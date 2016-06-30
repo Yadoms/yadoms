@@ -11,7 +11,7 @@ public:
    /// \param [in] value   The valueID from OpenZWave library
    /// \return The yadoms keyword name
    //-----------------------------------------------------------------------------
-   static std::string GenerateKeywordName(OpenZWave::ValueID & value);
+   static std::string GenerateKeywordName(OpenZWave::ValueID& value);
 
    //-----------------------------------------------------------------------------
    /// \brief	Generate the device name from a home and node id
@@ -19,6 +19,7 @@ public:
    /// \param [in] nodeId   The node id
    /// \return The yadoms device name
    //-----------------------------------------------------------------------------
-   static std::string GenerateDeviceName(Poco::UInt32 homeId, Poco::UInt8 nodeId);
+   static std::string GenerateDeviceName(Poco::UInt32 homeId,
+                                         Poco::UInt8 nodeId);
 };
 

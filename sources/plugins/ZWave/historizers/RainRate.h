@@ -1,8 +1,8 @@
 #pragma once
 #include "../OpenZWaveSingleHistorizableData.h"
 
-namespace historizers {
-
+namespace historizers
+{
    class CRainRate : public COpenZWaveSingleHistorizableData<double>
    {
    public:
@@ -12,7 +12,7 @@ namespace historizers {
       ///\param[in] accessMode      The access mode
       ///\param[in] measureType     The measure type (normally kAbsolute)
       //-----------------------------------------------------
-      CRainRate(const std::string & name);
+      CRainRate(const std::string& name);
 
       //-----------------------------------------------------
       ///\brief                     Constructor
@@ -20,7 +20,8 @@ namespace historizers {
       ///\param[in] accessMode      The access mode
       ///\param[in] measureType     The measure type (normally kAbsolute)
       //-----------------------------------------------------
-      CRainRate(const std::string & name, shared::plugin::yPluginApi::historization::EMeasureType measureType);
+      CRainRate(const std::string& name,
+                shared::plugin::yPluginApi::historization::EMeasureType measureType);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
@@ -28,9 +29,11 @@ namespace historizers {
       virtual ~CRainRate();
 
       // COpenZWaveSingleHistorizableData<Poco::Int64> override ------------------------
-      virtual void setWithUnits(double value, const std::string & unit);
-      virtual double getWithUnits(const std::string & unit) const;
+      void setWithUnits(double value,
+                        const std::string& unit) override;
+      double getWithUnits(const std::string& unit) const override;
       // [END] - COpenZWaveSingleHistorizableData<double> override ------------------------
    };
-
 } //namespace historizers 
+
+

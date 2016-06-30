@@ -2,15 +2,30 @@
 #include "Duration.h"
 #include "../StandardCapacities.h"
 
-namespace shared { namespace plugin { namespace yPluginApi { namespace historization
+namespace shared
 {
-   CDuration::CDuration(const std::string& keywordName, const EKeywordAccessMode& accessMode)
-      :CSingleHistorizableData<boost::posix_time::time_duration>(keywordName, CStandardCapacities::Duration, accessMode, boost::date_time::not_a_date_time, EMeasureType::kAbsolute)
+   namespace plugin
    {
-   }
+      namespace yPluginApi
+      {
+         namespace historization
+         {
+            CDuration::CDuration(const std::string& keywordName,
+                                 const EKeywordAccessMode& accessMode)
+               : CSingleHistorizableData<boost::posix_time::time_duration>(keywordName,
+                                                                           CStandardCapacities::Duration,
+                                                                           accessMode,
+                                                                           boost::date_time::not_a_date_time,
+                                                                           EMeasureType::kAbsolute)
+            {
+            }
 
-   CDuration::~CDuration()
-   {
+            CDuration::~CDuration()
+            {
+            }
+         }
+      }
    }
+} // namespace shared::plugin::yPluginApi::historization
 
-} } } } // namespace shared::plugin::yPluginApi::historization
+

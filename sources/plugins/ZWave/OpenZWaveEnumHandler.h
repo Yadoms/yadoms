@@ -2,11 +2,8 @@
 
 #include "OpenZWaveCommandClass.h"
 #include <value_classes/Value.h>
-#include "IOpenZWaveNodeKeyword.h"
 #include <shared/plugin/yPluginApi/historization/IHistorizable.h>
-#include <Notification.h>
 #include <Poco/Types.h>
-
 
 
 //--------------------------------------------------------------
@@ -18,18 +15,18 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Default constructor
    //--------------------------------------------------------------
-   COpenZWaveEnumHandler(); 
-   
+   COpenZWaveEnumHandler();
+
    //--------------------------------------------------------------
    /// \brief	    Default constructor
    //--------------------------------------------------------------
-   COpenZWaveEnumHandler(const std::string &str);
+   explicit COpenZWaveEnumHandler(const std::string& str);
 
    //--------------------------------------------------------------
    /// \brief	    Constructor
    /// \param [in]   vID   The OpenZWave valueID
    //--------------------------------------------------------------
-   COpenZWaveEnumHandler(OpenZWave::ValueID & vID);
+   explicit COpenZWaveEnumHandler(OpenZWave::ValueID& vID);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -37,12 +34,12 @@ public:
    virtual ~COpenZWaveEnumHandler();
 
    //shared::enumeration::IExtendedEnum implementation
-   virtual const std::string & getName() const;
-   virtual const std::string & toString() const;
-   virtual void fromString(const std::string & val);
-   virtual const std::multimap<int, std::string> getAllValuesAndStrings() const;
-   virtual const std::vector<int> getAllValues() const;
-   virtual const std::vector<std::string> getAllStrings() const;
+   const std::string& getName() const override;
+   const std::string& toString() const override;
+   void fromString(const std::string& val) override;
+   const std::multimap<int, std::string> getAllValuesAndStrings() const override;
+   const std::vector<int> getAllValues() const override;
+   const std::vector<std::string> getAllStrings() const override;
    //[END] - shared::enumeration::IExtendedEnum implementation
 
    //--------------------------------------------------------------
@@ -51,7 +48,8 @@ public:
    /// \param [out]  result                  The associated text
    /// \return true if value has been found, false otherwize
    //--------------------------------------------------------------
-   bool getTextOfValue(const std::string & integerValueInString, std::string & result);
+   bool getTextOfValue(const std::string& integerValueInString,
+                       std::string& result);
 
 private:
    //--------------------------------------------------------------
@@ -84,5 +82,4 @@ private:
    //--------------------------------------------------------------
    std::vector<Poco::Int32> m_integers;
 };
-
 

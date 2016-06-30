@@ -3,42 +3,55 @@
 #include <shared/Export.h>
 #include <shared/Field.hpp>
 
-namespace shared { namespace plugin { namespace yPluginApi { namespace historization { namespace typeInfo {
-
-   //-----------------------------------------------------
-   ///\brief Interface for keyword type information
-   //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CStringTypeInfo : public ITypeInfo
+namespace shared
+{
+   namespace plugin
    {
-   public:
-      //-----------------------------------------------------
-      ///\brief   Empty container (can be with references)
-      //-----------------------------------------------------
-      static CStringTypeInfo Empty;
-      
-      //-----------------------------------------------------
-      ///\brief   Constructor
-      //-----------------------------------------------------
-      CStringTypeInfo();
-      
-      //-----------------------------------------------------
-      ///\brief   Destructor
-      //-----------------------------------------------------
-      virtual ~CStringTypeInfo();
-      
-      //-----------------------------------------------------
-      ///\brief   Set the regex string
-      ///\param [in] regexString : The regex string
-      ///\return  A reference to itself to allow method chaining
-      //-----------------------------------------------------
-      CStringTypeInfo & setRegexString(const std::string & regexString);
+      namespace yPluginApi
+      {
+         namespace historization
+         {
+            namespace typeInfo
+            {
+               //-----------------------------------------------------
+               ///\brief Interface for keyword type information
+               //-----------------------------------------------------
+               class YADOMS_SHARED_EXPORT CStringTypeInfo : public ITypeInfo
+               {
+               public:
+                  //-----------------------------------------------------
+                  ///\brief   Empty container (can be with references)
+                  //-----------------------------------------------------
+                  static CStringTypeInfo Empty;
 
-      // ITypeInfo implementation 
-      virtual shared::CDataContainer serialize() const;
-      // END ITypeInfo implementation 
+                  //-----------------------------------------------------
+                  ///\brief   Constructor
+                  //-----------------------------------------------------
+                  CStringTypeInfo();
 
-   private:
-      CField<std::string> m_regex;
-   };
+                  //-----------------------------------------------------
+                  ///\brief   Destructor
+                  //-----------------------------------------------------
+                  virtual ~CStringTypeInfo();
 
-}}}}} // namespace shared::plugin::yPluginApi::historization::typeInfo
+                  //-----------------------------------------------------
+                  ///\brief   Set the regex string
+                  ///\param [in] regexString : The regex string
+                  ///\return  A reference to itself to allow method chaining
+                  //-----------------------------------------------------
+                  CStringTypeInfo& setRegexString(const std::string& regexString);
+
+                  // ITypeInfo implementation 
+                  CDataContainer serialize() const override;
+                  // END ITypeInfo implementation 
+
+               private:
+                  CField<std::string> m_regex;
+               };
+            }
+         }
+      }
+   }
+} // namespace shared::plugin::yPluginApi::historization::typeInfo
+
+

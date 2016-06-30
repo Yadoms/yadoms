@@ -1,25 +1,36 @@
 #include "stdafx.h"
 #include "UpDownStop.h"
-#include "../StandardValues.h"
 
 
-namespace shared { namespace plugin { namespace yPluginApi { namespace historization
+namespace shared
 {
-   DECLARE_ENUM_IMPLEMENTATION(EUpDownStopCommand,
-      ((Stop))
-      ((Up))
-      ((Down))
-   );
-
-   CUpDownStop::CUpDownStop(const std::string& keywordName, const EKeywordAccessMode& accessMode)
-      :CSingleHistorizableData<EUpDownStopCommand>(keywordName, CStandardCapacities::UpDownStop, accessMode, EUpDownStopCommand::kStop)
+   namespace plugin
    {
+      namespace yPluginApi
+      {
+         namespace historization
+         {
+            DECLARE_ENUM_IMPLEMENTATION(EUpDownStopCommand,
+               ((Stop))
+               ((Up))
+               ((Down))
+            );
+
+            CUpDownStop::CUpDownStop(const std::string& keywordName,
+                                     const EKeywordAccessMode& accessMode)
+               : CSingleHistorizableData<EUpDownStopCommand>(keywordName,
+                                                             CStandardCapacities::UpDownStop,
+                                                             accessMode,
+                                                             EUpDownStopCommand::kStop)
+            {
+            }
+
+            CUpDownStop::~CUpDownStop()
+            {
+            }
+         }
+      }
    }
+} // namespace shared::plugin::yPluginApi::historization
 
-   CUpDownStop::~CUpDownStop()
-   {
-   }
-
-
-} } } } // namespace shared::plugin::yPluginApi::historization
 

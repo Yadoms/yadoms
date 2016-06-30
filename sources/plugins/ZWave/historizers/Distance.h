@@ -1,8 +1,8 @@
 #pragma once
 #include "../OpenZWaveSingleHistorizableData.h"
 
-namespace historizers {
-
+namespace historizers
+{
    class CDistance : public COpenZWaveSingleHistorizableData<double>
    {
    public:
@@ -12,7 +12,8 @@ namespace historizers {
       ///\param[in] accessMode      The access mode
       ///\param[in] measureType     The measure type (normally kAbsolute)
       //-----------------------------------------------------
-      CDistance(const std::string & name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode);
+      CDistance(const std::string& name,
+                shared::plugin::yPluginApi::EKeywordAccessMode accessMode);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
@@ -20,10 +21,10 @@ namespace historizers {
       virtual ~CDistance();
 
       // COpenZWaveSingleHistorizableData<Poco::Int64> override ------------------------
-      virtual void setWithUnits(double value, const std::string & unit);
-      virtual double getWithUnits(const std::string & unit) const;
+      void setWithUnits(double value, const std::string& unit) override;
+      double getWithUnits(const std::string& unit) const override;
       // [END] - COpenZWaveSingleHistorizableData<double> override ------------------------
    };
-
-
 } //namespace historizers 
+
+

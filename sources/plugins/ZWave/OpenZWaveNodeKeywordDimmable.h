@@ -10,7 +10,9 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    //--------------------------------------------------------------
-   COpenZWaveNodeKeywordDimmable(OpenZWave::ValueID & valueId, const std::string & vLabel, shared::plugin::yPluginApi::EKeywordAccessMode accessMode);
+   COpenZWaveNodeKeywordDimmable(OpenZWave::ValueID& valueId,
+                                 const std::string& vLabel,
+                                 shared::plugin::yPluginApi::EKeywordAccessMode accessMode);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -18,8 +20,8 @@ public:
    virtual ~COpenZWaveNodeKeywordDimmable();
 
    // IOpenZWaveKeyword implementation
-   virtual bool sendCommand(const std::string & commandData);
-   virtual boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> getLastKeywordValue();
+   bool sendCommand(const std::string& commandData) override;
+   boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> getLastKeywordValue() override;
    // [END] IOpenZWaveKeyword implementation
 
 private:

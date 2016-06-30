@@ -12,20 +12,20 @@ protected:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    //--------------------------------------------------------------
-   explicit COpenZWaveNodeKeywordBase(OpenZWave::ValueID & valueId);
+   explicit COpenZWaveNodeKeywordBase(OpenZWave::ValueID& valueId);
 
 public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~COpenZWaveNodeKeywordBase();
-   
+
    // IOpenZWaveKeyword implementation
-   virtual bool sendCommand(const std::string & commandData) = 0;
+   virtual bool sendCommand(const std::string& commandData) = 0;
    virtual boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> getLastKeywordValue() = 0;
-   virtual void updateValue(OpenZWave::ValueID & value);
+   virtual void updateValue(OpenZWave::ValueID& value);
    // [END] IOpenZWaveKeyword implementation
-      
+
 protected:
    //--------------------------------------------------------------
    /// \brief	      Send a command.
@@ -33,15 +33,15 @@ protected:
    /// \return       true if command is sent (just sent, not applied), false other cases
    /// \note	      T the type of data
    //--------------------------------------------------------------
-   template<class T>
-   inline bool realSendCommand(const T & data);
+   template <class T>
+   inline bool realSendCommand(const T& data);
 
    //--------------------------------------------------------------
    /// \brief	      Extract a typed value from the OpenZWave::ValueID container 
    /// \return       The data contained in OpenZWave::ValueID, in the goot type
    /// \note	      T the type of data
    //--------------------------------------------------------------
-   template<class T>
+   template <class T>
    inline T extractLastValue();
 
    //--------------------------------------------------------------
@@ -49,28 +49,28 @@ protected:
    /// \return       The data unit
    //--------------------------------------------------------------
    const std::string getUnit();
-   
+
 private:
    //--------------------------------------------------------------
    /// \brief	      The value id
    //--------------------------------------------------------------
-   OpenZWave::ValueID m_valueId;   
+   OpenZWave::ValueID m_valueId;
 };
 
 
 //--------------------------------------------------------------
-template<class T>
-inline bool COpenZWaveNodeKeywordBase::realSendCommand(const T & data)
+template <class T>
+inline bool COpenZWaveNodeKeywordBase::realSendCommand(const T& data)
 {
    try
    {
       return OpenZWave::Manager::Get()->SetValue(m_valueId, data);
    }
-   catch (OpenZWave::OZWException & ex)
+   catch (OpenZWave::OZWException& ex)
    {
       std::cerr << "Fail to send command : OpenZWave exception : " << ex.what() << std::endl;
    }
-   catch (std::exception & ex)
+   catch (std::exception& ex)
    {
       std::cerr << "Fail to send command : std::exception : " << ex.what() << std::endl;
    }
@@ -81,13 +81,11 @@ inline bool COpenZWaveNodeKeywordBase::realSendCommand(const T & data)
    return false;
 }
 
-template<>
-inline bool COpenZWaveNodeKeywordBase::realSendCommand(const COpenZWaveEnumHandler & data)
+template <>
+inline bool COpenZWaveNodeKeywordBase::realSendCommand(const COpenZWaveEnumHandler& data)
 {
    try
    {
-      
-      
       if (!OpenZWave::Manager::Get()->SetValueListSelection(m_valueId, data.toString()))
       {
          std::string value;
@@ -98,11 +96,11 @@ inline bool COpenZWaveNodeKeywordBase::realSendCommand(const COpenZWaveEnumHandl
          }
       }
    }
-   catch (OpenZWave::OZWException & ex)
+   catch (OpenZWave::OZWException& ex)
    {
       std::cerr << "Fail to send command : OpenZWave exception : " << ex.what() << std::endl;
    }
-   catch (std::exception & ex)
+   catch (std::exception& ex)
    {
       std::cerr << "Fail to send command : std::exception : " << ex.what() << std::endl;
    }
@@ -113,18 +111,18 @@ inline bool COpenZWaveNodeKeywordBase::realSendCommand(const COpenZWaveEnumHandl
    return false;
 }
 
-template<>
-inline bool COpenZWaveNodeKeywordBase::realSendCommand(const Poco::UInt64 & data)
+template <>
+inline bool COpenZWaveNodeKeywordBase::realSendCommand(const Poco::UInt64& data)
 {
    try
    {
-      return OpenZWave::Manager::Get()->SetValue(m_valueId, (Poco::Int32)data);
+      return OpenZWave::Manager::Get()->SetValue(m_valueId, static_cast<Poco::Int32>(data));
    }
-   catch (OpenZWave::OZWException & ex)
+   catch (OpenZWave::OZWException& ex)
    {
       std::cerr << "Fail to send command : OpenZWave exception : " << ex.what() << std::endl;
    }
-   catch (std::exception & ex)
+   catch (std::exception& ex)
    {
       std::cerr << "Fail to send command : std::exception : " << ex.what() << std::endl;
    }
@@ -135,18 +133,18 @@ inline bool COpenZWaveNodeKeywordBase::realSendCommand(const Poco::UInt64 & data
    return false;
 }
 
-template<>
-inline bool COpenZWaveNodeKeywordBase::realSendCommand(const Poco::Int64 & data)
+template <>
+inline bool COpenZWaveNodeKeywordBase::realSendCommand(const Poco::Int64& data)
 {
    try
    {
-      return OpenZWave::Manager::Get()->SetValue(m_valueId, (Poco::Int32)data);
+      return OpenZWave::Manager::Get()->SetValue(m_valueId, static_cast<Poco::Int32>(data));
    }
-   catch (OpenZWave::OZWException & ex)
+   catch (OpenZWave::OZWException& ex)
    {
       std::cerr << "Fail to send command : OpenZWave exception : " << ex.what() << std::endl;
    }
-   catch (std::exception & ex)
+   catch (std::exception& ex)
    {
       std::cerr << "Fail to send command : std::exception : " << ex.what() << std::endl;
    }
@@ -157,18 +155,18 @@ inline bool COpenZWaveNodeKeywordBase::realSendCommand(const Poco::Int64 & data)
    return false;
 }
 
-template<>
-inline bool COpenZWaveNodeKeywordBase::realSendCommand(const double & data)
+template <>
+inline bool COpenZWaveNodeKeywordBase::realSendCommand(const double& data)
 {
    try
    {
-      return OpenZWave::Manager::Get()->SetValue(m_valueId, (float)data);
+      return OpenZWave::Manager::Get()->SetValue(m_valueId, static_cast<float>(data));
    }
-   catch (OpenZWave::OZWException & ex)
+   catch (OpenZWave::OZWException& ex)
    {
       std::cerr << "Fail to send command : OpenZWave exception : " << ex.what() << std::endl;
    }
-   catch (std::exception & ex)
+   catch (std::exception& ex)
    {
       std::cerr << "Fail to send command : std::exception : " << ex.what() << std::endl;
    }
@@ -180,7 +178,7 @@ inline bool COpenZWaveNodeKeywordBase::realSendCommand(const double & data)
 }
 
 
-template<class T>
+template <class T>
 inline T COpenZWaveNodeKeywordBase::extractLastValue()
 {
    std::cout << "COpenZWaveNodeKeywordBase::extractLastValue : generic type is not supported. Only overriden types are allowed" << std::endl;
@@ -189,7 +187,7 @@ inline T COpenZWaveNodeKeywordBase::extractLastValue()
    return boost::lexical_cast<T>(value);
 }
 
-template<>
+template <>
 inline bool COpenZWaveNodeKeywordBase::extractLastValue()
 {
    bool value;
@@ -197,7 +195,7 @@ inline bool COpenZWaveNodeKeywordBase::extractLastValue()
    return value;
 }
 
-template<>
+template <>
 inline Poco::UInt8 COpenZWaveNodeKeywordBase::extractLastValue()
 {
    Poco::UInt8 value;
@@ -205,7 +203,7 @@ inline Poco::UInt8 COpenZWaveNodeKeywordBase::extractLastValue()
    return value;
 }
 
-template<>
+template <>
 inline float COpenZWaveNodeKeywordBase::extractLastValue()
 {
    float value;
@@ -214,7 +212,7 @@ inline float COpenZWaveNodeKeywordBase::extractLastValue()
 }
 
 
-template<>
+template <>
 inline double COpenZWaveNodeKeywordBase::extractLastValue()
 {
    float value;
@@ -223,7 +221,7 @@ inline double COpenZWaveNodeKeywordBase::extractLastValue()
 }
 
 
-template<>
+template <>
 inline Poco::Int32 COpenZWaveNodeKeywordBase::extractLastValue()
 {
    Poco::Int32 value;
@@ -232,10 +230,7 @@ inline Poco::Int32 COpenZWaveNodeKeywordBase::extractLastValue()
 }
 
 
-
-
-
-template<>
+template <>
 inline Poco::Int16 COpenZWaveNodeKeywordBase::extractLastValue()
 {
    Poco::Int16 value;
@@ -244,7 +239,7 @@ inline Poco::Int16 COpenZWaveNodeKeywordBase::extractLastValue()
 }
 
 
-template<>
+template <>
 inline std::string COpenZWaveNodeKeywordBase::extractLastValue()
 {
    std::string value;
@@ -253,10 +248,9 @@ inline std::string COpenZWaveNodeKeywordBase::extractLastValue()
 }
 
 
-template<>
+template <>
 inline COpenZWaveEnumHandler COpenZWaveNodeKeywordBase::extractLastValue()
 {
    return COpenZWaveEnumHandler(m_valueId);
 }
-
 

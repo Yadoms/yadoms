@@ -1,25 +1,35 @@
 #include "stdafx.h"
 #include "EmptyTypeInfo.h"
 
-namespace shared { namespace plugin { namespace yPluginApi { namespace historization { namespace typeInfo {
-
-
-   CEmptyTypeInfo CEmptyTypeInfo::Empty;
-
-
-   CEmptyTypeInfo::CEmptyTypeInfo()
+namespace shared
+{
+   namespace plugin
    {
-   }
+      namespace yPluginApi
+      {
+         namespace historization
+         {
+            namespace typeInfo
+            {
+               CEmptyTypeInfo CEmptyTypeInfo::Empty;
 
-   CEmptyTypeInfo::~CEmptyTypeInfo()
-   {
-   }
 
-   CDataContainer CEmptyTypeInfo::serialize() const
-   {
-      return CDataContainer();
-   }
+               CEmptyTypeInfo::CEmptyTypeInfo()
+               {
+               }
 
-}}}}} // namespace shared::plugin::yPluginApi::historization::typeInfo
-	
-	
+               CEmptyTypeInfo::~CEmptyTypeInfo()
+               {
+               }
+
+               CDataContainer CEmptyTypeInfo::serialize() const
+               {
+                  return CDataContainer();
+               }
+            }
+         }
+      }
+   }
+} // namespace shared::plugin::yPluginApi::historization::typeInfo
+
+
