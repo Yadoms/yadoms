@@ -64,6 +64,161 @@
 			 <td class="vert-align"><a href="https://parall.ax/products/jspdf">jsPDF</a></td>
 			 <td class="vert-align"></td>
 		  </tr>	 	  
-	   </table>
+	   </table>    
    </div>
+   
+   <h2 class="sub-header" data-i18n="modals.dashboard.sub-windows.about.plugins"></h2>
+
+   <div class="table-responsive summary-table">
+	   <table id="plugin-package-list" class="table table-bordered table-striped dashboard-list">
+		  <tr>
+			 <td data-i18n="modals.dashboard.sub-windows.about.table.displayName"></td>
+			 <td data-i18n="modals.dashboard.sub-windows.about.table.authors"></td>
+			 <td data-i18n="modals.dashboard.sub-windows.about.table.credits"></td>
+		  </tr>
+		  <!-- plugin instance will be listed here-->
+	   </table>	   
+   </div>   
+   
+   <h2 class="sub-header" data-i18n="modals.dashboard.sub-windows.about.widgets"></h2>
+   
+   <div class="table-responsive summary-table">
+	   <table id="widget-package-list" class="table table-bordered table-striped dashboard-list">
+		  <tr>
+			 <td data-i18n="modals.dashboard.sub-windows.about.table.displayName"></td>
+			 <td data-i18n="modals.dashboard.sub-windows.about.table.authors"></td>
+			 <td data-i18n="modals.dashboard.sub-windows.about.table.credits"></td>
+		  </tr>
+		  <!-- plugin instance will be listed here-->
+	   </table>	   
+   </div>
+   
 </div>
+
+<script src="libs/markdown-it/markdown-it.min.js"></script>
+
+<script>
+
+   Yadoms.initializeAboutDashboard = function () {
+
+/*   
+		var converter = new showdown.Converter({
+			'github_flavouring': true,
+			'tables': true
+		});	  */
+		
+	 var md = window.markdownit({
+		  html: true,
+		  breaks:true,
+		 highlight: function (str, lang) {
+		   if (lang && hljs.getLanguage(lang)) {
+			 try {
+			   return hljs.highlight(lang, str).value;
+			 } catch (__) {}
+		   }
+
+		   return ''; // use external default escaping
+		 }
+	   });	
+	    
+	   function getWidgetDomRow(widgetPackage) {
+		  return $("table#widget-package-list").find("tr[widget-id='" + widgetPackage + "']");
+	   }
+
+	   function getPluginDomRow(pluginPackage) {
+		  return $("table#plugin-package-list").find("tr[plugin-id='" + pluginPackage + "']");
+	   }	   
+	   
+	    AddWidgetPackage = function( name, authors, credits, url ) {
+		
+		  //we add it to the DOM
+		  var $widgetPackageList = $("table#widget-package-list");
+
+		  var frameworkWidgetPackage = "<tr widget-id=\"" + name + "\">" +
+				  "<td class=\"widget-displayName vert-align\"></td>" +
+				  "<td class=\"widget-authors vert-align\"></td>" +
+				  "<td class=\"widget-credits vert-align\" align=\"left\"></td>" +
+				  "</tr>";		
+		
+		  $widgetPackageList.append( frameworkWidgetPackage );
+
+          var $widgetPackageRow = getWidgetDomRow( name );		  
+		  
+		  //we fill the data
+		  $widgetPackageRow.find("td.widget-displayName").html( "<a href=\"" + url + "\">" + name + "</a>" );
+		  $widgetPackageRow.find("td.widget-authors").html( authors );
+		  $widgetPackageRow.find("td.widget-credits").html( credits );
+		
+		};
+		
+	    AddPluginPackage = function( type, name, authors, credits, url ) {
+		
+		  //we add it to the DOM
+		  var $pluginPackageList = $("table#plugin-package-list");
+
+		  var frameworkPluginPackage = "<tr plugin-id=\"" + type + "\">" +
+				  "<td class=\"plugin-displayName vert-align\"></td>" +
+				  "<td class=\"plugin-authors vert-align\"></td>" +
+				  "<td class=\"plugin-credits vert-align\" align=\"left\"></td>" +
+				  "</tr>";		
+		
+		  $pluginPackageList.append( frameworkPluginPackage );
+
+          var $pluginPackageRow = getPluginDomRow( type );		  
+		  
+		  //we fill the data
+		  $pluginPackageRow.find("td.plugin-displayName").html( "<a href=\"" + url + "\">" + name + "</a>" );
+		  $pluginPackageRow.find("td.plugin-authors").html( authors );
+		  $pluginPackageRow.find("td.plugin-credits").html( credits );
+		
+		};		
+		
+	    // delete all existing information
+	    $("table#plugin-package-list").find("tr:gt(0)").remove();
+		
+         // Enter all Plugins into an array
+         var tabPlugins = [];
+	  
+         Object.keys(PluginManager.pluginTypes).forEach(function(key) {
+            //if( (!data.developerMode && !key.startsWith("dev-")) || data.developerMode) { //TODO JMB -> Mettre en place la lecture du developerMode
+               var value = PluginManager.pluginTypes[key];
+			   
+			   tabPlugins.push ( {plugin: value, friendlyName: $.t("plugins/" + value.type + ":name" ) });
+            //}
+         });
+		 
+         // sort each Plugins Name in the language selected
+         tabPlugins = sortListItemsWithFriendlyName ( tabPlugins );
+	     
+         //foreach element of the array
+         $.each(tabPlugins, function(index, value) {
+            
+			console.log ( value.plugin.package );
+			
+			var result = md.renderInline( value.plugin.package.credits ); 
+			
+			AddPluginPackage ( value.plugin.type, value.friendlyName, value.plugin.package.author, result, value.plugin.package.url );
+         });		 
+		
+	    // delete all existing information
+	    $("table#widget-package-list").find("tr:gt(0)").remove();
+	  
+	    // scan all widgets packages
+        for (var index in WidgetPackageManager.widgetPackages) {
+            if (WidgetPackageManager.widgetPackages.hasOwnProperty(index)) {
+                var value = WidgetPackageManager.widgetPackages[index].package;
+				
+				//console.log ( value );
+				
+				//var convert = function() {
+				//	console.log ( converter.makeHtml( value.credits ) );
+				//};
+				
+				//convert();
+				
+				AddWidgetPackage ( value.type, value.author, value.credits, value.url );
+            }
+        }
+   }
+
+</script>
