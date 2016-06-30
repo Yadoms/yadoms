@@ -1078,65 +1078,64 @@ set(CPACK_COMPONENT_GROUP_SCRIPTINTERPRETERS_DESCRIPTION  "All the script interp
 
 IF(WIN32 AND NOT UNIX)
 
-	# Custom target for packaging.
-	if(USE_NSIS)
-	  set(CPACK_GENERATOR "NSIS")
-	  
-     # There is a bug in NSI that does not handle full unix paths properly. Make
-     # sure there is at least one set of four (4) backlasshes.
-     SET(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/../distribution\\\\Yadoms.bmp")
+   # Custom target for packaging.
+   if(USE_NSIS)
+      set(CPACK_GENERATOR "NSIS")
 
-	  set(CPACK_NSIS_PLUGINS_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/NSIS/extensions")
-	  set(CPACK_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/NSIS")
+      # There is a bug in NSI that does not handle full unix paths properly. Make
+      # sure there is at least one set of four (4) backlasshes.
+      SET(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/../distribution\\\\Yadoms.bmp")
+
+      set(CPACK_NSIS_PLUGINS_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/NSIS/extensions")
+      set(CPACK_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/NSIS")
       SET(CPACK_NSIS_INSTALLED_ICON_NAME "${INSTALL_BINDIR}\\\\yadoms.exe")
       SET(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\yadoms.ico")
       SET(CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\yadoms.ico")
-	  SET(CPACK_NSIS_DISPLAY_NAME "Yadoms")
-	  SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.yadoms.com")
-	  SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.yadoms.com")
-	  SET(CPACK_NSIS_CONTACT "contact@yadoms.com")
-	  SET(CPACK_NSIS_MODIFY_PATH ON)
-	  
-     set(CPACK_NSIS_CREATE_ICONS_STARTMENU
-        "SetOutPath $INSTDIR\\\\bin
+      SET(CPACK_NSIS_DISPLAY_NAME "Yadoms")
+      SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.yadoms.com")
+      SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.yadoms.com")
+      SET(CPACK_NSIS_CONTACT "contact@yadoms.com")
+      SET(CPACK_NSIS_MODIFY_PATH ON)
+
+      set(CPACK_NSIS_CREATE_ICONS_STARTMENU
+         "SetOutPath $INSTDIR\\\\bin
          SetShellVarContext all
          CreateShortCut '\$SMPROGRAMS\$STARTMENU_FOLDER\\\\Yadoms.lnk' '\$INSTDIR\\\\bin\\\\yadoms.exe' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
-     )
+         )
 
-     set(CPACK_NSIS_CREATE_ICONS_DESKTOP
-        "SetOutPath $INSTDIR\\\\bin
+      set(CPACK_NSIS_CREATE_ICONS_DESKTOP
+         "SetOutPath $INSTDIR\\\\bin
          SetShellVarContext all
          CreateShortCut '\$DESKTOP\\\\Yadoms.lnk' '\$INSTDIR\\\\bin\\\\yadoms.exe' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
-     )
-     
-     set(CPACK_NSIS_INSTALL_SERVICE
+         )
+
+      set(CPACK_NSIS_INSTALL_SERVICE
          "ExecWait '\$INSTDIR\\\\bin\\\\yadoms.exe --registerService --displayName:Yadoms --startup:automatic' $0
          !insertmacro SERVICE 'start' 'Yadoms' ''"
-     )   
+         )   
 
-     set(CPACK_NSIS_UNINSTALL_SERVICE
+      set(CPACK_NSIS_UNINSTALL_SERVICE
          "!ifdef UN
-          !undef UN
-          !endif
-	       !define UN 'un.'         
-          !insertmacro SERVICE 'stop' 'Yadoms' ''
-          ExecWait '\$INSTDIR\\\\bin\\\\yadoms.exe --unregisterService' $0"
-     )
-      
-	  #d\E9fini les permissions pour le r\E9pertoire d'install pour tous les utilisateurs
-	  #pour l'utilisateur TOUT LE MONDE (identifi\E9 par (S-1-1-0) )
-	  set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
-	  	"AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1)\\\" \\\"FullAccess\\\"
-		 AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1-0)\\\" \\\"FullAccess\\\""
-	  )
-	else(USE_NSIS)
-	  set(CPACK_GENERATOR "ZIP")
-	endif(USE_NSIS)
+         !undef UN
+         !endif
+         !define UN 'un.'         
+         !insertmacro SERVICE 'stop' 'Yadoms' ''
+         ExecWait '\$INSTDIR\\\\bin\\\\yadoms.exe --unregisterService' $0"
+         )
+
+      #Set install folder permissions to all users (identified by (S-1-1-0))
+      set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
+         "AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1)\\\" \\\"FullAccess\\\"
+         AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1-0)\\\" \\\"FullAccess\\\""
+         )
+   else(USE_NSIS)
+      set(CPACK_GENERATOR "ZIP")
+   endif(USE_NSIS)
 
 ELSE(WIN32 AND NOT UNIX)
-  SET(CPACK_STRIP_FILES "Yadoms")
-  SET(CPACK_SOURCE_STRIP_FILES "")
+   SET(CPACK_STRIP_FILES "Yadoms")
+   SET(CPACK_SOURCE_STRIP_FILES "")
 ENDIF(WIN32 AND NOT UNIX)
-SET(CPACK_PACKAGE_EXECUTABLES "Yadoms" "Yadoms")
+   SET(CPACK_PACKAGE_EXECUTABLES "Yadoms" "Yadoms")
 
 INCLUDE(CPack)
