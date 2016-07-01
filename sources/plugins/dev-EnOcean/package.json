@@ -1,0 +1,20 @@
+{
+	"type": "enOcean",
+	"version": "0.1",
+	"releaseType": "beta",
+	"author": "Sébastien Gallou",
+   "url": "https://github.com/Yadoms/yadoms/",
+	"credits": "",
+	"supportedPlatforms": "all",
+	"configurationSchema": {
+		"SerialPort": {
+			"type": "enum",
+			"values": {
+				"__Binding__": {
+					"type": "system",
+					"query": "serialPorts"
+				}
+			}
+		}
+	}
+}
