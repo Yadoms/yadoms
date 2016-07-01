@@ -503,7 +503,14 @@
 		  "YadomsWebsite": "Yadoms website",
 		  "ReportABug": "Report a bug",
 		  "github": "Yadoms github",
-		  "forum": "Forum"
+		  "forum": "Forum",
+		  "plugins": "Plugins",
+		  "widgets": "Widgets",		  
+		  "table": {
+		     "displayName": "Name",
+			 "authors": "Author(s)",
+			 "credits": "credits"
+		  }
         }
       },
       "unableToLoadSubWindow": "Unable to load sub window __subWindowPath__"

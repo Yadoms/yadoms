@@ -98,6 +98,8 @@ namespace web {
 
       void CRestRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response)
       {
+         YADOMS_LOG(debug) << "Rest request : [" << request.getMethod() << "] : " << request.getURI();
+
          std::string answer = manageRestRequests(request);
          response.setContentType("application/json");
          std::ostream& ostr = response.send();

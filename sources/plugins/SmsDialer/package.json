@@ -3,8 +3,8 @@
    "version": "0.1",
    "releaseType": "beta",
    "author": "Sébastien Gallou",
-   "url": "https://github.com/Yadoms/yadoms/",
-   "credits": "",
+   "url": "https://github.com/Yadoms/yadoms/wiki/SmsDialer",
+   "credits": "[gammu](http://wammu.eu/gammu/)",
    "supportedPlatforms":
    {
       "mac": "none",
