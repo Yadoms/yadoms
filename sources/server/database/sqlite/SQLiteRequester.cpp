@@ -77,6 +77,13 @@ namespace database
             sqlite3_close(m_pDatabaseHandler);
       }
 
+      shared::CDataContainer CSQLiteRequester::getInformation()
+      {
+         shared::CDataContainer results;
+         results.set("type", "SQLite");
+         results.set("version", sqlite3_libversion());
+         return results;
+      }
 
       void isodate(sqlite3_context* context, int argc, sqlite3_value** argv)
       {

@@ -1,5 +1,5 @@
 #pragma once
-
+#include <shared/DataContainer.h>
 
 namespace database { 
 
@@ -18,7 +18,13 @@ namespace database {
       /// \Brief	Finalize the database system
       //--------------------------------------------------------------
       virtual void finalize() = 0;   
-      
+
+      //--------------------------------------------------------------
+      /// \Brief	Get database system information
+      /// \return shared::CDataContainer Some database information
+      //--------------------------------------------------------------
+      virtual shared::CDataContainer getInformation() = 0;
+
       //--------------------------------------------------------------
       /// \Brief	Virtual destructor
       //--------------------------------------------------------------   

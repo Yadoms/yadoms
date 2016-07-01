@@ -19,6 +19,7 @@
 #include "web/rest/service/Task.h"
 #include "web/rest/service/Recipient.h"
 #include "web/rest/service/Update.h"
+#include "web/rest/service/Maintenance.h"
 #include <shared/ThreadBase.h>
 #include "task/Scheduler.h"
 #include "communication/PluginGateway.h"
@@ -125,6 +126,7 @@ void CSupervisor::run()
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CTask>(taskManager));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CRecipient>(pDataProvider));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CUpdate>(updateManager));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CMaintenance>(pDataProvider->getDatabaseRequester()));
 
       webServer->start();
 
