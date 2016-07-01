@@ -3,38 +3,46 @@
 #include "SingleHistorizableData.hpp"
 #include "typeInfo/IntTypeInfo.h"
 
-namespace shared { namespace plugin { namespace yPluginApi { namespace historization
+namespace shared
 {
-   //-----------------------------------------------------
-   ///\brief A rssi (signal strength) historizable object
-   ///\note Rssi value is read-only
-   //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CRssi : public CSingleHistorizableData<int>
+   namespace plugin
    {
-   public:
-      //-----------------------------------------------------
-      ///\brief                     Constructor
-      ///\param[in] keywordName     Yadoms keyword name
-      ///\param[in] measureType     The measure type (normally kAbsolute)
-      //-----------------------------------------------------
-      CRssi(const std::string& keywordName, const EMeasureType& measureType = EMeasureType::kAbsolute, typeInfo::CIntTypeInfo & additionalInfo = typeInfo::CIntTypeInfo::Empty);
+      namespace yPluginApi
+      {
+         namespace historization
+         {
+            //-----------------------------------------------------
+            ///\brief A rssi (signal strength) historizable object
+            ///\note Rssi value is read-only
+            //-----------------------------------------------------
+            class YADOMS_SHARED_EXPORT CRssi : public CSingleHistorizableData<int>
+            {
+            public:
+               //-----------------------------------------------------
+               ///\brief                     Constructor
+               ///\param[in] keywordName     Yadoms keyword name
+               ///\param[in] measureType     The measure type (normally kAbsolute)
+               //-----------------------------------------------------
+               explicit CRssi(const std::string& keywordName,
+                              const EMeasureType& measureType = EMeasureType::kAbsolute,
+                              typeInfo::CIntTypeInfo& additionalInfo = typeInfo::CIntTypeInfo::Empty);
 
-      //-----------------------------------------------------
-      ///\brief                     Destructor
-      //-----------------------------------------------------
-      virtual ~CRssi();
+               //-----------------------------------------------------
+               ///\brief                     Destructor
+               //-----------------------------------------------------
+               virtual ~CRssi();
 
-   protected:
-      //-----------------------------------------------------
-      ///\brief                     Normalize the value
-      ///\param[in] level           Raw value
-      ///\return                    The normalized value (0-100)
-      //-----------------------------------------------------
-      virtual int Normalize(int value);
+            protected:
+               //-----------------------------------------------------
+               ///\brief                     Normalize the value
+               ///\param[in] level           Raw value
+               ///\return                    The normalized value (0-100)
+               //-----------------------------------------------------
+               int Normalize(int value) override;
+            };
+         }
+      }
+   }
+} // namespace shared::plugin::yPluginApi::historization
 
-   };
-
-
-
-} } } } // namespace shared::plugin::yPluginApi::historization
 

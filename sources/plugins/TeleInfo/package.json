@@ -3,7 +3,8 @@
 	"version": "0.1",
 	"releaseType": "beta",
 	"author": "Jean-Michel BERHAULT",
-   "url": "https://github.com/Yadoms/yadoms/",
+    "url": "https://github.com/Yadoms/yadoms/",
+	"credits": "",
 	"SupportedPlatforms": "all",
 	"supportManuallyDeviceCreation": "false",
 	"configurationSchema": {

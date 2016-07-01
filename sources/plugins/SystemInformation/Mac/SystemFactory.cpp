@@ -3,7 +3,8 @@
 
 CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api,
                                const std::string & device,
-                               const ISIConfiguration& configuration)
+                               const ISIConfiguration& configuration,
+                               shared::CDataContainer details)
 {
 }
 
@@ -11,17 +12,22 @@ CSystemFactory::~CSystemFactory()
 {
 }
 
-void CSystemFactory::OnSpeedUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                                   const ISIConfiguration& configuration)
+
+void CSystemFactory::OnHighFrequencyUpdate(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
+   
 }
- 
-void CSystemFactory::OnSlowUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                                  const ISIConfiguration& configuration)
+
+
+void CSystemFactory::OnLowFrequencyUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                          const ISIConfiguration& configuration)
 {
+   
 }
 
 void CSystemFactory::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                                           const ISIConfiguration& configuration)
+                           const ISIConfiguration& configuration,
+                           shared::CDataContainer details)
 {
+   
 }

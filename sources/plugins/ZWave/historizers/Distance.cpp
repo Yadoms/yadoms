@@ -2,12 +2,13 @@
 #include "Distance.h"
 #include <shared/plugin/yPluginApi/historization/Distance.h>
 
-namespace historizers {
-
-   CDistance::CDistance(const std::string & name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode)
-      : COpenZWaveSingleHistorizableData<double>(boost::shared_ptr< shared::plugin::yPluginApi::historization::CSingleHistorizableData<double> >(new shared::plugin::yPluginApi::historization::CDistance(name, accessMode)))
+namespace historizers
+{
+   CDistance::CDistance(const std::string& name,
+                        shared::plugin::yPluginApi::EKeywordAccessMode accessMode)
+      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CDistance>(name,
+                                                                                                                          accessMode))
    {
-
    }
 
    CDistance::~CDistance()
@@ -15,7 +16,8 @@ namespace historizers {
    }
 
    // COpenZWaveSingleHistorizableData<Poco::Int64> override ------------------------
-   void CDistance::setWithUnits(double value, const std::string & unit)
+   void CDistance::setWithUnits(double value,
+                                const std::string& unit)
    {
       if (unit == "cm")
          set(value / 100.0);
@@ -25,7 +27,7 @@ namespace historizers {
          set(value);
    }
 
-   double CDistance::getWithUnits(const std::string & unit) const
+   double CDistance::getWithUnits(const std::string& unit) const
    {
       if (unit == "cm")
          return get() * 100.0;
@@ -33,8 +35,8 @@ namespace historizers {
          return get() * 3.280839895;
       return get();
    }
+
    // [END] - COpenZWaveSingleHistorizableData<double> override ------------------------
-
-
-
 } //namespace historizers 
+
+

@@ -32,33 +32,42 @@
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 #include "OpenZWaveHelpers.h"
 
-std::vector< boost::shared_ptr<shared::plugin::yPluginApi::CStandardCapacity> > COpenZWaveNodeKeywordFactory::m_declaredCapacities;
+std::vector<boost::shared_ptr<shared::plugin::yPluginApi::CStandardCapacity> > COpenZWaveNodeKeywordFactory::m_declaredCapacities;
 
 
-boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::createKeyword(OpenZWave::ValueID & vID, Poco::UInt32 homeId, Poco::UInt8 nodeId, bool includeSystemKeywords)
+boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::createKeyword(OpenZWave::ValueID& vID,
+                                                                                     Poco::UInt32 homeId,
+                                                                                     Poco::UInt8 nodeId,
+                                                                                     bool includeSystemKeywords)
 {
-   return generateHistoriser(vID, homeId, nodeId, includeSystemKeywords);
+   return generateHistoriser(vID,
+                             homeId,
+                             nodeId,
+                             includeSystemKeywords);
 }
 
 
-boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateHistoriser(OpenZWave::ValueID & vID, Poco::UInt32 homeId, Poco::UInt8 nodeId, bool includeSystemKeywords)
+boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateHistoriser(OpenZWave::ValueID& vID,
+                                                                                          Poco::UInt32 homeId,
+                                                                                          Poco::UInt8 nodeId,
+                                                                                          bool includeSystemKeywords)
 {
    try
    {
-      if (vID.GetGenre() == OpenZWave::ValueID::ValueGenre_User || ( (vID.GetGenre() == OpenZWave::ValueID::ValueGenre_System || vID.GetGenre() == OpenZWave::ValueID::ValueGenre_Config)&& includeSystemKeywords))
+      if (vID.GetGenre() == OpenZWave::ValueID::ValueGenre_User || ((vID.GetGenre() == OpenZWave::ValueID::ValueGenre_System || vID.GetGenre() == OpenZWave::ValueID::ValueGenre_Config) && includeSystemKeywords))
       {
-         ECommandClass commandClass((int)vID.GetCommandClassId());
-         std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
-         uint8 commandClassInt = vID.GetCommandClassId();
-         bool readOnly = OpenZWave::Manager::Get()->IsValueReadOnly(vID);
-         bool writeOnly = OpenZWave::Manager::Get()->IsValueWriteOnly(vID);
-         bool polled = OpenZWave::Manager::Get()->IsValuePolled(vID);
-         bool valueSet = OpenZWave::Manager::Get()->IsValueSet(vID);
-         std::string units = OpenZWave::Manager::Get()->GetValueUnits(vID);
-         bool awake = OpenZWave::Manager::Get()->IsNodeAwake(homeId, nodeId);
-         bool failed = OpenZWave::Manager::Get()->IsNodeFailed(homeId, nodeId);
-         bool zwavePlus = OpenZWave::Manager::Get()->IsNodeZWavePlus(homeId, nodeId);
-         uint8 instance = vID.GetInstance();
+         ECommandClass commandClass(static_cast<int>(vID.GetCommandClassId()));
+         auto vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
+         auto commandClassInt = vID.GetCommandClassId();
+         auto readOnly = OpenZWave::Manager::Get()->IsValueReadOnly(vID);
+         auto writeOnly = OpenZWave::Manager::Get()->IsValueWriteOnly(vID);
+         auto polled = OpenZWave::Manager::Get()->IsValuePolled(vID);
+         auto valueSet = OpenZWave::Manager::Get()->IsValueSet(vID);
+         auto units = OpenZWave::Manager::Get()->GetValueUnits(vID);
+         auto awake = OpenZWave::Manager::Get()->IsNodeAwake(homeId, nodeId);
+         auto failed = OpenZWave::Manager::Get()->IsNodeFailed(homeId, nodeId);
+         auto zwavePlus = OpenZWave::Manager::Get()->IsNodeZWavePlus(homeId, nodeId);
+         auto instance = vID.GetInstance();
 
          if (units.empty())
             units = shared::plugin::yPluginApi::CStandardUnits::NoUnits;
@@ -86,8 +95,8 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
 
          std::cout << "[" << homeId << "." << nodeId << "] " << vLabel << ":" << commandClass.toString()
             << " [Genre=" << genre << "]"
-            << " [CommandClass=" << (int)commandClassInt << "]"
-            << " [Instance=" << (int)instance << "]"
+            << " [CommandClass=" << static_cast<int>(commandClassInt) << "]"
+            << " [Instance=" << static_cast<int>(instance) << "]"
             << " [ReadOnly=" << readOnly << "]"
             << " [WriteOnly= " << writeOnly << "]"
             << " [Polled= " << polled << "]"
@@ -101,15 +110,21 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
          if (readOnly)
             accessMode = shared::plugin::yPluginApi::EKeywordAccessMode::kGet;
 
-         boost::shared_ptr<IOpenZWaveNodeKeyword> genericKeyword = generateStandardKeyword(vLabel, vID, accessMode, commandClass);
+         boost::shared_ptr<IOpenZWaveNodeKeyword> genericKeyword = generateStandardKeyword(vLabel,
+                                                                                           vID,
+                                                                                           accessMode,
+                                                                                           commandClass);
          if (genericKeyword)
             return genericKeyword;
-         return generateSpecificKeyword(vLabel, units, vID, accessMode);
+         return generateSpecificKeyword(vLabel,
+                                        units,
+                                        vID,
+                                        accessMode);
       }
    }
-   catch (OpenZWave::OZWException & ex)
+   catch (OpenZWave::OZWException& ex)
    {
-      std::cerr << "OpenZWave::OZWException : "  << ex.what() << std::endl;
+      std::cerr << "OpenZWave::OZWException : " << ex.what() << std::endl;
    }
    catch (...)
    {
@@ -120,7 +135,10 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
 }
 
 
-boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateStandardKeyword(const std::string & vLabel, OpenZWave::ValueID & vID, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, const ECommandClass & commandClass)
+boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateStandardKeyword(const std::string& vLabel,
+                                                                                               OpenZWave::ValueID& vID,
+                                                                                               shared::plugin::yPluginApi::EKeywordAccessMode accessMode,
+                                                                                               const ECommandClass& commandClass)
 {
    //try to get already known keyword/capacity
    switch (commandClass)
@@ -128,44 +146,53 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
    case ECommandClass::kEnergyProductionValue:
       if (vLabel == "Instant energy production")
       {
-         boost::shared_ptr<historizers::CEnergy> historizer(new historizers::CEnergy(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CEnergy>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                  accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
       if (vLabel == "Total energy production" || vLabel == "Energy production today")
       {
-         boost::shared_ptr<historizers::CEnergy> historizer(new historizers::CEnergy(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode, shared::plugin::yPluginApi::historization::EMeasureType::kCumulative));
+         auto historizer(boost::make_shared<historizers::CEnergy>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                  accessMode,
+                                                                  shared::plugin::yPluginApi::historization::EMeasureType::kCumulative));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
       break;
    case ECommandClass::kMeterValue:
       if (vLabel == "Energy")
       {
-         boost::shared_ptr<historizers::CEnergy> historizer(new historizers::CEnergy(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CEnergy>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                  accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
       if (vLabel == "Power")
       {
-         boost::shared_ptr<historizers::CPower> historizer(new historizers::CPower(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CPower>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                 accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
       if (vLabel == "Count")
       {
-         boost::shared_ptr<historizers::CCounter> historizer(new historizers::CCounter(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CCounter>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                   accessMode));
          return COpenZWaveNodeKeywordGeneric<Poco::Int64>::create(historizer, vID);
       }
       if (vLabel == "Voltage")
       {
-         boost::shared_ptr<historizers::CVoltage> historizer(new historizers::CVoltage(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CVoltage>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                   accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
       if (vLabel == "Current")
       {
-         boost::shared_ptr<historizers::CCurrent> historizer(new historizers::CCurrent(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CCurrent>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                   accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
       if (vLabel == "Power Factor")
       {
-         boost::shared_ptr<historizers::CPowerFactor> historizer(new historizers::CPowerFactor(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CPowerFactor>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                       accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
       break;
@@ -173,7 +200,8 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
    case ECommandClass::kMeterPulseValue:
       if (vLabel == "Count")
       {
-         boost::shared_ptr<historizers::CCounter> historizer(new historizers::CCounter(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CCounter>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                   accessMode));
          return COpenZWaveNodeKeywordGeneric<Poco::Int64>::create(historizer, vID);
       }
       break;
@@ -182,7 +210,8 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
 
       if (vLabel == "Temperature" || vLabel == "Water Temperature" || vLabel == "Soil Temperature")
       {
-         boost::shared_ptr<historizers::CTemperature> historizer(new historizers::CTemperature(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CTemperature>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                       accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
@@ -190,74 +219,85 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
       {
          if (OpenZWave::Manager::Get()->GetValueUnits(vID) == "lux")
          {
-            boost::shared_ptr<historizers::CIllumination> historizer(new historizers::CIllumination(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+            auto historizer(boost::make_shared<historizers::CIllumination>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                           accessMode));
             return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
          }
       }
 
       if (vLabel == "Power")
       {
-         boost::shared_ptr<historizers::CPower> historizer(new historizers::CPower(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CPower>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                 accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
       if (vLabel == "Relative Humidity")
       {
-         boost::shared_ptr<historizers::CHumidity> historizer(new historizers::CHumidity(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CHumidity>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                    accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
       if (vLabel == "Velocity")
       {
-         boost::shared_ptr<historizers::CSpeed> historizer(new historizers::CSpeed(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CSpeed>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                 accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
       if (vLabel == "Direction")
       {
-         boost::shared_ptr<historizers::CDirection> historizer(new historizers::CDirection(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CDirection>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                     accessMode));
          return COpenZWaveNodeKeywordGeneric<Poco::Int32>::create(historizer, vID);
       }
 
       if (vLabel == "Barometric Pressure")
       {
-         boost::shared_ptr<historizers::CPressure> historizer(new historizers::CPressure(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CPressure>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                    accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
       if (vLabel == "Rain Rate")
       {
-         boost::shared_ptr<historizers::CRainRate> historizer(new historizers::CRainRate(COpenZWaveHelpers::GenerateKeywordName(vID)));
+         auto historizer(boost::make_shared<historizers::CRainRate>(COpenZWaveHelpers::GenerateKeywordName(vID)));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
       if (vLabel == "Weight")
       {
-         boost::shared_ptr<historizers::CWeight> historizer(new historizers::CWeight(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CWeight>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                  accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
       if (vLabel == "Voltage")
       {
-         boost::shared_ptr<historizers::CVoltage> historizer(new historizers::CVoltage(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CVoltage>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                   accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
-      
+
       if (vLabel == "Current")
       {
-         boost::shared_ptr<historizers::CCurrent> historizer(new historizers::CCurrent(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CCurrent>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                   accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
       if (vLabel == "Distance")
       {
-         boost::shared_ptr<historizers::CDistance> historizer(new historizers::CDistance(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CDistance>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                    accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
       if (vLabel == "Ultraviolet")
       {
-         boost::shared_ptr<historizers::CUv> historizer(new historizers::CUv(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CUv>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                              accessMode));
          return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
       }
 
@@ -265,7 +305,8 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
       {
          if (OpenZWave::Manager::Get()->GetValueUnits(vID) == "%")
          {
-            boost::shared_ptr<historizers::CHumidity> historizer(new historizers::CHumidity(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+            auto historizer(boost::make_shared<historizers::CHumidity>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                       accessMode));
             return COpenZWaveNodeKeywordGeneric<double>::create(historizer, vID);
          }
       }
@@ -275,27 +316,33 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
    case ECommandClass::kSwitchBinaryValue:
       if (vLabel == "Switch")
       {
-         boost::shared_ptr<historizers::CSwitch> historizer(new historizers::CSwitch(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CSwitch>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                  accessMode));
          return COpenZWaveNodeKeywordGeneric<bool>::create(historizer, vID);
       }
       break;
    case ECommandClass::kSwitchMultilevelValue:
       if (vLabel == "Level")
       {
-         return boost::shared_ptr<COpenZWaveNodeKeywordDimmable>(new COpenZWaveNodeKeywordDimmable(vID, vLabel, accessMode));
+         return boost::make_shared<COpenZWaveNodeKeywordDimmable>(vID,
+                                                                  vLabel,
+                                                                  accessMode);
       }
       break;
    case ECommandClass::kSwitchToggleBinaryValue:
       if (vLabel == "Toggle Switch")
       {
-         boost::shared_ptr<historizers::CSwitch> historizer(new historizers::CSwitch(COpenZWaveHelpers::GenerateKeywordName(vID), accessMode));
+         auto historizer(boost::make_shared<historizers::CSwitch>(COpenZWaveHelpers::GenerateKeywordName(vID),
+                                                                  accessMode));
          return COpenZWaveNodeKeywordGeneric<bool>::create(historizer, vID);
       }
       break;
    case ECommandClass::kSwitchToggleMultilevelValue:
       if (vLabel == "Level")
       {
-         return boost::shared_ptr<COpenZWaveNodeKeywordDimmable>(new COpenZWaveNodeKeywordDimmable(vID, vLabel, accessMode));
+         return boost::make_shared<COpenZWaveNodeKeywordDimmable>(vID,
+                                                                  vLabel,
+                                                                  accessMode);
       }
       break;
    }
@@ -304,70 +351,115 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
 }
 
 
-
-boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateSpecificKeyword(const std::string & vLabel, const std::string & units, OpenZWave::ValueID & vID, shared::plugin::yPluginApi::EKeywordAccessMode accessMode)
+boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateSpecificKeyword(const std::string& vLabel,
+                                                                                               const std::string& units,
+                                                                                               OpenZWave::ValueID& vID,
+                                                                                               shared::plugin::yPluginApi::EKeywordAccessMode accessMode)
 {
    //this an unknown capacity
    //try to create it depending on the valueType
    switch (vID.GetType())
    {
-      case  OpenZWave::ValueID::ValueType_Bool:			// Boolean, true or false
+   case OpenZWave::ValueID::ValueType_Bool: // Boolean, true or false
       {
-         return COpenZWaveNodeKeywordGeneric<bool>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kBool);
+         return COpenZWaveNodeKeywordGeneric<bool>::createFromDataType(vID,
+                                                                       vLabel,
+                                                                       accessMode,
+                                                                       units,
+                                                                       shared::plugin::yPluginApi::EKeywordDataType::kBool);
       }
 
-      case  OpenZWave::ValueID::ValueType_Byte:			// 8-bit unsigned value
+   case OpenZWave::ValueID::ValueType_Byte: // 8-bit unsigned value
       {
-         return COpenZWaveNodeKeywordGeneric<Poco::UInt8>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kNumeric);
+         return COpenZWaveNodeKeywordGeneric<Poco::UInt8>::createFromDataType(vID,
+                                                                              vLabel,
+                                                                              accessMode,
+                                                                              units,
+                                                                              shared::plugin::yPluginApi::EKeywordDataType::kNumeric);
       }
 
-      case  OpenZWave::ValueID::ValueType_Decimal:		// Represents a non-integer value as a string, to avoid floating point accuracy issues
+   case OpenZWave::ValueID::ValueType_Decimal: // Represents a non-integer value as a string, to avoid floating point accuracy issues
       {
-         return COpenZWaveNodeKeywordGeneric<double>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kNumeric);
+         return COpenZWaveNodeKeywordGeneric<double>::createFromDataType(vID,
+                                                                         vLabel,
+                                                                         accessMode,
+                                                                         units,
+                                                                         shared::plugin::yPluginApi::EKeywordDataType::kNumeric);
       }
 
-      case  OpenZWave::ValueID::ValueType_Int:			// 32-bit signed value
+   case OpenZWave::ValueID::ValueType_Int: // 32-bit signed value
       {
-         return COpenZWaveNodeKeywordGeneric<Poco::Int32>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kNumeric);
+         return COpenZWaveNodeKeywordGeneric<Poco::Int32>::createFromDataType(vID,
+                                                                              vLabel,
+                                                                              accessMode,
+                                                                              units,
+                                                                              shared::plugin::yPluginApi::EKeywordDataType::kNumeric);
       }
 
-      case  OpenZWave::ValueID::ValueType_List:			// List from which one item can be selected
+   case OpenZWave::ValueID::ValueType_List: // List from which one item can be selected
       {
          COpenZWaveEnumHandlerTypeInfo ti(vID);
-         return COpenZWaveNodeKeywordGeneric< COpenZWaveEnumHandler >::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kEnum, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti);
+         return COpenZWaveNodeKeywordGeneric<COpenZWaveEnumHandler>::createFromDataType(vID,
+                                                                                        vLabel,
+                                                                                        accessMode,
+                                                                                        units,
+                                                                                        shared::plugin::yPluginApi::EKeywordDataType::kEnum,
+                                                                                        shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute,
+                                                                                        ti);
       }
 
-      case  OpenZWave::ValueID::ValueType_Schedule:			// Complex type used with the Climate Control Schedule command class
+   case OpenZWave::ValueID::ValueType_Schedule: // Complex type used with the Climate Control Schedule command class
       {
          std::cout << "Value Schedule : " << std::endl;
          break;
       }
 
-      case  OpenZWave::ValueID::ValueType_Short:			// 16-bit signed value
+   case OpenZWave::ValueID::ValueType_Short: // 16-bit signed value
       {
-         return COpenZWaveNodeKeywordGeneric<Poco::Int16>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kNumeric);
+         return COpenZWaveNodeKeywordGeneric<Poco::Int16>::createFromDataType(vID,
+                                                                              vLabel,
+                                                                              accessMode,
+                                                                              units,
+                                                                              shared::plugin::yPluginApi::EKeywordDataType::kNumeric);
       }
 
-      case  OpenZWave::ValueID::ValueType_String:			// Text string
+   case OpenZWave::ValueID::ValueType_String: // Text string
       {
-         return COpenZWaveNodeKeywordGeneric<std::string>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kString);
+         return COpenZWaveNodeKeywordGeneric<std::string>::createFromDataType(vID,
+                                                                              vLabel,
+                                                                              accessMode,
+                                                                              units,
+                                                                              shared::plugin::yPluginApi::EKeywordDataType::kString);
       }
 
-      case  OpenZWave::ValueID::ValueType_Button:			// A write-only value that is the equivalent of pressing a button to send a command to a device
+   case OpenZWave::ValueID::ValueType_Button: // A write-only value that is the equivalent of pressing a button to send a command to a device
       {
-         return COpenZWaveNodeKeywordGeneric<bool>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kBool);
+         return COpenZWaveNodeKeywordGeneric<bool>::createFromDataType(vID,
+                                                                       vLabel,
+                                                                       accessMode,
+                                                                       units,
+                                                                       shared::plugin::yPluginApi::EKeywordDataType::kBool);
       }
 
-      case  OpenZWave::ValueID::ValueType_Raw:			// A collection of bytes
+   case OpenZWave::ValueID::ValueType_Raw: // A collection of bytes
       {
-         return COpenZWaveNodeKeywordGeneric<std::string>::createFromDataType(vID, vLabel, accessMode, units, shared::plugin::yPluginApi::EKeywordDataType::kString);
+         return COpenZWaveNodeKeywordGeneric<std::string>::createFromDataType(vID,
+                                                                              vLabel,
+                                                                              accessMode,
+                                                                              units,
+                                                                              shared::plugin::yPluginApi::EKeywordDataType::kString);
       }
    }
    return boost::shared_ptr<IOpenZWaveNodeKeyword>();
 }
 
-const shared::plugin::yPluginApi::CStandardCapacity& COpenZWaveNodeKeywordFactory::getCapacity(const std::string & name, const std::string & unit, shared::plugin::yPluginApi::EKeywordDataType dataType)
+const shared::plugin::yPluginApi::CStandardCapacity& COpenZWaveNodeKeywordFactory::getCapacity(const std::string& name,
+                                                                                               const std::string& unit,
+                                                                                               shared::plugin::yPluginApi::EKeywordDataType dataType)
 {
-   m_declaredCapacities.push_back(boost::shared_ptr<shared::plugin::yPluginApi::CStandardCapacity>(new shared::plugin::yPluginApi::CStandardCapacity(name, unit, dataType)));
+   m_declaredCapacities.push_back(boost::make_shared<shared::plugin::yPluginApi::CStandardCapacity>(name,
+                                                                                                    unit,
+                                                                                                    dataType));
    return *(m_declaredCapacities.back().get());
 }
+

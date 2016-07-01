@@ -2,18 +2,22 @@
 #include "Pressure.h"
 #include <shared/plugin/yPluginApi/historization/Pressure.h>
 
-namespace historizers {
-
-   CPressure::CPressure(const std::string & name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode)
-      : COpenZWaveSingleHistorizableData<double>(boost::shared_ptr< shared::plugin::yPluginApi::historization::CSingleHistorizableData<double> >(new shared::plugin::yPluginApi::historization::CPressure(name, accessMode)))
+namespace historizers
+{
+   CPressure::CPressure(const std::string& name,
+                        shared::plugin::yPluginApi::EKeywordAccessMode accessMode)
+      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CPressure>(name,
+                                                                                                                          accessMode))
    {
-
    }
 
-   CPressure::CPressure(const std::string & name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::historization::EMeasureType measureType)
-      : COpenZWaveSingleHistorizableData<double>(boost::shared_ptr< shared::plugin::yPluginApi::historization::CSingleHistorizableData<double> >(new shared::plugin::yPluginApi::historization::CPressure(name, accessMode, measureType)))
+   CPressure::CPressure(const std::string& name,
+                        shared::plugin::yPluginApi::EKeywordAccessMode accessMode,
+                        shared::plugin::yPluginApi::historization::EMeasureType measureType)
+      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CPressure>(name,
+                                                                                                                          accessMode,
+                                                                                                                          measureType))
    {
-
    }
 
    CPressure::~CPressure()
@@ -21,7 +25,8 @@ namespace historizers {
    }
 
    // COpenZWaveSingleHistorizableData<Poco::Int64> override ------------------------
-   void CPressure::setWithUnits(double value, const std::string & unit)
+   void CPressure::setWithUnits(double value,
+                                const std::string& unit)
    {
       if (unit == "inHg")
          set(value / 0.029613397);
@@ -31,7 +36,7 @@ namespace historizers {
          set(value);
    }
 
-   double CPressure::getWithUnits(const std::string & unit) const
+   double CPressure::getWithUnits(const std::string& unit) const
    {
       if (unit == "inHg")
          return get() * 0.029613397;
@@ -39,7 +44,8 @@ namespace historizers {
          return get() / 10.0;
       return get();
    }
+
    // [END] - COpenZWaveSingleHistorizableData<double> override ------------------------
-
-
 } //namespace historizers 
+
+

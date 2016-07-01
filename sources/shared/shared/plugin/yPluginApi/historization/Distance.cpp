@@ -2,15 +2,32 @@
 #include "Distance.h"
 #include "../StandardCapacities.h"
 
-namespace shared { namespace plugin { namespace yPluginApi { namespace historization
+namespace shared
 {
-   CDistance::CDistance(const std::string& keywordName, const EKeywordAccessMode& accessMode, typeInfo::CDoubleTypeInfo & additionalInfo)
-      :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Distance, accessMode, 0.0, EMeasureType::kAbsolute, additionalInfo)
+   namespace plugin
    {
-   }
+      namespace yPluginApi
+      {
+         namespace historization
+         {
+            CDistance::CDistance(const std::string& keywordName,
+                                 const EKeywordAccessMode& accessMode,
+                                 typeInfo::CDoubleTypeInfo& additionalInfo)
+               : CSingleHistorizableData<double>(keywordName,
+                                                 CStandardCapacities::Distance,
+                                                 accessMode,
+                                                 0.0,
+                                                 EMeasureType::kAbsolute,
+                                                 additionalInfo)
+            {
+            }
 
-   CDistance::~CDistance()
-   {
+            CDistance::~CDistance()
+            {
+            }
+         }
+      }
    }
+} // namespace shared::plugin::yPluginApi::historization
 
-} } } } // namespace shared::plugin::yPluginApi::historization
+

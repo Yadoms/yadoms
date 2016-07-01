@@ -12,7 +12,7 @@ public:
    //-----------------------------------------------------
    ///\brief   Constructor
    //-----------------------------------------------------
-   COpenZWaveEnumHandlerTypeInfo(OpenZWave::ValueID & vID);
+   explicit COpenZWaveEnumHandlerTypeInfo(OpenZWave::ValueID& vID);
 
    //-----------------------------------------------------
    ///\brief   Destructor
@@ -20,7 +20,7 @@ public:
    virtual ~COpenZWaveEnumHandlerTypeInfo();
 
    // shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo implementation 
-   virtual shared::CDataContainer serialize() const;
+   shared::CDataContainer serialize() const override;
    // END shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo implementation 
 
 private:
@@ -29,11 +29,11 @@ private:
    ///\param [in] vID   The openzwave ValueID
    ///\return  The content
    //-----------------------------------------------------
-   shared::CDataContainer getTypeInfo(OpenZWave::ValueID & vID);
+   static shared::CDataContainer getTypeInfo(OpenZWave::ValueID& vID);
 
    //-----------------------------------------------------
    ///\brief   The typeInfo content
    //-----------------------------------------------------
    shared::CDataContainer m_data;
-
 };
+

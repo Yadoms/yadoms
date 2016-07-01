@@ -3,15 +3,16 @@
 #include <Manager.h>
 #include "OpenZWaveCommandClass.h"
 
-std::string COpenZWaveHelpers::GenerateKeywordName(OpenZWave::ValueID & value)
+std::string COpenZWaveHelpers::GenerateKeywordName(OpenZWave::ValueID& value)
 {
-   ECommandClass commandClass((int)value.GetCommandClassId());
-   std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(value);
-   return (boost::format("%1%.%2%.%3%") % commandClass.toString() % vLabel % (int)value.GetInstance()).str();
+   ECommandClass commandClass(static_cast<int>(value.GetCommandClassId()));
+   auto vLabel = OpenZWave::Manager::Get()->GetValueLabel(value);
+   return (boost::format("%1%.%2%.%3%") % commandClass.toString() % vLabel % static_cast<int>(value.GetInstance())).str();
 }
 
-std::string COpenZWaveHelpers::GenerateDeviceName(Poco::UInt32 homeId, Poco::UInt8 nodeId)
+std::string COpenZWaveHelpers::GenerateDeviceName(Poco::UInt32 homeId,
+                                                  Poco::UInt8 nodeId)
 {
-   return (boost::format("%1%.%2%") % homeId % (int)nodeId).str();
+   return (boost::format("%1%.%2%") % homeId % static_cast<int>(nodeId)).str();
 }
 

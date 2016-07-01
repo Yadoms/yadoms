@@ -12,37 +12,36 @@
 #include <shared/Log.h>
 
 COpenZWaveController::COpenZWaveController()
-   :m_homeId(0),
-    m_initFailed(false),
-    m_nodesQueried(false),
-    m_lastSuccessfullySentCommand(OpenZWave::Driver::ControllerCommand_None),
-    m_handler(NULL),
-    m_configuration(NULL)
+   : m_homeId(0),
+     m_initFailed(false),
+     m_nodesQueried(false),
+     m_lastSuccessfullySentCommand(OpenZWave::Driver::ControllerCommand_None),
+     m_handler(nullptr),
+     m_configuration(0)
 {
-
 }
 
 
 COpenZWaveController::~COpenZWaveController()
 {
-
 }
 
-void onGlobalNotification(OpenZWave::Notification const* _notification, void* _context)
+void onGlobalNotification(OpenZWave::Notification const* _notification,
+                          void* _context)
 {
    try
    {
       std::cout << "OpenZWave notification : " << _notification->GetAsString() << std::endl;
 
-      COpenZWaveController * pPlugin = static_cast<COpenZWaveController *>(_context);
+      auto pPlugin = static_cast<COpenZWaveController *>(_context);
       if (pPlugin != nullptr)
          pPlugin->onNotification(_notification, _context);
    }
-   catch (OpenZWave::OZWException & ex)
+   catch (OpenZWave::OZWException& ex)
    {
       std::cerr << "OpenZWave exception (OnGlobalNotification) : " << ex.what() << std::endl;
    }
-   catch (std::exception & ex)
+   catch (std::exception& ex)
    {
       std::cerr << "OpenZWave std::exception (OnGlobalNotification) : " << ex.what() << std::endl;
    }
@@ -53,7 +52,8 @@ void onGlobalNotification(OpenZWave::Notification const* _notification, void* _c
 }
 
 
-void COpenZWaveController::configure(CZWaveConfiguration * configuration, shared::event::CEventHandler * handler)
+void COpenZWaveController::configure(CZWaveConfiguration* configuration,
+                                     shared::event::CEventHandler* handler)
 {
    BOOST_ASSERT(configuration != NULL);
    BOOST_ASSERT(handler != NULL);
@@ -64,7 +64,6 @@ void COpenZWaveController::configure(CZWaveConfiguration * configuration, shared
 
 IZWaveController::E_StartResult COpenZWaveController::start()
 {
-
    try
    {
       // Create the OpenZWave Manager.
@@ -77,7 +76,7 @@ IZWaveController::E_StartResult COpenZWaveController::start()
 
       auto dataFolder = full_path;
       dataFolder /= "data";
-      if (!boost::filesystem::exists(dataFolder)) 
+      if (!boost::filesystem::exists(dataFolder))
       {
          boost::system::error_code returnedError;
 
@@ -108,10 +107,10 @@ IZWaveController::E_StartResult COpenZWaveController::start()
       OpenZWave::Manager::Get()->AddWatcher(onGlobalNotification, this);
 
       // Add a Z-Wave Driver
-      
+
       //this part wait infinitely for serial port open success (configuration can be changed by another thread)
-      bool serialPortOpened = false;
-      int remainingTries = 3;
+      auto serialPortOpened = false;
+      auto remainingTries = 3;
       while (!serialPortOpened)
       {
          //lock access to configuration
@@ -131,16 +130,13 @@ IZWaveController::E_StartResult COpenZWaveController::start()
             if (remainingTries <= 0)
             {
                std::cerr << "Fail to open serial port : " << m_configuration->getSerialPort() << std::endl;
-               return IZWaveController::kSerialPortError;
+               return kSerialPortError;
             }
-            else
-            {
-               std::cout << "Fail to open serial port : " << m_configuration->getSerialPort() << ". Attemps remaining : " << remainingTries << std::endl;
-               boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
-            }
+
+            std::cout << "Fail to open serial port : " << m_configuration->getSerialPort() << ". Attemps remaining : " << remainingTries << std::endl;
+            boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
          }
       }
-         
 
 
       // Now we just wait for either the AwakeNodesQueried or AllNodesQueried notification,
@@ -162,21 +158,17 @@ IZWaveController::E_StartResult COpenZWaveController::start()
          RequestConfigurationParameters();
 
          OpenZWave::Manager::Get()->WriteConfig(m_homeId);
-         return IZWaveController::kSuccess;
-      }
-      else 
-      {
-         YADOMS_LOG(error) << "Fail to initialize controller";
-         return IZWaveController::kControllerError;
+         return kSuccess;
       }
 
-      
+      YADOMS_LOG(error) << "Fail to initialize controller";
+      return kControllerError;
    }
-   catch (OpenZWave::OZWException & ex)
+   catch (OpenZWave::OZWException& ex)
    {
       std::cerr << "Fail to start OpenZWave controller : OpenZWave exception : " << ex.what() << std::endl;
    }
-   catch (std::exception & ex)
+   catch (std::exception& ex)
    {
       std::cerr << "Fail to start OpenZWave controller : std::exception : " << ex.what() << std::endl;
    }
@@ -185,7 +177,7 @@ IZWaveController::E_StartResult COpenZWaveController::start()
       std::cerr << "Fail to start OpenZWave controller unknown exception" << std::endl;
    }
 
-   return IZWaveController::kUnknownError;
+   return kUnknownError;
 }
 
 void COpenZWaveController::stop()
@@ -194,11 +186,11 @@ void COpenZWaveController::stop()
    {
       OpenZWave::Manager::Destroy();
    }
-   catch (OpenZWave::OZWException & ex)
+   catch (OpenZWave::OZWException& ex)
    {
       std::cerr << "Fail to stop OpenZWave controller : OpenZWave exception : " << ex.what() << std::endl;
    }
-   catch (std::exception & ex)
+   catch (std::exception& ex)
    {
       std::cerr << "Fail to stop OpenZWave controller : std::exception : " << ex.what() << std::endl;
    }
@@ -211,14 +203,15 @@ void COpenZWaveController::stop()
 
 boost::shared_ptr<COpenZWaveNode> COpenZWaveController::getNode(OpenZWave::Notification const* _notification)
 {
-   uint32 const homeId = _notification->GetHomeId();
-   uint8 const nodeId = _notification->GetNodeId();
+   auto const homeId = _notification->GetHomeId();
+   auto const nodeId = _notification->GetNodeId();
    return getNode(homeId, nodeId);
 }
 
-boost::shared_ptr<COpenZWaveNode> COpenZWaveController::getNode(const uint32 homeId, const uint8 nodeId)
+boost::shared_ptr<COpenZWaveNode> COpenZWaveController::getNode(const uint32 homeId,
+                                                                const uint8 nodeId)
 {
-   for (NodeListType::iterator it = m_nodes.begin(); it != m_nodes.end(); ++it)
+   for (auto it = m_nodes.begin(); it != m_nodes.end(); ++it)
    {
       if ((*it)->match(homeId, nodeId))
          return *it;
@@ -228,251 +221,243 @@ boost::shared_ptr<COpenZWaveNode> COpenZWaveController::getNode(const uint32 hom
 
 void COpenZWaveController::RequestConfigurationParameters()
 {
-   for (NodeListType::iterator it = m_nodes.begin(); it != m_nodes.end(); ++it)
+   for (auto it = m_nodes.begin(); it != m_nodes.end(); ++it)
    {
       OpenZWave::Manager::Get()->RequestAllConfigParams((*it)->getHomeId(), (*it)->getNodeId());
    }
 }
 
 
-
-
-
-
-
-void COpenZWaveController::onNotification(OpenZWave::Notification const* _notification, void* _context)
+void COpenZWaveController::onNotification(OpenZWave::Notification const* _notification,
+                                          void* _context)
 {
    // Must do this inside a critical section to avoid conflicts with the main thread
    boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
    //get all glocbal informations (for all notifications)
-   OpenZWave::ValueID vID = _notification->GetValueID();
-   ECommandClass commandClass((int)vID.GetCommandClassId());
+   auto vID = _notification->GetValueID();
+   ECommandClass commandClass(static_cast<int>(vID.GetCommandClassId()));
 
    switch (_notification->GetType())
    {
    case OpenZWave::Notification::Type_ValueAdded:
-   {
-      boost::shared_ptr<COpenZWaveNode> node = getNode(_notification);
-      if (node)
-         node->registerKeyword(vID, m_configuration->getIncludeSystemKeywords());
-      break;
-   }
+      {
+         auto node = getNode(_notification);
+         if (node)
+            node->registerKeyword(vID, m_configuration->getIncludeSystemKeywords());
+         break;
+      }
 
    case OpenZWave::Notification::Type_ValueRemoved:
       break;
 
    case OpenZWave::Notification::Type_ValueChanged:
-   {
-      if (!OpenZWave::Manager::Get()->GetChangeVerified(vID))
       {
-         OpenZWave::Manager::Get()->SetChangeVerified(vID, true);
+         if (!OpenZWave::Manager::Get()->GetChangeVerified(vID))
+         {
+            OpenZWave::Manager::Get()->SetChangeVerified(vID, true);
+         }
+         else
+         {
+            auto node = getNode(_notification);
+            if (node)
+            {
+               auto kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
+               if (kw)
+               {
+                  auto historizedData = node->updateKeywordValue(vID,
+                                                                 m_configuration->getIncludeSystemKeywords());
+                  auto d(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(),
+                                                                                                     node->getNodeId()),
+                                                               historizedData));
+
+                  YADOMS_LOG(debug) << "===================================";
+                  YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : instance=" << static_cast<int>(vID.GetInstance());
+                  YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : node=" << static_cast<int>(vID.GetNodeId());
+                  YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : valeur=" << historizedData->formatValue();
+
+                  if (m_handler != nullptr)
+                     m_handler->postEvent(CZWave::kUpdateKeyword, d);
+               }
+            }
+         }
+         break;
       }
-      else
+
+   case OpenZWave::Notification::Type_ValueRefreshed:
       {
+         // One of the node values has changed
          auto node = getNode(_notification);
          if (node)
          {
-            auto kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
+            auto kw = node->getKeyword(vID,
+                                       m_configuration->getIncludeSystemKeywords());
             if (kw)
             {
                auto historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
-               auto d(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), historizedData));
+               auto d(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(),
+                                                                                                  node->getNodeId()),
+                                                            historizedData));
 
                YADOMS_LOG(debug) << "===================================";
-               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : instance=" << static_cast<int>(vID.GetInstance());
-               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : node=" << static_cast<int>(vID.GetNodeId());
-               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueChanged] : valeur=" << historizedData->formatValue();
+               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : instance=" << static_cast<int>(vID.GetInstance());
+               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : node=" << static_cast<int>(vID.GetNodeId());
+               YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : valeur=" << historizedData->formatValue();
 
                if (m_handler != nullptr)
                   m_handler->postEvent(CZWave::kUpdateKeyword, d);
             }
          }
+         break;
       }
-      break;
-   }
-
-   case OpenZWave::Notification::Type_ValueRefreshed:
-   {
-      // One of the node values has changed
-      auto node = getNode(_notification);
-      if (node)
-      {
-         auto kw = node->getKeyword(vID, m_configuration->getIncludeSystemKeywords());
-         if (kw)
-         {
-            auto historizedData = node->updateKeywordValue(vID, m_configuration->getIncludeSystemKeywords());
-            auto d(boost::make_shared<CKeywordContainer>(COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId()), historizedData));
-
-            YADOMS_LOG(debug) << "===================================";
-            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : instance=" << static_cast<int>(vID.GetInstance());
-            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : node=" << static_cast<int>(vID.GetNodeId());
-            YADOMS_LOG(debug) << "OpenZWave notification [Type_ValueRefreshed] : valeur=" << historizedData->formatValue();
-
-            if (m_handler != nullptr)
-               m_handler->postEvent(CZWave::kUpdateKeyword, d);
-         }
-
-         
-
-         
-      }
-      break;
-   }
 
    case OpenZWave::Notification::Type_Group:
-   {
-      // One of the node's association groups has changed
-      auto groupIdx = _notification->GetGroupIdx();
-      auto groupLabel = OpenZWave::Manager::Get()->GetGroupLabel(_notification->GetHomeId(), _notification->GetNodeId(), groupIdx);
-      YADOMS_LOG(debug) << "Group change : id= " << groupIdx << " label=" << groupLabel; 
-      break;
-
-   }
+      {
+         // One of the node's association groups has changed
+         auto groupIdx = _notification->GetGroupIdx();
+         auto groupLabel = OpenZWave::Manager::Get()->GetGroupLabel(_notification->GetHomeId(), _notification->GetNodeId(), groupIdx);
+         YADOMS_LOG(debug) << "Group change : id= " << groupIdx << " label=" << groupLabel;
+         break;
+      }
 
    case OpenZWave::Notification::Type_NodeAdded:
-   {
-      m_nodes.push_back(boost::make_shared<COpenZWaveNode>(_notification->GetHomeId(), _notification->GetNodeId()));
-      break;
-   }
-
-
+      {
+         m_nodes.push_back(boost::make_shared<COpenZWaveNode>(_notification->GetHomeId(), _notification->GetNodeId()));
+         break;
+      }
 
    case OpenZWave::Notification::Type_NodeProtocolInfo:
-   {
-      boost::shared_ptr<COpenZWaveNode> node = getNode(_notification);
-      if (node)
       {
-         //OpenZWave::Manager::Get()->GetControllerInterfaceType()
-         std::string sNodeType = OpenZWave::Manager::Get()->GetNodeType(node->getHomeId(), node->getNodeId());
-         std::cout << "ZWave : NodeProtocolInfo : " << sNodeType << std::endl;
-         
+         auto node = getNode(_notification);
+         if (node)
+         {
+            //OpenZWave::Manager::Get()->GetControllerInterfaceType()
+            auto sNodeType = OpenZWave::Manager::Get()->GetNodeType(node->getHomeId(), node->getNodeId());
+            std::cout << "ZWave : NodeProtocolInfo : " << sNodeType << std::endl;
+         }
+         break;
       }
-      break;
-   }
 
    case OpenZWave::Notification::Type_NodeNaming:
-   {
-      boost::shared_ptr<COpenZWaveNode> nodeInfo = getNode(_notification);
-      if (nodeInfo)
       {
-         std::string sNodeName = OpenZWave::Manager::Get()->GetNodeName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
-         std::string sNodeManufacturer = OpenZWave::Manager::Get()->GetNodeManufacturerName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
-         std::string sNodeProductName = OpenZWave::Manager::Get()->GetNodeProductName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
-         std::string sNodeProductType = OpenZWave::Manager::Get()->GetNodeProductType(nodeInfo->getHomeId(), nodeInfo->getNodeId());
-         std::string sNodeProductId = OpenZWave::Manager::Get()->GetNodeProductId(nodeInfo->getHomeId(), nodeInfo->getNodeId());
-         std::string sNodeLocation = OpenZWave::Manager::Get()->GetNodeLocation(nodeInfo->getHomeId(), nodeInfo->getNodeId());
-         std::string sNodeType = OpenZWave::Manager::Get()->GetNodeType(nodeInfo->getHomeId(), nodeInfo->getNodeId());
-         std::string id = COpenZWaveHelpers::GenerateDeviceName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+         auto nodeInfo = getNode(_notification);
+         if (nodeInfo)
+         {
+            auto sNodeName = OpenZWave::Manager::Get()->GetNodeName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            auto sNodeManufacturer = OpenZWave::Manager::Get()->GetNodeManufacturerName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            auto sNodeProductName = OpenZWave::Manager::Get()->GetNodeProductName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            auto sNodeProductType = OpenZWave::Manager::Get()->GetNodeProductType(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            auto sNodeProductId = OpenZWave::Manager::Get()->GetNodeProductId(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            auto sNodeLocation = OpenZWave::Manager::Get()->GetNodeLocation(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            auto sNodeType = OpenZWave::Manager::Get()->GetNodeType(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            auto id = COpenZWaveHelpers::GenerateDeviceName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
 
-         std::cout << "ZWave : NodeNaming : id = " << id << std::endl;
-         std::cout << "ZWave : NodeNaming : name = " << sNodeName << std::endl;
-         std::cout << "ZWave : NodeNaming : manufacturer = " << sNodeManufacturer << std::endl;
-         std::cout << "ZWave : NodeNaming : productName = " << sNodeProductName << std::endl;
-         std::cout << "ZWave : NodeNaming : productType = " << sNodeProductType << std::endl;
-         std::cout << "ZWave : NodeNaming : productId = " << sNodeProductId << std::endl;
+            std::cout << "ZWave : NodeNaming : id = " << id << std::endl;
+            std::cout << "ZWave : NodeNaming : name = " << sNodeName << std::endl;
+            std::cout << "ZWave : NodeNaming : manufacturer = " << sNodeManufacturer << std::endl;
+            std::cout << "ZWave : NodeNaming : productName = " << sNodeProductName << std::endl;
+            std::cout << "ZWave : NodeNaming : productType = " << sNodeProductType << std::endl;
+            std::cout << "ZWave : NodeNaming : productId = " << sNodeProductId << std::endl;
 
-         shared::CDataContainer d;
-         d.set("name", id);
+            shared::CDataContainer d;
+            d.set("name", id);
 
-         if (sNodeName.empty())
-            d.set("friendlyName", sNodeProductName);
-         else
-            d.set("friendlyName", sNodeName);
+            if (sNodeName.empty())
+               d.set("friendlyName", sNodeProductName);
+            else
+               d.set("friendlyName", sNodeName);
 
-         shared::CDataContainer details;
-         details.set("Manufacturer", sNodeManufacturer);
-         details.set("Product", sNodeProductName);
-         details.set("ProductId", sNodeProductId);
-         details.set("ProductType", sNodeProductType);
-         details.set("Location", sNodeLocation);
-         details.set("Type", sNodeType);
-         d.set("details", details);
+            shared::CDataContainer details;
+            details.set("Manufacturer", sNodeManufacturer);
+            details.set("Product", sNodeProductName);
+            details.set("ProductId", sNodeProductId);
+            details.set("ProductType", sNodeProductType);
+            details.set("Location", sNodeLocation);
+            details.set("Type", sNodeType);
+            d.set("details", details);
 
-         if (m_handler != NULL)
-            m_handler->postEvent(CZWave::kDeclareDevice, d);
-
+            if (m_handler != nullptr)
+               m_handler->postEvent(CZWave::kDeclareDevice, d);
+         }
+         break;
       }
-      break;
-   }
 
 
    case OpenZWave::Notification::Type_NodeRemoved:
-   {
-      uint32 const homeId = _notification->GetHomeId();
-      uint8 const nodeId = _notification->GetNodeId();
-
-      for (NodeListType::iterator i = m_nodes.begin(); i != m_nodes.end(); ++i)
       {
-         if ((*i)->match(homeId, nodeId))
+         auto const homeId = _notification->GetHomeId();
+         auto const nodeId = _notification->GetNodeId();
+
+         for (auto i = m_nodes.begin(); i != m_nodes.end(); ++i)
          {
-            m_nodes.erase(i);
-            break;
+            if ((*i)->match(homeId, nodeId))
+            {
+               m_nodes.erase(i);
+               break;
+            }
          }
+         break;
       }
-      break;
-   }
 
    case OpenZWave::Notification::Type_NodeEvent:
-   {
-      // We have received an event from the node, caused by a
-      // basic_set or hail message.
+      {
+         // We have received an event from the node, caused by a
+         // basic_set or hail message.
 
-      break;
-   }
+         break;
+      }
 
    case OpenZWave::Notification::Type_PollingDisabled:
-   {
-      break;
-   }
+      {
+         break;
+      }
 
    case OpenZWave::Notification::Type_PollingEnabled:
-   {
-      break;
-   }
+      {
+         break;
+      }
 
    case OpenZWave::Notification::Type_DriverReady:
-   {
-      if (m_handler != NULL)
-         m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kDriverReady);
-      
-      m_homeId = _notification->GetHomeId();
-      break;
-   }
+      {
+         if (m_handler != nullptr)
+            m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kDriverReady);
+
+         m_homeId = _notification->GetHomeId();
+         break;
+      }
 
    case OpenZWave::Notification::Type_DriverFailed:
-   {
-      if (m_handler != NULL)
-         m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kDriverFailed);
+      {
+         if (m_handler != nullptr)
+            m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kDriverFailed);
 
-      m_initFailed = true;
-      break;
-   }
+         m_initFailed = true;
+         break;
+      }
 
    case OpenZWave::Notification::Type_AwakeNodesQueried:
    case OpenZWave::Notification::Type_AllNodesQueried:
    case OpenZWave::Notification::Type_AllNodesQueriedSomeDead:
-   {
-      m_nodesQueried = true;
-      break;
-   }
+      {
+         m_nodesQueried = true;
+         break;
+      }
 
    case OpenZWave::Notification::Type_ControllerCommand:
       switch (_notification->GetEvent())
       {
       case OpenZWave::Driver::ControllerState_Normal:
-         //str = "ControlerCommand - Normal";
-         if (m_handler != NULL)
-            m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kRunning);
+         if (m_handler != nullptr)
+            m_handler->postEvent<std::string>(CZWave::kInternalStateChange,
+                                              EZWaveInteralState::kRunning);
          break;
       case OpenZWave::Driver::ControllerState_Starting:
-         //str = "ControllerComand - Starting";
          break;
       case OpenZWave::Driver::ControllerState_Cancel:
-         //str = "ControllerCommand - Canceled";
          m_lastSuccessfullySentCommand = OpenZWave::Driver::ControllerCommand_None;
-         if (m_handler != NULL)
-            m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kRunning);
+         if (m_handler != nullptr)
+            m_handler->postEvent<std::string>(CZWave::kInternalStateChange,
+                                              EZWaveInteralState::kRunning);
 
          break;
       case OpenZWave::Driver::ControllerState_Error:
@@ -516,48 +501,44 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          }
          break;
       case OpenZWave::Driver::ControllerState_Waiting:
-         //str = "ControllerCommand - Waiting";
-         if (m_handler != NULL)
+         if (m_handler != nullptr)
          {
             switch (m_lastSuccessfullySentCommand)
             {
             case OpenZWave::Driver::ControllerCommand_AddDevice:
-               m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kWaitingInclusion);
+               m_handler->postEvent<std::string>(CZWave::kInternalStateChange,
+                                                 EZWaveInteralState::kWaitingInclusion);
                break;
             case OpenZWave::Driver::ControllerCommand_RemoveDevice:
-               m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kWaitingExclusion);
+               m_handler->postEvent<std::string>(CZWave::kInternalStateChange,
+                                                 EZWaveInteralState::kWaitingExclusion);
                break;
             default:
-               m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kWaiting);
+               m_handler->postEvent<std::string>(CZWave::kInternalStateChange,
+                                                 EZWaveInteralState::kWaiting);
                break;
             }
          }
-            
+
          break;
       case OpenZWave::Driver::ControllerState_Sleeping:
-         //str = "ControllerCommand - Sleeping";
          break;
       case OpenZWave::Driver::ControllerState_InProgress:
-         //str = "ControllerCommand - InProgress";
          break;
       case OpenZWave::Driver::ControllerState_Completed:
-         //str = "ControllerCommand - Completed";
          m_lastSuccessfullySentCommand = OpenZWave::Driver::ControllerCommand_None;
-         if (m_handler != NULL)
-            m_handler->postEvent<std::string>(CZWave::kInternalStateChange, EZWaveInteralState::kCompleted);
+         if (m_handler != nullptr)
+            m_handler->postEvent<std::string>(CZWave::kInternalStateChange,
+                                              EZWaveInteralState::kCompleted);
          break;
       case OpenZWave::Driver::ControllerState_Failed:
-         //str = "ControllerCommand - Failed";
          break;
       case OpenZWave::Driver::ControllerState_NodeOK:
-         //str = "ControllerCommand - NodeOK";
          break;
       case OpenZWave::Driver::ControllerState_NodeFailed:
          break;
       }
       break;
-
-
 
    case OpenZWave::Notification::Type_DriverReset:
       break;
@@ -567,13 +548,15 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
 
    default:
       break;
-
    }
-
 }
 
 
-void COpenZWaveController::retreiveOpenZWaveIds(const std::string & device, const std::string & keyword, uint32 & homeId, uint8 & nodeId, uint8 & instance)
+void COpenZWaveController::retreiveOpenZWaveIds(const std::string& device,
+                                                const std::string& keyword,
+                                                uint32& homeId,
+                                                uint8& nodeId,
+                                                uint8& instance)
 {
    std::vector<std::string> splittedDevice;
    boost::split(splittedDevice, device, boost::is_any_of("."), boost::token_compress_on);
@@ -583,7 +566,7 @@ void COpenZWaveController::retreiveOpenZWaveIds(const std::string & device, cons
    }
    homeId = boost::lexical_cast<uint32>(splittedDevice[0]);
    nodeId = static_cast<uint8>(atoi(splittedDevice[1].c_str())); //dont use lexical cast for uint8, because it realize a string to char conversion: "2" is transform in '2' = 0x32
-   
+
    //instance <class>.<keyword>.<instance>
    std::vector<std::string> splittedKeyword;
    boost::split(splittedKeyword, keyword, boost::is_any_of("."), boost::token_compress_on);
@@ -593,7 +576,9 @@ void COpenZWaveController::retreiveOpenZWaveIds(const std::string & device, cons
       instance = 1; //default instance value in OpenZWave
 }
 
-void COpenZWaveController::sendCommand(const std::string & device, const std::string & keyword, const std::string & value)
+void COpenZWaveController::sendCommand(const std::string& device,
+                                       const std::string& keyword,
+                                       const std::string& value)
 {
    boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -602,14 +587,19 @@ void COpenZWaveController::sendCommand(const std::string & device, const std::st
    uint8 instance;
    ECommandClass keywordClass;
 
-   retreiveOpenZWaveIds(device, keyword, homeId, nodeId, instance);
+   retreiveOpenZWaveIds(device,
+                        keyword,
+                        homeId,
+                        nodeId,
+                        instance);
 
-   boost::shared_ptr<COpenZWaveNode> node = getNode(homeId, nodeId);
+   auto node = getNode(homeId, nodeId);
    if (node)
    {
-      if (!node->sendCommand(keyword, value))
+      if (!node->sendCommand(keyword,
+                             value))
       {
-         throw shared::exception::CException( (boost::format("Fail to send command keyword[%1%] = %2% ") % keyword % value).str());
+         throw shared::exception::CException((boost::format("Fail to send command keyword[%1%] = %2% ") % keyword % value).str());
       }
    }
 }
@@ -628,7 +618,7 @@ void COpenZWaveController::startInclusionMode()
 
 void COpenZWaveController::startExclusionMode()
 {
-   if(OpenZWave::Manager::Get()->RemoveNode(m_homeId))
+   if (OpenZWave::Manager::Get()->RemoveNode(m_homeId))
    {
       m_lastSuccessfullySentCommand = OpenZWave::Driver::ControllerCommand_RemoveDevice;
    }
@@ -636,7 +626,6 @@ void COpenZWaveController::startExclusionMode()
    {
       YADOMS_LOG(error) << "Fail to start exclusion mode";
    }
-
 }
 
 void COpenZWaveController::hardResetController()
@@ -651,12 +640,13 @@ void COpenZWaveController::softResetController()
 
 void COpenZWaveController::testNetwork(int count)
 {
-   OpenZWave::Manager::Get()->TestNetwork(m_homeId, count); //send count frames to each node
+   OpenZWave::Manager::Get()->TestNetwork(m_homeId,
+                                          count); //send count frames to each node
 }
 
-void COpenZWaveController::cancelCurrentCommand() 
+void COpenZWaveController::cancelCurrentCommand()
 {
-   if(OpenZWave::Manager::Get()->CancelControllerCommand(m_homeId))
+   if (OpenZWave::Manager::Get()->CancelControllerCommand(m_homeId))
    {
       m_lastSuccessfullySentCommand = OpenZWave::Driver::ControllerCommand_None;
    }
@@ -668,7 +658,7 @@ void COpenZWaveController::cancelCurrentCommand()
 
 void COpenZWaveController::healNetwork()
 {
-   OpenZWave::Manager::Get()->HealNetwork(m_homeId, true);
+   OpenZWave::Manager::Get()->HealNetwork(m_homeId,
+                                          true);
 }
-
 

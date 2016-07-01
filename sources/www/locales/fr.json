@@ -505,7 +505,14 @@
 		  "YadomsWebsite": "Site web de Yadoms",
 		  "ReportABug": "Signaler un bug",
 		  "github": "Yadoms sur github",
-		  "forum": "Forum"
+		  "forum": "Forum",
+		  "plugins": "Plugins",
+		  "widgets": "Les widgets",
+		  "table": {
+		     "displayName": "Nom",
+			 "authors": "Auteur(s)",
+			 "credits": "crédits"		  
+		  }		  
         }
       },
       "unableToLoadSubWindow": "Impossible d'afficher la fenêtre __subWindowPath__"

@@ -6,7 +6,7 @@
 ///\brief   Container for a shared::plugin::yPluginApi::historization::CSingleHistorizableData
 ///         and specific for Openzwave (handle units,...)
 //-----------------------------------------------------
-template<class T>
+template <class T>
 class COpenZWaveSingleHistorizableData
 {
 public:
@@ -14,8 +14,8 @@ public:
    ///\brief                        Constructor
    ///\param[in] internalKeyword    the internal keyword
    //-----------------------------------------------------
-   COpenZWaveSingleHistorizableData(boost::shared_ptr< shared::plugin::yPluginApi::historization::CSingleHistorizableData<T> > internalKeyword)
-      :m_internalKeyword(internalKeyword)
+   COpenZWaveSingleHistorizableData(boost::shared_ptr<shared::plugin::yPluginApi::historization::CSingleHistorizableData<T> > internalKeyword)
+      : m_internalKeyword(internalKeyword)
    {
    }
 
@@ -31,7 +31,8 @@ public:
    ///\param [in] value The value to set
    ///\param [in] unit  The value units
    //-----------------------------------------------------
-   virtual void setWithUnits(T value, const std::string & unit)
+   virtual void setWithUnits(T value,
+                             const std::string& unit)
    {
       //if not overidden, do not manage units
       m_internalKeyword->set(value);
@@ -42,12 +43,12 @@ public:
    ///\param [in] unit  The value units
    ///\return  The value in the specified units
    //-----------------------------------------------------
-   virtual T getWithUnits(const std::string & unit) const
+   virtual T getWithUnits(const std::string& unit) const
    {
       //if not overidden, do not manage units
       return m_internalKeyword->get();
    }
-   
+
    //-----------------------------------------------------
    ///\brief   Set the value
    ///\param [in] value The value to set
@@ -66,20 +67,20 @@ public:
       //if not overidden, do not manage units
       return m_internalKeyword->get();
    }
-   
+
    //-----------------------------------------------------
    ///\brief   Get the historizer
    ///\return  The historizer
    //-----------------------------------------------------
-   boost::shared_ptr< shared::plugin::yPluginApi::historization::CSingleHistorizableData<T> > getKeyword()
+   boost::shared_ptr<shared::plugin::yPluginApi::historization::CSingleHistorizableData<T> > getKeyword()
    {
       return m_internalKeyword;
    }
-   
+
 private:
    //-----------------------------------------------------
    ///\brief   The historizer
    //-----------------------------------------------------
-   boost::shared_ptr< shared::plugin::yPluginApi::historization::CSingleHistorizableData<T> > m_internalKeyword;
+   boost::shared_ptr<shared::plugin::yPluginApi::historization::CSingleHistorizableData<T> > m_internalKeyword;
 };
 

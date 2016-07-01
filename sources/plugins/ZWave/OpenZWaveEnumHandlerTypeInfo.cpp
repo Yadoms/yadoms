@@ -2,8 +2,8 @@
 #include "OpenZWaveEnumHandlerTypeInfo.h"
 #include "OpenZWaveEnumHandler.h"
 
-COpenZWaveEnumHandlerTypeInfo::COpenZWaveEnumHandlerTypeInfo(OpenZWave::ValueID & vID)
-   :m_data(getTypeInfo(vID))
+COpenZWaveEnumHandlerTypeInfo::COpenZWaveEnumHandlerTypeInfo(OpenZWave::ValueID& vID)
+   : m_data(getTypeInfo(vID))
 {
 }
 
@@ -16,7 +16,7 @@ shared::CDataContainer COpenZWaveEnumHandlerTypeInfo::serialize() const
    return m_data;
 }
 
-shared::CDataContainer COpenZWaveEnumHandlerTypeInfo::getTypeInfo(OpenZWave::ValueID & vID)
+shared::CDataContainer COpenZWaveEnumHandlerTypeInfo::getTypeInfo(OpenZWave::ValueID& vID)
 {
    COpenZWaveEnumHandler value(vID);
    shared::CDataContainer result;
@@ -24,3 +24,4 @@ shared::CDataContainer COpenZWaveEnumHandlerTypeInfo::getTypeInfo(OpenZWave::Val
    result.set("values", value.getAllStrings());
    return result;
 }
+
