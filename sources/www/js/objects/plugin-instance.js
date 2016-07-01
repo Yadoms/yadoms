@@ -61,7 +61,7 @@ PluginInstance.prototype.getBoundPackageConfigurationSchema = function() {
       } else {
          //if configurationSchema is not defined, to not try to do any binding...
          //just resolve with undefined configurationSchema
-         d.resolve();
+         d.resolve(this.package.configurationSchema);
       }
    } else {
       d.reject("undefined package");
@@ -85,7 +85,7 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
       } else {
          //if manuallyDeviceCreationConfigurationSchema is not defined, to not try to do any binding...
          //just resolve with undefined manuallyDeviceCreationConfigurationSchema
-         d.resolve();
+         d.resolve(this.package.manuallyDeviceCreationConfigurationSchema);
       }
    } else {
       d.reject("undefined package");
@@ -110,7 +110,7 @@ PluginInstance.prototype.getBoundExtraCommand = function () {
       } else {
          //if extra commands are not defined, to not try to do any binding...
          //just resolve with undefined extraCommands
-         d.resolve();
+         d.resolve(this.package.extraCommands);
       }
    } else {
       d.reject("undefined package");
