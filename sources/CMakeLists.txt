@@ -531,6 +531,8 @@ set(YADOMS_SRC
 	server/web/rest/service/Device.cpp
 	server/web/rest/service/EventLogger.h
 	server/web/rest/service/EventLogger.cpp
+	server/web/rest/service/Maintenance.h
+	server/web/rest/service/Maintenance.cpp
 	server/web/rest/service/System.h
 	server/web/rest/service/System.cpp
 	server/web/rest/service/IRestService.h

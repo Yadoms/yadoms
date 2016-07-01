@@ -254,6 +254,38 @@ namespace pgsql {
       closeAllConnections();
    }
 
+   shared::CDataContainer CPgsqlRequester::getInformation()
+   {
+      shared::CDataContainer results;
+      try
+      {
+         results.set("type", "PostgreSQL");
+         
+         auto pcon = getConnection();
+
+
+         int version = PQserverVersion(pcon);
+         int revision = version % 100;
+         version /= 100;
+         int minor = version % 100;
+         version /= 100;
+         int major = version % 100;
+
+         results.set("version", (boost::format("%1%.%2%.%3%") % major % minor % revision).str());
+
+         results.set("host", PQhost(pcon));
+         results.set("port", PQport(pcon));
+         results.set("name", PQdb(pcon));
+         results.set("user", PQuser(pcon));
+         results.set("secured", (PQgetssl(pcon) != nullptr));
+      }
+      catch (std::exception & ex)
+      {
+         YADOMS_LOG(error) << "Fail to get PostgreSQL database information : " << ex.what();
+      }
+      return results;
+   }
+
    void CPgsqlRequester::closeAllConnections()
    {
       //clear transactions
