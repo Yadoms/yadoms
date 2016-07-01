@@ -29,4 +29,4 @@ http://www.yadoms.com/forum
 
 #Licensing
 
-[Refere to LICENSE.md file](LICENSE.md)
+[Refer to LICENSE.md file](LICENSE.md)
