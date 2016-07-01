@@ -496,6 +496,9 @@
             "title": "Script interpreters"
           }
         },
+        "maintenance": {
+          "title": "Maintenance"
+        },
         "about": {
           "title": "About",
 		  "links": "Links",
