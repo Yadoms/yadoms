@@ -47,6 +47,18 @@
     text-align: right;
 }
 
+.maintenance-table {
+    width: 50%;
+}
+
+.maintenance-table td {
+    width: 50%;
+}
+
+.maintenance-table .header {
+    text-align: left;
+}
+
 /*Device edition part*/
 
 .delete-device {
