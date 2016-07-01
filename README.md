@@ -28,4 +28,5 @@ http://www.yadoms.com/forum
 * *probably most of unix based systems*
 
 #Licensing
-[[LICENSE]]
+
+[Refere to LICENSE.md file](LICENSE.md)
