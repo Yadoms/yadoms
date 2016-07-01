@@ -498,6 +498,9 @@
             "title": "Interpréteur de règle"
           }
         },
+        "maintenance": {
+          "title": "Maintenance"
+        },
         "about": {
           "title": "A propos",
 		  "links": "Liens utiles",

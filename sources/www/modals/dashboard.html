@@ -23,6 +23,7 @@
                         <li id="btn-dashboard-automatisation" class=""><a href="#"><span class="fa fa-code-fork"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.title"></span></a></li>
                         <li id="btn-dashboard-recipients" class=""><a href="#"><span class="fa fa-envelope"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.recipients.title"></span></a></li>
                         <li id="btn-dashboard-install-update" class=""><a href="#"><span class="glyphicon glyphicon-save"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.install-update.title"></span></a></li>
+                        <li id="btn-dashboard-maintenance" class=""><a href="#"><span class="fa fa-briefcase"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.maintenance.title"></span></a></li>
                         <li id="btn-dashboard-about" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.about.title"></a></li>
                      </ul>
                   </div>
@@ -285,6 +286,31 @@
    }
    $("#btn-dashboard-install-update").bind('click', showDashboardTabUpdate);
 
+   
+   function showDashboardTabMaintenance() {
+      //Has the page change is realized on an "li" element, we can't use disabled property.
+      //the only way to prevent from multiple click on the li is to unbind the click
+      $("#btn-dashboard-maintenance").unbind('click');
+      clearInterval(Yadoms.periodicDashboardTask);
+      asyncLoad("modals/dashboard/maintenance.html")
+      .done(function() {
+         Yadoms.initializeMaintenanceDashboard()
+         .done(function () {
+            setBtnActive(this.id);
+         })
+         .always(function () {
+            $("#btn-dashboard-maintenance").bind('click', showDashboardTabMaintenance);
+         });
+      })
+      .fail(function() {
+         $("#btn-dashboard-maintenance").bind('click', showDashboardTabMaintenance);
+      });
+   }
+   $("#btn-dashboard-maintenance").bind('click', showDashboardTabMaintenance);
+
+   
+   
+   
    function showDashboardTabAbout() {
       //Has the page change is realized on an "li" element, we can't use disabled property.
       //the only way to prevent from multiple click on the li is to unbind the click
