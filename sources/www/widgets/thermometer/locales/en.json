@@ -1,5 +1,5 @@
 {
-	"name": "thermometer display",
+	"name": "Thermometer display",
 	"description": "A simple widget that display a thermal value",
 	"configurationSchema": {
 		"device": {

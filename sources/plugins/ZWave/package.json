@@ -2,7 +2,7 @@
 	"type": "ZWave",
 	"version": "0.1",
 	"releaseType": "beta",
-	"author": "yadoms-team",
+	"author": "Jean-Michel DECORET",
    "url": "https://github.com/Yadoms/yadoms/wiki/Zwave",
 	"credits": "[openzwave](http://www.openzwave.com/)",
 	"supportedPlatforms": "all",
