@@ -1,5 +1,5 @@
 {
-	"type": "notification-sender",
+	"type": "dev-notification-sender",
 	"version": "0.1",
 	"releaseType": "beta",
 	"author": "Sébastien GALLOU",
