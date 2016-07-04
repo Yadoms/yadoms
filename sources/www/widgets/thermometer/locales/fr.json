@@ -1,5 +1,5 @@
 {
-	"name": "thermomètre",
+	"name": "Thermomètre",
 	"description": "Un widget qui affiche un thermomètre",
 	"configurationSchema": {
 		"device": {

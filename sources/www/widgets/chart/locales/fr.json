@@ -1,5 +1,5 @@
 {
-	"name": "graphique",
+	"name": "Graphique",
 	"description": "Un widget qui permet d'afficher un graphe d'historisation de données",
 	"errorDuringGettingDeviceData": "Erreur lors de la récupération des données",
 	"loadingData": "Chargement des données",

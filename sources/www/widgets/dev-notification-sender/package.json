@@ -1,8 +1,8 @@
 {
-	"type": "notification-sender",
+	"type": "dev-notification-sender",
 	"version": "0.1",
 	"releaseType": "beta",
-	"author": "yadoms team",
+	"author": "Sébastien GALLOU",
 	"url": "http://www.yadoms.com/wiki/widgets/notification-sender.html",
 	"credits": "",
 	"dimensions": {
