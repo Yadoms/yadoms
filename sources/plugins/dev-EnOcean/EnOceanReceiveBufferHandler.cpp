@@ -46,34 +46,38 @@ void CEnOceanReceiveBufferHandler::flush()
 
 boost::shared_ptr<const EnOceanMessage::CMessage> CEnOceanReceiveBufferHandler::getCompleteMessage()
 {
-   static const boost::shared_ptr<const EnOceanMessage::CMessage> invalidMessage;
+   static const boost::shared_ptr<const EnOceanMessage::CMessage> uncompleteMessage;
 
    if (m_content.empty())
-      return invalidMessage;
+      return uncompleteMessage;
 
    if (m_content.size() == 1)
    {
-      if (m_content[EnOceanMessage::offsetSyncByte] != EnOceanMessage::SYNC_BYTE_VALUE)
-         m_content.clear(); // Message is not valid, wait for next sync byte
-      return invalidMessage;
+      if (m_content[EnOceanMessage::kOffsetSyncByte] != EnOceanMessage::SYNC_BYTE_VALUE)
+      {
+         std::cerr << "Data received from EnOcean adapter : Message does not start with sync byte (0x55), wait for next sync byte" << std::endl;
+         m_content.clear();
+      }
+      return uncompleteMessage;
    }
 
    if (m_content.size() < 6)
-      return invalidMessage; // Message too small
+      return uncompleteMessage; // Message too small
 
-   const auto fullMessageSize = 6 + toWord(m_content, EnOceanMessage::offsetDataLength) + m_content[EnOceanMessage::offsetOptionalLength] + 1;
+   const auto fullMessageSize = 6 + toWord(m_content, EnOceanMessage::kOffsetDataLength) + m_content[EnOceanMessage::kOffsetOptionalLength] + 1;
 
    if (m_content.size() < fullMessageSize)
-      return invalidMessage; // Message too small
+      return uncompleteMessage; // Message too small
 
    // All expected bytes received, now check CRCs
 
    if (computeCrc8(m_content,
-                   EnOceanMessage::offsetDataLength,
-                   EnOceanMessage::offsetCrc8Header - 1) != m_content[EnOceanMessage::offsetCrc8Header])
+                   EnOceanMessage::kOffsetDataLength,
+                   EnOceanMessage::kOffsetCrc8Header) != m_content[EnOceanMessage::kOffsetCrc8Header])
    {
-      // Crc invalid, look for another sync byte already in buffer
-      for (auto byte = m_content.begin(); byte != m_content.end(); ++byte)
+      std::cerr << "Data received from EnOcean adapter : Header CRC is invalid, look for another sync byte already in buffer" << std::endl;
+
+      for (auto byte = m_content.begin() + 1; byte != m_content.end(); ++byte)
       {
          if (*byte == EnOceanMessage::SYNC_BYTE_VALUE)
          {
@@ -83,16 +87,17 @@ boost::shared_ptr<const EnOceanMessage::CMessage> CEnOceanReceiveBufferHandler::
       }
       // No sync byte found
       m_content.clear();
-      return invalidMessage;
+      return uncompleteMessage;
    }
 
-   const auto offsetCrc8Data = 6 + toWord(m_content, EnOceanMessage::offsetDataLength) + m_content[EnOceanMessage::offsetOptionalLength];
+   const auto offsetCrc8Data = 6 + toWord(m_content, EnOceanMessage::kOffsetDataLength) + m_content[EnOceanMessage::kOffsetOptionalLength];
    if (computeCrc8(m_content,
-                   EnOceanMessage::offsetData,
-                   offsetCrc8Data - 1) != m_content[offsetCrc8Data])
+                   EnOceanMessage::kOffsetData,
+                   offsetCrc8Data) != m_content[offsetCrc8Data])
    {
-      // Crc invalid, look for another sync byte already in buffer
-      for (auto byte = m_content.begin(); byte != m_content.end(); ++byte)
+      std::cerr << "Data received from EnOcean adapter : Data CRC is invalid, look for another sync byte already in buffer" << std::endl;
+
+      for (auto byte = m_content.begin() + 1; byte != m_content.end(); ++byte)
       {
          if (*byte == EnOceanMessage::SYNC_BYTE_VALUE)
          {
@@ -102,7 +107,7 @@ boost::shared_ptr<const EnOceanMessage::CMessage> CEnOceanReceiveBufferHandler::
       }
       // No sync byte found
       m_content.clear();
-      return invalidMessage;
+      return uncompleteMessage;
    }
 
    // The message is complete

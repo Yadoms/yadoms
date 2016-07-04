@@ -152,6 +152,12 @@ public:
       return m_defaultConfiguration;
    }
 
+   const boost::filesystem::path& getDataPath() const override
+   {
+      static const boost::filesystem::path path;
+      return path;
+   }
+
    // [END] IYPluginApi implementation
 
    const std::map<std::string, Device>& getDevices() const

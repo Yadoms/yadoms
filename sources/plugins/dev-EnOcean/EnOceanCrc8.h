@@ -3,10 +3,10 @@
 namespace EnOceanMessage
 {
    //--------------------------------------------------------------
-   /// \brief	                           Compute CRC8 on a buffer (from beginOffset to endOffset all included)
+   /// \brief	                           Compute CRC8 on a buffer (from beginOffset included to endOffset excluded)
    /// \param[in] buffer                  The buffer
-   /// \param[in] beginOffset             Start offset
-   /// \param[in] endOffset               Stop offset
+   /// \param[in] beginOffset             Start offset (included)
+   /// \param[in] endOffset               Stop offset (not included)
    //--------------------------------------------------------------
    unsigned char computeCrc8(const std::vector<unsigned char>& buffer,
                              unsigned int beginOffset,

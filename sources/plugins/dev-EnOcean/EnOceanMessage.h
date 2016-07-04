@@ -5,12 +5,12 @@ namespace EnOceanMessage
 {
    enum
    {
-      offsetSyncByte = 0,
-      offsetDataLength = 1,
-      offsetOptionalLength = 3,
-      offsetPacketType = 4,
-      offsetCrc8Header = 5,
-      offsetData = 6,
+      kOffsetSyncByte = 0,
+      kOffsetDataLength = 1,
+      kOffsetOptionalLength = 3,
+      kOffsetPacketType = 4,
+      kOffsetCrc8Header = 5,
+      kOffsetData = 6,
    };
 
    static const auto SYNC_BYTE_VALUE = 0x55;
@@ -36,18 +36,26 @@ namespace EnOceanMessage
    {
    public:
       explicit CHeader(const std::vector<unsigned char>& receivedBuffer);
+
+      unsigned short dataLength() const;
+      unsigned char optionalLength() const;
+      EPacketType packetType() const;
+      int offsetData() const;
+      int offsetOptional() const;
+
+   private:
       const unsigned short m_dataLength;
       const unsigned char m_optionalLength;
       const EPacketType m_packetType;
-      const unsigned int m_offsetData;
-      const unsigned int m_offsetOptional;
+      const int m_offsetData;
+      const int m_offsetOptional;
    };
 
 
    inline unsigned short toWord(const std::vector<unsigned char>& content,
       const unsigned int offset)
    {
-      return content[offset << 8] + content[offset + 1];
+      return content[offset] + content[offset + 1];
    }
 
 

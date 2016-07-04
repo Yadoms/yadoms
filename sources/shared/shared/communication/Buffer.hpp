@@ -28,7 +28,7 @@ namespace shared { namespace communication {
       /// \param[in] buffer            A raw buffer 
       /// \param[in] size              Buffer size
       //--------------------------------------------------------------
-      CBuffer(T * buffer, std::size_t size) :
+      CBuffer(const T * buffer, std::size_t size) :
          m_buffer(size)
       {
          memcpy(begin(), buffer, size);

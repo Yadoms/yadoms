@@ -1,7 +1,6 @@
 #pragma once
 #include <shared/event/EventHandler.hpp>
 #include <shared/communication/IReceiveBufferHandler.h>
-#include <shared/communication/Buffer.hpp>
 #include "EnOceanMessage.h"
 
 //--------------------------------------------------------------
