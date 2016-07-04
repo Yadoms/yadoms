@@ -204,7 +204,7 @@ ENDIF()
 #
 ###############################################
 set (PROTOBUF_SRC_ROOT_FOLDER ${PROTOBUF_ROOT})
-find_package(Protobuf 2.5.0 REQUIRED)
+find_package(Protobuf 2.6.1 REQUIRED)
 
 if(NOT ${PROTOBUF_FOUND})
 	message(FATAL_ERROR "Unable to find the required Protobuf tool")
