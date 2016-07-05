@@ -104,6 +104,10 @@ namespace plugin_cpp_api
 
       // The message queue buffer, localy used but defined here to be allocated only once
       boost::shared_ptr<unsigned char[]> m_mqBuffer;
+
+      // The send mutex. Protect m_mqBuffer and m_sendMessageQueue
+      mutable boost::recursive_mutex m_sendMutex;
+
       boost::shared_ptr<boost::interprocess::message_queue> m_sendMessageQueue;
 
       mutable boost::recursive_mutex m_onReceiveHookMutex;

@@ -112,6 +112,11 @@ namespace pluginSystem
       boost::interprocess::message_queue m_receiveMessageQueue;
 
       //-----------------------------------------------------
+      ///\brief               The send mutex. Protect m_sendBuffer and m_sendMessageQueue
+      //-----------------------------------------------------
+      mutable boost::recursive_mutex m_sendMutex;
+
+      //-----------------------------------------------------
       ///\brief               The message queue buffer for sending, localy used but defined here to be allocated only once
       //-----------------------------------------------------
       boost::shared_ptr<unsigned char[]> m_sendBuffer;
