@@ -5,6 +5,8 @@
 #include "../../../../sources/plugins/dev-EnOcean/EnOceanReceiveBufferHandler.h"
 #include <../../../../sources/shared/shared/communication/Buffer.hpp>
 
+#include "../../mock/shared/currentTime/DefaultCurrentTimeMock.h"
+
 // Includes needed to compile the test
 #include "../../testCommon/fileSystem.h"
 
@@ -100,7 +102,242 @@ BOOST_AUTO_TEST_CASE(MessageWithDataAndOptional)
       expectedOptional.begin(), expectedOptional.end());
 }
 
-//TODO  : test avec sync byte pas au début du message
-//TODO  : test sur timeout
+BOOST_AUTO_TEST_CASE(MessageWrongCrc8h)
+{
+   std::vector<unsigned char> message{
+      0x55, 0x00, 0x08, 0x07, EnOceanMessage::RADIO_ERP1,         // Header
+      0x3E,                                                       // CRC8H (wrong. Correct value is 0x3D)
+      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,             // Data
+      0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,                   // Optional
+      0x41                                                        // CRC8D
+   };
+
+   shared::event::CEventHandler evtHandler;
+   CEnOceanReceiveBufferHandler handler(evtHandler, shared::event::kUserFirstId);
+   handler.push(shared::communication::CByteBuffer(&message[0], message.size()));
+
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
+}
+
+BOOST_AUTO_TEST_CASE(MessageWrongCrc8d)
+{
+   std::vector<unsigned char> message{
+      0x55, 0x00, 0x08, 0x07, EnOceanMessage::RADIO_ERP1,         // Header
+      0x3D,                                                       // CRC8H
+      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,             // Data
+      0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,                   // Optional
+      0x42                                                        // CRC8D (wrong. Correct value is 0x41)
+   };
+
+   shared::event::CEventHandler evtHandler;
+   CEnOceanReceiveBufferHandler handler(evtHandler, shared::event::kUserFirstId);
+   handler.push(shared::communication::CByteBuffer(&message[0], message.size()));
+
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
+}
+
+BOOST_AUTO_TEST_CASE(MessageWithParasiticPrefix)
+{
+   std::vector<unsigned char> message{
+      0x12, 0x23,                                                 // Parasitic prefix, should be filtered
+      0x55, 0x00, 0x08, 0x07, EnOceanMessage::RADIO_ERP1,         // Header
+      0x3D,                                                       // CRC8H
+      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,             // Data
+      0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,                   // Optional
+      0x41                                                        // CRC8D
+   };
+
+   shared::event::CEventHandler evtHandler;
+   CEnOceanReceiveBufferHandler handler(evtHandler, shared::event::kUserFirstId);
+   handler.push(shared::communication::CByteBuffer(&message[0], message.size()));
+
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
+
+   auto data = evtHandler.getEventData<const EnOceanMessage::CMessage>();
+   BOOST_CHECK_EQUAL(data.header().dataLength(), 8);
+   BOOST_CHECK_EQUAL(data.header().optionalLength(), 7);
+   BOOST_CHECK_EQUAL(data.header().packetType(), EnOceanMessage::RADIO_ERP1);
+   BOOST_CHECK_EQUAL(data.header().offsetData(), 6);
+   BOOST_CHECK_EQUAL(data.header().offsetOptional(), 6 + 8);
+
+   std::vector<unsigned char> expectedData{ 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+   BOOST_CHECK_EQUAL_COLLECTIONS(data.data().begin(), data.data().end(),
+      expectedData.begin(), expectedData.end());
+
+   std::vector<unsigned char> expectedOptional{ 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
+   BOOST_CHECK_EQUAL_COLLECTIONS(data.optional().begin(), data.optional().end(),
+      expectedOptional.begin(), expectedOptional.end());
+}
+
+BOOST_AUTO_TEST_CASE(MessageWithoutSync)
+{
+   std::vector<unsigned char> message{
+      0x50, 0x00, 0x08, 0x07, EnOceanMessage::RADIO_ERP1,         // Header (no sync byte)
+      0x3D,                                                       // CRC8H
+      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,             // Data
+      0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,                   // Optional
+      0x41                                                        // CRC8D
+   };
+
+   shared::event::CEventHandler evtHandler;
+   CEnOceanReceiveBufferHandler handler(evtHandler, shared::event::kUserFirstId);
+   handler.push(shared::communication::CByteBuffer(&message[0], message.size()));
+
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
+}
+
+BOOST_AUTO_TEST_CASE(MessageWithParasiticPrefixContainingSync)
+{
+   std::vector<unsigned char> message{
+      // Wrong data (invalid message : CRC8H KO), should be filtered
+      0x55, 0x00, 0x08, 0x07, EnOceanMessage::RADIO_ERP1,         // Header (no sync byte)
+      0x3E,                                                       // CRC8H (should be 0x3D)
+      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,             // Data
+      0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,                   // Optional
+      0x41,                                                        // CRC8D
+
+      // Correct message
+      0x55, 0x00, 0x08, 0x07, EnOceanMessage::RADIO_ERP1,         // Header
+      0x3D,                                                       // CRC8H
+      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,             // Data
+      0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,                   // Optional
+      0x41                                                        // CRC8D
+   };
+
+   shared::event::CEventHandler evtHandler;
+   CEnOceanReceiveBufferHandler handler(evtHandler, shared::event::kUserFirstId);
+   handler.push(shared::communication::CByteBuffer(&message[0], message.size()));
+
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
+
+   auto data = evtHandler.getEventData<const EnOceanMessage::CMessage>();
+   BOOST_CHECK_EQUAL(data.header().dataLength(), 8);
+   BOOST_CHECK_EQUAL(data.header().optionalLength(), 7);
+   BOOST_CHECK_EQUAL(data.header().packetType(), EnOceanMessage::RADIO_ERP1);
+   BOOST_CHECK_EQUAL(data.header().offsetData(), 6);
+   BOOST_CHECK_EQUAL(data.header().offsetOptional(), 6 + 8);
+
+   std::vector<unsigned char> expectedData{ 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+   BOOST_CHECK_EQUAL_COLLECTIONS(data.data().begin(), data.data().end(),
+      expectedData.begin(), expectedData.end());
+
+   std::vector<unsigned char> expectedOptional{ 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
+   BOOST_CHECK_EQUAL_COLLECTIONS(data.optional().begin(), data.optional().end(),
+      expectedOptional.begin(), expectedOptional.end());
+}
+
+BOOST_AUTO_TEST_CASE(MessageSendInSeveralParts)
+{
+   std::vector<unsigned char> message1{
+      0x55, 0x00, 0x08, 0x07, EnOceanMessage::RADIO_ERP1,         // Header
+   };
+
+   std::vector<unsigned char> message2{
+      0x3D,                                                       // CRC8H
+      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,             // Data
+      0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,                   // Optional
+      0x41                                                        // CRC8D
+   };
+
+   shared::event::CEventHandler evtHandler;
+   CEnOceanReceiveBufferHandler handler(evtHandler, shared::event::kUserFirstId);
+   handler.push(shared::communication::CByteBuffer(&message1[0], message1.size()));
+
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
+
+   handler.push(shared::communication::CByteBuffer(&message2[0], message2.size()));
+
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
+
+   auto data = evtHandler.getEventData<const EnOceanMessage::CMessage>();
+   BOOST_CHECK_EQUAL(data.header().dataLength(), 8);
+   BOOST_CHECK_EQUAL(data.header().optionalLength(), 7);
+   BOOST_CHECK_EQUAL(data.header().packetType(), EnOceanMessage::RADIO_ERP1);
+   BOOST_CHECK_EQUAL(data.header().offsetData(), 6);
+   BOOST_CHECK_EQUAL(data.header().offsetOptional(), 6 + 8);
+
+   std::vector<unsigned char> expectedData{ 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+   BOOST_CHECK_EQUAL_COLLECTIONS(data.data().begin(), data.data().end(),
+      expectedData.begin(), expectedData.end());
+
+   std::vector<unsigned char> expectedOptional{ 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
+   BOOST_CHECK_EQUAL_COLLECTIONS(data.optional().begin(), data.optional().end(),
+      expectedOptional.begin(), expectedOptional.end());
+}
+
+BOOST_AUTO_TEST_CASE(Timeout)
+{
+   std::vector<unsigned char> message1{
+      0x55, 0x00, 0x08, 0x07, EnOceanMessage::RADIO_ERP1,         // Header
+      0x3D,                                                       // CRC8H
+      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,             // Data
+      0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,                   // Optional
+                                                                  // No CRC8D (missing byte)
+   };
+
+   std::vector<unsigned char> message2{
+      0x41                                                        // CRC8D
+   };
+
+   auto timeProviderMock = boost::make_shared<CDefaultCurrentTimeMock>();
+   shared::currentTime::Provider().setProvider(timeProviderMock);
+
+   shared::event::CEventHandler evtHandler;
+   CEnOceanReceiveBufferHandler handler(evtHandler, shared::event::kUserFirstId);
+   handler.push(shared::communication::CByteBuffer(&message1[0], message1.size()));
+
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
+
+   timeProviderMock->sleep(boost::posix_time::milliseconds(101)); // Timeout should be 100ms
+
+   handler.push(shared::communication::CByteBuffer(&message2[0], message2.size()));
+
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
+}
+
+BOOST_AUTO_TEST_CASE(JustBeforeTimeout)
+{
+   std::vector<unsigned char> message1{
+      0x55, 0x00, 0x08, 0x07, EnOceanMessage::RADIO_ERP1,         // Header
+      0x3D,                                                       // CRC8H
+      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,             // Data
+      0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,                   // Optional
+                                                                  // No CRC8D (missing byte)
+   };
+
+   std::vector<unsigned char> message2{
+      0x41                                                        // CRC8D
+   };
+
+   auto timeProviderMock = boost::make_shared<CDefaultCurrentTimeMock>();
+   shared::currentTime::Provider().setProvider(timeProviderMock);
+
+   shared::event::CEventHandler evtHandler;
+   CEnOceanReceiveBufferHandler handler(evtHandler, shared::event::kUserFirstId);
+   handler.push(shared::communication::CByteBuffer(&message1[0], message1.size()));
+
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
+
+   timeProviderMock->sleep(boost::posix_time::milliseconds(99)); // Timeout should be 100ms
+
+   handler.push(shared::communication::CByteBuffer(&message2[0], message2.size()));
+
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
+
+   auto data = evtHandler.getEventData<const EnOceanMessage::CMessage>();
+   BOOST_CHECK_EQUAL(data.header().dataLength(), 8);
+   BOOST_CHECK_EQUAL(data.header().optionalLength(), 7);
+   BOOST_CHECK_EQUAL(data.header().packetType(), EnOceanMessage::RADIO_ERP1);
+   BOOST_CHECK_EQUAL(data.header().offsetData(), 6);
+   BOOST_CHECK_EQUAL(data.header().offsetOptional(), 6 + 8);
+
+   std::vector<unsigned char> expectedData{ 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+   BOOST_CHECK_EQUAL_COLLECTIONS(data.data().begin(), data.data().end(),
+      expectedData.begin(), expectedData.end());
+
+   std::vector<unsigned char> expectedOptional{ 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
+   BOOST_CHECK_EQUAL_COLLECTIONS(data.optional().begin(), data.optional().end(),
+      expectedOptional.begin(), expectedOptional.end());
+}
 
 BOOST_AUTO_TEST_SUITE_END()

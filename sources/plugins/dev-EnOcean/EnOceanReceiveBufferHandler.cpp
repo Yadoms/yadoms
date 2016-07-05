@@ -6,7 +6,8 @@
 CEnOceanReceiveBufferHandler::CEnOceanReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
                                                            int receiveDataEventId)
    : m_receiveDataEventHandler(receiveDataEventHandler),
-     m_receiveDataEventId(receiveDataEventId)
+     m_receiveDataEventId(receiveDataEventId),
+   m_lastReceivedTime(shared::currentTime::Provider().now())
 {
 }
 
@@ -20,7 +21,7 @@ void CEnOceanReceiveBufferHandler::push(const shared::communication::CByteBuffer
 {
    // Manage timeout
    const auto now = shared::currentTime::Provider().now();
-   if (buffer.size() != 0)
+   if (m_content.size() != 0)
    {
       // Reset data if too old
       if (now - m_lastReceivedTime > timeout)
@@ -50,6 +51,10 @@ boost::shared_ptr<const EnOceanMessage::CMessage> CEnOceanReceiveBufferHandler::
 
    if (m_content.empty())
       return uncompleteMessage;
+
+   // Remove first bytes if not sync byte
+   while(!m_content.empty() && m_content[EnOceanMessage::kOffsetSyncByte] != EnOceanMessage::SYNC_BYTE_VALUE)
+      m_content.erase(m_content.begin());
 
    if (m_content.size() == 1)
    {
