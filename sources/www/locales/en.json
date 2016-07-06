@@ -63,7 +63,7 @@
     },
     "database" : {
         "backup" : {
-			"name" : "Database backup",
+            "name" : "Database backup",
             "inprogress" : "Backup in progress...",
             "success" : "Backup succeeded",
             "fail" : "Backup failed"
@@ -537,7 +537,7 @@
           "table": {
              "displayName": "Name",
              "authors": "Author(s)",
-			 "credits": "Credit(s)"
+             "credits": "Credit(s)"
           }
         }
       },

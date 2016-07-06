@@ -63,7 +63,7 @@
         },
         "database" : {
             "backup" : {
-				"name" : "Sauvegarde de base de données",
+                "name" : "Sauvegarde de base de données",
                 "inprogress" : "Sauvergarde en cours...",
                 "success" : "Sauvergarde réussie",
                 "fail" : "Echec de la sauvegarde"
@@ -534,7 +534,7 @@
           "ReportABug": "Signaler un bug",
           "github": "Yadoms sur github",
           "forum": "Forum",
-		  "plugins": "Les plugins",
+          "plugins": "Les plugins",
           "widgets": "Les widgets",
           "table": {
              "displayName": "Nom",
