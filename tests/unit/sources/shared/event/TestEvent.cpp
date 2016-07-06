@@ -36,15 +36,18 @@ private:
 };
 
 
-void postEventThreaded(shared::event::CEventHandler* receiver, int nbEvents)
+void postEventThreaded(shared::event::CEventHandler* receiver,
+   int nbEvents)
 {
-   for (int counter = 0; counter < nbEvents; counter++)
+   for (auto counter = 0; counter < nbEvents; counter++)
       receiver->postEvent(idEvent);
 }
 
-void postEventWithDataThreaded(shared::event::CEventHandler* receiver, CEventData& data, int nbEvents)
+void postEventWithDataThreaded(shared::event::CEventHandler* receiver,
+   CEventData& data,
+   int nbEvents)
 {
-   for (int counter = 0; counter < nbEvents; counter++)
+   for (auto counter = 0; counter < nbEvents; counter++)
       receiver->postEvent(idEvent, data);
 }
 
@@ -55,7 +58,7 @@ void postEventWithDataThreaded(shared::event::CEventHandler* receiver, CEventDat
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(EventFromSameThread)
 {
-   boost::shared_ptr<CDefaultCurrentTimeMock> timeProviderMock;//TODO revoir...
+   boost::shared_ptr<CDefaultCurrentTimeMock> timeProviderMock;
    shared::currentTime::Provider().setProvider(timeProviderMock);
 
    shared::event::CEventHandler evtHandler;
@@ -118,10 +121,10 @@ BOOST_AUTO_TEST_CASE(_100EventsFromSameThread)
 {
    shared::event::CEventHandler evtHandler;
    
-   for (int i = 0; i < 100; ++i)
+   for (auto i = 0; i < 100; ++i)
       evtHandler.postEvent(idEvent);
 
-   for (int i = 0; i < 100; ++i)
+   for (auto i = 0; i < 100; ++i)
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::seconds(1)), idEvent);
 
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(1)), shared::event::kTimeout);
@@ -137,7 +140,7 @@ BOOST_AUTO_TEST_CASE(_100EventsFromSeparateThread)
 
    boost::thread postEventThread(postEventThreaded, &evtHandler, 100);
 
-   for (int i = 0; i < 100; ++i)
+   for (auto i = 0; i < 100; ++i)
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::seconds(1)), idEvent);
 
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(1)), shared::event::kTimeout);
@@ -160,6 +163,21 @@ BOOST_AUTO_TEST_CASE(EventWithDataFromSameThread)
    BOOST_REQUIRE_NO_THROW(receivedData = evtHandler.getEventData<CEventData>());
    BOOST_CHECK_EQUAL(receivedData.intValue(), 42);
    BOOST_CHECK_EQUAL(receivedData.strValue(), std::string("Yadoms test"));
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test clearing event handler
+/// \result         No Error
+//--------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(EventClearHandler)
+{
+   shared::event::CEventHandler evtHandler;
+   CEventData data(42, "Yadoms test");
+
+   evtHandler.postEvent(idEvent, data);
+   evtHandler.clear();
+   BOOST_CHECK_EQUAL(evtHandler.empty(), true);
+   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
 }
 
 //--------------------------------------------------------------
