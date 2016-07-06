@@ -60,6 +60,14 @@
             "crash": "Tâche plantée",
             "unknownError": "Erreur inconnue",
             "end": "Tâche arrétée"
+        },
+        "database" : {
+            "backup" : {
+				"name" : "Sauvegarde de base de données",
+                "inprogress" : "Sauvergarde en cours...",
+                "success" : "Sauvergarde réussie",
+                "fail" : "Echec de la sauvegarde"
+            }
         }
     },
     "common": {
@@ -115,7 +123,7 @@
     },
     "browser": {
        "error": "navigateur incompatible !"
-    },	
+    },
     "404Page": {
         "title": "Page introuvable - Erreur 404",
         "line1": "Désolé, mais la page que vous recherchez n'a pas été trouvée. Vérifiez s'il n'y a pas d'erreur dans l'URL.",
@@ -204,9 +212,9 @@
       "pluginFailToDelete": "Impossible de supprimer le plugin __pluginName__",
       "pluginFailToConfigure": "Impossible de configurer le plugin __pluginName__"
     },
-	"extra-commands" : {
+    "extra-commands" : {
       "title": "Envoi d'une extra commande au plugin"
-	},
+    },
     "configure-device": {
       "title": "Configuration de l'équipement",
       "friendlyName-configuration": {
@@ -265,7 +273,7 @@
     },
     "show-log-plugin": {
       "title": "Journal d'une instance de plugin",
-	  "failToGetLog" : "Impossible d'obtenir le journal pour __pluginName__"
+      "failToGetLog" : "Impossible d'obtenir le journal pour __pluginName__"
     },
     "qrcode": {
       "title": "QR Code de Yadoms",
@@ -371,7 +379,7 @@
           "packageError": "Plugin invalide",
           "configure": "Configurer le plugin",
           "delete": "Supprimer le plugin",
-     	  "log": "Consulter le journal",
+           "log": "Consulter le journal",
           "errorGettingPluginList": "Erreur lors de la récupération de la liste des plugins",
           "confirmPluginDeletion": "Confirmez-vous la suppression du plugin __pluginName__ ?"
         },
@@ -500,30 +508,39 @@
         },
         "maintenance": {
           "title": "Maintenance",
-		  "type" : "Moteur de base de données",
-		  "version" : "Version",
-		  "host" : "Hôte",
-		  "port" : "Port",
-		  "name" : "Base",
-		  "user" : "Utilisateur",
-		  "secured" : "Mode sécurisé",
-		  "backup" : "Démarrer une sauvegarde de la base de données"
+          "type" : "Moteur de base de données",
+          "size" : "Taille",
+          "version" : "Version",
+          "host" : "Hôte",
+          "port" : "Port",
+          "name" : "Base",
+          "user" : "Utilisateur",
+          "secured" : "Mode sécurisé",
+          "backup" : "Démarrer une sauvegarde de la base de données",
+          "lastBackup" : "Dernière sauvegarde",
+          "lastBackupDate" : "Effectuée le ",
+          "lastBackupSize" : "Taille : ",
+          "lastBackupDownload" : "Télécharger",
+          "lastBackupDelete" : "Supprimer",
+          "lastBackupLocation" : "Emplacement : ",
+          "lastBackupDeleteConfirmTitle" : "Confirmer la suppression",
+          "lastBackupDeleteConfirm" : "Supprimer la dernière sauvegarde ?"
         },
         "about": {
           "title": "A propos",
-		  "links": "Liens utiles",
-		  "licensesUse": "Yadoms utilise ...",
-		  "YadomsWebsite": "Site web de Yadoms",
-		  "ReportABug": "Signaler un bug",
-		  "github": "Yadoms sur github",
-		  "forum": "Forum",
-		  "plugins": "Plugins",
-		  "widgets": "Les widgets",
-		  "table": {
-		     "displayName": "Nom",
-			 "authors": "Auteur(s)",
-			 "credits": "crédits"		  
-		  }		  
+          "links": "Liens utiles",
+          "licensesUse": "Yadoms utilise ...",
+          "YadomsWebsite": "Site web de Yadoms",
+          "ReportABug": "Signaler un bug",
+          "github": "Yadoms sur github",
+          "forum": "Forum",
+          "plugins": "Plugins",
+          "widgets": "Les widgets",
+          "table": {
+             "displayName": "Nom",
+             "authors": "Auteur(s)",
+             "credits": "crédits"
+          }
         }
       },
       "unableToLoadSubWindow": "Impossible d'afficher la fenêtre __subWindowPath__"
@@ -542,7 +559,7 @@
             "minNumberItemsRequired": "La liste doit contenir au moins __minValue__ éléments",
             "maxNumberItemsAllowed": "La liste ne peut contenir plus de __maxValue__ éléments"
         },
-		"iconpicker-search-prompt" : "Rechercher une icone..."
+        "iconpicker-search-prompt" : "Rechercher une icone..."
     },
     "blockly": {
         "toolbox": {
@@ -559,28 +576,28 @@
             "catVariables": "Variables",
             "catFunctions": "Fonctions",
             "catTemplate": "Exemples",
-		    "samples" : {
-			    "actionAfterSunset" : {
-					"title" : "Action après le coucher du soleil",
-					"logMessage" : "Définir ici les actions à effectuer après le coucher du soleil"
-				},
-			    "lowBatteryLevel" : {
-					"title" : "Niveau de batterie faible",
-					"logMessage1" : "Définir ici les actions à effectuer",
-					"logMessage2" : {
-						"part1" : "Le niveau de batterie de ",
-						"part2" : "est faible (",
-						"part3" : " %)"
-					}
-				}
-		    }
+            "samples" : {
+                "actionAfterSunset" : {
+                    "title" : "Action après le coucher du soleil",
+                    "logMessage" : "Définir ici les actions à effectuer après le coucher du soleil"
+                },
+                "lowBatteryLevel" : {
+                    "title" : "Niveau de batterie faible",
+                    "logMessage1" : "Définir ici les actions à effectuer",
+                    "logMessage2" : {
+                        "part1" : "Le niveau de batterie de ",
+                        "part2" : "est faible (",
+                        "part3" : " %)"
+                    }
+                }
+            }
         },
         "invalid": "Invalide",
-		"validation" : {
-			"errorMaxTopBlock" : "Un seul 'top block' est autorisé. Il faut soit les chaîner, soit en supprimer un",
-			"chooseItemInList" : "Veuiller selectionner une valeur correcte dans la liste",
-			"missingInputBlock" : "Veuiller compléter le block manquant"
-		},
+        "validation" : {
+            "errorMaxTopBlock" : "Un seul 'top block' est autorisé. Il faut soit les chaîner, soit en supprimer un",
+            "chooseItemInList" : "Veuiller selectionner une valeur correcte dans la liste",
+            "missingInputBlock" : "Veuiller compléter le block manquant"
+        },
         "global": {
             "durationUnits": {
                 "seconds": "secondes",
@@ -594,9 +611,9 @@
         "chooseKeywordHelper": "Choisir une donnée",
         "chooseCapacityHelper": "Choisir une capacité",
         "blocks": {
-			"logic_negate" : {
-				"title" : "l'inverse de"
-			},
+            "logic_negate" : {
+                "title" : "l'inverse de"
+            },
             "yadoms_wait": {
                 "title": "Attendre",
                 "tooltip": "Le script attends une date/heure spécifiée ou une durée"
@@ -626,27 +643,27 @@
                     "serverVersion": "Version du serveur Yadoms"
                 }
             },
-			"yadoms_wait_for_event_result" : {
+            "yadoms_wait_for_event_result" : {
                 "title": " du dernier évènement",
                 "tooltip": "Obtient les informations du dernier évènement",
-				"value" : "la valeur",
-				"deviceName" : "le nom de l'équipement",
-				"keywordName" : "le nom du capteur",
-				"fullName" : "le nom complet"
-			},
+                "value" : "la valeur",
+                "deviceName" : "le nom de l'équipement",
+                "keywordName" : "le nom du capteur",
+                "fullName" : "le nom complet"
+            },
             "yadoms_wait_for_event": {
                 "title": "Attendre un évènement",
                 "case": "Lorsque",
                 "caseCapacity": "Lorsqu'une donnée de type",
-				"caseDateTimeEveryMinute" : "Toutes les minutes",
-				"caseDateTimeCondition" : "Lorsque la date/heure",
+                "caseDateTimeEveryMinute" : "Toutes les minutes",
+                "caseDateTimeCondition" : "Lorsque la date/heure",
                 "capacity": "la capacité",
                 "triggered": "change",
                 "triggeredType": {
                     "change": "émet une donnée",
                     "become": ""
-                },      
-				"triggeredCapacityType": {
+                },
+                "triggeredCapacityType": {
                     "change": "est émise",
                     "become": ""
                 },
@@ -658,20 +675,19 @@
                     "base": {
                         "title": "Attendre un évènement",
                         "tooltip": "Attend un évènement d'une ou plusieurs sources (équipements, date/heure, ...).",
-						"storeValueInVariable" : "Stocker la nouvelle acquisition dans une variable",
-						"storeDeviceNameInVariable" : "Stocker le nom de l'écquipement dans une variable"
+                        "storeValueInVariable" : "Stocker la nouvelle acquisition dans une variable",
+                        "storeDeviceNameInVariable" : "Stocker le nom de l'écquipement dans une variable"
                     },
                     "keyword": {
                         "title": "Lorsqu'un équipement émet une donnée",
                         "tooltip": "Ajoute un nouveau block pour observer les changements d'un équipement",
-						"condition" : "sur une condition"
+                        "condition" : "sur une condition"
                     },
                     "capacity": {
                         "title": "Lorsqu'un type de données est émis",
                         "tooltip": "Ajoute un nouveau block pour observer un changement d'une donnée correspondant à une capacité",
-						"condition" : "sur une condition"
+                        "condition" : "sur une condition"
                     },
-					
                     "change": {
                         "title": "Equipement : chaque nouvelle donnée",
                         "tooltip": "Ajoute un nouveau block pour observer les changements d'un équipement"
@@ -838,7 +854,7 @@
             "errorDuringCreatingConfiguration": "Erreur lors de la création de la configuration __section__.__key__",
             "errorDuringUpdatingConfiguration": "Erreur lors de la mise à jour de la configuration __section__.__key__"
         },
-        "interpreter": { 
+        "interpreter": {
             "errorListingInterpreters" :  "Erreur lors du listing des interpréteurs de script"
         },
         "recipient": {
@@ -1031,7 +1047,14 @@
     }
   },
   "help-page" : {
-	"title" : "Yadoms : page d'aide"
+    "title" : "Yadoms : page d'aide"
+  },
+  "filesize-units" : {
+    "b" : "octets",
+    "kb" : "ko",
+    "mb" : "Mo",
+    "gb" : "Go",
+    "tb" : "To"
   }
 }
 

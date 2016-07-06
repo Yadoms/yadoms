@@ -2,6 +2,7 @@
 #include "task/ITask.h"
 #include "server/database/IDataBackup.h"
 #include <shared/event/EventHandler.hpp>
+#include <shared/StringExtension.h>
 
 namespace task { namespace backup {
 
@@ -14,7 +15,7 @@ namespace task { namespace backup {
       //------------------------------------------
       ///\brief   Constructor
       //------------------------------------------
-      CDatabase(boost::shared_ptr< database::IDataBackup > dataBackupInterface, const std::string & backupLocation);
+      CDatabase(boost::shared_ptr< database::IDataBackup > dataBackupInterface);
 
       //------------------------------------------
       ///\brief   Destructor
@@ -31,7 +32,7 @@ namespace task { namespace backup {
       //------------------------------------------
       ///\brief   Internal progress handler
       //------------------------------------------
-      void OnProgressionUpdatedInternal(int remaining, int total, const std::string & message = "");
+      void OnProgressionUpdatedInternal(int remaining, int total, const std::string & message = shared::CStringExtension::EmptyString);
 
       //------------------------------------------
       ///\brief   The task name
@@ -42,11 +43,6 @@ namespace task { namespace backup {
       ///\brief   The backup data interface
       //------------------------------------------
       boost::shared_ptr<database::IDataBackup> m_dataBackupInterface;
-
-      //------------------------------------------
-      ///\brief   The backup location
-      //------------------------------------------
-      const std::string m_backupLocation;
 
       //------------------------------------------
       ///\brief   The function pointer for reporting progression

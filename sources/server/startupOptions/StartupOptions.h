@@ -44,6 +44,7 @@ namespace startupOptions
       std::string getWebServerInitialPath() const override;
       EDatabaseEngine getDatabaseEngine() const override;
       std::string getDatabaseSqliteFile() const override;
+      std::string getDatabaseSqliteBackupFile() const override;
       std::string getDatabasePostgresqlHost() const override;
       unsigned int getDatabasePostgresqlPort() const override;
       std::string getDatabasePostgresqlDbName() const override;

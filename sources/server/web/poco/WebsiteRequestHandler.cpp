@@ -23,17 +23,27 @@ namespace web { namespace poco {
 
       void CWebsiteRequestHandler::configureAlias(const std::string & alias, const std::string & documentsPath)
       {
-         std::string realAlias = alias;
-         if (!boost::istarts_with(realAlias, "/"))
-            realAlias = "/" + realAlias;
-         if (!boost::iends_with(realAlias, "/"))
-            realAlias = realAlias + "/";
+         if (boost::filesystem::is_directory(boost::filesystem::path(documentsPath)))
+         {
+            std::string realAlias = alias;
+            if (!boost::istarts_with(realAlias, "/"))
+               realAlias = "/" + realAlias;
+            if (!boost::iends_with(realAlias, "/"))
+               realAlias = realAlias + "/";
 
-         std::string realDocumentsPath = documentsPath;
-         if (!boost::iends_with(realDocumentsPath, "/"))
-            realDocumentsPath = realDocumentsPath + "/";
+            std::string realDocumentsPath = documentsPath;
+            if (!boost::iends_with(realDocumentsPath, "/"))
+               realDocumentsPath = realDocumentsPath + "/";
 
-         m_alias[realAlias] = realDocumentsPath;
+            m_alias[realAlias] = realDocumentsPath;
+         }
+         else 
+         {
+            std::string realAlias = alias;
+            if (!boost::istarts_with(realAlias, "/"))
+               realAlias = "/" + realAlias;
+            m_alias[realAlias] = documentsPath;
+         }
       }
 
       bool CWebsiteRequestHandler::readAndSendFile(std::string & fullpath, Poco::Net::HTTPServerResponse& response)

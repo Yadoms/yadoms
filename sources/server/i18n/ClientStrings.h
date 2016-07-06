@@ -52,6 +52,9 @@ namespace i18n
       static std::string UpdateYadomsDeployFailed;
       static std::string UpdateYadomsExit;
 
+      static std::string DatabaseBackupInProgress;
+      static std::string DatabaseBackupSuccess;
+      static std::string DatabaseBackupFail;
 
       static std::string TaskInterrupted;
       static std::string TaskCrashed;

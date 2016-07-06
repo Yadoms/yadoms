@@ -449,3 +449,17 @@ function sortListItemsWithdisplayName( arguments ) {
 	var op = Array.prototype.sort.call(arguments, CustomSortDisplayName);
 	return op;
 }
+
+/**
+ * Format a file size to a human readable string
+ * @param size The file size in bbytes
+ * @return string The file size formatted : 88 kB
+ */
+function humanFileSize(size) {
+  var i = Math.floor( Math.log(size) / Math.log(1024) );
+  return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + [$.t("filesize-units.b", {defaultValue: 'B'}), 
+															  $.t("filesize-units.kb", {defaultValue: 'kB'}), 
+															  $.t("filesize-units.mb", {defaultValue: 'MB'}), 
+															  $.t("filesize-units.gb", {defaultValue: 'GB'}), 
+															  $.t("filesize-units.tb", {defaultValue: 'TB'})][i];
+}

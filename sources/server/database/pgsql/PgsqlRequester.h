@@ -47,7 +47,8 @@ namespace pgsql {
 
       // IDataBackup implementation
       bool backupSupported() override;
-      void backupData(const std::string & backupLocation, IDataBackup::ProgressFunc reporter) override;
+      void backupData(IDataBackup::ProgressFunc reporter) override;
+      boost::filesystem::path lastBackupData() override;
       // [END] IDataBackup implementation
 
    private:
