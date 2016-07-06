@@ -79,6 +79,11 @@ private:
    //-----------------------------------------------------
    unsigned char m_mqBuffer[m_messageQueueMessageSize];
 
+   //-----------------------------------------------------
+   ///\brief               The send mutex. Protect m_mqBuffer and m_sendMessageQueue
+   //-----------------------------------------------------
+   mutable boost::recursive_mutex m_sendMutex;
+
    //--------------------------------------------------------------
    /// \brief	IYScriptApi context instance
    //--------------------------------------------------------------

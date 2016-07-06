@@ -2,8 +2,8 @@
    "type": "forecast",
    "version": "0.1",
    "releaseType": "beta",
-   "author": "yadoms team",
-   "url" : "http://www.yadoms.com/wiki/widgets/forecast.html",
+   "author": "Jean-Michel BERHAULT",
+   "url" : "https://github.com/Yadoms/yadoms/wiki/forecast",
    "credits": "",
    "dimensions": {
       "min": {

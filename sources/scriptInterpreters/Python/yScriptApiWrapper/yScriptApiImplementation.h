@@ -58,6 +58,11 @@ private:
    //-----------------------------------------------------
    mutable boost::shared_ptr<boost::interprocess::message_queue> m_sendMessageQueue;
    mutable boost::shared_ptr<boost::interprocess::message_queue> m_receiveMessageQueue;
+   
+   //-----------------------------------------------------
+   ///\brief               The send mutex. Protect m_mqBuffer and m_sendMessageQueue
+   //-----------------------------------------------------
+   mutable boost::recursive_mutex m_sendMutex;
 
    //-----------------------------------------------------
    ///\brief               The message queue buffer, localy used but defined here to be allocated only once

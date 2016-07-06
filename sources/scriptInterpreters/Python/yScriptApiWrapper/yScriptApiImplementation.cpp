@@ -13,8 +13,8 @@ CYScriptApiImplementation::CYScriptApiImplementation(const std::string& yScriptA
 
    try
    {
-      const std::string sendMessageQueueId(yScriptApiAccessorId + ".toYadoms");
-      const std::string receiveMessageQueueId(yScriptApiAccessorId + ".toScript");
+      const auto sendMessageQueueId(yScriptApiAccessorId + ".toYadoms");
+      const auto receiveMessageQueueId(yScriptApiAccessorId + ".toScript");
       m_sendMessageQueue    = boost::make_shared<boost::interprocess::message_queue>(boost::interprocess::open_only, sendMessageQueueId.c_str()   );
       m_receiveMessageQueue = boost::make_shared<boost::interprocess::message_queue>(boost::interprocess::open_only, receiveMessageQueueId.c_str());
    }
@@ -44,6 +44,7 @@ void CYScriptApiImplementation::sendRequest(const pbRequest::msg& request) const
       if (request.ByteSize() > static_cast<int>(m_messageQueueMessageSize))
          throw std::overflow_error((boost::format("CYScriptApiImplementation::sendRequest \"%1%\" : request is too big") % request.descriptor()->full_name()).str());
 
+      boost::lock_guard<boost::recursive_mutex> lock(m_sendMutex);
       if (!request.SerializeToArray(m_mqBuffer, request.GetCachedSize()))
          throw std::overflow_error((boost::format("CYScriptApiImplementation::sendRequest \"%1%\" : fail to serialize request (too big ?)") % request.descriptor()->full_name()).str());
 

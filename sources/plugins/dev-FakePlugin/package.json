@@ -2,7 +2,7 @@
   "type": "dev-fakePlugin",
   "version": "0.1",
   "releaseType": "beta",
-  "author": "yadoms-team",
+  "author": "Sébastien GALLOU",
   "url": "https://github.com/Yadoms/yadoms/wiki/FakePlugin",
   "credits": "",
   "supportedPlatforms": "all",

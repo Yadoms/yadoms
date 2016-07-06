@@ -537,7 +537,7 @@
           "table": {
              "displayName": "Name",
              "authors": "Author(s)",
-             "credits": "credits"
+			 "credits": "Credit(s)"
           }
         }
       },
