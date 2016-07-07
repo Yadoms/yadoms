@@ -2,9 +2,9 @@
 	"type": "moon",
 	"version": "0.1",
 	"releaseType": "beta",
-	"author": "yadoms team",
-	"url": "http://www.yadoms.com/wiki/widgets/moon.html",
-	"credits": "",
+	"author": "Jean-Michel BERHAULT",
+	"url": "https://github.com/Yadoms/yadoms/wiki/moon",
+	"credits": "[Moon Phases font](http://www.dafont.com/fr/moon-phases.font)",
 	"dimensions": {
 		"min": {
 			"x": 1,

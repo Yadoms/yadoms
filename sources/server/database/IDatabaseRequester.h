@@ -123,7 +123,7 @@ namespace database
       // [END] ITransactionalProvider implementation
 
       // IDataBackup implementation
-      void backupData(const std::string& backupLocation, ProgressFunc reporter) override = 0;
+      void backupData(ProgressFunc reporter) override = 0;
       // [END] IDataBackup implementation
 
       // IDatabaseEngine implementation

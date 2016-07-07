@@ -27,3 +27,6 @@ http://www.yadoms.com/forum
 * Raspberry PI 1&2
 * *probably most of unix based systems*
 
+#Licensing
+
+[Refer to LICENSE.md file](LICENSE.md)

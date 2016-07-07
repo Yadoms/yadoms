@@ -1,5 +1,5 @@
 {
-	"name": "digital display",
+	"name": "Digital display",
 	"description": "A simple widget that display a numeric value of a device",
 	"configurationSchema": {
 		"device": {

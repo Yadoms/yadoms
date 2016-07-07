@@ -5,11 +5,130 @@
       <table class="table table-striped table-hover table-bordered toCompleteTable">
       </table>
    </div>
-   <button type="button" class="btn btn-default btn-info backupButton" data-i18n="modals.dashboard.sub-windows.maintenance.backup" aria-expanded="false" />
+   
+   <div class="backupSection">
+   
+      <button type="button" class="btn btn-default btn-info backupButton" data-i18n="modals.dashboard.sub-windows.maintenance.backup" aria-expanded="false" />
 
+      <div class="action-progression" style="width:340px;margin-top:10px;">
+         <div class="progress">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%">
+               <span class="hidden">60% Complete</span>
+            </div>
+         </div>
+         <span class="message"></span>
+      </div>
+      
+      <div class="bs-callout bs-callout-info lastBackup" style="margin-top:10px;">
+         <h4 data-i18n="modals.dashboard.sub-windows.maintenance.lastBackup"></h4>
+         
+         
+         <div class="btn-group">
+            <a class="btn btn-info lastBackupLink" data-i18n="[title]modals.dashboard.sub-windows.maintenance.lastBackupDownload">
+               <span class="glyphicon glyphicon-save "></span>
+            </a>
+            <button type="button" class="btn btn-danger btnDeleteLastBackup" data-i18n="[title]modals.dashboard.sub-windows.maintenance.lastBackupDelete">
+               <span class="fa fa-trash"></span>
+            </button>         
+         </div>
+         
+         <p><em>
+            <span data-i18n="modals.dashboard.sub-windows.maintenance.lastBackupDate"></span>
+            <span class="lastBackupDate"></span>
+            <br/>
+            <span data-i18n="modals.dashboard.sub-windows.maintenance.lastBackupSize"></span>
+            <span class="lastBackupSize"></span>
+            <br/>
+            <span data-i18n="modals.dashboard.sub-windows.maintenance.lastBackupLocation"></span>
+            <span class="lastBackupFile"></span>
+         </em></p>
+      </div>
+   </div>
 </div>
 
 <script>
+   function showLastBackupInformation()
+   {
+      $(".lastBackup").hide();
+      
+      MaintenanceManager.lastBackupInformation()
+      .done(function(info) {
+         if(info && info.url && info.path && info.size && info.modificationDate) {
+            $(".lastBackupLink").attr("href", info.url);
+            $(".lastBackupFile").html(info.path);
+            $(".lastBackupSize").html(humanFileSize(info.size));
+            $(".lastBackupDate").html(DateTimeFormatter.isoDateToString(info.modificationDate));
+            $(".lastBackup").show();
+         }
+      });
+   }
+   
+   function enableBackupSection() {
+      $(".backupSection").show();
+      $(".action-progression").hide();
+      
+      $(".btnDeleteLastBackup").unbind('click').bind('click', function () {
+         
+         
+      Yadoms.modals.confirmation.loadAsync()
+       .done(function () {
+          Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
+                $.t("modals.dashboard.sub-windows.maintenance.lastBackupDeleteConfirmTitle"),
+                $.t("modals.dashboard.sub-windows.maintenance.lastBackupDeleteConfirm"),
+                function () {
+                   //the user has confirmed the action
+                   MaintenanceManager.deleteLastBackup()
+                   .always(function() {
+                      showLastBackupInformation();
+                   });
+                });
+       });         
+         
+
+      });
+      
+      $(".backupButton").unbind('click').bind('click', function () {
+         MaintenanceManager.startBackup()
+         .done(function(data) {
+            //data.taskId
+            var $line = $(".action-progression");
+           
+            $line.show();
+            
+            $(document).on("taskupdatenotification." + data.taskId, function (e, taskInformation) {
+            
+               $line.find("div.progress-bar").css("width", taskInformation.progression + "%");
+               $line.find("span.message").text($.t("core." + taskInformation.message));
+
+               var taskFinished = false;
+               //we manage the end of the task
+               if(taskInformation.taskState) {
+                  if (taskInformation.taskState.toLowerCase() === "fail") {
+                     console.error("Unable to install : " + taskInformation.exception);
+                     notifyError($.t("core." + taskInformation.message));
+                     taskFinished = true;
+                  }
+
+                  if (taskInformation.taskState.toLowerCase() === "success") {
+                     notifySuccess($.t("core." + taskInformation.message));
+                     taskFinished = true;
+                     showLastBackupInformation();
+                  }
+
+                  if (taskFinished) {
+                     //we remove the progress information and restore buttons
+                     $line.find("div.progress-bar").css("width", "0");
+                     $line.hide();
+                  }
+               }
+               
+            });
+         });
+      });
+
+      showLastBackupInformation();
+   }
+   
    
    Yadoms.initializeMaintenanceDashboard = function () {
       var d = new $.Deferred();
@@ -19,16 +138,20 @@
       
          var $table = $("table.toCompleteTable");
       
-         $(".backupButton").prop("disabled", true);
+         $(".backupSection").hide();
          
          $table.find("tr").remove();
       
          $.each(data, function(index, value) {
             if(index !== "backupSupport") {
-               $table.append("<tr><td class=\"header\" data-i18n=\"modals.dashboard.sub-windows.maintenance." + index + "\"></td><td>" + value + "</td></tr>");
+               if(index !== "size") {
+                  $table.append("<tr><td class=\"header\" data-i18n=\"modals.dashboard.sub-windows.maintenance." + index + "\"></td><td>" + value + "</td></tr>");
+               } else {
+                  $table.append("<tr><td class=\"header\" data-i18n=\"modals.dashboard.sub-windows.maintenance." + index + "\"></td><td>" + humanFileSize(value) + "</td></tr>");
+               }
             } else {
                if(value === "true") {
-                  $(".backupButton").prop("disabled", false);
+                  enableBackupSection();
                }
             }
          }); 

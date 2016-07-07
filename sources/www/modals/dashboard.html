@@ -318,13 +318,13 @@
       clearInterval(Yadoms.periodicDashboardTask);
       asyncLoad("modals/dashboard/about.html")
       .done(function() {
-	     Yadoms.initializeAboutDashboard(); // TODO : JMB -> Comprendre les lignes suivantes
-         //.done(function () {
+	     Yadoms.initializeAboutDashboard()
+         .done(function () {
             setBtnActive(this.id);
-         //})
-         //.always(function () {
-         //   $("#btn-dashboard-install-update").bind('click', showDashboardTabUpdate);
-         //});
+         })
+		 .always(function() {
+		    $("#btn-dashboard-about").bind('click', showDashboardTabAbout);
+		 });		 
       })
       .always(function() {
          $("#btn-dashboard-about").bind('click', showDashboardTabAbout);

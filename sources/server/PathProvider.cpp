@@ -11,7 +11,8 @@ CPathProvider::CPathProvider(const boost::shared_ptr<startupOptions::IStartupOpt
      m_pluginsPath(startupOptions->getPluginsPath()),
      m_scriptsPath("scripts"),
      m_scriptInterpreters(startupOptions->getScriptInterpretersPath()),
-     m_databaseSqliteFile(startupOptions->getDatabaseSqliteFile())
+     m_databaseSqliteFile(startupOptions->getDatabaseSqliteFile()),
+     m_databaseSqliteBackupFile(startupOptions->getDatabaseSqliteBackupFile())
 {
    if (!boost::filesystem::exists(m_logsPath))
       boost::filesystem::create_directory(m_logsPath);
@@ -78,4 +79,9 @@ const boost::filesystem::path& CPathProvider::scriptInterpretersPath() const
 const boost::filesystem::path& CPathProvider::databaseSqliteFile() const
 {
    return m_databaseSqliteFile;
+}
+
+const boost::filesystem::path& CPathProvider::databaseSqliteBackupFile() const
+{
+   return m_databaseSqliteBackupFile;
 }

@@ -101,6 +101,7 @@ void CContextAccessor::sendAnswer(const pbAnswer::msg& answer, boost::interproce
    if (answer.ByteSize() > static_cast<int>(m_messageQueueMessageSize))
       throw std::overflow_error("CContextAccessor::sendAnswer : answer is too big");
 
+   boost::lock_guard<boost::recursive_mutex> lock(m_sendMutex);
    if (!answer.SerializeToArray(m_mqBuffer, answer.GetCachedSize()))
       throw std::overflow_error("CContextAccessor::sendAnswer : fail to serialize answer (too big ?)");
 

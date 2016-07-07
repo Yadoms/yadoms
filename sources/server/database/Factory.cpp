@@ -27,7 +27,7 @@ namespace database
       switch (dbEngine)
       {
       case startupOptions::EDatabaseEngine::kSqliteValue:
-         return boost::make_shared<sqlite::CSQLiteRequester>(pathProvider.databaseSqliteFile().string());
+         return boost::make_shared<sqlite::CSQLiteRequester>(pathProvider.databaseSqliteFile().string(), pathProvider.databaseSqliteBackupFile().string());
 #ifndef PGSQL_NOT_FOUND
       case startupOptions::EDatabaseEngine::kPostgresqlValue:
          return boost::make_shared<pgsql::CPgsqlRequester>();

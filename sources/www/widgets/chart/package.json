@@ -2,9 +2,9 @@
 	"type": "chart",
 	"version": "0.1",
 	"releaseType": "beta",
-	"author": "yadoms team",
+	"author": "Jean-Michel BERHAULT, Nicolas HILAIRE",
 	"url": "https://github.com/Yadoms/yadoms/wiki/chart",
-	"credits": "",
+	"credits": "[Highstocks](http://www.highcharts.com/)",
   "dimensions": {
     "min": {
       "x": 3,

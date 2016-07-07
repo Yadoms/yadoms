@@ -60,6 +60,14 @@
       "crash": "Task crashed",
       "unknownError": "Unknown Task error",
       "end": "Task end"
+    },
+    "database" : {
+        "backup" : {
+            "name" : "Database backup",
+            "inprogress" : "Backup in progress...",
+            "success" : "Backup succeeded",
+            "fail" : "Backup failed"
+        }
     }
   },
   "common": {
@@ -205,9 +213,9 @@
       "pluginFailToDelete": "Fail to delete plugin __pluginName__",
       "pluginFailToConfigure": "Fail to configure plugin __pluginName__"
     },
-	"extra-commands" : {
+    "extra-commands" : {
       "title": "Send extra command to plugin"
-	},
+    },
     "configure-device": {
       "title": "Device configuration",
       "friendlyName-configuration": {
@@ -266,7 +274,7 @@
     },
     "show-log-plugin": {
       "title": "Plugin log view",
-	  "failToGetLog" : "Fail to get log for __pluginName__"
+      "failToGetLog" : "Fail to get log for __pluginName__"
     },
     "qrcode": {
       "title": "QR Code de Yadoms",
@@ -367,7 +375,7 @@
           "packageError": "Invalid plugin",
           "configure": "Configure the plugin",
           "delete": "Delete the plugin",
-		  "log": "View log",
+          "log": "View log",
           "errorGettingPluginList": "An error has occurred acquiring plugin list",
           "confirmPluginDeletion": "This action will delete the plugin __pluginName__. Continue anyway ?"
         },
@@ -498,30 +506,39 @@
         },
         "maintenance": {
           "title": "Maintenance",
-		  "type" : "Database engine",
-		  "version" : "Version",
-		  "host" : "Host",
-		  "port" : "Port",
-		  "name" : "Database",
-		  "user" : "User",
-		  "secured" : "Secured mode",
-		  "backup" : "Start a database backup"
+          "type" : "Database engine",
+          "size" : "Database size",
+          "version" : "Version",
+          "host" : "Host",
+          "port" : "Port",
+          "name" : "Database",
+          "user" : "User",
+          "secured" : "Secured mode",
+          "backup" : "Start a database backup",
+          "lastBackup" : "Last backup",
+          "lastBackupDate" : "Realized on ",
+          "lastBackupSize" : "File size : ",
+          "lastBackupDownload" : "Download",
+          "lastBackupDelete" : "Delete",
+          "lastBackupLocation" : "Location : ",
+          "lastBackupDeleteConfirmTitle" : "Confirm delete",
+          "lastBackupDeleteConfirm" : "Delete the last backup ?"
         },
         "about": {
           "title": "About",
-		  "links": "Links",
-		  "licensesUse": "Yadoms uses ...",
-		  "YadomsWebsite": "Yadoms website",
-		  "ReportABug": "Report a bug",
-		  "github": "Yadoms github",
-		  "forum": "Forum",
-		  "plugins": "Plugins",
-		  "widgets": "Widgets",		  
-		  "table": {
-		     "displayName": "Name",
-			 "authors": "Author(s)",
-			 "credits": "credits"
-		  }
+          "links": "Links",
+          "licensesUse": "Yadoms uses ...",
+          "YadomsWebsite": "Yadoms website",
+          "ReportABug": "Report a bug",
+          "github": "Yadoms github",
+          "forum": "Forum",
+          "plugins": "Plugins",
+          "widgets": "Widgets",
+          "table": {
+             "displayName": "Name",
+             "authors": "Author(s)",
+             "credits": "Credit(s)"
+          }
         }
       },
       "unableToLoadSubWindow": "Unable to load sub window __subWindowPath__"
@@ -540,7 +557,7 @@
       "minNumberItemsRequired": "the list must have at least __minValue__ items",
       "maxNumberItemsAllowed": "the list can't have more than __maxValue__ items"
     },
-	"iconpicker-search-prompt" : "Search icon..."
+    "iconpicker-search-prompt" : "Search icon..."
   },
   "blockly": {
     "toolbox": {
@@ -557,28 +574,28 @@
       "catVariables": "Variables",
       "catFunctions": "Functions",
       "catTemplate": "Samples",
-	  "samples" : {
-		"actionAfterSunset" : {
-			"title" : "Do something after sunset",
-			"logMessage" : "Define here actions to realize after sunset"
-		},
-		"lowBatteryLevel" : {
-			"title" : "Low battery",
-			"logMessage1" : "Define here actions to realize when any device battery level is low",
-			"logMessage2" : {
-				"part1" : "For example : the battery level of ",
-				"part2" : "is low (",
-				"part3" : " %)"
-			}
-	    }
-	  }
+      "samples" : {
+        "actionAfterSunset" : {
+            "title" : "Do something after sunset",
+            "logMessage" : "Define here actions to realize after sunset"
+        },
+        "lowBatteryLevel" : {
+            "title" : "Low battery",
+            "logMessage1" : "Define here actions to realize when any device battery level is low",
+            "logMessage2" : {
+                "part1" : "For example : the battery level of ",
+                "part2" : "is low (",
+                "part3" : " %)"
+            }
+        }
+      }
     },
     "invalid": "invalid",
-	"validation" : {
-		"errorMaxTopBlock" : "Only 'top block' is allowed. Etiher chain them, or delete all but one",
-		"chooseItemInList" : "Please choose a correct value in list",
-		"missingInputBlock" : "Please complete the missing block"
-	},
+    "validation" : {
+        "errorMaxTopBlock" : "Only 'top block' is allowed. Etiher chain them, or delete all but one",
+        "chooseItemInList" : "Please choose a correct value in list",
+        "missingInputBlock" : "Please complete the missing block"
+    },
     "global": {
       "durationUnits": {
         "seconds": "seconds",
@@ -590,11 +607,11 @@
     "templateHelp": "Click on the blue cog icon, to configure the trigger",
     "chooseDeviceHelper" :  "Choose device",
     "chooseKeywordHelper" :  "Choose keyword",
-	"chooseCapacityHelper": "Choose a capacity",
+    "chooseCapacityHelper": "Choose a capacity",
     "blocks": {
-		"logic_negate" : {
-			"title" : "not"
-		},
+        "logic_negate" : {
+            "title" : "not"
+        },
       "yadoms_wait": {
         "title": "At",
         "tooltip": "Block the script until the specified date occurs"
@@ -625,51 +642,50 @@
         }
       },
       "yadoms_wait_for_event_result" : {
-			"title": "from last event",
-			"tooltip": "Get information about last event",
-			"value" : "the value",
-			"deviceName" : "the device name",
-			"keywordName" : "the sensor name",
-			"fullName" : "the full name"			
-		},
+            "title": "from last event",
+            "tooltip": "Get information about last event",
+            "value" : "the value",
+            "deviceName" : "the device name",
+            "keywordName" : "the sensor name",
+            "fullName" : "the full name"
+        },
       "yadoms_wait_for_event": {
         "title": "Wait for an event",
         "case": "When",
-		"caseCapacity": "When a data of type",
-		"caseDateTimeEveryMinute" : "Every minutes",
-		"caseDateTimeCondition" : "When date/time",
-		"capacity": "capacity",
+        "caseCapacity": "When a data of type",
+        "caseDateTimeEveryMinute" : "Every minutes",
+        "caseDateTimeCondition" : "When date/time",
+        "capacity": "capacity",
         "triggered": "is triggered",
         "triggeredType": {
           "change": "emits a data",
           "become": "become"
         },
-		"triggeredCapacityType": {
-			"change": "is sent",
-			"become": ""
-		},
+        "triggeredCapacityType": {
+            "change": "is sent",
+            "become": ""
+        },
         "do": "Then",
         "tooltip": "Wait for an event. It can be a device acquisition update or the date/time change",
         "defaultVarName": "newAcquisitionValue",
-		"defaultDeviceVarName": "targetDevice",
+        "defaultDeviceVarName": "targetDevice",
         "mutator": {
           "base": {
             "title": "Wait for acquisition",
             "tooltip": "Wait for a new acquisition of one or more keywords.",
-			"storeValueInVariable" : "Store the new acquisition in a variable",
-			"storeDeviceNameInVariable" : "Store the device name in a variable"
+            "storeValueInVariable" : "Store the new acquisition in a variable",
+            "storeDeviceNameInVariable" : "Store the device name in a variable"
           },
-			"keyword": {
-				"title": "When a device send data",
-				"tooltip": "Add a block for monitoring any data of a device",
-				"condition" : "on condition"
-			},
-			"capacity": {
-				"title": "When a data type is received",
-				"tooltip": "Add a block for monitoring any data type from any device",
-				"condition" : "on condition"
-			},
-			
+            "keyword": {
+                "title": "When a device send data",
+                "tooltip": "Add a block for monitoring any data of a device",
+                "condition" : "on condition"
+            },
+            "capacity": {
+                "title": "When a data type is received",
+                "tooltip": "Add a block for monitoring any data type from any device",
+                "condition" : "on condition"
+            },
           "change": {
             "title": "Device : any new acquisition",
             "tooltip": "Add a block for monitoring any new acquisition of a device"
@@ -678,14 +694,14 @@
             "title": "Device : particular value",
             "tooltip": "Add a block for monitoring new device acquisition matching a condition"
           },
-		  "capacityChange": {
-			"title": "Capacity : any new acquisition",
-			"tooltip": "Add a block for monitoring acquisitions matching a capacity"
-		  },
-		  "capacityBecome": {
-			"title": "Capacity : particular value",
-			"tooltip": "Add a block for monitoring acquisitions matching a capacity and a particular value (example: battery level < 10%)"
-		  },
+          "capacityChange": {
+            "title": "Capacity : any new acquisition",
+            "tooltip": "Add a block for monitoring acquisitions matching a capacity"
+          },
+          "capacityBecome": {
+            "title": "Capacity : particular value",
+            "tooltip": "Add a block for monitoring acquisitions matching a capacity and a particular value (example: battery level < 10%)"
+          },
           "datetimeChange": {
             "title": "Every minutes",
             "tooltip": "Add a block for monitoring date/time changes (every minutes)"
@@ -705,7 +721,7 @@
       },
       "keyword-value-set": {
         "title": "Set",
-		"titleTo": "to",
+        "titleTo": "to",
         "titleCall": "Call",
         "tooltip": "Affect a new value to a keyword"
       },
@@ -836,7 +852,7 @@
         "errorDuringCreatingConfiguration": "Error in creating configuration __section__.__key__",
         "errorDuringUpdatingConfiguration": "Error in updating configuration __section__.__key__"
     },
-    "interpreter": { 
+    "interpreter": {
         "errorListingInterpreters" :  "An error has occurred listing script interpreters"
     },
     "recipient": {
@@ -1041,6 +1057,13 @@
     }
   },
   "help-page" : {
-	"title" : "Yadoms help page"
+    "title" : "Yadoms help page"
+  },
+  "filesize-units" : {
+    "b" : "bytes",
+    "kb" : "kB",
+    "mb" : "MB",
+    "gb" : "GB",
+    "tb" : "TB"
   }
 }

@@ -48,6 +48,9 @@ namespace i18n
    std::string CClientStrings::UpdateYadomsDeployFailed                     = "yadoms.deployFailed";
    std::string CClientStrings::UpdateYadomsExit                             = "yadoms.exit";
 
+   std::string CClientStrings::DatabaseBackupInProgress                     = "database.backup.inprogress";
+   std::string CClientStrings::DatabaseBackupSuccess                        = "database.backup.success";
+   std::string CClientStrings::DatabaseBackupFail                           = "database.backup.fail";
 
    std::string CClientStrings::TaskInterrupted                              = "task.interrupted";
    std::string CClientStrings::TaskCrashed                                  = "task.crash";

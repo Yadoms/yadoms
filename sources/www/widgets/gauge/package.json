@@ -2,9 +2,9 @@
   "type": "gauge",
   "version": "0.1",
   "releaseType": "beta",
-  "author": "yadoms team",
-  "url": "http://www.yadoms.com/wiki/widgets/gauge.html",
-  "credits": "",
+  "author": "Jean-Michel BERHAULT, Sébastien GALLOU",
+  "url": "https://github.com/Yadoms/yadoms/wiki/gauge",
+  "credits": "[Highstocks](http://www.highcharts.com/)",
   "dimensions": {
     "min": {
       "x": 2,
