@@ -36,11 +36,6 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    // Load configuration values (provided by database)
    m_configuration.initializeWith(api->getConfiguration());
 
-   m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
-                                                             shared::event::CEventTimer::kOneShot,
-                                                             boost::posix_time::milliseconds(500));
-   m_waitForAnswerTimer->stop();
-
    // Create the connection
    createConnection(api);
 
@@ -105,9 +100,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kEvtPortDataReceived:
          {
-            const auto message(api->getEventHandler().getEventData<const EnOceanMessage::CMessage>());
-            //TODO            m_logger.logReceived(buffer);
-
+            const auto message(api->getEventHandler().getEventData<const message::CReceivedMessage>());
             processDataReceived(api, message);
             break;
          }
@@ -146,7 +139,6 @@ void CEnOcean::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
 void CEnOcean::destroyConnection()
 {
    m_port.reset();
-   m_waitForAnswerTimer->stop();
 }
 
 bool CEnOcean::connectionsAreEqual(const CEnOceanConfiguration& conf1,
@@ -156,35 +148,54 @@ bool CEnOcean::connectionsAreEqual(const CEnOceanConfiguration& conf1,
 }
 
 void CEnOcean::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
-                         boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command)
+                         boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const
 {
    if (!m_port)
-      std::cout << "Command not send (dongle is not ready) : " << command << std::endl;
+      std::cout << "Command not + (dongle is not ready) : " << command << std::endl;
 
    //TODO
 }
 
-void CEnOcean::send(const std::string& message,
-                    bool needAnswer,
-                    bool answerIsRequired)
-{
-   shared::communication::CByteBuffer buffer(message.size());
-   memcpy(buffer.begin(), message.c_str(), message.size());
-   send(buffer, needAnswer, answerIsRequired);
-}
 
-void CEnOcean::send(const shared::communication::CByteBuffer& buffer,
-                    bool needAnswer,
-                    bool answerIsRequired)
+void CEnOcean::send(const message::CSendMessage& sendMessage) const
 {
    if (!m_port)
+   {
+      std::cerr << "Send message failed : dongle is not ready" << std::endl;
       return;
+   }
 
-   m_logger.logSent(buffer);
-   m_port->send(buffer);
+   m_port->send(sendMessage.buildBuffer());
+}
 
-   if (needAnswer)
-      m_waitForAnswerTimer->start();
+void CEnOcean::send(const message::CSendMessage& sendMessage,
+                    boost::function<bool(const message::CReceivedMessage& rcvMessage)> checkExpectedMessageFunction,
+                    boost::function<void(const message::CReceivedMessage& rcvMessage)> onReceiveFct)
+{
+   shared::event::CEventHandler receivedEvtHandler;
+
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
+      m_onReceiveHook = [&](const message::CReceivedMessage& receivedMsg)-> bool
+         {
+            if (!checkExpectedMessageFunction(receivedMsg))
+               return false;
+
+            receivedEvtHandler.postEvent<const message::CReceivedMessage>(shared::event::kUserFirstId, receivedMsg);
+            return true;
+         };
+   }
+
+   send(sendMessage);
+
+   if (receivedEvtHandler.waitForEvents(message::EnOceanAnswerTimeout) == shared::event::kTimeout)
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
+      m_onReceiveHook.clear();
+      throw CProtocolException((boost::format("Asnwer timeout. Request was %1%") % sendMessage.packetType()).str());
+   }
+
+   onReceiveFct(receivedEvtHandler.getEventData<const message::CReceivedMessage>());
 }
 
 void CEnOcean::processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -193,6 +204,7 @@ void CEnOcean::processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
 
    try
    {
+      requestDongleVersion(api);
       //TODO
    }
    catch (CProtocolException& e)
@@ -223,88 +235,178 @@ void CEnOcean::processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api
 }
 
 void CEnOcean::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
-                                   const EnOceanMessage::CMessage& message)
+                                   const message::CReceivedMessage& message)
 {
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
+      if (m_onReceiveHook && m_onReceiveHook(message))
+      {
+         m_onReceiveHook.clear();
+         return;
+      }
+   }
+
    try
    {
-      //TODO
-      //if (message.length() < 1)
-      //   throw CProtocolException("message size < 1");
-
-      ////TODO
-      //switch (message[0])
-      //{
-      //case '(': // Status
-      //   {
-      //      char sepArray[] = {'(', ' ', MEGATEC_EOF, 0};
-      //      boost::char_separator<char> sep(sepArray);
-      //      boost::tokenizer<boost::char_separator<char> > tokens(message, sep);
-
-      //      // Count tokens
-      //      unsigned int tokenCount = 0;
-      //      for (boost::tokenizer<boost::char_separator<char> >::const_iterator itToken = tokens.begin(); itToken != tokens.end(); ++itToken)
-      //         ++tokenCount;
-
-      //      if (tokenCount != 8)
-      //         throw CProtocolException("invalid status message");
-
-      //      processReceivedStatus(api, tokens);
-      //      break;
-      //   }
-      //case '#': // Information or rating information
-      //   {
-      //      char sepArray[] = {'#', ' ', MEGATEC_EOF, 0};
-      //      boost::char_separator<char> sep(sepArray);
-      //      boost::tokenizer<boost::char_separator<char> > tokens(message, sep);
-
-      //      // Count tokens
-      //      unsigned int tokenCount = 0;
-      //      for (auto itToken = tokens.begin(); itToken != tokens.end(); ++itToken)
-      //         ++tokenCount;
-
-      //      if (tokenCount == 3)
-      //      {
-      //         processReceivedInformation(api, tokens);
-
-      //         // Now ask for rating informations
-      //         sendGetRatingInformationCmd();
-      //      }
-      //      else if (tokenCount == 4)
-      //      {
-      //         processReceivedRatingInformation(tokens);
-
-      //         // End of initialization, plugin is now running
-      //         api->setPluginState(yApi::historization::EPluginState::kRunning);
-
-      //         // Now ask for status
-      //         sendGetStatusCmd();
-      //      }
-      //      else
-      //         throw CProtocolException("invalid information message");
-      //      break;
-      //   }
-      //default:
-      //   {
-      //      // Maybe some dummy data are at beginning of the string, try to remove them
-      //      auto messageStartPos = message.find_first_of("(#");
-      //      if (messageStartPos == std::string::npos)
-      //      {
-      //         // None of starting characters found, the message is definitively bad...
-      //         throw CProtocolException((boost::format("invalid start byte : %1%") % message[0]).str());
-      //      }
-
-      //      // Remove bad part of the message, and retry
-      //      processDataReceived(api, message.substr(messageStartPos, message.length() - messageStartPos));
-      //   }
-      //}
-
-      // Message was recognized, stop timeout
-      m_waitForAnswerTimer->stop();
+      switch (message.header().packetType())
+      {
+      case message::RADIO_ERP1:
+         processRadioErp1(api, message);
+         break;//TODO
+      case message::RESPONSE: break;//TODO
+      case message::RADIO_SUB_TEL: break;//TODO
+      case message::EVENT:
+         processEvent(api, message);
+         break;//TODO
+      case message::COMMON_COMMAND: break;//TODO
+      case message::SMART_ACK_COMMAND: break;//TODO
+      case message::REMOTE_MAN_COMMAND: break;//TODO
+      case message::RADIO_MESSAGE: break;//TODO
+      case message::RADIO_ERP2: break;//TODO
+      case message::RADIO_802_15_4: break;//TODO
+      case message::COMMAND_2_4: break;//TODO
+      case message::MESSAGES: break;//TODO
+      default:
+         throw CProtocolException((boost::format("Unknown packet type %1%") % message.header().packetType()).str());
+      }
    }
    catch (CProtocolException& e)
    {
-      std::cout << "Unable to decode received message : " << e.what() << std::endl;
-      protocolErrorProcess(api);
+      std::cerr << "Error processing received message : " << e.what() << std::endl;
    }
+}
+
+
+void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
+                                const message::CReceivedMessage& message) const
+{
+   struct Optional
+   {
+      explicit Optional(const std::vector<unsigned char>& optional):
+         m_subTelNum(optional[0]),
+         m_destinationId(optional[1] << 24 | optional[2] << 16 | optional[3] << 8 | optional[4]),
+         m_dBm(optional[5]),
+         m_securityLevel(optional[6])
+      {
+      }
+
+      unsigned char m_subTelNum;
+      unsigned int m_destinationId;
+      unsigned char m_dBm;
+      unsigned char m_securityLevel;
+   };
+
+   if (message.header().optionalLength() != 7)
+      throw CProtocolException((boost::format("RadioERP1 message : wrong optional size (%1%, expected 7)") % message.header().optionalLength()).str());
+
+   Optional optional(message.optional());
+
+   //TODO
+}
+
+
+void CEnOcean::processEvent(boost::shared_ptr<yApi::IYPluginApi> api,
+                            const message::CReceivedMessage& message) const
+{
+   if (message.header().dataLength() < 1)
+      throw CProtocolException((boost::format("RadioERP1 message : wrong data size (%1%, < 1)") % message.header().dataLength()).str());
+
+   enum
+      {
+         SA_RECLAIM_NOT_SUCCESSFUL = 0x01,
+         SA_CONFIRM_LEARN = 0x02,
+         SA_LEARN_ACK = 0x03,
+         CO_READY = 0x04,
+         CO_EVENT_SECUREDEVICES = 0x05,
+         CO_DUTYCYCLE_LIMIT = 0x06,
+         CO_TRANSMIT_FAILED = 0x07
+      };
+
+   auto eventCode = message.data()[0];
+
+   switch (eventCode)
+   {
+   case SA_RECLAIM_NOT_SUCCESSFUL: break; //TODO
+   case SA_CONFIRM_LEARN: break; //TODO
+   case SA_LEARN_ACK: break; //TODO
+   case CO_READY: break; //TODO
+   case CO_EVENT_SECUREDEVICES: break; //TODO
+   case CO_DUTYCYCLE_LIMIT: break; //TODO
+   case CO_TRANSMIT_FAILED: break; //TODO
+   default:
+      throw CProtocolException((boost::format("Unknown event code %1%") % eventCode).str());
+   }
+
+   //TODO
+}
+
+void CEnOcean::requestDongleVersion(boost::shared_ptr<yApi::IYPluginApi> api)
+{
+   message::CCommandSendMessage sendMessage;
+   sendMessage.appendData({ message::CO_RD_VERSION });
+
+   send(sendMessage,
+        [](const message::CReceivedMessage& rcvMessage)
+        {
+           return rcvMessage.header().packetType() == message::RESPONSE;
+        },
+        [](const message::CReceivedMessage& rcvMessage)
+        {
+           if (rcvMessage.header().packetType() != message::RESPONSE)
+              throw CProtocolException((boost::format("Invalid packet type %1%, expected 2(RESPONSE). Request was CO_RD_VERSION.") % rcvMessage.header().packetType()).str());
+
+           if (rcvMessage.header().dataLength() != 33)
+              throw CProtocolException((boost::format("Invalid data length %1%, expected 33. Request was CO_RD_VERSION.") % rcvMessage.header().dataLength()).str());
+
+           auto returnCode = static_cast<message::EReturnCode>(rcvMessage.data()[0]);
+
+           if (returnCode == message::RET_NOT_SUPPORTED)
+           {
+              std::cout << "CO_RD_VERSION request returned not supported" << std::endl;
+              return;
+           }
+
+           if (returnCode != message::RET_OK)
+              throw CProtocolException((boost::format("Unexpected return code %1%. Request was CO_RD_VERSION.") % returnCode).str());
+
+           struct Version
+           {
+              unsigned int m_main;
+              unsigned int m_beta;
+              unsigned int m_alpha;
+              unsigned int m_build;
+
+              std::string toString() const
+              {
+                 std::ostringstream str;
+                 str << m_main << '.' << m_beta << '.' << m_alpha << '.' << m_build;
+                 return str.str();
+              }
+           };
+           Version appVersion;
+           appVersion.m_main = rcvMessage.data()[1];
+           appVersion.m_beta = rcvMessage.data()[2];
+           appVersion.m_alpha = rcvMessage.data()[3];
+           appVersion.m_build = rcvMessage.data()[4];
+
+           Version apiVersion;
+           apiVersion.m_main = rcvMessage.data()[5];
+           apiVersion.m_beta = rcvMessage.data()[6];
+           apiVersion.m_alpha = rcvMessage.data()[7];
+           apiVersion.m_build = rcvMessage.data()[8];
+
+           auto chipId = rcvMessage.data()[9] << 24 | rcvMessage.data()[10] << 16 | rcvMessage.data()[11] << 8 | rcvMessage.data()[12];
+
+           auto chipVersion = rcvMessage.data()[13] << 24 | rcvMessage.data()[14] << 16 | rcvMessage.data()[15] << 8 | rcvMessage.data()[16];
+
+           std::string appDescription(rcvMessage.data().begin() + 17, rcvMessage.data().end());
+
+           std::cout << "EnOcean dongle Version " << appVersion.toString() <<
+              "\"" << appDescription << "\"" <<
+              ", api " << apiVersion.toString() <<
+              ", chipId " << chipId <<
+              ", chipVersion " << chipVersion <<
+              std::endl;
+        });
 }
 

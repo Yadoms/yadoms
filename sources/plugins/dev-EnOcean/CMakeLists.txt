@@ -9,19 +9,26 @@ set(ENOCEAN_SOURCES
    stdafx.h
    stdafx.cpp
    IEnOceanConfiguration.h
-   EnOcean.cpp
    EnOcean.h
-   EnOceanCrc8.cpp
-   EnOceanCrc8.h
-   EnOceanReceiveBufferHandler.cpp
+   EnOcean.cpp
    EnOceanReceiveBufferHandler.h
-   EnOceanConfiguration.cpp
+   EnOceanReceiveBufferHandler.cpp
    EnOceanConfiguration.h
-   EnOceanFactory.cpp
+   EnOceanConfiguration.cpp
    EnOceanFactory.h
-   EnOceanMessage.cpp
-   EnOceanMessage.h
+   EnOceanFactory.cpp
+
+   message/Crc8.h
+   message/Crc8.cpp
+   message/ReceivedMessage.h
+   message/ReceivedMessage.cpp
+   message/SendMessage.h
+   message/SendMessage.cpp
+   message/types.h
    )
+   
+   
+source_group(message message/*.*)
 
 #########################################
 ## Place here all additional include directories

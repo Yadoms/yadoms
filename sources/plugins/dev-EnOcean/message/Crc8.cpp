@@ -1,6 +1,7 @@
 #include "stdafx.h"
+#include "Crc8.h"
 
-namespace EnOceanMessage
+namespace message
 {
    unsigned char u8CRC8Table[256] =
    {
@@ -40,13 +41,12 @@ namespace EnOceanMessage
 
    #define proccrc8(u8CRC, u8Data) (u8CRC8Table[u8CRC ^ u8Data])
 
-   unsigned char computeCrc8(const std::vector<unsigned char>& buffer,
-                             unsigned beginOffset,
-                             unsigned endOffset)
+   unsigned char computeCrc8(std::vector<unsigned char>::const_iterator beginIt,
+                             std::vector<unsigned char>::const_iterator endIt)
    {
       unsigned char crc8 = 0;
-      std::for_each(buffer.begin() + beginOffset,
-                    buffer.begin() + endOffset,
+      std::for_each(beginIt,
+                    endIt,
                     [&](const unsigned char byte)
                     {
                        crc8 = proccrc8(crc8, byte);
@@ -54,6 +54,6 @@ namespace EnOceanMessage
 
       return crc8;
    }
-} // namespace EnOceanMessage
+} // namespace message
 
 

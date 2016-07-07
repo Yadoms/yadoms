@@ -1,7 +1,8 @@
 #include "stdafx.h"
-#include "EnOceanMessage.h"
+#include "ReceivedMessage.h"
+#include "types.h"
 
-namespace EnOceanMessage
+namespace message
 {
    CHeader::CHeader(const std::vector<unsigned char>& receivedBuffer)
       : m_dataLength(toWord(receivedBuffer, kOffsetDataLength)),
@@ -38,31 +39,31 @@ namespace EnOceanMessage
    }
 
 
-   CMessage::CMessage(const std::vector<unsigned char>& receivedBuffer)
+   CReceivedMessage::CReceivedMessage(const std::vector<unsigned char>& receivedBuffer)
       : m_header(receivedBuffer),
         m_data(receivedBuffer.begin() + m_header.offsetData(), receivedBuffer.begin() + m_header.offsetData() + m_header.dataLength()),
         m_optional(receivedBuffer.begin() + m_header.offsetOptional(), receivedBuffer.begin() + m_header.offsetOptional() + m_header.optionalLength())
    {
    }
 
-   CMessage::~CMessage()
+   CReceivedMessage::~CReceivedMessage()
    {
    }
 
-   const CHeader& CMessage::header() const
+   const CHeader& CReceivedMessage::header() const
    {
       return m_header;
    }
 
-   const std::vector<unsigned char>& CMessage::data() const
+   const std::vector<unsigned char>& CReceivedMessage::data() const
    {
       return m_data;
    }
 
-   const std::vector<unsigned char>& CMessage::optional() const
+   const std::vector<unsigned char>& CReceivedMessage::optional() const
    {
       return m_optional;
    }
-} // namespace EnOceanMessage
+} // namespace message
 
 

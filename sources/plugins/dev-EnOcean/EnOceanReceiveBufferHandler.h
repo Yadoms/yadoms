@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/event/EventHandler.hpp>
 #include <shared/communication/IReceiveBufferHandler.h>
-#include "EnOceanMessage.h"
+#include "message/ReceivedMessage.h"
 
 //--------------------------------------------------------------
 /// \brief	Receive buffer handler for EnOcean
@@ -35,13 +35,13 @@ protected:
    /// \brief	                     Returns the message if complete
    /// \return                      The complete message, or null
    //--------------------------------------------------------------
-   boost::shared_ptr<const EnOceanMessage::CMessage> getCompleteMessage();
+   boost::shared_ptr<const message::CReceivedMessage> getCompleteMessage();
 
    //--------------------------------------------------------------
    /// \brief	                     Send a message to the target event handler
    /// \param[in] buffer            Buffer to send
    //--------------------------------------------------------------
-   void notifyEventHandler(boost::shared_ptr<const EnOceanMessage::CMessage> message) const;
+   void notifyEventHandler(boost::shared_ptr<const message::CReceivedMessage> message) const;
 
 private:
    //--------------------------------------------------------------

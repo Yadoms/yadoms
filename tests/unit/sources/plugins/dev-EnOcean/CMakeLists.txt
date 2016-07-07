@@ -7,10 +7,11 @@ IF(NOT DISABLE_TEST_PLUGIN_ENOCEAN)
    )
    
    SET(YADOMS_SOURCES
-      plugins/dev-EnOcean/EnOceanMessage.h
-      plugins/dev-EnOcean/EnOceanMessage.cpp
-      plugins/dev-EnOcean/EnOceanCrc8.h
-      plugins/dev-EnOcean/EnOceanCrc8.cpp
+      plugins/dev-EnOcean/message/types.h
+      plugins/dev-EnOcean/message/ReceivedMessage.h
+      plugins/dev-EnOcean/message/ReceivedMessage.cpp
+      plugins/dev-EnOcean/message/Crc8.h
+      plugins/dev-EnOcean/message/Crc8.cpp
       plugins/dev-EnOcean/EnOceanReceiveBufferHandler.h
       plugins/dev-EnOcean/EnOceanReceiveBufferHandler.cpp
    )

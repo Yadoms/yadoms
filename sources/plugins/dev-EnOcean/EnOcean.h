@@ -3,8 +3,8 @@
 #include "EnOceanConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
 #include <shared/communication/AsciiBufferLogger.h>
-#include <shared/event/EventTimer.h>
-#include "EnOceanMessage.h"
+#include "message/ReceivedMessage.h"
+#include "message/SendMessage.h"
 
 
 class CMegatecUpsConfiguration;
@@ -34,24 +34,15 @@ public:
 protected:
    //TOTO tout ce qui suit
    //--------------------------------------------------------------
-   /// \brief	                     Send a ASCII message to the UPS
-   /// \param [in] message          message to send
-   /// \param [in] needAnswer       true if answer is needed. If true, a timeout will occur if no answer is received.
-   /// \param [in] answerIsRequired true if answer is required (Used for some UPS, not supporting all commands)
+   /// \brief	                     Send a message to EnOcean dongle
+   /// \param [in] sendMessage      message to send
+   /// \param [in] onReceiveFct     function called when answer is received
+   /// \throw                       CProtocolException if timeout waiting answer
    //--------------------------------------------------------------
-   void send(const std::string& message,
-             bool needAnswer = false,
-             bool answerIsRequired = true);
-
-   //--------------------------------------------------------------
-   /// \brief	                     Send a buffer to the UPS
-   /// \param [in] buffer           Buffer to send
-   /// \param [in] needAnswer       true if answer is needed. If true, a timeout will occur if no answer is received.
-   /// \param [in] answerIsRequired true if answer is required (Used for some UPS, not supporting all commands)
-   //--------------------------------------------------------------
-   void send(const shared::communication::CByteBuffer& buffer,
-             bool needAnswer = false,
-             bool answerIsRequired = true);
+   void send(const message::CSendMessage& sendMessage) const;
+   void send(const message::CSendMessage& sendMessage,
+             boost::function<bool(const message::CReceivedMessage& rcvMessage)> checkExpectedMessageFunction,
+             boost::function<void(const message::CReceivedMessage& rcvMessage)> onReceiveFct);
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
@@ -59,7 +50,7 @@ protected:
    /// \param [in] command          The received command
    //--------------------------------------------------------------
    void onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
-                  boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command);
+                  boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const;
 
 
    //--------------------------------------------------------------
@@ -80,7 +71,23 @@ protected:
    /// \param [in] message          Message received
    //--------------------------------------------------------------
    void processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
-                            const EnOceanMessage::CMessage& message);
+                            const message::CReceivedMessage& message);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Process received messages
+   /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \param [in] message          Message received
+   //--------------------------------------------------------------
+   void processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
+                         const message::CReceivedMessage& message) const;
+   void processEvent(boost::shared_ptr<yApi::IYPluginApi> api,
+                     const message::CReceivedMessage& message) const;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Requests to EnOcean
+   /// \param [in] api              Plugin execution context (Yadoms API)
+   //--------------------------------------------------------------
+   void requestDongleVersion(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection to the UPS
@@ -124,9 +131,7 @@ private:
    //--------------------------------------------------------------
    shared::communication::CAsciiBufferLogger m_logger;
 
-   //--------------------------------------------------------------
-   /// \brief	Wait for answer timer
-   //--------------------------------------------------------------
-   boost::shared_ptr<shared::event::CEventTimer> m_waitForAnswerTimer;
+   mutable boost::recursive_mutex m_onReceiveHookMutex;
+   boost::function<bool(const message::CReceivedMessage& rcvMessage)> m_onReceiveHook;
 };
 
