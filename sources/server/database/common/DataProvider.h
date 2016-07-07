@@ -98,6 +98,11 @@ namespace database
             return m_recipientRequester;
          }
 
+         boost::shared_ptr<IDatabaseRequester> getDatabaseRequester() override
+         {
+            return m_databaseRequester;
+         }
+
          // [END] IDatabaseProvider implementation
 
          shared::versioning::CVersion GetVersion() const;

@@ -9,10 +9,10 @@
 #include "Database.h"
 namespace task { namespace backup {
 
-   std::string CDatabase::m_taskName = "system.databaseBackup";
+   std::string CDatabase::m_taskName = "database.backup";
 
-   CDatabase::CDatabase(boost::shared_ptr< database::IDataBackup > dataBackupInterface, const std::string & backupLocation)
-      :m_dataBackupInterface(dataBackupInterface), m_backupLocation(backupLocation)
+   CDatabase::CDatabase(boost::shared_ptr< database::IDataBackup > dataBackupInterface)
+      :m_dataBackupInterface(dataBackupInterface)
    {
       if(!m_dataBackupInterface)
          throw shared::exception::CInvalidParameter("dataBackupInterface");
@@ -29,7 +29,7 @@ namespace task { namespace backup {
 
    void CDatabase::OnProgressionUpdatedInternal(int remaining, int total, const std::string & message)
    {
-      float progression = (float)(total - remaining)*(float)100.0 / (float)total;
+      float progression = total!=0?( (float)(total - remaining)*(float)100.0 / (float)total ) : 0;
 
       if(m_reportRealProgress)
          m_reportRealProgress(true, progression, message, shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
@@ -38,7 +38,7 @@ namespace task { namespace backup {
    void CDatabase::doWork(TaskProgressFunc pFunctor)
    {
       m_reportRealProgress = pFunctor;
-      m_dataBackupInterface->backupData(m_backupLocation, boost::bind(&CDatabase::OnProgressionUpdatedInternal, this, _1, _2, _3));
+      m_dataBackupInterface->backupData(boost::bind(&CDatabase::OnProgressionUpdatedInternal, this, _1, _2, _3));
    }
 
 } //namespace backup

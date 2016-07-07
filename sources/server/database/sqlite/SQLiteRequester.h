@@ -11,12 +11,13 @@ namespace database
       class CSQLiteRequester : public IDatabaseRequester
       {
       public:
-         explicit CSQLiteRequester(const std::string& dbFile);
+         explicit CSQLiteRequester(const std::string& dbFile, const std::string& dbBackupFile);
          virtual ~CSQLiteRequester();
 
          // IDatabaseEngine implementation
          void initialize() override;
          void finalize() override;
+         shared::CDataContainer getInformation() override;
          // [END] IDatabaseEngine implementation
 
          // IDatabaseRequester implementation
@@ -45,7 +46,8 @@ namespace database
 
          // IDataBackup implementation
          bool backupSupported() override;
-         void backupData(const std::string& backupLocation, ProgressFunc reporter) override;
+         void backupData(ProgressFunc reporter) override;
+         boost::filesystem::path lastBackupData() override;
          // [END] IDataBackup implementation
 
 
@@ -61,9 +63,14 @@ namespace database
          sqlite3* m_pDatabaseHandler;
 
          //--------------------------------------------------------------
-         /// \Brief		Startup options
+         /// \Brief		Database path
          //--------------------------------------------------------------
          const std::string m_dbFile;
+
+         //--------------------------------------------------------------
+         /// \Brief		Backup database path
+         //--------------------------------------------------------------
+         const std::string m_dbBackupFile;
 
          //--------------------------------------------------------------
          /// \Brief		true if a transaction is already begin

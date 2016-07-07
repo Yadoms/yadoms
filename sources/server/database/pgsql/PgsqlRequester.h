@@ -16,47 +16,49 @@ namespace pgsql {
       virtual ~CPgsqlRequester();
 
       // IDatabaseEngine implementation
-      virtual void initialize();
-      virtual void finalize();
+      void initialize() override;
+      void finalize() override;
+      shared::CDataContainer getInformation() override;
       // [END] IDatabaseEngine implementation
 
       // IDatabaseRequester implementation
-      virtual database::common::CQuery newQuery();
-      virtual void queryEntities(database::common::adapters::IResultAdapter * pAdapter, const database::common::CQuery & querytoExecute);
-      virtual int queryStatement(const database::common::CQuery & querytoExecute, bool throwIfFails = true);
-      virtual int queryCount(const database::common::CQuery & querytoExecute);
-      virtual QueryRow querySingleLine(const database::common::CQuery & querytoExecute);
-      virtual QueryResults query(const database::common::CQuery & querytoExecute);
-      virtual bool checkTableExists(const database::common::CDatabaseTable & tableName);
-      virtual bool dropTableIfExists(const database::common::CDatabaseTable & tableName);
-      virtual bool createTableIfNotExists(const database::common::CDatabaseTable & tableName, const std::string & tableScript);
-      virtual void createIndex(const database::common::CDatabaseTable & tableName, const std::string & indexScript);
-      virtual void vacuum();
-      virtual boost::shared_ptr<ITableCreationScriptProvider> getTableCreationScriptProvider();
-      virtual bool supportInsertOrUpdateStatement();
+      database::common::CQuery newQuery() override;
+      void queryEntities(database::common::adapters::IResultAdapter * pAdapter, const database::common::CQuery & querytoExecute) override;
+      int queryStatement(const database::common::CQuery & querytoExecute, bool throwIfFails = true) override;
+      int queryCount(const database::common::CQuery & querytoExecute) override;
+      QueryRow querySingleLine(const database::common::CQuery & querytoExecute) override;
+      QueryResults query(const database::common::CQuery & querytoExecute) override;
+      bool checkTableExists(const database::common::CDatabaseTable & tableName) override;
+      bool dropTableIfExists(const database::common::CDatabaseTable & tableName) override;
+      bool createTableIfNotExists(const database::common::CDatabaseTable & tableName, const std::string & tableScript) override;
+      void createIndex(const database::common::CDatabaseTable & tableName, const std::string & indexScript) override;
+      void vacuum() override;
+      boost::shared_ptr<ITableCreationScriptProvider> getTableCreationScriptProvider() override;
+      bool supportInsertOrUpdateStatement() override;
       // [END] IDatabaseRequester implementation
 
       // ITransactionalProvider implementation
-      virtual bool transactionSupport();
-      virtual void transactionBegin();
-      virtual void transactionCommit();
-      virtual void transactionRollback();
-      virtual bool transactionIsAlreadyCreated();
+      bool transactionSupport() override;
+      void transactionBegin() override;
+      void transactionCommit() override;
+      void transactionRollback() override;
+      bool transactionIsAlreadyCreated() override;
       // [END] ITransactionalProvider implementation
 
       // IDataBackup implementation
-      virtual bool backupSupported();
-      virtual void backupData(const std::string & backupLocation, IDataBackup::ProgressFunc reporter);
+      bool backupSupported() override;
+      void backupData(IDataBackup::ProgressFunc reporter) override;
+      boost::filesystem::path lastBackupData() override;
       // [END] IDataBackup implementation
 
    private:
-      virtual void queryEntities(database::common::adapters::IResultAdapter * pAdapter, const database::common::CQuery & querytoExecute, PGconn * pConnection);
-      virtual int queryStatement(const database::common::CQuery & querytoExecute, bool throwIfFails, PGconn * pConnection);
-      virtual int queryCount(const database::common::CQuery & querytoExecute, PGconn * pConnection);
-      virtual void transactionBegin(PGconn * pConnection);
-      virtual void transactionCommit(PGconn * pConnection);
-      virtual void transactionRollback(PGconn * pConnection);
-      virtual bool transactionIsAlreadyCreated(PGconn * pConnection);
+      void queryEntities(database::common::adapters::IResultAdapter * pAdapter, const database::common::CQuery & querytoExecute, PGconn * pConnection);
+      int queryStatement(const database::common::CQuery & querytoExecute, bool throwIfFails, PGconn * pConnection);
+      int queryCount(const database::common::CQuery & querytoExecute, PGconn * pConnection);
+      void transactionBegin(PGconn * pConnection);
+      void transactionCommit(PGconn * pConnection);
+      void transactionRollback(PGconn * pConnection);
+      bool transactionIsAlreadyCreated(PGconn * pConnection);
 
       //--------------------------------------------------------------
       /// \Brief		Close all active connections

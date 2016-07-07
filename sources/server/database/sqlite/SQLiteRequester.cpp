@@ -10,6 +10,7 @@
 #include "SQLiteQuery.h"
 #include <shared/shared/Log.h>
 #include <shared/shared/exception/NullReference.hpp>
+#include "i18n/ClientStrings.h"
 
 namespace database
 {
@@ -21,9 +22,10 @@ namespace database
       int CSQLiteRequester::m_maxTries = 3;
 
 
-      CSQLiteRequester::CSQLiteRequester(const std::string& dbFile)
+      CSQLiteRequester::CSQLiteRequester(const std::string& dbFile, const std::string& dbBackupFile)
          : m_pDatabaseHandler(nullptr),
            m_dbFile(dbFile),
+           m_dbBackupFile(dbBackupFile),
            m_bOneTransactionActive(false)
       {
       }
@@ -77,6 +79,14 @@ namespace database
             sqlite3_close(m_pDatabaseHandler);
       }
 
+      shared::CDataContainer CSQLiteRequester::getInformation()
+      {
+         shared::CDataContainer results;
+         results.set("type", "SQLite");
+         results.set("version", sqlite3_libversion());
+         results.set("size", boost::filesystem::file_size(boost::filesystem::path(m_dbFile)));
+         return results;
+      }
 
       void isodate(sqlite3_context* context, int argc, sqlite3_value** argv)
       {
@@ -381,13 +391,12 @@ namespace database
          return true;
       }
 
-      void CSQLiteRequester::backupData(const std::string& backupLocation,
-                                        ProgressFunc reporter)
+      void CSQLiteRequester::backupData(ProgressFunc reporter)
       {
          sqlite3* pFile; /* Database connection opened on zFilename */
 
          /* Open the database file identified by zFilename. */
-         int rc = sqlite3_open(backupLocation.c_str(), &pFile);
+         int rc = sqlite3_open(m_dbBackupFile.c_str(), &pFile);
          if (rc == SQLITE_OK)
          {
             /* Open the sqlite3_backup object used to accomplish the transfer */
@@ -403,11 +412,7 @@ namespace database
                   rc = sqlite3_backup_step(pBackup, 5);
                   if (reporter)
                   {
-                     reporter(
-                        sqlite3_backup_remaining(pBackup),
-                        sqlite3_backup_pagecount(pBackup),
-                        "Backup in progress"
-                     );
+                     reporter(sqlite3_backup_remaining(pBackup), sqlite3_backup_pagecount(pBackup), i18n::CClientStrings::DatabaseBackupInProgress, "");
                   }
 
                   if (rc == SQLITE_OK || rc == SQLITE_BUSY || rc == SQLITE_LOCKED)
@@ -417,8 +422,23 @@ namespace database
                }
                while (rc == SQLITE_OK || rc == SQLITE_BUSY || rc == SQLITE_LOCKED);
 
+               //report
+               if (reporter)
+               {
+                  if (rc == SQLITE_OK || rc == SQLITE_DONE)
+                  {
+                     reporter(sqlite3_backup_remaining(pBackup), sqlite3_backup_pagecount(pBackup), i18n::CClientStrings::DatabaseBackupSuccess, "");
+                  }
+                  else
+                  {
+                     reporter(sqlite3_backup_remaining(pBackup), sqlite3_backup_pagecount(pBackup), i18n::CClientStrings::DatabaseBackupFail, sqlite3_errstr(rc));
+                  }
+               }
+
                /* Release resources allocated by backup_init(). */
                (void)sqlite3_backup_finish(pBackup);
+
+
             }
             rc = sqlite3_errcode(pFile);
          }
@@ -430,8 +450,15 @@ namespace database
 
          if (rc != SQLITE_OK)
          {
+            if (reporter)
+               reporter(0, 100, i18n::CClientStrings::DatabaseBackupFail, sqlite3_errstr(rc));
             throw shared::exception::CException(sqlite3_errstr(rc));
          }
+      }
+
+      boost::filesystem::path CSQLiteRequester::lastBackupData()
+      {
+         return boost::filesystem::path(m_dbBackupFile);
       }
 
       void CSQLiteRequester::vacuum()

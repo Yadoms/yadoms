@@ -75,6 +75,13 @@ namespace startupOptions
          .binding("server.sqlite.databasePath", &m_configContainer));
 
       options.addOption(
+         Poco::Util::Option("databaseSqliteBackupFile", "B", "Choose the database backup file (only for sqlite database)")
+         .required(false)
+         .repeatable(false)
+         .argument("backupFile")
+         .binding("server.sqlite.databaseBackupPath", &m_configContainer));
+
+      options.addOption(
          Poco::Util::Option("databasePostgresqlHost", "ph", "Specify PotgreSQL database host (only for postgresql database). Name of host to connect to. If this begins with a slash, it specifies Unix-domain communication rather than TCP/IP communication; the value is the name of the directory in which the socket file is stored. The default behavior when host is not specified is to connect to a Unix-domain socket in /tmp (or whatever socket directory was specified when PostgreSQL was built). On machines without Unix-domain sockets, the default is to connect to localhost.")
          .required(false)
          .repeatable(false)
@@ -321,6 +328,11 @@ namespace startupOptions
       return m_configContainer.getString("server.sqlite.databasePath", "yadoms.db3");
    }
 
+   std::string CStartupOptions::getDatabaseSqliteBackupFile() const
+   {
+      return m_configContainer.getString("server.sqlite.databaseBackupPath", "yadoms_backup.db3");
+   }
+   
    std::string CStartupOptions::getDatabasePostgresqlHost() const
    {
       return m_configContainer.getString("server.pgsql.host", "127.0.0.1");

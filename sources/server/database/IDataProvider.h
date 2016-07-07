@@ -12,6 +12,7 @@
 #include "IRecipientRequester.h"
 #include "IAcquisitionRequester.h"
 #include "ITransactionalProvider.h"
+#include "IDatabaseRequester.h"
 
 namespace database
 {
@@ -122,6 +123,13 @@ namespace database
       /// \throws 		
       //--------------------------------------------------------------  
       virtual boost::shared_ptr<IRecipientRequester> getRecipientRequester() = 0;
+
+      //--------------------------------------------------------------
+      /// \Brief		get the Database requester
+      /// \return 	the Database requester
+      /// \throws 		
+      //--------------------------------------------------------------  
+      virtual boost::shared_ptr<IDatabaseRequester> getDatabaseRequester() = 0;
    };
 } //namespace database 
 

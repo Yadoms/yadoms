@@ -4,7 +4,7 @@
   "releaseType": "beta",
   "author": "Jean-Michel BERHAULT, Sébastien GALLOU",
   "url": "https://github.com/Yadoms/yadoms/wiki/gauge",
-  "credits": "",
+  "credits": "[Highstocks](http://www.highcharts.com/)",
   "dimensions": {
     "min": {
       "x": 2,

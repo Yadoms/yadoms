@@ -19,6 +19,7 @@
 #include "web/rest/service/Task.h"
 #include "web/rest/service/Recipient.h"
 #include "web/rest/service/Update.h"
+#include "web/rest/service/Maintenance.h"
 #include <shared/ThreadBase.h>
 #include "task/Scheduler.h"
 #include "communication/PluginGateway.h"
@@ -111,6 +112,13 @@ void CSupervisor::run()
 
       webServer->getConfigurator()->websiteHandlerAddAlias("plugins", m_pathProvider.pluginsPath().string());
       webServer->getConfigurator()->websiteHandlerAddAlias("scriptInterpreters", scriptInterpretersPath);
+
+      if (pDataProvider->getDatabaseRequester()->backupSupported())
+      {
+         std::string filename = m_pathProvider.databaseSqliteBackupFile().filename().string();
+         webServer->getConfigurator()->websiteHandlerAddAlias(filename, m_pathProvider.databaseSqliteBackupFile().string());
+      }
+            
       webServer->getConfigurator()->configureAuthentication(boost::make_shared<authentication::CBasicAuthentication>(dal->getConfigurationManager(), startupOptions->getNoPasswordFlag()));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CPlugin>(pDataProvider, pluginManager, *pluginGateway));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CDevice>(pDataProvider, *pluginGateway));
@@ -125,6 +133,7 @@ void CSupervisor::run()
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CTask>(taskManager));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CRecipient>(pDataProvider));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CUpdate>(updateManager));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CMaintenance>(pDataProvider->getDatabaseRequester(), taskManager));
 
       webServer->start();
 

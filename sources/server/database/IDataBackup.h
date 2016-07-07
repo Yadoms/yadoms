@@ -14,7 +14,7 @@ namespace database {
       //---------------------------------
       ///\brief Define a function prototype for updating the backup progress
       //---------------------------------
-      typedef boost::function3<void, int, int, std::string> ProgressFunc;
+      typedef boost::function4<void, int, int, std::string, std::string> ProgressFunc;
 
       //---------------------------------
       ///\brief Indicate if backup is supported by database engine
@@ -24,11 +24,16 @@ namespace database {
 
       //---------------------------------
       ///\brief Backup the data provider to a file
-      ///\param [in] backupLocation : the backup location
       ///\param [in] reporter : a function pointer for reporting progression
       //---------------------------------
-      virtual void backupData(const std::string & backupLocation, ProgressFunc reporter) = 0;
+      virtual void backupData(ProgressFunc reporter) = 0;
 
+
+      //---------------------------------
+      ///\brief Get the last backup file path
+      ///\return The last backup file path
+      //---------------------------------
+      virtual boost::filesystem::path lastBackupData() = 0;
 
       //--------------------------------------------------------------
       /// \brief       Destructor

@@ -53,6 +53,13 @@ namespace startupOptions {
       virtual std::string getDatabaseSqliteFile() const = 0;
 
       //--------------------------------------------------------------
+      /// \brief	    Get the path of the backup of database file (sqlite only)
+      /// \return     Database file path
+      /// \note       If not exist, Yadoms will create the file. if it already exists, backup will be overwritten
+      //--------------------------------------------------------------
+      virtual std::string getDatabaseSqliteBackupFile() const = 0;
+
+      //--------------------------------------------------------------
       /// \brief	    Get the database host (PostgreSQL database only)
       /// \return     The database host (host name or ip)
       //--------------------------------------------------------------
