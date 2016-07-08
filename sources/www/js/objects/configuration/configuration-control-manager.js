@@ -11,14 +11,13 @@
  * @constructor
  */
 function ConfigurationControlManager(configurationSchema, currentConfiguration, i18nNamespace, $domContainer) {
-   assert(configurationSchema !== undefined, "configurationSchema must contain widget or plugin object");
    assert(i18nNamespace !== undefined, "i18nNamespace must contain widget or plugin object");
    assert($domContainer !== undefined, "$domContainer must be defined");
 
    if (!currentConfiguration)
        currentConfiguration = {};
 
-   this.configurationSchema = configurationSchema;
+   this.configurationSchema = configurationSchema || {};
    this.configurationValues = currentConfiguration;
    this.configurationHandlers = [];
 
