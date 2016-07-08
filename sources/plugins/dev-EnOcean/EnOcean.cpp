@@ -280,6 +280,42 @@ void CEnOcean::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
 void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
                                 const message::CReceivedMessage& message) const
 {
+   enum ERORG
+   {
+      kRBS = 0xF6,
+      k1BS = 0xD5,
+      k4BS = 0xA5,
+      kVLD = 0xD2,
+      kMSC = 0xD1,
+      kADT = 0xA6,
+      kSM_LRN_REQ = 0xC6,
+      kSM_LRN_ANS = 0xC7,
+      kSM_REC = 0xA7,
+      kSYS_EX = 0xC5,
+      kSEC = 0x30,
+      kSEC_ENCAPS = 0x31
+   };
+
+   auto rorg = static_cast<ERORG>(message.data()[0]);
+
+   switch (rorg)
+   {
+   case kRBS: break;//TODO
+   case k1BS: processRadioErp1_1BS(api, message.data()); break;//TODO
+   case k4BS: break;//TODO
+   case kVLD: break;//TODO
+   case kMSC: break;//TODO
+   case kADT: break;//TODO
+   case kSM_LRN_REQ: break;//TODO
+   case kSM_LRN_ANS: break;//TODO
+   case kSM_REC: break;//TODO
+   case kSYS_EX: break;//TODO
+   case kSEC: break;//TODO
+   case kSEC_ENCAPS: break;//TODO
+   default: throw CProtocolException((boost::format("Unknown RORG %1%") % rorg).str());
+   }
+
+
    struct Optional
    {
       explicit Optional(const std::vector<unsigned char>& optional):
@@ -304,6 +340,11 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
    //TODO
 }
 
+void CEnOcean::processRadioErp1_1BS(boost::shared_ptr<yApi::IYPluginApi> api,
+                                    const std::vector<unsigned char>& data) const
+{
+   //TODO
+}
 
 void CEnOcean::processEvent(boost::shared_ptr<yApi::IYPluginApi> api,
                             const message::CReceivedMessage& message) const

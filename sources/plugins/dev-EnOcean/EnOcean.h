@@ -84,6 +84,14 @@ protected:
                      const message::CReceivedMessage& message) const;
 
    //--------------------------------------------------------------
+   /// \brief	                     Process radio ERP1 received messages
+   /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \param [in] data             Data of the ERP1 message
+   //--------------------------------------------------------------
+   void processRadioErp1_1BS(boost::shared_ptr<yApi::IYPluginApi> api,
+                             const std::vector<unsigned char>& data) const;
+
+   //--------------------------------------------------------------
    /// \brief	                     Requests to EnOcean
    /// \param [in] api              Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
