@@ -354,7 +354,15 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
             //before replacing menuGenerator, get value to restore it after menu update
             var oldValue = operatorDropDown.getValue();
             operatorDropDown.menuGenerator_ = selectedOperators;
-            operatorDropDown.setValue(oldValue || selectedOperators[0][1]);
+
+            //ensure selected operator is still available for current possible ones
+            var availableValue = undefined;
+            selectedOperators.forEach(function(op) {
+                if(oldValue === op[1])
+                    availableValue = op[1];
+            });
+
+            operatorDropDown.setValue(availableValue || selectedOperators[0][1]);
             operatorDropDown.updateTextNode_();
         }
     },
