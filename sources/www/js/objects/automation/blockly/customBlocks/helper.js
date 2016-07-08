@@ -39,12 +39,25 @@ Blockly.Yadoms.ConfigureBlockForYadomsCapacitySelection = function(thisBlock, ca
                         var childBlock = connection.targetBlock();
                         if (childBlock) {
                             if (childBlock.isShadow()) {
-                                childBlock.dispose();
+								try {
+									childBlock.dispose();
+								}catch(e) {
+									try {
+										childBlock.dispose();
+									}catch(e) {
+									}
+								}
                             }
                         }
                     }
 
-                    inputType.setCheck(type);
+					try {
+						inputType.setCheck(type);
+					}catch(e) {
+						//just catch it.
+						//if connected blocks are not compatible they are bumped and setCheck throw an exception
+					}
+                    
 
                     //if connection is empty, add good default block
                     if (!connection.targetConnection && Blockly.Yadoms.isLoadingFromXml === false) {
@@ -69,6 +82,8 @@ Blockly.Yadoms.ConfigureBlockForYadomsCapacitySelection = function(thisBlock, ca
                 }
             }
 
+			Blockly.Yadoms.RemoveUnconnectedShadowBlocks(workspace);
+			
             thisBlock.isValid();
         }
     });
@@ -213,13 +228,25 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, on
                         var childBlock = connection.targetBlock();
                         if (childBlock) {
                             if (childBlock.isShadow()) {
-                                childBlock.dispose();
+								try {
+									childBlock.dispose();
+								}catch(e) {
+									try {
+										childBlock.dispose();
+									}catch(e) {
+									}
+								}
                             }
                         }
                     }
 
-                    inputType.setCheck(type);
-
+					try {
+						inputType.setCheck(type);
+					}catch(e) {
+						//just catch it.
+						//if connected blocks are not compatible they are bumped and setCheck throw an exception
+					}
+                    
                     //if connection is empty, add good default block
                     if (!connection.targetConnection && Blockly.Yadoms.isLoadingFromXml === false) {
                         var newChildBlock = Blockly.Yadoms.GetDefaultBlock_(Blockly.Yadoms.data.keywords[keyword], workspace);
@@ -243,6 +270,8 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, on
                 }
             }
 
+			Blockly.Yadoms.RemoveUnconnectedShadowBlocks(workspace);
+			
             thisBlock.isValid();
         }
     });

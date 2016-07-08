@@ -22,7 +22,9 @@ Blockly.Blocks["keyword-value-get"] = {
                 typeToSet = "null"; //any type allowed
 
             //make it compatible with older blockly version
-            $.isFunction(thisBlock.changeOutput) ? thisBlock.changeOutput(typeToSet) : thisBlock.outputConnection.setCheck(typeToSet);
+			try {
+				$.isFunction(thisBlock.changeOutput) ? thisBlock.changeOutput(typeToSet) : thisBlock.outputConnection.setCheck(typeToSet);
+			}catch(e) { }//just catch it.
 
             Blockly.Yadoms.UpdateBlockColour_(thisBlock, keywordType);
         }, this.deviceDropDownName, this.keywordDropDownName);

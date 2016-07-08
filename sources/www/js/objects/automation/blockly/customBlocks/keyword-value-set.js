@@ -33,7 +33,14 @@ Blockly.Blocks["keyword-value-set"] = {
                     //if the input is connected to shadow block, then just remove it
                     if (previousInput.connection && previousInput.connection.targetConnection) {
                         if (previousInput.connection.targetBlock() && previousInput.connection.targetBlock().isShadow()) {
-                            previousInput.connection.targetBlock().dispose();
+							try {
+								previousInput.connection.targetBlock().dispose();
+							}catch(e) {
+								try {
+									previousInput.connection.targetBlock().dispose();
+								}catch(e) {
+								}
+							}
                         }
                     }
                 }
@@ -51,7 +58,14 @@ Blockly.Blocks["keyword-value-set"] = {
                     var childBlock = input.connection.targetBlock();
                     if (childBlock) {
                         if (childBlock.isShadow()) {
-                            childBlock.dispose();
+							try {
+								childBlock.dispose();
+							}catch(e) {
+								try {
+									childBlock.dispose();
+								}catch(e) {
+								}
+							}
                         }
                     }
                 }

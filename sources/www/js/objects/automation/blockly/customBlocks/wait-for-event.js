@@ -178,7 +178,14 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         if (valueConnection) {
 
             if (bValueInput && bValueInput.connection && bValueInput.connection.targetBlock()) {
-                bValueInput.connection.targetBlock().dispose();
+				try {
+					bValueInput.connection.targetBlock().dispose();
+				}catch(e) {
+					try {
+						bValueInput.connection.targetBlock().dispose();
+					}catch(e) {
+					}
+				}
             }
 
             bValueInput.connection.connect(valueConnection);
@@ -236,7 +243,14 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         if (valueConnection) {
 
             if (bValueInput && bValueInput.connection && bValueInput.connection.targetBlock()) {
-                bValueInput.connection.targetBlock().dispose();
+				try {
+					bValueInput.connection.targetBlock().dispose();
+				}catch(e) {
+					try {
+						bValueInput.connection.targetBlock().dispose();
+					}catch(e) {
+					}
+				}
             }
 
             bValueInput.connection.connect(valueConnection);
@@ -268,10 +282,14 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
      * @private 
      */
     appendDatetimeStatementBecome_: function (no, operator, valueConnection, statementConnection) {
-        var bValueInput = this.appendValueInput("additionalInput_part1_" + no)
-            .setCheck(["datetime", "time", "date"])
-            .appendField($.t("blockly.blocks.yadoms_wait_for_event.caseDateTimeCondition"))
-            .appendField(new Blockly.FieldDropdown(Blockly.Yadoms.NumberOperators_), "operatorDd" + no);
+        var bValueInput = this.appendValueInput("additionalInput_part1_" + no);
+		
+		try {
+            bValueInput.setCheck(["datetime", "time", "date"]);
+		}catch(e) { }//just catch it.
+			
+        bValueInput.appendField($.t("blockly.blocks.yadoms_wait_for_event.caseDateTimeCondition"))
+					.appendField(new Blockly.FieldDropdown(Blockly.Yadoms.NumberOperators_), "operatorDd" + no);
 
         bValueInput.setForceNewlineInput(true);
 
@@ -556,8 +574,16 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
 
         //remove any shadow item on workspace
         $.each(this.workspace.topBlocks_, function (index, block) {
-            if (block && block.isShadow())
-                block.dispose();
+            if (block && block.isShadow()) {
+				try {
+					block.dispose();
+				}catch(e) {
+					try {
+						block.dispose();
+					}catch(e) {
+					}
+				}
+			}
         });
     },
 
@@ -643,8 +669,17 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
 
         //remove any shadow item on workspace
         $.each(this.workspace.topBlocks_, function(index, block) {
-            if (block && block.isShadow())
-                block.dispose();
+            if (block && block.isShadow()) {
+				try {
+					block.dispose();
+				}catch(e) {
+					try {
+						block.dispose();
+					}catch(e) {
+					}
+				}
+				
+			}
         });
 
         //manage warning display
