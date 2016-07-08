@@ -3,6 +3,7 @@ sys.path.append('.')
 import unittest
 from selenium import webdriver
 import database
+import config
 import scripts
 import yadomsServer
 import mainPage.widgets
@@ -13,6 +14,7 @@ class Customizing(unittest.TestCase):
    
    def setUp(self):
       database.deploy('OneFakePlugin')
+      config.deploy("withDeveloperMode")
       scripts.deleteAll()
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()

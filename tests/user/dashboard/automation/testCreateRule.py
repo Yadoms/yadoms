@@ -4,6 +4,7 @@ import unittest
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 import database
+import config
 import scripts
 import yadomsServer
 import dashboard
@@ -18,6 +19,7 @@ class CreateRule(unittest.TestCase):
    
    def setUp(self):
       database.new()
+      config.deploy("nominal")
       scripts.deleteAll()
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()

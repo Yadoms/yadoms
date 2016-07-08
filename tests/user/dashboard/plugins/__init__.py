@@ -6,6 +6,8 @@ from configurationPanel import ConfigurationPanel
 import modals
 import i18n
 import tools
+import dashboard
+import notification
 
 
 """ Operations on plugins dashboard page """
@@ -70,6 +72,13 @@ def getPluginExtraCommandButton(pluginsTable, pluginNumber):
    buttons = getPluginButtons(pluginsTable, pluginNumber)
    for button in buttons:
       if "btn-extraCommand" in button.get_attribute("class"):
+         return button
+   assert False, "Extra command button not found"
+   
+def getPluginLogButton(pluginsTable, pluginNumber):
+   buttons = getPluginButtons(pluginsTable, pluginNumber)
+   for button in buttons:
+      if "btn-log" in button.get_attribute("class"):
          return button
    assert False, "Extra command button not found"
    
@@ -164,4 +173,81 @@ class ConfigurePluginModal():
    def ok(self):
       self.getConfirmButton().click()
       modals.waitForClosed(self.__configurePluginModalWebElement)
+
+
+
+def basicFillConfigurationSequence(browser, pluginInstanceName):
+   print '  Plugin configuration'
+   editPluginModal = waitConfigurePluginModal(browser)
+   editPluginModal.setPluginName(pluginInstanceName)
+   print '  Click OK'
+   editPluginModal.ok()      
+
+
+def createPluginSequence(browser, pluginInstanceName, pluginType, setPluginConfigurationSequenceFct):
+   """ Create plugin all-in-one sequence """
+
+   print '  Open plugin dashboard'
+   dashboard.open(browser)
+   dashboard.openPlugin(browser)
+
+   print '  Create new plugin'
+   tools.waitUntil(lambda: getCreatePluginButton(browser).is_enabled())
+   getCreatePluginButton(browser).click()
+   newPluginModal = waitNewPluginModal(browser)
+   newPluginModal.selectPlugin(i18n.getPlugin(pluginType)["name"]).click()
+   newPluginModal.ok()
+
+   setPluginConfigurationSequenceFct(pluginInstanceName)
+
+
+def checkCreatedPluginSequence(test, pluginInstanceName, pluginType, hasExtraCommand, hasLog):
+   """ Check successfull plugin creation all-in-one sequence """
+
+   print '  Check notification'
+   notification.waitText(test.browser, notification.Type.Success, i18n.get()["modals"]["configure-plugin"]["pluginSuccessfullyCreated"])
       
+   print '  Check plugins table'
+   pluginsTable = waitPluginsTableHasNPlugins(test.browser, 1)
+
+   pluginNumber = 0
+      
+   test.assertEqual(len(getPluginDatas(pluginsTable, pluginNumber)), 5)
+   test.assertEqual(getPluginName(pluginsTable, pluginNumber), pluginInstanceName)
+   test.assertEqual(getPluginType(pluginsTable, pluginNumber).lstrip(), i18n.getPlugin(pluginType)["name"])
+   test.assertTrue(getPluginAutoStart(pluginsTable, pluginNumber))
+
+   buttons = getPluginButtons(pluginsTable, pluginNumber)
+   expectedButtonCount = 3 + (1 if hasExtraCommand else 0) + (1 if hasLog else 0)
+   test.assertEqual(len(buttons), expectedButtonCount)
+
+   buttonIndex = 0
+   startStopButton = getPluginStartStopButton(pluginsTable, pluginNumber)
+   test.assertEqual(startStopButton, buttons[buttonIndex])
+   tools.waitUntil(lambda: "btn-warning" in startStopButton.get_attribute("class"))
+   buttonIndex +=1;
+
+   configureButton = getPluginConfigureButton(pluginsTable, pluginNumber)
+   test.assertEqual(configureButton, buttons[buttonIndex])
+   test.assertIn("btn-primary", configureButton.get_attribute("class"))
+   buttonIndex +=1;
+
+   if hasExtraCommand:
+      extraCommandButton = getPluginExtraCommandButton(pluginsTable, pluginNumber)
+      test.assertEqual(extraCommandButton, buttons[buttonIndex])
+      test.assertIn("btn-success", extraCommandButton.get_attribute("class"))
+      buttonIndex +=1;
+
+   if hasLog:
+      logButton = getPluginLogButton(pluginsTable, pluginNumber)
+      test.assertEqual(logButton, buttons[buttonIndex])
+      test.assertIn("btn-info", logButton.get_attribute("class"))
+      buttonIndex +=1;
+
+   removeButton = getPluginRemoveButton(pluginsTable, pluginNumber)
+   test.assertEqual(removeButton, buttons[buttonIndex])
+   test.assertIn("btn-danger", removeButton.get_attribute("class"))
+   buttonIndex +=1;
+
+   WebDriverWait(test.browser, 20).until(lambda driver: getPluginState(pluginsTable, pluginNumber) == PluginState.Running)
+

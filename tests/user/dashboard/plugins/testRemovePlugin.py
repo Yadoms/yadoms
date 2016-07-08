@@ -5,6 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 import database
+import config
 import yadomsServer
 import dashboard
 import dashboard.plugins
@@ -15,6 +16,7 @@ class RemovePlugin(unittest.TestCase):
    
    def setUp(self):
       database.deploy('OneFakePlugin')
+      config.deploy("withDeveloperMode")
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()
       self.browser.implicitly_wait(10)

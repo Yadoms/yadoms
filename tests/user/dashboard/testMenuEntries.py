@@ -2,6 +2,7 @@ import sys
 sys.path.append('.')
 import unittest
 import database
+import config
 import scripts
 import yadomsServer
 import dashboard
@@ -12,6 +13,7 @@ class MenuEntries(unittest.TestCase):
    
    def setUp(self):
       database.new()
+      config.deploy("nominal")
       scripts.deleteAll()
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()

@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions as Condition
 from selenium.webdriver.common.keys import Keys
 import database
+import config
 import scripts
 import yadomsServer
 import dashboard
@@ -21,6 +22,7 @@ class RemoveRule(unittest.TestCase):
    
    def setUp(self):
       database.deploy('OneStoppedRule')
+      config.deploy("nominal")
       scripts.deploy(["DisplayLatitude"])
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()
