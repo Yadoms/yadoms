@@ -22,12 +22,5 @@ function systemDeactivatedWidgetViewModel() {
     * Callback for a resized event
     */
    this.resized = function () {
-      /*
-      if (this.widget.width() <= 200) {
-         this.widgetApi.find("div.deactivatedWidget span").css("font-size", "1em");
-      }
-      else
-         this.widgetApi.find("div.deactivatedWidget span").css("font-size", "2em");
-         */
    };
 };
