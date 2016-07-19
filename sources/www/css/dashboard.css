@@ -36,7 +36,6 @@
 
 .summary-table {
     width: 50%;
-    margin: auto;
 }
 
 .summary-table td {
@@ -400,14 +399,15 @@ Fix dropdown menus hidden by bootstrap modal
 }
 
 /* CSS Method for adding Font Awesome Chevron Icons */
-.install-update-section-title:after {
+.accordion-title:after {
     /* symbol for "opening" panels */
     font-family:'FontAwesome';
     content:"\f077";
     float: right;
     color: inherit;
 }
-.panel-heading.collapsed .install-update-section-title:after {
+
+.panel-heading.collapsed .accordion-title:after {
     /* symbol for "collapsed" panels */
     content:"\f078";
 }
