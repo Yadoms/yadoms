@@ -111,8 +111,6 @@ widgetViewModelCtor = function indicatorViewModel() {
                     self.command(0);
                     self.iconColor(self.deactivatedColor);
                 }
-                a = self;
-                console.log(self.iconColor());
             }
         }
         catch (err) { }
