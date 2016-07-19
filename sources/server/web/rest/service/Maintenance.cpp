@@ -6,6 +6,8 @@
 #include "web/rest/Result.h"
 #include "task/backup/Database.h"
 #include <shared/Log.h>
+#include <boost/date_time/local_time_adjustor.hpp>
+#include <boost/date_time/c_local_time_adjustor.hpp>
 
 namespace web { namespace rest { namespace service {
 
@@ -102,7 +104,7 @@ namespace web { namespace rest { namespace service {
                auto filesize = boost::filesystem::file_size(backup);
             
                auto lastWriteTimeT = boost::filesystem::last_write_time(backup);
-               auto lastWriteTimePosix = boost::posix_time::from_time_t(lastWriteTimeT);
+               auto lastWriteTimePosix = boost::date_time::c_local_adjustor<boost::posix_time::ptime>::utc_to_local(boost::posix_time::from_time_t(lastWriteTimeT));
 
                shared::CDataContainer result;
                result.set("size", filesize);
