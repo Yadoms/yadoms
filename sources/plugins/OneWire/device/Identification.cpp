@@ -33,10 +33,10 @@ namespace device
                                     const std::string& id,
                                     const std::string& model)
       :m_family(family),
-       m_id(id),
-       m_deviceName(buildDeviceName(family, id)),
-       m_model(model),
-       m_details(buildDeviceDetails(family, id))
+      m_id(id),
+      m_deviceName(buildDeviceName(family, id)),
+      m_model(model),
+      m_details(buildDeviceDetails(family, id))
    {
    }
 

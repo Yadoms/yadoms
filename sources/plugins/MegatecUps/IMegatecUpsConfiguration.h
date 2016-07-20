@@ -13,7 +13,7 @@ public:
    virtual ~IMegatecUpsConfiguration() {}
 
    //--------------------------------------------------------------
-   /// \brief		   Load configuration data
+   /// \brief		 Load configuration data
    /// \param [in] data The data container
    //--------------------------------------------------------------
    virtual void initializeWith(const shared::CDataContainer &data) = 0;
@@ -34,12 +34,12 @@ public:
    /// \brief	    Get the output shutdown delay
    /// \return     Output shutdown delay (minutes)
    //--------------------------------------------------------------
-   virtual double outuputShutdownDelay() const = 0;
+   virtual double outputShutdownDelay() const = 0;
 
    //--------------------------------------------------------------
    /// \brief	    Get the output restore delay
    /// \return     Output restore delay (minutes)
    //--------------------------------------------------------------
-   virtual double outuputRestoreDelay() const = 0;
+   virtual double outputRestoreDelay() const = 0;
 };
 

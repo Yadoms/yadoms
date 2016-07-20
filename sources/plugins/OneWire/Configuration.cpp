@@ -7,7 +7,7 @@ namespace yApi = shared::plugin::yPluginApi;
 
 CConfiguration::CConfiguration()
    :m_isOwfsMode(false),
-    m_isKernelMode(false)
+   m_isKernelMode(false)
 {
 }
 
@@ -34,9 +34,9 @@ void CConfiguration::initializeWith(const shared::CDataContainer &data)
       }
    }
    catch (const shared::exception::CException& e)
-	{
-		std::cerr << "OneWire configuration could not be loaded, " << e.what() << std::endl;
-	}
+   {
+      std::cerr << "OneWire configuration could not be loaded, " << e.what() << std::endl;
+   }
 }
 
 bool CConfiguration::isOwfsMode() const

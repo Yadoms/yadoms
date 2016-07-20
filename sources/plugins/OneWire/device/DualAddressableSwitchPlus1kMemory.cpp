@@ -8,9 +8,9 @@ namespace device
                                                                           const std::string& id,
                                                                           boost::shared_ptr<ioInterfaces::IDualAddressableSwitchPlus1kMemory> io)
       :m_identification(boost::make_shared<device::CIdentification>(family, id, "DS2406")),
-       m_io(io),
-       m_ioA(boost::make_shared<yApi::historization::CSwitch>("io_A")),
-       m_keywords({ m_ioA })
+      m_io(io),
+      m_ioA(boost::make_shared<yApi::historization::CSwitch>("io_A")),
+      m_keywords({ m_ioA })
    {
       BOOST_ASSERT_MSG(m_identification->family() == kDualAddressableSwitchPlus1kMemory, "Invalid family number");
 

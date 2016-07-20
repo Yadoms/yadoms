@@ -8,10 +8,10 @@ namespace device
                                       const std::string& id,
                                       boost::shared_ptr<ioInterfaces::IMultiSwitch> io)
       :m_identification(boost::make_shared<device::CIdentification>(family, id, "DS28E04-100")),
-       m_io(io),
-       m_ioA(boost::make_shared<yApi::historization::CSwitch>("io_A")),
-       m_ioB(boost::make_shared<yApi::historization::CSwitch>("io_B")),
-       m_keywords({ m_ioA, m_ioB })
+      m_io(io),
+      m_ioA(boost::make_shared<yApi::historization::CSwitch>("io_A")),
+      m_ioB(boost::make_shared<yApi::historization::CSwitch>("io_B")),
+      m_keywords({ m_ioA, m_ioB })
    {
       BOOST_ASSERT_MSG(m_identification->family() == k4kEepromWithPio, "Invalid family number");
    }

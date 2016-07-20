@@ -20,12 +20,12 @@ bool CMegatecUpsConfiguration::upsBeepEnable() const
    return m_data.get<bool>("UpsBeep");
 }
 
-double CMegatecUpsConfiguration::outuputShutdownDelay() const
+double CMegatecUpsConfiguration::outputShutdownDelay() const
 {
    return m_data.get<double>("UpsShutdownTimers.content.ShutdownDelay");
 }
 
-double CMegatecUpsConfiguration::outuputRestoreDelay() const
+double CMegatecUpsConfiguration::outputRestoreDelay() const
 {
    return m_data.get<double>("UpsShutdownTimers.content.RestoreDelay");
 }

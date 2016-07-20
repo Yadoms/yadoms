@@ -45,7 +45,7 @@ namespace owfs
    CEngine::CEngine(boost::shared_ptr<yApi::IYPluginApi> api,
                     boost::shared_ptr<const IConfiguration> configuration)
       :m_api(api),
-       m_configuration(configuration)
+      m_configuration(configuration)
    {
    }
 
@@ -104,12 +104,12 @@ namespace owfs
             }
             catch (shared::exception::CInvalidParameter&)
             {
-			      const std::string unsupportedFamily(dir->path().filename().string().substr(0, 2));
-			      if (m_unsupporterFamilies.find(unsupportedFamily) == m_unsupporterFamilies.end())
-			      {
-			         std::cout << "1-Wire, Device family 0x" << unsupportedFamily << " is not actually supported" << std::endl;
-			         m_unsupporterFamilies.insert(unsupportedFamily);
-			      }
+               const std::string unsupportedFamily(dir->path().filename().string().substr(0, 2));
+               if (m_unsupporterFamilies.find(unsupportedFamily) == m_unsupporterFamilies.end())
+               {
+                  std::cout << "1-Wire, Device family 0x" << unsupportedFamily << " is not actually supported" << std::endl;
+                  m_unsupporterFamilies.insert(unsupportedFamily);
+               }
             }
          }
       }
@@ -148,7 +148,7 @@ namespace owfs
       // Device Id (6 chars after '.')
       std::string id = filename.substr(3, 6 * 2);
       // OWFS give us the device ID inverted, so reinvert it
-      for (int i = 0; i<6 / 2; i++)
+      for (int i = 0; i < 6 / 2; i++)
       {
          int left_position = i * 2;          // Point on first byte
          int right_position = (6 - i - 1) * 2;   // Point on last byte
