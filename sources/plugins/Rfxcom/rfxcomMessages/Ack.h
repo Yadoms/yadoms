@@ -12,9 +12,9 @@ namespace rfxcomMessages
    public:
       //--------------------------------------------------------------
       /// \brief	                           Constructor
-      /// \param[in] seqNumberProvider       The sequence number provider
       /// \param[in] rbuf                    Message received from Rfxcom
       /// \param[in] rbufSize                Message size, received from Rfxcom
+      /// \param[in] seqNumberProvider       The sequence number provider
       //--------------------------------------------------------------
       CAck(const RBUF& rbuf, size_t rbufSize,
            boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
@@ -28,7 +28,6 @@ namespace rfxcomMessages
       boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const override;
       void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
       const std::string& getDeviceName() const override;
-
       // [END] IRfxcomMessage implementation
 
       //--------------------------------------------------------------

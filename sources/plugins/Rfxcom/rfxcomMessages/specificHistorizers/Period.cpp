@@ -20,7 +20,7 @@ namespace teleInfo
          ((NormalCostBlueDays))
          ((NormalCostWhiteDays))
          ((NormalCostRedDays))
-      );
+       );
 
       const shared::plugin::yPluginApi::CStandardCapacity& PeriodCapacity = shared::plugin::yPluginApi::CStandardCapacity("Period", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 

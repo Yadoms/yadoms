@@ -40,8 +40,8 @@ namespace rfxcomMessages
          CheckReceivedMessage(rbuf,
                               rbufSize,
                               pTypeInterfaceMessage,
-                              DONT_CHECK_SUBTYPE, 
-							         DONT_CHECK_SIZE,
+                              DONT_CHECK_SUBTYPE,
+                              DONT_CHECK_SIZE,
                               seqNumberProvider->last());
       }
 
@@ -195,7 +195,7 @@ namespace rfxcomMessages
    std::string CTransceiverStatus::rfxcomTypeToString() const
    {
       static const std::map<unsigned char, std::string> RfxcomTypes = boost::assign::map_list_of
-         (recType310, "310MHz")
+      (recType310, "310MHz")
          (recType315, "315MHz")
          (recType43392, "433.92MHz receiver only")
          (trxType43392, "433.92MHz transceiver")
@@ -271,7 +271,7 @@ namespace rfxcomMessages
          (configuration.isVISONICenabled() == m_VISONICenabled) &&
          (configuration.isKeeLoqenabled() == m_KeeLoqenabled) &&
          (configuration.isHomeConfortenabled() == m_HomeConfortenabled)
-      )
+         )
          return false;
 
       return true;

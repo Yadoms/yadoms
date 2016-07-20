@@ -34,7 +34,7 @@ namespace rfxcomMessages
       void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
       const std::string& getDeviceName() const override;
       // [END] IRfxcomMessage implementation
-      
+
    protected:
       //--------------------------------------------------------------
       /// \brief	Global initialization method

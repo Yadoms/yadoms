@@ -38,7 +38,7 @@ namespace rfxcomMessages
 
    protected:
       //--------------------------------------------------------------
-      /// \brief	Global initialization method
+      /// \brief	                        Global initialization method
       /// \param[in] api                  Yadoms APi context
       //--------------------------------------------------------------
       void Init(boost::shared_ptr<yApi::IYPluginApi> api);

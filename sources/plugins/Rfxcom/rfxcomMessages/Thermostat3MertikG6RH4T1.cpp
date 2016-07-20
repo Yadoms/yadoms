@@ -9,10 +9,10 @@ namespace rfxcomMessages
 {
    CThermostat3MertikG6RH4T1::CThermostat3MertikG6RH4T1()
       : m_statusByte(0),
-        m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
-        m_upDown(boost::make_shared<yApi::historization::CUpDownStop>("upDown", yApi::EKeywordAccessMode::kGetSet)),
-        m_runUpDown(boost::make_shared<yApi::historization::CUpDownStop>("runUpDown", yApi::EKeywordAccessMode::kGetSet)),
-        m_keywords({m_onOff, m_upDown, m_runUpDown})
+      m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
+      m_upDown(boost::make_shared<yApi::historization::CUpDownStop>("upDown", yApi::EKeywordAccessMode::kGetSet)),
+      m_runUpDown(boost::make_shared<yApi::historization::CUpDownStop>("runUpDown", yApi::EKeywordAccessMode::kGetSet)),
+      m_keywords({ m_onOff, m_upDown, m_runUpDown })
    {
    }
 

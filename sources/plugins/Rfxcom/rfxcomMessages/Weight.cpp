@@ -11,9 +11,9 @@ namespace rfxcomMessages
                     const RBUF& rbuf,
                     size_t rbufSize)
       : m_weight(boost::make_shared<yApi::historization::CWeight>("weight")),
-        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_weight , m_batteryLevel , m_rssi})
+      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_weight , m_batteryLevel , m_rssi })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,

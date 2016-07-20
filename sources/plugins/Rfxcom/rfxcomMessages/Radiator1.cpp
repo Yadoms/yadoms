@@ -12,9 +12,9 @@ namespace rfxcomMessages
                           const std::string& command,
                           const shared::CDataContainer& deviceDetails)
       : m_day(boost::make_shared<yApi::historization::CSwitch>("day")),
-        m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_day , m_setPoint , m_rssi})
+      m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_day , m_setPoint , m_rssi })
    {
       if (boost::iequals(keyword, m_day->getKeyword()))
       {
@@ -42,10 +42,10 @@ namespace rfxcomMessages
                           unsigned int subType,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_dayNightCmd(false),
-        m_day(boost::make_shared<yApi::historization::CSwitch>("day")),
-        m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_day , m_setPoint , m_rssi})
+      m_day(boost::make_shared<yApi::historization::CSwitch>("day")),
+      m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_day , m_setPoint , m_rssi })
    {
       m_day->set(false);
       m_setPoint->set(0.0);
@@ -70,13 +70,13 @@ namespace rfxcomMessages
                           const RBUF& rbuf,
                           size_t rbufSize)
       : m_subType(0),
-        m_unitCode(0),
-        m_id(0),
-        m_dayNightCmd(false),
-        m_day(boost::make_shared<yApi::historization::CSwitch>("day")),
-        m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_day , m_setPoint , m_rssi})
+      m_unitCode(0),
+      m_id(0),
+      m_dayNightCmd(false),
+      m_day(boost::make_shared<yApi::historization::CSwitch>("day")),
+      m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_day , m_setPoint , m_rssi })
    {
       // Should not be called (transmitter-only device)
       BOOST_ASSERT_MSG(false, "Constructing CRadiator1 object from received buffer is not possible, CRadiator1 is transmitter-only device");

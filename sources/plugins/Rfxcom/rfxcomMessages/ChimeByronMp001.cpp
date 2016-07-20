@@ -7,7 +7,7 @@ namespace rfxcomMessages
 {
    CChimeByronMp001::CChimeByronMp001()
       : m_event(boost::make_shared<shared::plugin::yPluginApi::historization::CEvent>("event")),
-        m_keywords({m_event})
+      m_keywords({ m_event })
    {
    }
 

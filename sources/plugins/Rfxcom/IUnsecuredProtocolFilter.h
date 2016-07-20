@@ -20,4 +20,3 @@ public:
    //--------------------------------------------------------------
    virtual bool isValid(const std::string& deviceName) = 0;
 };
-

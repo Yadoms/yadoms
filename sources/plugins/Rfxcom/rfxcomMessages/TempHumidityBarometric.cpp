@@ -11,11 +11,11 @@ namespace rfxcomMessages
                                                     const RBUF& rbuf,
                                                     size_t rbufSize)
       : m_temperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
-        m_humidity(boost::make_shared<yApi::historization::CHumidity>("humidity")),
-        m_pressure(boost::make_shared<yApi::historization::CPressure>("pressure")),
-        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_temperature , m_humidity, m_pressure, m_batteryLevel , m_rssi})
+      m_humidity(boost::make_shared<yApi::historization::CHumidity>("humidity")),
+      m_pressure(boost::make_shared<yApi::historization::CPressure>("pressure")),
+      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_temperature , m_humidity, m_pressure, m_batteryLevel , m_rssi })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,

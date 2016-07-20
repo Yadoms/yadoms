@@ -16,9 +16,9 @@ bool CCurrentEnergyFilter::isValid(const std::string& deviceName)
       m_recentlySeenDevices.erase(std::remove_if(m_recentlySeenDevices.begin(),
                                                  m_recentlySeenDevices.end(),
                                                  [&](std::pair<boost::posix_time::ptime, std::string> value)
-                                                 {
-                                                    return value.first < tooOldThreshold;
-                                                 }),
+      {
+         return value.first < tooOldThreshold;
+      }),
                                   m_recentlySeenDevices.end());
    }
 
@@ -28,14 +28,14 @@ bool CCurrentEnergyFilter::isValid(const std::string& deviceName)
    std::for_each(m_recentlySeenDevices.begin(),
                  m_recentlySeenDevices.end(),
                  [&](std::pair<boost::posix_time::ptime, std::string> value)
-                 {
-                    if (value.second == deviceName)
-                    {
-                       ++nbOccurences;
-                       if (nbOccurences >= NbOccurencesToBeValid)
-                          isValid = true;
-                    }
-                 });
+   {
+      if (value.second == deviceName)
+      {
+         ++nbOccurences;
+         if (nbOccurences >= NbOccurencesToBeValid)
+            isValid = true;
+      }
+   });
 
    // If found, remove elements corresponding to deviceName before return
    if (isValid)
@@ -43,9 +43,9 @@ bool CCurrentEnergyFilter::isValid(const std::string& deviceName)
       m_recentlySeenDevices.erase(std::remove_if(m_recentlySeenDevices.begin(),
                                                  m_recentlySeenDevices.end(),
                                                  [&](std::pair<boost::posix_time::ptime, std::string> value)
-                                                 {
-                                                    return value.second == deviceName;
-                                                 }),
+      {
+         return value.second == deviceName;
+      }),
                                   m_recentlySeenDevices.end());
    }
 

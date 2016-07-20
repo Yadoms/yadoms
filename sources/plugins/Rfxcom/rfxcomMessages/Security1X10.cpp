@@ -7,8 +7,8 @@ namespace rfxcomMessages
 {
    CSecurity1X10::CSecurity1X10()
       : m_alarm(boost::make_shared<yApi::historization::CSwitch>("alarm", yApi::EKeywordAccessMode::kGet)),
-        m_tamper(boost::make_shared<yApi::historization::CSwitch>("tamper", yApi::EKeywordAccessMode::kGet)),
-        m_keywords({m_alarm, m_tamper})
+      m_tamper(boost::make_shared<yApi::historization::CSwitch>("tamper", yApi::EKeywordAccessMode::kGet)),
+      m_keywords({ m_alarm, m_tamper })
    {
    }
 

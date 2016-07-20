@@ -7,8 +7,8 @@ namespace rfxcomMessages
 {
    CRemoteAtiWonder2::CRemoteAtiWonder2()
       : m_keywordCmnd(boost::make_shared<specificHistorizers::CRemoteAtiWonder2CmdHistorizer>("command")),
-        m_keywordCmndtype(boost::make_shared<specificHistorizers::CRemoteAtiWonder2CmdTypeHistorizer>("commandType")),
-        m_keywords({m_keywordCmnd , m_keywordCmndtype})
+      m_keywordCmndtype(boost::make_shared<specificHistorizers::CRemoteAtiWonder2CmdTypeHistorizer>("commandType")),
+      m_keywords({ m_keywordCmnd , m_keywordCmndtype })
    {
    }
 

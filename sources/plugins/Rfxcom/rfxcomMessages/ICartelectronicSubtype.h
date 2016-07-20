@@ -28,18 +28,21 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	                        Get ID from protocol data
       /// \param[in] buf                  buffer of the message
+      /// \return                         The id
       //--------------------------------------------------------------
       virtual std::string idFromProtocol(const RBUF& rbuf) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Get battery Level from protocol data
       /// \param[in] buf                  buffer of the message
+      /// \return                         The battery level
       //--------------------------------------------------------------
       virtual char BatteryLevelFromProtocol(const RBUF& rbuf) = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Get rssi from protocol data
       /// \param[in] buf                  buffer of the message
+      /// \return                         The rssi level
       //--------------------------------------------------------------
       virtual char RssiFromProtocol(const RBUF& rbuf) = 0;
 

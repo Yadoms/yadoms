@@ -76,4 +76,3 @@ public:
    virtual std::string createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
                                             const yApi::IManuallyDeviceCreationData& data) const = 0;
 };
-
