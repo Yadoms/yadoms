@@ -14,7 +14,7 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	    Send an email
-   /// \param [in]   message  The mail to send
+   /// \param [in] message  The mail to send
    //--------------------------------------------------------------
    virtual bool sendMail(const Poco::Net::MailMessage & message) const = 0;
 };

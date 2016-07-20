@@ -4,13 +4,13 @@
 #include <shared/encryption/Xor.h>
 
 CMSConfiguration::CMSConfiguration()
-   : m_SenderMail(""),
-     m_ServerName(""),
-     m_ServerPort(587),
-     m_kSecurityMode(ESecurityMode::kTLS),
-     m_bRequireAuthentication(false),
-     m_UserAccount(""),
-     m_Password("")
+   : m_senderMail(""),
+   m_serverName(""),
+   m_serverPort(587),
+   m_kSecurityMode(ESecurityMode::kTLS),
+   m_bRequireAuthentication(false),
+   m_userAccount(""),
+   m_password("")
 {
 }
 
@@ -24,52 +24,52 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer& data)
    {
       m_data.initializeWith(data);
 
-      m_SenderMail = m_data.get<std::string>("Sender");
+      m_senderMail = m_data.get<std::string>("Sender");
 
       if (m_data.exists("account.content.gmail.radio") && m_data.get<bool>("account.content.gmail.radio"))
       {
-         m_ServerName = "smtp.gmail.com";
-         m_ServerPort = 587;
+         m_serverName = "smtp.gmail.com";
+         m_serverPort = 587;
          m_kSecurityMode = ESecurityMode::kTLS;
          m_bRequireAuthentication = true;
-         m_UserAccount = m_SenderMail;
-         m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.gmail.content.password"));
+         m_userAccount = m_senderMail;
+         m_password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.gmail.content.password"));
       }
       else if (m_data.exists("account.content.outlook.radio") && m_data.get<bool>("account.content.outlook.radio"))
       {
-         m_ServerName = "smtp-mail.outlook.com";
-         m_ServerPort = 587;
+         m_serverName = "smtp-mail.outlook.com";
+         m_serverPort = 587;
          m_kSecurityMode = ESecurityMode::kTLS;
          m_bRequireAuthentication = true;
-         m_UserAccount = m_SenderMail;
-         m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.outlook.content.password"));
+         m_userAccount = m_senderMail;
+         m_password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.outlook.content.password"));
       }
       else if (m_data.exists("account.content.ovh.radio") && m_data.get<bool>("account.content.ovh.radio"))
       {
-         m_ServerName = "ns0.ovh.net";
-         m_ServerPort = 587;
+         m_serverName = "ns0.ovh.net";
+         m_serverPort = 587;
          m_kSecurityMode = ESecurityMode::kNone;
          m_bRequireAuthentication = true;
-         m_UserAccount = m_SenderMail;
-         m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.ovh.content.password"));
+         m_userAccount = m_senderMail;
+         m_password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.ovh.content.password"));
       }
       else if (m_data.exists("account.content.yahoo.radio") && m_data.get<bool>("account.content.yahoo.radio"))
       {
-         m_ServerName = "smtp.mail.yahoo.com";
-         m_ServerPort = 587;
+         m_serverName = "smtp.mail.yahoo.com";
+         m_serverPort = 587;
          m_kSecurityMode = ESecurityMode::kTLS;
          m_bRequireAuthentication = true;
-         m_UserAccount = m_SenderMail;
-         m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.yahoo.content.password"));
+         m_userAccount = m_senderMail;
+         m_password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.yahoo.content.password"));
       }
       else
       {
-         m_ServerName = m_data.get<std::string>("account.content.other.content.SMTPServer");
-         m_ServerPort = m_data.get<Poco::UInt16>("account.content.other.content.SMTPPort");
+         m_serverName = m_data.get<std::string>("account.content.other.content.SMTPServer");
+         m_serverPort = m_data.get<Poco::UInt16>("account.content.other.content.SMTPPort");
          m_kSecurityMode = m_data.get<ESecurityMode>("account.content.other.content.Security");
          m_bRequireAuthentication = m_data.get<bool>("account.content.other.content.authentication.checkbox");
-         m_UserAccount = m_data.get<std::string>("account.content.other.content.authentication.content.user");
-         m_Password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.other.content.authentication.content.password"));
+         m_userAccount = m_data.get<std::string>("account.content.other.content.authentication.content.user");
+         m_password = shared::encryption::CXor::decryptBase64(m_data.get<std::string>("account.content.other.content.authentication.content.password"));
       }
    }
    catch (shared::exception::CInvalidParameter& ip)
@@ -84,27 +84,27 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer& data)
 
 std::string CMSConfiguration::getSenderEmail() const
 {
-   return m_SenderMail;
+   return m_senderMail;
 }
 
 std::string CMSConfiguration::getHost() const
 {
-   return m_ServerName;
+   return m_serverName;
 }
 
 Poco::UInt16 CMSConfiguration::getPort() const
 {
-   return m_ServerPort;
+   return m_serverPort;
 }
 
 std::string CMSConfiguration::getLogin() const
 {
-   return m_UserAccount;
+   return m_userAccount;
 }
 
 std::string CMSConfiguration::getPassword() const
 {
-   return m_Password;
+   return m_password;
 }
 
 ESecurityMode CMSConfiguration::getSecurityMode() const

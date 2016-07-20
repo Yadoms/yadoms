@@ -9,7 +9,4 @@ DECLARE_ENUM_HEADER(ESecurityMode,
    ((SSL)(1))
    ((TLS)(2))
    ((Automatic)(3))
-)
-	
-
-	
+);
