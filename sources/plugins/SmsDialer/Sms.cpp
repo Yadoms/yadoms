@@ -18,7 +18,7 @@ CSms::CSms(const GSM_MultiSMSMessage& gammuSms)
    m_number = std::string(utf8);
 
    m_content.clear();
-   for (int smsPart = 0 ; smsPart < gammuSms.Number ; ++ smsPart)
+   for (int smsPart = 0; smsPart < gammuSms.Number; ++smsPart)
    {
       DecodeUnicode(gammuSms.SMS[smsPart].Text, utf8);
       m_content.append(utf8);

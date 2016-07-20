@@ -6,11 +6,11 @@
 
 CGammuPhone::CGammuPhone(const ISmsDialerConfiguration& configuration)
    : m_configuration(configuration),
-     m_connection(configuration),
-     m_smsSendStatus(ERR_NONE),
-     m_incompleteMessageId(-1),
-     m_incompleteMessageTime(0),
-     m_on(false)
+   m_connection(configuration),
+   m_smsSendStatus(ERR_NONE),
+   m_incompleteMessageId(-1),
+   m_incompleteMessageTime(0),
+   m_on(false)
 {
 }
 
@@ -131,7 +131,7 @@ void CGammuPhone::send(boost::shared_ptr<ISms> sms)
    handleGammuError(GSM_GetSMSC(m_connection.getGsmContext(), &PhoneSMSC), "Sending SMS : Unable to get the SMS center number (SMSC) from the SIM. Check the phone configuration, and try to send SMS manually from phone.");
 
    // Send message parts
-   for (int partIndex = 0; partIndex < gammuSms.Number; ++ partIndex)
+   for (int partIndex = 0; partIndex < gammuSms.Number; ++partIndex)
    {
       // Set the SMSC number in message
       CopyUnicodeString(gammuSms.SMS[partIndex].SMSC.Number, PhoneSMSC.Number);
@@ -200,27 +200,27 @@ boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::getIncomi
    switch (gammuError)
    {
    case ERR_NONE:
-      {
-         newSms = (gammuSmsStatus.SIMUsed + gammuSmsStatus.PhoneUsed > 0);
-         break;
-      }
+   {
+      newSms = (gammuSmsStatus.SIMUsed + gammuSmsStatus.PhoneUsed > 0);
+      break;
+   }
    case ERR_NOTSUPPORTED:
    case ERR_NOTIMPLEMENTED:
-      {
-         // Not supported, try another method
-         GSM_MultiSMSMessage gammuSms;
-         gammuSms.Number = 0;
-         gammuSms.SMS[0].Location = 0;
-         gammuSms.SMS[0].Folder = 0;
-         newSms = (GSM_GetNextSMS(m_connection.getGsmContext(), &gammuSms, TRUE) == ERR_NONE);
-         break;
-      }
+   {
+      // Not supported, try another method
+      GSM_MultiSMSMessage gammuSms;
+      gammuSms.Number = 0;
+      gammuSms.SMS[0].Location = 0;
+      gammuSms.SMS[0].Folder = 0;
+      newSms = (GSM_GetNextSMS(m_connection.getGsmContext(), &gammuSms, TRUE) == ERR_NONE);
+      break;
+   }
    default:
-      {
-         // Error
-         std::cerr << "Error getting SMS status : " << GSM_ErrorString(gammuError) << std::endl;
-         return noSms;
-      }
+   {
+      // Error
+      std::cerr << "Error getting SMS status : " << GSM_ErrorString(gammuError) << std::endl;
+      return noSms;
+   }
    }
 
    // No SMS found in phone
@@ -248,21 +248,21 @@ boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::readSms(b
       switch (gammuError)
       {
       case ERR_EMPTY:
-         {
-            // No more sms
-            break;
-         }
+      {
+         // No more sms
+         break;
+      }
       case ERR_NONE:
-         {
-            if (isValidMessage(&gammuSms))
-               gammuSmsVector.push_back(gammuSms);
-            break;
-         }
+      {
+         if (isValidMessage(&gammuSms))
+            gammuSmsVector.push_back(gammuSms);
+         break;
+      }
       default:
-         {
-            std::cerr << "Error getting SMS : " << gammuError << std::endl;
-            return noSms;
-         }
+      {
+         std::cerr << "Error getting SMS : " << gammuError << std::endl;
+         return noSms;
+      }
       }
 
       start = FALSE;

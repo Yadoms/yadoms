@@ -10,6 +10,7 @@ class CGammuPhoneConnection
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor, also try to establish the connection
+   /// \param[in] configuration       Configuration of the plugin
    //--------------------------------------------------------------
    explicit CGammuPhoneConnection(const ISmsDialerConfiguration& configuration);
 
