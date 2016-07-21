@@ -2,6 +2,7 @@
 #include "CPULoad.h"
 #include <shared/exception/Exception.hpp>
 #include <pdh.h>
+#include <pdhmsg.h>
 
 
 #pragma comment(lib, "pdh.lib")
@@ -12,7 +13,7 @@
 
 CCPULoad::CCPULoad(const std::string& keywordName)
    : m_keyword(boost::make_shared<yApi::historization::CLoad>(keywordName)),
-     m_InitializeOk(false)
+   m_InitializeOk(false)
 {
    try
    {
@@ -67,7 +68,7 @@ void CCPULoad::Initialize()
       throw shared::exception::CException(Message.str());
    }
 
-   PDH_COUNTER_PATH_ELEMENTS pcpe = {nullptr};
+   PDH_COUNTER_PATH_ELEMENTS pcpe = { nullptr };
    pcpe.szObjectName = ProcessorObjectName;
    pcpe.szInstanceName = "_Total"; // This parameter is identical for all languages
 
@@ -121,8 +122,7 @@ CCPULoad::~CCPULoad()
       {
          std::stringstream Message;
          Message << "PdhCloseQuery failed with status:";
-         Message << std::hex << GetLastError();
-
+         Message << std::hex << Status;
          std::cout << Message.str() << std::endl;
       }
    }
@@ -148,25 +148,36 @@ void CCPULoad::read()
       {
          std::stringstream Message;
          Message << "PdhCollectQueryData failed with status:";
-         Message << std::hex << GetLastError();
+         Message << std::hex << Status;
          throw shared::exception::CException(Message.str());
       }
 
       Status = PdhGetFormattedCounterValue(m_cpuTotal, PDH_FMT_DOUBLE | PDH_FMT_NOCAP100 | PDH_FMT_NOSCALE, &CounterType, &counterVal);
 
-      if (Status != ERROR_SUCCESS)
+      switch (Status)
       {
+         // No Error
+      case ERROR_SUCCESS:
+      {
+         auto CPULoad = static_cast<float>(floor(counterVal.doubleValue * 10 + 0.5)) / 10;
+         m_keyword->set(CPULoad);
+         std::cout << "CPU Load : " << m_keyword->formatValue() << std::endl;
+      }
+      break;
+      // Negative value ! No Value historize
+      case PDH_CALC_NEGATIVE_DENOMINATOR:
+      case PDH_CALC_NEGATIVE_VALUE:
+         std::cout << "CPU Load : Negative value detected. No Historization." << std::endl;
+         break;
+
+         // Undefined error -> throw an exception
+      default:
          std::stringstream Message;
          Message << "PdhGetFormattedCounterValue failed with status:";
-         Message << std::hex << GetLastError();
+         Message << std::hex << Status;
          throw shared::exception::CException(Message.str());
+         break;
       }
-
-      auto CPULoad = static_cast<float>(floor(counterVal.doubleValue * 10 + 0.5)) / 10;
-
-      m_keyword->set(CPULoad);
-
-      std::cout << "CPU Load : " << m_keyword->formatValue() << std::endl;
    }
    else
    {
