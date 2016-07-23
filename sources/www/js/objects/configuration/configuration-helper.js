@@ -71,9 +71,6 @@ ConfigurationHelper.createControlGroup = function (parameterHandler, controlToIn
    if ( !isNullOrUndefined ( parameterHandler ))
       result = md.renderInline( $.t(parameterHandler.i18nContext + parameterHandler.paramName + ".description") );
    
-   if (result === "")
-      result = parameterHandler.description;
-   
    s += "<span class=\"configuration-label-content configuration-label-name\" data-i18n=\"" + parameterHandler.i18nContext + parameterHandler.paramName + ".name\">" + parameterHandler.name + "</span>" +
       "<span class=\"configuration-label-content configuration-label-description\"\">" + result + "</span>" +
       "</label>" +
