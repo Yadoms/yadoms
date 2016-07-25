@@ -314,7 +314,7 @@ PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation = function (
             .done(function (yadomsInfo) {      
             var pluginInstanceList = [];
 
-            if (!isNullOrUndefined(data.plugin)) {
+            if (!isNullOrUndefinedOrEmpty(data.plugin)) {
                 $.each(data.plugin, function (index, value) {
                     var pi = PluginInstanceManager.factory(value);
                     //we don't show system plugins to user
