@@ -129,7 +129,7 @@ widgetViewModelCtor = function gaugeViewModel() {
             title: null,
             pane: {
                 center: ["50%", "80%"],
-                size: "110%",
+                size: "100%",
                 startAngle: -90,
                 endAngle: 90,
                 background: {
@@ -190,9 +190,10 @@ widgetViewModelCtor = function gaugeViewModel() {
 
     this.resized = function () {
         var self = this;
-        //debugger;
         if (!isNullOrUndefined(self.chart)) {
-            this.chart.setSize(self.widget.getInnerWidth() - 10, self.$chart.height(), false);
+            this.chart.setSize(self.widget.getInnerWidth() - 20, self.$chart.height(), false);
+            //we resize value and unit text to keep them into the gauge
+            $(".valueAndUnit").css("height", (self.$chart.find("path")[0].getBBox().height / 1.5) + "px");
         }
         self.widgetApi.fitText();
         $(window).trigger("resize");

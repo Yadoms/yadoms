@@ -15,9 +15,9 @@
 .widget-gauge .valueAndUnit {
     position: absolute;
     bottom: 10%;
-    height: 30%;
-    left: 0;
-    right: 0;
+    /*height: 30%;*/
+    left: 25%;
+    right: 25%;
     text-align: center;
 }
 
