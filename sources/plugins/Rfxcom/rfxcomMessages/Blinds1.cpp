@@ -11,9 +11,9 @@ namespace rfxcomMessages
                       const std::string& command,
                       const shared::CDataContainer& deviceDetails)
       : m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
-        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({ m_state, m_batteryLevel, m_rssi })
+      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_state, m_batteryLevel, m_rssi })
    {
       m_state->setCommand(command);
       m_batteryLevel->set(100);
@@ -30,9 +30,9 @@ namespace rfxcomMessages
                       unsigned int subType,
                       const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
-        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({ m_state, m_batteryLevel, m_rssi })
+      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_state, m_batteryLevel, m_rssi })
    {
       m_state->set(yApi::historization::ECurtainCommand::kStop);
       m_batteryLevel->set(100);
@@ -69,9 +69,9 @@ namespace rfxcomMessages
                       const RBUF& rbuf,
                       size_t rbufSize)
       : m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
-        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({ m_state, m_batteryLevel, m_rssi })
+      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_state, m_batteryLevel, m_rssi })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,

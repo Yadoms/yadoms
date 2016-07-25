@@ -9,9 +9,9 @@ namespace rfxcomMessages
    CCartelectronicEncoder::CCartelectronicEncoder(const RBUF& rbuf,
                                                   size_t rbufSize)
       : m_id(0),
-        m_counter1(boost::make_shared<yApi::historization::CCounter>("counter1")),
-        m_counter2(boost::make_shared<yApi::historization::CCounter>("counter2")),
-        m_keywords({m_counter1, m_counter2})
+      m_counter1(boost::make_shared<yApi::historization::CCounter>("counter1")),
+      m_counter2(boost::make_shared<yApi::historization::CCounter>("counter2")),
+      m_keywords({ m_counter1, m_counter2 })
    {
       CheckReceivedMessage(rbuf, rbufSize, pTypeCARTELECTRONIC, sTypeCEencoder, GET_RBUF_STRUCT_SIZE(CEENCODER), DONT_CHECK_SEQUENCE_NUMBER);
 

@@ -8,7 +8,7 @@ namespace rfxcomMessages
 {
    CThermostat1DigimaxShort::CThermostat1DigimaxShort()
       : m_currentTemperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
-        m_keywords({m_currentTemperature})
+      m_keywords({ m_currentTemperature })
    {
    }
 

@@ -21,7 +21,7 @@ namespace kernel
    CEngine::CEngine(boost::shared_ptr<yApi::IYPluginApi> api,
                     boost::shared_ptr<const IConfiguration> configuration)
       :m_api(api),
-       m_configuration(configuration)
+      m_configuration(configuration)
    {
    }
 

@@ -15,7 +15,6 @@ namespace device
       /// \brief	Constructor
       /// \param[in]	family Device family
       /// \param[in]	id Device serial number
-      /// \param[in]	api yApi context
       /// \param[in]	io I/O access object
       //--------------------------------------------------------------
       CDigitalPotentiometer(EOneWireFamily family,

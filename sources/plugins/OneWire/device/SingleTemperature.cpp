@@ -10,11 +10,11 @@ namespace device
                                           boost::shared_ptr<ioInterfaces::ITemperature> io,
                                           EOneWireFamily expectedFamily)
       :m_identification(boost::make_shared<device::CIdentification>(family, id, model)),
-       m_io(io),
-       m_temperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
-       m_allKeywords({ m_temperature }),
-       m_noKeywords(),
-       m_keywords(&m_allKeywords)
+      m_io(io),
+      m_temperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
+      m_allKeywords({ m_temperature }),
+      m_noKeywords(),
+      m_keywords(&m_allKeywords)
    {
       BOOST_ASSERT_MSG(m_identification->family() == expectedFamily, "Invalid family number");
    }

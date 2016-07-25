@@ -15,7 +15,7 @@ boost::shared_ptr<ISmtpServiceProvider> CSmtpServiceProviderFactory::CreateSmtpS
    case ESecurityMode::kTLSValue:
       return boost::make_shared<CSmtpTlsServiceProvider>(smtpConfiguration);
    default:
-      switch(smtpConfiguration->getPort())
+      switch (smtpConfiguration->getPort())
       {
       case 465: //default ssl port
          return boost::make_shared<CSmtpSslServiceProvider>(smtpConfiguration);
@@ -29,5 +29,4 @@ boost::shared_ptr<ISmtpServiceProvider> CSmtpServiceProviderFactory::CreateSmtpS
    }
 }
 
-   
-   
+

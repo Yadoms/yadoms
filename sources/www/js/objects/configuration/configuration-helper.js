@@ -30,6 +30,25 @@ ConfigurationHelper.createControlGroup = function (parameterHandler, controlToIn
    assert(parameterHandler !== undefined, "parameterHandler must be defined");
    assert(controlToInsert !== undefined, "controlToInsert must be defined");
 
+   var iterator = window.markdownitForInline;
+   
+   var md = window.markdownit({
+     html: true,
+     breaks:true,
+    highlight: function (str, lang) {
+      if (lang && hljs.getLanguage(lang)) {
+       try {
+         return hljs.highlight(lang, str).value;
+       } catch (__) {}
+      }
+
+      return ''; // use external default escaping
+    }
+   })
+   .use(iterator, 'url_new_win', 'link_open', function (tokens, idx) {
+     tokens[idx].attrPush([ 'target', '_blank' ]);
+   });
+      
    //if we don't ask to place the label inside the div we place it outside
    if (isNullOrUndefined(placeInsideLabel))
       placeInsideLabel = false;
@@ -47,8 +66,13 @@ ConfigurationHelper.createControlGroup = function (parameterHandler, controlToIn
    if (placeInsideLabel)
       s += controlToInsert;
 
+   // Convert markdown for the designation field.
+   var result = "";
+   if ( !isNullOrUndefined ( parameterHandler ))
+      result = md.renderInline( $.t(parameterHandler.i18nContext + parameterHandler.paramName + ".description") );
+   
    s += "<span class=\"configuration-label-content configuration-label-name\" data-i18n=\"" + parameterHandler.i18nContext + parameterHandler.paramName + ".name\">" + parameterHandler.name + "</span>" +
-      "<span class=\"configuration-label-content configuration-label-description\" data-i18n=\"" + parameterHandler.i18nContext + parameterHandler.paramName + ".description\">" + parameterHandler.description + "</span>" +
+      "<span class=\"configuration-label-content configuration-label-description\"\">" + result + "</span>" +
       "</label>" +
       "</div>";
    if (!placeInsideLabel) {

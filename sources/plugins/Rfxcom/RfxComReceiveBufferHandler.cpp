@@ -5,7 +5,7 @@
 CRfxcomReceiveBufferHandler::CRfxcomReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
                                                          int receiveDataEventId)
    : m_receiveDataEventHandler(receiveDataEventHandler),
-     m_receiveDataEventId(receiveDataEventId)
+   m_receiveDataEventId(receiveDataEventId)
 {
 }
 
@@ -15,7 +15,7 @@ CRfxcomReceiveBufferHandler::~CRfxcomReceiveBufferHandler()
 
 void CRfxcomReceiveBufferHandler::push(const shared::communication::CByteBuffer& buffer)
 {
-   for (auto idx = 0; idx < buffer.size(); ++ idx)
+   for (auto idx = 0; idx < buffer.size(); ++idx)
       m_content.push_back(buffer[idx]);
 
    if (isComplete())
@@ -53,7 +53,7 @@ boost::shared_ptr<const shared::communication::CByteBuffer> CRfxcomReceiveBuffer
    // So the message size is this value + 1.
    const size_t extractedMessageSize = m_content[0] + 1;
    boost::shared_ptr<shared::communication::CByteBuffer> extractedMessage(new shared::communication::CByteBuffer(extractedMessageSize));
-   for (size_t idx = 0; idx < extractedMessageSize; ++ idx)
+   for (size_t idx = 0; idx < extractedMessageSize; ++idx)
       (*extractedMessage)[idx] = m_content[idx];
 
    // Delete extracted data

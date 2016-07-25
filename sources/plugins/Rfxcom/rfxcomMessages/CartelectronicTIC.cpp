@@ -9,19 +9,19 @@ namespace rfxcomMessages
    CCartelectronicTIC::CCartelectronicTIC(const RBUF& rbuf,
                                           size_t rbufSize)
       : m_id(0),
-        m_apparentePower(boost::make_shared<yApi::historization::CApparentPower>("ApparentPower")),
-        m_Forecast(boost::make_shared<teleInfo::specificHistorizers::CColor>("ForecastTomorrow")),
-        m_Period(boost::make_shared<teleInfo::specificHistorizers::CPeriod>("RunningPeriod")),
-        m_keywords({m_apparentePower, m_Forecast, m_Period})
+      m_apparentePower(boost::make_shared<yApi::historization::CApparentPower>("ApparentPower")),
+      m_forecast(boost::make_shared<teleInfo::specificHistorizers::CColor>("ForecastTomorrow")),
+      m_period(boost::make_shared<teleInfo::specificHistorizers::CPeriod>("RunningPeriod")),
+      m_keywords({ m_apparentePower, m_forecast, m_period })
    {
       std::string NameCounter1;
       std::string NameCounter2;
 
       CheckReceivedMessage(rbuf, rbufSize, pTypeCARTELECTRONIC, sTypeTIC, GET_RBUF_STRUCT_SIZE(TIC), DONT_CHECK_SEQUENCE_NUMBER);
 
-      m_SubscribeContract = static_cast<Contract>(rbuf.TIC.contract_type >> 4);
+      m_subscribeContract = static_cast<Contract>(rbuf.TIC.contract_type >> 4);
 
-      switch (m_SubscribeContract)
+      switch (m_subscribeContract)
       {
       case OP_BASE: NameCounter1 = "BASE";
          break;
@@ -32,7 +32,7 @@ namespace rfxcomMessages
          NameCounter2 = "EJPPM";
          break;
       case OP_TEMPO:
-         m_Forecast->set(teleInfo::specificHistorizers::EColor((rbuf.TIC.state & 0x18) >> 3));
+         m_forecast->set(teleInfo::specificHistorizers::EColor((rbuf.TIC.state & 0x18) >> 3));
 
          // Counter dependant of the Period
          switch (rbuf.TIC.contract_type & 0x0f)
@@ -71,7 +71,7 @@ namespace rfxcomMessages
 
 
       m_apparentePower->set((rbuf.TIC.power_H << 8) + rbuf.TIC.power_L);
-      m_Period->set(teleInfo::specificHistorizers::EPeriod(rbuf.TIC.contract_type & 0x0F));
+      m_period->set(teleInfo::specificHistorizers::EPeriod(rbuf.TIC.contract_type & 0x0F));
    }
 
    CCartelectronicTIC::~CCartelectronicTIC()
@@ -90,8 +90,7 @@ namespace rfxcomMessages
 
       i_id = (static_cast<unsigned long long>(rbuf.TIC.id1) << 32) + (rbuf.TIC.id2 << 24) + (rbuf.TIC.id3 << 16) + (rbuf.TIC.id4 << 8) + (rbuf.TIC.id5);
 
-      // TODO : voir comment compléter à 12 caractères, pour le 0 devant
-      s_id << static_cast<unsigned long long>(i_id);
+      s_id << std::setfill('0') << std::setw(12) << static_cast<unsigned long long>(i_id);
 
       return s_id.str();
    }

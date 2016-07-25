@@ -8,10 +8,10 @@ namespace device
                                                 const std::string& id,
                                                 boost::shared_ptr<ioInterfaces::IDigitalPotentiometer> io)
       :m_identification(boost::make_shared<device::CIdentification>(family, id, "DS2890")),
-       m_io(io),
-       m_potentiometerMode(boost::make_shared<yApi::historization::CSwitch>("PotentiometerMode")),
-       m_dim(boost::make_shared<yApi::historization::CDimmable>("dim")),
-       m_keywords({ m_potentiometerMode, m_dim })
+      m_io(io),
+      m_potentiometerMode(boost::make_shared<yApi::historization::CSwitch>("PotentiometerMode")),
+      m_dim(boost::make_shared<yApi::historization::CDimmable>("dim")),
+      m_keywords({ m_potentiometerMode, m_dim })
    {
       BOOST_ASSERT_MSG(m_identification->family() == kDigitalPotentiometer, "Invalid family number");
    }

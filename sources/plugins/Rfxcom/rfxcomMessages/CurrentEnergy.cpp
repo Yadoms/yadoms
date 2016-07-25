@@ -13,13 +13,13 @@ namespace rfxcomMessages
                                   size_t rbufSize,
                                   boost::shared_ptr<IUnsecuredProtocolFilter> messageFilter)
       : m_messageFilter(messageFilter),
-        m_current1(boost::make_shared<yApi::historization::CCurrent>("channel_1")),
-        m_current2(boost::make_shared<yApi::historization::CCurrent>("channel_2")),
-        m_current3(boost::make_shared<yApi::historization::CCurrent>("channel_3")),
-        m_instantPower(boost::make_shared<yApi::historization::CPower>("instant")),
-        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_current1 , m_current2, m_current3, m_instantPower , m_batteryLevel, m_rssi})
+      m_current1(boost::make_shared<yApi::historization::CCurrent>("channel_1")),
+      m_current2(boost::make_shared<yApi::historization::CCurrent>("channel_2")),
+      m_current3(boost::make_shared<yApi::historization::CCurrent>("channel_3")),
+      m_instantPower(boost::make_shared<yApi::historization::CPower>("instant")),
+      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_current1 , m_current2, m_current3, m_instantPower , m_batteryLevel, m_rssi })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,

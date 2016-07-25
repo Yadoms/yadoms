@@ -11,78 +11,78 @@ namespace rfxcomMessages
                             const RBUF& rbuf,
                             size_t rbufSize)
       : m_pressure(boost::make_shared<yApi::historization::CPressure>("pressure")),
-        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({ m_pressure , m_batteryLevel , m_rssi })
-{
-   CheckReceivedMessage(rbuf,
-                        rbufSize,
-                        pTypeBARO,
-                        DONT_CHECK_SUBTYPE,
-                        GET_RBUF_STRUCT_SIZE(BARO),
-                        DONT_CHECK_SEQUENCE_NUMBER);
-
-   m_subType = rbuf.BARO.subtype;
-
-   m_id = rbuf.BARO.id1 | (rbuf.BARO.id2 << 8);
-
-   m_pressure->set(rbuf.BARO.baro1 << 8 | (rbuf.BARO.baro2));
-
-   m_batteryLevel->set(NormalizeBatteryLevel(rbuf.BARO.battery_level));
-   m_rssi->set(NormalizeRssiLevel(rbuf.BARO.rssi));
-
-   Init(api);
-}
-
-CBarometric::~CBarometric()
-{
-}
-
-void CBarometric::Init(boost::shared_ptr<yApi::IYPluginApi> api)
-{
-   // Build device description
-   buildDeviceModel();
-   buildDeviceName();
-
-   // Create device and keywords if needed
-   if (!api->deviceExists(m_deviceName))
+      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_pressure , m_batteryLevel , m_rssi })
    {
-      shared::CDataContainer details;
-      details.set("type", pTypeBARO);
-      details.set("subType", m_subType);
-      details.set("id", m_id);
-      api->declareDevice(m_deviceName,
-                         m_deviceModel,
-                         m_keywords,
-                         details);
+      CheckReceivedMessage(rbuf,
+                           rbufSize,
+                           pTypeBARO,
+                           DONT_CHECK_SUBTYPE,
+                           GET_RBUF_STRUCT_SIZE(BARO),
+                           DONT_CHECK_SEQUENCE_NUMBER);
+
+      m_subType = rbuf.BARO.subtype;
+
+      m_id = rbuf.BARO.id1 | (rbuf.BARO.id2 << 8);
+
+      m_pressure->set(rbuf.BARO.baro1 << 8 | (rbuf.BARO.baro2));
+
+      m_batteryLevel->set(NormalizeBatteryLevel(rbuf.BARO.battery_level));
+      m_rssi->set(NormalizeRssiLevel(rbuf.BARO.rssi));
+
+      Init(api);
    }
-}
 
-boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CBarometric::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
-{
-   throw shared::exception::CInvalidParameter("Barometric is a read-only message, can not be encoded");
-}
+   CBarometric::~CBarometric()
+   {
+   }
 
-void CBarometric::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
-{
-   api->historizeData(m_deviceName, m_keywords);
-}
+   void CBarometric::Init(boost::shared_ptr<yApi::IYPluginApi> api)
+   {
+      // Build device description
+      buildDeviceModel();
+      buildDeviceName();
 
-const std::string& CBarometric::getDeviceName() const
-{
-   return m_deviceName;
-}                     
+      // Create device and keywords if needed
+      if (!api->deviceExists(m_deviceName))
+      {
+         shared::CDataContainer details;
+         details.set("type", pTypeBARO);
+         details.set("subType", m_subType);
+         details.set("id", m_id);
+         api->declareDevice(m_deviceName,
+                            m_deviceModel,
+                            m_keywords,
+                            details);
+      }
+   }
 
-void CBarometric::buildDeviceName()
-{
-   std::ostringstream ssdeviceName;
-   ssdeviceName << static_cast<unsigned int>(m_subType) << "." << static_cast<unsigned int>(m_id);
-   m_deviceName = ssdeviceName.str();
-}
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CBarometric::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+   {
+      throw shared::exception::CInvalidParameter("Barometric is a read-only message, can not be encoded");
+   }
 
-void CBarometric::buildDeviceModel()
-{
-   m_deviceModel = "Barometric sensor";
-}
+   void CBarometric::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+      api->historizeData(m_deviceName, m_keywords);
+   }
+
+   const std::string& CBarometric::getDeviceName() const
+   {
+      return m_deviceName;
+   }
+
+   void CBarometric::buildDeviceName()
+   {
+      std::ostringstream ssdeviceName;
+      ssdeviceName << static_cast<unsigned int>(m_subType) << "." << static_cast<unsigned int>(m_id);
+      m_deviceName = ssdeviceName.str();
+   }
+
+   void CBarometric::buildDeviceModel()
+   {
+      m_deviceModel = "Barometric sensor";
+   }
 
 } // namespace rfxcomMessages

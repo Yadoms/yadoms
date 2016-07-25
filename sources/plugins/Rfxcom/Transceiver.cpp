@@ -59,7 +59,7 @@
 
 CTransceiver::CTransceiver()
    : m_seqNumberProvider(boost::make_shared<CIncrementSequenceNumber>()),
-     m_unsecuredProtocolFilters(createUnsecuredProtocolFilters())
+   m_unsecuredProtocolFilters(createUnsecuredProtocolFilters())
 {
 }
 
@@ -87,7 +87,7 @@ shared::communication::CByteBuffer CTransceiver::buildResetCmd() const
    request.ICMND.packettype = pTypeInterfaceControl;
    request.ICMND.subtype = sTypeInterfaceCommand;
    request.ICMND.seqnbr = m_seqNumberProvider->last();
-   request.ICMND.cmnd = cmdRESET ;
+   request.ICMND.cmnd = cmdRESET;
 
    return toBuffer(request, GET_RBUF_STRUCT_SIZE(ICMND));
 }
@@ -101,7 +101,7 @@ shared::communication::CByteBuffer CTransceiver::buildGetStatusCmd() const
    request.ICMND.packettype = pTypeInterfaceControl;
    request.ICMND.subtype = sTypeInterfaceCommand;
    request.ICMND.seqnbr = m_seqNumberProvider->next();
-   request.ICMND.cmnd = cmdSTATUS ;
+   request.ICMND.cmnd = cmdSTATUS;
 
    return toBuffer(request, GET_RBUF_STRUCT_SIZE(ICMND));
 }
@@ -116,7 +116,7 @@ shared::communication::CByteBuffer CTransceiver::buildSetModeCmd(unsigned char f
    request.ICMND.packettype = pTypeInterfaceControl;
    request.ICMND.subtype = sTypeInterfaceCommand;
    request.ICMND.seqnbr = m_seqNumberProvider->next();
-   request.ICMND.cmnd = cmdSETMODE ;
+   request.ICMND.cmnd = cmdSETMODE;
 
    // Frequency
    request.ICMND.freqsel = frequency;
@@ -126,20 +126,20 @@ shared::communication::CByteBuffer CTransceiver::buildSetModeCmd(unsigned char f
 
    // Add protocols activation
    request.ICMND.msg3 = 0;
-   if (configuration.isAEenabled()) request.ICMND.msg3 |= msg3_AE ;
-   if (configuration.isRUBICSONenabled()) request.ICMND.msg3 |= msg3_RUBICSON ;
-   if (configuration.isFINEOFFSETenabled()) request.ICMND.msg3 |= msg3_FINEOFFSET ;
-   if (configuration.isLIGHTING4enabled()) request.ICMND.msg3 |= msg3_LIGHTING4 ;
-   if (configuration.isRSLenabled()) request.ICMND.msg3 |= msg3_RSL ;
-   if (configuration.isSXenabled()) request.ICMND.msg3 |= msg3_SX ;
+   if (configuration.isAEenabled()) request.ICMND.msg3 |= msg3_AE;
+   if (configuration.isRUBICSONenabled()) request.ICMND.msg3 |= msg3_RUBICSON;
+   if (configuration.isFINEOFFSETenabled()) request.ICMND.msg3 |= msg3_FINEOFFSET;
+   if (configuration.isLIGHTING4enabled()) request.ICMND.msg3 |= msg3_LIGHTING4;
+   if (configuration.isRSLenabled()) request.ICMND.msg3 |= msg3_RSL;
+   if (configuration.isSXenabled()) request.ICMND.msg3 |= msg3_SX;
    if (configuration.isIMAGINTRONIXenabled()) request.ICMND.msg3 |= msg3_IMAGINTRONIX;
    if (configuration.isUNDECODEDenabled()) request.ICMND.msg3 |= msg3_undec;
    request.ICMND.msg4 = 0;
    if (configuration.isMERTIKenabled()) request.ICMND.msg4 |= msg4_MERTIK;
-   if (configuration.isLWRFenabled()) request.ICMND.msg4 |= msg4_AD ;
-   if (configuration.isHIDEKIenabled()) request.ICMND.msg4 |= msg4_HID ;
-   if (configuration.isLACROSSEenabled()) request.ICMND.msg4 |= msg4_LCROS ;
-   if (configuration.isFS20enabled()) request.ICMND.msg4 |= msg4_FS20 ;
+   if (configuration.isLWRFenabled()) request.ICMND.msg4 |= msg4_AD;
+   if (configuration.isHIDEKIenabled()) request.ICMND.msg4 |= msg4_HID;
+   if (configuration.isLACROSSEenabled()) request.ICMND.msg4 |= msg4_LCROS;
+   if (configuration.isFS20enabled()) request.ICMND.msg4 |= msg4_FS20;
    if (configuration.isPROGUARDenabled()) request.ICMND.msg4 |= msg4_PROGUARD;
    if (configuration.isBLINDST0enabled()) request.ICMND.msg4 |= msg4_BLINDST0;
    if (configuration.isBLINDST1enabled()) request.ICMND.msg4 |= msg4_BLINDST1;
@@ -147,14 +147,14 @@ shared::communication::CByteBuffer CTransceiver::buildSetModeCmd(unsigned char f
    if (configuration.isX10enabled()) request.ICMND.msg5 |= msg5_X10;
    if (configuration.isARCenabled()) request.ICMND.msg5 |= msg5_ARC;
    if (configuration.isACenabled()) request.ICMND.msg5 |= msg5_AC;
-   if (configuration.isHEEUenabled()) request.ICMND.msg5 |= msg5_HEU ;
-   if (configuration.isMEIANTECHenabled()) request.ICMND.msg5 |= msg5_MEI ;
+   if (configuration.isHEEUenabled()) request.ICMND.msg5 |= msg5_HEU;
+   if (configuration.isMEIANTECHenabled()) request.ICMND.msg5 |= msg5_MEI;
    if (configuration.isOREGONenabled()) request.ICMND.msg5 |= msg5_OREGON;
    if (configuration.isATIenabled()) request.ICMND.msg5 |= msg5_ATI;
    if (configuration.isVISONICenabled()) request.ICMND.msg5 |= msg5_VISONIC;
    request.ICMND.msg6 = 0;
    if (configuration.isKeeLoqenabled()) request.ICMND.msg6 |= msg6_KeeLoq;
-   if (configuration.isHomeConfortenabled()) request.ICMND.msg6 |= msg6_HC ;
+   if (configuration.isHomeConfortenabled()) request.ICMND.msg6 |= msg6_HC;
 
    return toBuffer(request, GET_RBUF_STRUCT_SIZE(ICMND));
 }
@@ -168,7 +168,7 @@ shared::communication::CByteBuffer CTransceiver::buildStartReceiverCmd() const
    request.ICMND.packettype = pTypeInterfaceControl;
    request.ICMND.subtype = sTypeInterfaceCommand;
    request.ICMND.seqnbr = m_seqNumberProvider->next();
-   request.ICMND.cmnd = cmdStartRec ;
+   request.ICMND.cmnd = cmdStartRec;
 
    return toBuffer(request, GET_RBUF_STRUCT_SIZE(ICMND));
 }
@@ -335,12 +335,12 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
       case pTypeFS20: message = boost::make_shared<rfxcomMessages::CFS20>(api, *buf, bufSize);
          break;
       default:
-         {
-            std::cerr << "Invalid RfxCom message received, unknown packet type " << std::setfill('0')
-               << std::setw(sizeof(unsigned char) * 2) << std::hex << static_cast<int>(buf->RXRESPONSE.packettype)
-               << std::endl;
-            break;
-         }
+      {
+         std::cerr << "Invalid RfxCom message received, unknown packet type " << std::setfill('0')
+            << std::setw(sizeof(unsigned char) * 2) << std::hex << static_cast<int>(buf->RXRESPONSE.packettype)
+            << std::endl;
+         break;
+      }
       }
       return message;
    }

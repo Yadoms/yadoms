@@ -9,7 +9,7 @@ namespace owfs
    {
       CTemperatureIo::CTemperatureIo(const boost::filesystem::path& devicePath)
          :m_binaryIos(boost::make_shared<CMultiSwitch>(devicePath, CMultiSwitch::kUnitIsUppercaseLetter)),
-          m_temperatureIo(boost::make_shared<CTemperature>(devicePath))
+         m_temperatureIo(boost::make_shared<CTemperature>(devicePath))
       {
       }
 

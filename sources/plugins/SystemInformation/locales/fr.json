@@ -1,13 +1,7 @@
 ﻿{
    "name": "Information systèmes",
    "description": "Plugin fournissant des informations sur le système (CPU, Mémoire...)",
-   "configurationSchema":
-   {
-	  "Advanced":
-	  {
-		 "name": "Variables avancées",
-		 "description": "Variables avancées pour des besoins de debug uniquement"
-	  }
+   "configurationSchema":{
 	},
 	"customLabels": {
 		"pluginState": {

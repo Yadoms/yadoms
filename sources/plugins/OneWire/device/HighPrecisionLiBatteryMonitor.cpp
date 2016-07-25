@@ -8,12 +8,12 @@ namespace device
                                                                   const std::string& id,
                                                                   boost::shared_ptr<ioInterfaces::IHighPrecisionLiBatteryMonitor> io)
       :m_identification(boost::make_shared<device::CIdentification>(family, id, "DS2760")),
-       m_io(io),
-       m_kwIo(boost::make_shared<yApi::historization::CSwitch>("io")),
-       m_kwTemperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
-       m_kwVis(boost::make_shared<yApi::historization::CVoltage>("vis")),
-       m_kwVolt(boost::make_shared<yApi::historization::CVoltage>("volt")),
-       m_keywords({ m_kwIo, m_kwTemperature, m_kwVis, m_kwVolt })
+      m_io(io),
+      m_kwIo(boost::make_shared<yApi::historization::CSwitch>("io")),
+      m_kwTemperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
+      m_kwVis(boost::make_shared<yApi::historization::CVoltage>("vis")),
+      m_kwVolt(boost::make_shared<yApi::historization::CVoltage>("volt")),
+      m_keywords({ m_kwIo, m_kwTemperature, m_kwVis, m_kwVolt })
    {
       BOOST_ASSERT_MSG(m_identification->family() == kHighPrecisionLiBatteryMonitor, "Invalid family number");
    }

@@ -15,7 +15,7 @@ enum
    kEvtPortDataReceived,
    kProtocolErrorRetryTimer,
    kAnswerTimeout,
-   kUpsStatusRequestDelay,
+   kUpsStatusRequestDelay
 };
 
 
@@ -38,30 +38,30 @@ static const std::locale ProtocolFloatFormatingLocale(std::locale(),
 
 CMegatecUps::CMegatecUps()
    : m_protocolErrorCounter(0),
-     m_lastSentBuffer(1),
-     m_answerIsRequired(true),
-     m_acPowerActive(true),
-     m_batteryNominalVoltage(0.0),
-     m_inputVoltage(boost::make_shared<yApi::historization::CVoltage>("inputVoltage")),
-     m_inputfaultVoltage(boost::make_shared<yApi::historization::CVoltage>("inputfaultVoltage")),
-     m_outputVoltage(boost::make_shared<yApi::historization::CVoltage>("outputVoltage")),
-     m_outputLoad(boost::make_shared<yApi::historization::CLoad>("outputLoad")),
-     m_inputFrequency(boost::make_shared<yApi::historization::CFrequency>("inputFrequency")),
-     m_batteryVoltage(boost::make_shared<yApi::historization::CVoltage>("batteryVoltage")),
-     m_temperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
-     m_acPowerHistorizer(boost::make_shared<yApi::historization::CSwitch>("acPowerActive", yApi::EKeywordAccessMode::kGet)),
-     m_batteryLowHistorizer(boost::make_shared<yApi::historization::CSwitch>("batteryLow", yApi::EKeywordAccessMode::kGet)),
-     m_upsShutdown(boost::make_shared<yApi::historization::CEvent>("UpsShutdown")),
-     m_keywords({m_inputVoltage ,
-        m_inputfaultVoltage ,
-        m_outputVoltage ,
-        m_outputLoad ,
-        m_inputFrequency ,
-        m_batteryVoltage ,
-        m_temperature ,
-        m_acPowerHistorizer ,
-        m_batteryLowHistorizer ,
-        m_upsShutdown})
+   m_lastSentBuffer(1),
+   m_answerIsRequired(true),
+   m_acPowerActive(true),
+   m_batteryNominalVoltage(0.0),
+   m_inputVoltage(boost::make_shared<yApi::historization::CVoltage>("inputVoltage")),
+   m_inputfaultVoltage(boost::make_shared<yApi::historization::CVoltage>("inputfaultVoltage")),
+   m_outputVoltage(boost::make_shared<yApi::historization::CVoltage>("outputVoltage")),
+   m_outputLoad(boost::make_shared<yApi::historization::CLoad>("outputLoad")),
+   m_inputFrequency(boost::make_shared<yApi::historization::CFrequency>("inputFrequency")),
+   m_batteryVoltage(boost::make_shared<yApi::historization::CVoltage>("batteryVoltage")),
+   m_temperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
+   m_acPowerHistorizer(boost::make_shared<yApi::historization::CSwitch>("acPowerActive", yApi::EKeywordAccessMode::kGet)),
+   m_batteryLowHistorizer(boost::make_shared<yApi::historization::CSwitch>("batteryLow", yApi::EKeywordAccessMode::kGet)),
+   m_upsShutdown(boost::make_shared<yApi::historization::CEvent>("UpsShutdown")),
+   m_keywords({ m_inputVoltage ,
+      m_inputfaultVoltage ,
+      m_outputVoltage ,
+      m_outputLoad ,
+      m_inputFrequency ,
+      m_batteryVoltage ,
+      m_temperature ,
+      m_acPowerHistorizer ,
+      m_batteryLowHistorizer ,
+      m_upsShutdown })
 {
 }
 
@@ -97,93 +97,93 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       switch (api->getEventHandler().waitForEvents())
       {
       case yApi::IYPluginApi::kEventStopRequested:
-         {
-            std::cout << "Stop requested" << std::endl;
-            api->setPluginState(yApi::historization::EPluginState::kStopped);
-            return;
-         }
+      {
+         std::cout << "Stop requested" << std::endl;
+         api->setPluginState(yApi::historization::EPluginState::kStopped);
+         return;
+      }
       case yApi::IYPluginApi::kEventDeviceCommand:
-         {
-            // Command received from Yadoms
-            auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
-            std::cout << "Command received : " << yApi::IDeviceCommand::toString(command) << std::endl;
+      {
+         // Command received from Yadoms
+         auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
+         std::cout << "Command received : " << yApi::IDeviceCommand::toString(command) << std::endl;
 
-            if (boost::iequals(command->getKeyword(), m_upsShutdown->getKeyword()))
-               onCommandShutdown(api, command->getBody());
-            else
-               std::cout << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
+         if (boost::iequals(command->getKeyword(), m_upsShutdown->getKeyword()))
+            onCommandShutdown(api, command->getBody());
+         else
+            std::cout << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
 
-            break;
-         }
+         break;
+      }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
-         {
-            // Configuration was updated
-            api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            auto newConfigurationData = api->getEventHandler().getEventData<shared::CDataContainer>();
-            std::cout << "Update configuration..." << std::endl;
-            BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+      {
+         // Configuration was updated
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+         auto newConfigurationData = api->getEventHandler().getEventData<shared::CDataContainer>();
+         std::cout << "Update configuration..." << std::endl;
+         BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
-            // Close connection
-            CMegatecUpsConfiguration newConfiguration;
-            newConfiguration.initializeWith(newConfigurationData);
+         // Close connection
+         CMegatecUpsConfiguration newConfiguration;
+         newConfiguration.initializeWith(newConfigurationData);
 
-            // If port has changed, destroy and recreate connection (if any)
-            auto needToReconnect = !connectionsAreEqual(m_configuration, newConfiguration) && !!m_port;
+         // If port has changed, destroy and recreate connection (if any)
+         auto needToReconnect = !connectionsAreEqual(m_configuration, newConfiguration) && !!m_port;
 
-            if (needToReconnect)
-               destroyConnection();
+         if (needToReconnect)
+            destroyConnection();
 
-            // Update configuration
-            m_configuration.initializeWith(newConfigurationData);
+         // Update configuration
+         m_configuration.initializeWith(newConfigurationData);
 
-            if (needToReconnect)
-               createConnection(api);
-            else
-               api->setPluginState(yApi::historization::EPluginState::kRunning);
-
-            break;
-         }
-      case kEvtPortConnection:
-         {
-            if (api->getEventHandler().getEventData<bool>())
-               processConnectionEvent(api);
-            else
-               processUnConnectionEvent(api);
-
-            break;
-         }
-      case kEvtPortDataReceived:
-         {
-            const auto buffer(api->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
-            m_logger.logReceived(buffer);
-
-            // Message are in ASCII format
-            std::string message(reinterpret_cast<const char*>(buffer.begin()), buffer.size());
-            processDataReceived(api, message);
-            break;
-         }
-      case kAnswerTimeout:
-         {
-            std::cout << "No answer received from UPS (timeout)" << std::endl;
-            protocolErrorProcess(api);
-            break;
-         }
-      case kUpsStatusRequestDelay:
-         {
-            // Ask for status
-            sendGetStatusCmd();
-            break;
-         }
-      case kProtocolErrorRetryTimer:
-         {
+         if (needToReconnect)
             createConnection(api);
-            break;
-         }
+         else
+            api->setPluginState(yApi::historization::EPluginState::kRunning);
+
+         break;
+      }
+      case kEvtPortConnection:
+      {
+         if (api->getEventHandler().getEventData<bool>())
+            processConnectionEvent(api);
+         else
+            processUnConnectionEvent(api);
+
+         break;
+      }
+      case kEvtPortDataReceived:
+      {
+         const auto buffer(api->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
+         m_logger.logReceived(buffer);
+
+         // Message are in ASCII format
+         std::string message(reinterpret_cast<const char*>(buffer.begin()), buffer.size());
+         processDataReceived(api, message);
+         break;
+      }
+      case kAnswerTimeout:
+      {
+         std::cout << "No answer received from UPS (timeout)" << std::endl;
+         protocolErrorProcess(api);
+         break;
+      }
+      case kUpsStatusRequestDelay:
+      {
+         // Ask for status
+         sendGetStatusCmd();
+         break;
+      }
+      case kProtocolErrorRetryTimer:
+      {
+         createConnection(api);
+         break;
+      }
       default:
-         {
-            std::cerr << "Unknown message id" << std::endl;
-            break;
-         }
+      {
+         std::cerr << "Unknown message id" << std::endl;
+         break;
+      }
       }
    }
 }
@@ -319,67 +319,67 @@ void CMegatecUps::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
       switch (message[0])
       {
       case '(': // Status
-         {
-            char sepArray[] = {'(', ' ', MEGATEC_EOF, 0};
-            boost::char_separator<char> sep(sepArray);
-            boost::tokenizer<boost::char_separator<char> > tokens(message, sep);
+      {
+         char sepArray[] = { '(', ' ', MEGATEC_EOF, 0 };
+         boost::char_separator<char> sep(sepArray);
+         boost::tokenizer<boost::char_separator<char> > tokens(message, sep);
 
-            // Count tokens
-            unsigned int tokenCount = 0;
-            for (boost::tokenizer<boost::char_separator<char> >::const_iterator itToken = tokens.begin(); itToken != tokens.end(); ++itToken)
-               ++tokenCount;
+         // Count tokens
+         unsigned int tokenCount = 0;
+         for (boost::tokenizer<boost::char_separator<char> >::const_iterator itToken = tokens.begin(); itToken != tokens.end(); ++itToken)
+            ++tokenCount;
 
-            if (tokenCount != 8)
-               throw CProtocolException("invalid status message");
+         if (tokenCount != 8)
+            throw CProtocolException("invalid status message");
 
-            processReceivedStatus(api, tokens);
-            break;
-         }
+         processReceivedStatus(api, tokens);
+         break;
+      }
       case '#': // Information or rating information
+      {
+         char sepArray[] = { '#', ' ', MEGATEC_EOF, 0 };
+         boost::char_separator<char> sep(sepArray);
+         boost::tokenizer<boost::char_separator<char> > tokens(message, sep);
+
+         // Count tokens
+         unsigned int tokenCount = 0;
+         for (auto itToken = tokens.begin(); itToken != tokens.end(); ++itToken)
+            ++tokenCount;
+
+         if (tokenCount == 3)
          {
-            char sepArray[] = {'#', ' ', MEGATEC_EOF, 0};
-            boost::char_separator<char> sep(sepArray);
-            boost::tokenizer<boost::char_separator<char> > tokens(message, sep);
+            processReceivedInformation(api, tokens);
 
-            // Count tokens
-            unsigned int tokenCount = 0;
-            for (auto itToken = tokens.begin(); itToken != tokens.end(); ++itToken)
-               ++tokenCount;
-
-            if (tokenCount == 3)
-            {
-               processReceivedInformation(api, tokens);
-
-               // Now ask for rating informations
-               sendGetRatingInformationCmd();
-            }
-            else if (tokenCount == 4)
-            {
-               processReceivedRatingInformation(tokens);
-
-               // End of initialization, plugin is now running
-               api->setPluginState(yApi::historization::EPluginState::kRunning);
-
-               // Now ask for status
-               sendGetStatusCmd();
-            }
-            else
-               throw CProtocolException("invalid information message");
-            break;
+            // Now ask for rating informations
+            sendGetRatingInformationCmd();
          }
+         else if (tokenCount == 4)
+         {
+            processReceivedRatingInformation(tokens);
+
+            // End of initialization, plugin is now running
+            api->setPluginState(yApi::historization::EPluginState::kRunning);
+
+            // Now ask for status
+            sendGetStatusCmd();
+         }
+         else
+            throw CProtocolException("invalid information message");
+         break;
+      }
       default:
+      {
+         // Maybe some dummy data are at beginning of the string, try to remove them
+         auto messageStartPos = message.find_first_of("(#");
+         if (messageStartPos == std::string::npos)
          {
-            // Maybe some dummy data are at beginning of the string, try to remove them
-            auto messageStartPos = message.find_first_of("(#");
-            if (messageStartPos == std::string::npos)
-            {
-               // None of starting characters found, the message is definitively bad...
-               throw CProtocolException((boost::format("invalid start byte : %1%") % message[0]).str());
-            }
-
-            // Remove bad part of the message, and retry
-            processDataReceived(api, message.substr(messageStartPos, message.length() - messageStartPos));
+            // None of starting characters found, the message is definitively bad...
+            throw CProtocolException((boost::format("invalid start byte : %1%") % message[0]).str());
          }
+
+         // Remove bad part of the message, and retry
+         processDataReceived(api, message.substr(messageStartPos, message.length() - messageStartPos));
+      }
       }
 
       // Message was recognized, stop timeout
@@ -430,20 +430,20 @@ void CMegatecUps::sendShtudownCmd()
    cmd.imbue(ProtocolFloatFormatingLocale);
 
    cmd << 'S';
-   if (m_configuration.outuputShutdownDelay() < 1)
+   if (m_configuration.outputShutdownDelay() < 1)
    {
       // Number <1 should be at format ".2", ".3"
 
       // No easy solution to format a decimal number without the '0' before the '.'
       std::ostringstream value;
-      value << std::setw(2) << std::setprecision(1) << std::fixed << m_configuration.outuputShutdownDelay();
+      value << std::setw(2) << std::setprecision(1) << std::fixed << m_configuration.outputShutdownDelay();
       std::string sValue = value.str();
       cmd << sValue.substr(1, sValue.size() - 1);
    }
    else
-      cmd << std::setw(2) << std::setfill('0') << m_configuration.outuputShutdownDelay();// Number >=1 should be at format "01", "02", "10"
+      cmd << std::setw(2) << std::setfill('0') << m_configuration.outputShutdownDelay();// Number >=1 should be at format "01", "02", "10"
 
-   cmd << 'R' << std::setw(4) << std::setprecision(0) << std::setfill('0') << m_configuration.outuputRestoreDelay();
+   cmd << 'R' << std::setw(4) << std::setprecision(0) << std::setfill('0') << m_configuration.outputRestoreDelay();
 
    cmd << MEGATEC_EOF;
 

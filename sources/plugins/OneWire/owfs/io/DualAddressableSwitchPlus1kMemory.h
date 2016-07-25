@@ -14,7 +14,6 @@ namespace owfs
          //--------------------------------------------------------------
          /// \brief	Constructor
          /// \param[in]	devicePath Device path
-         /// \param[in]	unitRepresentation Unit representation type
          //--------------------------------------------------------------
          explicit CDualAddressableSwitchPlus1kMemory(const boost::filesystem::path& devicePath);
 

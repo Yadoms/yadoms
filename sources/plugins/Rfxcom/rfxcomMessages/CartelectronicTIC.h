@@ -50,7 +50,7 @@ namespace rfxcomMessages
          OP_TEMPO
       } Contract;
 
-      Contract m_SubscribeContract;
+      Contract m_subscribeContract;
 
       //--------------------------------------------------------------
       /// \brief	The device id
@@ -75,12 +75,12 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The Color for Tomorow if any
       //--------------------------------------------------------------
-      boost::shared_ptr<teleInfo::specificHistorizers::CColor> m_Forecast;
+      boost::shared_ptr<teleInfo::specificHistorizers::CColor> m_forecast;
 
       //--------------------------------------------------------------
       /// \brief	The running period time
       //--------------------------------------------------------------
-      boost::shared_ptr<teleInfo::specificHistorizers::CPeriod> m_Period;
+      boost::shared_ptr<teleInfo::specificHistorizers::CPeriod> m_period;
 
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances

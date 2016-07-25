@@ -9,13 +9,13 @@ namespace device
                                   const std::string& id,
                                   boost::shared_ptr<ioInterfaces::ITemperatureIo> io)
       :m_identification(boost::make_shared<device::CIdentification>(family, id, "DS28EA00")),
-       m_io(io),
-       m_ioA(boost::make_shared<yApi::historization::CSwitch>("io_A")),
-       m_ioB(boost::make_shared<yApi::historization::CSwitch>("io_B")),
-       m_temperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
-       m_keywordsWithTemperature({ m_ioA, m_ioB, m_temperature }),
-       m_keywordsWithoutTemperature({ m_ioA, m_ioB }),
-       m_keywords(&m_keywordsWithTemperature)
+      m_io(io),
+      m_ioA(boost::make_shared<yApi::historization::CSwitch>("io_A")),
+      m_ioB(boost::make_shared<yApi::historization::CSwitch>("io_B")),
+      m_temperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
+      m_keywordsWithTemperature({ m_ioA, m_ioB, m_temperature }),
+      m_keywordsWithoutTemperature({ m_ioA, m_ioB }),
+      m_keywords(&m_keywordsWithTemperature)
    {
       BOOST_ASSERT_MSG(m_identification->family() == kTemperatureIo, "Invalid family number");
    }

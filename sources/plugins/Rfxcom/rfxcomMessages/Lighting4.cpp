@@ -10,8 +10,8 @@ namespace rfxcomMessages
                           const std::string& command,
                           const shared::CDataContainer& deviceDetails)
       : m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_keyword , m_rssi})
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_keyword , m_rssi })
    {
       m_rssi->set(0);
 
@@ -25,8 +25,8 @@ namespace rfxcomMessages
                           unsigned int subType,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_keyword , m_rssi})
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_keyword , m_rssi })
    {
       m_rssi->set(0);
 
@@ -43,8 +43,8 @@ namespace rfxcomMessages
                           const RBUF& rbuf,
                           size_t rbufSize)
       : m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_keyword , m_rssi})
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_keyword , m_rssi })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,

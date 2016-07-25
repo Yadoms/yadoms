@@ -85,7 +85,7 @@ namespace owfs
       /// \brief	Configuration
       //--------------------------------------------------------------
       boost::shared_ptr<const IConfiguration> m_configuration;
-   
+
       //--------------------------------------------------------------
       /// \brief	List of discovered unsupported families
       //--------------------------------------------------------------

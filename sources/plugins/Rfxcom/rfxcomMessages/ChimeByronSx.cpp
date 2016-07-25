@@ -8,8 +8,8 @@ namespace rfxcomMessages
 {
    CChimeByronSx::CChimeByronSx()
       : m_event(boost::make_shared<shared::plugin::yPluginApi::historization::CEvent>("event")),
-        m_sound(kDefaultSound),
-        m_keywords({m_event})
+      m_sound(kDefaultSound),
+      m_keywords({ m_event })
    {
    }
 

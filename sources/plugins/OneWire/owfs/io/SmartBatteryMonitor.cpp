@@ -13,13 +13,13 @@ namespace owfs
    {
       CSmartBatteryMonitor::CSmartBatteryMonitor(const boost::filesystem::path& devicePath)
          :m_sensorTypePath(devicePath / boost::filesystem::path("MultiSensor/type")),
-          m_temperatureIo(boost::make_shared<CTemperature>(devicePath)),
-          m_humidityIo(boost::make_shared<CHumidity>(devicePath)),
-          m_pressureIo(boost::make_shared<CPressure>(devicePath)),
-          m_light(boost::make_shared<CIllumination>(devicePath)),
-          m_vadIo(boost::make_shared<CVoltage>(devicePath, "vad")),
-          m_vddIo(boost::make_shared<CVoltage>(devicePath, "vdd")),
-          m_visIo(boost::make_shared<CVoltage>(devicePath, "vis"))
+         m_temperatureIo(boost::make_shared<CTemperature>(devicePath)),
+         m_humidityIo(boost::make_shared<CHumidity>(devicePath)),
+         m_pressureIo(boost::make_shared<CPressure>(devicePath)),
+         m_light(boost::make_shared<CIllumination>(devicePath)),
+         m_vadIo(boost::make_shared<CVoltage>(devicePath, "vad")),
+         m_vddIo(boost::make_shared<CVoltage>(devicePath, "vdd")),
+         m_visIo(boost::make_shared<CVoltage>(devicePath, "vis"))
       {
       }
 
@@ -36,7 +36,7 @@ namespace owfs
 
          if (readValue == "MS-TH")
             return ioInterfaces::ISmartBatteryMonitor::kMultisensorTemperatureHumidity;
-   
+
          if (readValue == "MS-TL")
             return ioInterfaces::ISmartBatteryMonitor::kMultisensorTemperatureLight;
 

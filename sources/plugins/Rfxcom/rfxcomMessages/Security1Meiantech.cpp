@@ -8,9 +8,9 @@ namespace rfxcomMessages
 {
    CSecurity1Meiantech::CSecurity1Meiantech()
       : m_statusByte(0),
-        m_panic(boost::make_shared<yApi::historization::CSwitch>("panic")),
-        m_armAlarm(boost::make_shared<yApi::historization::CArmingAlarm>("armAlarm")),
-        m_keywords({m_panic, m_armAlarm})
+      m_panic(boost::make_shared<yApi::historization::CSwitch>("panic")),
+      m_armAlarm(boost::make_shared<yApi::historization::CArmingAlarm>("armAlarm")),
+      m_keywords({ m_panic, m_armAlarm })
    {
    }
 

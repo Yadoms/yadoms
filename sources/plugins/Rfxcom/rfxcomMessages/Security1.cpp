@@ -18,8 +18,8 @@ namespace rfxcomMessages
                           const std::string& command,
                           const shared::CDataContainer& deviceDetails)
       : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_batteryLevel, m_rssi})
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_batteryLevel, m_rssi })
    {
       m_batteryLevel->set(100);
       m_rssi->set(0);
@@ -35,8 +35,8 @@ namespace rfxcomMessages
                           unsigned int subType,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_batteryLevel, m_rssi})
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_batteryLevel, m_rssi })
    {
       m_batteryLevel->set(100);
       m_rssi->set(0);
@@ -52,8 +52,8 @@ namespace rfxcomMessages
                           const RBUF& rbuf,
                           size_t rbufSize)
       : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_batteryLevel, m_rssi})
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_batteryLevel, m_rssi })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -63,7 +63,7 @@ namespace rfxcomMessages
                            DONT_CHECK_SEQUENCE_NUMBER);
 
       createSubType(rbuf.SECURITY1.subtype);
-      m_id = m_subTypeManager->idFromProtocol (rbuf );
+      m_id = m_subTypeManager->idFromProtocol(rbuf);
       m_subTypeManager->setFromProtocolState(rbuf.SECURITY1.status);
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.SECURITY1.battery_level));
       m_rssi->set(NormalizeRssiLevel(rbuf.SECURITY1.rssi));
