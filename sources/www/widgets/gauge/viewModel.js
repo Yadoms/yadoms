@@ -133,7 +133,7 @@ widgetViewModelCtor = function gaugeViewModel() {
                 startAngle: -90,
                 endAngle: 90,
                 background: {
-                    backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || "#EEE",  //TODO : change background color to adapt to color with opacity addded (ie Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0.3).get())
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || "#EEE", 
                     innerRadius: "60%",
                     outerRadius: "100%",
                     //borderWidth: 0
