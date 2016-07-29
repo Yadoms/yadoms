@@ -5,7 +5,7 @@ message Information {
 	required string version = 2;
 
 	enum EReleaseType {
-		kStable = 0; kTesting = 1; kBeta = 2;
+		kStable = 0; kReleaseCandidate = 1; kBeta = 2;
 	}
 	required EReleaseType releaseType = 3;
 

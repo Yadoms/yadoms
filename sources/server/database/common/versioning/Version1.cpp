@@ -150,7 +150,7 @@ namespace database { namespace common { namespace versioning {
          //set the database version
          CQuery qInsert = pRequester->newQuery();
          qInsert.InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName()).
-            Values("Database", "Version", m_version.toString(), "Database version");
+            Values("Database", "Version", m_version.toString(4), "Database version");
          pRequester->queryStatement(qInsert);              
                   
          //set the developer mode
