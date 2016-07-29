@@ -1,1 +1,7 @@
-Copyright Yadoms 2016
+Yadoms
+
+The Yadoms main application is under « GPL v3 and additional rights » license. It can be freely run, shared, modified. The GPL is a copyleft license, which means that derived works can only be distributed under the same license terms. Additional rights are reserved to Yadoms official team which keeps the right of distributing a version of Yadoms for any specific usage, commercial or not.
+
+All other components of Yadoms are based on Yadoms Shared Library and are licensed under LGPLv3 library. That is to say, you can modify / develop plugins, widgets, scripts, script interpreters. You are completely free to distribute your sources, your binaries or nothing.
+
+See https://github.com/Yadoms/yadoms/blob/master/LICENSE.md for licensing details

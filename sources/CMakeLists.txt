@@ -4,10 +4,10 @@
 ## This file generates projects/makefiles for the complete Yadoms software
 ##
 ## This file actually works for
-##   Windows 7 x64, MSVC 12
-##   Ubuntu 12.04, g++ 4.7
+##   Windows 7 x64, 10 x64, MSVC 12, MSVC 2015 (also works with MSVC Community edition)
+##   Ubuntu 12.04, 14.04, 16.04, g++ 4.7 .. 5.4
 ##   Raspberry Raspbian Wheezy, g++ 4.7
-##   MacOSx Snow Leopard 10.8, g++ 4.8
+##   MacOSx Snow Leopard 10.8, Lion 10.9, yosemite 10.10 and ElCaptain 10.11 , g++ 4.8 and more
 ##################################################################################################
 project (Yadoms)
 
@@ -19,7 +19,7 @@ cmake_minimum_required (VERSION 3.2.0)
 ##################################################################################################
 
 # First checks (compilers versions...)
-include(preChecks.cmake)
+include(cmake/preChecks.cmake)
 
 # User specific configuration
 include(CMakeListsUserConfig.txt OPTIONAL)
@@ -27,22 +27,22 @@ include(CMakeListsUserConfig.txt OPTIONAL)
 # Cotire 
 if(COTIRE_USE)
    set(COTIRE_PCH_MEMORY_SCALING_FACTOR 256)
-	include(cotire.cmake)
+	include(cmake/cotire.cmake)
 else()
-	include(PrecompiledHeader.cmake)
+	include(cmake/PrecompiledHeader.cmake)
 endif()
 
 
 # Windows specific macro
 if(WIN32)
-	include(windows.cmake)
+	include(cmake/windows.cmake)
 endif()
 
 # Compilers/IDE configurations
-include(compilers.cmake)
+include(cmake/compilers.cmake)
 
 # Boost built libraries copy helper
-include(copyBoost.cmake)
+include(cmake/copyBoost.cmake)
 
 
 
@@ -117,7 +117,7 @@ endif()
 
 ## IOKIT (needed for Mac)
 if(APPLE)
-	include("mac.cmake")
+	include(cmake/mac.cmake)
 	
 	if(NOT IOKIT_FOUND)
 		message(SEND_ERROR "Unable to find the required IOKit libraries")
@@ -168,7 +168,7 @@ endif()
 
 
 set( POCO_REQUIRE_MINIMUM_VERSION "1.6.1")
-include(FindPoco.cmake)
+include(cmake/FindPoco.cmake)
 
 IF(NOT ${Poco_FOUND})
 	message(FATAL_ERROR "Unable to find the required POCO libraries")
@@ -993,35 +993,83 @@ install(TARGETS yadoms RUNTIME DESTINATION ${INSTALL_BINDIR})
 
 #set yadoms.ini configuration file to be copied in bindir
 install(FILES "../config/yadoms.ini" DESTINATION ${INSTALL_BINDIR})
+
+#Configure all building targets to allow finding dependencies next to them
+#so just copying boost and poco next to yadoms executable and it will work
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE) 
+if(UNIX)
+   set(CMAKE_EXE_LINKER_FLAGS "-Wl,-rpath='$ORIGIN' ")
+endif()
    
-#set boost/debug libs to be copied in bindir
-FOREACH (BOOSTLIBRARY ${BOOST_FOUND_DEBUG_BINS})
-	install(FILES ${BOOSTLIBRARY} CONFIGURATIONS Debug RUNTIME DESTINATION ${INSTALL_BINDIR})
-ENDFOREACH(BOOSTLIBRARY)
+#Boost 
+if (DEFINED CMAKE_CONFIGURATION_TYPES)
+	if(UNIX)
+		FOREACH (BOOSTLIBRARY ${BOOST_LIBS})
+			string(TOUPPER ${BOOSTLIBRARY} boostLibUpperCase)
+			install(FILES ${Boost_${boostLibUpperCase}_LIBRARY_DEBUG} CONFIGURATIONS Debug DESTINATION ${INSTALL_BINDIR})
+			install(FILES ${Boost_${boostLibUpperCase}_LIBRARY_RELEASE} CONFIGURATIONS Release;RelWithDebInfo;MinSizeRel DESTINATION ${INSTALL_BINDIR})
+		ENDFOREACH(BOOSTLIBRARY)
+	else(UNIX)
+		FOREACH (BOOSTLIBRARY ${BOOST_FOUND_RELEASE_BINS})
+			install(FILES ${BOOSTLIBRARY} CONFIGURATIONS Release;RelWithDebInfo;MinSizeRel DESTINATION ${INSTALL_BINDIR})
+		ENDFOREACH(BOOSTLIBRARY)
+		FOREACH (BOOSTLIBRARY ${BOOST_FOUND_DEBUG_BINS})
+			install(FILES ${BOOSTLIBRARY} CONFIGURATIONS Debug DESTINATION ${INSTALL_BINDIR})
+		ENDFOREACH(BOOSTLIBRARY)
+	endif(UNIX)
+else()
+	if(UNIX)
+		FOREACH (BOOSTLIBRARY ${BOOST_LIBS})
+			string(TOUPPER ${BOOSTLIBRARY} boostLibUpperCase)
+			install(FILES ${Boost_${boostLibUpperCase}_LIBRARY} DESTINATION ${INSTALL_BINDIR})
+		ENDFOREACH(BOOSTLIBRARY)
+	else(UNIX)
+		FOREACH (BOOSTLIBRARY ${BOOST_FOUND_RELEASE_BINS})
+			install(FILES ${BOOSTLIBRARY} DESTINATION ${INSTALL_BINDIR})
+		ENDFOREACH(BOOSTLIBRARY)
+		FOREACH (BOOSTLIBRARY ${BOOST_FOUND_DEBUG_BINS})
+			install(FILES ${BOOSTLIBRARY} DESTINATION ${INSTALL_BINDIR})
+		ENDFOREACH(BOOSTLIBRARY)
+	endif(UNIX)
+endif()
 
-#set boost/release libs to be copied in bindir
-FOREACH (BOOSTLIBRARY ${BOOST_FOUND_RELEASE_BINS})
-	install(FILES ${BOOSTLIBRARY} CONFIGURATIONS Release;RelWithDebInfo;MinSizeRel RUNTIME DESTINATION ${INSTALL_BINDIR})
-ENDFOREACH(BOOSTLIBRARY)
 
-#set poco/debug libs to be copied in bindir
-FOREACH (POCOLIBRARY ${Poco_FOUND_DEBUG_BINS})
-	install(FILES ${POCOLIBRARY} CONFIGURATIONS Debug RUNTIME DESTINATION ${INSTALL_BINDIR})
-ENDFOREACH(POCOLIBRARY)
 
-#set poco/release libs to be copied in bindir
-FOREACH (POCOLIBRARY ${Poco_FOUND_RELEASE_BINS})
-	install(FILES ${POCOLIBRARY} CONFIGURATIONS Release;RelWithDebInfo;MinSizeRel RUNTIME DESTINATION ${INSTALL_BINDIR})
-ENDFOREACH(POCOLIBRARY)
+#Poco
+if (DEFINED CMAKE_CONFIGURATION_TYPES)
+	FOREACH (POCOLIBRARY ${Poco_FOUND_DEBUG_BINS})
+		get_filename_component(_filepathreal ${POCOLIBRARY} REALPATH)
+		install(FILES ${POCOLIBRARY} CONFIGURATIONS Debug RUNTIME DESTINATION ${INSTALL_BINDIR})
+	ENDFOREACH(POCOLIBRARY)
 
+	FOREACH (POCOLIBRARY ${Poco_FOUND_RELEASE_BINS})
+		get_filename_component(_filepathreal ${POCOLIBRARY} REALPATH)
+		install(FILES ${_filepathreal} CONFIGURATIONS Release;RelWithDebInfo;MinSizeRel RUNTIME DESTINATION ${INSTALL_BINDIR})
+	ENDFOREACH(POCOLIBRARY)
+else()
+	FOREACH (POCOLIBRARY ${Poco_FOUND_RELEASE_BINS})
+		get_filename_component(_filepathreal ${POCOLIBRARY} REALPATH)
+		install(FILES ${_filepathreal} DESTINATION ${INSTALL_BINDIR})
+	ENDFOREACH(POCOLIBRARY)
+endif()   
+   
+   
 #add depends
 FOREACH (PocoNetSSLDepend ${PocoNetSSLDepends})
-	install(FILES ${PocoNetSSLDepend} CONFIGURATIONS Debug;Release;RelWithDebInfo;MinSizeRel RUNTIME DESTINATION ${INSTALL_BINDIR})
+   if (DEFINED CMAKE_CONFIGURATION_TYPES)
+      install(FILES ${PocoNetSSLDepend} CONFIGURATIONS Debug;Release;RelWithDebInfo;MinSizeRel RUNTIME DESTINATION ${INSTALL_BINDIR})
+   else()
+      install(FILES ${PocoNetSSLDepend} RUNTIME DESTINATION ${INSTALL_BINDIR})
+   endif()
 ENDFOREACH(PocoNetSSLDepend)
 
 #add depends
 FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
-	install(FILES ${PostgreSqlDepend} CONFIGURATIONS Debug;Release;RelWithDebInfo;MinSizeRel RUNTIME DESTINATION ${INSTALL_BINDIR})
+   if (DEFINED CMAKE_CONFIGURATION_TYPES)
+      install(FILES ${PostgreSqlDepend} CONFIGURATIONS Debug;Release;RelWithDebInfo;MinSizeRel RUNTIME DESTINATION ${INSTALL_BINDIR})
+   else()
+      install(FILES ${PostgreSqlDepend} RUNTIME DESTINATION ${INSTALL_BINDIR})
+   endif()
 ENDFOREACH(PostgreSqlDepend)
 
 
@@ -1048,7 +1096,7 @@ set(CPACK_COMPONENT_YADOMSCORE_DISPLAY_NAME "Yadoms Server")
 set(CPACK_COMPONENT_YADOMSCORE_REQUIRED ON)
 set(CPACK_COMPONENT_YADOMSCORE_DESCRIPTION "Yadoms core server software components.")
 
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Yadoms")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The ultimate house automation solution")
 SET(CPACK_PACKAGE_VENDOR "Yadoms")
 SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Readme.txt")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Copyright.txt")
@@ -1056,6 +1104,7 @@ SET(CPACK_PACKAGE_VERSION_MAJOR "1")
 SET(CPACK_PACKAGE_VERSION_MINOR "0")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Yadoms")
+SET(CPACK_PACKAGE_CONTACT "Jean-Michel DECORET <decoretjm@gmail.com>")
 
 set(CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE 0)
 
@@ -1082,7 +1131,7 @@ IF(WIN32 AND NOT UNIX)
 
 	# Custom target for packaging.
 	if(USE_NSIS)
-	  set(CPACK_GENERATOR "NSIS")
+	  set(CPACK_GENERATOR "NSIS;ZIP")
 	  
      # There is a bug in NSI that does not handle full unix paths properly. Make
      # sure there is at least one set of four (4) backlasshes.
@@ -1138,6 +1187,14 @@ IF(WIN32 AND NOT UNIX)
 ELSE(WIN32 AND NOT UNIX)
   SET(CPACK_STRIP_FILES "Yadoms")
   SET(CPACK_SOURCE_STRIP_FILES "")
+  set(CPACK_GENERATOR "RPM;TGZ;DEB")
+  SET(CPACK_DEBIAN_PACKAGE_SECTION "Automation")
+  SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+  SET(CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://www.yadoms.com")
+  
+  SET(CPACK_RPM_PACKAGE_GROUP "Applications/Productivity")
+  SET(CPACK_RPM_PACKAGE_LICENSE "GPL/LGPL. See https://github.com/Yadoms/yadoms/blob/master/LICENSE.md for details")
+  
 ENDIF(WIN32 AND NOT UNIX)
 SET(CPACK_PACKAGE_EXECUTABLES "Yadoms" "Yadoms")
 
