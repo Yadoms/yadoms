@@ -17,13 +17,6 @@ public:
    }
 
    //--------------------------------------------------------------
-   /// \brief	                      initialize the keyword (Declaration)
-   /// \param[in] api                Yadoms APi context
-   //--------------------------------------------------------------
-   virtual void initialize(boost::shared_ptr<yApi::IYPluginApi> api,
-                           shared::CDataContainer details) const = 0;
-
-   //--------------------------------------------------------------
    /// \brief	                      Get the IHistorizable variable
    /// \return                       Historizable object
    //--------------------------------------------------------------

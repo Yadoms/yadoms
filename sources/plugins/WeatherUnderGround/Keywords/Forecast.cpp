@@ -16,13 +16,6 @@ CForecast::CForecast(std::string pluginName,
 {
 }
 
-void CForecast::initialize(boost::shared_ptr<yApi::IYPluginApi> api,
-                           shared::CDataContainer details) const
-{
-   if (!api->keywordExists(m_pluginName, m_forecast))
-      api->declareKeyword(m_pluginName, m_forecast, details);
-}
-
 CForecast::~CForecast()
 {
 }
