@@ -14,12 +14,12 @@ CAsciiBufferLogger::~CAsciiBufferLogger()
 
 void CAsciiBufferLogger::logReceived(const CByteBuffer& data) 
 {
-   YADOMS_LOG(debug) << "Yadoms <<< " << msgToString(data);
+   std::cout << "Yadoms <<< " << msgToString(data) << std::endl;
 }
 
 void CAsciiBufferLogger::logSent(const CByteBuffer& data)
 {
-   YADOMS_LOG(debug) << "Yadoms >>> " << msgToString(data);
+   std::cout << "Yadoms >>> " << msgToString(data) << std::endl;
 }
 
 std::string CAsciiBufferLogger::msgToString(const CByteBuffer& data) const

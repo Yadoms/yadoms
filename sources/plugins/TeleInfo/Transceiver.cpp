@@ -108,10 +108,16 @@ void CTransceiver::ParseData(const unsigned char* pData,
       ii++;
    }
 
+   std::cout << "m_baseUpdated" << m_baseUpdated << std::endl;
+   std::cout << "m_timePeriodUpdated" << m_timePeriodUpdated << std::endl;
+   std::cout << "m_instantCurrentUpdated" << m_instantCurrentUpdated << std::endl;
+   std::cout << "IsInformationUpdated" << IsInformationUpdated() << std::endl;
+
    if (!m_deviceCreated) createDeviceAndKeywords();
 
    //historizing all information pushed in the list
-   m_api->historizeData(m_DeviceName, m_keywords);
+   if (IsInformationUpdated())
+      m_api->historizeData(m_DeviceName, m_keywords);
 }
 
 void CTransceiver::createDeviceAndKeywords( void )

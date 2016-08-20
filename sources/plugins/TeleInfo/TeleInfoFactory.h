@@ -40,6 +40,7 @@ public:
    /// \return                            The Buffer handler
    //--------------------------------------------------------------
    static boost::shared_ptr<CTeleInfoReceiveBufferHandler> GetBufferHandler(shared::event::CEventHandler& eventHandler,
-                                                                            int evtPortDataReceived);
+                                                                            int evtPortDataReceived,
+                                                                            size_t messageSize);
 };
 

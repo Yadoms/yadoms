@@ -1,6 +1,5 @@
 #pragma once
 #include "IKeyword.h"
-#include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 namespace yApi = shared::plugin::yPluginApi;
 

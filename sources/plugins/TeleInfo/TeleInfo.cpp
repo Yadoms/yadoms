@@ -46,11 +46,12 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    // Create the buffer handler
    m_receiveBufferHandler = CTeleInfoFactory::GetBufferHandler(api->getEventHandler(),
-                                                               kEvtPortDataReceived);
+                                                               kEvtPortDataReceived,
+                                                               512 );
 
    m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
                                                              shared::event::CEventTimer::kOneShot,
-                                                             boost::posix_time::seconds(5));
+                                                             boost::posix_time::seconds(10));
    m_waitForAnswerTimer->stop();
 
    // Create the connection
@@ -62,7 +63,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    // Timer used to read periodically information
    api->getEventHandler().createTimer(kEvtTimerRefreshTeleInfoData,
                                       shared::event::CEventTimer::kPeriodic,
-                                      boost::posix_time::seconds(15));
+                                      boost::posix_time::seconds(30));
 
    while (1)
    {
@@ -183,12 +184,12 @@ void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const shared::communication::CByteBuffer& data)
 {
+   // Stop timeout
+   m_waitForAnswerTimer->stop();
+
    m_logger.logReceived(data);
 
    m_transceiver->decodeTeleInfoMessage(api, data);
-
-   // Message was recognized, stop timeout
-   m_waitForAnswerTimer->stop();
 
    // When all information are updated we stopped the reception !
    if (m_transceiver->IsInformationUpdated())
