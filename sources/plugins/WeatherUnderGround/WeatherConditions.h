@@ -25,7 +25,7 @@ public:
    //--------------------------------------------------------------
    CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
                       IWUConfiguration& wuConfiguration,
-                      const std::string& pluginName,
+                      const std::string& deviceName,
                       const std::string& prefix);
 
    //--------------------------------------------------------------
@@ -75,7 +75,7 @@ private:
    /// \param[in] wuConfiguration    The Plugin configuration
    //--------------------------------------------------------------
    void initializeVariables(boost::shared_ptr<yApi::IYPluginApi> api,
-                            IWUConfiguration& wuConfiguration) const;
+                            IWUConfiguration& wuConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site
@@ -88,9 +88,9 @@ private:
    std::string m_countryOrState;
 
    //--------------------------------------------------------------
-   /// \brief	    The Plugin Name
+   /// \brief	    The Device Name
    //--------------------------------------------------------------
-   std::string m_pluginName;
+   std::string m_deviceName;
 
    //--------------------------------------------------------------
    /// \brief	    Raw Web Data
@@ -115,29 +115,29 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Keywords
    //--------------------------------------------------------------
-   CTemp m_temp;
-
-   //--------------------------------------------------------------
-   /// \brief	The pressure (hPa)
-   //--------------------------------------------------------------
+   boost::shared_ptr<CTemp> m_temp;
    boost::shared_ptr<yApi::historization::CPressure> m_pressure;
    boost::shared_ptr<yApi::historization::CHumidity> m_humidity;
    boost::shared_ptr<yApi::historization::CDistance> m_visibility;
    boost::shared_ptr<yApi::historization::CDirection> m_uv;
    boost::shared_ptr<yApi::historization::CDirection> m_WindDirection;
-
-   CTemp m_dewPoint;
-   CRain m_rain1hr;
-   CWeatherIcon m_weatherConditionUrl;
-   CWindSpeed m_windAverageSpeed;
-   CWindSpeed m_windMaxSpeed;
-   CTemp m_feelsLike;
-   CTemp m_windchill;
-   CCondition m_liveConditions;
+   boost::shared_ptr<CTemp> m_dewPoint;
+   boost::shared_ptr<CRain> m_rain1hr;
+   boost::shared_ptr<CWeatherIcon> m_weatherConditionUrl;
+   boost::shared_ptr<CWindSpeed> m_windAverageSpeed;
+   boost::shared_ptr<CWindSpeed> m_windMaxSpeed;
+   boost::shared_ptr<CTemp> m_feelsLike;
+   boost::shared_ptr<CTemp> m_windchill;
+   boost::shared_ptr<CCondition> m_liveConditions;
 
    //--------------------------------------------------------------
-   /// \brief	    Error Detected ?
+   /// \brief	    Error Detected
    //--------------------------------------------------------------
    bool m_catchError;
+
+   //--------------------------------------------------------------
+   /// \brief  Keywords list
+   //--------------------------------------------------------------
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
 };
 

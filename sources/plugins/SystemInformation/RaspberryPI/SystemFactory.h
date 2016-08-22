@@ -78,7 +78,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The keywords lists to historize in one step for better performances
    //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_highFreqencyUpdateKeywords;
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_lowFreqencyUpdateKeywords;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_highFrequencyUpdateKeywords;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_lowFrequencyUpdateKeywords;
 };
 

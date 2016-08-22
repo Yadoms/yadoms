@@ -11,14 +11,6 @@ CDuration::CDuration(std::string pluginName,
 {
 }
 
-
-void CDuration::initialize(boost::shared_ptr<yApi::IYPluginApi> api,
-   shared::CDataContainer details) const
-{
-   if (!api->keywordExists(m_pluginName, m_duration))
-      api->declareKeyword(m_pluginName, m_duration, details);
-}
-
 CDuration::~CDuration()
 {
 }

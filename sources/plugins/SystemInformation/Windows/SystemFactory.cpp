@@ -12,8 +12,8 @@ CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api,
    : m_DeviceName(device),
      m_MemoryLoad(boost::make_shared<CMemoryLoad>("MemoryLoad")),
      m_CPULoad(boost::make_shared<CCPULoad>("CPULoad")),
-     m_highFreqencyUpdateKeywords({m_CPULoad->historizable()}),
-     m_lowFreqencyUpdateKeywords({m_MemoryLoad->historizable()})
+     m_highFrequencyUpdateKeywords({m_CPULoad->historizable()}),
+     m_lowFrequencyUpdateKeywords({m_MemoryLoad->historizable()})
 {
    // As disk list can change (add a disk), update it each time Yadoms starts
 
@@ -24,11 +24,11 @@ CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       auto diskUsage = boost::make_shared<CDiskUsage>(disk->substr(0, 1) + "_DiskUsage", *disk);
       m_diskUsageList.push_back(diskUsage);
-      m_lowFreqencyUpdateKeywords.push_back(diskUsage->historizable());
+      m_lowFrequencyUpdateKeywords.push_back(diskUsage->historizable());
    }
 
-   api->declareDevice(device, Model, m_highFreqencyUpdateKeywords, details);
-   api->declareDevice(device, Model, m_lowFreqencyUpdateKeywords, details);
+   api->declareDevice(device, Model, m_highFrequencyUpdateKeywords, details);
+   api->declareDevice(device, Model, m_lowFrequencyUpdateKeywords, details);
 }
 
 CSystemFactory::~CSystemFactory()
@@ -41,7 +41,7 @@ void CSystemFactory::OnHighFrequencyUpdate(boost::shared_ptr<yApi::IYPluginApi> 
 
    m_CPULoad->read();
 
-   api->historizeData(m_DeviceName, m_highFreqencyUpdateKeywords);
+   api->historizeData(m_DeviceName, m_highFrequencyUpdateKeywords);
 }
 
 void CSystemFactory::OnLowFrequencyUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -54,7 +54,7 @@ void CSystemFactory::OnLowFrequencyUpdate(boost::shared_ptr<yApi::IYPluginApi> a
    for (auto disk = m_diskUsageList.begin(); disk != m_diskUsageList.end(); ++disk)
       (*disk)->read();
 
-   api->historizeData(m_DeviceName, m_lowFreqencyUpdateKeywords);
+   api->historizeData(m_DeviceName, m_lowFrequencyUpdateKeywords);
 }
 
 void CSystemFactory::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,

@@ -25,7 +25,7 @@ public:
    //--------------------------------------------------------------
    CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
                  IWUConfiguration& wuConfiguration,
-                 std::string pluginName,
+                 std::string deviceName,
                  const std::string& prefix);
 
    //--------------------------------------------------------------
@@ -94,9 +94,9 @@ private:
    std::string m_prefix;
 
    //--------------------------------------------------------------
-   /// \brief	    The Plugin Name
+   /// \brief	    The Device Name
    //--------------------------------------------------------------
-   std::string m_pluginName;
+   std::string m_deviceName;
 
    //--------------------------------------------------------------
    /// \brief	    Raw Web Data
@@ -116,7 +116,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Keywords
    //--------------------------------------------------------------
-   CForecast m_forecast;
+   boost::shared_ptr<CForecast> m_forecast;
 
    //--------------------------------------------------------------
    /// \brief	    Tab of rain keywords for 3 next days
@@ -127,5 +127,9 @@ private:
    /// \brief	    Error Detecting ?
    //--------------------------------------------------------------
    bool m_catchError;
-};
 
+   //--------------------------------------------------------------
+   /// \brief  Keywords list
+   //--------------------------------------------------------------
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+};

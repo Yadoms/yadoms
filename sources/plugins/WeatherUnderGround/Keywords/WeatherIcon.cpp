@@ -13,13 +13,6 @@ CWeatherIcon::CWeatherIcon(std::string pluginName,
 {
 }
 
-void CWeatherIcon::initialize(boost::shared_ptr<yApi::IYPluginApi> api,
-                              shared::CDataContainer details) const
-{
-   if (!api->keywordExists(m_pluginName, m_weathercondition))
-      api->declareKeyword(m_pluginName, m_weathercondition, details);
-}
-
 CWeatherIcon::~CWeatherIcon()
 {
 }

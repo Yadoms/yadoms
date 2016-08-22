@@ -21,7 +21,7 @@ public:
    //--------------------------------------------------------------
    CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
               IWUConfiguration& wuConfiguration,
-              const std::string& pluginName,
+              const std::string& deviceName,
               const std::string& prefix);
 
    //--------------------------------------------------------------
@@ -65,7 +65,7 @@ private:
    /// \param[in] wuConfiguration    The Plugin configuration
    //--------------------------------------------------------------
    void initializeVariables(boost::shared_ptr<yApi::IYPluginApi> api,
-                            IWUConfiguration& wuConfiguration) const;
+                            IWUConfiguration& wuConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site
@@ -78,9 +78,9 @@ private:
    std::string m_countryOrState;
 
    //--------------------------------------------------------------
-   /// \brief	    The Plugin Name
+   /// \brief	    The Device Name
    //--------------------------------------------------------------
-   std::string m_pluginName;
+   std::string m_deviceName;
 
    //--------------------------------------------------------------
    /// \brief	    Raw Web Data
@@ -100,11 +100,16 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Keywords
    //--------------------------------------------------------------
-   CMoon m_moonCharacteristics;
+   boost::shared_ptr<CMoon> m_moonCharacteristics;
 
    //--------------------------------------------------------------
    /// \brief	    Error Detecting
    //--------------------------------------------------------------
    bool m_catchError;
+
+   //--------------------------------------------------------------
+   /// \brief  Keywords list
+   //--------------------------------------------------------------
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
 };
 
