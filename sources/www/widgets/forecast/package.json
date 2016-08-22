@@ -1,7 +1,7 @@
 {
    "type": "forecast",
-   "version": "0.1",
-   "releaseType": "beta",
+	"version": "1.0.0",
+	"releaseType": "beta",
    "author": "Jean-Michel BERHAULT",
    "url" : "https://github.com/Yadoms/yadoms/wiki/forecast",
    "credits": "[Weather icons](https://www.iconfinder.com/)",

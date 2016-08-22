@@ -466,7 +466,7 @@
           "releaseTypeChoice": "Choose the release type you want to manage",
           "releaseType": {
             "beta": "Beta version - recommended for developpers only",
-            "testing": "Testing version - use it at your own risks",
+            "releaseCandidate": "Release Candidate version - use it at your own risks",
             "stable": "Stable version - the most recommended release type"
           },
           "yadoms": {

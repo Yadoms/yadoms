@@ -471,6 +471,7 @@
           "releaseType": {
             "beta": "Beta - pour développeur",
             "testing": "Test - version en cours de test, utiliser à vos propres risques",
+            "releaseCandidate": "Release Candidate - version préliminaire, utilisez à vos risques et périls",
             "stable": "Stable - Recommandée"
           },
           "yadoms": {

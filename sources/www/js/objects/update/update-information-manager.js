@@ -44,26 +44,32 @@ UpdateInformationManager.getList = function(objectType) {
       var result = {};
       $.each(data, function(index, value) {
          //value is a list of all version available
-         result[index] = [];
-         $.each(value, function(versionIndex, versionValue) {
-            try {
-               result[index].push(UpdateInformationManager.factory(versionValue));
-            } catch (e) {
-               console.warn("Fail to parse " + objectType + " (" + index + ") package.");
-               console.warn("    name:" + versionValue.name);
-               console.warn("    releaseType:" + versionValue.releaseType);
-               console.warn("    version:" + versionValue.version);
-               console.warn("    type:" + versionValue.type);
-               console.warn("    description:" + versionValue.description);
-               console.warn("    url:" + versionValue.url);
-               console.warn("    author:" + versionValue.author);
-               console.warn("    credits:" + versionValue.credits);
-               console.warn("    downloadUrl:" + versionValue.downloadUrl);
-               console.warn("    iconUrl:" + versionValue.iconUrl);
-               console.warn("    md5Hash:" + versionValue.md5Hash);
-               console.warn(e);
-            }
-         });
+          if (value && value.length > 0) {
+              $.each(value,
+                  function(versionIndex, versionValue) {
+                      try {
+                          var infos = UpdateInformationManager.factory(versionValue);
+                          //we push into list only if the factory succeed
+                          if (!result[index])
+                              result[index] = [];
+                          result[index].push(infos);
+                      } catch (e) {
+                          console.warn("Fail to parse " + objectType + " (" + index + ") package.");
+                          console.warn("    name:" + versionValue.name);
+                          console.warn("    releaseType:" + versionValue.releaseType);
+                          console.warn("    version:" + versionValue.version);
+                          console.warn("    type:" + versionValue.type);
+                          console.warn("    description:" + versionValue.description);
+                          console.warn("    url:" + versionValue.url);
+                          console.warn("    author:" + versionValue.author);
+                          console.warn("    credits:" + versionValue.credits);
+                          console.warn("    downloadUrl:" + versionValue.downloadUrl);
+                          console.warn("    iconUrl:" + versionValue.iconUrl);
+                          console.warn("    md5Hash:" + versionValue.md5Hash);
+                          console.warn(e);
+                      }
+                  });
+          }
       });
 
       d.resolve(result);
@@ -101,7 +107,11 @@ UpdateInformationManager.remove = function(objectType, type) {
  * Compare the two UpdateInformationObjects. Return > 0 if item1 is lower, =0 if the same and <0 if item1 is higher
   */
 UpdateInformationManager.compareVersion = function(item1, item2) {
-   return item2.version - item1.version;
+    if (item1.version < item2.version)
+        return 1;
+    if (item1.version > item2.version)
+        return -1;
+    return 0;
 };
 
 /**

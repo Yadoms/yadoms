@@ -1,7 +1,7 @@
 {
   "type": "counter-display",
-  "version": "0.1",
-  "releaseType": "beta",
+	"version": "1.0.0",
+	"releaseType": "beta",
   "author": "Jean-Michel BERHAULT",
   "url": "https://github.com/Yadoms/yadoms/wiki/counter-display",
   "credits": "[Odometer v0.4.6](http://github.hubspot.com/odometer/docs/welcome/)",
