@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "TeleInfoReceiveBufferHandler.h"
 
-//#define TELEINFO_BUFFER 512
-
 CTeleInfoReceiveBufferHandler::CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
                                                              int receiveDataEventId,
                                                              size_t messageSize)
@@ -27,8 +25,6 @@ void CTeleInfoReceiveBufferHandler::push(const shared::communication::CByteBuffe
       if (isComplete())
          notifyEventHandler(popNextMessage());
    }
-   //else
-   //   flush(); // If the reception is suspended we flush the content
 }
 
 void CTeleInfoReceiveBufferHandler::suspend()
@@ -38,8 +34,8 @@ void CTeleInfoReceiveBufferHandler::suspend()
 
 void CTeleInfoReceiveBufferHandler::resume()
 {
+   flush(); // flush the buffer before resume
    m_receptionSuspended = false;
-   flush(); // flush the buffer before the sum up 
 }
 
 void CTeleInfoReceiveBufferHandler::flush()
@@ -76,4 +72,3 @@ void CTeleInfoReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<const s
    m_receiveDataEventHandler.postEvent<const shared::communication::CByteBuffer>(m_receiveDataEventId,
                                                                                  *buffer);
 }
-
