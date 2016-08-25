@@ -15,12 +15,12 @@ CBufferLogger::~CBufferLogger()
 
 void CBufferLogger::logReceived(const CByteBuffer& data) 
 {
-   std::cout << "Yadoms <<< " << msgToString(data) << std::endl;
+   //std::cout << "Yadoms <<< " << msgToString(data);
 }
 
 void CBufferLogger::logSent(const CByteBuffer& data)
 {
-   std::cout << "Yadoms >>> " << msgToString(data) << std::endl;
+   //std::cout << "Yadoms >>> " << msgToString(data);
 }
 
 std::string CBufferLogger::msgToString(const CByteBuffer& data) const
