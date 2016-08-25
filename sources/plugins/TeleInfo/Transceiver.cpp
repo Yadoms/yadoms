@@ -111,7 +111,8 @@ void CTransceiver::ParseData(const unsigned char* pData,
    if (!m_deviceCreated) createDeviceAndKeywords();
 
    //historizing all information pushed in the list
-   m_api->historizeData(m_DeviceName, m_keywords);
+   if (IsInformationUpdated())
+      m_api->historizeData(m_DeviceName, m_keywords);
 }
 
 void CTransceiver::createDeviceAndKeywords( void )
@@ -261,7 +262,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
 
       switch (it->second)
       {
-      case TELEINFO_TYPE_ADCO:   //TODO_V2 : Detect the change of the counter
+      case TELEINFO_TYPE_ADCO:   //TODO_V2 : Detect the change of the counter in live
          if (!ADCORead)
          {
             std::cout << "ADCO" << "=" << value << std::endl;
@@ -314,7 +315,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
                {
                   m_optarif = OP_TEMPO;
 
-                  //m_keywords.clear();
+                  m_keywords.clear();
                   m_keywords.push_back(m_tempoBlueDaysLowCostPeriod);
                   m_keywords.push_back(m_tempoBlueDaysNormalCostPeriod);
                   m_keywords.push_back(m_tempoRedDaysLowCostPeriod);

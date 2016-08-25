@@ -16,9 +16,11 @@ public:
    /// \brief	                           Constructor
    /// \param[in] receiveDataEventHandler The event handler to notify for received data event
    /// \param[in] receiveDataEventId      The event id to notify for received data event
+   /// \param[in] messageSize             The number of bytes expected for a message
    //--------------------------------------------------------------
    CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
-                                 int receiveDataEventId);
+                                 int receiveDataEventId,
+                                 size_t messageSize);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
@@ -68,6 +70,14 @@ private:
    //--------------------------------------------------------------
    int m_receiveDataEventId;
 
+   //--------------------------------------------------------------
+   /// \brief	The expected message size
+   //--------------------------------------------------------------
+   const size_t m_messageSize;
+
+   //--------------------------------------------------------------
+   /// \brief	state of the reception
+   //--------------------------------------------------------------
    bool m_receptionSuspended;
 };
 

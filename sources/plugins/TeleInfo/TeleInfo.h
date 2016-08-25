@@ -2,7 +2,7 @@
 #include <plugin_cpp_api/IPlugin.h>
 #include "TeleInfoConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
-#include <shared/communication/BufferLogger.h>
+#include <shared/communication/AsciiBufferLogger.h>
 #include "Transceiver.h"
 #include "TeleInfoReceiveBufferHandler.h"
 
@@ -105,7 +105,7 @@ private:
    //--------------------------------------------------------------
    /// \brief  The communication port
    //--------------------------------------------------------------
-   shared::communication::CBufferLogger m_logger;
+   shared::communication::CAsciiBufferLogger m_logger;
 
    //--------------------------------------------------------------
    /// \brief  The receiver buffer

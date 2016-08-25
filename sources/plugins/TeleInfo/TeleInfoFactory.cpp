@@ -30,10 +30,13 @@ boost::shared_ptr<shared::communication::IAsyncPort> CTeleInfoFactory::construct
 }
 
 boost::shared_ptr<CTeleInfoReceiveBufferHandler> CTeleInfoFactory::GetBufferHandler(shared::event::CEventHandler& eventHandler,
-                                                                                    int evtPortDataReceived)
+                                                                                    int evtPortDataReceived,
+                                                                                    size_t messageSize
+)
 {
    return boost::make_shared<CTeleInfoReceiveBufferHandler>(eventHandler,
-                                                            evtPortDataReceived);
+                                                            evtPortDataReceived,
+                                                            messageSize);
 }
 
 boost::shared_ptr<ITransceiver> CTeleInfoFactory::constructTransceiver()

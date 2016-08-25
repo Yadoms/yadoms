@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IKeyword.h"
-#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "../specificHistorizers/ForecastHistorizer.h"
 
 namespace yApi = shared::plugin::yPluginApi;

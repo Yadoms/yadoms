@@ -18,4 +18,3 @@ std::string CTeleInfoConfiguration::getSerialPort() const
 {
    return m_data.get<std::string>("SerialPort");
 }
-
