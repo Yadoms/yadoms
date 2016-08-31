@@ -213,12 +213,13 @@ namespace shared { namespace event
       //              Keep a reference on the timer object can be useful if you want to re-use it or differ start. In this case,
       //              the event handler won't remove it from it's time events list.
       //--------------------------------------------------------------
-      boost::shared_ptr<CEventTimer> createTimer(int timerEventId, CEventTimer::EPeriodicity periodicity = CEventTimer::kOneShot,
-         const boost::posix_time::time_duration& period = boost::date_time::not_a_date_time)
+      boost::shared_ptr<CEventTimer> createTimer(int timerEventId,
+                                                 CEventTimer::EPeriodicity periodicity = CEventTimer::kOneShot,
+                                                 const boost::posix_time::time_duration& period = boost::date_time::not_a_date_time)
       {
          BOOST_ASSERT(timerEventId >= kUserFirstId);
 
-         boost::shared_ptr<CEventTimer> timer(new CEventTimer(timerEventId, periodicity, period));
+         auto timer(boost::make_shared<CEventTimer>(timerEventId, periodicity, period));
          m_timeEvents.push_back(timer);
          return timer;
       }
@@ -235,13 +236,14 @@ namespace shared { namespace event
       //              - Be careful of a limitation : a time-point is not DST (Daylight Saving Time) compatible : for example, 
       //              a timepoint set after a DST change (ie change to summer hour) will not take account of time offset.
       //--------------------------------------------------------------
-      boost::shared_ptr<CEventTimePoint> createTimePoint(int timePointEventId, const boost::posix_time::ptime& dateTime)
+      boost::shared_ptr<CEventTimePoint> createTimePoint(int timePointEventId,
+                                                         const boost::posix_time::ptime& dateTime)
       {
          BOOST_ASSERT(timePointEventId >= kUserFirstId);
          if (dateTime <= currentTime::Provider().now())
-            throw shared::exception::COutOfRange("CEventHandler::createTimePoint : timePoint not in the future, ignored");
+            throw exception::COutOfRange("CEventHandler::createTimePoint : timePoint not in the future, ignored");
 
-         boost::shared_ptr<CEventTimePoint> timePoint(new CEventTimePoint(timePointEventId, dateTime));
+         auto timePoint(boost::make_shared<CEventTimePoint>(timePointEventId, dateTime));
          m_timeEvents.push_back(timePoint);
          return timePoint;
       }
@@ -379,12 +381,12 @@ namespace shared { namespace event
          if (m_timeEvents.empty())
             return;
 
-         for (TimeEventList::iterator it = m_timeEvents.begin() ;
-            it != m_timeEvents.end() ; )
+         for (auto it = m_timeEvents.begin();
+              it != m_timeEvents.end();)
          {
             if ((*it).unique() && (*it)->canBeRemoved())
             {
-               // Time event no more make sens, and is not referenced by user, so erase it from the list
+               // Time event no more make sense, and is not referenced by user, so erase it from the list
                it = m_timeEvents.erase(it);
             }
             else

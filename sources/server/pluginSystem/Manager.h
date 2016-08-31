@@ -38,9 +38,11 @@ namespace pluginSystem
                boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer);
 
       //--------------------------------------------------------------
-      /// \brief			Initialization, used for the 2-steps construction
+      /// \brief			Start the manager (try to start all active plugins)
+      /// \param[in]    timeout  Timeout waiting plugins to start
+      /// \details      This function is blocking until all plugins are started or timeout
       //--------------------------------------------------------------
-      void start();
+      void start(const boost::posix_time::time_duration& timeout);
 
       //--------------------------------------------------------------
       /// \brief			Destructor
@@ -216,15 +218,18 @@ namespace pluginSystem
    private:
       //-----------------------------------------------------
       ///\brief               Start all instances
+      ///\param[out] startedInstanceIds Instances started
       //-----------------------------------------------------
-      void startAllInstances();
+      void startAllInstances(std::set<int>& startedInstanceIds);
 
       //-----------------------------------------------------
       ///\brief               Start all specified instances
       ///\param[in] instances Instances to start
+      ///\param[out] startedInstanceIds Instances started
       ///\return              true if all instances were successfully started
       //-----------------------------------------------------
-      bool startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin> >& instances);
+      bool startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin> >& instances,
+                          std::set<int>& startedInstanceIds);
 
       //-----------------------------------------------------
       ///\brief               Stop all started instances
