@@ -13,7 +13,7 @@ class CCPULoad : public ILoad
 {
 public:
    //--------------------------------------------------------------
-   /// \brief	    Constructor
+   /// \brief	   Constructor
    /// \param[in] keywordName The keyword name
    //--------------------------------------------------------------
    explicit CCPULoad(const std::string& keywordName);
@@ -40,6 +40,7 @@ protected:
    void Initialize();
 
 private:
+
    //--------------------------------------------------------------
    /// \brief	    The Query for the CPU Load
    //--------------------------------------------------------------

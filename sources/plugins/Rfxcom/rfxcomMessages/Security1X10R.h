@@ -36,7 +36,7 @@ namespace rfxcomMessages
       void reset() override;
       void setFromProtocolState(unsigned char statusByte) override;
       unsigned char toProtocolState() const override;
-	  unsigned long idFromProtocol( const RBUF& rbuf ) const override;
+      unsigned long idFromProtocol(const RBUF& rbuf) const override;
       // [END] ISecurity1Subtype implementation
 
    private:

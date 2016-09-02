@@ -11,7 +11,7 @@ namespace rfxcomMessages
                           const RBUF& rbuf,
                           size_t rbufSize)
       : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_rssi})
+      m_keywords({ m_rssi })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -27,42 +27,42 @@ namespace rfxcomMessages
       switch (rbuf.RFXSENSOR.subtype)
       {
       case sTypeRFXSensorTemp:
-         {
-            m_temperature = boost::make_shared<yApi::historization::CTemperature>("temperature");
-            m_keywords.push_back(m_temperature);
+      {
+         m_temperature = boost::make_shared<yApi::historization::CTemperature>("temperature");
+         m_keywords.push_back(m_temperature);
 
-            auto temperature = ((rbuf.RFXSENSOR.msg1 & 0x7F) << 8 | rbuf.RFXSENSOR.msg2);
-            if (rbuf.RFXSENSOR.msg1 & 0x80)
-               temperature = -temperature;
-            m_temperature->set(temperature / 100);
-            break;
-         }
+         auto temperature = ((rbuf.RFXSENSOR.msg1 & 0x7F) << 8 | rbuf.RFXSENSOR.msg2);
+         if (rbuf.RFXSENSOR.msg1 & 0x80)
+            temperature = -temperature;
+         m_temperature->set(temperature / 100);
+         break;
+      }
       case sTypeRFXSensorAD:
-         {
-            m_adVoltage = boost::make_shared<yApi::historization::CVoltage>("adVoltage");
-            m_keywords.push_back(m_temperature);
+      {
+         m_adVoltage = boost::make_shared<yApi::historization::CVoltage>("adVoltage");
+         m_keywords.push_back(m_temperature);
 
-            m_adVoltage->set((rbuf.RFXSENSOR.msg1 << 8 | rbuf.RFXSENSOR.msg2) / 1000);
-            break;
-         }
+         m_adVoltage->set((rbuf.RFXSENSOR.msg1 << 8 | rbuf.RFXSENSOR.msg2) / 1000);
+         break;
+      }
       case sTypeRFXSensorVolt:
-         {
-            m_voltage = boost::make_shared<yApi::historization::CVoltage>("voltage");
-            m_keywords.push_back(m_temperature);
+      {
+         m_voltage = boost::make_shared<yApi::historization::CVoltage>("voltage");
+         m_keywords.push_back(m_temperature);
 
-            m_voltage->set((rbuf.RFXSENSOR.msg1 << 8 | rbuf.RFXSENSOR.msg2) / 1000);
-            break;
-         }
+         m_voltage->set((rbuf.RFXSENSOR.msg1 << 8 | rbuf.RFXSENSOR.msg2) / 1000);
+         break;
+      }
       case sTypeRFXSensorMessage:
-         {
-            processMessage(rbuf.RFXSENSOR.msg1 << 8 | rbuf.RFXSENSOR.msg2);
-            break;
-         }
+      {
+         processMessage(rbuf.RFXSENSOR.msg1 << 8 | rbuf.RFXSENSOR.msg2);
+         break;
+      }
       default:
-         {
-            std::cout << "Unsupported RFXSensor sub-type " << rbuf.RFXSENSOR.subtype << std::endl;
-            break;
-         }
+      {
+         std::cout << "Unsupported RFXSensor sub-type " << rbuf.RFXSENSOR.subtype << std::endl;
+         break;
+      }
       }
 
       m_rssi->set(NormalizeRssiLevel(rbuf.RFXSENSOR.rssi));

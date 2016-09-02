@@ -45,35 +45,35 @@ void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       switch (api->getEventHandler().waitForEvents())
       {
       case yApi::IYPluginApi::kEventStopRequested:
-         {
-            std::cout << "Stop requested" << std::endl;
-            api->setPluginState(yApi::historization::EPluginState::kStopped);
-            return;
-         }
+      {
+         std::cout << "Stop requested" << std::endl;
+         api->setPluginState(yApi::historization::EPluginState::kStopped);
+         return;
+      }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
-         {
-            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
-            break;
-         }
+      {
+         onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+         break;
+      }
 
       case yApi::IYPluginApi::kEventDeviceCommand:
-         {
-            // Command received
-            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
-            std::cout << "Command received :" << yApi::IDeviceCommand::toString(command) << std::endl;
+      {
+         // Command received
+         auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
+         std::cout << "Command received :" << yApi::IDeviceCommand::toString(command) << std::endl;
 
-            if (boost::iequals(command->getKeyword(), m_messageKeyword->getKeyword()))
-               onSendMailRequest(api, command->getBody());
-            else
-               std::cout << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
-         }
-         break;
+         if (boost::iequals(command->getKeyword(), m_messageKeyword->getKeyword()))
+            onSendMailRequest(api, command->getBody());
+         else
+            std::cout << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
+      }
+      break;
 
       default:
-         {
-            std::cerr << "Unknown message id" << std::endl;
-            break;
-         }
+      {
+         std::cerr << "Unknown message id" << std::endl;
+         break;
+      }
       }
    }
 }

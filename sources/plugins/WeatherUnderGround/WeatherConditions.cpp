@@ -5,25 +5,25 @@
 
 CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
                                        IWUConfiguration& wuConfiguration,
-                                       const std::string& pluginName,
+                                       const std::string& deviceName,
                                        const std::string& prefix)
    : m_localisation(wuConfiguration.getLocalisation()),
      m_countryOrState(wuConfiguration.getCountryOrState()),
-     m_pluginName(pluginName),
-     m_temp(pluginName, prefix + "temperature"),
+     m_deviceName(deviceName),
+     m_temp(boost::make_shared<CTemp>(deviceName, prefix + "temperature")),
      m_pressure(boost::make_shared<yApi::historization::CPressure>(prefix + "pressure")),
      m_humidity(boost::make_shared<yApi::historization::CHumidity>(prefix + "Humidity")),
      m_visibility(boost::make_shared<yApi::historization::CDistance>(prefix + "Visibility")),
      m_uv(boost::make_shared<yApi::historization::CDirection>(prefix + "UV")),
      m_WindDirection(boost::make_shared<yApi::historization::CDirection>(prefix + "WindDirection")),
-     m_dewPoint(pluginName, prefix + "DewPoint"),
-     m_rain1hr(pluginName, prefix + "Rain_1hr"),
-     m_weatherConditionUrl(pluginName, prefix + "WeatherCondition"),
-     m_windAverageSpeed(pluginName, prefix + "windAverageSpeed"),
-     m_windMaxSpeed(pluginName, prefix + "windMaxSpeed"),
-     m_feelsLike(pluginName, prefix + "FeelsLike"),
-     m_windchill(pluginName, prefix + "Windchill"),
-     m_liveConditions(pluginName, "LiveConditions")
+     m_dewPoint(boost::make_shared<CTemp>(deviceName, prefix + "DewPoint")),
+     m_rain1hr(boost::make_shared<CRain>(deviceName, prefix + "Rain_1hr")),
+     m_weatherConditionUrl(boost::make_shared<CWeatherIcon>(deviceName, prefix + "WeatherCondition")),
+     m_windAverageSpeed(boost::make_shared<CWindSpeed>(deviceName, prefix + "windAverageSpeed")),
+     m_windMaxSpeed(boost::make_shared<CWindSpeed>(deviceName, prefix + "windMaxSpeed")),
+     m_feelsLike(boost::make_shared<CTemp>(deviceName, prefix + "FeelsLike")),
+     m_windchill(boost::make_shared<CTemp>(deviceName, prefix + "Windchill")),
+     m_liveConditions(boost::make_shared<CCondition>(deviceName, "LiveConditions"))
 {
    try
    {
@@ -46,43 +46,45 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void CWeatherConditions::initializeVariables(boost::shared_ptr<yApi::IYPluginApi> api,
-                                             IWUConfiguration& wuConfiguration) const
+                                             IWUConfiguration& wuConfiguration)
 {
-   shared::CDataContainer details;
-   details.set("provider", "weather-underground");
-   details.set("shortProvider", "wu");
+   // Clear the list
+   m_keywords.clear();
 
    if (wuConfiguration.IsConditionsIndividualKeywordsEnabled())
    {
-      if (!api->keywordExists(m_pluginName, m_pressure)) api->declareKeyword(m_pluginName, m_pressure, details);
-      if (!api->keywordExists(m_pluginName, m_humidity)) api->declareKeyword(m_pluginName, m_humidity, details);
-      if (!api->keywordExists(m_pluginName, m_visibility)) api->declareKeyword(m_pluginName, m_visibility, details);
-      if (!api->keywordExists(m_pluginName, m_uv)) api->declareKeyword(m_pluginName, m_uv, details);
-      if (!api->keywordExists(m_pluginName, m_WindDirection)) api->declareKeyword(m_pluginName, m_WindDirection, details);
-
-      m_temp.initialize(api, details);
-      m_dewPoint.initialize(api, details);
-      m_rain1hr.initialize(api, details);
-      m_weatherConditionUrl.initialize(api, details);
-      m_windAverageSpeed.initialize(api, details);
-      m_windMaxSpeed.initialize(api, details);
-      m_feelsLike.initialize(api, details);
-      m_windchill.initialize(api, details);
+      m_keywords.push_back(m_temp->getHistorizable());
+      m_keywords.push_back(m_pressure);
+      m_keywords.push_back(m_humidity);
+      m_keywords.push_back(m_visibility);
+      m_keywords.push_back(m_uv);
+      m_keywords.push_back(m_WindDirection);
+      m_keywords.push_back(m_dewPoint->getHistorizable());
+      m_keywords.push_back(m_rain1hr->getHistorizable());
+      m_keywords.push_back(m_weatherConditionUrl->getHistorizable());
+      m_keywords.push_back(m_windAverageSpeed->getHistorizable());
+      m_keywords.push_back(m_windMaxSpeed->getHistorizable());
+      m_keywords.push_back(m_feelsLike->getHistorizable());
+      m_keywords.push_back(m_windchill->getHistorizable());
    }
 
    if (wuConfiguration.IsLiveConditionsEnabled())
    {
-      m_liveConditions.initialize(api, details);
+      m_keywords.push_back(m_liveConditions->getHistorizable());
 
-      m_liveConditions.addUnit(shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
+      m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
                                shared::plugin::yPluginApi::CStandardCapacities::Temperature.getUnit());
-      m_liveConditions.addUnit(shared::plugin::yPluginApi::CStandardCapacities::Speed.getName(),
+      m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Speed.getName(),
                                shared::plugin::yPluginApi::CStandardCapacities::Speed.getUnit());
-      m_liveConditions.addUnit(shared::plugin::yPluginApi::CStandardCapacities::Humidity.getName(),
+      m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Humidity.getName(),
                                shared::plugin::yPluginApi::CStandardCapacities::Humidity.getUnit());
-      m_liveConditions.addUnit(shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
+      m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
                                shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit());
    }
+
+   // Declare keywords
+   std::string m_URL = "www.wunderground.com/";
+   api->declareDevice(m_deviceName, m_URL, m_keywords);
 }
 
 void CWeatherConditions::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration)
@@ -146,7 +148,7 @@ bool CWeatherConditions::request(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          m_cityConditions = m_data.get<std::string>("current_observation.observation_location.city");
 
-         m_liveConditions.setCityName(m_cityConditions);
+         m_liveConditions->setCityName(m_cityConditions);
 
          std::cout << "Observation location :" << m_data.get<std::string>("current_observation.observation_location.full") << std::endl;
       }
@@ -177,22 +179,18 @@ void CWeatherConditions::parse(boost::shared_ptr<yApi::IYPluginApi> api,
       }
       else
       {
-         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > KeywordList;
-
          if (wuConfiguration.IsConditionsIndividualKeywordsEnabled())
          {
             //
             //Temperature
             //
-            m_temp.setValue(m_data, "current_observation.temp_c");
-            KeywordList.push_back(m_temp.getHistorizable());
+            m_temp->setValue(m_data, "current_observation.temp_c");
 
             //
             //Pressure
             //
             m_pressure->set(m_data.get<double>("current_observation.pressure_mb"));
             std::cout << m_pressure->getKeyword() << "=" << m_pressure->get() << "mbar" << std::endl;
-            KeywordList.push_back(m_pressure);
 
             //
             //Humidity
@@ -202,7 +200,6 @@ void CWeatherConditions::parse(boost::shared_ptr<yApi::IYPluginApi> api,
             auto d_humidity = static_cast<double>(atof(str_humidity.c_str()));
             m_humidity->set(d_humidity);
             std::cout << m_humidity->getKeyword() << "=" << m_humidity->get() << "%" << std::endl;
-            KeywordList.push_back(m_humidity);
 
             //
             //Visibility
@@ -215,68 +212,27 @@ void CWeatherConditions::parse(boost::shared_ptr<yApi::IYPluginApi> api,
                m_visibility->set(m_data.get<double>("current_observation.visibility_km") * 1000);
                std::cout << m_visibility->getKeyword() << "=" << m_visibility->get() << "m" << std::endl;
             }
-            KeywordList.push_back(m_visibility);
 
             //
             //UV
             //
             m_uv->set(static_cast<int>(m_data.get<double>("current_observation.UV")));
             std::cout << m_uv->getKeyword() << "=" << m_uv->get() << std::endl;
-            KeywordList.push_back(m_uv);
 
-            //
-            //DewPoint
-            //
-            m_dewPoint.setValue(m_data, "current_observation.dewpoint_c");
-            KeywordList.push_back(m_dewPoint.getHistorizable());
-
-            //
-            //Rain
-            //
-            m_rain1hr.setValue(m_data, "current_observation.precip_today_metric");
-            KeywordList.push_back(m_rain1hr.getHistorizable());
-
-            //
-            //Visual condition
-            //
-            m_weatherConditionUrl.setValue(m_data, "current_observation.icon");
-            KeywordList.push_back(m_weatherConditionUrl.getHistorizable());
-
-            //
-            //Wind (degrees)
-            //
+            m_dewPoint->setValue(m_data, "current_observation.dewpoint_c");
+            m_rain1hr->setValue(m_data, "current_observation.precip_today_metric");
+            m_weatherConditionUrl->setValue(m_data, "current_observation.icon");
             m_WindDirection->set(static_cast<int>(m_data.get<double>("current_observation.wind_degrees")));
             std::cout << m_WindDirection->getKeyword() << "=" << m_WindDirection->get() << " degrees" << std::endl;
-            KeywordList.push_back(m_WindDirection);
-
-            //
-            //Wind (speed)
-            //
-            m_windAverageSpeed.setValue(m_data, "current_observation.wind_kph");
-            KeywordList.push_back(m_windAverageSpeed.getHistorizable());
-
-            //
-            //Wind (Max speed)
-            //
-            m_windMaxSpeed.setValue(m_data, "current_observation.wind_gust_kph");
-            KeywordList.push_back(m_windMaxSpeed.getHistorizable());
-
-            //
-            //Feelslike
-            //
-            m_feelsLike.setValue(m_data, "current_observation.feelslike_c");
-            KeywordList.push_back(m_feelsLike.getHistorizable());
-
-            //
-            //Windchill
-            //
-            m_windchill.setValue(m_data, "current_observation.windchill_c");
-            KeywordList.push_back(m_windchill.getHistorizable());
+            m_windAverageSpeed->setValue(m_data, "current_observation.wind_kph");
+            m_windMaxSpeed->setValue(m_data, "current_observation.wind_gust_kph");
+            m_feelsLike->setValue(m_data, "current_observation.feelslike_c");
+            m_windchill->setValue(m_data, "current_observation.windchill_c");
          }
 
          if (wuConfiguration.IsLiveConditionsEnabled())
          {
-            m_liveConditions.setPeriod(m_data,
+            m_liveConditions->setPeriod(m_data,
                                        "current_observation.local_time_rfc822",
                                        "current_observation.icon",
                                        "current_observation.temp_c",
@@ -292,10 +248,9 @@ void CWeatherConditions::parse(boost::shared_ptr<yApi::IYPluginApi> api,
                                        "current_observation.feelslike_c",
                                        "current_observation.windchill_c"
             );
-            KeywordList.push_back(m_liveConditions.getHistorizable());
          }
 
-         api->historizeData(m_pluginName, KeywordList);
+         api->historizeData(m_deviceName, m_keywords);
       }
    }
    catch (shared::exception::CException& e)
@@ -312,4 +267,3 @@ bool CWeatherConditions::isModuleInFault() const
 CWeatherConditions::~CWeatherConditions()
 {
 }
-

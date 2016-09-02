@@ -1,22 +1,21 @@
 {
-	"type": "clock",
-	"version": "2",
+    "type": "clock",
+    "version": "2.0.0",
 	"releaseType": "stable",
-	"author": "Nicolas HILAIRE",
-	"url": "https://github.com/Yadoms/yadoms/wiki/clock",
-	"credits": "",
-  "dimensions": {
-    "min": {
-      "x": 1,
-      "y": 1
-    },
-    "max": {
-      "x": 3,
-      "y": 2
-    },
-    "default": {
-      "x": 2,
-      "y": 1
+    "author": "yadoms team",
+    "credits": "",
+    "dimensions": {
+        "min": {
+            "x": 1,
+            "y": 1
+        },
+        "max": {
+            "x": 3,
+            "y": 1
+        },
+        "default": {
+            "x": 1,
+            "y": 1
+        }
     }
-  }
 }

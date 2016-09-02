@@ -12,6 +12,7 @@ class CGammuPhone : public IPhone
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
+   /// \param[in] configuration   Configuration of the plugin
    //--------------------------------------------------------------
    explicit CGammuPhone(const ISmsDialerConfiguration& configuration);
 
@@ -29,7 +30,7 @@ public:
    virtual void unlock(const std::string& pin);
    virtual void send(boost::shared_ptr<ISms> sms);
    boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > getIncomingSMS();
-  // [END] IPhone implementation
+   // [END] IPhone implementation
 
 protected:
    //--------------------------------------------------------------

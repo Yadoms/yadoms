@@ -4,6 +4,7 @@ import unittest
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 import database
+import config
 import scripts
 import yadomsServer
 import mainPage.widgets
@@ -17,6 +18,7 @@ class CreateWidget(unittest.TestCase):
    
    def setUp(self):
       database.deploy('OneFakePlugin')
+      config.deploy("withDeveloperMode")
       scripts.deleteAll()
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()

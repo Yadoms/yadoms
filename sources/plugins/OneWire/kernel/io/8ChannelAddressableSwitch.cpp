@@ -27,7 +27,7 @@ namespace kernel
             // Now check the Crc
             unsigned char crcData[33];
             crcData[0] = cmdReadPioRegisters[0];
-            for (int i = 0; i<32; i++)
+            for (int i = 0; i < 32; i++)
                crcData[i + 1] = answer[i];
             if (CCommon::crc16(crcData, sizeof(crcData)) != answer[32])
                throw COneWireException("Invalid CRC when reading from " + m_devicePath.string());

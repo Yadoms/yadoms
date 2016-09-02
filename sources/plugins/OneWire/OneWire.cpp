@@ -39,8 +39,8 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    // Periodic network refresh
    api->getEventHandler().createTimer(kEvtTimerNetworkRefresh,
-                                       shared::event::CEventTimer::kPeriodic,
-                                       boost::posix_time::seconds(5));
+                                      shared::event::CEventTimer::kPeriodic,
+                                      boost::posix_time::seconds(5));
 
    api->setPluginState(yApi::historization::EPluginState::kRunning);
 
@@ -126,7 +126,7 @@ void COneWire::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void COneWire::onCommand(std::map<std::string,
-                         boost::shared_ptr<device::IDevice> >& devices,
+   boost::shared_ptr<device::IDevice> >& devices,
                          boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
    std::cout << "Command received :" << yApi::IDeviceCommand::toString(command) << std::endl;

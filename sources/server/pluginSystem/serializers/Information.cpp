@@ -23,7 +23,7 @@ namespace pluginSystem
          {
          case shared::versioning::EReleaseType::kStableValue: pb->set_releasetype(toPlugin::Information_EReleaseType_kStable);
             break;
-         case shared::versioning::EReleaseType::kTestingValue: pb->set_releasetype(toPlugin::Information_EReleaseType_kTesting);
+         case shared::versioning::EReleaseType::kReleaseCandidateValue: pb->set_releasetype(toPlugin::Information_EReleaseType_kReleaseCandidate);
             break;
          default: pb->set_releasetype(toPlugin::Information_EReleaseType_kBeta);
             break;

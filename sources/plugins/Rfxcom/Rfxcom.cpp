@@ -21,7 +21,7 @@ enum
 
 CRfxcom::CRfxcom()
    : m_configurationUpdated(false),
-     m_lastRequest(sizeof(RBUF))
+   m_lastRequest(sizeof(RBUF))
 {
 }
 
@@ -60,81 +60,81 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          switch (api->getEventHandler().waitForEvents())
          {
          case yApi::IYPluginApi::kEventStopRequested:
-            {
-               std::cout << "Stop requested" << std::endl;
-               api->setPluginState(yApi::historization::EPluginState::kStopped);
-               return;
-            }
+         {
+            std::cout << "Stop requested" << std::endl;
+            api->setPluginState(yApi::historization::EPluginState::kStopped);
+            return;
+         }
          case yApi::IYPluginApi::kEventDeviceCommand:
-            {
-               // Command received from Yadoms
-               auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
-               onCommand(api, command);
+         {
+            // Command received from Yadoms
+            auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
+            onCommand(api, command);
 
-               break;
-            }
+            break;
+         }
          case yApi::IYPluginApi::kEventManuallyDeviceCreationTest:
-            {
-               // Yadoms asks for test device parameters to check if it works before creating it. So just send command, don't declare anything.
-               //TODO_V2 not yet implemented
-               //boost::shared_ptr<const yApi::IManuallyDeviceCreationTestData> data = api->getEventHandler().getEventData<const boost::shared_ptr<yApi::IManuallyDeviceCreationTestData> >();
-               //onCommand(api, data->getCommand());
+         {
+            // Yadoms asks for test device parameters to check if it works before creating it. So just send command, don't declare anything.
+            //TODO_V2 not yet implemented
+            //boost::shared_ptr<const yApi::IManuallyDeviceCreationTestData> data = api->getEventHandler().getEventData<const boost::shared_ptr<yApi::IManuallyDeviceCreationTestData> >();
+            //onCommand(api, data->getCommand());
 
-               break;
-            }
+            break;
+         }
          case yApi::IYPluginApi::kEventManuallyDeviceCreation:
+         {
+            // Yadoms asks for device creation
+            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
+            std::cout << "Manually device creation request received for device :" << request->getData().getDeviceName() << std::endl;
+            try
             {
-               // Yadoms asks for device creation
-               auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
-               std::cout << "Manually device creation request received for device :" << request->getData().getDeviceName() << std::endl;
-               try
-               {
-                  request->sendSuccess(m_transceiver->createDeviceManually(api, request->getData()));
-               }
-               catch (CManuallyDeviceCreationException& e)
-               {
-                  request->sendError(e.what());
-               }
-
-               break;
+               request->sendSuccess(m_transceiver->createDeviceManually(api, request->getData()));
             }
+            catch (CManuallyDeviceCreationException& e)
+            {
+               request->sendError(e.what());
+            }
+
+            break;
+         }
          case yApi::IYPluginApi::kEventUpdateConfiguration:
-            {
-               api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-               onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+         {
+            api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
 
-               break;
-            }
+            break;
+         }
          case kEvtPortConnection:
-            {
-               if (api->getEventHandler().getEventData<bool>())
-                  processRfxcomConnectionEvent(api);
-               else
-                  processRfxcomUnConnectionEvent(api);
+         {
+            if (api->getEventHandler().getEventData<bool>())
+               processRfxcomConnectionEvent(api);
+            else
+               processRfxcomUnConnectionEvent(api);
 
-               break;
-            }
+            break;
+         }
          case kEvtPortDataReceived:
-            {
-               processRfxcomDataReceived(api, api->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
-               break;
-            }
+         {
+            processRfxcomDataReceived(api, api->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
+            break;
+         }
          case kAnswerTimeout:
-            {
-               std::cerr << "No answer received, try to reconnect in a while..." << std::endl;
-               errorProcess(api);
-               break;
-            }
+         {
+            std::cerr << "No answer received, try to reconnect in a while..." << std::endl;
+            errorProcess(api);
+            break;
+         }
          case kProtocolErrorRetryTimer:
-            {
-               createConnection(api->getEventHandler());
-               break;
-            }
+         {
+            createConnection(api->getEventHandler());
+            break;
+         }
          default:
-            {
-               std::cerr << "Unknown message id" << std::endl;
-               break;
-            }
+         {
+            std::cerr << "Unknown message id" << std::endl;
+            break;
+         }
          }
       }
       catch (shared::communication::CPortException&)
@@ -413,8 +413,8 @@ void CRfxcom::processRfxcomWrongCommandMessage(boost::shared_ptr<yApi::IYPluginA
    const RBUF* const lastRequest = reinterpret_cast<const RBUF* const>(m_lastRequest.begin());
 
    if (lastRequest->ICMND.packettype == pTypeInterfaceControl &&
-      lastRequest->ICMND.subtype == sTypeInterfaceCommand &&
-      lastRequest->ICMND.cmnd == cmdStartRec)
+       lastRequest->ICMND.subtype == sTypeInterfaceCommand &&
+       lastRequest->ICMND.cmnd == cmdStartRec)
    {
       // Message "start receiver" is not supported by old firmwares, so ignore wrong answer
       std::cout << "Ask the RFXCom status..." << std::endl;

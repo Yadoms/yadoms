@@ -51,17 +51,23 @@ Blockly.Blocks['yadoms_get_info'] = {
 		switch (val) {
 			case this.informationIdList_[0][1]: //sunrise
 			case this.informationIdList_[1][1]: //sunset
-				this.outputConnection.setCheck("time");
+				try {
+					this.outputConnection.setCheck("time");
+				}catch(e) { }//just catch it.
 				this.setColour(Blockly.Yadoms.Dates.time.HUE);
 				break;
 			case this.informationIdList_[2][1]: //latitude
 			case this.informationIdList_[3][1]: //longitude
 			case this.informationIdList_[4][1]: //altitude
-				this.outputConnection.setCheck("Number");
+				try {
+					this.outputConnection.setCheck("Number");
+				}catch(e) { }//just catch it.
 				this.setColour(Blockly.Blocks.math.HUE);
 				break;
 			default:
-				this.outputConnection.setCheck("String");
+				try {
+					this.outputConnection.setCheck("String");
+				}catch(e) { }//just catch it.
 				this.setColour(Blockly.Blocks.texts.HUE);
 				break;
 		}

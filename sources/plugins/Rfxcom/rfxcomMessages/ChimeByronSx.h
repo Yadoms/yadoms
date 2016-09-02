@@ -25,12 +25,12 @@ namespace rfxcomMessages
       void set(const std::string& yadomsCommand, const shared::CDataContainer& deviceDetails) override;
       void reset() override;
       unsigned int idFromProtocol(unsigned char id1,
-         unsigned char id2,
-         unsigned char sound) override;
+                                  unsigned char id2,
+                                  unsigned char sound) override;
       void idToProtocol(unsigned int id,
-         unsigned char& id1,
-         unsigned char& id2,
-         unsigned char& sound) const override;
+                        unsigned char& id1,
+                        unsigned char& id2,
+                        unsigned char& sound) const override;
       void setFromProtocolState(unsigned char cmd) override;
       void toProtocolState(unsigned char& sound) const override;
       // [END] ILighting2Subtype implementation

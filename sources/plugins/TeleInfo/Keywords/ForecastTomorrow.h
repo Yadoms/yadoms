@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IKeyword.h"
-#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "../specificHistorizer/Color.h"
 
 namespace yApi = shared::plugin::yPluginApi;
@@ -14,21 +13,16 @@ class CForecastTomorrow : public IKeyword
 public:
    //--------------------------------------------------------------
    /// \brief	                      Constructor
-   /// \param[in] api                  Yadoms APi context
-   /// \param[in] PluginName           The name of the plugin
    /// \param[in] KeyWordName          The keyword name
    /// \note                           Use this constructor initialising the keyword for this plugin
    //--------------------------------------------------------------
-   CForecastTomorrow(boost::shared_ptr<yApi::IYPluginApi> api,
-                     std::string PluginName,
-                     std::string KeyWordName,
-                     shared::CDataContainer details);
+   CForecastTomorrow(std::string KeyWordName);
 
    //--------------------------------------------------------------
    /// \brief	                      Set the value of the keyword
    /// \param[in] Value                The new value
    //--------------------------------------------------------------
-   void SetValue(std::string& Value) const;
+   void set(std::string& Value) const;
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -40,10 +34,6 @@ public:
    // [END] IKeyword implementation
 
 private:
-   //--------------------------------------------------------------
-   /// \brief	The device name
-   //--------------------------------------------------------------
-   std::string m_PluginName;
 
    //--------------------------------------------------------------
    /// \brief	The period type

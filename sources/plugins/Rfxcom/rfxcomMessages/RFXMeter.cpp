@@ -11,8 +11,8 @@ namespace rfxcomMessages
                         const RBUF& rbuf,
                         size_t rbufSize)
       : m_counter(boost::make_shared<yApi::historization::CCounter>("counter")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_counter , m_rssi})
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_counter , m_rssi })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,

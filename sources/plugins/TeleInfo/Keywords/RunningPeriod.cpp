@@ -5,18 +5,12 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CRunningPeriod::CRunningPeriod(boost::shared_ptr<yApi::IYPluginApi> api,
-                               std::string PluginName,
-                               std::string KeyWordName,
-                               shared::CDataContainer details)
-   : m_PluginName(PluginName),
-     m_runningPeriod(boost::make_shared<teleInfo::specificHistorizers::CPeriod>(KeyWordName))
+CRunningPeriod::CRunningPeriod(std::string KeyWordName)
+   : m_runningPeriod(boost::make_shared<teleInfo::specificHistorizers::CPeriod>(KeyWordName))
 {
-   if (!api->keywordExists(m_PluginName, m_runningPeriod))
-      api->declareKeyword(m_PluginName, m_runningPeriod, details);
 }
 
-void CRunningPeriod::SetValue(std::string& Value) const
+void CRunningPeriod::set(std::string& Value) const
 {
    static const EnumPeriod EEnumPeriod = boost::assign::map_list_of
       ("TH..", teleInfo::specificHistorizers::EPeriod::kAllHours)

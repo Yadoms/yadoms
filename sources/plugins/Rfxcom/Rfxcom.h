@@ -150,7 +150,7 @@ protected:
    /// \return                      true is connection data are all the same in the both configurations
    //--------------------------------------------------------------
    static bool connectionsAreEqual(const CRfxcomConfiguration& conf1,
-                            const CRfxcomConfiguration& conf2);
+                                   const CRfxcomConfiguration& conf2);
 
 private:
    //--------------------------------------------------------------

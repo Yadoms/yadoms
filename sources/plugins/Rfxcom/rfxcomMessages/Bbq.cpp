@@ -11,10 +11,10 @@ namespace rfxcomMessages
               const RBUF& rbuf,
               size_t rbufSize)
       : m_foodTemperature(boost::make_shared<yApi::historization::CTemperature>("food")),
-        m_bbqTemperature(boost::make_shared<yApi::historization::CTemperature>("bbq")),
-        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_foodTemperature , m_bbqTemperature , m_batteryLevel , m_rssi})
+      m_bbqTemperature(boost::make_shared<yApi::historization::CTemperature>("bbq")),
+      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_foodTemperature , m_bbqTemperature , m_batteryLevel , m_rssi })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,

@@ -63,41 +63,65 @@ Blockly.Blocks['yadoms_date_extract'] = {
   updateTypes_: function (val) {
 	switch (val) {
 			case "date":
-				this.getInput(this.valueInputName_).setCheck("datetime");
-				this.outputConnection.setCheck("date");
+				try {
+					this.getInput(this.valueInputName_).setCheck("datetime");
+				}catch(e) { }//just catch it.
+				try {
+					this.outputConnection.setCheck("date");
+				}catch(e) { } //just catch it.
 				this.setColour(Blockly.Yadoms.Dates.date.HUE);
 				break;
 				
 			case "time":
-				this.getInput(this.valueInputName_).setCheck("datetime");
-				this.outputConnection.setCheck("time");
+				try {
+					this.getInput(this.valueInputName_).setCheck("datetime");
+				}catch(e) { } //just catch it. 
+				try {
+					this.outputConnection.setCheck("time");
+				}catch(e) { } //just catch it. 
 				this.setColour(Blockly.Yadoms.Dates.time.HUE);
 				break;
 				
 			case "weekDay":
-				this.getInput(this.valueInputName_).setCheck(["datetime", "date"]);
-				this.outputConnection.setCheck("Number");
+				try {
+					this.getInput(this.valueInputName_).setCheck(["datetime", "date"]);
+				}catch(e) { }//just catch it.
+				try {
+					this.outputConnection.setCheck("Number");
+				}catch(e) { }//just catch it.
 				this.setColour(Blockly.Blocks.math.HUE);
 				break;
 				
 			case "year":
 			case "month":
 			case "day":
-				this.getInput(this.valueInputName_).setCheck(["datetime", "date"]);
-				this.outputConnection.setCheck("Number");
+				try {
+					this.getInput(this.valueInputName_).setCheck(["datetime", "date"]);
+				}catch(e) { }//just catch it.
+				try {
+					this.outputConnection.setCheck("Number");
+				}catch(e) { }//just catch it.
 				this.setColour(Blockly.Blocks.math.HUE);
 				break;
 				
 			case "hour":
 			case "minute":
-				this.getInput(this.valueInputName_).setCheck(["datetime", "time"]);
-				this.outputConnection.setCheck("Number");
+				try {
+					this.getInput(this.valueInputName_).setCheck(["datetime", "time"]);
+				}catch(e) { }//just catch it.
+				try {
+					this.outputConnection.setCheck("Number");
+				}catch(e) { }//just catch it.
 				this.setColour(Blockly.Blocks.math.HUE);
 				break;
 
 			default:
-				this.getInput(this.valueInputName_).setCheck(["datetime", "date", "time"]);
-				this.outputConnection.setCheck(["datetime", "date", "time"]);
+				try {
+					this.getInput(this.valueInputName_).setCheck(["datetime", "date", "time"]);
+				}catch(e) { }//just catch it.
+				try {
+					this.outputConnection.setCheck(["datetime", "date", "time"]);
+				}catch(e) { }//just catch it.
 				this.setColour(Blockly.Yadoms.Dates.datetime.HUE);
 				break;
 		}			  

@@ -25,9 +25,9 @@ namespace rfxcomMessages
                         unsigned int subType,
                         const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_subType(0),
-        m_houseCode(0),
-        m_unitCode(0),
-        m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
+      m_houseCode(0),
+      m_unitCode(0),
+      m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
    {
       m_state->set(yApi::historization::ECurtainCommand::kStop);
 
@@ -45,9 +45,9 @@ namespace rfxcomMessages
                         const RBUF& rbuf,
                         size_t rbufSize)
       : m_subType(0),
-        m_houseCode(0),
-        m_unitCode(0),
-        m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
+      m_houseCode(0),
+      m_unitCode(0),
+      m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
    {
       // Should not be called (transmitter-only device)
       BOOST_ASSERT_MSG(false, "Constructing Curtain1 object from received buffer is not possible, Curtain1 is transmitter-only device");

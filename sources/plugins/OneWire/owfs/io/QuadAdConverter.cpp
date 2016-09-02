@@ -20,7 +20,7 @@ namespace owfs
       {
          std::string filename("volt.");
          filename.append(1, 'A' + unit);
-   
+
          boost::filesystem::path readPath = m_devicePath / boost::filesystem::path(filename);
          std::string readValue = CCommon::read(readPath);
 

@@ -129,11 +129,11 @@ widgetViewModelCtor = function gaugeViewModel() {
             title: null,
             pane: {
                 center: ["50%", "80%"],
-                size: "110%",
+                size: "100%",
                 startAngle: -90,
                 endAngle: 90,
                 background: {
-                    backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || "#EEE",  //TODO : change background color to adapt to color with opacity addded (ie Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0.3).get())
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || "#EEE", 
                     innerRadius: "60%",
                     outerRadius: "100%",
                     //borderWidth: 0
@@ -190,9 +190,10 @@ widgetViewModelCtor = function gaugeViewModel() {
 
     this.resized = function () {
         var self = this;
-        //debugger;
         if (!isNullOrUndefined(self.chart)) {
-            this.chart.setSize(self.widget.getInnerWidth() - 10, self.$chart.height(), false);
+            this.chart.setSize(self.widget.getInnerWidth() - 20, self.$chart.height(), false);
+            //we resize value and unit text to keep them into the gauge
+            $(".valueAndUnit").css("height", (self.$chart.find("path")[0].getBBox().height / 1.5) + "px");
         }
         self.widgetApi.fitText();
         $(window).trigger("resize");

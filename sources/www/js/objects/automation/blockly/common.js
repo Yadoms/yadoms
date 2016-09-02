@@ -23,7 +23,6 @@ Blockly.Yadoms.blockColour = { HUE: 20 }
  */
 Blockly.Yadoms.CurrentWorkspace = null;
 
-
 /**
  * Indicate if the current workspace is being load from xml
  */
@@ -163,7 +162,8 @@ Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) 
                maxScale: 2,
                minScale: .1,
                scaleSpeed: 1.1
-            }
+            },
+			shadowMorph: true			
          });
 
          Blockly.Yadoms.isLoadingFromXml = true;
@@ -341,4 +341,20 @@ Blockly.Yadoms.GenerateHelpUrl = function(blockName) {
     }
 	url += "#" + blockName;
 	return url;
+};
+
+Blockly.Yadoms.RemoveUnconnectedShadowBlocks = function(workspace) {
+	//remove any shadow item on workspace
+	$.each((workspace || Blockly.Yadoms.CurrentWorkspace).topBlocks_, function (index, block) {
+		if (block && block.isShadow()) {
+			try {
+				block.dispose();
+			}catch(e) {
+				try {
+					block.dispose();
+				}catch(e) {
+				}
+			}
+		}
+	});
 };

@@ -29,7 +29,7 @@ namespace plugin_cpp_api
       switch (m_buffer->releasetype())
       {
       case toPlugin::Information_EReleaseType_kStable: return shared::versioning::EReleaseType::kStable;
-      case toPlugin::Information_EReleaseType_kTesting: return shared::versioning::EReleaseType::kTesting;
+      case toPlugin::Information_EReleaseType_kReleaseCandidate: return shared::versioning::EReleaseType::kReleaseCandidate;
       default: return shared::versioning::EReleaseType::kBeta;
       }
    }

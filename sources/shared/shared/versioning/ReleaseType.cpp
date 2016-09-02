@@ -5,7 +5,7 @@ namespace shared { namespace versioning {
 
    DECLARE_ENUM_IMPLEMENTATION(EReleaseType,
       ((Stable))
-      ((Testing))
+      ((ReleaseCandidate))
       ((Beta))
    )
 

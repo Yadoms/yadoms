@@ -101,7 +101,7 @@ protected:
    /// \return                      true is connection data are all the same in the both configurations
    //--------------------------------------------------------------
    static bool connectionsAreEqual(const CMegatecUpsConfiguration& conf1,
-                            const CMegatecUpsConfiguration& conf2);
+                                   const CMegatecUpsConfiguration& conf2);
 
    //--------------------------------------------------------------
    /// \brief	                     Send the 'Get Information' command

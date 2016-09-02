@@ -6,7 +6,4 @@ DECLARE_ENUM_IMPLEMENTATION(ESecurityMode,
    ((SSL))
    ((TLS))
    ((Automatic))
-)
-
-	
-	
+);

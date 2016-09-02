@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions as Condition
 from selenium.webdriver.common.keys import Keys
 import database
+import config
 import scripts
 import yadomsServer
 import dashboard
@@ -19,6 +20,7 @@ class StartStopPlugin(unittest.TestCase):
    
    def setUp(self):
       database.deploy('OneFakePlugin')
+      config.deploy("withDeveloperMode")
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()
       self.browser.implicitly_wait(10)

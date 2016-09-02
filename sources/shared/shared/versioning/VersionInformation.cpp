@@ -6,7 +6,7 @@ namespace shared { namespace versioning {
 
    CVersionInformation::CVersionInformation(const shared::versioning::CVersion & version, const shared::versioning::EReleaseType & releaseType)
    {
-      m_container.set("version", version.toString());
+      m_container.set("version", version.toString(3));
       m_container.set("releaseType", releaseType);
    }
 

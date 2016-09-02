@@ -11,10 +11,10 @@ namespace rfxcomMessages
                 const RBUF& rbuf,
                 size_t rbufSize)
       : m_windDirection(boost::make_shared<yApi::historization::CDirection>("windDirection")),
-        m_windMaxSpeed(boost::make_shared<yApi::historization::CSpeed>("windMaxSpeed")),
-        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_windDirection , m_windMaxSpeed , m_batteryLevel , m_rssi})
+      m_windMaxSpeed(boost::make_shared<yApi::historization::CSpeed>("windMaxSpeed")),
+      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_windDirection , m_windMaxSpeed , m_batteryLevel , m_rssi })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,

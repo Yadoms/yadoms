@@ -42,6 +42,8 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	Set and create the subtype
       /// \param[in] subType              Device subType
+      /// \param[in] rbuf                 The received buffer
+      /// \param[in] rbufSize             Message size, received from Rfxcom
       //--------------------------------------------------------------
       void createSubType(unsigned char subType,
                          const RBUF& rbuf,

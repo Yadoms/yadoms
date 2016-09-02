@@ -5,13 +5,13 @@
 
 CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
                              IWUConfiguration& wuConfiguration,
-                             std::string pluginName,
+                             std::string deviceName,
                              const std::string& prefix)
    : m_localisation(wuConfiguration.getLocalisation()),
      m_countryOrState(wuConfiguration.getCountryOrState()),
      m_prefix(prefix),
-     m_pluginName(pluginName),
-     m_forecast(pluginName, "Forecast", weatherunderground::helper::EPeriod::kDay)
+     m_deviceName(deviceName),
+     m_forecast(boost::make_shared<CForecast>(deviceName, "Forecast", weatherunderground::helper::EPeriod::kDay))
 {
    try
    {
@@ -39,22 +39,21 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
    //Initialization
    try
    {
+      // Clear the list
+      m_keywords.clear();
+
       if (wuConfiguration.IsForecast10DaysEnabled())
       {
-         shared::CDataContainer details;
-         details.set("provider", "weather-underground");
-         details.set("shortProvider", "wu");
+         m_keywords.push_back(m_forecast->getHistorizable());
 
-         m_forecast.initialize(api, details);
-
-         m_forecast.addUnit(shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
-                            shared::plugin::yPluginApi::CStandardCapacities::Temperature.getUnit());
-         m_forecast.addUnit(shared::plugin::yPluginApi::CStandardCapacities::Speed.getName(),
-                            shared::plugin::yPluginApi::CStandardCapacities::Speed.getUnit());
-         m_forecast.addUnit(shared::plugin::yPluginApi::CStandardCapacities::Humidity.getName(),
-                            shared::plugin::yPluginApi::CStandardCapacities::Humidity.getUnit());
-         m_forecast.addUnit(shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
-                            shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit());
+         m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
+                             shared::plugin::yPluginApi::CStandardCapacities::Temperature.getUnit());
+         m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Speed.getName(),
+                             shared::plugin::yPluginApi::CStandardCapacities::Speed.getUnit());
+         m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Humidity.getName(),
+                             shared::plugin::yPluginApi::CStandardCapacities::Humidity.getUnit());
+         m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
+                             shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit());
 
          if (wuConfiguration.IsRainIndividualKeywordsEnabled())
          {
@@ -62,11 +61,15 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
             {
                std::stringstream TempString;
                TempString << m_prefix << "Rain_Day_" << counter;
-               m_forecastRain[counter] = boost::make_shared<CRain>(m_pluginName, TempString.str());
-               m_forecastRain[counter]->initialize(api, details);
+               m_forecastRain[counter] = boost::make_shared<CRain>(m_deviceName, TempString.str());
+               m_keywords.push_back(m_forecastRain[counter]->getHistorizable());
             }
          }
       }
+
+      // Declare keywords
+      std::string m_URL = "www.wunderground.com/";
+      api->declareDevice(m_deviceName, m_URL, m_keywords);
    }
    catch (shared::exception::CException& e)
    {
@@ -122,46 +125,42 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
 
       if (!m_catchError)
       {
-         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > KeywordList;
-
          if (wuConfiguration.IsForecast10DaysEnabled())
          {
             auto result = m_data.get<std::vector<shared::CDataContainer> >("forecast.simpleforecast.forecastday");
             std::vector<shared::CDataContainer>::iterator i;
 
-            m_forecast.clearAllPeriods();
+            m_forecast->clearAllPeriods();
 
             unsigned char counter = 0;
 
             for (i = result.begin(); i != result.end(); ++i)
             {
-               m_forecast.addPeriod(*i,
-                                    "date.year",
-                                    "date.month",
-                                    "date.day",
-                                    "icon",
-                                    "high.celsius",
-                                    "low.celsius",
-                                    "maxwind.kph",
-                                    "avewind.kph",
-                                    "avewind.degrees",
-                                    "avehumidity",
-                                    "qpf_allday.mm",
-                                    "snow_allday.cm");
+               m_forecast->addPeriod(*i,
+                                     "date.year",
+                                     "date.month",
+                                     "date.day",
+                                     "icon",
+                                     "high.celsius",
+                                     "low.celsius",
+                                     "maxwind.kph",
+                                     "avewind.kph",
+                                     "avewind.degrees",
+                                     "avehumidity",
+                                     "qpf_allday.mm",
+                                     "snow_allday.cm");
 
                if (wuConfiguration.IsRainIndividualKeywordsEnabled())
                {
                   if (counter < NB_RAIN_FORECAST_DAY)
                   {
                      m_forecastRain[counter]->setValue(*i, "qpf_allday.mm");
-                     KeywordList.push_back(m_forecastRain[counter]->getHistorizable());
                   }
                   ++counter;
                }
             }
-            KeywordList.push_back(m_forecast.getHistorizable());
          }
-         api->historizeData(m_pluginName, KeywordList);
+         api->historizeData(m_deviceName, m_keywords);
 
          std::cout << "Forecast Updated !" << std::endl;
       }
@@ -174,7 +173,7 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
 
 void CForecastDays::setCityName(const std::string& CityName)
 {
-   m_forecast.setCityName(CityName);
+   m_forecast->setCityName(CityName);
 }
 
 bool CForecastDays::isModuleInFault() const
@@ -185,4 +184,3 @@ bool CForecastDays::isModuleInFault() const
 CForecastDays::~CForecastDays()
 {
 }
-

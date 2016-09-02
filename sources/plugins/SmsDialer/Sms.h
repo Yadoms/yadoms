@@ -6,7 +6,7 @@
 /// \brief	This class represent a SMS
 //--------------------------------------------------------------
 class CSms : public ISms
-{  
+{
 public:
    //--------------------------------------------------------------
    /// \brief	            Constructor from raw SMS data

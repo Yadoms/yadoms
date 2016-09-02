@@ -5,12 +5,12 @@
 
 CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
                        IWUConfiguration& wuConfiguration,
-                       const std::string& pluginName,
+                       const std::string& deviceName,
                        const std::string& prefix)
    : m_localisation(wuConfiguration.getLocalisation()),
      m_countryOrState(wuConfiguration.getCountryOrState()),
-     m_pluginName(pluginName),
-     m_moonCharacteristics(pluginName, prefix + "Moon")
+   m_deviceName(deviceName),
+     m_moonCharacteristics(boost::make_shared<CMoon>(deviceName, prefix + "Moon"))
 {
    m_catchError = false;
    m_url.str("");
@@ -30,19 +30,21 @@ CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void CAstronomy::initializeVariables(boost::shared_ptr<yApi::IYPluginApi> api,
-                                     IWUConfiguration& wuConfiguration) const
+                                     IWUConfiguration& wuConfiguration)
 {
+   // Clear the list
+   m_keywords.clear();
+
    if (wuConfiguration.IsAstronomyEnabled())
    {
-      shared::CDataContainer details;
-      details.set("provider", "weather-underground");
-      details.set("shortProvider", "wu");
-
-      m_moonCharacteristics.initialize(api, details);
-
-      m_moonCharacteristics.addUnit(shared::plugin::yPluginApi::CStandardCapacities::Load.getName(),
-                                    shared::plugin::yPluginApi::CStandardCapacities::Load.getUnit());
+      m_keywords.push_back(m_moonCharacteristics->getHistorizable());
+      m_moonCharacteristics->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Load.getName(),
+                                     shared::plugin::yPluginApi::CStandardCapacities::Load.getUnit());
    }
+
+   // Declare keywords
+   std::string m_URL = "www.wunderground.com/";
+   api->declareDevice(m_deviceName, m_URL, m_keywords);
 }
 
 void CAstronomy::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -97,18 +99,14 @@ void CAstronomy::parse(boost::shared_ptr<yApi::IYPluginApi> api,
 
       if (!m_catchError)
       {
-         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > KeywordList;
-
          if (wuConfiguration.IsAstronomyEnabled())
          {
-            m_moonCharacteristics.setParameters(m_data,
-                                                "moon_phase.percentIlluminated",
-                                                "moon_phase.ageOfMoon");
-
-            KeywordList.push_back(m_moonCharacteristics.getHistorizable());
+            m_moonCharacteristics->setParameters(m_data,
+                                                 "moon_phase.percentIlluminated",
+                                                 "moon_phase.ageOfMoon");
          }
 
-         api->historizeData(m_pluginName, KeywordList);
+         api->historizeData(m_deviceName, m_keywords);
       }
    }
    catch (shared::exception::CException& e)

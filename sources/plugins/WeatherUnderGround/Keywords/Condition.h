@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IKeyword.h"
-#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "../specificHistorizers/ConditionHistorizer.h"
 
 namespace yApi = shared::plugin::yPluginApi;
@@ -65,8 +64,6 @@ public:
                   const std::string& filterWindChill) const;
 
    // IKeyword implementation
-   void initialize(boost::shared_ptr<yApi::IYPluginApi> api,
-                   shared::CDataContainer details) const override;
    boost::shared_ptr<yApi::historization::IHistorizable> getHistorizable() const override;
    // [END] IKeyword implementation
 
@@ -79,7 +76,7 @@ private:
    std::string m_pluginName;
 
    //--------------------------------------------------------------
-   /// \brief	The pressure (hPa)
+   /// \brief	The historizer
    //--------------------------------------------------------------
    boost::shared_ptr<CConditionHistorizer> m_condition;
 };

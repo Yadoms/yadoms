@@ -144,16 +144,27 @@ namespace shared { namespace versioning {
    }
 
 
-   const std::string CVersion::toString() const
+   const std::string CVersion::toString(const unsigned int level) const
    {
       std::string versionAsString;
 
+      int stepToRender = level;
+      if (stepToRender < 1)
+         stepToRender = 1;
+      if (stepToRender > 4)
+         stepToRender = 4;
+
+      int currentStep = 1;
       for (std::vector<int>::const_iterator i = m_versionInfo.begin(); i != m_versionInfo.end(); ++i)
       {
          //insert a point if there is already a digit
          if (!versionAsString.empty())
             versionAsString += ".";
          versionAsString += boost::lexical_cast<std::string>(*i);
+
+         currentStep++;
+         if (currentStep >= stepToRender)
+            break;
       }
 
       return versionAsString;

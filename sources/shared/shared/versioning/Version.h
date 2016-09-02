@@ -78,9 +78,10 @@ namespace shared { namespace versioning {
 
       //---------------------------------------------
       ///\brief Get the version as a string
+      ///\param [in] level the wanted level of details (from 1 to 4 :  4 => "1.2.3.4",  3 => "1.2.3", 2 => "1.2", 1 => "1")
       ///\return  the version as a string
       //---------------------------------------------
-      const std::string toString() const;
+      const std::string toString(const unsigned int level) const;
 
    protected:
       //---------------------------------------------

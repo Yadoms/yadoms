@@ -8,8 +8,8 @@ namespace rfxcomMessages
 {
    CThermostat1Digimax::CThermostat1Digimax()
       : m_currentTemperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
-        m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint", yApi::EKeywordAccessMode::kGetSet)),
-        m_keywords({m_currentTemperature})
+      m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint", yApi::EKeywordAccessMode::kGetSet)),
+      m_keywords({ m_currentTemperature })
    {
    }
 

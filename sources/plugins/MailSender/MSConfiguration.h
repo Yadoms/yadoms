@@ -29,7 +29,6 @@ public:
    bool getAuthenticationRequired() const override;
    std::string getLogin() const override;
    std::string getPassword() const override;
-
    // [END] ISIConfiguration implementation
 
 private:
@@ -41,17 +40,17 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Sender Mail
    //--------------------------------------------------------------
-   std::string m_SenderMail;
+   std::string m_senderMail;
 
    //--------------------------------------------------------------
    /// \brief	    Name of the server
    //--------------------------------------------------------------
-   std::string m_ServerName;
+   std::string m_serverName;
 
    //--------------------------------------------------------------
    /// \brief	    The port of the server
    //--------------------------------------------------------------
-   Poco::UInt16 m_ServerPort;
+   Poco::UInt16 m_serverPort;
 
    //--------------------------------------------------------------
    /// \brief	    The server securoty mode
@@ -66,11 +65,11 @@ private:
    //--------------------------------------------------------------
    /// \brief	    User account
    //--------------------------------------------------------------
-   std::string m_UserAccount;
+   std::string m_userAccount;
 
    //--------------------------------------------------------------
    /// \brief	    Password
    //--------------------------------------------------------------
-   std::string m_Password;
+   std::string m_password;
 };
 

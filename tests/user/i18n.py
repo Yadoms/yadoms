@@ -17,8 +17,12 @@ def get():
    return translations
    
    
-def getPlugin(pluginName):
+def getPlugin(pluginType):
    """Return the translations array for a plugin"""
+
+   try:
+      translations = json.load(codecs.open(os.path.join(yadomsServer.pluginsPath(), pluginType, "locales", currentLocale() + ".json"), "r", "utf-8-sig"))
+   except:
+      print "getPlugin : ", pluginType, " not found"
    
-   translations = json.load(codecs.open(os.path.join(yadomsServer.pluginsPath(), pluginName, "locales", currentLocale() + ".json"), "r", "utf-8-sig"))
    return translations

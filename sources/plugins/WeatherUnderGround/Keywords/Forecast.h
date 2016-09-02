@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IKeyword.h"
-#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "../specificHistorizers/ForecastHistorizer.h"
 
 namespace yApi = shared::plugin::yPluginApi;
@@ -72,8 +71,6 @@ public:
    void clearAllPeriods() const;
 
    // IKeyword implementation
-   void initialize(boost::shared_ptr<yApi::IYPluginApi> api,
-                   shared::CDataContainer details) const override;
    boost::shared_ptr<yApi::historization::IHistorizable> getHistorizable() const override;
    // [END] IKeyword implementation
 

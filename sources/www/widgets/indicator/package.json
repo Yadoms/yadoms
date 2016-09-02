@@ -1,7 +1,7 @@
 {
   "type": "indicator",
-  "version": "0.1",
-  "releaseType": "beta",
+	"version": "1.0.0",
+	"releaseType": "beta",
   "author": "Nicolas HILAIRE",
   "url": "https://github.com/Yadoms/yadoms/wiki/indicator",
   "credits": "",

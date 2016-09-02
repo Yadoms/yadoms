@@ -11,9 +11,9 @@ namespace rfxcomMessages
                     const RBUF& rbuf,
                     size_t rbufSize)
       : m_instantPower(boost::make_shared<yApi::historization::CPower>("instant")),
-        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_instantPower , m_batteryLevel , m_rssi})
+      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_instantPower , m_batteryLevel , m_rssi })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,

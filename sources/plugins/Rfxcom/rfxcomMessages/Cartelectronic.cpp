@@ -13,8 +13,8 @@ namespace rfxcomMessages
                                     const RBUF& rbuf,
                                     size_t rbufSize)
       : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-        m_keywords({m_rssi, m_batteryLevel})
+      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
+      m_keywords({ m_rssi, m_batteryLevel })
    {
       createSubType(rbuf.TIC.subtype, rbuf, rbufSize);
 

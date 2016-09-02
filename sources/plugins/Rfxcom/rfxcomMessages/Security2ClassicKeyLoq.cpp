@@ -9,11 +9,11 @@ namespace rfxcomMessages
 {
    CSecurity2ClassicKeyLoq::CSecurity2ClassicKeyLoq()
       : m_id(0),
-        m_button0(boost::make_shared<yApi::historization::CSwitch>("button0", yApi::EKeywordAccessMode::kGetSet)),
-        m_button1(boost::make_shared<yApi::historization::CSwitch>("button1", yApi::EKeywordAccessMode::kGetSet)),
-        m_button2(boost::make_shared<yApi::historization::CSwitch>("button2", yApi::EKeywordAccessMode::kGetSet)),
-        m_button3(boost::make_shared<yApi::historization::CSwitch>("button3", yApi::EKeywordAccessMode::kGetSet)),
-        m_keywords({m_button0, m_button1, m_button2, m_button3})
+      m_button0(boost::make_shared<yApi::historization::CSwitch>("button0", yApi::EKeywordAccessMode::kGetSet)),
+      m_button1(boost::make_shared<yApi::historization::CSwitch>("button1", yApi::EKeywordAccessMode::kGetSet)),
+      m_button2(boost::make_shared<yApi::historization::CSwitch>("button2", yApi::EKeywordAccessMode::kGetSet)),
+      m_button3(boost::make_shared<yApi::historization::CSwitch>("button3", yApi::EKeywordAccessMode::kGetSet)),
+      m_keywords({ m_button0, m_button1, m_button2, m_button3 })
    {
    }
 

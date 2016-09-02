@@ -12,9 +12,9 @@ namespace rfxcomMessages
               const std::string& command,
               const shared::CDataContainer& deviceDetails)
       : m_lightCmd(false),
-        m_light(boost::make_shared<yApi::historization::CSwitch>("light")),
-        m_fan(boost::make_shared<yApi::historization::CSwitch>("fan")),
-        m_keywords({m_light , m_fan})
+      m_light(boost::make_shared<yApi::historization::CSwitch>("light")),
+      m_fan(boost::make_shared<yApi::historization::CSwitch>("fan")),
+      m_keywords({ m_light , m_fan })
    {
       if (boost::iequals(keyword, m_light->getKeyword()))
       {
@@ -39,9 +39,9 @@ namespace rfxcomMessages
               unsigned int subType,
               const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_lightCmd(false),
-        m_light(boost::make_shared<yApi::historization::CSwitch>("light")),
-        m_fan(boost::make_shared<yApi::historization::CSwitch>("fan")),
-        m_keywords({m_light , m_fan})
+      m_light(boost::make_shared<yApi::historization::CSwitch>("light")),
+      m_fan(boost::make_shared<yApi::historization::CSwitch>("fan")),
+      m_keywords({ m_light , m_fan })
    {
       m_light->set(false);
       m_fan->set(false);
@@ -65,11 +65,11 @@ namespace rfxcomMessages
               const RBUF& rbuf,
               size_t rbufSize)
       : m_subType(0),
-        m_id(0),
-        m_lightCmd(false),
-        m_light(boost::make_shared<yApi::historization::CSwitch>("light")),
-        m_fan(boost::make_shared<yApi::historization::CSwitch>("fan")),
-        m_keywords({m_light , m_fan})
+      m_id(0),
+      m_lightCmd(false),
+      m_light(boost::make_shared<yApi::historization::CSwitch>("light")),
+      m_fan(boost::make_shared<yApi::historization::CSwitch>("fan")),
+      m_keywords({ m_light , m_fan })
    {
       // Should not be called (transmitter-only device)
       BOOST_ASSERT_MSG(false, "Constructing CFan object from received buffer is not possible, Cfan is transmitter-only device");

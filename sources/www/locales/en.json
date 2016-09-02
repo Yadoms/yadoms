@@ -61,13 +61,13 @@
       "unknownError": "Unknown Task error",
       "end": "Task end"
     },
-    "database" : {
-        "backup" : {
-            "name" : "Database backup",
-            "inprogress" : "Backup in progress...",
-            "success" : "Backup succeeded",
-            "fail" : "Backup failed"
-        }
+    "database": {
+      "backup": {
+        "name": "Database backup",
+        "inprogress": "Backup in progress...",
+        "success": "Backup succeeded",
+        "fail": "Backup failed"
+      }
     }
   },
   "common": {
@@ -213,7 +213,7 @@
       "pluginFailToDelete": "Fail to delete plugin __pluginName__",
       "pluginFailToConfigure": "Fail to configure plugin __pluginName__"
     },
-    "extra-commands" : {
+    "extra-commands": {
       "title": "Send extra command to plugin"
     },
     "configure-device": {
@@ -274,7 +274,7 @@
     },
     "show-log-plugin": {
       "title": "Plugin log view",
-      "failToGetLog" : "Fail to get log for __pluginName__"
+      "failToGetLog": "Fail to get log for __pluginName__"
     },
     "qrcode": {
       "title": "QR Code de Yadoms",
@@ -466,7 +466,7 @@
           "releaseTypeChoice": "Choose the release type you want to manage",
           "releaseType": {
             "beta": "Beta version - recommended for developpers only",
-            "testing": "Testing version - use it at your own risks",
+            "releaseCandidate": "Release Candidate version - use it at your own risks",
             "stable": "Stable version - the most recommended release type"
           },
           "yadoms": {
@@ -506,23 +506,26 @@
         },
         "maintenance": {
           "title": "Maintenance",
-          "type" : "Database engine",
-          "size" : "Database size",
-          "version" : "Version",
-          "host" : "Host",
-          "port" : "Port",
-          "name" : "Database",
-          "user" : "User",
-          "secured" : "Secured mode",
-          "backup" : "Start a database backup",
-          "lastBackup" : "Last backup",
-          "lastBackupDate" : "Realized on ",
-          "lastBackupSize" : "File size : ",
-          "lastBackupDownload" : "Download",
-          "lastBackupDelete" : "Delete",
-          "lastBackupLocation" : "Location : ",
-          "lastBackupDeleteConfirmTitle" : "Confirm delete",
-          "lastBackupDeleteConfirm" : "Delete the last backup ?"
+          "database": {
+            "title": "Database"
+          },
+          "type": "Database engine",
+          "size": "Database size",
+          "version": "Version",
+          "host": "Host",
+          "port": "Port",
+          "name": "Database",
+          "user": "User",
+          "secured": "Secured mode",
+          "backup": "Start a database backup",
+          "lastBackup": "Last backup",
+          "lastBackupDate": "Realized on ",
+          "lastBackupSize": "File size : ",
+          "lastBackupDownload": "Download",
+          "lastBackupDelete": "Delete",
+          "lastBackupLocation": "Location : ",
+          "lastBackupDeleteConfirmTitle": "Confirm delete",
+          "lastBackupDeleteConfirm": "Delete the last backup ?"
         },
         "about": {
           "title": "About",
@@ -535,9 +538,9 @@
           "plugins": "Plugins",
           "widgets": "Widgets",
           "table": {
-             "displayName": "Name",
-             "authors": "Author(s)",
-             "credits": "Credit(s)"
+            "displayName": "Name",
+            "authors": "Author(s)",
+            "credits": "Credit(s)"
           }
         }
       },

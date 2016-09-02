@@ -33,11 +33,6 @@ public:
 
 private:
    //--------------------------------------------------------------
-   /// \brief  The message sequence number
-   //--------------------------------------------------------------
-   boost::shared_ptr<ISequenceNumberProvider> m_seqNumberProvider;
-
-   //--------------------------------------------------------------
    /// \brief	                     calculate et check the checksum of the message
    /// \param [in] buffer            Buffer of the message
    /// \return                       true if the checksum is valid
@@ -58,40 +53,37 @@ private:
    void MatchLine(const unsigned char* buffer);
 
    //--------------------------------------------------------------
-   /// \brief	                     Historize TeleInfoData
-   /// \param [in] KeywordName       The keyword Name
-   /// \param [in] Value             The value of the data
-   //--------------------------------------------------------------
-   template <class T>
-   void HistorizeTeleInfoData(std::string KeywordName, long Value);
-
-   //--------------------------------------------------------------
    /// \brief	                     Create the Device with the counter Id
-   /// \param [in] CounterId         The counter Id
    //--------------------------------------------------------------
-   void CreateDevice(std::string CounterId);
+   void createDeviceAndKeywords( void );
 
    //--------------------------------------------------------------
    /// \brief  Keywords list
    //--------------------------------------------------------------
-
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_KeywordList;
-
-   //--------------------------------------------------------------
-   /// \brief  Details for keywords
-   //--------------------------------------------------------------
-
-   shared::CDataContainer m_KeywordDetails;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
 
    //--------------------------------------------------------------
    /// \brief  Details for the device
    //--------------------------------------------------------------
-
    shared::CDataContainer m_DeviceDetails;
 
    //--------------------------------------------------------------
    /// \brief  Keywords
    //--------------------------------------------------------------
+   boost::shared_ptr<yApi::historization::CEnergy>        m_baseCounter;
+   boost::shared_ptr<yApi::historization::CEnergy>        m_lowCostCounter;
+   boost::shared_ptr<yApi::historization::CEnergy>        m_normalCostCounter; 
+   boost::shared_ptr<yApi::historization::CEnergy>        m_EJPPeakPeriod;
+   boost::shared_ptr<yApi::historization::CEnergy>        m_EJPNormalPeriod;
+   boost::shared_ptr<yApi::historization::CEnergy>        m_tempoBlueDaysLowCostPeriod;
+   boost::shared_ptr<yApi::historization::CEnergy>        m_tempoBlueDaysNormalCostPeriod;
+   boost::shared_ptr<yApi::historization::CEnergy>        m_tempoRedDaysLowCostPeriod;
+   boost::shared_ptr<yApi::historization::CEnergy>        m_tempoRedDaysNormalCostPeriod;
+   boost::shared_ptr<yApi::historization::CEnergy>        m_tempoWhiteDaysLowCostPeriod;
+   boost::shared_ptr<yApi::historization::CEnergy>        m_tempoWhiteDaysNormalCostPeriod;
+   boost::shared_ptr<yApi::historization::CCurrent>       m_instantCurrent;
+   boost::shared_ptr<yApi::historization::CApparentPower> m_apparentPower;
+
 
    boost::shared_ptr<CRunningPeriod> m_TimePeriod;
    boost::shared_ptr<CForecastTomorrow> m_ForecastPeriod;

@@ -11,8 +11,8 @@ namespace rfxcomMessages
                       const std::string& command,
                       const shared::CDataContainer& deviceDetails)
       : m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_camera , m_rssi})
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_camera , m_rssi })
    {
       m_camera->setCommand(command);
       m_rssi->set(0);
@@ -27,8 +27,8 @@ namespace rfxcomMessages
                       unsigned int subType,
                       const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_camera , m_rssi})
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_camera , m_rssi })
    {
       m_camera->set(yApi::historization::ECameraMoveCommand::kCenterPosition);
       m_rssi->set(0);
@@ -46,8 +46,8 @@ namespace rfxcomMessages
                       const RBUF& rbuf,
                       size_t rbufSize)
       : m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_camera , m_rssi})
+      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      m_keywords({ m_camera , m_rssi })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,

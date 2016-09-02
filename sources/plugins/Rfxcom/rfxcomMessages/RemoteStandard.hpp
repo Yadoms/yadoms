@@ -19,8 +19,8 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       explicit CRemoteStandard(const std::string& model)
          : m_model(model),
-           m_keyword(boost::make_shared<THistorizer>("command")),
-           m_keywords({m_keyword})
+         m_keyword(boost::make_shared<THistorizer>("command")),
+         m_keywords({ m_keyword })
       {
       }
 
