@@ -79,9 +79,9 @@ protected:
    /// \param [in] message          Message received
    //--------------------------------------------------------------
    void processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
-                         const message::CReceivedMessage& message) const;
+                         const message::CReceivedMessage& message);
    void processEvent(boost::shared_ptr<yApi::IYPluginApi> api,
-                     const message::CReceivedMessage& message) const;
+                     const message::CReceivedMessage& message);
 
    //--------------------------------------------------------------
    /// \brief	                     Process radio ERP1 received messages
@@ -89,7 +89,32 @@ protected:
    /// \param [in] data             Data of the ERP1 message
    //--------------------------------------------------------------
    void processRadioErp1_1BS(boost::shared_ptr<yApi::IYPluginApi> api,
-                             const std::vector<unsigned char>& data) const;
+                             const std::vector<unsigned char>& data);
+   void processRadioErp1_4BS(boost::shared_ptr<yApi::IYPluginApi> api,
+                             const std::vector<unsigned char>& data);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Extract sender ID from buffer
+   /// \param [in] data             Buffer containing sender ID
+   /// \param [in] startIndex       Index of the first byte
+   //--------------------------------------------------------------
+   static std::string extractSenderId(const std::vector<unsigned char>& data,
+                                      int startIndex);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Scale a value from a range to another
+   /// \param [in] inValue          Input value to scale
+   /// \param [in] inRangeMin       Input value range start
+   /// \param [in] inRangeMax       Input value range end
+   /// \param [in] outScaleMin      Output range start
+   /// \param [in] outScaleMax      Output range end
+   /// \return                      Scaled value
+   //--------------------------------------------------------------
+   static double CEnOcean::scaleToDouble(int inValue,
+                                         int inRangeMin,
+                                         int inRangeMax,
+                                         int outScaleMin,
+                                         int outScaleMax);
 
    //--------------------------------------------------------------
    /// \brief	                     Requests to EnOcean
@@ -133,6 +158,11 @@ private:
    /// \brief  The communication port
    //--------------------------------------------------------------
    boost::shared_ptr<shared::communication::IAsyncPort> m_port;
+
+   //--------------------------------------------------------------
+   /// \brief  Api access
+   //--------------------------------------------------------------
+   boost::shared_ptr<yApi::IYPluginApi> m_api;
 
    //--------------------------------------------------------------
    /// \brief  The communication port logger

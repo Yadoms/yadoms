@@ -29,6 +29,8 @@ CEnOcean::~CEnOcean()
 
 void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
+   m_api = api;
+
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
    std::cout << "CEnOcean is starting..." << std::endl;
@@ -54,7 +56,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventDeviceCommand:
          {
             // Command received from Yadoms
-            auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
+            auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
             std::cout << "Command received : " << yApi::IDeviceCommand::toString(command) << std::endl;
 
             onCommand(api, command);
@@ -274,11 +276,15 @@ void CEnOcean::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       std::cerr << "Error processing received message : " << e.what() << std::endl;
    }
+   catch (std::exception& e)
+   {
+      std::cerr << "Error processing received message : " << e.what() << std::endl;
+   }
 }
 
 
 void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
-                                const message::CReceivedMessage& message) const
+                                const message::CReceivedMessage& message)
 {
    enum ERORG
    {
@@ -301,8 +307,8 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
    switch (rorg)
    {
    case kRBS: break;//TODO
-   case k1BS: processRadioErp1_1BS(api, message.data()); break;//TODO
-   case k4BS: break;//TODO
+   case k1BS: processRadioErp1_1BS(api, message.data()); break;
+   case k4BS: processRadioErp1_4BS(api, message.data()); break;
    case kVLD: break;//TODO
    case kMSC: break;//TODO
    case kADT: break;//TODO
@@ -341,13 +347,70 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void CEnOcean::processRadioErp1_1BS(boost::shared_ptr<yApi::IYPluginApi> api,
-                                    const std::vector<unsigned char>& data) const
+                                    const std::vector<unsigned char>& data)
 {
    //TODO
 }
 
+void CEnOcean::processRadioErp1_4BS(boost::shared_ptr<yApi::IYPluginApi> api,
+                                    const std::vector<unsigned char>& data)
+{
+   auto temperature = data[3];
+   auto isTeachIn = !(data[4] & 0x08);
+
+   auto senderId = extractSenderId(data, 5);
+
+   auto status = data[9]; //TODO : status is not used...
+
+   static const std::string keywordName("temperature");
+   auto keyword(boost::make_shared<yApi::historization::CTemperature>(keywordName));
+
+   if (!m_api->deviceExists(senderId))
+   {
+      if (!isTeachIn)
+         throw CProtocolException((boost::format("Received message from unknown device %1%, ignored") % senderId).str());
+
+      //TODO il semblerait qu'il existe un bit dans data[4] qui indique une variante particulière du mode "teach in" qui fournit fabricant/profile/type du device directement dans ce message. Cependant cette fonction n'est pas documentée dans la spec.
+      m_api->declareDevice(senderId, std::string(), keyword);
+   }
+   else if (!m_api->keywordExists(senderId, keywordName))
+   {
+      m_api->declareKeyword(senderId, keyword);
+   }
+
+   //TODO gérer les FUNC
+   //TODO gérer les TYPE
+
+   keyword->set(scaleToDouble(temperature, 255, 0, -40, 0));
+   m_api->historizeData(senderId, keyword);
+}
+
+double CEnOcean::scaleToDouble(int inValue,
+                               int inRangeMin,
+                               int inRangeMax,
+                               int outScaleMin,
+                               int outScaleMax)
+{
+   double inRange = inRangeMax - inRangeMin;
+   double outScale = outScaleMax - outScaleMin;
+
+   if (inRange == 0 || outScale == 0)
+      throw std::out_of_range((boost::format("Unable to scale value %1% (min=%2%, max=%3%) to range [%4%, %5%]") % inValue % inRangeMin % inRangeMax % outScaleMin % outScaleMax).str());
+
+   return (inValue - inRangeMin) * (outScale / inRange) + outScaleMin;
+}
+
+std::string CEnOcean::extractSenderId(const std::vector<unsigned char>& data,
+                                      int startIndex)
+{
+   return std::to_string((data[startIndex + 3] << 24)
+      + (data[startIndex + 2] << 16)
+      + (data[startIndex + 1] << 8)
+      + (data[startIndex]));
+}
+
 void CEnOcean::processEvent(boost::shared_ptr<yApi::IYPluginApi> api,
-                            const message::CReceivedMessage& message) const
+                            const message::CReceivedMessage& message)
 {
    if (message.header().dataLength() < 1)
       throw CProtocolException((boost::format("RadioERP1 message : wrong data size (%1%, < 1)") % message.header().dataLength()).str());
