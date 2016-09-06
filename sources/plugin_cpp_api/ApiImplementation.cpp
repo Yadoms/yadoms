@@ -7,7 +7,6 @@
 #include "ExtraCommand.h"
 #include "ManuallyDeviceCreation.h"
 
-
 namespace plugin_cpp_api
 {
    CApiImplementation::CApiImplementation()
@@ -649,6 +648,32 @@ namespace plugin_cpp_api
    shared::event::CEventHandler& CApiImplementation::getEventHandler()
    {
       return m_pluginEventHandler;
+   }
+
+   bool CApiImplementation::isDeveloperMode() const
+   {
+      toYadoms::msg req;
+      req.mutable_developermoderequest();
+
+      auto exists = false;
+      try
+      {
+         send(req,
+              [](const toPlugin::msg& ans) -> bool
+         {
+            return ans.has_developermodeanswer();
+         },
+              [&](const toPlugin::msg& ans) -> void
+         {
+            exists = ans.developermodeanswer().exists();
+         });
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : isDevelopperMode()" << std::endl;
+         throw;
+      }
+      return exists;
    }
 } // namespace plugin_cpp_api	
 

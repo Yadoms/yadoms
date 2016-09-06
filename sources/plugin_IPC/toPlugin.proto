@@ -58,6 +58,9 @@ message ManuallyDeviceCreation {
 	optional string configuration = 2;
 }
 
+message DeveloperModeAnswer{
+    required bool exists = 1;
+}
 
 message msg {
 	optional string error = 1;
@@ -77,6 +80,7 @@ message msg {
 		FindRecipientsFromFieldAnswer findRecipientsFromFieldAnswer = 14;
 		RecipientFieldExitsAnswer recipientFieldExitsAnswer = 15;
 		ManuallyDeviceCreation manuallyDeviceCreation = 16;
+		DeveloperModeAnswer developerModeAnswer = 17;
 	}
 }
 

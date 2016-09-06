@@ -79,6 +79,7 @@ namespace pluginSystem
       shared::CDataContainer getConfiguration() override;
       const boost::filesystem::path& getDataPath() const override;
       shared::event::CEventHandler& getEventHandler() override;
+      bool isDeveloperMode() const override;
       // [END] IYPluginApi implementation 
 
       //-----------------------------------------------------

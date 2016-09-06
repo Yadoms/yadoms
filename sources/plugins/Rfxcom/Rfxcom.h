@@ -35,17 +35,21 @@ public:
 protected:
    //--------------------------------------------------------------
    /// \brief	                     Send a message to the RFXCom
+   /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] buffer           Buffer to send
    /// \param [in] needAnswer       true if answer is needed. If true, a timeout will occur if no answer is received.
    //--------------------------------------------------------------
-   void send(const shared::communication::CByteBuffer& buffer,
+   void send(boost::shared_ptr<yApi::IYPluginApi> api,
+             const shared::communication::CByteBuffer& buffer,
              bool needAnswer);
 
    //--------------------------------------------------------------
    /// \brief	                    Send several messages to the RFXCom
+   /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] buffers          Buffers to send
    //--------------------------------------------------------------
-   void send(boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > buffers);
+   void send(boost::shared_ptr<yApi::IYPluginApi> api, 
+             boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > buffers);
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
@@ -96,8 +100,9 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	                     Initialize the connected RFXCom
+   /// \param [in] api              Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void initRfxcom();
+   void initRfxcom(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	                     Process error (disconnect and retry connect later)
