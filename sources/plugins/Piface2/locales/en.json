@@ -1,0 +1,6 @@
+{
+   "name": "Piface2",
+   "description": "This plugin configures GPIO for using the Piface2 board",
+   "configurationSchema":{
+	}
+}

@@ -1,0 +1,11 @@
+{
+   "type": "Piface2",
+   "version": "1.0.0",
+   "releaseType": "beta",
+   "author": "Jean-Michel BERHAULT",
+   "url": "https://github.com/Yadoms/yadoms/wiki/Piface2",
+   "credits": "wiringPi",
+   "supportedPlatforms":"all",
+   "configurationSchema": {
+   }
+}
