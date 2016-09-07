@@ -328,7 +328,7 @@ namespace pluginSystem
    {
       toPlugin::msg ans;
       auto answer = ans.mutable_developermodeanswer();
-      answer->set_exists(m_pluginApi->isDeveloperMode());
+      answer->set_enabled(m_pluginApi->isDeveloperMode());
       send(ans);
    }
 

@@ -665,12 +665,12 @@ namespace plugin_cpp_api
          },
               [&](const toPlugin::msg& ans) -> void
          {
-            exists = ans.developermodeanswer().exists();
+            exists = ans.developermodeanswer().enabled();
          });
       }
       catch (std::exception&)
       {
-         std::cerr << "Call was : isDevelopperMode()" << std::endl;
+         std::cerr << "Call was : isDeveloperMode()" << std::endl;
          throw;
       }
       return exists;
