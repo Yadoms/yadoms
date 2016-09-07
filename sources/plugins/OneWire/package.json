@@ -1,6 +1,6 @@
 {
    "type": "OneWire",
-   "version": "1.0",
+   "version": "1.0.0",
    "releaseType": "beta",
    "author": "Sébastien GALLOU",
    "url": "https://github.com/Yadoms/yadoms/wiki/OneWire",
