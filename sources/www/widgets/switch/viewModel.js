@@ -5,17 +5,19 @@ widgetViewModelCtor =
     * @constructor
     */
       function switchViewModel() {
+		  
+		  var self = this;
+		  
           //observable data
           this.state = [];
           this.command = ko.observable(1);
-
           this.kind = ko.observable("simple");
           this.icon = ko.observable("");
-
           this.capacity = [];
-
+		  this.accessMode = [];
           this.showDeviceName = ko.observable(true);
-
+          this.readonly = ko.observable(true);
+		  
           this.commandClick = function (newState) {
 
               var self = this;
@@ -24,7 +26,7 @@ widgetViewModelCtor =
                   var cmd = null;
 
                   $.each(this.widget.configuration.devices, function (index, device) {
-
+				  	  
                       if (!isNullOrUndefined(self.capacity[index])) {
                           switch (self.capacity[index]) {
                               case "dimmable": cmd = newState == 1 ? 100 : 0; break;
@@ -32,7 +34,9 @@ widgetViewModelCtor =
                               default: cmd = newState; break;
                           }
 
-                          KeywordManager.sendCommand(device.content.source.keywordId, cmd.toString());
+						  // We send the command only for Set and GetSet variables
+						  if ( self.accessMode[index] === "GetSet" || self.accessMode[index] === "Set" )
+                             KeywordManager.sendCommand(device.content.source.keywordId, cmd.toString());
                       }
                   });
               }
@@ -60,6 +64,7 @@ widgetViewModelCtor =
 
               if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.devices))) {
                   $.each(this.widget.configuration.devices, function (index, device) {
+					  
                       //we register keyword new acquisition
                       self.widgetApi.registerKeywordAcquisitions(device.content.source.keywordId);
                   });
@@ -78,21 +83,37 @@ widgetViewModelCtor =
 
               //we ask for device information
               if ((!isNullOrUndefined(this.widget.configuration.devices))) {
+				  
+				  var readOnlyMode=true;
+				  var arrayOfDeffered = [];
 
                   $.each(this.widget.configuration.devices, function (index, device) {
 
                       if (!isNullOrUndefined(device.content.source.deviceId)) {
+						  
                           // Get the capacity of the keyword
-                         KeywordManager.get(device.content.source.keywordId)
+                         var deffered = KeywordManager.get(device.content.source.keywordId)
                          .done(function (keyword) {
-                           self.capacity[index] = keyword.capacityName;
+                           self.capacity[index]   = keyword.capacityName;
+						   self.accessMode[index] = keyword.accessMode;
+						   
+						   if ( keyword.accessMode ==="GetSet" )
+							  readOnlyMode = false;
+						   
                          });
+						 
+						 arrayOfDeffered.push(deffered);
 
-                          //Initialisation initiale
-                          if (isNullOrUndefined(self.state[index]))
+                         //Initialization
+                         if (isNullOrUndefined(self.state[index]))
                               self.state[index] = 0;
                       }
                   });
+				  
+				  // This variable is used only for the display
+                  $.whenAll(arrayOfDeffered).done(function () {
+				     self.readonly ( readOnlyMode );
+				  });				  
               }
           };
 

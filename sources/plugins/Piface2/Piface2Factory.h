@@ -29,8 +29,6 @@ public:
    //--------------------------------------------------------------
    virtual ~CPiface2Factory();
 
-protected:
-
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
    /// \param [in] api              Plugin execution context (Yadoms API)
@@ -47,6 +45,8 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywordsToDeclare;
 
    shared::event::CEventHandler m_Event;
+
+   std::map<std::string, boost::shared_ptr<CIO> > m_mapKeywordsName;
 
    boost::shared_ptr<CIO> m_WriteIO;
    boost::shared_ptr<CIO> m_ReadIO;

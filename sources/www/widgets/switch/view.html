@@ -5,8 +5,8 @@
             <button class="btn btn-default" data-bind="css: { active: command() == 0, 'btn-primary': command() == 1, 'btn-default': command() != 1 }, event: {click: function() {commandClick(1)}}">1</button>
         </div>
         <div class="action btn-group-vertical btn-toggle hidden" data-bind="css: { hidden: kind() != 'verticalInverter'}">
-            <button class="btn btn-default" data-bind="css: { active: command() == 1, 'btn-primary': command() == 1, 'btn-default': command() != 1 }, event: {click: function() {commandClick(1)}}"><span class="glyphicon glyphicon-chevron-up"></span></button>
-            <button class="btn btn-primary active" data-bind="css: { active: command() == 0, 'btn-primary': command() == 0, 'btn-default': command() != 0 }, event: {click: function() {commandClick(0)}}"><span class="glyphicon glyphicon-chevron-down"></span></button>
+            <button class="btn btn-default" data-bind="disable: readonly, css: {active: command() == 1, 'btn-primary': command() == 1, 'btn-default': command() != 1 }, event: {click: function() {commandClick(1)}}"><span class="glyphicon glyphicon-chevron-up"></span></button>
+            <button class="btn btn-primary active" data-bind="disable: readonly, css: {active: command() == 0, 'btn-primary': command() == 0, 'btn-default': command() != 0 }, event: {click: function() {commandClick(0)}}"><span class="glyphicon glyphicon-chevron-down"></span></button>
         </div>
         <div class="action btn-group btn-toggle hidden" style="padding-top: 11px;" data-bind="css: { hidden: kind() != 'pushButton'}">
             <button class="btn btn-lg btn-primary" data-bind="event: {click: function() {commandClick(1)}}">

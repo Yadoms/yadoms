@@ -11,8 +11,11 @@ CPiface2Factory::CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
    // TODO : initialisation WiringPi
 
    // IO Configuration
-   m_WriteIO = boost::make_shared<CIO>("IO1", 0, EIOType::kWrite);
-   m_ReadIO  = boost::make_shared<CIO>("IO2", 0, EIOType::kRead);
+   m_WriteIO = boost::make_shared<CIO>("IO1", 0, yApi::EKeywordAccessMode::kGetSet);
+   m_ReadIO  = boost::make_shared<CIO>("IO2", 1, yApi::EKeywordAccessMode::kGet);
+
+   m_mapKeywordsName["IO1"] = m_WriteIO;
+   m_mapKeywordsName["IO2"] = m_ReadIO;
 
    // IO subscription
    m_ReadIO->subscribeForConnectionEvents(m_Event, forId);
@@ -24,11 +27,16 @@ CPiface2Factory::CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void CPiface2Factory::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
-                         boost::shared_ptr<const yApi::IDeviceCommand> command)
+                                boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
    std::cout << "Command received :" << yApi::IDeviceCommand::toString(command) << std::endl;
 
-   // TODO : Dispatch entre les IOs, et write ce qu'il va bien
+   auto search = m_mapKeywordsName.find(command->getKeyword());
+
+   if (search != m_mapKeywordsName.end())
+      search->second->write(boost::lexical_cast<bool>(command->getBody()));
+   else
+      std::cerr << "Cannot find keyword " << command->getKeyword();
 }
 
 CPiface2Factory::~CPiface2Factory()

@@ -9,14 +9,6 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-//-----------------------------------------------------
-///\brief               The IO type values
-//-----------------------------------------------------   
-DECLARE_ENUM_HEADER(EIOType,
-((Read))
-((Write))
-);
-
 //--------------------------------------------------------------
 /// \brief	the structure sent with the event
 //--------------------------------------------------------------
@@ -40,7 +32,7 @@ public:
    //--------------------------------------------------------------
    explicit CIO(const std::string& keywordName, 
                 const int pin, 
-                EIOType configuration);
+                const yApi::EKeywordAccessMode& accessMode);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -62,9 +54,7 @@ public:
    //--------------------------------------------------------------
    void subscribeForConnectionEvents(shared::event::CEventHandler& forEventHandler, int forId);
 
-   void writeValue(bool state);
-
-   bool isWritable(void);
+   void write(bool state);
 
 private:
 
