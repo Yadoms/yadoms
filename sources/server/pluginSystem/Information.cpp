@@ -31,8 +31,8 @@ namespace pluginSystem
             throw shared::exception::CInvalidParameter("Error reading package.json : plugin type can not be empty");
 
          m_version = m_package.get<std::string>("version");
-         if (m_version.empty() || !regex_match(m_version, boost::regex("\\d+.\\d+")))
-            throw shared::exception::CInvalidParameter("Error reading package.json : plugin version doesn't match expected format (x.x)");
+         if (m_version.empty() || !regex_match(m_version, boost::regex("\\d+.\\d+.\\d+")))
+            throw shared::exception::CInvalidParameter("Error reading package.json : plugin version doesn't match expected format (x.x.x)");
 
          m_releaseType = m_package.get<shared::versioning::EReleaseType>("releaseType");
 
