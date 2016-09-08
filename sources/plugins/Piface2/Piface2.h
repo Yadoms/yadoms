@@ -4,6 +4,12 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
+// Event IDs
+enum
+{
+   kEvtIOStateReceived = yApi::IYPluginApi::kPluginFirstEventId // Always start from shared::event::CEventHandler::kUserFirstId
+};
+
 //--------------------------------------------------------------
 /// \brief	This class is the Piface2 plugin
 /// \note   This plugin configure GPIOs of the Pi board for using the Piface2 extension board.
@@ -25,7 +31,12 @@ public:
    void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
    // [END] IPlugin implementation
 
+protected:
+
 private:
+   //--------------------------------------------------------------
+   /// \brief	The device name
+   //--------------------------------------------------------------
    std::string m_deviceName;
 };
 

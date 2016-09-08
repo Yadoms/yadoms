@@ -8,8 +8,13 @@ include("../YadomsPluginsCommon.cmake")
 set(PIFACE2_PLUGIN_SOURCES
 	stdafx.h
 	stdafx.cpp
-        Piface2.h
-        Piface2.cpp
+    Piface2.h
+    Piface2.cpp
+    Piface2Factory.h
+    Piface2Factory.cpp
+	IIO.h
+	IO.h
+	IO.cpp
 	)
 
 #########################################
