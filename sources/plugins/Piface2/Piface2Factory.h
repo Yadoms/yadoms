@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/event/eventHandler.hpp>
+#include <shared/event/EventHandler.hpp>
 #include "IO.h"
 
 // Shortcut to yPluginApi namespace

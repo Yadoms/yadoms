@@ -4,7 +4,7 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/Export.h>
 #include <shared/enumeration/EnumHelpers.hpp>
-#include <shared/event/eventHandler.hpp>
+#include <shared/event/EventHandler.hpp>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
