@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Piface2Factory.h"
+#include "wiringPi.h"
 
 static const std::string Model("Piface2");
 
@@ -8,7 +9,8 @@ CPiface2Factory::CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
                                  shared::CDataContainer details,
                                  int forId)
 {
-   // TODO : initialisation WiringPi
+   // Initializing wiringPi
+   wiringPiSetup();
 
    // IO Configuration
    m_WriteIO = boost::make_shared<CIO>("IO1", 0, yApi::EKeywordAccessMode::kGetSet);

@@ -82,6 +82,4 @@ private:
    /// \brief	The port used in the Pi2
    //--------------------------------------------------------------
    int m_portUsed;
-
-   bool m_Writable;
 };
