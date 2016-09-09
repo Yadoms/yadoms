@@ -35,11 +35,11 @@
 }
 
 .summary-table {
-    width: 50%;
+    width: auto;
 }
 
 .summary-table td {
-    width: 50%;
+    width: auto;
 }
 
 .summary-table .header {
