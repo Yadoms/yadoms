@@ -2,6 +2,8 @@
 #include "yPluginApiImplementation.h"
 #include <shared/exception/EmptyResult.hpp>
 #include <shared/Log.h>
+#include <startupOptions/IStartupOptions.h>
+#include <shared/ServiceLocator.h>
 
 namespace pluginSystem
 {
@@ -211,6 +213,11 @@ namespace pluginSystem
       BOOST_ASSERT(false); // No event handler required here
       static shared::event::CEventHandler evtHandler;
       return evtHandler;
+   }
+
+   bool CYPluginApiImplementation::isDeveloperMode() const
+   {
+      return shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getDeveloperMode();
    }
 
    int CYPluginApiImplementation::getPluginId() const

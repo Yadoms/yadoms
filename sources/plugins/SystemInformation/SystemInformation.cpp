@@ -30,7 +30,7 @@ enum
 void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    std::cout << "SystemInformation is starting..." << std::endl;
-
+      
    m_configuration.initializeWith(api->getConfiguration());
 
    shared::CDataContainer details;

@@ -204,6 +204,8 @@ namespace pluginSystem
          break;
       case toYadoms::msg::kHistorizeData: processHistorizeData(toYadomsProtoBuffer.historizedata());
          break;
+      case toYadoms::msg::kDeveloperModeRequest: processDeveloperModeRequest(toYadomsProtoBuffer.developermoderequest());
+         break;
       default:
          throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
       }
@@ -322,6 +324,13 @@ namespace pluginSystem
       m_pluginApi->historizeData(msg.device(), dataVect);
    }
 
+   void CIpcAdapter::processDeveloperModeRequest(const toYadoms::DeveloperModeRequest& msg)
+   {
+      toPlugin::msg ans;
+      auto answer = ans.mutable_developermodeanswer();
+      answer->set_enabled(m_pluginApi->isDeveloperMode());
+      send(ans);
+   }
 
    void CIpcAdapter::postStopRequest()
    {
