@@ -193,7 +193,7 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
    // Stop timeout
    m_waitForAnswerTimer->stop();
 
-   m_logger.logReceived(data); // TODO : To be deleted
+   if (api->isDeveloperMode()) m_logger.logReceived(data);
 
    m_transceiver->decodeTeleInfoMessage(api, data);
 
