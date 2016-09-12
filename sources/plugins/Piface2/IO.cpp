@@ -2,6 +2,8 @@
 #include "IO.h"
 #include "staticInterrupts.h"
 #include "wiringPi.h"
+#include "InitializationException.hpp"
+#include <errno.h>
 
 CIO::CIO(const std::string& keywordName, 
          const int pin,
@@ -16,9 +18,10 @@ CIO::CIO(const std::string& keywordName,
 
    if ( accessMode == yApi::EKeywordAccessMode::kGet)
    {
-      pinMode (pin, INPUT);
-      wiringPiISR( pin, INT_EDGE_BOTH, interrupt[pin] );
+      if (wiringPiISR( pin, INT_EDGE_BOTH, interrupt[pin] ) == -1)
+         throw CInitializationException( strerror (errno) );
 
+      pinMode (pin, INPUT);
       ConfigurePullResistance ( pullResistanceState );
    }
 }
