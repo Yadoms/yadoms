@@ -2,6 +2,84 @@
    "name": "Piface2",
    "description": "Ce plugin configure les GPIOs de la Pi pour la carte Piface2",
    "configurationSchema":{
+		"DI0": {
+			   "name": "Entrée digitale 0",
+			   "description": "Active la résistance de pullup de cette entrée",
+			   "values": {
+					"Disable" : "Désactivé",
+					"Pullup"  : "Pullup",
+					"Pulldown": "Pulldown"
+				}
+		},
+		"DI1": {
+			   "name": "Entrée digitale 1",
+			   "description": "Active la résistance de pullup de cette entrée",
+			   "values": {
+					"Disable" : "Désactivé",
+					"Pullup"  : "Pullup",
+					"Pulldown": "Pulldown"
+				}
+		},
+		"DI2": {
+			   "name": "Entrée digitale 2",
+			   "description": "Active la résistance de pullup de cette entrée",
+			   "values": {
+					"Disable" : "Désactivé",
+					"Pullup"  : "Pullup",
+					"Pulldown": "Pulldown"
+				}
+		},
+		"DI3": {
+			   "name": "Entrée digitale 3",
+			   "description": "Active la résistance de pullup de cette entrée",
+			   "values": {
+					"Disable" : "Désactivé",
+					"Pullup"  : "Pullup",
+					"Pulldown": "Pulldown"
+				}
+		},
+		"DI4": {
+			   "name": "Entrée digitale 4",
+			   "description": "Active la résistance de pullup de cette entrée",
+			   "values": {
+					"Disable" : "Désactivé",
+					"Pullup"  : "Pullup",
+					"Pulldown": "Pulldown"
+				}
+		},
+		"DI5": {
+			   "name": "Entrée digitale 5",
+			   "description": "Active la résistance de pullup de cette entrée",
+			   "values": {
+					"Disable" : "Désactivé",
+					"Pullup"  : "Pullup",
+					"Pulldown": "Pulldown"
+				}
+		},
+		"DI6": {
+			   "name": "Entrée digitale 6",
+			   "description": "Active la résistance de pullup de cette entrée",
+			   "values": {
+					"Disable" : "Désactivé",
+					"Pullup"  : "Pullup",
+					"Pulldown": "Pulldown"
+				}
+		},
+		"DI7": {
+			   "name": "Entrée digitale 7",
+			   "description": "Active la résistance de pullup de cette entrée",
+			   "values": {
+					"Disable" : "Désactivé",
+					"Pullup"  : "Pullup",
+					"Pulldown": "Pulldown"
+				}
+		}
+	},
+	"customLabels": {
+		"pluginState": {
+                        "InitializationError": "Erreur d'initialisation",
+			"updateConfiguration": "Mise à jour de la configuration..."
+		}
 	}
 }
 

@@ -5,9 +5,12 @@
 #include <shared/Export.h>
 #include <shared/enumeration/EnumHelpers.hpp>
 #include <shared/event/EventHandler.hpp>
+#include "IPf2Configuration.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
+
+//TODO : Ajouter les pull-up, ainsi que dans la configuration du plugin, pour les 8 IOs, indépendamment.
 
 //--------------------------------------------------------------
 /// \brief	the structure sent with the event
@@ -15,7 +18,8 @@ namespace yApi = shared::plugin::yPluginApi;
 typedef struct CIOState
 {
    int pin;
-   boost::shared_ptr<yApi::historization::IHistorizable> keyword;
+   std::string keywordName;
+   bool value;
 }IOState;
 
 //--------------------------------------------------------------
@@ -28,10 +32,12 @@ public:
    /// \brief	  Constructor
    /// \param[in] keywordName   The keyword name
    /// \param[in] pin           The pin number for the initialization
+   /// \param[in] pullupEnabled Pullup resistance is enabled
    /// \param[in] configuration The configuration of the pin
    //--------------------------------------------------------------
    explicit CIO(const std::string& keywordName, 
-                const int pin, 
+                const int pin,
+                const EPullResistance pullResistanceState, 
                 const yApi::EKeywordAccessMode& accessMode);
 
    //--------------------------------------------------------------
@@ -43,25 +49,25 @@ public:
    boost::shared_ptr<const yApi::historization::IHistorizable> historizable() const override;
    // [END] ILoad Implementation
 
-   // TODO : A mettre éventuellement dans l'IIO
    //--------------------------------------------------------------
-   /// \brief	                     Subscribe to the connection/disconnection events
-   /// \param [in] forEventHandler  The event handler to notify for these events
-   /// \param [in] forId            The event id to send for these events (set kNoEvent to unsubscribe)
-   /// \throw exception::CInvalidParameter if try to subscribe on event for which a subscription already exists (user must unsubscribe first)
-   /// \note The raised event contains a bool data : true if port was connected, false if port was disconnected
-   /// \note Must be called before start
+   /// \brief	    ConfigurePullResistance
+   /// \param[in] pullResistanceState state of the pull resistanceord
    //--------------------------------------------------------------
-   void subscribeForConnectionEvents(shared::event::CEventHandler& forEventHandler, int forId);
+   void ConfigurePullResistance(const EPullResistance pullResistanceState);
 
-   void write(bool state);
+   //--------------------------------------------------------------
+   /// \brief	    Set
+   /// \param[in] state          the new state of the IO
+   /// \param[in] boardAccess    writing the value to the board is necessary
+   //--------------------------------------------------------------
+   void set(bool state, bool boardAccess);
+
+protected:
+   void writeHardware(bool state);
 
 private:
 
-   //--------------------------------------------------------------
-   /// \brief	    function used to post a message
-   //--------------------------------------------------------------
-   void notifyEventHandler(void);
+   //std::string m_keywordName;
 
    //--------------------------------------------------------------
    /// \brief	    Keyword
@@ -71,12 +77,12 @@ private:
    //--------------------------------------------------------------
    /// \brief	The event handler to notify for events ( interrupt due to change value )
    //--------------------------------------------------------------
-   shared::event::CEventHandler* m_InterruptEventHandler;
+   //shared::event::CEventHandler* m_InterruptEventHandler;
 
    //--------------------------------------------------------------
    /// \brief	The event id to notify for events ( interrupt due to change value )
    //--------------------------------------------------------------
-   int m_InterruptEventId;
+   //int m_InterruptEventId;
 
    //--------------------------------------------------------------
    /// \brief	The port used in the Pi2

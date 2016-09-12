@@ -1,33 +1,42 @@
 #include "stdafx.h"
 #include "IO.h"
+#include "staticInterrupts.h"
 #include "wiringPi.h"
 
 CIO::CIO(const std::string& keywordName, 
-         const int pin, 
+         const int pin,
+         const EPullResistance pullResistanceState, 
          const yApi::EKeywordAccessMode& accessMode)
    : m_value(boost::make_shared<yApi::historization::CSwitch>(keywordName, accessMode)),
-   m_InterruptEventHandler(NULL),
-   m_InterruptEventId(shared::event::kNoEvent),
    m_portUsed(pin)
 {
-
    // Configuring the access type
    if ( accessMode == yApi::EKeywordAccessMode::kGetSet)
       pinMode (pin, OUTPUT);
 
    if ( accessMode == yApi::EKeywordAccessMode::kGet)
+   {
       pinMode (pin, INPUT);
+      wiringPiISR( pin, INT_EDGE_BOTH, interrupt[pin] );
+
+      ConfigurePullResistance ( pullResistanceState );
+   }
 }
 
 CIO::~CIO()
 {
 }
 
-void CIO::write(bool state)
+void CIO::set(bool state, bool boardAccess)
 {
    std::cout << m_value->getKeyword() << "set to " << state << std::endl;
    m_value->set( state );
 
+   if (boardAccess) writeHardware (state);
+}
+
+void CIO::writeHardware(bool state)
+{
    // Writing the value
    if (state)
       digitalWrite (m_portUsed, HIGH);
@@ -35,19 +44,20 @@ void CIO::write(bool state)
       digitalWrite (m_portUsed, LOW);
 }
 
-void CIO::subscribeForConnectionEvents(shared::event::CEventHandler& forEventHandler, int forId)
+void CIO::ConfigurePullResistance(const EPullResistance pullResistanceState)
 {
-   m_InterruptEventHandler = &forEventHandler;
-   m_InterruptEventId = forId;
-}
-
-void CIO::notifyEventHandler( void )
-{
-   //set the statut
-   m_value->set( digitalRead ( m_portUsed ) );
-
-   if (m_InterruptEventHandler)
-      m_InterruptEventHandler->postEvent<const IOState>(m_InterruptEventId, { m_portUsed, m_value });
+      switch ( pullResistanceState )
+      {
+         case kDisable:
+            pullUpDnControl (m_portUsed, PUD_OFF );
+            break;
+         case kPullUp:
+            pullUpDnControl (m_portUsed, PUD_DOWN );
+            break;
+         case kPullDown:
+            pullUpDnControl (m_portUsed, PUD_UP );
+            break;
+      }
 }
 
 boost::shared_ptr<const yApi::historization::IHistorizable> CIO::historizable() const 

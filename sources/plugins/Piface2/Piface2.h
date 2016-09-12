@@ -1,14 +1,10 @@
 #pragma once
 #include <plugin_cpp_api/IPlugin.h>
+#include "eventIdentification.h"
+#include "Pf2Configuration.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
-
-// Event IDs
-enum
-{
-   kEvtIOStateReceived = yApi::IYPluginApi::kPluginFirstEventId // Always start from shared::event::CEventHandler::kUserFirstId
-};
 
 //--------------------------------------------------------------
 /// \brief	This class is the Piface2 plugin
@@ -31,6 +27,8 @@ public:
    void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
    // [END] IPlugin implementation
 
+   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData);
+
 protected:
 
 private:
@@ -38,5 +36,10 @@ private:
    /// \brief	The device name
    //--------------------------------------------------------------
    std::string m_deviceName;
+
+   //--------------------------------------------------------------
+   /// \brief	The plugin configuration
+   //--------------------------------------------------------------
+   CPf2Configuration m_configuration;
 };
 
