@@ -1,20 +1,8 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
-#include <shared/enumeration/EnumHelpers.hpp>
 
 namespace yApi = shared::plugin::yPluginApi;
-
-//-----------------------------------------------------
-///\brief   Internal Response type name
-//-----------------------------------------------------
-DECLARE_ENUM_HEADER(EZWaveInteralState,
-   ((Running))
-   ((DriverReady))
-   ((DriverFailed))
-   ((Waiting))
-   ((Completed))
-)
 
 //--------------------------------------------------------------
 /// \brief	ErrorAnswerHandler Module
