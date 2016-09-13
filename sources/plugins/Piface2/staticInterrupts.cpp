@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Piface2Factory.h"
+#include "IOManager.h"
 #include "staticInterrupts.h"
 #include "IO.h"
 #include "wiringPi.h"
@@ -9,7 +9,7 @@ void OnInterrupt(const int portUsed, const std::string keywordName)
 {
    int value = digitalRead(portUsed);
    CIOState Event = { portUsed, keywordName, (bool)value };
-   CPiface2Factory::SendMessage(Event);
+   CIOManager::SendMessage(Event);
 }
 
 void interrupt0()
