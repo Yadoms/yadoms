@@ -5,56 +5,49 @@
 #include "wiringPi.h"
 
 //TODO : Dans chaque interruption, construire une commande identique que pour un write
-void OnInterrupt(const int portUsed, const std::string keywordName, bool value)
+void OnInterrupt(const int portUsed, const std::string keywordName)
 {
-   CIOState Event = { portUsed, keywordName, value };
+   int value = digitalRead(portUsed);
+   CIOState Event = { portUsed, keywordName, (bool)value };
    CPiface2Factory::SendMessage(Event);
 }
 
 void interrupt0()
 {
-   int value = digitalRead ( m_portUsed );
-   OnInterrupt(0, "DI0", (bool)value);
+   OnInterrupt(0, "DI0");
 }
 
 void interrupt1()
 {
-   int value = digitalRead ( m_portUsed );
-   OnInterrupt(1, "DI1", (bool)value);
+   OnInterrupt(1, "DI1");
 }
 
 void interrupt2()
 {
-   int value = digitalRead ( m_portUsed );
-   OnInterrupt(2, "DI2", (bool)value);
+   OnInterrupt(2, "DI2");
 }
 
 void interrupt3()
 {
-   int value = digitalRead ( m_portUsed );
-   OnInterrupt(3, "DI3", (bool)value);
+   OnInterrupt(3, "DI3");
 }
 
 void interrupt4()
 {
-   int value = digitalRead ( m_portUsed );
-   OnInterrupt(4, "DI4", (bool)value);
+   OnInterrupt(4, "DI4");
 }
 
 void interrupt5()
 {
-   int value = digitalRead ( m_portUsed );
-   OnInterrupt(5, "DI5", (bool)value);
+   OnInterrupt(5, "DI5");
 }
 
 void interrupt6()
 {
-   int value = digitalRead ( m_portUsed );
-   OnInterrupt(6, "DI6", (bool)value);
+   OnInterrupt(6, "DI6");
 }
 
 void interrupt7()
 {
-   int value = digitalRead ( m_portUsed );
-   OnInterrupt(7, "DI7", (bool)value);
+   OnInterrupt(7, "DI7");
 }

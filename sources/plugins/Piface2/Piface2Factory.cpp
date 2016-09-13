@@ -9,8 +9,6 @@
 
 static const std::string Model("Piface2");
 
-shared::event::CEventHandler CPiface2Factory::m_Event;
-
 CPiface2Factory::CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
                                  const std::string& device,
                                  const IPf2Configuration& configuration,
