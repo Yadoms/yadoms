@@ -24,7 +24,7 @@
 		"device": {
 			"type": "keyword",
 			"expectedCapacity": "switch",
-			"expectedKeywordAccess": "getset"
+			"expectedKeywordAccess": "get"
 		},
 		"kind": {
 			"type": "radioSection",

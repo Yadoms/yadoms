@@ -9,6 +9,8 @@ set(PIFACE2_PLUGIN_SOURCES
    stdafx.h
    stdafx.cpp
    InitializationException.hpp
+   IOManager.h
+   IOManager.cpp
    IPf2Configuration.h
    Pf2Configuration.h
    Pf2Configuration.cpp

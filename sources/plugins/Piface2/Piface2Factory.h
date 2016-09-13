@@ -2,7 +2,6 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/event/EventHandler.hpp>
 #include "IO.h"
-#include "eventIdentification.h"
 #include "IPf2Configuration.h"
 
 // Shortcut to yPluginApi namespace
@@ -24,22 +23,12 @@ public:
    CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
                    const std::string& device,
                    const IPf2Configuration& configuration,
-                   shared::CDataContainer details,
-                   int forId);
+                   shared::CDataContainer details);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~CPiface2Factory();
-
-   //--------------------------------------------------------------
-   /// \brief	                     Process a command received from Yadoms
-   /// \param [in] api              Plugin execution context (Yadoms API)
-   /// \param [in] command          The received command
-   //--------------------------------------------------------------
-   void onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
-                  boost::shared_ptr<const yApi::IDeviceCommand> command,
-                  bool fromInput);
 
    //--------------------------------------------------------------
    /// \brief	    OnConfigurationUpdate
@@ -51,11 +40,7 @@ public:
                               const IPf2Configuration& configuration,
                               shared::CDataContainer details);
 
-   //--------------------------------------------------------------
-   /// \brief	    m_Event
-   /// \note        static EnventHandler used by interrupts
-   //--------------------------------------------------------------
-   static shared::event::CEventHandler m_Event;
+   std::map<std::string, boost::shared_ptr<CIO> >getAllDigitalIO(void);
 
 private:
 
@@ -64,8 +49,14 @@ private:
    //--------------------------------------------------------------
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywordsToDeclare;
 
+   //--------------------------------------------------------------
+   /// \brief	Map of all IOs identify by the name
+   //--------------------------------------------------------------
    std::map<std::string, boost::shared_ptr<CIO> > m_mapKeywordsName;
 
+   //--------------------------------------------------------------
+   /// \brief	IOs of the Piface2
+   //--------------------------------------------------------------
    boost::shared_ptr<CIO> m_DigitalInput[8];
    boost::shared_ptr<CIO> m_DigitalOutput[8];
 };

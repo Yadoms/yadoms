@@ -1,7 +1,7 @@
 #pragma once
 #include <plugin_cpp_api/IPlugin.h>
-#include "eventIdentification.h"
 #include "Pf2Configuration.h"
+#include "IOManager.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;

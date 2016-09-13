@@ -14,8 +14,7 @@ shared::event::CEventHandler CPiface2Factory::m_Event;
 CPiface2Factory::CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
                                  const std::string& device,
                                  const IPf2Configuration& configuration,
-                                 shared::CDataContainer details,
-                                 int forId)
+                                 shared::CDataContainer details)
 {
    // Initializing wiringPi in Gpio mode
    // need root privilege, but needed of pullup or pulldown
@@ -43,20 +42,6 @@ CPiface2Factory::CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
    api->declareDevice(device, Model, m_keywordsToDeclare, details);
 }
 
-void CPiface2Factory::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
-                                boost::shared_ptr<const yApi::IDeviceCommand> command,
-                                bool fromInput)
-{
-   std::cout << "Command received :" << yApi::IDeviceCommand::toString(command) << std::endl;
-
-   auto search = m_mapKeywordsName.find(command->getKeyword());
-
-   if (search != m_mapKeywordsName.end())
-      search->second->set(boost::lexical_cast<bool>(command->getBody()), !fromInput);
-   else
-      std::cerr << "Cannot find keyword " << command->getKeyword();
-}
-
 void CPiface2Factory::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                             const IPf2Configuration& configuration,
                                             shared::CDataContainer details)
@@ -68,6 +53,10 @@ void CPiface2Factory::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi>
    }
 }
 
-CPiface2Factory::~CPiface2Factory()
+std::map<std::string, boost::shared_ptr<CIO> > CPiface2Factory::getAllDigitalIO(void)
 {
+   return m_mapKeywordsName;
 }
+
+CPiface2Factory::~CPiface2Factory()
+{}

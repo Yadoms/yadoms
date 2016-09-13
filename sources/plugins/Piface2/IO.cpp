@@ -21,7 +21,7 @@ CIO::CIO(const std::string& keywordName,
       if (wiringPiISR( pin, INT_EDGE_BOTH, interrupt[pin] ) == -1)
          throw CInitializationException( strerror (errno) );
 
-      pinMode (pin, INPUT);
+      //pinMode (pin, INPUT);
       ConfigurePullResistance ( pullResistanceState );
    }
 }
