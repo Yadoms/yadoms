@@ -55,8 +55,10 @@ IF (UNIX AND NOT APPLE)
 	CommonLinux/DisksList.cpp
 	CommonLinux/DiskUsage.h
 	CommonLinux/DiskUsage.cpp
-        CommonLinux/LinuxHelpers.h
-        CommonLinux/LinuxHelpers.cpp
+    CommonLinux/LinuxHelpers.h
+    CommonLinux/LinuxHelpers.cpp
+    CommonLinux/MemoryLoad.h
+    CommonLinux/MemoryLoad.cpp	
 	)
 	
 	source_group(CommonLinux CommonLinux/*.*)
@@ -66,8 +68,6 @@ IF (UNIX AND NOT APPLE AND NOT (CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry"))
    set(SYSTEMINFORMATION_PLUGIN_SOURCES ${SYSTEMINFORMATION_PLUGIN_SOURCES}
       Linux/SystemFactory.h
       Linux/SystemFactory.cpp
-      Linux/MemoryLoad.h
-      Linux/MemoryLoad.cpp
       )
 
     source_group(Linux Linux/*.*)
@@ -89,8 +89,6 @@ IF(CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
       RaspberryPI/SystemFactory.cpp
       RaspberryPI/TemperatureSensor.cpp
       RaspberryPI/TemperatureSensor.h
-      RaspberryPI/MemoryLoad.h
-      RaspberryPI/MemoryLoad.cpp
       )
 	
 	source_group(RaspberryPI RaspberryPI/*.*)

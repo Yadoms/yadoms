@@ -6,8 +6,6 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-#define NB_LINE_TO_BE_READ 5
-
 //--------------------------------------------------------------
 /// \brief	Memory Load of the Linux System
 /// \note   return the memory load for Linux Operating System
@@ -34,16 +32,26 @@ public:
       return m_keyword;
    }
 
-   void ReadFromFile( unsigned long long *dmemTotal,
-                      unsigned long long *dmemFree,
-                      unsigned long long *dbuffer,
-                      unsigned long long *dcached
-                    );
+   void ReadFromFile(unsigned long long *dmemTotal,
+                     unsigned long long *dmemFree,
+                     unsigned long long *dbuffer,
+                     unsigned long long *dcached);
 
 private:
+
+   //--------------------------------------------------------------
+   /// \brief	tab indexes used for needed values
+   //--------------------------------------------------------------
+   enum EEnumType
+   {
+      kmemTotal = 0,
+      kmemFree  = 1,
+      kbuffer   = 2,
+      kcached   = 3
+   };
+
    //--------------------------------------------------------------
    /// \brief	    Keyword
    //--------------------------------------------------------------
    boost::shared_ptr<yApi::historization::CLoad> m_keyword;
 };
-
