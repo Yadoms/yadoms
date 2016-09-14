@@ -5,23 +5,27 @@
 #include "InitializationException.hpp"
 #include <errno.h>
 
-CIO::CIO(const std::string& keywordName, 
+CIO::CIO(const std::string& keywordName,
+         const int baseAddress,
          const int pin,
          const EPullResistance pullResistanceState, 
          const yApi::EKeywordAccessMode& accessMode)
    : m_value(boost::make_shared<yApi::historization::CSwitch>(keywordName, accessMode)),
-   m_portUsed(pin)
+   m_portUsed(baseAddress + pin)
 {
+   if ((pin<0) || (pin>8))
+      throw CInitializationException("pin out of range");
+
    // Configuring the access type
    if ( accessMode == yApi::EKeywordAccessMode::kGetSet)
-      pinMode (pin, OUTPUT);
+      pinMode (baseAddress + pin, OUTPUT);
 
    if ( accessMode == yApi::EKeywordAccessMode::kGet)
    {
-      if (wiringPiISR( pin, INT_EDGE_BOTH, interrupt[pin] ) == -1)
+      if (wiringPiISR(baseAddress + pin, INT_EDGE_BOTH, interrupt[pin] ) == -1)
          throw CInitializationException( strerror (errno) );
 
-      //pinMode (pin, INPUT);
+      pinMode (baseAddress + pin, INPUT);
       ConfigurePullResistance ( pullResistanceState );
    }
 }
@@ -32,8 +36,9 @@ CIO::~CIO()
 
 void CIO::set(bool state, bool boardAccess)
 {
-   std::cout << m_value->getKeyword() << "set to " << state << std::endl;
    m_value->set( state );
+
+   std::cout << m_value->getKeyword() << " set to " << state << std::endl;
 
    if (boardAccess) writeHardware (state);
 }

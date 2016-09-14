@@ -35,7 +35,8 @@ public:
    /// \param[in] pullupEnabled Pullup resistance is enabled
    /// \param[in] configuration The configuration of the pin
    //--------------------------------------------------------------
-   explicit CIO(const std::string& keywordName, 
+   explicit CIO(const std::string& keywordName,
+                const int baseAddress,
                 const int pin,
                 const EPullResistance pullResistanceState, 
                 const yApi::EKeywordAccessMode& accessMode);
