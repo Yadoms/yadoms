@@ -33,7 +33,8 @@ void CMemoryLoad::ReadFromFile(unsigned long long *dmemTotal,
    boost::regex reg("^(.*): *(\\d+)");
 
    std::string line;
-   unsigned long long memTab[4];
+   unsigned long long memTab[4]={0};
+   bool memTabUsed[4] = {false, false, false, false};
    unsigned char counter = 0;
 
    while ( std::getline(procFile, line) && (counter < NB_LINE_TO_PARSE) ) 
@@ -44,7 +45,10 @@ void CMemoryLoad::ReadFromFile(unsigned long long *dmemTotal,
          shared::CDataContainer::EnumValuesNames::const_iterator it = EEnumTypeNames.find(boost::lexical_cast<std::string>(match[1]));
 
          if (it != EEnumTypeNames.end())
+		 {
             memTab[ it->second ]  = boost::lexical_cast<long long>(match[2]);
+			memTabUsed[ it->second ] = true;
+		 }
       }
       counter++;
    }
@@ -55,6 +59,11 @@ void CMemoryLoad::ReadFromFile(unsigned long long *dmemTotal,
    *dcached   = memTab[ 3 ];
 
    procFile.close();
+   
+   if (memTabUsed[0] && memTabUsed[1] && memTabUsed[2] && memTabUsed[3])
+	   return true;
+   else
+	   return false;
 }
 
 void CMemoryLoad::read()
@@ -64,19 +73,22 @@ void CMemoryLoad::read()
    unsigned long long memBuffer =0;
    unsigned long long memCached =0;
 
-   ReadFromFile ( &memTotal, &memFree, &memBuffer, &memCached );
+   if (ReadFromFile ( &memTotal, &memFree, &memBuffer, &memCached ))
+   {
+      // as described here :
+      // http://blog.guillaume.fenollar.fr/2013/11/comprendre-conso-memoire-vive-ram-linux.html
 
-   // as described here :
-   // http://blog.guillaume.fenollar.fr/2013/11/comprendre-conso-memoire-vive-ram-linux.html
+      std::cout << "memTotal :" << memTotal << std::endl;
+      std::cout << "memFree  :" << memFree << std::endl;
+      std::cout << "memBuffer:" << memBuffer << std::endl;
+      std::cout << "memCached:" << memCached << std::endl;
 
-   std::cout << "memTotal :" << memTotal << std::endl;
-   std::cout << "memFree  :" << memFree << std::endl;
-   std::cout << "memBuffer:" << memBuffer << std::endl;
-   std::cout << "memCached:" << memCached << std::endl;
+      float MemoryLoad = static_cast<float>(((memTotal-memFree)-memBuffer-memCached) * 100 / (float) memTotal );
 
-   float MemoryLoad = static_cast<float>(((memTotal-memFree)-memBuffer-memCached) * 100 / (float) memTotal );
+      m_keyword->set(MemoryLoad);
 
-   m_keyword->set(MemoryLoad);
-
-   std::cout << "Memory Load : " << m_keyword->formatValue() << std::endl;
+      std::cout << "Memory Load : " << m_keyword->formatValue() << std::endl;
+   }
+   else
+	   std::cout << "the memory load could not be calculated" << std::endl;
 }
