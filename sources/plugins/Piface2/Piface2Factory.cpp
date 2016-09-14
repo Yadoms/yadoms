@@ -17,7 +17,7 @@ CPiface2Factory::CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
                                  const IPf2Configuration& configuration,
                                  shared::CDataContainer details)
 {
-   std::cout << "user euid:" << geteuid(void) << std::endl;
+   std::cout << "user euid:" << geteuid() << std::endl;
 
    // Initializing wiringPi in Gpio mode
    // need root privilege, but needed of pullup or pulldown
