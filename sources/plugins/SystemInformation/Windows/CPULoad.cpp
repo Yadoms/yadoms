@@ -30,7 +30,7 @@ void CCPULoad::Initialize()
    PDH_STATUS Status;
    char ProcessorTimeString[256];
    CHAR ProcessorObjectName[256];
-   CHAR CounterPath[256];
+   char *CounterPath;
 
    DWORD nsize = sizeof(ProcessorTimeString);
 
@@ -73,10 +73,26 @@ void CCPULoad::Initialize()
    pcpe.szInstanceName = "_Total"; // This parameter is identical for all languages
 
    pcpe.szCounterName = ProcessorTimeString;
-   nsize = sizeof(CounterPath);
+
+   nsize = 0;
+
+   // Read the size of the counter  path
+   Status = PdhMakeCounterPath(&pcpe, NULL, &nsize, 0);
+
+   if (Status != PDH_MORE_DATA)
+   {
+      std::cout << "Status: " << std::hex << Status << std::endl;
+      std::cout << "size: " << nsize << std::endl;
+      std::stringstream Message;
+      Message << "PdhMakeCounterPath failed with status:";
+      Message << std::hex << Status;
+      throw shared::exception::CException(Message.str());
+   }
+
+   CounterPath = (char*)malloc(nsize);
 
    // Create the path of the counter
-   Status = PdhMakeCounterPath(&pcpe, CounterPath, &nsize, 0);
+   Status = PdhMakeCounterPath(&pcpe, CounterPath, &nsize, PDH_PATH_WBEM_INPUT ); //0
 
    if (Status != ERROR_SUCCESS)
    {
@@ -106,6 +122,8 @@ void CCPULoad::Initialize()
       Message << std::hex << Status;
       throw shared::exception::CException(Message.str());
    }
+
+   free(CounterPath);
 
    m_InitializeOk = true;
 }
