@@ -2,11 +2,6 @@
 
 include("../YadomsPluginsCommon.cmake")
 
-## Check for Version ##
-if( (WIN32) AND ( ${CMAKE_SYSTEM_VERSION} EQUAL 6.0 ) ) # Windows XP
-   MESSAGE ( "This Operating System is not supported with this plugin" )
-else()
-
 #########################################
 ## Place here all the plugin source files
 #########################################
@@ -155,5 +150,3 @@ PLUGIN_LINK   (SystemInformation ${SYSTEMINFORMATION_PLUGIN_ADDITIONAL_LIB})
 PLUGIN_POST_BUILD_COPY_FILE(SystemInformation package.json)
 PLUGIN_POST_BUILD_COPY_FILE(SystemInformation icon.png)
 PLUGIN_POST_BUILD_COPY_DIRECTORY(SystemInformation locales)
-
-endif()

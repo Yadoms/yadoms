@@ -1,204 +1,68 @@
 #include "stdafx.h"
 #include "CPULoad.h"
 #include <shared/exception/Exception.hpp>
-#include <pdh.h>
-#include <pdhmsg.h>
-
-
-#pragma comment(lib, "pdh.lib")
-
-//Error Messages could be obtained with this function:
-// http://msdn.microsoft.com/en-us/library/aa373046%28VS.85%29.aspx
-// https://msdn.microsoft.com/en-us/library/windows/desktop/ms724451(v=vs.85).aspx
+#include <stdio.h>
 
 CCPULoad::CCPULoad(const std::string& keywordName)
-   : m_keyword(boost::make_shared<yApi::historization::CLoad>(keywordName)),
-   m_InitializeOk(false)
+   : m_keyword(boost::make_shared<yApi::historization::CLoad>(keywordName))
 {
-   try
-   {
-      Initialize();
-   }
-   catch (shared::exception::CException& e)
-   {
-      std::cerr << "Error initializing CPULoad Keyword : " << m_keyword->getKeyword() << "Error :" << e.what() << std::endl;
-   }
-}
-
-void CCPULoad::Initialize()
-{
-   PDH_STATUS Status;
-   char ProcessorTimeString[256];
-   CHAR ProcessorObjectName[256];
-   char *CounterPath;
-
-   DWORD nsize = sizeof(ProcessorTimeString);
-
-   // Create the Query
-   Status = PdhOpenQuery(nullptr, NULL, &m_cpuQuery);
-
-   if (Status != ERROR_SUCCESS)
-   {
-      std::stringstream Message;
-      Message << "PdhOpenQuery failed with status:";
-      Message << std::hex << Status;
-      throw shared::exception::CException(Message.str());
-   }
-
-   Status = PdhLookupPerfNameByIndex(nullptr, 0x06, ProcessorTimeString, &nsize); // 
-
-   if (Status != ERROR_SUCCESS)
-   {
-      std::cout << "ProcessorTimeString: " << ProcessorTimeString << std::endl;
-      std::stringstream Message;
-      Message << "PdhLookupPerfNameByIndex failed with status:";
-      Message << std::hex << Status;
-      throw shared::exception::CException(Message.str());
-   }
-
-   nsize = sizeof(ProcessorObjectName);
-   Status = PdhLookupPerfNameByIndex(nullptr, 238, ProcessorObjectName, &nsize); // Processus object
-
-   if (Status != ERROR_SUCCESS)
-   {
-      std::cout << "ProcessorObjectName: " << ProcessorObjectName << std::endl;
-      std::stringstream Message;
-      Message << "PdhLookupPerfNameByIndex failed with status:";
-      Message << std::hex << Status;
-      throw shared::exception::CException(Message.str());
-   }
-
-   PDH_COUNTER_PATH_ELEMENTS pcpe = { nullptr };
-   pcpe.szObjectName = ProcessorObjectName;
-   pcpe.szInstanceName = "_Total"; // This parameter is identical for all languages
-
-   pcpe.szCounterName = ProcessorTimeString;
-
-   nsize = 0;
-
-   // Read the size of the counter  path
-   Status = PdhMakeCounterPath(&pcpe, NULL, &nsize, 0);
-
-   if (Status != PDH_MORE_DATA)
-   {
-      std::cout << "Status: " << std::hex << Status << std::endl;
-      std::cout << "size: " << nsize << std::endl;
-      std::stringstream Message;
-      Message << "PdhMakeCounterPath failed with status:";
-      Message << std::hex << Status;
-      throw shared::exception::CException(Message.str());
-   }
-
-   CounterPath = (char*)malloc(nsize);
-
-   // Create the path of the counter
-   Status = PdhMakeCounterPath(&pcpe, CounterPath, &nsize, PDH_PATH_WBEM_INPUT ); //0
-
-   if (Status != ERROR_SUCCESS)
-   {
-      std::cout << "CounterPath: " << CounterPath << std::endl;
-      std::stringstream Message;
-      Message << "PdhMakeCounterPath failed with status:";
-      Message << std::hex << Status;
-      throw shared::exception::CException(Message.str());
-   }
-
-   // Add the selected counter to the query
-   Status = PdhAddCounter(m_cpuQuery, TEXT(CounterPath), NULL, &m_cpuTotal);
-
-   if (Status != ERROR_SUCCESS)
-   {
-      std::stringstream Message;
-      Message << "PdhAddCounter failed with status:";
-      Message << std::hex << Status;
-      throw shared::exception::CException(Message.str());
-   }
-
-   Status = PdhCollectQueryData(m_cpuQuery);
-   if (Status != ERROR_SUCCESS)
-   {
-      std::stringstream Message;
-      Message << "PdhCollectQueryData failed with status:";
-      Message << std::hex << Status;
-      throw shared::exception::CException(Message.str());
-   }
-
-   free(CounterPath);
-
-   m_InitializeOk = true;
+   readSystemValues(&ul_sys_idle_old, &ul_sys_kernel_old, &ul_sys_user_old);
 }
 
 CCPULoad::~CCPULoad()
+{}
+
+void CCPULoad::readSystemValues(ULARGE_INTEGER *sysIdle, ULARGE_INTEGER *sysKernel, ULARGE_INTEGER *sysUser)
 {
-   PDH_STATUS Status;
+   FILETIME               ft_sys_idle;
+   FILETIME               ft_sys_kernel;
+   FILETIME               ft_sys_user;
 
-   if (m_InitializeOk)
+   if (!GetSystemTimes(&ft_sys_idle, &ft_sys_kernel, &ft_sys_user))
    {
-      Status = PdhCloseQuery(m_cpuQuery);
-
-      if (Status != ERROR_SUCCESS)
-      {
-         std::stringstream Message;
-         Message << "PdhCloseQuery failed with status:";
-         Message << std::hex << Status;
-         std::cout << Message.str() << std::endl;
-      }
+      std::stringstream Message;
+      Message << "GetSystemTimes failed with status:";
+      Message << std::hex << GetLastError();
+      shared::exception::CException(Message.str());
    }
+
+   CopyMemory(sysIdle, &ft_sys_idle, sizeof(FILETIME)); // Could been optimized away...
+   CopyMemory(sysKernel, &ft_sys_kernel, sizeof(FILETIME)); // Could been optimized away...
+   CopyMemory(sysUser, &ft_sys_user, sizeof(FILETIME)); // Could been optimized away...
+}
+
+float  CCPULoad::getCpuUsage()
+{
+   ULARGE_INTEGER         ul_sys_idle;
+   ULARGE_INTEGER         ul_sys_kernel;
+   ULARGE_INTEGER         ul_sys_user;
+
+   float  usage = 0;
+
+   readSystemValues(&ul_sys_idle, &ul_sys_kernel, &ul_sys_user);
+
+   ULONGLONG sysKernelDiff = (ul_sys_kernel.QuadPart - ul_sys_kernel_old.QuadPart);
+   ULONGLONG sysUserDiff   = (ul_sys_user.QuadPart - ul_sys_user_old.QuadPart);
+   ULONGLONG sysIdleDiff = (ul_sys_idle.QuadPart - ul_sys_idle_old.QuadPart);
+
+   usage = ((sysKernelDiff + sysUserDiff - sysIdleDiff) * 100) / float(sysKernelDiff + sysUserDiff);
+
+   ul_sys_idle_old.QuadPart = ul_sys_idle.QuadPart;
+   ul_sys_user_old.QuadPart = ul_sys_user.QuadPart;
+   ul_sys_kernel_old.QuadPart = ul_sys_kernel.QuadPart;
+
+   return usage;
 }
 
 void CCPULoad::read()
 {
-   PDH_FMT_COUNTERVALUE counterVal;
-   PDH_STATUS Status;
-   DWORD CounterType;
-
-   // Most counters require two sample values to display a formatted value.
-   // PDH stores the current sample value and the previously collected
-   // sample value. This call retrieves the first value that will be used
-   // by PdhGetFormattedCounterValue in the first iteration of the loop
-   // Note that this value is lost if the counter does not require two
-   // values to compute a displayable value.
-
-   if (m_InitializeOk)
+   try
    {
-      Status = PdhCollectQueryData(m_cpuQuery);
-      if (Status != ERROR_SUCCESS)
-      {
-         std::stringstream Message;
-         Message << "PdhCollectQueryData failed with status:";
-         Message << std::hex << Status;
-         throw shared::exception::CException(Message.str());
-      }
-
-      Status = PdhGetFormattedCounterValue(m_cpuTotal, PDH_FMT_DOUBLE | PDH_FMT_NOCAP100 | PDH_FMT_NOSCALE, &CounterType, &counterVal);
-
-      switch (Status)
-      {
-         // No Error
-      case ERROR_SUCCESS:
-      {
-         auto CPULoad = static_cast<float>(floor(counterVal.doubleValue * 10 + 0.5)) / 10;
-         m_keyword->set(CPULoad);
-         std::cout << "CPU Load : " << m_keyword->formatValue() << std::endl;
-      }
-      break;
-      // Negative value ! No Value historize
-      case PDH_CALC_NEGATIVE_DENOMINATOR:
-      case PDH_CALC_NEGATIVE_VALUE:
-         std::cout << "CPU Load : Negative value detected. No Historization." << std::endl;
-         break;
-
-         // Undefined error -> throw an exception
-      default:
-         std::stringstream Message;
-         Message << "PdhGetFormattedCounterValue failed with status:";
-         Message << std::hex << Status;
-         throw shared::exception::CException(Message.str());
-         break;
-      }
+      m_keyword->set(getCpuUsage());
+      std::cout << "CPU Load : " << m_keyword->formatValue() << std::endl;
    }
-   else
+   catch (shared::exception::CException exception)
    {
-      std::cout << m_keyword->getKeyword() << " is disabled" << std::endl;
+      std::cout << "CPU Load reading failed:" << exception.what() << std::endl;
    }
 }
