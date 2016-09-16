@@ -327,7 +327,7 @@
             },
             "basicAuthentication": {
               "name": "Autentification",
-              "description": "Méthode d'autentification pour accéder à Yadoms."
+              "description": "Méthode d'authentification pour accéder à Yadoms."
             },
             "basicAuthenticationUser": {
               "name": "Utilisateur",
