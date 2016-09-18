@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "Piface2Factory.h"
-#include "wiringPi.h"
-#include <mcp23s17.h>
+//#include "wiringPi.h"
+#include "pifacedigital.h"
 #include "InitializationException.hpp"
 #include <errno.h>
-#include <unistd.h>
+//#include <unistd.h>
 
 #define BASE_ADDRESS 16
 #define NB_INPUTS  8
@@ -17,15 +17,17 @@ CPiface2Factory::CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
                                  const IPf2Configuration& configuration,
                                  shared::CDataContainer details)
 {
-   std::cout << "user euid:" << geteuid() << std::endl;
+   //std::cout << "user euid:" << geteuid() << std::endl;
 
    // Initializing wiringPi in Gpio mode
    // need root privilege, but needed of pullup or pulldown
-   if (wiringPiSetupGpio() ==-1 )
-      throw CInitializationException( strerror (errno) );
+   //if (wiringPiSetupGpio() ==-1 )
+   //   throw CInitializationException( strerror (errno) );
 
    //Initializing the component
-   mcp23s17Setup( BASE_ADDRESS, 0, 0 );
+   //mcp23s17Setup( BASE_ADDRESS, 0, 0 );
+
+   pifacedigital_open(hw_addr);
 
    // IO Configuration
    for (int counter=0; counter<NB_OUTPUTS; ++counter)

@@ -38,7 +38,8 @@ set(PIFACE2_PLUGIN_SOURCES
 ## (by default yadoms-shared and boost are included)
 #########################################
 set(PIFACE2_PLUGIN_LINK
-   wiringPi
+   pifacedigital
+   mcp23s17
 )
 
 #########################################
