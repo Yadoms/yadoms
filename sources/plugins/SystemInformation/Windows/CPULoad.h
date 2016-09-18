@@ -2,8 +2,7 @@
 
 #include "../ILoad.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <pdh.h>
-
+#include <windows.h>
 
 //--------------------------------------------------------------
 /// \brief	CPU Load of the Windows System
@@ -34,31 +33,21 @@ public:
    // [END] ILoad Implementation
 
 protected:
-   //--------------------------------------------------------------
-   /// \brief	    Initialization
-   //--------------------------------------------------------------
-   void Initialize();
+
+   float getCpuUsage( void );
+   void readSystemValues(ULARGE_INTEGER *sysIdle, ULARGE_INTEGER *sysKernel, ULARGE_INTEGER *sysUser);
 
 private:
 
    //--------------------------------------------------------------
-   /// \brief	    The Query for the CPU Load
+   /// \brief	    Old references
    //--------------------------------------------------------------
-   PDH_HQUERY m_cpuQuery;
-
-   //--------------------------------------------------------------
-   /// \brief	    Counter TOTAL CPU Load
-   //--------------------------------------------------------------
-   PDH_HCOUNTER m_cpuTotal;
+   ULARGE_INTEGER  ul_sys_idle_old;
+   ULARGE_INTEGER  ul_sys_kernel_old;
+   ULARGE_INTEGER  ul_sys_user_old;
 
    //--------------------------------------------------------------
    /// \brief	    Keyword
    //--------------------------------------------------------------
    boost::shared_ptr<yApi::historization::CLoad> m_keyword;
-
-   //--------------------------------------------------------------
-   /// \brief	    Initialization ok
-   //--------------------------------------------------------------
-   bool m_InitializeOk;
 };
-

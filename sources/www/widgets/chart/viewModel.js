@@ -242,23 +242,6 @@ widgetViewModelCtor =
            });
        };
 
-       this.cleanUpChart = function (serie, time, cleanValue) {
-           var ex = false;
-
-           while (!ex) {
-               if (!isNullOrUndefined(serie.points)) {
-                   if (!isNullOrUndefined(serie.points[0])) {
-                       if ((time.valueOf() - serie.points[0].x) > cleanValue)
-                           serie.removePoint(0, true); // If false, we never delete the point -> infinite loop
-                       else
-                           ex = true;
-                   } else
-                       ex = true;
-               } else
-                   ex = true;
-           }
-       };
-
        this.navigatorBtnClick = function () {
            var self = this;
            return function (e) {
@@ -694,13 +677,32 @@ widgetViewModelCtor =
            self.chart.redraw(false); //without animation
        };
 	   
-       this.DisplaySummary = function (index, nb, device, range, prefix) {
+       this.cleanUpChart = function (serie, finaldate, dateInMilliSecondes) {
+           var ex = false;
+
+           var isofinaldate = DateTimeFormatter.isoDateToDate(finaldate)._d.getTime().valueOf();
+                      
+           while (!ex) {
+               if (!isNullOrUndefined(serie.points)) {
+                   if (!isNullOrUndefined(serie.points[0])) {
+                       if ((isofinaldate - serie.points[0].x) > dateInMilliSecondes)
+                           serie.removePoint(0, true); // If false, we never delete the point -> infinite loop
+                       else
+                           ex = true;
+                   } else
+                       ex = true;
+               } else
+                   ex = true;
+           }
+       };      
+      
+       this.DisplaySummary = function (index, nb, device, range, prefix, cleanValue) {
            var self = this;
 
            try {
                //The goal is to ask to the server the elapsed time only. Example : 22h00 -> 22h59mn59s. 
                //If you ask 22h00 -> 23h00, the system return also the average for 23h. If 23h is not complete, the value will be wrong.
-
+               
                var dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf(prefix).subtract(1, 'seconds'));
                var dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(nb, range).startOf(prefix));
 
@@ -717,11 +719,11 @@ widgetViewModelCtor =
 
                               // If a serie is available  // Clean points > cleanValue for serie
                               if (!isNullOrUndefined(serie))
-                                 self.cleanUpChart(serie, dateTo.date, cleanValue);
+                                 self.cleanUpChart(serie, dateTo, cleanValue);
 
                                // Clean points > cleanValue for ranges, if any
                               if (!isNullOrUndefined(serieRange))
-                                 self.cleanUpChart(serieRange, dateTo.date, cleanValue);							  
+                                 self.cleanUpChart(serieRange, dateTo, cleanValue);							  
 						      
                               //Add also for ranges if any
                               if (serieRange)
@@ -784,44 +786,44 @@ widgetViewModelCtor =
                            // If a serie is available
                            if (!isNullOrUndefined(serie)) {
 
+                              // date received in iso format to compare
+                              var isolastdate = DateTimeFormatter.isoDateToDate(data.date)._d.getTime().valueOf();
+                           
                                // Add new point depending of the interval
                                switch (self.interval) {
                                    case "HOUR":
-                                       console.log(serie);
-
                                        if (!isNullOrUndefined(serie)) {
                                            self.chart.hideLoading(); // If a text was displayed before
                                            serie.addPoint([data.date.valueOf(), parseFloat(data.value)], true, false, true);
+                                           
+                                           self.cleanUpChart(serie, moment().startOf("minute"), cleanValue);
                                        }
                                        break;
                                    case "DAY":
-
-                                       if ((serie.points.length > 0) && ((data.date.valueOf() - serie.points[serie.points.length - 1].x) > 3600000 * 2))
-                                           self.DisplaySummary(index, 1, device, "hours", "hour");
+                                       if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 2))
+                                           self.DisplaySummary(index, 1, device, "hours", "hour", cleanValue);
                                        break;
 
                                    case "WEEK":
-
-                                       if ((serie.points.length > 0) && ((data.date.valueOf() - serie.points[serie.points.length - 1].x) > 3600000 * 2))
-                                           self.DisplaySummary(index, 1, device, "weeks", "hour");
+                                       if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 2))
+                                           self.DisplaySummary(index, 1, device, "weeks", "hour", cleanValue);
 
                                        break;
                                    case "MONTH":
-
-                                       if ((serie.points.length > 0) && ((data.date.valueOf() - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
-                                           self.DisplaySummary(index, 1, device, "months", "day");
+                                       if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
+                                           self.DisplaySummary(index, 1, device, "months", "day", cleanValue);
 
                                        break;
                                    case "HALF_YEAR":
 
-                                       if ((serie.points.length > 0) && ((data.date.valueOf() - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
-                                           self.DisplaySummary(index, 6, device, "months", "day");
+                                       if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
+                                           self.DisplaySummary(index, 6, device, "months", "day", cleanValue);
 
                                        break;
                                    case "YEAR":
 
-                                       if ((serie.points.length > 0) && ((data.date.valueOf() - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
-                                           self.DisplaySummary(index, 1, device, "years", "day");
+                                       if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
+                                           self.DisplaySummary(index, 1, device, "years", "day", cleanValue);
 
                                        break;
                                    default:
