@@ -18,10 +18,10 @@ CIO::CIO(const std::string& keywordName,
       throw CInitializationException("pin out of range");
 
    // Configuring the access type
-   if ( accessMode == yApi::EKeywordAccessMode::kGetSet)
+   //if ( accessMode == yApi::EKeywordAccessMode::kGetSet)
       //pinMode (baseAddress + pin, OUTPUT);
 
-   if ( accessMode == yApi::EKeywordAccessMode::kGet)
+   //if ( accessMode == yApi::EKeywordAccessMode::kGet)
    {
       //if (wiringPiISR(baseAddress + pin, INT_EDGE_BOTH, interrupt[pin] ) == -1)
       //   throw CInitializationException( strerror (errno) );
@@ -52,7 +52,7 @@ void CIO::writeHardware(bool state)
       pifacedigital_digital_write(m_portUsed, 1);
    else
       //digitalWrite (m_portUsed, LOW);
-      pifacedigital_digital_write(m_portUsed, 1);
+      pifacedigital_digital_write(m_portUsed, 0);
 }
 
 void CIO::ConfigurePullResistance(const EPullResistance pullResistanceState)
@@ -61,11 +61,11 @@ void CIO::ConfigurePullResistance(const EPullResistance pullResistanceState)
       {
          case kDisable:
             //pullUpDnControl (m_portUsed, PUD_OFF );
-            pifacedigital_write_reg(0xff, GPPUB, hw_addr);
+            //pifacedigital_write_reg(0xff, GPPUB, hw_addr);
             break;
          case kPullUp:
             //pullUpDnControl (m_portUsed, PUD_DOWN );
-            pifacedigital_write_reg(0xff, GPPUB, hw_addr);
+            //pifacedigital_write_reg(0xff, GPPUB, hw_addr);
             break;
          case kPullDown:
             //pullUpDnControl (m_portUsed, PUD_UP );
