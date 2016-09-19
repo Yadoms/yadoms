@@ -2,12 +2,12 @@
 #include "IOManager.h"
 #include "staticInterrupts.h"
 #include "IO.h"
-#include "wiringPi.h"
+//#include "wiringPi.h"
 
 //TODO : Dans chaque interruption, construire une commande identique que pour un write
 void OnInterrupt(const int portUsed, const std::string keywordName)
 {
-   int value = digitalRead(portUsed);
+   int value = 0;//digitalRead(portUsed);
    CIOState Event = { portUsed, keywordName, (bool)value };
    CIOManager::SendMessage(Event);
 }
