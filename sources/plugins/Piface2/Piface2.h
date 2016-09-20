@@ -2,6 +2,7 @@
 #include <plugin_cpp_api/IPlugin.h>
 #include "Pf2Configuration.h"
 #include "IOManager.h"
+#include "Piface2Factory.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -27,7 +28,14 @@ public:
    void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
    // [END] IPlugin implementation
 
-   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData);
+   //--------------------------------------------------------------
+   /// \brief	   onUpdateConfiguration
+   /// \param[in] api                  Yadoms api
+   /// \param[in] newConfigurationData The new configuration
+   //--------------------------------------------------------------
+   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, 
+                              const shared::CDataContainer& newConfigurationData,
+                              shared::CDataContainer& details);
 
 protected:
 
@@ -46,5 +54,10 @@ private:
    /// \brief	The IO Manager
    //--------------------------------------------------------------
    boost::shared_ptr<CIOManager> m_ioManager;
+
+   //--------------------------------------------------------------
+   /// \brief	The factory
+   //--------------------------------------------------------------
+   boost::shared_ptr<CPiface2Factory> m_factory;
 };
 

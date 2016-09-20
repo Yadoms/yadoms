@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "Piface2.h"
-#include "Piface2Factory.h"
 #include <shared/event/EventTimer.h>
 #include <plugin_cpp_api/ImplementationHelper.h>
+#include "eventDefinitions.h"
+#include "InitializationException.hpp"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -29,8 +30,17 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    details.set("provider", "PiFace2");
    details.set("shortProvider", "pf2");
 
-   CPiface2Factory m_factory  (api, m_deviceName, m_configuration, details);
-   m_ioManager = m_factory.getIOManager();
+   try 
+   {
+      CPiface2Factory m_factory(api, m_deviceName, m_configuration, details);
+      m_ioManager = m_factory.getIOManager();
+   }
+   catch (const CInitializationException& e)
+   {
+      api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
+      std::cerr << e.what() << std::endl;
+      throw e;
+   }
 
    // the main loop
    std::cout << "Piface2 plugin is running..." << std::endl;
@@ -68,8 +78,7 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            m_factory.OnConfigurationUpdate(api, m_configuration, details);
-            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>(), details);
             api->setPluginState(yApi::historization::EPluginState::kRunning);
             break;
          }
@@ -82,13 +91,15 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CPiface2::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData)
+void CPiface2::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData, shared::CDataContainer& details)
 {
    // Configuration was updated
    std::cout << "Update configuration..." << std::endl;
    BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
+   // Update the configuration for sub-components
+   m_factory->OnConfigurationUpdate(api, m_configuration, details);
+
    // Update configuration
    m_configuration.initializeWith(newConfigurationData);
 }
-

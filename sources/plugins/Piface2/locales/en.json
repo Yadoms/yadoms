@@ -70,7 +70,7 @@
 	"customLabels": {
 		"pluginState": {
 			"InitializationError": "Initialization error",
-                        "updateConfiguration": "Configuration updating..."
+            "updateConfiguration": "Configuration updating..."
 		}
 	}
 }
