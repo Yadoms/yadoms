@@ -10,8 +10,8 @@ CIO::CIO(const std::string& keywordName,
          const yApi::EKeywordAccessMode& accessMode,
          shared::event::CEventHandler& interruptEventHandler)
    : m_value(boost::make_shared<yApi::historization::CSwitch>(keywordName, accessMode)),
-   m_portUsed(pin),
-   m_InterruptEventHandler(interruptEventHandler)
+   m_InterruptEventHandler(interruptEventHandler),
+   m_portUsed(pin)
 {
    if ((pin<0) || (pin>8))
       throw CInitializationException("pin out of range");
@@ -81,7 +81,7 @@ void CIO::interruptReceiverThreaded(const int portUsed, const std::string& keywo
       {
          int value = pifacedigital_digital_read(portUsed);
          CIOState Event = { portUsed, keywordName, (bool)value };
-         m_InterruptEventHandler->postEvent<const CIOState>(kEvtIOStateReceived, Event);
+         m_InterruptEventHandler.postEvent<const CIOState>(kEvtIOStateReceived, Event);
       }
    }
    catch (boost::thread_interrupted&)
