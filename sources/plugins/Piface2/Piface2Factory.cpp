@@ -24,7 +24,7 @@ CPiface2Factory::CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
    for (int counter=0; counter<NB_OUTPUTS; ++counter)
    {
       std::string name = "DO" + boost::lexical_cast<std::string>(counter);
-      m_DigitalOutput[counter] = boost::make_shared<CIO>( name, counter, EPullResistance::kDisable, yApi::EKeywordAccessMode::kGetSet, &m_InterruptHandler);
+      m_DigitalOutput[counter] = boost::make_shared<CIO>( name, counter, EPullResistance::kDisable, yApi::EKeywordAccessMode::kGetSet, m_InterruptHandler);
       m_mapKeywordsName[ name ] = m_DigitalOutput[counter];
       m_keywordsToDeclare.push_back(m_DigitalOutput[counter]->historizable());
    }
@@ -32,7 +32,7 @@ CPiface2Factory::CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
    for (int counter=0; counter<NB_INPUTS; ++counter)
    {
       std::string name = "DI" + boost::lexical_cast<std::string>(counter);
-      m_DigitalInput[counter]  = boost::make_shared<CIO>( name, counter, configuration.PullResistanceState(counter), yApi::EKeywordAccessMode::kGet, &m_InterruptHandler);
+      m_DigitalInput[counter]  = boost::make_shared<CIO>( name, counter, configuration.PullResistanceState(counter), yApi::EKeywordAccessMode::kGet, m_InterruptHandler);
       m_mapKeywordsName[ name ] = m_DigitalOutput[counter];
       m_keywordsToDeclare.push_back(m_DigitalInput[counter]->historizable());
    }

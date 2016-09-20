@@ -24,6 +24,9 @@ CIO::CIO(const std::string& keywordName,
       m_interruptReceiverThread.interrupt();
       m_interruptReceiverThread.timed_join(boost::posix_time::seconds(20));
 
+      if (!pifacedigital_enable_interrupts())
+         throw CInitializationException("interrupt initialization error");
+
       ConfigurePullResistance ( pullResistanceState );
    }
 }
@@ -76,7 +79,7 @@ void CIO::interruptReceiverThreaded(const int portUsed, const std::string& keywo
    {
       while (true)
       {
-         int value = digitalRead(portUsed);
+         int value = pifacedigital_digital_read(portUsed);
          CIOState Event = { portUsed, keywordName, (bool)value };
          m_InterruptEventHandler->postEvent<const CIOState>(kEvtIOStateReceived, Event);
       }
