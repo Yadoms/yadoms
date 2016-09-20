@@ -8,6 +8,7 @@ include("../YadomsPluginsCommon.cmake")
 set(PIFACE2_PLUGIN_SOURCES
    stdafx.h
    stdafx.cpp
+   eventDefinitions.h
    InitializationException.hpp
    IOManager.h
    IOManager.cpp

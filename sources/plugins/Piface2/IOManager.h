@@ -6,11 +6,6 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-enum
-{
-   kEvtIOStateReceived = yApi::IYPluginApi::kPluginFirstEventId // Always start from shared::event::CEventHandler::kUserFirstId
-};
-
 //--------------------------------------------------------------
 /// \brief	Class where all keywords are updated
 /// \note   

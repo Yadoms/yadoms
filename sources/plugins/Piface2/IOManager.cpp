@@ -25,11 +25,6 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
    else
       std::cerr << "Cannot find keyword " << command->getKeyword();
 }
-/*
-void CIOManager::SendMessage(CIOState Event)
-{
-    m_Event.postEvent<const CIOState>(kEvtIOStateReceived, Event);
-}*/
 
 void CIOManager::setNewIOList(std::map<std::string, boost::shared_ptr<CIO> > IOlist)
 {

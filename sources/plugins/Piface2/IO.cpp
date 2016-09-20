@@ -3,31 +3,27 @@
 #include "staticInterrupts.h"
 #include "pifacedigital.h"
 #include "InitializationException.hpp"
-#include <errno.h>
 
 CIO::CIO(const std::string& keywordName,
          const int pin,
          const EPullResistance pullResistanceState, 
          const yApi::EKeywordAccessMode& accessMode,
-         const shared::event::CEventHandler* interruptEventHandler)
+         shared::event::CEventHandler& interruptEventHandler)
    : m_value(boost::make_shared<yApi::historization::CSwitch>(keywordName, accessMode)),
-   m_portUsed(baseAddress + pin),
+   m_portUsed(pin),
    m_InterruptEventHandler(interruptEventHandler)
 {
    if ((pin<0) || (pin>8))
       throw CInitializationException("pin out of range");
 
-   // Configuring the access type
-   //if ( accessMode == yApi::EKeywordAccessMode::kGetSet)
-      //pinMode (baseAddress + pin, OUTPUT);
-
    if ( accessMode == yApi::EKeywordAccessMode::kGet)
    {
-      m_interruptReceiverThread = boost::thread(&CIO::interruptReceiverThreaded, this, pin, keywordName, ioManager);
-      //if (wiringPiISR(baseAddress + pin, INT_EDGE_BOTH, interrupt[pin] ) == -1)
-      //   throw CInitializationException( strerror (errno) );
+      m_interruptReceiverThread = boost::thread(&CIO::interruptReceiverThreaded, this, pin, keywordName);
 
-      //pinMode (baseAddress + pin, INPUT);
+      //TODO : A comprendre comment cela fonctionne
+      m_interruptReceiverThread.interrupt();
+      m_interruptReceiverThread.timed_join(boost::posix_time::seconds(20));
+
       ConfigurePullResistance ( pullResistanceState );
    }
 }
@@ -59,15 +55,12 @@ void CIO::ConfigurePullResistance(const EPullResistance pullResistanceState)
       switch ( pullResistanceState )
       {
          case kDisable:
-            //pullUpDnControl (m_portUsed, PUD_OFF );
             //pifacedigital_write_reg(0xff, GPPUB, hw_addr);
             break;
          case kPullUp:
-            //pullUpDnControl (m_portUsed, PUD_DOWN );
             //pifacedigital_write_reg(0xff, GPPUB, hw_addr);
             break;
-         case kPullDown:
-            //pullUpDnControl (m_portUsed, PUD_UP );
+         case kPullDown: // Never used for Piface2
             break;
       }
 }
@@ -77,7 +70,7 @@ boost::shared_ptr<const yApi::historization::IHistorizable> CIO::historizable() 
   return m_value;
 }
 
-void CIO::interruptReceiverThreaded(const int portUsed, const std::string& keywordName, const boost::shared_ptr<CIOManager> ioManager) const
+void CIO::interruptReceiverThreaded(const int portUsed, const std::string& keywordName) const
 {
    try
    {
@@ -85,7 +78,7 @@ void CIO::interruptReceiverThreaded(const int portUsed, const std::string& keywo
       {
          int value = digitalRead(portUsed);
          CIOState Event = { portUsed, keywordName, (bool)value };
-         m_Event.postEvent<const CIOState>(kEvtIOStateReceived, Event);
+         m_InterruptEventHandler->postEvent<const CIOState>(kEvtIOStateReceived, Event);
       }
    }
    catch (boost::thread_interrupted&)

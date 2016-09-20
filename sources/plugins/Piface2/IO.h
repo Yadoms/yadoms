@@ -6,14 +6,11 @@
 #include <shared/enumeration/EnumHelpers.hpp>
 #include <shared/event/EventHandler.hpp>
 #include "IPf2Configuration.h"
+#include "eventDefinitions.h"
 #include <boost/thread.hpp>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
-
-//TODO : Ajouter les pull-up, ainsi que dans la configuration du plugin, pour les 8 IOs, indépendamment.
-//TODO : Pourquoi cela ne fonctionne pas !
-class CIOManager;
 
 //--------------------------------------------------------------
 /// \brief	the structure sent with the event
@@ -33,16 +30,17 @@ class CIO : public IIO
 public:
    //--------------------------------------------------------------
    /// \brief	  Constructor
-   /// \param[in] keywordName   The keyword name
-   /// \param[in] pin           The pin number for the initialization
-   /// \param[in] pullupEnabled Pullup resistance is enabled
-   /// \param[in] configuration The configuration of the pin
+   /// \param[in] keywordName           The keyword name
+   /// \param[in] pin                   The pin number for the initialization
+   /// \param[in] pullResistanceState   Pullup resistance is enabled
+   /// \param[in] accessMode            access R/W of the IO
+   /// \param[in] interruptEventHandler interrupt Event handler to read values.
    //--------------------------------------------------------------
    explicit CIO(const std::string& keywordName,
                 const int pin,
                 const EPullResistance pullResistanceState, 
                 const yApi::EKeywordAccessMode& accessMode,
-                const shared::event::CEventHandler* interruptEventHandler);
+                shared::event::CEventHandler& interruptEventHandler);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -67,11 +65,14 @@ public:
    void set(bool state, bool boardAccess);
 
 protected:
+
+   //--------------------------------------------------------------
+   /// \brief	    writeHardware
+   /// \param[in] state          the new state of the IO when writing to the physical board
+   //--------------------------------------------------------------
    void writeHardware(bool state);
 
 private:
-
-   //std::string m_keywordName;
 
    //--------------------------------------------------------------
    /// \brief	    Keyword
@@ -81,12 +82,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The event handler to notify for events ( interrupt due to change value )
    //--------------------------------------------------------------
-   shared::event::CEventHandler* m_InterruptEventHandler;
-
-   //--------------------------------------------------------------
-   /// \brief	The event id to notify for events ( interrupt due to change value )
-   //--------------------------------------------------------------
-   //int m_InterruptEventId;
+   shared::event::CEventHandler& m_InterruptEventHandler;
 
    //--------------------------------------------------------------
    /// \brief	The port used in the Pi2/Pi3
@@ -101,5 +97,5 @@ private:
    //--------------------------------------------------------------
    ///\brief               The thread function to receive interrupts from the component
    //--------------------------------------------------------------
-   void interruptReceiverThreaded(const int portUsed, const std::string& keywordName, const boost::shared_ptr<CIOManager> ioManager) const;
+   void interruptReceiverThreaded(const int portUsed, const std::string& keywordName) const;
 };
