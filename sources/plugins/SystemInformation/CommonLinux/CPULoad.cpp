@@ -107,12 +107,19 @@ void CCPULoad::read()
       double percent = total;
       total = total + (totalIdle - m_lastTotalIdle) +
 	              (totalIowait - m_lastTotalIowait);
-      percent /= total;
-      percent *= 100;
+                 
+      if ((total) >0)
+      {
+         percent /= total;
+         percent *= 100;
+         m_keyword->set (percent);
 
-      m_keyword->set (percent);
-
-      std::cout << "CPU Load : " << m_keyword->formatValue() << std::endl;
+         std::cout << "CPU Load : " << m_keyword->formatValue() << std::endl;
+      }
+      else 
+      {
+         std::cout << "CPU Load : time too short between execution" << std::endl;
+      }
     }
     m_lastTotalUser    = totalUser;
     m_lastTotalUserLow = totalUserLow;
