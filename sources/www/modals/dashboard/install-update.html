@@ -587,7 +587,7 @@
                  });
         })
         .fail(function (error) {
-            notifyError($.t("objects.update-information.errorListing"), error);
+            console.error("Unable to get versions for " + objectType + " : " + error);
             d.reject(error);
         });
 
