@@ -21,6 +21,7 @@ namespace update { namespace info {
    std::string CUpdateSite::m_distantScriptParamOs("os");
    std::string CUpdateSite::m_distantScriptParamArch("arch");
    std::string CUpdateSite::m_distantScriptParamLang("lang");
+   std::string CUpdateSite::m_distantScriptParamDevMode("devMode");
 
    std::string CUpdateSite::m_distantScriptResult("result");
 
@@ -54,7 +55,7 @@ namespace update { namespace info {
 
    shared::CDataContainer CUpdateSite::callDistantScript(const std::string & script, bool includeOsAndArch, const std::string & displayLanguage, const std::string & resultFieldToReturn)
    {
-      boost::shared_ptr<startupOptions::IStartupOptions> startupOptions(shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>());
+      auto startupOptions(shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>());
 
       //get the script address
       Poco::URI base(startupOptions->getUpdateSiteUri());
@@ -65,6 +66,8 @@ namespace update { namespace info {
       {
          base.addQueryParameter(m_distantScriptParamOs, Poco::Environment::osName());
          base.addQueryParameter(m_distantScriptParamArch, Poco::Environment::osArchitecture());
+         if (shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getDeveloperMode())
+            base.addQueryParameter(m_distantScriptParamDevMode);
       }
       base.addQueryParameter(m_distantScriptParamLang, displayLanguage);
 
