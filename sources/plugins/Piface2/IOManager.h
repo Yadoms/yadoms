@@ -42,7 +42,7 @@ public:
    /// \brief	    SendMessage
    /// \param[in] Event             Information to send
    //--------------------------------------------------------------
-   static void SendMessage(CIOState Event);
+   //static void SendMessage(CIOState Event);
 
    //--------------------------------------------------------------
    /// \brief	   setNewIOList
@@ -56,12 +56,6 @@ private:
    /// \brief	The plugin name
    //--------------------------------------------------------------
    std::string m_deviceName;
-
-   //--------------------------------------------------------------
-   /// \brief	    m_Event
-   /// \note        static EnventHandler used by interrupts
-   //--------------------------------------------------------------
-   static shared::event::CEventHandler m_Event;
 
    //--------------------------------------------------------------
    /// \brief	The keywords lists to historize in one step for better performances

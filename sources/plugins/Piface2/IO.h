@@ -6,11 +6,14 @@
 #include <shared/enumeration/EnumHelpers.hpp>
 #include <shared/event/EventHandler.hpp>
 #include "IPf2Configuration.h"
+#include <boost/thread.hpp>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
 //TODO : Ajouter les pull-up, ainsi que dans la configuration du plugin, pour les 8 IOs, indépendamment.
+//TODO : Pourquoi cela ne fonctionne pas !
+class CIOManager;
 
 //--------------------------------------------------------------
 /// \brief	the structure sent with the event
@@ -36,10 +39,10 @@ public:
    /// \param[in] configuration The configuration of the pin
    //--------------------------------------------------------------
    explicit CIO(const std::string& keywordName,
-                const int baseAddress,
                 const int pin,
                 const EPullResistance pullResistanceState, 
-                const yApi::EKeywordAccessMode& accessMode);
+                const yApi::EKeywordAccessMode& accessMode,
+                const shared::event::CEventHandler* interruptEventHandler);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -78,7 +81,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The event handler to notify for events ( interrupt due to change value )
    //--------------------------------------------------------------
-   //shared::event::CEventHandler* m_InterruptEventHandler;
+   shared::event::CEventHandler* m_InterruptEventHandler;
 
    //--------------------------------------------------------------
    /// \brief	The event id to notify for events ( interrupt due to change value )
@@ -86,7 +89,17 @@ private:
    //int m_InterruptEventId;
 
    //--------------------------------------------------------------
-   /// \brief	The port used in the Pi2
+   /// \brief	The port used in the Pi2/Pi3
    //--------------------------------------------------------------
    int m_portUsed;
+
+   //--------------------------------------------------------------
+   ///\brief               The thread used to receive messages from Yadoms
+   //--------------------------------------------------------------
+   boost::thread m_interruptReceiverThread;
+
+   //--------------------------------------------------------------
+   ///\brief               The thread function to receive interrupts from the component
+   //--------------------------------------------------------------
+   void interruptReceiverThreaded(const int portUsed, const std::string& keywordName, const boost::shared_ptr<CIOManager> ioManager) const;
 };

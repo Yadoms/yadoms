@@ -18,8 +18,6 @@ set(PIFACE2_PLUGIN_SOURCES
    Piface2.cpp
    Piface2Factory.h
    Piface2Factory.cpp
-   staticInterrupts.h
-   staticInterrupts.cpp
    IIO.h
    IO.h
    IO.cpp

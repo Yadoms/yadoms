@@ -30,9 +30,7 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    details.set("shortProvider", "pf2");
 
    CPiface2Factory m_factory  (api, m_deviceName, m_configuration, details);
-   CIOManager      m_ioManager(m_deviceName);
-
-   m_ioManager.setNewIOList(m_factory.getAllDigitalIO());
+   m_ioManager = m_factory.getIOManager();
 
    // the main loop
    std::cout << "Piface2 plugin is running..." << std::endl;
@@ -63,7 +61,7 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          // Command received from Yadoms
          auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
 
-         m_ioManager.onCommand(api, command, false);
+         m_ioManager->onCommand(api, command, false);
 
          break;
       }

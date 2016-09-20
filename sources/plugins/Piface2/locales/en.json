@@ -7,8 +7,7 @@
 			   "description": "Enable the pullup of this input",
 			   "values": {
 					"Disable" : "Disable",
-					"Pullup"  : "Pullup",
-					"Pulldown": "Pulldown"
+					"Pullup"  : "Pullup"
 				}
 		},
 		"DI1": {
@@ -16,8 +15,7 @@
 			   "description": "Enable the pullup of this input",
 			   "values": {
 					"Disable" : "Disable",
-					"Pullup"  : "Pullup",
-					"Pulldown": "Pulldown"
+					"Pullup"  : "Pullup"
 				}
 		},
 		"DI2": {
@@ -25,8 +23,7 @@
 			   "description": "Enable the pullup of this input",
 			   "values": {
 					"Disable" : "Disable",
-					"Pullup"  : "Pullup",
-					"Pulldown": "Pulldown"
+					"Pullup"  : "Pullup"
 				}
 		},
 		"DI3": {
@@ -34,8 +31,7 @@
 			   "description": "Enable the pullup of this input",
 			   "values": {
 					"Disable" : "Disable",
-					"Pullup"  : "Pullup",
-					"Pulldown": "Pulldown"
+					"Pullup"  : "Pullup"
 				}
 		},
 		"DI4": {
@@ -43,8 +39,7 @@
 			   "description": "Enable the pullup of this input",
 			   "values": {
 					"Disable" : "Disable",
-					"Pullup"  : "Pullup",
-					"Pulldown": "Pulldown"
+					"Pullup"  : "Pullup"
 				}
 		},
 		"DI5": {
@@ -52,8 +47,7 @@
 			   "description": "Enable the pullup of this input",
 			   "values": {
 					"Disable" : "Disable",
-					"Pullup"  : "Pullup",
-					"Pulldown": "Pulldown"
+					"Pullup"  : "Pullup"
 				}
 		},
 		"DI6": {
@@ -61,8 +55,7 @@
 			   "description": "Enable the pullup of this input",
 			   "values": {
 					"Disable" : "Disable",
-					"Pullup"  : "Pullup",
-					"Pulldown": "Pulldown"
+					"Pullup"  : "Pullup"
 				}
 		},
 		"DI7": {
@@ -70,8 +63,7 @@
 			   "description": "Enable the pullup of this input",
 			   "values": {
 					"Disable" : "Disable",
-					"Pullup"  : "Pullup",
-					"Pulldown": "Pulldown"
+					"Pullup"  : "Pullup"
 				}
 		}
 	},

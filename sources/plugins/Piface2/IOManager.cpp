@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "IOManager.h"
-#include "wiringPi.h"
 #include "InitializationException.hpp"
 #include <errno.h>
 
@@ -8,8 +7,6 @@
 #define NB_OUTPUTS 8
 
 static const std::string Model("Piface2");
-
-shared::event::CEventHandler CIOManager::m_Event;
 
 CIOManager::CIOManager(const std::string& device)
    : m_deviceName (device)
@@ -28,11 +25,11 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
    else
       std::cerr << "Cannot find keyword " << command->getKeyword();
 }
-
+/*
 void CIOManager::SendMessage(CIOState Event)
 {
     m_Event.postEvent<const CIOState>(kEvtIOStateReceived, Event);
-}
+}*/
 
 void CIOManager::setNewIOList(std::map<std::string, boost::shared_ptr<CIO> > IOlist)
 {

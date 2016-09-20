@@ -41,5 +41,10 @@ private:
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
    CPf2Configuration m_configuration;
+
+   //--------------------------------------------------------------
+   /// \brief	The IO Manager
+   //--------------------------------------------------------------
+   boost::shared_ptr<CIOManager> m_ioManager;
 };
 

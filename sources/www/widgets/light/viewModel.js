@@ -69,7 +69,7 @@ widgetViewModelCtor =
                   self.widgetApi.registerKeywordAcquisitions(this.widget.configuration.device.keywordId);
 				  
 				  // Get the capacity of the keyword
-				  var deffered = KeywordManager.get(device.content.source.keywordId)
+				  var deffered = KeywordManager.get(this.widget.configuration.device.keywordId)
 				  .done(function (keyword) {
 					   if ( keyword.accessMode ==="GetSet" )
 						  self.readonly ( false );

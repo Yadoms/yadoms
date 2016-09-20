@@ -4,7 +4,7 @@
    "releaseType": "beta",
    "author": "Jean-Michel BERHAULT",
    "url": "https://github.com/Yadoms/yadoms/wiki/Piface2",
-   "credits": "wiringPi",
+   "credits": "",
    "supportedPlatforms":"all",
    "supportManuallyDeviceCreation": "false",
    "configurationSchema": {
@@ -12,8 +12,7 @@
            "type": "enum",
            "values": {
 			"Disable" : "",
-			"Pullup"  : "",
-			"Pulldown": ""
+			"Pullup"  : ""
 		},
 		"defaultValue": "Disable"
 	},
@@ -21,8 +20,7 @@
            "type": "enum",
            "values": {
 			"Disable" : "",
-			"Pullup"  : "",
-			"Pulldown": ""
+			"Pullup"  : ""
 		},
 		"defaultValue": "Disable"
 	},
@@ -30,8 +28,7 @@
            "type": "enum",
            "values": {
 			"Disable" : "",
-			"Pullup"  : "",
-			"Pulldown": ""
+			"Pullup"  : ""
 		},
 		"defaultValue": "Disable"
 	},
@@ -39,8 +36,7 @@
            "type": "enum",
            "values": {
 			"Disable" : "",
-			"Pullup"  : "",
-			"Pulldown": ""
+			"Pullup"  : ""
 		},
 		"defaultValue": "Disable"
 	},
@@ -48,8 +44,7 @@
            "type": "enum",
            "values": {
 			"Disable" : "",
-			"Pullup"  : "",
-			"Pulldown": ""
+			"Pullup"  : ""
 		},
 		"defaultValue": "Disable"
 	},
@@ -57,8 +52,7 @@
            "type": "enum",
            "values": {
 			"Disable" : "",
-			"Pullup"  : "",
-			"Pulldown": ""
+			"Pullup"  : ""
 		},
 		"defaultValue": "Disable"
 	},
@@ -66,8 +60,7 @@
            "type": "enum",
            "values": {
 			"Disable" : "",
-			"Pullup"  : "",
-			"Pulldown": ""
+			"Pullup"  : ""
 		},
 		"defaultValue": "Disable"
 	},
@@ -75,8 +68,7 @@
            "type": "enum",
            "values": {
 			"Disable" : "",
-			"Pullup"  : "",
-			"Pulldown": ""
+			"Pullup"  : ""
 		},
 		"defaultValue": "Disable"
 	}

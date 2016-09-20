@@ -20,8 +20,7 @@ EPullResistance CPf2Configuration::PullResistanceState(int pin) const
    // Enum type, declare keys labels
    static const shared::CDataContainer::EnumValuesNames EEnumTypeNames = boost::assign::map_list_of
       ("Disable" , kDisable)
-      ("Pullup"  , kPullUp)
-      ("Pulldown", kPullDown);
+      ("Pullup"  , kPullUp);
 
    std::string name ( "DI" );
    name.append ( boost::lexical_cast<std::string>(pin) );

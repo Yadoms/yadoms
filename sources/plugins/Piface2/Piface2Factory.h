@@ -3,6 +3,7 @@
 #include <shared/event/EventHandler.hpp>
 #include "IO.h"
 #include "IPf2Configuration.h"
+#include "IOManager.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -42,6 +43,8 @@ public:
 
    std::map<std::string, boost::shared_ptr<CIO> >getAllDigitalIO(void);
 
+   boost::shared_ptr<CIOManager> getIOManager(void);
+
 private:
 
    //--------------------------------------------------------------
@@ -53,6 +56,17 @@ private:
    /// \brief	Map of all IOs identify by the name
    //--------------------------------------------------------------
    std::map<std::string, boost::shared_ptr<CIO> > m_mapKeywordsName;
+
+   //--------------------------------------------------------------
+   /// \brief	Manager for all IOs
+   //--------------------------------------------------------------
+   boost::shared_ptr<CIOManager> m_ioManager;
+
+   //--------------------------------------------------------------
+   /// \brief	    m_Event
+   /// \note        static EnventHandler used by interrupts
+   //--------------------------------------------------------------
+   shared::event::CEventHandler m_InterruptHandler;
 
    //--------------------------------------------------------------
    /// \brief	IOs of the Piface2

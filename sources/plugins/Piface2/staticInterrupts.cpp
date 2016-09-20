@@ -7,9 +7,9 @@
 //TODO : Dans chaque interruption, construire une commande identique que pour un write
 void OnInterrupt(const int portUsed, const std::string keywordName)
 {
-   int value = 0;//digitalRead(portUsed);
+   int value = digitalRead(portUsed);
    CIOState Event = { portUsed, keywordName, (bool)value };
-   CIOManager::SendMessage(Event);
+   //CIOManager::SendMessage(Event);
 }
 
 void interrupt0()
