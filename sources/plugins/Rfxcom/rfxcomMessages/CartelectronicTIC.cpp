@@ -10,7 +10,7 @@ namespace rfxcomMessages
    CCartelectronicTIC::CCartelectronicTIC(const RBUF& rbuf,
                                           size_t rbufSize)
       : m_id(0),
-      m_teleInfoError(boost::make_shared<yApi::historization::CSwitch>("TeleInfoError")),
+      m_teleInfoError(boost::make_shared<yApi::historization::CSwitch>("TeleInfoError", yApi::EKeywordAccessMode::kGet)), // Read-only keyword
       m_keywords({ m_teleInfoError })
    {
       std::string NameCounter1;
