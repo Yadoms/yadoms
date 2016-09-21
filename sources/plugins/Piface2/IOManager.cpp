@@ -10,7 +10,14 @@ static const std::string Model("Piface2");
 
 CIOManager::CIOManager(const std::string& device)
    : m_deviceName (device)
-{}
+{
+   // Initial reading of DIO
+   for (int counter = 0; counter<NB_INPUTS; ++counter)
+   {
+      std::string name = "DI" + boost::lexical_cast<std::string>(counter);
+      m_mapKeywordsName[name]->set(m_mapKeywordsName[name]->readHardware(), false);
+   }
+}
 
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                                 boost::shared_ptr<const yApi::IDeviceCommand> command,

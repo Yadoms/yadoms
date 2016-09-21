@@ -3,6 +3,7 @@
 #include "staticInterrupts.h"
 #include "pifacedigital.h"
 #include "InitializationException.hpp"
+#include <MCP23S17.h>
 
 CIO::CIO(const std::string& keywordName,
          const int pin,
@@ -21,8 +22,8 @@ CIO::CIO(const std::string& keywordName,
       m_interruptReceiverThread = boost::thread(&CIO::interruptReceiverThreaded, this, pin, keywordName);
 
       //TODO : A comprendre comment cela fonctionne
-      m_interruptReceiverThread.interrupt();
-      m_interruptReceiverThread.timed_join(boost::posix_time::seconds(20));
+      //m_interruptReceiverThread.interrupt();
+      //m_interruptReceiverThread.timed_join(boost::posix_time::seconds(20));
 
       if (!pifacedigital_enable_interrupts())
          throw CInitializationException("interrupt initialization error");
@@ -44,6 +45,13 @@ void CIO::set(bool state, bool boardAccess)
    if (boardAccess) writeHardware (state);
 }
 
+bool CIO::readHardware(void)
+{
+   // TODO : could we historize the value here ?
+
+   return (bool)pifacedigital_digital_read(portUsed);
+}
+
 void CIO::writeHardware(bool state)
 {
    // Writing the value
@@ -58,7 +66,7 @@ void CIO::ConfigurePullResistance(const EPullResistance pullResistanceState)
       switch ( pullResistanceState )
       {
          case kDisable:
-            //pifacedigital_write_reg(0xff, GPPUB, hw_addr);
+            //pifacedigital_write_reg(0x00, GPPUB, hw_addr);
             break;
          case kPullUp:
             //pifacedigital_write_reg(0xff, GPPUB, hw_addr);
