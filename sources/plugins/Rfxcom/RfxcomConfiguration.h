@@ -23,7 +23,6 @@ public:
    std::string getEthernetAddress() const override;
    std::string getEthernetPort() const override;
    std::string getSerialPort() const override;
-   unsigned int getSendRepetitions() const override;
    bool isAEenabled() const override;
    bool isRUBICSONenabled() const override;
    bool isFINEOFFSETenabled() const override;

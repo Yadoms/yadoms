@@ -273,7 +273,7 @@
 
                           $.each(list, function (versionIndex, versionValue) {
                               //if this releasetype is wanted and is not the current version we add it to the arrays of version for this item
-                              if ($.inArray(versionValue.releaseType.toLowerCase(), wantedVersion) > -1) {
+                              if ($.inArray(versionValue.releaseType, wantedVersion) > -1) {
                                   if ((!matchVersion(versionValue, localInformation)) &&
                                       (localInformation.version < versionValue.version)) {
                                       serverVersions.push(versionValue);
@@ -627,7 +627,7 @@
                         $.each(serverValue,
                             function (versionIndex, versionValue) {
                                 //if this releasetype is wanted we add it to the arrays of version for this item
-                                if ($.inArray(versionValue.version.toLowerCase(), wantedVersion)) {
+                                if ($.inArray(versionValue.version, wantedVersion)) {
                                     var item = {};
                                     item.downloadUrl = versionValue.downloadUrl;
                                     item.version = versionValue.version;
@@ -667,7 +667,7 @@
                                 item.releaseType = versionValue.releaseType;
                                 newItem.serverVersions.push(item);
                                 //we need only one release type available in tthe wanted array to can see the whole line
-                                if ($.inArray(item.releaseType.toLowerCase(), wantedVersion) > -1)
+                                if ($.inArray(item.releaseType, wantedVersion) > -1)
                                     canAddOnThePage = true;
                             });
 
@@ -793,7 +793,7 @@
             if (!isNullOrUndefined(item.serverVersions)) {
                 //we create a list of all version available to update based on the type of the version and the list of available version different from the local one
                 $.each(item.serverVersions, function (index, value) {
-                    if ($.inArray(value.releaseType.toLowerCase(), wantedVersion) > -1) {
+                    if ($.inArray(value.releaseType, wantedVersion) > -1) {
                         //we manage latest version
                         if (isNullOrUndefined(latestVersion)) {
                             //latestVersion hasn't defined for the moment we take the first one
@@ -1040,7 +1040,7 @@
     }
 
     function matchVersion(version1, version2) {
-        return ((version1.version === version2.version) && (version1.releaseType.toLowerCase() === version2.releaseType.toLowerCase()));
+        return ((version1.version === version2.version) && (version1.releaseType === version2.releaseType));
     }
 
     /**
@@ -1051,7 +1051,7 @@
     function versionToString(version) {
         if ((isNullOrUndefined(version)) || (isNullOrUndefined(version.version)) || (isNullOrUndefined(version.releaseType)))
             return "";
-        return "v " + version.version + " " + version.releaseType.toLowerCase();
+        return "v " + version.version + " " + version.releaseType;
     }
 
     /**

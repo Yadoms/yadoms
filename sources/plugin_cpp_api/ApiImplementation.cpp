@@ -60,29 +60,50 @@ namespace plugin_cpp_api
                                  boost::function1<void, const toPlugin::msg&> onReceiveFunction) const
    {
       shared::event::CEventHandler receivedEvtHandler;
+      enum { kExpectedEventReceived = shared::event::kUserFirstId, kErrorReceived };
 
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
          m_onReceiveHook = [&](const toPlugin::msg& receivedMsg)-> bool
             {
+               if (receivedMsg.has_error())
+               {
+                  receivedEvtHandler.postEvent<const toPlugin::msg>(kErrorReceived, receivedMsg);
+                  return true;
+               }
+
                if (!checkExpectedMessageFunction(receivedMsg))
                   return false;
 
-               receivedEvtHandler.postEvent<const toPlugin::msg>(shared::event::kUserFirstId, receivedMsg);
+               receivedEvtHandler.postEvent<const toPlugin::msg>(kExpectedEventReceived, receivedMsg);
                return true;
             };
       }
 
       send(msg);
 
-      if (receivedEvtHandler.waitForEvents(boost::posix_time::minutes(1)) == shared::event::kTimeout)
+      switch (receivedEvtHandler.waitForEvents(boost::posix_time::minutes(1)))
+      {
+      case kExpectedEventReceived:
+      {
+         onReceiveFunction(receivedEvtHandler.getEventData<const toPlugin::msg>());
+         break;
+      }
+
+      case kErrorReceived:
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
+         m_onReceiveHook.clear();
+         throw std::runtime_error((boost::format("Error \"%1%\" received from Yadoms when sending message %2%") % receivedEvtHandler.getEventData<const toPlugin::msg>().error() % msg.OneOf_case()).str());
+      }
+
+      case shared::event::kTimeout:
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
          m_onReceiveHook.clear();
          throw std::runtime_error((boost::format("No answer from Yadoms when sending message %1%") % msg.OneOf_case()).str());
       }
-
-      onReceiveFunction(receivedEvtHandler.getEventData<const toPlugin::msg>());
+      }
    }
 
    void CApiImplementation::onReceive(boost::shared_ptr<const unsigned char[]> message,

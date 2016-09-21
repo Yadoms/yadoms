@@ -43,12 +43,6 @@ public:
    virtual std::string getSerialPort() const = 0;
 
    //--------------------------------------------------------------
-   /// \brief	    Send repetitions number
-   /// \return     The send repetition number
-   //--------------------------------------------------------------
-   virtual unsigned int getSendRepetitions() const = 0;
-
-   //--------------------------------------------------------------
    /// \brief	    Get the protocols configured by user
    /// \return     The configured transceiver status
    //--------------------------------------------------------------
