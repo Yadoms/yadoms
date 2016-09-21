@@ -8,3 +8,6 @@ enum
 {
    kEvtIOStateReceived = yApi::IYPluginApi::kPluginFirstEventId // Always start from shared::event::CEventHandler::kUserFirstId
 };
+
+#define NB_INPUTS  8
+#define NB_OUTPUTS 8

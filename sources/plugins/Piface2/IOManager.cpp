@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "IOManager.h"
 #include "InitializationException.hpp"
-#include <errno.h>
+#include "pifacedigital.h"
+#include <mcp23s17.h>
+#include "eventDefinitions.h"
 
-#define NB_INPUTS  8
-#define NB_OUTPUTS 8
+//static const std::string Model("Piface2");
 
-static const std::string Model("Piface2");
-
-CIOManager::CIOManager(const std::string& device)
-   : m_deviceName (device)
+CIOManager::CIOManager(const std::string& device, shared::event::CEventHandler& interruptEventHandler)
+   : m_deviceName (device),
+   m_InterruptEventHandler(interruptEventHandler)
 {
    // Initial reading of DIO
    for (int counter = 0; counter<NB_INPUTS; ++counter)
@@ -17,6 +17,12 @@ CIOManager::CIOManager(const std::string& device)
       std::string name = "DI" + boost::lexical_cast<std::string>(counter);
       m_mapKeywordsName[name]->set(m_mapKeywordsName[name]->readHardware(), false);
    }
+
+   // Creation of the reception thread
+   m_interruptReceiverThread = boost::thread(&CIOManager::interruptReceiverThreaded, this, m_deviceName);
+
+   if (!pifacedigital_enable_interrupts())
+      throw CInitializationException("interrupt initialization error");
 }
 
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -28,9 +34,11 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
    auto search = m_mapKeywordsName.find(command->getKeyword());
 
    if (search != m_mapKeywordsName.end())
-      search->second->set(boost::lexical_cast<bool>(command->getBody()), !fromInput);
+      search->second->set(boost::lexical_cast<bool>(command->getBody()));
    else
       std::cerr << "Cannot find keyword " << command->getKeyword();
+
+   // Historize here ! check the list and historize.
 }
 
 void CIOManager::setNewIOList(std::map<std::string, boost::shared_ptr<CIO> > IOlist)
@@ -38,5 +46,35 @@ void CIOManager::setNewIOList(std::map<std::string, boost::shared_ptr<CIO> > IOl
    m_mapKeywordsName = IOlist;
 }
 
+void CIOManager::interruptReceiverThreaded(const std::string& keywordName) const
+{
+   try
+   {
+      while (true)
+      {
+         unsigned char inputs=0;
+
+         //int value = pifacedigital_digital_read(portUsed);
+         if (pifacedigital_wait_for_input(&inputs, -1, 0) > 0)
+            //OK
+         //else
+            // throw sometimes.
+
+         // TODO : Set the value directly read each IO ? or from the input variable
+         // estimate where values have changed and send the message for the historization
+
+         CIOState Event = { keywordName, inputs };
+         m_InterruptEventHandler.postEvent<const CIOState>(kEvtIOStateReceived, Event);
+      }
+   }
+   catch (boost::thread_interrupted&)
+   {
+   }
+}
+
 CIOManager::~CIOManager()
-{}
+{
+   // TODO : A voir si cela doit se trouver ici !
+   m_interruptReceiverThread.interrupt();
+   m_interruptReceiverThread.timed_join(boost::posix_time::seconds(20));
+}

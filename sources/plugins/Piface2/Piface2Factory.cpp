@@ -3,7 +3,6 @@
 #include "pifacedigital.h"
 #include "InitializationException.hpp"
 #include "eventDefinitions.h"
-#include <errno.h>
 
 #define NB_INPUTS  8
 #define NB_OUTPUTS 8
