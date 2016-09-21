@@ -78,5 +78,3 @@ namespace rfxcomMessages
       return m_id;
    }
 } // namespace rfxcomMessages
-
-
