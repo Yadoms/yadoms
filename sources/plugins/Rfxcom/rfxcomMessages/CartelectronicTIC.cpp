@@ -20,12 +20,12 @@ namespace rfxcomMessages
 
       if ((rbuf.TIC.state & 0x01) != 0)
       {
-         // TeleInfo reading error
+         //TeleInfo reading error - historize only on state change
          m_teleInfoError->set(true);
       }
       else
       {
-         // TeleInfo reading error
+         // TeleInfo reading error - historize only on state change
          m_teleInfoError->set(false);
 
          // Subscribe Contract
@@ -93,7 +93,7 @@ namespace rfxcomMessages
          if ((rbuf.TIC.state & 0x02) != 0)
          {
             m_apparentePower = boost::make_shared<yApi::historization::CApparentPower>("ApparentPower");
-            m_keywords.push_back(m_counter1);
+            m_keywords.push_back(m_apparentePower);
             m_apparentePower->set(boost::lexical_cast<double>((rbuf.TIC.power_H << 8) + rbuf.TIC.power_L));
          }
          //---------
