@@ -13,13 +13,6 @@
          "type" : "enum",
 		   "values" : {"__Binding__" : {"type" : "system", "query" : "serialPorts"}}
       },
-      "SendRepetitions" :
-      {
-         "type": "int",
-         "defaultValue": "0",
-         "minimumValue": "0",
-         "maximumValue": "2"
-      },
       "Protocols":
       {
           "type" : "section",
