@@ -45,11 +45,14 @@ float  CCPULoad::getCpuUsage()
    ULONGLONG sysUserDiff   = (ul_sys_user.QuadPart - ul_sys_user_old.QuadPart);
    ULONGLONG sysIdleDiff = (ul_sys_idle.QuadPart - ul_sys_idle_old.QuadPart);
 
-   usage = ((sysKernelDiff + sysUserDiff - sysIdleDiff) * 100) / float(sysKernelDiff + sysUserDiff);
-
    ul_sys_idle_old.QuadPart = ul_sys_idle.QuadPart;
    ul_sys_user_old.QuadPart = ul_sys_user.QuadPart;
    ul_sys_kernel_old.QuadPart = ul_sys_kernel.QuadPart;
+
+   if ((sysKernelDiff + sysUserDiff) > 0)
+      usage = ((sysKernelDiff + sysUserDiff - sysIdleDiff) * 100) / float(sysKernelDiff + sysUserDiff);
+   else
+      shared::exception::CException("time too short between two execution");
 
    return usage;
 }
