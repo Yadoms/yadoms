@@ -300,7 +300,7 @@
                           serverVersions.sort(UpdateInformationManager.compareVersion);
                           var canChooseVersion = false;
                           var installUpdateAllowed = false;
-                           debugger;
+
                           if (serverVersions.length > 0) {
                               if (serverVersions.length > 1) {
                                   //there is different versions visible
@@ -834,7 +834,7 @@
                     //there is different versions visible
                     canChooseVersion = true;
                 }
-                debugger;
+
                 //the main install button is allowed only if latest version and current version are different
                 installUpdateAllowed = (UpdateInformationManager.compareVersion(item.package, latestVersion) !== 0);
 
