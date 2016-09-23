@@ -57,12 +57,12 @@ namespace update {
       {
          //determine the filename to download
          Poco::URI toDownload(downloadUrl);
-         std::string packageName = shared::web::CUriHelpers::getFile(toDownload);
+         auto packageName = shared::web::CUriHelpers::getFile(toDownload);
          if (packageName.empty())
             packageName = "temp.zip";
 
          //determine local path
-         Poco::Path downloadedPackage(tools::CFileSystem::getTemporaryFolder());
+         auto downloadedPackage(tools::CFileSystem::getTemporaryFolder());
          downloadedPackage.setFileName(packageName);
 
          shared::web::CFileDownloader::downloadFileAndVerify(toDownload, downloadedPackage, md5Hash, progressReporter);
