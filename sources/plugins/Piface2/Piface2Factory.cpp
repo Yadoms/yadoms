@@ -59,7 +59,4 @@ void CPiface2Factory::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi>
 }
 
 CPiface2Factory::~CPiface2Factory()
-{
-   // Close de connection
-   pifacedigital_close(0);
-}
+{}

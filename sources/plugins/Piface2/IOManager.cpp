@@ -22,10 +22,10 @@ void CIOManager::Initialize(std::map<std::string, boost::shared_ptr<CIO> > IOlis
    }
 
    // Creation of the reception thread
-   m_interruptReceiverThread = boost::thread(&CIOManager::interruptReceiverThreaded, this, m_deviceName);
+   //m_interruptReceiverThread = boost::thread(&CIOManager::interruptReceiverThreaded, this, m_deviceName);
 
-   if (!pifacedigital_enable_interrupts())
-      throw CInitializationException("interrupt initialization error");
+   //if (!pifacedigital_enable_interrupts())
+   //   throw CInitializationException("interrupt initialization error");
 }
 
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -72,6 +72,11 @@ void CIOManager::interruptReceiverThreaded(const std::string& keywordName) const
 CIOManager::~CIOManager()
 {
    // TODO : A voir si cela doit se trouver ici !
-   m_interruptReceiverThread.interrupt();
-   m_interruptReceiverThread.timed_join(boost::posix_time::seconds(20));
+   //m_interruptReceiverThread.interrupt();
+   //m_interruptReceiverThread.timed_join(boost::posix_time::seconds(20));
+
+   std::cout << "close the connection" << std::endl;
+
+   // Close de connection
+   pifacedigital_close(0);
 }
