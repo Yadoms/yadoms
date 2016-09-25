@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "SoftwareStop.h"
-#include <windows.h> 
 #include <shared/Log.h>
 
 namespace shared
