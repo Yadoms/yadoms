@@ -71,7 +71,7 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          // Command received from Yadoms
          auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
 
-         m_ioManager->onCommand(api, command/*, false*/);
+         m_ioManager->onCommand(api, command, false);
 
          break;
       }

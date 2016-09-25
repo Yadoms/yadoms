@@ -32,6 +32,12 @@ public:
                shared::event::CEventHandler& interruptEventHandler);
 
    //--------------------------------------------------------------
+   /// \brief	    Initialize all elements
+   /// \param[in] IOlist            Set a new list of IOs
+   //--------------------------------------------------------------
+   void Initialize(std::map<std::string, boost::shared_ptr<CIO> > IOlist);
+
+   //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~CIOManager();
@@ -44,12 +50,6 @@ public:
    void onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                   boost::shared_ptr<const yApi::IDeviceCommand> command,
                   bool fromInput);
-
-   //--------------------------------------------------------------
-   /// \brief	   setNewIOList
-   /// \param[in] IOlist            Set a new list of IOs
-   //--------------------------------------------------------------
-   void setNewIOList(std::map<std::string, boost::shared_ptr<CIO> > IOlist);
 
 private:
 

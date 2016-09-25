@@ -13,7 +13,7 @@ CPiface2Factory::CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
                                  const std::string& device,
                                  const IPf2Configuration& configuration,
                                  shared::CDataContainer details):
-   m_ioManager(boost::make_shared<CIOManager>(device))
+   m_ioManager(boost::make_shared<CIOManager>(device, m_InterruptHandler))
 {
    // Open the connection
    if (pifacedigital_open( 0 ) == -1)
@@ -23,7 +23,7 @@ CPiface2Factory::CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
    for (int counter=0; counter<NB_OUTPUTS; ++counter)
    {
       std::string name = "DO" + boost::lexical_cast<std::string>(counter);
-      m_DigitalOutput[counter] = boost::make_shared<CIO>( name, counter, EPullResistance::kDisable, yApi::EKeywordAccessMode::kGetSet, m_InterruptHandler);
+      m_DigitalOutput[counter] = boost::make_shared<CIO>( name, counter, EPullResistance::kDisable, yApi::EKeywordAccessMode::kGetSet);
       m_mapKeywordsName[ name ] = m_DigitalOutput[counter];
       m_keywordsToDeclare.push_back(m_DigitalOutput[counter]->historizable());
    }
@@ -31,16 +31,15 @@ CPiface2Factory::CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
    for (int counter=0; counter<NB_INPUTS; ++counter)
    {
       std::string name = "DI" + boost::lexical_cast<std::string>(counter);
-      m_DigitalInput[counter]  = boost::make_shared<CIO>( name, counter, configuration.PullResistanceState(counter), yApi::EKeywordAccessMode::kGet, m_InterruptHandler);
+      m_DigitalInput[counter]  = boost::make_shared<CIO>( name, counter, configuration.PullResistanceState(counter), yApi::EKeywordAccessMode::kGet);
       m_mapKeywordsName[ name ] = m_DigitalOutput[counter];
       m_keywordsToDeclare.push_back(m_DigitalInput[counter]->historizable());
    }
 
-   // Copy all IOs created to the IO Manager
-   m_ioManager->setNewIOList(getAllDigitalIO());
-
    //Déclaration of all IOs
    api->declareDevice(device, Model, m_keywordsToDeclare, details);
+
+   m_ioManager->Initialize(m_mapKeywordsName);
 }
 
 boost::shared_ptr<CIOManager> CPiface2Factory::getIOManager(void)
@@ -57,11 +56,6 @@ void CPiface2Factory::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi>
       std::string name = "DI" + boost::lexical_cast<std::string>(counter);
       m_DigitalInput[counter]->ConfigurePullResistance( configuration.PullResistanceState(counter) );
    }
-}
-
-std::map<std::string, boost::shared_ptr<CIO> > CPiface2Factory::getAllDigitalIO(void)
-{
-   return m_mapKeywordsName;
 }
 
 CPiface2Factory::~CPiface2Factory()

@@ -5,18 +5,20 @@
 #include <mcp23s17.h>
 #include "eventDefinitions.h"
 
-//static const std::string Model("Piface2");
-
 CIOManager::CIOManager(const std::string& device, shared::event::CEventHandler& interruptEventHandler)
    : m_InterruptEventHandler(interruptEventHandler), 
    m_deviceName (device)
+{}
+
+void CIOManager::Initialize(std::map<std::string, boost::shared_ptr<CIO> > IOlist)
 {
+   m_mapKeywordsName = IOlist;
+
    // Initial reading of DIO
    for (int counter = 0; counter<NB_INPUTS; ++counter)
    {
       std::string name = "DI" + boost::lexical_cast<std::string>(counter);
-      //TODO : To be enhanced !!
-      m_mapKeywordsName[name]->set(m_mapKeywordsName[name]->get(), false);
+      m_mapKeywordsName[name]->get();
    }
 
    // Creation of the reception thread
@@ -42,11 +44,6 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
    // Historize here ! check the list and historize.
 }
 
-void CIOManager::setNewIOList(std::map<std::string, boost::shared_ptr<CIO> > IOlist)
-{
-   m_mapKeywordsName = IOlist;
-}
-
 void CIOManager::interruptReceiverThreaded(const std::string& keywordName) const
 {
    try
@@ -64,8 +61,7 @@ void CIOManager::interruptReceiverThreaded(const std::string& keywordName) const
          // TODO : Set the value directly read each IO ? or from the input variable
          // estimate where values have changed and send the message for the historization
 
-         CIOState Event = { keywordName, inputs };
-         m_InterruptEventHandler.postEvent<const CIOState>(kEvtIOStateReceived, Event);
+         m_InterruptEventHandler.postEvent<const CIOState>(kEvtIOStateReceived, { keywordName, inputs });
       }
    }
    catch (boost::thread_interrupted&)

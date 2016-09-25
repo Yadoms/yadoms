@@ -41,8 +41,10 @@ public:
                               const IPf2Configuration& configuration,
                               shared::CDataContainer details);
 
-   std::map<std::string, boost::shared_ptr<CIO> >getAllDigitalIO(void);
-
+   //--------------------------------------------------------------
+   /// \brief	    getIOManager
+   /// \return     the IOManager
+   //--------------------------------------------------------------
    boost::shared_ptr<CIOManager> getIOManager(void);
 
 private:

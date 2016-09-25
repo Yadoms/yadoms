@@ -2,6 +2,7 @@
 #include "IO.h"
 #include "pifacedigital.h"
 #include "InitializationException.hpp"
+#include <mcp23s17.h>
 
 CIO::CIO(const std::string& keywordName,
          const int pin,
@@ -35,7 +36,10 @@ void CIO::set(bool state)
 
 bool CIO::get(void)
 {
-   m_value->set( pifacedigital_digital_read(m_portUsed) );
+   bool ret = pifacedigital_digital_read(m_portUsed);
+   m_value->set(ret);
+
+   return ret;
 }
 
 void CIO::ConfigurePullResistance(const EPullResistance pullResistanceState)
