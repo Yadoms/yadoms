@@ -8,14 +8,15 @@
 //static const std::string Model("Piface2");
 
 CIOManager::CIOManager(const std::string& device, shared::event::CEventHandler& interruptEventHandler)
-   : m_deviceName (device),
-   m_InterruptEventHandler(interruptEventHandler)
+   : m_InterruptEventHandler(interruptEventHandler), 
+   m_deviceName (device)
 {
    // Initial reading of DIO
    for (int counter = 0; counter<NB_INPUTS; ++counter)
    {
       std::string name = "DI" + boost::lexical_cast<std::string>(counter);
-      m_mapKeywordsName[name]->set(m_mapKeywordsName[name]->readHardware(), false);
+      //TODO : To be enhanced !!
+      m_mapKeywordsName[name]->set(m_mapKeywordsName[name]->get(), false);
    }
 
    // Creation of the reception thread
