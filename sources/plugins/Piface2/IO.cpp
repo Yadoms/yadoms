@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "IO.h"
+#include "pifacedigital.h"
 #include "InitializationException.hpp"
 
 CIO::CIO(const std::string& keywordName,
