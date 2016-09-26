@@ -7,7 +7,6 @@
 #include "message/SendMessage.h"
 
 
-class CMegatecUpsConfiguration;
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 

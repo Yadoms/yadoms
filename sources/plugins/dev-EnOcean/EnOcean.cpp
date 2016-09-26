@@ -4,6 +4,7 @@
 #include "EnOceanFactory.h"
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
+#include "Manufacturers.h"
 
 IMPLEMENT_PLUGIN(CEnOcean)
 
@@ -365,21 +366,25 @@ void CEnOcean::processRadioErp1_4BS(boost::shared_ptr<yApi::IYPluginApi> api,
    static const std::string keywordName("temperature");
    auto keyword(boost::make_shared<yApi::historization::CTemperature>(keywordName));
 
-   if (!m_api->deviceExists(senderId))
+   if (isTeachIn && !m_api->deviceExists(senderId))
    {
-      if (!isTeachIn)
-         throw CProtocolException((boost::format("Received message from unknown device %1%, ignored") % senderId).str());
+      auto eepIsProvided = data[4] & 0x80;
 
-      //TODO il semblerait qu'il existe un bit dans data[4] qui indique une variante particulière du mode "teach in" qui fournit fabricant/profile/type du device directement dans ce message. Cependant cette fonction n'est pas documentée dans la spec.
+      if (eepIsProvided)
+      {
+         unsigned int manufacturer = ((DB_2 & 7) << 8) | DB_1;
+         unsigned int type = ((DB_3 & 3) << 5) | (DB_2 >> 3);
+         unsigned int func = DB_3 >> 2;
+      }
+      else
+      {
+         unsigned int manufacturer = CManufacturers::kMulti_user_Manufacturer_ID;
+         unsigned int type = 5;//TODO ça serait mieux avec une constante
+         unsigned int func = 2;//TODO ça serait mieux avec une constante
+      }
+
       m_api->declareDevice(senderId, std::string(), keyword);
    }
-   else if (!m_api->keywordExists(senderId, keywordName))
-   {
-      m_api->declareKeyword(senderId, keyword);
-   }
-
-   //TODO gérer les FUNC
-   //TODO gérer les TYPE
 
    keyword->set(scaleToDouble(temperature, 255, 0, -40, 0));
    m_api->historizeData(senderId, keyword);
@@ -403,10 +408,11 @@ double CEnOcean::scaleToDouble(int inValue,
 std::string CEnOcean::extractSenderId(const std::vector<unsigned char>& data,
                                       int startIndex)
 {
-   return std::to_string((data[startIndex + 3] << 24)
-      + (data[startIndex + 2] << 16)
-      + (data[startIndex + 1] << 8)
-      + (data[startIndex]));
+   return std::to_string(
+      (data[startIndex + 3] << 24) +
+      (data[startIndex + 2] << 16) +
+      (data[startIndex + 1] << 8) +
+      (data[startIndex]));
 }
 
 void CEnOcean::processEvent(boost::shared_ptr<yApi::IYPluginApi> api,
