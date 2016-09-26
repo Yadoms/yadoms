@@ -8,7 +8,11 @@
 CIOManager::CIOManager(const std::string& device, shared::event::CEventHandler& interruptEventHandler)
    : m_InterruptEventHandler(interruptEventHandler), 
    m_deviceName (device)
-{}
+{
+   // Open the connection
+   if (pifacedigital_open(0) == -1)
+      throw CInitializationException("Initialization error - Configuration of the SPI in raspi-config ?");
+}
 
 void CIOManager::Initialize(std::map<std::string, boost::shared_ptr<CIO> > IOlist)
 {
@@ -22,10 +26,10 @@ void CIOManager::Initialize(std::map<std::string, boost::shared_ptr<CIO> > IOlis
    }
 
    // Creation of the reception thread
-   //m_interruptReceiverThread = boost::thread(&CIOManager::interruptReceiverThreaded, this, m_deviceName);
+   m_interruptReceiverThread = boost::thread(this->interruptReceiverThreaded, this, m_deviceName); //&CIOManager::interruptReceiverThreaded
 
-   //if (!pifacedigital_enable_interrupts())
-   //   throw CInitializationException("interrupt initialization error");
+   if (pifacedigital_enable_interrupts() != 0)
+      throw CInitializationException("interrupt initialization error");
 }
 
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,

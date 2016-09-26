@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Piface2Factory.h"
-#include "pifacedigital.h"
 #include "InitializationException.hpp"
 #include "eventDefinitions.h"
 
@@ -15,10 +14,6 @@ CPiface2Factory::CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
                                  shared::CDataContainer details):
    m_ioManager(boost::make_shared<CIOManager>(device, m_InterruptHandler))
 {
-   // Open the connection
-   if (pifacedigital_open( 0 ) == -1)
-      throw CInitializationException("Initialization error - Configuration of the SPI in raspi-config ?");
-
    // IO Configuration
    for (int counter=0; counter<NB_OUTPUTS; ++counter)
    {
