@@ -2,11 +2,6 @@
 
 include("../YadomsPluginsCommon.cmake")
 
-## Check for Version ##
-if( (WIN32) AND ( ${CMAKE_SYSTEM_VERSION} EQUAL 6.0 ) ) # Windows XP
-   MESSAGE ( "This Operating System is not supported with this plugin" )
-else()
-
 #########################################
 ## Place here all the plugin source files
 #########################################
@@ -55,8 +50,10 @@ IF (UNIX AND NOT APPLE)
 	CommonLinux/DisksList.cpp
 	CommonLinux/DiskUsage.h
 	CommonLinux/DiskUsage.cpp
-        CommonLinux/LinuxHelpers.h
-        CommonLinux/LinuxHelpers.cpp
+    CommonLinux/LinuxHelpers.h
+    CommonLinux/LinuxHelpers.cpp
+    CommonLinux/MemoryLoad.h
+    CommonLinux/MemoryLoad.cpp	
 	)
 	
 	source_group(CommonLinux CommonLinux/*.*)
@@ -66,8 +63,6 @@ IF (UNIX AND NOT APPLE AND NOT (CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry"))
    set(SYSTEMINFORMATION_PLUGIN_SOURCES ${SYSTEMINFORMATION_PLUGIN_SOURCES}
       Linux/SystemFactory.h
       Linux/SystemFactory.cpp
-      Linux/MemoryLoad.h
-      Linux/MemoryLoad.cpp
       )
 
     source_group(Linux Linux/*.*)
@@ -89,8 +84,6 @@ IF(CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
       RaspberryPI/SystemFactory.cpp
       RaspberryPI/TemperatureSensor.cpp
       RaspberryPI/TemperatureSensor.h
-      RaspberryPI/MemoryLoad.h
-      RaspberryPI/MemoryLoad.cpp
       )
 	
 	source_group(RaspberryPI RaspberryPI/*.*)
@@ -157,5 +150,3 @@ PLUGIN_LINK   (SystemInformation ${SYSTEMINFORMATION_PLUGIN_ADDITIONAL_LIB})
 PLUGIN_POST_BUILD_COPY_FILE(SystemInformation package.json)
 PLUGIN_POST_BUILD_COPY_FILE(SystemInformation icon.png)
 PLUGIN_POST_BUILD_COPY_DIRECTORY(SystemInformation locales)
-
-endif()

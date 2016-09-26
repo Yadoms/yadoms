@@ -42,14 +42,52 @@ namespace pluginSystem
       stop();
    }
 
-   void CManager::start()
+   void CManager::start(const boost::posix_time::time_duration& timeout)
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+      std::set<int> startedInstanceIds;
 
-      // Initialize the plugin list (detect available plugins)
-      updatePluginList();
+      // Start all plugin instances
+      YADOMS_LOG(information) << "Start all plugin instances...";
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
 
-      startAllInstances();
+         // Initialize the plugin list (detect available plugins)
+         updatePluginList();
+
+         startAllInstances(startedInstanceIds);
+      }
+
+      // Wait for instances started or timeout
+      YADOMS_LOG(debug) << "All plugin instances are started, wait for running...";
+      enum { kStartInstancesTimeoutId = shared::event::kUserFirstId };
+      shared::event::CEventHandler startInstancesEventHandler;
+      startInstancesEventHandler.createTimePoint(kStartInstancesTimeoutId, shared::currentTime::Provider().now() + timeout);
+      while (true)
+      {
+         switch(startInstancesEventHandler.waitForEvents(boost::posix_time::seconds(2)))
+         {
+         case kStartInstancesTimeoutId:
+            YADOMS_LOG(error) << "Timeout starting plugin instances : some instance(s) are not running";
+            return;
+         case shared::event::kTimeout: // Every 2 seconds
+            for (auto it = startedInstanceIds.begin(); it != startedInstanceIds.end(); )
+            {
+               if (getInstanceState(*it) == shared::plugin::yPluginApi::historization::EPluginState::kRunning)
+               {
+                  YADOMS_LOG(debug) << "Plugin instance " << *it << " is running";
+                  it = startedInstanceIds.erase(it);
+               }
+               else
+                  ++it;
+            }
+            if (startedInstanceIds.empty())
+            {
+               YADOMS_LOG(information) << "All started instances are now running";
+               return;
+            }
+            break;
+         }
+      }
    }
 
    void CManager::stop()
@@ -57,20 +95,22 @@ namespace pluginSystem
       stopInstances();
    }
 
-   void CManager::startAllInstances()
+   void CManager::startAllInstances(std::set<int>& startedInstanceIds)
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       if (!m_runningInstances.empty())
          throw shared::exception::CException("Some plugins are already started, are you sure that manager was successfuly stopped ?");
 
-      if (!startInstances(getInstanceList()))
+      if (!startInstances(getInstanceList(),
+                          startedInstanceIds))
          YADOMS_LOG(error) << "One or more plugins failed to start, check plugins page for details";
 
       //start the internal plugin
       startInternalPlugin();
    }
 
-   bool CManager::startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin> >& instances)
+   bool CManager::startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin> >& instances,
+                                 std::set<int>& startedInstanceIds)
    {
       auto allInstancesStarted = true;
       for (auto it = instances.begin(); it != instances.end(); ++it)
@@ -79,7 +119,11 @@ namespace pluginSystem
          {
             if ((*it)->Category() != database::entities::EPluginCategory::kSystem)
                if ((*it)->AutoStart())
+               {
+                  YADOMS_LOG(debug) << "Start plugin instance " << (*it)->Id() << "...";
                   startInstance((*it)->Id());
+                  startedInstanceIds.insert((*it)->Id());
+               }
          }
          catch (CPluginException& ex)
          {

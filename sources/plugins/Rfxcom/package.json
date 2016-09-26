@@ -1,6 +1,6 @@
 {
    "type": "rfxcom",
-   "version": "0.1",
+   "version": "1.0.0",
    "releaseType": "beta",
    "author": "Sébastien GALLOU",
    "url": "https://github.com/Yadoms/yadoms/wiki/Rfxcom",
@@ -12,13 +12,6 @@
       {
          "type" : "enum",
 		   "values" : {"__Binding__" : {"type" : "system", "query" : "serialPorts"}}
-      },
-      "SendRepetitions" :
-      {
-         "type": "int",
-         "defaultValue": "0",
-         "minimumValue": "0",
-         "maximumValue": "2"
       },
       "Protocols":
       {

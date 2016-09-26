@@ -97,6 +97,9 @@ message ManuallyDeviceCreationAnswer {
 	}
 }
 
+message DeveloperModeRequest{
+}
+
 message msg {
 	oneof OneOf {
 		SetPluginState pluginState = 1;
@@ -112,5 +115,6 @@ message msg {
 		RecipientFieldExitsRequest recipientFieldExitsRequest = 11;
 		HistorizeData historizeData = 12;
 		ManuallyDeviceCreationAnswer manuallyDeviceCreationAnswer = 13;
+		DeveloperModeRequest developerModeRequest = 14;
 	}
 }

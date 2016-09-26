@@ -83,11 +83,11 @@ int CYScriptApiImplementation::getKeywordId(const std::string& deviceName, const
    pbAnswer::msg answer;
    receiveAnswer(answer);
 
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::getKeywordId returned error : ") + answer.error());
+
    if (!answer.has_getkeywordid())
       throw std::out_of_range("yScriptApiWrapper::getKeywordId, wrong message received");
-
-   if (answer.has_error())
-      throw std::out_of_range(std::string("yScriptApiWrapper::getKeywordId, error : ") + answer.error());
 
    return answer.getkeywordid().id();
 }
@@ -103,11 +103,11 @@ int CYScriptApiImplementation::getRecipientId(const std::string& firstName, cons
    pbAnswer::msg answer;
    receiveAnswer(answer);
 
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::getRecipientId returned error : ") + answer.error());
+
    if (!answer.has_getrecipientid())
       throw std::out_of_range("yScriptApiWrapper::getRecipientId, wrong message received");
-
-   if (answer.has_error())
-      throw std::out_of_range(std::string("yScriptApiWrapper::getRecipientId, error : ") + answer.error());
 
    return answer.getrecipientid().id();
 }
@@ -122,11 +122,11 @@ std::string CYScriptApiImplementation::readKeyword(int keywordId) const
    pbAnswer::msg answer;
    receiveAnswer(answer);
 
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::readKeyword returned error : ") + answer.error());
+
    if (!answer.has_readkeyword())
       throw std::out_of_range("yScriptApiWrapper::readKeyword, wrong message received");
-
-   if (answer.has_error())
-      throw std::out_of_range(std::string("yScriptApiWrapper::readKeyword, error : ") + answer.error());
 
    return answer.readkeyword().value();
 }
@@ -143,11 +143,11 @@ std::string CYScriptApiImplementation::waitForNextAcquisition(int keywordId, con
    pbAnswer::msg answer;
    receiveAnswer(answer);
 
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::waitForNextAcquisition returned error : ") + answer.error());
+
    if (!answer.has_waitfornextacquisition())
       throw std::out_of_range("yScriptApiWrapper::waitForNextAcquisition, wrong message received");
-
-   if (answer.has_error())
-      throw std::out_of_range(std::string("yScriptApiWrapper::waitForNextAcquisition, error : ") + answer.error());
 
    return answer.waitfornextacquisition().acquisition();
 }
@@ -165,11 +165,11 @@ std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(c
    pbAnswer::msg answer;
    receiveAnswer(answer);
 
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::waitForNextAcquisitions returned error : ") + answer.error());
+
    if (!answer.has_waitfornextacquisitions())
       throw std::out_of_range("yScriptApiWrapper::waitForNextAcquisitions, wrong message received");
-
-   if (answer.has_error())
-      throw std::out_of_range(std::string("yScriptApiWrapper::waitForNextAcquisitions, error : ") + answer.error());
 
    return std::pair<int, std::string>(answer.waitfornextacquisitions().keywordid(), answer.waitfornextacquisitions().has_acquisition() ? answer.waitfornextacquisitions().acquisition() : std::string());
 }
@@ -188,11 +188,11 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
    pbAnswer::msg answer;
    receiveAnswer(answer);
 
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::waitForEvent returned error : ") + answer.error());
+
    if (!answer.has_waitforevent())
       throw std::out_of_range("yScriptApiWrapper::waitForEvent, wrong message received");
-
-   if (answer.has_error())
-      throw std::out_of_range(std::string("yScriptApiWrapper::waitForEvent, error : ") + answer.error());
 
    shared::script::yScriptApi::CWaitForEventResult result;
    switch (answer.waitforevent().type())
@@ -242,11 +242,11 @@ void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& n
    pbAnswer::msg answer;
    receiveAnswer(answer);
 
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::writeKeyword returned error : ") + answer.error());
+
    if (!answer.has_writekeyword())
       throw std::out_of_range("yScriptApiWrapper::writeKeyword, wrong message received");
-
-   if (answer.has_error())
-      throw std::out_of_range(std::string("yScriptApiWrapper::writeKeyword, error : ") + answer.error());
 }
 
 void CYScriptApiImplementation::sendNotification(int keywordId, int recipientId, const std::string& message)
@@ -261,11 +261,11 @@ void CYScriptApiImplementation::sendNotification(int keywordId, int recipientId,
    pbAnswer::msg answer;
    receiveAnswer(answer);
 
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::sendNotification returned error : ") + answer.error());
+
    if (!answer.has_sendnotification())
       throw std::out_of_range("yScriptApiWrapper::sendNotification, wrong message received");
-
-   if (answer.has_error())
-      throw std::out_of_range(std::string("yScriptApiWrapper::sendNotification, error : ") + answer.error());
 }
 
 std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
@@ -289,11 +289,11 @@ std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
    pbAnswer::msg answer;
    receiveAnswer(answer);
 
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::getInfo returned error : ") + answer.error());
+
    if (!answer.has_getinfo())
       throw std::out_of_range("yScriptApiWrapper::getInfo, wrong message received");
-
-   if (answer.has_error())
-      throw std::out_of_range(std::string("yScriptApiWrapper::getInfo, error : ") + answer.error());
 
    return answer.getinfo().value();
 }
@@ -309,11 +309,11 @@ std::string CYScriptApiImplementation::getKeywordName(int keywordId) const
    pbAnswer::msg answer;
    receiveAnswer(answer);
 
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::getKeywordName returned error : ") + answer.error());
+
    if (!answer.has_getkeywordname())
       throw std::out_of_range("yScriptApiWrapper::getKeywordName, wrong message received");
-
-   if (answer.has_error())
-      throw std::out_of_range(std::string("yScriptApiWrapper::getKeywordName, error : ") + answer.error());
 
    return answer.getkeywordname().keywordname();
 }
@@ -329,11 +329,11 @@ std::string CYScriptApiImplementation::getKeywordDeviceName(int keywordId) const
    pbAnswer::msg answer;
    receiveAnswer(answer);
 
+   if (answer.has_error())
+      throw std::out_of_range(std::string("yScriptApiWrapper::getKeywordDeviceName returned error : ") + answer.error());
+
    if (!answer.has_getkeyworddevicename())
       throw std::out_of_range("yScriptApiWrapper::getKeywordDeviceName, wrong message received");
-
-   if (answer.has_error())
-      throw std::out_of_range(std::string("yScriptApiWrapper::getKeywordDeviceName, error : ") + answer.error());
 
    return answer.getkeyworddevicename().devicename();
 }

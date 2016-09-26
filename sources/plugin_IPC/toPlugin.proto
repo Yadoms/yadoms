@@ -58,11 +58,13 @@ message ManuallyDeviceCreation {
 	optional string configuration = 2;
 }
 
+message DeveloperModeAnswer{
+    required bool enabled = 1;
+}
 
 message msg {
-	optional string error = 1;
-
 	oneof OneOf {
+		string error = 1;
 		System system = 2;
 		Init init = 3;
 		Configuration configurationAnswer = 5;
@@ -77,6 +79,7 @@ message msg {
 		FindRecipientsFromFieldAnswer findRecipientsFromFieldAnswer = 14;
 		RecipientFieldExitsAnswer recipientFieldExitsAnswer = 15;
 		ManuallyDeviceCreation manuallyDeviceCreation = 16;
+		DeveloperModeAnswer developerModeAnswer = 17;
 	}
 }
 

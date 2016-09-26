@@ -255,6 +255,11 @@ namespace automation
                   }
                   break;
                }
+            default:
+               {
+                  YADOMS_LOG(error) << "CYScriptApiImplementation::waitForEvent : unknown result code " << resultCode;
+                  throw std::out_of_range((boost::format("CYScriptApiImplementation::waitForEvent : unknown result code %1%") % resultCode).str());
+               }
             }
 
             if (dateTimeObserver)

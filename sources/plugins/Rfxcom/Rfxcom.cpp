@@ -172,20 +172,21 @@ bool CRfxcom::connectionsAreEqual(const CRfxcomConfiguration& conf1,
    return (conf1.getSerialPort() == conf2.getSerialPort());
 }
 
-void CRfxcom::send(const shared::communication::CByteBuffer& buffer,
+void CRfxcom::send(boost::shared_ptr<yApi::IYPluginApi> api,
+                   const shared::communication::CByteBuffer& buffer,
                    bool needAnswer)
 {
    if (!m_port)
       return;
 
-   m_logger.logSent(buffer);
+   if (api->isDeveloperMode()) m_logger.logSent(buffer);
    m_port->send(buffer);
    m_lastRequest = buffer;
    if (needAnswer)
       m_waitForAnswerTimer->start();
 }
 
-void CRfxcom::send(boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > buffers)
+void CRfxcom::send(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > buffers)
 {
    if (!m_port)
       return;
@@ -193,7 +194,7 @@ void CRfxcom::send(boost::shared_ptr<std::queue<shared::communication::CByteBuff
    // Send all messages
    while (!buffers->empty())
    {
-      send(buffers->front(), false);
+      send(api, buffers->front(), false);
       buffers->pop();
    }
 }
@@ -210,14 +211,7 @@ void CRfxcom::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
    }
 
    auto message(m_transceiver->buildMessageToDevice(api, command));
-   send(message);
-
-   // Manage repetitions
-   for (unsigned int repetition = 0; repetition < m_configuration.getSendRepetitions(); ++repetition)
-   {
-      boost::this_thread::sleep(boost::posix_time::milliseconds(200));
-      send(message);
-   }
+   send(api, message);
 }
 
 void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -248,7 +242,7 @@ void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 
       // Ask status, to compare with new configuration
       std::cout << "Ask the RFXCom status..." << std::endl;
-      send(m_transceiver->buildGetStatusCmd(), true);
+      send(api, m_transceiver->buildGetStatusCmd(), true);
       return;
    }
 
@@ -270,7 +264,7 @@ void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> 
    try
    {
       // Reset the RFXCom
-      initRfxcom();
+      initRfxcom(api);
    }
    catch (CProtocolException& e)
    {
@@ -298,7 +292,7 @@ void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi
 void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
                                         const shared::communication::CByteBuffer& data)
 {
-   m_logger.logReceived(data);
+   if (api->isDeveloperMode()) m_logger.logReceived(data);
 
    auto message = m_transceiver->decodeRfxcomMessage(api, data);
 
@@ -330,7 +324,7 @@ void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> api
    message->historizeData(api);
 }
 
-void CRfxcom::initRfxcom()
+void CRfxcom::initRfxcom(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Reset the RFXCom.
    // Nbote that this sequence doesn't respect specification (see RFXCom SDK documentation),
@@ -338,7 +332,7 @@ void CRfxcom::initRfxcom()
 
    // Send reset command to the RfxCom
    std::cout << "Reset the RFXCom..." << std::endl;
-   send(m_transceiver->buildResetCmd(), false);
+   send(api, m_transceiver->buildResetCmd(), false);
 
    m_configurationUpdated = false;
 
@@ -346,7 +340,7 @@ void CRfxcom::initRfxcom()
    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
 
    std::cout << "Start the RFXtrx receiver..." << std::endl;
-   send(m_transceiver->buildStartReceiverCmd(), true);
+   send(api, m_transceiver->buildStartReceiverCmd(), true);
 }
 
 void CRfxcom::processRfxcomCommandResponseMessage(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -390,7 +384,7 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> ap
       if (status.needConfigurationUpdate(m_configuration))
       {
          std::cout << "Incorrect RFXCom configuration. Updating configuration..." << std::endl;
-         send(m_transceiver->buildSetModeCmd(status.getRfxcomType(), m_configuration), true);// Don't change the RFXCom frequency
+         send(api, m_transceiver->buildSetModeCmd(status.getRfxcomType(), m_configuration), true);// Don't change the RFXCom frequency
       }
       m_configurationUpdated = true;
       std::cout << "RFXCom is running" << std::endl;
@@ -404,7 +398,7 @@ void CRfxcom::processRfxcomReceiverStartedMessage(boost::shared_ptr<yApi::IYPlug
    std::cout << "RFXCom started message, device \"" << status.getValidMessage() << "\" detected" << std::endl;
 
    std::cout << "Ask the RFXCom status..." << std::endl;
-   send(m_transceiver->buildGetStatusCmd(), true);
+   send(api, m_transceiver->buildGetStatusCmd(), true);
 }
 
 void CRfxcom::processRfxcomWrongCommandMessage(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -418,7 +412,7 @@ void CRfxcom::processRfxcomWrongCommandMessage(boost::shared_ptr<yApi::IYPluginA
    {
       // Message "start receiver" is not supported by old firmwares, so ignore wrong answer
       std::cout << "Ask the RFXCom status..." << std::endl;
-      send(m_transceiver->buildGetStatusCmd(), true);
+      send(api, m_transceiver->buildGetStatusCmd(), true);
    }
    else
    {

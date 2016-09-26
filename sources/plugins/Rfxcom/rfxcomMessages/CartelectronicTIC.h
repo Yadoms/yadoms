@@ -83,10 +83,13 @@ namespace rfxcomMessages
       boost::shared_ptr<teleInfo::specificHistorizers::CPeriod> m_period;
 
       //--------------------------------------------------------------
+      /// \brief	TeleInfo Error
+      //--------------------------------------------------------------
+      boost::shared_ptr<yApi::historization::CSwitch> m_teleInfoError;
+
+      //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances
       //--------------------------------------------------------------
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };
 } // namespace rfxcomMessages
-
-

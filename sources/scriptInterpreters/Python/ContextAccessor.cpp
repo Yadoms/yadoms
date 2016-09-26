@@ -267,14 +267,15 @@ void CContextAccessor::processWaitForNextAcquisitions(const pbRequest::WaitForNe
 void CContextAccessor::processWaitForEvent(const pbRequest::WaitForEvent& request, boost::interprocess::message_queue& messageQueue)
 {
    pbAnswer::msg ans;
-   pbAnswer::WaitForEvent* answer = ans.mutable_waitforevent();
+   auto answer = ans.mutable_waitforevent();
    try
    {
       std::vector<int> keywordIdList;
-      for (google::protobuf::RepeatedField<google::protobuf::int32>::const_iterator it = request.keywordid().begin(); it != request.keywordid().end(); ++it)
+      for (auto it = request.keywordid().begin(); it != request.keywordid().end(); ++it)
          keywordIdList.push_back(*it);
 
-      shared::script::yScriptApi::CWaitForEventResult result = m_scriptApi->waitForEvent(keywordIdList, request.receivedatetimeevent(), request.has_timeout() ? request.timeout() : std::string());
+      auto result = m_scriptApi->waitForEvent(keywordIdList, request.receivedatetimeevent(), request.has_timeout() ? request.timeout() : std::string());
+
       switch (result.getType())
       {
       case shared::script::yScriptApi::CWaitForEventResult::kTimeout:answer->set_type(pbAnswer::WaitForEvent_EventType_kTimeout); break;
@@ -310,8 +311,8 @@ void CContextAccessor::processGetKeywordsByCapacity(const pbRequest::GetKeywords
    pbAnswer::GetKeywordsByCapacity* answer = ans.mutable_getkeywordsbycapacity();
    try
    {
-      std::vector<int> keywordIdList = m_scriptApi->getKeywordsByCapacity(request.capacity());
-      for (std::vector<int>::iterator i = keywordIdList.begin(); i != keywordIdList.end(); ++i)
+      auto keywordIdList = m_scriptApi->getKeywordsByCapacity(request.capacity());
+      for (auto i = keywordIdList.begin(); i != keywordIdList.end(); ++i)
          answer->add_keywordids(*i);
    }
    catch (std::exception& ex)

@@ -219,6 +219,8 @@ set(SHARED_LIB_SRC
    shared/process/Process.h
    shared/process/Process.cpp
    shared/process/ProcessException.hpp
+   shared/process/SoftwareStop.h
+   shared/process/SoftwareStop.cpp
 
    shared/serialization/IDataSerializable.h
    shared/serialization/IDataFileSerializable.h

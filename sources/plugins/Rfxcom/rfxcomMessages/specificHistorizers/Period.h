@@ -12,6 +12,7 @@ namespace teleInfo {
       ///\brief  All periods
       //-----------------------------------------------------   
       DECLARE_ENUM_HEADER(EPeriod,
+         ((NotDefined))
          ((AllHours))
          ((LowCostHours))
          ((PeakCostHours))
