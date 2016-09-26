@@ -2,6 +2,7 @@
 #include "ApplicationStopHandler.h"
 #include <execinfo.h>
 #include <shared/Log.h>
+#include <shared/process/SoftwareStop.h>
 
 namespace shared
 {
@@ -36,6 +37,8 @@ namespace shared
       void CApplicationStopHandler::setApplicationStopHandler(boost::function<bool()> onStopRequestedFct)
       {
          m_onStopRequestedFct = onStopRequestedFct;
+
+         CSoftwareStop::setOnStopRequestedHandler(onStopRequestedFct);
 
          signal(SIGINT, CApplicationStopHandler::stopHandler);     // CTRL+C signal
          signal(SIGTERM, CApplicationStopHandler::stopHandler);    // Termination request

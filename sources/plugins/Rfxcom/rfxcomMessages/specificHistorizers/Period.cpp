@@ -9,6 +9,7 @@ namespace teleInfo
    namespace specificHistorizers
    {
       DECLARE_ENUM_IMPLEMENTATION(EPeriod,
+         ((NotDefined))
          ((AllHours))
          ((LowCostHours))
          ((PeakCostHours))

@@ -212,13 +212,6 @@ void CRfxcom::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
 
    auto message(m_transceiver->buildMessageToDevice(api, command));
    send(api, message);
-
-   // Manage repetitions
-   for (unsigned int repetition = 0; repetition < m_configuration.getSendRepetitions(); ++repetition)
-   {
-      boost::this_thread::sleep(boost::posix_time::milliseconds(200));
-      send(api, message);
-   }
 }
 
 void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,

@@ -65,10 +65,9 @@ message GetKeywordDeviceName
    
 message msg
 {
-   optional string error = 1;
-   
    oneof OneOf
    {
+	  string error = 1;
       GetKeywordId getKeywordId = 2;
       GetRecipientId getRecipientId = 3;
       ReadKeyword readKeyword = 4;

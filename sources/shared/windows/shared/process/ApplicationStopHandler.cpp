@@ -2,6 +2,7 @@
 #include "ApplicationStopHandler.h"
 #include "ServiceControlHandler.h"
 #include "ConsoleControlHandler.h"
+#include <shared/process/SoftwareStop.h>
 
 namespace shared
 {
@@ -18,6 +19,7 @@ namespace shared
 
       void CApplicationStopHandler::setApplicationStopHandler(boost::function<bool()> onStopRequestedFct)
       {
+         CSoftwareStop::setOnStopRequestedHandler(onStopRequestedFct);
          CConsoleControlHandler::setOnStopRequestedHandler(onStopRequestedFct);
          if (m_isRunningAsService)
             CServiceControlHandler::setOnStopRequestedHandler(onStopRequestedFct);
