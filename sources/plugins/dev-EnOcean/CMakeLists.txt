@@ -17,6 +17,8 @@ set(ENOCEAN_SOURCES
    EnOceanConfiguration.cpp
    EnOceanFactory.h
    EnOceanFactory.cpp
+   Manufacturers.h
+   Manufacturers.cpp
 
    message/Crc8.h
    message/Crc8.cpp
@@ -29,6 +31,24 @@ set(ENOCEAN_SOURCES
    
    
 source_group(message message/*.*)
+
+
+#########################################
+## Code generator configuration
+#########################################
+set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
+   enOceanDescriptors/manufacturers.xml
+   enOceanDescriptors/generateManufacturers.py
+   enOceanDescriptors/generated-manufacturers.cpp
+   enOceanDescriptors/generated-manufacturers.h
+   )
+source_group(enOceanDescriptors enOceanDescriptors/*.*)
+
+add_custom_command(OUTPUT enOceanDescriptors/generated-manufacturers.h enOceanDescriptors/generated-manufacturers.cpp
+                   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generateManufacturers.py ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/manufacturers.xml enOceanDescriptors/generated-manufacturers.h enOceanDescriptors/generated-manufacturers.cpp
+                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/manufacturers.xml ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generateManufacturers.py 
+                   COMMENT "Generating Manufacturers source code...")
+
 
 #########################################
 ## Place here all additional include directories

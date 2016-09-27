@@ -372,9 +372,10 @@ void CEnOcean::processRadioErp1_4BS(boost::shared_ptr<yApi::IYPluginApi> api,
 
       if (eepIsProvided)
       {
-         unsigned int manufacturer = ((DB_2 & 7) << 8) | DB_1;
-         unsigned int type = ((DB_3 & 3) << 5) | (DB_2 >> 3);
-         unsigned int func = DB_3 >> 2;
+         //TODO
+         //unsigned int manufacturer = ((DB_2 & 7) << 8) | DB_1;
+         //unsigned int type = ((DB_3 & 3) << 5) | (DB_2 >> 3);
+         //unsigned int func = DB_3 >> 2;
       }
       else
       {
