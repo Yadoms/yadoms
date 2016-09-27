@@ -33,9 +33,11 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	    Initialize all elements
-   /// \param[in] IOlist            Set a new list of IOs
+   /// \param[in]  api              Plugin execution context (Yadoms API)
+   /// \param[in]  IOlist           Set a new list of IOs
    //--------------------------------------------------------------
-   void Initialize(std::map<std::string, boost::shared_ptr<CIO> > IOlist);
+   void Initialize(boost::shared_ptr<yApi::IYPluginApi> api, 
+                   std::map<std::string, boost::shared_ptr<CIO> > IOlist);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -48,8 +50,15 @@ public:
    /// \param [in] command          The received command
    //--------------------------------------------------------------
    void onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
-                  boost::shared_ptr<const yApi::IDeviceCommand> command,
-                  bool fromInput);
+                  boost::shared_ptr<const yApi::IDeviceCommand> command);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Process a command received from Yadoms
+   /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \param [in] receivedValue    The received value from the interrupt
+   //--------------------------------------------------------------
+   void onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
+                  int receivedValue);
 
 private:
 
@@ -82,4 +91,6 @@ private:
    ///\brief   The thread function to receive interrupts from the component
    //--------------------------------------------------------------
    void interruptReceiverThreaded(const std::string& keywordName) const;
+
+   char m_inputValue;
 };

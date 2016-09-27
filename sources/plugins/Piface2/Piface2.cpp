@@ -60,19 +60,16 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          std::cout << "Event received" << std::endl;
 
-         // TODO : Créer une commande pour repasser par m_factory.onCommand(api, command)
-         //auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
-         
-         //m_ioManager.onCommand(api, command, true);
+         //Value received from DI
+         m_ioManager->onCommand(api, api->getEventHandler().getEventData<int>() );
          break;
       }
       case yApi::IYPluginApi::kEventDeviceCommand:
       {
          // Command received from Yadoms
-         auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
+         auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
 
-         m_ioManager->onCommand(api, command, false);
-
+         m_ioManager->onCommand(api, command);
          break;
       }
       case yApi::IYPluginApi::kEventUpdateConfiguration:

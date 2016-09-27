@@ -34,7 +34,7 @@ CPiface2Factory::CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
    //Déclaration of all IOs
    api->declareDevice(device, Model, m_keywordsToDeclare, details);
 
-   m_ioManager->Initialize(m_mapKeywordsName);
+   m_ioManager->Initialize(api, m_mapKeywordsName);
 }
 
 boost::shared_ptr<CIOManager> CPiface2Factory::getIOManager(void)

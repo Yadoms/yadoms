@@ -25,8 +25,8 @@ void CIO::set(bool state)
 {
    m_value->set( state );
 
-   // Writing the value
-   if (state)
+   // Writing the value only if it's a getSet
+   if (state && (m_value->getAccessMode() == yApi::EKeywordAccessMode::kGetSet))
       pifacedigital_digital_write(m_portUsed, 1);
    else
       pifacedigital_digital_write(m_portUsed, 0);
@@ -38,7 +38,6 @@ bool CIO::get(void)
 {
    bool ret = pifacedigital_digital_read(m_portUsed);
    m_value->set(ret);
-
    return ret;
 }
 
