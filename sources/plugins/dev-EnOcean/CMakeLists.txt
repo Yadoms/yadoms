@@ -17,8 +17,6 @@ set(ENOCEAN_SOURCES
    EnOceanConfiguration.cpp
    EnOceanFactory.h
    EnOceanFactory.cpp
-   Manufacturers.h
-   Manufacturers.cpp
 
    message/Crc8.h
    message/Crc8.cpp
@@ -55,6 +53,7 @@ add_custom_command(OUTPUT enOceanDescriptors/generated-manufacturers.h enOceanDe
 ## (by default yadoms-shared and boost are included)
 #########################################
 set(ENOCEAN_ADDITIONAL_INC_DIR
+   ${CMAKE_CURRENT_BINARY_DIR}/enOceanDescriptors
 )
 
 #########################################
