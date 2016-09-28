@@ -163,7 +163,7 @@ namespace shared { namespace versioning {
          versionAsString += boost::lexical_cast<std::string>(*i);
 
          currentStep++;
-         if (currentStep >= stepToRender)
+         if (currentStep > stepToRender)
             break;
       }
 
