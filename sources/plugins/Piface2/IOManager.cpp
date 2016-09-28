@@ -15,10 +15,9 @@ CIOManager::CIOManager(const std::string& device)
 }
 
 void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api, 
-                            std::map<std::string, boost::shared_ptr<CIO> > IOlist,
-                            boost::shared_ptr<shared::event::CEventHandler> interruptEventHandler)
+                            std::map<std::string, boost::shared_ptr<CIO> > IOlist)
 {
-   m_InterruptEventHandler = interruptEventHandler;
+   m_InterruptEventHandler = &api->getEventHandler();
    m_mapKeywordsName = IOlist;
    m_keywordsToDeclare.clear();
 
@@ -54,7 +53,7 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
       api->historizeData(m_deviceName, search->second->historizable());
    }
    else
-      std::cerr << "Cannot find keyword " << command->getKeyword();
+      std::cerr << "Cannot find keyword : " << command->getKeyword();
 }
 
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -68,12 +67,19 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       std::string name = "DI" + boost::lexical_cast<std::string>(counter);
 
-      // If a value changed
-      if ((m_inputValue & (1 << counter)) != (receivedValue & (1 << counter)))
+      auto search = m_mapKeywordsName.find(name);
+
+      if (search != m_mapKeywordsName.end())
       {
-         m_mapKeywordsName[name]->set((bool)(m_inputValue & (1 << counter))>>counter);
-         m_keywordsToDeclare.push_back(m_mapKeywordsName[name]->historizable());
+         if ((m_inputValue & (1 << counter)) != (receivedValue & (1 << counter)))
+         {
+            //m_mapKeywordsName[name]->set((bool)(m_inputValue & (1 << counter))>>counter);
+            search->second->set(boost::lexical_cast<bool>((m_inputValue & (1 << counter)) >> counter));
+            m_keywordsToDeclare.push_back(m_mapKeywordsName[name]->historizable());
+         }
       }
+      else
+         std::cerr << "Cannot find keyword : " << name;
    }
 
    api->historizeData(m_deviceName, m_keywordsToDeclare);
@@ -89,7 +95,7 @@ void CIOManager::interruptReceiverThreaded(const std::string& keywordName) const
       {
          unsigned char inputs=0;
 
-         if (pifacedigital_wait_for_input(&inputs, 5, 0) > 0)
+         if (pifacedigital_wait_for_input(&inputs, 5000, 0) > 0)
          {
             std::cout << "pifacedigital_wait_for_input :" << std::hex << (int)inputs << std::endl;
             m_InterruptEventHandler->postEvent<const int>(kEvtIOStateReceived, inputs );
@@ -101,7 +107,7 @@ void CIOManager::interruptReceiverThreaded(const std::string& keywordName) const
 
          if (boost::this_thread::interruption_requested())
          {
-            cout << "Interrupt requested while disabled\n";
+            std::cout << "Interrupt requested while disabled\n";
             throw boost::thread_interrupted();
          }
       }

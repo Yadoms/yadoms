@@ -36,8 +36,7 @@ public:
    /// \param[in] interruptEventHandler interrupt Event handler to read values.
    //--------------------------------------------------------------
    void Initialize(boost::shared_ptr<yApi::IYPluginApi> api, 
-                   std::map<std::string, boost::shared_ptr<CIO> > IOlist,
-                   boost::shared_ptr<shared::event::CEventHandler> interruptEventHandler);
+                   std::map<std::string, boost::shared_ptr<CIO> > IOlist);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -65,7 +64,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The event handler to notify for events ( interrupt due to change value )
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::event::CEventHandler> m_InterruptEventHandler;
+   shared::event::CEventHandler *m_InterruptEventHandler;
 
    //--------------------------------------------------------------
    /// \brief	The plugin name

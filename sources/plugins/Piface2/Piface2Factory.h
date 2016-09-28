@@ -65,12 +65,6 @@ private:
    boost::shared_ptr<CIOManager> m_ioManager;
 
    //--------------------------------------------------------------
-   /// \brief	    m_Event
-   /// \note        static EnventHandler used by interrupts
-   //--------------------------------------------------------------
-   boost::shared_ptr<shared::event::CEventHandler> m_InterruptHandler;
-
-   //--------------------------------------------------------------
    /// \brief	IOs of the Piface2
    //--------------------------------------------------------------
    boost::shared_ptr<CIO> m_DigitalInput[8];
