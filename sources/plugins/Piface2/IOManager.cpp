@@ -5,9 +5,8 @@
 #include <mcp23s17.h>
 #include "eventDefinitions.h"
 
-CIOManager::CIOManager(const std::string& device, shared::event::CEventHandler& interruptEventHandler)
-   : m_InterruptEventHandler(interruptEventHandler), 
-   m_deviceName (device),
+CIOManager::CIOManager(const std::string& device)
+   :m_deviceName (device),
    m_inputValue(0)
 {
    // Open the connection
@@ -16,9 +15,10 @@ CIOManager::CIOManager(const std::string& device, shared::event::CEventHandler& 
 }
 
 void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api, 
-                            std::map<std::string, 
-                            boost::shared_ptr<CIO> > IOlist)
+                            std::map<std::string, boost::shared_ptr<CIO> > IOlist,
+                            boost::shared_ptr<shared::event::CEventHandler> interruptEventHandler)
 {
+   m_InterruptEventHandler = interruptEventHandler;
    m_mapKeywordsName = IOlist;
    m_keywordsToDeclare.clear();
 
@@ -37,7 +37,7 @@ void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
       throw CInitializationException("interrupt initialization error");
 
    // Creation of the reception thread
-   m_interruptReceiverThread = boost::thread(this->interruptReceiverThreaded, this, m_deviceName);
+   m_interruptReceiverThread = boost::thread(&CIOManager::interruptReceiverThreaded, this, m_deviceName);
 }
 
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -85,28 +85,36 @@ void CIOManager::interruptReceiverThreaded(const std::string& keywordName) const
    {
       std::cout << "### Start interruptReceiverThread ###" << std::endl;
 
-      while (true)
+      while (true) // /*!boost::this_thread::interruption_requested()*/
       {
          unsigned char inputs=0;
 
-         //int value = pifacedigital_digital_read(portUsed);
          if (pifacedigital_wait_for_input(&inputs, -1, 0) > 0)
-            //OK
-         //else
-            // throw sometimes.
-
-         m_InterruptEventHandler.postEvent<const CIOState>(kEvtIOStateReceived, { keywordName, inputs });
+         {
+            std::cout << "pifacedigital_wait_for_input :" << std::hex << inputs << std::endl;
+            m_InterruptEventHandler.postEvent<const CIOState>(kEvtIOStateReceived, { keywordName, inputs });
+         }
+         else
+         {
+            std::cout << "pifacedigital_wait_for_input <=0" << std::endl;
+         }
       }
    }
    catch (boost::thread_interrupted&)
    {
       std::cout << "### Stop interruptReceiverThread ###" << std::endl;
    }
+   catch (...)
+   {
+      std::cout << "### Unknown error ###" << std::endl;
+   }
 }
 
 CIOManager::~CIOManager()
 {
    m_interruptReceiverThread.interrupt();
+
+   //TODO : return value to be interpreted !
    m_interruptReceiverThread.timed_join(boost::posix_time::seconds(20));
 
    std::cout << "close Piface2 connection" << std::endl;

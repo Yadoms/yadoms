@@ -68,7 +68,7 @@ private:
    /// \brief	    m_Event
    /// \note        static EnventHandler used by interrupts
    //--------------------------------------------------------------
-   shared::event::CEventHandler m_InterruptHandler;
+   boost::shared_ptr<shared::event::CEventHandler> m_InterruptHandler;
 
    //--------------------------------------------------------------
    /// \brief	IOs of the Piface2
