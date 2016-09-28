@@ -5,24 +5,13 @@
         <i class="making-async-action pull-right fa fa-circle-o-notch fa-spin hidden"></i>
     </h1>
 
-    <div class="row install-update-button-group">
-        <div class="col-md-12">
-            <span data-i18n="modals.dashboard.sub-windows.install-update.releaseTypeChoice"></span>
-            <select class="form-control"></select>
-            <div class="btn-group" data-toggle="buttons">
-                <label class="btn btn-primary active">
-                    <input type="radio" name="options" id="version-stable" class="install-update-button" autocomplete="off" checked><span data-i18n="modals.dashboard.sub-windows.install-update.releaseType.stable"></span>
-                </label>
-                <label class="btn btn-default">
-                    <input type="radio" name="options" id="version-releaseCandidate" class="install-update-button" autocomplete="off"><span data-i18n="modals.dashboard.sub-windows.install-update.releaseType.releaseCandidate"></span>
-                </label>
-                <label class="btn btn-default">
-                    <input type="radio" name="options" id="version-beta" class="install-update-button" autocomplete="off"><span data-i18n="modals.dashboard.sub-windows.install-update.releaseType.beta"></span>
-                </label>
-            </div>
-            <br />
-        </div>
-    </div>
+    <span data-i18n="modals.dashboard.sub-windows.install-update.releaseTypeChoice"></span>
+    <select class="form-control" id="install-update-release-choice">
+        <option value="version-stable" selected data-i18n="modals.dashboard.sub-windows.install-update.releaseType.stable"></option>
+        <option value="version-releaseCandidate" data-i18n="modals.dashboard.sub-windows.install-update.releaseType.releaseCandidate"></option>
+        <option value="version-beta" data-i18n="modals.dashboard.sub-windows.install-update.releaseType.beta"></option>
+    </select>
+    <br/>
 
     <div class="panel-group" id="install-update-accordion" role="tablist" aria-multiselectable="true">
         <!--accordion yadoms update-->
@@ -186,12 +175,11 @@
 
     Yadoms.initializeInstallUpdateDashboard = function () {
 
-        $('.install-update-button').on('change', function (e) {
-            updatebuttonColor($('#version-stable'));
-            updatebuttonColor($('#version-releaseCandidate'));
-            updatebuttonColor($('#version-beta'));
-            refreshAllData($(e.target));
-        });
+        $('#install-update-release-choice')
+            .on('change',
+                function (e) {
+                    refreshAllData();
+                });
 
         return refreshAllData();
     };
@@ -200,11 +188,8 @@
     /**
   * Permit to update wantedVersion array from the combo box release type
   */
-    function updateReleaseType(clickedInput) {
-        var selectedValue = "";
-        if (clickedInput) {
-            selectedValue = clickedInput.prop('id');
-        }
+    function updateReleaseType() {
+        var selectedValue = $("#install-update-release-choice").val();
         switch (selectedValue) {
             case "version-beta":
                 wantedVersion = ["beta", "releaseCandidate", "stable"];
