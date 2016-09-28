@@ -89,14 +89,20 @@ void CIOManager::interruptReceiverThreaded(const std::string& keywordName) const
       {
          unsigned char inputs=0;
 
-         if (pifacedigital_wait_for_input(&inputs, -1, 0) > 0)
+         if (pifacedigital_wait_for_input(&inputs, 5, 0) > 0)
          {
             std::cout << "pifacedigital_wait_for_input :" << std::hex << (int)inputs << std::endl;
-            m_InterruptEventHandler->postEvent<const CIOState>(kEvtIOStateReceived, { keywordName, inputs });
+            m_InterruptEventHandler->postEvent<const int>(kEvtIOStateReceived, inputs );
          }
          else
          {
             std::cout << "pifacedigital_wait_for_input <=0" << std::endl;
+         }
+
+         if (boost::this_thread::interruption_requested())
+         {
+            cout << "Interrupt requested while disabled\n";
+            throw boost::thread_interrupted();
          }
       }
    }
