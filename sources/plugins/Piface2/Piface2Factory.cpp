@@ -12,8 +12,8 @@ CPiface2Factory::CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
                                  const std::string& device,
                                  const IPf2Configuration& configuration,
                                  shared::CDataContainer details):
-   m_InterruptHandler(boost::make_shared<shared::event::CEventHandler>()),
-   m_ioManager(boost::make_shared<CIOManager>(device))
+   m_ioManager(boost::make_shared<CIOManager>(device)),
+   m_InterruptHandler(boost::make_shared<shared::event::CEventHandler>())
 {
    // IO Configuration
    for (int counter=0; counter<NB_OUTPUTS; ++counter)

@@ -32,8 +32,8 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    try 
    {
-      CPiface2Factory m_factory(api, m_deviceName, m_configuration, details);
-      m_ioManager = m_factory.getIOManager();
+      m_factory.reset( new CPiface2Factory(api, m_deviceName, m_configuration, details));
+      m_ioManager = m_factory->getIOManager();
    }
    catch (const CInitializationException& e)
    {

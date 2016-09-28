@@ -91,8 +91,8 @@ void CIOManager::interruptReceiverThreaded(const std::string& keywordName) const
 
          if (pifacedigital_wait_for_input(&inputs, -1, 0) > 0)
          {
-            std::cout << "pifacedigital_wait_for_input :" << std::hex << inputs << std::endl;
-            m_InterruptEventHandler.postEvent<const CIOState>(kEvtIOStateReceived, { keywordName, inputs });
+            std::cout << "pifacedigital_wait_for_input :" << std::hex << (int)inputs << std::endl;
+            m_InterruptEventHandler->postEvent<const CIOState>(kEvtIOStateReceived, { keywordName, inputs });
          }
          else
          {
