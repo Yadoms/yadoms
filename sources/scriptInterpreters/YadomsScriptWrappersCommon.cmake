@@ -14,6 +14,14 @@ MACRO(SCRIPT_API_WRAPPER_SOURCES targetLanguage)
    IF(MSVC OR XCODE)
       SET_PROPERTY(TARGET ${SWIG_MODULE_yScriptApiWrapper_REAL_NAME} PROPERTY FOLDER "scriptInterpreters/${targetLanguage}/yScriptApiWrapper")
    ENDIF()
+   
+	##################################################################################################
+	## Adjust platform toolset (case of Windows XP build)
+	##################################################################################################
+	IF(MSVC)
+		set_target_properties(${SWIG_MODULE_yScriptApiWrapper_REAL_NAME} PROPERTIES PLATFORM_TOOLSET "${CMAKE_VS_PLATFORM_TOOLSET}")
+	ENDIF(MSVC)
+	
 ENDMACRO()
 
 MACRO(SCRIPT_API_WRAPPER_INCLDIR)

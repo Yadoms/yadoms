@@ -12,6 +12,10 @@ MACRO(PLUGIN_SOURCES _targetName)
 	IF(MSVC OR XCODE)
 		SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "plugins")
 	ENDIF()
+	
+
+
+	
 ENDMACRO()
 
 MACRO(PLUGIN_INCLDIR _targetName)
@@ -74,6 +78,16 @@ MACRO(PLUGIN_LINK _targetName)
 		endif()	
 	endif()	
 	
+	##################################################################################################
+	## Adjust platform toolset (case of Windows XP build)
+	##################################################################################################
+	IF(MSVC)
+		set_target_properties(${_targetName} PROPERTIES PLATFORM_TOOLSET "${CMAKE_VS_PLATFORM_TOOLSET}")
+		
+		if(COTIRE_USE_UNITY)
+			set_target_properties(${_targetName}_unity PROPERTIES PLATFORM_TOOLSET "${CMAKE_VS_PLATFORM_TOOLSET}")
+		endif(COTIRE_USE_UNITY)
+	ENDIF(MSVC)	
 ENDMACRO()
 
 # brief Copy a file to the target output dir
