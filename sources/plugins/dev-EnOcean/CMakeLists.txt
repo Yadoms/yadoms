@@ -34,9 +34,13 @@ source_group(message message/*.*)
 #########################################
 ## Code generator configuration
 #########################################
+file(GLOB PYTHON_GENERATOR_FILES enOceanDescriptors/*.py)
+
 set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    enOceanDescriptors/manufacturers.xml
-   enOceanDescriptors/generateManufacturers.py
+   
+   ${PYTHON_GENERATOR_FILES}
+
    enOceanDescriptors/generated-manufacturers.cpp
    enOceanDescriptors/generated-manufacturers.h
    )
@@ -44,7 +48,7 @@ source_group(enOceanDescriptors enOceanDescriptors/*.*)
 
 add_custom_command(OUTPUT enOceanDescriptors/generated-manufacturers.h enOceanDescriptors/generated-manufacturers.cpp
                    COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generateManufacturers.py ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/manufacturers.xml enOceanDescriptors/generated-manufacturers.h enOceanDescriptors/generated-manufacturers.cpp
-                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/manufacturers.xml ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generateManufacturers.py 
+                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/manufacturers.xml ${PYTHON_GENERATOR_FILES} 
                    COMMENT "Generating Manufacturers source code...")
 
 

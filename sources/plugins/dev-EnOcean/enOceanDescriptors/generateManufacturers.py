@@ -4,6 +4,8 @@ import os.path
 import xml.etree.ElementTree
 import string
 
+import cppClass
+
 
 xmlInputFilePath = sys.argv[1]
 
@@ -19,10 +21,10 @@ def getXmlEnumNodes(xmlInputFile, xmlElementPath):
    # Some checks on xmlElementPath input
    xmlElementPathArray = string.split(xmlElementPath, ".")
    if xmlElementPathArray.count < 2:
-      raise Exception("delcareEnum : Invalid xmlElementPath \"" + xmlElementPath + "\" : must at least be in the form \"root.element\"")
+      raise Exception("getXmlEnumNodes : Invalid xmlElementPath \"" + xmlElementPath + "\" : must at least be in the form \"root.element\"")
 
    if xmlElementPathArray[0] != xmlRootNode.tag:
-      raise Exception("delcareEnum : Invalid xmlElementPath \"" + xmlElementPath + "\" : invalid root name")
+      raise Exception("getXmlEnumNodes : Invalid xmlElementPath \"" + xmlElementPath + "\" : invalid root name")
 
    # Remove root name
    xmlElementPathArray.pop(0)
@@ -129,5 +131,27 @@ def generateSource() :
       f.write("}\n")
 
 #-------------------------------------------------------------------------------
-generateHeader()
-generateSource()
+#-- Premiere methode
+#generateHeader()
+#generateSource()
+
+
+#-- Seconde methode
+
+manufacturersClass = cppClass.CppClass("CManufacturers")
+manufacturersClass.addSubType(cppClass.CppEnumType("EManufacturerIds", xmlInputFilePath, "manufacturers.manufacturer", "name", "id", cppClass.PUBLIC))
+manufacturersClass.addMember(cppClass.CppMember("ManufacturersMap", "std::map<int, std::string>", cppClass.PRIVATE, cppClass.STATIC | cppClass.CONST))
+manufacturersClass.addMethod(cppClass.CppMethod("name", "const std::string&", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, "   return ManufacturersMap.at(id);\n"))
+
+with open(headerPath, 'w') as cppHeaderFile, open(sourcePath, 'w') as cppSourceFile :
+
+   cppHeaderFile.write("// Generated file, don't modify\n")
+   cppHeaderFile.write("#pragma once\n")
+   cppHeaderFile.write("\n")
+
+   cppSourceFile.write("// Generated file, don't modify\n")
+   cppSourceFile.write("#include \"stdafx.h\"\n")
+   cppSourceFile.write("#include \"{}\"\n".format(os.path.basename(headerPath)))
+   cppSourceFile.write("\n")
+
+   manufacturersClass.generate(cppHeaderFile, cppSourceFile)
