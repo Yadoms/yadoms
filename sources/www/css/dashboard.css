@@ -359,6 +359,11 @@ Fix dropdown menus hidden by bootstrap modal
 }
 
 /*Install update dashboard page*/
+
+#install-update-release-choice {
+    width: auto;
+}
+
 .action-progression .progress {
     margin-bottom : 0;
 }

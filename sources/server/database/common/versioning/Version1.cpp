@@ -11,7 +11,7 @@ namespace database { namespace common { namespace versioning {
 
 
    CVersion1::CVersion1()
-      :m_version(0, 2, 0, 0) //modify this version to a greater value, to force update of current version
+      :m_version(1, 0, 0, 0) //modify this version to a greater value, to force update of current version
    {
    }
 
@@ -150,7 +150,7 @@ namespace database { namespace common { namespace versioning {
          //set the database version
          CQuery qInsert = pRequester->newQuery();
          qInsert.InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName()).
-            Values("Database", "Version", m_version.toString(4), "Database version");
+            Values("Database", "Version", m_version.toString(3), "Database version");
          pRequester->queryStatement(qInsert);              
                   
          //set the developer mode
