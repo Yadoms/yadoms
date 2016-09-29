@@ -87,7 +87,7 @@ with open(headerPath, 'w') as cppHeaderFile:
    manufacturersClass.generateHeader(cppHeaderFile)
 
 # Generate Source
-createParentDir(headerPath)
+createParentDir(sourcePath)
 with open(sourcePath, 'w') as cppSourceFile:
 
    cppSourceFile.write("// Generated file, don't modify\n")
