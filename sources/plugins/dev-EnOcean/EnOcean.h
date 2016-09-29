@@ -5,7 +5,7 @@
 #include <shared/communication/AsciiBufferLogger.h>
 #include "message/ReceivedMessage.h"
 #include "message/SendMessage.h"
-
+#include "Device.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -40,8 +40,8 @@ protected:
    //--------------------------------------------------------------
    void send(const message::CSendMessage& sendMessage) const;
    void send(const message::CSendMessage& sendMessage,
-             boost::function<bool(const message::CReceivedMessage& rcvMessage)> checkExpectedMessageFunction,
-             boost::function<void(const message::CReceivedMessage& rcvMessage)> onReceiveFct);
+             boost::function<bool(const message::CReceivedEsp3Packet& rcvMessage)> checkExpectedMessageFunction,
+             boost::function<void(const message::CReceivedEsp3Packet& rcvMessage)> onReceiveFct);
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
@@ -70,7 +70,7 @@ protected:
    /// \param [in] message          Message received
    //--------------------------------------------------------------
    void processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
-                            const message::CReceivedMessage& message);
+                            const message::CReceivedEsp3Packet& message);
 
    //--------------------------------------------------------------
    /// \brief	                     Process received messages
@@ -78,9 +78,9 @@ protected:
    /// \param [in] message          Message received
    //--------------------------------------------------------------
    void processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
-                         const message::CReceivedMessage& message);
+                         const message::CReceivedEsp3Packet& esp3Packet);
    void processEvent(boost::shared_ptr<yApi::IYPluginApi> api,
-                     const message::CReceivedMessage& message);
+                     const message::CReceivedEsp3Packet& esp3Packet);
 
    //--------------------------------------------------------------
    /// \brief	                     Process radio ERP1 received messages
@@ -90,7 +90,8 @@ protected:
    void processRadioErp1_1BS(boost::shared_ptr<yApi::IYPluginApi> api,
                              const std::vector<unsigned char>& data);
    void processRadioErp1_4BS(boost::shared_ptr<yApi::IYPluginApi> api,
-                             const std::vector<unsigned char>& data);
+                             const CDevice& device,
+                             const message::C4BSMessage& data);
 
    //--------------------------------------------------------------
    /// \brief	                     Extract sender ID from buffer
@@ -98,22 +99,30 @@ protected:
    /// \param [in] startIndex       Index of the first byte
    //--------------------------------------------------------------
    static std::string extractSenderId(const std::vector<unsigned char>& data,
-                                      int startIndex);
+                                      int startIndex);//TODO virer
+
+   //--------------------------------------------------------------
+   /// \brief	                     Retrieve device in database
+   /// \param [in] data             Buffer containing sender ID
+   /// \param [in] startIndex       Index of the first byte
+   /// \throw std::out_of_range     If device is not found in database
+   //--------------------------------------------------------------
+   static CDevice retrieveDevice(unsigned int deviceId);
 
    //--------------------------------------------------------------
    /// \brief	                     Scale a value from a range to another
-   /// \param [in] inValue          Input value to scale
-   /// \param [in] inRangeMin       Input value range start
-   /// \param [in] inRangeMax       Input value range end
-   /// \param [in] outScaleMin      Output range start
-   /// \param [in] outScaleMax      Output range end
+   /// \param [in] rawValue         Read value from device
+   /// \param [in] rangeMin         Min range of the read value (ex 0..255 for a byte value)
+   /// \param [in] rangeMax         Max range of the read value
+   /// \param [in] scaleMin         Min scale of the real value (ex -40° for temperature sensor of FUNC=2 and Type=1)
+   /// \param [in] scaleMax         Max scale of the real value (ex 0° for temperature sensor of FUNC=2 and Type=1)
    /// \return                      Scaled value
    //--------------------------------------------------------------
-   static double CEnOcean::scaleToDouble(int inValue,
-                                         int inRangeMin,
-                                         int inRangeMax,
-                                         int outScaleMin,
-                                         int outScaleMax);
+   static double CEnOcean::scaleToDouble(int rawValue,
+                                         int rangeMin,
+                                         int rangeMax,
+                                         int scaleMin,
+                                         int scaleMax);
 
    //--------------------------------------------------------------
    /// \brief	                     Requests to EnOcean
@@ -169,6 +178,6 @@ private:
    shared::communication::CAsciiBufferLogger m_logger;
 
    mutable boost::recursive_mutex m_onReceiveHookMutex;
-   boost::function<bool(const message::CReceivedMessage& rcvMessage)> m_onReceiveHook;
+   boost::function<bool(const message::CReceivedEsp3Packet& rcvMessage)> m_onReceiveHook;
 };
 

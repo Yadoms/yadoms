@@ -9,6 +9,8 @@ set(ENOCEAN_SOURCES
    stdafx.h
    stdafx.cpp
    IEnOceanConfiguration.h
+   Device.h
+   Device.cpp
    EnOcean.h
    EnOcean.cpp
    EnOceanReceiveBufferHandler.h

@@ -103,7 +103,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kEvtPortDataReceived:
          {
-            const auto message(api->getEventHandler().getEventData<const message::CReceivedMessage>());
+            const auto message(api->getEventHandler().getEventData<const message::CReceivedEsp3Packet>());
             processDataReceived(api, message);
             break;
          }
@@ -172,19 +172,19 @@ void CEnOcean::send(const message::CSendMessage& sendMessage) const
 }
 
 void CEnOcean::send(const message::CSendMessage& sendMessage,
-                    boost::function<bool(const message::CReceivedMessage& rcvMessage)> checkExpectedMessageFunction,
-                    boost::function<void(const message::CReceivedMessage& rcvMessage)> onReceiveFct)
+                    boost::function<bool(const message::CReceivedEsp3Packet& rcvMessage)> checkExpectedMessageFunction,
+                    boost::function<void(const message::CReceivedEsp3Packet& rcvMessage)> onReceiveFct)
 {
    shared::event::CEventHandler receivedEvtHandler;
 
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
-      m_onReceiveHook = [&](const message::CReceivedMessage& receivedMsg)-> bool
+      m_onReceiveHook = [&](const message::CReceivedEsp3Packet& receivedMsg)-> bool
          {
             if (!checkExpectedMessageFunction(receivedMsg))
                return false;
 
-            receivedEvtHandler.postEvent<const message::CReceivedMessage>(shared::event::kUserFirstId, receivedMsg);
+            receivedEvtHandler.postEvent<const message::CReceivedEsp3Packet>(shared::event::kUserFirstId, receivedMsg);
             return true;
          };
    }
@@ -198,7 +198,7 @@ void CEnOcean::send(const message::CSendMessage& sendMessage,
       throw CProtocolException((boost::format("Asnwer timeout. Request was %1%") % sendMessage.packetType()).str());
    }
 
-   onReceiveFct(receivedEvtHandler.getEventData<const message::CReceivedMessage>());
+   onReceiveFct(receivedEvtHandler.getEventData<const message::CReceivedEsp3Packet>());
 }
 
 void CEnOcean::processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -238,7 +238,7 @@ void CEnOcean::processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api
 }
 
 void CEnOcean::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
-                                   const message::CReceivedMessage& message)
+                                   const message::CReceivedEsp3Packet& message)
 {
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
@@ -285,64 +285,52 @@ void CEnOcean::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
 
 
 void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
-                                const message::CReceivedMessage& message)
+                                const message::CReceivedEsp3Packet& esp3Packet)
 {
-   enum ERORG
-   {
-      kRBS = 0xF6,
-      k1BS = 0xD5,
-      k4BS = 0xA5,
-      kVLD = 0xD2,
-      kMSC = 0xD1,
-      kADT = 0xA6,
-      kSM_LRN_REQ = 0xC6,
-      kSM_LRN_ANS = 0xC7,
-      kSM_REC = 0xA7,
-      kSYS_EX = 0xC5,
-      kSEC = 0x30,
-      kSEC_ENCAPS = 0x31
-   };
+   message::CRadioErp1Message erp1Message(esp3Packet);
 
-   auto rorg = static_cast<ERORG>(message.data()[0]);
+   // Get device details from database
+   auto device = retrieveDevice(erp1Message.senderId());
 
-   switch (rorg)
+   switch (erp1Message.rorg())
    {
-   case kRBS: break;//TODO
-   case k1BS: processRadioErp1_1BS(api, message.data()); break;
-   case k4BS: processRadioErp1_4BS(api, message.data()); break;
-   case kVLD: break;//TODO
-   case kMSC: break;//TODO
-   case kADT: break;//TODO
-   case kSM_LRN_REQ: break;//TODO
-   case kSM_LRN_ANS: break;//TODO
-   case kSM_REC: break;//TODO
-   case kSYS_EX: break;//TODO
-   case kSEC: break;//TODO
-   case kSEC_ENCAPS: break;//TODO
-   default: throw CProtocolException((boost::format("Unknown RORG %1%") % rorg).str());
+   case message::CRadioErp1Message::kRBS: break;//TODO
+   case message::CRadioErp1Message::k1BS: processRadioErp1_1BS(api, esp3Packet.data()); break;
+   case message::CRadioErp1Message::k4BS: processRadioErp1_4BS(api, device, message::C4BSMessage(erp1Message)); break;
+   case message::CRadioErp1Message::kVLD: break;//TODO
+   case message::CRadioErp1Message::kMSC: break;//TODO
+   case message::CRadioErp1Message::kADT: break;//TODO
+   case message::CRadioErp1Message::kSM_LRN_REQ: break;//TODO
+   case message::CRadioErp1Message::kSM_LRN_ANS: break;//TODO
+   case message::CRadioErp1Message::kSM_REC: break;//TODO
+   case message::CRadioErp1Message::kSYS_EX: break;//TODO
+   case message::CRadioErp1Message::kSEC: break;//TODO
+   case message::CRadioErp1Message::kSEC_ENCAPS: break;//TODO
+   default: throw CProtocolException((boost::format("Unknown RORG %1%") % erp1Message.rorg()).str());
    }
 
 
-   struct Optional
-   {
-      explicit Optional(const std::vector<unsigned char>& optional):
-         m_subTelNum(optional[0]),
-         m_destinationId(optional[1] << 24 | optional[2] << 16 | optional[3] << 8 | optional[4]),
-         m_dBm(optional[5]),
-         m_securityLevel(optional[6])
-      {
-      }
+   //TODO
+   //struct Optional
+   //{
+   //   explicit Optional(const std::vector<unsigned char>& optional):
+   //      m_subTelNum(optional[0]),
+   //      m_destinationId(optional[1] << 24 | optional[2] << 16 | optional[3] << 8 | optional[4]),
+   //      m_dBm(optional[5]),
+   //      m_securityLevel(optional[6])
+   //   {
+   //   }
 
-      unsigned char m_subTelNum;
-      unsigned int m_destinationId;
-      unsigned char m_dBm;
-      unsigned char m_securityLevel;
-   };
+   //   unsigned char m_subTelNum;
+   //   unsigned int m_destinationId;
+   //   unsigned char m_dBm;
+   //   unsigned char m_securityLevel;
+   //};
 
-   if (message.header().optionalLength() != 7)
-      throw CProtocolException((boost::format("RadioERP1 message : wrong optional size (%1%, expected 7)") % message.header().optionalLength()).str());
+   //if (message.header().optionalLength() != 7)
+   //   throw CProtocolException((boost::format("RadioERP1 message : wrong optional size (%1%, expected 7)") % message.header().optionalLength()).str());
 
-   Optional optional(message.optional());
+   //Optional optional(message.optional());
 
    //TODO
 }
@@ -354,56 +342,94 @@ void CEnOcean::processRadioErp1_1BS(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void CEnOcean::processRadioErp1_4BS(boost::shared_ptr<yApi::IYPluginApi> api,
-                                    const std::vector<unsigned char>& data)
+                                    const CDevice& device,
+                                    const message::C4BSMessage& data)
 {
-   auto temperature = data[3];
-   auto isTeachIn = !(data[4] & 0x08);
-
-   auto senderId = extractSenderId(data, 5);
-
-   auto status = data[9]; //TODO : status is not used...
-
-   static const std::string keywordName("temperature");
-   auto keyword(boost::make_shared<yApi::historization::CTemperature>(keywordName));
-
-   if (isTeachIn && !m_api->deviceExists(senderId))
+   switch (device.func())
    {
-      auto eepIsProvided = data[4] & 0x80;
-
-      if (eepIsProvided)
+   case 2 /*TODO mettre une constante*/:
       {
-         //TODO
-         //unsigned int manufacturer = ((DB_2 & 7) << 8) | DB_1;
-         //unsigned int type = ((DB_3 & 3) << 5) | (DB_2 >> 3);
-         //unsigned int func = DB_3 >> 2;
-      }
-      else
-      {
-         unsigned int manufacturer = CManufacturers::kMulti_user_Manufacturer_ID;
-         unsigned int type = 5;//TODO ça serait mieux avec une constante
-         unsigned int func = 2;//TODO ça serait mieux avec une constante
-      }
+         // Temperature Sensors
+         double temperature;
+         switch (device.type())
+         {
+         case 1 /*TODO mettre une constante*/:
+            {
+               // Temperature Sensor Range -40°C to 0°C
+               temperature = scaleToDouble(data.db1(),// TODO position de la valeur à récupérer de l'XML
+                                           0, 255,// TODO valeurs à récupérer de l'XML
+                                           -40, 0);// TODO valeurs à récupérer de l'XML
+               break;
+            }
+         case 2 /*TODO mettre une constante*/:
+         {
+            // Temperature Sensor Range -30°C to +10°C
+            temperature = scaleToDouble(data.db1(),// TODO position de la valeur à récupérer de l'XML
+               0, 255,// TODO valeurs à récupérer de l'XML
+               -30, +10);// TODO valeurs à récupérer de l'XML
+            break;
+         }
 
-      m_api->declareDevice(senderId, std::string(), keyword);
+         default:
+            throw std::out_of_range((boost::format("Unknown TYPE value (%1%) for FUNC %2%") % device.type() % device.func()).str());
+         }
+
+
+         static const std::string keywordName("temperature");
+         auto keyword(boost::make_shared<yApi::historization::CTemperature>(keywordName));
+         keyword->set(temperature);
+         m_api->historizeData(std::to_string(device.id()), keyword);
+         break;
+      }
+   default:
+      throw std::out_of_range((boost::format("Unknown FUNC value (%1%)") % device.func()).str());
    }
 
-   keyword->set(scaleToDouble(temperature, 255, 0, -40, 0));
-   m_api->historizeData(senderId, keyword);
+
+   //TODO virer
+   //auto temperature = data[3];
+   //auto isTeachIn = !(data[4] & 0x08);
+
+   //auto senderId = extractSenderId(data, 5);
+
+   //auto status = data[9]; //TODO : status is not used...
+
+   //static const std::string keywordName("temperature");
+   //auto keyword(boost::make_shared<yApi::historization::CTemperature>(keywordName));
+
+   //if (isTeachIn && !m_api->deviceExists(senderId))
+   //{
+   //   auto eepIsProvided = data[4] & 0x80;
+
+   //   if (eepIsProvided)
+   //   {
+   //      //TODO
+   //      //unsigned int manufacturer = ((DB_2 & 7) << 8) | DB_1;
+   //      //unsigned int type = ((DB_3 & 3) << 5) | (DB_2 >> 3);
+   //      //unsigned int func = DB_3 >> 2;
+   //   }
+   //   else
+   //   {
+   //      unsigned int manufacturer = CManufacturers::kMulti_user_Manufacturer_ID;
+   //      unsigned int type = 5;//TODO ça serait mieux avec une constante
+   //      unsigned int func = 2;//TODO ça serait mieux avec une constante
+   //   }
+
+   //   m_api->declareDevice(senderId, std::string(), keyword);
+   //}
+
+   //keyword->set(scaleToDouble(temperature, 255, 0, -40, 0));
+   //m_api->historizeData(senderId, keyword);
 }
 
-double CEnOcean::scaleToDouble(int inValue,
-                               int inRangeMin,
-                               int inRangeMax,
-                               int outScaleMin,
-                               int outScaleMax)
+double CEnOcean::scaleToDouble(int rawValue,
+                               int rangeMin,
+                               int rangeMax,
+                               int scaleMin,
+                               int scaleMax)
 {
-   double inRange = inRangeMax - inRangeMin;
-   double outScale = outScaleMax - outScaleMin;
-
-   if (inRange == 0 || outScale == 0)
-      throw std::out_of_range((boost::format("Unable to scale value %1% (min=%2%, max=%3%) to range [%4%, %5%]") % inValue % inRangeMin % inRangeMax % outScaleMin % outScaleMax).str());
-
-   return (inValue - inRangeMin) * (outScale / inRange) + outScaleMin;
+   unsigned int multiplier = (scaleMax - scaleMin) / (rangeMax - rangeMin);
+   return multiplier * (rawValue - rangeMin) + scaleMin;
 }
 
 std::string CEnOcean::extractSenderId(const std::vector<unsigned char>& data,
@@ -416,11 +442,18 @@ std::string CEnOcean::extractSenderId(const std::vector<unsigned char>& data,
       (data[startIndex]));
 }
 
-void CEnOcean::processEvent(boost::shared_ptr<yApi::IYPluginApi> api,
-                            const message::CReceivedMessage& message)
+CDevice CEnOcean::retrieveDevice(unsigned int deviceId)
 {
-   if (message.header().dataLength() < 1)
-      throw CProtocolException((boost::format("RadioERP1 message : wrong data size (%1%, < 1)") % message.header().dataLength()).str());
+   //TODO interroger la base
+
+   return CDevice(deviceId, CManufacturers::kThermokon, 2, 1);//TODO revoir tous les paramètres
+}
+
+void CEnOcean::processEvent(boost::shared_ptr<yApi::IYPluginApi> api,
+                            const message::CReceivedEsp3Packet& esp3Packet)
+{
+   if (esp3Packet.header().dataLength() < 1)
+      throw CProtocolException((boost::format("RadioERP1 message : wrong data size (%1%, < 1)") % esp3Packet.header().dataLength()).str());
 
    enum
       {
@@ -433,7 +466,7 @@ void CEnOcean::processEvent(boost::shared_ptr<yApi::IYPluginApi> api,
          CO_TRANSMIT_FAILED = 0x07
       };
 
-   auto eventCode = message.data()[0];
+   auto eventCode = esp3Packet.data()[0];
 
    switch (eventCode)
    {
@@ -457,11 +490,11 @@ void CEnOcean::requestDongleVersion(boost::shared_ptr<yApi::IYPluginApi> api)
    sendMessage.appendData({ message::CO_RD_VERSION });
 
    send(sendMessage,
-        [](const message::CReceivedMessage& rcvMessage)
+        [](const message::CReceivedEsp3Packet& rcvMessage)
         {
            return rcvMessage.header().packetType() == message::RESPONSE;
         },
-        [](const message::CReceivedMessage& rcvMessage)
+        [](const message::CReceivedEsp3Packet& rcvMessage)
         {
            if (rcvMessage.header().packetType() != message::RESPONSE)
               throw CProtocolException((boost::format("Invalid packet type %1%, expected 2(RESPONSE). Request was CO_RD_VERSION.") % rcvMessage.header().packetType()).str());

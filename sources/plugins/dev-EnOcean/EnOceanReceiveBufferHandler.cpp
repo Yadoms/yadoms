@@ -43,9 +43,9 @@ void CEnOceanReceiveBufferHandler::flush()
 }
 
 
-boost::shared_ptr<const message::CReceivedMessage> CEnOceanReceiveBufferHandler::getCompleteMessage()
+boost::shared_ptr<const message::CReceivedEsp3Packet> CEnOceanReceiveBufferHandler::getCompleteMessage()
 {
-   static const boost::shared_ptr<const message::CReceivedMessage> uncompleteMessage;
+   static const boost::shared_ptr<const message::CReceivedEsp3Packet> uncompleteMessage;
 
    if (m_content.empty())
       return uncompleteMessage;
@@ -113,7 +113,7 @@ boost::shared_ptr<const message::CReceivedMessage> CEnOceanReceiveBufferHandler:
 
    // The message is complete
 
-   auto message = boost::make_shared<message::CReceivedMessage>(m_content);
+   auto message = boost::make_shared<message::CReceivedEsp3Packet>(m_content);
 
    // Delete extracted data
    m_content.erase(m_content.begin(), m_content.begin() + fullMessageSize);
@@ -121,9 +121,9 @@ boost::shared_ptr<const message::CReceivedMessage> CEnOceanReceiveBufferHandler:
    return message;
 }
 
-void CEnOceanReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<const message::CReceivedMessage> message) const
+void CEnOceanReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<const message::CReceivedEsp3Packet> message) const
 {
-   m_receiveDataEventHandler.postEvent<const message::CReceivedMessage>(m_receiveDataEventId,
-                                                                        *message);
+   m_receiveDataEventHandler.postEvent<const message::CReceivedEsp3Packet>(m_receiveDataEventId,
+                                                                           *message);
 }
 
