@@ -21,6 +21,10 @@ void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
    m_mapKeywordsName = IOlist;
    m_keywordsToDeclare.clear();
 
+
+   if (pifacedigital_enable_interrupts() != 0)
+      throw CInitializationException("interrupt initialization error");
+
    // Initial reading of DI
    for (int counter = 0; counter<NB_INPUTS; ++counter)
    {
@@ -31,9 +35,6 @@ void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
 
    //Historize initial values
    api->historizeData(m_deviceName, m_keywordsToDeclare);
-
-   if (pifacedigital_enable_interrupts() != 0)
-      throw CInitializationException("interrupt initialization error");
 
    // Creation of the reception thread
    m_interruptReceiverThread = boost::thread(&CIOManager::interruptReceiverThreaded, this, m_deviceName);
@@ -67,20 +68,14 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       std::string name = "DI" + boost::lexical_cast<std::string>(counter);
 
-      auto search = m_mapKeywordsName.find(name);
-
-      if (search != m_mapKeywordsName.end())
+      if ((m_inputValue & (1 << counter)) != (receivedValue & (1 << counter)))
       {
-         if ((m_inputValue & (1 << counter)) != (receivedValue & (1 << counter)))
-         {
-            search->second->set(boost::lexical_cast<bool>((m_inputValue & (1 << counter)) >> counter));
-            m_keywordsToDeclare.push_back(m_mapKeywordsName[name]->historizable());
-         }
+         m_mapKeywordsName[name]->set(boost::lexical_cast<bool>((receivedValue & (1 << counter)) >> counter));
+         m_keywordsToDeclare.push_back(m_mapKeywordsName[name]->historizable());
       }
-      else
-         std::cerr << "Cannot find keyword : " << name;
    }
 
+   m_inputValue = receivedValue;
    api->historizeData(m_deviceName, m_keywordsToDeclare);
 }
 
@@ -94,12 +89,11 @@ void CIOManager::interruptReceiverThreaded(const std::string& keywordName) const
       {
          unsigned char inputs=0;
 
-         unsigned char ret = pifacedigital_wait_for_input(&inputs, 5000, 0);
+         int ret = pifacedigital_wait_for_input(&inputs, 5000, 0);
          switch (ret)
          {
             // Change of variables
             case 1:
-               std::cout << "pifacedigital_wait_for_input :" << std::hex << (int)inputs << std::endl;
                m_InterruptEventHandler->postEvent<const int>(kEvtIOStateReceived, inputs );
                break;
             // Time out
@@ -133,7 +127,6 @@ CIOManager::~CIOManager()
 {
    m_interruptReceiverThread.interrupt();
 
-   //TODO : return value to be interpreted !
    if (!m_interruptReceiverThread.timed_join(boost::posix_time::seconds(20)))
       std::cerr << "Thread interruptReceiverThread join time out" << std::endl;
 

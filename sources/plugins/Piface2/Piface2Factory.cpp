@@ -27,7 +27,7 @@ CPiface2Factory::CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       std::string name = "DI" + boost::lexical_cast<std::string>(counter);
       m_DigitalInput[counter]  = boost::make_shared<CIO>( name, counter, configuration.PullResistanceState(counter), yApi::EKeywordAccessMode::kGet);
-      m_mapKeywordsName[ name ] = m_DigitalOutput[counter];
+      m_mapKeywordsName[ name ] = m_DigitalInput[counter];
       m_keywordsToDeclare.push_back(m_DigitalInput[counter]->historizable());
    }
 
