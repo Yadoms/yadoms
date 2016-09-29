@@ -1,5 +1,7 @@
 # include common plugin definitions
 
+IF(CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
+
 include("../YadomsPluginsCommon.cmake")
 
 #########################################
@@ -63,3 +65,7 @@ PLUGIN_LINK   (Piface2 ${PIFACE2_PLUGIN_LINK})
 PLUGIN_POST_BUILD_COPY_FILE(Piface2 package.json)
 PLUGIN_POST_BUILD_COPY_FILE(Piface2 icon.png)
 PLUGIN_POST_BUILD_COPY_DIRECTORY(Piface2 locales)
+
+ELSE()
+   MESSAGE ( "This Operating System is not supported with this plugin" )
+ENDIF()

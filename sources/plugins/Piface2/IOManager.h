@@ -8,15 +8,6 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
-/// \brief	the structure sent with the event
-//--------------------------------------------------------------
-typedef struct CIOState
-{
-   std::string keywordName;
-   unsigned char value;
-}IOState;
-
-//--------------------------------------------------------------
 /// \brief	Class where all keywords are updated
 /// \note   
 //--------------------------------------------------------------
@@ -33,7 +24,6 @@ public:
    /// \brief	    Initialize all elements
    /// \param[in]  api              Plugin execution context (Yadoms API)
    /// \param[in]  IOlist           Set a new list of IOs
-   /// \param[in] interruptEventHandler interrupt Event handler to read values.
    //--------------------------------------------------------------
    void Initialize(boost::shared_ptr<yApi::IYPluginApi> api, 
                    std::map<std::string, boost::shared_ptr<CIO> > IOlist);

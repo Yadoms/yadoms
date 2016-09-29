@@ -38,6 +38,9 @@ bool CIO::get(void)
 {
    bool ret = pifacedigital_digital_read(m_portUsed);
    m_value->set(ret);
+
+   std::cout << "read " << m_value->getKeyword() << " at " << ret << std::endl;
+
    return ret;
 }
 

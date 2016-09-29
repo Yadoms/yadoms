@@ -5,7 +5,10 @@
    "author": "Jean-Michel BERHAULT",
    "url": "https://github.com/Yadoms/yadoms/wiki/Piface2",
    "credits": "",
-   "supportedPlatforms":"all",
+   "supportedPlatforms":{
+      "raspberry": "supported",
+      "others": "unsupported"   
+   },
    "supportManuallyDeviceCreation": "false",
    "configurationSchema": {
 	"DI0": {

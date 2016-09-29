@@ -47,10 +47,7 @@ void CPiface2Factory::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi>
                                             shared::CDataContainer details)
 {
    for (int counter=0; counter<NB_INPUTS; ++counter)
-   {
-      std::string name = "DI" + boost::lexical_cast<std::string>(counter);
       m_DigitalInput[counter]->ConfigurePullResistance( configuration.PullResistanceState(counter) );
-   }
 }
 
 CPiface2Factory::~CPiface2Factory()

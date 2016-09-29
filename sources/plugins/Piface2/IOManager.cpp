@@ -73,7 +73,6 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
       {
          if ((m_inputValue & (1 << counter)) != (receivedValue & (1 << counter)))
          {
-            //m_mapKeywordsName[name]->set((bool)(m_inputValue & (1 << counter))>>counter);
             search->second->set(boost::lexical_cast<bool>((m_inputValue & (1 << counter)) >> counter));
             m_keywordsToDeclare.push_back(m_mapKeywordsName[name]->historizable());
          }
@@ -91,25 +90,33 @@ void CIOManager::interruptReceiverThreaded(const std::string& keywordName) const
    {
       std::cout << "### Start interruptReceiverThread ###" << std::endl;
 
-      while (true) // /*!boost::this_thread::interruption_requested()*/
+      while (true)
       {
          unsigned char inputs=0;
 
-         if (pifacedigital_wait_for_input(&inputs, 5000, 0) > 0)
+         unsigned char ret = pifacedigital_wait_for_input(&inputs, 5000, 0);
+         switch (ret)
          {
-            std::cout << "pifacedigital_wait_for_input :" << std::hex << (int)inputs << std::endl;
-            m_InterruptEventHandler->postEvent<const int>(kEvtIOStateReceived, inputs );
-         }
-         else
-         {
-            std::cout << "pifacedigital_wait_for_input <=0" << std::endl;
+            // Change of variables
+            case 1:
+               std::cout << "pifacedigital_wait_for_input :" << std::hex << (int)inputs << std::endl;
+               m_InterruptEventHandler->postEvent<const int>(kEvtIOStateReceived, inputs );
+               break;
+            // Time out
+            case 0:
+               break;
+            // Error
+            case -1:
+               throw CInitializationException("pifacedigital_wait_for_input error");
+               break;
+            // Unknow return
+            default:
+               throw CInitializationException("pifacedigital_wait_for_input unknow return");
+               break;
          }
 
          if (boost::this_thread::interruption_requested())
-         {
-            std::cout << "Interrupt requested while disabled\n";
             throw boost::thread_interrupted();
-         }
       }
    }
    catch (boost::thread_interrupted&)
@@ -127,9 +134,8 @@ CIOManager::~CIOManager()
    m_interruptReceiverThread.interrupt();
 
    //TODO : return value to be interpreted !
-   m_interruptReceiverThread.timed_join(boost::posix_time::seconds(20));
-
-   std::cout << "close Piface2 connection" << std::endl;
+   if (!m_interruptReceiverThread.timed_join(boost::posix_time::seconds(20)))
+      std::cerr << "Thread interruptReceiverThread join time out" << std::endl;
 
    // Close de connection
    pifacedigital_close(0);
