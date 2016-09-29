@@ -56,6 +56,18 @@ def EnumValues():
    return enumValues
 
 
+#-------------------------------------------------------------------------------
+def createParentDir(path):
+   parentDir = os.path.dirname(path)
+   if not parentDir:
+      return
+   try:
+      os.mkdir(parentDir)
+   except:
+      pass
+
+
+
 
 #-------------------------------------------------------------------------------
 
@@ -65,6 +77,7 @@ manufacturersClass.addMember(cppClass.CppMember("ManufacturersMap", "std::map<in
 manufacturersClass.addMethod(cppClass.CppMethod("name", "const std::string&", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, "   return ManufacturersMap.at(id);"))
 
 # Generate Header
+createParentDir(headerPath)
 with open(headerPath, 'w') as cppHeaderFile:
 
    cppHeaderFile.write("// Generated file, don't modify\n")
@@ -74,6 +87,7 @@ with open(headerPath, 'w') as cppHeaderFile:
    manufacturersClass.generateHeader(cppHeaderFile)
 
 # Generate Source
+createParentDir(headerPath)
 with open(sourcePath, 'w') as cppSourceFile:
 
    cppSourceFile.write("// Generated file, don't modify\n")
