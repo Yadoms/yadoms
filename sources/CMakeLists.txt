@@ -997,7 +997,7 @@ install(FILES "../config/yadoms.ini" DESTINATION ${INSTALL_BINDIR})
 #Configure all building targets to allow finding dependencies next to them
 #so just copying boost and poco next to yadoms executable and it will work
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE) 
-if(UNIX)
+if(UNIX AND NOT APPLE)
    set(CMAKE_EXE_LINKER_FLAGS "-Wl,-rpath='$ORIGIN' ")
 endif()
    
@@ -1187,16 +1187,22 @@ IF(WIN32 AND NOT UNIX)
 	endif(USE_NSIS)
 
 ELSE(WIN32 AND NOT UNIX)
-  SET(CPACK_STRIP_FILES "Yadoms")
-  SET(CPACK_SOURCE_STRIP_FILES "")
-  set(CPACK_GENERATOR "RPM;TGZ;DEB")
-  SET(CPACK_DEBIAN_PACKAGE_SECTION "Automation")
-  SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
-  SET(CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://www.yadoms.com")
-  
-  SET(CPACK_RPM_PACKAGE_GROUP "Applications/Productivity")
-  SET(CPACK_RPM_PACKAGE_LICENSE "GPL/LGPL. See https://github.com/Yadoms/yadoms/blob/master/LICENSE.md for details")
-  
+
+  IF(APPLE)
+     SET(CPACK_GENERATOR "TGZ")
+  ELSE(APPLE)
+
+    SET(CPACK_STRIP_FILES "Yadoms")
+    SET(CPACK_SOURCE_STRIP_FILES "")
+    SET(CPACK_GENERATOR "RPM;TGZ;DEB")
+    SET(CPACK_DEBIAN_PACKAGE_SECTION "Automation")
+    SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+    SET(CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://www.yadoms.com")  
+    SET(CPACK_RPM_PACKAGE_GROUP "Applications/Productivity")
+    SET(CPACK_RPM_PACKAGE_LICENSE "GPL/LGPL. See https://github.com/Yadoms/yadoms/blob/master/LICENSE.md for details")
+
+  ENDIF()
+
 ENDIF(WIN32 AND NOT UNIX)
 SET(CPACK_PACKAGE_EXECUTABLES "Yadoms" "Yadoms")
 
