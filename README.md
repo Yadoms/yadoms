@@ -30,3 +30,8 @@ http://www.yadoms.com/forum
 #Licensing
 
 [Refer to LICENSE.md file](LICENSE.md)
+
+#Downloads
+
+[v1.0.0 Beta](https://github.com/Yadoms/yadoms/releases/tag/1_0_0_beta)
+

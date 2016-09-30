@@ -1148,6 +1148,8 @@ IF(WIN32 AND NOT UNIX)
 	  SET(CPACK_NSIS_CONTACT "contact@yadoms.com")
 	  SET(CPACK_NSIS_MODIFY_PATH ON)
 	  
+     SET(CPACK_NSIS_VCREDIST "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\NSIS\\\\vcredist_x86.exe")
+
      set(CPACK_NSIS_CREATE_ICONS_STARTMENU
         "SetOutPath $INSTDIR\\\\bin
          SetShellVarContext all
