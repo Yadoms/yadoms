@@ -1153,15 +1153,24 @@ IF(WIN32 AND NOT UNIX)
      set(CPACK_NSIS_CREATE_ICONS_STARTMENU
         "SetOutPath $INSTDIR\\\\bin
          SetShellVarContext all
-         CreateShortCut '\$SMPROGRAMS\$STARTMENU_FOLDER\\\\Yadoms.lnk' '\$INSTDIR\\\\bin\\\\yadoms.exe' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
+         CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Yadoms-StartServer.lnk' '\$INSTDIR\\\\bin\\\\yadoms.exe' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0
+         CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Yadoms.lnk' 'http://localhost:8080' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
      )
 
      set(CPACK_NSIS_CREATE_ICONS_DESKTOP
         "SetOutPath $INSTDIR\\\\bin
          SetShellVarContext all
-         CreateShortCut '\$DESKTOP\\\\Yadoms.lnk' '\$INSTDIR\\\\bin\\\\yadoms.exe' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
+         CreateShortCut '\$DESKTOP\\\\Yadoms.lnk' 'http://localhost:8080' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
      )
      
+     set(CPACK_NSIS_CREATE_ICONS_DESKTOP_NOSERVICE
+        "SetOutPath $INSTDIR\\\\bin
+         SetShellVarContext all
+         CreateShortCut '\$DESKTOP\\\\Yadoms-StartServer.lnk' '\$INSTDIR\\\\bin\\\\yadoms.exe' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0
+         CreateShortCut '\$DESKTOP\\\\Yadoms.lnk' 'http://localhost:8080' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
+     )
+     
+
      set(CPACK_NSIS_INSTALL_SERVICE
          "ExecWait '\$INSTDIR\\\\bin\\\\yadoms.exe --registerService --displayName:Yadoms --startup:automatic' $0
          !insertmacro SERVICE 'start' 'Yadoms' ''"
