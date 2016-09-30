@@ -723,7 +723,11 @@ Section "-Core installation"
   Push "Contact"
   Push "@CPACK_NSIS_CONTACT@"
   Call ConditionalAddToRegisty
+
+  ;Read a value from an InstallOptions INI file
   !insertmacro MUI_INSTALLOPTIONS_READ $INSTALL_DESKTOP "NSIS.InstallOptions.ini" "Field 1" "State"
+  !insertmacro MUI_INSTALLOPTIONS_READ $INSTALL_SERVICE "NSIS.InstallOptions.ini" "Field 2" "State"
+
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
 
   ;Create shortcuts
@@ -734,11 +738,14 @@ Section "-Core installation"
 
   
   IntCmp $INSTALL_DESKTOP 0 end_of_install_desktop_icons
+  
+	IntCmp $INSTALL_SERVICE 0 desktop_withoutservice
 @CPACK_NSIS_CREATE_ICONS_DESKTOP@
+	Goto end_of_install_desktop_icons
+  desktop_withoutservice:
+@CPACK_NSIS_CREATE_ICONS_DESKTOP_NOSERVICE@
   end_of_install_desktop_icons:
   
-  ;Read a value from an InstallOptions INI file
-  !insertmacro MUI_INSTALLOPTIONS_READ $INSTALL_SERVICE "NSIS.InstallOptions.ini" "Field 2" "State"
   
   ;Check if we have redistributable installed
   Call  CheckRedistributableInstalled
