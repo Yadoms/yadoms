@@ -12,6 +12,10 @@ CIOManager::CIOManager(const std::string& device)
    // Open the connection
    if (pifacedigital_open(0) == -1)
       throw CInitializationException("Initialization error - Configuration of the SPI in raspi-config ?");
+
+   //Initialization des interruptions
+   if (pifacedigital_enable_interrupts() != 0)
+      throw CInitializationException("interrupt initialization error");
 }
 
 void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api, 
@@ -20,10 +24,6 @@ void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
    m_InterruptEventHandler = &api->getEventHandler();
    m_mapKeywordsName = IOlist;
    m_keywordsToDeclare.clear();
-
-
-   if (pifacedigital_enable_interrupts() != 0)
-      throw CInitializationException("interrupt initialization error");
 
    // Initial reading of DI
    for (int counter = 0; counter<NB_INPUTS; ++counter)
