@@ -59,7 +59,7 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kEvtIOStateReceived:
       {
          //Value received from DI
-         m_ioManager->onCommand(api, api->getEventHandler().getEventData<int>() );
+         m_ioManager->onCommand(api, api->getEventHandler().getEventData<const int>() );
          break;
       }
       case yApi::IYPluginApi::kEventDeviceCommand:
