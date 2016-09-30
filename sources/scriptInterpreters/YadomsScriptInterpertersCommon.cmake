@@ -12,8 +12,6 @@ MACRO(SCRIPT_INTERPRETER_SOURCES _targetName)
 	IF(MSVC OR XCODE)
 		SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "scriptInterpreters/${_targetName}")
 	ENDIF()
-	
-
 ENDMACRO()
 
 MACRO(SCRIPT_INTERPRETER_INCLDIR _targetName)
@@ -49,17 +47,6 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
 			target_link_libraries(${_targetName}_unity yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS} ${ARGN})
 		endif()	
 	endif()	
-	
-	##################################################################################################
-	## Adjust platform toolset (case of Windows XP build)
-	##################################################################################################
-	IF(MSVC)
-		set_target_properties(${_targetName} PROPERTIES PLATFORM_TOOLSET "${CMAKE_VS_PLATFORM_TOOLSET}")
-		
-		if(COTIRE_USE_UNITY)
-			set_target_properties(${_targetName}_unity PROPERTIES PLATFORM_TOOLSET "${CMAKE_VS_PLATFORM_TOOLSET}")
-		endif(COTIRE_USE_UNITY)
-	ENDIF(MSVC)		
 	
 ENDMACRO()
 

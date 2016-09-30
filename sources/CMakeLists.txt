@@ -983,23 +983,6 @@ if(COTIRE_USE)
 	endif()	
 endif()
       
-	  
-
-##################################################################################################
-## Adjust platform toolset (case of Windows XP build)
-##################################################################################################
-if(MSVC)
-	set_target_properties(yadoms PROPERTIES PLATFORM_TOOLSET "${CMAKE_VS_PLATFORM_TOOLSET}")
-	set_target_properties(yadoms-shared PROPERTIES PLATFORM_TOOLSET "${CMAKE_VS_PLATFORM_TOOLSET}")
-	set_target_properties(plugin_IPC PROPERTIES PLATFORM_TOOLSET "${CMAKE_VS_PLATFORM_TOOLSET}")
-	
-	if(COTIRE_USE_UNITY)
-		set_target_properties(yadoms_unity PROPERTIES PLATFORM_TOOLSET "${CMAKE_VS_PLATFORM_TOOLSET}")
-		set_target_properties(yadoms-shared_unity PROPERTIES PLATFORM_TOOLSET "${CMAKE_VS_PLATFORM_TOOLSET}")
-	endif()
-endif()
-
-	  
 ##################################################################################################
 ## CPACK
 ##################################################################################################

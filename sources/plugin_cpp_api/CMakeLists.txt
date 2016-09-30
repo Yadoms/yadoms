@@ -70,10 +70,3 @@ IF(MSVC OR XCODE)
 ENDIF()
 
 set(plugin_cpp_api_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
-
-##################################################################################################
-## Adjust platform toolset (case of Windows XP build)
-##################################################################################################
-IF(MSVC)
-	set_target_properties(plugin_cpp_api PROPERTIES PLATFORM_TOOLSET "${CMAKE_VS_PLATFORM_TOOLSET}")
-ENDIF(MSVC)
