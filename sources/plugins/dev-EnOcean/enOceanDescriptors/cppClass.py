@@ -1,3 +1,6 @@
+#-------------------------------------------------------------------------------
+# CPP class generation
+
 import sys
 import os.path
 import xml.etree.ElementTree
@@ -196,7 +199,7 @@ class CppClass():
       self.__generateHeaderVisibilityBlock(f, PROTECTED, "protected")
       self.__generateHeaderVisibilityBlock(f, PRIVATE, "private")
 
-      f.write("};\n")
+      f.write("};\n\n")
 
 
    def generateSource(self, f):
@@ -213,3 +216,4 @@ class CppClass():
       f.write("\n")
       for method in self.__methods:
          method.generateSource(f, self.__cppClassName)
+      f.write("\n\n")
