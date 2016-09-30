@@ -1,5 +1,6 @@
 #pragma once
 #include "types.h"
+#include "generated-eep.h"
 
 namespace message
 {
@@ -68,22 +69,6 @@ namespace message
    class CRadioErp1Message
    {
    public:
-      enum ERORG
-      {
-         kRBS = 0xF6,
-         k1BS = 0xD5,
-         k4BS = 0xA5,
-         kVLD = 0xD2,
-         kMSC = 0xD1,
-         kADT = 0xA6,
-         kSM_LRN_REQ = 0xC6,
-         kSM_LRN_ANS = 0xC7,
-         kSM_REC = 0xA7,
-         kSYS_EX = 0xC5,
-         kSEC = 0x30,
-         kSEC_ENCAPS = 0x31
-      };
-
       //--------------------------------------------------------------
       /// \brief	                           Constructor
       /// \param[in] receivedContent         The received buffer
@@ -95,12 +80,12 @@ namespace message
       //--------------------------------------------------------------
       virtual ~CRadioErp1Message();
 
-      unsigned char rorg() const;
+      CRorgs::ERorgIds rorg() const;
       unsigned int senderId() const;
       const std::vector<unsigned char>& data() const;
 
    private:
-      const unsigned char m_rorg;
+      const CRorgs::ERorgIds m_rorg;
       const unsigned int m_senderId;
       const unsigned char m_status;
       const std::vector<unsigned char> m_data;

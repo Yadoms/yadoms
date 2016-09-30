@@ -67,7 +67,7 @@ namespace message
 
 
    CRadioErp1Message::CRadioErp1Message(const CReceivedEsp3Packet& esp3Packet)
-      : m_rorg(esp3Packet.data()[0]),
+      : m_rorg(CRorgs::toRorgId(esp3Packet.data()[0])),
         m_senderId(esp3Packet.data()[esp3Packet.data().size() - 5] << 24 | esp3Packet.data()[esp3Packet.data().size() - 4] << 16 | esp3Packet.data()[esp3Packet.data().size() - 3] << 8 | esp3Packet.data()[esp3Packet.data().size() - 2]),
         m_status(esp3Packet.data()[esp3Packet.data().size() - 1]),
         m_data(esp3Packet.data().begin() + 1, esp3Packet.data().begin() + esp3Packet.data().size() - 6)
@@ -78,7 +78,7 @@ namespace message
    {
    }
 
-   unsigned char CRadioErp1Message::rorg() const
+   CRorgs::ERorgIds CRadioErp1Message::rorg() const
    {
       return m_rorg;
    }

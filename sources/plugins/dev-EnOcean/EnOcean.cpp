@@ -294,18 +294,10 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
 
    switch (erp1Message.rorg())
    {
-   case message::CRadioErp1Message::kRBS: break;//TODO
-   case message::CRadioErp1Message::k1BS: processRadioErp1_1BS(api, esp3Packet.data()); break;
-   case message::CRadioErp1Message::k4BS: processRadioErp1_4BS(api, device, message::C4BSMessage(erp1Message)); break;
-   case message::CRadioErp1Message::kVLD: break;//TODO
-   case message::CRadioErp1Message::kMSC: break;//TODO
-   case message::CRadioErp1Message::kADT: break;//TODO
-   case message::CRadioErp1Message::kSM_LRN_REQ: break;//TODO
-   case message::CRadioErp1Message::kSM_LRN_ANS: break;//TODO
-   case message::CRadioErp1Message::kSM_REC: break;//TODO
-   case message::CRadioErp1Message::kSYS_EX: break;//TODO
-   case message::CRadioErp1Message::kSEC: break;//TODO
-   case message::CRadioErp1Message::kSEC_ENCAPS: break;//TODO
+   case CRorgs::kRPS_Telegram: break;//TODO
+   case CRorgs::k1BS_Telegram: processRadioErp1_1BS(api, esp3Packet.data()); break;
+   case CRorgs::k4BS_Telegram: processRadioErp1_4BS(api, device, message::C4BSMessage(erp1Message)); break;
+   case CRorgs::kVLD_Telegram: break;//TODO
    default: throw CProtocolException((boost::format("Unknown RORG %1%") % erp1Message.rorg()).str());
    }
 

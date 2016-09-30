@@ -50,6 +50,10 @@ rorgsClass = cppClass.CppClass("CRorgs")
 classes.append(rorgsClass)
 rorgsClass.addSubType(cppClass.CppEnumType("ERorgIds", lambda: RorgEnumValues(), cppClass.PUBLIC))
 rorgsClass.addMember(cppClass.CppMember("RorgMap", "std::map<unsigned int, std::string>", cppClass.PRIVATE, cppClass.STATIC | cppClass.CONST, lambda: RorgMapInitCode()))
+rorgsClass.addMethod(cppClass.CppMethod("toRorgId", "CRorgs::ERorgIds", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, \
+   "   if (RorgMap.find(id) == RorgMap.end())\n" \
+   "      throw std::out_of_range(\"Unknown rorg\");\n" \
+   "   return static_cast<ERorgIds>(id);\n"))
 rorgsClass.addMethod(cppClass.CppMethod("name", "const std::string&", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, \
    "   try {\n" \
    "      return RorgMap.at(id);\n" \
