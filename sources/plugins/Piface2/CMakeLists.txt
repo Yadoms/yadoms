@@ -26,10 +26,17 @@ set(PIFACE2_PLUGIN_SOURCES
    IO.cpp
    )
 
+ADD_SUBDIRECTORY(libmcp23s17)  
+ADD_SUBDIRECTORY(libpifacedigital)
+ 
 #########################################
 ## Place here all additional include directories
 ## (by default yadoms-shared and boost are included)
 #########################################
+
+   set(PIFACE2_PLUGIN_ADDITIONAL_INC_DIR
+       ${PIFACE2DIGITAL_INCLUDE_DIRECTORY}
+       ${MCP23S17_INCLUDE_DIRECTORY})
 
    set(PIFACE2_PLUGIN_INCLDIR  
        ${CMAKE_CURRENT_SOURCE_DIR})
@@ -38,9 +45,10 @@ set(PIFACE2_PLUGIN_SOURCES
 ## Place here all additional libraries to link with
 ## (by default yadoms-shared and boost are included)
 #########################################
+
 set(PIFACE2_PLUGIN_LINK
-   pifacedigital
    mcp23s17
+   pifacedigital
 )
 
 #########################################
@@ -54,7 +62,7 @@ set(PIFACE2_PLUGIN_LINK
 #########################################
 
 PLUGIN_SOURCES(Piface2 ${PIFACE2_PLUGIN_SOURCES})
-PLUGIN_INCLDIR(Piface2 ${PIFACE2_PLUGIN_INCLDIR})
+PLUGIN_INCLDIR(Piface2 ${PIFACE2_PLUGIN_INCLDIR} ${PIFACE2_PLUGIN_ADDITIONAL_INC_DIR})
 PLUGIN_LINK   (Piface2 ${PIFACE2_PLUGIN_LINK})
 
 #########################################

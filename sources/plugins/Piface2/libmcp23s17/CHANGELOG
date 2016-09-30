@@ -1,0 +1,28 @@
+Change Log
+==========
+
+v0.3.3
+------
+- Added the "install" target to Makefile.
+- Small fixups and additions to README.md
+
+v0.3.2
+------
+- Fixed issue #8 - added memset to clear transfer struct.
+- Fixed issue #9 - correctly tested epoll.
+
+v0.3.1
+------
+- Fixed issue #5 - bug with interrupts.
+
+v0.3.0
+------
+- Added support for interrupts.
+
+v0.2.0
+------
+- Improved documentation.
+
+v0.1.0
+------
+- Initial release.
