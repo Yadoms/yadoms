@@ -53,7 +53,8 @@ BrandingText "@CPACK_NSIS_PACKAGE_NAME@"
 ;Plugin for windows services
 !include "@CPACK_NSIS_PLUGINS_ROOT@\services.nsh"
   
-    
+!include 'LogicLib.nsh'
+
 @CPACK_NSIS_DEFINES@
 
   !include Sections.nsh
@@ -401,6 +402,26 @@ Function un.RemoveFromPath
     Pop $0
 FunctionEnd
 
+Function CheckRedistributableInstalled
+
+  ;{13A4EE12-23EA-3371-91EE-EFB36DDFFF3E} - msvs2013 x86
+  
+  Push $R0
+  ClearErrors
+   
+  ;try to read Version subkey to R0
+  ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{13A4EE12-23EA-3371-91EE-EFB36DDFFF3E}" "Version"
+
+  ;was there error or not?
+  IfErrors 0 NoErrors
+   
+  ;error occured, copy "Error" to R0
+  StrCpy $R0 "Error"
+
+  NoErrors:
+  
+    Exch $R0 
+FunctionEnd
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Uninstall sutff
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -702,7 +723,11 @@ Section "-Core installation"
   Push "Contact"
   Push "@CPACK_NSIS_CONTACT@"
   Call ConditionalAddToRegisty
+
+  ;Read a value from an InstallOptions INI file
   !insertmacro MUI_INSTALLOPTIONS_READ $INSTALL_DESKTOP "NSIS.InstallOptions.ini" "Field 1" "State"
+  !insertmacro MUI_INSTALLOPTIONS_READ $INSTALL_SERVICE "NSIS.InstallOptions.ini" "Field 2" "State"
+
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
 
   ;Create shortcuts
@@ -713,11 +738,31 @@ Section "-Core installation"
 
   
   IntCmp $INSTALL_DESKTOP 0 end_of_install_desktop_icons
+  
+	IntCmp $INSTALL_SERVICE 0 desktop_withoutservice
 @CPACK_NSIS_CREATE_ICONS_DESKTOP@
+	Goto end_of_install_desktop_icons
+  desktop_withoutservice:
+@CPACK_NSIS_CREATE_ICONS_DESKTOP_NOSERVICE@
   end_of_install_desktop_icons:
   
-  ;Read a value from an InstallOptions INI file
-  !insertmacro MUI_INSTALLOPTIONS_READ $INSTALL_SERVICE "NSIS.InstallOptions.ini" "Field 2" "State"
+  
+  ;Check if we have redistributable installed
+  Call  CheckRedistributableInstalled
+  Pop $R0
+
+  ${If} $R0 == "Error"
+    File @CPACK_NSIS_VCREDIST@
+	
+	SetDetailsPrint both
+	DetailPrint "Installing VCRedist 2013 32 Bits "
+	DetailPrint "$INSTDIR\vcredist_x86.exe"
+	SetDetailsPrint none
+
+    ExecWait '"$INSTDIR\bin\vcredist_x86.exe" /install /passive /norestart'	
+    Delete "$INSTDIR\bin\vcredist_x86.exe"
+  ${EndIf}
+  
   
   IntCmp $INSTALL_SERVICE 0 end_of_install_service
 @CPACK_NSIS_INSTALL_SERVICE@
@@ -739,6 +784,8 @@ Section "-Core installation"
 
   !insertmacro MUI_STARTMENU_WRITE_END
 
+
+  
 @CPACK_NSIS_EXTRA_INSTALL_COMMANDS@
 
 SectionEnd
