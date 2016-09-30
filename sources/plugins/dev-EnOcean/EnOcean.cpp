@@ -345,22 +345,73 @@ void CEnOcean::processRadioErp1_4BS(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const CDevice& device,
                                     const message::C4BSMessage& data)
 {
-   switch (device.func())
+   if (data.isTeachIn())
    {
-   case 2 /*TODO mettre une constante*/:
+      // Teachin telegram
+      if (!data.isEepProvided())
+         throw std::out_of_range((boost::format("4BS teach-in telegram of variation 1 (with no profile provided) is not supported. Please report to Yadoms-team. Telegram \"%1%\"") % data.dump()).str());
+
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywords;
+      auto model(CManufacturers::name(data.manufacturerId()));
+
+      switch (data.func())
+      {
+      case 2 /*TODO mettre une constante*/:
+         {
+            // Temperature Sensors
+            model += std::string(" - ") + "Temperature Sensors";/*TODO à tirer du XML */
+            switch (device.type())
+            {
+            case 1 /*TODO mettre une constante*/:model += std::string(" (") + "Temperature Sensor Range -40°C to 0°C" /*TODO à tirer du XML */ + ")"; break;
+            case 2 /*TODO mettre une constante*/:model += std::string(" (") + "Temperature Sensor Range -30°C to +10°C" /*TODO à tirer du XML */ + ")"; break;
+            default:
+               throw std::out_of_range((boost::format("Unknown TYPE value (%1%) for FUNC %2%") % device.type() % device.func()).str());
+            }
+            
+            keywords.push_back(boost::make_shared<yApi::historization::CTemperature>("temperature"));
+            break;
+         }
+      case 4 /*TODO mettre une constante*/:
+         {
+            // Temperature and Humidity Sensors
+            model += std::string(" - ") + "Temperature and Humidity Sensor";/*TODO à tirer du XML */
+            switch (device.type())
+            {
+            case 1 /*TODO mettre une constante*/: model += std::string(" (") + "Range 0°C to +40°C and 0% to 100%" /*TODO à tirer du XML */ + ")"; break;
+            case 2 /*TODO mettre une constante*/: model += std::string(" (") + "Range -20°C to +60°C and 0% to 100%" /*TODO à tirer du XML */ + ")"; break;
+            default:
+               throw std::out_of_range((boost::format("Unknown TYPE value (%1%) for FUNC %2%") % device.type() % device.func()).str());
+            }
+
+            keywords.push_back(boost::make_shared<yApi::historization::CTemperature>("temperature"));
+            keywords.push_back(boost::make_shared<yApi::historization::CHumidity>("humidity"));
+            break;
+         }
+         default:
+            throw std::out_of_range((boost::format("Unknown FUNC value (%1%)") % device.func()).str());
+      }
+
+      m_api->declareDevice(std::to_string(device.id()), model, keywords);
+   }
+   else
+   {
+      // Data telegram
+      switch (device.func())
+      {
+      case 2 /*TODO mettre une constante*/:
       {
          // Temperature Sensors
          double temperature;
          switch (device.type())
          {
          case 1 /*TODO mettre une constante*/:
-            {
-               // Temperature Sensor Range -40°C to 0°C
-               temperature = scaleToDouble(data.db1(),// TODO position de la valeur à récupérer de l'XML
-                                           0, 255,// TODO valeurs à récupérer de l'XML
-                                           -40, 0);// TODO valeurs à récupérer de l'XML
-               break;
-            }
+         {
+            // Temperature Sensor Range -40°C to 0°C
+            temperature = scaleToDouble(data.db1(),// TODO position de la valeur à récupérer de l'XML
+               0, 255,// TODO valeurs à récupérer de l'XML
+               -40, 0);// TODO valeurs à récupérer de l'XML
+            break;
+         }
          case 2 /*TODO mettre une constante*/:
          {
             // Temperature Sensor Range -30°C to +10°C
@@ -381,45 +432,10 @@ void CEnOcean::processRadioErp1_4BS(boost::shared_ptr<yApi::IYPluginApi> api,
          m_api->historizeData(std::to_string(device.id()), keyword);
          break;
       }
-   default:
-      throw std::out_of_range((boost::format("Unknown FUNC value (%1%)") % device.func()).str());
+      default:
+         throw std::out_of_range((boost::format("Unknown FUNC value (%1%)") % device.func()).str());
+      }
    }
-
-
-   //TODO virer
-   //auto temperature = data[3];
-   //auto isTeachIn = !(data[4] & 0x08);
-
-   //auto senderId = extractSenderId(data, 5);
-
-   //auto status = data[9]; //TODO : status is not used...
-
-   //static const std::string keywordName("temperature");
-   //auto keyword(boost::make_shared<yApi::historization::CTemperature>(keywordName));
-
-   //if (isTeachIn && !m_api->deviceExists(senderId))
-   //{
-   //   auto eepIsProvided = data[4] & 0x80;
-
-   //   if (eepIsProvided)
-   //   {
-   //      //TODO
-   //      //unsigned int manufacturer = ((DB_2 & 7) << 8) | DB_1;
-   //      //unsigned int type = ((DB_3 & 3) << 5) | (DB_2 >> 3);
-   //      //unsigned int func = DB_3 >> 2;
-   //   }
-   //   else
-   //   {
-   //      unsigned int manufacturer = CManufacturers::kMulti_user_Manufacturer_ID;
-   //      unsigned int type = 5;//TODO ça serait mieux avec une constante
-   //      unsigned int func = 2;//TODO ça serait mieux avec une constante
-   //   }
-
-   //   m_api->declareDevice(senderId, std::string(), keyword);
-   //}
-
-   //keyword->set(scaleToDouble(temperature, 255, 0, -40, 0));
-   //m_api->historizeData(senderId, keyword);
 }
 
 double CEnOcean::scaleToDouble(int rawValue,

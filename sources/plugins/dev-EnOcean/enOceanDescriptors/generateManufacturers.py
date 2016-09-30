@@ -74,7 +74,14 @@ def createParentDir(path):
 manufacturersClass = cppClass.CppClass("CManufacturers")
 manufacturersClass.addSubType(cppClass.CppEnumType("EManufacturerIds", lambda: EnumValues(), cppClass.PUBLIC))
 manufacturersClass.addMember(cppClass.CppMember("ManufacturersMap", "std::map<int, std::string>", cppClass.PRIVATE, cppClass.STATIC | cppClass.CONST, lambda: ManufacturersMapInitCode()))
-manufacturersClass.addMethod(cppClass.CppMethod("name", "const std::string&", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, "   return ManufacturersMap.at(id);"))
+manufacturersClass.addMethod(cppClass.CppMethod("name", "const std::string&", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, \
+   "   try {\n" \
+   "      return ManufacturersMap.at(id);\n" \
+   "   } catch(std::out_of_range&) {\n" \
+   "      static const std::string UnknownManufacturer(\"Unknown manufacturer\");\n" \
+   "      return UnknownManufacturer;\n" \
+   "   }"))
+
 
 # Generate Header
 createParentDir(headerPath)
