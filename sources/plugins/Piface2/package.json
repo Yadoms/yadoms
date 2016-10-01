@@ -4,9 +4,9 @@
    "releaseType": "beta",
    "author": "Jean-Michel BERHAULT",
    "url": "https://github.com/Yadoms/yadoms/wiki/Piface2",
-   "credits": "",
+   "credits": "[libmcp23s17](https://github.com/piface/libmcp23s17) [libpifacedigital](https://github.com/piface/libpifacedigital)",
    "supportedPlatforms":{
-      "raspberry": "supported",
+      "linux": "supported",
       "others": "unsupported"   
    },
    "supportManuallyDeviceCreation": "false",
