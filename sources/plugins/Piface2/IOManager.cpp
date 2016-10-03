@@ -9,6 +9,11 @@ CIOManager::CIOManager(const std::string& device)
    :m_deviceName (device),
    m_inputValue(0)
 {
+   if (pifacedigital_open(0) == -1)
+      throw CInitializationException("Initialization error - Configuration of the SPI in raspi-config ?");
+
+   pifacedigital_close(0);
+
    // Open the connection
    if (pifacedigital_open(0) == -1)
       throw CInitializationException("Initialization error - Configuration of the SPI in raspi-config ?");
