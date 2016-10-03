@@ -1,4 +1,5 @@
 #pragma once
+#include "generated-manufacturers.h"
 
 
 //--------------------------------------------------------------
@@ -21,13 +22,13 @@ public:
    virtual ~CDevice();
 
    unsigned int id() const;
-   unsigned int manufacturer() const;
+   CManufacturers::EManufacturerIds manufacturer() const;
    unsigned int func() const;
    unsigned int type() const;
 
 private:
    unsigned int m_id;
-   unsigned int m_manufacturer;
+   CManufacturers::EManufacturerIds m_manufacturer;
    unsigned int m_func;
    unsigned int m_type;
 };

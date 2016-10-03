@@ -56,6 +56,8 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
    rorgClassName = "C" + xmlRorgNode.find("telegram").text + "Telegram"
    rorgClass = cppClass.CppClass(rorgClassName)
    classes.append(rorgClass)
+   rorgClass.addMember(cppClass.CppMember("m_data", "std::vector<unsigned char>", cppClass.PRIVATE, cppClass.CONST))
+   rorgClass.addConstructor(cppClass.CppClassConstructor(args="const CRadioErp1Message& erp1", init="m_data(erp1.data())"))
    rorgClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.STATIC, "   return " + xmlRorgNode.find("number").text + ";"))
    rorgClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.STATIC, \
    "   static const std::string title(\"" + xmlRorgNode.find("title").text + "\");\n" \
@@ -63,6 +65,12 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
    rorgClass.addMethod(cppClass.CppMethod("fullname", "const std::string&", "", cppClass.PUBLIC, cppClass.STATIC, \
    "   static const std::string fullname(\"" + xmlRorgNode.find("fullname").text + "\");\n" \
    "   return fullname;"))
+   rorgClass.addMethod(cppClass.CppMethod("dump", "std::string", "", cppClass.PUBLIC, cppClass.CONST, \
+   "   std::stringstream ss;\n" \
+   "   ss << std::setfill('0') << std::setw(2) << std::hex;\n" \
+   "   for (auto it = m_data.begin(); it != m_data.end(); ++it)\n" \
+   "      ss << *it << \" \";\n" \
+   "   return ss.str();"))
 
    rorgClass.addSubType(cppClass.CppEnumType("EFuncIds", xmlHelper.getEnumValues(inNode=xmlRorgNode, foreachSubNode="func", enumValueNameTag="title", enumValueTag="number"), cppClass.PUBLIC))
    rorgClass.addMember(cppClass.CppMember("FuncMap", "std::map<unsigned int, std::string>", cppClass.PRIVATE, cppClass.STATIC | cppClass.CONST, \
@@ -98,6 +106,7 @@ with open(headerPath, 'w') as cppHeaderFile:
 
    cppHeaderFile.write("// Generated file, don't modify\n")
    cppHeaderFile.write("#pragma once\n")
+   cppHeaderFile.write("#include \"ReceivedMessage.h\"\n")
    cppHeaderFile.write("\n")
 
    for oneClass in classes:

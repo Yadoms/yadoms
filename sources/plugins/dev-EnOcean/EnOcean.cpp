@@ -388,7 +388,7 @@ void CEnOcean::processRadioErp1_4BS(boost::shared_ptr<yApi::IYPluginApi> api,
    else
    {
       // Data telegram
-      switch (device.func())
+      switch (static_cast<C4BSTelegram::EFuncIds>(device.func()))
       {
       case 2 /*TODO mettre une constante*/:
       {

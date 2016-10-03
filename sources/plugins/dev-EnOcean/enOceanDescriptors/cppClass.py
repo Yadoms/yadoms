@@ -22,6 +22,14 @@ PUBLIC = 1
 PROTECTED = 2
 PRIVATE = 3
 
+def visibilityCppTag(visibility):
+   return {
+        PUBLIC: "public",
+        PROTECTED: "protected",
+        PRIVATE: "private",
+    }[visibility]
+
+
 #-------------------------------------------------------------------------------
 class CppMethod():
    """ Object for generating a cpp class method """
@@ -53,7 +61,10 @@ class CppMethod():
    def generateSource(self, f, parentClassName):
       if self.__qualifier & PURE_VIRTUAL:
          return
-      f.write(self.__cppReturnType + " " + parentClassName + "::" + self.__cppMethodName + "(" + self.__cppArgs + ") {\n");
+      f.write(self.__cppReturnType + " " + parentClassName + "::" + self.__cppMethodName + "(" + self.__cppArgs + ")");
+      if self.__qualifier & CONST:
+         f.write(" const");
+      f.write(" {\n");
       f.write(self.__content + "\n");
       f.write("}\n");
 
@@ -133,12 +144,40 @@ class CppEnumType(CppSubType):
 
 
 #-------------------------------------------------------------------------------
+class CppClassConstructor():
+   """ Object for generating a CPP class constructor """
+
+   def __init__(self, args, init = None, code = None, visibility = PUBLIC):
+      self.__args = args
+      self.__init = init
+      self.__code = code
+      self.__visibility = visibility
+
+   def generateHeader(self, f, cppClassName):
+      f.write(visibilityCppTag(self.__visibility) + ":\n")
+      f.write("   ")
+      if self.__args and len(self.__args) > 0 and self.__args.count(',') == 0:
+         f.write("explicit ")
+      f.write(cppClassName + "(" + self.__args + ");\n")
+
+   def generateSource(self, f, cppClassName):
+      f.write(cppClassName + "::" + cppClassName + "(" + self.__args + ")\n")
+      if self.__init:
+         f.write(": " + self.__init + "\n")
+      f.write("{\n")
+      if self.__code:
+         f.write(self.__code + "\n")
+      f.write("}\n")
+
+
+#-------------------------------------------------------------------------------
 class CppClass():
    """ Object for generating a cpp class """
 
    def __init__(self, cppClassName):
       self.__cppClassName = cppClassName
       self.__subTypes = []
+      self.__constructors = []
       self.__members = []
       self.__methods = []
       self.__extraContentInHeader = []
@@ -149,6 +188,10 @@ class CppClass():
       if not isinstance(cppSubType, CppSubType) :
          raise TypeError(str(cppSubType) + " object is not an instance of CppSubType")
       self.__subTypes.append(cppSubType)
+
+
+   def addConstructor(self, cppClassConstructor):
+      self.__constructors.append(cppClassConstructor)
 
 
    def addMethod(self, cppMethod):
@@ -163,8 +206,8 @@ class CppClass():
       self.__members.append(cppMember)
 
 
-   def __generateHeaderVisibilityBlock(self, cppHeaderFile, visibility, visibilityCppTag):
-      cppHeaderFile.write(visibilityCppTag + ":\n")
+   def __generateHeaderVisibilityBlock(self, cppHeaderFile, visibility):
+      cppHeaderFile.write(visibilityCppTag(visibility) + ":\n")
       for subType in self.__subTypes:
          if subType.visibility() is visibility:
             subType.generateHeader(cppHeaderFile)
@@ -180,13 +223,15 @@ class CppClass():
       f.write("class " + self.__cppClassName + " {\n")
 
       # Ctor and dtor
-      f.write("public:\n")
+      f.write(visibilityCppTag(PUBLIC) + ":\n")
       f.write("   " + self.__cppClassName + "();\n")
+      for constructor in self.__constructors:
+         constructor.generateHeader(f, self.__cppClassName)
       f.write("   virtual ~" + self.__cppClassName + "();\n")
 
-      self.__generateHeaderVisibilityBlock(f, PUBLIC, "public")
-      self.__generateHeaderVisibilityBlock(f, PROTECTED, "protected")
-      self.__generateHeaderVisibilityBlock(f, PRIVATE, "private")
+      self.__generateHeaderVisibilityBlock(f, PUBLIC)
+      self.__generateHeaderVisibilityBlock(f, PROTECTED)
+      self.__generateHeaderVisibilityBlock(f, PRIVATE)
 
       f.write("};\n\n")
 
@@ -201,8 +246,12 @@ class CppClass():
       # Ctor and dtor
       f.write(self.__cppClassName + "::" + self.__cppClassName + "(){}\n")
       f.write("\n")
+      for constructor in self.__constructors:
+         constructor.generateSource(f, self.__cppClassName)
       f.write(self.__cppClassName + "::~" + self.__cppClassName + "(){}\n")
       f.write("\n")
+
+      # Methods
       for method in self.__methods:
          method.generateSource(f, self.__cppClassName)
       f.write("\n\n")

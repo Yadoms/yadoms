@@ -6,7 +6,7 @@ CDevice::CDevice(unsigned int id,
                  unsigned int func,
                  unsigned int type)
    : m_id(id),
-     m_manufacturer(manufacturer),
+     m_manufacturer(CManufacturers::toManufacturerId(manufacturer)),
      m_func(func),
      m_type(type)
 {
@@ -21,7 +21,7 @@ unsigned int CDevice::id() const
    return m_id;
 }
 
-unsigned int CDevice::manufacturer() const
+CManufacturers::EManufacturerIds CDevice::manufacturer() const
 {
    return m_manufacturer;
 }

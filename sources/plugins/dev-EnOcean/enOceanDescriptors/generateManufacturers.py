@@ -28,11 +28,16 @@ xmlRootNode = xml.etree.ElementTree.parse(xmlInputFilePath).getroot()
 if xmlRootNode.tag != "manufacturers":
    raise Exception("getAllNodes : Invalid root \"" + xmlRootNode.tag + "\", \"manufacturers\" expected")
 
-manufacturersClass = cppClass.CppClass("CManufacturers")
+manufacturersClassName = "CManufacturers"
+manufacturersClass = cppClass.CppClass(manufacturersClassName)
 manufacturersClass.addSubType(cppClass.CppEnumType("EManufacturerIds", \
    xmlHelper.getEnumValues(inNode=xmlRootNode, foreachSubNode="manufacturer", enumValueNameTag="name", enumValueTag="id"), cppClass.PUBLIC))
 manufacturersClass.addMember(cppClass.CppMember("ManufacturersMap", "std::map<unsigned int, std::string>", cppClass.PRIVATE, cppClass.STATIC | cppClass.CONST, \
    cppHelper.getMapInitCode(xmlHelper.getEnumValues(inNode=xmlRootNode, foreachSubNode="manufacturer", enumValueNameTag="name"))))
+manufacturersClass.addMethod(cppClass.CppMethod("toManufacturerId", manufacturersClassName + "::EManufacturerIds", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, \
+   "   if (ManufacturersMap.find(id) == ManufacturersMap.end())\n" \
+   "      throw std::out_of_range(\"Unknown manufacturer\");\n" \
+   "   return static_cast<EManufacturerIds>(id);\n"))
 manufacturersClass.addMethod(cppClass.CppMethod("name", "const std::string&", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, \
    "   try {\n" \
    "      return ManufacturersMap.at(id);\n" \

@@ -97,7 +97,7 @@ namespace message
    ///
    /// This class manages a 4BS radio EnOcean message.
    //--------------------------------------------------------------
-   class C4BSMessage
+   class C4BSMessage //TODO virer
    {
    public:
       //--------------------------------------------------------------
