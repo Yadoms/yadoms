@@ -174,8 +174,9 @@ class CppClassConstructor():
 class CppClass():
    """ Object for generating a cpp class """
 
-   def __init__(self, cppClassName):
+   def __init__(self, cppClassName, createDefaultCtor=True):
       self.__cppClassName = cppClassName
+      self.__createDefaultCtor = createDefaultCtor
       self.__subTypes = []
       self.__constructors = []
       self.__members = []
@@ -224,7 +225,8 @@ class CppClass():
 
       # Ctor and dtor
       f.write(visibilityCppTag(PUBLIC) + ":\n")
-      f.write("   " + self.__cppClassName + "();\n")
+      if self.__createDefaultCtor:
+         f.write("   " + self.__cppClassName + "();\n")
       for constructor in self.__constructors:
          constructor.generateHeader(f, self.__cppClassName)
       f.write("   virtual ~" + self.__cppClassName + "();\n")
@@ -244,8 +246,9 @@ class CppClass():
             member.generateSource(f, self.__cppClassName)
 
       # Ctor and dtor
-      f.write(self.__cppClassName + "::" + self.__cppClassName + "(){}\n")
-      f.write("\n")
+      if self.__createDefaultCtor:
+         f.write(self.__cppClassName + "::" + self.__cppClassName + "(){}\n")
+         f.write("\n")
       for constructor in self.__constructors:
          constructor.generateSource(f, self.__cppClassName)
       f.write(self.__cppClassName + "::~" + self.__cppClassName + "(){}\n")

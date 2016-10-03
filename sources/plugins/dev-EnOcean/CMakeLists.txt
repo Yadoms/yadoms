@@ -52,14 +52,18 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    )
 source_group(enOceanDescriptors enOceanDescriptors/*.*)
 
-add_custom_command(OUTPUT enOceanDescriptors/generated-manufacturers.h enOceanDescriptors/generated-manufacturers.cpp
-                   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generateManufacturers.py ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/manufacturers.xml enOceanDescriptors/generated-manufacturers.h enOceanDescriptors/generated-manufacturers.cpp
-                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/manufacturers.xml ${PYTHON_GENERATOR_FILES} 
+add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-manufacturers.h
+                          ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-manufacturers.cpp
+                   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generateManufacturers.py ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/manufacturers.xml ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-manufacturers.h ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-manufacturers.cpp
+                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/manufacturers.xml
+                           ${PYTHON_GENERATOR_FILES} 
                    COMMENT "Generating Manufacturers source code...")
 
-add_custom_command(OUTPUT enOceanDescriptors/generated-eep.h enOceanDescriptors/generated-eep.cpp
-                   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generateEep.py ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/eep${EEP_VERSION}.xml enOceanDescriptors/generated-eep.h enOceanDescriptors/generated-eep.cpp
-                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/eep${EEP_VERSION}.xml ${PYTHON_GENERATOR_FILES} 
+add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.h
+                          ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.cpp
+                   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generateEep.py ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/eep${EEP_VERSION}.xml ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.h ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.cpp
+                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/eep${EEP_VERSION}.xml
+                           ${PYTHON_GENERATOR_FILES} 
                    COMMENT "Generating EEP profiles source code...")
 
 

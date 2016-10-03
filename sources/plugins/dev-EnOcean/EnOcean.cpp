@@ -4,7 +4,7 @@
 #include "EnOceanFactory.h"
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
-#include "generated-manufacturers.h"
+#include "enOceanDescriptors/generated-manufacturers.h"
 
 IMPLEMENT_PLUGIN(CEnOcean)
 

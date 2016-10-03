@@ -13,3 +13,4 @@ tests/user/user.sln
 .DS_Store
 *.suo
 *.db
+sources/plugins/dev-EnOcean/enOceanDescriptors/generated-*

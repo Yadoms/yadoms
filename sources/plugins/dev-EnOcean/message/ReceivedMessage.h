@@ -1,6 +1,6 @@
 #pragma once
 #include "types.h"
-#include "generated-eep.h"
+#include "../enOceanDescriptors/generated-eep.h"
 
 namespace message
 {

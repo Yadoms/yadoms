@@ -54,10 +54,10 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
    # Rorg telegram classes
    rorgClassName = "C" + xmlRorgNode.find("telegram").text + "Telegram"
-   rorgClass = cppClass.CppClass(rorgClassName)
+   rorgClass = cppClass.CppClass(rorgClassName, createDefaultCtor=False)
    classes.append(rorgClass)
-   rorgClass.addMember(cppClass.CppMember("m_data", "std::vector<unsigned char>", cppClass.PRIVATE, cppClass.CONST))
-   rorgClass.addConstructor(cppClass.CppClassConstructor(args="const CRadioErp1Message& erp1", init="m_data(erp1.data())"))
+   rorgClass.addMember(cppClass.CppMember("m_erp1Data", "std::vector<unsigned char>&", cppClass.PRIVATE, cppClass.CONST))
+   rorgClass.addConstructor(cppClass.CppClassConstructor(args="const std::vector<unsigned char>& erp1Data", init="m_erp1Data(erp1Data)"))
    rorgClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.STATIC, "   return " + xmlRorgNode.find("number").text + ";"))
    rorgClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.STATIC, \
    "   static const std::string title(\"" + xmlRorgNode.find("title").text + "\");\n" \
@@ -68,7 +68,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
    rorgClass.addMethod(cppClass.CppMethod("dump", "std::string", "", cppClass.PUBLIC, cppClass.CONST, \
    "   std::stringstream ss;\n" \
    "   ss << std::setfill('0') << std::setw(2) << std::hex;\n" \
-   "   for (auto it = m_data.begin(); it != m_data.end(); ++it)\n" \
+   "   for (auto it = m_erp1Data.begin(); it != m_erp1Data.end(); ++it)\n" \
    "      ss << *it << \" \";\n" \
    "   return ss.str();"))
 
@@ -106,7 +106,6 @@ with open(headerPath, 'w') as cppHeaderFile:
 
    cppHeaderFile.write("// Generated file, don't modify\n")
    cppHeaderFile.write("#pragma once\n")
-   cppHeaderFile.write("#include \"ReceivedMessage.h\"\n")
    cppHeaderFile.write("\n")
 
    for oneClass in classes:

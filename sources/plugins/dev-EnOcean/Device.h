@@ -1,5 +1,5 @@
 #pragma once
-#include "generated-manufacturers.h"
+#include "enOceanDescriptors/generated-manufacturers.h"
 
 
 //--------------------------------------------------------------
