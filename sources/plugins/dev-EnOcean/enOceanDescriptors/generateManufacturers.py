@@ -19,31 +19,20 @@ headerPath = sys.argv[2]
 sourcePath = sys.argv[3]
 
 
-#-------------------------------------------------------------------------------
-def ManufacturersMapInitCode():
-   initCode = "boost::assign::map_list_of\n"
-   for child in xmlHelper.getAllNodes(xmlInputFilePath, "manufacturers/manufacturer"):
-      initCode += "   (" + cppHelper.toEnumValueName(child.find("name").text)
-      initCode += ", \"" + child.find("name").text.strip() + "\")\n"
-   initCode += ";\n"
-   return initCode
 
 
 #-------------------------------------------------------------------------------
-def EnumValues():
-   enumValues = []
-   for child in xmlHelper.getAllNodes(xmlInputFilePath, "manufacturers/manufacturer"):
-      enumValues.append([cppHelper.toEnumValueName(child.find("name").text), child.find("id").text])
-   return enumValues
 
 
-
-
-#-------------------------------------------------------------------------------
+xmlRootNode = xml.etree.ElementTree.parse(xmlInputFilePath).getroot()
+if xmlRootNode.tag != "manufacturers":
+   raise Exception("getAllNodes : Invalid root \"" + xmlRootNode.tag + "\", \"manufacturers\" expected")
 
 manufacturersClass = cppClass.CppClass("CManufacturers")
-manufacturersClass.addSubType(cppClass.CppEnumType("EManufacturerIds", lambda: EnumValues(), cppClass.PUBLIC))
-manufacturersClass.addMember(cppClass.CppMember("ManufacturersMap", "std::map<unsigned int, std::string>", cppClass.PRIVATE, cppClass.STATIC | cppClass.CONST, lambda: ManufacturersMapInitCode()))
+manufacturersClass.addSubType(cppClass.CppEnumType("EManufacturerIds", \
+   xmlHelper.getEnumValues(inNode=xmlRootNode, foreachSubNode="manufacturer", enumValueNameTag="name", enumValueTag="id"), cppClass.PUBLIC))
+manufacturersClass.addMember(cppClass.CppMember("ManufacturersMap", "std::map<unsigned int, std::string>", cppClass.PRIVATE, cppClass.STATIC | cppClass.CONST, \
+   cppHelper.getMapInitCode(xmlHelper.getEnumValues(inNode=xmlRootNode, foreachSubNode="manufacturer", enumValueNameTag="name"))))
 manufacturersClass.addMethod(cppClass.CppMethod("name", "const std::string&", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, \
    "   try {\n" \
    "      return ManufacturersMap.at(id);\n" \

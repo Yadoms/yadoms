@@ -5,6 +5,7 @@ import sys
 import os.path
 import xml.etree.ElementTree
 import string
+import cppHelper
 
 
 
@@ -61,12 +62,12 @@ class CppMethod():
 class CppMember():
    """ Object for generating a cpp class member """
 
-   def __init__(self, cppMemberName, cppType, visibility = PRIVATE, qualifier = NO_QUALIFER, initilizationCodeFct = None):
+   def __init__(self, cppMemberName, cppType, visibility = PRIVATE, qualifier = NO_QUALIFER, initilizationCode = None):
       self.__cppMemberName = cppMemberName
       self.__cppType = cppType
       self.__visibility = visibility
       self.__qualifier = qualifier
-      self.__initilizationCodeFct = initilizationCodeFct
+      self.__initilizationCode = initilizationCode
 
    def qualifier(self):
       return self.__qualifier
@@ -89,8 +90,8 @@ class CppMember():
       if self.__qualifier & CONST:
          f.write("const ");
       f.write(self.__cppType + " " + parentClassName + "::" + self.__cppMemberName);
-      if self.__initilizationCodeFct:
-         f.write(" = " + self.__initilizationCodeFct())
+      if self.__initilizationCode:
+         f.write(" = " + self.__initilizationCode)
       f.write("\n")
 
 
@@ -115,15 +116,15 @@ class CppSubType(object):
 class CppEnumType(CppSubType):
    """ Object for generating a cpp enum type """
 
-   def __init__(self, cppEnumName, listItemsFct, visibility = PRIVATE):
+   def __init__(self, cppEnumName, listItems, visibility = PRIVATE):
       super(CppEnumType, self).__init__(cppEnumName, visibility)
-      self.__listItemsFct = listItemsFct 
+      self.__listItems = listItems
 
    def generateHeader(self, f):
       f.write("enum " + self._cppTypeName + " {\n")
-      for item in self.__listItemsFct():
+      for item in self.__listItems:
          # Enum item name
-         f.write("   " + item[0])
+         f.write("   " + cppHelper.toEnumValueName(item[0]))
          # If available, enum item value
          if item[1]:
             f.write(" = " + item[1])
@@ -160,18 +161,6 @@ class CppClass():
       if not isinstance(cppMember, CppMember) :
          raise TypeError(str(cppMember) + " object is not an instance of CppMember")
       self.__members.append(cppMember)
-
-
-   def addExtraContentInHeader(self, extraContentInHeaderFct, visibility = PRIVATE):
-      if type(extraContentInHeaderFct) is not string:
-         raise TypeError(extraContentInHeaderFct)
-      self.__extraContentInHeader.append([visibility, extraContentInHeaderFct])
-
-
-   def addExtraContentInSource(self, extraContentInSourceFct, visibility = PRIVATE):
-      if type(extraContentInSourceFct) is not string:
-         raise TypeError(extraContentInSourceFct)
-      self.__extraContentInSource.append([visibility, extraContentInSourceFct])
 
 
    def __generateHeaderVisibilityBlock(self, cppHeaderFile, visibility, visibilityCppTag):

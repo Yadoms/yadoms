@@ -24,3 +24,13 @@ def getAllNodes(xmlInputFile, xmlElementPath):
    xmlElementPathArray.pop(0)
 
    return xmlRootNode.findall(string.join(xmlElementPathArray, "/"))
+
+
+
+
+#-------------------------------------------------------------------------------
+def getEnumValues(inNode, foreachSubNode, enumValueNameTag, enumValueTag = None):
+   enumValues = []
+   for child in inNode.findall(foreachSubNode):
+      enumValues.append([child.find(enumValueNameTag).text, child.find(enumValueTag).text if enumValueTag else None])
+   return enumValues
