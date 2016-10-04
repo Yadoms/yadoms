@@ -60,6 +60,20 @@ irorgClass.addMethod(cppClass.CppMethod("fullname", "const std::string&", "", cp
 irorgClass.addMethod(cppClass.CppMethod("dump", "std::string", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 
 
+# IFunc : Func interface
+ifuncClass = cppClass.CppClass("IFunc")
+classes.append(ifuncClass)
+ifuncClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+ifuncClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+
+
+# IType : Type interface
+ifuncClass = cppClass.CppClass("IType")
+classes.append(ifuncClass)
+ifuncClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+ifuncClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+
+
 
 
 for xmlRorgNode in xmlProfileNode.findall("rorg"):
@@ -104,9 +118,10 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
    # Func classes
    for xmlFuncNode in xmlRorgNode.findall("func"):
       funcClass = cppClass.CppClass("C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("title").text))
+      funcClass.inheritFrom("IFunc", cppClass.PUBLIC)
       classes.append(funcClass)
-      funcClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.STATIC, "   return " + xmlFuncNode.find("number").text + ";"))
-      funcClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.STATIC, \
+      funcClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, "   return " + xmlFuncNode.find("number").text + ";"))
+      funcClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, \
       "   static const std::string title(\"" + xmlFuncNode.find("title").text + "\");\n" \
       "   return title;"))
 

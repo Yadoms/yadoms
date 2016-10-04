@@ -191,9 +191,9 @@ class CppClass():
 
    def inheritFrom(self, parentClasses, visibility):
       try:
-         self.__parentClasses[visibility] += parentClasses
+         self.__parentClasses[visibility] += parentClasses + " "
       except:
-         self.__parentClasses[visibility] = parentClasses
+         self.__parentClasses[visibility] = parentClasses + " "
 
 
    def addSubType(self, cppSubType):
