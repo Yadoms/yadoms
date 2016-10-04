@@ -92,7 +92,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
       "   if (FuncMap.find(id) == FuncMap.end())\n" \
       "      throw std::out_of_range(\"Unknown func\");\n" \
       "   return static_cast<EFuncIds>(id);\n"))
-   rorgClass.addMethod(cppClass.CppMethod("name", "const std::string&", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, \
+   rorgClass.addMethod(cppClass.CppMethod("toFuncName", "const std::string&", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, \
       "   try {\n" \
       "      return FuncMap.at(id);\n" \
       "   } catch(std::out_of_range&) {\n" \
