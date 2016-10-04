@@ -144,11 +144,10 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
 # Generate Header
 util.createParentDir(headerPath)
-with codecs.open(headerPath, 'w', 'utf-8') as cppHeaderFile:
+with codecs.open(headerPath, 'w', 'utf_8') as cppHeaderFile:
 
    cppHeaderFile.write("// Generated file, don't modify\n")
    cppHeaderFile.write("#pragma once\n")
-   #TODO cppHeaderFile.write(u"Degre = ° & é è")
    cppHeaderFile.write("\n")
 
    for oneClass in classes:
@@ -156,7 +155,7 @@ with codecs.open(headerPath, 'w', 'utf-8') as cppHeaderFile:
 
 # Generate Source
 util.createParentDir(sourcePath)
-with codecs.open(sourcePath, 'w', 'utf-8') as cppSourceFile:
+with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
 
    cppSourceFile.write("// Generated file, don't modify\n")
    cppSourceFile.write("#include \"stdafx.h\"\n")
