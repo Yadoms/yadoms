@@ -154,8 +154,8 @@ int mcp23s17_enable_interrupts()
     write(fd, str_gpio, len);
     close(fd);
 
-	sleep(1);
-	//usleep(1000);
+	// Needed to be completly process by the chip before sending the next command
+	usleep(100000);
 	
     snprintf(str_filenm, sizeof(str_filenm), "/sys/class/gpio/gpio%d/direction", GPIO_INTERRUPT_PIN);
     if ((fd = open(str_filenm, O_WRONLY)) < 0)
