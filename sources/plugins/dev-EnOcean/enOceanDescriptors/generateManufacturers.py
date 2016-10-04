@@ -1,3 +1,5 @@
+#!/usr/local/bin/python
+# coding: utf-8
 #-------------------------------------------------------------------------------
 # CPP code generation script for EnOcean manufacturers
 
