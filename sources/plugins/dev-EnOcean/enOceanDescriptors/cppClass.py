@@ -15,6 +15,7 @@ STATIC = 1
 CONST = 2
 VIRTUAL = 4
 PURE_VIRTUAL = 8
+OVERRIDE = 16
 NO_QUALIFER = None
 
 # Member visibility
@@ -34,7 +35,7 @@ def visibilityCppTag(visibility):
 class CppMethod():
    """ Object for generating a cpp class method """
 
-   def __init__(self, cppMethodName, cppReturnType, cppArgs, visibility, qualifier, content):
+   def __init__(self, cppMethodName, cppReturnType, cppArgs, visibility, qualifier, content = None):
       self.__cppMethodName = cppMethodName
       self.__cppReturnType = cppReturnType
       self.__cppArgs = cppArgs
@@ -54,6 +55,8 @@ class CppMethod():
       f.write(self.__cppReturnType + " " + self.__cppMethodName + "(" + self.__cppArgs + ")")
       if self.__qualifier & CONST:
          f.write(" const");
+      if self.__qualifier & OVERRIDE:
+         f.write(" override");
       if self.__qualifier & PURE_VIRTUAL:
          f.write(" = 0");
       f.write(";\n")
@@ -183,6 +186,14 @@ class CppClass():
       self.__methods = []
       self.__extraContentInHeader = []
       self.__extraContentInSource = []
+      self.__parentClasses = dict()
+
+
+   def inheritFrom(self, parentClasses, visibility):
+      try:
+         self.__parentClasses[visibility] += parentClasses
+      except:
+         self.__parentClasses[visibility] = parentClasses
 
 
    def addSubType(self, cppSubType):
@@ -221,7 +232,30 @@ class CppClass():
 
 
    def generateHeader(self, f):
-      f.write("class " + self.__cppClassName + " {\n")
+      f.write("class " + self.__cppClassName)
+
+      # Parent classes
+      if self.__parentClasses:
+         f.write(" : ")
+         if self.__parentClasses.has_key(PUBLIC):
+            publicClassesString = visibilityCppTag(PUBLIC) + " " + self.__parentClasses[PUBLIC]
+         if self.__parentClasses.has_key(PROTECTED):
+            protectedClassesString = visibilityCppTag(PROTECTED) + " " + self.__parentClasses[PROTECTED]
+         if self.__parentClasses.has_key(PRIVATE):
+            privateClassesString = visibilityCppTag(PRIVATE) + " " + self.__parentClasses[PRIVATE]
+
+         if 'publicClassesString' in locals():
+            f.write(publicClassesString)
+            if 'protectedClassesString' in locals() or 'privateClassesString' in locals():
+               f.write(", ")
+         if 'protectedClassesString' in locals():
+            f.write(protectedClassesString)
+            if 'privateClassesString' in locals():
+               f.write(", ")
+         if 'privateClassesString' in locals():
+            f.write(privateClassesString)
+
+      f.write(" {\n")
 
       # Ctor and dtor
       f.write(visibilityCppTag(PUBLIC) + ":\n")

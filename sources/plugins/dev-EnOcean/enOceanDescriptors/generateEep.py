@@ -31,6 +31,7 @@ if xmlRootNode.tag != "eep":
 xmlProfileNode = xmlRootNode.find("profile")
 
 
+# CRorgs : Main Rorgs class, listing Rorg messages
 rorgsClass = cppClass.CppClass("CRorgs")
 classes.append(rorgsClass)
 rorgsClass.addSubType(cppClass.CppEnumType("ERorgIds", \
@@ -50,22 +51,34 @@ rorgsClass.addMethod(cppClass.CppMethod("name", "const std::string&", "unsigned 
    "   }"))
 
 
+# IRorg : Rorg interface
+irorgClass = cppClass.CppClass("IRorg")
+classes.append(irorgClass)
+irorgClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+irorgClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+irorgClass.addMethod(cppClass.CppMethod("fullname", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+irorgClass.addMethod(cppClass.CppMethod("dump", "std::string", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+
+
+
+
 for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
    # Rorg telegram classes
    rorgClassName = "C" + xmlRorgNode.find("telegram").text + "Telegram"
    rorgClass = cppClass.CppClass(rorgClassName, createDefaultCtor=False)
+   rorgClass.inheritFrom("IRorg", cppClass.PUBLIC)
    classes.append(rorgClass)
    rorgClass.addMember(cppClass.CppMember("m_erp1Data", "std::vector<unsigned char>&", cppClass.PRIVATE, cppClass.CONST))
    rorgClass.addConstructor(cppClass.CppClassConstructor(args="const std::vector<unsigned char>& erp1Data", init="m_erp1Data(erp1Data)"))
-   rorgClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.STATIC, "   return " + xmlRorgNode.find("number").text + ";"))
-   rorgClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.STATIC, \
+   rorgClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   return " + xmlRorgNode.find("number").text + ";"))
+   rorgClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, \
    "   static const std::string title(\"" + xmlRorgNode.find("title").text + "\");\n" \
    "   return title;"))
-   rorgClass.addMethod(cppClass.CppMethod("fullname", "const std::string&", "", cppClass.PUBLIC, cppClass.STATIC, \
+   rorgClass.addMethod(cppClass.CppMethod("fullname", "const std::string&", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, \
    "   static const std::string fullname(\"" + xmlRorgNode.find("fullname").text + "\");\n" \
    "   return fullname;"))
-   rorgClass.addMethod(cppClass.CppMethod("dump", "std::string", "", cppClass.PUBLIC, cppClass.CONST, \
+   rorgClass.addMethod(cppClass.CppMethod("dump", "std::string", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, \
    "   std::stringstream ss;\n" \
    "   ss << std::setfill('0') << std::setw(2) << std::hex;\n" \
    "   for (auto it = m_erp1Data.begin(); it != m_erp1Data.end(); ++it)\n" \
