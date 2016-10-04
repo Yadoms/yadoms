@@ -154,16 +154,19 @@ int mcp23s17_enable_interrupts()
     write(fd, str_gpio, len);
     close(fd);
 
+	sleep(1);
+	//usleep(1000);
+	
     snprintf(str_filenm, sizeof(str_filenm), "/sys/class/gpio/gpio%d/direction", GPIO_INTERRUPT_PIN);
     if ((fd = open(str_filenm, O_WRONLY)) < 0)
-        return -1;
+        return -2; // JM. BERHAULT for debugging purpose
 
     write(fd, "in", 3);
     close(fd);
 
     snprintf(str_filenm, sizeof(str_filenm), "/sys/class/gpio/gpio%d/edge", GPIO_INTERRUPT_PIN);
     if ((fd = open(str_filenm, O_WRONLY)) < 0)
-        return -1;
+        return -3; // JM. BERHAULT for debugging purpose
 
     write(fd, "falling", 8);
     close(fd);
