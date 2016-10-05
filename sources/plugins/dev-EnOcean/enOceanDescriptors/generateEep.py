@@ -88,7 +88,7 @@ def createRorgCode(xmlProfileNode):
    code += "   default : throw std::out_of_range(\"Invalid EOrgId\");\n"
    code += "   }\n"
    return code
-rorgsClass.addMethod(cppClass.CppMethod("createRorg", "boost::shared_ptr<IRorg>", "ERorgIds id, const std::vector<unsigned char>& erp1Data", cppClass.PUBLIC, cppClass.STATIC, createRorgCode(xmlProfileNode)))
+rorgsClass.addMethod(cppClass.CppMethod("createRorg", "boost::shared_ptr<IRorg>", "ERorgIds id, const boost::dynamic_bitset<>& erp1Data", cppClass.PUBLIC, cppClass.STATIC, createRorgCode(xmlProfileNode)))
 
 
 
@@ -100,8 +100,8 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
    rorgClass = cppClass.CppClass(rorgClassName, createDefaultCtor=False)
    rorgClass.inheritFrom("IRorg", cppClass.PUBLIC)
    classes.append(rorgClass)
-   rorgClass.addMember(cppClass.CppMember("m_erp1Data", "std::vector<unsigned char>&", cppClass.PRIVATE, cppClass.CONST))
-   rorgClass.addConstructor(cppClass.CppClassConstructor(args="const std::vector<unsigned char>& erp1Data", init="m_erp1Data(erp1Data)"))
+   rorgClass.addMember(cppClass.CppMember("m_erp1Data", "boost::dynamic_bitset<>&", cppClass.PRIVATE, cppClass.CONST))
+   rorgClass.addConstructor(cppClass.CppClassConstructor(args="const boost::dynamic_bitset<>& erp1Data", init="m_erp1Data(erp1Data)"))
    rorgClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   return " + xmlRorgNode.find("number").text + ";"))
    rorgClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, \
       "   static const std::string title(\"" + xmlRorgNode.find("title").text + "\");\n" \
@@ -112,9 +112,9 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
    rorgClass.addMethod(cppClass.CppMethod("dump", "std::string", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, \
       "   std::stringstream ss;\n" \
       "   ss << std::setfill('0') << std::setw(2) << std::hex;\n" \
-      "   for (auto it = m_erp1Data.begin(); it != m_erp1Data.end(); ++it)\n" \
-      "      ss << *it << \" \";\n" \
-      "   return ss.str();"))
+      "   for (size_t bit = 0; bit < m_erp1Data.count(); ++bit)\n" \
+      "      ss << m_erp1Data[bit] << \" \";\n" \
+      "   return ss.str();")) # TODO dumper en bytes
 
    def createIsTeachInCode(xmlRorgNode):
       if xmlRorgNode.find("teachin") is None:
@@ -193,7 +193,6 @@ with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
    cppSourceFile.write("// Generated file, don't modify\n")
    cppSourceFile.write("#include \"stdafx.h\"\n")
    cppSourceFile.write("#include \"" + os.path.basename(headerPath) + "\"\n")
-   cppSourceFile.write("#include \"../bitsetHelper.hpp\"\n")
    cppSourceFile.write("\n")
 
    for oneClass in classes:

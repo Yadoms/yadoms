@@ -5,6 +5,7 @@
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
 #include "enOceanDescriptors/generated-manufacturers.h"
+#include "bitsetHelper.hpp"
 
 IMPLEMENT_PLUGIN(CEnOcean)
 
@@ -293,7 +294,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
    auto device = retrieveDevice(erp1Message.senderId());
 
    // Create associated RORG message
-   auto rorg = CRorgs::createRorg(erp1Message.rorg(), erp1Message.data());
+   auto rorg = CRorgs::createRorg(erp1Message.rorg(), bitset_from_bytes(erp1Message.data()));
 
    if (rorg->isTeachIn())
    {
