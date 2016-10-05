@@ -117,20 +117,20 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
       "   return ss.str();"))
 
    def createIsTeachInCode(xmlRorgNode):
-      if not xmlRorgNode.find("teachin"):
+      if xmlRorgNode.find("teachin") is None:
          return "   return false;"
       for teachinCase in xmlRorgNode.findall("teachin/type/case"):
          print xmlRorgNode.find("telegram").text
          lrnBitDatafieldNode = teachinCase.find("./datafield[data='LRN Bit']")
-         if lrnBitDatafieldNode:
+         if lrnBitDatafieldNode is not None:
             offset = lrnBitDatafieldNode.find("bitoffs").text
             size = lrnBitDatafieldNode.find("bitsize").text
             teachInValue = xmlHelper.findInDatafield(datafieldXmlNode=lrnBitDatafieldNode, select="value", where="description", equals="Teach-in telegram")
-            code = "   return m_data.toUChar(" + offset + ", 1) == " + teachInValue + ";\n"
+            #return "   return m_data.toUChar(" + offset + ", 1) == " + teachInValue + ";\n"
+            return "   return false;"#TODO
          else:
-            print "NNOOONNNN!!!"#TODO
-            code = "";
-      return code
+            return "   return false;"
+      return "   return false;"
    rorgClass.addMethod(cppClass.CppMethod("isTeachIn", "bool", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, createIsTeachInCode(xmlRorgNode)))
 
 
@@ -193,7 +193,7 @@ with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
    cppSourceFile.write("// Generated file, don't modify\n")
    cppSourceFile.write("#include \"stdafx.h\"\n")
    cppSourceFile.write("#include \"" + os.path.basename(headerPath) + "\"\n")
-   cppSourceFile.write("#include \"bitsetHelper.hpp\"\n")
+   cppSourceFile.write("#include \"../bitsetHelper.hpp\"\n")
    cppSourceFile.write("\n")
 
    for oneClass in classes:

@@ -89,9 +89,6 @@ protected:
    //--------------------------------------------------------------
    void processRadioErp1_1BS(boost::shared_ptr<yApi::IYPluginApi> api,
                              const std::vector<unsigned char>& data);
-   void processRadioErp1_4BS(boost::shared_ptr<yApi::IYPluginApi> api,
-                             const CDevice& device,
-                             const message::C4BSMessage& data);
 
    //--------------------------------------------------------------
    /// \brief	                     Extract sender ID from buffer
