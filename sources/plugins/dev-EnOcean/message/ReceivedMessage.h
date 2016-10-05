@@ -92,47 +92,4 @@ namespace message
    };
 
 
-   //--------------------------------------------------------------
-   /// \brief	EnOcean 4BS radio message
-   ///
-   /// This class manages a 4BS radio EnOcean message.
-   //--------------------------------------------------------------
-   class C4BSMessage //TODO virer
-   {
-   public:
-      //--------------------------------------------------------------
-      /// \brief	                           Constructor
-      /// \param[in] receivedContent         The received ERP1 radio message
-      //--------------------------------------------------------------
-      explicit C4BSMessage(const CRadioErp1Message& erp1);
-
-      //--------------------------------------------------------------
-      /// \brief	                           Destructor
-      //--------------------------------------------------------------
-      virtual ~C4BSMessage();
-
-      std::string dump() const;
-
-      // Data telegram
-      unsigned char db3() const;
-      unsigned char db2() const;
-      unsigned char db1() const;
-      unsigned char db0() const;
-
-      // Teach-in telegram
-      bool isTeachIn() const;
-      bool isEepProvided() const;
-
-      unsigned int manufacturerId() const;
-      unsigned int type() const;
-      unsigned int func() const;
-
-   private:
-      const unsigned char m_db3;
-      const unsigned char m_db2;
-      const unsigned char m_db1;
-      const unsigned char m_db0;
-   };
-
-
 } // namespace message

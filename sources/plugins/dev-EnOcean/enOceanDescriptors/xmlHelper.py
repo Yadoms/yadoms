@@ -36,3 +36,14 @@ def getEnumValues(inNode, foreachSubNode, enumValueNameTag, enumValueTag = None)
    for child in inNode.findall(foreachSubNode):
       enumValues.append([child.find(enumValueNameTag).text, child.find(enumValueTag).text if enumValueTag else None])
    return enumValues
+
+
+
+
+#-------------------------------------------------------------------------------
+def findInDatafield(datafieldXmlNode, select, where, equals):
+   for item in datafieldXmlNode.find("enum").findall("item"):
+      if (item.find(where).text == equals):
+         return item.find(select).text
+   return None
+   

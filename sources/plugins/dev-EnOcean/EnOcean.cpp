@@ -292,39 +292,17 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
    // Get device details from database
    auto device = retrieveDevice(erp1Message.senderId());
 
-   switch (erp1Message.rorg())
+   // Create associated RORG message
+   auto rorg = CRorgs::createRorg(erp1Message.rorg(), erp1Message.data());
+
+   if (rorg.isTeachIn())
    {
-   case CRorgs::kRPS_Telegram: break;//TODO
-   case CRorgs::k1BS_Telegram: processRadioErp1_1BS(api, esp3Packet.data()); break;
-   case CRorgs::k4BS_Telegram: processRadioErp1_4BS(api, device, message::C4BSMessage(erp1Message)); break;
-   case CRorgs::kVLD_Telegram: break;//TODO
-   default: throw CProtocolException((boost::format("Unknown RORG %1%") % erp1Message.rorg()).str());
+      //TODO
    }
-
-
-   //TODO
-   //struct Optional
-   //{
-   //   explicit Optional(const std::vector<unsigned char>& optional):
-   //      m_subTelNum(optional[0]),
-   //      m_destinationId(optional[1] << 24 | optional[2] << 16 | optional[3] << 8 | optional[4]),
-   //      m_dBm(optional[5]),
-   //      m_securityLevel(optional[6])
-   //   {
-   //   }
-
-   //   unsigned char m_subTelNum;
-   //   unsigned int m_destinationId;
-   //   unsigned char m_dBm;
-   //   unsigned char m_securityLevel;
-   //};
-
-   //if (message.header().optionalLength() != 7)
-   //   throw CProtocolException((boost::format("RadioERP1 message : wrong optional size (%1%, expected 7)") % message.header().optionalLength()).str());
-
-   //Optional optional(message.optional());
-
-   //TODO
+   else
+   {
+      //TODO
+   }
 }
 
 void CEnOcean::processRadioErp1_1BS(boost::shared_ptr<yApi::IYPluginApi> api,

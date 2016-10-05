@@ -34,6 +34,31 @@ if xmlRootNode.tag != "eep":
 xmlProfileNode = xmlRootNode.find("profile")
 
 
+
+# IRorg : Rorg interface
+irorgClass = cppClass.CppClass("IRorg")
+classes.append(irorgClass)
+irorgClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+irorgClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+irorgClass.addMethod(cppClass.CppMethod("fullname", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+irorgClass.addMethod(cppClass.CppMethod("dump", "std::string", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+irorgClass.addMethod(cppClass.CppMethod("isTeachIn", "bool", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+
+
+# IFunc : Func interface
+ifuncClass = cppClass.CppClass("IFunc")
+classes.append(ifuncClass)
+ifuncClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+ifuncClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+
+
+# IType : Type interface
+ifuncClass = cppClass.CppClass("IType")
+classes.append(ifuncClass)
+ifuncClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+ifuncClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+
+
 # CRorgs : Main Rorgs class, listing Rorg messages
 rorgsClass = cppClass.CppClass("CRorgs")
 classes.append(rorgsClass)
@@ -53,32 +78,21 @@ rorgsClass.addMethod(cppClass.CppMethod("name", "const std::string&", "unsigned 
    "      return UnknownRorg;\n" \
    "   }"))
 
-
-# IRorg : Rorg interface
-irorgClass = cppClass.CppClass("IRorg")
-classes.append(irorgClass)
-irorgClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-irorgClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-irorgClass.addMethod(cppClass.CppMethod("fullname", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-irorgClass.addMethod(cppClass.CppMethod("dump", "std::string", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-
-
-# IFunc : Func interface
-ifuncClass = cppClass.CppClass("IFunc")
-classes.append(ifuncClass)
-ifuncClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-ifuncClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-
-
-# IType : Type interface
-ifuncClass = cppClass.CppClass("IType")
-classes.append(ifuncClass)
-ifuncClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-ifuncClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+def createRorgCode(xmlProfileNode):
+   code = "   switch(id)\n"
+   code += "   {\n"
+   for child in xmlProfileNode.findall("rorg"):
+      enumValue = cppHelper.toEnumValueName(child.find("title").text)
+      className = "C" + child.find("telegram").text + "Telegram"
+      code += "   case " + enumValue + ": return boost::make_shared<" + className + ">(erp1Data);\n"
+   code += "   default : throw std::out_of_range(\"Invalid EOrgId\");\n"
+   code += "   }\n"
+   return code
+rorgsClass.addMethod(cppClass.CppMethod("createRorg", "boost::shared_ptr<IRorg>", "ERorgIds id, const std::vector<unsigned char>& erp1Data", cppClass.PUBLIC, cppClass.STATIC, createRorgCode(xmlProfileNode)))
 
 
 
-
+# Create each Rorg telegram class
 for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
    # Rorg telegram classes
@@ -101,6 +115,25 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
       "   for (auto it = m_erp1Data.begin(); it != m_erp1Data.end(); ++it)\n" \
       "      ss << *it << \" \";\n" \
       "   return ss.str();"))
+
+   def createIsTeachInCode(xmlRorgNode):
+      if not xmlRorgNode.find("teachin"):
+         return "   return false;"
+      for teachinCase in xmlRorgNode.findall("teachin/type/case"):
+         print xmlRorgNode.find("telegram").text
+         lrnBitDatafieldNode = teachinCase.find("./datafield[data='LRN Bit']")
+         if lrnBitDatafieldNode:
+            offset = lrnBitDatafieldNode.find("bitoffs").text
+            size = lrnBitDatafieldNode.find("bitsize").text
+            teachInValue = xmlHelper.findInDatafield(datafieldXmlNode=lrnBitDatafieldNode, select="value", where="description", equals="Teach-in telegram")
+            code = "   return m_data.toUChar(" + offset + ", 1) == " + teachInValue + ";\n"
+         else:
+            print "NNOOONNNN!!!"#TODO
+            code = "";
+      return code
+   rorgClass.addMethod(cppClass.CppMethod("isTeachIn", "bool", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, createIsTeachInCode(xmlRorgNode)))
+
+
 
    rorgClass.addSubType(cppClass.CppEnumType("EFuncIds", xmlHelper.getEnumValues(inNode=xmlRorgNode, foreachSubNode="func", enumValueNameTag="title", enumValueTag="number"), cppClass.PUBLIC))
    rorgClass.addMember(cppClass.CppMember("FuncMap", "std::map<unsigned int, std::string>", cppClass.PRIVATE, cppClass.STATIC | cppClass.CONST, \
@@ -159,7 +192,8 @@ with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
 
    cppSourceFile.write("// Generated file, don't modify\n")
    cppSourceFile.write("#include \"stdafx.h\"\n")
-   cppSourceFile.write("#include \"{}\"\n".format(os.path.basename(headerPath)))
+   cppSourceFile.write("#include \"" + os.path.basename(headerPath) + "\"\n")
+   cppSourceFile.write("#include \"bitsetHelper.hpp\"\n")
    cppSourceFile.write("\n")
 
    for oneClass in classes:
