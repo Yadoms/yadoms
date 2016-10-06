@@ -47,3 +47,14 @@ def findInDatafield(datafieldXmlNode, select, where, equals):
          return item.find(select).text
    return None
    
+
+
+#-------------------------------------------------------------------------------
+def findUsefulDataFieldNodes(inXmlNode):
+   usefulDataFieldNodes = []
+   for xmlDataFieldNode in inXmlNode.findall("datafield"):
+      if xmlDataFieldNode.find("data") is not None:
+         dataText = xmlDataFieldNode.find("data").text
+         if dataText and dataText != "LRN Bit":
+            usefulDataFieldNodes.append(xmlDataFieldNode)
+   return usefulDataFieldNodes

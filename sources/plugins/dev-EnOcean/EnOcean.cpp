@@ -5,7 +5,6 @@
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
 #include "enOceanDescriptors/generated-manufacturers.h"
-#include "bitsetHelper.hpp"
 
 IMPLEMENT_PLUGIN(CEnOcean)
 
@@ -412,16 +411,6 @@ void CEnOcean::processRadioErp1_1BS(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const std::vector<unsigned char>& data)
 {
    //TODO
-}
-
-double CEnOcean::scaleToDouble(int rawValue,
-                               int rangeMin,
-                               int rangeMax,
-                               int scaleMin,
-                               int scaleMax)
-{
-   unsigned int multiplier = (scaleMax - scaleMin) / (rangeMax - rangeMin);
-   return multiplier * (rawValue - rangeMin) + scaleMin;
 }
 
 std::string CEnOcean::extractSenderId(const std::vector<unsigned char>& data,

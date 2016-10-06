@@ -8,7 +8,6 @@ include("../YadomsPluginsCommon.cmake")
 set(ENOCEAN_SOURCES
    stdafx.h
    stdafx.cpp
-   bitsetHelper.hpp
    IEnOceanConfiguration.h
    Device.h
    Device.cpp
@@ -20,7 +19,7 @@ set(ENOCEAN_SOURCES
    EnOceanConfiguration.cpp
    EnOceanFactory.h
    EnOceanFactory.cpp
-
+   
    message/Crc8.h
    message/Crc8.cpp
    message/ReceivedMessage.h
@@ -45,6 +44,9 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    enOceanDescriptors/eep${EEP_VERSION}.xml
    
    ${PYTHON_GENERATOR_FILES}
+
+   enOceanDescriptors/bitsetHelpers.hpp
+   enOceanDescriptors/commonHelpers.hpp
 
    enOceanDescriptors/generated-manufacturers.cpp
    enOceanDescriptors/generated-manufacturers.h

@@ -36,7 +36,7 @@ xmlProfileNode = xmlRootNode.find("profile")
 
 
 # IType : Type interface
-itypeClass = cppClass.CppClass("IType")
+itypeClass = cppClass.CppClass("IType", createDefaultCtor=False)
 classes.append(itypeClass)
 itypeClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 itypeClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
@@ -44,7 +44,7 @@ itypeClass.addMethod(cppClass.CppMethod("states", "boost::shared_ptr<std::vector
 
 
 # IFunc : Func interface
-ifuncClass = cppClass.CppClass("IFunc")
+ifuncClass = cppClass.CppClass("IFunc", createDefaultCtor=False)
 classes.append(ifuncClass)
 ifuncClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 ifuncClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
@@ -52,7 +52,7 @@ ifuncClass.addMethod(cppClass.CppMethod("createType", "boost::shared_ptr<IType>"
 
 
 # IRorg : Rorg interface
-irorgClass = cppClass.CppClass("IRorg")
+irorgClass = cppClass.CppClass("IRorg", createDefaultCtor=False)
 classes.append(irorgClass)
 irorgClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 irorgClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
@@ -203,18 +203,56 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             "   static const std::string title(\"" + xmlTypeNode.find("title").text + "\");\n" \
             "   return title;"))
 
+
+         def statesCodeForDoubleValue(xmlDataFieldNode, keywordHistorizerClass, keywordName):
+            offset = xmlDataFieldNode.find("bitoffs").text
+            size = xmlDataFieldNode.find("bitsize").text
+            code = "   {\n"
+            code += "      unsigned int rawValue = bitset_extract(m_data, " + offset + ", " + size + ");\n"
+            rangeMin = xmlDataFieldNode.find("range/min").text
+            rangeMax = xmlDataFieldNode.find("range/max").text
+            scaleMin = xmlDataFieldNode.find("scale/min").text
+            scaleMax = xmlDataFieldNode.find("scale/max").text
+            code += "      double value = scaleToDouble(rawValue, " + rangeMin + ", " + rangeMax + ", " + scaleMin + ", " + scaleMax + ");\n"
+            code += "\n"
+            code += "      auto keyword(boost::make_shared<" + keywordHistorizerClass + ">(\"" + keywordName + "\"));\n"
+            code += "      keyword->set(value);\n"
+            code += "      historizers->push_back(keyword);\n"
+            code += "   }\n"
+            return code
+
+         def statesCodeForTemperature(xmlDataFieldNode):
+            if xmlDataFieldNode.find("unit") is not None and xmlDataFieldNode.find("unit").text != u"°C":
+               print "Unsupported unit \"" + xmlDataFieldNode.find("unit").text + "\" for temperature, corresponding data will be ignored"
+               return ""
+            return statesCodeForDoubleValue(xmlDataFieldNode, "yApi::historization::CTemperature", "temperature")
+
+         def statesCodeForHumidity(xmlDataFieldNode):
+            if xmlDataFieldNode.find("unit") is not None and xmlDataFieldNode.find("unit").text != u"%":
+               print "Unsupported unit \"" + xmlDataFieldNode.find("unit").text + "\" for humidity, corresponding data will be ignored"
+               return ""
+            return statesCodeForDoubleValue(xmlDataFieldNode, "yApi::historization::CHumidity", "humidity")
+
          def statesCode(xmlTypeNode):
-            return "return boost::shared_ptr<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > >();"
-            #TODO
-            #code = "   switch(static_cast<ETypeIds>(typeId))\n"
-            #code += "   {\n"
-            #for xmlTypeNode in xmlFuncNode.findall("type"):
-            #   enumValue = cppHelper.toEnumValueName(xmlTypeNode.find("number").text)
-            #   className = "C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("title").text) + "_" + xmlTypeNode.find("number").text
-            #   code += "   case " + enumValue + ": return boost::make_shared<" + className + ">();\n"
-            #code += "   default : throw std::out_of_range(\"Invalid EFuncIds\");\n"
-            #code += "   }\n"
-            #return code
+            code = "   auto historizers(boost::make_shared<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > >());\n"
+            if len(xmlTypeNode.findall("case")) != 1:
+               #TODO erreur unicode                  print "Warning : func/type : Unsupported number of \"case\" tags (expected 1) for \"" + xmlTypeNode.find("title").text + "\" node. This profile will be ignored."#TODO
+               code += "   return historizers;\n"
+               return code
+            xmlCaseNode = xmlTypeNode.find("case")
+            for xmlDataFieldNode in xmlHelper.findUsefulDataFieldNodes(inXmlNode=xmlCaseNode):
+               dataText = xmlDataFieldNode.find("data").text
+               if dataText == "Temperature":
+                  code += statesCodeForTemperature(xmlDataFieldNode) + "\n"
+               elif dataText == "Humidity":
+                  code += statesCodeForHumidity(xmlDataFieldNode) + "\n"
+               else:
+                  #TODO erreur unicode                  print ("Warning : func/type : Unsupported data type \"" + dataText + "\" for \"" + xmlTypeNode.find("title").text + "\" node. This data will be ignored.")#TODO
+                  code += "return historizers;\n"
+                  return code
+            code += "   return historizers;\n"
+            return code
+
          typeClass.addMethod(cppClass.CppMethod("states", "boost::shared_ptr<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > >", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, statesCode(xmlTypeNode)))
 
 
@@ -226,7 +264,8 @@ with codecs.open(headerPath, 'w', 'utf_8') as cppHeaderFile:
 
    cppHeaderFile.write("// Generated file, don't modify\n")
    cppHeaderFile.write("#pragma once\n")
-   cppHeaderFile.write("#include <boost/dynamic_bitset.hpp>\n")
+   cppHeaderFile.write("#include \"bitsetHelpers.hpp\"\n")
+   cppHeaderFile.write("#include \"commonHelpers.hpp\"\n")
    cppHeaderFile.write("#include <plugin_cpp_api/IPlugin.h>\n")
    cppHeaderFile.write("\n")
    cppHeaderFile.write("namespace yApi = shared::plugin::yPluginApi;\n")

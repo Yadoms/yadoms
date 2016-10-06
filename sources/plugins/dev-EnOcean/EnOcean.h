@@ -31,7 +31,7 @@ public:
    // [END] IPlugin implementation
 
 protected:
-   //TOTO tout ce qui suit
+   //TODO tout ce qui suit
    //--------------------------------------------------------------
    /// \brief	                     Send a message to EnOcean dongle
    /// \param [in] sendMessage      message to send
@@ -105,21 +105,6 @@ protected:
    /// \throw std::out_of_range     If device is not found in database
    //--------------------------------------------------------------
    static CDevice retrieveDevice(unsigned int deviceId);
-
-   //--------------------------------------------------------------
-   /// \brief	                     Scale a value from a range to another
-   /// \param [in] rawValue         Read value from device
-   /// \param [in] rangeMin         Min range of the read value (ex 0..255 for a byte value)
-   /// \param [in] rangeMax         Max range of the read value
-   /// \param [in] scaleMin         Min scale of the real value (ex -40° for temperature sensor of FUNC=2 and Type=1)
-   /// \param [in] scaleMax         Max scale of the real value (ex 0° for temperature sensor of FUNC=2 and Type=1)
-   /// \return                      Scaled value
-   //--------------------------------------------------------------
-   static double CEnOcean::scaleToDouble(int rawValue,
-                                         int rangeMin,
-                                         int rangeMax,
-                                         int scaleMin,
-                                         int scaleMax);
 
    //--------------------------------------------------------------
    /// \brief	                     Requests to EnOcean

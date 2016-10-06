@@ -8,6 +8,7 @@ import os.path
 import xml.etree.ElementTree
 import string
 import cppHelper
+import traceback
 
 
 
@@ -49,29 +50,37 @@ class CppMethod():
       return self.__visibility
 
    def generateHeader(self, f):
-      f.write("   ");
-      if self.__qualifier & VIRTUAL or self.__qualifier & PURE_VIRTUAL:
-         f.write("virtual ");
-      if self.__qualifier & STATIC:
-         f.write("static ");
-      f.write(self.__cppReturnType + " " + self.__cppMethodName + "(" + self.__cppArgs + ")")
-      if self.__qualifier & CONST:
-         f.write(" const");
-      if self.__qualifier & OVERRIDE:
-         f.write(" override");
-      if self.__qualifier & PURE_VIRTUAL:
-         f.write(" = 0");
-      f.write(";\n")
+      try:
+         f.write("   ");
+         if self.__qualifier & VIRTUAL or self.__qualifier & PURE_VIRTUAL:
+            f.write("virtual ");
+         if self.__qualifier & STATIC:
+            f.write("static ");
+         f.write(self.__cppReturnType + " " + self.__cppMethodName + "(" + self.__cppArgs + ")")
+         if self.__qualifier & CONST:
+            f.write(" const");
+         if self.__qualifier & OVERRIDE:
+            f.write(" override");
+         if self.__qualifier & PURE_VIRTUAL:
+            f.write(" = 0");
+         f.write(";\n")
+      except Exception as e:
+         print "error : generating header of " + parentClassName + "::" + self.__cppMethodName
+         print traceback.format_exc()
 
    def generateSource(self, f, parentClassName):
-      if self.__qualifier & PURE_VIRTUAL:
-         return
-      f.write(self.__cppReturnType + " " + parentClassName + "::" + self.__cppMethodName + "(" + self.__cppArgs + ")");
-      if self.__qualifier & CONST:
-         f.write(" const");
-      f.write(" {\n");
-      f.write(self.__content + "\n");
-      f.write("}\n");
+      try:
+         if self.__qualifier & PURE_VIRTUAL:
+            return
+         f.write(self.__cppReturnType + " " + parentClassName + "::" + self.__cppMethodName + "(" + self.__cppArgs + ")");
+         if self.__qualifier & CONST:
+            f.write(" const");
+         f.write(" {\n");
+         f.write(self.__content + "\n");
+         f.write("}\n");
+      except Exception as e:
+         print "error : generating source of " + parentClassName + "::" + self.__cppMethodName
+         print traceback.format_exc()
 
 
 #-------------------------------------------------------------------------------
@@ -92,23 +101,31 @@ class CppMember():
       return self.__visibility
 
    def generateHeader(self, f):
-      f.write("   ");
-      if self.__qualifier & STATIC:
-         f.write("static ");
-      if self.__qualifier & CONST:
-         f.write("const ");
-      f.write(self.__cppType + " " + self.__cppMemberName + ";\n")
+      try:
+         f.write("   ");
+         if self.__qualifier & STATIC:
+            f.write("static ");
+         if self.__qualifier & CONST:
+            f.write("const ");
+         f.write(self.__cppType + " " + self.__cppMemberName + ";\n")
+      except Exception as e:
+         print "error : generating header of " + parentClassName + "::" + self.__cppMemberName
+         print traceback.format_exc()
 
    def generateSource(self, f, parentClassName):
-      if not self.__qualifier & STATIC:
-         return
+      try:
+         if not self.__qualifier & STATIC:
+            return
 
-      if self.__qualifier & CONST:
-         f.write("const ");
-      f.write(self.__cppType + " " + parentClassName + "::" + self.__cppMemberName);
-      if self.__initilizationCode:
-         f.write(" = " + self.__initilizationCode)
-      f.write("\n")
+         if self.__qualifier & CONST:
+            f.write("const ");
+         f.write(self.__cppType + " " + parentClassName + "::" + self.__cppMemberName);
+         if self.__initilizationCode:
+            f.write(" = " + self.__initilizationCode)
+         f.write("\n")
+      except Exception as e:
+         print "error : generating source of " + parentClassName + "::" + self.__cppMemberName
+         print traceback.format_exc()
 
 
 
@@ -127,7 +144,6 @@ class CppSubType(object):
       raise NotImplementedError()
 
 
-
 #-------------------------------------------------------------------------------
 class CppEnumType(CppSubType):
    """ Object for generating a cpp enum type """
@@ -137,15 +153,19 @@ class CppEnumType(CppSubType):
       self.__listItems = listItems
 
    def generateHeader(self, f):
-      f.write("enum " + self._cppTypeName + " {\n")
-      for item in self.__listItems:
-         # Enum item name
-         f.write("   " + cppHelper.toEnumValueName(item[0]))
-         # If available, enum item value
-         if item[1]:
-            f.write(" = " + item[1])
-         f.write(",\n")
-      f.write("};\n")
+      try:
+         f.write("enum " + self._cppTypeName + " {\n")
+         for item in self.__listItems:
+            # Enum item name
+            f.write("   " + cppHelper.toEnumValueName(item[0]))
+            # If available, enum item value
+            if item[1]:
+               f.write(" = " + item[1])
+            f.write(",\n")
+         f.write("};\n")
+      except Exception as e:
+         print "error : generating header of enum " + self._cppTypeName
+         print traceback.format_exc()
 
 
 #-------------------------------------------------------------------------------
@@ -159,20 +179,28 @@ class CppClassConstructor():
       self.__visibility = visibility
 
    def generateHeader(self, f, cppClassName):
-      f.write(visibilityCppTag(self.__visibility) + ":\n")
-      f.write("   ")
-      if self.__args and len(self.__args) > 0 and self.__args.count(',') == 0:
-         f.write("explicit ")
-      f.write(cppClassName + "(" + self.__args + ");\n")
+      try:
+         f.write(visibilityCppTag(self.__visibility) + ":\n")
+         f.write("   ")
+         if self.__args and len(self.__args) > 0 and self.__args.count(',') == 0:
+            f.write("explicit ")
+         f.write(cppClassName + "(" + self.__args + ");\n")
+      except Exception as e:
+         print "error : generating header of " + parentClassName + "::" + parentClassName
+         print traceback.format_exc()
 
    def generateSource(self, f, cppClassName):
-      f.write(cppClassName + "::" + cppClassName + "(" + self.__args + ")\n")
-      if self.__init:
-         f.write(": " + self.__init + "\n")
-      f.write("{\n")
-      if self.__code:
-         f.write(self.__code + "\n")
-      f.write("}\n")
+      try:
+         f.write(cppClassName + "::" + cppClassName + "(" + self.__args + ")\n")
+         if self.__init:
+            f.write(": " + self.__init + "\n")
+         f.write("{\n")
+         if self.__code:
+            f.write(self.__code + "\n")
+         f.write("}\n")
+      except Exception as e:
+         print "error : generating source of " + parentClassName + "::" + parentClassName
+         print traceback.format_exc()
 
 
 #-------------------------------------------------------------------------------
@@ -234,63 +262,72 @@ class CppClass():
 
 
    def generateHeader(self, f):
-      f.write("class " + self.__cppClassName)
+      try:
+         f.write("class " + self.__cppClassName)
 
-      # Parent classes
-      if self.__parentClasses:
-         f.write(" : ")
-         if self.__parentClasses.has_key(PUBLIC):
-            publicClassesString = visibilityCppTag(PUBLIC) + " " + self.__parentClasses[PUBLIC]
-         if self.__parentClasses.has_key(PROTECTED):
-            protectedClassesString = visibilityCppTag(PROTECTED) + " " + self.__parentClasses[PROTECTED]
-         if self.__parentClasses.has_key(PRIVATE):
-            privateClassesString = visibilityCppTag(PRIVATE) + " " + self.__parentClasses[PRIVATE]
+         # Parent classes
+         if self.__parentClasses:
+            f.write(" : ")
+            if self.__parentClasses.has_key(PUBLIC):
+               publicClassesString = visibilityCppTag(PUBLIC) + " " + self.__parentClasses[PUBLIC]
+            if self.__parentClasses.has_key(PROTECTED):
+               protectedClassesString = visibilityCppTag(PROTECTED) + " " + self.__parentClasses[PROTECTED]
+            if self.__parentClasses.has_key(PRIVATE):
+               privateClassesString = visibilityCppTag(PRIVATE) + " " + self.__parentClasses[PRIVATE]
 
-         if 'publicClassesString' in locals():
-            f.write(publicClassesString)
-            if 'protectedClassesString' in locals() or 'privateClassesString' in locals():
-               f.write(", ")
-         if 'protectedClassesString' in locals():
-            f.write(protectedClassesString)
+            if 'publicClassesString' in locals():
+               f.write(publicClassesString)
+               if 'protectedClassesString' in locals() or 'privateClassesString' in locals():
+                  f.write(", ")
+            if 'protectedClassesString' in locals():
+               f.write(protectedClassesString)
+               if 'privateClassesString' in locals():
+                  f.write(", ")
             if 'privateClassesString' in locals():
-               f.write(", ")
-         if 'privateClassesString' in locals():
-            f.write(privateClassesString)
+               f.write(privateClassesString)
 
-      f.write(" {\n")
+         f.write(" {\n")
 
-      # Ctor and dtor
-      f.write(visibilityCppTag(PUBLIC) + ":\n")
-      if self.__createDefaultCtor:
-         f.write("   " + self.__cppClassName + "();\n")
-      for constructor in self.__constructors:
-         constructor.generateHeader(f, self.__cppClassName)
-      f.write("   virtual ~" + self.__cppClassName + "();\n")
+         # Ctor and dtor
+         f.write(visibilityCppTag(PUBLIC) + ":\n")
+         if self.__createDefaultCtor:
+            f.write("   " + self.__cppClassName + "();\n")
+         for constructor in self.__constructors:
+            constructor.generateHeader(f, self.__cppClassName)
+         f.write("   virtual ~" + self.__cppClassName + "();\n")
 
-      self.__generateHeaderVisibilityBlock(f, PUBLIC)
-      self.__generateHeaderVisibilityBlock(f, PROTECTED)
-      self.__generateHeaderVisibilityBlock(f, PRIVATE)
+         self.__generateHeaderVisibilityBlock(f, PUBLIC)
+         self.__generateHeaderVisibilityBlock(f, PROTECTED)
+         self.__generateHeaderVisibilityBlock(f, PRIVATE)
 
-      f.write("};\n\n")
+         f.write("};\n\n")
+
+      except Exception as e:
+         print "error : generating header of " + self.__cppClassName
+         print traceback.format_exc()
 
 
    def generateSource(self, f):
+      try:
+         # Initialization of static members
+         for member in self.__members:
+            if member.qualifier() & STATIC:
+               member.generateSource(f, self.__cppClassName)
 
-      # Initialization of static members
-      for member in self.__members:
-         if member.qualifier() & STATIC:
-            member.generateSource(f, self.__cppClassName)
-
-      # Ctor and dtor
-      if self.__createDefaultCtor:
-         f.write(self.__cppClassName + "::" + self.__cppClassName + "(){}\n")
+         # Ctor and dtor
+         if self.__createDefaultCtor:
+            f.write(self.__cppClassName + "::" + self.__cppClassName + "(){}\n")
+            f.write("\n")
+         for constructor in self.__constructors:
+            constructor.generateSource(f, self.__cppClassName)
+         f.write(self.__cppClassName + "::~" + self.__cppClassName + "(){}\n")
          f.write("\n")
-      for constructor in self.__constructors:
-         constructor.generateSource(f, self.__cppClassName)
-      f.write(self.__cppClassName + "::~" + self.__cppClassName + "(){}\n")
-      f.write("\n")
 
-      # Methods
-      for method in self.__methods:
-         method.generateSource(f, self.__cppClassName)
-      f.write("\n\n")
+         # Methods
+         for method in self.__methods:
+            method.generateSource(f, self.__cppClassName)
+         f.write("\n\n")
+
+      except Exception as e:
+         print "error : generating source of " + self.__cppClassName
+         print traceback.format_exc()
