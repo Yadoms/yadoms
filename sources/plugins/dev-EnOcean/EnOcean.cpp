@@ -294,7 +294,8 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
    auto device = retrieveDevice(erp1Message.senderId());
 
    // Create associated RORG object
-   auto rorg = CRorgs::createRorg(erp1Message.rorg(), bitset_from_bytes(erp1Message.data()));
+   auto data = bitset_from_bytes(erp1Message.data());
+   auto rorg = CRorgs::createRorg(erp1Message.rorg(), data);
 
    if (rorg->isTeachIn())
    {
@@ -353,7 +354,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
       // Create associated FUNC object
       auto func = rorg->createFunc(device.func());
 
-      auto type = func->createType(device.type());
+      auto type = func->createType(device.type(), data);
       
       auto keywordsToHistorize = type->states();
       if (keywordsToHistorize->empty())

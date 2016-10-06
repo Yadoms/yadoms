@@ -48,7 +48,7 @@ ifuncClass = cppClass.CppClass("IFunc")
 classes.append(ifuncClass)
 ifuncClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 ifuncClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-ifuncClass.addMethod(cppClass.CppMethod("createType", "boost::shared_ptr<IType>", "unsigned int typeId", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+ifuncClass.addMethod(cppClass.CppMethod("createType", "boost::shared_ptr<IType>", "unsigned int typeId, const boost::dynamic_bitset<>& data", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 
 
 # IRorg : Rorg interface
@@ -182,19 +182,22 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
          for xmlTypeNode in xmlFuncNode.findall("type"):
             enumValue = cppHelper.toEnumValueName(xmlTypeNode.find("number").text)
             className = "C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("title").text) + "_" + xmlTypeNode.find("number").text
-            code += "   case " + enumValue + ": return boost::make_shared<" + className + ">();\n"
+            code += "   case " + enumValue + ": return boost::make_shared<" + className + ">(data);\n"
          code += "   default : throw std::out_of_range(\"Invalid EFuncIds\");\n"
          code += "   }\n"
          return code
-      funcClass.addMethod(cppClass.CppMethod("createType", "boost::shared_ptr<IType>", "unsigned int typeId", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, createTypeCode(xmlRorgNode, xmlFuncNode)))
+      funcClass.addMethod(cppClass.CppMethod("createType", "boost::shared_ptr<IType>", "unsigned int typeId, const boost::dynamic_bitset<>& data", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, createTypeCode(xmlRorgNode, xmlFuncNode)))
 
 
 
       # Type classes
       for xmlTypeNode in xmlFuncNode.findall("type"):
-         typeClass = cppClass.CppClass("C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("title").text) + "_" + xmlTypeNode.find("number").text)
+         typeClassName = "C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("title").text) + "_" + xmlTypeNode.find("number").text
+         typeClass = cppClass.CppClass(typeClassName, createDefaultCtor=False)
          typeClass.inheritFrom("IType", cppClass.PUBLIC)
          classes.append(typeClass)
+         typeClass.addMember(cppClass.CppMember("m_data", "boost::dynamic_bitset<>&", cppClass.PRIVATE, cppClass.CONST))
+         typeClass.addConstructor(cppClass.CppClassConstructor(args="const boost::dynamic_bitset<>& data", init="m_data(data)"))
          typeClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, "   return " + xmlTypeNode.find("number").text + ";"))
          typeClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, \
             "   static const std::string title(\"" + xmlTypeNode.find("title").text + "\");\n" \
