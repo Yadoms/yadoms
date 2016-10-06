@@ -120,14 +120,13 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
       if xmlRorgNode.find("teachin") is None:
          return "   return false;"
       for teachinCase in xmlRorgNode.findall("teachin/type/case"):
-         print xmlRorgNode.find("telegram").text
          lrnBitDatafieldNode = teachinCase.find("./datafield[data='LRN Bit']")
          if lrnBitDatafieldNode is not None:
             offset = lrnBitDatafieldNode.find("bitoffs").text
-            size = lrnBitDatafieldNode.find("bitsize").text
+            if lrnBitDatafieldNode.find("bitsize").text != "1":
+               raise Exception(xmlRorgNode.find("telegram").text + " telegram : teachin LRN Bit wrong size, expected 1")
             teachInValue = xmlHelper.findInDatafield(datafieldXmlNode=lrnBitDatafieldNode, select="value", where="description", equals="Teach-in telegram")
-            #return "   return m_data.toUChar(" + offset + ", 1) == " + teachInValue + ";\n"
-            return "   return false;"#TODO
+            return "   return m_erp1Data[" + offset + "] == " + teachInValue + ";\n"
          else:
             return "   return false;"
       return "   return false;"
