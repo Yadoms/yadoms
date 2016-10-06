@@ -40,6 +40,7 @@ itypeClass = cppClass.CppClass("IType")
 classes.append(itypeClass)
 itypeClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 itypeClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+itypeClass.addMethod(cppClass.CppMethod("states", "boost::shared_ptr<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > >", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 
 
 # IFunc : Func interface
@@ -191,13 +192,27 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
       # Type classes
       for xmlTypeNode in xmlFuncNode.findall("type"):
-         funcClass = cppClass.CppClass("C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("title").text) + "_" + xmlTypeNode.find("number").text)
-         funcClass.inheritFrom("IType", cppClass.PUBLIC)
-         classes.append(funcClass)
-         funcClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, "   return " + xmlTypeNode.find("number").text + ";"))
-         funcClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, \
+         typeClass = cppClass.CppClass("C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("title").text) + "_" + xmlTypeNode.find("number").text)
+         typeClass.inheritFrom("IType", cppClass.PUBLIC)
+         classes.append(typeClass)
+         typeClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, "   return " + xmlTypeNode.find("number").text + ";"))
+         typeClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, \
             "   static const std::string title(\"" + xmlTypeNode.find("title").text + "\");\n" \
             "   return title;"))
+
+         def statesCode(xmlTypeNode):
+            return "return boost::shared_ptr<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > >();"
+            #TODO
+            #code = "   switch(static_cast<ETypeIds>(typeId))\n"
+            #code += "   {\n"
+            #for xmlTypeNode in xmlFuncNode.findall("type"):
+            #   enumValue = cppHelper.toEnumValueName(xmlTypeNode.find("number").text)
+            #   className = "C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("title").text) + "_" + xmlTypeNode.find("number").text
+            #   code += "   case " + enumValue + ": return boost::make_shared<" + className + ">();\n"
+            #code += "   default : throw std::out_of_range(\"Invalid EFuncIds\");\n"
+            #code += "   }\n"
+            #return code
+         typeClass.addMethod(cppClass.CppMethod("states", "boost::shared_ptr<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > >", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, statesCode(xmlTypeNode)))
 
 
 
@@ -208,7 +223,10 @@ with codecs.open(headerPath, 'w', 'utf_8') as cppHeaderFile:
 
    cppHeaderFile.write("// Generated file, don't modify\n")
    cppHeaderFile.write("#pragma once\n")
-   cppHeaderFile.write("#include <boost/dynamic_bitset.hpp>")
+   cppHeaderFile.write("#include <boost/dynamic_bitset.hpp>\n")
+   cppHeaderFile.write("#include <plugin_cpp_api/IPlugin.h>\n")
+   cppHeaderFile.write("\n")
+   cppHeaderFile.write("namespace yApi = shared::plugin::yPluginApi;\n")
    cppHeaderFile.write("\n")
 
    for oneClass in classes:

@@ -354,6 +354,15 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
       auto func = rorg->createFunc(device.func());
 
       auto type = func->createType(device.type());
+      
+      auto keywordsToHistorize = type->states();
+      if (keywordsToHistorize->empty())
+      {
+         std::cout << "Recevied message for id#" << device.id() << ", " << erp1Message.rorg() << "-" << device.func() << "-" << device.type() << ", but nothing to historize" << std::endl;
+         return;
+      }
+
+      m_api->historizeData(std::to_string(device.id()), *keywordsToHistorize);
 
       //TODO
    //   switch (static_cast<C4BSTelegram::EFuncIds>(device.func()))
