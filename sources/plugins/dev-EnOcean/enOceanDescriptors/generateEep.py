@@ -13,6 +13,8 @@ import cppClass
 import cppHelper
 import xmlHelper
 import util
+import sys
+
 
 
 #-------------------------------------------------------------------------------
@@ -223,20 +225,20 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
          def statesCodeForTemperature(xmlDataFieldNode):
             if xmlDataFieldNode.find("unit") is not None and xmlDataFieldNode.find("unit").text != u"°C":
-               print "Unsupported unit \"" + xmlDataFieldNode.find("unit").text + "\" for temperature, corresponding data will be ignored"
+               util.warning("Unsupported unit \"" + xmlDataFieldNode.find("unit").text.encode("utf-8") + "\" for temperature, corresponding data will be ignored")
                return ""
             return statesCodeForDoubleValue(xmlDataFieldNode, "yApi::historization::CTemperature", "temperature")
 
          def statesCodeForHumidity(xmlDataFieldNode):
             if xmlDataFieldNode.find("unit") is not None and xmlDataFieldNode.find("unit").text != u"%":
-               print "Unsupported unit \"" + xmlDataFieldNode.find("unit").text + "\" for humidity, corresponding data will be ignored"
+               util.warning("Unsupported unit \"" + xmlDataFieldNode.find("unit").text.encode("utf-8") + "\" for humidity, corresponding data will be ignored")
                return ""
             return statesCodeForDoubleValue(xmlDataFieldNode, "yApi::historization::CHumidity", "humidity")
 
          def statesCode(xmlTypeNode):
             code = "   auto historizers(boost::make_shared<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > >());\n"
             if len(xmlTypeNode.findall("case")) != 1:
-               #TODO erreur unicode                  print "Warning : func/type : Unsupported number of \"case\" tags (expected 1) for \"" + xmlTypeNode.find("title").text + "\" node. This profile will be ignored."#TODO
+               util.warning("func/type : Unsupported number of \"case\" tags (expected 1) for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This profile will be ignored.")#TODO
                code += "   return historizers;\n"
                return code
             xmlCaseNode = xmlTypeNode.find("case")
@@ -247,7 +249,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                elif dataText == "Humidity":
                   code += statesCodeForHumidity(xmlDataFieldNode) + "\n"
                else:
-                  #TODO erreur unicode                  print ("Warning : func/type : Unsupported data type \"" + dataText + "\" for \"" + xmlTypeNode.find("title").text + "\" node. This data will be ignored.")#TODO
+                  util.warning("func/type : Unsupported data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
                   code += "return historizers;\n"
                   return code
             code += "   return historizers;\n"
@@ -285,3 +287,5 @@ with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
 
    for oneClass in classes:
       oneClass.generateSource(cppSourceFile)
+
+sys.exit(util.getError())
