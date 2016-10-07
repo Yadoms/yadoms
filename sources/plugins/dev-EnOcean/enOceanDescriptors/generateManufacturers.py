@@ -70,4 +70,4 @@ with open(sourcePath, 'w') as cppSourceFile:
 
    manufacturersClass.generateSource(cppSourceFile)
 
-sys.exit(util.getError())
+util.finish()

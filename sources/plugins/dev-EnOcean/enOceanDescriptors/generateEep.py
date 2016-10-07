@@ -13,7 +13,6 @@ import cppClass
 import cppHelper
 import xmlHelper
 import util
-import sys
 
 
 
@@ -288,4 +287,4 @@ with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
    for oneClass in classes:
       oneClass.generateSource(cppSourceFile)
 
-sys.exit(util.getError())
+util.finish()
