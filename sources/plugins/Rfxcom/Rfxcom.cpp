@@ -21,7 +21,8 @@ enum
 
 CRfxcom::CRfxcom()
    : m_configurationUpdated(false),
-   m_lastRequest(sizeof(RBUF))
+   m_lastRequest(sizeof(RBUF)),
+   m_isDeveloperMode(false)
 {
 }
 
@@ -36,6 +37,8 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    std::cout << "CRfxcom is starting..." << std::endl;
 
    m_configurationUpdated = false;
+
+   m_isDeveloperMode = api->isDeveloperMode();
 
    // Load configuration values (provided by database)
    m_configuration.initializeWith(api->getConfiguration());
@@ -179,7 +182,7 @@ void CRfxcom::send(boost::shared_ptr<yApi::IYPluginApi> api,
    if (!m_port)
       return;
 
-   if (api->isDeveloperMode()) m_logger.logSent(buffer);
+   if (m_isDeveloperMode) m_logger.logSent(buffer);
    m_port->send(buffer);
    m_lastRequest = buffer;
    if (needAnswer)
@@ -292,7 +295,7 @@ void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi
 void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
                                         const shared::communication::CByteBuffer& data)
 {
-   if (api->isDeveloperMode()) m_logger.logReceived(data);
+   if (m_isDeveloperMode) m_logger.logReceived(data);
 
    auto message = m_transceiver->decodeRfxcomMessage(api, data);
 
