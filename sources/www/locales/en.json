@@ -539,6 +539,7 @@
           "widgets": "Widgets",
           "table": {
             "displayName": "Name",
+			"version": "Revision",
             "authors": "Author(s)",
             "credits": "Credit(s)"
           }
