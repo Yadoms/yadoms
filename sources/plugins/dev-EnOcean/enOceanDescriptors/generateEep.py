@@ -226,6 +226,26 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             code += "   }\n"
             return code
 
+         def statesCodeForBoolValue(xmlDataFieldNode, keywordHistorizerClass, keywordName):
+            offset = xmlDataFieldNode.find("bitoffs").text
+            code = "   {\n"
+            code += "      auto keyword(boost::make_shared<" + keywordHistorizerClass + ">(\"" + keywordName + "\"));\n"
+            code += "      keyword->set(m_data[" + offset + "]);\n"
+            code += "      historizers->push_back(keyword);\n"
+            code += "   }\n"
+            return code
+
+         def isLinearValue(xmlDataFieldNode):
+            return True if xmlDataFieldNode.find("range/min") is not None \
+               and xmlDataFieldNode.find("range/max") is not None \
+               and xmlDataFieldNode.find("scale/min") is not None \
+               and xmlDataFieldNode.find("scale/max") is not None else False
+
+         def isBoolValue(xmlDataFieldNode):
+            return True if xmlDataFieldNode.find("enum") is not None \
+               and len(xmlDataFieldNode.findall("enum/item")) == 2 \
+               and int(xmlDataFieldNode.find("bitsize").text) == 1 else False
+
          def statesCode(xmlTypeNode):
             code = "   auto historizers(boost::make_shared<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > >());\n"
             if len(xmlTypeNode.findall("case")) != 1:
@@ -234,19 +254,26 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                return code
             xmlCaseNode = xmlTypeNode.find("case")
             for xmlDataFieldNode in xmlHelper.findUsefulDataFieldNodes(inXmlNode=xmlCaseNode):
-               dataText = xmlDataFieldNode.find("data").text
-               if dataText == "Temperature":
-                  code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CTemperature", "temperature", u"°C")
-               elif dataText == "Humidity":
-                  code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CHumidity", "humidity", u"%")
-               elif dataText == "Barometer":
-                  code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CPressure", "pressure", u"hPa")
-               elif dataText == "Supply voltage" and xmlDataFieldNode.find("range") is not None:
-                  code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CVoltage", "voltage", u"V")
-               elif dataText == "Illumination":
-                  code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CIllumination", "illumination", u"lx")
+               if isLinearValue(xmlDataFieldNode):
+                  dataText = xmlDataFieldNode.find("data").text
+                  if dataText == "Temperature":
+                     code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CTemperature", "temperature", u"°C")
+                  elif dataText == "Humidity":
+                     code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CHumidity", "humidity", u"%")
+                  elif dataText == "Barometer":
+                     code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CPressure", "pressure", u"hPa")
+                  elif dataText == "Supply voltage" and xmlDataFieldNode.find("range") is not None:
+                     code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CVoltage", "voltage", u"V")
+                  elif dataText == "Illumination":
+                     code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CIllumination", "illumination", u"lx")
+                  else:
+                     util.warning("func/type : Unsupported linear data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
+                     code += "return historizers;\n"
+                     return code
+               elif isBoolValue(xmlDataFieldNode):
+                  code += statesCodeForBoolValue(xmlDataFieldNode, "yApi::historization::CSwitch", xmlDataFieldNode.find("data").text)
                else:
-                  util.warning("func/type : Unsupported data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
+                  util.warning("func/type : Unsupported data type \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
                   code += "return historizers;\n"
                   return code
             code += "\n"
