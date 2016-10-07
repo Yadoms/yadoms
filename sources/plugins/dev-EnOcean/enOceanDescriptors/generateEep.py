@@ -234,6 +234,24 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                return ""
             return statesCodeForDoubleValue(xmlDataFieldNode, "yApi::historization::CHumidity", "humidity")
 
+         def statesCodeForBarometer(xmlDataFieldNode):
+            if xmlDataFieldNode.find("unit") is not None and xmlDataFieldNode.find("unit").text != u"hPa":
+               util.warning("Unsupported unit \"" + xmlDataFieldNode.find("unit").text.encode("utf-8") + "\" for barometer, corresponding data will be ignored")
+               return ""
+            return statesCodeForDoubleValue(xmlDataFieldNode, "yApi::historization::CPressure", "pressure")
+
+         def statesCodeForVoltage(xmlDataFieldNode):
+            if xmlDataFieldNode.find("unit") is not None and xmlDataFieldNode.find("unit").text != u"V":
+               util.warning("Unsupported unit \"" + xmlDataFieldNode.find("unit").text.encode("utf-8") + "\" for voltage, corresponding data will be ignored")
+               return ""
+            return statesCodeForDoubleValue(xmlDataFieldNode, "yApi::historization::CVoltage", "voltage")
+
+         def statesCodeForIllumination(xmlDataFieldNode):
+            if xmlDataFieldNode.find("unit") is not None and xmlDataFieldNode.find("unit").text != u"lx":
+               util.warning("Unsupported unit \"" + xmlDataFieldNode.find("unit").text.encode("utf-8") + "\" for illumination, corresponding data will be ignored")
+               return ""
+            return statesCodeForDoubleValue(xmlDataFieldNode, "yApi::historization::CIllumination", "illumination")
+
          def statesCode(xmlTypeNode):
             code = "   auto historizers(boost::make_shared<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > >());\n"
             if len(xmlTypeNode.findall("case")) != 1:
@@ -244,13 +262,20 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             for xmlDataFieldNode in xmlHelper.findUsefulDataFieldNodes(inXmlNode=xmlCaseNode):
                dataText = xmlDataFieldNode.find("data").text
                if dataText == "Temperature":
-                  code += statesCodeForTemperature(xmlDataFieldNode) + "\n"
+                  code += statesCodeForTemperature(xmlDataFieldNode)
                elif dataText == "Humidity":
-                  code += statesCodeForHumidity(xmlDataFieldNode) + "\n"
+                  code += statesCodeForHumidity(xmlDataFieldNode)
+               elif dataText == "Barometer":
+                  code += statesCodeForBarometer(xmlDataFieldNode)
+               elif dataText == "Supply voltage" and xmlDataFieldNode.find("range") is not None:
+                  code += statesCodeForVoltage(xmlDataFieldNode)
+               elif dataText == "Illumination":
+                  code += statesCodeForIllumination(xmlDataFieldNode)
                else:
                   util.warning("func/type : Unsupported data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
                   code += "return historizers;\n"
                   return code
+            code += "\n"
             code += "   return historizers;\n"
             return code
 

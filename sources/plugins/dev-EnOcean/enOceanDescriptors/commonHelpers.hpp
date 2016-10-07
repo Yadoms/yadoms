@@ -17,6 +17,6 @@ inline double scaleToDouble(unsigned int rawValue,
                             double scaleMin,
                             double scaleMax)
 {
-   double multiplier = (scaleMax - scaleMin) / (rangeMax - rangeMin);
+   auto multiplier = (scaleMax - scaleMin) / (rangeMax - rangeMin);
    return multiplier * (rawValue - rangeMin) + scaleMin;
 }
