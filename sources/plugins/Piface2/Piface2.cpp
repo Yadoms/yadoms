@@ -24,6 +24,8 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    std::cout << "Piface2 is starting..." << std::endl;
 
+   bool initializationError = false;
+   
    m_configuration.initializeWith(api->getConfiguration());
 
    shared::CDataContainer details;
@@ -34,18 +36,20 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       m_factory.reset( new CPiface2Factory(api, m_deviceName, m_configuration, details));
       m_ioManager = m_factory->getIOManager();
+	  
+	  
    }
    catch (const CInitializationException& e)
    {
       api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
       std::cerr << e.what() << std::endl;
-      throw e;
+	  initializationError = true;
    }
 
    // the main loop
    std::cout << "Piface2 plugin is running..." << std::endl;
 
-   while (true)
+   while (!initializationError)
    {
       // Wait for an event
       switch (api->getEventHandler().waitForEvents())
