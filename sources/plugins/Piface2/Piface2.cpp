@@ -98,9 +98,9 @@ void CPiface2::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, c
    std::cout << "Update configuration..." << std::endl;
    BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
+   // Update configuration
+   m_configuration.initializeWith(newConfigurationData);   
+   
    // Update the configuration for sub-components
    m_factory->OnConfigurationUpdate(api, m_configuration, details);
-
-   // Update configuration
-   m_configuration.initializeWith(newConfigurationData);
 }
