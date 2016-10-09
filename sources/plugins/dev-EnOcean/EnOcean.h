@@ -75,20 +75,12 @@ protected:
    //--------------------------------------------------------------
    /// \brief	                     Process received messages
    /// \param [in] api              Plugin execution context (Yadoms API)
-   /// \param [in] message          Message received
+   /// \param [in] esp3Packet       Message received
    //--------------------------------------------------------------
    void processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
                          const message::CReceivedEsp3Packet& esp3Packet);
    void processEvent(boost::shared_ptr<yApi::IYPluginApi> api,
                      const message::CReceivedEsp3Packet& esp3Packet);
-
-   //--------------------------------------------------------------
-   /// \brief	                     Process radio ERP1 received messages
-   /// \param [in] api              Plugin execution context (Yadoms API)
-   /// \param [in] data             Data of the ERP1 message
-   //--------------------------------------------------------------
-   void processRadioErp1_1BS(boost::shared_ptr<yApi::IYPluginApi> api,
-                             const std::vector<unsigned char>& data);
 
    //--------------------------------------------------------------
    /// \brief	                     Extract sender ID from buffer
@@ -100,8 +92,7 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	                     Retrieve device in database
-   /// \param [in] data             Buffer containing sender ID
-   /// \param [in] startIndex       Index of the first byte
+   /// \param [in] deviceId         Device ID to search
    /// \throw std::out_of_range     If device is not found in database
    //--------------------------------------------------------------
    static CDevice retrieveDevice(unsigned int deviceId);

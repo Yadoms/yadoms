@@ -271,7 +271,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Historize a list of new data
             ///\param    [in]    device            The device name
-            ///\param    [in]    datalist          The list of historizable data
+            ///\param    [in]    dataVect          The list of historizable data
             //-----------------------------------------------------    
             virtual void historizeData(const std::string& device,
                                        const std::vector<boost::shared_ptr<const historization::IHistorizable> >& dataVect) = 0;

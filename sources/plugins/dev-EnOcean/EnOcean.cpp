@@ -407,12 +407,6 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
    }
 }
 
-void CEnOcean::processRadioErp1_1BS(boost::shared_ptr<yApi::IYPluginApi> api,
-                                    const std::vector<unsigned char>& data)
-{
-   //TODO
-}
-
 std::string CEnOcean::extractSenderId(const std::vector<unsigned char>& data,
                                       int startIndex)
 {
