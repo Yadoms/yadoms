@@ -49,7 +49,7 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    // the main loop
    std::cout << "Piface2 plugin is running..." << std::endl;
 
-   while (!initializationError)
+   while (true)
    {
       // Wait for an event
       switch (api->getEventHandler().waitForEvents())
@@ -63,7 +63,8 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kEvtIOStateReceived:
       {
          //Value received from DI
-         m_ioManager->onCommand(api, api->getEventHandler().getEventData<const int>() );
+		 if (!initializationError)
+            m_ioManager->onCommand(api, api->getEventHandler().getEventData<const int>() );
          break;
       }
       case yApi::IYPluginApi::kEventDeviceCommand:
@@ -71,7 +72,8 @@ void CPiface2::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          // Command received from Yadoms
          auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
 
-         m_ioManager->onCommand(api, command);
+		 if (!initializationError)
+            m_ioManager->onCommand(api, command);
          break;
       }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
