@@ -15,6 +15,7 @@ import xmlHelper
 import util
 
 
+
 #-------------------------------------------------------------------------------
 # Input parameters
 xmlInputFilePath = sys.argv[1]
@@ -204,7 +205,11 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             "   return title;"))
 
 
-         def statesCodeForDoubleValue(xmlDataFieldNode, keywordHistorizerClass, keywordName):
+         def statesCodeForLinearValue(xmlDataFieldNode, keywordHistorizerClass, keywordName, expectedUnit):
+            if expectedUnit is not None and xmlDataFieldNode.find("unit").text != expectedUnit:
+               util.warning("Unsupported unit \"" + xmlDataFieldNode.find("unit").text.encode("utf-8") + \
+                  "\" for \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" (expected \"" + expectedUnit.encode("utf-8") + "\"), corresponding data will be ignored")
+
             offset = xmlDataFieldNode.find("bitoffs").text
             size = xmlDataFieldNode.find("bitsize").text
             code = "   {\n"
@@ -221,35 +226,57 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             code += "   }\n"
             return code
 
-         def statesCodeForTemperature(xmlDataFieldNode):
-            if xmlDataFieldNode.find("unit") is not None and xmlDataFieldNode.find("unit").text != u"°C":
-               print "Unsupported unit \"" + xmlDataFieldNode.find("unit").text + "\" for temperature, corresponding data will be ignored"
-               return ""
-            return statesCodeForDoubleValue(xmlDataFieldNode, "yApi::historization::CTemperature", "temperature")
+         def statesCodeForBoolValue(xmlDataFieldNode, keywordHistorizerClass, keywordName):
+            offset = xmlDataFieldNode.find("bitoffs").text
+            code = "   {\n"
+            code += "      auto keyword(boost::make_shared<" + keywordHistorizerClass + ">(\"" + keywordName + "\"));\n"
+            code += "      keyword->set(m_data[" + offset + "]);\n"
+            code += "      historizers->push_back(keyword);\n"
+            code += "   }\n"
+            return code
 
-         def statesCodeForHumidity(xmlDataFieldNode):
-            if xmlDataFieldNode.find("unit") is not None and xmlDataFieldNode.find("unit").text != u"%":
-               print "Unsupported unit \"" + xmlDataFieldNode.find("unit").text + "\" for humidity, corresponding data will be ignored"
-               return ""
-            return statesCodeForDoubleValue(xmlDataFieldNode, "yApi::historization::CHumidity", "humidity")
+         def isLinearValue(xmlDataFieldNode):
+            return True if xmlDataFieldNode.find("range/min") is not None \
+               and xmlDataFieldNode.find("range/max") is not None \
+               and xmlDataFieldNode.find("scale/min") is not None \
+               and xmlDataFieldNode.find("scale/max") is not None else False
+
+         def isBoolValue(xmlDataFieldNode):
+            return True if xmlDataFieldNode.find("enum") is not None \
+               and len(xmlDataFieldNode.findall("enum/item")) == 2 \
+               and int(xmlDataFieldNode.find("bitsize").text) == 1 else False
 
          def statesCode(xmlTypeNode):
             code = "   auto historizers(boost::make_shared<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > >());\n"
             if len(xmlTypeNode.findall("case")) != 1:
-               #TODO erreur unicode                  print "Warning : func/type : Unsupported number of \"case\" tags (expected 1) for \"" + xmlTypeNode.find("title").text + "\" node. This profile will be ignored."#TODO
+               util.warning("func/type : Unsupported number of \"case\" tags (expected 1) for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This profile will be ignored.")#TODO
                code += "   return historizers;\n"
                return code
             xmlCaseNode = xmlTypeNode.find("case")
             for xmlDataFieldNode in xmlHelper.findUsefulDataFieldNodes(inXmlNode=xmlCaseNode):
-               dataText = xmlDataFieldNode.find("data").text
-               if dataText == "Temperature":
-                  code += statesCodeForTemperature(xmlDataFieldNode) + "\n"
-               elif dataText == "Humidity":
-                  code += statesCodeForHumidity(xmlDataFieldNode) + "\n"
+               if isLinearValue(xmlDataFieldNode):
+                  dataText = xmlDataFieldNode.find("data").text
+                  if dataText == "Temperature":
+                     code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CTemperature", "temperature", u"°C")
+                  elif dataText == "Humidity":
+                     code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CHumidity", "humidity", u"%")
+                  elif dataText == "Barometer":
+                     code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CPressure", "pressure", u"hPa")
+                  elif dataText == "Supply voltage" and xmlDataFieldNode.find("range") is not None:
+                     code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CVoltage", "voltage", u"V")
+                  elif dataText == "Illumination":
+                     code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CIllumination", "illumination", u"lx")
+                  else:
+                     util.warning("func/type : Unsupported linear data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
+                     code += "return historizers;\n"
+                     return code
+               elif isBoolValue(xmlDataFieldNode):
+                  code += statesCodeForBoolValue(xmlDataFieldNode, "yApi::historization::CSwitch", xmlDataFieldNode.find("data").text)
                else:
-                  #TODO erreur unicode                  print ("Warning : func/type : Unsupported data type \"" + dataText + "\" for \"" + xmlTypeNode.find("title").text + "\" node. This data will be ignored.")#TODO
+                  util.warning("func/type : Unsupported data type \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
                   code += "return historizers;\n"
                   return code
+            code += "\n"
             code += "   return historizers;\n"
             return code
 
@@ -285,3 +312,5 @@ with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
 
    for oneClass in classes:
       oneClass.generateSource(cppSourceFile)
+
+util.finish()

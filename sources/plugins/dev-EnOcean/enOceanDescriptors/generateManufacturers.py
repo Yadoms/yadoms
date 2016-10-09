@@ -69,3 +69,5 @@ with open(sourcePath, 'w') as cppSourceFile:
    cppSourceFile.write("\n")
 
    manufacturersClass.generateSource(cppSourceFile)
+
+util.finish()
