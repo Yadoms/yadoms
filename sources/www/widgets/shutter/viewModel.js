@@ -10,6 +10,7 @@ widgetViewModelCtor =
           this.command = ko.observable(1);
           this.kind = ko.observable("simple");
           this.icon = ko.observable("");
+		  this.readonly = ko.observable(true);
 
           // default size
           this.WidgetHeight = 70;
@@ -65,13 +66,24 @@ widgetViewModelCtor =
           this.configurationChanged = function () {
               var self = this;
 
+			  console.log ( "kind :", this.widget.configuration );
+			  
               if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
                   return;
 
               if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
                   self.widgetApi.registerKeywordAcquisitions(this.widget.configuration.device.keywordId);
+				  
+				  // Get the capacity of the keyword
+				  var deffered = KeywordManager.get(this.widget.configuration.device.keywordId)
+				  .done(function (keyword) {
+					   if ( keyword.accessMode ==="GetSet" )
+						  self.readonly ( false );
+					   else
+						  self.readonly ( true );
+				  });
               }
-
+			  
               if (!isNullOrUndefined(this.widget.configuration.kind)) {
                   this.kind(this.widget.configuration.kind.activeSection);
               }

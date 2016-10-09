@@ -539,6 +539,7 @@
           "widgets": "Les widgets",
           "table": {
              "displayName": "Nom",
+			 "version": "Version",
              "authors": "Auteur(s)",
              "credits": "crédits"
           }

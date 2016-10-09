@@ -1,6 +1,6 @@
 {
 	"type": "light",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"releaseType": "beta",
 	"author": "Jean-Michel BERHAULT",
 	"url": "https://github.com/Yadoms/yadoms/wiki/light",
@@ -24,7 +24,7 @@
 		"device": {
 			"type": "keyword",
 			"expectedCapacity": "switch",
-			"expectedKeywordAccess": "getset"
+			"expectedKeywordAccess": "get"
 		}
 	}
 }

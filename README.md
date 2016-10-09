@@ -24,7 +24,7 @@ http://www.yadoms.com/forum
 * Windows
 * Linux
 * Mac OSX
-* Raspberry PI 1&2
+* Raspberry PI 1,2&3
 * *probably most of unix based systems*
 
 #Licensing

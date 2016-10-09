@@ -1,0 +1,76 @@
+{
+   "name": "Piface2",
+   "description": "This plugin configures GPIO for using the Piface2 board",
+   "configurationSchema":{
+		"DI0": {
+			   "name": "Digital Input 0",
+			   "description": "Enable the pullup of this input",
+			   "values": {
+					"Disable" : "Disable",
+					"Pullup"  : "Pullup"
+				}
+		},
+		"DI1": {
+			   "name": "Digital Input 1",
+			   "description": "Enable the pullup of this input",
+			   "values": {
+					"Disable" : "Disable",
+					"Pullup"  : "Pullup"
+				}
+		},
+		"DI2": {
+			   "name": "Digital Input 2",
+			   "description": "Enable the pullup of this input",
+			   "values": {
+					"Disable" : "Disable",
+					"Pullup"  : "Pullup"
+				}
+		},
+		"DI3": {
+			   "name": "Digital Input 3",
+			   "description": "Enable the pullup of this input",
+			   "values": {
+					"Disable" : "Disable",
+					"Pullup"  : "Pullup"
+				}
+		},
+		"DI4": {
+			   "name": "Digital Input 4",
+			   "description": "Enable the pullup of this input",
+			   "values": {
+					"Disable" : "Disable",
+					"Pullup"  : "Pullup"
+				}
+		},
+		"DI5": {
+			   "name": "Digital Input 5",
+			   "description": "Enable the pullup of this input",
+			   "values": {
+					"Disable" : "Disable",
+					"Pullup"  : "Pullup"
+				}
+		},
+		"DI6": {
+			   "name": "Digital Input 6",
+			   "description": "Enable the pullup of this input",
+			   "values": {
+					"Disable" : "Disable",
+					"Pullup"  : "Pullup"
+				}
+		},
+		"DI7": {
+			   "name": "Digital Input 7",
+			   "description": "Enable the pullup of this input",
+			   "values": {
+					"Disable" : "Disable",
+					"Pullup"  : "Pullup"
+				}
+		}
+	},
+	"customLabels": {
+		"pluginState": {
+			"InitializationError": "Initialization error",
+            "updateConfiguration": "Configuration updating..."
+		}
+	}
+}

@@ -111,5 +111,10 @@ private:
    /// \brief  The receiver buffer
    //--------------------------------------------------------------
    boost::shared_ptr<CTeleInfoReceiveBufferHandler> m_receiveBufferHandler;
+
+   //--------------------------------------------------------------
+   /// \brief  developerMode state
+   //--------------------------------------------------------------
+   bool m_isDeveloperMode;
 };
 
