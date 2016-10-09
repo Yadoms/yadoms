@@ -1,5 +1,5 @@
 ﻿{
-	"name": "TeleInfo,
+	"name": "TeleInfo",
 	"description": "Module de suivi de consommation électrique.",
 	"configurationSchema": {
 		"SerialPort": {
