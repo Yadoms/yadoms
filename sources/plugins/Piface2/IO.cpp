@@ -9,7 +9,6 @@ CIO::CIO(const std::string& keywordName,
          const EPullResistance pullResistanceState, 
          const yApi::EKeywordAccessMode& accessMode)
    : m_value(boost::make_shared<yApi::historization::CSwitch>(keywordName, accessMode)),
-   m_accessMode(accessMode),
    m_portUsed(pin)
 {
    if ((pin<0) || (pin>8))
@@ -50,8 +49,8 @@ bool CIO::get(void)
 
 void CIO::ConfigurePullResistance(const EPullResistance pullResistanceState)
 {
-	if ( m_accessMode == yApi::EKeywordAccessMode::kGet)
-	{	
+   if ((m_value->getAccessMode() == yApi::EKeywordAccessMode::kGet))
+   {	
       switch ( pullResistanceState )
       {
          case kDisable:
@@ -67,7 +66,7 @@ void CIO::ConfigurePullResistance(const EPullResistance pullResistanceState)
          default:        // Never used also !
             break;
       }
-	}
+   }
 }
 
 boost::shared_ptr<const yApi::historization::IHistorizable> CIO::historizable() const 

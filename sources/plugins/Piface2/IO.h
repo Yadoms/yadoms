@@ -65,11 +65,6 @@ private:
    /// \brief	    Keyword
    //--------------------------------------------------------------
    boost::shared_ptr<yApi::historization::CSwitch> m_value;
-
-   //--------------------------------------------------------------
-   /// \brief	    Access Mode of the keyword
-   //--------------------------------------------------------------   
-   yApi::EKeywordAccessMode m_accessMode;   
    
    //--------------------------------------------------------------
    /// \brief	The port used in the Pi2/Pi3
