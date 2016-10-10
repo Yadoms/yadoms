@@ -60,6 +60,8 @@ irorgClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppCl
 irorgClass.addMethod(cppClass.CppMethod("fullname", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 irorgClass.addMethod(cppClass.CppMethod("dump", "std::string", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 irorgClass.addMethod(cppClass.CppMethod("isTeachIn", "bool", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+irorgClass.addMethod(cppClass.CppMethod("isEepProvided", "bool", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+irorgClass.addMethod(cppClass.CppMethod("manufacturerId", "CManufacturers::EManufacturerIds", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 irorgClass.addMethod(cppClass.CppMethod("createFunc", "boost::shared_ptr<IFunc>", "unsigned int funcId", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 
 
@@ -121,21 +123,54 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
       "      ss << m_erp1Data[bit] << \" \";\n" \
       "   return ss.str();")) # TODO dumper en bytes
 
-   def createIsTeachInCode(xmlRorgNode):
+   def isTeachInCode(xmlRorgNode):
       if xmlRorgNode.find("teachin") is None:
          return "   return false;"
       for teachinCase in xmlRorgNode.findall("teachin/type/case"):
          lrnBitDatafieldNode = teachinCase.find("./datafield[data='LRN Bit']")
-         if lrnBitDatafieldNode is not None:
-            offset = lrnBitDatafieldNode.find("bitoffs").text
-            if lrnBitDatafieldNode.find("bitsize").text != "1":
-               raise Exception(xmlRorgNode.find("telegram").text + " telegram : teachin LRN Bit wrong size, expected 1")
-            teachInValue = xmlHelper.findInDatafield(datafieldXmlNode=lrnBitDatafieldNode, select="value", where="description", equals="Teach-in telegram")
-            return "   return m_erp1Data[" + offset + "] == " + teachInValue + ";\n"
-         else:
+         if lrnBitDatafieldNode is None:
             return "   return false;"
+         offset = lrnBitDatafieldNode.find("bitoffs").text
+         if lrnBitDatafieldNode.find("bitsize").text != "1":
+            util.error(xmlRorgNode.find("telegram").text + " telegram : teachin LRN Bit wrong size, expected 1")
+         teachInValue = xmlHelper.findInDatafield(datafieldXmlNode=lrnBitDatafieldNode, select="value", where="description", equals="Teach-in telegram")
+         return "   return m_erp1Data[" + offset + "] == " + teachInValue + ";\n"
       return "   return false;"
-   rorgClass.addMethod(cppClass.CppMethod("isTeachIn", "bool", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, createIsTeachInCode(xmlRorgNode)))
+   rorgClass.addMethod(cppClass.CppMethod("isTeachIn", "bool", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, isTeachInCode(xmlRorgNode)))
+
+   def isEepProvidedCode(xmlRorgNode):
+      if xmlRorgNode.find("teachin") is None:
+         return "   return false;"
+      teachinType = xmlRorgNode.find("teachin/type")
+      if teachinType is None:
+         return "   return false;"
+      variation2CaseNode = teachinType.find("./case[title='Variation 2']")
+      if variation2CaseNode is None:
+         return "   return false;"
+      lrnTypeDatafieldNode = variation2CaseNode.find("./datafield[data='LRN Type']")
+      if lrnTypeDatafieldNode is None:
+         util.error(xmlRorgNode.find("telegram").text + " teachin variation 2, \"LRN Type\" bit description not found")
+      offset = lrnTypeDatafieldNode.find("bitoffs").text
+      if lrnTypeDatafieldNode.find("bitsize").text != "1":
+         util.error(xmlRorgNode.find("telegram").text + " telegram : teachin LRN Type wrong size, expected 1")
+      eepProvidedValue = xmlHelper.findInDatafield(datafieldXmlNode=lrnTypeDatafieldNode, select="value", where="description", equals="telegram with EEP number and Manufacturer ID")
+      return "   return m_erp1Data[" + offset + "] == " + eepProvidedValue + ";\n"
+   rorgClass.addMethod(cppClass.CppMethod("isEepProvided", "bool", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, isEepProvidedCode(xmlRorgNode)))
+
+   def manufacturerIdCode(xmlRorgNode):
+      if xmlRorgNode.find("teachin") is None:
+         return "   return CManufacturers::kMulti_user_Manufacturer_ID;"
+      rorgShortTag = xmlRorgNode.find("telegram").text + " " + "teach"
+      if xmlRootNode.find("./appendix/section[short='" + rorgShortTag + "']") is None:
+         return "   return CManufacturers::kMulti_user_Manufacturer_ID;"
+      # No description on how to find teachin parameters is provided in the xml, so hard-code they here (available depending on kind of messages)
+      if xmlRorgNode.find("telegram").text == "4BS":
+         code =  "   if (!isEepProvided())\n"
+         code += "      return CManufacturers::kMulti_user_Manufacturer_ID;\n"
+         code += "   return CManufacturers::toManufacturerId(bitset_extract(m_erp1Data, 13, 11));\n"
+         return code;
+      return "   return CManufacturers::kMulti_user_Manufacturer_ID;"
+   rorgClass.addMethod(cppClass.CppMethod("manufacturerId", "CManufacturers::EManufacturerIds", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, manufacturerIdCode(xmlRorgNode)))
 
    def createFuncCode(xmlRorgNode):
       code = "   switch(static_cast<EFuncIds>(funcId))\n"
@@ -291,6 +326,7 @@ with codecs.open(headerPath, 'w', 'utf_8') as cppHeaderFile:
 
    cppHeaderFile.write("// Generated file, don't modify\n")
    cppHeaderFile.write("#pragma once\n")
+   cppHeaderFile.write("#include \"generated-manufacturers.h\"\n")
    cppHeaderFile.write("#include \"bitsetHelpers.hpp\"\n")
    cppHeaderFile.write("#include \"commonHelpers.hpp\"\n")
    cppHeaderFile.write("#include <plugin_cpp_api/IPlugin.h>\n")
