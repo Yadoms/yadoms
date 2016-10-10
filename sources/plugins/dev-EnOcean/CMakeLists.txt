@@ -8,6 +8,9 @@ include("../YadomsPluginsCommon.cmake")
 set(ENOCEAN_SOURCES
    stdafx.h
    stdafx.cpp
+
+   4BSTeachinVariant2.h
+   4BSTeachinVariant2.cpp
    IEnOceanConfiguration.h
    Device.h
    Device.cpp

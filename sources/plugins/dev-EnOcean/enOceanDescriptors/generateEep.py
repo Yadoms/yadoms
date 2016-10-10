@@ -42,6 +42,7 @@ classes.append(itypeClass)
 itypeClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 itypeClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 itypeClass.addMethod(cppClass.CppMethod("states", "boost::shared_ptr<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > >", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+itypeClass.addMethod(cppClass.CppMethod("historizers", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 
 
 # IFunc : Func interface
@@ -61,7 +62,6 @@ irorgClass.addMethod(cppClass.CppMethod("fullname", "const std::string&", "", cp
 irorgClass.addMethod(cppClass.CppMethod("dump", "std::string", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 irorgClass.addMethod(cppClass.CppMethod("isTeachIn", "bool", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 irorgClass.addMethod(cppClass.CppMethod("isEepProvided", "bool", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-irorgClass.addMethod(cppClass.CppMethod("manufacturerId", "CManufacturers::EManufacturerIds", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 irorgClass.addMethod(cppClass.CppMethod("createFunc", "boost::shared_ptr<IFunc>", "unsigned int funcId", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 
 
@@ -157,21 +157,6 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
       return "   return m_erp1Data[" + offset + "] == " + eepProvidedValue + ";\n"
    rorgClass.addMethod(cppClass.CppMethod("isEepProvided", "bool", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, isEepProvidedCode(xmlRorgNode)))
 
-   def manufacturerIdCode(xmlRorgNode):
-      if xmlRorgNode.find("teachin") is None:
-         return "   return CManufacturers::kMulti_user_Manufacturer_ID;"
-      rorgShortTag = xmlRorgNode.find("telegram").text + " " + "teach"
-      if xmlRootNode.find("./appendix/section[short='" + rorgShortTag + "']") is None:
-         return "   return CManufacturers::kMulti_user_Manufacturer_ID;"
-      # No description on how to find teachin parameters is provided in the xml, so hard-code they here (available depending on kind of messages)
-      if xmlRorgNode.find("telegram").text == "4BS":
-         code =  "   if (!isEepProvided())\n"
-         code += "      return CManufacturers::kMulti_user_Manufacturer_ID;\n"
-         code += "   return CManufacturers::toManufacturerId(bitset_extract(m_erp1Data, 13, 11));\n"
-         return code;
-      return "   return CManufacturers::kMulti_user_Manufacturer_ID;"
-   rorgClass.addMethod(cppClass.CppMethod("manufacturerId", "CManufacturers::EManufacturerIds", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, manufacturerIdCode(xmlRorgNode)))
-
    def createFuncCode(xmlRorgNode):
       code = "   switch(static_cast<EFuncIds>(funcId))\n"
       code += "   {\n"
@@ -232,8 +217,57 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
          typeClass = cppClass.CppClass(typeClassName, createDefaultCtor=False)
          typeClass.inheritFrom("IType", cppClass.PUBLIC)
          classes.append(typeClass)
-         typeClass.addMember(cppClass.CppMember("m_data", "boost::dynamic_bitset<>&", cppClass.PRIVATE, cppClass.CONST))
-         typeClass.addConstructor(cppClass.CppClassConstructor(args="const boost::dynamic_bitset<>& data", init="m_data(data)"))
+         typeClass.addMember(cppClass.CppMember("m_data", "boost::dynamic_bitset<>&", cppClass.PRIVATE, cppClass.CONST, initilizationCode="m_data(data)"))
+
+         def isLinearValue(xmlDataFieldNode):
+            return True if xmlDataFieldNode.find("range/min") is not None \
+               and xmlDataFieldNode.find("range/max") is not None \
+               and xmlDataFieldNode.find("scale/min") is not None \
+               and xmlDataFieldNode.find("scale/max") is not None else False
+
+         def isBoolValue(xmlDataFieldNode):
+            return True if xmlDataFieldNode.find("enum") is not None \
+               and len(xmlDataFieldNode.findall("enum/item")) == 2 \
+               and int(xmlDataFieldNode.find("bitsize").text) == 1 else False
+
+         # Create historizers
+         historizersCppName = []
+         if len(xmlTypeNode.findall("case")) != 1:
+            util.warning("func/type : Unsupported number of \"case\" tags (expected 1) for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This profile will be ignored.")#TODO
+         else:
+            for xmlDataFieldNode in xmlHelper.findUsefulDataFieldNodes(inXmlNode=xmlTypeNode.find("case")):
+               dataText = xmlDataFieldNode.find("data").text
+               keywordName = xmlDataFieldNode.find("shortcut").text + " - " + dataText
+               historizerCppName = "m_" + cppHelper.toCppName(keywordName)
+               cppClassName = ""
+               if isLinearValue(xmlDataFieldNode):
+                  if dataText == "Temperature":
+                     cppClassName = "yApi::historization::CTemperature"
+                  elif dataText == "Humidity":
+                     cppClassName = "yApi::historization::CHumidity"
+                  elif dataText == "Barometer":
+                     cppClassName = "yApi::historization::CPressure"
+                  elif dataText == "Supply voltage" and xmlDataFieldNode.find("range") is not None:
+                     cppClassName = "yApi::historization::CVoltage"
+                  elif dataText == "Illumination":
+                     cppClassName = "yApi::historization::CIllumination"
+                  else:
+                     util.warning("func/type : Unsupported linear data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
+                     continue
+               elif isBoolValue(xmlDataFieldNode):
+                  cppClassName = "yApi::historization::CSwitch"
+               else:
+                  util.warning("func/type : Unsupported data type \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
+                  continue
+               typeClass.addMember(cppClass.CppMember(historizerCppName, "boost::shared_ptr<" + cppClassName + ">", \
+                  cppClass.PRIVATE, cppClass.NO_QUALIFER, initilizationCode= historizerCppName + "(\"" + keywordName + "\"),\n"))
+               historizersCppName.append(historizerCppName)
+               
+         typeClass.addMember(cppClass.CppMember("m_historizers", "std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >", cppClass.PRIVATE, cppClass.NO_QUALIFER, \
+            initilizationCode="m_historizers({" + ",".join(historizersCppName) + "})"))
+
+         typeClass.addMethod(cppClass.CppMethod("historizers", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   return m_historizers;"))
+         typeClass.addConstructor(cppClass.CppClassConstructor(args="const boost::dynamic_bitset<>& data"))
          typeClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, "   return " + xmlTypeNode.find("number").text + ";"))
          typeClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, \
             "   static const std::string title(\"" + xmlTypeNode.find("title").text + "\");\n" \
@@ -248,12 +282,12 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             offset = xmlDataFieldNode.find("bitoffs").text
             size = xmlDataFieldNode.find("bitsize").text
             code = "   {\n"
-            code += "      unsigned int rawValue = bitset_extract(m_data, " + offset + ", " + size + ");\n"
+            code += "      auto rawValue = bitset_extract(m_data, " + offset + ", " + size + ");\n"
             rangeMin = xmlDataFieldNode.find("range/min").text
             rangeMax = xmlDataFieldNode.find("range/max").text
             scaleMin = xmlDataFieldNode.find("scale/min").text
             scaleMax = xmlDataFieldNode.find("scale/max").text
-            code += "      double value = scaleToDouble(rawValue, " + rangeMin + ", " + rangeMax + ", " + scaleMin + ", " + scaleMax + ");\n"
+            code += "      auto value = scaleToDouble(rawValue, " + rangeMin + ", " + rangeMax + ", " + scaleMin + ", " + scaleMax + ");\n"
             code += "\n"
             code += "      auto keyword(boost::make_shared<" + keywordHistorizerClass + ">(\"" + keywordName + "\"));\n"
             code += "      keyword->set(value);\n"
@@ -269,17 +303,6 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             code += "      historizers->push_back(keyword);\n"
             code += "   }\n"
             return code
-
-         def isLinearValue(xmlDataFieldNode):
-            return True if xmlDataFieldNode.find("range/min") is not None \
-               and xmlDataFieldNode.find("range/max") is not None \
-               and xmlDataFieldNode.find("scale/min") is not None \
-               and xmlDataFieldNode.find("scale/max") is not None else False
-
-         def isBoolValue(xmlDataFieldNode):
-            return True if xmlDataFieldNode.find("enum") is not None \
-               and len(xmlDataFieldNode.findall("enum/item")) == 2 \
-               and int(xmlDataFieldNode.find("bitsize").text) == 1 else False
 
          def statesCode(xmlTypeNode):
             code = "   auto historizers(boost::make_shared<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > >());\n"

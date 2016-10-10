@@ -19,7 +19,7 @@ CONST = 2
 VIRTUAL = 4
 PURE_VIRTUAL = 8
 OVERRIDE = 16
-NO_QUALIFER = None
+NO_QUALIFER = 0
 
 # Member visibility
 PUBLIC = 1
@@ -49,7 +49,7 @@ class CppMethod():
    def visibility(self):
       return self.__visibility
 
-   def generateHeader(self, f):
+   def generateHeader(self, f, parentClassName):
       try:
          f.write("   ");
          if self.__qualifier & VIRTUAL or self.__qualifier & PURE_VIRTUAL:
@@ -93,6 +93,7 @@ class CppMember():
       self.__visibility = visibility
       self.__qualifier = qualifier
       self.__initilizationCode = initilizationCode
+      #TODO mieux gérer l'initialisation (distinguer le ctorCode des initializers)
 
    def qualifier(self):
       return self.__qualifier
@@ -100,7 +101,7 @@ class CppMember():
    def visibility(self):
       return self.__visibility
 
-   def generateHeader(self, f):
+   def generateHeader(self, f, parentClassName):
       try:
          f.write("   ");
          if self.__qualifier & STATIC:
@@ -140,7 +141,7 @@ class CppSubType(object):
    def visibility(self):
       return self.__visibility
 
-   def generateHeader(self, f):
+   def generateHeader(self, f, parentClassName):
       raise NotImplementedError()
 
 
@@ -152,7 +153,7 @@ class CppEnumType(CppSubType):
       super(CppEnumType, self).__init__(cppEnumName, visibility)
       self.__listItems = listItems
 
-   def generateHeader(self, f):
+   def generateHeader(self, f, parentClassName):
       try:
          f.write("enum " + self._cppTypeName + " {\n")
          for item in self.__listItems:
@@ -252,13 +253,13 @@ class CppClass():
       cppHeaderFile.write(visibilityCppTag(visibility) + ":\n")
       for subType in self.__subTypes:
          if subType.visibility() is visibility:
-            subType.generateHeader(cppHeaderFile)
+            subType.generateHeader(cppHeaderFile, self.__cppClassName)
       for member in self.__members:
          if member.visibility() is visibility:
-            member.generateHeader(cppHeaderFile)
+            member.generateHeader(cppHeaderFile, self.__cppClassName)
       for method in self.__methods:
          if method.visibility() is visibility:
-            method.generateHeader(cppHeaderFile)
+            method.generateHeader(cppHeaderFile, self.__cppClassName)
 
 
    def generateHeader(self, f):

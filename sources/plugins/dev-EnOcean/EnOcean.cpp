@@ -5,6 +5,7 @@
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
 #include "enOceanDescriptors/generated-manufacturers.h"
+#include "4BSTeachinVariant2.h"
 
 IMPLEMENT_PLUGIN(CEnOcean)
 
@@ -301,10 +302,38 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
       // Teachin telegram
 
       if (!rorg->isEepProvided())
-         throw std::out_of_range((boost::format("Teach-in telegram variations (without profile provided) are not supported. Please report to Yadoms-team. Telegram \"%1%\"") % erp1Message.dump()).str());
+         throw std::out_of_range((boost::format("Teach-in telegram variations (without profile provided) are not supported for now. Please report to Yadoms-team. Telegram \"%1%\"") % erp1Message.dump()).str());
 
-      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywords;
-      auto model(CManufacturers::name(rorg->manufacturerId()));
+
+      // Special-case of 4BS teachin mode Variant 2 (profile is provided in the telegram)
+      if (rorg->isEepProvided())
+      {
+         C4BSTeachinVariant2 teachInData(data);
+         auto func = rorg->createFunc(teachInData.funcId());
+         auto type = func->createType(teachInData.typeId(), data);
+
+         auto keywordsToDeclare = type->keywords();
+         if (keywordsToDeclare->empty())
+         {
+            std::cout << "Received teachin telegram for id#" << device.id() << ", " << erp1Message.rorg() << "-" << device.func() << "-" << device.type() << ", but no keyword to declare" << std::endl;
+            return;
+         }
+
+         auto model(CManufacturers::name(rorg->manufacturerId()));
+         model += std::string(" - ") + "Temperature Sensors";/*TODO à tirer du XML */
+                                                             //            switch (device.type())
+                                                             //            {
+                                                             //            case 1 /*TODO mettre une constante*/:model += std::string(" (") + "Temperature Sensor Range -40°C to 0°C" /*TODO à tirer du XML */ + ")"; break;
+                                                             //            case 2 /*TODO mettre une constante*/:model += std::string(" (") + "Temperature Sensor Range -30°C to +10°C" /*TODO à tirer du XML */ + ")"; break;
+                                                             //            default:
+                                                             //               throw std::out_of_range((boost::format("Unknown TYPE value (%1%) for FUNC %2%") % device.type() % device.func()).str());
+                                                             //            }
+
+         m_api->declareDevice(std::to_string(device.id()), model, *keywordsToDeclare);
+      }
+
+
+      throw std::out_of_range((boost::format("4BS teach-in telegram of variation 1 (with no profile provided) is not supported. Please report to Yadoms-team. Telegram \"%1%\"") % data.dump()).str());
 
       //TODO
 
@@ -360,9 +389,8 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
 
       // Create associated FUNC object
       auto func = rorg->createFunc(device.func());
-
       auto type = func->createType(device.type(), data);
-      
+
       auto keywordsToHistorize = type->states();
       if (keywordsToHistorize->empty())
       {
@@ -429,7 +457,7 @@ void CEnOcean::processEvent(boost::shared_ptr<yApi::IYPluginApi> api,
 void CEnOcean::requestDongleVersion(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    message::CCommandSendMessage sendMessage;
-   sendMessage.appendData({ message::CO_RD_VERSION });
+   sendMessage.appendData({message::CO_RD_VERSION});
 
    send(sendMessage,
         [](const message::CReceivedEsp3Packet& rcvMessage)
@@ -495,4 +523,3 @@ void CEnOcean::requestDongleVersion(boost::shared_ptr<yApi::IYPluginApi> api)
               std::endl;
         });
 }
-

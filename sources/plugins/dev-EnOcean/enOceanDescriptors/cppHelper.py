@@ -10,7 +10,12 @@
 
 #-------------------------------------------------------------------------------
 def toCppName(label):
-   return label.strip().replace(" ", "_").replace("+", "_plus_").replace("-", "_").replace(".", "_").replace(",", "_").replace("(", "_").replace(")", "_").replace("/", "_").replace("&", "_and_")
+   def acceptedChar(char):
+      return True if char.isalnum() or char == "_" else False
+      
+   normalizedLabel = label.strip().replace(" ", "_").replace("+", "_plus_").replace("-", "_").replace(".", "_").replace(",", "_").replace("(", "_") \
+      .replace(")", "_").replace("/", "_").replace("&", "_and_")
+   return ''.join([char for char in list(normalizedLabel) if acceptedChar(char)])
 
 
 #-------------------------------------------------------------------------------
