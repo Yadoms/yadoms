@@ -16,7 +16,7 @@ namespace yApi = shared::plugin::yPluginApi;
 IMPLEMENT_PLUGIN(CTeleInfo)
 
 
-CTeleInfo::CTeleInfo()
+CTeleInfo::CTeleInfo(): m_isDeveloperMode(false)
 {
 }
 
@@ -37,6 +37,8 @@ enum
 void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    std::cout << "Teleinfo is starting..." << std::endl;
+
+   m_isDeveloperMode = api->isDeveloperMode();
 
    // Load configuration values (provided by database)
    m_configuration.initializeWith(api->getConfiguration());
@@ -193,7 +195,7 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
    // Stop timeout
    m_waitForAnswerTimer->stop();
 
-   if (api->isDeveloperMode()) m_logger.logReceived(data);
+   if (m_isDeveloperMode) m_logger.logReceived(data);
 
    m_transceiver->decodeTeleInfoMessage(api, data);
 

@@ -6,10 +6,9 @@ widgetViewModelCtor = function indicatorViewModel() {
 
     //observable data
     this.command = ko.observable(1);
-
-    //observable data
     this.icon = ko.observable("");
     this.iconColor = ko.observable("");
+	this.readonly = ko.observable(true);
 
     this.capacity = null;
 
@@ -88,6 +87,11 @@ widgetViewModelCtor = function indicatorViewModel() {
                 KeywordManager.get(this.widget.configuration.device.keywordId)
                 .done(function (keyword) {
                     self.capacity = keyword.capacityName;
+					
+				   if ( keyword.accessMode ==="GetSet" )
+					  self.readonly ( false );
+				   else
+					  self.readonly ( true );
                 });
             }
         }

@@ -9,6 +9,7 @@ widgetViewModelCtor =
           //observable data
           this.command = ko.observable(1);
           this.icon = ko.observable("");
+		  this.readonly = ko.observable(true);
 
           // default size
           this.WidgetHeight = 70;
@@ -66,6 +67,15 @@ widgetViewModelCtor =
 
               if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
                   self.widgetApi.registerKeywordAcquisitions(this.widget.configuration.device.keywordId);
+				  
+				  // Get the capacity of the keyword
+				  var deffered = KeywordManager.get(this.widget.configuration.device.keywordId)
+				  .done(function (keyword) {
+					   if ( keyword.accessMode ==="GetSet" )
+						  self.readonly ( false );
+					   else
+						  self.readonly ( true );
+				  });				  
               }
 
               //we ask for device information

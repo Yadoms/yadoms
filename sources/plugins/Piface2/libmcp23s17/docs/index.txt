@@ -1,0 +1,41 @@
+/**
+@mainpage
+
+[mcp23s17.h](mcp23s17_8h.html)
+
+@section links Links
+
+- [piface.org.uk](http://www.piface.org.uk)
+- [piface product source code](http://piface.github.io)
+- [Source code on GitHub](https://github.com/piface/libmcp23s17)
+
+@section use Using the library
+
+Download:
+
+    $ git clone https://github.com/piface/libmcp23s17.git
+
+Build the library:
+
+    $ cd libmcp23s17/
+    $ make
+
+This creates the library `libmcp23s17.a`. Build the example (using PiFace Digital):
+
+    $ make example
+
+Include the library in your project with:
+
+    $ gcc -o example example.c -Isrc/ -L. -lmcp23s17
+
+`-I` directories to search for header files.
+`-L` directories to search for libraries.
+`-l` libraries to link.
+
+@section todo Todo
+
+Feel free to contribute!
+
+- Debian install
+
+*/
