@@ -93,6 +93,14 @@ namespace message
       return m_data;
    }
 
+   std::string CRadioErp1Message::dump() const
+   {
+      std::stringstream ss;
+      ss << std::setfill('0') << std::setw(2) << std::hex;
+      for (auto byte = m_data.begin(); byte != m_data.end(); ++byte)
+         ss << *byte << " ";
+      return ss.str();
+   }
 } // namespace message
 
 

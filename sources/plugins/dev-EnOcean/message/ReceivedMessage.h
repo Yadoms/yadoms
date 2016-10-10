@@ -83,7 +83,7 @@ namespace message
       CRorgs::ERorgIds rorg() const;
       unsigned int senderId() const;
       const std::vector<unsigned char>& data() const;
-
+      std::string dump() const;
    private:
       const CRorgs::ERorgIds m_rorg;
       const unsigned int m_senderId;

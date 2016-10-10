@@ -298,6 +298,14 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
 
    if (rorg->isTeachIn())
    {
+      // Teachin telegram
+
+      if (!rorg->isEepProvided())
+         throw std::out_of_range((boost::format("Teach-in telegram variations (without profile provided) are not supported. Please report to Yadoms-team. Telegram \"%1%\"") % erp1Message.dump()).str());
+
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywords;
+      auto model(CManufacturers::name(rorg->manufacturerId()));
+
       //TODO
 
       //      // Teachin telegram
@@ -363,47 +371,6 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
       }
 
       m_api->historizeData(std::to_string(device.id()), *keywordsToHistorize);
-
-      //TODO
-   //   switch (static_cast<C4BSTelegram::EFuncIds>(device.func()))
-   //   {
-   //   case 2 /*TODO mettre une constante*/:
-   //   {
-   //      // Temperature Sensors
-   //      double temperature;
-   //      switch (device.type())
-   //      {
-   //      case 1 /*TODO mettre une constante*/:
-   //      {
-   //         // Temperature Sensor Range -40°C to 0°C
-   //         temperature = scaleToDouble(data.db1(),// TODO position de la valeur à récupérer de l'XML
-   //            0, 255,// TODO valeurs à récupérer de l'XML
-   //            -40, 0);// TODO valeurs à récupérer de l'XML
-   //         break;
-   //      }
-   //      case 2 /*TODO mettre une constante*/:
-   //      {
-   //         // Temperature Sensor Range -30°C to +10°C
-   //         temperature = scaleToDouble(data.db1(),// TODO position de la valeur à récupérer de l'XML
-   //            0, 255,// TODO valeurs à récupérer de l'XML
-   //            -30, +10);// TODO valeurs à récupérer de l'XML
-   //         break;
-   //      }
-
-   //      default:
-   //         throw std::out_of_range((boost::format("Unknown TYPE value (%1%) for FUNC %2%") % device.type() % device.func()).str());
-   //      }
-
-
-   //      static const std::string keywordName("temperature");
-   //      auto keyword(boost::make_shared<yApi::historization::CTemperature>(keywordName));
-   //      keyword->set(temperature);
-   //      m_api->historizeData(std::to_string(device.id()), keyword);
-   //      break;
-   //   }
-   //   default:
-   //      throw std::out_of_range((boost::format("Unknown FUNC value (%1%)") % device.func()).str());
-   //   }
    }
 }
 
