@@ -269,6 +269,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
          historizersCppName = []
          if len(xmlTypeNode.findall("case")) != 1:
+            
             util.warning("func/type : Unsupported number of \"case\" tags (expected 1) for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This profile will be ignored.")#TODO
          else:
             for xmlDataFieldNode in xmlHelper.findUsefulDataFieldNodes(inXmlNode=xmlTypeNode.find("case")):
@@ -297,6 +298,12 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                      if not supportedUnit(xmlDataFieldNode, u"lx"):
                         continue
                      cppHistorizerClassName = "yApi::historization::CIllumination"
+                  elif dataText.encode("utf-8") == "Sun – West" \
+                     or dataText.encode("utf-8") == "Sun – South" \
+                     or dataText.encode("utf-8") == "Sun – East":            
+                     if not supportedUnit(xmlDataFieldNode, u"klx"):
+                        continue
+                     cppHistorizerClassName = "yApi::historization::CIllumination"
                   else:
                      util.warning("func/type : Unsupported linear data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
                      continue
@@ -322,7 +329,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             "   return title;"))
 
 
-         def statesCodeForLinearValue(xmlDataFieldNode):
+         def statesCodeForLinearValue(xmlDataFieldNode, applyCoef = None):
             offset = xmlDataFieldNode.find("bitoffs").text
             size = xmlDataFieldNode.find("bitsize").text
             code = "   {\n"
@@ -331,8 +338,10 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             rangeMax = xmlDataFieldNode.find("range/max").text
             scaleMin = xmlDataFieldNode.find("scale/min").text
             scaleMax = xmlDataFieldNode.find("scale/max").text
+            if applyCoef is not None:
+               scaleMin = str(float(scaleMin) * float(applyCoef))
+               scaleMax = str(float(scaleMax) * float(applyCoef))
             code += "      auto value = scaleToDouble(rawValue, " + rangeMin + ", " + rangeMax + ", " + scaleMin + ", " + scaleMax + ");\n"
-            code += "\n"
             keywordName = xmlDataFieldNode.find("shortcut").text + " - " + xmlDataFieldNode.find("data").text
             historizerCppName = "m_" + cppHelper.toCppName(keywordName)
             code += "      " + historizerCppName + "->set(value);\n"
@@ -359,6 +368,10 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                      dataText == "Supply voltage" or \
                      dataText == "Illumination":
                      code += statesCodeForLinearValue(xmlDataFieldNode)
+                  elif dataText.encode("utf-8") == "Sun – West" \
+                     or dataText.encode("utf-8") == "Sun – South" \
+                     or dataText.encode("utf-8") == "Sun – East": # Provided as kilo-lux as Yadoms knows only lux
+                     code += statesCodeForLinearValue(xmlDataFieldNode, 1000)
                   else:
                      util.warning("func/type : Unsupported linear data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
                      continue
@@ -398,6 +411,7 @@ with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
    cppSourceFile.write("#include \"../stdafx.h\"\n")
    cppSourceFile.write("#include \"" + os.path.basename(headerPath) + "\"\n")
    cppSourceFile.write("#include <shared/plugin/yPluginApi/StandardUnits.h>\n")
+   cppSourceFile.write("\n")
    cppSourceFile.write("#include \"bitsetHelpers.hpp\"\n")
    cppSourceFile.write("#include \"commonHelpers.hpp\"\n")
    cppSourceFile.write("\n")
