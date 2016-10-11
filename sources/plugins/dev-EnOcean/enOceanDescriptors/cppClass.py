@@ -133,6 +133,21 @@ class CppMember():
 
 
 #-------------------------------------------------------------------------------
+class CppType(object):
+   """ Object for generating a cpp type of higher level """
+
+   def __init__(self, cppTypeName):
+      self._cppTypeName = cppTypeName
+
+   def generateHeader(self, f):
+      raise NotImplementedError()
+
+   def generateSource(self, f):
+      raise NotImplementedError()
+
+
+
+#-------------------------------------------------------------------------------
 class CppSubType(object):
    """ Object for generating a cpp sub type """
 
@@ -148,33 +163,6 @@ class CppSubType(object):
 
    def generateSource(self, f, parentClassName):
       raise NotImplementedError()
-
-
-#-------------------------------------------------------------------------------
-class CppExtendedEnumType(CppSubType):
-   """ Object for generating a Yadoms extended enum type """
-
-   def __init__(self, cppEnumName, listItems, visibility = PRIVATE):
-      super(CppExtendedEnumType, self).__init__(cppEnumName, visibility)
-      self.__listItems = listItems
-
-   def generateHeader(self, f, parentClassName):
-      f.write("DECLARE_ENUM_HEADER(" + self._cppTypeName + ",\n")
-      for item in self.__listItems:
-         # Enum item name
-         f.write("   ((" + cppHelper.toEnumValueName(item[0]) + ")")
-         # If available, enum item value
-         if item[1]:
-            f.write("(" + item[1] + ")")
-         f.write(")\n")
-      f.write(");\n")
-
-   def generateSource(self, f, parentClassName):
-      f.write("DECLARE_ENUM_IMPLEMENTATION(" + self._cppTypeName + ",\n")
-      for item in self.__listItems:
-         # Enum item name
-         f.write("   ((" + cppHelper.toEnumValueName(item[0]) + "))")
-      f.write(");\n")
 
 
 #-------------------------------------------------------------------------------
@@ -198,6 +186,33 @@ class CppEnumType(CppSubType):
 
    def generateSource(self, f, parentClassName):
       pass
+
+
+#-------------------------------------------------------------------------------
+class CppExtendedEnumType(CppType):
+   """ Object for generating a Yadoms extended enum type """
+
+   def __init__(self, cppEnumName, listItems, visibility = PRIVATE):
+      super(CppExtendedEnumType, self).__init__(cppEnumName)
+      self.__listItems = listItems
+
+   def generateHeader(self, f):
+      f.write("DECLARE_ENUM_HEADER(" + self._cppTypeName + ",\n")
+      for item in self.__listItems:
+         # Enum item name
+         f.write("   ((" + cppHelper.toEnumValueName(item[0]) + ")")
+         # If available, enum item value
+         if item[1]:
+            f.write("(" + item[1] + ")")
+         f.write(")\n")
+      f.write(");\n\n")
+
+   def generateSource(self, f):
+      f.write("DECLARE_ENUM_IMPLEMENTATION(" + self._cppTypeName + ",\n")
+      for item in self.__listItems:
+         # Enum item name
+         f.write("   ((" + cppHelper.toEnumValueName(item[0]) + "))\n")
+      f.write(");\n")
 
 
 #-------------------------------------------------------------------------------
@@ -242,10 +257,11 @@ class CppClassConstructor():
 
 
 #-------------------------------------------------------------------------------
-class CppClass():
+class CppClass(CppType):
    """ Object for generating a cpp class """
 
    def __init__(self, cppClassName, createDefaultCtor=True):
+      super(CppClass, self).__init__(cppClassName)
       self.__cppClassName = cppClassName
       self.__createDefaultCtor = createDefaultCtor
       self.__subTypes = []

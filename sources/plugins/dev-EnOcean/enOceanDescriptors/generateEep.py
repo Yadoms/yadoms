@@ -27,7 +27,7 @@ sourcePath = sys.argv[3]
 
 
 #-------------------------------------------------------------------------------
-classes = []
+cppTypes = []
 
 
 xmlRootNode = xml.etree.ElementTree.parse(xmlInputFilePath).getroot()
@@ -39,7 +39,7 @@ xmlProfileNode = xmlRootNode.find("profile")
 
 # IType : Type interface
 itypeClass = cppClass.CppClass("IType", createDefaultCtor=False)
-classes.append(itypeClass)
+cppTypes.append(itypeClass)
 itypeClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 itypeClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 itypeClass.addMethod(cppClass.CppMethod("states", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
@@ -48,7 +48,7 @@ itypeClass.addMethod(cppClass.CppMethod("historizers", "const std::vector<boost:
 
 # IFunc : Func interface
 ifuncClass = cppClass.CppClass("IFunc", createDefaultCtor=False)
-classes.append(ifuncClass)
+cppTypes.append(ifuncClass)
 ifuncClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 ifuncClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 ifuncClass.addMethod(cppClass.CppMethod("createType", "boost::shared_ptr<IType>", "unsigned int typeId, const boost::dynamic_bitset<>& data", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
@@ -56,7 +56,7 @@ ifuncClass.addMethod(cppClass.CppMethod("createType", "boost::shared_ptr<IType>"
 
 # IRorg : Rorg interface
 irorgClass = cppClass.CppClass("IRorg", createDefaultCtor=False)
-classes.append(irorgClass)
+cppTypes.append(irorgClass)
 irorgClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 irorgClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 irorgClass.addMethod(cppClass.CppMethod("fullname", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
@@ -68,7 +68,7 @@ irorgClass.addMethod(cppClass.CppMethod("createFunc", "boost::shared_ptr<IFunc>"
 
 # CRorgs : Main Rorgs class, listing Rorg messages
 rorgsClass = cppClass.CppClass("CRorgs")
-classes.append(rorgsClass)
+cppTypes.append(rorgsClass)
 rorgsClass.addSubType(cppClass.CppEnumType("ERorgIds", \
    xmlHelper.getEnumValues(inNode=xmlProfileNode, foreachSubNode="rorg", enumValueNameTag="title", enumValueTag="number"), cppClass.PUBLIC))
 rorgsClass.addMember(cppClass.CppMember("RorgMap", "std::map<unsigned int, std::string>", cppClass.PRIVATE, cppClass.STATIC | cppClass.CONST, \
@@ -102,11 +102,11 @@ rorgsClass.addMethod(cppClass.CppMethod("createRorg", "boost::shared_ptr<IRorg>"
 # Create each Rorg telegram class
 for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
-   # Rorg telegram classes
+   # Rorg telegram cppTypes
    rorgClassName = "C" + xmlRorgNode.find("telegram").text + "Telegram"
    rorgClass = cppClass.CppClass(rorgClassName, createDefaultCtor=False)
    rorgClass.inheritFrom("IRorg", cppClass.PUBLIC)
-   classes.append(rorgClass)
+   cppTypes.append(rorgClass)
    rorgClass.addSubType(cppClass.CppEnumType("EFuncIds", xmlHelper.getEnumValues(inNode=xmlRorgNode, foreachSubNode="func", enumValueNameTag="title", enumValueTag="number"), cppClass.PUBLIC))
    rorgClass.addMember(cppClass.CppMember("m_erp1Data", "boost::dynamic_bitset<>&", cppClass.PRIVATE, cppClass.CONST))
    rorgClass.addConstructor(cppClass.CppClassConstructor(args="const boost::dynamic_bitset<>& erp1Data", init="m_erp1Data(erp1Data)"))
@@ -187,11 +187,11 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
       "   }"))
 
 
-   # Func classes
+   # Func cppTypes
    for xmlFuncNode in xmlRorgNode.findall("func"):
       funcClass = cppClass.CppClass("C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("title").text))
       funcClass.inheritFrom("IFunc", cppClass.PUBLIC)
-      classes.append(funcClass)
+      cppTypes.append(funcClass)
       funcClass.addSubType(cppClass.CppEnumType("ETypeIds", xmlHelper.getEnumValues(inNode=xmlFuncNode, foreachSubNode="type", enumValueNameTag="number", enumValueTag="number"), cppClass.PUBLIC))
       funcClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, "   return " + xmlFuncNode.find("number").text + ";"))
       funcClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, \
@@ -212,12 +212,11 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
 
 
-      # Type classes
+      # Type cppTypes
       for xmlTypeNode in xmlFuncNode.findall("type"):
          typeClassName = "C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("title").text) + "_" + xmlTypeNode.find("number").text
          typeClass = cppClass.CppClass(typeClassName, createDefaultCtor=False)
          typeClass.inheritFrom("IType", cppClass.PUBLIC)
-         classes.append(typeClass)
          typeClass.addMember(cppClass.CppMember("m_data", "boost::dynamic_bitset<>&", cppClass.PRIVATE, cppClass.CONST, initilizationCode="m_data(data)"))
 
          def isLinearValue(xmlDataFieldNode):
@@ -232,8 +231,18 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                and int(xmlDataFieldNode.find("bitsize").text) == 1 else False
 
          def isEnumValue(xmlDataFieldNode):
-            return True if xmlDataFieldNode.find("enum") is not None \
-               and len(xmlDataFieldNode.findall("enum/item")) > 2 else False
+            if xmlDataFieldNode.find("enum") is None \
+               or len(xmlDataFieldNode.findall("enum/item")) <= 2 \
+               or len(xmlDataFieldNode.findall("enum/item")) != len(xmlDataFieldNode.findall("enum/item/value")):
+               return False
+            # Check if value is convertible to int
+            try:
+               for value in xmlDataFieldNode.findall("enum/item/value"):
+                  int(value.text)
+            except:
+               return False
+            return True
+
 
          def supportedUnit(xmlDataFieldNode, expectedUnit):
             if expectedUnit is not None and xmlDataFieldNode.find("unit").text == expectedUnit:
@@ -243,17 +252,19 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             return False
 
          # Create historizers
-         def createSpecificHistorizer(xmlDataFieldNode, cppHistorizerClassName):
+         def createSpecificHistorizer(xmlDataFieldNode, xmlTypeNode):
             enumValues = xmlHelper.getEnumValues(xmlDataFieldNode.find("enum"), "item", "description", "value")
             for enumValue in enumValues:
                enumValue[1] = re.split(":|<", enumValue[1])[0]
-            historizerEnumName = "E" + cppHelper.toCppName(xmlDataFieldNode.find("data").text)
+            cppHistorizerClassName = "C" + cppHelper.toCppName(xmlTypeNode.find("title").text) + "_" + cppHelper.toCppName(xmlDataFieldNode.find("data").text) + "Historizer"
+            historizerEnumName = "E" + cppHelper.toCppName(xmlTypeNode.find("title").text) + "_" + cppHelper.toCppName(xmlDataFieldNode.find("data").text) + "_" + cppHelper.toCppName(xmlDataFieldNode.find("data").text)
             cppHistorizerClass = cppClass.CppClass(cppHistorizerClassName, createDefaultCtor=False)
             cppHistorizerClass.inheritFrom("yApi::historization::CSingleHistorizableData<" + historizerEnumName + ">", cppClass.PUBLIC)
-            cppHistorizerClass.addSubType(cppClass.CppExtendedEnumType(historizerEnumName, enumValues))
             cppHistorizerClass.addConstructor(cppClass.CppClassConstructor("const std::string& keywordName", \
-               "CSingleHistorizableData<" + historizerEnumName + ">(keywordName, yApi::CStandardCapacity("", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kNoData), yApi::EKeywordAccessMode::kGet)"))
-            classes.append(cppHistorizerClass)
+               "CSingleHistorizableData<" + historizerEnumName + ">(keywordName, yApi::CStandardCapacity(\"" + historizerEnumName + "\", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kNoData), yApi::EKeywordAccessMode::kGet)"))
+            cppTypes.append(cppClass.CppExtendedEnumType(historizerEnumName, enumValues))
+            cppTypes.append(cppHistorizerClass)
+            return cppHistorizerClassName
 
 
          historizersCppName = []
@@ -292,8 +303,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                elif isBoolValue(xmlDataFieldNode):
                   cppHistorizerClassName = "yApi::historization::CSwitch"
                elif isEnumValue(xmlDataFieldNode):
-                  cppHistorizerClassName = "C" + cppHelper.toCppName(dataText) + "Historizer"
-                  typeClass.addSubType(createSpecificHistorizer(xmlDataFieldNode, cppHistorizerClassName))
+                  cppHistorizerClassName = createSpecificHistorizer(xmlDataFieldNode, xmlTypeNode)
                else:
                   util.warning("func/type : Unsupported data type \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
                   continue
@@ -361,6 +371,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             return code
 
          typeClass.addMethod(cppClass.CppMethod("states", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, statesCode(xmlTypeNode)))
+         cppTypes.append(typeClass)
 
 
 
@@ -371,13 +382,13 @@ with codecs.open(headerPath, 'w', 'utf_8') as cppHeaderFile:
 
    cppHeaderFile.write("// Generated file, don't modify\n")
    cppHeaderFile.write("#pragma once\n")
-   cppHeaderFile.write("#include <plugin_cpp_api/IPlugin.h>\n")
+   cppHeaderFile.write("#include <shared/plugin/yPluginApi/IYPluginApi.h>\n")
    cppHeaderFile.write("\n")
    cppHeaderFile.write("namespace yApi = shared::plugin::yPluginApi;\n")
    cppHeaderFile.write("\n")
 
-   for oneClass in classes:
-      oneClass.generateHeader(cppHeaderFile)
+   for oneType in cppTypes:
+      oneType.generateHeader(cppHeaderFile)
 
 # Generate Source
 util.createParentDir(sourcePath)
@@ -386,11 +397,12 @@ with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
    cppSourceFile.write("// Generated file, don't modify\n")
    cppSourceFile.write("#include \"../stdafx.h\"\n")
    cppSourceFile.write("#include \"" + os.path.basename(headerPath) + "\"\n")
+   cppSourceFile.write("#include <shared/plugin/yPluginApi/StandardUnits.h>\n")
    cppSourceFile.write("#include \"bitsetHelpers.hpp\"\n")
    cppSourceFile.write("#include \"commonHelpers.hpp\"\n")
    cppSourceFile.write("\n")
 
-   for oneClass in classes:
-      oneClass.generateSource(cppSourceFile)
+   for oneType in cppTypes:
+      oneType.generateSource(cppSourceFile)
 
 util.finish()
