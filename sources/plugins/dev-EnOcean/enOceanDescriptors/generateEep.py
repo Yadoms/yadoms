@@ -260,7 +260,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                   util.warning("func/type : Unsupported data type \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
                   continue
                typeClass.addMember(cppClass.CppMember(historizerCppName, "boost::shared_ptr<" + cppClassName + ">", \
-                  cppClass.PRIVATE, cppClass.NO_QUALIFER, initilizationCode= historizerCppName + "(\"" + keywordName + "\")"))
+                  cppClass.PRIVATE, cppClass.NO_QUALIFER, initilizationCode= historizerCppName + "(boost::make_shared<" + cppClassName + ">(\"" + keywordName + "\"))"))
                historizersCppName.append(historizerCppName)
                
          typeClass.addMember(cppClass.CppMember("m_historizers", "std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >", cppClass.PRIVATE, cppClass.NO_QUALIFER, \
