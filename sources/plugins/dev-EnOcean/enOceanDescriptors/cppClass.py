@@ -146,6 +146,36 @@ class CppSubType(object):
    def generateHeader(self, f, parentClassName):
       raise NotImplementedError()
 
+   def generateSource(self, f, parentClassName):
+      raise NotImplementedError()
+
+
+#-------------------------------------------------------------------------------
+class CppExtendedEnumType(CppSubType):
+   """ Object for generating a Yadoms extended enum type """
+
+   def __init__(self, cppEnumName, listItems, visibility = PRIVATE):
+      super(CppExtendedEnumType, self).__init__(cppEnumName, visibility)
+      self.__listItems = listItems
+
+   def generateHeader(self, f, parentClassName):
+      f.write("DECLARE_ENUM_HEADER(" + self._cppTypeName + ",\n")
+      for item in self.__listItems:
+         # Enum item name
+         f.write("   ((" + cppHelper.toEnumValueName(item[0]) + ")")
+         # If available, enum item value
+         if item[1]:
+            f.write("(" + item[1] + ")")
+         f.write(")\n")
+      f.write(");\n")
+
+   def generateSource(self, f, parentClassName):
+      f.write("DECLARE_ENUM_IMPLEMENTATION(" + self._cppTypeName + ",\n")
+      for item in self.__listItems:
+         # Enum item name
+         f.write("   ((" + cppHelper.toEnumValueName(item[0]) + "))")
+      f.write(");\n")
+
 
 #-------------------------------------------------------------------------------
 class CppEnumType(CppSubType):
@@ -156,19 +186,18 @@ class CppEnumType(CppSubType):
       self.__listItems = listItems
 
    def generateHeader(self, f, parentClassName):
-      try:
-         f.write("enum " + self._cppTypeName + " {\n")
-         for item in self.__listItems:
-            # Enum item name
-            f.write("   " + cppHelper.toEnumValueName(item[0]))
-            # If available, enum item value
-            if item[1]:
-               f.write(" = " + item[1])
-            f.write(",\n")
-         f.write("};\n")
-      except Exception as e:
-         print "error : generating header of enum " + self._cppTypeName
-         print traceback.format_exc()
+      f.write("enum " + self._cppTypeName + " {\n")
+      for item in self.__listItems:
+         # Enum item name
+         f.write("   " + cppHelper.toEnumValueName(item[0]))
+         # If available, enum item value
+         if item[1]:
+            f.write(" = " + item[1])
+         f.write(",\n")
+      f.write("};\n")
+
+   def generateSource(self, f, parentClassName):
+      pass
 
 
 #-------------------------------------------------------------------------------
@@ -328,6 +357,10 @@ class CppClass():
 
    def generateSource(self, f):
       try:
+         # Subtypes
+         for subType in self.__subTypes:
+            subType.generateSource(f, self.__cppClassName)
+
          # Initialization of static members
          for member in self.__members:
             if member.qualifier() & STATIC:

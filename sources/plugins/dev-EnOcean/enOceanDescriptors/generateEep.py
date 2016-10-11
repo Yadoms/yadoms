@@ -8,6 +8,7 @@ import os.path
 import xml.etree.ElementTree
 import string
 import codecs
+import re
 
 import cppClass
 import cppHelper
@@ -230,6 +231,10 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                and len(xmlDataFieldNode.findall("enum/item")) == 2 \
                and int(xmlDataFieldNode.find("bitsize").text) == 1 else False
 
+         def isEnumValue(xmlDataFieldNode):
+            return True if xmlDataFieldNode.find("enum") is not None \
+               and len(xmlDataFieldNode.findall("enum/item")) > 2 else False
+
          def supportedUnit(xmlDataFieldNode, expectedUnit):
             if expectedUnit is not None and xmlDataFieldNode.find("unit").text == expectedUnit:
                return True
@@ -238,6 +243,19 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             return False
 
          # Create historizers
+         def createSpecificHistorizer(xmlDataFieldNode, cppHistorizerClassName):
+            enumValues = xmlHelper.getEnumValues(xmlDataFieldNode.find("enum"), "item", "description", "value")
+            for enumValue in enumValues:
+               enumValue[1] = re.split(":|<", enumValue[1])[0]
+            historizerEnumName = "E" + cppHelper.toCppName(xmlDataFieldNode.find("data").text)
+            cppHistorizerClass = cppClass.CppClass(cppHistorizerClassName, createDefaultCtor=False)
+            cppHistorizerClass.inheritFrom("yApi::historization::CSingleHistorizableData<" + historizerEnumName + ">", cppClass.PUBLIC)
+            cppHistorizerClass.addSubType(cppClass.CppExtendedEnumType(historizerEnumName, enumValues))
+            cppHistorizerClass.addConstructor(cppClass.CppClassConstructor("const std::string& keywordName", \
+               "CSingleHistorizableData<" + historizerEnumName + ">(keywordName, yApi::CStandardCapacity("", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kNoData), yApi::EKeywordAccessMode::kGet)"))
+            classes.append(cppHistorizerClass)
+
+
          historizersCppName = []
          if len(xmlTypeNode.findall("case")) != 1:
             util.warning("func/type : Unsupported number of \"case\" tags (expected 1) for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This profile will be ignored.")#TODO
@@ -246,38 +264,41 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                dataText = xmlDataFieldNode.find("data").text
                keywordName = xmlDataFieldNode.find("shortcut").text + " - " + dataText
                historizerCppName = "m_" + cppHelper.toCppName(keywordName)
-               cppClassName = ""
+               cppHistorizerClassName = ""
                if isLinearValue(xmlDataFieldNode):
                   if dataText == "Temperature":
                      if not supportedUnit(xmlDataFieldNode, u"°C"):
                         continue
-                     cppClassName = "yApi::historization::CTemperature"
+                     cppHistorizerClassName = "yApi::historization::CTemperature"
                   elif dataText == "Humidity":
                      if not supportedUnit(xmlDataFieldNode, u"%"):
                         continue
-                     cppClassName = "yApi::historization::CHumidity"
+                     cppHistorizerClassName = "yApi::historization::CHumidity"
                   elif dataText == "Barometer":
                      if not supportedUnit(xmlDataFieldNode, u"hPa"):
                         continue
-                     cppClassName = "yApi::historization::CPressure"
+                     cppHistorizerClassName = "yApi::historization::CPressure"
                   elif dataText == "Supply voltage" and xmlDataFieldNode.find("range") is not None:
                      if not supportedUnit(xmlDataFieldNode, u"V"):
                         continue
-                     cppClassName = "yApi::historization::CVoltage"
+                     cppHistorizerClassName = "yApi::historization::CVoltage"
                   elif dataText == "Illumination":
                      if not supportedUnit(xmlDataFieldNode, u"lx"):
                         continue
-                     cppClassName = "yApi::historization::CIllumination"
+                     cppHistorizerClassName = "yApi::historization::CIllumination"
                   else:
                      util.warning("func/type : Unsupported linear data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
                      continue
                elif isBoolValue(xmlDataFieldNode):
-                  cppClassName = "yApi::historization::CSwitch"
+                  cppHistorizerClassName = "yApi::historization::CSwitch"
+               elif isEnumValue(xmlDataFieldNode):
+                  cppHistorizerClassName = "C" + cppHelper.toCppName(dataText) + "Historizer"
+                  typeClass.addSubType(createSpecificHistorizer(xmlDataFieldNode, cppHistorizerClassName))
                else:
                   util.warning("func/type : Unsupported data type \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
                   continue
-               typeClass.addMember(cppClass.CppMember(historizerCppName, "boost::shared_ptr<" + cppClassName + ">", \
-                  cppClass.PRIVATE, cppClass.NO_QUALIFER, initilizationCode= historizerCppName + "(boost::make_shared<" + cppClassName + ">(\"" + keywordName + "\"))"))
+               typeClass.addMember(cppClass.CppMember(historizerCppName, "boost::shared_ptr<" + cppHistorizerClassName + ">", \
+                  cppClass.PRIVATE, cppClass.NO_QUALIFER, initilizationCode= historizerCppName + "(boost::make_shared<" + cppHistorizerClassName + ">(\"" + keywordName + "\"))"))
                historizersCppName.append(historizerCppName)
                
          typeClass.addMember(cppClass.CppMember("m_historizers", "std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >", cppClass.PRIVATE, cppClass.NO_QUALIFER, \
