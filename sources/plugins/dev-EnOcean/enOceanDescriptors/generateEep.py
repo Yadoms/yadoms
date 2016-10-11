@@ -260,11 +260,11 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                   util.warning("func/type : Unsupported data type \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
                   continue
                typeClass.addMember(cppClass.CppMember(historizerCppName, "boost::shared_ptr<" + cppClassName + ">", \
-                  cppClass.PRIVATE, cppClass.NO_QUALIFER, initilizationCode= historizerCppName + "(\"" + keywordName + "\"),\n"))
+                  cppClass.PRIVATE, cppClass.NO_QUALIFER, initilizationCode= historizerCppName + "(\"" + keywordName + "\")"))
                historizersCppName.append(historizerCppName)
                
          typeClass.addMember(cppClass.CppMember("m_historizers", "std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >", cppClass.PRIVATE, cppClass.NO_QUALIFER, \
-            initilizationCode="m_historizers({" + ",".join(historizersCppName) + "})"))
+            initilizationCode="m_historizers( { " + ", ".join(historizersCppName) + " } )"))
 
          typeClass.addMethod(cppClass.CppMethod("historizers", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   return m_historizers;"))
          typeClass.addConstructor(cppClass.CppClassConstructor(args="const boost::dynamic_bitset<>& data"))
@@ -349,9 +349,6 @@ with codecs.open(headerPath, 'w', 'utf_8') as cppHeaderFile:
 
    cppHeaderFile.write("// Generated file, don't modify\n")
    cppHeaderFile.write("#pragma once\n")
-   cppHeaderFile.write("#include \"generated-manufacturers.h\"\n")
-   cppHeaderFile.write("#include \"bitsetHelpers.hpp\"\n")
-   cppHeaderFile.write("#include \"commonHelpers.hpp\"\n")
    cppHeaderFile.write("#include <plugin_cpp_api/IPlugin.h>\n")
    cppHeaderFile.write("\n")
    cppHeaderFile.write("namespace yApi = shared::plugin::yPluginApi;\n")
@@ -367,6 +364,8 @@ with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
    cppSourceFile.write("// Generated file, don't modify\n")
    cppSourceFile.write("#include \"../stdafx.h\"\n")
    cppSourceFile.write("#include \"" + os.path.basename(headerPath) + "\"\n")
+   cppSourceFile.write("#include \"bitsetHelpers.hpp\"\n")
+   cppSourceFile.write("#include \"commonHelpers.hpp\"\n")
    cppSourceFile.write("\n")
 
    for oneClass in classes:

@@ -93,13 +93,15 @@ class CppMember():
       self.__visibility = visibility
       self.__qualifier = qualifier
       self.__initilizationCode = initilizationCode
-      #TODO mieux gérer l'initialisation (distinguer le ctorCode des initializers)
 
    def qualifier(self):
       return self.__qualifier
 
    def visibility(self):
       return self.__visibility
+
+   def initilizationCode(self):
+      return self.__initilizationCode
 
    def generateHeader(self, f, parentClassName):
       try:
@@ -179,22 +181,28 @@ class CppClassConstructor():
       self.__code = code
       self.__visibility = visibility
 
-   def generateHeader(self, f, cppClassName):
+   def generateHeader(self, f, parentClassName):
       try:
          f.write(visibilityCppTag(self.__visibility) + ":\n")
          f.write("   ")
          if self.__args and len(self.__args) > 0 and self.__args.count(',') == 0:
             f.write("explicit ")
-         f.write(cppClassName + "(" + self.__args + ");\n")
+         f.write(parentClassName + "(" + self.__args + ");\n")
       except Exception as e:
          print "error : generating header of " + parentClassName + "::" + parentClassName
          print traceback.format_exc()
 
-   def generateSource(self, f, cppClassName):
+   def generateSource(self, f, initializersCode, parentClassName):
       try:
-         f.write(cppClassName + "::" + cppClassName + "(" + self.__args + ")\n")
+         f.write(parentClassName + "::" + parentClassName + "(" + self.__args + ")\n")
+         if initializersCode or self.__init:
+            f.write(": ")
+         if initializersCode:
+            f.write(",\n  ".join(initializersCode))
+            if self.__init:
+               f.write(",\n")
          if self.__init:
-            f.write(": " + self.__init + "\n")
+            f.write(self.__init + "\n")
          f.write("{\n")
          if self.__code:
             f.write(self.__code + "\n")
@@ -308,6 +316,16 @@ class CppClass():
          print traceback.format_exc()
 
 
+   def __generateMembersInitializersCode(self):
+      initializers = []
+      for member in self.__members:
+         if member.qualifier() & STATIC:
+            continue
+         if member.initilizationCode():
+            initializers.append(member.initilizationCode())
+      return initializers
+
+
    def generateSource(self, f):
       try:
          # Initialization of static members
@@ -317,12 +335,17 @@ class CppClass():
 
          # Ctor and dtor
          if self.__createDefaultCtor:
-            f.write(self.__cppClassName + "::" + self.__cppClassName + "(){}\n")
-            f.write("\n")
+            f.write(self.__cppClassName + "::" + self.__cppClassName + "()\n")
+            initializersCode = ",\n  ".join(self.__generateMembersInitializersCode())
+            if initializersCode:
+               f.write(": " + initializersCode + "\n")
+            f.write("{}\n")
+
          for constructor in self.__constructors:
-            constructor.generateSource(f, self.__cppClassName)
-         f.write(self.__cppClassName + "::~" + self.__cppClassName + "(){}\n")
-         f.write("\n")
+            constructor.generateSource(f, self.__generateMembersInitializersCode(), self.__cppClassName)
+
+         f.write(self.__cppClassName + "::~" + self.__cppClassName + "()\n")
+         f.write("{}\n")
 
          # Methods
          for method in self.__methods:
