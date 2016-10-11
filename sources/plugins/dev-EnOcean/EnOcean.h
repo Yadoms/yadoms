@@ -48,39 +48,35 @@ protected:
    /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] command          The received command
    //--------------------------------------------------------------
-   void onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
-                  boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const;
+   void onCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const;
 
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the UPS becomes connected
    /// \param [in] api              Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
+   void processConnectionEvent();
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the UPS becomes unconnected
    /// \param [in] api              Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
+   void processUnConnectionEvent();
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the data are received from the UPS
    /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] message          Message received
    //--------------------------------------------------------------
-   void processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
-                            const message::CReceivedEsp3Packet& message);
+   void processDataReceived(const message::CReceivedEsp3Packet& message);
 
    //--------------------------------------------------------------
    /// \brief	                     Process received messages
    /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] esp3Packet       Message received
    //--------------------------------------------------------------
-   void processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
-                         const message::CReceivedEsp3Packet& esp3Packet);
-   void processEvent(boost::shared_ptr<yApi::IYPluginApi> api,
-                     const message::CReceivedEsp3Packet& esp3Packet);
+   void processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) const;
+   static void processEvent(const message::CReceivedEsp3Packet& esp3Packet);
 
    //--------------------------------------------------------------
    /// \brief	                     Extract sender ID from buffer
@@ -101,13 +97,13 @@ protected:
    /// \brief	                     Requests to EnOcean
    /// \param [in] api              Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void requestDongleVersion(boost::shared_ptr<yApi::IYPluginApi> api);
+   void requestDongleVersion();
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection to the UPS
    /// \param [in] api              Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void createConnection(boost::shared_ptr<yApi::IYPluginApi> api);
+   void createConnection();
 
    //--------------------------------------------------------------
    /// \brief	                     Close the connection to the UPS
@@ -118,7 +114,7 @@ protected:
    /// \brief	                     Protocol error processing (retry last command)
    /// \param [in] api              Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void protocolErrorProcess(boost::shared_ptr<yApi::IYPluginApi> api);
+   void protocolErrorProcess();
 
    //--------------------------------------------------------------
    /// \brief	                     Check if connections are the same between the 2 configurations

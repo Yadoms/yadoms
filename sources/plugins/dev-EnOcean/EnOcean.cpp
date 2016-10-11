@@ -6,6 +6,7 @@
 #include "ProtocolException.hpp"
 #include "enOceanDescriptors/generated-manufacturers.h"
 #include "4BSTeachinVariant2.h"
+#include "enOceanDescriptors/bitsetHelpers.hpp"
 
 IMPLEMENT_PLUGIN(CEnOcean)
 
@@ -33,43 +34,43 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    m_api = api;
 
-   api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+   m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
    std::cout << "CEnOcean is starting..." << std::endl;
 
    // Load configuration values (provided by database)
-   m_configuration.initializeWith(api->getConfiguration());
+   m_configuration.initializeWith(m_api->getConfiguration());
 
    // Create the connection
-   createConnection(api);
+   createConnection();
 
    // the main loop
    while (true)
    {
       // Wait for an event
-      switch (api->getEventHandler().waitForEvents())
+      switch (m_api->getEventHandler().waitForEvents())
       {
       case yApi::IYPluginApi::kEventStopRequested:
          {
             std::cout << "Stop requested" << std::endl;
-            api->setPluginState(yApi::historization::EPluginState::kStopped);
+            m_api->setPluginState(yApi::historization::EPluginState::kStopped);
             return;
          }
       case yApi::IYPluginApi::kEventDeviceCommand:
          {
             // Command received from Yadoms
-            auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
+            auto command(m_api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
             std::cout << "Command received : " << yApi::IDeviceCommand::toString(command) << std::endl;
 
-            onCommand(api, command);
+            onCommand(command);
 
             break;
          }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
             // Configuration was updated
-            api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            auto newConfigurationData = api->getEventHandler().getEventData<shared::CDataContainer>();
+            m_api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+            auto newConfigurationData = m_api->getEventHandler().getEventData<shared::CDataContainer>();
             std::cout << "Update configuration..." << std::endl;
             BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
@@ -87,36 +88,36 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             m_configuration.initializeWith(newConfigurationData);
 
             if (needToReconnect)
-               createConnection(api);
+               createConnection();
             else
-               api->setPluginState(yApi::historization::EPluginState::kRunning);
+               m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 
             break;
          }
       case kEvtPortConnection:
          {
-            if (api->getEventHandler().getEventData<bool>())
-               processConnectionEvent(api);
+            if (m_api->getEventHandler().getEventData<bool>())
+               processConnectionEvent();
             else
-               processUnConnectionEvent(api);
+               processUnConnectionEvent();
 
             break;
          }
       case kEvtPortDataReceived:
          {
-            const auto message(api->getEventHandler().getEventData<const message::CReceivedEsp3Packet>());
-            processDataReceived(api, message);
+            const auto message(m_api->getEventHandler().getEventData<const message::CReceivedEsp3Packet>());
+            processDataReceived(message);
             break;
          }
       case kAnswerTimeout:
          {
             std::cout << "No answer received from EnOcean dongle (timeout)" << std::endl;
-            protocolErrorProcess(api);
+            protocolErrorProcess();
             break;
          }
       case kProtocolErrorRetryTimer:
          {
-            createConnection(api);
+            createConnection();
             break;
          }
       default:
@@ -128,13 +129,13 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CEnOcean::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
+void CEnOcean::createConnection()
 {
-   api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+   m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
    // Create the port instance
    m_port = CEnOceanFactory::constructPort(m_configuration,
-                                           api->getEventHandler(),
+                                           m_api->getEventHandler(),
                                            kEvtPortConnection,
                                            kEvtPortDataReceived);
    m_port->start();
@@ -151,8 +152,7 @@ bool CEnOcean::connectionsAreEqual(const CEnOceanConfiguration& conf1,
    return (conf1.getSerialPort() == conf2.getSerialPort());
 }
 
-void CEnOcean::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
-                         boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const
+void CEnOcean::onCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const
 {
    if (!m_port)
       std::cout << "Command not + (dongle is not ready) : " << command << std::endl;
@@ -202,19 +202,19 @@ void CEnOcean::send(const message::CSendMessage& sendMessage,
    onReceiveFct(receivedEvtHandler.getEventData<const message::CReceivedEsp3Packet>());
 }
 
-void CEnOcean::processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
+void CEnOcean::processConnectionEvent()
 {
    std::cout << "EnOcean port opened" << std::endl;
 
    try
    {
-      requestDongleVersion(api);
+      requestDongleVersion();
       //TODO
    }
    catch (CProtocolException& e)
    {
       std::cerr << "Protocol error : " << e.what();
-      protocolErrorProcess(api);
+      protocolErrorProcess();
    }
    catch (shared::communication::CPortException& e)
    {
@@ -223,23 +223,22 @@ void CEnOcean::processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
    }
 }
 
-void CEnOcean::protocolErrorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
+void CEnOcean::protocolErrorProcess()
 {
    // Retry full connection
-   processUnConnectionEvent(api);
-   api->getEventHandler().createTimer(kProtocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
+   processUnConnectionEvent();
+   m_api->getEventHandler().createTimer(kProtocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
 }
 
-void CEnOcean::processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
+void CEnOcean::processUnConnectionEvent()
 {
    std::cout << "EnOcean connection was lost" << std::endl;
-   api->setPluginState(yApi::historization::EPluginState::kError, "connectionFailed");
+   m_api->setPluginState(yApi::historization::EPluginState::kError, "connectionFailed");
 
    destroyConnection();
 }
 
-void CEnOcean::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
-                                   const message::CReceivedEsp3Packet& message)
+void CEnOcean::processDataReceived(const message::CReceivedEsp3Packet& message)
 {
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
@@ -255,12 +254,12 @@ void CEnOcean::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
       switch (message.header().packetType())
       {
       case message::RADIO_ERP1:
-         processRadioErp1(api, message);
+         processRadioErp1(message);
          break;//TODO
       case message::RESPONSE: break;//TODO
       case message::RADIO_SUB_TEL: break;//TODO
       case message::EVENT:
-         processEvent(api, message);
+         processEvent(message);
          break;//TODO
       case message::COMMON_COMMAND: break;//TODO
       case message::SMART_ACK_COMMAND: break;//TODO
@@ -285,8 +284,7 @@ void CEnOcean::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 
-void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
-                                const message::CReceivedEsp3Packet& esp3Packet)
+void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) const
 {
    message::CRadioErp1Message erp1Message(esp3Packet);
 
@@ -306,82 +304,19 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
 
 
       // Special-case of 4BS teachin mode Variant 2 (profile is provided in the telegram)
-      if (rorg->isEepProvided())
+      C4BSTeachinVariant2 teachInData(data);
+      auto func = rorg->createFunc(teachInData.funcId());
+      auto type = func->createType(teachInData.typeId(), data);
+
+      auto keywordsToDeclare = type->historizers();
+      if (keywordsToDeclare.empty())
       {
-         C4BSTeachinVariant2 teachInData(data);
-         auto func = rorg->createFunc(teachInData.funcId());
-         auto type = func->createType(teachInData.typeId(), data);
-
-         auto keywordsToDeclare = type->keywords();
-         if (keywordsToDeclare->empty())
-         {
-            std::cout << "Received teachin telegram for id#" << device.id() << ", " << erp1Message.rorg() << "-" << device.func() << "-" << device.type() << ", but no keyword to declare" << std::endl;
-            return;
-         }
-
-         auto model(CManufacturers::name(rorg->manufacturerId()));
-         model += std::string(" - ") + "Temperature Sensors";/*TODO à tirer du XML */
-                                                             //            switch (device.type())
-                                                             //            {
-                                                             //            case 1 /*TODO mettre une constante*/:model += std::string(" (") + "Temperature Sensor Range -40°C to 0°C" /*TODO à tirer du XML */ + ")"; break;
-                                                             //            case 2 /*TODO mettre une constante*/:model += std::string(" (") + "Temperature Sensor Range -30°C to +10°C" /*TODO à tirer du XML */ + ")"; break;
-                                                             //            default:
-                                                             //               throw std::out_of_range((boost::format("Unknown TYPE value (%1%) for FUNC %2%") % device.type() % device.func()).str());
-                                                             //            }
-
-         m_api->declareDevice(std::to_string(device.id()), model, *keywordsToDeclare);
+         std::cout << "Received teachin telegram for id#" << device.id() << ", " << erp1Message.rorg() << "-" << device.func() << "-" << device.type() << ", but no keyword to declare" << std::endl;
+         return;
       }
 
-
-      throw std::out_of_range((boost::format("4BS teach-in telegram of variation 1 (with no profile provided) is not supported. Please report to Yadoms-team. Telegram \"%1%\"") % data.dump()).str());
-
-      //TODO
-
-      //      // Teachin telegram
-      //      if (!data.isEepProvided())
-      //         throw std::out_of_range((boost::format("4BS teach-in telegram of variation 1 (with no profile provided) is not supported. Please report to Yadoms-team. Telegram \"%1%\"") % data.dump()).str());
-      //
-      //      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywords;
-      //      auto model(CManufacturers::name(data.manufacturerId()));
-      //
-      //      switch (data.func())
-      //      {
-      //      case 2 /*TODO mettre une constante*/:
-      //         {
-      //            // Temperature Sensors
-      //            model += std::string(" - ") + "Temperature Sensors";/*TODO à tirer du XML */
-      //            switch (device.type())
-      //            {
-      //            case 1 /*TODO mettre une constante*/:model += std::string(" (") + "Temperature Sensor Range -40°C to 0°C" /*TODO à tirer du XML */ + ")"; break;
-      //            case 2 /*TODO mettre une constante*/:model += std::string(" (") + "Temperature Sensor Range -30°C to +10°C" /*TODO à tirer du XML */ + ")"; break;
-      //            default:
-      //               throw std::out_of_range((boost::format("Unknown TYPE value (%1%) for FUNC %2%") % device.type() % device.func()).str());
-      //            }
-      //            
-      //            keywords.push_back(boost::make_shared<yApi::historization::CTemperature>("temperature"));
-      //            break;
-      //         }
-      //      case 4 /*TODO mettre une constante*/:
-      //         {
-      //            // Temperature and Humidity Sensors
-      //            model += std::string(" - ") + "Temperature and Humidity Sensor";/*TODO à tirer du XML */
-      //            switch (device.type())
-      //            {
-      //            case 1 /*TODO mettre une constante*/: model += std::string(" (") + "Range 0°C to +40°C and 0% to 100%" /*TODO à tirer du XML */ + ")"; break;
-      //            case 2 /*TODO mettre une constante*/: model += std::string(" (") + "Range -20°C to +60°C and 0% to 100%" /*TODO à tirer du XML */ + ")"; break;
-      //            default:
-      //               throw std::out_of_range((boost::format("Unknown TYPE value (%1%) for FUNC %2%") % device.type() % device.func()).str());
-      //            }
-      //
-      //            keywords.push_back(boost::make_shared<yApi::historization::CTemperature>("temperature"));
-      //            keywords.push_back(boost::make_shared<yApi::historization::CHumidity>("humidity"));
-      //            break;
-      //         }
-      //         default:
-      //            throw std::out_of_range((boost::format("Unknown FUNC value (%1%)") % device.func()).str());
-      //      }
-      //
-      //      m_api->declareDevice(std::to_string(device.id()), model, keywords);
+      auto model(CManufacturers::name(teachInData.manufacturerId()) + std::string(" - ") + func->title() + "(" + type->title() + ")");
+      m_api->declareDevice(std::to_string(device.id()), model, keywordsToDeclare);
    }
    else
    {
@@ -392,13 +327,13 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<yApi::IYPluginApi> api,
       auto type = func->createType(device.type(), data);
 
       auto keywordsToHistorize = type->states();
-      if (keywordsToHistorize->empty())
+      if (keywordsToHistorize.empty())
       {
          std::cout << "Recevied message for id#" << device.id() << ", " << erp1Message.rorg() << "-" << device.func() << "-" << device.type() << ", but nothing to historize" << std::endl;
          return;
       }
 
-      m_api->historizeData(std::to_string(device.id()), *keywordsToHistorize);
+      m_api->historizeData(std::to_string(device.id()), keywordsToHistorize);
    }
 }
 
@@ -419,9 +354,9 @@ CDevice CEnOcean::retrieveDevice(unsigned int deviceId)
    return CDevice(deviceId, CManufacturers::kThermokon, 2, 1);//TODO revoir tous les paramètres
 }
 
-void CEnOcean::processEvent(boost::shared_ptr<yApi::IYPluginApi> api,
-                            const message::CReceivedEsp3Packet& esp3Packet)
+void CEnOcean::processEvent(const message::CReceivedEsp3Packet& esp3Packet)
 {
+   //TODO tout revoir pour utiliser le code généré (si dispo pour les events)
    if (esp3Packet.header().dataLength() < 1)
       throw CProtocolException((boost::format("RadioERP1 message : wrong data size (%1%, < 1)") % esp3Packet.header().dataLength()).str());
 
@@ -454,7 +389,7 @@ void CEnOcean::processEvent(boost::shared_ptr<yApi::IYPluginApi> api,
    //TODO
 }
 
-void CEnOcean::requestDongleVersion(boost::shared_ptr<yApi::IYPluginApi> api)
+void CEnOcean::requestDongleVersion()
 {
    message::CCommandSendMessage sendMessage;
    sendMessage.appendData({message::CO_RD_VERSION});
@@ -523,3 +458,4 @@ void CEnOcean::requestDongleVersion(boost::shared_ptr<yApi::IYPluginApi> api)
               std::endl;
         });
 }
+

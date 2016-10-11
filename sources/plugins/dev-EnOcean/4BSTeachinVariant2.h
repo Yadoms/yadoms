@@ -8,7 +8,7 @@ public:
    explicit C4BSTeachinVariant2(const boost::dynamic_bitset<>& data);
    virtual ~C4BSTeachinVariant2();
 public:
-   CManufacturers::EManufacturerIds manufacturer() const;
+   CManufacturers::EManufacturerIds manufacturerId() const;
    unsigned int funcId() const;
    unsigned int typeId() const;
 private:

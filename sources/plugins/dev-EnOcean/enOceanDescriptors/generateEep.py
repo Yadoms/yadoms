@@ -41,7 +41,7 @@ itypeClass = cppClass.CppClass("IType", createDefaultCtor=False)
 classes.append(itypeClass)
 itypeClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 itypeClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-itypeClass.addMethod(cppClass.CppMethod("states", "boost::shared_ptr<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > >", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+itypeClass.addMethod(cppClass.CppMethod("states", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 itypeClass.addMethod(cppClass.CppMethod("historizers", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 
 
@@ -230,6 +230,13 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                and len(xmlDataFieldNode.findall("enum/item")) == 2 \
                and int(xmlDataFieldNode.find("bitsize").text) == 1 else False
 
+         def supportedUnit(xmlDataFieldNode, expectedUnit):
+            if expectedUnit is not None and xmlDataFieldNode.find("unit").text == expectedUnit:
+               return True
+            util.warning("Unsupported unit \"" + xmlDataFieldNode.find("unit").text.encode("utf-8") + \
+               "\" for \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" (expected \"" + expectedUnit.encode("utf-8") + "\"), corresponding data will be ignored")
+            return False
+
          # Create historizers
          historizersCppName = []
          if len(xmlTypeNode.findall("case")) != 1:
@@ -242,14 +249,24 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                cppClassName = ""
                if isLinearValue(xmlDataFieldNode):
                   if dataText == "Temperature":
+                     if not supportedUnit(xmlDataFieldNode, u"°C"):
+                        continue
                      cppClassName = "yApi::historization::CTemperature"
                   elif dataText == "Humidity":
+                     if not supportedUnit(xmlDataFieldNode, u"%"):
+                        continue
                      cppClassName = "yApi::historization::CHumidity"
                   elif dataText == "Barometer":
+                     if not supportedUnit(xmlDataFieldNode, u"hPa"):
+                        continue
                      cppClassName = "yApi::historization::CPressure"
                   elif dataText == "Supply voltage" and xmlDataFieldNode.find("range") is not None:
+                     if not supportedUnit(xmlDataFieldNode, u"V"):
+                        continue
                      cppClassName = "yApi::historization::CVoltage"
                   elif dataText == "Illumination":
+                     if not supportedUnit(xmlDataFieldNode, u"lx"):
+                        continue
                      cppClassName = "yApi::historization::CIllumination"
                   else:
                      util.warning("func/type : Unsupported linear data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
@@ -274,11 +291,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             "   return title;"))
 
 
-         def statesCodeForLinearValue(xmlDataFieldNode, keywordHistorizerClass, keywordName, expectedUnit):
-            if expectedUnit is not None and xmlDataFieldNode.find("unit").text != expectedUnit:
-               util.warning("Unsupported unit \"" + xmlDataFieldNode.find("unit").text.encode("utf-8") + \
-                  "\" for \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" (expected \"" + expectedUnit.encode("utf-8") + "\"), corresponding data will be ignored")
-
+         def statesCodeForLinearValue(xmlDataFieldNode):
             offset = xmlDataFieldNode.find("bitoffs").text
             size = xmlDataFieldNode.find("bitsize").text
             code = "   {\n"
@@ -289,56 +302,44 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             scaleMax = xmlDataFieldNode.find("scale/max").text
             code += "      auto value = scaleToDouble(rawValue, " + rangeMin + ", " + rangeMax + ", " + scaleMin + ", " + scaleMax + ");\n"
             code += "\n"
-            code += "      auto keyword(boost::make_shared<" + keywordHistorizerClass + ">(\"" + keywordName + "\"));\n"
-            code += "      keyword->set(value);\n"
-            code += "      historizers->push_back(keyword);\n"
+            keywordName = xmlDataFieldNode.find("shortcut").text + " - " + xmlDataFieldNode.find("data").text
+            historizerCppName = "m_" + cppHelper.toCppName(keywordName)
+            code += "      " + historizerCppName + "->set(value);\n"
             code += "   }\n"
             return code
 
-         def statesCodeForBoolValue(xmlDataFieldNode, keywordHistorizerClass, keywordName):
+         def statesCodeForBoolValue(xmlDataFieldNode):
             offset = xmlDataFieldNode.find("bitoffs").text
-            code = "   {\n"
-            code += "      auto keyword(boost::make_shared<" + keywordHistorizerClass + ">(\"" + keywordName + "\"));\n"
-            code += "      keyword->set(m_data[" + offset + "]);\n"
-            code += "      historizers->push_back(keyword);\n"
-            code += "   }\n"
-            return code
+            keywordName = xmlDataFieldNode.find("shortcut").text + " - " + xmlDataFieldNode.find("data").text
+            historizerCppName = "m_" + cppHelper.toCppName(keywordName)
+            return "   " + historizerCppName + "->set(m_data[" + offset + "]);\n"
 
          def statesCode(xmlTypeNode):
-            code = "   auto historizers(boost::make_shared<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > >());\n"
             if len(xmlTypeNode.findall("case")) != 1:
                util.warning("func/type : Unsupported number of \"case\" tags (expected 1) for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This profile will be ignored.")#TODO
-               code += "   return historizers;\n"
-               return code
-            xmlCaseNode = xmlTypeNode.find("case")
-            for xmlDataFieldNode in xmlHelper.findUsefulDataFieldNodes(inXmlNode=xmlCaseNode):
+               return "   return m_historizers;\n"
+            code = ""
+            for xmlDataFieldNode in xmlHelper.findUsefulDataFieldNodes(inXmlNode=xmlTypeNode.find("case")):
                if isLinearValue(xmlDataFieldNode):
                   dataText = xmlDataFieldNode.find("data").text
-                  if dataText == "Temperature":
-                     code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CTemperature", "temperature", u"°C")
-                  elif dataText == "Humidity":
-                     code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CHumidity", "humidity", u"%")
-                  elif dataText == "Barometer":
-                     code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CPressure", "pressure", u"hPa")
-                  elif dataText == "Supply voltage" and xmlDataFieldNode.find("range") is not None:
-                     code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CVoltage", "voltage", u"V")
-                  elif dataText == "Illumination":
-                     code += statesCodeForLinearValue(xmlDataFieldNode, "yApi::historization::CIllumination", "illumination", u"lx")
+                  if dataText == "Temperature" or \
+                     dataText == "Humidity" or \
+                     dataText == "Barometer" or \
+                     dataText == "Supply voltage" or \
+                     dataText == "Illumination":
+                     code += statesCodeForLinearValue(xmlDataFieldNode)
                   else:
                      util.warning("func/type : Unsupported linear data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
-                     code += "return historizers;\n"
-                     return code
+                     continue
                elif isBoolValue(xmlDataFieldNode):
-                  code += statesCodeForBoolValue(xmlDataFieldNode, "yApi::historization::CSwitch", xmlDataFieldNode.find("data").text)
+                  code += statesCodeForBoolValue(xmlDataFieldNode)
                else:
                   util.warning("func/type : Unsupported data type \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
-                  code += "return historizers;\n"
-                  return code
-            code += "\n"
-            code += "   return historizers;\n"
+                  continue
+            code += "   return m_historizers;"
             return code
 
-         typeClass.addMethod(cppClass.CppMethod("states", "boost::shared_ptr<std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > >", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, statesCode(xmlTypeNode)))
+         typeClass.addMethod(cppClass.CppMethod("states", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, statesCode(xmlTypeNode)))
 
 
 
