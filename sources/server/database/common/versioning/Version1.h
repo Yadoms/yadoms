@@ -36,7 +36,7 @@ namespace database { namespace common { namespace versioning {
       /// \brief     Create the database (when tables are not found)
       ///\param [in] pRequester : database requester object
       //-----------------------------------
-      void CreateDatabase(const boost::shared_ptr<IDatabaseRequester> & pRequester);
+      void CreateDatabase(const boost::shared_ptr<IDatabaseRequester> & pRequester) const;
    };
 
 } //namespace versioning
