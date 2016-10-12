@@ -14,7 +14,7 @@ def toCppName(label):
       return True if char.isalnum() or char == "_" else False
       
    normalizedLabel = label.strip().replace(" ", "_").replace("+", "_plus_").replace("-", "_").replace(".", "_").replace(",", "_").replace("(", "_") \
-      .replace(")", "_").replace("/", "_").replace("&", "_and_")
+      .replace(")", "_").replace("/", "_").replace(u"μ", "u").replace("&", "_and_")
    return ''.join([char for char in list(normalizedLabel) if acceptedChar(char)])
 
 
