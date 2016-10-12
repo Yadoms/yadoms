@@ -5,11 +5,11 @@ namespace shared
    namespace communication
    {
       //--------------------------------------------------------------
-      /// \class An automaticaly message queue remover
+      /// \brief An automaticaly message queue remover
       /// \details As a message queue is persistent on the system,
       /// we delete it :
       /// - on construction (for safety)
-      /// - on destruction (for cleanup)
+      /// - on destruction (for normal cleanup)
       //--------------------------------------------------------------
       struct CMessageQueueRemover
       {
