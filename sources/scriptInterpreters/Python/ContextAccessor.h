@@ -8,12 +8,13 @@
 //--------------------------------------------------------------
 /// \brief	yScriptApi context accessor, based on message queues
 //--------------------------------------------------------------
-class CContextAccessor : public IContextAccessor, protected shared::CThreadBase
+class CContextAccessor : public IContextAccessor,
+                         protected shared::CThreadBase
 {
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
-   /// \param[in] context IYScriptApi context instance
+   /// \param[in] yScriptApi IYScriptApi context instance
    //--------------------------------------------------------------
    explicit CContextAccessor(boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi);
 
@@ -40,33 +41,48 @@ protected:
    /// \brief	Process a received message
    /// \param[in] message The message data
    /// \param[in] messageSize The message size
-   /// \param[in] boost::interprocess::message_queue Message queue used to send answer
+   /// \param[in] messageQueue Message queue used to send answer
    //--------------------------------------------------------------
-   void processMessage(const void* message, size_t messageSize, boost::interprocess::message_queue& messageQueue);
+   void processMessage(const void* message,
+                       size_t messageSize,
+                       boost::interprocess::message_queue& messageQueue);
 
    //--------------------------------------------------------------
    /// \brief	Process messages
    /// \param[in] request Received requests
    /// \param[in] messageQueue Message Queue used for answer
    //--------------------------------------------------------------
-   void processGetKeywordId(const pbRequest::GetKeywordId& request, boost::interprocess::message_queue& messageQueue);
-   void processGetRecipientId(const pbRequest::GetRecipientId& request, boost::interprocess::message_queue& messageQueue);
-   void processReadKeyword(const pbRequest::ReadKeyword& request, boost::interprocess::message_queue& messageQueue);
-   void processWaitForNextAcquisition(const pbRequest::WaitForNextAcquisition& request, boost::interprocess::message_queue& messageQueue);
-   void processWaitForNextAcquisitions(const pbRequest::WaitForNextAcquisitions& request, boost::interprocess::message_queue& messageQueue);
-   void processWaitForEvent(const pbRequest::WaitForEvent& request, boost::interprocess::message_queue& messageQueue);
-   void processWriteKeyword(const pbRequest::WriteKeyword& request, boost::interprocess::message_queue& messageQueue);
-   void processSendNotification(const pbRequest::SendNotification& request, boost::interprocess::message_queue& messageQueue);
-   void processGetInfo(const pbRequest::GetInfo& request, boost::interprocess::message_queue& messageQueue);
-   void processGetKeywordsByCapacity(const pbRequest::GetKeywordsByCapacity& request, boost::interprocess::message_queue& messageQueue);
-   void processGetKeywordName(const pbRequest::GetKeywordName& request, boost::interprocess::message_queue& messageQueue);
-   void processGetKeywordDeviceName(const pbRequest::GetKeywordDeviceName& request, boost::interprocess::message_queue& messageQueue);
+   void processGetKeywordId(const pbRequest::GetKeywordId& request,
+                            boost::interprocess::message_queue& messageQueue);
+   void processGetRecipientId(const pbRequest::GetRecipientId& request,
+                              boost::interprocess::message_queue& messageQueue);
+   void processReadKeyword(const pbRequest::ReadKeyword& request,
+                           boost::interprocess::message_queue& messageQueue);
+   void processWaitForNextAcquisition(const pbRequest::WaitForNextAcquisition& request,
+                                      boost::interprocess::message_queue& messageQueue);
+   void processWaitForNextAcquisitions(const pbRequest::WaitForNextAcquisitions& request,
+                                       boost::interprocess::message_queue& messageQueue);
+   void processWaitForEvent(const pbRequest::WaitForEvent& request,
+                            boost::interprocess::message_queue& messageQueue);
+   void processWriteKeyword(const pbRequest::WriteKeyword& request,
+                            boost::interprocess::message_queue& messageQueue);
+   void processSendNotification(const pbRequest::SendNotification& request,
+                                boost::interprocess::message_queue& messageQueue);
+   void processGetInfo(const pbRequest::GetInfo& request,
+                       boost::interprocess::message_queue& messageQueue);
+   void processGetKeywordsByCapacity(const pbRequest::GetKeywordsByCapacity& request,
+                                     boost::interprocess::message_queue& messageQueue);
+   void processGetKeywordName(const pbRequest::GetKeywordName& request,
+                              boost::interprocess::message_queue& messageQueue);
+   void processGetKeywordDeviceName(const pbRequest::GetKeywordDeviceName& request,
+                                    boost::interprocess::message_queue& messageQueue);
    //--------------------------------------------------------------
    /// \brief	Send an answer
    /// \param[in] answer The answer
-   /// \param[in] boost::interprocess::message_queue Message queue used to send answer
+   /// \param[in] messageQueue Message queue used to send answer
    //--------------------------------------------------------------
-   void sendAnswer(const pbAnswer::msg& answer, boost::interprocess::message_queue& messageQueue);
+   void sendAnswer(const pbAnswer::msg& answer,
+                   boost::interprocess::message_queue& messageQueue);
 
 private:
    //--------------------------------------------------------------
@@ -99,6 +115,3 @@ private:
    //--------------------------------------------------------------
    mutable boost::barrier m_readyBarrier;
 };
-
-
-
