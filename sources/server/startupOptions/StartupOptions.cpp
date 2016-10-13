@@ -302,20 +302,7 @@ namespace startupOptions
 
    std::string CStartupOptions::getWebServerInitialPath() const
    {
-      // To not have to copy the full 'www' directory at debug build step,
-      // force to use (if not specified in Yadoms configuration or command line)
-      // the www in source folder
-#ifdef _DEBUG
-#ifdef _WINDOWS
-      static const std::string defaultWebServerPath("../../sources/www");
-#else
-      static const std::string defaultWebServerPath("../sources/www");
-#endif
-#else
-      static const std::string defaultWebServerPath("www");
-#endif
-
-      return m_configContainer.getString("server.www", defaultWebServerPath);
+      return m_configContainer.getString("server.www", "www");
    }
 
    EDatabaseEngine CStartupOptions::getDatabaseEngine() const
