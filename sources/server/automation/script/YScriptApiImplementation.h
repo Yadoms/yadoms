@@ -24,9 +24,7 @@ namespace automation
          //-----------------------------------------------------
          ///\brief               Constructor
          ///\param[in] ruleLogger Logger to use for script logging
-         ///\param[in] interpreterErrorRaiser Interpretor error signaler
          ///\param[in] pluginGateway Plugin access to do actions on plugins
-         ///\param[in] acquisitionNotifier Acquisition notifier, used to be notified on new acquisitions on keywords
          ///\param[in] dbAcquisitionRequester  Database acquisition requester
          ///\param[in] dbDeviceRequester  Database device requester
          ///\param[in] keywordAccessLayer  Database keyword access layer

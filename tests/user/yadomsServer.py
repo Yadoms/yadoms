@@ -71,12 +71,12 @@ def isProcessRunning(pid):
    """Check if the process is running"""
 
    if (platform.system() == "Windows"):
-		try:
-		   os.kill(pid, 0)
-		except OSError as err:
-		   if err.errno == errno.ESRCH:
-		      return False
-		return True
+      try:
+         os.kill(pid, 0)
+      except OSError as err:
+         if err.errno == errno.ESRCH:
+            return False
+      return True
    else:
       return os.path.exists("/proc/" + str(pid))
          

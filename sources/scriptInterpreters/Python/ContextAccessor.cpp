@@ -7,7 +7,10 @@
 const size_t CContextAccessor::m_maxMessages(100);
 
 CContextAccessor::CContextAccessor(boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi)
-   :CThreadBase(createId()), m_scriptApi(yScriptApi), m_id(createId()), m_readyBarrier(2)
+   : CThreadBase(createId()),
+     m_scriptApi(yScriptApi),
+     m_id(createId()),
+     m_readyBarrier(2)
 {
    memset(m_mqBuffer, 0, sizeof(m_mqBuffer));
    CThreadBase::start();
@@ -36,13 +39,13 @@ void CContextAccessor::doWork()
    // compatible with the version of the headers we compiled against.
    GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-   const std::string sendMessageQueueId(m_id + ".toScript");
-   const std::string receiveMessageQueueId(m_id + ".toYadoms");
+   const auto sendMessageQueueId(m_id + ".toScript");
+   const auto receiveMessageQueueId(m_id + ".toYadoms");
    const shared::communication::CMessageQueueRemover sendMessageQueueRemover(sendMessageQueueId);
    const shared::communication::CMessageQueueRemover receiveMessageQueueRemover(receiveMessageQueueId);
    try
    {
-      YADOMS_LOG(debug) << "Open message queues";
+      YADOMS_LOG(debug) << "Open message queues for id " << m_id;
       boost::interprocess::message_queue sendMessageQueue   (boost::interprocess::create_only, sendMessageQueueId.c_str()   , m_maxMessages, m_messageQueueMessageSize);
       boost::interprocess::message_queue receiveMessageQueue(boost::interprocess::create_only, receiveMessageQueueId.c_str(), m_maxMessages, m_messageQueueMessageSize);
 
@@ -99,7 +102,8 @@ void CContextAccessor::sendAnswer(const pbAnswer::msg& answer, boost::interproce
       throw std::overflow_error("CContextAccessor::sendAnswer : answer is not fully initialized");
 
    if (answer.ByteSize() > static_cast<int>(m_messageQueueMessageSize))
-      throw std::overflow_error("CContextAccessor::sendAnswer : answer is too big");
+      throw std::overflow_error((boost::format("CContextAccessor::sendAnswer : answer is too big size=%1%, max=%2%")
+         % answer.ByteSize() % static_cast<int>(m_messageQueueMessageSize)).str());
 
    boost::lock_guard<boost::recursive_mutex> lock(m_sendMutex);
    if (!answer.SerializeToArray(m_mqBuffer, answer.GetCachedSize()))
@@ -149,6 +153,7 @@ void CContextAccessor::processGetKeywordId(const pbRequest::GetKeywordId& reques
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
+      YADOMS_LOG(warning) << "Error processing processGetKeywordId request : " << ex.what();
    }
 
    try
@@ -165,7 +170,7 @@ void CContextAccessor::processGetKeywordId(const pbRequest::GetKeywordId& reques
 void CContextAccessor::processGetRecipientId(const pbRequest::GetRecipientId& request, boost::interprocess::message_queue& messageQueue)
 {
    pbAnswer::msg ans;
-   pbAnswer::GetRecipientId* answer = ans.mutable_getrecipientid();
+   auto answer = ans.mutable_getrecipientid();
    try
    {
       answer->set_id(m_scriptApi->getRecipientId(request.firstname(), request.lastname()));
@@ -173,6 +178,7 @@ void CContextAccessor::processGetRecipientId(const pbRequest::GetRecipientId& re
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
+      YADOMS_LOG(warning) << "Error processing processGetRecipientId request : " << ex.what();
    }
 
    try
@@ -189,7 +195,7 @@ void CContextAccessor::processGetRecipientId(const pbRequest::GetRecipientId& re
 void CContextAccessor::processReadKeyword(const pbRequest::ReadKeyword& request, boost::interprocess::message_queue& messageQueue)
 {
    pbAnswer::msg ans;
-   pbAnswer::ReadKeyword* answer = ans.mutable_readkeyword();
+   auto answer = ans.mutable_readkeyword();
    try
    {
       answer->set_value(m_scriptApi->readKeyword(request.keywordid()));
@@ -197,6 +203,7 @@ void CContextAccessor::processReadKeyword(const pbRequest::ReadKeyword& request,
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
+      YADOMS_LOG(warning) << "Error processing processReadKeyword request : " << ex.what();
    }
 
    try
@@ -213,7 +220,7 @@ void CContextAccessor::processReadKeyword(const pbRequest::ReadKeyword& request,
 void CContextAccessor::processWaitForNextAcquisition(const pbRequest::WaitForNextAcquisition& request, boost::interprocess::message_queue& messageQueue)
 {
    pbAnswer::msg ans;
-   pbAnswer::WaitForNextAcquisition* answer = ans.mutable_waitfornextacquisition();
+   auto answer = ans.mutable_waitfornextacquisition();
    try
    {
       answer->set_acquisition(m_scriptApi->waitForNextAcquisition(request.keywordid(), request.has_timeout() ? request.timeout() : std::string()));
@@ -221,6 +228,7 @@ void CContextAccessor::processWaitForNextAcquisition(const pbRequest::WaitForNex
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
+      YADOMS_LOG(warning) << "Error processing processWaitForNextAcquisition request : " << ex.what();
    }
 
    try
@@ -237,7 +245,7 @@ void CContextAccessor::processWaitForNextAcquisition(const pbRequest::WaitForNex
 void CContextAccessor::processWaitForNextAcquisitions(const pbRequest::WaitForNextAcquisitions& request, boost::interprocess::message_queue& messageQueue)
 {
    pbAnswer::msg ans;
-   pbAnswer::WaitForNextAcquisitions* answer = ans.mutable_waitfornextacquisitions();
+   auto answer = ans.mutable_waitfornextacquisitions();
    try
    {
       std::vector<int> keywordIdList;
@@ -251,6 +259,7 @@ void CContextAccessor::processWaitForNextAcquisitions(const pbRequest::WaitForNe
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
+      YADOMS_LOG(warning) << "Error processing processWaitForNextAcquisitions request : " << ex.what();
    }
 
    try
@@ -291,6 +300,7 @@ void CContextAccessor::processWaitForEvent(const pbRequest::WaitForEvent& reques
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
+      YADOMS_LOG(warning) << "Error processing WaitForEvent request : " << ex.what();
    }
 
    try
@@ -299,16 +309,26 @@ void CContextAccessor::processWaitForEvent(const pbRequest::WaitForEvent& reques
    }
    catch (std::exception& ex)
    {
-      YADOMS_LOG(error) << "Unable to answer to WaitForEvent request : " << ex.what();
+      YADOMS_LOG(error) << "Unable to answer to WaitForEvent request : " << ex.what() << ". Answer was " << ans.OneOf_case();
+
+      std::stringstream requestDetails;
+      requestDetails << "keywordId = { ";
+      for (auto it = request.keywordid().begin(); it != request.keywordid().end(); ++it)
+         requestDetails << *it << " ";
+      requestDetails << "}";
+      requestDetails << ", receiveDateTimeEvent = " << (request.receivedatetimeevent() ? "true" : "false");
+      if (request.has_timeout())
+         requestDetails << ", timeout = " << request.timeout();
+
+      YADOMS_LOG(error) << "Request was WaitForEvent(" << requestDetails.str() << ")";
       throw;
    }
 }
 
 void CContextAccessor::processGetKeywordsByCapacity(const pbRequest::GetKeywordsByCapacity& request, boost::interprocess::message_queue& messageQueue)
 {
-
    pbAnswer::msg ans;
-   pbAnswer::GetKeywordsByCapacity* answer = ans.mutable_getkeywordsbycapacity();
+   auto answer = ans.mutable_getkeywordsbycapacity();
    try
    {
       auto keywordIdList = m_scriptApi->getKeywordsByCapacity(request.capacity());
@@ -318,6 +338,7 @@ void CContextAccessor::processGetKeywordsByCapacity(const pbRequest::GetKeywords
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
+      YADOMS_LOG(warning) << "Error processing processGetKeywordsByCapacity request : " << ex.what();
    }
 
    try
@@ -342,6 +363,7 @@ void CContextAccessor::processWriteKeyword(const pbRequest::WriteKeyword& reques
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
+      YADOMS_LOG(warning) << "Error processing processWriteKeyword request : " << ex.what();
    }
 
    try
@@ -366,6 +388,7 @@ void CContextAccessor::processSendNotification(const pbRequest::SendNotification
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
+      YADOMS_LOG(warning) << "Error processing processSendNotification request : " << ex.what();
    }
 
    try
@@ -382,7 +405,7 @@ void CContextAccessor::processSendNotification(const pbRequest::SendNotification
 void CContextAccessor::processGetInfo(const pbRequest::GetInfo& request, boost::interprocess::message_queue& messageQueue)
 {
    pbAnswer::msg ans;
-   pbAnswer::GetInfo* answer = ans.mutable_getinfo();
+   auto answer = ans.mutable_getinfo();
    try
    {
       shared::script::yScriptApi::IYScriptApi::EInfoKeys key;
@@ -404,6 +427,7 @@ void CContextAccessor::processGetInfo(const pbRequest::GetInfo& request, boost::
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
+      YADOMS_LOG(warning) << "Error processing processGetInfo request : " << ex.what();
    }
 
    try
@@ -420,17 +444,18 @@ void CContextAccessor::processGetInfo(const pbRequest::GetInfo& request, boost::
 void CContextAccessor::processGetKeywordName(const pbRequest::GetKeywordName& request, boost::interprocess::message_queue& messageQueue)
 {
    pbAnswer::msg ans;
-   pbAnswer::GetKeywordName* answer = ans.mutable_getkeywordname();
+   auto answer = ans.mutable_getkeywordname();
 
    try
    {
       answer->set_keywordname(""); //predefine with "", to ensure answer is complete. Even if an error occurs, it should always return ""
-      std::string name = m_scriptApi->getKeywordName(request.keywordid());
+      auto name = m_scriptApi->getKeywordName(request.keywordid());
       answer->set_keywordname(name);
    }
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
+      YADOMS_LOG(warning) << "Error processing processGetKeywordName request : " << ex.what();
    }
 
    try
@@ -447,17 +472,18 @@ void CContextAccessor::processGetKeywordName(const pbRequest::GetKeywordName& re
 void CContextAccessor::processGetKeywordDeviceName(const pbRequest::GetKeywordDeviceName& request, boost::interprocess::message_queue& messageQueue)
 {
    pbAnswer::msg ans;
-   pbAnswer::GetKeywordDeviceName* answer = ans.mutable_getkeyworddevicename();
+   auto answer = ans.mutable_getkeyworddevicename();
 
    try
    {
       answer->set_devicename(""); //predefine with "", to ensure answer is complete. Even if an error occurs, it should always return ""
-      std::string name = m_scriptApi->getKeywordDeviceName(request.keywordid());
+      auto name = m_scriptApi->getKeywordDeviceName(request.keywordid());
       answer->set_devicename(name);
    }
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
+      YADOMS_LOG(warning) << "Error processing processGetKeywordDeviceName request : " << ex.what();
    }
 
    try

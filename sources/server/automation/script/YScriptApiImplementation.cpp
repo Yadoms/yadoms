@@ -225,16 +225,19 @@ namespace automation
             {
             case shared::event::kTimeout:
                {
+                  YADOMS_LOG(debug) << "CYScriptApiImplementation : kTimeout";
                   result.setType(shared::script::yScriptApi::CWaitForEventResult::kTimeout);
                   break;
                }
 
             case kKeyword:
                {
+                  YADOMS_LOG(debug) << "CYScriptApiImplementation : kKeyword";
                   auto newAcquisition = eventHandler->getEventData<boost::shared_ptr<notification::acquisition::CNotification> >();
                   result.setType(shared::script::yScriptApi::CWaitForEventResult::kKeyword);
                   if (newAcquisition)
                   {
+                     YADOMS_LOG(debug) << "CYScriptApiImplementation : kKeyword #" << newAcquisition->getAcquisition()->KeywordId() << " : " << newAcquisition->getAcquisition()->Value();
                      result.setKeywordId(newAcquisition->getAcquisition()->KeywordId);
                      result.setValue(newAcquisition->getAcquisition()->Value);
                   }
@@ -243,14 +246,13 @@ namespace automation
 
             case kTime:
                {
-                  YADOMS_LOG(information) << "CYScriptApiImplementation : kTime";
+                  YADOMS_LOG(debug) << "CYScriptApiImplementation : kTime";
                   auto timeNotif = eventHandler->getEventData<boost::shared_ptr<shared::dateTime::CDateTimeContainer> >();
-
 
                   result.setType(shared::script::yScriptApi::CWaitForEventResult::kDateTime);
                   if (timeNotif)
                   {
-                     YADOMS_LOG(information) << "CYScriptApiImplementation : kTime" << timeNotif->getBoostDateTime();
+                     YADOMS_LOG(debug) << "CYScriptApiImplementation : kTime" << timeNotif->getBoostDateTime();
                      result.setValue(boost::posix_time::to_iso_string(timeNotif->getBoostDateTime()));
                   }
                   break;

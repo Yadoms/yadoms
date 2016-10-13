@@ -30,8 +30,8 @@ class CreateDevice(unittest.TestCase):
 
    def test_configurePlugin(self):
       print '=== Manually device creation test ==='
-      deviceName = "My device"
-      attachedPluginInstance = "My fakePlugin instance"
+      deviceName = u'My device'
+      attachedPluginInstance = u'My fakePlugin instance'
      
       print '  Create the device'
       tools.waitUntil(lambda: dashboard.devices.getCreateDeviceButton(self.browser).is_enabled())
@@ -48,10 +48,10 @@ class CreateDevice(unittest.TestCase):
       
       print '  Check created device'
       devicesTable = dashboard.devices.waitDevicesTable(self.browser)
-      deviceNumber = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
-      deviceDatas = dashboard.devices.getDeviceDatas(devicesTable, deviceNumber)
-      self.assertTrue(tools.waitUntil(lambda: dashboard.devices.getDeviceName(devicesTable, deviceNumber) == deviceName))
-      self.assertEqual(dashboard.devices.getAttachedPlugin(devicesTable, deviceNumber), attachedPluginInstance)
+      deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
+      deviceDatas = dashboard.devices.getDeviceDatas(devicesTable, deviceId)
+      self.assertTrue(tools.waitUntil(lambda: dashboard.devices.getDeviceName(devicesTable, deviceId) == deviceName))
+      self.assertEqual(dashboard.devices.getAttachedPlugin(devicesTable, deviceId), attachedPluginInstance)
       
       
    def tearDown(self):
