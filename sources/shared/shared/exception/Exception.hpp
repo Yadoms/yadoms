@@ -47,7 +47,7 @@ namespace shared
          /// \brief	    Build full message explaining exception reason
          /// \return     message explaining exception reason
          //--------------------------------------------------------------
-         virtual char const* what() const override { return m_message.c_str(); }
+         virtual char const* what() const throw() override { return m_message.c_str(); }
 
       protected:
          //--------------------------------------------------------------
