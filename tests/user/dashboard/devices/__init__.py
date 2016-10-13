@@ -25,30 +25,38 @@ def waitDevicesTable(browser):
    return browser.find_element_by_id("device-list")
 
 def findDeviceInTable(devicesTable, expectedDeviceName):
-   for line in devicesTable.find_elements_by_tag_name("tr"):
-      if line.find_elements_by_tag_name("td") == expectedDeviceName:
-         return line.find_elements_by_tag_name("td")
+   # return device ID or None if not found
+   try:
+      lines = devicesTable.find_elements_by_xpath('//tr[@class="device"]')
+      for line in lines:
+         deviceNameElem = line.find_element_by_class_name('device-friendlyName')
+         if deviceNameElem is not None and deviceNameElem.find_elements_by_tag_name('span')[1].text == expectedDeviceName:
+            return line.get_attribute("device-id")
+   except:
+      pass
    return None
 
 def waitDevicesTableHasDeviceNamed(browser, expectedDeviceName):
    devicesTable = waitDevicesTable(browser)
    assert tools.waitUntil(lambda: findDeviceInTable(devicesTable, expectedDeviceName) is not None)
-   return devicesTable
+   return findDeviceInTable(devicesTable, expectedDeviceName)
    
-def getDeviceDatas(devicesTable, deviceNumber):
-   device = devicesTable.find_elements_by_tag_name("tr")[deviceNumber + 1]
-   return device.find_elements_by_tag_name("td")
+def getDeviceDatas(devicesTable, deviceId):
+   return devicesTable.find_elements_by_xpath('//tr[@device-id="' + deviceId + '"]/td')
 
-def getDeviceName(devicesTable, deviceNumber):
-   return getDeviceDatas(devicesTable, deviceNumber)[0].text
+def getDeviceName(devicesTable, deviceId):
+   return getDeviceDatas(devicesTable, deviceId)[0].find_elements_by_tag_name('span')[1].text
+
+def getAttachedPlugin(devicesTable, deviceId):
+   return getDeviceDatas(devicesTable, deviceId)[1].find_element_by_tag_name('span').text
    
-def getDeviceButtons(devicesTable, deviceNumber):
-   devicesActionsButtonsCell = getDeviceDatas(devicesTable, deviceNumber)[3]
+def getDeviceButtons(devicesTable, deviceId):
+   devicesActionsButtonsCell = getDeviceDatas(devicesTable, deviceId)[3]
    buttonsGroup = devicesActionsButtonsCell.find_element_by_class_name("btn-group")
    return buttonsGroup.find_elements_by_tag_name("button")
    
-def getDeviceButton(devicesTable, deviceNumber, index):
-   buttons = getDeviceButtons(devicesTable, deviceNumber)
+def getDeviceButton(devicesTable, deviceId, index):
+   buttons = getDeviceButtons(devicesTable, deviceId)
    return buttons[index]
    
 
