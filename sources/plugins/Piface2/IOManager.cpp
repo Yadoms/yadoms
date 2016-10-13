@@ -6,8 +6,9 @@
 #include "eventDefinitions.h"
 
 CIOManager::CIOManager(const std::string& device)
-   :m_deviceName (device),
-   m_inputValue(0)
+   : m_InterruptEventHandler(nullptr),
+     m_deviceName (device),
+     m_inputValue(0)
 {
    // Open the connection
    if (pifacedigital_open(0) == -1)
