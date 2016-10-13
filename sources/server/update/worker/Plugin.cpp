@@ -16,7 +16,7 @@ namespace update
    namespace worker
    {
       void CPlugin::install(CWorkerTools::WorkerProgressFunc progressCallback,
-                            const std::string downloadUrl,
+                            const std::string& downloadUrl,
                             boost::shared_ptr<pluginSystem::CManager> pluginManager)
       {
          YADOMS_LOG(information) << "Installing new plugin from " << downloadUrl;

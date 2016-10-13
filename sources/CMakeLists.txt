@@ -960,7 +960,7 @@ ENDFOREACH(PostgreSqlDepend)
 #copy www directory into build directory
 add_custom_command(TARGET yadoms POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
-                       ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
+                   ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
 		
 
 ##################################################################################################

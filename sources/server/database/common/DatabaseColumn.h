@@ -13,7 +13,7 @@ namespace common {
       /// \Brief		   Constructor
       /// \param [in]	name: The database column name
       //--------------------------------------------------------------   
-      CDatabaseColumn(const std::string & name);
+      explicit CDatabaseColumn(const std::string & name);
       
       //--------------------------------------------------------------
       /// \Brief		   Destructor
@@ -44,7 +44,7 @@ namespace common {
       /// \Brief		   Constructor
       /// \param [in]	name: The database table name
       //--------------------------------------------------------------   
-      CDatabaseTable(const std::string & name);
+      explicit CDatabaseTable(const std::string & name);
       
       //--------------------------------------------------------------
       /// \Brief		   Destructor

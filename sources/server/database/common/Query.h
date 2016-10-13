@@ -83,7 +83,7 @@ namespace database { namespace common {
       //
       /// \brief           Constructor
       //
-      CQuery(const bool fromWithClauseNeeded = false);
+      explicit CQuery(const bool fromWithClauseNeeded = false);
 
    public:
       //
@@ -664,7 +664,7 @@ namespace database { namespace common {
 
          }
 
-         CFunction(const std::string & sql)
+         explicit CFunction(const std::string & sql)
             :m_sql(sql)
          {
 

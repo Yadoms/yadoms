@@ -16,7 +16,7 @@ namespace database { namespace common { namespace requesters {
       /// \Brief		   Constructor
       /// \param [in]	pDatabaseHandler: the database handler
       //--------------------------------------------------------------
-      CConfiguration(boost::shared_ptr<IDatabaseRequester> databaseRequester);
+      explicit CConfiguration(boost::shared_ptr<IDatabaseRequester> databaseRequester);
 
       //--------------------------------------------------------------
       /// \Brief		   Destructor

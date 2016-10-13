@@ -17,7 +17,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       CNativeExecutableCommandLine(const boost::filesystem::path& executablePath,
                                    const boost::filesystem::path& workingDirectory,
-                                   const std::vector<std::string> parameters);
+                                   const std::vector<std::string>& parameters);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

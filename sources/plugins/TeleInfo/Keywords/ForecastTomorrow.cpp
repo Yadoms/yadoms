@@ -5,12 +5,12 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CForecastTomorrow::CForecastTomorrow(std::string KeyWordName)
+CForecastTomorrow::CForecastTomorrow(const std::string& KeyWordName)
      : m_forecastPeriod(boost::make_shared<teleInfo::specificHistorizers::CColor>(KeyWordName))
 {
 }
 
-void CForecastTomorrow::set(std::string& Value) const
+void CForecastTomorrow::set(const std::string& Value) const
 {
    static const EnumColorMap EEnumColorMap = boost::assign::map_list_of
       ("----", teleInfo::specificHistorizers::EColor::kNOTDEFINED)

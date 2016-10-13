@@ -20,7 +20,7 @@ namespace startupOptions
       /// \brief Constructor
       /// \param [in] availableValues The list of all available values
       //--------------------------------------------------------------
-      CListValidator(std::vector<std::string> & availableValues)
+      explicit CListValidator(std::vector<std::string> & availableValues)
       :m_availableValues(availableValues)
       {
       }

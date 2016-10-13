@@ -9,7 +9,7 @@ namespace sqlite {
    class CSQLiteResultHandler : public database::common::IResultHandler
    {
    public:
-      CSQLiteResultHandler(sqlite3_stmt *pStatement);
+      explicit CSQLiteResultHandler(sqlite3_stmt *pStatement);
       virtual ~CSQLiteResultHandler();
 
       // database::common::IResultHandler implementation

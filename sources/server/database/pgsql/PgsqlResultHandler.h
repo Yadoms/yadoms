@@ -8,7 +8,7 @@ namespace database { namespace pgsql {
    class CPgsqlResultHandler : public database::common::IResultHandler
    {
    public:
-      CPgsqlResultHandler(PGresult *res);
+      explicit CPgsqlResultHandler(PGresult *res);
       virtual ~CPgsqlResultHandler();
 
       // database::common::IResultHandler implementation

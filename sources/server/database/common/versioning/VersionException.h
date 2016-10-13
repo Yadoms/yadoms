@@ -14,7 +14,7 @@ namespace database { namespace common { namespace versioning {
       /// \brief	                        Constructor
       /// \param[in]  message             Exception message
       //--------------------------------------------------------------
-      CVersionException(const char * message)
+      explicit CVersionException(const char * message)
          :CException(message)
       {
       }
