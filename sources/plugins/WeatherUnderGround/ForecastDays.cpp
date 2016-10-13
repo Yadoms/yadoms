@@ -13,7 +13,8 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
      m_deviceName(deviceName),
      m_forecast(boost::make_shared<CForecast>(deviceName, "Forecast", weatherunderground::helper::EPeriod::kDay)),
      m_temp(boost::make_shared<CTemp>(deviceName, prefix + "low_temperature")),
-     m_isDesactivated(false)
+     m_isDesactivated(false),
+     m_isUserDesactivated(false)
 {
    try
    {
@@ -25,11 +26,8 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
    catch (shared::exception::CException& e)
    {
       std::cout << "Configuration or initialization error of Forecast 3 Days module :" << e.what() << std::endl;
-
-      // Informs Yadoms about the plugin actual state
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
-
       m_isDesactivated = true;
+      throw e;
    }
 }
 
@@ -37,11 +35,10 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
                                            IWUConfiguration& wuConfiguration
 )
 {
-   //Initialization
-   m_keywords.clear();
-
    if (wuConfiguration.IsForecast10DaysEnabled())
    {
+      m_keywords.clear();
+
       m_keywords.push_back(m_forecast->getHistorizable());
 
       m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
@@ -65,37 +62,38 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
       }
 
       m_keywords.push_back(m_temp->getHistorizable());
-   }
 
-   // Declare keywords
-   std::string m_URL = "www.wunderground.com/";
-   api->declareDevice(m_deviceName, m_URL, m_keywords);
+      // Declare keywords
+      std::string m_URL = "www.wunderground.com/";
+      api->declareDevice(m_deviceName, m_URL, m_keywords);
+
+      m_isUserDesactivated = false;
+   }
+   else
+      m_isUserDesactivated = true;
 }
 
 void CForecastDays::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                              IWUConfiguration& wuConfiguration)
 {
-   if (!m_isDesactivated)
-   {
-      //read the localisation
-      m_localisation = wuConfiguration.getLocalisation();
+   //read the localisation
+   m_localisation = wuConfiguration.getLocalisation();
 
-      //read the country or State code
-      m_countryOrState = wuConfiguration.getCountryOrState();
+   //read the country or State code
+   m_countryOrState = wuConfiguration.getCountryOrState();
 
-      m_url.str("");
+   m_url.str("");
 
-      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/" << m_prefix << "/q/" << m_countryOrState << "/" << m_localisation << ".json";
+   m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/" << m_prefix << "/q/" << m_countryOrState << "/" << m_localisation << ".json";
 
-      InitializeForecastDays(api, wuConfiguration);
-   }
+   InitializeForecastDays(api, wuConfiguration);
 }
 
 void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
                           const IWUConfiguration& wuConfiguration,
                           const shared::CDataContainer dataToParse)
 {
-   if (!m_isDesactivated)
+   if (!m_isDesactivated && !m_isUserDesactivated)
    {
       try
       {
@@ -140,11 +138,12 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
          }
          api->historizeData(m_deviceName, m_keywords);
 
-         std::cout << "Forecast Updated !" << std::endl;
+         std::cout << "Refresh Forecast Information" << std::endl;
       }
       catch (shared::exception::CException& e)
       {
          std::cout << "Error during the parsing of the element ! : " << e.what() << std::endl;
+         throw e;
       }
    }
 }

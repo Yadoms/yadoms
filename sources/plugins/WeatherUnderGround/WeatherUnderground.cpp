@@ -18,7 +18,8 @@ IMPLEMENT_PLUGIN(CWeatherUnderground)
 
 
 CWeatherUnderground::CWeatherUnderground()
-   : m_deviceName("WeatherUnderground")
+   : m_deviceName("WeatherUnderground"),
+     m_runningState(false)
 {}
 
 CWeatherUnderground::~CWeatherUnderground()
@@ -30,42 +31,46 @@ enum
    kEvtTimerRefreshWeatherConditions = yApi::IYPluginApi::kPluginFirstEventId, // Always start from shared::event::CEventHandler::kUserFirstId
    kEvtTimerRefreshAstronomy,
    kEvtTimerRefreshForecast10Days,
+   kEvtPluginState
 };
 
 void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
+   std::cout << "CWeatherUnderground is starting..." << std::endl;
+
    int weatherConditionsSendingRetry = 0;
    int astronomySendingRetry = 0;
    int forcast10daysSendingRetry = 0;
 
-   std::cout << "CWeatherUnderground is starting..." << std::endl;
+   boost::shared_ptr<CWeatherConditions> m_WeatherConditionsRequester;
+   boost::shared_ptr<CAstronomy> m_AstronomyRequester;
+   boost::shared_ptr<CForecastDays> m_Forecast10Days;
 
    // Load configuration values (provided by database)
    m_configuration.initializeWith(api->getConfiguration());
 
-   api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-   api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
-
-   api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-   api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(9));
-
-   api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-   api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(3));
-
-   if (!api->deviceExists(m_deviceName))
+   try
    {
-      std::string m_URL = "www.wunderground.com/";
+      m_WeatherConditionsRequester = boost::make_shared<CWeatherConditions>(api, m_configuration, m_deviceName, "conditions.");
+      m_AstronomyRequester = boost::make_shared<CAstronomy>(api, m_configuration, m_deviceName, "astronomy.");
+      m_Forecast10Days = boost::make_shared<CForecastDays>(api, m_configuration, m_deviceName, "forecast.");
 
-      api->declareDevice(m_deviceName, m_URL);
+      api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+      api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
+
+      api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+      api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(9));
+
+      api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+      api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(3));
+   }
+   catch (...)
+   {
+      // Informs Yadoms about the plugin actual state
+      api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
    }
 
-   CWeatherConditions m_WeatherConditionsRequester(api, m_configuration, m_deviceName, "conditions.");
-   CAstronomy m_AstronomyRequester(api, m_configuration, m_deviceName, "astronomy.");
-   CForecastDays m_Forecast10Days(api, m_configuration, m_deviceName, "forecast.");
-
    std::cout << "CWeatherUnderground plugin is running..." << std::endl;
-
-   api->setPluginState(yApi::historization::EPluginState::kRunning);
 
    // the main loop
    while (1)
@@ -84,13 +89,13 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             shared::CDataContainer returnData;
             try
             {
-               returnData = SendUrlRequest(api, m_WeatherConditionsRequester.getUrl(), kEvtTimerRefreshWeatherConditions, weatherConditionsSendingRetry);
-               m_WeatherConditionsRequester.parse(api, m_configuration, returnData);
-               std::cout << "Refresh Weather Conditions" << std::endl;
-               api->setPluginState(yApi::historization::EPluginState::kRunning);
+               returnData = SendUrlRequest(api, m_WeatherConditionsRequester->getUrl(), kEvtTimerRefreshWeatherConditions, weatherConditionsSendingRetry);
+               m_WeatherConditionsRequester->parse(api, m_configuration, returnData);
             }
             catch(CRequestErrorException& )
             {}
+
+            api->getEventHandler().createTimer(kEvtPluginState, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
 
             break;
          }
@@ -99,13 +104,13 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             shared::CDataContainer returnData;
             try
             {
-               returnData = SendUrlRequest(api, m_AstronomyRequester.getUrl(), kEvtTimerRefreshAstronomy, astronomySendingRetry);
-               m_AstronomyRequester.parse(api, m_configuration, returnData);
-               std::cout << "Refresh Astronomy Information" << std::endl;
-               api->setPluginState(yApi::historization::EPluginState::kRunning);
+               returnData = SendUrlRequest(api, m_AstronomyRequester->getUrl(), kEvtTimerRefreshAstronomy, astronomySendingRetry);
+               m_AstronomyRequester->parse(api, m_configuration, returnData);
             }
             catch (CRequestErrorException&)
             {}
+
+            api->getEventHandler().createTimer(kEvtPluginState, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
 
             break;
          }
@@ -114,14 +119,15 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             shared::CDataContainer returnData;
             try
             {
-               returnData = SendUrlRequest(api, m_Forecast10Days.getUrl(), kEvtTimerRefreshForecast10Days, forcast10daysSendingRetry);
-               m_Forecast10Days.setCityName(m_WeatherConditionsRequester.getCityName()); // TODO : Vérifier lorsque m_WeatherConditionsRequester n'est pas utilisé !!
-               m_Forecast10Days.parse(api, m_configuration, returnData);
-               std::cout << "Refresh Forecast 10 Days Information" << std::endl;
-               api->setPluginState(yApi::historization::EPluginState::kRunning);
+               returnData = SendUrlRequest(api, m_Forecast10Days->getUrl(), kEvtTimerRefreshForecast10Days, forcast10daysSendingRetry);
+               m_Forecast10Days->setCityName(m_WeatherConditionsRequester->getCityName()); // TODO : Vérifier lorsque m_WeatherConditionsRequester n'est pas utilisé !!
+               m_Forecast10Days->parse(api, m_configuration, returnData);
             }
             catch (CRequestErrorException&)
             {}
+
+            api->getEventHandler().createTimer(kEvtPluginState, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+
             break;
          }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
@@ -129,29 +135,44 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             shared::CDataContainer returnData;
             onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
 
-            m_WeatherConditionsRequester.onUpdate(api, m_configuration);
+            m_WeatherConditionsRequester->onUpdate(api, m_configuration);
 
             // Send a message to send for manage the corresponding information
             api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
 
-            m_AstronomyRequester.onUpdate(api, m_configuration);
+            m_AstronomyRequester->onUpdate(api, m_configuration);
 
             // Send a message to send for manage the corresponding information
             api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
 
-            m_Forecast10Days.onUpdate(api, m_configuration);
-            m_Forecast10Days.setCityName(m_WeatherConditionsRequester.getCityName());
+            m_Forecast10Days->onUpdate(api, m_configuration);
+            m_Forecast10Days->setCityName(m_WeatherConditionsRequester->getCityName());
 
             // Send a message to send for manage the corresponding information
             api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
             break;
          }
-
-      default:
+      case kEvtPluginState:
          {
-            std::cerr << "Unknown message id" << std::endl;
-            break;
+            bool newState = false;
+
+            // estimate the state of the plugin
+            if (!m_Forecast10Days->isDesactivated() && !m_AstronomyRequester->isDesactivated() && !m_WeatherConditionsRequester->isDesactivated())
+               newState = true;
+
+            if (m_runningState != newState)
+            {
+               m_runningState = newState;
+               if (m_runningState)
+                  api->setPluginState(yApi::historization::EPluginState::kRunning);
+               else
+                 api->setPluginState(yApi::historization::EPluginState::kCustom, "desactivated");
+            }
          }
+         break;
+      default:
+         std::cerr << "Unknown message id" << std::endl;
+         break;
       }
    }
 }
@@ -171,10 +192,8 @@ shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yAp
 {
    try
    {
-      shared::CDataContainer data;
       shared::CHttpMethods m_webServer;
-
-      data = m_webServer.SendGetRequest(url);
+      shared::CDataContainer data = m_webServer.SendGetRequest(url);
 
       ErrorAnswerHandler Response(api, data);
 

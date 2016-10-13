@@ -11,7 +11,8 @@ CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
      m_countryOrState(wuConfiguration.getCountryOrState()),
      m_deviceName(deviceName),
      m_moonCharacteristics(boost::make_shared<CMoon>(deviceName, prefix + "Moon")),
-     m_isDesactivated(false)
+     m_isDesactivated(false),
+     m_isUserDesactivated(false)
 {
    try
    {
@@ -20,9 +21,8 @@ CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
    catch (shared::exception::CException& e)
    {
       std::cout << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
-
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
       m_isDesactivated = true;
+      throw e;
    }
 }
 
@@ -49,9 +49,11 @@ void CAstronomy::initializeVariables(boost::shared_ptr<yApi::IYPluginApi> api,
 
       m_url.str("");
       m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/astronomy/q/" << m_countryOrState << "/" << m_localisation << ".json";
+
+      m_isUserDesactivated = false;
    }
    else
-      m_isDesactivated = true;
+      m_isUserDesactivated = true;
 }
 
 void CAstronomy::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -64,9 +66,8 @@ void CAstronomy::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
    catch (shared::exception::CException& e)
    {
       std::cout << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
-
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
       m_isDesactivated = true;
+      throw e;
    }
 }
 
@@ -74,7 +75,7 @@ void CAstronomy::parse(boost::shared_ptr<yApi::IYPluginApi> api,
                        const IWUConfiguration& wuConfiguration,
                        const shared::CDataContainer dataToParse)
 {
-   if (!m_isDesactivated)
+   if (!m_isDesactivated && !m_isUserDesactivated)
    {
       try
       {
@@ -86,6 +87,7 @@ void CAstronomy::parse(boost::shared_ptr<yApi::IYPluginApi> api,
          }
 
          api->historizeData(m_deviceName, m_keywords);
+         std::cout << "Refresh Astronomy Information" << std::endl;
       }
       catch (shared::exception::CException& e)
       {

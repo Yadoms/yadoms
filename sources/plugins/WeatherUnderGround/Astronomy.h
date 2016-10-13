@@ -99,8 +99,13 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
 
    //--------------------------------------------------------------
-   /// \brief	    the module is desactivated
+   /// \brief	    the module is desactivated by an error
    //--------------------------------------------------------------
    bool m_isDesactivated;
+
+   //--------------------------------------------------------------
+   /// \brief	    the module is desactivated by the user
+   //--------------------------------------------------------------
+   bool m_isUserDesactivated;
 };
 

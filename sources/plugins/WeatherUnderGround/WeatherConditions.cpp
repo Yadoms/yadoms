@@ -23,29 +23,27 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
      m_feelsLike(boost::make_shared<CTemp>(deviceName, prefix + "FeelsLike")),
      m_windchill(boost::make_shared<CTemp>(deviceName, prefix + "Windchill")),
      m_liveConditions(boost::make_shared<CCondition>(deviceName, "LiveConditions")),
-     m_isDesactivated(false)
+     m_isDesactivated(false),
+     m_isUserDesactivated(false)
 {
    try
    {
-      m_url.str("");
-      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/conditions/q/" << m_countryOrState << "/" << m_localisation << ".json";
-
       initializeVariables(api, wuConfiguration);
    }
    catch (shared::exception::CException& e)
    {
       std::cout << "Configuration or initialization error of Weather condition module :" << e.what() << std::endl;
-
-      // Informs Yadoms about the plugin actual state
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
-
       m_isDesactivated = true;
+      throw e;
    }
 }
 
 void CWeatherConditions::initializeVariables(boost::shared_ptr<yApi::IYPluginApi> api,
                                              IWUConfiguration& wuConfiguration)
 {
+   m_url.str("");
+   m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/conditions/q/" << m_countryOrState << "/" << m_localisation << ".json";
+
    // Clear the list
    m_keywords.clear();
 
@@ -80,9 +78,16 @@ void CWeatherConditions::initializeVariables(boost::shared_ptr<yApi::IYPluginApi
                                shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit());
    }
 
-   // Declare keywords
-   std::string m_URL = "www.wunderground.com/";
-   api->declareDevice(m_deviceName, m_URL, m_keywords);
+   if (wuConfiguration.IsConditionsIndividualKeywordsEnabled() || wuConfiguration.IsLiveConditionsEnabled())
+   {
+      // Declare keywords
+      std::string m_URL = "www.wunderground.com/";
+      api->declareDevice(m_deviceName, m_URL, m_keywords);
+
+      m_isUserDesactivated = false;
+   }
+   else
+      m_isUserDesactivated = true;
 }
 
 void CWeatherConditions::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration)
@@ -96,16 +101,12 @@ void CWeatherConditions::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUC
 
       //read the country or State code
       m_countryOrState = wuConfiguration.getCountryOrState();
-
-      m_url.str("");
-      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/conditions/q/" << m_countryOrState << "/" << m_localisation << ".json";
    }
    catch (shared::exception::CException& e)
    {
       std::cout << e.what() << std::endl;
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "Initialization Error");
-
       m_isDesactivated = true;
+      throw e;
    }
 }
 
@@ -123,7 +124,7 @@ void CWeatherConditions::parse(boost::shared_ptr<yApi::IYPluginApi> api,
                                const IWUConfiguration& wuConfiguration,
                                const shared::CDataContainer dataToParse)
 {
-   if (!m_isDesactivated)
+   if (!m_isDesactivated && !m_isUserDesactivated)
    {
       try
       {
@@ -202,18 +203,20 @@ void CWeatherConditions::parse(boost::shared_ptr<yApi::IYPluginApi> api,
             );
          }
          api->historizeData(m_deviceName, m_keywords);
+
+         std::cout << "Refresh Weather Conditions" << std::endl;
       }
       catch (shared::exception::CException& e)
       {
          std::cout << e.what() << std::endl;
          m_isDesactivated = true;
+         throw e;
       }
    }
 }
 
 CWeatherConditions::~CWeatherConditions()
-{
-}
+{}
 
 bool CWeatherConditions::isDesactivated() const
 {

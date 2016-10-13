@@ -54,5 +54,10 @@ private:
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
    CWUConfiguration m_configuration;
+
+   //--------------------------------------------------------------
+   /// \brief	The plugin state
+   //--------------------------------------------------------------
+   bool m_runningState;
 };
 
