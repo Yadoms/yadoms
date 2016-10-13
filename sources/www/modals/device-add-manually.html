@@ -50,7 +50,7 @@
 			tabPlugins = sortListItemsWithdisplayName ( tabPlugins );
 			
 			$.each(tabPlugins, function(index, value) {
-			   $("select#associatedPluginTypeList").append("<option value=\"" + value.id + "\">" + value.displayName + "</option>");
+			   $("select#associatedPluginTypeList").append("<option value=\"" + value.type + "\">" + value.displayName + "</option>");
 			});
 
             //event click on add plugin button
@@ -60,10 +60,10 @@
 
                //we get the plugin instance id chosen
                var pluginId = $("select#associatedPluginTypeList").val();
-
+			   
                //from the id, retreive the plugin instance
                var instance = $.grep(list, function(e) { return e.id === pluginId; });
-
+			   
                //send found instance
                callback(instance[0]);
             });
