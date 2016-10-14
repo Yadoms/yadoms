@@ -27,7 +27,7 @@ namespace xplcore
    CXplMessage::CXplMessage(const ETypeIdentifier& typeId,
                             const CXplActor& source,
                             const CXplActor& target,
-                            CXplMessageSchemaIdentifier messageSchemaIdentifier)
+                            const CXplMessageSchemaIdentifier& messageSchemaIdentifier)
    {
       m_hop = 1;
       setTypeIdentifier(typeId);

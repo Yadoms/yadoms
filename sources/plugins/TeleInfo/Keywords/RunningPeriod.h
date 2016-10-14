@@ -16,7 +16,7 @@ public:
    /// \param[in] KeyWordName        The keyword name
    /// \note                         Use this constructor initializing the keyword for this plugin
    //--------------------------------------------------------------
-   explicit CRunningPeriod(std::string KeyWordName);
+   explicit CRunningPeriod(const std::string& KeyWordName);
 
    //--------------------------------------------------------------
    /// \brief	                      Set the value of the keyword

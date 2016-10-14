@@ -8,16 +8,13 @@ namespace historizers
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
-      ///\param[in] keywordName     Yadoms keyword name
-      ///\param[in] accessMode      The access mode
-      ///\param[in] measureType     The measure type (normally kAbsolute)
+      ///\param[in] name            Yadoms keyword name
       //-----------------------------------------------------
-      CRainRate(const std::string& name);
+      explicit CRainRate(const std::string& name);
 
       //-----------------------------------------------------
       ///\brief                     Constructor
-      ///\param[in] keywordName     Yadoms keyword name
-      ///\param[in] accessMode      The access mode
+      ///\param[in] name            Yadoms keyword name
       ///\param[in] measureType     The measure type (normally kAbsolute)
       //-----------------------------------------------------
       CRainRate(const std::string& name,

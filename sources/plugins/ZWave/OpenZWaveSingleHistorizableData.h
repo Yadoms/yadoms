@@ -14,7 +14,7 @@ public:
    ///\brief                        Constructor
    ///\param[in] internalKeyword    the internal keyword
    //-----------------------------------------------------
-   COpenZWaveSingleHistorizableData(boost::shared_ptr<shared::plugin::yPluginApi::historization::CSingleHistorizableData<T> > internalKeyword)
+   explicit COpenZWaveSingleHistorizableData(boost::shared_ptr<shared::plugin::yPluginApi::historization::CSingleHistorizableData<T> > internalKeyword)
       : m_internalKeyword(internalKeyword)
    {
    }

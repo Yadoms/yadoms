@@ -38,7 +38,8 @@ public:
    COpenZWaveNodeKeywordGenericByType(const std::string& keywordName,
                                       const shared::plugin::yPluginApi::CStandardCapacity& capacity,
                                       const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode,
-                                      const T initialValue, const shared::plugin::yPluginApi::historization::EMeasureType& measureType = shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute,
+                                      const T& initialValue,
+                                      const shared::plugin::yPluginApi::historization::EMeasureType& measureType = shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute,
                                       shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo& typeInfo = shared::plugin::yPluginApi::historization::typeInfo::CEmptyTypeInfo::Empty)
       : shared::plugin::yPluginApi::historization::CSingleHistorizableData<T>(keywordName,
                                                                               capacity,
