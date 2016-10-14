@@ -18,8 +18,8 @@ public:
    /// \param[in] period               The Period Type ( "Day", "Hour" )
    /// \note                           Use this constructor initialising the keyword for this plugin
    //--------------------------------------------------------------
-   CForecast(std::string pluginName,
-             std::string keyWordName,
+   CForecast(const std::string& pluginName,
+             const std::string& keyWordName,
              const weatherunderground::helper::EPeriod& period);
 
    //--------------------------------------------------------------
@@ -30,7 +30,7 @@ public:
    //-----------------------------------------------------
    ///\brief                      Add a new unit to be send to the widget
    ///\param[in] unitName         The Unit Name
-   ///\param[in] UnitValue        The Unit Value
+   ///\param[in] unitValue        The Unit Value
    //-----------------------------------------------------
    void addUnit(const std::string& unitName,
                 const std::string& unitValue) const;

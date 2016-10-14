@@ -20,12 +20,12 @@ public:
    /// \brief	  Constructor
    /// \param[in] api              pointer to the API
    /// \param[in] wuConfiguration  The Configuration of the module
-   /// \param[in] pluginName       The Name of the module
+   /// \param[in] deviceName       The Name of the module
    /// \param[in] prefix           Prefix Name used eventually to subname Keywords
    //--------------------------------------------------------------
    CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
                  IWUConfiguration& wuConfiguration,
-                 std::string deviceName,
+                 const std::string& deviceName,
                  const std::string& prefix);
 
    //--------------------------------------------------------------
@@ -35,8 +35,8 @@ public:
    /// \param[in] dataToParse     data to parse
    //--------------------------------------------------------------
    void parse(boost::shared_ptr<yApi::IYPluginApi> api,
-      const IWUConfiguration& wuConfiguration,
-      const shared::CDataContainer dataToParse);
+              const IWUConfiguration& wuConfiguration,
+              const shared::CDataContainer dataToParse) const;
 
    //--------------------------------------------------------------
    /// \brief	  Update the configuration when something change from the HMI
@@ -50,7 +50,7 @@ public:
    /// \brief	  Set the city Name
    /// \param[in] wuConfiguration    The Plugin configuration
    //--------------------------------------------------------------
-   void setCityName(const std::string& CityName);
+   void setCityName(const std::string& CityName) const;
 
    //--------------------------------------------------------------
    /// \brief	  Return the url

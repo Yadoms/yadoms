@@ -17,8 +17,8 @@ public:
    /// \param[in] keyWordName          The keyword name
    /// \note                           Use this constructor initialising the keyword for this plugin. This function is used for conditions.
    //--------------------------------------------------------------
-   CCondition(std::string pluginName,
-              std::string keyWordName);
+   CCondition(const std::string& pluginName,
+              const std::string& keyWordName);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -33,20 +33,6 @@ public:
    void addUnit(const std::string& unitName,
                 const std::string& unitValue) const;
 
-   //-----------------------------------------------------
-   ///\brief                      Add a new day with all integrated parameter
-   ///\param[in] Year             The Year of the period
-   ///\param[in] Month            The Month of the period
-   ///\param[in] Day              The Day of the period
-   ///\param[in] WeatherCondition The weather condition of the day
-   ///\param[in] TempMax          The maximal temperature of the day
-   ///\param[in] TempMin          The minimum temperature of the day
-   ///\param[in] MaxWind          The maximum wind speed of the day
-   ///\param[in] AveWind          The average wind speed of the day
-   ///\param[in] AveHumidity      The average humidity of the day
-   ///\param[in] RainDay          The quantity of rain in the day
-   ///\throw                      shared::exception::CInvalidParameter or COutOfRange if fail to parse command
-   //-----------------------------------------------------
    void setPeriod(const shared::CDataContainer& valueContainer,
                   const std::string& filterTime,
                   const std::string& filterWeatherCondition,
@@ -80,4 +66,3 @@ private:
    //--------------------------------------------------------------
    boost::shared_ptr<CConditionHistorizer> m_condition;
 };
-

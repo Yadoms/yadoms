@@ -5,7 +5,7 @@
 
 CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
                              IWUConfiguration& wuConfiguration,
-                             std::string deviceName,
+                             const std::string& deviceName,
                              const std::string& prefix)
    : m_localisation(wuConfiguration.getLocalisation()),
      m_countryOrState(wuConfiguration.getCountryOrState()),
@@ -27,7 +27,7 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       std::cout << "Configuration or initialization error of Forecast 3 Days module :" << e.what() << std::endl;
       m_isDesactivated = true;
-      throw e;
+      throw;
    }
 }
 
@@ -42,13 +42,13 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
       m_keywords.push_back(m_forecast->getHistorizable());
 
       m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
-                           shared::plugin::yPluginApi::CStandardCapacities::Temperature.getUnit());
+                          shared::plugin::yPluginApi::CStandardCapacities::Temperature.getUnit());
       m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Speed.getName(),
-                           shared::plugin::yPluginApi::CStandardCapacities::Speed.getUnit());
+                          shared::plugin::yPluginApi::CStandardCapacities::Speed.getUnit());
       m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Humidity.getName(),
-                           shared::plugin::yPluginApi::CStandardCapacities::Humidity.getUnit());
+                          shared::plugin::yPluginApi::CStandardCapacities::Humidity.getUnit());
       m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
-                           shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit());
+                          shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit());
 
       if (wuConfiguration.IsRainIndividualKeywordsEnabled())
       {
@@ -91,7 +91,7 @@ void CForecastDays::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
 
 void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
                           const IWUConfiguration& wuConfiguration,
-                          const shared::CDataContainer dataToParse)
+                          const shared::CDataContainer dataToParse) const
 {
    if (!m_isDesactivated && !m_isUserDesactivated)
    {
@@ -143,18 +143,19 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
       catch (shared::exception::CException& e)
       {
          std::cout << "Error during the parsing of the element ! : " << e.what() << std::endl;
-         throw e;
+         throw;
       }
    }
 }
 
-void CForecastDays::setCityName(const std::string& CityName)
+void CForecastDays::setCityName(const std::string& CityName) const
 {
    m_forecast->setCityName(CityName);
 }
 
 CForecastDays::~CForecastDays()
-{}
+{
+}
 
 std::string CForecastDays::getUrl() const
 {

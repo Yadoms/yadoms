@@ -16,8 +16,8 @@ public:
    /// \param[in] keyWordName          The keyword name
    /// \note                           Use this constructor initialising the keyword for this plugin
    //--------------------------------------------------------------
-   CDuration(std::string pluginName,
-             std::string keyWordName);
+   CDuration(const std::string& pluginName,
+             const std::string& keyWordName);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
