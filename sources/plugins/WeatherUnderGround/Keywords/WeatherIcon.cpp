@@ -6,8 +6,8 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CWeatherIcon::CWeatherIcon(std::string pluginName,
-                           std::string keyWordName)
+CWeatherIcon::CWeatherIcon(const std::string& pluginName,
+                           const std::string& keyWordName)
    : m_pluginName(pluginName),
      m_weathercondition(boost::make_shared<yApi::historization::CWeatherCondition>(keyWordName))
 {
