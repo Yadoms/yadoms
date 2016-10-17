@@ -222,3 +222,8 @@ bool CWeatherConditions::isDesactivated() const
 {
    return m_isDesactivated;
 }
+
+bool CWeatherConditions::isUserDesactivated() const
+{
+   return m_isUserDesactivated;
+}

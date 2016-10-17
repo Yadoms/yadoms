@@ -86,69 +86,58 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kEvtTimerRefreshWeatherConditions:
          {
-            shared::CDataContainer returnData;
             try
             {
-               returnData = SendUrlRequest(api, m_WeatherConditionsRequester->getUrl(), kEvtTimerRefreshWeatherConditions, weatherConditionsSendingRetry);
+               shared::CDataContainer returnData = SendUrlRequest(api, m_WeatherConditionsRequester->getUrl(), kEvtTimerRefreshWeatherConditions, weatherConditionsSendingRetry);
                m_WeatherConditionsRequester->parse(api, m_configuration, returnData);
             }
             catch(CRequestErrorException& )
             {}
-
             api->getEventHandler().createTimer(kEvtPluginState, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-
-            break;
          }
+         break;
       case kEvtTimerRefreshAstronomy:
          {
-            shared::CDataContainer returnData;
             try
             {
-               returnData = SendUrlRequest(api, m_AstronomyRequester->getUrl(), kEvtTimerRefreshAstronomy, astronomySendingRetry);
+               shared::CDataContainer returnData = SendUrlRequest(api, m_AstronomyRequester->getUrl(), kEvtTimerRefreshAstronomy, astronomySendingRetry);
                m_AstronomyRequester->parse(api, m_configuration, returnData);
             }
             catch (CRequestErrorException&)
             {}
-
             api->getEventHandler().createTimer(kEvtPluginState, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-
-            break;
          }
+         break;
       case kEvtTimerRefreshForecast10Days:
          {
-            shared::CDataContainer returnData;
             try
             {
-               returnData = SendUrlRequest(api, m_Forecast10Days->getUrl(), kEvtTimerRefreshForecast10Days, forcast10daysSendingRetry);
-               m_Forecast10Days->setCityName(m_WeatherConditionsRequester->getCityName()); // TODO : Vérifier lorsque m_WeatherConditionsRequester n'est pas utilisé !!
+               if (m_WeatherConditionsRequester->isUserDesactivated())
+                  m_Forecast10Days->setCityName(m_configuration.getLocalisation());
+               else
+                  m_Forecast10Days->setCityName(m_WeatherConditionsRequester->getCityName());
+
+               shared::CDataContainer returnData = SendUrlRequest(api, m_Forecast10Days->getUrl(), kEvtTimerRefreshForecast10Days, forcast10daysSendingRetry);
                m_Forecast10Days->parse(api, m_configuration, returnData);
             }
             catch (CRequestErrorException&)
             {}
-
             api->getEventHandler().createTimer(kEvtPluginState, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-
-            break;
          }
+         break;
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
             shared::CDataContainer returnData;
             onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
 
+            // Update configurations
             m_WeatherConditionsRequester->onUpdate(api, m_configuration);
+            m_AstronomyRequester->onUpdate(api, m_configuration);
+            m_Forecast10Days->onUpdate(api, m_configuration);
 
             // Send a message to send for manage the corresponding information
             api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-
-            m_AstronomyRequester->onUpdate(api, m_configuration);
-
-            // Send a message to send for manage the corresponding information
             api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-
-            m_Forecast10Days->onUpdate(api, m_configuration);
-            m_Forecast10Days->setCityName(m_WeatherConditionsRequester->getCityName());
-
-            // Send a message to send for manage the corresponding information
             api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
             break;
          }
@@ -197,7 +186,6 @@ shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yAp
 
       ErrorAnswerHandler Response(api, data);
 
-      // TODO : Cracher une exception différente avec le message d'erreur qui va bien!
       if (Response.ContainError())
          throw shared::exception::CException("Response contain error");
 
@@ -218,6 +206,7 @@ shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yAp
       {
          std::cout << e.what() << ". Stop retry." << std::endl;
          api->setPluginState(yApi::historization::EPluginState::kCustom, "NoConnection"); 
+         nbRetry = 0;
       }
 
       throw CRequestErrorException();

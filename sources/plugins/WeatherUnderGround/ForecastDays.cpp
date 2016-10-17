@@ -122,7 +122,7 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
                                      "qpf_allday.mm",
                                      "snow_allday.cm");
 
-               if (counter == 0) //TODO : A vérifier
+               if (counter == 0)
                {
                   m_temp->setValue(*i, "low.celsius");
                }
