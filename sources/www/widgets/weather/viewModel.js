@@ -54,7 +54,8 @@ widgetViewModelCtor = function weatherViewModel() {
 
             //We only keep the city name
             var res = obj.city.split(",");
-            self.city(res[0]);
+			if (res.length >=2)
+               self.city(res[1]);
 
             self.condition(obj.Conditions.WeatherCondition);
             self.temperature(obj.Conditions.Temp + $.t(obj.Units.temperature));
