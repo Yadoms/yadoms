@@ -271,6 +271,7 @@ class CppClass(CppType):
       self.__extraContentInHeader = []
       self.__extraContentInSource = []
       self.__parentClasses = dict()
+      self.__comments = []
 
 
    def inheritFrom(self, parentClasses, visibility):
@@ -302,6 +303,10 @@ class CppClass(CppType):
       self.__members.append(cppMember)
 
 
+   def addComment(self, comment):
+      self.__comments.append(comment)
+
+
    def __generateHeaderVisibilityBlock(self, cppHeaderFile, visibility):
       cppHeaderFile.write(visibilityCppTag(visibility) + ":\n")
       for subType in self.__subTypes:
@@ -317,6 +322,10 @@ class CppClass(CppType):
 
    def generateHeader(self, f):
       try:
+         if self.__comments is not None:
+            for comment in self.__comments:
+               f.write("// " + comment + "\n")
+
          f.write("class " + self.__cppClassName)
 
          # Parent classes

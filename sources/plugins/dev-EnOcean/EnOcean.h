@@ -35,17 +35,12 @@ protected:
    //--------------------------------------------------------------
    /// \brief	                     Send a message to EnOcean dongle
    /// \param [in] sendMessage      message to send
-   /// \param [in] onReceiveFct     function called when answer is received
    /// \throw                       CProtocolException if timeout waiting answer
    //--------------------------------------------------------------
    void send(const message::CSendMessage& sendMessage) const;
-   void send(const message::CSendMessage& sendMessage,
-             boost::function<bool(const message::CReceivedEsp3Packet& rcvMessage)> checkExpectedMessageFunction,
-             boost::function<void(const message::CReceivedEsp3Packet& rcvMessage)> onReceiveFct);
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
-   /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] command          The received command
    //--------------------------------------------------------------
    void onCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const;
@@ -53,29 +48,26 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the UPS becomes connected
-   /// \param [in] api              Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
    void processConnectionEvent();
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the UPS becomes unconnected
-   /// \param [in] api              Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
    void processUnConnectionEvent();
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the data are received from the UPS
-   /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] message          Message received
    //--------------------------------------------------------------
    void processDataReceived(const message::CReceivedEsp3Packet& message);
 
    //--------------------------------------------------------------
    /// \brief	                     Process received messages
-   /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] esp3Packet       Message received
    //--------------------------------------------------------------
    void processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) const;
+   static void processResponse(const message::CReceivedEsp3Packet& esp3Packet);
    static void processEvent(const message::CReceivedEsp3Packet& esp3Packet);
 
    //--------------------------------------------------------------
@@ -95,24 +87,21 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	                     Requests to EnOcean
-   /// \param [in] api              Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
    void requestDongleVersion();
 
    //--------------------------------------------------------------
-   /// \brief	                     Create the connection to the UPS
-   /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \brief	                     Create the connection
    //--------------------------------------------------------------
    void createConnection();
 
    //--------------------------------------------------------------
-   /// \brief	                     Close the connection to the UPS
+   /// \brief	                     Close the connection
    //--------------------------------------------------------------
    void destroyConnection();
 
    //--------------------------------------------------------------
    /// \brief	                     Protocol error processing (retry last command)
-   /// \param [in] api              Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
    void protocolErrorProcess();
 
@@ -145,8 +134,5 @@ private:
    /// \brief  The communication port logger
    //--------------------------------------------------------------
    shared::communication::CAsciiBufferLogger m_logger;
-
-   mutable boost::recursive_mutex m_onReceiveHookMutex;
-   boost::function<bool(const message::CReceivedEsp3Packet& rcvMessage)> m_onReceiveHook;
 };
 

@@ -47,7 +47,7 @@ namespace message
 
    void CCommandSendMessage::updateBuffer(std::vector<unsigned char>& buffer) const
    {
-      buffer.resize(6 + m_data.size() + m_optional.size(), 0);
+      buffer.clear();
 
       // Header
       buffer.push_back(SYNC_BYTE_VALUE);
@@ -66,7 +66,7 @@ namespace message
 
       // CRC8D
       buffer.push_back(computeCrc8(buffer.begin() + kOffsetData,
-                                   buffer.begin() + m_data.size() + m_optional.size()));
+                                   buffer.begin() + kOffsetData + m_data.size() + m_optional.size()));
 
    }
 } // namespace message

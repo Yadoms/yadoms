@@ -163,7 +163,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
       code += "   {\n"
       for xmlFuncNode in xmlRorgNode.findall("func"):
          enumValue = cppHelper.toEnumValueName(xmlFuncNode.find("title").text)
-         className = "C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("title").text)
+         className = "C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("number").text)
          code += "   case " + enumValue + ": return boost::make_shared<" + className + ">();\n"
       code += "   default : throw std::out_of_range(\"Invalid EFuncIds\");\n"
       code += "   }\n"
@@ -189,7 +189,8 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
    # Func cppTypes
    for xmlFuncNode in xmlRorgNode.findall("func"):
-      funcClass = cppClass.CppClass("C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("title").text))
+      funcClass = cppClass.CppClass("C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("number").text))
+      funcClass.addComment(cppHelper.toCppName(xmlFuncNode.find("title").text))
       funcClass.inheritFrom("IFunc", cppClass.PUBLIC)
       cppTypes.append(funcClass)
       funcClass.addSubType(cppClass.CppEnumType("ETypeIds", xmlHelper.getEnumValues(inNode=xmlFuncNode, foreachSubNode="type", enumValueNameTag="number", enumValueTag="number"), cppClass.PUBLIC))

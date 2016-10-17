@@ -223,16 +223,16 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    Create timer associated with this event handler
          /// \param[in] timerEventId   Id of the timer event
-         /// \param[in] periodic       Periodic or one-shot timer
+         /// \param[in] periodicity    Periodic or one-shot timer
          /// \param[in] period         Timer period. If provided, timer starts immediately, else user must call start method
          /// \return     the created timer (see note)
          /// \note       Usually, caller don't need to get the timer object as it is owned (and will be destroyed) by the event handler.
          //              Keep a reference on the timer object can be useful if you want to re-use it or differ start. In this case,
          //              the event handler won't remove it from it's time events list.
          //--------------------------------------------------------------
-      boost::shared_ptr<CEventTimer> createTimer(int timerEventId,
-                                                 CEventTimer::EPeriodicity periodicity = CEventTimer::kOneShot,
-                                                 const boost::posix_time::time_duration& period = boost::date_time::not_a_date_time)
+         boost::shared_ptr<CEventTimer> createTimer(int timerEventId,
+                                                    CEventTimer::EPeriodicity periodicity = CEventTimer::kOneShot,
+                                                    const boost::posix_time::time_duration& period = boost::date_time::not_a_date_time)
          {
             BOOST_ASSERT(timerEventId >= kUserFirstId);
 
@@ -256,8 +256,8 @@ namespace shared
          //              - Be careful of a limitation : a time-point is not DST (Daylight Saving Time) compatible : for example, 
          //              a timepoint set after a DST change (ie change to summer hour) will not take account of time offset.
          //--------------------------------------------------------------
-      boost::shared_ptr<CEventTimePoint> createTimePoint(int timePointEventId,
-                                                         const boost::posix_time::ptime& dateTime)
+         boost::shared_ptr<CEventTimePoint> createTimePoint(int timePointEventId,
+                                                            const boost::posix_time::ptime& dateTime)
          {
             BOOST_ASSERT(timePointEventId >= kUserFirstId);
             if (dateTime <= currentTime::Provider().now())

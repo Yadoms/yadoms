@@ -36,7 +36,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-   std::cout << "CEnOcean is starting..." << std::endl;
+   std::cout << "EnOcean is starting..." << std::endl;
 
    // Load configuration values (provided by database)
    m_configuration.initializeWith(m_api->getConfiguration());
@@ -172,36 +172,6 @@ void CEnOcean::send(const message::CSendMessage& sendMessage) const
    m_port->send(sendMessage.buildBuffer());
 }
 
-void CEnOcean::send(const message::CSendMessage& sendMessage,
-                    boost::function<bool(const message::CReceivedEsp3Packet& rcvMessage)> checkExpectedMessageFunction,
-                    boost::function<void(const message::CReceivedEsp3Packet& rcvMessage)> onReceiveFct)
-{
-   shared::event::CEventHandler receivedEvtHandler;
-
-   {
-      boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
-      m_onReceiveHook = [&](const message::CReceivedEsp3Packet& receivedMsg)-> bool
-         {
-            if (!checkExpectedMessageFunction(receivedMsg))
-               return false;
-
-            receivedEvtHandler.postEvent<const message::CReceivedEsp3Packet>(shared::event::kUserFirstId, receivedMsg);
-            return true;
-         };
-   }
-
-   send(sendMessage);
-
-   if (receivedEvtHandler.waitForEvents(message::EnOceanAnswerTimeout) == shared::event::kTimeout)
-   {
-      boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
-      m_onReceiveHook.clear();
-      throw CProtocolException((boost::format("Asnwer timeout. Request was %1%") % sendMessage.packetType()).str());
-   }
-
-   onReceiveFct(receivedEvtHandler.getEventData<const message::CReceivedEsp3Packet>());
-}
-
 void CEnOcean::processConnectionEvent()
 {
    std::cout << "EnOcean port opened" << std::endl;
@@ -240,15 +210,6 @@ void CEnOcean::processUnConnectionEvent()
 
 void CEnOcean::processDataReceived(const message::CReceivedEsp3Packet& message)
 {
-   {
-      boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
-      if (m_onReceiveHook && m_onReceiveHook(message))
-      {
-         m_onReceiveHook.clear();
-         return;
-      }
-   }
-
    try
    {
       switch (message.header().packetType())
@@ -256,7 +217,9 @@ void CEnOcean::processDataReceived(const message::CReceivedEsp3Packet& message)
       case message::RADIO_ERP1:
          processRadioErp1(message);
          break;//TODO
-      case message::RESPONSE: break;//TODO
+      case message::RESPONSE:
+         processResponse(message);
+         break;
       case message::RADIO_SUB_TEL: break;//TODO
       case message::EVENT:
          processEvent(message);
@@ -354,6 +317,70 @@ CDevice CEnOcean::retrieveDevice(unsigned int deviceId)
    return CDevice(deviceId, CManufacturers::kThermokon, 2, 1);//TODO revoir tous les paramètres
 }
 
+void CEnOcean::processResponse(const message::CReceivedEsp3Packet& esp3Packet)
+{
+   if (esp3Packet.header().dataLength() != 33) //TODO on peut pas mieux faire que cette valeur en dur ?
+      throw CProtocolException((boost::format("Invalid data length %1%, expected 33. Request was CO_RD_VERSION.") % esp3Packet.header().dataLength()).str());
+
+   auto returnCode = static_cast<message::EReturnCode>(esp3Packet.data()[0]);
+
+   if (returnCode == message::RET_NOT_SUPPORTED)
+   {
+      std::cout << "CO_RD_VERSION request returned not supported" << std::endl;
+      return;
+   }
+
+   if (returnCode != message::RET_OK)
+      throw CProtocolException((boost::format("Unexpected return code %1%. Request was CO_RD_VERSION.") % returnCode).str());
+
+   struct Version
+   {
+      unsigned int m_main;
+      unsigned int m_beta;
+      unsigned int m_alpha;
+      unsigned int m_build;
+
+      std::string toString() const
+      {
+         std::ostringstream str;
+         str << m_main << '.' << m_beta << '.' << m_alpha << '.' << m_build;
+         return str.str();
+      }
+   };
+   Version appVersion;
+   appVersion.m_main = esp3Packet.data()[1];
+   appVersion.m_beta = esp3Packet.data()[2];
+   appVersion.m_alpha = esp3Packet.data()[3];
+   appVersion.m_build = esp3Packet.data()[4];
+
+   Version apiVersion;
+   apiVersion.m_main = esp3Packet.data()[5];
+   apiVersion.m_beta = esp3Packet.data()[6];
+   apiVersion.m_alpha = esp3Packet.data()[7];
+   apiVersion.m_build = esp3Packet.data()[8];
+
+   auto chipId = esp3Packet.data()[9] << 24
+      | esp3Packet.data()[10] << 16
+      | esp3Packet.data()[11] << 8
+      | esp3Packet.data()[12];
+
+   auto chipVersion = esp3Packet.data()[13] << 24
+      | esp3Packet.data()[14] << 16
+      | esp3Packet.data()[15] << 8
+      | esp3Packet.data()[16];
+
+   std::string appDescription(esp3Packet.data().begin() + 17,
+                              esp3Packet.data().end());
+   appDescription.erase(appDescription.find_last_not_of('\0') + 1);
+
+   std::cout << "EnOcean dongle Version " << appVersion.toString() <<
+      " " << appDescription << "" <<
+      ", api " << apiVersion.toString() <<
+      ", chipId " << std::hex << chipId <<
+      ", chipVersion " << std::hex << chipVersion <<
+      std::endl;
+}
+
 void CEnOcean::processEvent(const message::CReceivedEsp3Packet& esp3Packet)
 {
    //TODO tout revoir pour utiliser le code généré (si dispo pour les events)
@@ -394,68 +421,6 @@ void CEnOcean::requestDongleVersion()
    message::CCommandSendMessage sendMessage;
    sendMessage.appendData({message::CO_RD_VERSION});
 
-   send(sendMessage,
-        [](const message::CReceivedEsp3Packet& rcvMessage)
-        {
-           return rcvMessage.header().packetType() == message::RESPONSE;
-        },
-        [](const message::CReceivedEsp3Packet& rcvMessage)
-        {
-           if (rcvMessage.header().packetType() != message::RESPONSE)
-              throw CProtocolException((boost::format("Invalid packet type %1%, expected 2(RESPONSE). Request was CO_RD_VERSION.") % rcvMessage.header().packetType()).str());
-
-           if (rcvMessage.header().dataLength() != 33)
-              throw CProtocolException((boost::format("Invalid data length %1%, expected 33. Request was CO_RD_VERSION.") % rcvMessage.header().dataLength()).str());
-
-           auto returnCode = static_cast<message::EReturnCode>(rcvMessage.data()[0]);
-
-           if (returnCode == message::RET_NOT_SUPPORTED)
-           {
-              std::cout << "CO_RD_VERSION request returned not supported" << std::endl;
-              return;
-           }
-
-           if (returnCode != message::RET_OK)
-              throw CProtocolException((boost::format("Unexpected return code %1%. Request was CO_RD_VERSION.") % returnCode).str());
-
-           struct Version
-           {
-              unsigned int m_main;
-              unsigned int m_beta;
-              unsigned int m_alpha;
-              unsigned int m_build;
-
-              std::string toString() const
-              {
-                 std::ostringstream str;
-                 str << m_main << '.' << m_beta << '.' << m_alpha << '.' << m_build;
-                 return str.str();
-              }
-           };
-           Version appVersion;
-           appVersion.m_main = rcvMessage.data()[1];
-           appVersion.m_beta = rcvMessage.data()[2];
-           appVersion.m_alpha = rcvMessage.data()[3];
-           appVersion.m_build = rcvMessage.data()[4];
-
-           Version apiVersion;
-           apiVersion.m_main = rcvMessage.data()[5];
-           apiVersion.m_beta = rcvMessage.data()[6];
-           apiVersion.m_alpha = rcvMessage.data()[7];
-           apiVersion.m_build = rcvMessage.data()[8];
-
-           auto chipId = rcvMessage.data()[9] << 24 | rcvMessage.data()[10] << 16 | rcvMessage.data()[11] << 8 | rcvMessage.data()[12];
-
-           auto chipVersion = rcvMessage.data()[13] << 24 | rcvMessage.data()[14] << 16 | rcvMessage.data()[15] << 8 | rcvMessage.data()[16];
-
-           std::string appDescription(rcvMessage.data().begin() + 17, rcvMessage.data().end());
-
-           std::cout << "EnOcean dongle Version " << appVersion.toString() <<
-              "\"" << appDescription << "\"" <<
-              ", api " << apiVersion.toString() <<
-              ", chipId " << chipId <<
-              ", chipVersion " << chipVersion <<
-              std::endl;
-        });
+   send(sendMessage);
 }
 

@@ -23,10 +23,11 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    Constructor
          /// \param[in] eventId        Id of the event
-         /// \param[in] periodic       Periodic or one-shot timer
+         /// \param[in] periodicity       Periodic or one-shot timer
          /// \param[in] period         Timer period. If provided, timer starts immediatley, else user must call start method
          //--------------------------------------------------------------
-         explicit CEventTimer(int eventId, EPeriodicity periodicity = kOneShot,
+         explicit CEventTimer(int eventId,
+                              EPeriodicity periodicity = kOneShot,
                               const boost::posix_time::time_duration& period = boost::date_time::not_a_date_time);
 
          //--------------------------------------------------------------
