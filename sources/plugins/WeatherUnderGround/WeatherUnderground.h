@@ -35,6 +35,16 @@ public:
                               const shared::CDataContainer& newConfigurationData);
 
 private:
+
+   //--------------------------------------------------------------
+   /// \brief Manage the url sending
+   /// \param[in] api      pointer to the API
+   /// \param[in] url      The url to send
+   /// \param[in] event    event to send for retry
+   /// \return if the sending is working properly
+   //--------------------------------------------------------------
+   shared::CDataContainer SendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api, std::string url, int event, int &nbRetry);
+
    //--------------------------------------------------------------
    /// \brief	The plugin Name
    //--------------------------------------------------------------
@@ -44,5 +54,10 @@ private:
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
    CWUConfiguration m_configuration;
+
+   //--------------------------------------------------------------
+   /// \brief	The plugin state
+   //--------------------------------------------------------------
+   bool m_runningState;
 };
 

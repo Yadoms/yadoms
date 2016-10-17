@@ -4,8 +4,8 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CRain::CRain(std::string pluginName,
-             std::string keyWordName)
+CRain::CRain(const std::string& pluginName,
+             const std::string& keyWordName)
    : m_pluginName(pluginName),
      m_rain(boost::make_shared<yApi::historization::CRain>(keyWordName))
 {

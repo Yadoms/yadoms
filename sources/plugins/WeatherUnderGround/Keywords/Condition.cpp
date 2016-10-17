@@ -6,8 +6,8 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CCondition::CCondition(std::string pluginName,
-                       std::string keyWordName)
+CCondition::CCondition(const std::string& pluginName,
+                       const std::string& keyWordName)
    : m_pluginName(pluginName),
      m_condition(boost::make_shared<CConditionHistorizer>(keyWordName, yApi::EKeywordAccessMode::kGet))
 {
@@ -75,4 +75,3 @@ boost::shared_ptr<yApi::historization::IHistorizable> CCondition::getHistorizabl
 {
    return m_condition;
 }
-

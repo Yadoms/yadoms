@@ -340,7 +340,8 @@
 			"InitializationError": "Erreur d'initialisation",
 			"querynotfound": "Localisation non trouvée",
 			"keynotfound": "Clé API incorrecte",
-			"NoConnection": "Pas de connexion Internet"
+			"NoConnection": "Pas de connexion Internet",
+			"desactivated": "Un ou plusieurs modules sont désactivés"
 		}
 	}
 }

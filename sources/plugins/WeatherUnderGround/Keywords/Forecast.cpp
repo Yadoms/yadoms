@@ -6,8 +6,8 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CForecast::CForecast(std::string pluginName,
-                     std::string keyWordName,
+CForecast::CForecast(const std::string& pluginName,
+                     const std::string& keyWordName,
                      const weatherunderground::helper::EPeriod& period)
    : m_pluginName(pluginName),
      m_forecast(boost::make_shared<yApi::historization::CForecastHistorizer>(keyWordName,
@@ -43,7 +43,7 @@ void CForecast::addPeriod(const shared::CDataContainer& valueContainer,
 {
    std::string weatherIconTemp;
 
-   weatherunderground::helper::EnumValuesNames::const_iterator it = weatherunderground::helper::EEnumTypeNames.find(valueContainer.get<std::string>(weatherCondition));
+   auto it = weatherunderground::helper::EEnumTypeNames.find(valueContainer.get<std::string>(weatherCondition));
    if (it != weatherunderground::helper::EEnumTypeNames.end())
    {
       weatherIconTemp = static_cast<yApi::historization::EWeatherCondition>(it->second).toString();

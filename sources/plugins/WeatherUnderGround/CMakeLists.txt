@@ -15,6 +15,7 @@ set(WUNDERGROUND_SOURCES
    ForecastDays.h
    IWUConfiguration.h
    NoStateException.hpp
+   RequestErrorException.hpp
    stdafx.h
    stdafx.cpp
    WeatherUnderground.h
