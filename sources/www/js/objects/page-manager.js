@@ -162,13 +162,16 @@ PageManager.addToDom = function (page) {
     });
 
     page.$grid.on('dragstop', function (event) {
+        console.log(event.target);
         //we remove the page overlay
         $(".tabPagePills .tabPagePillsDropper").addClass("hidden");
 
+        var targetPill = event.toElement || event.originalEvent.target;
+
         //we look if the widget has been dropped onto another page pill
-        if ((!event.toElement) || (!event.target))
+        if ((!targetPill) || (!event.target))
             return;
-        var $page = $(event.toElement).parent();
+        var $page = $(targetPill).parent();
         if (!$page)
             return;
         var $widget = $(event.target);
