@@ -70,7 +70,7 @@ namespace message
       : m_rorg(CRorgs::toRorgId(esp3Packet.data()[0])),
         m_senderId(esp3Packet.data()[esp3Packet.data().size() - 5] << 24 | esp3Packet.data()[esp3Packet.data().size() - 4] << 16 | esp3Packet.data()[esp3Packet.data().size() - 3] << 8 | esp3Packet.data()[esp3Packet.data().size() - 2]),
         m_status(esp3Packet.data()[esp3Packet.data().size() - 1]),
-        m_data(esp3Packet.data().begin() + 1, esp3Packet.data().begin() + esp3Packet.data().size() - 6)
+        m_data(esp3Packet.data().begin() + 1, esp3Packet.data().begin() + esp3Packet.data().size() - 6 + 1)
    {
    }
 

@@ -8,6 +8,8 @@
 #include "4BSTeachinVariant2.h"
 #include "enOceanDescriptors/bitsetHelpers.hpp"
 
+//TODO gérer un cache pour les devices connus (pour ne pas requêter Yadoms pour rien)
+
 IMPLEMENT_PLUGIN(CEnOcean)
 
 
@@ -208,7 +210,7 @@ void CEnOcean::processUnConnectionEvent()
    destroyConnection();
 }
 
-void CEnOcean::processDataReceived(const message::CReceivedEsp3Packet& message)
+void CEnOcean::processDataReceived(const message::CReceivedEsp3Packet& message) const
 {
    try
    {
@@ -251,9 +253,6 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) 
 {
    message::CRadioErp1Message erp1Message(esp3Packet);
 
-   // Get device details from database
-   auto device = retrieveDevice(erp1Message.senderId());
-
    // Create associated RORG object
    auto data = bitset_from_bytes(erp1Message.data());
    auto rorg = CRorgs::createRorg(erp1Message.rorg(), data);
@@ -265,25 +264,50 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) 
       if (!rorg->isEepProvided())
          throw std::out_of_range((boost::format("Teach-in telegram variations (without profile provided) are not supported for now. Please report to Yadoms-team. Telegram \"%1%\"") % erp1Message.dump()).str());
 
+      if (rorg->id() != CRorgs::k4BS_Telegram)
+         throw std::domain_error((boost::format("Teach-in telegram is only supported for 4BS telegram for now. Please report to Yadoms-team. Telegram \"%1%\"") % erp1Message.dump()).str());
 
       // Special-case of 4BS teachin mode Variant 2 (profile is provided in the telegram)
       C4BSTeachinVariant2 teachInData(data);
+
       auto func = rorg->createFunc(teachInData.funcId());
       auto type = func->createType(teachInData.typeId(), data);
 
       auto keywordsToDeclare = type->historizers();
       if (keywordsToDeclare.empty())
       {
-         std::cout << "Received teachin telegram for id#" << device.id() << ", " << erp1Message.rorg() << "-" << device.func() << "-" << device.type() << ", but no keyword to declare" << std::endl;
+         std::cout << "Received teachin telegram for id#" << std::to_string(erp1Message.senderId())
+            << ", " << std::hex << erp1Message.rorg()
+            << "-" << std::hex << func->id()
+            << "-" << type->id()
+            << ", but no keyword to declare" << std::endl;
          return;
       }
 
       auto model(CManufacturers::name(teachInData.manufacturerId()) + std::string(" - ") + func->title() + "(" + type->title() + ")");
-      m_api->declareDevice(std::to_string(device.id()), model, keywordsToDeclare);
+      shared::CDataContainer details;
+      details.set("manufacturer", teachInData.manufacturerId());
+      details.set("rorg", rorg->id());
+      details.set("func", func->id());
+      details.set("type", type->id());
+      m_api->declareDevice(std::to_string(erp1Message.senderId()), model, keywordsToDeclare, details);
+
+      std::cout << "New device declared : " << std::endl;
+      std::cout << "  - Id           : " << std::setfill('0') << std::setw(8) << std::uppercase << std::hex << erp1Message.senderId() << std::endl;
+      std::cout << "  - Manufacturer : " << CManufacturers::name(teachInData.manufacturerId()) << std::endl;
+      std::cout << "  - Profile      : " << std::setfill('0') << std::setw(2) << std::uppercase << std::hex << rorg->id() << "-"
+         << std::setfill('0') << std::setw(2) << std::uppercase << std::hex << func->id() << "-"
+         << std::setfill('0') << std::setw(2) << std::uppercase << std::hex << type->id() << std::endl;
+      std::cout << "  - RORG         : " << rorg->title() << std::endl;
+      std::cout << "  - FUNC         : " << func->title() << std::endl;
+      std::cout << "  - TYPE         : " << type->title() << std::endl;
    }
    else
    {
       // Data telegram
+
+      // Get device details from database
+      auto device = retrieveDevice(erp1Message.senderId());
 
       // Create associated FUNC object
       auto func = rorg->createFunc(device.func());
@@ -310,11 +334,14 @@ std::string CEnOcean::extractSenderId(const std::vector<unsigned char>& data,
       (data[startIndex]));
 }
 
-CDevice CEnOcean::retrieveDevice(unsigned int deviceId)
+CDevice CEnOcean::retrieveDevice(unsigned int deviceId) const
 {
-   //TODO interroger la base
+   auto deviceDetails = m_api->getDeviceDetails(std::to_string(deviceId));
 
-   return CDevice(deviceId, CManufacturers::kThermokon, 2, 1);//TODO revoir tous les paramètres
+   return CDevice(deviceId,
+                  deviceDetails.get<int>("manufacturer"),
+                  deviceDetails.get<int>("func"),
+                  deviceDetails.get<int>("type"));
 }
 
 void CEnOcean::processResponse(const message::CReceivedEsp3Packet& esp3Packet)

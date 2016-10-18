@@ -60,7 +60,7 @@ protected:
    /// \brief	                     Called when the data are received from the UPS
    /// \param [in] message          Message received
    //--------------------------------------------------------------
-   void processDataReceived(const message::CReceivedEsp3Packet& message);
+   void processDataReceived(const message::CReceivedEsp3Packet& message) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Process received messages
@@ -83,7 +83,7 @@ protected:
    /// \param [in] deviceId         Device ID to search
    /// \throw std::out_of_range     If device is not found in database
    //--------------------------------------------------------------
-   static CDevice retrieveDevice(unsigned int deviceId);
+   CDevice retrieveDevice(unsigned int deviceId) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Requests to EnOcean
