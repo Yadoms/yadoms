@@ -13,15 +13,14 @@ class CRunningPeriod : public IKeyword
 public:
    //--------------------------------------------------------------
    /// \brief	                      Constructor
-   /// \param[in] api                  Yadoms APi context
-   /// \param[in] KeyWordName          The keyword name
-   /// \note                           Use this constructor initialising the keyword for this plugin
+   /// \param[in] KeyWordName        The keyword name
+   /// \note                         Use this constructor initializing the keyword for this plugin
    //--------------------------------------------------------------
-   CRunningPeriod(std::string KeyWordName);
+   explicit CRunningPeriod(const std::string& KeyWordName);
 
    //--------------------------------------------------------------
    /// \brief	                      Set the value of the keyword
-   /// \param[in] Value                The new value
+   /// \param[in] Value              The new value
    //--------------------------------------------------------------
    void set(std::string& Value) const;
 

@@ -53,7 +53,7 @@ namespace shared
                CSingleHistorizableData(const std::string& keywordName,
                                        const CStandardCapacity& capacity,
                                        const EKeywordAccessMode& accessMode,
-                                       const T initialValue,
+                                       const T& initialValue,
                                        const EMeasureType& measureType = EMeasureType::kAbsolute,
                                        typeInfo::ITypeInfo& typeInfo = typeInfo::CEmptyTypeInfo::Empty)
                   : m_keywordName(keywordName),

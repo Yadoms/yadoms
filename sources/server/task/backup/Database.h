@@ -15,7 +15,7 @@ namespace task { namespace backup {
       //------------------------------------------
       ///\brief   Constructor
       //------------------------------------------
-      CDatabase(boost::shared_ptr< database::IDataBackup > dataBackupInterface);
+      explicit CDatabase(boost::shared_ptr< database::IDataBackup > dataBackupInterface);
 
       //------------------------------------------
       ///\brief   Destructor

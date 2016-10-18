@@ -957,10 +957,10 @@ FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
 ENDFOREACH(PostgreSqlDepend)
 
 
-#copy www directory into build directory (release configuration only)
+#copy www directory into build directory
 add_custom_command(TARGET yadoms POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E $<$<CONFIG:debug>:echo>$<$<NOT:$<CONFIG:debug>>:copy_directory>
-                       ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                   ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
 		
 
 ##################################################################################################

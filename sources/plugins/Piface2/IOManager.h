@@ -18,7 +18,7 @@ public:
    /// \brief	   Constructor
    /// \param[in] device                The device name
    //--------------------------------------------------------------
-   CIOManager( const std::string& device);
+   explicit CIOManager(const std::string& device);
 
    //--------------------------------------------------------------
    /// \brief	    Initialize all elements

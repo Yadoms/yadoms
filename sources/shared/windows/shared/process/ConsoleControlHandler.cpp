@@ -27,7 +27,7 @@ namespace shared
                // Signal stop request and wait for application fully stops
                if (!m_onStopRequestedFct())
                {
-                  YADOMS_LOG(error) << "Fail to wait the app end event";
+                  YADOMS_LOG(error) << "CConsoleControlHandler : Fail to wait the app end event";
                   return FALSE;
                }
 

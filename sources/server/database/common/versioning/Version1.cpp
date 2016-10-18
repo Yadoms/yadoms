@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Version1.h"
 #include "database/common/Query.h"
-#include "database/common/adapters/SingleValueAdapter.hpp"
 #include "database/common/DatabaseTables.h"
 #include <shared/versioning/Version.h>
 #include "VersionException.h"
@@ -22,13 +21,13 @@ namespace database { namespace common { namespace versioning {
    // ISQLiteVersionUpgrade implementation
    void CVersion1::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester> & pRequester, const shared::versioning::CVersion & currentVersion)
    {
-      bool bNeedToCreateOrUpgrade = true;
+      auto bNeedToCreateOrUpgrade = false;
 
       if (currentVersion >= m_version)
       {
          //not for me, version is correct
 
-         //check that table all tables exists
+         //check that all tables exist
          if(!pRequester->checkTableExists(CConfigurationTable::getTableName()) ||
             !pRequester->checkTableExists(CDeviceTable::getTableName()) ||
             !pRequester->checkTableExists(CPluginTable::getTableName()) ||
@@ -46,15 +45,10 @@ namespace database { namespace common { namespace versioning {
             //at least one table is missing
             bNeedToCreateOrUpgrade = true;
          }
-         else
-         {
-            //good version, but missing table (developpement mode only)
-            bNeedToCreateOrUpgrade = false;
-         }
       }
       else
       {
-         //version is lower to requested, then create database
+         //version is lower to requested
          bNeedToCreateOrUpgrade = true;
       }
 
@@ -72,7 +66,7 @@ namespace database { namespace common { namespace versioning {
    ///\param [in] pRequester : database requester object
    ///\throw      CVersionException if create database failed
    //-----------------------------------
-   void CVersion1::CreateDatabase(const boost::shared_ptr<IDatabaseRequester> & pRequester)
+   void CVersion1::CreateDatabase(const boost::shared_ptr<IDatabaseRequester> & pRequester) const
    {
       try
       {
@@ -148,7 +142,7 @@ namespace database { namespace common { namespace versioning {
          }
 
          //set the database version
-         CQuery qInsert = pRequester->newQuery();
+         auto qInsert = pRequester->newQuery();
          qInsert.InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName()).
             Values("Database", "Version", m_version.toString(3), "Database version");
          pRequester->queryStatement(qInsert);              

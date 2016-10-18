@@ -158,6 +158,11 @@ public:
       return path;
    }
 
+   bool isDeveloperMode() const override
+   {
+      return false;
+   }
+
    // [END] IYPluginApi implementation
 
    const std::map<std::string, Device>& getDevices() const

@@ -15,7 +15,7 @@ static const std::string DefaultPackageFileContent(
 "{"
 "   \"type\": \"FakePackage\","
 "      \"description\": \"This is just a fake package file, used to test pluginSystem::CInformation class.\","
-"      \"version\": \"0.1\","
+"      \"version\": \"0.0.1\","
 "      \"releaseType\": \"beta\","
 "      \"author\": \"yadoms-team\","
 "     \"url\": \"https://github.com/Yadoms/yadoms/\","
@@ -120,12 +120,12 @@ BOOST_AUTO_TEST_CASE(ReadDefaultInformation)
    pluginSystem::CInformation info(DefaultPackagePath);
 
    BOOST_CHECK_EQUAL(info.getType(), "FakePackage");
-   BOOST_CHECK_EQUAL(info.getVersion(), "0.1");
+   BOOST_CHECK_EQUAL(info.getVersion(), "0.0.1");
    BOOST_CHECK_EQUAL(info.getReleaseType(), shared::versioning::EReleaseType::kBetaValue);
    BOOST_CHECK_EQUAL(info.getAuthor(), "yadoms-team");
    BOOST_CHECK_EQUAL(info.getUrl(), "https://github.com/Yadoms/yadoms/");
-   BOOST_CHECK_EQUAL(info.getIdentity(), "FakePackage v0.1[Beta]");
-   BOOST_CHECK_EQUAL(info.toString(), "FakePackage v0.1[Beta] by yadoms-team (https://github.com/Yadoms/yadoms/)");
+   BOOST_CHECK_EQUAL(info.getIdentity(), "FakePackage v0.0.1[Beta]");
+   BOOST_CHECK_EQUAL(info.toString(), "FakePackage v0.0.1[Beta] by yadoms-team (https://github.com/Yadoms/yadoms/)");
 }
 
 BOOST_AUTO_TEST_CASE(WrongPackageFileJsonFormat)

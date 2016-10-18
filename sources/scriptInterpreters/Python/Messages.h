@@ -3,4 +3,4 @@
 #include <pbRequest.pb.h>
 #include <pbAnswer.pb.h>
 
-const size_t m_messageQueueMessageSize(1000);
+const size_t m_messageQueueMessageSize(100000);

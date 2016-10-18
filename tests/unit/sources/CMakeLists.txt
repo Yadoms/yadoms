@@ -23,24 +23,24 @@ set(YADOMS_PATH ../../../sources)
 ##################################################################################################
 
 # First checks (compilers versions...)
-include(${YADOMS_PATH}/preChecks.cmake)
+include(${YADOMS_PATH}/cmake/preChecks.cmake)
 
 # Precompiled headers
-include(${YADOMS_PATH}/PrecompiledHeader.cmake)
+include(${YADOMS_PATH}/cmake/PrecompiledHeader.cmake)
 
 # User specific configuration
 include("CMakeListsUserConfig.txt" OPTIONAL)
 
 # Windows specific macro
 if(WIN32)
-	include(${YADOMS_PATH}/windows.cmake)
+	include(${YADOMS_PATH}/cmake/windows.cmake)
 endif()
 
 # Compilers/IDE configurations
-include(${YADOMS_PATH}/compilers.cmake)
+include(${YADOMS_PATH}/cmake/compilers.cmake)
 
 # Boost built libraries copy helper
-include(${YADOMS_PATH}/copyBoost.cmake)
+include(${YADOMS_PATH}/cmake/copyBoost.cmake)
 
 
 
@@ -109,7 +109,7 @@ endif()
 
 ## IOKIT (needed for Mac)
 if(APPLE)
-	include(${YADOMS_PATH}/mac.cmake)
+	include(${YADOMS_PATH}/cmake/mac.cmake)
 	
 	if(NOT IOKIT_FOUND)
 		message(SEND_ERROR "Unable to find the required IOKit libraries")
@@ -137,7 +137,7 @@ SET ( POCO_LIBS
    PocoZip
 )
 
-include(${YADOMS_PATH}/FindPoco.cmake)
+include(${YADOMS_PATH}/cmake/FindPoco.cmake)
 
 IF(NOT ${Poco_FOUND})
 	message(SEND_ERROR "Unable to find the requested POCO libraries")

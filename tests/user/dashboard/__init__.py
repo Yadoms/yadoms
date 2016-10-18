@@ -42,4 +42,10 @@ def openPlugin(browser):
    """Open the plugin page of dashboard"""
    
    openPage(browser, "btn-dashboard-plugins", "plugin-instance-list")
+
+   
+def openDevice(browser):
+   """Open the device page of dashboard"""
+   
+   openPage(browser, "btn-dashboard-devices", "device-list")
    

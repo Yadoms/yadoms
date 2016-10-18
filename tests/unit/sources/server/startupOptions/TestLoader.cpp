@@ -7,16 +7,6 @@
 #include "../../testCommon/fileSystem.h"
 
 
-#ifdef _DEBUG
-#ifdef WIN32
-static const std::string WebServerInitialPath("../../sources/www");
-#else
-static const std::string WebServerInitialPath("../sources/www");
-#endif
-#else
-static const std::string WebServerInitialPath("www");
-#endif
-
 
 class CTestPath
 {

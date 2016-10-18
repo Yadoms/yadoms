@@ -3,53 +3,57 @@
 #include <string>
 #include <exception>
 
-namespace shared { namespace exception
+namespace shared
 {
-
-   //--------------------------------------------------------------
-   /// \class Standard exception with some text
-   //--------------------------------------------------------------
-   class CException : public std::exception
+   namespace exception
    {
-   protected:
       //--------------------------------------------------------------
-      /// \brief	                        Default constructor (only internal usage)
+      /// \brief Standard exception with some text
       //--------------------------------------------------------------
-      CException() {}
-
-   public:
-      //--------------------------------------------------------------
-      /// \brief	                        Constructor
-      /// \param[in]  message             Exception message
-      //--------------------------------------------------------------
-      explicit CException(const char * message)
+      class CException : public std::exception
       {
-         if(message != NULL)
-            m_message=std::string(message);
-      }
-      explicit CException(const std::string& message)
-         :m_message(message)
-      {
-      }
+      protected:
+         //--------------------------------------------------------------
+         /// \brief	                        Default constructor (only internal usage)
+         //--------------------------------------------------------------
+         CException()
+         {
+         }
 
-      //--------------------------------------------------------------
-      /// \brief      Destructor
-      //--------------------------------------------------------------
-      virtual ~CException() throw()
-      {
-      }
+      public:
+         //--------------------------------------------------------------
+         /// \brief	                        Constructor
+         /// \param[in]  message             Exception message
+         //--------------------------------------------------------------
+         explicit CException(const char* message)
+         {
+            if (message != NULL)
+               m_message = std::string(message);
+         }
 
-      //--------------------------------------------------------------
-      /// \brief	    Build full message explaining exception reason
-      /// \return     message explaining exception reason
-      //--------------------------------------------------------------
-      virtual const char* what() const throw() { return m_message.c_str(); }
+         explicit CException(const std::string& message)
+            : m_message(message)
+         {
+         }
 
-   protected:
-      //--------------------------------------------------------------
-      /// \brief      Message container
-      //--------------------------------------------------------------
-      std::string m_message;
-   };
+         //--------------------------------------------------------------
+         /// \brief      Destructor
+         //--------------------------------------------------------------
+         virtual ~CException() throw()
+         {
+         }
 
-} } // namespace shared::exception
+         //--------------------------------------------------------------
+         /// \brief	    Build full message explaining exception reason
+         /// \return     message explaining exception reason
+         //--------------------------------------------------------------
+         virtual char const* what() const throw() override { return m_message.c_str(); }
+
+      protected:
+         //--------------------------------------------------------------
+         /// \brief      Message container
+         //--------------------------------------------------------------
+         std::string m_message;
+      };
+   }
+} // namespace shared::exception

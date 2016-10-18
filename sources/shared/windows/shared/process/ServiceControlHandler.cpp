@@ -32,12 +32,13 @@ namespace shared
             {
                // Signal stop request and wait for application fully stops
                if (!m_onStopRequestedFct())
-                  YADOMS_LOG(error) << "Fail to wait the app end event";
+                  YADOMS_LOG(error) << "CServiceControlHandler : Fail to wait the app end event";
 
                m_serviceStatus.dwCurrentState = SERVICE_STOP_PENDING;
             }
             break;
          case SERVICE_CONTROL_INTERROGATE:
+         default:
             break;
          }
          SetServiceStatus(m_serviceStatusHandle, &m_serviceStatus);

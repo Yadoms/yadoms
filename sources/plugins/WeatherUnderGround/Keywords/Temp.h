@@ -16,8 +16,8 @@ public:
    /// \param[in] keyWordName          The keyword name
    /// \note                           Use this constructor initialising the keyword for this plugin
    //--------------------------------------------------------------
-   CTemp(std::string pluginName,
-         std::string keyWordName);
+   CTemp(const std::string& pluginName,
+         const std::string& keyWordName);
 
    //--------------------------------------------------------------
    /// \brief	                      Set the value from the container

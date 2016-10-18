@@ -15,7 +15,7 @@ namespace database { namespace common { namespace versioning {
    boost::shared_ptr<IVersionUpgrade> CVersionUpgraderFactory::GetUpgrader()
    { 
       //change this line when a new SQlite version is released
-      return boost::shared_ptr<IVersionUpgrade>(new CVersion1()); 
+      return boost::make_shared<CVersion1>();
    }
 
 } //namespace versioning

@@ -85,24 +85,31 @@ namespace plugin_cpp_api
       switch (receivedEvtHandler.waitForEvents(boost::posix_time::minutes(1)))
       {
       case kExpectedEventReceived:
-      {
-         onReceiveFunction(receivedEvtHandler.getEventData<const toPlugin::msg>());
-         break;
-      }
+         {
+            onReceiveFunction(receivedEvtHandler.getEventData<const toPlugin::msg>());
+            break;
+         }
 
       case kErrorReceived:
-      {
-         boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
-         m_onReceiveHook.clear();
-         throw std::runtime_error((boost::format("Error \"%1%\" received from Yadoms when sending message %2%") % receivedEvtHandler.getEventData<const toPlugin::msg>().error() % msg.OneOf_case()).str());
-      }
+         {
+            boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
+            m_onReceiveHook.clear();
+            throw std::runtime_error((boost::format("Error \"%1%\" received from Yadoms when sending message %2%") % receivedEvtHandler.getEventData<const toPlugin::msg>().error() % msg.OneOf_case()).str());
+         }
 
       case shared::event::kTimeout:
-      {
-         boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
-         m_onReceiveHook.clear();
-         throw std::runtime_error((boost::format("No answer from Yadoms when sending message %1%") % msg.OneOf_case()).str());
-      }
+         {
+            boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
+            m_onReceiveHook.clear();
+            throw std::runtime_error((boost::format("No answer from Yadoms when sending message %1%") % msg.OneOf_case()).str());
+         }
+
+      default:
+         {
+            boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
+            m_onReceiveHook.clear();
+            throw std::runtime_error((boost::format("Invalid event received %1% when sending message %2%") % receivedEvtHandler.getEventId() % msg.OneOf_case()).str());
+         }
       }
    }
 

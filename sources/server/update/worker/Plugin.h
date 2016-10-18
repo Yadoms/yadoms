@@ -16,7 +16,7 @@ namespace update
          ///\param [in] pluginManager     The plugin manager
          //---------------------------------------------
          static void install(CWorkerTools::WorkerProgressFunc progressCallback,
-                             const std::string downloadUrl,
+                             const std::string& downloadUrl,
                              boost::shared_ptr<pluginSystem::CManager> pluginManager);
 
          //---------------------------------------------

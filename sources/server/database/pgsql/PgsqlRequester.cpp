@@ -77,10 +77,7 @@ namespace pgsql {
    void CPgsqlRequester::terminateConnection(PGconn * pConnection)
    {
       if(pConnection != NULL)
-      {
          PQfinish(pConnection);
-         pConnection = NULL;
-      }
    }
 
    std::string CPgsqlRequester::getLastErrorMessage(PGconn * pConnection)
@@ -293,7 +290,7 @@ namespace pgsql {
       m_activeTransactionsList.clear();
 
       //close all connection
-      for (std::map<unsigned long, PGconn*>::iterator i = m_connectionList.begin(); i != m_connectionList.end(); i++)
+      for (std::map<unsigned long, PGconn*>::iterator i = m_connectionList.begin(); i != m_connectionList.end(); ++i)
          PQfinish(i->second);
       m_connectionList.clear();
    }

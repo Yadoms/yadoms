@@ -33,7 +33,7 @@ namespace xplcore
       CXplMessage(const ETypeIdentifier& typeId,
                   const CXplActor& source,
                   const CXplActor& target,
-                  CXplMessageSchemaIdentifier messageSchemaIdentifier);
+                  const CXplMessageSchemaIdentifier& messageSchemaIdentifier);
 
       //--------------------------------------------------------------
       /// \brief	    Constructor

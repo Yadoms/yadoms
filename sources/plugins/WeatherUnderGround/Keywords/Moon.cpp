@@ -4,8 +4,8 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CMoon::CMoon(std::string pluginName,
-             std::string keyWordName)
+CMoon::CMoon(const std::string& pluginName,
+             const std::string& keyWordName)
    : m_pluginName(pluginName),
      m_moonCharacteristics(boost::make_shared<yApi::historization::CMoonHistorizer>(keyWordName,
                                                                                     yApi::EKeywordAccessMode::kGet))

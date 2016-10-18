@@ -16,13 +16,13 @@ public:
    /// \param[in] KeyWordName          The keyword name
    /// \note                           Use this constructor initialising the keyword for this plugin
    //--------------------------------------------------------------
-   CForecastTomorrow(std::string KeyWordName);
+   explicit CForecastTomorrow(const std::string& KeyWordName);
 
    //--------------------------------------------------------------
    /// \brief	                      Set the value of the keyword
    /// \param[in] Value                The new value
    //--------------------------------------------------------------
-   void set(std::string& Value) const;
+   void set(const std::string& Value) const;
 
    //--------------------------------------------------------------
    /// \brief	Destructor
