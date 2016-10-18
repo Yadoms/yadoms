@@ -10,6 +10,7 @@
 #include <Poco/Net/HTTPServerResponse.h>
 #include <Poco/Net/HTTPServerParams.h>
 #include <Poco/Net/ServerSocket.h>
+#include <Poco/Net/SecureServerSocket.h>
 #include <Poco/Net/WebSocket.h>
 #include <Poco/Net/NetException.h>
 #include "MimeType.h"
@@ -20,7 +21,7 @@
 namespace web { namespace poco {
 
 
-   CWebServer::CWebServer(const std::string & address, const std::string & port, const std::string & doc_root, const std::string & restKeywordBase, const std::string & webSocketKeywordBase)
+   CWebServer::CWebServer(const std::string & address, const bool useSSL, const unsigned short port, const std::string & doc_root, const std::string & restKeywordBase, const std::string & webSocketKeywordBase)
       :m_httpRequestHandlerFactory(new CHttpRequestHandlerFactory())
    {
       //configure the factory
@@ -39,7 +40,14 @@ namespace web { namespace poco {
       if (address == "0.0.0.0" || address.empty())
       {
          //in case of "0.0.0.0" or empty , then do not use it, just use port, listen on all interfaces
-         Poco::Net::ServerSocket svs(boost::lexical_cast<unsigned short>(port));
+         //Poco::Net::ServerSocket svs(boost::lexical_cast<unsigned short>(port));
+         Poco::Net::ServerSocket svs(port);
+
+         if (useSSL)
+         {
+            svs = Poco::Net::SecureServerSocket(port);
+         }
+
          bool a = false;
          int b = 0;
          svs.getLinger(a, b);
