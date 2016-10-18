@@ -40,9 +40,9 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    std::cout << "CWeatherUnderground is starting..." << std::endl;
 
-   int weatherConditionsSendingRetry = 0;
-   int astronomySendingRetry = 0;
-   int forcast10daysSendingRetry = 0;
+   auto weatherConditionsSendingRetry = 0;
+   auto astronomySendingRetry = 0;
+   auto forcast10daysSendingRetry = 0;
 
    boost::shared_ptr<CWeatherConditions> m_WeatherConditionsRequester;
    boost::shared_ptr<CAstronomy> m_AstronomyRequester;
@@ -90,7 +90,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             try
             {
-               shared::CDataContainer returnData = SendUrlRequest(api, m_WeatherConditionsRequester->getUrl(), kEvtTimerRefreshWeatherConditions, weatherConditionsSendingRetry);
+               auto returnData = SendUrlRequest(api, m_WeatherConditionsRequester->getUrl(), kEvtTimerRefreshWeatherConditions, weatherConditionsSendingRetry);
                m_WeatherConditionsRequester->parse(api, m_configuration, returnData);
             }
             catch (CRequestErrorException&)
@@ -103,7 +103,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             try
             {
-               shared::CDataContainer returnData = SendUrlRequest(api, m_AstronomyRequester->getUrl(), kEvtTimerRefreshAstronomy, astronomySendingRetry);
+               auto returnData = SendUrlRequest(api, m_AstronomyRequester->getUrl(), kEvtTimerRefreshAstronomy, astronomySendingRetry);
                m_AstronomyRequester->parse(api, m_configuration, returnData);
             }
             catch (CRequestErrorException&)
@@ -148,7 +148,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kEvtPluginState:
          {
-            bool newState = false;
+            auto newState = false;
 
             // estimate the state of the plugin
             if (!m_Forecast10Days->isDesactivated() && !m_AstronomyRequester->isDesactivated() && !m_WeatherConditionsRequester->isDesactivated())
