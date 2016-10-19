@@ -121,7 +121,7 @@ namespace shared
             ///\brief Get the details of a device
             ///\param    [in]    device            The device name
             ///\return the device details
-            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            ///\throw shared::exception::CEmptyResult if device doesn't exist
             //-----------------------------------------------------
             virtual CDataContainer getDeviceDetails(const std::string& device) const = 0;
 
