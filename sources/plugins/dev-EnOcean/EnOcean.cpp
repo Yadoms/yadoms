@@ -68,6 +68,23 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             break;
          }
+         case yApi::IYPluginApi::kEventExtraCommand:
+         {
+            // Extra-command was received from Yadoms
+            auto extraCommand = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraCommand> >();
+            if (extraCommand)
+            {
+               std::cout << "Extra command received : " << extraCommand->getCommand() << std::endl;
+
+               if (extraCommand->getCommand() == "inclusionMode")
+                  startInclusionMode();
+               else if (extraCommand->getCommand() == "cancelSpecialMode")
+                  cancelSpecialMode();
+               else
+                  std::cerr << "Unsupported extra-command, ignored" << std::endl;
+            }
+            break;
+         }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
             // Configuration was updated
@@ -174,9 +191,21 @@ void CEnOcean::send(const message::CSendMessage& sendMessage) const
    m_port->send(sendMessage.buildBuffer());
 }
 
+void CEnOcean::startInclusionMode()
+{
+   //TODO
+}
+
+void CEnOcean::cancelSpecialMode()
+{
+   //TODO
+}
+
 void CEnOcean::processConnectionEvent()
 {
    std::cout << "EnOcean port opened" << std::endl;
+
+   m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 
    try
    {
@@ -261,6 +290,12 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) 
    {
       // Teachin telegram
 
+      if (m_api->deviceExists(std::to_string(erp1Message.senderId())))
+      {
+         std::cout << "Device " << std::setfill('0') << std::setw(8) << std::uppercase << std::hex << erp1Message.senderId() << " already exists, message ignored." << std::endl;
+         return;
+      }
+
       if (!rorg->isEepProvided())
          throw std::out_of_range((boost::format("Teach-in telegram variations (without profile provided) are not supported for now. Please report to Yadoms-team. Telegram \"%1%\"") % erp1Message.dump()).str());
 
@@ -284,7 +319,7 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) 
          return;
       }
 
-      auto model(CManufacturers::name(teachInData.manufacturerId()) + std::string(" - ") + func->title() + "(" + type->title() + ")");
+      auto model(CManufacturers::name(teachInData.manufacturerId()) + std::string(" - ") + func->title() + " (" + type->title() + ")");
       shared::CDataContainer details;
       details.set("manufacturer", teachInData.manufacturerId());
       details.set("rorg", rorg->id());
@@ -307,6 +342,12 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) 
       // Data telegram
 
       // Get device details from database
+      if (!m_api->deviceExists(std::to_string(erp1Message.senderId())))
+      {
+         std::cout << "Unknown device " << std::setfill('0') << std::setw(8) << std::uppercase << std::hex << erp1Message.senderId() << ". Use inclusion mode to add device to Yadoms." << std::endl;
+         return;
+      }
+
       auto device = retrieveDevice(erp1Message.senderId());
 
       // Create associated FUNC object
@@ -443,7 +484,7 @@ void CEnOcean::processEvent(const message::CReceivedEsp3Packet& esp3Packet)
    //TODO
 }
 
-void CEnOcean::requestDongleVersion()
+void CEnOcean::requestDongleVersion() const
 {
    message::CCommandSendMessage sendMessage;
    sendMessage.appendData({message::CO_RD_VERSION});

@@ -45,6 +45,15 @@ protected:
    //--------------------------------------------------------------
    void onCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const;
 
+   //--------------------------------------------------------------
+   /// \brief	                     Enter in inclusion mode
+   //--------------------------------------------------------------
+   void startInclusionMode();
+
+   //--------------------------------------------------------------
+   /// \brief	                     Cancel current special mode (inclusion,exclusion...)
+   //--------------------------------------------------------------
+   void cancelSpecialMode();
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the UPS becomes connected
@@ -88,7 +97,7 @@ protected:
    //--------------------------------------------------------------
    /// \brief	                     Requests to EnOcean
    //--------------------------------------------------------------
-   void requestDongleVersion();
+   void requestDongleVersion() const;
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection

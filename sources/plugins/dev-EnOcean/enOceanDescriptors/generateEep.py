@@ -335,14 +335,15 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             size = xmlDataFieldNode.find("bitsize").text
             code = "   {\n"
             code += "      auto rawValue = bitset_extract(m_data, " + offset + ", " + size + ");\n"
-            rangeMin = xmlDataFieldNode.find("range/min").text
-            rangeMax = xmlDataFieldNode.find("range/max").text
-            scaleMin = xmlDataFieldNode.find("scale/min").text
-            scaleMax = xmlDataFieldNode.find("scale/max").text
+            rangeMin = int(xmlDataFieldNode.find("range/min").text)
+            rangeMax = int(xmlDataFieldNode.find("range/max").text)
+            scaleMin = float(xmlDataFieldNode.find("scale/min").text)
+            scaleMax = float(xmlDataFieldNode.find("scale/max").text)
             if applyCoef is not None:
-               scaleMin = str(float(scaleMin) * float(applyCoef))
-               scaleMax = str(float(scaleMax) * float(applyCoef))
-            code += "      auto value = scaleToDouble(rawValue, " + rangeMin + ", " + rangeMax + ", " + scaleMin + ", " + scaleMax + ");\n"
+               scaleMin = scaleMin * float(applyCoef)
+               scaleMax = scaleMax * float(applyCoef)
+            multiplier = (scaleMax - scaleMin) / (rangeMax - rangeMin);
+            code += "      auto value = " + str(multiplier) + " * ((signed)rawValue - " + str(rangeMin) + ") + " + str(scaleMin) + ";\n"
             keywordName = xmlDataFieldNode.find("shortcut").text + " - " + xmlDataFieldNode.find("data").text
             historizerCppName = "m_" + cppHelper.toCppName(keywordName)
             code += "      " + historizerCppName + "->set(value);\n"
