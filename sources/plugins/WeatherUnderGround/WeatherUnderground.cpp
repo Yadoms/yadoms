@@ -55,14 +55,23 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       m_AstronomyRequester = boost::make_shared<CAstronomy>(api, m_configuration, m_deviceName, "astronomy.");
       m_Forecast10Days = boost::make_shared<CForecastDays>(api, m_configuration, m_deviceName, "forecast.");
 
-      api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-      api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
+      if (!m_WeatherConditionsRequester->isUserDesactivated())
+      {
+         api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+         api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
+      }
 
-      api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-      api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(9));
+      if (!m_AstronomyRequester->isUserDesactivated())
+      {
+         api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+         api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(9));
+      }
 
-      api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-      api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(3));
+      if (!m_Forecast10Days->isUserDesactivated())
+      {
+         api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+         api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(3));
+      }
    }
    catch (...)
    {
@@ -135,10 +144,15 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             m_AstronomyRequester->onUpdate(api, m_configuration);
             m_Forecast10Days->onUpdate(api, m_configuration);
 
-            // Send a message to send for manage the corresponding information
-            api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-            api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-            api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+            // Send a message to the corresponding module
+            if (!m_WeatherConditionsRequester->isUserDesactivated())
+               api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+
+            if (!m_AstronomyRequester->isUserDesactivated())
+               api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+
+            if (!m_Forecast10Days->isUserDesactivated())
+               api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
             break;
          }
       case kEvtPluginState:

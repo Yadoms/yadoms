@@ -109,3 +109,8 @@ bool CAstronomy::isDesactivated() const
 {
    return m_isDesactivated;
 }
+
+bool CAstronomy::isUserDesactivated() const
+{
+   return m_isUserDesactivated;
+}

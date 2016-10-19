@@ -166,3 +166,8 @@ bool CForecastDays::isDesactivated() const
 {
    return m_isDesactivated;
 }
+
+bool CForecastDays::isUserDesactivated() const
+{
+   return m_isUserDesactivated;
+}
