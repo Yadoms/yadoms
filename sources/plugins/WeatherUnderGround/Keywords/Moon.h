@@ -17,8 +17,8 @@ public:
    /// \param[in] keyWordName          The keyword name
    /// \note                           Use this constructor initialising the keyword for this plugin
    //--------------------------------------------------------------
-   CMoon(std::string pluginName,
-         std::string keyWordName);
+   CMoon(const std::string& pluginName,
+         const std::string& keyWordName);
 
    //--------------------------------------------------------------
    /// \brief	Destructor

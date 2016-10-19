@@ -9,13 +9,11 @@ CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
                        const std::string& prefix)
    : m_localisation(wuConfiguration.getLocalisation()),
      m_countryOrState(wuConfiguration.getCountryOrState()),
-   m_deviceName(deviceName),
-     m_moonCharacteristics(boost::make_shared<CMoon>(deviceName, prefix + "Moon"))
+     m_deviceName(deviceName),
+     m_moonCharacteristics(boost::make_shared<CMoon>(deviceName, prefix + "Moon")),
+     m_isDesactivated(false),
+     m_isUserDesactivated(false)
 {
-   m_catchError = false;
-   m_url.str("");
-   m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/astronomy/q/" << m_countryOrState << "/" << m_localisation << ".json";
-
    try
    {
       initializeVariables(api, wuConfiguration);
@@ -23,28 +21,39 @@ CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
    catch (shared::exception::CException& e)
    {
       std::cout << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
-
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
-      m_catchError = true;
+      m_isDesactivated = true;
+      throw e;
    }
 }
 
 void CAstronomy::initializeVariables(boost::shared_ptr<yApi::IYPluginApi> api,
                                      IWUConfiguration& wuConfiguration)
 {
-   // Clear the list
-   m_keywords.clear();
-
    if (wuConfiguration.IsAstronomyEnabled())
    {
+      m_localisation = wuConfiguration.getLocalisation();
+
+      //read the country or State code
+      m_countryOrState = wuConfiguration.getCountryOrState();
+
+      // Clear the list
+      m_keywords.clear();
+
       m_keywords.push_back(m_moonCharacteristics->getHistorizable());
       m_moonCharacteristics->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Load.getName(),
                                      shared::plugin::yPluginApi::CStandardCapacities::Load.getUnit());
-   }
 
-   // Declare keywords
-   std::string m_URL = "www.wunderground.com/";
-   api->declareDevice(m_deviceName, m_URL, m_keywords);
+      // Declare keywords
+      std::string m_URL = "www.wunderground.com/";
+      api->declareDevice(m_deviceName, m_URL, m_keywords);
+
+      m_url.str("");
+      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/astronomy/q/" << m_countryOrState << "/" << m_localisation << ".json";
+
+      m_isUserDesactivated = false;
+   }
+   else
+      m_isUserDesactivated = true;
 }
 
 void CAstronomy::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -52,75 +61,51 @@ void CAstronomy::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    try
    {
-      m_localisation = wuConfiguration.getLocalisation();
-
-      //read the country or State code
-      m_countryOrState = wuConfiguration.getCountryOrState();
-
-      m_url.str("");
-
-      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/astronomy/q/" << m_countryOrState << "/" << m_localisation << ".json";
-
       initializeVariables(api, wuConfiguration);
    }
    catch (shared::exception::CException& e)
    {
       std::cout << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
-
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
-      m_catchError = true;
+      m_isDesactivated = true;
+      throw e;
    }
-}
-
-bool CAstronomy::request(boost::shared_ptr<yApi::IYPluginApi> api)
-{
-   try
-   {
-      m_catchError = false;
-      m_data = m_webServer.SendGetRequest(m_url.str());
-   }
-   catch (shared::exception::CException& e)
-   {
-      std::cout << "Astronomy :" << e.what() << std::endl;
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "NoConnection");
-      m_catchError = true;
-   }
-
-   return m_catchError;
 }
 
 void CAstronomy::parse(boost::shared_ptr<yApi::IYPluginApi> api,
-                       const IWUConfiguration& wuConfiguration)
+                       const IWUConfiguration& wuConfiguration,
+                       const shared::CDataContainer dataToParse)
 {
-   try
+   if (!m_isDesactivated && !m_isUserDesactivated)
    {
-      ErrorAnswerHandler Response(api, m_data);
-      m_catchError = Response.ContainError();
-
-      if (!m_catchError)
+      try
       {
          if (wuConfiguration.IsAstronomyEnabled())
          {
-            m_moonCharacteristics->setParameters(m_data,
+            m_moonCharacteristics->setParameters(dataToParse,
                                                  "moon_phase.percentIlluminated",
                                                  "moon_phase.ageOfMoon");
          }
 
          api->historizeData(m_deviceName, m_keywords);
+         std::cout << "Refresh Astronomy Information" << std::endl;
+      }
+      catch (shared::exception::CException& e)
+      {
+         std::cout << e.what() << std::endl;
+         throw e;
       }
    }
-   catch (shared::exception::CException& e)
-   {
-      std::cout << e.what() << std::endl;
-   }
-}
-
-bool CAstronomy::isModuleInFault() const
-{
-   return m_catchError;
 }
 
 CAstronomy::~CAstronomy()
+{}
+
+std::string CAstronomy::getUrl() const
 {
+   return m_url.str();
 }
 
+bool CAstronomy::isDesactivated() const
+{
+   return m_isDesactivated;
+}
