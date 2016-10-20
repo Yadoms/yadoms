@@ -69,23 +69,6 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             break;
          }
-         case yApi::IYPluginApi::kEventExtraCommand:
-         {
-            // Extra-command was received from Yadoms
-            auto extraCommand = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraCommand> >();
-            if (extraCommand)
-            {
-               std::cout << "Extra command received : " << extraCommand->getCommand() << std::endl;
-
-               if (extraCommand->getCommand() == "inclusionMode")
-                  startInclusionMode();
-               else if (extraCommand->getCommand() == "cancelSpecialMode")
-                  cancelSpecialMode();
-               else
-                  std::cerr << "Unsupported extra-command, ignored" << std::endl;
-            }
-            break;
-         }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
             // Configuration was updated
@@ -192,16 +175,6 @@ void CEnOcean::send(const message::CSendMessage& sendMessage) const
    m_port->send(sendMessage.buildBuffer());
 }
 
-void CEnOcean::startInclusionMode()
-{
-   //TODO
-}
-
-void CEnOcean::cancelSpecialMode()
-{
-   //TODO
-}
-
 void CEnOcean::processConnectionEvent()
 {
    std::cout << "EnOcean port opened" << std::endl;
@@ -296,7 +269,10 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) 
       }
 
       if (!rorg->isEepProvided())
-         throw std::out_of_range((boost::format("Teach-in telegram variations (without profile provided) are not supported for now. Please report to Yadoms-team. Telegram \"%1%\"") % erp1Message.dump()).str());
+      {
+         declareDeviceWithoutProfile(erp1Message);
+         return;
+      }
 
       if (rorg->id() != CRorgs::k4BS_Telegram)
          throw std::domain_error((boost::format("Teach-in telegram is only supported for 4BS telegram for now. Please report to Yadoms-team. Telegram \"%1%\"") % erp1Message.dump()).str());
@@ -343,7 +319,7 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) 
       // Get device details from database
       if (!m_api->deviceExists(erp1Message.senderIdAsString()))
       {
-         std::cout << "Unknown device " << erp1Message.senderIdAsString() << ". Use inclusion mode to add device to Yadoms." << std::endl;
+         declareDeviceWithoutProfile(erp1Message);
          return;
       }
 
@@ -368,6 +344,24 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) 
    }
 }
 
+void CEnOcean::declareDeviceWithoutProfile(const message::CRadioErp1Message& erp1Message) const
+{
+   std::cout << "New device declared : " << std::endl;
+   std::cout << "  - Id           : " << erp1Message.senderIdAsString() << std::endl;
+   std::cout << "  - Profile      : Unknown. No historization until user enter profile." << std::endl;
+
+   shared::CDataContainer details;
+   details.set<unsigned int>("manufacturer", 0);
+   details.set<unsigned int>("rorg", static_cast<int>(erp1Message.rorg()));
+   details.set<unsigned int>("func", 0);
+   details.set<unsigned int>("type", 0);
+
+   m_api->declareDevice(erp1Message.senderIdAsString(),
+                        std::string(),
+                        std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >(),
+                        details);
+}
+
 std::string CEnOcean::extractSenderId(const std::vector<unsigned char>& data,
                                       int startIndex)
 {
@@ -383,9 +377,9 @@ CDevice CEnOcean::retrieveDevice(const std::string& deviceId) const
    auto deviceDetails = m_api->getDeviceDetails(deviceId);
 
    return CDevice(deviceId,
-                  deviceDetails.get<int>("manufacturer"),
-                  deviceDetails.get<int>("func"),
-                  deviceDetails.get<int>("type"));
+                  deviceDetails.get<unsigned int>("manufacturer"),
+                  deviceDetails.get<unsigned int>("func"),
+                  deviceDetails.get<unsigned int>("type"));
 }
 
 void CEnOcean::processResponse(const message::CReceivedEsp3Packet& esp3Packet) const

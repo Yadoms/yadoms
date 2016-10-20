@@ -16,13 +16,5 @@
 				}
 			}
 		}
-	},
-	"extraCommands" : {
-		"inclusionMode" : {
-			"iconClass" : "fa fa-plus"
-		},
-		"cancelSpecialMode" : {
-			"iconClass" : "fa fa-undo"
-		}
 	}
 }

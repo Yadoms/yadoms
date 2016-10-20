@@ -46,16 +46,6 @@ protected:
    void onCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const;
 
    //--------------------------------------------------------------
-   /// \brief	                     Enter in inclusion mode
-   //--------------------------------------------------------------
-   void startInclusionMode();
-
-   //--------------------------------------------------------------
-   /// \brief	                     Cancel current special mode (inclusion,exclusion...)
-   //--------------------------------------------------------------
-   void cancelSpecialMode();
-
-   //--------------------------------------------------------------
    /// \brief	                     Called when the UPS becomes connected
    //--------------------------------------------------------------
    void processConnectionEvent();
@@ -79,6 +69,12 @@ protected:
    void processResponse(const message::CReceivedEsp3Packet& esp3Packet) const;
    void processDongleVersionResponse(const message::CReceivedEsp3Packet& esp3Packet) const;
    static void processEvent(const message::CReceivedEsp3Packet& esp3Packet);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Declare a device when ignoring profile
+   /// \param [in] erp1Message      The received ERP1 message
+   //--------------------------------------------------------------
+   void declareDeviceWithoutProfile(const message::CRadioErp1Message& erp1Message) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Extract sender ID from buffer
