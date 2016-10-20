@@ -76,7 +76,8 @@ protected:
    /// \param [in] esp3Packet       Message received
    //--------------------------------------------------------------
    void processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) const;
-   static void processResponse(const message::CReceivedEsp3Packet& esp3Packet);
+   void processResponse(const message::CReceivedEsp3Packet& esp3Packet) const;
+   void processDongleVersionResponse(const message::CReceivedEsp3Packet& esp3Packet) const;
    static void processEvent(const message::CReceivedEsp3Packet& esp3Packet);
 
    //--------------------------------------------------------------
@@ -92,12 +93,12 @@ protected:
    /// \param [in] deviceId         Device ID to search
    /// \throw std::out_of_range     If device is not found in database
    //--------------------------------------------------------------
-   CDevice retrieveDevice(unsigned int deviceId) const;
+   CDevice retrieveDevice(const std::string& deviceId) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Requests to EnOcean
    //--------------------------------------------------------------
-   void requestDongleVersion() const;
+   void requestDongleVersion();
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection
@@ -143,5 +144,10 @@ private:
    /// \brief  The communication port logger
    //--------------------------------------------------------------
    shared::communication::CAsciiBufferLogger m_logger;
+
+   //--------------------------------------------------------------
+   /// \brief  The last sent command
+   //--------------------------------------------------------------
+   message::ECommonCommand m_sentCommand;
 };
 

@@ -2,6 +2,7 @@
 #include "types.h"
 #include "../enOceanDescriptors/generated-eep.h"
 
+//TODO 3 classes dans ce fichier, faire le ménage
 namespace message
 {
    class CHeader
@@ -41,7 +42,7 @@ namespace message
    public:
       //--------------------------------------------------------------
       /// \brief	                           Constructor
-      /// \param[in] receivedContent         The received buffer
+      /// \param[in] receivedBuffer          The received buffer
       //--------------------------------------------------------------
       explicit CReceivedEsp3Packet(const std::vector<unsigned char>& receivedBuffer);
 
@@ -71,7 +72,7 @@ namespace message
    public:
       //--------------------------------------------------------------
       /// \brief	                           Constructor
-      /// \param[in] receivedContent         The received buffer
+      /// \param[in] esp3Packet              The esp3 message
       //--------------------------------------------------------------
       explicit CRadioErp1Message(const CReceivedEsp3Packet& esp3Packet);
 
@@ -82,11 +83,15 @@ namespace message
 
       CRorgs::ERorgIds rorg() const;
       unsigned int senderId() const;
+      std::string senderIdAsString() const;
       const std::vector<unsigned char>& data() const;
       std::string dump() const;
+   protected:
+      static std::string senderIdToString(unsigned int senderId);
    private:
       const CRorgs::ERorgIds m_rorg;
       const unsigned int m_senderId;
+      const std::string m_senderIdAsString;
       const unsigned char m_status;
       const std::vector<unsigned char> m_data;
    };

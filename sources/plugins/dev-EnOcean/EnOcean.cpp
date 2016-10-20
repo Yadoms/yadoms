@@ -25,6 +25,7 @@ enum
 
 
 CEnOcean::CEnOcean()
+   : m_sentCommand(message::CO_WR_SLEEP)
 {
 }
 
@@ -205,8 +206,6 @@ void CEnOcean::processConnectionEvent()
 {
    std::cout << "EnOcean port opened" << std::endl;
 
-   m_api->setPluginState(yApi::historization::EPluginState::kRunning);
-
    try
    {
       requestDongleVersion();
@@ -290,9 +289,9 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) 
    {
       // Teachin telegram
 
-      if (m_api->deviceExists(std::to_string(erp1Message.senderId())))
+      if (m_api->deviceExists(erp1Message.senderIdAsString()))
       {
-         std::cout << "Device " << std::setfill('0') << std::setw(8) << std::uppercase << std::hex << erp1Message.senderId() << " already exists, message ignored." << std::endl;
+         std::cout << "Device " << erp1Message.senderIdAsString() << " already exists, message ignored." << std::endl;
          return;
       }
 
@@ -311,7 +310,7 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) 
       auto keywordsToDeclare = type->historizers();
       if (keywordsToDeclare.empty())
       {
-         std::cout << "Received teachin telegram for id#" << std::to_string(erp1Message.senderId())
+         std::cout << "Received teachin telegram for id#" << erp1Message.senderIdAsString()
             << ", " << std::hex << erp1Message.rorg()
             << "-" << std::hex << func->id()
             << "-" << type->id()
@@ -325,10 +324,10 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) 
       details.set("rorg", rorg->id());
       details.set("func", func->id());
       details.set("type", type->id());
-      m_api->declareDevice(std::to_string(erp1Message.senderId()), model, keywordsToDeclare, details);
+      m_api->declareDevice(erp1Message.senderIdAsString(), model, keywordsToDeclare, details);
 
       std::cout << "New device declared : " << std::endl;
-      std::cout << "  - Id           : " << std::setfill('0') << std::setw(8) << std::uppercase << std::hex << erp1Message.senderId() << std::endl;
+      std::cout << "  - Id           : " << erp1Message.senderIdAsString() << std::endl;
       std::cout << "  - Manufacturer : " << CManufacturers::name(teachInData.manufacturerId()) << std::endl;
       std::cout << "  - Profile      : " << std::setfill('0') << std::setw(2) << std::uppercase << std::hex << rorg->id() << "-"
          << std::setfill('0') << std::setw(2) << std::uppercase << std::hex << func->id() << "-"
@@ -342,13 +341,13 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) 
       // Data telegram
 
       // Get device details from database
-      if (!m_api->deviceExists(std::to_string(erp1Message.senderId())))
+      if (!m_api->deviceExists(erp1Message.senderIdAsString()))
       {
-         std::cout << "Unknown device " << std::setfill('0') << std::setw(8) << std::uppercase << std::hex << erp1Message.senderId() << ". Use inclusion mode to add device to Yadoms." << std::endl;
+         std::cout << "Unknown device " << erp1Message.senderIdAsString() << ". Use inclusion mode to add device to Yadoms." << std::endl;
          return;
       }
 
-      auto device = retrieveDevice(erp1Message.senderId());
+      auto device = retrieveDevice(erp1Message.senderIdAsString());
 
       // Create associated FUNC object
       auto func = rorg->createFunc(device.func());
@@ -357,11 +356,15 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) 
       auto keywordsToHistorize = type->states();
       if (keywordsToHistorize.empty())
       {
-         std::cout << "Recevied message for id#" << device.id() << ", " << erp1Message.rorg() << "-" << device.func() << "-" << device.type() << ", but nothing to historize" << std::endl;
+         std::cout << "Received message for id#" << device.id() << ", " << erp1Message.rorg() << "-" << device.func() << "-" << device.type() << ", but nothing to historize" << std::endl;
          return;
       }
 
-      m_api->historizeData(std::to_string(device.id()), keywordsToHistorize);
+      std::cout << "Received message for id#" << device.id() << " : " << std::endl;
+      for (const auto& kw: keywordsToHistorize)
+         std::cout << "  - " << kw->getKeyword() << " = " << kw->formatValue() << std::endl;;
+      
+      m_api->historizeData(device.id(), keywordsToHistorize);
    }
 }
 
@@ -375,9 +378,9 @@ std::string CEnOcean::extractSenderId(const std::vector<unsigned char>& data,
       (data[startIndex]));
 }
 
-CDevice CEnOcean::retrieveDevice(unsigned int deviceId) const
+CDevice CEnOcean::retrieveDevice(const std::string& deviceId) const
 {
-   auto deviceDetails = m_api->getDeviceDetails(std::to_string(deviceId));
+   auto deviceDetails = m_api->getDeviceDetails(deviceId);
 
    return CDevice(deviceId,
                   deviceDetails.get<int>("manufacturer"),
@@ -385,7 +388,18 @@ CDevice CEnOcean::retrieveDevice(unsigned int deviceId) const
                   deviceDetails.get<int>("type"));
 }
 
-void CEnOcean::processResponse(const message::CReceivedEsp3Packet& esp3Packet)
+void CEnOcean::processResponse(const message::CReceivedEsp3Packet& esp3Packet) const
+{
+   switch(m_sentCommand)
+   {
+   case message::CO_RD_VERSION: processDongleVersionResponse(esp3Packet);
+      break;
+   default:
+      std::cout << "Receive response not supported (last command sent was " << m_sentCommand << ")" << std::endl;
+   }
+}
+
+void CEnOcean::processDongleVersionResponse(const message::CReceivedEsp3Packet& esp3Packet) const
 {
    if (esp3Packet.header().dataLength() != 33) //TODO on peut pas mieux faire que cette valeur en dur ?
       throw CProtocolException((boost::format("Invalid data length %1%, expected 33. Request was CO_RD_VERSION.") % esp3Packet.header().dataLength()).str());
@@ -438,7 +452,7 @@ void CEnOcean::processResponse(const message::CReceivedEsp3Packet& esp3Packet)
       | esp3Packet.data()[16];
 
    std::string appDescription(esp3Packet.data().begin() + 17,
-                              esp3Packet.data().end());
+      esp3Packet.data().end());
    appDescription.erase(appDescription.find_last_not_of('\0') + 1);
 
    std::cout << "EnOcean dongle Version " << appVersion.toString() <<
@@ -447,6 +461,8 @@ void CEnOcean::processResponse(const message::CReceivedEsp3Packet& esp3Packet)
       ", chipId " << std::hex << chipId <<
       ", chipVersion " << std::hex << chipVersion <<
       std::endl;
+
+   m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 }
 
 void CEnOcean::processEvent(const message::CReceivedEsp3Packet& esp3Packet)
@@ -484,10 +500,11 @@ void CEnOcean::processEvent(const message::CReceivedEsp3Packet& esp3Packet)
    //TODO
 }
 
-void CEnOcean::requestDongleVersion() const
+void CEnOcean::requestDongleVersion()
 {
    message::CCommandSendMessage sendMessage;
    sendMessage.appendData({message::CO_RD_VERSION});
+   m_sentCommand = message::CO_RD_VERSION;
 
    send(sendMessage);
 }

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Device.h"
 
-CDevice::CDevice(unsigned int id,
+CDevice::CDevice(const std::string& id,
                  unsigned int manufacturer,
                  unsigned int func,
                  unsigned int type)
@@ -16,7 +16,7 @@ CDevice::~CDevice()
 {
 }
 
-unsigned int CDevice::id() const
+std::string CDevice::id() const
 {
    return m_id;
 }

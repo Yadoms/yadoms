@@ -11,7 +11,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    //--------------------------------------------------------------
-   CDevice(unsigned int id,
+   CDevice(const std::string& id,
            unsigned int manufacturer,
            unsigned int func,
            unsigned int type);
@@ -21,13 +21,13 @@ public:
    //--------------------------------------------------------------
    virtual ~CDevice();
 
-   unsigned int id() const;
+   std::string id() const;
    CManufacturers::EManufacturerIds manufacturer() const;
    unsigned int func() const;
    unsigned int type() const;
 
 private:
-   unsigned int m_id;
+   const std::string m_id;
    CManufacturers::EManufacturerIds m_manufacturer;
    unsigned int m_func;
    unsigned int m_type;
