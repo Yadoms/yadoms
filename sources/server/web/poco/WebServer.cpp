@@ -21,7 +21,7 @@
 namespace web { namespace poco {
 
 
-   CWebServer::CWebServer(const std::string & address, const bool useSSL, const unsigned short port, const std::string & doc_root, const std::string & restKeywordBase, const std::string & webSocketKeywordBase)
+   CWebServer::CWebServer(const std::string & address, const bool useSSL, const unsigned short port, const unsigned short securedPort, const std::string & doc_root, const std::string & restKeywordBase, const std::string & webSocketKeywordBase)
       :m_httpRequestHandlerFactory(new CHttpRequestHandlerFactory())
    {
       //configure the factory
@@ -42,10 +42,40 @@ namespace web { namespace poco {
          //in case of "0.0.0.0" or empty , then do not use it, just use port, listen on all interfaces
          //Poco::Net::ServerSocket svs(boost::lexical_cast<unsigned short>(port));
          Poco::Net::ServerSocket svs(port);
-
          if (useSSL)
          {
-            svs = Poco::Net::SecureServerSocket(port);
+            bool fail = false;
+
+            try {
+               svs = Poco::Net::SecureServerSocket(securedPort);
+
+            }
+            catch (Poco::Exception & ex)
+            {
+               //fail to download package
+               YADOMS_LOG(error) << "Fail to configure HTTPS: " << ex.message();
+               fail = true;
+            }
+            catch (std::exception & ex)
+            {
+               //fail to download package
+               YADOMS_LOG(error) << "Fail to configure HTTPS: " << ex.what();
+               fail = true;
+            }
+            catch (...)
+            {
+               //fail to download package
+               YADOMS_LOG(error) << "Fail to configure HTTPS";
+               fail = true;
+            }
+            if (fail)
+            {
+               //we activate the default classic web server
+               YADOMS_LOG(warning) << "**********************************************************";
+               YADOMS_LOG(warning) << "Using HTTP instead of HTTPS due to malformed configuration";
+               YADOMS_LOG(warning) << "**********************************************************";
+               svs = Poco::Net::ServerSocket(port);
+            }
          }
 
          bool a = false;
