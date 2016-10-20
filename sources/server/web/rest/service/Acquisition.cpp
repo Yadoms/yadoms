@@ -1,32 +1,30 @@
 ﻿#include "stdafx.h"
 #include "Acquisition.h"
-#include <shared/exception/NotImplemented.hpp>
 #include "web/rest/Result.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/RestDispatcher.h"
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
 
-namespace web {
-   namespace rest {
-      namespace service {
-
+namespace web
+{
+   namespace rest
+   {
+      namespace service
+      {
          std::string CAcquisition::m_restKeyword = std::string("acquisition");
 
 
          CAcquisition::CAcquisition(boost::shared_ptr<database::IDataProvider> dataProvider)
-            :m_dataProvider(dataProvider)
+            : m_dataProvider(dataProvider)
          {
-
          }
-
 
          CAcquisition::~CAcquisition()
          {
          }
 
-
-         void CAcquisition::configureDispatcher(CRestDispatcher & dispatcher)
+         void CAcquisition::configureDispatcher(CRestDispatcher& dispatcher)
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("keyword")("lastdata"), CAcquisition::getKeywordListLastData); //get the last data of a list of keywords
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*")("lastdata"), CAcquisition::getKeywordLastData); //get all keyword data
@@ -66,29 +64,30 @@ namespace web {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("highcharts")("keyword")("*")("year")("*")("*"), CAcquisition::getHighchartKeywordDataByYear); //get keyword data between two dates (fast queries, optimized for highcharts js)
          }
 
-         const std::string & CAcquisition::getRestKeyword()
+         const std::string& CAcquisition::getRestKeyword()
          {
             return m_restKeyword;
          }
 
-         shared::CDataContainer CAcquisition::getKeywordLastData(const std::vector<std::string> & parameters, const std::string & requestContent)
+         shared::CDataContainer CAcquisition::getKeywordLastData(const std::vector<std::string>& parameters,
+                                                                 const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() > 2)
                {
-                  int keywordId = boost::lexical_cast<int>(parameters[2]);
-                  boost::shared_ptr<database::entities::CAcquisition> acq = m_dataProvider->getAcquisitionRequester()->getKeywordLastData(keywordId);
+                  auto keywordId = boost::lexical_cast<int>(parameters[2]);
+                  auto acq = m_dataProvider->getAcquisitionRequester()->getKeywordLastData(keywordId);
                   return CResult::GenerateSuccess(acq);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive acquisitionId in url");
             }
-            catch (shared::exception::CEmptyResult & /*noData*/)
+            catch (shared::exception::CEmptyResult& /*noData*/)
             {
                //if no data just return success
                return CResult::GenerateSuccess();
             }
-            catch (std::exception &ex)
+            catch (std::exception& ex)
             {
                return CResult::GenerateError(ex);
             }
@@ -98,7 +97,8 @@ namespace web {
             }
          }
 
-         shared::CDataContainer CAcquisition::getKeywordListLastData(const std::vector<std::string> & parameters, const std::string & requestContent)
+         shared::CDataContainer CAcquisition::getKeywordListLastData(const std::vector<std::string>& parameters,
+                                                                     const std::string& requestContent) const
          {
             try
             {
@@ -107,42 +107,44 @@ namespace web {
                   shared::CDataContainer content(requestContent);
                   if (content.containsChild("keywords"))
                   {
-                     std::vector<int> list = content.get< std::vector<int> >("keywords");
+                     auto list = content.get<std::vector<int> >("keywords");
 
                      shared::CDataContainer result;
-                     for (std::vector<int>::iterator i = list.begin(); i != list.end(); ++i)
+                     for (auto i = list.begin(); i != list.end(); ++i)
                      {
                         try
                         {
-                           boost::shared_ptr<database::entities::CAcquisition> lastData = m_dataProvider->getAcquisitionRequester()->getKeywordLastData(*i, false);
+                           auto lastData = m_dataProvider->getAcquisitionRequester()->getKeywordLastData(*i, false);
                            if (lastData)
                            {
-                              result.set(boost::lexical_cast<std::string>(*i), lastData);
+                              result.set(boost::lexical_cast<std::string>(*i),
+                                         lastData);
                            }
                            else
                            {
                               shared::CDataContainer emptyResult;
                               emptyResult.set("keywordId", *i);
-                              result.set(boost::lexical_cast<std::string>(*i), emptyResult);
+                              result.set(boost::lexical_cast<std::string>(*i),
+                                         emptyResult);
                            }
                         }
-                        catch (std::exception & /*noData*/)
+                        catch (std::exception& /*noData*/)
                         {
                            //ensure returning entity object, because we need to indicate that a keyword have no data, not others (in case of multiple keyword without data)
                            shared::CDataContainer emptyResult;
                            emptyResult.set("keywordId", *i);
-                           result.set(boost::lexical_cast<std::string>(*i), emptyResult);
+                           result.set(boost::lexical_cast<std::string>(*i),
+                                      emptyResult);
                         }
                      }
                      return CResult::GenerateSuccess(result);
-
                   }
                   content.printToLog();
                   return CResult::GenerateError("invalid parameter. Can not retreive keywords in request content");
                }
                return CResult::GenerateError("invalid parameter.");
             }
-            catch (std::exception &ex)
+            catch (std::exception& ex)
             {
                return CResult::GenerateError(ex);
             }
@@ -152,14 +154,15 @@ namespace web {
             }
          }
 
-         shared::CDataContainer CAcquisition::getKeywordData(const std::vector<std::string> & parameters, const std::string & requestContent)
+         shared::CDataContainer CAcquisition::getKeywordData(const std::vector<std::string>& parameters,
+                                                             const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() >= 2)
                {
                   //get device id from URL
-                  int keywordId = boost::lexical_cast<int>(parameters[2]);
+                  auto keywordId = boost::lexical_cast<int>(parameters[2]);
 
                   //try to get from and to limits.
                   //as this method is common for three rest url, those variable may keep unfilled
@@ -171,11 +174,12 @@ namespace web {
                   if (parameters.size() > 4)
                      timeTo = boost::posix_time::from_iso_string(parameters[4]);
 
-                  std::vector< boost::tuple<boost::posix_time::ptime, std::string> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordData(keywordId, timeFrom, timeTo);
+                  auto allData = m_dataProvider->getAcquisitionRequester()->getKeywordData(keywordId,
+                                                                                           timeFrom,
+                                                                                           timeTo);
                   std::vector<shared::CDataContainer> objectList;
-                  std::vector< boost::tuple<boost::posix_time::ptime, std::string> >::const_iterator i;
 
-                  for (i = allData.begin(); i != allData.end(); ++i)
+                  for (auto i = allData.begin(); i != allData.end(); ++i)
                   {
                      shared::CDataContainer result;
                      result.set("date", boost::posix_time::to_iso_string(i->get<0>()));
@@ -184,12 +188,12 @@ namespace web {
                   }
 
                   shared::CDataContainer result;
-                  result.set< std::vector<shared::CDataContainer> >("data", objectList);
+                  result.set<std::vector<shared::CDataContainer> >("data", objectList);
                   return CResult::GenerateSuccess(result);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
             }
-            catch (std::exception &ex)
+            catch (std::exception& ex)
             {
                return CResult::GenerateError(ex);
             }
@@ -199,14 +203,15 @@ namespace web {
             }
          }
 
-         shared::CDataContainer CAcquisition::getKeywordDataByHour(const std::vector<std::string> & parameters, const std::string & requestContent)
+         shared::CDataContainer CAcquisition::getKeywordDataByHour(const std::vector<std::string>& parameters,
+                                                                   const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() >= 2)
                {
                   //get device id from URL
-                  int keywordId = boost::lexical_cast<int>(parameters[2]);
+                  auto keywordId = boost::lexical_cast<int>(parameters[2]);
 
                   //try to get from and to limits.
                   //as this method is common for three rest url, those variable may keep unfilled
@@ -218,14 +223,16 @@ namespace web {
                   if (parameters.size() > 5)
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
-                  std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByHour(keywordId, timeFrom, timeTo);
+                  auto allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByHour(keywordId,
+                                                                                                 timeFrom,
+                                                                                                 timeTo);
                   shared::CDataContainer result;
                   result.set("data", allData);
                   return CResult::GenerateSuccess(result);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
             }
-            catch (std::exception &ex)
+            catch (std::exception& ex)
             {
                return CResult::GenerateError(ex);
             }
@@ -236,14 +243,15 @@ namespace web {
          }
 
 
-         shared::CDataContainer CAcquisition::getKeywordDataByDay(const std::vector<std::string> & parameters, const std::string & requestContent)
+         shared::CDataContainer CAcquisition::getKeywordDataByDay(const std::vector<std::string>& parameters,
+                                                                  const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() >= 2)
                {
                   //get device id from URL
-                  int keywordId = boost::lexical_cast<int>(parameters[2]);
+                  auto keywordId = boost::lexical_cast<int>(parameters[2]);
 
                   //try to get from and to limits.
                   //as this method is common for three rest url, those variable may keep unfilled
@@ -255,14 +263,16 @@ namespace web {
                   if (parameters.size() > 5)
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
-                  std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByDay(keywordId, timeFrom, timeTo);
+                  auto allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByDay(keywordId,
+                                                                                                timeFrom,
+                                                                                                timeTo);
                   shared::CDataContainer result;
                   result.set("data", allData);
                   return CResult::GenerateSuccess(result);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
             }
-            catch (std::exception &ex)
+            catch (std::exception& ex)
             {
                return CResult::GenerateError(ex);
             }
@@ -273,14 +283,15 @@ namespace web {
          }
 
 
-         shared::CDataContainer CAcquisition::getKeywordDataByMonth(const std::vector<std::string> & parameters, const std::string & requestContent)
+         shared::CDataContainer CAcquisition::getKeywordDataByMonth(const std::vector<std::string>& parameters,
+                                                                    const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() >= 2)
                {
                   //get device id from URL
-                  int keywordId = boost::lexical_cast<int>(parameters[2]);
+                  auto keywordId = boost::lexical_cast<int>(parameters[2]);
 
                   //try to get from and to limits.
                   //as this method is common for three rest url, those variable may keep unfilled
@@ -292,14 +303,16 @@ namespace web {
                   if (parameters.size() > 5)
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
-                  std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByMonth(keywordId, timeFrom, timeTo);
+                  auto allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByMonth(keywordId,
+                                                                                                  timeFrom,
+                                                                                                  timeTo);
                   shared::CDataContainer result;
                   result.set("data", allData);
                   return CResult::GenerateSuccess(result);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
             }
-            catch (std::exception &ex)
+            catch (std::exception& ex)
             {
                return CResult::GenerateError(ex);
             }
@@ -310,14 +323,15 @@ namespace web {
          }
 
 
-         shared::CDataContainer CAcquisition::getKeywordDataByYear(const std::vector<std::string> & parameters, const std::string & requestContent)
+         shared::CDataContainer CAcquisition::getKeywordDataByYear(const std::vector<std::string>& parameters,
+                                                                   const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() >= 2)
                {
                   //get device id from URL
-                  int keywordId = boost::lexical_cast<int>(parameters[2]);
+                  auto keywordId = boost::lexical_cast<int>(parameters[2]);
 
                   //try to get from and to limits.
                   //as this method is common for three rest url, those variable may keep unfilled
@@ -329,14 +343,16 @@ namespace web {
                   if (parameters.size() > 5)
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
-                  std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByYear(keywordId, timeFrom, timeTo);
+                  auto allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByYear(keywordId,
+                                                                                                 timeFrom,
+                                                                                                 timeTo);
                   shared::CDataContainer result;
                   result.set("data", allData);
                   return CResult::GenerateSuccess(result);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
             }
-            catch (std::exception &ex)
+            catch (std::exception& ex)
             {
                return CResult::GenerateError(ex);
             }
@@ -346,17 +362,15 @@ namespace web {
             }
          }
 
-
-
-
-         shared::CDataContainer CAcquisition::getHighchartKeywordData(const std::vector<std::string> & parameters, const std::string & requestContent)
+         shared::CDataContainer CAcquisition::getHighchartKeywordData(const std::vector<std::string>& parameters,
+                                                                      const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() >= 3)
                {
                   //get device id from URL
-                  int keywordId = boost::lexical_cast<int>(parameters[3]);
+                  auto keywordId = boost::lexical_cast<int>(parameters[3]);
 
                   //try to get from and to limits.
                   //as this method is common for three rest url, those variable may keep unfilled
@@ -371,13 +385,15 @@ namespace web {
                   //using the raw data format, to optimize treatment
                   //output is "[[dateiso,data],[dateiso,data],....]"
                   YADOMS_LOG(debug) << "Reading highchart data...";
-                  std::string raw = m_dataProvider->getAcquisitionRequester()->getKeywordHighchartData(keywordId, timeFrom, timeTo);
+                  auto raw = m_dataProvider->getAcquisitionRequester()->getKeywordHighchartData(keywordId,
+                                                                                                timeFrom,
+                                                                                                timeTo);
                   YADOMS_LOG(debug) << "Reading highchart data... OK";
                   return CResult::GenerateSuccess(raw);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
             }
-            catch (std::exception &ex)
+            catch (std::exception& ex)
             {
                return CResult::GenerateError(ex);
             }
@@ -387,14 +403,15 @@ namespace web {
             }
          }
 
-         shared::CDataContainer CAcquisition::getHighchartKeywordDataByHour(const std::vector<std::string> & parameters, const std::string & requestContent)
+         shared::CDataContainer CAcquisition::getHighchartKeywordDataByHour(const std::vector<std::string>& parameters,
+                                                                            const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() >= 3)
                {
                   //get device id from URL
-                  int keywordId = boost::lexical_cast<int>(parameters[3]);
+                  auto keywordId = boost::lexical_cast<int>(parameters[3]);
 
                   //try to get from and to limits.
                   //as this method is common for three rest url, those variable may keep unfilled
@@ -409,13 +426,15 @@ namespace web {
                   //using the raw data format, to optimize treatment
                   //output is "[[dateiso,data],[dateiso,data],....]"
                   YADOMS_LOG(debug) << "Reading highchart data...";
-                  std::string raw = m_dataProvider->getAcquisitionRequester()->getKeywordHighchartData(keywordId, timeFrom, timeTo);
+                  auto raw = m_dataProvider->getAcquisitionRequester()->getKeywordHighchartData(keywordId,
+                                                                                                timeFrom,
+                                                                                                timeTo);
                   YADOMS_LOG(debug) << "Reading highchart data... OK";
                   return CResult::GenerateSuccess(raw);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
             }
-            catch (std::exception &ex)
+            catch (std::exception& ex)
             {
                return CResult::GenerateError(ex);
             }
@@ -426,14 +445,15 @@ namespace web {
          }
 
 
-         shared::CDataContainer CAcquisition::getHighchartKeywordDataByDay(const std::vector<std::string> & parameters, const std::string & requestContent)
+         shared::CDataContainer CAcquisition::getHighchartKeywordDataByDay(const std::vector<std::string>& parameters,
+                                                                           const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() >= 3)
                {
                   //get device id from URL
-                  int keywordId = boost::lexical_cast<int>(parameters[3]);
+                  auto keywordId = boost::lexical_cast<int>(parameters[3]);
 
                   //try to get from and to limits.
                   //as this method is common for three rest url, those variable may keep unfilled
@@ -448,13 +468,15 @@ namespace web {
                   //using the raw data format, to optimize treatment
                   //output is "[[dateiso,data],[dateiso,data],....]"
                   YADOMS_LOG(debug) << "Reading highchart data...";
-                  std::string raw = m_dataProvider->getAcquisitionRequester()->getKeywordHighchartData(keywordId, timeFrom, timeTo);
+                  auto raw = m_dataProvider->getAcquisitionRequester()->getKeywordHighchartData(keywordId,
+                                                                                                timeFrom,
+                                                                                                timeTo);
                   YADOMS_LOG(debug) << "Reading highchart data... OK";
                   return CResult::GenerateSuccess(raw);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
             }
-            catch (std::exception &ex)
+            catch (std::exception& ex)
             {
                return CResult::GenerateError(ex);
             }
@@ -465,14 +487,15 @@ namespace web {
          }
 
 
-         shared::CDataContainer CAcquisition::getHighchartKeywordDataByMonth(const std::vector<std::string> & parameters, const std::string & requestContent)
+         shared::CDataContainer CAcquisition::getHighchartKeywordDataByMonth(const std::vector<std::string>& parameters,
+                                                                             const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() >= 3)
                {
                   //get device id from URL
-                  int keywordId = boost::lexical_cast<int>(parameters[3]);
+                  auto keywordId = boost::lexical_cast<int>(parameters[3]);
 
                   //try to get from and to limits.
                   //as this method is common for three rest url, those variable may keep unfilled
@@ -487,13 +510,15 @@ namespace web {
                   //using the raw data format, to optimize treatment
                   //output is "[[dateiso,data],[dateiso,data],....]"
                   YADOMS_LOG(debug) << "Reading highchart data...";
-                  std::string raw = m_dataProvider->getAcquisitionRequester()->getKeywordHighchartDataByMonth(keywordId, timeFrom, timeTo);
+                  auto raw = m_dataProvider->getAcquisitionRequester()->getKeywordHighchartDataByMonth(keywordId,
+                                                                                                       timeFrom,
+                                                                                                       timeTo);
                   YADOMS_LOG(debug) << "Reading highchart data... OK";
                   return CResult::GenerateSuccess(raw);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
             }
-            catch (std::exception &ex)
+            catch (std::exception& ex)
             {
                return CResult::GenerateError(ex);
             }
@@ -503,14 +528,15 @@ namespace web {
             }
          }
 
-         shared::CDataContainer CAcquisition::getHighchartKeywordDataByYear(const std::vector<std::string> & parameters, const std::string & requestContent)
+         shared::CDataContainer CAcquisition::getHighchartKeywordDataByYear(const std::vector<std::string>& parameters,
+                                                                            const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() >= 3)
                {
                   //get device id from URL
-                  int keywordId = boost::lexical_cast<int>(parameters[3]);
+                  auto keywordId = boost::lexical_cast<int>(parameters[3]);
 
                   //try to get from and to limits.
                   //as this method is common for three rest url, those variable may keep unfilled
@@ -525,13 +551,15 @@ namespace web {
                   //using the raw data format, to optimize treatment
                   //output is "[[dateiso,data],[dateiso,data],....]"
                   YADOMS_LOG(debug) << "Reading highchart data...";
-                  std::string raw = m_dataProvider->getAcquisitionRequester()->getKeywordHighchartDataByYear(keywordId, timeFrom, timeTo);
+                  auto raw = m_dataProvider->getAcquisitionRequester()->getKeywordHighchartDataByYear(keywordId,
+                                                                                                      timeFrom,
+                                                                                                      timeTo);
                   YADOMS_LOG(debug) << "Reading highchart data... OK";
                   return CResult::GenerateSuccess(raw);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
             }
-            catch (std::exception &ex)
+            catch (std::exception& ex)
             {
                return CResult::GenerateError(ex);
             }
@@ -540,8 +568,8 @@ namespace web {
                return CResult::GenerateError("unknown exception in reading device data");
             }
          }
-
-
       } //namespace service
    } //namespace rest
 } //namespace web 
+
+

@@ -15,8 +15,8 @@ public:
    /// \param[in] name                 The keyword name
    /// \note                           Use this constructor initialising the keyword for this plugin
    //--------------------------------------------------------------
-   CWindSpeed(std::string pluginName,
-              std::string name);
+   CWindSpeed(const std::string& pluginName,
+              const std::string& name);
 
    //--------------------------------------------------------------
    /// \brief	                         Set the value from the container

@@ -1,7 +1,6 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
-#include <shared/http/HttpMethods.h>
 #include "WUConfiguration.h"
 #include "Keywords/Moon.h"
 
@@ -25,18 +24,14 @@ public:
               const std::string& prefix);
 
    //--------------------------------------------------------------
-   /// \brief	  Send the request and receive the response from the web site
-   /// \param[in] api    pointer to the API
-   //--------------------------------------------------------------
-   bool request(boost::shared_ptr<yApi::IYPluginApi> api);
-
-   //--------------------------------------------------------------
    /// \brief	  Parse the answer from the web Site
    /// \param[in] api             pointer to the API
    /// \param[in] wuConfiguration The configuration of the module
+   /// \param[in] dataToParse     received data to parse
    //--------------------------------------------------------------
    void parse(boost::shared_ptr<yApi::IYPluginApi> api,
-              const IWUConfiguration& wuConfiguration);
+              const IWUConfiguration& wuConfiguration,
+              const shared::CDataContainer dataToParse);
 
    //--------------------------------------------------------------
    /// \brief	  Update the configuration when something change from the HMI
@@ -47,10 +42,22 @@ public:
                  IWUConfiguration& wuConfiguration);
 
    //--------------------------------------------------------------
-   /// \brief	  Return true if an error occured during the request
-   /// \return    The state of this request
+   /// \brief	  Return the url
+   /// \return    The url string
    //--------------------------------------------------------------
-   bool isModuleInFault() const;
+   std::string getUrl() const;
+
+   //--------------------------------------------------------------
+   /// \brief	  Return if the module is desactivated
+   /// \return    true if desactivated
+   //--------------------------------------------------------------
+   bool isDesactivated() const;
+
+   //--------------------------------------------------------------
+   /// \brief	  Return if the module is desactivated by the user
+   /// \return    true if desactivated
+   //--------------------------------------------------------------
+   bool isUserDesactivated() const;
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -83,19 +90,9 @@ private:
    std::string m_deviceName;
 
    //--------------------------------------------------------------
-   /// \brief	    Raw Web Data
-   //--------------------------------------------------------------
-   shared::CDataContainer m_data;
-
-   //--------------------------------------------------------------
    /// \brief	    The url link to access properly the web site
    //--------------------------------------------------------------
    std::stringstream m_url;
-
-   //--------------------------------------------------------------
-   /// \brief	    The web Server engine
-   //--------------------------------------------------------------
-   shared::CHttpMethods m_webServer;
 
    //--------------------------------------------------------------
    /// \brief	    Keywords
@@ -103,13 +100,18 @@ private:
    boost::shared_ptr<CMoon> m_moonCharacteristics;
 
    //--------------------------------------------------------------
-   /// \brief	    Error Detecting
-   //--------------------------------------------------------------
-   bool m_catchError;
-
-   //--------------------------------------------------------------
    /// \brief  Keywords list
    //--------------------------------------------------------------
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+
+   //--------------------------------------------------------------
+   /// \brief	    the module is desactivated by an error
+   //--------------------------------------------------------------
+   bool m_isDesactivated;
+
+   //--------------------------------------------------------------
+   /// \brief	    the module is desactivated by the user
+   //--------------------------------------------------------------
+   bool m_isUserDesactivated;
 };
 

@@ -2,10 +2,10 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "WeatherUndergroundHelpers.h"
 #include <shared/DataContainer.h>
-#include <shared/http/HttpMethods.h>
 #include "WUConfiguration.h"
 #include "Keywords/Forecast.h"
 #include "Keywords/Rain.h"
+#include "Keywords/Temp.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -20,28 +20,23 @@ public:
    /// \brief	  Constructor
    /// \param[in] api              pointer to the API
    /// \param[in] wuConfiguration  The Configuration of the module
-   /// \param[in] pluginName       The Name of the module
+   /// \param[in] deviceName       The Name of the module
    /// \param[in] prefix           Prefix Name used eventually to subname Keywords
    //--------------------------------------------------------------
    CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
                  IWUConfiguration& wuConfiguration,
-                 std::string deviceName,
+                 const std::string& deviceName,
                  const std::string& prefix);
-
-   //--------------------------------------------------------------
-   /// \brief	  Send the request and receive the response from the web site
-   /// \param[in] api            pointer to the API
-   //--------------------------------------------------------------
-   bool request(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	  Parse the answer from the web Site
    /// \param[in] api             pointer to the API
    /// \param[in] wuConfiguration The configuration of the module
-   /// \param[in] pluginName      The name of the plugin module
+   /// \param[in] dataToParse     data to parse
    //--------------------------------------------------------------
    void parse(boost::shared_ptr<yApi::IYPluginApi> api,
-      const IWUConfiguration& wuConfiguration);
+              const IWUConfiguration& wuConfiguration,
+              const shared::CDataContainer dataToParse) const;
 
    //--------------------------------------------------------------
    /// \brief	  Update the configuration when something change from the HMI
@@ -55,13 +50,25 @@ public:
    /// \brief	  Set the city Name
    /// \param[in] wuConfiguration    The Plugin configuration
    //--------------------------------------------------------------
-   void setCityName(const std::string& CityName);
+   void setCityName(const std::string& CityName) const;
 
    //--------------------------------------------------------------
-   /// \brief	  Return true if an error occured during the request
-   /// \return    The state of this request
+   /// \brief	  Return the url
+   /// \return    The url string
    //--------------------------------------------------------------
-   bool isModuleInFault() const;
+   std::string getUrl() const;
+
+   //--------------------------------------------------------------
+   /// \brief	  Return if the module is desactivated
+   /// \return    true if desactivated
+   //--------------------------------------------------------------
+   bool isDesactivated() const;
+
+   //--------------------------------------------------------------
+   /// \brief	  Return if the module is desactivated by the user
+   /// \return    true if desactivated
+   //--------------------------------------------------------------
+   bool isUserDesactivated() const;
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -99,19 +106,9 @@ private:
    std::string m_deviceName;
 
    //--------------------------------------------------------------
-   /// \brief	    Raw Web Data
-   //--------------------------------------------------------------
-   shared::CDataContainer m_data;
-
-   //--------------------------------------------------------------
    /// \brief	    The url link to access properly the web site
    //--------------------------------------------------------------
    std::stringstream m_url;
-
-   //--------------------------------------------------------------
-   /// \brief	    The web Server engine
-   //--------------------------------------------------------------
-   shared::CHttpMethods m_webServer;
 
    //--------------------------------------------------------------
    /// \brief	    Keywords
@@ -124,12 +121,22 @@ private:
    boost::shared_ptr<CRain> m_forecastRain[NB_RAIN_FORECAST_DAY];
 
    //--------------------------------------------------------------
-   /// \brief	    Error Detecting ?
+   /// \brief	    the temperature for the next day
    //--------------------------------------------------------------
-   bool m_catchError;
+   boost::shared_ptr<CTemp> m_temp;
 
    //--------------------------------------------------------------
    /// \brief  Keywords list
    //--------------------------------------------------------------
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+
+   //--------------------------------------------------------------
+   /// \brief	    the module is desactivated by an error
+   //--------------------------------------------------------------
+   bool m_isDesactivated;
+
+   //--------------------------------------------------------------
+   /// \brief	    the module is desactivated by the user
+   //--------------------------------------------------------------
+   bool m_isUserDesactivated;
 };

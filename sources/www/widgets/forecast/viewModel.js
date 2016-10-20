@@ -126,9 +126,12 @@ function forecastViewModel() {
       if (keywordId === self.widget.configuration.device.keywordId) {
          if (data.value && data.value !== "") {
             var obj = jQuery.parseJSON(data.value);
+			
             //We only keep the city name
             var res = obj.city.split(",");
-            self.city(res[0]);
+			
+			if (res.length >=2)
+               self.city(res[1]);
 
             //We delete all information already keep in.
             while (self.TempPeriod.length > 0) {

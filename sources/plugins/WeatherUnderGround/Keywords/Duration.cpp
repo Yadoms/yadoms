@@ -4,8 +4,8 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CDuration::CDuration(std::string pluginName,
-                     std::string keyWordName)
+CDuration::CDuration(const std::string& pluginName,
+                     const std::string& keyWordName)
    : m_pluginName(pluginName),
      m_duration(boost::make_shared<yApi::historization::CDuration>(keyWordName))
 {

@@ -4,8 +4,8 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CTemp::CTemp(std::string pluginName,
-             std::string keyWordName)
+CTemp::CTemp(const std::string& pluginName,
+             const std::string& keyWordName)
    : m_pluginName(pluginName),
      m_temperature(boost::make_shared<yApi::historization::CTemperature>(keyWordName,
                                                                          yApi::EKeywordAccessMode::kGet))

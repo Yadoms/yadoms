@@ -3,7 +3,6 @@
 #include "PythonCommandLine.h"
 #include <shared/process/Process.h>
 #include <shared/FileSystemExtension.h>
-#include <shared/DynamicLibrary.h>
 
 
 CScriptProcess::CScriptProcess(boost::shared_ptr<IPythonExecutable> executable,

@@ -341,7 +341,8 @@
 			"InitializationError": "Initialization error",
 			"querynotfound": "City not found",
 			"keynotfound": "This key does not exist",
-			"NoConnection": "No Internet connection..."
+			"NoConnection": "No Internet connection...",
+			"desactivated": "One module or more are desactivated"
 		}
 	}
 }
