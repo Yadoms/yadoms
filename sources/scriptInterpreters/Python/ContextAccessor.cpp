@@ -83,6 +83,10 @@ void CContextAccessor::doWork()
          {
             YADOMS_LOG(error) << "Error receiving/processing queue message, invalid parameter : " << ex.what();
          }
+         catch (boost::thread_interrupted&)
+         {
+            break;
+         }
          catch (std::exception& ex)
          {
             YADOMS_LOG(error) << "Error receiving/processing queue message : " << ex.what();
@@ -96,9 +100,6 @@ void CContextAccessor::doWork()
    catch (boost::interprocess::interprocess_exception& ex)
    {
       YADOMS_LOG(error) << "Error creating/using message queues (" << m_id << ") in context accessor : " << ex.what();
-   }
-   catch (boost::thread_interrupted&)
-   {
    }
    catch (std::exception& ex)
    {

@@ -31,7 +31,7 @@ namespace automation
       ///\brief               Get all rules
       ///\return              The rule list
       //-----------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CRule>> getRules() const = 0;
+      virtual std::vector<boost::shared_ptr<database::entities::CRule> > getRules() const = 0;
 
       //-----------------------------------------------------
       ///\brief               Create a new rule
@@ -122,8 +122,9 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               Stop a rule
       ///\param[in] ruleId    The rule ID
+      ///\return              true if rule is stopping, false if rule was not running
       //-----------------------------------------------------
-      virtual void stopRule(int ruleId) = 0;
+      virtual bool stopRule(int ruleId) = 0;
    };
 } // namespace automation	
 

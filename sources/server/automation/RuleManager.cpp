@@ -59,7 +59,7 @@ namespace automation
       if (!m_startedRules.empty())
          throw shared::exception::CException("Some rules are already started, are you sure that manager was successfuly stopped ?");
 
-      if (!startRules(getRules()))
+      if (!startRules(m_ruleRequester->getRules()))
       YADOMS_LOG(error) << "One or more automation rules failed to start, check automation rules page for details";
    }
 
@@ -144,15 +144,16 @@ namespace automation
       }
    }
 
-   void CRuleManager::stopRule(int ruleId)
+   bool CRuleManager::stopRule(int ruleId)
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
       auto rule = m_startedRules.find(ruleId);
 
       if (rule == m_startedRules.end())
-         return;
+         return false;
 
       rule->second->requestStop();
+      return true;
    }
 
    void CRuleManager::stopRuleAndWaitForStopped(int ruleId)
@@ -166,11 +167,12 @@ namespace automation
       if (isRuleStarted(ruleId))
       {
          // Stop the rule
-         stopRule(ruleId);
-
-         // Wait for rule stopped
-         if (waitForStoppedRuleHandler->waitForEvents(boost::posix_time::seconds(10)) == shared::event::kTimeout)
-            throw CRuleException("Unable to stop rule");
+         if (stopRule(ruleId))
+         {
+            // Wait for rule stopped
+            if (waitForStoppedRuleHandler->waitForEvents(boost::posix_time::seconds(10)) == shared::event::kTimeout)
+               throw CRuleException("Unable to stop rule");
+         }
       }
 
       {
@@ -204,7 +206,7 @@ namespace automation
       }
    }
 
-   bool CRuleManager::isRuleStarted(int ruleId)
+   bool CRuleManager::isRuleStarted(int ruleId) const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
       return m_startedRules.find(ruleId) != m_startedRules.end();

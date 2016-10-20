@@ -63,7 +63,7 @@ namespace automation
       void stopAllRulesMatchingInterpreter(const std::string& interpreterName) override;
       void deleteAllRulesMatchingInterpreter(const std::string& interpreterName) override;
       void startRule(int ruleId) override;
-      void stopRule(int ruleId) override;
+      bool stopRule(int ruleId) override;
       // [END] IRuleManager Implementation
 
 
@@ -86,7 +86,7 @@ namespace automation
       ///\param[in] ruleId    The rule ID
       ///\return              true if started
       //-----------------------------------------------------
-      bool isRuleStarted(int ruleId);
+      bool isRuleStarted(int ruleId) const;
 
       //-----------------------------------------------------
       ///\brief               Stop all started rules
