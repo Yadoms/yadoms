@@ -25,7 +25,19 @@ namespace startupOptions {
       /// \brief	    Get the port number
       /// \return     Configured port number
       //--------------------------------------------------------------
-      virtual unsigned int getWebServerPortNumber() const = 0;
+      virtual unsigned short getWebServerPortNumber() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get the SSL port number
+      /// \return     Configured SSL port number
+      //--------------------------------------------------------------
+      virtual unsigned short getSSLWebServerPortNumber() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Determine if the SSL port is activated
+      /// \return     true if SSL is activated 
+      //--------------------------------------------------------------
+      virtual bool getIsWebServerUseSSL() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the web server ip address
