@@ -61,6 +61,12 @@ void CAstronomy::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    try
    {
+      //read the localisation
+      m_localisation = wuConfiguration.getLocalisation();
+
+      //read the country or State code
+      m_countryOrState = wuConfiguration.getCountryOrState();
+
       initializeVariables(api, wuConfiguration);
    }
    catch (shared::exception::CException& e)

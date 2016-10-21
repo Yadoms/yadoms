@@ -139,4 +139,9 @@ private:
    /// \brief	    the module is desactivated by the user
    //--------------------------------------------------------------
    bool m_isUserDesactivated;
+
+   //--------------------------------------------------------------
+   /// \brief  developerMode state
+   //--------------------------------------------------------------
+   bool m_isDeveloperMode;
 };
