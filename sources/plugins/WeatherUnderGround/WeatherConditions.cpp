@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "WeatherConditions.h"
 #include <shared/exception/Exception.hpp>
+#include "Keywords/KeywordException.hpp"
 
 CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
                                        IWUConfiguration& wuConfiguration,
@@ -94,13 +95,13 @@ void CWeatherConditions::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUC
 {
    try
    {
-      initializeVariables(api, wuConfiguration);
-
       //read the localisation
       m_localisation = wuConfiguration.getLocalisation();
 
       //read the country or State code
       m_countryOrState = wuConfiguration.getCountryOrState();
+
+      initializeVariables(api, wuConfiguration);
    }
    catch (shared::exception::CException& e)
    {
@@ -206,6 +207,8 @@ void CWeatherConditions::parse(boost::shared_ptr<yApi::IYPluginApi> api,
 
          std::cout << "Refresh Weather Conditions" << std::endl;
       }
+      catch (CKeywordException&)
+      {}
       catch (shared::exception::CException& e)
       {
          std::cout << e.what() << std::endl;
