@@ -16,7 +16,9 @@ namespace yApi = shared::plugin::yPluginApi;
 IMPLEMENT_PLUGIN(CTeleInfo)
 
 
-CTeleInfo::CTeleInfo(): m_isDeveloperMode(false)
+CTeleInfo::CTeleInfo(): 
+   m_isDeveloperMode(false),
+   m_runningState(false)
 {
 }
 
@@ -93,7 +95,6 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kEvtPortDataReceived:
       {
          std::cout << "TeleInfo plugin :  DataReceived" << std::endl;
-         api->setPluginState(yApi::historization::EPluginState::kRunning);
 
          processDataReceived(api,
                              api->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
@@ -202,8 +203,16 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
    // When all information are updated we stopped the reception !
    if (m_transceiver->IsInformationUpdated())
    {
+      bool newState = true;
+
       std::cout << "Suspend COM" << std::endl;
       m_receiveBufferHandler->suspend();
+
+      if (m_runningState != newState)
+      {
+         api->setPluginState(yApi::historization::EPluginState::kRunning);
+         m_runningState = true;
+      }
    }
 }
 

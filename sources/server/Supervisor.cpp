@@ -100,12 +100,16 @@ void CSupervisor::run()
 
       // Start Web server
       const auto webServerIp = startupOptions->getWebServerIPAddress();
-      const auto webServerPort = boost::lexical_cast<std::string>(startupOptions->getWebServerPortNumber());
+      const bool webServerUseSSL = startupOptions->getIsWebServerUseSSL();
+      const unsigned short webServerPort = startupOptions->getWebServerPortNumber();
+      const unsigned short securedWebServerPort = startupOptions->getSSLWebServerPortNumber();
       const auto webServerPath = m_pathProvider.webServerPath().string();
       const auto scriptInterpretersPath = m_pathProvider.scriptInterpretersPath().string();
 
       auto webServer(boost::make_shared<web::poco::CWebServer>(webServerIp,
+                                                               webServerUseSSL,
                                                                webServerPort,
+                                                               securedWebServerPort,
                                                                webServerPath,
                                                                "/rest/",
                                                                "/ws"));

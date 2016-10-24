@@ -290,9 +290,19 @@ namespace startupOptions
       return m_configContainer.getString("server.logLevel", "information");
    }
 
-   unsigned int CStartupOptions::getWebServerPortNumber() const
+   unsigned short CStartupOptions::getWebServerPortNumber() const
    {
-      return m_configContainer.getUInt("server.port", 8080);
+      return (unsigned short)m_configContainer.getUInt("server.port", 8080);
+   }
+
+   unsigned short CStartupOptions::getSSLWebServerPortNumber() const
+   {
+      return (unsigned short)m_configContainer.getUInt("server.SSLport", 443);
+   }
+   
+   bool CStartupOptions::getIsWebServerUseSSL() const
+   {
+      return m_configContainer.getBool("server.useSSL", false);
    }
 
    std::string CStartupOptions::getWebServerIPAddress() const
