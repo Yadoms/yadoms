@@ -157,12 +157,12 @@ namespace shared
                return;
             }
 
-            // Connected
-            notifyEventHandler(true);
-
             // Flush buffers if required
             if (m_flushAtConnect)
                flush();
+
+            // Connected
+            notifyEventHandler(true);
          }
 
          // Start listening on the port

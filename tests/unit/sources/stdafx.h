@@ -28,6 +28,7 @@
 #include <boost/chrono/thread_clock.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/posix_time/time_formatters.hpp>
+#include <boost/dynamic_bitset.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 #include <boost/function.hpp>

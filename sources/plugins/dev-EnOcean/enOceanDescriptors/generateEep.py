@@ -410,7 +410,7 @@ util.createParentDir(sourcePath)
 with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
 
    cppSourceFile.write("// Generated file, don't modify\n")
-   cppSourceFile.write("#include \"../stdafx.h\"\n")
+   cppSourceFile.write("#include \"stdafx.h\"\n")
    cppSourceFile.write("#include \"" + os.path.basename(headerPath) + "\"\n")
    cppSourceFile.write("#include <shared/plugin/yPluginApi/StandardUnits.h>\n")
    cppSourceFile.write("\n")

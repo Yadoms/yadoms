@@ -11,6 +11,13 @@
 #include "../../testCommon/fileSystem.h"
 
 
+// Mock
+CRorgs::ERorgIds CRorgs::toRorgId(unsigned int id)
+{
+   return k4BS_Telegram;
+}
+
+
 BOOST_AUTO_TEST_SUITE(TestEnOceanReceiveBufferHandler)
 
 BOOST_AUTO_TEST_CASE(SmallestMessage)
@@ -27,7 +34,7 @@ BOOST_AUTO_TEST_CASE(SmallestMessage)
 
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 
-   auto data = evtHandler.getEventData<const message::CReceivedMessage>();
+   auto data = evtHandler.getEventData<const message::CReceivedEsp3Packet>();
    BOOST_CHECK_EQUAL(data.header().dataLength(), 0);
    BOOST_CHECK_EQUAL(data.header().optionalLength(), 0);
    BOOST_CHECK_EQUAL(data.header().packetType(), message::RADIO_ERP1);
@@ -56,7 +63,7 @@ BOOST_AUTO_TEST_CASE(MessageWithData)
 
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 
-   auto data = evtHandler.getEventData<const message::CReceivedMessage>();
+   auto data = evtHandler.getEventData<const message::CReceivedEsp3Packet>();
    BOOST_CHECK_EQUAL(data.header().dataLength(), 8);
    BOOST_CHECK_EQUAL(data.header().optionalLength(), 0);
    BOOST_CHECK_EQUAL(data.header().packetType(), message::RADIO_ERP1);
@@ -86,7 +93,7 @@ BOOST_AUTO_TEST_CASE(MessageWithDataAndOptional)
 
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 
-   auto data = evtHandler.getEventData<const message::CReceivedMessage>();
+   auto data = evtHandler.getEventData<const message::CReceivedEsp3Packet>();
    BOOST_CHECK_EQUAL(data.header().dataLength(), 8);
    BOOST_CHECK_EQUAL(data.header().optionalLength(), 7);
    BOOST_CHECK_EQUAL(data.header().packetType(), message::RADIO_ERP1);
@@ -153,7 +160,7 @@ BOOST_AUTO_TEST_CASE(MessageWithParasiticPrefix)
 
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 
-   auto data = evtHandler.getEventData<const message::CReceivedMessage>();
+   auto data = evtHandler.getEventData<const message::CReceivedEsp3Packet>();
    BOOST_CHECK_EQUAL(data.header().dataLength(), 8);
    BOOST_CHECK_EQUAL(data.header().optionalLength(), 7);
    BOOST_CHECK_EQUAL(data.header().packetType(), message::RADIO_ERP1);
@@ -210,7 +217,7 @@ BOOST_AUTO_TEST_CASE(MessageWithParasiticPrefixContainingSync)
 
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 
-   auto data = evtHandler.getEventData<const message::CReceivedMessage>();
+   auto data = evtHandler.getEventData<const message::CReceivedEsp3Packet>();
    BOOST_CHECK_EQUAL(data.header().dataLength(), 8);
    BOOST_CHECK_EQUAL(data.header().optionalLength(), 7);
    BOOST_CHECK_EQUAL(data.header().packetType(), message::RADIO_ERP1);
@@ -249,7 +256,7 @@ BOOST_AUTO_TEST_CASE(MessageSendInSeveralParts)
 
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 
-   auto data = evtHandler.getEventData<const message::CReceivedMessage>();
+   auto data = evtHandler.getEventData<const message::CReceivedEsp3Packet>();
    BOOST_CHECK_EQUAL(data.header().dataLength(), 8);
    BOOST_CHECK_EQUAL(data.header().optionalLength(), 7);
    BOOST_CHECK_EQUAL(data.header().packetType(), message::RADIO_ERP1);
@@ -324,7 +331,7 @@ BOOST_AUTO_TEST_CASE(JustBeforeTimeout)
 
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
 
-   auto data = evtHandler.getEventData<const message::CReceivedMessage>();
+   auto data = evtHandler.getEventData<const message::CReceivedEsp3Packet>();
    BOOST_CHECK_EQUAL(data.header().dataLength(), 8);
    BOOST_CHECK_EQUAL(data.header().optionalLength(), 7);
    BOOST_CHECK_EQUAL(data.header().packetType(), message::RADIO_ERP1);

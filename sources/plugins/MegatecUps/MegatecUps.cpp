@@ -252,6 +252,7 @@ void CMegatecUps::processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> ap
 {
    std::cout << "UPS port opened" << std::endl;
 
+
    try
    {
       // Ask for UPS informations

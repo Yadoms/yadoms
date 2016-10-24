@@ -12,6 +12,7 @@ IF(NOT DISABLE_TEST_PLUGIN_ENOCEAN)
       plugins/dev-EnOcean/message/ReceivedMessage.cpp
       plugins/dev-EnOcean/message/Crc8.h
       plugins/dev-EnOcean/message/Crc8.cpp
+      plugins/dev-EnOcean/enOceanDescriptors/generated-eep.h
       plugins/dev-EnOcean/EnOceanReceiveBufferHandler.h
       plugins/dev-EnOcean/EnOceanReceiveBufferHandler.cpp
    )
