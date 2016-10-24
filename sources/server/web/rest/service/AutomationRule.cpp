@@ -242,7 +242,7 @@ namespace web
                auto ruleId = boost::lexical_cast<int>(parameters[2]);
 
                //stop the rule
-               m_rulesManager->stopRule(ruleId);
+               m_rulesManager->stopRuleAndWaitForStopped(ruleId);
 
                auto ruleFound = m_rulesManager->getRule(ruleId);
                return CResult::GenerateSuccess(ruleFound);

@@ -1,30 +1,32 @@
 #pragma once
 #include "IAutoLocation.h"
 
-namespace automation { namespace script
+namespace automation
 {
-   //-----------------------------------------------------
-   ///\brief The auto-location via ip-api service (http://ip-api.com/)
-   //-----------------------------------------------------
-   class CIpApiAutoLocation : public IAutoLocation
+   namespace script
    {
-   public:
       //-----------------------------------------------------
-      ///\brief               Constructor
+      ///\brief The auto-location via ip-api service (http://ip-api.com/)
       //-----------------------------------------------------
-      CIpApiAutoLocation();
+      class CIpApiAutoLocation : public IAutoLocation
+      {
+      public:
+         //-----------------------------------------------------
+         ///\brief               Constructor
+         //-----------------------------------------------------
+         CIpApiAutoLocation();
 
-      //-----------------------------------------------------
-      ///\brief               Destructor
-      //-----------------------------------------------------
-      virtual ~CIpApiAutoLocation();
+         //-----------------------------------------------------
+         ///\brief               Destructor
+         //-----------------------------------------------------
+         virtual ~CIpApiAutoLocation();
 
-   protected:
-      // IAutoLocation Implementation
-      virtual shared::CDataContainer tryAutoLocate() const;
-      // [END] IAutoLocation Implementation
-   };
+      protected:
+         // IAutoLocation Implementation
+         shared::CDataContainer tryAutoLocate() const override;
+         // [END] IAutoLocation Implementation
+      };
+   }
+} // namespace automation::script
 
-} } // namespace automation::script
-	
-	
+

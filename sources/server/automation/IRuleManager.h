@@ -125,6 +125,14 @@ namespace automation
       ///\return              true if rule is stopping, false if rule was not running
       //-----------------------------------------------------
       virtual bool stopRule(int ruleId) = 0;
+
+      //-----------------------------------------------------
+      ///\brief               Stop a rule
+      ///\param[in] ruleId    The rule ID
+      ///\throw               CRuleException if timeout
+      //-----------------------------------------------------
+      virtual void stopRuleAndWaitForStopped(int ruleId,
+                                             const boost::posix_time::time_duration& timeout = boost::posix_time::seconds(20)) = 0;
    };
 } // namespace automation	
 

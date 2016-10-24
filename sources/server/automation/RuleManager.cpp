@@ -156,7 +156,8 @@ namespace automation
       return true;
    }
 
-   void CRuleManager::stopRuleAndWaitForStopped(int ruleId)
+   void CRuleManager::stopRuleAndWaitForStopped(int ruleId,
+                                                const boost::posix_time::time_duration& timeout)
    {
       auto waitForStoppedRuleHandler(boost::make_shared<shared::event::CEventHandler>());
       {
@@ -170,7 +171,7 @@ namespace automation
          if (stopRule(ruleId))
          {
             // Wait for rule stopped
-            if (waitForStoppedRuleHandler->waitForEvents(boost::posix_time::seconds(10)) == shared::event::kTimeout)
+            if (waitForStoppedRuleHandler->waitForEvents(timeout) == shared::event::kTimeout)
                throw CRuleException("Unable to stop rule");
          }
       }

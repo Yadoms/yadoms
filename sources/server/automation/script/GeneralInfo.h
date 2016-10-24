@@ -1,35 +1,32 @@
 #pragma once
 #include "IGeneralInfo.h"
-#include "IDayLight.h"
-#include "ILocation.h"
-#include <shared/enumeration/EnumHelpers.hpp>
-#include "../../dataAccessLayer/IConfigurationManager.h"
-#include "../../IRunningInformation.h"
 
-namespace automation { namespace script
+namespace automation
 {
-   //-----------------------------------------------------
-   ///\brief The script properties
-   //-----------------------------------------------------
-   class CGeneralInfo : public IGeneralInfo
+   namespace script
    {
-   public:
       //-----------------------------------------------------
-      ///\brief               Constructor
+      ///\brief The script properties
       //-----------------------------------------------------
-      CGeneralInfo();
+      class CGeneralInfo : public IGeneralInfo
+      {
+      public:
+         //-----------------------------------------------------
+         ///\brief               Constructor
+         //-----------------------------------------------------
+         CGeneralInfo();
 
-      //-----------------------------------------------------
-      ///\brief               Destructor
-      //-----------------------------------------------------
-      virtual ~CGeneralInfo();
+         //-----------------------------------------------------
+         ///\brief               Destructor
+         //-----------------------------------------------------
+         virtual ~CGeneralInfo();
 
-   protected:
-      // IGeneralInfo Implementation
-      virtual std::string get(shared::script::yScriptApi::IYScriptApi::EInfoKeys key) const;
-      // [END] IGeneralInfo Implementation
-   };
+      protected:
+         // IGeneralInfo Implementation
+         std::string get(shared::script::yScriptApi::IYScriptApi::EInfoKeys key) const override;
+         // [END] IGeneralInfo Implementation
+      };
+   }
+} // namespace automation::script
 
-} } // namespace automation::script
-	
-	
+

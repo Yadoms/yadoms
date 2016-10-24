@@ -148,6 +148,7 @@
          })
          .fail(function (error) {
             notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleStopError", { rule: rule.name }), error);
+            getAutomationRuleDomRow(rule).find("button.btn-startStop").prop('disabled', false);
          });
 
       }
@@ -162,6 +163,7 @@
          })
          .fail(function (error) {
             notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleStartError", { rule: rule.name }), error);
+            getAutomationRuleDomRow(rule).find("button.btn-startStop").prop('disabled', false);
          });
       }
    }

@@ -45,15 +45,23 @@ namespace automation
          virtual ~CYScriptApiImplementation();
 
          // shared::script::yScriptApi::IYScriptApi implementation
-         int getKeywordId(const std::string& deviceName, const std::string& keywordName) const override;
-         int getRecipientId(const std::string& firstName, const std::string& lastName) const override;
+         int getKeywordId(const std::string& deviceName,
+                          const std::string& keywordName) const override;
+         int getRecipientId(const std::string& firstName,
+                            const std::string& lastName) const override;
          std::string readKeyword(int keywordId) const override;
-         std::string waitForNextAcquisition(int keywordId, const std::string& timeout = std::string()) const override;
-         std::pair<int, std::string> waitForNextAcquisitions(const std::vector<int>& keywordIdList, const std::string& timeout) const override;
-         shared::script::yScriptApi::CWaitForEventResult waitForEvent(const std::vector<int>& keywordIdList, bool receiveDateTimeEvent, const std::string& timeout) const override;
+         std::string waitForNextAcquisition(int keywordId,
+                                            const std::string& timeout = std::string()) const override;
+         std::pair<int, std::string> waitForNextAcquisitions(const std::vector<int>& keywordIdList,
+                                                             const std::string& timeout) const override;
+         shared::script::yScriptApi::CWaitForEventResult waitForEvent(const std::vector<int>& keywordIdList,
+                                                                      bool receiveDateTimeEvent,
+                                                                      const std::string& timeout) const override;
          std::vector<int> getKeywordsByCapacity(const std::string& capacity) const override;
-         void writeKeyword(int keywordId, const std::string& newState) override;
-         void sendNotification(int keywordId, int recipientId, const std::string& message) override;
+         void writeKeyword(int keywordId,
+                           const std::string& newState) override;
+         void sendNotification(int keywordId,
+                               int recipientId, const std::string& message) override;
          std::string getInfo(EInfoKeys key) const override;
          std::string getKeywordName(int keywordId) const override;
          std::string getKeywordDeviceName(int keywordId) const override;
@@ -89,8 +97,8 @@ namespace automation
          ///\param[in] timeout   Timeout, as string. Can be a duration (format \"hh:mm:ss.xxx\") or a dateTime (format \"YYYY-MM-DD hh:mm:ss.xxx\"). No timeout if empty.
          ///\return              The acquisition (null if timeout)
          //-----------------------------------------------------
-         static boost::shared_ptr<notification::acquisition::CNotification> waitForAction(boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification> > action,
-                                                                                   const std::string& timeout);
+         static boost::shared_ptr<notification::acquisition::CNotification> waitForAction(boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification >> action,
+                                                                                          const std::string& timeout);
 
       private:
          //-----------------------------------------------------
