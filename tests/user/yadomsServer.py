@@ -112,7 +112,10 @@ def restart():
 
 def openClient(browser):
    """Open a client on local server and wait for full loading"""
-   
+
+   import time
+   time.sleep(10)  # TODO : improve that to be sure that yadomsServer is ready for web client connection
+
    browser.get("http://127.0.0.1:8080")
    WebDriverWait(browser, 10).until(lambda driver: driver.execute_script("return document.readyState") == u"complete" and driver.execute_script("return jQuery.active") == 0)
    

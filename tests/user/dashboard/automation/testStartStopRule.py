@@ -25,8 +25,6 @@ class StartStopRule(unittest.TestCase):
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()
       self.browser.implicitly_wait(10)
-      import time
-      time.sleep(10)  # TODO : improve that to be sure that yadomsServer is ready for web client connection
       yadomsServer.openClient(self.browser)
       
       
