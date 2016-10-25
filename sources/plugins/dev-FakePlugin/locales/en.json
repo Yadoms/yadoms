@@ -133,5 +133,13 @@
 				}
 			}
 		}
-	}
+	},
+  "supportDeviceConfiguration": {
+    "configurationSchema": {
+      "CounterDivider": {
+        "name": "Divider",
+        "description": "Divider used to low the counter frequency"
+      }
+    }
+  }
 }

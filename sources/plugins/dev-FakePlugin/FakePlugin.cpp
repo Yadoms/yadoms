@@ -8,6 +8,7 @@
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/tools/Random.h>
 #include "FakeController.h"
+#include "FakeConfigurableDevice.h"
 #include <Poco/Net/NetworkInterface.h>
 
 // Use this macro to define all necessary to make your plugin a Yadoms valid plugin.
@@ -52,6 +53,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    CFakeSwitch fakeDimmableReadOnlySwitch("fakeDimmableReadOnlySwitch", true, false);
    CFakeSwitch fakeDimmableReadWriteSwitch("fakeDimmableReadWriteSwitch", true, true);
    CFakeController fakeController("fakeController1");
+   CFakeConfigurableDevice configurableDevice("configurableDevice");
 
 
    // Declare these sensors to Yadoms (devices and associated keywords) if not already declared
@@ -63,6 +65,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    fakeDimmableReadOnlySwitch.declareDevice(api);
    fakeDimmableReadWriteSwitch.declareDevice(api);
    fakeController.declareDevice(api);
+   configurableDevice.declareDevice(api);
 
    // Timer used to send fake sensor states periodically
    api->getEventHandler().createTimer(kSendSensorsStateTimerEventId,
@@ -122,6 +125,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             fakeOnOffReadOnlySwitch.read();
             fakeDimmableReadOnlySwitch.read();
             fakeController.read();
+            configurableDevice.read();
 
             std::cout << "Send the periodically sensors state..." << std::endl;
             fakeSensor1.historizeData(api);
@@ -130,6 +134,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             fakeOnOffReadOnlySwitch.historizeData(api);
             fakeDimmableReadOnlySwitch.historizeData(api);
             fakeController.historizeData(api);
+            configurableDevice.historizeData(api);
 
             break;
          }
@@ -188,7 +193,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
             else
             {
-               std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
+               auto errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
                data->sendError(errorMessage);
                std::cerr << errorMessage << std::endl;
             }
@@ -231,6 +236,46 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
             break;
          }
+
+      case yApi::IYPluginApi::kGetDeviceConfigurationSchema:
+         {
+            // Yadoms ask for device configuration schema
+            // Schema can come from package.json, or built by code. In this example,
+            // we just take the schema from package.json, in case of configuration is supported by device.
+            auto deviceConfigurationSchemaRequest = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest>>();
+
+            if (deviceConfigurationSchemaRequest->getData()->device() == configurableDevice->name())
+            {
+               std::cout << "This device is configurable, return its configuration schema to device configuration schema request" << std::endl;
+               deviceConfigurationSchemaRequest->sendSuccess(configurableDevice->deviceConfigurationSchema());
+            }
+            else
+            {
+               std::cout << "This device is not configurable, return an empty schema to device configuration schema request" << std::endl;
+               deviceConfigurationSchemaRequest->sendSuccess(shared::CDataContainer());
+            }
+
+            break;
+         }
+
+      case yApi::IYPluginApi::kSetDeviceConfiguration:
+         {
+            // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
+            auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceConfiguration>>();
+
+            if (deviceConfiguration->device() == configurableDevice->name())
+            {
+               configurableDevice->setConfiguration(deviceConfiguration->configuration());
+            }
+            else
+            {
+               auto errorMessage = "Try to apply a device configuration to an unconfigurable device";
+               std::cerr << errorMessage << std::endl;
+            }
+
+            break;
+         }
+
       default:
          {
             std::cerr << "Unknown or unsupported message id " << api->getEventHandler().getEventId() << std::endl;
