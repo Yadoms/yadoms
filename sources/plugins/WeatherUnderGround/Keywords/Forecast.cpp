@@ -49,9 +49,11 @@ void CForecast::addPeriod(const shared::CDataContainer& valueContainer,
       weatherIconTemp = static_cast<yApi::historization::EWeatherCondition>(it->second).toString();
    }
    else
-      throw CKeywordException("Value " + valueContainer.get<std::string>(weatherCondition) + " could not be set");
+      throw CKeywordException("Value [" + valueContainer.get<std::string>(weatherCondition) + "] could not be set");
 
-   m_forecast->addPeriod(valueContainer.get<std::string>(year),
+   try
+   {
+      m_forecast->addPeriod(valueContainer.get<std::string>(year),
                          valueContainer.get<std::string>(month),
                          valueContainer.get<std::string>(day),
                          weatherIconTemp,
@@ -63,6 +65,16 @@ void CForecast::addPeriod(const shared::CDataContainer& valueContainer,
                          valueContainer.get<std::string>(aveHumidity),
                          valueContainer.get<std::string>(rainDay),
                          boost::lexical_cast<std::string>(valueContainer.get<double>(snowDay) * 10)); // Transform from cm -> mm
+   }
+   catch(...)
+   {
+      std::cout << "value maxWind :" << maxWind << std::endl;
+      std::cout << "value aveWind :" << aveWind << std::endl;
+      std::cout << "value snowDay :" << snowDay << std::endl;
+      std::cout << "value weatherIconTemp :" << weatherIconTemp << std::endl;
+
+      throw;
+   }
 }
 
 void CForecast::clearAllPeriods() const
@@ -79,4 +91,3 @@ boost::shared_ptr<yApi::historization::IHistorizable> CForecast::getHistorizable
 {
    return m_forecast;
 }
-

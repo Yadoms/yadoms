@@ -60,7 +60,14 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
         window.WebSocket = window.MozWebSocket;
     }
     if(window.WebSocket) {
-        WebSocketEngine.webSocket_ = new WebSocket('ws://' + window.location.host + '/ws');
+        //the protocol of the web socket depends on the http or https protocol
+        var protocol = "";
+        if (window.location.protocol.indexOf("https") !== -1)
+           protocol = "wss://";
+        else
+           protocol = "ws://";
+        
+        WebSocketEngine.webSocket_ = new WebSocket(protocol + window.location.host + '/ws');
 
         WebSocketEngine.webSocket_.onopen = function() {
             console.debug('Web socket opened');

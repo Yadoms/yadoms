@@ -48,7 +48,7 @@ void CCondition::setPeriod(const shared::CDataContainer& valueContainer,
       weatherIconTemp = static_cast<yApi::historization::EWeatherCondition>(it->second).toString();
    }
    else
-      throw CKeywordException("Value " + valueContainer.get<std::string>(filterWeatherCondition) + " could not be set");
+      throw CKeywordException("Value [" + valueContainer.get<std::string>(filterWeatherCondition) + "] could not be set");
 
    m_condition->setPeriod(valueContainer.get<std::string>(filterTime),
                           weatherIconTemp,

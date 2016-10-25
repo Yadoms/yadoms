@@ -39,7 +39,9 @@ namespace startupOptions
       //--------------------------------------------------------------
       // IStartupOptions implementation (see IStartupOptions declaration for details)
       std::string getLogLevel() const override;
-      unsigned int getWebServerPortNumber() const override;
+      unsigned short getWebServerPortNumber() const override;
+      unsigned short getSSLWebServerPortNumber() const override;
+      bool getIsWebServerUseSSL() const override;
       std::string getWebServerIPAddress() const override;
       std::string getWebServerInitialPath() const override;
       EDatabaseEngine getDatabaseEngine() const override;
@@ -76,6 +78,8 @@ namespace startupOptions
       std::string getUpdateSiteUri() const override;
       int getDatabaseAcquisitionLifetime() const override;
       bool getDeveloperMode() const override;
+
+
       // [END] IStartupOptions implementation
       //--------------------------------------------------------------
 

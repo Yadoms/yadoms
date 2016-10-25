@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "WeatherConditions.h"
 #include <shared/exception/Exception.hpp>
+#include "Keywords/KeywordException.hpp"
 
 CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
                                        IWUConfiguration& wuConfiguration,
@@ -41,9 +42,6 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
 void CWeatherConditions::initializeVariables(boost::shared_ptr<yApi::IYPluginApi> api,
                                              IWUConfiguration& wuConfiguration)
 {
-   m_url.str("");
-   m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/conditions/q/" << m_countryOrState << "/" << m_localisation << ".json";
-
    // Clear the list
    m_keywords.clear();
 
@@ -80,6 +78,9 @@ void CWeatherConditions::initializeVariables(boost::shared_ptr<yApi::IYPluginApi
 
    if (wuConfiguration.IsConditionsIndividualKeywordsEnabled() || wuConfiguration.IsLiveConditionsEnabled())
    {
+      m_url.str("");
+      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/conditions/q/" << m_countryOrState << "/" << m_localisation << ".json";
+
       // Declare keywords
       std::string m_URL = "www.wunderground.com/";
       api->declareDevice(m_deviceName, m_URL, m_keywords);
@@ -94,13 +95,13 @@ void CWeatherConditions::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUC
 {
    try
    {
-      initializeVariables(api, wuConfiguration);
-
       //read the localisation
       m_localisation = wuConfiguration.getLocalisation();
 
       //read the country or State code
       m_countryOrState = wuConfiguration.getCountryOrState();
+
+      initializeVariables(api, wuConfiguration);
    }
    catch (shared::exception::CException& e)
    {
@@ -206,11 +207,12 @@ void CWeatherConditions::parse(boost::shared_ptr<yApi::IYPluginApi> api,
 
          std::cout << "Refresh Weather Conditions" << std::endl;
       }
+      catch (CKeywordException&)
+      {}
       catch (shared::exception::CException& e)
       {
          std::cout << e.what() << std::endl;
          m_isDesactivated = true;
-         throw e;
       }
    }
 }

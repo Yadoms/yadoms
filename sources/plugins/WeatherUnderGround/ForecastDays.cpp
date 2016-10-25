@@ -2,6 +2,7 @@
 #include "ForecastDays.h"
 #include "ErrorAnswerHandler.h"
 #include <shared/exception/Exception.hpp>
+#include "Keywords/KeywordException.hpp"
 
 CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
                              IWUConfiguration& wuConfiguration,
@@ -14,13 +15,12 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
      m_forecast(boost::make_shared<CForecast>(deviceName, "Forecast", weatherunderground::helper::EPeriod::kDay)),
      m_temp(boost::make_shared<CTemp>(deviceName, prefix + "low_temperature")),
      m_isDesactivated(false),
-     m_isUserDesactivated(false)
+     m_isUserDesactivated(false),
+     m_isDeveloperMode(false)
 {
    try
    {
-      m_url.str("");
-      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/" << m_prefix << "/q/" << m_countryOrState << "/" << m_localisation << ".json";
-
+      m_isDeveloperMode = api->isDeveloperMode();
       InitializeForecastDays(api, wuConfiguration);
    }
    catch (shared::exception::CException& e)
@@ -37,6 +37,9 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
 {
    if (wuConfiguration.IsForecast10DaysEnabled())
    {
+      m_url.str("");
+      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/forecast/q/" << m_countryOrState << "/" << m_localisation << ".json";
+
       m_keywords.clear();
 
       m_keywords.push_back(m_forecast->getHistorizable());
@@ -82,10 +85,6 @@ void CForecastDays::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
    //read the country or State code
    m_countryOrState = wuConfiguration.getCountryOrState();
 
-   m_url.str("");
-
-   m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/" << m_prefix << "/q/" << m_countryOrState << "/" << m_localisation << ".json";
-
    InitializeForecastDays(api, wuConfiguration);
 }
 
@@ -101,6 +100,12 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
          {
             auto result = dataToParse.get<std::vector<shared::CDataContainer> >("forecast.simpleforecast.forecastday");
             std::vector<shared::CDataContainer>::iterator i;
+
+            if (m_isDeveloperMode)
+            {
+               dataToParse.printToLog();
+               std::cout << "city :" << m_localisation << std::endl;
+            }
 
             m_forecast->clearAllPeriods();
 
@@ -140,10 +145,11 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
 
          std::cout << "Refresh Forecast Information" << std::endl;
       }
+      catch (CKeywordException&)
+      {}
       catch (shared::exception::CException& e)
       {
          std::cout << "Error during the parsing of the element ! : " << e.what() << std::endl;
-         throw;
       }
    }
 }
@@ -165,4 +171,9 @@ std::string CForecastDays::getUrl() const
 bool CForecastDays::isDesactivated() const
 {
    return m_isDesactivated;
+}
+
+bool CForecastDays::isUserDesactivated() const
+{
+   return m_isUserDesactivated;
 }

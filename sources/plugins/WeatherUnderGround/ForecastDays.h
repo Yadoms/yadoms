@@ -65,6 +65,12 @@ public:
    bool isDesactivated() const;
 
    //--------------------------------------------------------------
+   /// \brief	  Return if the module is desactivated by the user
+   /// \return    true if desactivated
+   //--------------------------------------------------------------
+   bool isUserDesactivated() const;
+
+   //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~CForecastDays();
@@ -133,4 +139,9 @@ private:
    /// \brief	    the module is desactivated by the user
    //--------------------------------------------------------------
    bool m_isUserDesactivated;
+
+   //--------------------------------------------------------------
+   /// \brief  developerMode state
+   //--------------------------------------------------------------
+   bool m_isDeveloperMode;
 };
