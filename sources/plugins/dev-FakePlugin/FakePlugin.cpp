@@ -168,8 +168,8 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kBindingQuery:
          {
             // Yadoms ask for a binding query 
-            auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
-            if (data->getData().getQuery() == "test")
+            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
+            if (request->getData().getQuery() == "test")
             {
                shared::CDataContainer ev;
                ev.set("HOUR", "1 hour");
@@ -189,12 +189,12 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                shared::CDataContainer result;
                result.set("interval", en);
 
-               data->sendSuccess(result);
+               request->sendSuccess(result);
             }
             else
             {
-               auto errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
-               data->sendError(errorMessage);
+               auto errorMessage = (boost::format("unknown query : %1%") % request->getData().getQuery()).str();
+               request->sendError(errorMessage);
                std::cerr << errorMessage << std::endl;
             }
             break;
@@ -242,7 +242,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             // Yadoms ask for device configuration schema
             // Schema can come from package.json, or built by code. In this example,
             // we just take the schema from package.json, in case of configuration is supported by device.
-            auto deviceConfigurationSchemaRequest = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest>>();
+            auto deviceConfigurationSchemaRequest = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest> >();
 
             if (deviceConfigurationSchemaRequest->getData()->device() == configurableDevice.getDeviceName())
             {
@@ -261,7 +261,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kSetDeviceConfiguration:
          {
             // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
-            auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceConfiguration>>();
+            auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceConfiguration> >();
 
             if (deviceConfiguration->device() == configurableDevice.getDeviceName())
             {
