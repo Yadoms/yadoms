@@ -23,7 +23,7 @@ class RemoveRule(unittest.TestCase):
    def setUp(self):
       database.deploy('OneStoppedRule')
       config.deploy("nominal")
-      scripts.deploy(["DisplayLatitude"])
+      scripts.deploy(["DisplayServerVersion"])
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()
       self.browser.implicitly_wait(10)
@@ -42,7 +42,8 @@ class RemoveRule(unittest.TestCase):
    def initialConditionsForRemoveRunningRuleTest(self, rulesTable, ruleNumber):
       tools.waitUntil(lambda: dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).is_enabled())
       dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).click()
-      self.assertTrue(tools.waitUntil(lambda: dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Running))
+      self.assertTrue(tools.waitUntil(lambda: dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).is_enabled()))
+      self.assertTrue(tools.waitUntil(lambda: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running))
    
    def test_removeRunningRule(self):
       print '=== Remove of a running rule test ==='
@@ -75,6 +76,9 @@ class RemoveRule(unittest.TestCase):
       
    def test_dontConfirmRemoveRule(self):
       print '=== Don\'t confirm remove rule test ==='
+
+      # Wait startup notifications are closed
+      self.assertTrue(tools.waitUntil(lambda: notification.noNotification(self.browser)))
 
       print '  Open rules dashboard'
       dashboard.open(self.browser)

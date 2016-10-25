@@ -23,7 +23,7 @@ class EditRule(unittest.TestCase):
    def setUp(self):
       database.deploy('OneStoppedRule')
       config.deploy("nominal")
-      scripts.deploy(["DisplayLatitude"])
+      scripts.deploy(["DisplayServerVersion"])
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Firefox()
       self.browser.implicitly_wait(10)
