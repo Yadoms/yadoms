@@ -49,9 +49,12 @@ const std::string& CFakeConfigurableDevice::getModel()
    return model;
 }
 
-shared::CDataContainer CFakeConfigurableDevice::deviceConfigurationSchema() const
+boost::shared_ptr<shared::CDataContainer> CFakeConfigurableDevice::deviceConfigurationSchema(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   TODO
+   if (!api->getInformation()->getPackage()->containsChild("supportDeviceConfiguration/configurationSchema"))
+      throw shared::exception::CException("supportDeviceConfiguration node not found in package.json");
+
+   return boost::make_shared<shared::CDataContainer>(api->getInformation()->getPackage()->get<shared::CDataContainer>("supportDeviceConfiguration/configurationSchema"));
 }
 
 void CFakeConfigurableDevice::setConfiguration(const shared::CDataContainer& newConfiguration)

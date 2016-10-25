@@ -25,7 +25,7 @@ namespace pluginSystem
          std::string getIdentity() const override;
          bool isSupportedOnThisPlatform() const override;
          bool getSupportManuallyCreatedDevice() const override;
-         shared::CDataContainer getPackage() const override;
+         boost::shared_ptr<const shared::CDataContainer> getPackage() const override;
          const boost::filesystem::path& getPath() const override;
          // [END] shared::plugin::IInformation implementation
 
@@ -35,7 +35,7 @@ namespace pluginSystem
          shared::versioning::EReleaseType m_releaseType;
          std::string m_author;
          std::string m_url;
-         shared::CDataContainer m_package;
+         boost::shared_ptr<shared::CDataContainer> m_package;
       };
    }
 } // namespace pluginSystem::internalPlugin

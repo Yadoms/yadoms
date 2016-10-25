@@ -34,7 +34,7 @@ namespace pluginSystem
          pb->set_tostring(m_information->toString());
          pb->set_supportedonthisplatform(m_information->isSupportedOnThisPlatform());
          pb->set_supportmanuallycreateddevice(m_information->getSupportManuallyCreatedDevice());
-         pb->set_packagefilecontent(m_information->getPackage().serialize());
+         pb->set_packagefilecontent(m_information->getPackage()->serialize());
          pb->set_path(m_information->getPath().string());
 
          if (!pb->IsInitialized())

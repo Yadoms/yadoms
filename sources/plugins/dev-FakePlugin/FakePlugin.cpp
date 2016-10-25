@@ -244,10 +244,10 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             // we just take the schema from package.json, in case of configuration is supported by device.
             auto deviceConfigurationSchemaRequest = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest>>();
 
-            if (deviceConfigurationSchemaRequest->getData()->device() == configurableDevice->name())
+            if (deviceConfigurationSchemaRequest->getData()->device() == configurableDevice.getDeviceName())
             {
                std::cout << "This device is configurable, return its configuration schema to device configuration schema request" << std::endl;
-               deviceConfigurationSchemaRequest->sendSuccess(configurableDevice->deviceConfigurationSchema());
+               deviceConfigurationSchemaRequest->sendSuccess(configurableDevice.deviceConfigurationSchema(api));
             }
             else
             {
@@ -263,9 +263,9 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
             auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceConfiguration>>();
 
-            if (deviceConfiguration->device() == configurableDevice->name())
+            if (deviceConfiguration->device() == configurableDevice.getDeviceName())
             {
-               configurableDevice->setConfiguration(deviceConfiguration->configuration());
+               configurableDevice.setConfiguration(deviceConfiguration->configuration());
             }
             else
             {
