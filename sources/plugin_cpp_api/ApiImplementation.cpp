@@ -6,6 +6,8 @@
 #include "DeviceCommand.h"
 #include "ExtraCommand.h"
 #include "ManuallyDeviceCreation.h"
+#include "DeviceConfigurationSchemaRequest.h"
+#include "SetDeviceConfiguration.h"
 
 namespace plugin_cpp_api
 {
@@ -153,6 +155,10 @@ namespace plugin_cpp_api
          break;
       case toPlugin::msg::kExtraCommand: processExtraCommand(toPluginProtoBuffer.extracommand());
          break;
+      case toPlugin::msg::kDeviceConfigurationSchemaRequest: processDeviceConfigurationSchemaRequest(toPluginProtoBuffer.deviceconfigurationschemarequest());
+         break;
+      case toPlugin::msg::kSetDeviceConfiguration: processSetDeviceConfiguration(toPluginProtoBuffer.setdeviceconfiguration());
+         break;
       case toPlugin::msg::kManuallyDeviceCreation: processManuallyDeviceCreation(toPluginProtoBuffer.manuallydevicecreation());
          break;
       default:
@@ -205,59 +211,86 @@ namespace plugin_cpp_api
 
    void CApiImplementation::processBindingQuery(const toPlugin::BindingQuery& msg)
    {
-      boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> query = boost::make_shared<CBindingQuery>(msg,
-                                                                                                                    [&](const shared::CDataContainer& r)
-                                                                                                                    {
-                                                                                                                       toYadoms::msg ans;
-                                                                                                                       auto answer = ans.mutable_bindingqueryanswer();
-                                                                                                                       answer->set_success(true);
-                                                                                                                       answer->set_result(r.serialize());
-                                                                                                                       send(ans);
-                                                                                                                    },
-                                                                                                                    [&](const std::string& r)
-                                                                                                                    {
-                                                                                                                       toYadoms::msg ans;
-                                                                                                                       auto answer = ans.mutable_bindingqueryanswer();
-                                                                                                                       answer->set_success(false);
-                                                                                                                       answer->set_result(r);
-                                                                                                                       send(ans);
-                                                                                                                    });
+      auto query = boost::make_shared<CBindingQuery>(msg,
+                                                     [&](const shared::CDataContainer& r)
+                                                     {
+                                                        toYadoms::msg ans;
+                                                        auto answer = ans.mutable_bindingqueryanswer();
+                                                        answer->set_success(true);
+                                                        answer->set_result(r.serialize());
+                                                        send(ans);
+                                                     },
+                                                     [&](const std::string& r)
+                                                     {
+                                                        toYadoms::msg ans;
+                                                        auto answer = ans.mutable_bindingqueryanswer();
+                                                        answer->set_success(false);
+                                                        answer->set_result(r);
+                                                        send(ans);
+                                                     });
 
       m_pluginEventHandler.postEvent(kBindingQuery, query);
    }
 
+   void CApiImplementation::processDeviceConfigurationSchemaRequest(const toPlugin::DeviceConfigurationSchemaRequest& msg)
+   {
+      auto query = boost::make_shared<CDeviceConfigurationSchemaRequest>(msg,
+                                                                         [&](const shared::CDataContainer& r)
+                                                                         {
+                                                                            toYadoms::msg ans;
+                                                                            auto answer = ans.mutable_deviceconfigurationschemaanswer();
+                                                                            answer->set_success(true);
+                                                                            answer->set_result(r.serialize());
+                                                                            send(ans);
+                                                                         },
+                                                                         [&](const std::string& r)
+                                                                         {
+                                                                            toYadoms::msg ans;
+                                                                            auto answer = ans.mutable_deviceconfigurationschemaanswer();
+                                                                            answer->set_success(false);
+                                                                            answer->set_result(r);
+                                                                            send(ans);
+                                                                         });
+
+      m_pluginEventHandler.postEvent(kGetDeviceConfigurationSchemaRequest, query);
+   }
+
+   void CApiImplementation::processSetDeviceConfiguration(const toPlugin::SetDeviceConfiguration& msg)
+   {
+      m_pluginEventHandler.postEvent(kSetDeviceConfiguration, boost::make_shared<CSetDeviceConfiguration>(msg));
+   }
+
    void CApiImplementation::processDeviceCommand(const toPlugin::DeviceCommand& msg)
    {
-      boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command = boost::make_shared<CDeviceCommand>(msg);
+      auto command = boost::make_shared<CDeviceCommand>(msg);
       m_pluginEventHandler.postEvent(kEventDeviceCommand, command);
    }
 
    void CApiImplementation::processExtraCommand(const toPlugin::ExtraCommand& msg)
    {
-      boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command = boost::make_shared<CExtraCommand>(msg);
+      auto command = boost::make_shared<CExtraCommand>(msg);
       m_pluginEventHandler.postEvent(kEventExtraCommand, command);
    }
 
    void CApiImplementation::processManuallyDeviceCreation(const toPlugin::ManuallyDeviceCreation& msg)
    {
-      boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request =
-         boost::make_shared<CManuallyDeviceCreation>(msg,
-                                                     [&](const std::string& newDeviceName)
-                                                     {
-                                                        toYadoms::msg ans;
-                                                        auto answer = ans.mutable_manuallydevicecreationanswer();
-                                                        auto success = answer->mutable_sucess();
-                                                        success->set_newdevicename(newDeviceName);
-                                                        send(ans);
-                                                     },
-                                                     [&](const std::string& errorMessage)
-                                                     {
-                                                        toYadoms::msg ans;
-                                                        auto answer = ans.mutable_manuallydevicecreationanswer();
-                                                        auto error = answer->mutable_error();
-                                                        error->set_message(errorMessage);
-                                                        send(ans);
-                                                     });
+      auto request = boost::make_shared<CManuallyDeviceCreation>(msg,
+                                                                 [&](const std::string& newDeviceName)
+                                                                 {
+                                                                    toYadoms::msg ans;
+                                                                    auto answer = ans.mutable_manuallydevicecreationanswer();
+                                                                    auto success = answer->mutable_sucess();
+                                                                    success->set_newdevicename(newDeviceName);
+                                                                    send(ans);
+                                                                 },
+                                                                 [&](const std::string& errorMessage)
+                                                                 {
+                                                                    toYadoms::msg ans;
+                                                                    auto answer = ans.mutable_manuallydevicecreationanswer();
+                                                                    auto error = answer->mutable_error();
+                                                                    error->set_message(errorMessage);
+                                                                    send(ans);
+                                                                 });
 
       m_pluginEventHandler.postEvent(kEventManuallyDeviceCreation, request);
    }

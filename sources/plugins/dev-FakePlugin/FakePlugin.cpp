@@ -7,6 +7,7 @@
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
+#include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
 #include <shared/tools/Random.h>
 #include "FakeController.h"
 #include "FakeConfigurableDevice.h"
@@ -262,7 +263,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kSetDeviceConfiguration:
          {
             // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
-            auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceConfiguration> >();
+            auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration> >();
 
             if (deviceConfiguration->device() == configurableDevice.getDeviceName())
             {

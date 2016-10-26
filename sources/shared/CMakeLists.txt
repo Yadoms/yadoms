@@ -104,6 +104,7 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/IExtraCommand.h
    shared/plugin/yPluginApi/IManuallyDeviceCreationData.h
    shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h
+   shared/plugin/yPluginApi/ISetDeviceConfiguration.h
    shared/plugin/yPluginApi/IYPluginApi.h
    shared/plugin/yPluginApi/KeywordAccessMode.cpp
    shared/plugin/yPluginApi/KeywordAccessMode.h

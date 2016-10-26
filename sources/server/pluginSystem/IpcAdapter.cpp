@@ -411,8 +411,8 @@ namespace pluginSystem
               },
               [&](const toYadoms::msg& ans) -> void
               {
-                 success = ans.bindingqueryanswer().success();
-                 result = ans.bindingqueryanswer().result();
+                 success = ans.deviceconfigurationschemaanswer().success();
+                 result = ans.deviceconfigurationschemaanswer().result();
               });
       }
       catch (std::exception& e)

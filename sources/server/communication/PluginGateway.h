@@ -41,6 +41,8 @@ namespace communication
                                    communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) override;
       void sendDeviceConfigurationSchemaRequest(int deviceId,
                                                 communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) override;
+      void sendSetDeviceConfiguration(int deviceId,
+                                      const shared::CDataContainer& configuration) override;
       // [END] ISendMessageAsync Implementation
 
    private:

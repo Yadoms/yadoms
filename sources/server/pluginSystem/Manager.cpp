@@ -18,6 +18,7 @@
 #include "InvalidPluginException.hpp"
 #include "InstanceRemoverRaii.hpp"
 #include "DeviceConfigurationSchemaRequest.h"
+#include "SetDeviceconfiguration.h"
 
 namespace pluginSystem
 {
@@ -298,15 +299,15 @@ namespace pluginSystem
    {
       // Find instances to start
       std::vector<int> instancesToStart;
-      std::vector<boost::shared_ptr<database::entities::CPlugin> > allInstances = getInstanceList();
-      for (std::vector<boost::shared_ptr<database::entities::CPlugin> >::const_iterator instance = allInstances.begin(); instance != allInstances.end(); ++instance)
+      auto allInstances = getInstanceList();
+      for (auto instance = allInstances.begin(); instance != allInstances.end(); ++instance)
       {
          if (boost::iequals((*instance)->Type(), pluginName) && (*instance)->AutoStart())
             instancesToStart.push_back((*instance)->Id());
       }
 
       // Start all instances of this plugin
-      for (std::vector<int>::const_iterator instanceToStart = instancesToStart.begin(); instanceToStart != instancesToStart.end(); ++instanceToStart)
+      for (auto instanceToStart = instancesToStart.begin(); instanceToStart != instancesToStart.end(); ++instanceToStart)
          startInstance(*instanceToStart);
    }
 
@@ -650,6 +651,22 @@ namespace pluginSystem
       {
          request->sendError((boost::format("Error when requesting DeviceConfigurationSchema on device %1% : %2%") % device->Name() % e.what()).str());
       }
+   }
+
+   void CManager::postSetDeviceConfiguration(int deviceId,
+                                             const shared::CDataContainer& configuration) const
+   {
+      auto device = m_dataAccessLayer->getDeviceManager()->getDevice(deviceId);
+
+      auto command(boost::make_shared<pluginSystem::CSetDeviceConfiguration>(device->Name(),
+                                                                             configuration));
+
+      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+      auto instance(getRunningInstance(device->PluginId()));
+
+      YADOMS_LOG(debug) << "Set configuration to device \"" << device->Name() << "\" to plugin " << instance->about()->DisplayName();
+
+      instance->postSetDeviceConfiguration(command);
    }
 } // namespace pluginSystem
 

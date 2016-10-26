@@ -63,6 +63,11 @@ namespace pluginSystem
       m_ipcAdapter->postManuallyDeviceCreationRequest(request);
    }
 
+   void CInstance::postSetDeviceConfiguration(boost::shared_ptr<const shared::plugin::yPluginApi::ISetDeviceConfiguration> command)
+   {
+      m_ipcAdapter->postSetDeviceConfiguration(command);
+   }
+
    void CInstance::postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand)
    {
       m_ipcAdapter->postExtraCommand(extraCommand);

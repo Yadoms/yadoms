@@ -28,6 +28,8 @@ set(plugin_cpp_api_SOURCES
    ManuallyDeviceCreationData.cpp
    PluginInformation.h
    PluginInformation.cpp
+   SetDeviceConfiguration.h
+   SetDeviceConfiguration.cpp
 
    PluginContext.h
    PluginContext.cpp

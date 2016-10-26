@@ -1,5 +1,4 @@
 #pragma once
-
 #include "callback/ISynchronousCallback.h"
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationData.h>
 #include <shared/plugin/yPluginApi/IBindingQueryData.h>
@@ -66,6 +65,14 @@ namespace communication
       //----------------------------------------------
       virtual void sendDeviceConfigurationSchemaRequest(int deviceId,
                                                         communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) = 0;
+
+      //----------------------------------------------
+      ///\brief                     Send a new configuration to device on a plugin
+      ///\param [in] deviceId       Device ID on which to send configuration
+      ///\param [in] configuration  The new device configuration
+      //----------------------------------------------
+      virtual void sendSetDeviceConfiguration(int deviceId,
+                                              const shared::CDataContainer& configuration) = 0;
    };
 } //namespace communication
 

@@ -217,6 +217,14 @@ namespace pluginSystem
                                                 communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) const;
 
       //--------------------------------------------------------------
+      /// \brief                       Post a new device configuration to a plugin
+      /// \param [in] deviceId         Device Id
+      /// \param [in] configuration    New device configuration
+      //--------------------------------------------------------------
+      void postSetDeviceConfiguration(int deviceId,
+                                      const shared::CDataContainer& configuration) const;
+
+      //--------------------------------------------------------------
       /// \brief                 Start all instances matching the plugin name
       /// \param [in] pluginName The plugin name
       //--------------------------------------------------------------
@@ -227,7 +235,6 @@ namespace pluginSystem
       /// \param [in] pluginName The plugin name
       //--------------------------------------------------------------
       void stopAllInstancesOfPlugin(const std::string& pluginName);
-
    private:
       //-----------------------------------------------------
       ///\brief               Start all instances

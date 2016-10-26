@@ -116,6 +116,17 @@ namespace shared
                //-----------------------------------------------------
                kSetDeviceConfiguration,
 
+               //-----------------------------------------------------
+               ///\brief First event ID to use for user-defined events
+               ///\note Define plugin events like :
+               ///\note enum
+               ///\note {
+               ///\note    userDefinedFirstEvent = kPluginFirstEventId,
+               ///\note    userDefinedSecondEvent,
+               ///\note    userDefinedThirdEvent,
+               ///\note    ...
+               ///\note };
+               //-----------------------------------------------------
                kPluginFirstEventId = event::kUserFirstId + 100 // The next usable event ID for the plugin code
             };
 

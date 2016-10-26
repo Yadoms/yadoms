@@ -80,6 +80,13 @@ namespace communication
    {
       m_pluginManager->postDeviceConfigurationSchemaRequest(deviceId, callback);
    }
+
+   void CPluginGateway::sendSetDeviceConfiguration(int deviceId,
+                                                   const shared::CDataContainer& configuration)
+   {
+      m_pluginManager->postSetDeviceConfiguration(deviceId,
+                                                  configuration);
+   }
 } //namespace communication
 
 
