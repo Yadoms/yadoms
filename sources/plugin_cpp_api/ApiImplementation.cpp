@@ -261,7 +261,8 @@ namespace plugin_cpp_api
 
    void CApiImplementation::processSetDeviceConfiguration(const toPlugin::SetDeviceConfiguration& msg)
    {
-      m_pluginEventHandler.postEvent(kSetDeviceConfiguration, boost::make_shared<CSetDeviceConfiguration>(msg));
+      boost::shared_ptr<const shared::plugin::yPluginApi::ISetDeviceConfiguration> command = boost::make_shared<CSetDeviceConfiguration>(msg);
+      m_pluginEventHandler.postEvent(kSetDeviceConfiguration, command);
    }
 
    void CApiImplementation::processDeviceCommand(const toPlugin::DeviceCommand& msg)

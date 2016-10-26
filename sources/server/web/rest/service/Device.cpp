@@ -318,7 +318,7 @@ namespace web
             {
                if (parameters.size() > 2)
                {
-                  auto deviceId = boost::lexical_cast<int>(parameters[2]);
+                  auto deviceId = boost::lexical_cast<int>(parameters[1]);
 
                   try
                   {
