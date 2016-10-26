@@ -108,7 +108,7 @@ void CWeatherConditions::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUC
    {
       std::cout << e.what() << std::endl;
       m_isDesactivated = true;
-      throw e;
+      throw;
    }
 }
 
