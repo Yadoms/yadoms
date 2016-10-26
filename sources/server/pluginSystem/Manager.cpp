@@ -18,7 +18,7 @@
 #include "InvalidPluginException.hpp"
 #include "InstanceRemoverRaii.hpp"
 #include "DeviceConfigurationSchemaRequest.h"
-#include "SetDeviceconfiguration.h"
+#include "SetDeviceConfiguration.h"
 
 namespace pluginSystem
 {
