@@ -5,6 +5,8 @@
 #include <shared/plugin/yPluginApi/IExtraCommand.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
+#include <boost/array.hpp>
+#include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
 
 
 namespace pluginSystem
@@ -59,6 +61,12 @@ namespace pluginSystem
       //--------------------------------------------------------------
       virtual void postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request) = 0;
 
+      //--------------------------------------------------------------
+      /// \brief                 Set a new device configuration to a plugin
+      /// \param [in] command    Set device configuration command
+      //--------------------------------------------------------------
+      virtual void postSetDeviceConfiguration(boost::shared_ptr<const shared::plugin::yPluginApi::ISetDeviceConfiguration>& command) = 0;
+      
       //--------------------------------------------------------------
       /// \brief                 Post a device command to a plugin
       /// \param [in] deviceCommand The command

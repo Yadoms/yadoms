@@ -426,6 +426,15 @@ namespace pluginSystem
          request->sendError(result);
    }
 
+   void CIpcAdapter::postSetDeviceConfiguration(boost::shared_ptr<const shared::plugin::yPluginApi::ISetDeviceConfiguration>& command)
+   {
+      toPlugin::msg msg;
+      auto message = msg.mutable_setdeviceconfiguration();
+      message->set_device(command->device());
+      message->set_configuration(command->configuration().serialize());
+      send(msg);
+   }
+
    void CIpcAdapter::postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand)
    {
       toPlugin::msg msg;
