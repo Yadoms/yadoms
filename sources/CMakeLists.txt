@@ -379,6 +379,8 @@ set(YADOMS_SRC
    server/pluginSystem/IpcAdapter.cpp
    server/pluginSystem/DeviceCommand.h
    server/pluginSystem/DeviceCommand.cpp
+   server/pluginSystem/DeviceConfigurationSchemaRequest.h
+   server/pluginSystem/DeviceConfigurationSchemaRequest.cpp
 	server/pluginSystem/DummyQualifier.h
 	server/pluginSystem/DummyQualifier.cpp
 	server/pluginSystem/ExtraCommand.h
@@ -416,8 +418,6 @@ set(YADOMS_SRC
    server/pluginSystem/BindingQueryData.h
    server/pluginSystem/BindingQueryRequest.cpp
    server/pluginSystem/BindingQueryRequest.h
-   server/pluginSystem/ManuallyDeviceCreationTestData.cpp
-   server/pluginSystem/ManuallyDeviceCreationTestData.h
    server/pluginSystem/NativeExecutableCommandLine.cpp
    server/pluginSystem/NativeExecutableCommandLine.h
 	server/pluginSystem/PluginException.hpp

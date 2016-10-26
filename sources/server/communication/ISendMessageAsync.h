@@ -46,8 +46,8 @@ namespace communication
       ///\param [in] callback       The callback
       //----------------------------------------------
       virtual void sendManuallyDeviceCreationRequest(int pluginId,
-                                                     const shared::plugin::yPluginApi::IManuallyDeviceCreationData& data
-                                                     , communication::callback::ISynchronousCallback<std::string>& callback) = 0;
+                                                     const shared::plugin::yPluginApi::IManuallyDeviceCreationData& data,
+                                                     communication::callback::ISynchronousCallback<std::string>& callback) = 0;
 
       //----------------------------------------------
       ///\brief                     Send a binding query request to a plugin with a mandatory callback
@@ -58,6 +58,14 @@ namespace communication
       virtual void sendBindingQueryRequest(int pluginId,
                                            const shared::plugin::yPluginApi::IBindingQueryData& data,
                                            communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) = 0;
+
+      //----------------------------------------------
+      ///\brief                     Send a binding query request to a plugin with a mandatory callback
+      ///\param [in] deviceId       Device ID on which ask configuration schema
+      ///\param [in] callback       The callback
+      //----------------------------------------------
+      virtual void sendDeviceConfigurationSchemaRequest(int deviceId,
+                                                        communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) = 0;
    };
 } //namespace communication
 

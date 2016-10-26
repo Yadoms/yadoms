@@ -5,6 +5,7 @@
 #include "FakeCounter.h"
 #include "FakeSwitch.h"
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
+#include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/tools/Random.h>
 #include "FakeController.h"
@@ -237,17 +238,17 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             break;
          }
 
-      case yApi::IYPluginApi::kGetDeviceConfigurationSchema:
+      case yApi::IYPluginApi::kGetDeviceConfigurationSchemaRequest:
          {
             // Yadoms ask for device configuration schema
             // Schema can come from package.json, or built by code. In this example,
             // we just take the schema from package.json, in case of configuration is supported by device.
             auto deviceConfigurationSchemaRequest = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest> >();
 
-            if (deviceConfigurationSchemaRequest->getData()->device() == configurableDevice.getDeviceName())
+            if (deviceConfigurationSchemaRequest->device() == configurableDevice.getDeviceName())
             {
                std::cout << "This device is configurable, return its configuration schema to device configuration schema request" << std::endl;
-               deviceConfigurationSchemaRequest->sendSuccess(configurableDevice.deviceConfigurationSchema(api));
+               deviceConfigurationSchemaRequest->sendSuccess(*configurableDevice.deviceConfigurationSchema(api));
             }
             else
             {

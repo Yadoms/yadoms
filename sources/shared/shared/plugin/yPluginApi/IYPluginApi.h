@@ -106,7 +106,7 @@ namespace shared
                ///\note Data : a boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest> object containing the device configuration schema request
                ///\note Plugin must return the configation schema associated to the device (by calling request->sendSuccess or sendError)
                //-----------------------------------------------------
-               kGetDeviceConfigurationSchema,
+               kGetDeviceConfigurationSchemaRequest,
 
                //-----------------------------------------------------
                ///\brief Yadoms sent the configuration of a device

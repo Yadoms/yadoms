@@ -17,6 +17,7 @@
 #include "PluginException.hpp"
 #include "InvalidPluginException.hpp"
 #include "InstanceRemoverRaii.hpp"
+#include "DeviceConfigurationSchemaRequest.h"
 
 namespace pluginSystem
 {
@@ -59,18 +60,21 @@ namespace pluginSystem
 
       // Wait for instances started or timeout
       YADOMS_LOG(debug) << "All plugin instances are started, wait for running...";
-      enum { kStartInstancesTimeoutId = shared::event::kUserFirstId };
+      enum
+         {
+            kStartInstancesTimeoutId = shared::event::kUserFirstId
+         };
       shared::event::CEventHandler startInstancesEventHandler;
       startInstancesEventHandler.createTimePoint(kStartInstancesTimeoutId, shared::currentTime::Provider().now() + timeout);
       while (true)
       {
-         switch(startInstancesEventHandler.waitForEvents(boost::posix_time::seconds(2)))
+         switch (startInstancesEventHandler.waitForEvents(boost::posix_time::seconds(2)))
          {
          case kStartInstancesTimeoutId:
             YADOMS_LOG(error) << "Timeout starting plugin instances : some instance(s) are not running";
             return;
          case shared::event::kTimeout: // Every 2 seconds
-            for (auto it = startedInstanceIds.begin(); it != startedInstanceIds.end(); )
+            for (auto it = startedInstanceIds.begin(); it != startedInstanceIds.end();)
             {
                if (getInstanceState(*it) == shared::plugin::yPluginApi::historization::EPluginState::kRunning)
                {
@@ -103,7 +107,7 @@ namespace pluginSystem
 
       if (!startInstances(getInstanceList(),
                           startedInstanceIds))
-         YADOMS_LOG(error) << "One or more plugins failed to start, check plugins page for details";
+      YADOMS_LOG(error) << "One or more plugins failed to start, check plugins page for details";
 
       //start the internal plugin
       startInternalPlugin();
@@ -217,7 +221,7 @@ namespace pluginSystem
       }
    }
 
-   std::string CManager::getInstanceLog(int id)
+   std::string CManager::getInstanceLog(int id) const
    {
       try
       {
@@ -494,7 +498,7 @@ namespace pluginSystem
                   defaultState.set("messageId", dc.getWithDefault("messageId", shared::CStringExtension::EmptyString));
                   defaultState.set("messageData", dc.getWithDefault("messageData", shared::CStringExtension::EmptyString));
                }
-               catch (shared::exception::CJSONParse & jsonerror)
+               catch (shared::exception::CJSONParse& jsonerror)
                {
                   YADOMS_LOG(debug) << "Fail to parser JSON in pluginState id=" << id << " error=" << jsonerror.what();
                   defaultState.set("messageId", m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
@@ -544,7 +548,7 @@ namespace pluginSystem
             defaultState.set("messageId", dc.getWithDefault("messageId", shared::CStringExtension::EmptyString));
             defaultState.set("messageData", dc.getWithDefault("messageData", shared::CStringExtension::EmptyString));
          }
-         catch (shared::exception::CJSONParse & jsonerror)
+         catch (shared::exception::CJSONParse& jsonerror)
          {
             YADOMS_LOG(debug) << "Fail to parser JSON in pluginState id=" << id << " error=" << jsonerror.what();
             defaultState.set("messageId", m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
@@ -567,7 +571,8 @@ namespace pluginSystem
       return fullState.get<shared::plugin::yPluginApi::historization::EPluginState>("state");
    }
 
-   void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const
+   void CManager::postCommand(int id,
+                              boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       auto instance(getRunningInstance(id));
@@ -577,7 +582,8 @@ namespace pluginSystem
       instance->postDeviceCommand(command);
    }
 
-   void CManager::postExtraCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command) const
+   void CManager::postExtraCommand(int id,
+                                   boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command) const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       auto instance(getRunningInstance(id));
@@ -587,7 +593,8 @@ namespace pluginSystem
       instance->postExtraCommand(command);
    }
 
-   void CManager::postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request) const
+   void CManager::postManuallyDeviceCreationRequest(int id,
+                                                    boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request) const
    {
       try
       {
@@ -604,7 +611,8 @@ namespace pluginSystem
       }
    }
 
-   void CManager::postBindingQueryRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request)
+   void CManager::postBindingQueryRequest(int id,
+                                          boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request) const
    {
       try
       {
@@ -620,4 +628,29 @@ namespace pluginSystem
          request->sendError((boost::format("Error when requesting binding query %1%") % e.what()).str());
       }
    }
+
+   void CManager::postDeviceConfigurationSchemaRequest(int deviceId,
+                                                       communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) const
+   {
+      auto device = m_dataAccessLayer->getDeviceManager()->getDevice(deviceId);
+
+      boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request(boost::make_shared<pluginSystem::CDeviceConfigurationSchemaRequest>(device->Name(),
+                                                                                                                                                                   callback));
+
+      try
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+         auto instance = getRunningInstance(device->PluginId);
+
+         YADOMS_LOG(debug) << "Send DeviceConfigurationSchema request on device \"" << device->Name() << "\" to plugin " << instance->about()->DisplayName();
+
+         instance->postDeviceConfigurationSchemaRequest(request);
+      }
+      catch (CPluginException& e)
+      {
+         request->sendError((boost::format("Error when requesting DeviceConfigurationSchema on device %1% : %2%") % device->Name() % e.what()).str());
+      }
+   }
 } // namespace pluginSystem
+
+

@@ -4,6 +4,7 @@
 #include <shared/plugin/yPluginApi/IDeviceCommand.h>
 #include <shared/plugin/yPluginApi/IExtraCommand.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
+#include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
 
 
 namespace pluginSystem
@@ -48,9 +49,15 @@ namespace pluginSystem
 
       //--------------------------------------------------------------
       /// \brief                 Post a custom query request to a plugin
-      /// \param [in] request    Request data
+      /// \param [in] request    Request
       //--------------------------------------------------------------
       virtual void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                 Post a device configuration schema request to a plugin
+      /// \param [in] request    Request
+      //--------------------------------------------------------------
+      virtual void postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Post a device command to a plugin
@@ -69,7 +76,6 @@ namespace pluginSystem
       /// \param [in] request    Request data
       //--------------------------------------------------------------
       virtual void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) = 0;
-
    };
 } // namespace pluginSystem
 

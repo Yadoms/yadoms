@@ -24,6 +24,10 @@ message DeviceCommand {
 	required string body = 3;
 }
 
+message DeviceConfigurationSchemaRequest {
+	required string device = 1;
+}
+
 message ExtraCommand {
 	required string command = 1;
 	required string data = 2;
@@ -71,6 +75,7 @@ message msg {
 		Configuration updateConfiguration = 6;
 		BindingQuery bindingQuery = 7;
 		DeviceCommand deviceCommand = 8;
+		DeviceConfigurationSchemaRequest deviceConfigurationSchemaRequest = 18;
 		ExtraCommand extraCommand = 9;
 		DeviceExitsAnswer deviceExists = 10;
 		DeviceDetailsAnswer deviceDetails = 11;

@@ -39,6 +39,8 @@ namespace communication
       void sendBindingQueryRequest(int pluginId,
                                    const shared::plugin::yPluginApi::IBindingQueryData& data,
                                    communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) override;
+      void sendDeviceConfigurationSchemaRequest(int deviceId,
+                                                communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) override;
       // [END] ISendMessageAsync Implementation
 
    private:

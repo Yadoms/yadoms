@@ -74,6 +74,12 @@ namespace communication
       // Dispatch command to the right plugin
       m_pluginManager->postBindingQueryRequest(pluginId, request);
    }
+
+   void CPluginGateway::sendDeviceConfigurationSchemaRequest(int deviceId,
+                                                             communication::callback::ISynchronousCallback<shared::CDataContainer>& callback)
+   {
+      m_pluginManager->postDeviceConfigurationSchemaRequest(deviceId, callback);
+   }
 } //namespace communication
 
 
