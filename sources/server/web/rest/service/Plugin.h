@@ -27,7 +27,7 @@ namespace web
             const std::string& getRestKeyword() const;
             shared::CDataContainer getOnePlugin(const std::vector<std::string>& parameters, const std::string& requestContent) const;
             shared::CDataContainer getAllPluginsInstance(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            shared::CDataContainer getAllPluginsInstanceForManualDeviceCreation(const std::vector<std::string>& parameters, const std::string& requestContent);
+            shared::CDataContainer getAllPluginsInstanceForManualDeviceCreation(const std::vector<std::string>& parameters, const std::string& requestContent) const;
             shared::CDataContainer getAllAvailablePlugins(const std::vector<std::string>& parameters, const std::string& requestContent) const;
             shared::CDataContainer getAllAvailablePluginsWithPackage(const std::vector<std::string>& parameters, const std::string& requestContent) const;
             shared::CDataContainer getPluginDevices(const std::vector<std::string>& parameters, const std::string& requestContent) const;

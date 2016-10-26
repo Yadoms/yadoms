@@ -407,7 +407,7 @@ namespace pluginSystem
          send(req,
               [&](const toYadoms::msg& ans) -> bool
               {
-                 return ans.has_bindingqueryanswer();
+                 return ans.has_deviceconfigurationschemaanswer();
               },
               [&](const toYadoms::msg& ans) -> void
               {

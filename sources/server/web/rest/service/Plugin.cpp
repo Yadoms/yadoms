@@ -123,7 +123,7 @@ namespace web
          }
 
          shared::CDataContainer CPlugin::getAllPluginsInstanceForManualDeviceCreation(const std::vector<std::string>& parameters,
-                                                                                      const std::string& requestContent)
+                                                                                      const std::string& requestContent) const
          {
             std::vector<boost::shared_ptr<database::entities::CPlugin>> result;
 

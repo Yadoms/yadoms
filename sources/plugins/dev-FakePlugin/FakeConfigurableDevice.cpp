@@ -5,7 +5,7 @@ CFakeConfigurableDevice::CFakeConfigurableDevice(const std::string& deviceName)
    : m_deviceName(deviceName),
      m_counter(boost::make_shared<yApi::historization::CCounter>("counter")),
      m_internalCounter(0),
-     m_divider(0),
+     m_divider(1),
      m_historizers({m_counter})
 {
    m_counter->set(0);
@@ -51,10 +51,10 @@ const std::string& CFakeConfigurableDevice::getModel()
 
 boost::shared_ptr<shared::CDataContainer> CFakeConfigurableDevice::deviceConfigurationSchema(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   if (!api->getInformation()->getPackage()->containsChild("supportDeviceConfiguration/configurationSchema"))
+   if (!api->getInformation()->getPackage()->containsChild("supportDeviceConfiguration.configurationSchema"))
       throw shared::exception::CException("supportDeviceConfiguration node not found in package.json");
 
-   return boost::make_shared<shared::CDataContainer>(api->getInformation()->getPackage()->get<shared::CDataContainer>("supportDeviceConfiguration/configurationSchema"));
+   return boost::make_shared<shared::CDataContainer>(api->getInformation()->getPackage()->get<shared::CDataContainer>("supportDeviceConfiguration.configurationSchema"));
 }
 
 void CFakeConfigurableDevice::setConfiguration(const shared::CDataContainer& newConfiguration)

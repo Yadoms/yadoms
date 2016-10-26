@@ -35,7 +35,7 @@ namespace web
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CDevice::getAllDevices);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CDevice::getOneDevice);
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("configurationSchema")("*"), CDevice::getDeviceConfigurationSchema);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("configurationSchema"), CDevice::getDeviceConfigurationSchema);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword"), CDevice::getAllKeywords);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*"), CDevice::getKeyword);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchcapacity")("*")("*"), CDevice::getDevicesWithCapacity);
@@ -45,6 +45,7 @@ namespace web
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CDevice::updateDeviceFriendlyName, CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*"), CDevice::updateKeywordFriendlyName, CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keyword")("*")("command"), CDevice::sendDeviceCommand, CDevice::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("setDeviceConfiguration"), CDevice::setDeviceConfiguration, CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("*"), CDevice::cleanupDevice, CDevice::transactionalMethod);
          }
 
@@ -64,7 +65,7 @@ namespace web
          {
             try
             {
-               if (parameters.size() > 3)
+               if (parameters.size() > 2)
                {
                   auto deviceId = boost::lexical_cast<int>(parameters[1]);
                   try
@@ -307,6 +308,37 @@ namespace web
             catch (...)
             {
                return CResult::GenerateError("unknown exception in sending command to device");
+            }
+         }
+
+         shared::CDataContainer CDevice::setDeviceConfiguration(const std::vector<std::string>& parameters,
+                                                                const std::string& requestContent) const
+         {
+            try
+            {
+               if (parameters.size() > 2)
+               {
+                  auto deviceId = boost::lexical_cast<int>(parameters[2]);
+
+                  try
+                  {
+                     m_messageSender.sendSetDeviceConfiguration(deviceId, shared::CDataContainer(requestContent));
+                     return CResult::GenerateSuccess();
+                  }
+                  catch (shared::exception::CEmptyResult&)
+                  {
+                     return CResult::GenerateError("invalid parameter. Can not retreive device in database");
+                  }
+               }
+               return CResult::GenerateError("invalid parameter. Not enough parameters in url");
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in sending new configuration to device");
             }
          }
 
