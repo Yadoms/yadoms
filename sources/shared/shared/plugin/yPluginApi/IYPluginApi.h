@@ -4,6 +4,10 @@
 #include <shared/DataContainer.h>
 #include "IDeviceCommand.h"
 #include "IExtraCommand.h"
+#include "IBindingQueryRequest.h"
+#include "IDeviceConfigurationSchemaRequest.h"
+#include "IManuallyDeviceCreationRequest.h"
+#include "ISetDeviceConfiguration.h"
 #include "historization/Historizers.h"
 #include <shared/StringExtension.h>
 

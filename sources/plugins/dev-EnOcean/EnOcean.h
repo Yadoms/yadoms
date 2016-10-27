@@ -92,6 +92,12 @@ protected:
    CDevice retrieveDevice(const std::string& deviceId) const;
 
    //--------------------------------------------------------------
+   /// \brief	                     Get the device configuration schema
+   /// \return                      The device configuration schema
+   //--------------------------------------------------------------
+   const shared::CDataContainer& getDeviceConfigurationSchema() const;
+
+   //--------------------------------------------------------------
    /// \brief	                     Requests to EnOcean
    //--------------------------------------------------------------
    void requestDongleVersion();
@@ -145,5 +151,10 @@ private:
    /// \brief  The last sent command
    //--------------------------------------------------------------
    message::ECommonCommand m_sentCommand;
+
+   //--------------------------------------------------------------
+   /// \brief  The last sent command
+   //--------------------------------------------------------------
+   shared::CDataContainer m_deviceConfigurationSchema;
 };
 

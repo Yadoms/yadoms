@@ -4,10 +4,6 @@
 #include "FakeSensor.h"
 #include "FakeCounter.h"
 #include "FakeSwitch.h"
-#include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
-#include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
-#include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
-#include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
 #include <shared/tools/Random.h>
 #include "FakeController.h"
 #include "FakeConfigurableDevice.h"

@@ -7,6 +7,7 @@
 #include "enOceanDescriptors/generated-manufacturers.h"
 #include "4BSTeachinVariant2.h"
 #include "enOceanDescriptors/bitsetHelpers.hpp"
+#include <shared/exception/EmptyResult.hpp>
 
 //TODO gérer un cache pour les devices connus (pour ne pas requêter Yadoms pour rien)
 
@@ -25,7 +26,8 @@ enum
 
 
 CEnOcean::CEnOcean()
-   : m_sentCommand(message::CO_WR_SLEEP)
+   : m_sentCommand(message::CO_WR_SLEEP),
+     m_deviceConfigurationSchema("{ \"CounterDivider\": { \"type\": \"int\", \"defaultValue\" : \"2\", \"minimumValue\" : \"1\", \"maximumValue\" : \"10\" } }")//TODO
 {
 }
 
@@ -59,16 +61,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             m_api->setPluginState(yApi::historization::EPluginState::kStopped);
             return;
          }
-      case yApi::IYPluginApi::kEventDeviceCommand:
-         {
-            // Command received from Yadoms
-            auto command(m_api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
-            std::cout << "Command received : " << yApi::IDeviceCommand::toString(command) << std::endl;
 
-            onCommand(command);
-
-            break;
-         }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
             // Configuration was updated
@@ -97,6 +90,51 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             break;
          }
+
+      case yApi::IYPluginApi::kEventDeviceCommand:
+         {
+            // Command received from Yadoms
+            auto command(m_api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
+            std::cout << "Command received : " << yApi::IDeviceCommand::toString(command) << std::endl;
+
+            onCommand(command);
+
+            break;
+         }
+
+      case yApi::IYPluginApi::kGetDeviceConfigurationSchemaRequest:
+         {
+            auto deviceConfigurationSchemaRequest = m_api->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest>>();
+            try
+            {
+               auto device = m_api->getDeviceDetails(deviceConfigurationSchemaRequest->device());
+               deviceConfigurationSchemaRequest->sendSuccess(getDeviceConfigurationSchema());
+            }
+            catch (shared::exception::CEmptyResult&)
+            {
+               auto error((boost::format("Unable to get device configuration schema : unknown device \"%1%\"") % deviceConfigurationSchemaRequest->device()).str());
+               std::cerr << error << std::endl;
+               deviceConfigurationSchemaRequest->sendError(error);
+            }
+            break;
+         }
+
+      case yApi::IYPluginApi::kSetDeviceConfiguration:
+         {
+            // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
+            auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
+            try
+            {
+               auto device = m_api->getDeviceDetails(deviceConfiguration->device());
+               std::cout << "TODO : new divider = " << deviceConfiguration->configuration().get<int>("CounterDivider") << std::endl;
+            }
+            catch (shared::exception::CEmptyResult&)
+            {
+               std::cerr << "Unable to configure device : unknown device \"" << deviceConfiguration->device() << "\"" << std::endl;
+            }
+            break;
+         }
+
       case kEvtPortConnection:
          {
             if (m_api->getEventHandler().getEventData<bool>())
@@ -380,6 +418,11 @@ CDevice CEnOcean::retrieveDevice(const std::string& deviceId) const
                   deviceDetails.get<unsigned int>("manufacturer"),
                   deviceDetails.get<unsigned int>("func"),
                   deviceDetails.get<unsigned int>("type"));
+}
+
+const shared::CDataContainer& CEnOcean::getDeviceConfigurationSchema() const
+{
+   return m_deviceConfigurationSchema;
 }
 
 void CEnOcean::processResponse(const message::CReceivedEsp3Packet& esp3Packet) const
