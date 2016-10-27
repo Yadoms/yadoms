@@ -8,7 +8,7 @@
 /// \param[in]  label                The name of the parameter whe need
 /// \return                          true is the conversion is ok
 //--------------------------------------------------------------
-bool convertDouble(double& value, const shared::CDataContainer& valueContainer, const std::string label);
+bool convertDouble(double& value, const shared::CDataContainer& valueContainer, const std::string& label);
 
 //--------------------------------------------------------------
 /// \brief convert a std::string from a CDataContainer to a int
@@ -17,7 +17,7 @@ bool convertDouble(double& value, const shared::CDataContainer& valueContainer, 
 /// \param[in]  label                The name of the parameter whe need
 /// \return                          true is the conversion is ok
 //--------------------------------------------------------------
-bool convertInt(int& value, const shared::CDataContainer& valueContainer, const std::string label);
+bool convertInt(int& value, const shared::CDataContainer& valueContainer, const std::string& label);
 
 //--------------------------------------------------------------
 /// \brief	returnString = "--" if the value is not a number
@@ -30,7 +30,7 @@ bool convertInt(int& value, const shared::CDataContainer& valueContainer, const 
 /// \param[in]  valueContainer       The container where to find the parameter with the name "label"
 /// \param[in]  label                The name of the parameter whe need
 //--------------------------------------------------------------
-void convertKmhToMs(std::string& returnString, const shared::CDataContainer& valueContainer, const std::string label);
+void convertKmhToMs(std::string& returnString, const shared::CDataContainer& valueContainer, const std::string& label);
 
 //--------------------------------------------------------------
 /// \brief  convert cm to mm
@@ -39,4 +39,4 @@ void convertKmhToMs(std::string& returnString, const shared::CDataContainer& val
 /// \param[in]  valueContainer       The container where to find the parameter with the name "label"
 /// \param[in]  label                The name of the parameter whe need
 //--------------------------------------------------------------
-void convertcmTomm(std::string& returnString, const shared::CDataContainer& valueContainer, const std::string label);
+void convertcmTomm(std::string& returnString, const shared::CDataContainer& valueContainer, const std::string& label);

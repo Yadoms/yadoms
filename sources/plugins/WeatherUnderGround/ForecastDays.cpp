@@ -15,7 +15,8 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
      m_forecast(boost::make_shared<CForecast>(deviceName, "Forecast", weatherunderground::helper::EPeriod::kDay)),
      m_temp(boost::make_shared<yApi::historization::CTemperature>(prefix + "low_temperature")),
      m_isDesactivated(false),
-     m_isUserDesactivated(false)
+     m_isUserDesactivated(false),
+     m_isDeveloperMode(false)
 {
    try
    {
