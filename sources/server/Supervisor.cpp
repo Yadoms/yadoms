@@ -81,7 +81,9 @@ void CSupervisor::run()
                                                                     pluginManager));
 
       // Start the plugin gateway
-      auto pluginGateway(boost::make_shared<communication::CPluginGateway>(pDataProvider, dal->getAcquisitionHistorizer(), pluginManager));
+      auto pluginGateway(boost::make_shared<communication::CPluginGateway>(pDataProvider,
+                                                                           dal->getAcquisitionHistorizer(),
+                                                                           pluginManager));
 
       // Start the plugin manager (start all plugin instances)
       pluginManager->start(boost::posix_time::minutes(2));

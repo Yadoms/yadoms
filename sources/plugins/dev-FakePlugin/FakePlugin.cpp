@@ -5,9 +5,12 @@
 #include "FakeCounter.h"
 #include "FakeSwitch.h"
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
+#include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
+#include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
 #include <shared/tools/Random.h>
 #include "FakeController.h"
+#include "FakeConfigurableDevice.h"
 #include <Poco/Net/NetworkInterface.h>
 
 // Use this macro to define all necessary to make your plugin a Yadoms valid plugin.
@@ -52,6 +55,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    CFakeSwitch fakeDimmableReadOnlySwitch("fakeDimmableReadOnlySwitch", true, false);
    CFakeSwitch fakeDimmableReadWriteSwitch("fakeDimmableReadWriteSwitch", true, true);
    CFakeController fakeController("fakeController1");
+   CFakeConfigurableDevice configurableDevice("configurableDevice");
 
 
    // Declare these sensors to Yadoms (devices and associated keywords) if not already declared
@@ -63,6 +67,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    fakeDimmableReadOnlySwitch.declareDevice(api);
    fakeDimmableReadWriteSwitch.declareDevice(api);
    fakeController.declareDevice(api);
+   configurableDevice.declareDevice(api);
 
    // Timer used to send fake sensor states periodically
    api->getEventHandler().createTimer(kSendSensorsStateTimerEventId,
@@ -84,13 +89,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             api->setPluginState(yApi::historization::EPluginState::kStopped);
             return;
          }
-      case yApi::IYPluginApi::kEventDeviceCommand:
-         {
-            // A command was received from Yadoms
-            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
-            std::cout << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
-            break;
-         }
+
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
             // Configuration was updated
@@ -111,26 +110,88 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             break;
          }
-      case kSendSensorsStateTimerEventId:
+
+      case yApi::IYPluginApi::kEventExtraCommand:
          {
-            // Timer used here to send sensors state to Yadoms periodically
+            // Extra-command was received from Yadoms
+            auto extraCommand = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraCommand> >();
 
-            // Read sensor value and send data to Yadoms (temperatures, battery level, Rssi measure...)
-            fakeSensor1.read();
-            fakeSensor2.read();
-            fakeCounter.read();
-            fakeOnOffReadOnlySwitch.read();
-            fakeDimmableReadOnlySwitch.read();
-            fakeController.read();
+            if (extraCommand)
+            {
+               std::cout << "Extra command received : " << extraCommand->getCommand() << std::endl;
 
-            std::cout << "Send the periodically sensors state..." << std::endl;
-            fakeSensor1.historizeData(api);
-            fakeSensor2.historizeData(api);
-            fakeCounter.historizeData(api);
-            fakeOnOffReadOnlySwitch.historizeData(api);
-            fakeDimmableReadOnlySwitch.historizeData(api);
-            fakeController.historizeData(api);
+               if (extraCommand->getCommand() == "simpleCommand")
+               {
+                  std::cout << "Simple command received" << std::endl;
+               }
+               else if (extraCommand->getCommand() == "dataCommand")
+               {
+                  auto s = extraCommand->getData().get<std::string>("testValue");
+                  std::cout << "Command with data received : data=" << s << std::endl;
+               }
+               else if (extraCommand->getCommand() == "dataBindingCommand")
+               {
+                  auto value = extraCommand->getData().get<std::string>("networkInterface");
+                  std::cout << "Command with binded data received : value=" << value << " text=" << Poco::Net::NetworkInterface::forName(value).displayName() << std::endl;
+               }
+               else if (extraCommand->getCommand() == "dataBindingPluginCommand")
+               {
+                  auto interval = extraCommand->getData().get<std::string>("dynamicSection.content.interval");
+                  std::cout << "Command with plugin binded data received : value=" << interval << std::endl;
+               }
+               else if (extraCommand->getCommand() == "changePluginStateMessage")
+               {
+                  auto message = extraCommand->getData().get<std::string>("newStateMessage");
+                  api->setPluginState(shared::plugin::yPluginApi::historization::EPluginState::kCustom, "newCustomStateMessage", {{"messageFromExtraCommand", message}});
+               }
+            }
+            break;
+         }
 
+      case yApi::IYPluginApi::kBindingQuery:
+         {
+            // Yadoms ask for a binding query 
+            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
+            if (request->getData().getQuery() == "test")
+            {
+               shared::CDataContainer ev;
+               ev.set("HOUR", "1 hour");
+               ev.set("DAY", "1 day");
+               ev.set("WEEK", "1 week");
+               ev.set("MONTH", "1 month");
+               ev.set("HALF_YEAR", "6 months");
+               ev.set("YEAR", "1 year");
+
+               shared::CDataContainer en;
+               en.set("name", "Interval of the chart");
+               en.set("description", "Permit to change the interval of all the chart");
+               en.set("type", "enum");
+               en.set("values", ev);
+               en.set("defaultValue", "DAY");
+
+               shared::CDataContainer result;
+               result.set("interval", en);
+
+               request->sendSuccess(result);
+            }
+            else
+            {
+               auto errorMessage = (boost::format("unknown query : %1%") % request->getData().getQuery()).str();
+               request->sendError(errorMessage);
+               std::cerr << errorMessage << std::endl;
+            }
+            break;
+         }
+
+      case yApi::IYPluginApi::kEventDeviceCommand:
+         {
+            // A command was received from Yadoms
+            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
+            std::cout << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
+            if (command->getKeyword().empty())
+               std::cout << "Specific command for a device (can be used for any purpose, unless keyword driving, device configuration (see kGetDeviceConfigurationSchemaRequest and kSetDeviceConfiguration documentation) and deletion" << std::endl;
+            else
+               std::cout << "Standard command to a keyword (used to drive a switch, a thermostat..." << std::endl;
             break;
          }
 
@@ -160,77 +221,70 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             break;
          }
 
-      case yApi::IYPluginApi::kBindingQuery:
+      case yApi::IYPluginApi::kGetDeviceConfigurationSchemaRequest:
          {
-            // Yadoms ask for a binding query 
-            auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
-            if (data->getData().getQuery() == "test")
+            // Yadoms ask for device configuration schema
+            // Schema can come from package.json, or built by code. In this example,
+            // we just take the schema from package.json, in case of configuration is supported by device.
+            auto deviceConfigurationSchemaRequest = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest> >();
+
+            if (deviceConfigurationSchemaRequest->device() == configurableDevice.getDeviceName())
             {
-               shared::CDataContainer ev;
-               ev.set("HOUR", "1 hour");
-               ev.set("DAY", "1 day");
-               ev.set("WEEK", "1 week");
-               ev.set("MONTH", "1 month");
-               ev.set("HALF_YEAR", "6 months");
-               ev.set("YEAR", "1 year");
-
-               shared::CDataContainer en;
-               en.set("name", "Interval of the chart");
-               en.set("description", "Permit to change the interval of all the chart");
-               en.set("type", "enum");
-               en.set("values", ev);
-               en.set("defaultValue", "DAY");
-
-               shared::CDataContainer result;
-               result.set("interval", en);
-
-               data->sendSuccess(result);
+               std::cout << "This device is configurable, return its configuration schema to device configuration schema request" << std::endl;
+               deviceConfigurationSchemaRequest->sendSuccess(*configurableDevice.deviceConfigurationSchema(api));
             }
             else
             {
-               std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
-               data->sendError(errorMessage);
+               std::cout << "This device is not configurable, return an empty schema to device configuration schema request" << std::endl;
+               deviceConfigurationSchemaRequest->sendSuccess(shared::CDataContainer());
+            }
+
+            break;
+         }
+
+      case yApi::IYPluginApi::kSetDeviceConfiguration:
+         {
+            // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
+            auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration> >();
+
+            if (deviceConfiguration->device() == configurableDevice.getDeviceName())
+            {
+               configurableDevice.setConfiguration(deviceConfiguration->configuration());
+            }
+            else
+            {
+               auto errorMessage = "Try to apply a device configuration to an unconfigurable device";
                std::cerr << errorMessage << std::endl;
             }
+
             break;
          }
 
-      case yApi::IYPluginApi::kEventExtraCommand:
+      case kSendSensorsStateTimerEventId:
          {
-            // Command was received from Yadoms
-            auto extraCommand = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraCommand> >();
+            // Timer used here to send sensors state to Yadoms periodically
 
-            if (extraCommand)
-            {
-               std::cout << "Extra command received : " << extraCommand->getCommand() << std::endl;
+            // Read sensor value and send data to Yadoms (temperatures, battery level, Rssi measure...)
+            fakeSensor1.read();
+            fakeSensor2.read();
+            fakeCounter.read();
+            fakeOnOffReadOnlySwitch.read();
+            fakeDimmableReadOnlySwitch.read();
+            fakeController.read();
+            configurableDevice.read();
 
-               if (extraCommand->getCommand() == "simpleCommand")
-               {
-                  std::cout << "Simple command received" << std::endl;
-               }
-               else if (extraCommand->getCommand() == "dataCommand")
-               {
-                  auto s = extraCommand->getData().get<std::string>("testValue");
-                  std::cout << "Command with data received : data=" << s << std::endl;
-               }
-               else if (extraCommand->getCommand() == "dataBindingCommand")
-               {
-                  auto value = extraCommand->getData().get<std::string>("networkInterface");
-                  std::cout << "Command with binded data received : value=" << value << " text=" << Poco::Net::NetworkInterface::forName(value).displayName() << std::endl;
-               }
-               else if (extraCommand->getCommand() == "dataBindingPluginCommand")
-               {
-                  auto interval = extraCommand->getData().get<std::string>("dynamicSection.content.interval");
-                  std::cout << "Command with plugin binded data received : value=" << interval << std::endl;
-               }  
-               else if (extraCommand->getCommand() == "changePluginStateMessage")
-               {
-                  auto message = extraCommand->getData().get<std::string>("newStateMessage");
-                  api->setPluginState(shared::plugin::yPluginApi::historization::EPluginState::kCustom, "newCustomStateMessage", { { "messageFromExtraCommand", message } });
-               }
-            }
+            std::cout << "Send the periodically sensors state..." << std::endl;
+            fakeSensor1.historizeData(api);
+            fakeSensor2.historizeData(api);
+            fakeCounter.historizeData(api);
+            fakeOnOffReadOnlySwitch.historizeData(api);
+            fakeDimmableReadOnlySwitch.historizeData(api);
+            fakeController.historizeData(api);
+            configurableDevice.historizeData(api);
+
             break;
          }
+
       default:
          {
             std::cerr << "Unknown or unsupported message id " << api->getEventHandler().getEventId() << std::endl;

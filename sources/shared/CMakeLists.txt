@@ -97,25 +97,26 @@ set(SHARED_LIB_SRC
    shared/plugin/information/IInformation.h
 
    shared/plugin/yPluginApi/commonIncludes.h
+   shared/plugin/yPluginApi/IBindingQueryData.h
+   shared/plugin/yPluginApi/IBindingQueryRequest.h
    shared/plugin/yPluginApi/IDeviceCommand.h
+   shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h
    shared/plugin/yPluginApi/IExtraCommand.h
    shared/plugin/yPluginApi/IManuallyDeviceCreationData.h
    shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h
-   shared/plugin/yPluginApi/IBindingQueryData.h
-   shared/plugin/yPluginApi/IBindingQueryRequest.h
-   shared/plugin/yPluginApi/IManuallyDeviceCreationTestData.h
+   shared/plugin/yPluginApi/ISetDeviceConfiguration.h
    shared/plugin/yPluginApi/IYPluginApi.h
-   shared/plugin/yPluginApi/KeywordAccessMode.h
    shared/plugin/yPluginApi/KeywordAccessMode.cpp
-   shared/plugin/yPluginApi/KeywordDataType.h
+   shared/plugin/yPluginApi/KeywordAccessMode.h
    shared/plugin/yPluginApi/KeywordDataType.cpp
-   shared/plugin/yPluginApi/YPluginConfiguration.hpp
-   shared/plugin/yPluginApi/StandardUnits.h
+   shared/plugin/yPluginApi/KeywordDataType.h
    shared/plugin/yPluginApi/StandardCapacities.h
-   shared/plugin/yPluginApi/StandardValues.h
-   shared/plugin/yPluginApi/StandardDeclarations.cpp
-   shared/plugin/yPluginApi/StandardCapacity.h
    shared/plugin/yPluginApi/StandardCapacity.cpp
+   shared/plugin/yPluginApi/StandardCapacity.h
+   shared/plugin/yPluginApi/StandardDeclarations.cpp
+   shared/plugin/yPluginApi/StandardUnits.h
+   shared/plugin/yPluginApi/StandardValues.h
+   shared/plugin/yPluginApi/YPluginConfiguration.hpp
 
    shared/plugin/yPluginApi/historization/IHistorizable.h
    shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp

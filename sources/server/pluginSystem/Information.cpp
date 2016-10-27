@@ -8,14 +8,15 @@
 namespace pluginSystem
 {
    CInformation::CInformation(const boost::filesystem::path& pluginPath)
-      :m_path(pluginPath),
-       m_isSupportedOnThisPlatform(true)
+      : m_path(pluginPath),
+        m_isSupportedOnThisPlatform(true),
+        m_package(boost::make_shared<shared::CDataContainer>())
    {
       try
       {
          boost::filesystem::path packageFile;
          packageFile = m_path / "package.json";
-         m_package.deserializeFromFile(packageFile.string());
+         m_package->deserializeFromFile(packageFile.string());
       }
       catch (shared::exception::CException& e)
       {
@@ -26,38 +27,38 @@ namespace pluginSystem
       {
          // Get and check data
 
-         m_type = m_package.get<std::string>("type");
+         m_type = m_package->get<std::string>("type");
          if (m_type.empty())
             throw shared::exception::CInvalidParameter("Error reading package.json : plugin type can not be empty");
 
-         m_version = m_package.get<std::string>("version");
+         m_version = m_package->get<std::string>("version");
          if (m_version.empty() || !regex_match(m_version, boost::regex("\\d+.\\d+.\\d+")))
             throw shared::exception::CInvalidParameter("Error reading package.json : plugin version doesn't match expected format (x.x.x)");
 
-         m_releaseType = m_package.get<shared::versioning::EReleaseType>("releaseType");
+         m_releaseType = m_package->get<shared::versioning::EReleaseType>("releaseType");
 
-         m_author = m_package.get<std::string>("author");
+         m_author = m_package->get<std::string>("author");
          if (m_author.empty())
             throw shared::exception::CInvalidParameter("Error reading package.json : plugin author can not be empty");
 
-         if (m_package.containsValue("url"))
-            m_url = m_package.get<std::string>("url");   // No check on URL
+         if (m_package->containsValue("url"))
+            m_url = m_package->get<std::string>("url"); // No check on URL
          else
             m_url = shared::CStringExtension::EmptyString;
 
 
-         if (m_package.containsValue("supportedPlatforms") || m_package.containsChild("supportedPlatforms"))
-            m_isSupportedOnThisPlatform = tools::CSupportedPlatformsChecker::isSupported(m_package.get<shared::CDataContainer>("supportedPlatforms"));
+         if (m_package->containsValue("supportedPlatforms") || m_package->containsChild("supportedPlatforms"))
+            m_isSupportedOnThisPlatform = tools::CSupportedPlatformsChecker::isSupported(m_package->get<shared::CDataContainer>("supportedPlatforms"));
          else
             m_isSupportedOnThisPlatform = true;
 
 
-         if (m_package.containsValue("supportManuallyDeviceCreation"))
-            m_supportManuallyCreatedDevice = m_package.get<bool>("supportManuallyDeviceCreation");
+         if (m_package->containsValue("supportManuallyDeviceCreation"))
+            m_supportManuallyCreatedDevice = m_package->get<bool>("supportManuallyDeviceCreation");
          else
             m_supportManuallyCreatedDevice = false;
       }
-      catch (shared::exception::CException & e)
+      catch (shared::exception::CException& e)
       {
          // Set plugin as not supported
          m_isSupportedOnThisPlatform = false;
@@ -84,7 +85,7 @@ namespace pluginSystem
 
    const std::string& CInformation::getVersion() const
    {
-      return  m_version;
+      return m_version;
    }
 
    shared::versioning::EReleaseType CInformation::getReleaseType() const
@@ -99,7 +100,7 @@ namespace pluginSystem
 
    const std::string& CInformation::getUrl() const
    {
-      return  m_url;
+      return m_url;
    }
 
    std::string CInformation::getIdentity() const
@@ -134,7 +135,7 @@ namespace pluginSystem
       return m_supportManuallyCreatedDevice;
    }
 
-   shared::CDataContainer CInformation::getPackage() const
+   boost::shared_ptr<const shared::CDataContainer> CInformation::getPackage() const
    {
       return m_package;
    }
@@ -143,6 +144,4 @@ namespace pluginSystem
    {
       return m_path;
    }
-
-
 } // namespace pluginSystem

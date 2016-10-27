@@ -45,27 +45,44 @@ namespace pluginSystem
 
       void CInstance::postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand)
       {
-         m_eventHandler->postEvent(yApi::IYPluginApi::kEventDeviceCommand, deviceCommand);
+         m_eventHandler->postEvent(yApi::IYPluginApi::kEventDeviceCommand,
+                                   deviceCommand);
       }
 
       void CInstance::postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request)
       {
-         m_eventHandler->postEvent(yApi::IYPluginApi::kBindingQuery, request);
+         m_eventHandler->postEvent(yApi::IYPluginApi::kBindingQuery,
+                                   request);
+      }
+
+      void CInstance::postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request)
+      {
+         m_eventHandler->postEvent(yApi::IYPluginApi::kGetDeviceConfigurationSchemaRequest,
+                                   request);
+      }
+
+      void CInstance::postSetDeviceConfiguration(boost::shared_ptr<const shared::plugin::yPluginApi::ISetDeviceConfiguration> command)
+      {
+         m_eventHandler->postEvent(yApi::IYPluginApi::kSetDeviceConfiguration,
+                                   command);
       }
 
       void CInstance::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request)
       {
-         m_eventHandler->postEvent(yApi::IYPluginApi::kEventManuallyDeviceCreation, request);
+         m_eventHandler->postEvent(yApi::IYPluginApi::kEventManuallyDeviceCreation,
+                                   request);
       }
 
       void CInstance::postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand)
       {
-         m_eventHandler->postEvent(yApi::IYPluginApi::kEventExtraCommand, extraCommand);
+         m_eventHandler->postEvent(yApi::IYPluginApi::kEventExtraCommand,
+                                   extraCommand);
       }
 
       void CInstance::updateConfiguration(const shared::CDataContainer& newConfiguration)
       {
-         m_eventHandler->postEvent(yApi::IYPluginApi::kEventUpdateConfiguration, newConfiguration);
+         m_eventHandler->postEvent(yApi::IYPluginApi::kEventUpdateConfiguration,
+                                   newConfiguration);
       }
 
       boost::shared_ptr<const database::entities::CPlugin> CInstance::about() const

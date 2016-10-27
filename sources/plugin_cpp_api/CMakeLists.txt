@@ -18,6 +18,8 @@ set(plugin_cpp_api_SOURCES
    BindingQueryData.cpp
    DeviceCommand.h
    DeviceCommand.cpp
+   DeviceConfigurationSchemaRequest.h
+   DeviceConfigurationSchemaRequest.cpp
    ExtraCommand.h
    ExtraCommand.cpp
    ManuallyDeviceCreation.h
@@ -26,6 +28,8 @@ set(plugin_cpp_api_SOURCES
    ManuallyDeviceCreationData.cpp
    PluginInformation.h
    PluginInformation.cpp
+   SetDeviceConfiguration.h
+   SetDeviceConfiguration.cpp
 
    PluginContext.h
    PluginContext.cpp

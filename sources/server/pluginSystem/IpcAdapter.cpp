@@ -232,7 +232,7 @@ namespace pluginSystem
 
       shared::CDataContainer dc(msg.custommessagedata());
 
-      auto values = dc.get< std::map<std::string, std::string> >();
+      auto values = dc.get<std::map<std::string, std::string> >();
 
       m_pluginApi->setPluginState(state, msg.custommessageid(), values);
    }
@@ -407,6 +407,48 @@ namespace pluginSystem
          request->sendError(result);
    }
 
+   void CIpcAdapter::postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request)
+   {
+      toPlugin::msg req;
+      auto message = req.mutable_deviceconfigurationschemarequest();
+      message->set_device(request->device());
+
+      bool success;
+      std::string result;
+
+      try
+      {
+         send(req,
+              [&](const toYadoms::msg& ans) -> bool
+              {
+                 return ans.has_deviceconfigurationschemaanswer();
+              },
+              [&](const toYadoms::msg& ans) -> void
+              {
+                 success = ans.deviceconfigurationschemaanswer().success();
+                 result = ans.deviceconfigurationschemaanswer().result();
+              });
+      }
+      catch (std::exception& e)
+      {
+         request->sendError((boost::format("Plugin doesn't answer to device configuration schema request : %1%") % e.what()).str());
+      }
+
+      if (success)
+         request->sendSuccess(shared::CDataContainer(result));
+      else
+         request->sendError(result);
+   }
+
+   void CIpcAdapter::postSetDeviceConfiguration(boost::shared_ptr<const shared::plugin::yPluginApi::ISetDeviceConfiguration>& command)
+   {
+      toPlugin::msg msg;
+      auto message = msg.mutable_setdeviceconfiguration();
+      message->set_device(command->device());
+      message->set_configuration(command->configuration().serialize());
+      send(msg);
+   }
+
    void CIpcAdapter::postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand)
    {
       toPlugin::msg msg;
@@ -461,6 +503,6 @@ namespace pluginSystem
       else
          request->sendError(result);
    }
-
 } // namespace pluginSystem
+
 

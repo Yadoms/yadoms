@@ -373,16 +373,22 @@ set(YADOMS_SRC
    
 	server/pluginSystem/BasicQualifier.h
 	server/pluginSystem/BasicQualifier.cpp
+   server/pluginSystem/BindingQueryData.cpp
+   server/pluginSystem/BindingQueryData.h
+   server/pluginSystem/BindingQueryRequest.cpp
+   server/pluginSystem/BindingQueryRequest.h
    server/pluginSystem/CommandHistorizer.h
    server/pluginSystem/CommandHistorizer.cpp
-   server/pluginSystem/IpcAdapter.h
-   server/pluginSystem/IpcAdapter.cpp
    server/pluginSystem/DeviceCommand.h
    server/pluginSystem/DeviceCommand.cpp
+   server/pluginSystem/DeviceConfigurationSchemaRequest.h
+   server/pluginSystem/DeviceConfigurationSchemaRequest.cpp
 	server/pluginSystem/DummyQualifier.h
 	server/pluginSystem/DummyQualifier.cpp
 	server/pluginSystem/ExtraCommand.h
 	server/pluginSystem/ExtraCommand.cpp
+	server/pluginSystem/Factory.cpp
+	server/pluginSystem/Factory.h
    server/pluginSystem/FromPluginHistorizer.h
    server/pluginSystem/FromPluginHistorizer.cpp
 	server/pluginSystem/IdentityForQualifier.h
@@ -405,26 +411,22 @@ set(YADOMS_SRC
 	server/pluginSystem/InstanceStateHandler.h
 	server/pluginSystem/InstanceStateHandler.cpp
 	server/pluginSystem/InvalidPluginException.hpp
+   server/pluginSystem/IpcAdapter.h
+   server/pluginSystem/IpcAdapter.cpp
 	server/pluginSystem/IQualifier.h
-	server/pluginSystem/Factory.cpp
-	server/pluginSystem/Factory.h
 	server/pluginSystem/Manager.h
 	server/pluginSystem/Manager.cpp
    server/pluginSystem/ManuallyDeviceCreationData.cpp
    server/pluginSystem/ManuallyDeviceCreationData.h
-   server/pluginSystem/BindingQueryData.cpp
-   server/pluginSystem/BindingQueryData.h
-   server/pluginSystem/BindingQueryRequest.cpp
-   server/pluginSystem/BindingQueryRequest.h
-   server/pluginSystem/ManuallyDeviceCreationTestData.cpp
-   server/pluginSystem/ManuallyDeviceCreationTestData.h
+	server/pluginSystem/ManuallyDeviceCreationRequest.h
+	server/pluginSystem/ManuallyDeviceCreationRequest.cpp
    server/pluginSystem/NativeExecutableCommandLine.cpp
    server/pluginSystem/NativeExecutableCommandLine.h
 	server/pluginSystem/PluginException.hpp
+	server/pluginSystem/SetDeviceConfiguration.h
+	server/pluginSystem/SetDeviceConfiguration.cpp
    server/pluginSystem/yPluginApiImplementation.h
    server/pluginSystem/yPluginApiImplementation.cpp
-	server/pluginSystem/ManuallyDeviceCreationRequest.h
-	server/pluginSystem/ManuallyDeviceCreationRequest.cpp
    
 	server/pluginSystem/internalPlugin/System.h
 	server/pluginSystem/internalPlugin/System.cpp

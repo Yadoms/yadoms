@@ -44,17 +44,89 @@ namespace shared
 
             //-----------------------------------------------------
             ///\brief Events Id from Yadoms received by the plugin
+            ///\note The events described above are sent by Yadoms to the plugin.
+            ///\note They may or not contain data (see description of each event).
+            ///\note Data is read from event by a call to api->getEventHandler().getEventData<DataType>();
+            ///\note
+            ///\note The usage indicates if plugin must process this event or not
             //-----------------------------------------------------
             enum
             {
-               kEventStopRequested = event::kUserFirstId, // Yadoms requests the plugin to stop
-               kEventUpdateConfiguration, // Yadoms notify the plugin that its configuration was changed
-               kEventDeviceCommand, // Yadoms send a command to a device managed by this plugin
-               kEventManuallyDeviceCreationTest, // Yadoms ask the plugin to test a device with provided parameters, before to create it (TODO_V2 : not yet implemented)
-               kEventManuallyDeviceCreation, // Yadoms ask the plugin to create a device
-               kEventExtraCommand, // Yadoms send extra command to plugin
-               kBindingQuery, // Yadoms ask the plugin a binding query
+               //-----------------------------------------------------
+               ///\brief Yadoms requests the plugin to stop
+               ///\usage Needed
+               ///\note Data : none
+               ///\note Plugin must exit as soon as possible when receiving this event
+               //-----------------------------------------------------
+               kEventStopRequested = event::kUserFirstId,
 
+               //-----------------------------------------------------
+               ///\brief Yadoms notifies the plugin that its configuration was changed
+               ///\usage Optional (required if a configuration is declared in package.json)
+               ///\note Data : a shared::CDataContainer object containing the new configuration
+               ///\note Plugin must take account of new configuration when receiving this event
+               //-----------------------------------------------------
+               kEventUpdateConfiguration,
+
+               //-----------------------------------------------------
+               ///\brief Yadoms send extra command to plugin
+               ///\usage Optional, required if package.json declare that plugin supports extra commands
+               ///\note Data : a boost::shared_ptr<const yApi::IExtraCommand> object containing the extra command
+               ///\note Plugin must process the specified command
+               //-----------------------------------------------------
+               kEventExtraCommand,
+
+               //-----------------------------------------------------
+               ///\brief Yadoms ask the plugin a binding query
+               ///\usage Optional, required if package.json used bind data ("__binding__" label, with "type" = "plugin")
+               ///\note Data : a boost::shared_ptr<yApi::IBindingQueryRequest> object containing the binding request
+               ///\note Plugin must process the specified request, and return result by calling request->sendSuccess or sendError
+               //-----------------------------------------------------
+               kBindingQuery,
+
+               //-----------------------------------------------------
+               ///\brief Yadoms send a command to a device managed by this plugin
+               ///\usage Optional
+               ///\note Data : a boost::shared_ptr<const yApi::IDeviceCommand> object containing the command
+               ///\note Plugin must transmit the command to the device
+               //-----------------------------------------------------
+               kEventDeviceCommand,
+
+               //-----------------------------------------------------
+               ///\brief Yadoms ask the plugin to create a device
+               ///\usage Optional, required if package.json declare that plugin supports manually device creation
+               ///\note Data : a boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> object containing the device creation request
+               ///\note Plugin must create the specified device
+               //-----------------------------------------------------
+               kEventManuallyDeviceCreation,
+
+               //-----------------------------------------------------
+               ///\brief Yadoms ask the device configuration schema
+               ///\usage Optional, required if device configuration support is declared in package.json
+               ///\note Data : a boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest> object containing the device configuration schema request
+               ///\note Plugin must return the configation schema associated to the device (by calling request->sendSuccess or sendError)
+               //-----------------------------------------------------
+               kGetDeviceConfigurationSchemaRequest,
+
+               //-----------------------------------------------------
+               ///\brief Yadoms sent the configuration of a device
+               ///\usage Optional, required if device configuration support is declared in package.json
+               ///\note Data : a boost::shared_ptr<const yApi::IDeviceConfiguration> object containing the new device configuration
+               ///\note Plugin update the device
+               //-----------------------------------------------------
+               kSetDeviceConfiguration,
+
+               //-----------------------------------------------------
+               ///\brief First event ID to use for user-defined events
+               ///\note Define plugin events like :
+               ///\note enum
+               ///\note {
+               ///\note    userDefinedFirstEvent = kPluginFirstEventId,
+               ///\note    userDefinedSecondEvent,
+               ///\note    userDefinedThirdEvent,
+               ///\note    ...
+               ///\note };
+               //-----------------------------------------------------
                kPluginFirstEventId = event::kUserFirstId + 100 // The next usable event ID for the plugin code
             };
 

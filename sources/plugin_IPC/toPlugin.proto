@@ -58,8 +58,17 @@ message ManuallyDeviceCreation {
 	optional string configuration = 2;
 }
 
-message DeveloperModeAnswer{
+message DeveloperModeAnswer {
     required bool enabled = 1;
+}
+
+message DeviceConfigurationSchemaRequest {
+	required string device = 1;
+}
+
+message SetDeviceConfiguration {
+	required string device = 1;
+	required string configuration = 2;
 }
 
 message msg {
@@ -80,6 +89,8 @@ message msg {
 		RecipientFieldExitsAnswer recipientFieldExitsAnswer = 15;
 		ManuallyDeviceCreation manuallyDeviceCreation = 16;
 		DeveloperModeAnswer developerModeAnswer = 17;
+		DeviceConfigurationSchemaRequest deviceConfigurationSchemaRequest = 18;
+		SetDeviceConfiguration setDeviceConfiguration = 19;
 	}
 }
 

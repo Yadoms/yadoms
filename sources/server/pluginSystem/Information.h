@@ -30,7 +30,7 @@ namespace pluginSystem
       std::string toString() const override;
       bool isSupportedOnThisPlatform() const override;
       bool getSupportManuallyCreatedDevice() const override;
-      shared::CDataContainer getPackage() const override;
+      boost::shared_ptr<const shared::CDataContainer> getPackage() const override;
       const boost::filesystem::path& getPath() const override;
       // [END] shared::plugin::IInformation implementation
 
@@ -83,7 +83,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief	    Package.json content
       //--------------------------------------------------------------
-      shared::CDataContainer m_package;
+      boost::shared_ptr<shared::CDataContainer> m_package;
    };
 
 } // namespace pluginSystem

@@ -17,8 +17,8 @@ namespace web
                           boost::shared_ptr<pluginSystem::CManager> pluginManager,
                           communication::ISendMessageAsync& messageSender)
             : m_dataProvider(dataProvider),
-              m_pluginManager(pluginManager)
-              , m_restKeyword("plugin"),
+              m_pluginManager(pluginManager),
+              m_restKeyword("plugin"),
               m_messageSender(messageSender)
          {
          }
@@ -95,9 +95,9 @@ namespace web
             {
                if (parameters.size() > 1)
                {
-                  int instanceId = boost::lexical_cast<int>(parameters[1]);
+                  auto instanceId = boost::lexical_cast<int>(parameters[1]);
 
-                  boost::shared_ptr<database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(instanceId);
+                  auto pluginFound = m_pluginManager->getInstance(instanceId);
 
                   return CResult::GenerateSuccess(pluginFound);
                }
@@ -192,7 +192,7 @@ namespace web
                {
                   shared::CDataContainer pluginInfo;
                   pluginInfo.set("type", plugin->first);
-                  pluginInfo.set("package", plugin->second->getPackage());
+                  pluginInfo.set("package", *(plugin->second->getPackage()));
                   pluginCollection.push_back(pluginInfo);
                }
 
@@ -261,8 +261,8 @@ namespace web
             {
                if (parameters.size() >= 4)
                {
-                  int instanceId = boost::lexical_cast<int>(parameters[1]);
-                  std::string command = parameters[3];
+                  auto instanceId = boost::lexical_cast<int>(parameters[1]);
+                  auto command = parameters[3];
                   shared::CDataContainer commandData(requestContent);
                   m_messageSender.sendExtraCommandAsync(instanceId, command, commandData);
                   return CResult::GenerateSuccess();
@@ -494,7 +494,7 @@ namespace web
                      {
                      case communication::callback::CSynchronousCallback<std::string>::kResult:
                         {
-                           communication::callback::CSynchronousCallback<std::string>::CSynchronousResult res = cb.getCallbackResult();
+                           auto res = cb.getCallbackResult();
 
                            if (res.Success)
                            {
@@ -601,3 +601,5 @@ namespace web
       } //namespace service
    } //namespace rest
 } //namespace web 
+
+
