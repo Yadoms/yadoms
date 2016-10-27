@@ -89,13 +89,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             api->setPluginState(yApi::historization::EPluginState::kStopped);
             return;
          }
-      case yApi::IYPluginApi::kEventDeviceCommand:
-         {
-            // A command was received from Yadoms
-            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
-            std::cout << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
-            break;
-         }
+
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
             // Configuration was updated
@@ -116,53 +110,40 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             break;
          }
-      case kSendSensorsStateTimerEventId:
+
+      case yApi::IYPluginApi::kEventExtraCommand:
          {
-            // Timer used here to send sensors state to Yadoms periodically
+            // Command was received from Yadoms
+            auto extraCommand = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraCommand> >();
 
-            // Read sensor value and send data to Yadoms (temperatures, battery level, Rssi measure...)
-            fakeSensor1.read();
-            fakeSensor2.read();
-            fakeCounter.read();
-            fakeOnOffReadOnlySwitch.read();
-            fakeDimmableReadOnlySwitch.read();
-            fakeController.read();
-            configurableDevice.read();
-
-            std::cout << "Send the periodically sensors state..." << std::endl;
-            fakeSensor1.historizeData(api);
-            fakeSensor2.historizeData(api);
-            fakeCounter.historizeData(api);
-            fakeOnOffReadOnlySwitch.historizeData(api);
-            fakeDimmableReadOnlySwitch.historizeData(api);
-            fakeController.historizeData(api);
-            configurableDevice.historizeData(api);
-
-            break;
-         }
-
-      case yApi::IYPluginApi::kEventManuallyDeviceCreation:
-         {
-            auto creation = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
-            try
+            if (extraCommand)
             {
-               // Yadoms asks for device creation
-               auto sni = creation->getData().getConfiguration().get<std::string>("networkInterface");
-               auto dyn = creation->getData().getConfiguration().get<std::string>("dynamicSection.content.interval");
+               std::cout << "Extra command received : " << extraCommand->getCommand() << std::endl;
 
-               auto devId = (boost::format("%1%_%2%_0x%3$08X") % sni % dyn % shared::tools::CRandom::generateNbBits(26, false)).str();
-               api->declareDevice(devId,
-                                  "FakeDevice_" + devId,
-                                  std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(),
-                                  creation->getData().getConfiguration());
-
-               api->declareKeyword(devId, boost::make_shared<yApi::historization::CSwitch>("manualSwitch"));
-
-               creation->sendSuccess(devId);
-            }
-            catch (std::exception& ex)
-            {
-               creation->sendError(ex.what());
+               if (extraCommand->getCommand() == "simpleCommand")
+               {
+                  std::cout << "Simple command received" << std::endl;
+               }
+               else if (extraCommand->getCommand() == "dataCommand")
+               {
+                  auto s = extraCommand->getData().get<std::string>("testValue");
+                  std::cout << "Command with data received : data=" << s << std::endl;
+               }
+               else if (extraCommand->getCommand() == "dataBindingCommand")
+               {
+                  auto value = extraCommand->getData().get<std::string>("networkInterface");
+                  std::cout << "Command with binded data received : value=" << value << " text=" << Poco::Net::NetworkInterface::forName(value).displayName() << std::endl;
+               }
+               else if (extraCommand->getCommand() == "dataBindingPluginCommand")
+               {
+                  auto interval = extraCommand->getData().get<std::string>("dynamicSection.content.interval");
+                  std::cout << "Command with plugin binded data received : value=" << interval << std::endl;
+               }
+               else if (extraCommand->getCommand() == "changePluginStateMessage")
+               {
+                  auto message = extraCommand->getData().get<std::string>("newStateMessage");
+                  api->setPluginState(shared::plugin::yPluginApi::historization::EPluginState::kCustom, "newCustomStateMessage", {{"messageFromExtraCommand", message}});
+               }
             }
             break;
          }
@@ -202,39 +183,36 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             break;
          }
 
-      case yApi::IYPluginApi::kEventExtraCommand:
+      case yApi::IYPluginApi::kEventDeviceCommand:
          {
-            // Command was received from Yadoms
-            auto extraCommand = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraCommand> >();
+            // A command was received from Yadoms
+            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
+            std::cout << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
+            break;
+         }
 
-            if (extraCommand)
+      case yApi::IYPluginApi::kEventManuallyDeviceCreation:
+         {
+            auto creation = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
+            try
             {
-               std::cout << "Extra command received : " << extraCommand->getCommand() << std::endl;
+               // Yadoms asks for device creation
+               auto sni = creation->getData().getConfiguration().get<std::string>("networkInterface");
+               auto dyn = creation->getData().getConfiguration().get<std::string>("dynamicSection.content.interval");
 
-               if (extraCommand->getCommand() == "simpleCommand")
-               {
-                  std::cout << "Simple command received" << std::endl;
-               }
-               else if (extraCommand->getCommand() == "dataCommand")
-               {
-                  auto s = extraCommand->getData().get<std::string>("testValue");
-                  std::cout << "Command with data received : data=" << s << std::endl;
-               }
-               else if (extraCommand->getCommand() == "dataBindingCommand")
-               {
-                  auto value = extraCommand->getData().get<std::string>("networkInterface");
-                  std::cout << "Command with binded data received : value=" << value << " text=" << Poco::Net::NetworkInterface::forName(value).displayName() << std::endl;
-               }
-               else if (extraCommand->getCommand() == "dataBindingPluginCommand")
-               {
-                  auto interval = extraCommand->getData().get<std::string>("dynamicSection.content.interval");
-                  std::cout << "Command with plugin binded data received : value=" << interval << std::endl;
-               }  
-               else if (extraCommand->getCommand() == "changePluginStateMessage")
-               {
-                  auto message = extraCommand->getData().get<std::string>("newStateMessage");
-                  api->setPluginState(shared::plugin::yPluginApi::historization::EPluginState::kCustom, "newCustomStateMessage", { { "messageFromExtraCommand", message } });
-               }
+               auto devId = (boost::format("%1%_%2%_0x%3$08X") % sni % dyn % shared::tools::CRandom::generateNbBits(26, false)).str();
+               api->declareDevice(devId,
+                                  "FakeDevice_" + devId,
+                                  std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(),
+                                  creation->getData().getConfiguration());
+
+               api->declareKeyword(devId, boost::make_shared<yApi::historization::CSwitch>("manualSwitch"));
+
+               creation->sendSuccess(devId);
+            }
+            catch (std::exception& ex)
+            {
+               creation->sendError(ex.what());
             }
             break;
          }
@@ -274,6 +252,31 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                auto errorMessage = "Try to apply a device configuration to an unconfigurable device";
                std::cerr << errorMessage << std::endl;
             }
+
+            break;
+         }
+
+      case kSendSensorsStateTimerEventId:
+         {
+            // Timer used here to send sensors state to Yadoms periodically
+
+            // Read sensor value and send data to Yadoms (temperatures, battery level, Rssi measure...)
+            fakeSensor1.read();
+            fakeSensor2.read();
+            fakeCounter.read();
+            fakeOnOffReadOnlySwitch.read();
+            fakeDimmableReadOnlySwitch.read();
+            fakeController.read();
+            configurableDevice.read();
+
+            std::cout << "Send the periodically sensors state..." << std::endl;
+            fakeSensor1.historizeData(api);
+            fakeSensor2.historizeData(api);
+            fakeCounter.historizeData(api);
+            fakeOnOffReadOnlySwitch.historizeData(api);
+            fakeDimmableReadOnlySwitch.historizeData(api);
+            fakeController.historizeData(api);
+            configurableDevice.historizeData(api);
 
             break;
          }

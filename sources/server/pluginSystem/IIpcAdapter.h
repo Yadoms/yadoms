@@ -5,7 +5,6 @@
 #include <shared/plugin/yPluginApi/IExtraCommand.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
-#include <boost/array.hpp>
 #include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
 
 

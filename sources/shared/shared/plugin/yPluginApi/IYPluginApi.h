@@ -69,22 +69,6 @@ namespace shared
                kEventUpdateConfiguration,
 
                //-----------------------------------------------------
-               ///\brief Yadoms send a command to a device managed by this plugin
-               ///\usage Optional
-               ///\note Data : a boost::shared_ptr<const yApi::IDeviceCommand> object containing the command
-               ///\note Plugin must transmit the command to the device
-               //-----------------------------------------------------
-               kEventDeviceCommand,
-
-               //-----------------------------------------------------
-               ///\brief Yadoms ask the plugin to create a device
-               ///\usage Optional, required if package.json declare that plugin supports manually device creation
-               ///\note Data : a boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> object containing the device creation request
-               ///\note Plugin must create the specified device
-               //-----------------------------------------------------
-               kEventManuallyDeviceCreation,
-
-               //-----------------------------------------------------
                ///\brief Yadoms send extra command to plugin
                ///\usage Optional, required if package.json declare that plugin supports extra commands
                ///\note Data : a boost::shared_ptr<const yApi::IExtraCommand> object containing the extra command
@@ -99,6 +83,22 @@ namespace shared
                ///\note Plugin must process the specified request, and return result by calling request->sendSuccess or sendError
                //-----------------------------------------------------
                kBindingQuery,
+
+               //-----------------------------------------------------
+               ///\brief Yadoms send a command to a device managed by this plugin
+               ///\usage Optional
+               ///\note Data : a boost::shared_ptr<const yApi::IDeviceCommand> object containing the command
+               ///\note Plugin must transmit the command to the device
+               //-----------------------------------------------------
+               kEventDeviceCommand,
+
+               //-----------------------------------------------------
+               ///\brief Yadoms ask the plugin to create a device
+               ///\usage Optional, required if package.json declare that plugin supports manually device creation
+               ///\note Data : a boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> object containing the device creation request
+               ///\note Plugin must create the specified device
+               //-----------------------------------------------------
+               kEventManuallyDeviceCreation,
 
                //-----------------------------------------------------
                ///\brief Yadoms ask the device configuration schema
