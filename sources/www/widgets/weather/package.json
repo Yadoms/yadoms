@@ -4,7 +4,7 @@
 	"releaseType": "beta",
 	"author": "Nicolas HILAIRE",
 	"url": "http://www.yadoms.com/wiki/widgets/weather.html",
-	"credits": "[Weather icons](https://www.iconfinder.com/)",
+	"credits": "[Weather icons](https://github.com/erikflowers/weather-icons)",
 	"dimensions": {
 		"min": {
 			"x": 2,

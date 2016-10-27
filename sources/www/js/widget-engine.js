@@ -149,6 +149,7 @@ function tabClick(pageId) {
         }
         //debounce
         setTimeout(function () {
+			PageManager.refreshWidgets(page);
             PageManager.updateWidgetLayout(page);
             page.$grid.packery("layout");
         }, 10);
