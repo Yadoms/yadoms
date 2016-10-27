@@ -85,6 +85,13 @@ namespace shared
 
 
             //--------------------------------------------------------------
+            /// \brief	    Check if plugin must be instantiated once
+            /// \return     true if it must be, false if not
+            //--------------------------------------------------------------
+            virtual bool pluginMustBeInstantiatedOnce() const = 0;
+
+
+            //--------------------------------------------------------------
             /// \brief	    Provide the package.json content
             /// \return     the package.json content
             //--------------------------------------------------------------

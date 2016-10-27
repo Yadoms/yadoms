@@ -64,6 +64,11 @@ namespace plugin_cpp_api
       return m_buffer->supportmanuallycreateddevice();
    }
 
+   bool CPluginInformation::pluginMustBeInstantiatedOnce() const
+   {
+      return m_buffer->pluginmustbeinstantiatedonce();
+   }
+
    shared::CDataContainer CPluginInformation::getPackage() const
    {
       return shared::CDataContainer(m_buffer->packagefilecontent());
