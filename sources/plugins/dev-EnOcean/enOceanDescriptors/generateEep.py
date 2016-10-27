@@ -9,6 +9,7 @@ import xml.etree.ElementTree
 import string
 import codecs
 import re
+import json
 
 import cppClass
 import cppHelper
@@ -28,6 +29,7 @@ sourcePath = sys.argv[3]
 
 #-------------------------------------------------------------------------------
 cppTypes = []
+supportedProfiles = []
 
 
 xmlRootNode = xml.etree.ElementTree.parse(xmlInputFilePath).getroot()
@@ -220,6 +222,9 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
          typeClass.inheritFrom("IType", cppClass.PUBLIC)
          typeClass.addMember(cppClass.CppMember("m_data", "boost::dynamic_bitset<>&", cppClass.PRIVATE, cppClass.CONST, initilizationCode="m_data(data)"))
 
+         supportedProfiles.append(xmlRorgNode.find("number").text[2:] + "-" + xmlFuncNode.find("number").text[2:] + "-" + xmlTypeNode.find("number").text[2:])
+
+
          def isLinearValue(xmlDataFieldNode):
             return True if xmlDataFieldNode.find("range/min") is not None \
                and xmlDataFieldNode.find("range/max") is not None \
@@ -269,8 +274,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
 
          historizersCppName = []
-         if len(xmlTypeNode.findall("case")) != 1:
-            
+         if len(xmlTypeNode.findall("case")) != 1:            
             util.warning("func/type : Unsupported number of \"case\" tags (expected 1) for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This profile will be ignored.")#TODO
          else:
             for xmlDataFieldNode in xmlHelper.findUsefulDataFieldNodes(inXmlNode=xmlTypeNode.find("case")):
@@ -389,6 +393,20 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
          cppTypes.append(typeClass)
 
 
+# Device configuration schema
+def configurationSchemaCode():
+   profiles = {}
+   profiles['profiles'] = supportedProfiles
+   configurationSchema = {}
+   configurationSchema['configurationSchema'] = profiles
+   json_data = json.dumps(configurationSchema)
+   code = "   static const shared::CDataContainer profiles(" + json_data + ");\n"
+   code += "   return profiles;\n"
+   return code
+   
+#configurationSchemaClass = cppClass.CppClass("CDeviceConfigurationSchema", False)
+#cppTypes.append(configurationSchemaClass)
+#configurationSchemaClass.addMethod(cppClass.CppMethod("schema", "const shared::CDataContainer&", "", cppClass.PUBLIC, cppClass.STATIC, configurationSchemaCode())
 
 
 # Generate Header
