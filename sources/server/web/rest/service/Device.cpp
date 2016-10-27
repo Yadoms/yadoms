@@ -44,7 +44,8 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CDevice::updateDeviceFriendlyName, CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*"), CDevice::updateKeywordFriendlyName, CDevice::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keyword")("*")("command"), CDevice::sendDeviceCommand, CDevice::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keyword")("*")("command"), CDevice::sendKeywordCommand, CDevice::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("command"), CDevice::sendDeviceCommand, CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("setDeviceConfiguration"), CDevice::setDeviceConfiguration, CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("*"), CDevice::cleanupDevice, CDevice::transactionalMethod);
          }
@@ -80,12 +81,12 @@ namespace web
                      switch (cb.waitForResult())
                      {
                      case communication::callback::CSynchronousCallback<shared::CDataContainer>::kResult:
-                     {
-                        auto res = cb.getCallbackResult();
-                        if (res.Success)
-                           return CResult::GenerateSuccess(res.Result);
-                        return CResult::GenerateError(res.ErrorMessage);
-                     }
+                        {
+                           auto res = cb.getCallbackResult();
+                           if (res.Success)
+                              return CResult::GenerateSuccess(res.Result);
+                           return CResult::GenerateError(res.ErrorMessage);
+                        }
                      case shared::event::kTimeout:
                         return CResult::GenerateError("The plugin did not respond");
                      default:
@@ -279,8 +280,8 @@ namespace web
             }
          }
 
-         shared::CDataContainer CDevice::sendDeviceCommand(const std::vector<std::string>& parameters,
-                                                           const std::string& requestContent) const
+         shared::CDataContainer CDevice::sendKeywordCommand(const std::vector<std::string>& parameters,
+                                                            const std::string& requestContent) const
          {
             try
             {
@@ -291,12 +292,44 @@ namespace web
 
                   try
                   {
-                     m_messageSender.sendCommandAsync(keywordId, requestContent);
+                     m_messageSender.sendKeywordCommandAsync(keywordId, requestContent);
                      return CResult::GenerateSuccess();
                   }
                   catch (shared::exception::CEmptyResult&)
                   {
                      return CResult::GenerateError("invalid parameter. Can not retreive keyword in database");
+                  }
+               }
+               return CResult::GenerateError("invalid parameter. Not enough parameters in url");
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in sending command to keyword");
+            }
+         }
+
+         shared::CDataContainer CDevice::sendDeviceCommand(const std::vector<std::string>& parameters,
+                                                           const std::string& requestContent) const
+         {
+            try
+            {
+               if (parameters.size() > 2)
+               {
+                  //get device id from URL
+                  auto deviceId = boost::lexical_cast<int>(parameters[1]);
+
+                  try
+                  {
+                     m_messageSender.sendDeviceCommandAsync(deviceId, requestContent);
+                     return CResult::GenerateSuccess();
+                  }
+                  catch (shared::exception::CEmptyResult&)
+                  {
+                     return CResult::GenerateError("invalid parameter. Can not retreive device in database");
                   }
                }
                return CResult::GenerateError("invalid parameter. Not enough parameters in url");

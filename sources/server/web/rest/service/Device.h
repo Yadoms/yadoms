@@ -13,8 +13,8 @@ namespace web
          class CDevice : public IRestService
          {
          public:
-            explicit CDevice(boost::shared_ptr<database::IDataProvider> dataProvider,
-                             communication::ISendMessageAsync& messageSender);
+            CDevice(boost::shared_ptr<database::IDataProvider> dataProvider,
+                    communication::ISendMessageAsync& messageSender);
             virtual ~CDevice();
 
          public:
@@ -80,6 +80,12 @@ namespace web
                                                   const std::string& requestContent) const;
 
             //-----------------------------------------
+            ///\brief   send a command to a keyword of a device
+            //-----------------------------------------
+            shared::CDataContainer sendKeywordCommand(const std::vector<std::string>& parameters,
+                                                      const std::string& requestContent) const;
+
+            //-----------------------------------------
             ///\brief   send a command to a device
             //-----------------------------------------
             shared::CDataContainer sendDeviceCommand(const std::vector<std::string>& parameters,
@@ -134,3 +140,5 @@ namespace web
       } //namespace service
    } //namespace rest
 } //namespace web 
+
+

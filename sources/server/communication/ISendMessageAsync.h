@@ -20,13 +20,22 @@ namespace communication
       }
 
       //----------------------------------------------
-      ///\brief                     Send a command
+      ///\brief                     Send a command to a keyword
       ///\param [in] keywordId      Target keyword Id
       ///\param [in] body           The command body to send
       ///\throw shared::exception::CEmptyResult if keywordId not found
       //----------------------------------------------
-      virtual void sendCommandAsync(int keywordId,
-                                    const std::string& body) = 0;
+      virtual void sendKeywordCommandAsync(int keywordId,
+                                           const std::string& body) = 0;
+
+      //----------------------------------------------
+      ///\brief                     Send a command to a device
+      ///\param [in] deviceId       Target device Id
+      ///\param [in] body           The command body to send
+      ///\throw shared::exception::CEmptyResult if deviceId not found
+      //----------------------------------------------
+      virtual void sendDeviceCommandAsync(int deviceId,
+                                          const std::string& body) = 0;
 
       //----------------------------------------------
       ///\brief                     Send an extra command

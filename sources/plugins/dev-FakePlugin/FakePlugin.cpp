@@ -113,7 +113,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       case yApi::IYPluginApi::kEventExtraCommand:
          {
-            // Command was received from Yadoms
+            // Extra-command was received from Yadoms
             auto extraCommand = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraCommand> >();
 
             if (extraCommand)
@@ -188,6 +188,10 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             // A command was received from Yadoms
             auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
             std::cout << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
+            if (command->getKeyword().empty())
+               std::cout << "Specific command for a device (can be used for any purpose, unless keyword driving, device configuration (see kGetDeviceConfigurationSchemaRequest and kSetDeviceConfiguration documentation) and deletion" << std::endl;
+            else
+               std::cout << "Standard command to a keyword (used to drive a switch, a thermostat..." << std::endl;
             break;
          }
 

@@ -25,8 +25,8 @@ namespace communication
    {
    }
 
-   void CPluginGateway::sendCommandAsync(int keywordId,
-                                         const std::string& body)
+   void CPluginGateway::sendKeywordCommandAsync(int keywordId,
+                                                const std::string& body)
    {
       auto keyword = m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
       auto device = m_dataProvider->getDeviceRequester()->getDevice(keyword->DeviceId);
@@ -39,6 +39,18 @@ namespace communication
 
       // Historize the command
       m_acquisitionHistorizer->saveData(keywordId, command->getHistorizableObject());
+   }
+
+   void CPluginGateway::sendDeviceCommandAsync(int deviceId,
+                                               const std::string& body)
+   {
+      auto device = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+
+      // Create the command
+      auto command(boost::make_shared<pluginSystem::CDeviceCommand>(device->Name, std::string(), body));
+
+      // Dispatch command to the right plugin
+      m_pluginManager->postCommand(device->PluginId, command);
    }
 
    void CPluginGateway::sendExtraCommandAsync(int pluginId,

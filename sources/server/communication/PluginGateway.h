@@ -29,7 +29,10 @@ namespace communication
       virtual ~CPluginGateway();
 
       // ISendMessageAsync Implementation
-      void sendCommandAsync(int keywordId, const std::string& body) override;
+      void sendKeywordCommandAsync(int keywordId,
+                                   const std::string& body) override;
+      void sendDeviceCommandAsync(int deviceId,
+                                  const std::string& body) override;
       void sendExtraCommandAsync(int pluginId,
                                  const std::string& command,
                                  const shared::CDataContainer& data = shared::CDataContainer::EmptyContainer) override;
