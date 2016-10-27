@@ -28,7 +28,7 @@ class CreateDevice(unittest.TestCase):
       dashboard.openDevice(self.browser)
       
 
-   def test_configurePlugin(self):
+   def test_createDevice(self):
       print '=== Manually device creation test ==='
       deviceName = u'My device'
       attachedPluginInstance = u'My fakePlugin instance'

@@ -9,34 +9,38 @@
 #include "automation/script/Location.h"
 #include "dataAccessLayer/IDataAccessLayer.h"
 
-namespace automation { namespace script {
-
-ObjectFactory::~ObjectFactory()
+namespace automation
 {
-}
-
-boost::shared_ptr<automation::script::IAutoLocation> ObjectFactory::getAutoLocationService()
-{
-   if (!m_autoLocationService)
+   namespace script
    {
-      // Use ip-api service to try to auto-locate (need an internet connexion)
-      m_autoLocationService = boost::make_shared<automation::script::CIpApiAutoLocation>();
+      ObjectFactory::~ObjectFactory()
+      {
+      }
+
+      boost::shared_ptr<IAutoLocation> ObjectFactory::getAutoLocationService()
+      {
+         if (!m_autoLocationService)
+         {
+            // Use ip-api service to try to auto-locate (need an internet connexion)
+            m_autoLocationService = boost::make_shared<CIpApiAutoLocation>();
+         }
+         return m_autoLocationService;
+      }
+
+      boost::shared_ptr<ILocation> ObjectFactory::getLocation()
+      {
+         if (!m_location)
+            m_location = boost::make_shared<CLocation>(shared::CServiceLocator::instance().get<dataAccessLayer::IDataAccessLayer>()->getConfigurationManager());
+         return m_location;
+      }
+
+      boost::shared_ptr<IDayLight> ObjectFactory::getDayLight()
+      {
+         if (!m_dayLight)
+            m_dayLight = boost::make_shared<CDayLight>(getLocation());
+         return m_dayLight;
+      }
    }
-   return m_autoLocationService;
-}
+} // namespace automation::script
 
-boost::shared_ptr<automation::script::ILocation> ObjectFactory::getLocation()
-{
-   if (!m_location)
-      m_location = boost::make_shared<automation::script::CLocation>(shared::CServiceLocator::instance().get<dataAccessLayer::IDataAccessLayer>()->getConfigurationManager());
-   return m_location;
-}
 
-boost::shared_ptr<automation::script::IDayLight> ObjectFactory::getDayLight()
-{
-   if (!m_dayLight)
-      m_dayLight = boost::make_shared<automation::script::CDayLight>(getLocation());
-   return m_dayLight;
-}
-
-} } // namespace automation::script

@@ -22,7 +22,7 @@ CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       std::cout << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
       m_isDesactivated = true;
-      throw e;
+      throw;
    }
 }
 
@@ -73,7 +73,7 @@ void CAstronomy::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       std::cout << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
       m_isDesactivated = true;
-      throw e;
+      throw;
    }
 }
 
@@ -98,7 +98,7 @@ void CAstronomy::parse(boost::shared_ptr<yApi::IYPluginApi> api,
       catch (shared::exception::CException& e)
       {
          std::cout << e.what() << std::endl;
-         throw e;
+         throw;
       }
    }
 }

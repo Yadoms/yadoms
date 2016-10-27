@@ -130,8 +130,10 @@ function forecastViewModel() {
             //We only keep the city name
             var res = obj.city.split(",");
 			
-			if (res.length >=2)
+			   if (res.length >=2)
                self.city(res[1]);
+            else
+               self.city(res[0]);
 
             //We delete all information already keep in.
             while (self.TempPeriod.length > 0) {

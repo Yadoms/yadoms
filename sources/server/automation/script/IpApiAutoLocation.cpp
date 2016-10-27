@@ -4,39 +4,41 @@
 #include <shared/http/HttpMethods.h>
 
 
-namespace automation { namespace script
+namespace automation
 {
-
-CIpApiAutoLocation::CIpApiAutoLocation()
-{
-}
-
-CIpApiAutoLocation::~CIpApiAutoLocation()
-{         
-}
-
-shared::CDataContainer CIpApiAutoLocation::tryAutoLocate() const
-{
-   try
+   namespace script
    {
-      shared::CDataContainer foundLocation;
+      CIpApiAutoLocation::CIpApiAutoLocation()
+      {
+      }
 
-      shared::CDataContainer ipApiResult(shared::CHttpMethods::SendGetRequest("http://ip-api.com/json/?fields=lat,lon"));
+      CIpApiAutoLocation::~CIpApiAutoLocation()
+      {
+      }
 
-      if (ipApiResult.get("status") == std::string("fail"))
-         throw shared::exception::CException(ipApiResult.get("message"));
+      shared::CDataContainer CIpApiAutoLocation::tryAutoLocate() const
+      {
+         try
+         {
+            shared::CDataContainer foundLocation;
 
-      foundLocation.set("latitude", ipApiResult.get<double>("lat"));
-      foundLocation.set("longitude", ipApiResult.get<double>("lon"));
-      foundLocation.set("altitude", 0.0); // Not available by this service
+            auto ipApiResult(shared::CHttpMethods::SendGetRequest("http://ip-api.com/json/?fields=lat,lon"));
 
-      return foundLocation;
+            if (ipApiResult.get("status") == std::string("fail"))
+               throw shared::exception::CException(ipApiResult.get("message"));
+
+            foundLocation.set("latitude", ipApiResult.get<double>("lat"));
+            foundLocation.set("longitude", ipApiResult.get<double>("lon"));
+            foundLocation.set("altitude", 0.0); // Not available by this service
+
+            return foundLocation;
+         }
+         catch (shared::exception::CException& e)
+         {
+            throw shared::exception::CEmptyResult(std::string("Unable to get location via ip-api service : ") + e.what());
+         }
+      }
    }
-   catch (shared::exception::CException& e)
-   {
-      throw shared::exception::CEmptyResult(std::string("Unable to get location via ip-api service : ") + e.what());
-   }
-}
+} // namespace automation::script
 
-} } // namespace automation::script
 

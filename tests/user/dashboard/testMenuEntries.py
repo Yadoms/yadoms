@@ -37,7 +37,7 @@ class MenuEntries(unittest.TestCase):
       print '  Check summary page'
       dashboard_boutons = self.browser.find_element_by_id("dashboard-btns")
       menuEntries = dashboard_boutons.find_elements_by_xpath("./child::*")
-      self.assertEqual(len(menuEntries), 8)
+      self.assertEqual(len(menuEntries), 9)
       self.checkMenuEntry(menuEntries[0], "btn-dashboard-summary")
       self.checkMenuEntry(menuEntries[1], "btn-dashboard-system-configuration")
       self.checkMenuEntry(menuEntries[2], "btn-dashboard-plugins")
@@ -45,7 +45,8 @@ class MenuEntries(unittest.TestCase):
       self.checkMenuEntry(menuEntries[4], "btn-dashboard-automatisation")
       self.checkMenuEntry(menuEntries[5], "btn-dashboard-recipients")
       self.checkMenuEntry(menuEntries[6], "btn-dashboard-install-update")
-      self.checkMenuEntry(menuEntries[7], "btn-dashboard-about")
+      self.checkMenuEntry(menuEntries[7], "btn-dashboard-maintenance")
+      self.checkMenuEntry(menuEntries[8], "btn-dashboard-about")
       
    def tearDown(self):
       self.browser.close()
