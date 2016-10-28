@@ -420,8 +420,11 @@
    }
 
    function addNewPlugin() {
-      Yadoms.modals.pluginAdd.loadAsync()
+      Yadoms.modals.pickupController.loadAsync()
       .done(function () {
+	     //search all plugin information
+	     Yadoms.askPackages(PluginManager);
+/*		 
          Yadoms.askPluginTypes(function (pluginType) {
             var pi = new PluginInstance(null, $.t("plugins/" + pluginType.type + ":name", { defaultValue: pluginType.package.name }), pluginType.type, "", 1, "user");
 
@@ -454,7 +457,7 @@
                   });
                });
             });
-         });
+         });*/
       });
    }
 

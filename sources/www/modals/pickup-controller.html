@@ -1,4 +1,4 @@
-<link href="../css/add_widget.css" rel="stylesheet">
+<link href="../css/pickup-controller.css" rel="stylesheet">
 
 <!--New Modal -->
 <div class="modal fade" id="new-pickup-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -9,7 +9,7 @@
                 <h4 class="modal-title" id="myModalLabel" data-i18n="modals.add-widget.title">Add a new Widget</h4>
             </div>
             <div class="modal-body">
-                <div id="add-pickup-details" widget-type="">
+                <div id="pickup-details" widget-type="">
                     <div class="row header">
                         <div class="col-xs-4 cell">
                             <img alt="" />
@@ -91,7 +91,7 @@ Yadoms.askPackages = function (instanceManager) {
         $("ul#ul-add-element").i18n();
 		
         //we display the modal
-        $('div#new-widget-modal').modal({ backdrop: 'static' });
+        $('div#new-pickup-modal').modal({ backdrop: 'static' });
         
         var deferredArray = [];
 
@@ -99,24 +99,12 @@ Yadoms.askPackages = function (instanceManager) {
 	}
 
     /**
-     * Ask for widget packages to the REST server
-     */
-/*
-    Yadoms.askWidgetPackages = function () {
-        WidgetPackageManager.getAll()
-           .done(requestWidgetsTypeDone)
-           .fail(function (error) {
-               notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), error);
-           });
-    };
-*/
-    /**
      * Callback of the request widget packages
      * @returns {Function}
      */
     function requestWidgetsTypeDone() {
         //if the details is visible, we must hide it
-        var $detailsDiv = $("div#add-widget-details");
+        var $detailsDiv = $("div#pickup-details");
         $detailsDiv.hide();
 
         //we replace the "go back" button by the "Get more" one
@@ -189,7 +177,7 @@ Yadoms.askPackages = function (instanceManager) {
                             $("button#btn-close-details").removeClass("hidden");
 
                             //we show more details about the widget
-                            var $detailsDiv = $("div#add-widget-details");
+                            var $detailsDiv = $("div#pickup-details");
                             $detailsDiv.attr("widget-type", type);
 
                             //we fill the details div
@@ -211,7 +199,7 @@ Yadoms.askPackages = function (instanceManager) {
          * Callback to the click of the button to return to the list of widgets
          */
         $("button#btn-close-details").click(function () {
-            var $detailsDiv = $("div#add-widget-details");
+            var $detailsDiv = $("div#pickup-details");
             $detailsDiv.fadeOut();
             $("button#btn-close-details").addClass("hidden");
         });
@@ -228,7 +216,7 @@ Yadoms.askPackages = function (instanceManager) {
 
             $("div#new-widget-modal").on("hidden.bs.modal", function () {
                 $("div#new-widget-modal").unbind("hidden.bs.modal");
-                var $detailsDiv = $("div#add-widget-details");
+                var $detailsDiv = $("div#pickup-details");
 
                 var packageName = $detailsDiv.attr("widget-type");
 
