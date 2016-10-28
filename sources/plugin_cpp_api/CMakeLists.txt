@@ -22,6 +22,8 @@ set(plugin_cpp_api_SOURCES
    DeviceConfigurationSchemaRequest.cpp
    ExtraQuery.h
    ExtraQuery.cpp
+   ExtraQueryData.h
+   ExtraQueryData.cpp
    ManuallyDeviceCreation.h
    ManuallyDeviceCreation.cpp
    ManuallyDeviceCreationData.h

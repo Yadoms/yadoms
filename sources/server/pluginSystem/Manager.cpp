@@ -584,14 +584,14 @@ namespace pluginSystem
    }
 
    void CManager::postExtraQuery(int id,
-                                   boost::shared_ptr<const shared::plugin::yPluginApi::IExtraQuery> command) const
+                                 boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query) const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       auto instance(getRunningInstance(id));
 
-      YADOMS_LOG(debug) << "Send extra command " << command->getQuery() << " to plugin " << instance->about()->DisplayName();
+      YADOMS_LOG(debug) << "Send extra query " << query->getData().query() << " to plugin " << instance->about()->DisplayName();
 
-      instance->postExtraQuery(command);
+      instance->postExtraQuery(query);
    }
 
    void CManager::postManuallyDeviceCreationRequest(int id,

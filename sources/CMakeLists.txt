@@ -387,6 +387,8 @@ set(YADOMS_SRC
 	server/pluginSystem/DummyQualifier.cpp
 	server/pluginSystem/ExtraQuery.h
 	server/pluginSystem/ExtraQuery.cpp
+   server/pluginSystem/ExtraQueryData.cpp
+   server/pluginSystem/ExtraQueryData.h
 	server/pluginSystem/Factory.cpp
 	server/pluginSystem/Factory.h
    server/pluginSystem/FromPluginHistorizer.h

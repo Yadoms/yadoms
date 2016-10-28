@@ -70,7 +70,7 @@ namespace pluginSystem
       /// \brief			            Post a device command to the plugin
       /// \param  information       Device command
       //--------------------------------------------------------------
-      virtual void postExtraQuery(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraQuery> extraQuery) = 0;
+      virtual void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery) = 0;
 
       //--------------------------------------------------------------
       /// \brief			            Set the configuration of a device

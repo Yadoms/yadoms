@@ -97,7 +97,7 @@ namespace pluginSystem
       /// \brief           Get the plugin instances list
       /// \return          List of instances ID of all known instances, started or not
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<database::entities::CPlugin>> getInstanceList() const;
+      std::vector<boost::shared_ptr<database::entities::CPlugin> > getInstanceList() const;
 
       //--------------------------------------------------------------
       /// \brief           Get the instance configuration
@@ -190,7 +190,7 @@ namespace pluginSystem
       /// \param [in] command    The command to post
       //--------------------------------------------------------------
       void postExtraQuery(int id,
-                            boost::shared_ptr<const shared::plugin::yPluginApi::IExtraQuery> command) const;
+                          boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post a manually device creation request to a plugin

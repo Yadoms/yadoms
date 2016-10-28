@@ -114,37 +114,41 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventExtraQuery:
          {
             // Extra-command was received from Yadoms
-            auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraQuery> >();
+            auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery> >();
 
             if (extraQuery)
             {
-               std::cout << "Extra command received : " << extraQuery->getQuery() << std::endl;
+               std::cout << "Extra command received : " << extraQuery->getData().query() << std::endl;
 
-               if (extraQuery->getQuery() == "simpleCommand")
+               if (extraQuery->getData().query() == "simpleCommand")
                {
                   std::cout << "Simple command received" << std::endl;
                }
-               else if (extraQuery->getQuery() == "dataCommand")
+               else if (extraQuery->getData().query() == "dataCommand")
                {
-                  auto s = extraQuery->getData().get<std::string>("testValue");
+                  auto s = extraQuery->getData().data().get<std::string>("testValue");
                   std::cout << "Command with data received : data=" << s << std::endl;
                }
-               else if (extraQuery->getQuery() == "dataBindingCommand")
+               else if (extraQuery->getData().query() == "dataBindingCommand")
                {
-                  auto value = extraQuery->getData().get<std::string>("networkInterface");
+                  auto value = extraQuery->getData().data().get<std::string>("networkInterface");
                   std::cout << "Command with binded data received : value=" << value << " text=" << Poco::Net::NetworkInterface::forName(value).displayName() << std::endl;
                }
-               else if (extraQuery->getQuery() == "dataBindingPluginCommand")
+               else if (extraQuery->getData().query() == "dataBindingPluginCommand")
                {
-                  auto interval = extraQuery->getData().get<std::string>("dynamicSection.content.interval");
+                  auto interval = extraQuery->getData().data().get<std::string>("dynamicSection.content.interval");
                   std::cout << "Command with plugin binded data received : value=" << interval << std::endl;
                }
-               else if (extraQuery->getQuery() == "changePluginStateMessage")
+               else if (extraQuery->getData().query() == "changePluginStateMessage")
                {
-                  auto message = extraQuery->getData().get<std::string>("newStateMessage");
+                  auto message = extraQuery->getData().data().get<std::string>("newStateMessage");
                   api->setPluginState(shared::plugin::yPluginApi::historization::EPluginState::kCustom, "newCustomStateMessage", {{"messageFromExtraQuery", message}});
                }
             }
+
+            // Extra-query can return success or error indicator. In case of success, can also return data.
+            // Return here a success without data (=empty container)
+            extraQuery->sendSuccess(shared::CDataContainer());
             break;
          }
 

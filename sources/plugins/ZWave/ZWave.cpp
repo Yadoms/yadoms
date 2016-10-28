@@ -83,41 +83,42 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             case yApi::IYPluginApi::kEventExtraQuery:
             {
                // Command was received from Yadoms
-               auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraQuery> >();
+               auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery> >();
 
                if (extraQuery)
                {
-                  std::cout << "Extra command received : " << extraQuery->getQuery() << std::endl;
+                  std::cout << "Extra command received : " << extraQuery->getData().query() << std::endl;
 
-                  if (extraQuery->getQuery() == "inclusionMode")
+                  if (extraQuery->getData().query() == "inclusionMode")
                   {
                      m_controller->startInclusionMode();
                   }
-                  else if (extraQuery->getQuery() == "exclusionMode")
+                  else if (extraQuery->getData().query() == "exclusionMode")
                   {
                      m_controller->startExclusionMode();
                   }
-                  else if (extraQuery->getQuery() == "hardReset")
+                  else if (extraQuery->getData().query() == "hardReset")
                   {
                      m_controller->hardResetController();
                   }
-                  else if (extraQuery->getQuery() == "softReset")
+                  else if (extraQuery->getData().query() == "softReset")
                   {
                      m_controller->softResetController();
                   }
-                  else if (extraQuery->getQuery() == "testNetwork")
+                  else if (extraQuery->getData().query() == "testNetwork")
                   {
-                     m_controller->testNetwork(extraQuery->getData().get<int>("frameCount"));
+                     m_controller->testNetwork(extraQuery->getData().data().get<int>("frameCount"));
                   }
-                  else if (extraQuery->getQuery() == "healNetowrk")
+                  else if (extraQuery->getData().query() == "healNetowrk")
                   {
                      m_controller->healNetwork();
                   }
-                  else if (extraQuery->getQuery() == "cancelCommand")
+                  else if (extraQuery->getData().query() == "cancelCommand")
                   {
                      m_controller->cancelCurrentCommand();
                   }
                }
+               extraQuery->sendSuccess(shared::CDataContainer());
                break;
             }
 

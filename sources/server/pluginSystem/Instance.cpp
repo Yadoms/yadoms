@@ -68,7 +68,7 @@ namespace pluginSystem
       m_ipcAdapter->postSetDeviceConfiguration(command);
    }
 
-   void CInstance::postExtraQuery(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraQuery> extraQuery)
+   void CInstance::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery)
    {
       m_ipcAdapter->postExtraQuery(extraQuery);
    }

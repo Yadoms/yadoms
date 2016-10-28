@@ -1,5 +1,8 @@
 #pragma once
+#include "communication/callback/ISynchronousCallback.h"
+#include "communication/callback/ICallbackRequest.h"
 #include <shared/plugin/yPluginApi/IExtraQuery.h>
+#include <shared/plugin/yPluginApi/IExtraQueryData.h>
 
 
 namespace pluginSystem
@@ -12,11 +15,12 @@ namespace pluginSystem
    public:
       //-----------------------------------------------------
       ///\brief                  Constructor
-      ///\param[in] command      The extra command
-      ///\param[in] data         The optional command data
+      ///\param[in] query        The extra query
+      ///\param[in] data         The query data
+      ///\param [in]  callback   The callback to call when request returns
       //-----------------------------------------------------
-      explicit CExtraQuery(const std::string& command,
-                             const shared::CDataContainer& data = shared::CDataContainer::EmptyContainer);
+      explicit CExtraQuery(const shared::plugin::yPluginApi::IExtraQueryData& data,
+                           communication::callback::ISynchronousCallback<shared::CDataContainer>& callback);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -24,20 +28,16 @@ namespace pluginSystem
       virtual ~CExtraQuery();
 
       // IExtraQuery implementation
-      virtual const std::string& getQuery() const;
-      virtual const shared::CDataContainer& getData() const;
+      const shared::plugin::yPluginApi::IExtraQueryData& getData() const override;
+      void sendSuccess(const shared::CDataContainer& data) override;
+      void sendError(const std::string& errorMessage) override;
       // [END] IExtraQuery implementation
 
    private:
       //-----------------------------------------------------
-      ///\brief               Command
+      ///\brief Internal data
       //-----------------------------------------------------
-      std::string m_command;
-
-      //-----------------------------------------------------
-      ///\brief               Command data
-      //-----------------------------------------------------
-      shared::CDataContainer m_data;
+      boost::shared_ptr<communication::callback::ICallbackRequest<shared::plugin::yPluginApi::IExtraQueryData, shared::CDataContainer> > m_requestPtr;
    };
 } // namespace pluginSystem	
 

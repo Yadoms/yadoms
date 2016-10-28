@@ -4,6 +4,7 @@
 #include "web/rest/Result.h"
 #include "pluginSystem/ManuallyDeviceCreationData.h"
 #include "pluginSystem/BindingQueryData.h"
+#include "pluginSystem/ExtraQueryData.h"
 #include "communication/callback/SynchronousCallback.h"
 
 
@@ -254,17 +255,34 @@ namespace web
          }
 
          shared::CDataContainer CPlugin::sendExtraQuery(const std::vector<std::string>& parameters,
-                                                          const std::string& requestContent) const
+                                                        const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() >= 4)
                {
                   auto instanceId = boost::lexical_cast<int>(parameters[1]);
-                  auto command = parameters[3];
-                  shared::CDataContainer commandData(requestContent);
-                  m_messageSender.sendExtraQueryAsync(instanceId, command, commandData);
-                  return CResult::GenerateSuccess();
+                  auto query = parameters[3];
+                  shared::CDataContainer queryData(requestContent);
+
+                  communication::callback::CSynchronousCallback<shared::CDataContainer> cb;
+                  pluginSystem::CExtraQueryData data(query, queryData);
+                  m_messageSender.sendExtraQueryAsync(instanceId, data, cb);
+
+                  switch (cb.waitForResult())
+                  {
+                  case communication::callback::CSynchronousCallback<shared::CDataContainer>::kResult:
+                  {
+                     auto res = cb.getCallbackResult();
+                     if (res.Success)
+                        return CResult::GenerateSuccess(res.Result);
+                     return CResult::GenerateError(res.ErrorMessage);
+                  }
+                  case shared::event::kTimeout:
+                     return CResult::GenerateError("The plugin did not respond");
+                  default:
+                     return CResult::GenerateError("Unkown plugin result");
+                  }
                }
                return CResult::GenerateError("invalid parameter. Not enough parameters in url");
             }
@@ -274,7 +292,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in sending extra command to plugin");
+               return CResult::GenerateError("unknown exception in sending extra query to plugin");
             }
          }
 

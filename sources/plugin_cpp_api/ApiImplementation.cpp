@@ -273,7 +273,23 @@ namespace plugin_cpp_api
 
    void CApiImplementation::processExtraQuery(const toPlugin::ExtraQuery& msg)
    {
-      boost::shared_ptr<const shared::plugin::yPluginApi::IExtraQuery> command = boost::make_shared<CExtraQuery>(msg);
+      boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> command = boost::make_shared<CExtraQuery>(msg,
+                                                                                                           [&](const shared::CDataContainer& r)
+                                                                                                           {
+                                                                                                              toYadoms::msg ans;
+                                                                                                              auto answer = ans.mutable_extraqueryanswer();
+                                                                                                              answer->set_success(true);
+                                                                                                              answer->set_result(r.serialize());
+                                                                                                              send(ans);
+                                                                                                           },
+                                                                                                           [&](const std::string& r)
+                                                                                                           {
+                                                                                                              toYadoms::msg ans;
+                                                                                                              auto answer = ans.mutable_extraqueryanswer();
+                                                                                                              answer->set_success(false);
+                                                                                                              answer->set_result(r);
+                                                                                                              send(ans);
+                                                                                                           });
       m_pluginEventHandler.postEvent(kEventExtraQuery, command);
    }
 
@@ -425,7 +441,7 @@ namespace plugin_cpp_api
 
    void CApiImplementation::declareDevice(const std::string& device,
                                           const std::string& model,
-                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords,
+                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& keywords,
                                           const shared::CDataContainer& details)
    {
       toYadoms::msg req;
@@ -640,7 +656,7 @@ namespace plugin_cpp_api
    }
 
    void CApiImplementation::historizeData(const std::string& device,
-                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& dataVect)
+                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& dataVect)
    {
       toYadoms::msg msg;
       auto message = msg.mutable_historizedata();
@@ -743,3 +759,5 @@ namespace plugin_cpp_api
       return exists;
    }
 } // namespace plugin_cpp_api	
+
+

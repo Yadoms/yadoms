@@ -445,13 +445,38 @@ namespace pluginSystem
       send(msg);
    }
 
-   void CIpcAdapter::postExtraQuery(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraQuery> extraQuery)
+   void CIpcAdapter::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery)
    {
-      toPlugin::msg msg;
-      auto message = msg.mutable_extraquery();
-      message->set_query(extraQuery->getQuery());
-      message->set_data(extraQuery->getData().serialize());
-      send(msg);
+      toPlugin::msg req;
+      auto message = req.mutable_extraquery();
+      message->set_query(extraQuery->getData().query());
+      message->set_data(extraQuery->getData().data().serialize());
+
+      bool success;
+      std::string result;
+
+      try
+      {
+         send(req,
+            [&](const toYadoms::msg& ans) -> bool
+         {
+            return ans.has_extraqueryanswer();
+         },
+            [&](const toYadoms::msg& ans) -> void
+         {
+            success = ans.extraqueryanswer().success();
+            result = ans.extraqueryanswer().result();
+         });
+      }
+      catch (std::exception& e)
+      {
+         extraQuery->sendError((boost::format("Plugin doesn't answer to extra query : %1%") % e.what()).str());
+      }
+
+      if (success)
+         extraQuery->sendSuccess(shared::CDataContainer(result));
+      else
+         extraQuery->sendError(result);
    }
 
    void CIpcAdapter::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request)
