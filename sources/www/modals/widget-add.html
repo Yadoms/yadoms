@@ -75,7 +75,7 @@
      * Callback of the request widget packages
      * @returns {Function}
      */
-    function requestWidgetsTypeDone() {
+    function requestWidgetsTypeDone(test) {
         //if the details is visible, we must hide it
         var $detailsDiv = $("div#add-widget-details");
         $detailsDiv.hide();
@@ -108,10 +108,10 @@
 		$.when(deferred)
 		   .done(function () {
 		
-			for (var index in WidgetPackageManager.widgetPackages) {
-				if (WidgetPackageManager.widgetPackages.hasOwnProperty(index)) {
-					var value = WidgetPackageManager.widgetPackages[index].package;
-
+			for (var index in WidgetPackageManager.packageList) {
+				if (WidgetPackageManager.packageList.hasOwnProperty(index)) {
+					var value = WidgetPackageManager.packageList[index].package;
+					
 					if ((!value.type.startsWith("system-")) && ((developerMode) || (!value.type.startsWith("dev-")))) {
 						var i18NContext = value.type + ":";
 						
@@ -142,7 +142,7 @@
 			$("button.btn-select-widget").unbind().bind('click', function (e) {
 				var type = $(e.currentTarget).attr("widget-type");
 				if (!isNullOrUndefined(type)) {
-					var value = WidgetPackageManager.widgetPackages[type].package;
+					var value = WidgetPackageManager.packageList[type].package;
 					if (!isNullOrUndefined(value)) {
 						$("button#btn-close-details").removeClass("hidden");
 
@@ -196,7 +196,7 @@
                     var minX = 1;
                     var minY = 1;
 
-                    var pkg = WidgetPackageManager.widgetPackages[packageName].package;
+                    var pkg = WidgetPackageManager.packageList[packageName].package;
 
                     try {
                         minX = pkg.dimensions.min.x;

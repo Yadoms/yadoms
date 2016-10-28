@@ -6,7 +6,7 @@
  * This associative array based on plugin Type contains all plugin type information with their package
  * @type {Array}
  */
-PluginManager.pluginTypes = [];
+//PluginManager.pluginTypes = [];
 
 /**
  * The list of plugin packages
@@ -33,7 +33,7 @@ PluginManager.getAll = function () {
    RestEngine.getJson("rest/plugin")
    .done(function(data) {
       //we've got a list of plugin type. For each of one we download the package.json
-      PluginManager.pluginTypes = [];
+      PluginManager.packageList = [];
       i18n.options.resGetPath = '__ns__/locales/__lng__.json';
 
       var arrayOfDeffered = [];
@@ -43,7 +43,7 @@ PluginManager.getAll = function () {
          var deffered = PluginManager.downloadPackage(pluginType);
          arrayOfDeffered.push(deffered);
          deffered.done(function (package) {
-            PluginManager.pluginTypes[pluginType] = PluginManager.factory(package);
+            PluginManager.packageList[pluginType] = PluginManager.factory(package);
          })
          .fail(function (error) {
             notifyError($.t("objects.pluginInstance.errorGettingPackage", { pluginName: pluginType }), error);
@@ -52,7 +52,7 @@ PluginManager.getAll = function () {
 
       $.whenAll(arrayOfDeffered).done(function () {
          i18n.options.resGetPath = "locales/__lng__.json";
-         d.resolve(PluginManager.pluginTypes);
+         d.resolve(PluginManager.packageList);
       });
    })
    .fail(function (error) {

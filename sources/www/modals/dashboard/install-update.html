@@ -501,7 +501,7 @@
         //we save the information that the load of objectType is in progress
         WidgetPackageManager.getAll()
         .done(function () {
-            buildList("widget", WidgetPackageManager.widgetPackages).always(d.resolve);
+            buildList("widget", WidgetPackageManager.packageList).always(d.resolve);
         })
         .fail(function (error) {
             notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), error);

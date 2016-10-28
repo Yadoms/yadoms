@@ -39,9 +39,9 @@
          // Enter all Plugins into an array
          var tabPlugins = [];
 	  
-         Object.keys(PluginManager.pluginTypes).forEach(function(key) {
+         Object.keys(PluginManager.packageList).forEach(function(key) {
             if( (!data.developerMode && !key.startsWith("dev-")) || data.developerMode) {
-               var value = PluginManager.pluginTypes[key];
+               var value = PluginManager.packageList[key];
                tabPlugins.push ( {type: value.type, friendlyName: $.t("plugins/" + value.type + ":name" ) });
             }
          });
@@ -59,7 +59,7 @@
             //we close the new plugin modal
             $("div#new-plugin-modal").modal("hide");
             var pluginType = $("select#pluginTypeList").val();
-            callback(PluginManager.pluginTypes[pluginType]);
+            callback(PluginManager.packageList[pluginType]);
          });
 
          //i18n

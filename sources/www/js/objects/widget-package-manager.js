@@ -12,7 +12,7 @@ function WidgetPackageManager(){}
  * Contains all Ctor of all loaded viewModels
  * @type {Array}
  */
-WidgetPackageManager.widgetPackages = [];
+WidgetPackageManager.packageList = [];
 
 WidgetPackageManager.factory = function(json) {
    assert(!isNullOrUndefined(json), "json must be defined");
@@ -32,7 +32,7 @@ WidgetPackageManager.factory = function(json) {
    return wp;
 };
 
-WidgetPackageManager.widgetPackages = [];
+WidgetPackageManager.packageList = [];
 
 WidgetPackageManager.getAll = function () {
 
@@ -53,22 +53,22 @@ WidgetPackageManager.getAll = function () {
          
          //
          $.each(newWidgetPackages, function(index, newPackage) {
-            if(WidgetPackageManager.widgetPackages[newPackage.type]) {
+            if(WidgetPackageManager.packageList[newPackage.type]) {
                //if already exists and newer
-               if(newPackage.version != WidgetPackageManager.widgetPackages[newPackage.type].version) {
-                  WidgetPackageManager.widgetPackages[newPackage.type] = newPackage;
+               if(newPackage.version != WidgetPackageManager.packageList[newPackage.type].version) {
+                  WidgetPackageManager.packageList[newPackage.type] = newPackage;
                } else {
                   //already exist, same version, so do nothing
                }
             } else {
                //if not exists
-               WidgetPackageManager.widgetPackages[newPackage.type] = newPackage;
+               WidgetPackageManager.packageList[newPackage.type] = newPackage;
             }
          });
          
-         for(var i = WidgetPackageManager.widgetPackages.length; i>0; i--) {
-            if(!newWidgetPackages[ WidgetPackageManager.widgetPackages[i].type ]) {
-               WidgetPackageManager.widgetPackages.slice(-1,1);
+         for(var i = WidgetPackageManager.packageList.length; i>0; i--) {
+            if(!newWidgetPackages[ WidgetPackageManager.packageList[i].type ]) {
+               WidgetPackageManager.packageList.slice(-1,1);
             }
          }
 
@@ -79,5 +79,5 @@ WidgetPackageManager.getAll = function () {
 };
 
 WidgetPackageManager.packageExists = function(packageName) {
-   return (!isNullOrUndefined(WidgetPackageManager.widgetPackages[packageName]));
+   return (!isNullOrUndefined(WidgetPackageManager.packageList[packageName]));
 };

@@ -220,9 +220,9 @@
           // Enter all Plugins into an array
           var tabPlugins = [];
         
-          Object.keys(PluginManager.pluginTypes).forEach(function(key) {
+          Object.keys(PluginManager.packageList).forEach(function(key) {
             if( (!data.developerMode && !key.startsWith("dev-")) || data.developerMode) {
-               var value = PluginManager.pluginTypes[key];
+               var value = PluginManager.packageList[key];
                
                tabPlugins.push ( {plugin: value, friendlyName: $.t("plugins/" + value.type + ":name" ) });
             }
@@ -247,9 +247,9 @@
           var WidgetList = [];
         
          // scan all widgets packages
-         for (var index in WidgetPackageManager.widgetPackages) {
-            if (WidgetPackageManager.widgetPackages.hasOwnProperty(index)) {
-               var value = WidgetPackageManager.widgetPackages[index].package;
+         for (var index in WidgetPackageManager.packageList) {
+            if (WidgetPackageManager.packageList.hasOwnProperty(index)) {
+               var value = WidgetPackageManager.packageList[index].package;
                
                if ((!value.type.startsWith("system-")) && ((data.developerMode) || (!value.type.startsWith("dev-")))) {
                        var i18NContext = value.type + ":";
