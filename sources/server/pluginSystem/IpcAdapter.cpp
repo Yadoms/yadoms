@@ -445,12 +445,12 @@ namespace pluginSystem
       send(msg);
    }
 
-   void CIpcAdapter::postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand)
+   void CIpcAdapter::postExtraQuery(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraQuery> extraQuery)
    {
       toPlugin::msg msg;
-      auto message = msg.mutable_extracommand();
-      message->set_command(extraCommand->getCommand());
-      message->set_data(extraCommand->getData().serialize());
+      auto message = msg.mutable_extraquery();
+      message->set_query(extraQuery->getQuery());
+      message->set_data(extraQuery->getData().serialize());
       send(msg);
    }
 

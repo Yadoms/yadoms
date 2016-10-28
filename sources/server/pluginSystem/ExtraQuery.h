@@ -1,13 +1,13 @@
 #pragma once
-#include <shared/plugin/yPluginApi/IExtraCommand.h>
+#include <shared/plugin/yPluginApi/IExtraQuery.h>
 
 
 namespace pluginSystem
 {
    //-----------------------------------------------------
-   ///\brief The IExtraCommand implementation
+   ///\brief The IExtraQuery implementation
    //-----------------------------------------------------
-   class CExtraCommand : public shared::plugin::yPluginApi::IExtraCommand
+   class CExtraQuery : public shared::plugin::yPluginApi::IExtraQuery
    {
    public:
       //-----------------------------------------------------
@@ -15,18 +15,18 @@ namespace pluginSystem
       ///\param[in] command      The extra command
       ///\param[in] data         The optional command data
       //-----------------------------------------------------
-      explicit CExtraCommand(const std::string& command,
+      explicit CExtraQuery(const std::string& command,
                              const shared::CDataContainer& data = shared::CDataContainer::EmptyContainer);
 
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~CExtraCommand();
+      virtual ~CExtraQuery();
 
-      // IExtraCommand implementation
-      virtual const std::string& getCommand() const;
+      // IExtraQuery implementation
+      virtual const std::string& getQuery() const;
       virtual const shared::CDataContainer& getData() const;
-      // [END] IExtraCommand implementation
+      // [END] IExtraQuery implementation
 
    private:
       //-----------------------------------------------------

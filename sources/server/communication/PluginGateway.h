@@ -33,7 +33,7 @@ namespace communication
                                    const std::string& body) override;
       void sendDeviceCommandAsync(int deviceId,
                                   const std::string& body) override;
-      void sendExtraCommandAsync(int pluginId,
+      void sendExtraQueryAsync(int pluginId,
                                  const std::string& command,
                                  const shared::CDataContainer& data = shared::CDataContainer::EmptyContainer) override;
       void sendManuallyDeviceCreationRequest(int pluginId,

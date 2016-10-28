@@ -9,7 +9,7 @@
 #include <shared/plugin/information/IInformation.h>
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceCommand.h>
-#include <shared/plugin/yPluginApi/IExtraCommand.h>
+#include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include "IInstance.h"
 #include "IIpcAdapter.h"
 
@@ -47,7 +47,7 @@ namespace pluginSystem
       boost::shared_ptr<const database::entities::CPlugin> about() const override;
       boost::shared_ptr<const shared::plugin::information::IInformation> aboutPlugin() const override;
       void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) override;
-      void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) override;
+      void postExtraQuery(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraQuery> extraQuery) override;
       void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) override;
       void postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request) override;
       void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) override;

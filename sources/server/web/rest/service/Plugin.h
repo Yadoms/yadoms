@@ -35,7 +35,7 @@ namespace web
             shared::CDataContainer updatePlugin(const std::vector<std::string>& parameters, const std::string& requestContent) const;
             shared::CDataContainer deletePlugin(const std::vector<std::string>& parameters, const std::string& requestContent) const;
             shared::CDataContainer deleteAllPlugins(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            shared::CDataContainer sendExtraCommand(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            shared::CDataContainer sendExtraQuery(const std::vector<std::string>& parameters, const std::string& requestContent) const;
             shared::CDataContainer getInstanceState(const std::vector<std::string>& parameters, const std::string& requestContent) const;
             shared::CDataContainer startInstance(const std::vector<std::string>& parameters, const std::string& requestContent) const;
             shared::CDataContainer stopInstance(const std::vector<std::string>& parameters, const std::string& requestContent) const;

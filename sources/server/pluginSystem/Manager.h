@@ -13,7 +13,7 @@
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceCommand.h>
-#include <shared/plugin/yPluginApi/IExtraCommand.h>
+#include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include <shared/plugin/yPluginApi/historization/PluginState.h>
 #include "InstanceRemover.h"
 #include <IPathProvider.h>
@@ -189,8 +189,8 @@ namespace pluginSystem
       /// \param [in] id         Plugin instance Id
       /// \param [in] command    The command to post
       //--------------------------------------------------------------
-      void postExtraCommand(int id,
-                            boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command) const;
+      void postExtraQuery(int id,
+                            boost::shared_ptr<const shared::plugin::yPluginApi::IExtraQuery> command) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post a manually device creation request to a plugin

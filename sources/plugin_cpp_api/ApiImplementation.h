@@ -85,7 +85,7 @@ namespace plugin_cpp_api
       void processDeviceConfigurationSchemaRequest(const toPlugin::DeviceConfigurationSchemaRequest& msg);
       void processSetDeviceConfiguration(const toPlugin::SetDeviceConfiguration& msg);
       void processDeviceCommand(const toPlugin::DeviceCommand& msg);
-      void processExtraCommand(const toPlugin::ExtraCommand& msg);
+      void processExtraQuery(const toPlugin::ExtraQuery& msg);
       void processManuallyDeviceCreation(const toPlugin::ManuallyDeviceCreation& msg);
 
       void setInitialized();

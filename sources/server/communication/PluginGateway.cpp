@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "PluginGateway.h"
 #include "pluginSystem/DeviceCommand.h"
-#include "pluginSystem/ExtraCommand.h"
+#include "pluginSystem/ExtraQuery.h"
 #include "pluginSystem/ManuallyDeviceCreationRequest.h"
 #include "pluginSystem/BindingQueryRequest.h"
 
@@ -53,15 +53,15 @@ namespace communication
       m_pluginManager->postCommand(device->PluginId, command);
    }
 
-   void CPluginGateway::sendExtraCommandAsync(int pluginId,
+   void CPluginGateway::sendExtraQueryAsync(int pluginId,
                                               const std::string& command,
                                               const shared::CDataContainer& data)
    {
       // Create the command
-      boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand(boost::make_shared<pluginSystem::CExtraCommand>(command, data));
+      boost::shared_ptr<const shared::plugin::yPluginApi::IExtraQuery> extraQuery(boost::make_shared<pluginSystem::CExtraQuery>(command, data));
 
       // Dispatch command to the right plugin
-      m_pluginManager->postExtraCommand(pluginId, extraCommand);
+      m_pluginManager->postExtraQuery(pluginId, extraQuery);
    }
 
 

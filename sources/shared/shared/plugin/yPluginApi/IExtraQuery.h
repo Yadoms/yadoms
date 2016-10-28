@@ -10,13 +10,13 @@ namespace shared
          //-----------------------------------------------------
          ///\brief The API used for the commands on plugin
          //-----------------------------------------------------
-         class IExtraCommand
+         class IExtraQuery
          {
          public:
             //-----------------------------------------------------
             ///\brief               Destructor
             //-----------------------------------------------------
-            virtual ~IExtraCommand()
+            virtual ~IExtraQuery()
             {
             }
 
@@ -24,7 +24,7 @@ namespace shared
             ///\brief               Get the extra command name
             ///\return              The extra command name
             //-----------------------------------------------------
-            virtual const std::string& getCommand() const = 0;
+            virtual const std::string& getQuery() const = 0;
 
             //-----------------------------------------------------
             ///\brief Obtain the command data

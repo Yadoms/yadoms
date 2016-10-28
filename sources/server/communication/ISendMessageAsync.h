@@ -43,9 +43,9 @@ namespace communication
       ///\param [in] command        The extra command 
       ///\param [in] data           The extra command data
       //----------------------------------------------
-      virtual void sendExtraCommandAsync(int pluginId,
-                                         const std::string& command,
-                                         const shared::CDataContainer& data = shared::CDataContainer::EmptyContainer) = 0;
+      virtual void sendExtraQueryAsync(int pluginId,
+                                       const std::string& command,
+                                       const shared::CDataContainer& data = shared::CDataContainer::EmptyContainer) = 0;
 
       //----------------------------------------------
       ///\brief                     Send a manually device creation request to a plugin with a mandatory callback

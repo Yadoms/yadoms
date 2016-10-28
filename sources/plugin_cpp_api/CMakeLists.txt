@@ -20,8 +20,8 @@ set(plugin_cpp_api_SOURCES
    DeviceCommand.cpp
    DeviceConfigurationSchemaRequest.h
    DeviceConfigurationSchemaRequest.cpp
-   ExtraCommand.h
-   ExtraCommand.cpp
+   ExtraQuery.h
+   ExtraQuery.cpp
    ManuallyDeviceCreation.h
    ManuallyDeviceCreation.cpp
    ManuallyDeviceCreationData.h

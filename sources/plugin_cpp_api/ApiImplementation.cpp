@@ -4,7 +4,7 @@
 #include "PluginInformation.h"
 #include "BindingQuery.h"
 #include "DeviceCommand.h"
-#include "ExtraCommand.h"
+#include "ExtraQuery.h"
 #include "ManuallyDeviceCreation.h"
 #include "DeviceConfigurationSchemaRequest.h"
 #include "SetDeviceConfiguration.h"
@@ -157,7 +157,7 @@ namespace plugin_cpp_api
          break;
       case toPlugin::msg::kDeviceCommand: processDeviceCommand(toPluginProtoBuffer.devicecommand());
          break;
-      case toPlugin::msg::kExtraCommand: processExtraCommand(toPluginProtoBuffer.extracommand());
+      case toPlugin::msg::kExtraQuery: processExtraQuery(toPluginProtoBuffer.extraquery());
          break;
       case toPlugin::msg::kDeviceConfigurationSchemaRequest: processDeviceConfigurationSchemaRequest(toPluginProtoBuffer.deviceconfigurationschemarequest());
          break;
@@ -271,10 +271,10 @@ namespace plugin_cpp_api
       m_pluginEventHandler.postEvent(kEventDeviceCommand, command);
    }
 
-   void CApiImplementation::processExtraCommand(const toPlugin::ExtraCommand& msg)
+   void CApiImplementation::processExtraQuery(const toPlugin::ExtraQuery& msg)
    {
-      boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command = boost::make_shared<CExtraCommand>(msg);
-      m_pluginEventHandler.postEvent(kEventExtraCommand, command);
+      boost::shared_ptr<const shared::plugin::yPluginApi::IExtraQuery> command = boost::make_shared<CExtraQuery>(msg);
+      m_pluginEventHandler.postEvent(kEventExtraQuery, command);
    }
 
    void CApiImplementation::processManuallyDeviceCreation(const toPlugin::ManuallyDeviceCreation& msg)
