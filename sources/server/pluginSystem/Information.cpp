@@ -10,7 +10,7 @@ namespace pluginSystem
    CInformation::CInformation(const boost::filesystem::path& pluginPath)
       :m_path(pluginPath),
        m_isSupportedOnThisPlatform(true),
-      m_mustBeInstantiatedOnce(false)
+      m_uniqueInstance(false)
    {
       try
       {
@@ -58,10 +58,10 @@ namespace pluginSystem
          else
             m_supportManuallyCreatedDevice = false;
 
-         if (m_package.containsValue("mustBeInstantiatedOnce"))
-            m_mustBeInstantiatedOnce = m_package.get<bool>("mustBeInstantiatedOnce");
+         if (m_package.containsValue("uniqueInstance"))
+            m_uniqueInstance = m_package.get<bool>("uniqueInstance");
          else
-            m_mustBeInstantiatedOnce = false;
+            m_uniqueInstance = false;
       }
       catch (shared::exception::CException & e)
       {
@@ -140,9 +140,9 @@ namespace pluginSystem
       return m_supportManuallyCreatedDevice;
    }
 
-   bool CInformation::pluginMustBeInstantiatedOnce() const
+   bool CInformation::isUniqueInstance() const
    {
-      return m_mustBeInstantiatedOnce;
+      return m_uniqueInstance;
    }
 
    shared::CDataContainer CInformation::getPackage() const

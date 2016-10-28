@@ -25,6 +25,7 @@ namespace pluginSystem
          std::string getIdentity() const override;
          bool isSupportedOnThisPlatform() const override;
          bool getSupportManuallyCreatedDevice() const override;
+         bool isUniqueInstance() const override;
          shared::CDataContainer getPackage() const override;
          const boost::filesystem::path& getPath() const override;
          // [END] shared::plugin::IInformation implementation

@@ -30,7 +30,7 @@ namespace pluginSystem
       std::string toString() const override;
       bool isSupportedOnThisPlatform() const override;
       bool getSupportManuallyCreatedDevice() const override;
-      bool pluginMustBeInstantiatedOnce() const override;
+      bool isUniqueInstance() const override;
       shared::CDataContainer getPackage() const override;
       const boost::filesystem::path& getPath() const override;
       // [END] shared::plugin::IInformation implementation
@@ -82,9 +82,9 @@ namespace pluginSystem
       bool m_isSupportedOnThisPlatform;
 
       //--------------------------------------------------------------
-      /// \brief	    Flag indicating if the plugin should be instantiated once
+      /// \brief	    Flag indicating if the plugin should be instantiated only one time
       //--------------------------------------------------------------
-      bool m_mustBeInstantiatedOnce;
+      bool m_uniqueInstance;
 
       //--------------------------------------------------------------
       /// \brief	    Package.json content

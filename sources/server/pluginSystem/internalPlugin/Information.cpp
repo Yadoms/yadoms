@@ -81,6 +81,11 @@ namespace pluginSystem
          return false;
       }
 
+      bool CInformation::isUniqueInstance() const
+      {
+         return true;
+      }
+
       shared::CDataContainer CInformation::getPackage() const
       {
          return m_package;

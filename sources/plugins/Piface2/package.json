@@ -9,6 +9,7 @@
       "linux": "supported",
       "others": "unsupported"   
    },
+   "uniqueInstance": "true",
    "supportManuallyDeviceCreation": "false",
    "configurationSchema": {
 	"DI0": {

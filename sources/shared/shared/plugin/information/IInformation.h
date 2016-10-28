@@ -85,10 +85,10 @@ namespace shared
 
 
             //--------------------------------------------------------------
-            /// \brief	    Check if plugin must be instantiated once
+            /// \brief	    Check if plugin must be instantiated only one time
             /// \return     true if it must be, false if not
             //--------------------------------------------------------------
-            virtual bool pluginMustBeInstantiatedOnce() const = 0;
+            virtual bool isUniqueInstance() const = 0;
 
 
             //--------------------------------------------------------------
