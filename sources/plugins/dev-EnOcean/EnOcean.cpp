@@ -25,9 +25,10 @@ enum
 };
 
 
+const shared::CDataContainer CEnOcean::m_deviceConfigurationSchema(createDeviceConfigurationSchema());
+
 CEnOcean::CEnOcean()
-   : m_sentCommand(message::CO_WR_SLEEP),
-     m_deviceConfigurationSchema("{ \"CounterDivider\": { \"type\": \"int\", \"defaultValue\" : \"2\", \"minimumValue\" : \"1\", \"maximumValue\" : \"10\" } }")//TODO
+   : m_sentCommand(message::CO_WR_SLEEP)
 {
 }
 
@@ -108,7 +109,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             try
             {
                auto device = m_api->getDeviceDetails(deviceConfigurationSchemaRequest->device());
-               deviceConfigurationSchemaRequest->sendSuccess(getDeviceConfigurationSchema());
+               deviceConfigurationSchemaRequest->sendSuccess(m_deviceConfigurationSchema);
             }
             catch (shared::exception::CEmptyResult&)
             {
@@ -123,15 +124,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
             auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
-            try
-            {
-               auto device = m_api->getDeviceDetails(deviceConfiguration->device());
-               std::cout << "TODO : new divider = " << deviceConfiguration->configuration().get<int>("CounterDivider") << std::endl;
-            }
-            catch (shared::exception::CEmptyResult&)
-            {
-               std::cerr << "Unable to configure device : unknown device \"" << deviceConfiguration->device() << "\"" << std::endl;
-            }
+            setDeviceConfiguration(deviceConfiguration);
             break;
          }
 
@@ -420,9 +413,59 @@ CDevice CEnOcean::retrieveDevice(const std::string& deviceId) const
                   deviceDetails.get<unsigned int>("type"));
 }
 
-const shared::CDataContainer& CEnOcean::getDeviceConfigurationSchema() const
+shared::CDataContainer CEnOcean::createDeviceConfigurationSchema()
 {
-   return m_deviceConfigurationSchema;
+   shared::CDataContainer manufacturer;
+   manufacturer.set("type", "string");
+
+   shared::CDataContainer model;
+   model.set("type", "string");
+
+   shared::CDataContainer configurationSchema;
+   configurationSchema.set("profile", CProfilesList::list());
+   configurationSchema.set("model", model);
+
+   shared::CDataContainer schema;
+   schema.set("configurationSchema", configurationSchema);
+   return schema;
+}
+
+void CEnOcean::setDeviceConfiguration(boost::shared_ptr<const yApi::ISetDeviceConfiguration> deviceConfiguration)
+{
+   try
+   {
+      auto profile = deviceConfiguration->configuration().get<std::string>("configurationSchema.profile");
+      std::cout << "Device \"" << deviceConfiguration->device() << "\" is configurated as " << profile << std::endl;
+
+      boost::regex pattern("([[:xdigit:]]{2})-([[:xdigit:]]{2})-([[:xdigit:]]{2})");
+      boost::smatch result;
+      if (!boost::regex_search(profile, result, pattern))
+         throw std::invalid_argument("Unsupported profile " + profile);
+
+      std::string rorg(result[1].first, result[1].second);
+      std::string func(result[2].first, result[2].second);
+      std::string type(result[3].first, result[3].second);
+
+      auto device = m_api->getDeviceDetails(deviceConfiguration->device());
+      auto model(deviceConfiguration->configuration().get<std::string>("manufacturer") + std::string(" - ") + deviceConfiguration->configuration().get<std::string>("model"));
+      shared::CDataContainer details;
+      details.set("manufacturer", deviceConfiguration->configuration().get<std::string>("manufacturer"));
+      details.set("rorg", rorg);
+      details.set("func", func);
+      details.set("type", type);
+
+      //TODO mettre à jour la base de donnée (mais comment faire ?)
+      //m_api->declareDevice(erp1Message.senderIdAsString(), model, keywordsToDeclare, details);
+   }
+   catch (shared::exception::CEmptyResult&)
+   {
+      std::cerr << "Unable to configure device : unknown device \"" << deviceConfiguration->device() << "\"" << std::endl;
+   }
+   catch (std::exception& e)
+   {
+      std::cerr << "Unable to configure device : " << e.what() << std::endl;
+   }
+   //TODO ajouter un catch si la regex ne se passe pas bien
 }
 
 void CEnOcean::processResponse(const message::CReceivedEsp3Packet& esp3Packet) const

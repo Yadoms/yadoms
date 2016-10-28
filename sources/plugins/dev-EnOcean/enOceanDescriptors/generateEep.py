@@ -9,7 +9,6 @@ import xml.etree.ElementTree
 import string
 import codecs
 import re
-import json
 
 import cppClass
 import cppHelper
@@ -394,19 +393,14 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
 
 # Device configuration schema
-def configurationSchemaCode():
-   profiles = {}
-   profiles['profiles'] = supportedProfiles
-   configurationSchema = {}
-   configurationSchema['configurationSchema'] = profiles
-   json_data = json.dumps(configurationSchema)
-   code = "   static const shared::CDataContainer profiles(" + json_data + ");\n"
+def profilesListCode():
+   code = "   static const std::vector<std::string> profiles = {" + str(supportedProfiles).strip('[]').replace("\'", "\"") + "};\n"
    code += "   return profiles;\n"
    return code
    
-#configurationSchemaClass = cppClass.CppClass("CDeviceConfigurationSchema", False)
-#cppTypes.append(configurationSchemaClass)
-#configurationSchemaClass.addMethod(cppClass.CppMethod("schema", "const shared::CDataContainer&", "", cppClass.PUBLIC, cppClass.STATIC, configurationSchemaCode())
+profilesListClass = cppClass.CppClass("CProfilesList", False)
+cppTypes.append(profilesListClass)
+profilesListClass.addMethod(cppClass.CppMethod("list", "const std::vector<std::string>&", "", cppClass.PUBLIC, cppClass.STATIC, profilesListCode()))
 
 
 # Generate Header

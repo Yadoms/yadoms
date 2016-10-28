@@ -187,7 +187,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             if (command->getKeyword().empty())
                std::cout << "Specific command for a device (can be used for any purpose, unless keyword driving, device configuration (see kGetDeviceConfigurationSchemaRequest and kSetDeviceConfiguration documentation) and deletion" << std::endl;
             else
-               std::cout << "Standard command to a keyword (used to drive a switch, a thermostat..." << std::endl;
+               std::cout << "Standard command to a keyword (used to drive a switch, a thermostat...)" << std::endl;
             break;
          }
 

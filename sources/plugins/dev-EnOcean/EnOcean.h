@@ -95,8 +95,14 @@ protected:
    /// \brief	                     Get the device configuration schema
    /// \return                      The device configuration schema
    //--------------------------------------------------------------
-   const shared::CDataContainer& getDeviceConfigurationSchema() const;
+   static shared::CDataContainer createDeviceConfigurationSchema();
 
+   //--------------------------------------------------------------
+   /// \brief	                     Get the device configuration schema
+   /// \return                      The device configuration schema
+   //--------------------------------------------------------------
+   void setDeviceConfiguration(boost::shared_ptr<const yApi::ISetDeviceConfiguration> deviceConfiguration);
+   
    //--------------------------------------------------------------
    /// \brief	                     Requests to EnOcean
    //--------------------------------------------------------------
@@ -155,6 +161,6 @@ private:
    //--------------------------------------------------------------
    /// \brief  The last sent command
    //--------------------------------------------------------------
-   shared::CDataContainer m_deviceConfigurationSchema;
+   static const shared::CDataContainer m_deviceConfigurationSchema;
 };
 
