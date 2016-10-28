@@ -95,77 +95,75 @@
         //we display the modal
         $('div#new-widget-modal').modal({ backdrop: 'static' });
         
-        var deferredArray = [];
-		
 		var WidgetList = [];
+		var developerMode = null;
+		
+		// Reading of the developerMode information
+		var deferred = YadomsInformationManager.getList();
+		deferred.done( function (data) {
+		        developerMode = data.developerMode;
+			}
+		);
+		
+		$.when(deferred)
+		   .done(function () {
+		
+			for (var index in WidgetPackageManager.widgetPackages) {
+				if (WidgetPackageManager.widgetPackages.hasOwnProperty(index)) {
+					var value = WidgetPackageManager.widgetPackages[index].package;
 
-        for (var index in WidgetPackageManager.widgetPackages) {
-            if (WidgetPackageManager.widgetPackages.hasOwnProperty(index)) {
-                var value = WidgetPackageManager.widgetPackages[index].package;
+					if ((!value.type.startsWith("system-")) && ((developerMode) || (!value.type.startsWith("dev-")))) {
+						var i18NContext = value.type + ":";
+						
+						// Add all widgets into a list
+						WidgetList.push ( {displayName: $.t("widgets/" + i18NContext + "name"), type: value.type} );
+					}
 
-                var deferred = YadomsInformationManager.getList();
-                deferredArray.push(deferred);
-                deferred.done(function (currPakage) {
-                    var currentPackage = currPakage;
-                    return function (data) {
-                        if ((!currentPackage.type.startsWith("system-")) && ((data.developerMode) || (!currentPackage.type.startsWith("dev-")))) {
-                            var i18NContext = currentPackage.type + ":";
-							
-							// Add all widgets into a list
-							WidgetList.push ( {displayName: $.t("widgets/" + i18NContext + "name"), type: currentPackage.type} );
-                        }
-
-                        //we translate the new item
-                        $("ul#ul-add-widget:last-child").i18n();
-                    }
-                }(value));
-            }
-        }
-
-        //when we have finished request all widget we can enable buttons
-        $.whenAll(deferredArray)
-            .done(function () {
-			
-			    //sort all widgets
-				WidgetList = sortListItemsWithdisplayName ( WidgetList );
+					//we translate the new item
+					$("ul#ul-add-widget:last-child").i18n();
+				}
+			}
 				
-				//display all widgets
-				$.each(WidgetList, function(index, value) {
-					$("ul#ul-add-widget").append(
-						"<li>" +
-						"<button type=\"button\" class=\"btn-select-widget btn btn-default\" widget-type=\"" + value.type + "\">" +
-						"<div class=\"widget-preview\" ><img src=\"/widgets/" + value.type + "/preview.png\"></div>" +
-						"<span class=\"widget-name\" \">" + value.displayName + "</span>" +
-						"</button>" +
-						"</li>"
-					);
-				});
+			//sort all widgets
+			WidgetList = sortListItemsWithdisplayName ( WidgetList );
 			
-                $("button.btn-select-widget").unbind().bind('click', function (e) {
-                    var type = $(e.currentTarget).attr("widget-type");
-                    if (!isNullOrUndefined(type)) {
-                        var value = WidgetPackageManager.widgetPackages[type].package;
-                        if (!isNullOrUndefined(value)) {
-                            $("button#btn-close-details").removeClass("hidden");
+			//display all widgets
+			$.each(WidgetList, function(index, value) {
+				$("ul#ul-add-widget").append(
+					"<li>" +
+					"<button type=\"button\" class=\"btn-select-widget btn btn-default\" widget-type=\"" + value.type + "\">" +
+					"<div class=\"widget-preview\" ><img src=\"/widgets/" + value.type + "/preview.png\"></div>" +
+					"<span class=\"widget-name\" \">" + value.displayName + "</span>" +
+					"</button>" +
+					"</li>"
+				);
+			});
+		
+			$("button.btn-select-widget").unbind().bind('click', function (e) {
+				var type = $(e.currentTarget).attr("widget-type");
+				if (!isNullOrUndefined(type)) {
+					var value = WidgetPackageManager.widgetPackages[type].package;
+					if (!isNullOrUndefined(value)) {
+						$("button#btn-close-details").removeClass("hidden");
 
-                            //we show more details about the widget
-                            var $detailsDiv = $("div#add-widget-details");
-                            $detailsDiv.attr("widget-type", type);
+						//we show more details about the widget
+						var $detailsDiv = $("div#add-widget-details");
+						$detailsDiv.attr("widget-type", type);
 
-                            //we fill the details div
-                            $detailsDiv.find("img").attr("src", "/widgets/" + value.type + "/preview.png");
-                            $detailsDiv.find("span.widget-name").text($.t("widgets/" + type + ":name", { defaultValue: value.name }));
-                            $detailsDiv.find("td.widget-description").text($.t("widgets/" + type + ":description", { defaultValue: value.description }));
-                            $detailsDiv.find("td.widget-version").text(value.version);
-                            $detailsDiv.find("td.widget-author").text(value.author);
+						//we fill the details div
+						$detailsDiv.find("img").attr("src", "/widgets/" + value.type + "/preview.png");
+						$detailsDiv.find("span.widget-name").text($.t("widgets/" + type + ":name", { defaultValue: value.name }));
+						$detailsDiv.find("td.widget-description").text($.t("widgets/" + type + ":description", { defaultValue: value.description }));
+						$detailsDiv.find("td.widget-version").text(value.version);
+						$detailsDiv.find("td.widget-author").text(value.author);
 
-                            $detailsDiv.fadeIn();
-                        }
-                    }
-                });
+						$detailsDiv.fadeIn();
+					}
+				}
+			});
 
-                $("button#btn-confirm-add-widget").removeClass("disabled");
-            });
+			$("button#btn-confirm-add-widget").removeClass("disabled");
+		});
 
         /**
          * Callback to the click of the button to return to the list of widgets
