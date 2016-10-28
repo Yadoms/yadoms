@@ -9,6 +9,11 @@
 PluginManager.pluginTypes = [];
 
 /**
+ * The list of plugin packages
+ */
+PluginInstanceManager.packageList = [];
+
+/**
  * Factory which create objects from json data
  * @param json The json data
  * @returns {Plugin} List of plugins
@@ -21,7 +26,7 @@ PluginManager.factory = function (json) {
 /**
  * Function which list all available plugins with their packages
  */
-PluginManager.get = function () {
+PluginManager.getAll = function () {
 
    var d = new $.Deferred();
 

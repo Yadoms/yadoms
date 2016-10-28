@@ -314,7 +314,7 @@
                Yadoms.modals.mainDashboard.loadAsync()
                .done(function () {
                     //before showing the dashboard we update many cache informations
-                   PluginManager.get()
+                   PluginManager.getAll()
                    .done(function () {
                         $('#main-dashboard-modal').modal({ backdrop: 'static' });
                         $('#main-dashboard-modal').off('hidden.bs.modal').on('hidden.bs.modal', function () {

@@ -485,7 +485,7 @@
     function fillPluginList() {
         var d = new $.Deferred();
         //we launch requests
-        PluginManager.get()
+        PluginManager.getAll()
         .done(function (localList) {
             buildList("plugin", localList).always(d.resolve);
         })
