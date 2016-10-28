@@ -1,17 +1,17 @@
-#add-widget-list {
+#add-element-list {
     height: 350px;
     overflow-x: hidden;
     overflow-y: auto;
 }
-#ul-add-widget {
+#ul-add-element {
     list-style: none;
 }
 
-.widget-name:first-letter {
+.element-name:first-letter {
     text-transform: uppercase;
 }
 
-#ul-add-widget li button {
+#ul-add-element li button {
     width: 30%;
     float: left;
     height: 115px;
@@ -23,17 +23,17 @@
     margin: 5px;
 }
 
-#ul-add-widget li img {
+#ul-add-element li img {
     max-width: 100%;
     max-height: 100%;
     margin-top: 0;
 }
 
-.widget-preview {
+.element-preview {
     height: 80%;
 }
 
-.widget-name {
+.element-name {
     height: 20%;
     display: block;
 }
