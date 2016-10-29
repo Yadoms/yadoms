@@ -1,17 +1,29 @@
 {
-	"name": "EnOcean",
-	"description": "EnOcean devices support",
-	"configurationSchema": {
-		"SerialPort": {
-			"name": "Serial port",
-			"description": "The (virtual) serial port connected to the EnOcean USB stick"
-		}
-	},
-	"customLabels": {
-		"pluginState": {
-			"connecting": "Connecting...",
-			"connectionFailed": "Connection failed, will retry in a while...",
-			"updateConfiguration": "Configuration updating..."
-		}
-	}
+  "name": "EnOcean",
+  "description": "EnOcean devices support",
+  "configurationSchema": {
+    "SerialPort": {
+      "name": "Serial port",
+      "description": "The (virtual) serial port connected to the EnOcean USB stick"
+    }
+  },
+  "deviceConfigurationSchema": {
+    "configurationSchema": {
+      "profile": {
+        "name": "Profile",
+        "description": "Select the device profile, normaly provided on the device label or manual"
+      },
+      "model": {
+        "name": "Model",
+        "description":  "Enter here the model of your device" 
+      } 
+    }
+  },
+  "customLabels": {
+    "pluginState": {
+      "connecting": "Connecting...",
+      "connectionFailed": "Connection failed, will retry in a while...",
+      "updateConfiguration": "Configuration updating..."
+    }
+  }
 }

@@ -7,6 +7,18 @@
 			"description": "Le port série (virtuel) connecté au stick USB EnOcean"
 		}
 	},
+  "deviceConfigurationSchema": {
+    "configurationSchema": {
+      "profile": {
+        "name": "Profil",
+        "description": "Sélectionner le profil de l'équipement, tel qu'indiqué sur l'étiquette ou dans le manuel utilisateur"
+      },
+      "model": {
+        "name": "Modèle",
+        "description":  "Saisir ici le modèle de l'équipement" 
+      } 
+    }
+  },
 	"customLabels": {
 		"pluginState": {
 			"connecting": "Connexion en cours...",

@@ -108,7 +108,6 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             auto deviceConfigurationSchemaRequest = m_api->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest>>();
             try
             {
-               auto device = m_api->getDeviceDetails(deviceConfigurationSchemaRequest->device());
                deviceConfigurationSchemaRequest->sendSuccess(m_deviceConfigurationSchema);
             }
             catch (shared::exception::CEmptyResult&)
