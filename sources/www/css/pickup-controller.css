@@ -38,7 +38,7 @@
     display: block;
 }
 
-#pickup-details {
+#add-pickup-details {
     right: 0;
     left: 0;
     top: 0;
@@ -52,44 +52,44 @@
     display: none;
 }
 
-#pickup-details .header {
+#add-pickup-details .header {
     height: 110px;
     text-align: center;
     font-size: 36px;
 }
 
-#pickup-details .row {
+#add-pickup-details .row {
     margin: 10px;
     display: flex;
     align-items: center;    
 }
 
-#pickup-details .cell {
+#add-pickup-details .cell {
     display:inline-block;
     vertical-align:middle;
 }
 
-#pickup-details img {
+#add-pickup-details img {
     max-width: 100%;
     max-height: 120px;
     border: 1px solid #808080;
 }
 
-#pickup-details .table-responsive {
+#add-pickup-details .table-responsive {
     width: 70%;
     -ms-border-radius: 3px;
     border-radius: 3px;
 }
 
-#pickup-details .table-responsive td {
+#add-pickup-details .table-responsive td {
     border: none;
 }
 
-#pickup-details .table-responsive .header-info {
+#add-pickup-details .table-responsive .header-info {
     text-align: right;
     color: #808080;
 }
 
-#add-widget-details .table-responsive .detail-info {
+#add-element-details .table-responsive .detail-info {
     text-align: left;
 }

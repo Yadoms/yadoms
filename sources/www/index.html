@@ -99,7 +99,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
 	<script src="libs/bowser-1.3.0/js/bowser.min.js"></script>
-    <script src="libs/jquery/js/jquery-2.2.0.min.js"></script>
+    <script src="libs/jquery/js/jquery-2.2.4.min.js"></script>
     <!-- must be included before bootstrap -->
     <script src="libs/jquery-ui/js/jquery-ui.min.js"></script>
     <script src="libs/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
@@ -254,6 +254,7 @@
                                 //we check for page. If there is no page, we create a new one automatically
                                 PageManager.getAll()
                                 .done(function () {
+								   console.log ("PageManager.pages.length");
                                    if (PageManager.pages.length === 0) {
                                       console.info("Creating a default page");
                                       PageManager.createPage($.t("initialization.homePage"), 0)

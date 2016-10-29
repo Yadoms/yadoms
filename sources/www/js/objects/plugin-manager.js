@@ -6,11 +6,6 @@
  * This associative array based on plugin Type contains all plugin type information with their package
  * @type {Array}
  */
-//PluginManager.pluginTypes = [];
-
-/**
- * The list of plugin packages
- */
 PluginInstanceManager.packageList = [];
 
 /**
@@ -35,30 +30,40 @@ PluginManager.getAll = function () {
       //we've got a list of plugin type. For each of one we download the package.json
       PluginManager.packageList = [];
       i18n.options.resGetPath = '__ns__/locales/__lng__.json';
-
+	  
       var arrayOfDeffered = [];
       $.each(data.plugins, function (index, pluginType) {
          i18n.loadNamespace("plugins/" + pluginType);
 
          var deffered = PluginManager.downloadPackage(pluginType);
-         arrayOfDeffered.push(deffered);
+		 arrayOfDeffered.push(deffered);
+		 
          deffered.done(function (package) {
+			
+			var defferedDownload = new $.Deferred();
             PluginManager.packageList[pluginType] = PluginManager.factory(package);
+			defferedDownload.resolve();
          })
          .fail(function (error) {
+			defferedDownload.reject();
             notifyError($.t("objects.pluginInstance.errorGettingPackage", { pluginName: pluginType }), error);
          });
       });
 
-      $.whenAll(arrayOfDeffered).done(function () {
-         i18n.options.resGetPath = "locales/__lng__.json";
-         d.resolve(PluginManager.packageList);
-      });
+      $.whenAll(arrayOfDeffered)
+	     .done(function () {
+            i18n.options.resGetPath = "locales/__lng__.json";
+            d.resolve(PluginManager.packageList);
+         })
+		 .fail(function (error) {
+			d.reject();
+         });
    })
    .fail(function (error) {
       notifyError($.t("objects.plugin.errorListing"), error);
       d.reject();
    });
+   
    return d.promise();
 };
 

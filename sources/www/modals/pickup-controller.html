@@ -9,16 +9,16 @@
                 <h4 class="modal-title" id="myModalLabel" data-i18n="modals.add-widget.title">Add a new Widget</h4>
             </div>
             <div class="modal-body">
-                <div id="pickup-details" widget-type="">
+                <div id="add-pickup-details" widget-type="">
                     <div class="row header">
                         <div class="col-xs-4 cell">
                             <img alt="" />
                         </div>
                         <div class="col-xs-4 cell">
-                            <h1><span class="instance-name"></span></h1>
+                            <h1><span class="element-name"></span></h1>
                         </div>
                         <div class="col-xs-4 cell">
-                            <button id="btn-confirm-add-instance" type="button" class="btn btn-success disabled">
+                            <button id="btn-confirm-add-element" type="button" class="btn btn-success disabled">
                                 <i class="fa fa-plus"></i>&nbsp;
                                 <span data-i18n="modals.add-widget.add"></span>
                             </button>
@@ -67,9 +67,11 @@ function PickupControl() {
 * Ask for packages to the REST server
 */
 
-Yadoms.askPackages = function (instanceManager) {
+Yadoms.askPackages = function (elements, instanceManager, thumbnail) {
    instanceManager.getAll()
-           .done(requestInformationDone(instanceManager))
+           .done(function (data){
+		      requestInformationDone(elements, instanceManager, thumbnail)
+		   })
            .fail(function (error) {
                notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), error);
            });		
@@ -79,7 +81,7 @@ Yadoms.askPackages = function (instanceManager) {
      * Callback of the request elements
      * @returns {Function}
      */
-    function requestInformationDone(instanceManager) {
+    function requestInformationDone(elements, instanceManager, thumbnail) {
 	    //if the details is visible, we must hide it
         var $detailsDiv = $("div#add-pickup-details");
         $detailsDiv.hide();	
@@ -123,7 +125,7 @@ Yadoms.askPackages = function (instanceManager) {
 						var i18NContext = value.type + ":";
 						
 						// Add all package into a list
-						packageList.push ( {displayName: $.t("plugins/" + i18NContext + "name"), type: value.type} ); //TODO : widgets
+						packageList.push ( {displayName: $.t(elements + "/" + i18NContext + "name"), type: value.type} ); //TODO : widgets
 					}
 
 					//we translate the new item
@@ -138,135 +140,64 @@ Yadoms.askPackages = function (instanceManager) {
 			$.each(packageList, function(index, value) {
 				$("ul#ul-add-element").append(
 					"<li>" +
-					"<button type=\"button\" class=\"btn-select-widget btn btn-default\" widget-type=\"" + value.type + "\">" +
-					"<div class=\"element-preview\" ><img src=\"/plugins/" + value.type + "/icon.png\"></div>" +    //TODO : widgets  // preview.png
+					"<button type=\"button\" class=\"btn-select-element btn btn-default\" element-type=\"" + value.type + "\">" +
+					"<div class=\"element-preview\" ><img src=\"/" + elements + "/" + value.type + "/" + thumbnail + "\"></div>" +    //TODO : widgets  // preview.png
 					"<span class=\"element-name\" \">" + value.displayName + "</span>" +
 					"</button>" +
 					"</li>"
 				);
 			});
-        });			
-	}
-
-    /**
-     * Callback of the request widget packages
-     * @returns {Function}
-     */
-    function requestWidgetsTypeDone() {
-        //if the details is visible, we must hide it
-        var $detailsDiv = $("div#pickup-details");
-        $detailsDiv.hide();
-
-        //we replace the "go back" button by the "Get more" one
-
-        /*Show button when something behind is available (see similar comments)
-        $("button#btn-get-more-widget").removeClass("hidden");
-        */
-        $("button#btn-close-details").addClass("hidden");
-
-        $("ul#ul-add-widget").empty();
-
-        //we translate the container
-        $("ul#ul-add-widget").i18n();
-
-        //we display the modal
-        $('div#new-widget-modal').modal({ backdrop: 'static' });
-        
-		var packageList = [];
-		var developerMode = null;
-		
-		// Reading of the developerMode information
-		var deferred = YadomsInformationManager.getList();
-		deferred.done( function (data) {
-		        developerMode = data.developerMode;
-			}
-		);
-		
-		$.when(deferred)
-		   .done(function () {
-		
-			for (var index in WidgetPackageManager.packageList) {
-				if (WidgetPackageManager.packageList.hasOwnProperty(index)) {
-					var value = WidgetPackageManager.packageList[index].package;
-					
-					if ((!value.type.startsWith("system-")) && ((developerMode) || (!value.type.startsWith("dev-")))) {
-						var i18NContext = value.type + ":";
-						
-						// Add all widgets into a list
-						packageList.push ( {displayName: $.t("widgets/" + i18NContext + "name"), type: value.type} );
-					}
-
-					//we translate the new item
-					$("ul#ul-add-widget:last-child").i18n();
-				}
-			}
+			
+			$("button.btn-select-element").unbind().bind('click', function (e) {
+				var type = $(e.currentTarget).attr("element-type");
 				
-			//sort all widgets
-			packageList = sortListItemsWithdisplayName ( WidgetList );
-			
-			//display all widgets
-			$.each(packageList, function(index, value) {
-				$("ul#ul-add-widget").append(
-					"<li>" +
-					"<button type=\"button\" class=\"btn-select-widget btn btn-default\" widget-type=\"" + value.type + "\">" +
-					"<div class=\"widget-preview\" ><img src=\"/widgets/" + value.type + "/preview.png\"></div>" +
-					"<span class=\"widget-name\" \">" + value.displayName + "</span>" +
-					"</button>" +
-					"</li>"
-				);
+				if (!isNullOrUndefined(type)) {
+					var value = instanceManager.packageList[type].package;
+					if (!isNullOrUndefined(value)) {
+						$("button#btn-close-details").removeClass("hidden");
+
+						//we show more details about the element
+						var $detailsDiv = $("div#add-pickup-details");
+						$detailsDiv.attr("element-type", type);
+
+						//we fill the details div
+						$detailsDiv.find("img").attr("src", "/" + elements + "/" + value.type + "/" + thumbnail);
+						$detailsDiv.find("span.element-name").text($.t( elements + "/" + type + ":name", { defaultValue: value.name }));
+						$detailsDiv.find("td.element-description").text($.t( elements + "/" + type + ":description", { defaultValue: value.description }));
+						$detailsDiv.find("td.element-version").text(value.version);
+						$detailsDiv.find("td.element-author").text(value.author);
+
+						$detailsDiv.fadeIn();
+					}
+				}
 			});
-			
-			/*
-                $("button.btn-select-widget").unbind().bind('click', function (e) {
-                    var type = $(e.currentTarget).attr("widget-type");
-                    if (!isNullOrUndefined(type)) {
-                        var value = WidgetPackageManager.widgetPackages[type].package;
-                        if (!isNullOrUndefined(value)) {
-                            $("button#btn-close-details").removeClass("hidden");
 
-                            //we show more details about the widget
-                            var $detailsDiv = $("div#pickup-details");
-                            $detailsDiv.attr("widget-type", type);
-
-                            //we fill the details div
-                            $detailsDiv.find("img").attr("src", "/widgets/" + value.type + "/preview.png");
-                            $detailsDiv.find("span.widget-name").text($.t("widgets/" + type + ":name", { defaultValue: value.name }));
-                            $detailsDiv.find("td.widget-description").text($.t("widgets/" + type + ":description", { defaultValue: value.description }));
-                            $detailsDiv.find("td.widget-version").text(value.version);
-                            $detailsDiv.find("td.widget-author").text(value.author);
-
-                            $detailsDiv.fadeIn();
-                        }
-                    }
-                });*/
-
-                //$("button#btn-confirm-add-widget").removeClass("disabled");
-            });
-
+			$("button#btn-confirm-add-element").removeClass("disabled");			
+        });	
+		
         /**
          * Callback to the click of the button to return to the list of widgets
          */
         $("button#btn-close-details").click(function () {
-            var $detailsDiv = $("div#pickup-details");
+            var $detailsDiv = $("div#add-pickup-details");
             $detailsDiv.fadeOut();
             $("button#btn-close-details").addClass("hidden");
-        });
-
+        });		
+		
         /**
-         * Callback to the click of the button to confirm an add of a new widget
+         * Callback to the click of the button to confirm an add of a new element
          */
-        $("button#btn-confirm-add-widget").unbind("click").bind("click", function () {
+        $("button#btn-confirm-add-element").unbind("click").bind("click", function () {
             var currentPage = PageManager.getCurrentPage();
             assert(!isNullOrUndefined(currentPage), "A page must be selected");
 
             $("button#btn-close-details").addClass("hidden");
-            //we close the new widget modal and wait for the modal being closed before continuing
+            //we close the new modal and wait for the modal being closed before continuing
+            $("div#new-pickup-modal").on("hidden.bs.modal", function () {
+                $("div#new-pickup-modal").unbind("hidden.bs.modal");
+                var $detailsDiv = $("div#add-pickup-details");
 
-            $("div#new-widget-modal").on("hidden.bs.modal", function () {
-                $("div#new-widget-modal").unbind("hidden.bs.modal");
-                var $detailsDiv = $("div#pickup-details");
-
-                var packageName = $detailsDiv.attr("widget-type");
+                var packageName = $detailsDiv.attr("element-type");
 
                 if (packageName) {
 
@@ -274,7 +205,7 @@ Yadoms.askPackages = function (instanceManager) {
                     var minX = 1;
                     var minY = 1;
 
-                    var pkg = WidgetPackageManager.widgetPackages[packageName].package;
+                    var pkg = instanceManager.packageList[packageName].package;
 
                     try {
                         minX = pkg.dimensions.min.x;
@@ -305,6 +236,7 @@ Yadoms.askPackages = function (instanceManager) {
                     assert(!isNullOrUndefined(currentPage), "A page must be selected");
 
                     //we create a fake widget to display configuration form
+					// TODO : Change !!
                     var newWidget = new Widget(-1, currentPage.id, packageName, "", sizeX * Yadoms.gridWidth, sizeY * Yadoms.gridHeight, 0, 0, "");
 
                     newWidget.package = pkg;
@@ -324,7 +256,7 @@ Yadoms.askPackages = function (instanceManager) {
                 }
             });
 
-            $("div#new-widget-modal").modal("hide");
+            $("div#new-pickup-modal").modal("hide");
         });
     }
 
