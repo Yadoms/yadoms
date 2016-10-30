@@ -36,6 +36,83 @@ function initializeWidgetEngine() {
             notifyError($.t("objects.lazyLoaderManager.unableToLoadModal", { modalPath: self.modalPath }), error);
         });
     });
+	
+	function createobject(packageName) {
+		
+		if (packageName) {
+
+			//we get default size of the widget
+			var minX = 1;
+			var minY = 1;
+
+			var pkg = WidgetPackageManager.packageList[packageName].package;
+
+			try {
+				minX = pkg.dimensions.min.x;
+				minY = pkg.dimensions.min.y;
+			} catch (err) {
+			}
+
+			var maxX = Infinity;
+			var maxY = Infinity;
+			try {
+				maxX = pkg.dimensions.max.x;
+				maxY = pkg.dimensions.max.y;
+			} catch (err) {
+			}
+
+			var defaultX = 1;
+			var defaultY = 1;
+			try {
+				defaultX = pkg.dimensions.default.x;
+				defaultY = pkg.dimensions.default.y;
+			} catch (err) {
+			}
+
+			var sizeX = Math.min(maxX, Math.max(defaultX, minX));
+			var sizeY = Math.min(maxY, Math.max(defaultY, minY));
+
+			var currentPage = PageManager.getCurrentPage();
+			assert(!isNullOrUndefined(currentPage), "A page must be selected");		
+		
+			//we create a fake widget to display configuration form
+			var newWidget = new Widget(-1, currentPage.id, packageName, "", sizeX * Yadoms.gridWidth, sizeY * Yadoms.gridHeight, 0, 0, "");
+
+			newWidget.package = pkg;
+			//we load configuration window only if the widget has a configuration
+			if (!isNullOrUndefined(newWidget.package.configurationSchema)) {
+				Yadoms.modals.widgetConfiguration.loadAsync()
+					.done(function () {
+						Yadoms.configureWidget(newWidget, function () {
+							//if the configuration has been validated we can create the widget
+							createWidget(newWidget, currentPage);
+						});
+					});
+			} else {
+				//we directly create the widget
+				createWidget(newWidget, currentPage);
+			}
+		}
+	}
+	
+    function createWidget(newWidget, currentPage) {
+        WidgetManager.createWidget(newWidget)
+        .done(function (w) {
+            //we indicate taht the widget has never been placed on
+            w.position = 1000;
+            WidgetManager.loadWidget(w, currentPage, true)
+            .done(function () {
+                //we update the filter for the websocket
+                updateWebSocketFilter();
+            })
+              .fail(function (errorMessage) {
+                  notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": newWidget.type }), errorMessage);
+              });
+        })
+        .fail(function (errorMessage) {
+            notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": newWidget.type }), errorMessage);
+        });
+    }	
 
     //we ask all widgets packages
     WidgetPackageManager.getAll()

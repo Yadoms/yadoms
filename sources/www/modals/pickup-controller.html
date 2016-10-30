@@ -67,10 +67,11 @@ function PickupControl() {
 * Ask for packages to the REST server
 */
 
-Yadoms.askPackages = function (elements, instanceManager, thumbnail) {
+Yadoms.askPackages = function (elements, instanceManager, thumbnail, callback) {
+   assert($.isFunction(callback), "callback must be defined");
    instanceManager.getAll()
            .done(function (data){
-		      requestInformationDone(elements, instanceManager, thumbnail)
+		      requestInformationDone(elements, instanceManager, thumbnail, callback)
 		   })
            .fail(function (error) {
                notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), error);
@@ -81,7 +82,7 @@ Yadoms.askPackages = function (elements, instanceManager, thumbnail) {
      * Callback of the request elements
      * @returns {Function}
      */
-    function requestInformationDone(elements, instanceManager, thumbnail) {
+    function requestInformationDone(elements, instanceManager, thumbnail, callback) {
 	    //if the details is visible, we must hide it
         var $detailsDiv = $("div#add-pickup-details");
         $detailsDiv.hide();	
@@ -96,8 +97,6 @@ Yadoms.askPackages = function (elements, instanceManager, thumbnail) {
         $('div#new-pickup-modal').modal({ backdrop: 'static' });
         
         var deferredArray = [];
-
-        console.log ("element list", instanceManager.packageList);
 		
 		var packageList = [];
 		var developerMode = null;
@@ -112,20 +111,15 @@ Yadoms.askPackages = function (elements, instanceManager, thumbnail) {
 		$.when(deferred)
 		   .done(function () {
 		
-		    console.log ( "deferred" );
-		
 			for (var index in instanceManager.packageList) {
-			    console.log ("index :", index);
 				if (instanceManager.packageList.hasOwnProperty(index)) {
 					var value = instanceManager.packageList[index].package;
-					
-					console.log ("value :", value);
 					
 					if ((!value.type.startsWith("system-")) && ((developerMode) || (!value.type.startsWith("dev-")))) {
 						var i18NContext = value.type + ":";
 						
 						// Add all package into a list
-						packageList.push ( {displayName: $.t(elements + "/" + i18NContext + "name"), type: value.type} ); //TODO : widgets
+						packageList.push ( {displayName: $.t(elements + "/" + i18NContext + "name"), type: value.type} );
 					}
 
 					//we translate the new item
@@ -141,7 +135,7 @@ Yadoms.askPackages = function (elements, instanceManager, thumbnail) {
 				$("ul#ul-add-element").append(
 					"<li>" +
 					"<button type=\"button\" class=\"btn-select-element btn btn-default\" element-type=\"" + value.type + "\">" +
-					"<div class=\"element-preview\" ><img src=\"/" + elements + "/" + value.type + "/" + thumbnail + "\"></div>" +    //TODO : widgets  // preview.png
+					"<div class=\"element-preview\" ><img src=\"/" + elements + "/" + value.type + "/" + thumbnail + "\"></div>" +  
 					"<span class=\"element-name\" \">" + value.displayName + "</span>" +
 					"</button>" +
 					"</li>"
@@ -199,83 +193,11 @@ Yadoms.askPackages = function (elements, instanceManager, thumbnail) {
 
                 var packageName = $detailsDiv.attr("element-type");
 
-                if (packageName) {
-
-                    //we get default size of the widget
-                    var minX = 1;
-                    var minY = 1;
-
-                    var pkg = instanceManager.packageList[packageName].package;
-
-                    try {
-                        minX = pkg.dimensions.min.x;
-                        minY = pkg.dimensions.min.y;
-                    } catch (err) {
-                    }
-
-                    var maxX = Infinity;
-                    var maxY = Infinity;
-                    try {
-                        maxX = pkg.dimensions.max.x;
-                        maxY = pkg.dimensions.max.y;
-                    } catch (err) {
-                    }
-
-                    var defaultX = 1;
-                    var defaultY = 1;
-                    try {
-                        defaultX = pkg.dimensions.default.x;
-                        defaultY = pkg.dimensions.default.y;
-                    } catch (err) {
-                    }
-
-                    var sizeX = Math.min(maxX, Math.max(defaultX, minX));
-                    var sizeY = Math.min(maxY, Math.max(defaultY, minY));
-
-                    var currentPage = PageManager.getCurrentPage();
-                    assert(!isNullOrUndefined(currentPage), "A page must be selected");
-
-                    //we create a fake widget to display configuration form
-					// TODO : Change !!
-                    var newWidget = new Widget(-1, currentPage.id, packageName, "", sizeX * Yadoms.gridWidth, sizeY * Yadoms.gridHeight, 0, 0, "");
-
-                    newWidget.package = pkg;
-                    //we load configuration window only if the widget has a configuration
-                    if (!isNullOrUndefined(newWidget.package.configurationSchema)) {
-                        Yadoms.modals.widgetConfiguration.loadAsync()
-                            .done(function () {
-                                Yadoms.configureWidget(newWidget, function () {
-                                    //if the configuration has been validated we can create the widget
-                                    createWidget(newWidget, currentPage);
-                                });
-                            });
-                    } else {
-                        //we directly create the widget
-                        createWidget(newWidget, currentPage);
-                    }
-                }
+				// creation function specific for each type
+			    callback(packageName, instanceManager.packageList[packageName]);
             });
 
             $("div#new-pickup-modal").modal("hide");
-        });
-    }
-
-    function createWidget(newWidget, currentPage) {
-        WidgetManager.createWidget(newWidget)
-        .done(function (w) {
-            //we indicate taht the widget has never been placed on
-            w.position = 1000;
-            WidgetManager.loadWidget(w, currentPage, true)
-            .done(function () {
-                //we update the filter for the websocket
-                updateWebSocketFilter();
-            })
-              .fail(function (errorMessage) {
-                  notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": newWidget.type }), errorMessage);
-              });
-        })
-        .fail(function (errorMessage) {
-            notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", { "widgetType": newWidget.type }), errorMessage);
         });
     }
 
