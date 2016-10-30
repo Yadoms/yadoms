@@ -28,16 +28,22 @@ function initializeWidgetEngine() {
          * Make lazy loading of the add widget modal
          */
     $("#btn-add-widget").click(function () {
-        Yadoms.modals.widgetAdd.loadAsync()
-         .done(function () {
-             Yadoms.askWidgetPackages();
-         })
-        .fail(function (error) {
+      Yadoms.modals.pickupController.loadAsync()
+      .done(function () {
+	     //search all plugin information
+	     Yadoms.askPackages( "widgets",
+		                     WidgetPackageManager,
+		                     "preview.png",   // Name of thumbnail
+							 "modals.add-widget.title",
+							 createobject
+							);
+        })
+		.fail(function (error) {
             notifyError($.t("objects.lazyLoaderManager.unableToLoadModal", { modalPath: self.modalPath }), error);
         });
     });
 	
-	function createobject(packageName) {
+	function createobject(packageName, widgetType) {
 		
 		if (packageName) {
 
@@ -45,7 +51,7 @@ function initializeWidgetEngine() {
 			var minX = 1;
 			var minY = 1;
 
-			var pkg = WidgetPackageManager.packageList[packageName].package;
+			var pkg = widgetType.package;
 
 			try {
 				minX = pkg.dimensions.min.x;

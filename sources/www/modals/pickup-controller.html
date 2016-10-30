@@ -6,7 +6,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel" data-i18n="modals.add-widget.title">Add a new Widget</h4>
+                <h4 class="modal-title" id="myModalLabel"></h4> <!-- data-i18n="modals.add-widget.title" -->
             </div>
             <div class="modal-body">
                 <div id="add-pickup-details" widget-type="">
@@ -20,7 +20,7 @@
                         <div class="col-xs-4 cell">
                             <button id="btn-confirm-add-element" type="button" class="btn btn-success disabled">
                                 <i class="fa fa-plus"></i>&nbsp;
-                                <span data-i18n="modals.add-widget.add"></span>
+                                <span data-i18n="modals.pickup.add"></span>
                             </button>
                         </div>
                     </div>
@@ -28,15 +28,15 @@
                         <div class="table-responsive">
                             <table class="table">
                                 <tr>
-                                    <td class="header-info" data-i18n="modals.add-widget.descriptionHeader"></td>
+                                    <td class="header-info" data-i18n="modals.pickup.descriptionHeader"></td>
                                     <td class="detail-info element-description"></td>
                                 </tr>
                                 <tr>
-                                    <td class="header-info" data-i18n="modals.add-widget.versionHeader"></td>
+                                    <td class="header-info" data-i18n="modals.pickup.versionHeader"></td>
                                     <td class="detail-info element-version"></td>
                                 </tr>
                                 <tr>
-                                    <td class="header-info" data-i18n="modals.add-widget.authorHeader"></td>
+                                    <td class="header-info" data-i18n="modals.pickup.authorHeader"></td>
                                     <td class="detail-info element-author"></td>
                                 </tr>
                             </table>
@@ -51,7 +51,7 @@
                 <!-- Show button when something behind is available (see similar comments)
                     <button id="btn-get-more-widget" type="button" class="btn btn-primary pull-left" data-i18n="modals.add-widget.getMore"></button>
                 -->
-                <button id="btn-close-details" type="button" class="btn btn-default pull-left hidden"><i class="fa fa-reply"></i>&nbsp;<span data-i18n="modals.add-widget.goBack"></span></button>
+                <button id="btn-close-details" type="button" class="btn btn-default pull-left hidden"><i class="fa fa-reply"></i>&nbsp;<span data-i18n="modals.pickup.goBack"></span></button>
                 <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.close">Close</button>
             </div>
         </div>
@@ -67,11 +67,11 @@ function PickupControl() {
 * Ask for packages to the REST server
 */
 
-Yadoms.askPackages = function (elements, instanceManager, thumbnail, callback) {
+Yadoms.askPackages = function (elements, instanceManager, thumbnail, title, callback) {
    assert($.isFunction(callback), "callback must be defined");
    instanceManager.getAll()
            .done(function (data){
-		      requestInformationDone(elements, instanceManager, thumbnail, callback)
+		      requestInformationDone(elements, instanceManager, thumbnail, title, callback)
 		   })
            .fail(function (error) {
                notifyError($.t("objects.widgetPackageManager.errorDuringGettingPackages"), error);
@@ -82,10 +82,14 @@ Yadoms.askPackages = function (elements, instanceManager, thumbnail, callback) {
      * Callback of the request elements
      * @returns {Function}
      */
-    function requestInformationDone(elements, instanceManager, thumbnail, callback) {
-	    //if the details is visible, we must hide it
+    function requestInformationDone(elements, instanceManager, thumbnail, title, callback) {
+	    //if the detail is visible, we must hide it
         var $detailsDiv = $("div#add-pickup-details");
         $detailsDiv.hide();	
+
+		// Add the correct title
+	    $("h4#myModalLabel").attr("data-i18n", title);
+		$("h4#myModalLabel").i18n();
 	
         $("button#btn-close-details").addClass("hidden");
         $("ul#ul-add-element").empty();
@@ -96,6 +100,9 @@ Yadoms.askPackages = function (elements, instanceManager, thumbnail, callback) {
         //we display the modal
         $('div#new-pickup-modal').modal({ backdrop: 'static' });
         
+		//focus the modal
+		$('div#new-pickup-modal').appendTo("body").modal('show');
+		
         var deferredArray = [];
 		
 		var packageList = [];

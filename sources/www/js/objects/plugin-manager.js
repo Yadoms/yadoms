@@ -36,8 +36,8 @@ PluginManager.getAll = function () {
          i18n.loadNamespace("plugins/" + pluginType);
 
          var deffered = PluginManager.downloadPackage(pluginType);
-		 arrayOfDeffered.push(deffered);
 		 
+		 arrayOfDeffered.push(deffered);
          deffered.done(function (package) {
 			
 			var defferedDownload = new $.Deferred();

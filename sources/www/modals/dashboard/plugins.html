@@ -470,86 +470,44 @@
 	     Yadoms.askPackages( "plugins",
 		                     PluginManager,
 		                     "icon.png",   // Name of thumbnail
+							 "modals.add-plugin.title",
 							 createPlugin
 							);
         });
-      }	
+      }
 	
 	function createPlugin(packageName, pluginType) {
 	
-	   console.log (packageName);
-	   console.log (pluginType);
-	
-	   /*PluginManager.packageList[packageName].package;*/
 	   var pi = new PluginInstance(null, $.t("plugins/" + pluginType.type + ":name", { defaultValue: pluginType.package.name }), pluginType.type, "", 1, "user");
 	
-	   console.log (pi);
+	   pi.package = pluginType.package;
 	   
-	   ////TODO Optimisation : A voir, si on ne peut pas supprimer en reprenant PluginManager.packageList[packageName].package;
-	   
-		//we get package.json
-		PluginInstanceManager.downloadPackage(pi).done(function () {	
-			   //we ask for configuration modal async
-			   Yadoms.modals.pluginConfigure.loadAsync()
-			   .done(function () {
-				  //we launch configureInstance GUI
-				  Yadoms.configurePluginInstance(pi, function () {
-					 //we ask for pluginInstance creation
-					 PluginInstanceManager.createToServer(pi)
-						 .done(function () {
-							notifySuccess($.t("modals.configure-plugin.pluginSuccessfullyCreated"));
-							
-							pluginInstanceList.push(pi);
-							
-							//sort the list with the new item
-							//pluginInstanceList = sortListItemsWithdisplayName ( pluginInstanceList );
-							
-							// the first one ?
-							if ( pluginInstanceList.length === 1 )
-							   addPluginInstanceToDom ( pi, null );
-							else
-							   addPluginInstanceToDom ( pi, pluginInstanceList.indexOf (pi) );
-						 })
-						 .fail(function (error) {
-							notifyError($.t("modals.configure-plugin.pluginFailToCreate", { pluginName: pi.displayName }), error);
-						 });
-				  });
-			   });
-			});
+	   //we ask for configuration modal async
+	   Yadoms.modals.pluginConfigure.loadAsync()
+	   .done(function () {
+		  
+		  console.log (pi);
+		  
+		  //we launch configureInstance GUI
+		  Yadoms.configurePluginInstance(pi, function () {
+			 //we ask for pluginInstance creation
+			 PluginInstanceManager.createToServer(pi)
+				 .done(function () {
+					notifySuccess($.t("modals.configure-plugin.pluginSuccessfullyCreated"));
+					
+					pluginInstanceList.push(pi);
+					
+					// the first one ?
+					if ( pluginInstanceList.length === 1 )
+					   addPluginInstanceToDom ( pi, null );
+					else
+					   addPluginInstanceToDom ( pi, pluginInstanceList.indexOf (pi) );
+				 })
+				 .fail(function (error) {
+					notifyError($.t("modals.configure-plugin.pluginFailToCreate", { pluginName: pi.displayName }), error);
+				 });
+		  });
+	   });
 	};
-/*		 
-         Yadoms.askPluginTypes(function (pluginType) {
-            var pi = new PluginInstance(null, $.t("plugins/" + pluginType.type + ":name", { defaultValue: pluginType.package.name }), pluginType.type, "", 1, "user");
-
-            //we get package.json
-            PluginInstanceManager.downloadPackage(pi).done(function () {
-               //we ask for configuration modal async
-               Yadoms.modals.pluginConfigure.loadAsync()
-               .done(function () {
-                  //we launch configureInstance GUI
-                  Yadoms.configurePluginInstance(pi, function () {
-                     //we ask for pluginInstance creation
-                     PluginInstanceManager.createToServer(pi)
-                         .done(function () {
-                            notifySuccess($.t("modals.configure-plugin.pluginSuccessfullyCreated"));
-                            
-                            pluginInstanceList.push(pi);
-							
-							//sort the list with the new item
-							pluginInstanceList = sortListItemsWithdisplayName ( pluginInstanceList );
-							
-							// the first one ?
-							if ( pluginInstanceList.length === 1 )
-							   addPluginInstanceToDom ( pi, null );
-							else
-							   addPluginInstanceToDom ( pi, pluginInstanceList.indexOf (pi) );
-                         })
-                         .fail(function (error) {
-                            notifyError($.t("modals.configure-plugin.pluginFailToCreate", { pluginName: pi.displayName }), error);
-                         });
-                  });
-               });
-            });
-         });*/
 
 </script>

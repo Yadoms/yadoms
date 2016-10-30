@@ -190,8 +190,6 @@
         $(document).ready(function () {
             //we define all the modals to lazy load
 		   Yadoms.modals.pickupController = new LazyLoaderManager("modals/pickup-controller.html");
-           Yadoms.modals.widgetAdd = new LazyLoaderManager("modals/widget-add.html");
-		   //Yadoms.modals.pluginAdd = new LazyLoaderManager("modals/plugin-add.html");
            Yadoms.modals.widgetConfiguration = new LazyLoaderManager("modals/widget-configure.html");
            Yadoms.modals.widgetDelete = new LazyLoaderManager("modals/widget-delete.html");
            Yadoms.modals.pageDelete = new LazyLoaderManager("modals/page-delete.html");
@@ -254,14 +252,16 @@
                                 //we check for page. If there is no page, we create a new one automatically
                                 PageManager.getAll()
                                 .done(function () {
-								   console.log ("PageManager.pages.length");
-                                   if (PageManager.pages.length === 0) {
-                                      console.info("Creating a default page");
-                                      PageManager.createPage($.t("initialization.homePage"), 0)
-                                      .done(function () {
-                                         PageManager.ensureOnePageIsSelected();
-                                      });
-                                   }
+								   PluginManager.getAll()
+								   .done(function() {
+									   if (PageManager.pages.length === 0) {
+										  console.info("Creating a default page");
+										  PageManager.createPage($.t("initialization.homePage"), 0)
+										  .done(function () {
+											 PageManager.ensureOnePageIsSelected();
+										  });
+									  }
+                                   });
                                    //we can start app
                                    main();
                                 })
@@ -315,18 +315,13 @@
             $("#btn-show-dashboard").click(function () {
                Yadoms.modals.mainDashboard.loadAsync()
                .done(function () {
-                    //before showing the dashboard we update many cache informations
-                   PluginManager.getAll()
-                   .done(function () {
-                        $('#main-dashboard-modal').modal({ backdrop: 'static' });
-                        $('#main-dashboard-modal').off('hidden.bs.modal').on('hidden.bs.modal', function () {
+					$('#main-dashboard-modal').modal({ backdrop: 'static' });
+					$('#main-dashboard-modal').off('hidden.bs.modal').on('hidden.bs.modal', function () {
+						//clear the bootstrap validation when modal is hidden (handle submit and cancel behaviors)
+						$('#main-dashboard-modal').find("input,select,textarea").jqBootstrapValidation("destroy");
 
-                            //clear the bootstrap validation when modal is hidden (handle submit and cancel behaviors)
-                            $('#main-dashboard-modal').find("input,select,textarea").jqBootstrapValidation("destroy");
-
-                            //we force the dashboard to display the summary refreshed page
-                            $("#btn-dashboard-summary").click();
-                        });
+						//we force the dashboard to display the summary refreshed page
+						$("#btn-dashboard-summary").click();
                     });
                 });
             });
