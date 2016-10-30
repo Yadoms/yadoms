@@ -61,7 +61,7 @@ namespace pluginSystem
       {
          // Set plugin as not supported
          m_isSupportedOnThisPlatform = false;
-         throw shared::exception::CInvalidParameter(pluginPath.stem().string() + std::string("Error reading package.json : data not found : ") + e.what());
+         throw shared::exception::CInvalidParameter(pluginPath.stem().string() + std::string(" : Error reading package.json : data not found : ") + e.what());
       }
 
       auto pluginFolder = m_path.filename().string();
