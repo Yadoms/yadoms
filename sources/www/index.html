@@ -105,7 +105,7 @@
     <script src="libs/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
     <script src="libs/bootstrap/js/bootstrap.min.js"></script>
     <script src="libs/knockout/js/knockout-3.4.0.js"></script>
-    <script src="libs/i18next/js/i18next-1.7.2.min.js"></script>
+    <script src="libs/i18next/js/i18next-1.7.7.min.js"></script>
     <script src="libs/lazyload/js/lazyload.js"></script>
     <script src="libs/moment.js/js/moment-with-langs.min.js"></script>
     <script src="libs/moment.js/js/moment-timezone.min.js"></script>
@@ -212,7 +212,7 @@
            Yadoms.modals.recipientConfigure = new LazyLoaderManager("modals/recipient_configure.html");
 
             //we start i18n engine
-            var option = { resGetPath: "locales/__lng__.json", fallbackLng: "en", useDataAttrOptions: true, debug: false, fallbackNS: "translation" };
+            var option = { resGetPath: "locales/__lng__.json", fallbackLng: "en", useDataAttrOptions: true, debug: false, fallbackNS: "translation", load: 'unspecific', getAsync: false };
             i18n.init(option, function () {		
 			
                 //we get install/firstStart key to have information if firstStart has already been done
@@ -252,8 +252,8 @@
                                 //we check for page. If there is no page, we create a new one automatically
                                 PageManager.getAll()
                                 .done(function () {
-								   PluginManager.getAll()
-								   .done(function() {
+								   //PluginManager.getAll()
+								   //.done(function() {
 									   if (PageManager.pages.length === 0) {
 										  console.info("Creating a default page");
 										  PageManager.createPage($.t("initialization.homePage"), 0)
@@ -261,7 +261,7 @@
 											 PageManager.ensureOnePageIsSelected();
 										  });
 									  }
-                                   });
+                                   //});
                                    //we can start app
                                    main();
                                 })

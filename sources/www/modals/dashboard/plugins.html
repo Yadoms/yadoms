@@ -32,11 +32,11 @@
 
          //we dynamically ask for plugins (async)
          PluginInstanceManager.getAll().done(function (allInstances) {
-          pluginInstanceList = sortListItemsWithdisplayName ( allInstances );
-          
-          indexSystemPlugin = 0;
-          
-          //foreach result we append a <tr>
+		 
+           pluginInstanceList = sortListItemsWithdisplayName ( allInstances );
+           indexSystemPlugin = 0;
+		  
+           //foreach result we append a <tr>
             $.each(pluginInstanceList, function (index, value) {
                //we don't show system plugins to user
                if (!value.isSystemCategory()) {
@@ -46,9 +46,9 @@
                indexSystemPlugin = index;
             });
           
-          // we remove the system plugin from the list
-          pluginInstanceList.splice(indexSystemPlugin, 1);
-
+            // we remove the system plugin from the list
+            pluginInstanceList.splice(indexSystemPlugin, 1);
+			
             //we use the periodic task of the dashboard
             clearInterval(Yadoms.periodicDashboardTask);
             Yadoms.periodicDashboardTask = setInterval(periodicDashboardPluginTask, 2000);
@@ -132,6 +132,8 @@
       //we set autostart value
       $pluginInstanceRow.find("input.cb-autoStart").prop("checked", pi.autoStart);
 
+	  //translation of the line
+	  $pluginInstanceRow.i18n();
 
       //setup extraCommand button initial state
       if (pi.containsExtraCommand() && (pi.lastState === "Stopped" || pi.lastState === "Error" || !pi.lastState)) {
@@ -147,10 +149,6 @@
          $pluginInstanceRow.find("button.btn-log").unbind('click').bind('click', function () { showPluginInstanceLog(pi); });
       }
       $pluginInstanceRow.find("button.btn-delete").unbind('click').bind('click', function () { deletePlugin(pi); });
-
-      $pluginInstanceRow.i18n();
-
-      
    }
 
    function startStopPlugin(pi) {
