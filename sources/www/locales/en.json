@@ -139,7 +139,8 @@
       "goBack": "Go back",	
       "descriptionHeader": "Description:",
       "versionHeader": "Version:",
-      "authorHeader": "Author:"	
+      "authorHeader": "Author:",
+	  "errorDuringGettingPackages": "Error during requesting packages"
 	},
     "add-widget": {
       "title": "Add a new widget",

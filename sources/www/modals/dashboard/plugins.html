@@ -14,6 +14,7 @@
    </table>
 </div>
 <script>
+
    var pluginInstanceList = [];
    var developerMode = false;
    
@@ -416,50 +417,6 @@
       }
       return i18nOpt.defaultValue;      
    }
-
-    /**
-     * Ask for plugin types to the REST server
-     */
-/*
-   Yadoms.askPluginTypes = function(callback) {
-
-      YadomsInformationManager.getList()
-      .done(function (data) {      
-         $("select#pluginTypeList").empty();
-
-         // Enter all Plugins into an array
-         var tabPlugins = [];
-	  
-         Object.keys(PluginManager.packageList).forEach(function(key) {
-            if( (!data.developerMode && !key.startsWith("dev-")) || data.developerMode) {
-               var value = PluginManager.packageList[key];
-               tabPlugins.push ( {type: value.type, friendlyName: $.t("plugins/" + value.type + ":name" ) });
-            }
-         });
-	  
-         // sort each Plugins Name in the language selected
-         tabPlugins = sortListItemsWithFriendlyName ( tabPlugins );
-	  
-         //foreach element of the array
-         $.each(tabPlugins, function(index, value) {
-            $("select#pluginTypeList").append("<option value=\"" + value.type + "\">" + value.friendlyName + "</option>");
-         });
-
-         //event click on add plugin button
-         $("button#btn-confirm-add-plugin").unbind("click").bind("click", function() {
-            //we close the new plugin modal
-            $("div#new-plugin-modal").modal("hide");
-            var pluginType = $("select#pluginTypeList").val();
-            callback(PluginManager.packageList[pluginType]);
-         });
-
-         //i18n
-         $("div#new-plugin-modal .modal-body").i18n();
-
-         //we display the modal
-         $('div#new-plugin-modal').modal({ backdrop: 'static' });
-      });
-   };   */
    
    function addNewPlugin() {
       Yadoms.modals.pickupController.loadAsync()
@@ -471,8 +428,11 @@
 							 "modals.add-plugin.title",
 							 createPlugin
 							);
-        });
-      }
+        })
+		.fail(function () {
+		   notifyError($.t("objects.lazyLoaderManager.unableToLoadModal", { modalPath: self.modalPath }), error);
+		})
+      };
 	
 	function createPlugin(packageName, pluginType) {
 	
@@ -483,8 +443,6 @@
 	   //we ask for configuration modal async
 	   Yadoms.modals.pluginConfigure.loadAsync()
 	   .done(function () {
-		  
-		  console.log (pi);
 		  
 		  //we launch configureInstance GUI
 		  Yadoms.configurePluginInstance(pi, function () {
