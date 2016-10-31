@@ -1,0 +1,28 @@
+﻿{
+   "name": "IPX800",
+   "description": "Plugin permettant de dialoguer avec un module IPX800",
+   "configurationSchema":{
+      "IPAddress":{
+			"name": "Adresse IP",
+			"description": "L'adresse IP du module"
+      },
+      "Port":{
+			"name": "Port",
+			"description": "Le port de communication de l'IPX800 (exemple: 80)"
+      },
+	  "Account": {
+			"name": "Compte",
+			"description": "le compte utilisateur du module"
+	  },
+	  "Password": {
+		    "name": "Mot de passe",
+			"description": "le mot de passe du compte utilisateur"
+	  }	  
+	},
+	"customLabels": {
+		"pluginState": {
+			"updateConfiguration": "Mise à jour de la configuration..."
+		}
+	}
+}
+
