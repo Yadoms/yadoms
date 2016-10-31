@@ -26,9 +26,7 @@ void CTemperatureSensor::read()
          }
       }
       temperatureFile.close();
-
       m_keyword->set( atof(readValue.c_str()) / 1000.0 );
-      std::cout << "CPU Temp : " << m_keyword->formatValue() << std::endl;
    }
    catch(std::exception & ex)
    {

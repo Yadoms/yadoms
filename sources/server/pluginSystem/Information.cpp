@@ -45,7 +45,6 @@ namespace pluginSystem
          else
             m_url = shared::CStringExtension::EmptyString;
 
-
          if (m_package.containsValue("supportedPlatforms") || m_package.containsChild("supportedPlatforms"))
             m_isSupportedOnThisPlatform = tools::CSupportedPlatformsChecker::isSupported(m_package.get<shared::CDataContainer>("supportedPlatforms"));
          else
