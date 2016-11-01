@@ -33,6 +33,13 @@ public:
    void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
                               const shared::CDataContainer& newConfigurationData);
 
+   //--------------------------------------------------------------
+   /// \brief Send a command to the IPX800
+   /// \param[in] IPAddress             IP Address of the equipment
+   /// \param[in] M2MPassword           password of the equipment
+   //--------------------------------------------------------------
+   void SendCommand(Poco::Net::IPAddress IPAddress, std::string M2MPassword);
+
 private:
    std::string m_deviceName;
 

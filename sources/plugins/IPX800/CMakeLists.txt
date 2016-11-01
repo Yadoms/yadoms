@@ -6,13 +6,20 @@ include("../YadomsPluginsCommon.cmake")
 ## Place here all the plugin source files
 #########################################
 set(IPX800_PLUGIN_SOURCES
-	stdafx.h
-	stdafx.cpp
+    IIO.h
+	IO.cpp
+	IO.h
+	IOManager.cpp
+	IOManager.h
 	IIPX800Configuration.h
-    IPX800.h
     IPX800.cpp
-	IPX800Configuration.h
+    IPX800.h
 	IPX800Configuration.cpp
+	IPX800Configuration.h
+	IPX800Factory.cpp
+	IPX800Factory.h
+	stdafx.cpp
+	stdafx.h	
 	)
 
 #########################################

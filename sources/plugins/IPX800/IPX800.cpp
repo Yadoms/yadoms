@@ -2,6 +2,8 @@
 #include "IPX800.h"
 #include <shared/event/EventTimer.h>
 #include <plugin_cpp_api/ImplementationHelper.h>
+#include <shared/http/HttpMethods.h>
+#include "IPX800Factory.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -29,11 +31,21 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    std::cout << "IPX800 is starting..." << std::endl;
       
-   m_configuration.initializeWith(api->getConfiguration());
+   try {
+      m_configuration.initializeWith(api->getConfiguration());
+   }
+   catch (...)
+   {
+      api->setPluginState(yApi::historization::EPluginState::kCustom, "initializationError");
+   }
 
    shared::CDataContainer details;
    details.set("provider", "IPX800");
    details.set("shortProvider", "ipx");
+
+   //CIPX800Factory factory(api, m_deviceName, m_configuration, details);
+
+   SendCommand(m_configuration.GetIPAddress(), m_configuration.GetPassword());
 
    // the main loop
    std::cout << "IPX800 plugin is running..." << std::endl;
@@ -75,3 +87,29 @@ void CIPX800::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, co
    m_configuration.initializeWith(newConfigurationData);
 }
 
+void CIPX800::SendCommand(Poco::Net::IPAddress IPAddress, std::string M2MPassword)
+{
+   std::stringstream url;
+
+   // create the URL
+   url << "http://" << IPAddress.toString() << "/api/xdevices.json";// ? key = " << M2MPassword << "&SetR = 01";
+   std::cout << url.str();
+
+   shared::CDataContainer parameters;
+
+   parameters.set("key", M2MPassword);
+   parameters.set("SetR", "01");
+
+   shared::CDataContainer data = shared::CHttpMethods::SendGetRequest(url.str(), parameters);
+
+   try {
+      auto returnValue = data.get<std::string>("Success");
+
+      std::cout << "ok" << std::endl;
+      std::cout << returnValue << std::endl;
+   }
+   catch (...)
+   {
+      std::cout << "not found" << std::endl;
+   }
+}

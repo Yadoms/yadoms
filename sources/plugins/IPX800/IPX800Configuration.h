@@ -1,5 +1,6 @@
 #pragma once
 #include "IIPX800Configuration.h"
+#include "IOManager.h"
 #include <shared/DataContainer.h>
 
 //--------------------------------------------------------------
@@ -25,6 +26,7 @@ public:
    Poco::Net::SocketAddress GetSocket() const override;
    std::string GetAccount() const override;
    std::string GetPassword() const override;
+   shared::CDataContainer GetConfiguredEquipments() const override;
    // [END] IIPX800Configuration implementation
 
 private:

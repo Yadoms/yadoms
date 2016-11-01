@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/DataContainer.h>
-
 #include <Poco/Net/SocketAddress.h>
 #include <Poco/Net/NetworkInterface.h>
 
@@ -45,4 +44,10 @@ public:
    /// \return     the password
    //--------------------------------------------------------------
    virtual std::string GetPassword() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief      Get all equipments configured
+   /// \return     A container with all numbers
+   //--------------------------------------------------------------
+   virtual shared::CDataContainer GetConfiguredEquipments() const = 0;
 };

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "IPX800Configuration.h"
 #include <boost/lexical_cast.hpp>
+#include <shared/encryption/Xor.h>
 
 CIPX800Configuration::CIPX800Configuration()
 {}
@@ -32,5 +33,19 @@ std::string CIPX800Configuration::GetAccount() const
 
 std::string CIPX800Configuration::GetPassword() const
 {
-   return m_data.get<std::string>("Password");
+   return shared::encryption::CXor::decryptBase64(m_data.get<std::string>("Password"));
+}
+
+shared::CDataContainer CIPX800Configuration::GetConfiguredEquipments() const
+{
+   shared::CDataContainer equipments;
+
+   // Base configuration
+   equipments.set("relays", "8");
+   equipments.set("analog", "4");
+   equipments.set("Digital input", "8");
+
+   // TODO : Add configuration for extensions added
+
+   return equipments;
 }
