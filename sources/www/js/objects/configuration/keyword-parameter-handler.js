@@ -238,7 +238,7 @@ KeywordParameterHandler.prototype.applyScript = function () {
                   //we append each keywords in the list
                   var keywordToSelect = 0;
               
-				      newList = sortListItemsWithFriendlyName ( newList );
+				  newList = sortListItemsWithFriendlyName ( newList );
 
                   $.each(newList, function(index, value) {
                      //foreach keyword

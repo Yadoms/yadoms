@@ -1,0 +1,95 @@
+#add-element-list {
+    height: 350px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+#ul-add-element {
+    list-style: none;
+}
+
+.element-name:first-letter {
+    text-transform: uppercase;
+}
+
+#ul-add-element li button {
+    width: 30%;
+    float: left;
+    height: 115px;
+    text-align: center;
+    background-color: #f9f9f9;
+    border: 1px solid #E9E9E9;
+    -ms-border-radius: 5px;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+#ul-add-element li img {
+    max-width: 100%;
+    max-height: 100%;
+    margin-top: 0;
+}
+
+.element-preview {
+    height: 80%;
+}
+
+.element-name {
+    height: 20%;
+    display: block;
+}
+
+#add-pickup-details {
+    right: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: 15px;
+    position: absolute;
+    border: 1px solid #E9E9E9;
+    background-color: #f9f9f9;
+    -ms-border-radius: 3px;
+    border-radius: 3px;
+    display: none;
+}
+
+#add-pickup-details .header {
+    height: 110px;
+    text-align: center;
+    font-size: 36px;
+}
+
+#add-pickup-details .row {
+    margin: 10px;
+    display: flex;
+    align-items: center;    
+}
+
+#add-pickup-details .cell {
+    display:inline-block;
+    vertical-align:middle;
+}
+
+#add-pickup-details img {
+    max-width: 100%;
+    max-height: 120px;
+    border: 1px solid #808080;
+}
+
+#add-pickup-details .table-responsive {
+    width: 70%;
+    -ms-border-radius: 3px;
+    border-radius: 3px;
+}
+
+#add-pickup-details .table-responsive td {
+    border: none;
+}
+
+#add-pickup-details .table-responsive .header-info {
+    text-align: right;
+    color: #808080;
+}
+
+#add-element-details .table-responsive .detail-info {
+    text-align: left;
+}
