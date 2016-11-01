@@ -1,6 +1,7 @@
 #pragma once
 #include <plugin_cpp_api/IPlugin.h>
 #include "IPX800Configuration.h"
+#include "IOManager.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -33,13 +34,6 @@ public:
    void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
                               const shared::CDataContainer& newConfigurationData);
 
-   //--------------------------------------------------------------
-   /// \brief Send a command to the IPX800
-   /// \param[in] IPAddress             IP Address of the equipment
-   /// \param[in] M2MPassword           password of the equipment
-   //--------------------------------------------------------------
-   void SendCommand(Poco::Net::IPAddress IPAddress, std::string M2MPassword);
-
 private:
    std::string m_deviceName;
 
@@ -47,5 +41,10 @@ private:
    /// \brief Configuration of the device
    //--------------------------------------------------------------
    CIPX800Configuration m_configuration;
+
+   //--------------------------------------------------------------
+   /// \brief The IO Manager
+   //--------------------------------------------------------------
+   boost::shared_ptr<CIOManager> m_ioManager;
 };
 

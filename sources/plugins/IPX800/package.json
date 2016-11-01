@@ -6,6 +6,8 @@
    "url": "https://github.com/Yadoms/yadoms/wiki/IPX800",
    "credits": "",
    "supportedPlatforms":"all",
+   "supportManuallyDeviceCreation": "false",
+   "manuallyDeviceCreationConfigurationSchema": {},
    "configurationSchema": {
 		"IPAddress": {
 		  "type": "string",
@@ -14,16 +16,39 @@
 		},
 		"Port": {
 		  "type": "int",
-		  "required" : "true"
-		},
-		"Account": {
-		  "type": "string",
-		  "required" : "true"
-		},
-		"Password": {
-		  "type": "string",
 		  "required" : "true",
-		  "encrypted": "true"
-		}   		
+		  "defaultValue": "80"
+		},
+	    "authentication": {
+		   "type": "section",
+		   "enableWithCheckBox": "true",
+		   "enableWithCheckBoxDefaultValue": "true",
+		   "content": {
+		      "Password": {
+			     "type": "string",
+			     "encrypted": "true"
+			}
+		 }
+	  },
+	  "extensions": {
+         "type": "list",
+		 "nbItemsMin": "0",
+		 "nbItemsMax": "20",
+		 "allowDuplication": "true",
+		 "item": {
+		    "type":"section",
+			"content":{
+			   "equipment":{
+			      "type": "enum",
+			      "values": {
+			         "X-8D": "X-8D",
+			         "X-THL": "X-THL",
+			         "X400-CT": "X400-CT",
+			         "X8R": "X8R"
+				  }
+			   }
+			}
+		  }
+		}
    }
 }

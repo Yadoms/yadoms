@@ -10,14 +10,36 @@
 			"name": "Port",
 			"description": "the IPX800 local socket opened (example: 80)"
       },
-	  "Account": {
-			"name": "Login",
-			"description": "the login account"
+	  "authentication": {
+		   "name": "key to access the IPX800",
+		   "description": "Only if the key is enabled",
+		   "content": {
+		      "Password": {
+		         "name": "password",
+		         "description": ""
+		      }
+		 }
 	  },
-	  "Password": {
-		    "name": "Password",
-			"description": "the password of the login account"
-	  }
+	  "extensions": {
+         "name": "Extensions",
+         "description": "List of extensions connected to the IPX800",
+		 "item": {
+            "name": "Equipment",
+            "description": "",
+			"content":{
+			   "equipment":{
+                  "name": "Equipment",
+                  "description": "Choose the equipment type",
+			      "values": {
+			         "X-8D": "X-8D",
+			         "X-THL": "X-THL",
+			         "X400-CT": "X400-CT",
+			         "X8R": "X8R"
+				  }
+			   }
+			}
+		  }
+		}	  
 	},
 	"customLabels": {
 		"pluginState": {

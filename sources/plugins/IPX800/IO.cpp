@@ -17,7 +17,7 @@ void CIO::set(bool state)
 
 bool CIO::get(void)
 {
-   int ret = 0;
+   bool ret = false;
 
    m_value->set(ret);
    std::cout << "read " << m_value->getKeyword() << " at " << ret << std::endl;

@@ -1,7 +1,8 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/event/EventHandler.hpp>
-#include "IIO.h"
+//#include "IIO.h"
+//#include "IO.h"
 #include "IIPX800Configuration.h"
 #include "IOManager.h"
 #include <Poco/Net/SocketAddress.h>
@@ -59,16 +60,10 @@ private:
    //--------------------------------------------------------------
    /// \brief	Map of all IOs identify by the name
    //--------------------------------------------------------------
-   std::map<std::string, boost::shared_ptr<IIO> > m_mapKeywordsName;
+   std::map<std::string, boost::shared_ptr<yApi::historization::CSwitch> > m_mapKeywordsName;
 
    //--------------------------------------------------------------
    /// \brief	Manager for all IOs
    //--------------------------------------------------------------
    boost::shared_ptr<CIOManager> m_ioManager;
-
-   //--------------------------------------------------------------
-   /// \brief	IOs of the Piface2
-   //--------------------------------------------------------------
-   //boost::shared_ptr<CIO> m_DigitalInput[8];
-   //boost::shared_ptr<CIO> m_DigitalOutput[8];
 };

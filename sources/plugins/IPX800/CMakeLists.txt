@@ -19,7 +19,9 @@ set(IPX800_PLUGIN_SOURCES
 	IPX800Factory.cpp
 	IPX800Factory.h
 	stdafx.cpp
-	stdafx.h	
+	stdafx.h
+	urlManager.cpp
+	urlManager.h
 	)
 
 #########################################

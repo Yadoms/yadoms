@@ -4,6 +4,17 @@
 #include <Poco/Net/NetworkInterface.h>
 
 //--------------------------------------------------------------
+/// \brief	The enum extension
+//--------------------------------------------------------------
+enum EExtension
+{
+   kX8D,
+   kXTHL,
+   kX400CT,
+   kX8R
+};
+
+//--------------------------------------------------------------
 /// \brief	Interface of plugin configuration
 //--------------------------------------------------------------
 class IIPX800Configuration
@@ -34,10 +45,10 @@ public:
    virtual Poco::Net::SocketAddress GetSocket() const = 0;
 
    //--------------------------------------------------------------
-   /// \brief      retrieve the account used to connect the IPX800
-   /// \return     the account
+   /// \brief      return if the password is activated
+   /// \return     the password
    //--------------------------------------------------------------
-   virtual std::string GetAccount() const = 0;
+   virtual bool isPasswordActivated() const = 0;
 
    //--------------------------------------------------------------
    /// \brief      retrieve the password used to connect the IPX800
@@ -49,5 +60,5 @@ public:
    /// \brief      Get all equipments configured
    /// \return     A container with all numbers
    //--------------------------------------------------------------
-   virtual shared::CDataContainer GetConfiguredEquipments() const = 0;
+   virtual shared::CDataContainer GetConfiguredIOs() const = 0;
 };

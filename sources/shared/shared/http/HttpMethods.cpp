@@ -24,8 +24,11 @@ namespace shared
          std::map<std::string, std::string> mapParameters = parameters.getAsMap();
          Poco::URI uri(url);
 
-         for (std::map<std::string, std::string>::iterator parametersIterator = mapParameters.begin(); parametersIterator != mapParameters.end(); ++parametersIterator)
-            uri.addQueryParameter(parametersIterator->first, parametersIterator->second);
+         if (!parameters.empty())
+         {
+            for (std::map<std::string, std::string>::iterator parametersIterator = mapParameters.begin(); parametersIterator != mapParameters.end(); ++parametersIterator)
+               uri.addQueryParameter(parametersIterator->first, parametersIterator->second);
+         }
 
          Poco::Net::HTTPClientSession session(uri.getHost(), uri.getPort());
          Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET, uri.getPathAndQuery(), Poco::Net::HTTPMessage::HTTP_1_1);

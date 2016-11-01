@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "IPX800Factory.h"
-//#include "InitializationException.hpp"
-//#include "eventDefinitions.h"
 
 static const std::string Model("IPX800");
 
@@ -9,24 +7,46 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
                                  const std::string& device,
                                  const IIPX800Configuration& configuration,
                                  shared::CDataContainer details):
-   m_ioManager(boost::make_shared<CIOManager>(device))
+   m_ioManager(boost::make_shared<CIOManager>(device, configuration.GetIPAddress(), configuration.isPasswordActivated(), configuration.GetPassword()))
 {
-   // IO Configuration
-/*
-   for (int counter=0; counter<NB_OUTPUTS; ++counter)
+   // Relay Configuration
+   for (int counter=0; counter<8; ++counter)
    {
-      std::string name = "DO" + boost::lexical_cast<std::string>(counter);
-      m_DigitalOutput[counter] = boost::make_shared<CIO>( name, counter, EPullResistance::kDisable, yApi::EKeywordAccessMode::kGetSet);
-      m_mapKeywordsName[ name ] = m_DigitalOutput[counter];
-      m_keywordsToDeclare.push_back(m_DigitalOutput[counter]->historizable());
+      std::stringstream name;
+      name << "R" << std::setfill('0') << std::setw(2) << boost::lexical_cast<int>(counter + 1);
+      boost::shared_ptr<yApi::historization::CSwitch> temp = boost::make_shared<yApi::historization::CSwitch>(name.str(), yApi::EKeywordAccessMode::kGetSet);
+      m_mapKeywordsName[ name.str() ] = temp;
+      m_keywordsToDeclare.push_back(temp);
    }
 
-   for (int counter=0; counter<NB_INPUTS; ++counter)
+   // Virtual Output Configuration
+   for (int counter = 0; counter<8; ++counter)
    {
-      std::string name = "DI" + boost::lexical_cast<std::string>(counter);
-      m_DigitalInput[counter]  = boost::make_shared<CIO>( name, counter, configuration.PullResistanceState(counter), yApi::EKeywordAccessMode::kGet);
-      m_mapKeywordsName[ name ] = m_DigitalInput[counter];
-      m_keywordsToDeclare.push_back(m_DigitalInput[counter]->historizable());
+      std::stringstream name;
+      name << "VO" << std::setfill('0') << std::setw(2) << boost::lexical_cast<int>(counter + 1);
+      boost::shared_ptr<yApi::historization::CSwitch> temp = boost::make_shared<yApi::historization::CSwitch>(name.str(), yApi::EKeywordAccessMode::kGetSet);
+      m_mapKeywordsName[name.str()] = temp;
+      m_keywordsToDeclare.push_back(temp);
+   }
+
+   // Virtual Input Configuration
+   for (int counter = 0; counter<8; ++counter)
+   {
+      std::stringstream name;
+      name << "VI" << std::setfill('0') << std::setw(2) << boost::lexical_cast<int>(counter + 1);
+      boost::shared_ptr<yApi::historization::CSwitch> temp = boost::make_shared<yApi::historization::CSwitch>(name.str(), yApi::EKeywordAccessMode::kGet);
+      m_mapKeywordsName[name.str()] = temp;
+      m_keywordsToDeclare.push_back(temp);
+   }
+
+/*
+   // Analog Input Configuration
+   for (int counter = 0; counter<4; ++counter)
+   {
+      std::string name = "VA" + boost::lexical_cast<std::string>(counter + 1);
+      boost::shared_ptr<yApi::historization::CCounter> temp = boost::make_shared<yApi::historization::CCounter>(name, yApi::EKeywordAccessMode::kGet);
+      m_mapKeywordsName[name] = temp;
+      m_keywordsToDeclare.push_back(temp);
    }
    */
    //Déclaration of all IOs

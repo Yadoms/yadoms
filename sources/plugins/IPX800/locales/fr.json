@@ -10,14 +10,36 @@
 			"name": "Port",
 			"description": "Le port de communication de l'IPX800 (exemple: 80)"
       },
-	  "Account": {
-			"name": "Compte",
-			"description": "le compte utilisateur du module"
+	  "authentication": {
+		   "name": "clé d'accès au module IPX800",
+		   "description": "seulement si la clé est activée",
+		   "content": {
+		      "Password": {
+		         "name": "Mot de passe",
+		         "description": "la clé d'accès"	
+		      }
+		 }
 	  },
-	  "Password": {
-		    "name": "Mot de passe",
-			"description": "le mot de passe du compte utilisateur"
-	  }	  
+	  "extensions": {
+         "name": "Extensions",
+         "description": "Liste des extensions connectées à l'IPX800",
+		 "item": {
+            "name": "Equipement",
+            "description": "",
+			"content":{
+			   "equipment":{
+                  "name": "Module",
+                  "description": "Choisissez le module connecté",
+			      "values": {
+			         "X-8D": "X-8D",
+			         "X-THL": "X-THL",
+			         "X400-CT": "X400-CT",
+			         "X8R": "X8R"
+				  }
+			   }
+			}
+		  }
+		}	  
 	},
 	"customLabels": {
 		"pluginState": {

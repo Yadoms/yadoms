@@ -2,7 +2,6 @@
 #include "IPX800.h"
 #include <shared/event/EventTimer.h>
 #include <plugin_cpp_api/ImplementationHelper.h>
-#include <shared/http/HttpMethods.h>
 #include "IPX800Factory.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
@@ -24,7 +23,8 @@ CIPX800::~CIPX800()
 // Event IDs
 enum
 {
-   kEvtTimerRefreshCPULoad = yApi::IYPluginApi::kPluginFirstEventId // Always start from shared::event::CEventHandler::kUserFirstId
+   kEvtTimerRefreshCPULoad = yApi::IYPluginApi::kPluginFirstEventId, // Always start from shared::event::CEventHandler::kUserFirstId
+   kRefreshStatesReceived
 };
 
 void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -33,22 +33,27 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       
    try {
       m_configuration.initializeWith(api->getConfiguration());
+
+      shared::CDataContainer details;
+      details.set("provider", "IPX800");
+      details.set("shortProvider", "ipx");
+
+      //Factory : Creation of all the needed
+      CIPX800Factory factory(api, m_deviceName, m_configuration, details);
+
+      m_ioManager = factory.getIOManager();
+
+      // Timer used to read periodically IOs from the IPX800
+      api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(2));
+
+      api->setPluginState(yApi::historization::EPluginState::kRunning);
+      std::cout << "IPX800 plugin is running..." << std::endl;
    }
    catch (...)
    {
       api->setPluginState(yApi::historization::EPluginState::kCustom, "initializationError");
+      std::cerr << "IPX800 plugin initialization error..." << std::endl;
    }
-
-   shared::CDataContainer details;
-   details.set("provider", "IPX800");
-   details.set("shortProvider", "ipx");
-
-   //CIPX800Factory factory(api, m_deviceName, m_configuration, details);
-
-   SendCommand(m_configuration.GetIPAddress(), m_configuration.GetPassword());
-
-   // the main loop
-   std::cout << "IPX800 plugin is running..." << std::endl;
 
    while (true)
    {
@@ -68,6 +73,23 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             api->setPluginState(yApi::historization::EPluginState::kRunning);
             break;
          }
+      case kRefreshStatesReceived:
+      {
+         std::cout << "Timer received" << std::endl;
+         //Value received from DI
+         //if (!initializationError)
+            //m_ioManager->onCommand(api, api->getEventHandler().getEventData<const int>());
+         break;
+      }
+      case yApi::IYPluginApi::kEventDeviceCommand:
+      {
+         // Command received from Yadoms
+         auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
+
+         //if (!initializationError)
+         m_ioManager->onCommand(api, command);
+         break;
+      }
       default:
          {
             std::cerr << "Unknown message id" << std::endl;
@@ -85,31 +107,4 @@ void CIPX800::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, co
 
    // Update configuration
    m_configuration.initializeWith(newConfigurationData);
-}
-
-void CIPX800::SendCommand(Poco::Net::IPAddress IPAddress, std::string M2MPassword)
-{
-   std::stringstream url;
-
-   // create the URL
-   url << "http://" << IPAddress.toString() << "/api/xdevices.json";// ? key = " << M2MPassword << "&SetR = 01";
-   std::cout << url.str();
-
-   shared::CDataContainer parameters;
-
-   parameters.set("key", M2MPassword);
-   parameters.set("SetR", "01");
-
-   shared::CDataContainer data = shared::CHttpMethods::SendGetRequest(url.str(), parameters);
-
-   try {
-      auto returnValue = data.get<std::string>("Success");
-
-      std::cout << "ok" << std::endl;
-      std::cout << returnValue << std::endl;
-   }
-   catch (...)
-   {
-      std::cout << "not found" << std::endl;
-   }
 }

@@ -24,9 +24,9 @@ public:
    void initializeWith(const shared::CDataContainer& data) override;
    Poco::Net::IPAddress GetIPAddress() const override;
    Poco::Net::SocketAddress GetSocket() const override;
-   std::string GetAccount() const override;
+   bool isPasswordActivated() const override;
    std::string GetPassword() const override;
-   shared::CDataContainer GetConfiguredEquipments() const override;
+   shared::CDataContainer GetConfiguredIOs() const override;
    // [END] IIPX800Configuration implementation
 
 private:
