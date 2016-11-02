@@ -82,6 +82,11 @@ namespace pluginSystem
          return false;
       }
 
+      bool CInformation::getSupportDeviceRemovedNotification() const
+      {
+         return false;
+      }
+
       boost::shared_ptr<const shared::CDataContainer> CInformation::getPackage() const
       {
          return m_package;

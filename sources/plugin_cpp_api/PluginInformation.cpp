@@ -64,6 +64,11 @@ namespace plugin_cpp_api
       return m_buffer->supportmanuallycreateddevice();
    }
 
+   bool CPluginInformation::getSupportDeviceRemovedNotification() const
+   {
+      return m_buffer->supportdeviceremovednotification();
+   }
+
    boost::shared_ptr<const shared::CDataContainer> CPluginInformation::getPackage() const
    {
       return boost::make_shared<const shared::CDataContainer>(m_buffer->packagefilecontent());

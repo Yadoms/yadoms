@@ -138,7 +138,7 @@ DeviceManager.deleteFromServer = function (device, deleteDevice) {
         deleteDevice = false;
     }
 
-    return RestEngine.deleteJson("/rest/device/" + device.id + (deleteDevice ? "/removeDevice" : ""));
+    return RestEngine.deleteJson("/rest/device/" + device.id + (deleteDevice ? "/removeDevice" : "/cleanupOnly"));
 };
 
 /**

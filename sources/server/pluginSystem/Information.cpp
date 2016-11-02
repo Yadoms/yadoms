@@ -51,11 +51,15 @@ namespace pluginSystem
          else
             m_isSupportedOnThisPlatform = true;
 
-
          if (m_package->containsValue("supportManuallyDeviceCreation"))
             m_supportManuallyCreatedDevice = m_package->get<bool>("supportManuallyDeviceCreation");
          else
             m_supportManuallyCreatedDevice = false;
+
+         if (m_package->containsValue("supportDeviceRemovedNotification"))
+            m_supportDeviceRemovedNotification = m_package->get<bool>("supportDeviceRemovedNotification");
+         else
+            m_supportDeviceRemovedNotification = false;
       }
       catch (shared::exception::CException& e)
       {
@@ -132,6 +136,11 @@ namespace pluginSystem
    bool CInformation::getSupportManuallyCreatedDevice() const
    {
       return m_supportManuallyCreatedDevice;
+   }
+
+   bool CInformation::getSupportDeviceRemovedNotification() const
+   {
+      return m_supportDeviceRemovedNotification;
    }
 
    boost::shared_ptr<const shared::CDataContainer> CInformation::getPackage() const

@@ -85,6 +85,13 @@ namespace shared
 
 
             //--------------------------------------------------------------
+            /// \brief	    indicates if the plugin supports device removed notification
+            /// \return     true if the plugin supports device removed notification
+            //--------------------------------------------------------------
+            virtual bool getSupportDeviceRemovedNotification() const = 0;
+
+
+            //--------------------------------------------------------------
             /// \brief	    Provide the package.json content
             /// \return     the package.json content
             //--------------------------------------------------------------

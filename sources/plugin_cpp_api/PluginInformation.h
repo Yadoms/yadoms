@@ -26,6 +26,7 @@ namespace plugin_cpp_api
       std::string toString() const override;
       bool isSupportedOnThisPlatform() const override;
       bool getSupportManuallyCreatedDevice() const override;
+      bool getSupportDeviceRemovedNotification() const override;
       boost::shared_ptr<const shared::CDataContainer> getPackage() const override;
       const boost::filesystem::path& getPath() const override;
       // [END] shared::plugin::IInformation implementation
