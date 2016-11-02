@@ -158,5 +158,6 @@
         "maximumValue": "10"
       }
     }
-  }
+  },
+  "supportDeviceRemovedNotification": "true"
 }

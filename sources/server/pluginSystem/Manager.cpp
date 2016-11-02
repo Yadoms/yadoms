@@ -341,8 +341,9 @@ namespace pluginSystem
 
          YADOMS_LOG(debug) << "Send removed device notification on device " << device->Name() << " to plugin " << instance->about()->DisplayName();
 
-         instance->postDeviceRemoved(boost::make_shared<CDeviceRemoved>(device->Name(),
-                                                                        device->Details()));
+         if (instance->aboutPlugin()->getSupportDeviceRemovedNotification())
+            instance->postDeviceRemoved(boost::make_shared<CDeviceRemoved>(device->Name(),
+                                                                           device->Details()));
       }
       catch(CPluginException&)
       {
