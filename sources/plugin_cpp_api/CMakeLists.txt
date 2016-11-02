@@ -20,6 +20,8 @@ set(plugin_cpp_api_SOURCES
    DeviceCommand.cpp
    DeviceConfigurationSchemaRequest.h
    DeviceConfigurationSchemaRequest.cpp
+   DeviceRemoved.h
+   DeviceRemoved.cpp
    ExtraQuery.h
    ExtraQuery.cpp
    ExtraQueryData.h

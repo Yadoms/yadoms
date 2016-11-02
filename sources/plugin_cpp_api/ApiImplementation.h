@@ -87,6 +87,7 @@ namespace plugin_cpp_api
       void processDeviceCommand(const toPlugin::DeviceCommand& msg);
       void processExtraQuery(const toPlugin::ExtraQuery& msg);
       void processManuallyDeviceCreation(const toPlugin::ManuallyDeviceCreation& msg);
+      void processDeviceRemoved(const toPlugin::DeviceRemoved& msg);
 
       void setInitialized();
 

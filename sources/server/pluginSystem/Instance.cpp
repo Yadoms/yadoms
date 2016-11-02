@@ -68,6 +68,11 @@ namespace pluginSystem
       m_ipcAdapter->postSetDeviceConfiguration(command);
    }
 
+   void CInstance::postDeviceRemoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event)
+   {
+      m_ipcAdapter->postDeviceRemoved(event);
+   }
+
    void CInstance::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery)
    {
       m_ipcAdapter->postExtraQuery(extraQuery);

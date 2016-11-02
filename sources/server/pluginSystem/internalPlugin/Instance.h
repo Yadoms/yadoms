@@ -8,6 +8,7 @@
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceCommand.h>
 #include <shared/plugin/yPluginApi/IExtraQuery.h>
+#include <shared/plugin/yPluginApi/IDeviceRemoved.h>
 #include "../InstanceStateHandler.h"
 #include "../IInstance.h"
 #include "System.h"
@@ -51,6 +52,7 @@ namespace pluginSystem
          void postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request) override;
          void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) override;
          void postSetDeviceConfiguration(boost::shared_ptr<const shared::plugin::yPluginApi::ISetDeviceConfiguration> command) override;
+         void postDeviceRemoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event) override;
          // [END] IInstance Implementation
 
       private:

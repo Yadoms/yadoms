@@ -94,6 +94,12 @@ namespace pluginSystem
       {
          return m_pluginInformation;
       }
+
+      void CInstance::postDeviceRemoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event)
+      {
+         m_eventHandler->postEvent(yApi::IYPluginApi::kEventDeviceRemoved,
+                                   event);
+      }
    }
 } // namespace pluginSystem::internalPlugin
 

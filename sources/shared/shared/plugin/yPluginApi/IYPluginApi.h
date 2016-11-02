@@ -101,6 +101,13 @@ namespace shared
                kEventManuallyDeviceCreation,
 
                //-----------------------------------------------------
+               ///\brief Yadoms notifies plugin that a device was removed
+               ///\usage Optional, useful if plugin needs to do notify an adapter that one of its devices was removed
+               ///\note Data : a boost::shared_ptr<const yApi::IDeviceRemoved> object containing the device and its details
+               //-----------------------------------------------------
+               kEventDeviceRemoved,
+
+               //-----------------------------------------------------
                ///\brief Yadoms ask the device configuration schema
                ///\usage Optional, required if device configuration support is declared in package.json
                ///\note Data : a boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest> object containing the device configuration schema request

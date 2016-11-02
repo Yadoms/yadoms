@@ -235,6 +235,13 @@ namespace pluginSystem
       /// \param [in] pluginName The plugin name
       //--------------------------------------------------------------
       void stopAllInstancesOfPlugin(const std::string& pluginName);
+
+      //--------------------------------------------------------------
+      /// \brief                 Remove a device from a plugin
+      /// \param [in] deviceId   The devide ID to remove
+      //--------------------------------------------------------------
+      void removeDevice(int deviceId) const;
+
    private:
       //-----------------------------------------------------
       ///\brief               Start all instances

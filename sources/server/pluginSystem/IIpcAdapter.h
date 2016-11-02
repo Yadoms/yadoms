@@ -6,6 +6,7 @@
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
 #include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
+#include <shared/plugin/yPluginApi/IDeviceRemoved.h>
 
 
 namespace pluginSystem
@@ -83,6 +84,12 @@ namespace pluginSystem
       /// \param [in] request    Request data
       //--------------------------------------------------------------
       virtual void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                 Post a device removed notification to a plugin
+      /// \param [in] event      The notification
+      //--------------------------------------------------------------
+      virtual void postDeviceRemoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event) = 0;
    };
 } // namespace pluginSystem
 

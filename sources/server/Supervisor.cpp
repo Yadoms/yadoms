@@ -102,9 +102,9 @@ void CSupervisor::run()
 
       // Start Web server
       const auto webServerIp = startupOptions->getWebServerIPAddress();
-      const bool webServerUseSSL = startupOptions->getIsWebServerUseSSL();
-      const unsigned short webServerPort = startupOptions->getWebServerPortNumber();
-      const unsigned short securedWebServerPort = startupOptions->getSSLWebServerPortNumber();
+      const auto webServerUseSSL = startupOptions->getIsWebServerUseSSL();
+      const auto webServerPort = startupOptions->getWebServerPortNumber();
+      const auto securedWebServerPort = startupOptions->getSSLWebServerPortNumber();
       const auto webServerPath = m_pathProvider.webServerPath().string();
       const auto scriptInterpretersPath = m_pathProvider.scriptInterpretersPath().string();
 
@@ -121,13 +121,13 @@ void CSupervisor::run()
 
       if (pDataProvider->getDatabaseRequester()->backupSupported())
       {
-         std::string filename = m_pathProvider.databaseSqliteBackupFile().filename().string();
+         auto filename = m_pathProvider.databaseSqliteBackupFile().filename().string();
          webServer->getConfigurator()->websiteHandlerAddAlias(filename, m_pathProvider.databaseSqliteBackupFile().string());
       }
             
       webServer->getConfigurator()->configureAuthentication(boost::make_shared<authentication::CBasicAuthentication>(dal->getConfigurationManager(), startupOptions->getNoPasswordFlag()));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CPlugin>(pDataProvider, pluginManager, *pluginGateway));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CDevice>(pDataProvider, *pluginGateway));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CDevice>(pDataProvider, pluginManager, *pluginGateway));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CPage>(pDataProvider));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CWidget>(pDataProvider, webServerPath));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CConfiguration>(dal->getConfigurationManager()));

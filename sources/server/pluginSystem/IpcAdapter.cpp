@@ -514,6 +514,15 @@ namespace pluginSystem
       else
          request->sendError(result);
    }
+
+   void CIpcAdapter::postDeviceRemoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event)
+   {
+      toPlugin::msg msg;
+      auto message = msg.mutable_deviceremoved();
+      message->set_device(event->device());
+      message->set_details(event->details().serialize());
+      send(msg);
+   }
 } // namespace pluginSystem
 
 

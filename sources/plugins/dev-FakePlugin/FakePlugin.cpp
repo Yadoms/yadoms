@@ -6,6 +6,7 @@
 #include "FakeSwitch.h"
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
+#include <shared/plugin/yPluginApi/IDeviceRemoved.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
 #include <shared/tools/Random.h>
@@ -222,6 +223,13 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                creation->sendError(ex.what());
             }
+            break;
+         }
+
+      case yApi::IYPluginApi::kEventDeviceRemoved:
+         {
+            auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
+            std::cout << device->device() << " was removed" << std::endl;
             break;
          }
 

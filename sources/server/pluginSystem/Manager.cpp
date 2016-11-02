@@ -19,6 +19,7 @@
 #include "InstanceRemoverRaii.hpp"
 #include "DeviceConfigurationSchemaRequest.h"
 #include "SetDeviceConfiguration.h"
+#include "DeviceRemoved.h"
 
 namespace pluginSystem
 {
@@ -326,6 +327,27 @@ namespace pluginSystem
       // Stop all instances of this plugin
       for (std::vector<int>::const_iterator instanceToStop = instancesToStop.begin(); instanceToStop != instancesToStop.end(); ++instanceToStop)
          requestStopInstance(*instanceToStop);
+   }
+
+   void CManager::removeDevice(int deviceId) const
+   {
+      try
+      {
+         auto device = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+         auto pluginInstanceId = device->PluginId();
+
+         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+         auto instance(getRunningInstance(pluginInstanceId));
+
+         YADOMS_LOG(debug) << "Send removed device notification on device " << device->Name() << " to plugin " << instance->about()->DisplayName();
+
+         instance->postDeviceRemoved(boost::make_shared<CDeviceRemoved>(device->Name(),
+                                                                        device->Details()));
+      }
+      catch(CPluginException&)
+      {
+         // Plugin instance is not running
+      }
    }
 
    void CManager::startInstance(int id)

@@ -15,8 +15,10 @@ namespace web
 
 
          CDevice::CDevice(boost::shared_ptr<database::IDataProvider> dataProvider,
+                          boost::shared_ptr<pluginSystem::CManager> pluginManager,
                           communication::ISendMessageAsync& messageSender)
             : m_dataProvider(dataProvider),
+              m_pluginManager(pluginManager),
               m_messageSender(messageSender)
          {
          }
@@ -401,7 +403,10 @@ namespace web
                   }
 
                   if (removeDevice)
+                  {
+                     m_pluginManager->removeDevice(deviceId);
                      m_dataProvider->getDeviceRequester()->removeDevice(deviceId);
+                  }
 
                   return CResult::GenerateSuccess();
                }

@@ -101,6 +101,7 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/IBindingQueryRequest.h
    shared/plugin/yPluginApi/IDeviceCommand.h
    shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h
+   shared/plugin/yPluginApi/IDeviceRemoved.h
    shared/plugin/yPluginApi/IExtraQuery.h
    shared/plugin/yPluginApi/IExtraQueryData.h
    shared/plugin/yPluginApi/IManuallyDeviceCreationData.h

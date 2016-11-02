@@ -1,6 +1,5 @@
 #pragma once
 #include "IIpcAdapter.h"
-#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/communication/MessageQueueRemover.hpp>
 #include <plugin_IPC/plugin_IPC.h>
 #include "yPluginApiImplementation.h"
@@ -37,6 +36,7 @@ namespace pluginSystem
       void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) override;
       void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery) override;
       void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) override;
+      void postDeviceRemoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event) override;
       // [END] IIpcAdapter Implementation
 
       //--------------------------------------------------------------

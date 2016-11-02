@@ -8,6 +8,7 @@
 #include "ManuallyDeviceCreation.h"
 #include "DeviceConfigurationSchemaRequest.h"
 #include "SetDeviceConfiguration.h"
+#include "DeviceRemoved.h"
 
 namespace plugin_cpp_api
 {
@@ -165,6 +166,8 @@ namespace plugin_cpp_api
          break;
       case toPlugin::msg::kManuallyDeviceCreation: processManuallyDeviceCreation(toPluginProtoBuffer.manuallydevicecreation());
          break;
+      case toPlugin::msg::kDeviceRemoved: processDeviceRemoved(toPluginProtoBuffer.deviceremoved());
+         break;
       default:
          throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toPluginProtoBuffer.OneOf_case()).str());
       }
@@ -315,6 +318,12 @@ namespace plugin_cpp_api
                                                      });
 
       m_pluginEventHandler.postEvent(kEventManuallyDeviceCreation, request);
+   }
+
+   void CApiImplementation::processDeviceRemoved(const toPlugin::DeviceRemoved& msg)
+   {
+      boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event = boost::make_shared<CDeviceRemoved>(msg);
+      m_pluginEventHandler.postEvent(kEventDeviceRemoved, event);
    }
 
 

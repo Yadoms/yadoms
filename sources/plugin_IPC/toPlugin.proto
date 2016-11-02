@@ -71,6 +71,11 @@ message SetDeviceConfiguration {
 	required string configuration = 2;
 }
 
+message DeviceRemoved {
+	required string device = 1;
+	required string details = 2;
+}
+
 message msg {
 	oneof OneOf {
 		string error = 1;
@@ -91,6 +96,7 @@ message msg {
 		DeveloperModeAnswer developerModeAnswer = 17;
 		DeviceConfigurationSchemaRequest deviceConfigurationSchemaRequest = 18;
 		SetDeviceConfiguration setDeviceConfiguration = 19;
+		DeviceRemoved deviceRemoved = 20;
 	}
 }
 
