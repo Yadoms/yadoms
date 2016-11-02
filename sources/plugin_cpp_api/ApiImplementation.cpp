@@ -4,10 +4,11 @@
 #include "PluginInformation.h"
 #include "BindingQuery.h"
 #include "DeviceCommand.h"
-#include "ExtraCommand.h"
+#include "ExtraQuery.h"
 #include "ManuallyDeviceCreation.h"
 #include "DeviceConfigurationSchemaRequest.h"
 #include "SetDeviceConfiguration.h"
+#include "DeviceRemoved.h"
 
 namespace plugin_cpp_api
 {
@@ -157,13 +158,15 @@ namespace plugin_cpp_api
          break;
       case toPlugin::msg::kDeviceCommand: processDeviceCommand(toPluginProtoBuffer.devicecommand());
          break;
-      case toPlugin::msg::kExtraCommand: processExtraCommand(toPluginProtoBuffer.extracommand());
+      case toPlugin::msg::kExtraQuery: processExtraQuery(toPluginProtoBuffer.extraquery());
          break;
       case toPlugin::msg::kDeviceConfigurationSchemaRequest: processDeviceConfigurationSchemaRequest(toPluginProtoBuffer.deviceconfigurationschemarequest());
          break;
       case toPlugin::msg::kSetDeviceConfiguration: processSetDeviceConfiguration(toPluginProtoBuffer.setdeviceconfiguration());
          break;
       case toPlugin::msg::kManuallyDeviceCreation: processManuallyDeviceCreation(toPluginProtoBuffer.manuallydevicecreation());
+         break;
+      case toPlugin::msg::kDeviceRemoved: processDeviceRemoved(toPluginProtoBuffer.deviceremoved());
          break;
       default:
          throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toPluginProtoBuffer.OneOf_case()).str());
@@ -271,10 +274,26 @@ namespace plugin_cpp_api
       m_pluginEventHandler.postEvent(kEventDeviceCommand, command);
    }
 
-   void CApiImplementation::processExtraCommand(const toPlugin::ExtraCommand& msg)
+   void CApiImplementation::processExtraQuery(const toPlugin::ExtraQuery& msg)
    {
-      boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command = boost::make_shared<CExtraCommand>(msg);
-      m_pluginEventHandler.postEvent(kEventExtraCommand, command);
+      boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> command = boost::make_shared<CExtraQuery>(msg,
+                                                                                                           [&](const shared::CDataContainer& r)
+                                                                                                           {
+                                                                                                              toYadoms::msg ans;
+                                                                                                              auto answer = ans.mutable_extraqueryanswer();
+                                                                                                              answer->set_success(true);
+                                                                                                              answer->set_result(r.serialize());
+                                                                                                              send(ans);
+                                                                                                           },
+                                                                                                           [&](const std::string& r)
+                                                                                                           {
+                                                                                                              toYadoms::msg ans;
+                                                                                                              auto answer = ans.mutable_extraqueryanswer();
+                                                                                                              answer->set_success(false);
+                                                                                                              answer->set_result(r);
+                                                                                                              send(ans);
+                                                                                                           });
+      m_pluginEventHandler.postEvent(kEventExtraQuery, command);
    }
 
    void CApiImplementation::processManuallyDeviceCreation(const toPlugin::ManuallyDeviceCreation& msg)
@@ -299,6 +318,12 @@ namespace plugin_cpp_api
                                                      });
 
       m_pluginEventHandler.postEvent(kEventManuallyDeviceCreation, request);
+   }
+
+   void CApiImplementation::processDeviceRemoved(const toPlugin::DeviceRemoved& msg)
+   {
+      boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event = boost::make_shared<CDeviceRemoved>(msg);
+      m_pluginEventHandler.postEvent(kEventDeviceRemoved, event);
    }
 
 
@@ -425,7 +450,7 @@ namespace plugin_cpp_api
 
    void CApiImplementation::declareDevice(const std::string& device,
                                           const std::string& model,
-                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords,
+                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& keywords,
                                           const shared::CDataContainer& details)
    {
       toYadoms::msg req;
@@ -640,7 +665,7 @@ namespace plugin_cpp_api
    }
 
    void CApiImplementation::historizeData(const std::string& device,
-                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& dataVect)
+                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& dataVect)
    {
       toYadoms::msg msg;
       auto message = msg.mutable_historizedata();
@@ -743,3 +768,5 @@ namespace plugin_cpp_api
       return exists;
    }
 } // namespace plugin_cpp_api	
+
+

@@ -35,8 +35,7 @@ namespace web
                                                           const std::string& requestContent) const;
             shared::CDataContainer getAllAvailablePluginsWithPackage(const std::vector<std::string>& parameters,
                                                                      const std::string& requestContent) const;
-            shared::CDataContainer getPluginDevices(const std::vector<std::string>& parameters,
-                                                    const std::string& requestContent) const;
+            shared::CDataContainer sendExtraQuery(const std::vector<std::string>& parameters, const std::string& requestContent) const;
             shared::CDataContainer createPlugin(const std::vector<std::string>& parameters,
                                                 const std::string& requestContent) const;
             shared::CDataContainer updatePlugin(const std::vector<std::string>& parameters,
@@ -45,9 +44,9 @@ namespace web
                                                 const std::string& requestContent) const;
             shared::CDataContainer deleteAllPlugins(const std::vector<std::string>& parameters,
                                                     const std::string& requestContent) const;
-            shared::CDataContainer sendExtraCommand(const std::vector<std::string>& parameters,
-                                                    const std::string& requestContent) const;
             shared::CDataContainer getInstanceState(const std::vector<std::string>& parameters,
+                                                    const std::string& requestContent) const;
+            shared::CDataContainer getPluginDevices(const std::vector<std::string>& parameters,
                                                     const std::string& requestContent) const;
             shared::CDataContainer startInstance(const std::vector<std::string>& parameters,
                                                  const std::string& requestContent) const;

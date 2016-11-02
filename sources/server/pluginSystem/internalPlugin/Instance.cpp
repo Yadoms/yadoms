@@ -73,10 +73,10 @@ namespace pluginSystem
                                    request);
       }
 
-      void CInstance::postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand)
+      void CInstance::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery)
       {
-         m_eventHandler->postEvent(yApi::IYPluginApi::kEventExtraCommand,
-                                   extraCommand);
+         m_eventHandler->postEvent(yApi::IYPluginApi::kEventExtraQuery,
+                                   extraQuery);
       }
 
       void CInstance::updateConfiguration(const shared::CDataContainer& newConfiguration)
@@ -93,6 +93,12 @@ namespace pluginSystem
       boost::shared_ptr<const shared::plugin::information::IInformation> CInstance::aboutPlugin() const
       {
          return m_pluginInformation;
+      }
+
+      void CInstance::postDeviceRemoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event)
+      {
+         m_eventHandler->postEvent(yApi::IYPluginApi::kEventDeviceRemoved,
+                                   event);
       }
    }
 } // namespace pluginSystem::internalPlugin

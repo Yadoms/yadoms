@@ -46,7 +46,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    m_configuration.initializeWith(api->getConfiguration());
 
    // Create the transceiver
-   m_transceiver = CTeleInfoFactory::constructTransceiver();
+   m_transceiver = CTeleInfoFactory::constructTransceiver(api);
 
    // Create the buffer handler
    m_receiveBufferHandler = CTeleInfoFactory::GetBufferHandler(api->getEventHandler(),
@@ -203,16 +203,15 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
    // When all information are updated we stopped the reception !
    if (m_transceiver->IsInformationUpdated())
    {
-      bool newState = true;
-
       std::cout << "Suspend COM" << std::endl;
       m_receiveBufferHandler->suspend();
+   }
 
-      if (m_runningState != newState)
-      {
-         api->setPluginState(yApi::historization::EPluginState::kRunning);
-         m_runningState = true;
-      }
+   bool newState = true;
+   if (m_runningState != newState)
+   {
+      api->setPluginState(yApi::historization::EPluginState::kRunning);
+      m_runningState = true;
    }
 }
 

@@ -31,9 +31,10 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	                           Create a transceiver instance
+   /// \param [in] api                    Plugin execution context (Yadoms API)
    /// \return                            The created transceiver
    //--------------------------------------------------------------
-   static boost::shared_ptr<ITransceiver> constructTransceiver();
+   static boost::shared_ptr<ITransceiver> constructTransceiver(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	                          Return the buffer handler of the teleInfo

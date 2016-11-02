@@ -107,40 +107,44 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             break;
          }
 
-      case yApi::IYPluginApi::kEventExtraCommand:
+      case yApi::IYPluginApi::kEventExtraQuery:
          {
             // Extra-command was received from Yadoms
-            auto extraCommand = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraCommand> >();
+            auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery> >();
 
-            if (extraCommand)
+            if (extraQuery)
             {
-               std::cout << "Extra command received : " << extraCommand->getCommand() << std::endl;
+               std::cout << "Extra command received : " << extraQuery->getData().query() << std::endl;
 
-               if (extraCommand->getCommand() == "simpleCommand")
+               if (extraQuery->getData().query() == "simpleCommand")
                {
                   std::cout << "Simple command received" << std::endl;
                }
-               else if (extraCommand->getCommand() == "dataCommand")
+               else if (extraQuery->getData().query() == "dataCommand")
                {
-                  auto s = extraCommand->getData().get<std::string>("testValue");
+                  auto s = extraQuery->getData().data().get<std::string>("testValue");
                   std::cout << "Command with data received : data=" << s << std::endl;
                }
-               else if (extraCommand->getCommand() == "dataBindingCommand")
+               else if (extraQuery->getData().query() == "dataBindingCommand")
                {
-                  auto value = extraCommand->getData().get<std::string>("networkInterface");
+                  auto value = extraQuery->getData().data().get<std::string>("networkInterface");
                   std::cout << "Command with binded data received : value=" << value << " text=" << Poco::Net::NetworkInterface::forName(value).displayName() << std::endl;
                }
-               else if (extraCommand->getCommand() == "dataBindingPluginCommand")
+               else if (extraQuery->getData().query() == "dataBindingPluginCommand")
                {
-                  auto interval = extraCommand->getData().get<std::string>("dynamicSection.content.interval");
+                  auto interval = extraQuery->getData().data().get<std::string>("dynamicSection.content.interval");
                   std::cout << "Command with plugin binded data received : value=" << interval << std::endl;
                }
-               else if (extraCommand->getCommand() == "changePluginStateMessage")
+               else if (extraQuery->getData().query() == "changePluginStateMessage")
                {
-                  auto message = extraCommand->getData().get<std::string>("newStateMessage");
-                  api->setPluginState(shared::plugin::yPluginApi::historization::EPluginState::kCustom, "newCustomStateMessage", {{"messageFromExtraCommand", message}});
+                  auto message = extraQuery->getData().data().get<std::string>("newStateMessage");
+                  api->setPluginState(shared::plugin::yPluginApi::historization::EPluginState::kCustom, "newCustomStateMessage", {{"messageFromExtraQuery", message}});
                }
             }
+
+            // Extra-query can return success or error indicator. In case of success, can also return data.
+            // Return here a success without data (=empty container)
+            extraQuery->sendSuccess(shared::CDataContainer());
             break;
          }
 
@@ -214,6 +218,13 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                creation->sendError(ex.what());
             }
+            break;
+         }
+
+      case yApi::IYPluginApi::kEventDeviceRemoved:
+         {
+            auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
+            std::cout << device->device() << " was removed" << std::endl;
             break;
          }
 

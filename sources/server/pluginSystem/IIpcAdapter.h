@@ -2,10 +2,11 @@
 #include <shared/plugin/information/IInformation.h>
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceCommand.h>
-#include <shared/plugin/yPluginApi/IExtraCommand.h>
+#include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
 #include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
+#include <shared/plugin/yPluginApi/IDeviceRemoved.h>
 
 
 namespace pluginSystem
@@ -74,15 +75,21 @@ namespace pluginSystem
 
       //--------------------------------------------------------------
       /// \brief                 Post an extra command to a plugin
-      /// \param [in] extraCommand The command
+      /// \param [in] extraQuery The command
       //--------------------------------------------------------------
-      virtual void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) = 0;
+      virtual void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Post a manually device creation request to a plugin
       /// \param [in] request    Request data
       //--------------------------------------------------------------
       virtual void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                 Post a device removed notification to a plugin
+      /// \param [in] event      The notification
+      //--------------------------------------------------------------
+      virtual void postDeviceRemoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event) = 0;
    };
 } // namespace pluginSystem
 

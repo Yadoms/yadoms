@@ -34,12 +34,8 @@ void CDiskUsage::read()
          {
              long long numblock    = boost::lexical_cast<long long>(match[2]);
              long long availblocks = boost::lexical_cast<long long>(match[4]);
-
-                std::cout << "numblock    :  " << numblock << std::endl;
-                std::cout << "availblocks :  " << availblocks << std::endl;
 			 
              m_keyword->set((numblock - availblocks)/double(numblock)*100);
-             std::cout << "Disk Name :  " << m_driveName << " Disk Usage : " << m_keyword->formatValue() << std::endl;
          }
        }
    }

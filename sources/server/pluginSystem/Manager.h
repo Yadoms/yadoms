@@ -13,7 +13,7 @@
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceCommand.h>
-#include <shared/plugin/yPluginApi/IExtraCommand.h>
+#include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include <shared/plugin/yPluginApi/historization/PluginState.h>
 #include "InstanceRemover.h"
 #include <IPathProvider.h>
@@ -97,7 +97,7 @@ namespace pluginSystem
       /// \brief           Get the plugin instances list
       /// \return          List of instances ID of all known instances, started or not
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<database::entities::CPlugin>> getInstanceList() const;
+      std::vector<boost::shared_ptr<database::entities::CPlugin> > getInstanceList() const;
 
       //--------------------------------------------------------------
       /// \brief           Get the instance configuration
@@ -189,8 +189,8 @@ namespace pluginSystem
       /// \param [in] id         Plugin instance Id
       /// \param [in] command    The command to post
       //--------------------------------------------------------------
-      void postExtraCommand(int id,
-                            boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command) const;
+      void postExtraQuery(int id,
+                          boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post a manually device creation request to a plugin
@@ -235,6 +235,13 @@ namespace pluginSystem
       /// \param [in] pluginName The plugin name
       //--------------------------------------------------------------
       void stopAllInstancesOfPlugin(const std::string& pluginName);
+
+      //--------------------------------------------------------------
+      /// \brief                 Remove a device from a plugin
+      /// \param [in] deviceId   The devide ID to remove
+      //--------------------------------------------------------------
+      void removeDevice(int deviceId) const;
+
    private:
       //-----------------------------------------------------
       ///\brief               Start all instances

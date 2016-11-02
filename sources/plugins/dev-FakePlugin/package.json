@@ -100,7 +100,7 @@
       "defaultValue": "true"
     }
   },
-  "extraCommands": {
+  "extraQueries": {
     "simpleCommand": {
       "iconClass": "fa fa-bolt"
     },

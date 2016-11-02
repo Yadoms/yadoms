@@ -2,6 +2,7 @@
 #include "callback/ISynchronousCallback.h"
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationData.h>
 #include <shared/plugin/yPluginApi/IBindingQueryData.h>
+#include <shared/plugin/yPluginApi/IExtraQueryData.h>
 #include <shared/DataContainer.h>
 
 namespace communication
@@ -40,12 +41,13 @@ namespace communication
       //----------------------------------------------
       ///\brief                     Send an extra command
       ///\param [in] pluginId       Plugin Id to send extra command
-      ///\param [in] command        The extra command 
-      ///\param [in] data           The extra command data
+      ///\param [in] query          The extra query
+      ///\param [in] data           The extra query data
+      ///\param [in] callback       The callback
       //----------------------------------------------
-      virtual void sendExtraCommandAsync(int pluginId,
-                                         const std::string& command,
-                                         const shared::CDataContainer& data = shared::CDataContainer::EmptyContainer) = 0;
+      virtual void sendExtraQueryAsync(int pluginId,
+                                       const shared::plugin::yPluginApi::IExtraQueryData& data,
+                                       communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) = 0;
 
       //----------------------------------------------
       ///\brief                     Send a manually device creation request to a plugin with a mandatory callback

@@ -33,9 +33,9 @@ namespace communication
                                    const std::string& body) override;
       void sendDeviceCommandAsync(int deviceId,
                                   const std::string& body) override;
-      void sendExtraCommandAsync(int pluginId,
-                                 const std::string& command,
-                                 const shared::CDataContainer& data = shared::CDataContainer::EmptyContainer) override;
+      void sendExtraQueryAsync(int pluginId,
+                               const shared::plugin::yPluginApi::IExtraQueryData& data,
+                               communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) override;
       void sendManuallyDeviceCreationRequest(int pluginId,
                                              const shared::plugin::yPluginApi::IManuallyDeviceCreationData& data,
                                              communication::callback::ISynchronousCallback<std::string>& callback) override;

@@ -383,10 +383,14 @@ set(YADOMS_SRC
    server/pluginSystem/DeviceCommand.cpp
    server/pluginSystem/DeviceConfigurationSchemaRequest.h
    server/pluginSystem/DeviceConfigurationSchemaRequest.cpp
+   server/pluginSystem/DeviceRemoved.h
+   server/pluginSystem/DeviceRemoved.cpp
 	server/pluginSystem/DummyQualifier.h
 	server/pluginSystem/DummyQualifier.cpp
-	server/pluginSystem/ExtraCommand.h
-	server/pluginSystem/ExtraCommand.cpp
+	server/pluginSystem/ExtraQuery.h
+	server/pluginSystem/ExtraQuery.cpp
+   server/pluginSystem/ExtraQueryData.cpp
+   server/pluginSystem/ExtraQueryData.h
 	server/pluginSystem/Factory.cpp
 	server/pluginSystem/Factory.h
    server/pluginSystem/FromPluginHistorizer.h

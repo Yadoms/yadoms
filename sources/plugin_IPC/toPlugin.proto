@@ -24,8 +24,8 @@ message DeviceCommand {
 	required string body = 3;
 }
 
-message ExtraCommand {
-	required string command = 1;
+message ExtraQuery {
+	required string query = 1;
 	required string data = 2;
 }
 
@@ -71,6 +71,11 @@ message SetDeviceConfiguration {
 	required string configuration = 2;
 }
 
+message DeviceRemoved {
+	required string device = 1;
+	required string details = 2;
+}
+
 message msg {
 	oneof OneOf {
 		string error = 1;
@@ -80,7 +85,7 @@ message msg {
 		Configuration updateConfiguration = 6;
 		BindingQuery bindingQuery = 7;
 		DeviceCommand deviceCommand = 8;
-		ExtraCommand extraCommand = 9;
+		ExtraQuery extraQuery = 9;
 		DeviceExitsAnswer deviceExists = 10;
 		DeviceDetailsAnswer deviceDetails = 11;
 		KeywordExitsAnswer keywordExists = 12;
@@ -91,6 +96,7 @@ message msg {
 		DeveloperModeAnswer developerModeAnswer = 17;
 		DeviceConfigurationSchemaRequest deviceConfigurationSchemaRequest = 18;
 		SetDeviceConfiguration setDeviceConfiguration = 19;
+		DeviceRemoved deviceRemoved = 20;
 	}
 }
 

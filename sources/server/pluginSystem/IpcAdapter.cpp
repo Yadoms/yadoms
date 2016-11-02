@@ -459,13 +459,38 @@ namespace pluginSystem
       send(msg);
    }
 
-   void CIpcAdapter::postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand)
+   void CIpcAdapter::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery)
    {
-      toPlugin::msg msg;
-      auto message = msg.mutable_extracommand();
-      message->set_command(extraCommand->getCommand());
-      message->set_data(extraCommand->getData().serialize());
-      send(msg);
+      toPlugin::msg req;
+      auto message = req.mutable_extraquery();
+      message->set_query(extraQuery->getData().query());
+      message->set_data(extraQuery->getData().data().serialize());
+
+      bool success;
+      std::string result;
+
+      try
+      {
+         send(req,
+            [&](const toYadoms::msg& ans) -> bool
+         {
+            return ans.has_extraqueryanswer();
+         },
+            [&](const toYadoms::msg& ans) -> void
+         {
+            success = ans.extraqueryanswer().success();
+            result = ans.extraqueryanswer().result();
+         });
+      }
+      catch (std::exception& e)
+      {
+         extraQuery->sendError((boost::format("Plugin doesn't answer to extra query : %1%") % e.what()).str());
+      }
+
+      if (success)
+         extraQuery->sendSuccess(shared::CDataContainer(result));
+      else
+         extraQuery->sendError(result);
    }
 
    void CIpcAdapter::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request)
@@ -502,6 +527,15 @@ namespace pluginSystem
          request->sendSuccess(result);
       else
          request->sendError(result);
+   }
+
+   void CIpcAdapter::postDeviceRemoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event)
+   {
+      toPlugin::msg msg;
+      auto message = msg.mutable_deviceremoved();
+      message->set_device(event->device());
+      message->set_details(event->details().serialize());
+      send(msg);
    }
 } // namespace pluginSystem
 

@@ -3,6 +3,7 @@
 #include "IRestService.h"
 #include "database/IDataProvider.h"
 #include "communication/ISendMessageAsync.h"
+#include "pluginSystem/Manager.h"
 
 namespace web
 {
@@ -14,6 +15,7 @@ namespace web
          {
          public:
             CDevice(boost::shared_ptr<database::IDataProvider> dataProvider,
+                    boost::shared_ptr<pluginSystem::CManager> pluginManager,
                     communication::ISendMessageAsync& messageSender);
             virtual ~CDevice();
 
@@ -126,6 +128,11 @@ namespace web
             ///\brief   Data provider
             //-----------------------------------------
             boost::shared_ptr<database::IDataProvider> m_dataProvider;
+
+            //-----------------------------------------
+            ///\brief   Plugin manager (required for some operations)
+            //-----------------------------------------
+            boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
 
             //-----------------------------------------
             ///\brief   The rest keyword which identifies this rule

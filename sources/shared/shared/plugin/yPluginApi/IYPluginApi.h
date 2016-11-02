@@ -3,11 +3,12 @@
 #include <shared/plugin/information/IInformation.h>
 #include <shared/DataContainer.h>
 #include "IDeviceCommand.h"
-#include "IExtraCommand.h"
+#include "IExtraQuery.h"
 #include "IBindingQueryRequest.h"
 #include "IDeviceConfigurationSchemaRequest.h"
 #include "IManuallyDeviceCreationRequest.h"
 #include "ISetDeviceConfiguration.h"
+#include "IDeviceRemoved.h"
 #include "historization/Historizers.h"
 #include <shared/StringExtension.h>
 
@@ -73,12 +74,12 @@ namespace shared
                kEventUpdateConfiguration,
 
                //-----------------------------------------------------
-               ///\brief Yadoms send extra command to plugin
-               ///\usage Optional, required if package.json declare that plugin supports extra commands
-               ///\note Data : a boost::shared_ptr<const yApi::IExtraCommand> object containing the extra command
+               ///\brief Yadoms send extra query to plugin
+               ///\usage Optional, required if package.json declare that plugin supports extra query
+               ///\note Data : a boost::shared_ptr<const yApi::IExtraQuery> object containing the extra query
                ///\note Plugin must process the specified command
                //-----------------------------------------------------
-               kEventExtraCommand,
+               kEventExtraQuery,
 
                //-----------------------------------------------------
                ///\brief Yadoms ask the plugin a binding query
@@ -103,6 +104,13 @@ namespace shared
                ///\note Plugin must create the specified device
                //-----------------------------------------------------
                kEventManuallyDeviceCreation,
+
+               //-----------------------------------------------------
+               ///\brief Yadoms notifies plugin that a device was removed
+               ///\usage Optional, useful if plugin needs to do notify an adapter that one of its devices was removed
+               ///\note Data : a boost::shared_ptr<const yApi::IDeviceRemoved> object containing the device and its details
+               //-----------------------------------------------------
+               kEventDeviceRemoved,
 
                //-----------------------------------------------------
                ///\brief Yadoms ask the device configuration schema

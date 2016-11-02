@@ -20,7 +20,7 @@ namespace pluginSystem
       }
       catch (shared::exception::CException& e)
       {
-         throw shared::exception::CInvalidParameter(std::string("Error reading package.json : ") + e.what());
+         throw shared::exception::CInvalidParameter(pluginPath.stem().string() + std::string(" : Error reading package.json : ") + e.what());
       }
 
       try
@@ -46,7 +46,6 @@ namespace pluginSystem
          else
             m_url = shared::CStringExtension::EmptyString;
 
-
          if (m_package->containsValue("supportedPlatforms") || m_package->containsChild("supportedPlatforms"))
             m_isSupportedOnThisPlatform = tools::CSupportedPlatformsChecker::isSupported(m_package->get<shared::CDataContainer>("supportedPlatforms"));
          else
@@ -62,7 +61,7 @@ namespace pluginSystem
       {
          // Set plugin as not supported
          m_isSupportedOnThisPlatform = false;
-         throw shared::exception::CInvalidParameter(std::string("Error reading package.json : data not found : ") + e.what());
+         throw shared::exception::CInvalidParameter(pluginPath.stem().string() + std::string(" : Error reading package.json : data not found : ") + e.what());
       }
 
       auto pluginFolder = m_path.filename().string();

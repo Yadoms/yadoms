@@ -19,6 +19,7 @@
 #include "InstanceRemoverRaii.hpp"
 #include "DeviceConfigurationSchemaRequest.h"
 #include "SetDeviceConfiguration.h"
+#include "DeviceRemoved.h"
 
 namespace pluginSystem
 {
@@ -328,6 +329,27 @@ namespace pluginSystem
          requestStopInstance(*instanceToStop);
    }
 
+   void CManager::removeDevice(int deviceId) const
+   {
+      try
+      {
+         auto device = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+         auto pluginInstanceId = device->PluginId();
+
+         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+         auto instance(getRunningInstance(pluginInstanceId));
+
+         YADOMS_LOG(debug) << "Send removed device notification on device " << device->Name() << " to plugin " << instance->about()->DisplayName();
+
+         instance->postDeviceRemoved(boost::make_shared<CDeviceRemoved>(device->Name(),
+                                                                        device->Details()));
+      }
+      catch(CPluginException&)
+      {
+         // Plugin instance is not running
+      }
+   }
+
    void CManager::startInstance(int id)
    {
       try
@@ -583,15 +605,15 @@ namespace pluginSystem
       instance->postDeviceCommand(command);
    }
 
-   void CManager::postExtraCommand(int id,
-                                   boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command) const
+   void CManager::postExtraQuery(int id,
+                                 boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query) const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       auto instance(getRunningInstance(id));
 
-      YADOMS_LOG(debug) << "Send extra command " << command->getCommand() << " to plugin " << instance->about()->DisplayName();
+      YADOMS_LOG(debug) << "Send extra query " << query->getData().query() << " to plugin " << instance->about()->DisplayName();
 
-      instance->postExtraCommand(command);
+      instance->postExtraQuery(query);
    }
 
    void CManager::postManuallyDeviceCreationRequest(int id,

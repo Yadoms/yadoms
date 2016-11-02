@@ -4,6 +4,7 @@
 #include "web/rest/Result.h"
 #include "pluginSystem/ManuallyDeviceCreationData.h"
 #include "pluginSystem/BindingQueryData.h"
+#include "pluginSystem/ExtraQueryData.h"
 #include "communication/callback/SynchronousCallback.h"
 
 
@@ -50,7 +51,7 @@ namespace web
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CPlugin::createPlugin, CPlugin::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CPlugin::updatePlugin, CPlugin::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("extraCommand")("*"), CPlugin::sendExtraCommand, CPlugin::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("extraQuery")("*"), CPlugin::sendExtraQuery, CPlugin::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CPlugin::deleteAllPlugins, CPlugin::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPlugin::deletePlugin, CPlugin::transactionalMethod);
          }
@@ -254,18 +255,35 @@ namespace web
             }
          }
 
-         shared::CDataContainer CPlugin::sendExtraCommand(const std::vector<std::string>& parameters,
-                                                          const std::string& requestContent) const
+         shared::CDataContainer CPlugin::sendExtraQuery(const std::vector<std::string>& parameters,
+                                                        const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() >= 4)
                {
                   auto instanceId = boost::lexical_cast<int>(parameters[1]);
-                  auto command = parameters[3];
-                  shared::CDataContainer commandData(requestContent);
-                  m_messageSender.sendExtraCommandAsync(instanceId, command, commandData);
-                  return CResult::GenerateSuccess();
+                  auto query = parameters[3];
+                  shared::CDataContainer queryData(requestContent);
+
+                  communication::callback::CSynchronousCallback<shared::CDataContainer> cb;
+                  pluginSystem::CExtraQueryData data(query, queryData);
+                  m_messageSender.sendExtraQueryAsync(instanceId, data, cb);
+
+                  switch (cb.waitForResult())
+                  {
+                  case communication::callback::CSynchronousCallback<shared::CDataContainer>::kResult:
+                  {
+                     auto res = cb.getCallbackResult();
+                     if (res.Success)
+                        return CResult::GenerateSuccess(res.Result);
+                     return CResult::GenerateError(res.ErrorMessage);
+                  }
+                  case shared::event::kTimeout:
+                     return CResult::GenerateError("The plugin did not respond");
+                  default:
+                     return CResult::GenerateError("Unkown plugin result");
+                  }
                }
                return CResult::GenerateError("invalid parameter. Not enough parameters in url");
             }
@@ -275,7 +293,7 @@ namespace web
             }
             catch (...)
             {
-               return CResult::GenerateError("unknown exception in sending extra command to plugin");
+               return CResult::GenerateError("unknown exception in sending extra query to plugin");
             }
          }
 

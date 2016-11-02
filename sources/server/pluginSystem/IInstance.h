@@ -2,8 +2,9 @@
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceCommand.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
-#include <shared/plugin/yPluginApi/IExtraCommand.h>
+#include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
+#include <shared/plugin/yPluginApi/IDeviceRemoved.h>
 #include <server/database/entities/Entities.h>
 #include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
 
@@ -70,7 +71,7 @@ namespace pluginSystem
       /// \brief			            Post a device command to the plugin
       /// \param  information       Device command
       //--------------------------------------------------------------
-      virtual void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) = 0;
+      virtual void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery) = 0;
 
       //--------------------------------------------------------------
       /// \brief			            Set the configuration of a device
@@ -83,6 +84,12 @@ namespace pluginSystem
       /// \param [in] request    Request data
       //--------------------------------------------------------------
       virtual void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief			            Post a device removed notification to the plugin
+      /// \param  event             Device removed notification
+      //--------------------------------------------------------------
+      virtual void postDeviceRemoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event) = 0;
    };
 	
 } // namespace pluginSystem	

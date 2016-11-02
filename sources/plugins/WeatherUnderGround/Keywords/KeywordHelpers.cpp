@@ -2,7 +2,7 @@
 #include "KeywordHelpers.h"
 #include <boost/lexical_cast.hpp>
 
-bool convertDouble(double& value, const shared::CDataContainer& valueContainer, const std::string label)
+bool convertDouble(double& value, const shared::CDataContainer& valueContainer, const std::string& label)
 {
    try
    {
@@ -16,7 +16,7 @@ bool convertDouble(double& value, const shared::CDataContainer& valueContainer, 
    }
 }
 
-bool convertInt(int& value, const shared::CDataContainer& valueContainer, const std::string label)
+bool convertInt(int& value, const shared::CDataContainer& valueContainer, const std::string& label)
 {
    try
    {
@@ -30,7 +30,7 @@ bool convertInt(int& value, const shared::CDataContainer& valueContainer, const 
    }
 }
 
-void convertKmhToMs(std::string& returnString, const shared::CDataContainer& valueContainer, const std::string label)
+void convertKmhToMs(std::string& returnString, const shared::CDataContainer& valueContainer, const std::string& label)
 {
    double temp = 0;
 
@@ -40,7 +40,7 @@ void convertKmhToMs(std::string& returnString, const shared::CDataContainer& val
       returnString = boost::lexical_cast<std::string>(temp / 3.6);
 }
 
-void convertcmTomm(std::string& returnString, const shared::CDataContainer& valueContainer, const std::string label)
+void convertcmTomm(std::string& returnString, const shared::CDataContainer& valueContainer, const std::string& label)
 {
    double temp = 0;
 
