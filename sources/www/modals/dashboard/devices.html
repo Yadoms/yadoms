@@ -231,6 +231,9 @@
                      getDeviceDomRow(device).remove();
                   }
                }
+            })
+            .fail(function (error) {
+               notifyError($.t("objects.deviceManager.errorDeleting", { deviceName: device.friendlyName }), error);
             });
          });
       });

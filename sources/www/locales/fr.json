@@ -195,7 +195,7 @@
       "errorDuringGettingPluginTypes": "Erreur lors de la récupération de la liste des types de plugins"
     },
     "delete-device": {
-      "title": "Confirmation de l'historique de l'équipement",
+      "title": "Suppression de l'historique de l'équipement",
       "text": "Cette opération va supprimer l'historique associé à l'équipement __deviceName__. Voulez-vous continuer ?",
       "checkDeleteDevice": "Supprimer l'équipement",
       "checkDeleteDeviceNote": "Attention, l'équipement sera re-créé si Yadoms reçoit à nouveau un message provenant du capteur associé."

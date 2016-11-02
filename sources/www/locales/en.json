@@ -196,7 +196,7 @@
       "errorDuringGettingPluginTypes": "Error during requesting plugin types"
     },
     "delete-device": {
-      "title": "Delete historic device confirmation",
+      "title": "Delete device historic",
       "text": "This operation will cleanup device __deviceName__ historic. Continue anyway ?",
       "checkDeleteDevice": "Delete the device",
       "checkDeleteDeviceNote": "Please note that device will be re-created if still transmits."
