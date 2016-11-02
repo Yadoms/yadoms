@@ -113,8 +113,6 @@ void CCPULoad::read()
          percent /= total;
          percent *= 100;
          m_keyword->set (percent);
-
-         std::cout << "CPU Load : " << m_keyword->formatValue() << std::endl;
       }
       else 
       {

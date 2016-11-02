@@ -4,8 +4,7 @@
 #include "Transceiver.h"
 
 CTeleInfoFactory::~CTeleInfoFactory()
-{
-}
+{}
 
 boost::shared_ptr<shared::communication::IAsyncPort> CTeleInfoFactory::constructPort(const ITeleInfoConfiguration& configuration,
                                                                                      shared::event::CEventHandler& eventHandler,
@@ -39,8 +38,8 @@ boost::shared_ptr<CTeleInfoReceiveBufferHandler> CTeleInfoFactory::GetBufferHand
                                                             messageSize);
 }
 
-boost::shared_ptr<ITransceiver> CTeleInfoFactory::constructTransceiver()
+boost::shared_ptr<ITransceiver> CTeleInfoFactory::constructTransceiver(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   return boost::make_shared<CTransceiver>();
+   return boost::make_shared<CTransceiver>(api);
 }
 

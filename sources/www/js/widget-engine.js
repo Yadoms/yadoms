@@ -15,28 +15,6 @@ var failGetEventCounter = 0;
 
 function initializeWidgetEngine() {
 
-    /**
-     * Callback of the click on the add page button
-     * Make lazy loading of the add page modal
-     */
-    $("#btn-add-page").click(function () {
-        createOrUpdatePage();
-    });
-
-    /**
-         * Callback of the click on the add widget button
-         * Make lazy loading of the add widget modal
-         */
-    $("#btn-add-widget").click(function () {
-        Yadoms.modals.widgetAdd.loadAsync()
-         .done(function () {
-             Yadoms.askWidgetPackages();
-         })
-        .fail(function (error) {
-            notifyError($.t("objects.lazyLoaderManager.unableToLoadModal", { modalPath: self.modalPath }), error);
-        });
-    });
-
     //we ask all widgets packages
     WidgetPackageManager.getAll()
     .done(function () {
@@ -149,6 +127,7 @@ function tabClick(pageId) {
         }
         //debounce
         setTimeout(function () {
+			PageManager.refreshWidgets(page);
             PageManager.updateWidgetLayout(page);
             page.$grid.packery("layout");
         }, 10);

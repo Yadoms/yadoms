@@ -149,9 +149,9 @@ WidgetManager.getViewModelFromServer_ = function (widgetType) {
                console.error("ViewModel of widget " + widgetType + " do not contains widgetViewModelCtor function");
                d.reject();
            } else {
-               WidgetPackageManager.widgetPackages[widgetType].viewModelCtor = widgetViewModelCtor;
+               WidgetPackageManager.packageList[widgetType].viewModelCtor = widgetViewModelCtor;
                //all job has been done without error
-               WidgetPackageManager.widgetPackages[widgetType].viewAnViewModelHaveBeenDownloaded = true;
+               WidgetPackageManager.packageList[widgetType].viewAnViewModelHaveBeenDownloaded = true;
 
                //ensure next async call will not use this viewModel
                widgetViewModelCtor = null;
@@ -389,7 +389,7 @@ WidgetManager.loadWidget = function (widget, pageWhereToAdd, ensureVisible) {
 
     } else {
 
-        if (!WidgetPackageManager.widgetPackages[widget.type].viewAnViewModelHaveBeenDownloaded) {
+        if (!WidgetPackageManager.packageList[widget.type].viewAnViewModelHaveBeenDownloaded) {
             WidgetManager.downloadWidgetViewAndVieWModel_(widget.type, true)
             .done(function () {
                 WidgetManager.instanciateWidgetToPage_(pageWhereToAdd, widget, widget.type, ensureVisible);
@@ -420,7 +420,7 @@ WidgetManager.loadWidget = function (widget, pageWhereToAdd, ensureVisible) {
 WidgetManager.instanciateWidgetToPage_ = function (pageWhereToAdd, widget, widgetType, ensureVisible) {
     try {
         //we finalize the load of the widget
-        WidgetManager.consolidate_(widget, WidgetPackageManager.widgetPackages[widgetType]);
+        WidgetManager.consolidate_(widget, WidgetPackageManager.packageList[widgetType]);
         WidgetManager.addToDom_(widget, ensureVisible);
         //we add the widget to the collection
         pageWhereToAdd.addWidget(widget);
@@ -712,4 +712,13 @@ WidgetManager.createGridWidget = function (widget) {
 WidgetManager.updateWidgetLayout = function (widget) {
 	console.log ("updateWidgetLayout");
     widget.$gridWidget.find(".textfit").fitText();
+};
+
+/**
+ * Refresh widgets
+ */
+WidgetManager.refreshWidgets = function (widget) {
+	if (widget.viewModel.configurationChanged !== undefined) {
+	   widget.viewModel.configurationChanged();
+	}	
 };
