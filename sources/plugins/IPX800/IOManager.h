@@ -4,6 +4,7 @@
 #include "IOManager.h"
 #include <shared/event/EventHandler.hpp>
 #include <Poco/Net/NetworkInterface.h>
+#include "specificHistorizers/Analog.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -33,7 +34,9 @@ public:
    /// \param[in]  IOlist           Set a new list of IOs
    //--------------------------------------------------------------
    void Initialize(boost::shared_ptr<yApi::IYPluginApi> api, 
-                   std::map<std::string, boost::shared_ptr<yApi::historization::CSwitch> > IOlist);
+                   std::map<std::string, boost::shared_ptr<yApi::historization::CSwitch> > IOlist,
+                   std::map<std::string, boost::shared_ptr<specificHistorizers::CVirtualAnalog> > virtualAnalogList,
+                   std::map<std::string, boost::shared_ptr<yApi::historization::CCounter> > counterList);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -87,5 +90,15 @@ private:
    //--------------------------------------------------------------
    /// \brief	Map of all IOs identify by the name
    //--------------------------------------------------------------
-   std::map<std::string, boost::shared_ptr<yApi::historization::CSwitch> > m_mapKeywordsName;
+   std::map<std::string, boost::shared_ptr<yApi::historization::CSwitch> > m_mapDigitalInputOuput;
+
+   //--------------------------------------------------------------
+   /// \brief	Map of all virtual analog input
+   //--------------------------------------------------------------
+   std::map<std::string, boost::shared_ptr<specificHistorizers::CVirtualAnalog> > m_mapVirtualAnalogInput;
+
+   //--------------------------------------------------------------
+   /// \brief	Map of all counters
+   //--------------------------------------------------------------
+   std::map<std::string, boost::shared_ptr<yApi::historization::CCounter> > m_mapCounters;
 };

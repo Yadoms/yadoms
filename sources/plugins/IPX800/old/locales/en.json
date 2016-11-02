@@ -1,0 +1,51 @@
+{
+   "name": "IPX800",
+   "description": "This plugin provide access to IPX800 equipment\n",
+   "configurationSchema":{
+      "IPAddress":{
+			"name": "IP Address",
+			"description": "the IP address of the equipment"
+      },	
+      "Port":{
+			"name": "Port",
+			"description": "the IPX800 local socket opened (example: 80)"
+      },
+	  "authentication": {
+		   "name": "key to access the IPX800",
+		   "description": "Only if the key is enabled",
+		   "content": {
+		      "Password": {
+		         "name": "password",
+		         "description": ""
+		      }
+		 }
+	  },
+	  "extensions": {
+         "name": "Extensions",
+         "description": "List of extensions connected to the IPX800",
+		 "item": {
+            "name": "Equipment",
+            "description": "",
+			"content":{
+			   "equipment":{
+                  "name": "Equipment",
+                  "description": "Choose the equipment type",
+			      "values": {
+			         "X-8D": "X-8D : Extension module with 8 Digital inputs",
+					 "X-24D": "X-24D : Extension module with 24 Digital inputs",
+			         "X-THL": "X-THL : Extension module with temperature/humidity/luxmeter",
+			         "X400-CT": "X400-CT : Extension module for intensity clamps",
+			         "X8R": "X-8R : Extension module with 8 relays"
+				  }
+			   }
+			}
+		  }
+		}	  
+	},
+	"customLabels": {
+		"pluginState": {
+			"initializationError": "Initialization error",		
+			"updateConfiguration": "Configuration updating..."
+		}
+	}
+}

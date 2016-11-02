@@ -6,8 +6,6 @@
    "url": "https://github.com/Yadoms/yadoms/wiki/IPX800",
    "credits": "",
    "supportedPlatforms":"all",
-   "supportManuallyDeviceCreation": "false",
-   "manuallyDeviceCreationConfigurationSchema": {},
    "configurationSchema": {
 		"IPAddress": {
 		  "type": "string",
@@ -29,26 +27,55 @@
 			     "encrypted": "true"
 			}
 		 }
-	  },
-	  "extensions": {
-         "type": "list",
-		 "nbItemsMin": "0",
-		 "nbItemsMax": "20",
-		 "allowDuplication": "true",
-		 "item": {
-		    "type":"section",
-			"content":{
-			   "equipment":{
-			      "type": "enum",
-			      "values": {
-			         "X-8D": "X-8D",
-			         "X-THL": "X-THL",
-			         "X400-CT": "X400-CT",
-			         "X8R": "X8R"
-				  }
-			   }
-			}
-		  }
-		}
+	  }
+   },
+   "supportManuallyDeviceCreation": "true",
+   "manuallyDeviceCreationConfigurationSchema": {
+      "type":
+      {
+         "type": "radioSection",
+         "content":
+         {
+			  "X8R" :
+			  {
+                 "type": "section",
+                 "content":
+                 {
+				    "Position" :
+				    {				 
+				       "type" : "enum",
+					   "__Binding__" : {
+						 "type" : "plugin", 
+						 "query" : "X8R"
+					   }
+					}
+				 }
+			  },
+			  "X8D" :
+			  {
+                 "type": "section",
+                 "content":
+                 {
+				    "Position" :
+				    {				 
+				       "type" : "enum",
+				       "values" : {"__Binding__" : {"type" : "system", "query" : "serialPorts"}}
+					}
+				 }
+			  },
+			  "X24D" :
+			  {
+                 "type": "section",
+                 "content":
+                 {
+				    "Position" :
+				    {				 
+				       "type" : "enum",
+				       "values" : {"__Binding__" : {"type" : "system", "query" : "serialPorts"}}
+					}
+				 }
+			  }			  
+		 }
+	  }
    }
 }

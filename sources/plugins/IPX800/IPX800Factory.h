@@ -7,6 +7,7 @@
 #include "IOManager.h"
 #include <Poco/Net/SocketAddress.h>
 #include <Poco/Net/NetworkInterface.h>
+#include "specificHistorizers/Analog.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -58,9 +59,19 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywordsToDeclare;
 
    //--------------------------------------------------------------
-   /// \brief	Map of all IOs identify by the name
+   /// \brief	Map of all IOs identify by the name (Relays, virtual inputs, virtuals outputs)
    //--------------------------------------------------------------
-   std::map<std::string, boost::shared_ptr<yApi::historization::CSwitch> > m_mapKeywordsName;
+   std::map<std::string, boost::shared_ptr<yApi::historization::CSwitch> > m_mapDigitalInputOuput;
+
+   //--------------------------------------------------------------
+   /// \brief	Map of all virtual analog input
+   //--------------------------------------------------------------
+   std::map<std::string, boost::shared_ptr<specificHistorizers::CVirtualAnalog> > m_mapVirtualAnalogInput;
+
+   //--------------------------------------------------------------
+   /// \brief	Map of all counters
+   //--------------------------------------------------------------
+   std::map<std::string, boost::shared_ptr<yApi::historization::CCounter> > m_mapCounters;
 
    //--------------------------------------------------------------
    /// \brief	Manager for all IOs

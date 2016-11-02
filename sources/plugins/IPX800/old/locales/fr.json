@@ -1,0 +1,52 @@
+﻿{
+   "name": "IPX800",
+   "description": "Plugin permettant de dialoguer avec un module IPX800",
+   "configurationSchema":{
+      "IPAddress":{
+			"name": "Adresse IP",
+			"description": "L'adresse IP du module"
+      },
+      "Port":{
+			"name": "Port",
+			"description": "Le port de communication de l'IPX800 (exemple: 80)"
+      },
+	  "authentication": {
+		   "name": "clé d'accès au module IPX800",
+		   "description": "seulement si la clé est activée",
+		   "content": {
+		      "Password": {
+		         "name": "Mot de passe",
+		         "description": "la clé d'accès"	
+		      }
+		 }
+	  },
+	  "extensions": {
+         "name": "Extensions",
+         "description": "Liste des extensions connectées à l'IPX800",
+		 "item": {
+            "name": "Equipement",
+            "description": "",
+			"content":{
+			   "equipment":{
+                  "name": "Module",
+                  "description": "Choisissez le module connecté",
+			      "values": {
+			         "X-8D": "X-8D : Module d'extension de 8 entrées digitales",
+					 "X-24D": "X-24D : Module d'extension de 24 entrées digitales",
+			         "X-THL": "X-THL : Module d'extension ajoutant la température,l'humidité et un luxmètre",
+			         "X400-CT": "X400-CT : Module d'extension pour pinces ampèremétriques",
+			         "X8R": "X-8R : module d'extension de 8 relais"
+				  }
+			   }
+			}
+		  }
+		}	  
+	},
+	"customLabels": {
+		"pluginState": {
+            "initializationError": "Erreur d'initialisation",		
+			"updateConfiguration": "Mise à jour de la configuration..."
+		}
+	}
+}
+

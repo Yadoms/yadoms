@@ -12,25 +12,16 @@ CIOManager::CIOManager(const std::string& device, Poco::Net::IPAddress IPAddress
 {}
 
 void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api, 
-                            std::map<std::string, 
-                            boost::shared_ptr<yApi::historization::CSwitch> > IOlist)
+                            std::map<std::string, boost::shared_ptr<yApi::historization::CSwitch> > IOlist,
+                            std::map<std::string, boost::shared_ptr<specificHistorizers::CVirtualAnalog> > virtualAnalogList,
+                            std::map<std::string, boost::shared_ptr<yApi::historization::CCounter> > counterList)
 {
-   m_mapKeywordsName = IOlist;
+   m_mapDigitalInputOuput = IOlist;
+   m_mapVirtualAnalogInput = virtualAnalogList;
+   m_mapCounters = counterList;
    m_keywordsToDeclare.clear();
 
    //readIOFromDevice();
-
-   // Initial reading of DI
-/*
-   for (int counter = 0; counter<NB_INPUTS; ++counter)
-   {
-      std::string name = "DI" + boost::lexical_cast<std::string>(counter);
-      m_inputValue |= (m_mapKeywordsName[name]->get() << counter);
-      m_keywordsToDeclare.push_back(m_mapKeywordsName[name]->historizable());
-   }
-   */
-   //Historize initial values
-   //api->historizeData(m_deviceName, m_keywordsToDeclare);
 }
 
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -42,14 +33,15 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
 
    std::cout << "Command received :" << yApi::IDeviceCommand::toString(command) << std::endl;
 
-   auto search = m_mapKeywordsName.find(keywordName);
+   // add the password if activated
+   if (m_isPasswordActivated)
+      parameters.set("key", m_password);
 
-   if (search != m_mapKeywordsName.end())
+   auto search = m_mapDigitalInputOuput.find(keywordName);
+
+   // is it found in the IOList
+   if (search != m_mapDigitalInputOuput.end())
    {
-      // add the password if activated
-      if (m_isPasswordActivated)
-         parameters.set("key", m_password);
-
       //separation of letters and digits
       boost::regex reg("([a-zA-Z]+)(\\d+)");
       boost::smatch match;
@@ -57,20 +49,23 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
       //Set the digit number
       if (boost::regex_search(keywordName, match, reg))
       {
-         // function selection + add the type of device
-         switch (boost::lexical_cast<int>(command->getBody()))
+         // In case of keywords that begins by 'R', 'VI', or 'VO'
+         if (match[1].compare("R") == 0 || match[1].compare("VI") == 0 || match[1].compare("VO") == 0)
          {
-         case 0:
-            commandSelected = "Clear" + match[1];
-            break;
-         case 1:
-            commandSelected = "Set" + match[1];
-            break;
-         default:
-            break;
+            // function selection + add the type of device
+            switch (boost::lexical_cast<int>(command->getBody()))
+            {
+            case 0:
+               commandSelected = "Clear" + match[1];
+               break;
+            case 1:
+               commandSelected = "Set" + match[1];
+               break;
+            default:
+               break;
+            }
+            parameters.set(commandSelected, match[2]);
          }
-
-         parameters.set(commandSelected, match[2]);
       }
 
       if (urlManager::sendCommand(m_IPAddress, parameters))
@@ -80,8 +75,37 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
          api->historizeData(m_deviceName, search->second);
       }
    }
-   else
-      std::cerr << "Cannot find keyword : " << command->getKeyword();
+
+   auto search1 = m_mapCounters.find(keywordName);
+
+   // is it found in the IOList
+   if (search1 != m_mapCounters.end())
+   {
+      //separation of letters and digits
+      boost::regex reg("([a-zA-Z]+)(\\d+)");
+      boost::smatch match;
+
+      //Set the digit number
+      if (boost::regex_search(keywordName, match, reg))
+      {
+         // In case of keywords that begins by 'C' -> Counters
+         // 'Set' have a different behaviour that for 
+         if (match[1].compare("C") == 0)
+         {
+            commandSelected = "Set" + match[1];
+            parameters.set(commandSelected, match[2]);
+         }
+      }
+
+      if (urlManager::sendCommand(m_IPAddress, parameters))
+      {
+         // Set the value of the corresponding IO and historize if the return is success
+         search->second->set(boost::lexical_cast<bool>(command->getBody()));
+         api->historizeData(m_deviceName, search->second);
+      }
+   }
+   
+   //std::cerr << "Cannot find keyword : " << command->getKeyword();
 }
 
 void CIOManager::readIOFromDevice()

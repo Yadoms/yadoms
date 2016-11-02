@@ -6,9 +6,6 @@ include("../YadomsPluginsCommon.cmake")
 ## Place here all the plugin source files
 #########################################
 set(IPX800_PLUGIN_SOURCES
-    IIO.h
-	IO.cpp
-	IO.h
 	IOManager.cpp
 	IOManager.h
 	IIPX800Configuration.h
@@ -22,8 +19,12 @@ set(IPX800_PLUGIN_SOURCES
 	stdafx.h
 	urlManager.cpp
 	urlManager.h
+	specificHistorizers/Analog.cpp
+	specificHistorizers/Analog.h
 	)
 
+source_group(specificHistorizers specificHistorizers/*.*)
+	
 #########################################
 ## Place here all additional include directories
 ## (by default yadoms-shared and boost are included)

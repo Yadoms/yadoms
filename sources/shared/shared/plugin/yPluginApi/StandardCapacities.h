@@ -44,7 +44,7 @@ namespace shared { namespace plugin { namespace yPluginApi {
       static const CStandardCapacity & Speed;             // speed             | m/s                   | A speed value, in m/s
       static const CStandardCapacity & Switch;            // switch            | -                     | A on/off value
       static const CStandardCapacity & Temperature;       // temperature       | degrees Celcius       | Temperature
-      static const CStandardCapacity & Text;              // text              | -                     | A on/off value
+      static const CStandardCapacity & Text;              // text              | -                     | A text
       static const CStandardCapacity & UpDownStop;        // upDownStop        | -                     | Used for device accepting orders Up, Down Stop
       static const CStandardCapacity & Uv;                // uv                | uv                    | UV index
       static const CStandardCapacity & Voltage;           // voltage           | Volt                  | Voltage

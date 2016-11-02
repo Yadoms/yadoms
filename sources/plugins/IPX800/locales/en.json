@@ -19,28 +19,69 @@
 		         "description": ""
 		      }
 		 }
-	  },
-	  "extensions": {
-         "name": "Extensions",
-         "description": "List of extensions connected to the IPX800",
-		 "item": {
-            "name": "Equipment",
-            "description": "",
-			"content":{
-			   "equipment":{
-                  "name": "Equipment",
-                  "description": "Choose the equipment type",
-			      "values": {
-			         "X-8D": "X-8D",
-			         "X-THL": "X-THL",
-			         "X400-CT": "X400-CT",
-			         "X8R": "X8R"
-				  }
-			   }
-			}
-		  }
-		}	  
+	  }	  
 	},
+   "manuallyDeviceCreationConfigurationSchema": {
+      "type":
+      {
+         "name": "Type",
+         "description": "Type of the device",
+         "content":
+         {
+			  "X8R" :
+			  {
+                 "name": "X-8R Extension module with 8 relays",
+                 "content":
+                 {
+				    "Name" :
+				    {				 
+                       "name": "Name of the device",
+                       "description": ""
+					},		 
+				    "Position" :
+				    {				 
+                       "name" : "Slot position",
+                       "description" : "slot defined in the IPX800 (Ex:X-8R N°1)"
+					}
+				 }
+			  },
+			  "X8D" :
+			  {
+                 "name": "X-8D Extension module with 8 digital inputs",
+                 "content":
+                 {
+				    "Name" :
+				    {				 
+                       "name": "Name of the device",
+                       "description": ""
+					},				 
+				    "Position" :
+				    {				 
+                       "name" : "Slot position",
+                       "description" : "slot defined in the IPX800 (Ex:X-8D N°1)"
+					}
+				 }
+			  },
+			  "X24D" :
+			  {
+                 "name": "X-24D Extension module with 24 digital inputs",
+                 "content":
+                 {
+				    "Name" :
+				    {				 
+                       "name": "Name of the device",
+                       "description": ""
+					},				 
+				    "Position" :
+				    {				 
+                       "name" : "Slot position",
+                       "description" : "slot defined in the IPX800 (Ex:X-24D N°1)"
+					}
+				 }
+			 }
+		 }
+	  }
+   },	
 	"customLabels": {
 		"pluginState": {
 			"initializationError": "Initialization error",		

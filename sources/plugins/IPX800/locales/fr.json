@@ -20,26 +20,67 @@
 		      }
 		 }
 	  },
-	  "extensions": {
-         "name": "Extensions",
-         "description": "Liste des extensions connectées à l'IPX800",
-		 "item": {
-            "name": "Equipement",
-            "description": "",
-			"content":{
-			   "equipment":{
-                  "name": "Module",
-                  "description": "Choisissez le module connecté",
-			      "values": {
-			         "X-8D": "X-8D",
-			         "X-THL": "X-THL",
-			         "X400-CT": "X400-CT",
-			         "X8R": "X8R"
-				  }
-			   }
-			}
-		  }
-		}	  
+,
+   "manuallyDeviceCreationConfigurationSchema": {
+      "type":
+      {
+         "name": "Type",
+         "description": "Type de l'équipement",
+         "content":
+         {
+			  "X8R" :
+			  {
+                 "name": "X-8R module d'extension 8 relais",
+                 "content":
+                 {
+				    "Name" :
+				    {				 
+                       "name": "Nom de l'équipement",
+                       "description": ""
+					},		 
+				    "Position" :
+				    {
+                       "name" : "Position",
+                       "description" : "configuration définie dans l'IPX800 (Ex:X-8R N°1)"
+					}
+				 }
+			  },
+			  "X8D" :
+			  {
+                 "name": "X-8D module d'extension 8 entrées digitales",
+                 "content":
+                 {
+				    "Name" :
+				    {				 
+                       "name": "Nom de l'équipement",
+                       "description": ""
+					},				 
+				    "Position" :
+				    {				 
+                       "name" : "Position",
+                       "description" : "configuration définie dans l'IPX800 (Ex:X-8D N°1)"
+					}
+				 }
+			  },
+			  "X24D" :
+			  {
+                 "name": "X-24D module d'extension 24 entrées digitales",
+                 "content":
+                 {
+				    "Name" :
+				    {				 
+                       "name": "Nom de l'équipement",
+                       "description": ""
+					},				 
+				    "Position" :
+				    {				 
+                       "name" : "Position",
+                       "description" : "configuration définie dans l'IPX800 (Ex:X-8D N°1)"
+					}
+				 }
+			 }
+		 }
+	  }	  
 	},
 	"customLabels": {
 		"pluginState": {
