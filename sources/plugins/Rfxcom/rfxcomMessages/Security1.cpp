@@ -18,8 +18,8 @@ namespace rfxcomMessages
                           const std::string& command,
                           const shared::CDataContainer& deviceDetails)
       : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_batteryLevel, m_rssi })
+        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+        m_keywords({m_batteryLevel, m_rssi})
    {
       m_batteryLevel->set(100);
       m_rssi->set(0);
@@ -35,8 +35,8 @@ namespace rfxcomMessages
                           unsigned int subType,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_batteryLevel, m_rssi })
+        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+        m_keywords({m_batteryLevel, m_rssi})
    {
       m_batteryLevel->set(100);
       m_rssi->set(0);
@@ -52,8 +52,8 @@ namespace rfxcomMessages
                           const RBUF& rbuf,
                           size_t rbufSize)
       : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_batteryLevel, m_rssi })
+        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+        m_keywords({m_batteryLevel, m_rssi})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -86,7 +86,8 @@ namespace rfxcomMessages
          break;
       case CSecurity1X10R::rfxValue: m_subTypeManager = boost::make_shared<CSecurity1X10R>();
          break;
-      case CSecurity1KD101_SA30::rfxValueKD101: m_subTypeManager = boost::make_shared<CSecurity1KD101_SA30>("KD101");
+      case CSecurity1KD101_SA30::rfxValueKD101: m_subTypeManager = boost::make_shared<CSecurity1KD101_SA30>(CSecurity1KD101_SA30::rfxValueKD101,
+                                                                                                            "KD101");
          break;
       case CSecurity1PowerCodeSensor::rfxValuePowercodeSensor: m_subTypeManager = boost::make_shared<CSecurity1PowerCodeSensor>(false);
          break;
@@ -96,7 +97,11 @@ namespace rfxcomMessages
          break;
       case CSecurity1Meiantech::rfxValue: m_subTypeManager = boost::make_shared<CSecurity1Meiantech>();
          break;
-      case CSecurity1KD101_SA30::rfxValueSA30: m_subTypeManager = boost::make_shared<CSecurity1KD101_SA30>("SA30");
+      case CSecurity1KD101_SA30::rfxValueSA30: m_subTypeManager = boost::make_shared<CSecurity1KD101_SA30>(CSecurity1KD101_SA30::rfxValueSA30,
+                                                                                                           "SA30");
+         break;
+      case CSecurity1KD101_SA30::rfxValueRM174RF: m_subTypeManager = boost::make_shared<CSecurity1KD101_SA30>(CSecurity1KD101_SA30::rfxValueRM174RF,
+                                                                                                              "RM174RF");
          break;
       default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
@@ -124,7 +129,7 @@ namespace rfxcomMessages
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CSecurity1::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CSecurity1::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
    {
       RBUF rbuf;
       MEMCLEAR(rbuf.SECURITY1);
@@ -158,5 +163,3 @@ namespace rfxcomMessages
       m_deviceName = ssdeviceName.str();
    }
 } // namespace rfxcomMessages
-
-
