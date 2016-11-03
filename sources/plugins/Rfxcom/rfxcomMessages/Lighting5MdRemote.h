@@ -14,8 +14,9 @@ namespace rfxcomMessages
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
+      /// \param[in] model                The device model
       //--------------------------------------------------------------
-      CLighting5MdRemote();
+      explicit CLighting5MdRemote(const std::string& model);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -37,10 +38,13 @@ namespace rfxcomMessages
 
    private:
       //--------------------------------------------------------------
+      /// \brief	                        The model
+      //--------------------------------------------------------------
+      const std::string m_model;
+
+      //--------------------------------------------------------------
       /// \brief	                        The keyword
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CDimmable> m_keyword;
    };
 } // namespace rfxcomMessages
-
-
