@@ -1,5 +1,5 @@
 {
-   "name": "System Information (en/US)",
+   "name": "System Information",
    "description": "This plugin provide System information (CPU load, memory load,...)\n",
    "configurationSchema":{
 	},

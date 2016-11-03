@@ -106,7 +106,7 @@ Recipient.prototype.mergeFields = function() {
 
         $.each(instanciatedTypes, function(key, value) {
             //for each recipient fields in the plugin
-            var plugin = PluginManager.pluginTypes[value];
+            var plugin = PluginManager.packageList[value];
             if (plugin) {
                 var recipientFieldsFromPlugin = plugin.getRecipientFields();
                 for (var recipientField in recipientFieldsFromPlugin) {

@@ -22,7 +22,7 @@ CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       std::cout << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
       m_isDesactivated = true;
-      throw e;
+      throw;
    }
 }
 
@@ -61,13 +61,19 @@ void CAstronomy::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    try
    {
+      //read the localisation
+      m_localisation = wuConfiguration.getLocalisation();
+
+      //read the country or State code
+      m_countryOrState = wuConfiguration.getCountryOrState();
+
       initializeVariables(api, wuConfiguration);
    }
    catch (shared::exception::CException& e)
    {
       std::cout << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
       m_isDesactivated = true;
-      throw e;
+      throw;
    }
 }
 
@@ -92,7 +98,7 @@ void CAstronomy::parse(boost::shared_ptr<yApi::IYPluginApi> api,
       catch (shared::exception::CException& e)
       {
          std::cout << e.what() << std::endl;
-         throw e;
+         throw;
       }
    }
 }

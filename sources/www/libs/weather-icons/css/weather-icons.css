@@ -1800,6 +1800,11 @@
 .wi-wu-cloudy:before {
   content: "\f002";
 }
+
+/*JMB : Add missing fog for Weather Underground*/
+.wi-wu-fog:before {
+  content: "\f003";
+}
 .wi-wu-flurries:before {
   content: "\f064";
 }

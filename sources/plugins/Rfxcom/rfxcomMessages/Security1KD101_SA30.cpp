@@ -5,11 +5,12 @@ namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
-
-   CSecurity1KD101_SA30::CSecurity1KD101_SA30(const std::string& model)
-      :m_model(model),
-      m_alarm(boost::make_shared<yApi::historization::CSwitch>("alarm", yApi::EKeywordAccessMode::kGet)),
-      m_keywords({ m_alarm })
+   CSecurity1KD101_SA30::CSecurity1KD101_SA30(SubType subtype,
+                                              const std::string& model)
+      : m_subtype(subtype),
+        m_model(model),
+        m_alarm(boost::make_shared<yApi::historization::CSwitch>("alarm", yApi::EKeywordAccessMode::kGet)),
+        m_keywords({m_alarm})
    {
    }
 
@@ -22,7 +23,7 @@ namespace rfxcomMessages
       return m_model;
    }
 
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CSecurity1KD101_SA30::keywords() const
+   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CSecurity1KD101_SA30::keywords() const
    {
       return m_keywords;
    }
@@ -50,7 +51,9 @@ namespace rfxcomMessages
 
    unsigned long CSecurity1KD101_SA30::idFromProtocol(const RBUF& rbuf) const
    {
-      return (unsigned long)(rbuf.SECURITY1.id1 << 8) + (rbuf.SECURITY1.id2);
+      if (m_subtype == rfxValueRM174RF)
+         return static_cast<unsigned long>(rbuf.SECURITY1.id1 << 16) | (rbuf.SECURITY1.id2 << 8) | (rbuf.SECURITY1.id3);
+      else
+         return static_cast<unsigned long>(rbuf.SECURITY1.id1 << 8) | (rbuf.SECURITY1.id2);
    }
-
 } // namespace rfxcomMessages

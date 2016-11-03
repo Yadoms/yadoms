@@ -63,7 +63,8 @@ namespace automation
       void stopAllRulesMatchingInterpreter(const std::string& interpreterName) override;
       void deleteAllRulesMatchingInterpreter(const std::string& interpreterName) override;
       void startRule(int ruleId) override;
-      void stopRule(int ruleId) override;
+      bool stopRule(int ruleId) override;
+      void stopRuleAndWaitForStopped(int ruleId, const boost::posix_time::time_duration& timeout = boost::posix_time::seconds(20)) override;
       // [END] IRuleManager Implementation
 
 
@@ -86,19 +87,12 @@ namespace automation
       ///\param[in] ruleId    The rule ID
       ///\return              true if started
       //-----------------------------------------------------
-      bool isRuleStarted(int ruleId);
+      bool isRuleStarted(int ruleId) const;
 
       //-----------------------------------------------------
       ///\brief               Stop all started rules
       //-----------------------------------------------------
       void stopRules();
-
-      //-----------------------------------------------------
-      ///\brief               Stop the rule and wait for stopped
-      ///\param[in] ruleId    The rule ID
-      ///\throw               CRuleException if timeout
-      //-----------------------------------------------------
-      void stopRuleAndWaitForStopped(int ruleId);
 
       //-----------------------------------------------------
       ///\brief               Called when rule is stopped

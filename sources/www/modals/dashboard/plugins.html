@@ -14,6 +14,7 @@
    </table>
 </div>
 <script>
+
    var pluginInstanceList = [];
    var developerMode = false;
    
@@ -32,11 +33,11 @@
 
          //we dynamically ask for plugins (async)
          PluginInstanceManager.getAll().done(function (allInstances) {
-          pluginInstanceList = sortListItemsWithdisplayName ( allInstances );
-          
-          indexSystemPlugin = 0;
-          
-          //foreach result we append a <tr>
+		 
+           pluginInstanceList = sortListItemsWithdisplayName ( allInstances );
+           indexSystemPlugin = 0;
+		  
+           //foreach result we append a <tr>
             $.each(pluginInstanceList, function (index, value) {
                //we don't show system plugins to user
                if (!value.isSystemCategory()) {
@@ -46,9 +47,9 @@
                indexSystemPlugin = index;
             });
           
-          // we remove the system plugin from the list
-          pluginInstanceList.splice(indexSystemPlugin, 1);
-
+            // we remove the system plugin from the list
+            pluginInstanceList.splice(indexSystemPlugin, 1);
+			
             //we use the periodic task of the dashboard
             clearInterval(Yadoms.periodicDashboardTask);
             Yadoms.periodicDashboardTask = setInterval(periodicDashboardPluginTask, 2000);
@@ -132,6 +133,8 @@
       //we set autostart value
       $pluginInstanceRow.find("input.cb-autoStart").prop("checked", pi.autoStart);
 
+	  //translation of the line
+	  $pluginInstanceRow.i18n();
 
       //setup extraCommand button initial state
       if (pi.containsExtraCommand() && (pi.lastState === "Stopped" || pi.lastState === "Error" || !pi.lastState)) {
@@ -147,10 +150,6 @@
          $pluginInstanceRow.find("button.btn-log").unbind('click').bind('click', function () { showPluginInstanceLog(pi); });
       }
       $pluginInstanceRow.find("button.btn-delete").unbind('click').bind('click', function () { deletePlugin(pi); });
-
-      $pluginInstanceRow.i18n();
-
-      
    }
 
    function startStopPlugin(pi) {
@@ -418,44 +417,53 @@
       }
       return i18nOpt.defaultValue;      
    }
-
+   
    function addNewPlugin() {
-      Yadoms.modals.pluginAdd.loadAsync()
+      Yadoms.modals.pickupController.loadAsync()
       .done(function () {
-         Yadoms.askPluginTypes(function (pluginType) {
-            var pi = new PluginInstance(null, $.t("plugins/" + pluginType.type + ":name", { defaultValue: pluginType.package.name }), pluginType.type, "", 1, "user");
-
-            //we get package.json
-            PluginInstanceManager.downloadPackage(pi).done(function () {
-               //we ask for configuration modal async
-               Yadoms.modals.pluginConfigure.loadAsync()
-               .done(function () {
-                  //we launch configureInstance GUI
-                  Yadoms.configurePluginInstance(pi, function () {
-                     //we ask for pluginInstance creation
-                     PluginInstanceManager.createToServer(pi)
-                         .done(function () {
-                            notifySuccess($.t("modals.configure-plugin.pluginSuccessfullyCreated"));
-                            
-                            pluginInstanceList.push(pi);
-							
-							//sort the list with the new item
-							pluginInstanceList = sortListItemsWithdisplayName ( pluginInstanceList );
-							
-							// the first one ?
-							if ( pluginInstanceList.length === 1 )
-							   addPluginInstanceToDom ( pi, null );
-							else
-							   addPluginInstanceToDom ( pi, pluginInstanceList.indexOf (pi) );
-                         })
-                         .fail(function (error) {
-                            notifyError($.t("modals.configure-plugin.pluginFailToCreate", { pluginName: pi.displayName }), error);
-                         });
-                  });
-               });
-            });
-         });
-      });
-   }
+	     //search all plugin information
+	     Yadoms.askPackages( "plugins",
+		                     PluginManager,
+		                     "icon.png",   // Name of thumbnail
+							 "modals.add-plugin.title",
+							 createPlugin
+							);
+        })
+		.fail(function () {
+		   notifyError($.t("objects.lazyLoaderManager.unableToLoadModal", { modalPath: self.modalPath }), error);
+		})
+      };
+	
+	function createPlugin(packageName, pluginType) {
+	
+	   var pi = new PluginInstance(null, $.t("plugins/" + pluginType.type + ":name", { defaultValue: pluginType.package.name }), pluginType.type, "", 1, "user");
+	
+	   pi.package = pluginType.package;
+	   
+	   //we ask for configuration modal async
+	   Yadoms.modals.pluginConfigure.loadAsync()
+	   .done(function () {
+		  
+		  //we launch configureInstance GUI
+		  Yadoms.configurePluginInstance(pi, function () {
+			 //we ask for pluginInstance creation
+			 PluginInstanceManager.createToServer(pi)
+				 .done(function () {
+					notifySuccess($.t("modals.configure-plugin.pluginSuccessfullyCreated"));
+					
+					pluginInstanceList.push(pi);
+					
+					// the first one ?
+					if ( pluginInstanceList.length === 1 )
+					   addPluginInstanceToDom ( pi, null );
+					else
+					   addPluginInstanceToDom ( pi, pluginInstanceList.indexOf (pi) );
+				 })
+				 .fail(function (error) {
+					notifyError($.t("modals.configure-plugin.pluginFailToCreate", { pluginName: pi.displayName }), error);
+				 });
+		  });
+	   });
+	};
 
 </script>

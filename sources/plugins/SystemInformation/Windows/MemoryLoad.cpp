@@ -28,7 +28,5 @@ void CMemoryLoad::read()
    float MemoryLoad = static_cast<float>(floor(float(statex.ullTotalPhys - statex.ullAvailPhys) * 100 / statex.ullTotalPhys * 10)) / 10;
 
    m_keyword->set(MemoryLoad);
-
-   std::cout << "Memory Load : " << m_keyword->formatValue() << std::endl;
 }
 

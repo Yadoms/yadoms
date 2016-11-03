@@ -2,6 +2,7 @@
 #include "Forecast.h"
 #include <boost/lexical_cast.hpp>
 #include "KeywordException.hpp"
+#include "KeywordHelpers.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -45,24 +46,30 @@ void CForecast::addPeriod(const shared::CDataContainer& valueContainer,
 
    auto it = weatherunderground::helper::EEnumTypeNames.find(valueContainer.get<std::string>(weatherCondition));
    if (it != weatherunderground::helper::EEnumTypeNames.end())
-   {
       weatherIconTemp = static_cast<yApi::historization::EWeatherCondition>(it->second).toString();
-   }
    else
-      throw CKeywordException("Value " + valueContainer.get<std::string>(weatherCondition) + " could not be set");
+      throw CKeywordException("Value [" + valueContainer.get<std::string>(weatherCondition) + "] could not be set");
+
+   std::string stgmaxWind;
+   std::string stgaveWind;
+   std::string stgsnowday;
+   
+   convertKmhToMs(stgmaxWind, valueContainer, maxWind);
+   convertKmhToMs(stgaveWind, valueContainer, aveWind);
+   convertcmTomm(stgsnowday, valueContainer, snowDay);
 
    m_forecast->addPeriod(valueContainer.get<std::string>(year),
-                         valueContainer.get<std::string>(month),
-                         valueContainer.get<std::string>(day),
-                         weatherIconTemp,
-                         valueContainer.get<std::string>(tempMax),
-                         valueContainer.get<std::string>(tempMin),
-                         boost::lexical_cast<std::string>(valueContainer.get<double>(maxWind) / 3.6), // Transform from Km/h -> m/s
-                         boost::lexical_cast<std::string>(valueContainer.get<double>(aveWind) / 3.6), // Transform from Km/h -> m/s
-                         valueContainer.get<std::string>(aveWindDegrees),
-                         valueContainer.get<std::string>(aveHumidity),
-                         valueContainer.get<std::string>(rainDay),
-                         boost::lexical_cast<std::string>(valueContainer.get<double>(snowDay) * 10)); // Transform from cm -> mm
+                           valueContainer.get<std::string>(month),
+                           valueContainer.get<std::string>(day),
+                           weatherIconTemp,
+                           valueContainer.get<std::string>(tempMax),
+                           valueContainer.get<std::string>(tempMin),
+                           stgmaxWind,
+                           stgaveWind,
+                           valueContainer.get<std::string>(aveWindDegrees),
+                           valueContainer.get<std::string>(aveHumidity),
+                           valueContainer.get<std::string>(rainDay),
+                           stgsnowday);
 }
 
 void CForecast::clearAllPeriods() const
@@ -79,4 +86,3 @@ boost::shared_ptr<yApi::historization::IHistorizable> CForecast::getHistorizable
 {
    return m_forecast;
 }
-

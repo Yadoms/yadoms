@@ -28,7 +28,5 @@ void CDiskUsage::read()
    float DiskUsage = static_cast<float>(floor((1 - static_cast<float>(FreeSpaceAvailable.QuadPart) / TotalSpace.QuadPart) * 1000)) / 10;
 
    m_keyword->set(DiskUsage);
-
-   std::cout << m_driveName << " Disk Usage : " << m_keyword->formatValue() << std::endl;
 }
 

@@ -1,0 +1,208 @@
+<link href="../css/pickup-controller.css" rel="stylesheet">
+
+<!--New Modal -->
+<div class="modal fade" id="new-pickup-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel"></h4> <!-- data-i18n="modals.add-widget.title" -->
+            </div>
+            <div class="modal-body">
+                <div id="add-pickup-details" widget-type="">
+                    <div class="row header">
+                        <div class="col-xs-4 cell">
+                            <img alt="" />
+                        </div>
+                        <div class="col-xs-4 cell">
+                            <h1><span class="element-name"></span></h1>
+                        </div>
+                        <div class="col-xs-4 cell">
+                            <button id="btn-confirm-add-element" type="button" class="btn btn-success disabled">
+                                <i class="fa fa-plus"></i>&nbsp;
+                                <span data-i18n="modals.pickup.add"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tr>
+                                    <td class="header-info" data-i18n="modals.pickup.descriptionHeader"></td>
+                                    <td class="detail-info element-description"></td>
+                                </tr>
+                                <tr>
+                                    <td class="header-info" data-i18n="modals.pickup.versionHeader"></td>
+                                    <td class="detail-info element-version"></td>
+                                </tr>
+                                <tr>
+                                    <td class="header-info" data-i18n="modals.pickup.authorHeader"></td>
+                                    <td class="detail-info element-author"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div id="add-element-list">
+                    <ul id="ul-add-element"></ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- Show button when something behind is available (see similar comments)
+                    <button id="btn-get-more-widget" type="button" class="btn btn-primary pull-left" data-i18n="modals.add-widget.getMore"></button>
+                -->
+                <button id="btn-close-details" type="button" class="btn btn-default pull-left hidden"><i class="fa fa-reply"></i>&nbsp;<span data-i18n="modals.pickup.goBack"></span></button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+/**
+* Ask for packages to the REST server
+*/
+
+Yadoms.askPackages = function (elements, instanceManager, thumbnail, title, callback) {
+   assert($.isFunction(callback), "callback must be defined");
+   instanceManager.getAll()
+           .done(function (data){
+		      requestInformationDone(elements, instanceManager, thumbnail, title, callback)
+		   })
+           .fail(function (error) {
+               notifyError($.t("objects.pickup.errorDuringGettingPackages"), error);
+           });		
+};
+
+/**
+     * Callback of the request elements
+     * @returns {Function}
+     */
+    function requestInformationDone(elements, instanceManager, thumbnail, title, callback) {
+	    //if the detail is visible, we must hide it
+        var $detailsDiv = $("div#add-pickup-details");
+        $detailsDiv.hide();	
+
+		// Add the correct title
+	    $("h4#myModalLabel").attr("data-i18n", title);
+		$("h4#myModalLabel").i18n();
+	
+        $("button#btn-close-details").addClass("hidden");
+        $("ul#ul-add-element").empty();
+
+        //we translate the container
+        $("ul#ul-add-element").i18n();
+		
+        //we display the modal
+        $('div#new-pickup-modal').modal({ backdrop: 'static' });
+        
+		//focus the modal
+		$('div#new-pickup-modal').appendTo("body").modal('show');
+		
+        var deferredArray = [];
+		
+		var packageList = [];
+		var developerMode = null;
+		
+		// Reading of the developerMode information
+		var deferred = YadomsInformationManager.getList();
+		deferred.done( function (data) {
+		        developerMode = data.developerMode;
+			}
+		);
+		
+		$.when(deferred)
+		   .done(function () {
+		
+			for (var index in instanceManager.packageList) {
+				if (instanceManager.packageList.hasOwnProperty(index)) {
+					var value = instanceManager.packageList[index].package;
+					
+					if ((!value.type.startsWith("system-")) && ((developerMode) || (!value.type.startsWith("dev-")))) {
+						var i18NContext = value.type + ":";
+						
+						// Add all package into a list
+						packageList.push ( {displayName: $.t(elements + "/" + i18NContext + "name"), type: value.type} );
+					}
+
+					//we translate the new item
+					$("ul#ul-add-element:last-child").i18n();
+				}
+			}
+				
+			//sort all packages
+			packageList = sortListItemsWithdisplayName ( packageList );
+			
+			//display all packages
+			$.each(packageList, function(index, value) {
+				$("ul#ul-add-element").append(
+					"<li>" +
+					"<button type=\"button\" class=\"btn-select-element btn btn-default\" element-type=\"" + value.type + "\">" +
+					"<div class=\"element-preview\" ><img src=\"/" + elements + "/" + value.type + "/" + thumbnail + "\"></div>" +  
+					"<span class=\"element-name\" \">" + value.displayName + "</span>" +
+					"</button>" +
+					"</li>"
+				);
+			});
+			
+			$("button.btn-select-element").unbind().bind('click', function (e) {
+				var type = $(e.currentTarget).attr("element-type");
+				
+				if (!isNullOrUndefined(type)) {
+					var value = instanceManager.packageList[type].package;
+					if (!isNullOrUndefined(value)) {
+						$("button#btn-close-details").removeClass("hidden");
+
+						//we show more details about the element
+						var $detailsDiv = $("div#add-pickup-details");
+						$detailsDiv.attr("element-type", type);
+
+						//we fill the details div
+						$detailsDiv.find("img").attr("src", "/" + elements + "/" + value.type + "/" + thumbnail);
+						$detailsDiv.find("span.element-name").text($.t( elements + "/" + type + ":name", { defaultValue: value.name }));
+						$detailsDiv.find("td.element-description").text($.t( elements + "/" + type + ":description", { defaultValue: value.description }));
+						$detailsDiv.find("td.element-version").text(value.version);
+						$detailsDiv.find("td.element-author").text(value.author);
+
+						$detailsDiv.fadeIn();
+					}
+				}
+			});
+
+			$("button#btn-confirm-add-element").removeClass("disabled");			
+        });	
+		
+        /**
+         * Callback to the click of the button to return to the list of widgets
+         */
+        $("button#btn-close-details").click(function () {
+            var $detailsDiv = $("div#add-pickup-details");
+            $detailsDiv.fadeOut();
+            $("button#btn-close-details").addClass("hidden");
+        });		
+		
+        /**
+         * Callback to the click of the button to confirm an add of a new element
+         */
+        $("button#btn-confirm-add-element").unbind("click").bind("click", function () {
+            var currentPage = PageManager.getCurrentPage();
+            assert(!isNullOrUndefined(currentPage), "A page must be selected");
+
+            $("button#btn-close-details").addClass("hidden");
+            //we close the new modal and wait for the modal being closed before continuing
+            $("div#new-pickup-modal").on("hidden.bs.modal", function () {
+                $("div#new-pickup-modal").unbind("hidden.bs.modal");
+                var $detailsDiv = $("div#add-pickup-details");
+
+                var packageName = $detailsDiv.attr("element-type");
+
+				// creation function specific for each type
+			    callback(packageName, instanceManager.packageList[packageName]);
+            });
+
+            $("div#new-pickup-modal").modal("hide");
+        });
+   }
+
+</script>

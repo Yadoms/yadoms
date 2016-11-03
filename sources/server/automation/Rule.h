@@ -19,8 +19,8 @@ namespace automation
       ///\param[in] ruleStateHandler   The rule state handler
       //-----------------------------------------------------
       CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
-         boost::shared_ptr<script::IManager> scriptManager,
-         boost::shared_ptr<IRuleStateHandler> ruleStateHandler);
+            boost::shared_ptr<script::IManager> scriptManager,
+            boost::shared_ptr<IRuleStateHandler> ruleStateHandler);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -28,7 +28,7 @@ namespace automation
       virtual ~CRule();
 
       // IRule Implementation
-      void requestStop();
+      void requestStop() override;
       // [END] IRule Implementation
 
    protected:
@@ -63,7 +63,6 @@ namespace automation
       //-----------------------------------------------------
       boost::shared_ptr<IRuleStateHandler> m_ruleStateHandler;
    };
-	
 } // namespace automation	
-	
-	
+
+

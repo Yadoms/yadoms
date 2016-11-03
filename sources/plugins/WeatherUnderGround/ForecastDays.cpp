@@ -2,6 +2,7 @@
 #include "ForecastDays.h"
 #include "ErrorAnswerHandler.h"
 #include <shared/exception/Exception.hpp>
+#include "Keywords/KeywordHelpers.h"
 
 CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
                              IWUConfiguration& wuConfiguration,
@@ -12,9 +13,10 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
      m_prefix(prefix),
      m_deviceName(deviceName),
      m_forecast(boost::make_shared<CForecast>(deviceName, "Forecast", weatherunderground::helper::EPeriod::kDay)),
-     m_temp(boost::make_shared<CTemp>(deviceName, prefix + "low_temperature")),
+     m_temp(boost::make_shared<yApi::historization::CTemperature>(prefix + "low_temperature")),
      m_isDesactivated(false),
-     m_isUserDesactivated(false)
+     m_isUserDesactivated(false),
+     m_isDeveloperMode(false)
 {
    try
    {
@@ -56,12 +58,12 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
          {
             std::stringstream TempString;
             TempString << m_prefix << "Rain_Day_" << counter;
-            m_forecastRain[counter] = boost::make_shared<CRain>(m_deviceName, TempString.str());
-            m_keywords.push_back(m_forecastRain[counter]->getHistorizable());
+            m_forecastRain[counter] = boost::make_shared<yApi::historization::CRainRate>(TempString.str());
+            m_keywords.push_back(m_forecastRain[counter]);
          }
       }
 
-      m_keywords.push_back(m_temp->getHistorizable());
+      m_keywords.push_back(m_temp);
 
       // Declare keywords
       std::string m_URL = "www.wunderground.com/";
@@ -124,13 +126,19 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
 
                if (counter == 0)
                {
-                  m_temp->setValue(*i, "low.celsius");
+                  double temp = 0;
+                  if (convertDouble(temp, *i, "low.celsius"))
+                     m_temp->set(temp);
                }
 
                if (wuConfiguration.IsRainIndividualKeywordsEnabled())
                {
                   if (counter < NB_RAIN_FORECAST_DAY)
-                     m_forecastRain[counter]->setValue(*i, "qpf_allday.mm");
+                  {
+                     double rainRate1h = 0;
+                     if (convertDouble(rainRate1h, *i, "qpf_allday.mm"))
+                        m_forecastRain[counter]->set(rainRate1h);
+                  }
                }
 
                ++counter;

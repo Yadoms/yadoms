@@ -6,7 +6,7 @@
  * This associative array based on plugin Type contains all plugin type information with their package
  * @type {Array}
  */
-PluginManager.pluginTypes = [];
+PluginInstanceManager.packageList = [];
 
 /**
  * Factory which create objects from json data
@@ -21,39 +21,49 @@ PluginManager.factory = function (json) {
 /**
  * Function which list all available plugins with their packages
  */
-PluginManager.get = function () {
+PluginManager.getAll = function () {
 
    var d = new $.Deferred();
 
    RestEngine.getJson("rest/plugin")
    .done(function(data) {
       //we've got a list of plugin type. For each of one we download the package.json
-      PluginManager.pluginTypes = [];
+      PluginManager.packageList = [];
       i18n.options.resGetPath = '__ns__/locales/__lng__.json';
-
+	  
       var arrayOfDeffered = [];
       $.each(data.plugins, function (index, pluginType) {
          i18n.loadNamespace("plugins/" + pluginType);
 
          var deffered = PluginManager.downloadPackage(pluginType);
-         arrayOfDeffered.push(deffered);
+		 
+		 arrayOfDeffered.push(deffered);
          deffered.done(function (package) {
-            PluginManager.pluginTypes[pluginType] = PluginManager.factory(package);
+			
+			var defferedDownload = new $.Deferred();
+            PluginManager.packageList[pluginType] = PluginManager.factory(package);
+			defferedDownload.resolve();
          })
          .fail(function (error) {
+			defferedDownload.reject();
             notifyError($.t("objects.pluginInstance.errorGettingPackage", { pluginName: pluginType }), error);
          });
       });
 
-      $.whenAll(arrayOfDeffered).done(function () {
-         i18n.options.resGetPath = "locales/__lng__.json";
-         d.resolve(PluginManager.pluginTypes);
-      });
+      $.whenAll(arrayOfDeffered)
+	     .done(function () {
+            i18n.options.resGetPath = "locales/__lng__.json";
+            d.resolve(PluginManager.packageList);
+         })
+		 .fail(function (error) {
+			d.reject();
+         });
    })
    .fail(function (error) {
       notifyError($.t("objects.plugin.errorListing"), error);
       d.reject();
    });
+   
    return d.promise();
 };
 

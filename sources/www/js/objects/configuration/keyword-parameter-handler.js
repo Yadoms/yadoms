@@ -49,10 +49,65 @@ function KeywordParameterHandler(i18NContext, paramName, content, currentValue) 
 }
 
 /**
+ * Return all devices
+ * @returns {Function}
+ */
+
+function returnDevices (handler, tabDevice, devicePromise)
+{
+   return function(data) {
+      var $deviceList = $("select#" + handler.uuid);
+
+      $.each(data.device, function(index, value) {
+          tabDevice.push ( value );
+      });
+      
+      devicePromise.resolve();
+   };
+}
+
+/**
  * Asynchronous populate the list
  * @param handler
  * @returns {Function}
  */
+function addDeviceList(handler, tabDevice) {
+   
+     var $deviceList = $("select#" + handler.uuid);
+
+   //A device matches criteria
+   if (tabDevice.length !== 0) {
+     var itemToSelect = -1;
+     var listDevice = sortListItemsWithFriendlyName ( tabDevice );
+     
+       $.each(listDevice, function(index, value) {
+          //we add device only if it is not already in the list
+          if ($deviceList.find("option[value=\"" + value.id + "\"]").length === 0) {
+            $deviceList.append("<option value=\"" + value.id + "\">" + value.friendlyName + "</option>");
+            //if the new element is those that we are looking for we save the position in the list
+            if (value.id == handler.value.deviceId)
+               itemToSelect = $deviceList.find("option").length - 1;
+          }
+       });
+
+       //until we have no device selected we have no keyword to select
+       var $cbKeywords = $("select#" + handler.uuidKeywordList);
+       $cbKeywords.prop('disabled', true);
+
+       //we set the last selected device if it exist anymore
+       if (itemToSelect !== -1)
+         $deviceList.prop('selectedIndex', itemToSelect);
+
+       $deviceList.change();
+   }
+}
+
+/**
+ * Asynchronous populate the list
+ * @param handler
+ * @returns {Function}
+ */
+ 
 function populateDeviceList(handler) {
    return function(data) {
       var $deviceList = $("select#" + handler.uuid);
@@ -104,7 +159,7 @@ KeywordParameterHandler.prototype.applyScript = function () {
 
    //until no device has been select the list is disabled
    $cbKeywords.prop('disabled', true);
-
+   
    var self = this;
 
    $deviceList.change(function(handler) {
@@ -182,7 +237,7 @@ KeywordParameterHandler.prototype.applyScript = function () {
 
                   //we append each keywords in the list
                   var keywordToSelect = 0;
-					
+              
 				  newList = sortListItemsWithFriendlyName ( newList );
 
                   $.each(newList, function(index, value) {
@@ -216,17 +271,29 @@ KeywordParameterHandler.prototype.applyScript = function () {
    switch (self.lookupMethod)
    {
       case "type":
+          
          //we look for a type
          if (Array.isArray(self.expectedKeywordType)) {
+            
+            var arrayOfDeffered = [];
+            var tabDevice = [];            
+            
             //we have a list of types
             //we async ask for device list that support a type
             $.each(self.expectedKeywordType, function (index, type) {
+               
+               var promise = new $.Deferred();
+               arrayOfDeffered.push(promise);               
+               
                RestEngine.getJson("/rest/device/matchcapacitytype/" + self.expectedKeywordAccess + "/" + type)
-                  .done(populateDeviceList(self))
+                  .done(returnDevices(self, tabDevice, promise))
                   .fail(function(error) {
                      notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacityType", {expectedKeywordAccess : self.expectedKeywordAccess, expectedKeywordType : type}), error);
                   });
             });
+            $.whenAll(arrayOfDeffered).done(function () {
+               addDeviceList(self, tabDevice);
+            });            
          }
          else {
             //we async ask for device list that support a type
@@ -238,16 +305,28 @@ KeywordParameterHandler.prototype.applyScript = function () {
          }
          break;
       case "name":
+      
          //we look for a capacity name
          if (Array.isArray(self.expectedCapacity)) {
+            
+            var arrayOfDeffered = [];
+            var tabDevice = [];
+            
             //we have a list of capacities
             //we async ask for keyword list of the device for each capacity
             $.each(self.expectedCapacity, function (index, capacity) {
+               
+               var promise = new $.Deferred();
+               arrayOfDeffered.push(promise);
+               
                RestEngine.getJson("/rest/device/matchcapacity/" + self.expectedKeywordAccess + "/" + capacity)
-                  .done(populateDeviceList(self))
+                  .done(returnDevices(self, tabDevice, promise))
                   .fail(function(error) {
                      notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacity", {expectedKeywordAccess : self.expectedKeywordAccess, expectedCapacity : self.expectedCapacity}), error);
                   });
+            });
+            $.whenAll(arrayOfDeffered).done(function () {
+               addDeviceList(self, tabDevice);
             });
          }
          else {
@@ -261,6 +340,7 @@ KeywordParameterHandler.prototype.applyScript = function () {
          break;
       default:
       case "all":
+      
          //we get all devices
          RestEngine.getJson("/rest/device/")
             .done(populateDeviceList(self))

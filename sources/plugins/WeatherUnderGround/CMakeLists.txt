@@ -27,23 +27,17 @@ set(WUNDERGROUND_SOURCES
    WUConfiguration.cpp
    WUConfiguration.h
    Keywords/Condition.h
-   Keywords/Condition.cpp   
-   Keywords/Duration.h
-   Keywords/Duration.cpp
+   Keywords/Condition.cpp
    Keywords/Forecast.h
    Keywords/Forecast.cpp   
    Keywords/IKeyword.h 
    Keywords/KeywordException.hpp
+   Keywords/KeywordHelpers.cpp
+   Keywords/KeywordHelpers.h
    Keywords/Moon.h
    Keywords/Moon.cpp
-   Keywords/Rain.h
-   Keywords/Rain.cpp
-   Keywords/Temp.h
-   Keywords/Temp.cpp   
    Keywords/WeatherIcon.h
-   Keywords/WeatherIcon.cpp   
-   Keywords/WindSpeed.h
-   Keywords/WindSpeed.cpp
+   Keywords/WeatherIcon.cpp
    specificHistorizers/ConditionHistorizer.h
    specificHistorizers/ConditionHistorizer.cpp
    specificHistorizers/ConditionFormatter.h

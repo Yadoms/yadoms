@@ -4,8 +4,6 @@
 #include <shared/DataContainer.h>
 #include "WUConfiguration.h"
 #include "Keywords/Forecast.h"
-#include "Keywords/Rain.h"
-#include "Keywords/Temp.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -118,12 +116,12 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Tab of rain keywords for 3 next days
    //--------------------------------------------------------------
-   boost::shared_ptr<CRain> m_forecastRain[NB_RAIN_FORECAST_DAY];
+   boost::shared_ptr<yApi::historization::CRainRate> m_forecastRain[NB_RAIN_FORECAST_DAY];
 
    //--------------------------------------------------------------
    /// \brief	    the temperature for the next day
    //--------------------------------------------------------------
-   boost::shared_ptr<CTemp> m_temp;
+   boost::shared_ptr<yApi::historization::CTemperature> m_temp;
 
    //--------------------------------------------------------------
    /// \brief  Keywords list
@@ -139,4 +137,9 @@ private:
    /// \brief	    the module is desactivated by the user
    //--------------------------------------------------------------
    bool m_isUserDesactivated;
+
+   //--------------------------------------------------------------
+   /// \brief  developerMode state
+   //--------------------------------------------------------------
+   bool m_isDeveloperMode;
 };

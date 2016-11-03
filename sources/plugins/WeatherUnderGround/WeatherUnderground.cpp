@@ -195,8 +195,7 @@ shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yAp
 {
    try
    {
-      shared::CHttpMethods m_webServer;
-      shared::CDataContainer data = m_webServer.SendGetRequest(url);
+      shared::CDataContainer data = shared::CHttpMethods::SendGetRequest(url);
 
       ErrorAnswerHandler Response(api, data);
 

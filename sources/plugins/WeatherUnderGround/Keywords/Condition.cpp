@@ -2,6 +2,7 @@
 #include "Condition.h"
 #include <boost/lexical_cast.hpp>
 #include "KeywordException.hpp"
+#include "KeywordHelpers.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -48,7 +49,13 @@ void CCondition::setPeriod(const shared::CDataContainer& valueContainer,
       weatherIconTemp = static_cast<yApi::historization::EWeatherCondition>(it->second).toString();
    }
    else
-      throw CKeywordException("Value " + valueContainer.get<std::string>(filterWeatherCondition) + " could not be set");
+      throw CKeywordException("Value [" + valueContainer.get<std::string>(filterWeatherCondition) + "] could not be set");
+
+   std::string stgmaxWind;
+   std::string stgaveWind;
+
+   convertKmhToMs(stgmaxWind, valueContainer, filterMaxWind);
+   convertKmhToMs(stgaveWind, valueContainer, filterAveWind);
 
    m_condition->setPeriod(valueContainer.get<std::string>(filterTime),
                           weatherIconTemp,
@@ -57,8 +64,8 @@ void CCondition::setPeriod(const shared::CDataContainer& valueContainer,
                           valueContainer.get<std::string>(filterVisibility),
                           valueContainer.get<std::string>(filterUV),
                           valueContainer.get<std::string>(filterDewPoint),
-                          boost::lexical_cast<std::string>(valueContainer.get<double>(filterMaxWind) / 3.6), // Transform from Km/h -> m/s
-                          boost::lexical_cast<std::string>(valueContainer.get<double>(filterAveWind) / 3.6), // Transform from Km/h -> m/s
+                          stgmaxWind,
+                          stgaveWind,
                           valueContainer.get<std::string>(filterAveWindDegrees),
                           valueContainer.get<std::string>(filterAveHumidity),
                           valueContainer.get<std::string>(filterRainDay),

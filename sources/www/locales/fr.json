@@ -133,17 +133,20 @@
         "takeMeHome": "Retourner à l'accueil"
     },
   "modals": {
+    "pickup": {
+      "add": "Ajouter",
+      "goBack": "Retour",	
+      "descriptionHeader": "Description:",
+      "versionHeader": "Version:",
+      "authorHeader": "Author:",
+	  "errorDuringGettingPackages": "Error during requesting packages"
+	},  
     "add-widget": {
       "title": "Ajouter un nouveau widget",
       "getMore": "Obtenir des widgets",
-      "add": "Ajouter",
-      "goBack": "Retour",
       "errorDuringCreatingWidget": "Erreur à la création du widget",
       "widgetSuccessfullyCreated": "Widget créé",
-      "unableToCreateWidgetOfType": "Impossible de créer le widget du type __widgetType__",
-      "descriptionHeader": "Description:",
-      "versionHeader": "Version:",
-      "authorHeader": "Auteur:"
+      "unableToCreateWidgetOfType": "Impossible de créer le widget du type __widgetType__"
     },
     "configure-widget": {
       "title": "Configuration du widget",

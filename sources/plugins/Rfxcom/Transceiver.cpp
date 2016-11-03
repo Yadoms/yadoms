@@ -52,8 +52,8 @@
 // RFXCOM implementation
 // =======================================================================
 // This RFXCom support was developped for :
-// - Sepcifications "RFXtrx SDK.pdf" : Version 9.08 May 6, 2016
-// - RFXtrx.h : version 9.08
+// - Sepcifications "RFXtrx SDK.pdf" : Version 9.11 Oct 27, 2016
+// - RFXtrx.h : version 9.11
 // =======================================================================
 //
 
@@ -405,8 +405,8 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
          msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeEMW100, data.getConfiguration().get<shared::CDataContainer>("type.content.emw100.content"));
       else if (data.getConfiguration().get<bool>("type.content.bbsb.radio"))
          msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeBBSB, data.getConfiguration().get<shared::CDataContainer>("type.content.bbsb.content"));
-      else if (data.getConfiguration().get<bool>("type.content.mdRemote.radio"))
-         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeMDREMOTE, data.getConfiguration().get<shared::CDataContainer>("type.content.mdRemote.content"));
+      else if (data.getConfiguration().get<bool>("type.content.mdRemote106.radio"))
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeMDREMOTE, data.getConfiguration().get<shared::CDataContainer>("type.content.mdRemote106.content"));
       else if (data.getConfiguration().get<bool>("type.content.rsl.radio"))
          msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeRSL, data.getConfiguration().get<shared::CDataContainer>("type.content.rsl.content"));
       else if (data.getConfiguration().get<bool>("type.content.livolo.radio"))
@@ -427,6 +427,8 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
          msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeMDREMOTE107, data.getConfiguration().get<shared::CDataContainer>("type.content.mdremote107.content"));
       else if (data.getConfiguration().get<bool>("type.content.legrandCad.radio"))
          msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeLegrandCAD, data.getConfiguration().get<shared::CDataContainer>("type.content.legrandCad.content"));
+      else if (data.getConfiguration().get<bool>("type.content.mdRemote108.radio"))
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeMDREMOTE108, data.getConfiguration().get<shared::CDataContainer>("type.content.mdRemote108.content"));
 
       // Lighting6
       else if (data.getConfiguration().get<bool>("type.content.blyss.radio"))
@@ -445,6 +447,12 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
       // Fan
       else if (data.getConfiguration().get<bool>("type.content.siemensSf01.radio"))
          msg = boost::make_shared<rfxcomMessages::CFan>(api, sTypeSiemensSF01, data.getConfiguration().get<shared::CDataContainer>("type.content.siemensSf01.content"));
+      else if (data.getConfiguration().get<bool>("type.content.lucciAir.radio"))
+         msg = boost::make_shared<rfxcomMessages::CFan>(api, sTypeLucciAir, data.getConfiguration().get<shared::CDataContainer>("type.content.lucciAir.content"));
+      else if (data.getConfiguration().get<bool>("type.content.seavTxs4.radio"))
+         msg = boost::make_shared<rfxcomMessages::CFan>(api, sTypeSeavTXS4, data.getConfiguration().get<shared::CDataContainer>("type.content.seavTxs4.content"));
+      else if (data.getConfiguration().get<bool>("type.content.westinghouse7226640.radio"))
+         msg = boost::make_shared<rfxcomMessages::CFan>(api, sTypeWestinghouse, data.getConfiguration().get<shared::CDataContainer>("type.content.westinghouse7226640.content"));
 
       // Curtain1
       else if (data.getConfiguration().get<bool>("type.content.harrisonCurtain.radio"))

@@ -17,7 +17,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	                           Constructor
    //--------------------------------------------------------------
-   CTransceiver();
+   CTransceiver(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
@@ -90,6 +90,8 @@ private:
 
    boost::shared_ptr<yApi::IYPluginApi> m_api;
    std::string m_DeviceName;
+
+   bool m_isdeveloperMode;
 
    //Contract Options -> Abonnement
    typedef enum

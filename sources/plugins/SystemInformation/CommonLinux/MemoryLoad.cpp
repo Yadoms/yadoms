@@ -79,10 +79,7 @@ void CMemoryLoad::read()
       // http://blog.guillaume.fenollar.fr/2013/11/comprendre-conso-memoire-vive-ram-linux.html
 
       float MemoryLoad = static_cast<float>(((memTotal-memFree)-memBuffer-memCached) * 100 / (float) memTotal );
-
       m_keyword->set(MemoryLoad);
-
-      std::cout << "Memory Load : " << m_keyword->formatValue() << std::endl;
    }
    else
       std::cout << "the memory load could not be calculated" << std::endl;
