@@ -4,7 +4,6 @@
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
-#include "IPX800Factory.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -36,14 +35,10 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    try {
       m_configuration.initializeWith(api->getConfiguration());
 
-      shared::CDataContainer details;
-      details.set("provider", "IPX800");
-      details.set("shortProvider", "ipx");
-
       //Factory : Creation of all the needed
-      CIPX800Factory factory(api, m_deviceName, m_configuration, details);
+      m_factory = boost::make_shared<CIPX800Factory>(api, m_deviceName, m_configuration);
 
-      m_ioManager = factory.getIOManager();
+      m_ioManager = m_factory->getIOManager();
 
       // Timer used to read periodically IOs from the IPX800
       api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
@@ -85,19 +80,19 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       }
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
       {
-/*
+
          // Yadoms asks for device creation
          auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
          std::cout << "Manually device creation request received for device :" << request->getData().getDeviceName() << std::endl;
          try
          {
-            request->sendSuccess(m_transceiver->createDeviceManually(api, request->getData()));
+            request->sendSuccess(m_factory->createDeviceManually(api, request->getData()));
          }
-         catch (CManuallyDeviceCreationException& e)
+         catch (/*CManuallyDeviceCreationException& e*/...)
          {
-            request->sendError(e.what());
+            //request->sendError(e.what());
          }
-         */
+         
          break;
       }
       case yApi::IYPluginApi::kBindingQuery:
@@ -106,27 +101,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
          if (data->getData().getQuery() == "X8R")
          {
-            std::cout << "query" << std::endl;
-
-            shared::CDataContainer ev;
-            ev.set("SLOT1", "X8-R Slot 1");
-            ev.set("SLOT2", "X8-R Slot 2");
-            ev.set("SLOT3", "X8-R Slot 3");
-            ev.set("SLOT4", "X8-R Slot 4");
-            ev.set("SLOT5", "X8-R Slot 5");
-            ev.set("SLOT6", "X8-R Slot 6");
-
-            shared::CDataContainer en;
-            //en.set("name", "Interval of the chart");
-            //en.set("description", "Permit to change the interval of all the chart");
-            en.set("type", "enum");
-            en.set("values", ev);
-            en.set("defaultValue", "SLOT1");
-
-            shared::CDataContainer result;
-            result.set("position", en);
-
-            data->sendSuccess(en);
+            data->sendSuccess(m_factory->bindSlotsX8R());
          }
          else
          {

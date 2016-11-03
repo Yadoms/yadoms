@@ -59,7 +59,10 @@
 				    "Position" :
 				    {				 
 				       "type" : "enum",
-				       "values" : {"__Binding__" : {"type" : "system", "query" : "serialPorts"}}
+				       "__Binding__" : {
+					      "type" : "plugin", 
+						  "query" : "X8D"
+					   }
 					}
 				 }
 			  },
@@ -71,7 +74,10 @@
 				    "Position" :
 				    {				 
 				       "type" : "enum",
-				       "values" : {"__Binding__" : {"type" : "system", "query" : "serialPorts"}}
+				       "__Binding__" : {
+					      "type" : "plugin", 
+						  "query" : "X24D"
+					   }
 					}
 				 }
 			  }			  

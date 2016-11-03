@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-//#include "IIO.h"
 #include "IOManager.h"
 #include <shared/event/EventHandler.hpp>
 #include <Poco/Net/NetworkInterface.h>
@@ -35,7 +34,7 @@ public:
    //--------------------------------------------------------------
    void Initialize(boost::shared_ptr<yApi::IYPluginApi> api, 
                    std::map<std::string, boost::shared_ptr<yApi::historization::CSwitch> > IOlist,
-                   std::map<std::string, boost::shared_ptr<specificHistorizers::CVirtualAnalog> > virtualAnalogList,
+                   std::map<std::string, boost::shared_ptr<specificHistorizers::CAnalog> > virtualAnalogList,
                    std::map<std::string, boost::shared_ptr<yApi::historization::CCounter> > counterList);
 
    //--------------------------------------------------------------
@@ -95,7 +94,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	Map of all virtual analog input
    //--------------------------------------------------------------
-   std::map<std::string, boost::shared_ptr<specificHistorizers::CVirtualAnalog> > m_mapVirtualAnalogInput;
+   std::map<std::string, boost::shared_ptr<specificHistorizers::CAnalog> > m_mapVirtualAnalogInput;
 
    //--------------------------------------------------------------
    /// \brief	Map of all counters

@@ -214,11 +214,9 @@ namespace shared
 
    void CDataContainer::printToLog() const
    {
-      //YADOMS_LOG(information) << "| TREE START";
-      std::cout << "| TREE START" << std::endl;
+      YADOMS_LOG(information) << "| TREE START";
       printToLog(m_tree, 0);
-      //YADOMS_LOG(information) << "| TREE END";
-      std::cout << "| TREE END" << std::endl;
+      YADOMS_LOG(information) << "| TREE END";
    }
 
    void CDataContainer::printToLog(const boost::property_tree::ptree & pt, const int deep) const
@@ -231,8 +229,7 @@ namespace shared
 		prefix += "|-";
       for (boost::property_tree::ptree::const_iterator it = pt.begin(); it != end; ++it) 
       {
-         //YADOMS_LOG(information) << prefix << it->first << " : " << it->second.get_value<std::string>();
-         std::cout << prefix << it->first << " : " << it->second.get_value<std::string>() << std::endl;
+         YADOMS_LOG(information) << prefix << it->first << " : " << it->second.get_value<std::string>();
          printToLog(it->second, deep+1);
       }
    }

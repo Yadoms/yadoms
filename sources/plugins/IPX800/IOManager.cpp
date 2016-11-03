@@ -13,7 +13,7 @@ CIOManager::CIOManager(const std::string& device, Poco::Net::IPAddress IPAddress
 
 void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api, 
                             std::map<std::string, boost::shared_ptr<yApi::historization::CSwitch> > IOlist,
-                            std::map<std::string, boost::shared_ptr<specificHistorizers::CVirtualAnalog> > virtualAnalogList,
+                            std::map<std::string, boost::shared_ptr<specificHistorizers::CAnalog> > virtualAnalogList,
                             std::map<std::string, boost::shared_ptr<yApi::historization::CCounter> > counterList)
 {
    m_mapDigitalInputOuput = IOlist;

@@ -2,6 +2,7 @@
 #include <plugin_cpp_api/IPlugin.h>
 #include "IPX800Configuration.h"
 #include "IOManager.h"
+#include "IPX800Factory.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -46,5 +47,10 @@ private:
    /// \brief The IO Manager
    //--------------------------------------------------------------
    boost::shared_ptr<CIOManager> m_ioManager;
+
+   //--------------------------------------------------------------
+   /// \brief The IO Manager
+   //--------------------------------------------------------------
+   boost::shared_ptr<CIPX800Factory> m_factory;
 };
 
