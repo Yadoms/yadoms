@@ -71,10 +71,27 @@ protected:
    static void processEvent(const message::CReceivedEsp3Packet& esp3Packet);
 
    //--------------------------------------------------------------
+   /// \brief	                     Declare a device
+   /// \param [in] deviceId         Device ID
+   /// \param [in] rorgId           Device RORG
+   /// \param [in] funcId           Device FUNC
+   /// \param [in] typeId           Device TYPE
+   /// \param [in] manufacturer     Manufacturer
+   /// \param [in] model            Device model (auto-generated if not provided)
+   //--------------------------------------------------------------
+   void declareDevice(const std::string& deviceId,
+                      unsigned int rorgId,
+                      unsigned int funcId,
+                      unsigned int typeId,
+                      const std::string& manufacturer,
+                      const std::string& model = std::string()) const;
+
+   //--------------------------------------------------------------
    /// \brief	                     Declare a device when ignoring profile
    /// \param [in] erp1Message      The received ERP1 message
    //--------------------------------------------------------------
    void declareDeviceWithoutProfile(const message::CRadioErp1Message& erp1Message) const;
+
 
    //--------------------------------------------------------------
    /// \brief	                     Extract sender ID from buffer
@@ -102,7 +119,7 @@ protected:
    /// \return                      The device configuration schema
    //--------------------------------------------------------------
    void setDeviceConfiguration(boost::shared_ptr<const yApi::ISetDeviceConfiguration> deviceConfiguration);
-   
+
    //--------------------------------------------------------------
    /// \brief	                     Requests to EnOcean
    //--------------------------------------------------------------

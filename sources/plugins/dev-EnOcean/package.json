@@ -1,21 +1,46 @@
 {
-	"type": "dev-enOcean",
-	"version": "0.0.1",
-	"releaseType": "beta",
-	"author": "Sébastien Gallou",
-   "url": "https://github.com/Yadoms/yadoms/",
-	"credits": "",
-	"supportedPlatforms": "all",
-	"configurationSchema": {
-		"SerialPort": {
-			"type": "enum",
-			"values": {
-				"__Binding__": {
-					"type": "system",
-					"query": "serialPorts"
-				}
-			}
-		}
-	},
-   "supportDeviceConfiguration": ""
+  "type": "dev-enOcean",
+  "version": "0.0.1",
+  "releaseType": "beta",
+  "author": "Sébastien Gallou",
+  "url": "https://github.com/Yadoms/yadoms/",
+  "credits": "",
+  "supportedPlatforms": "all",
+  "configurationSchema": {
+    "SerialPort": {
+      "type": "enum",
+      "values": {
+        "__Binding__": {
+          "type": "system",
+          "query": "serialPorts"
+        }
+      }
+    }
+  },
+  "supportManuallyDeviceCreation": "true",
+  "manuallyDeviceCreationConfigurationSchema": {
+    "id": {
+      "type": "string",
+      "maximumLength": "8",
+      "required": "true",
+      "regex": "^[a-fA-F0-9]{8}$",
+      "regexErrorMessage": "Must be a 8 characters long hexadecimal string (ie: 0x1234ABCD)"
+    },
+    "profile": {
+      "type": "enum",
+      "values": {
+        "__Binding__": {
+          "type": "plugin",
+          "query": "profiles"
+        }
+      }
+    },
+    "manufacturer": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    }
+  },
+  "supportDeviceConfiguration": "true"
 }

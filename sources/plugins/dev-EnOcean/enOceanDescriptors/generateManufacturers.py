@@ -47,6 +47,8 @@ manufacturersClass.addMethod(cppClass.CppMethod("name", "const std::string&", "u
    "      static const std::string UnknownManufacturer(\"Unknown manufacturer\");\n" \
    "      return UnknownManufacturer;\n" \
    "   }"))
+manufacturersClass.addMethod(cppClass.CppMethod("name", "const std::string&", "EManufacturerIds id", cppClass.PUBLIC, cppClass.STATIC, \
+   "   return name(static_cast<unsigned int>(id));"))
 
 
 # Generate Header

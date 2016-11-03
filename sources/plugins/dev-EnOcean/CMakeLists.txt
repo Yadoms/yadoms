@@ -22,6 +22,8 @@ set(ENOCEAN_SOURCES
    EnOceanConfiguration.cpp
    EnOceanFactory.h
    EnOceanFactory.cpp
+   ProfileHelper.h
+   ProfileHelper.cpp
    
    message/Crc8.h
    message/Crc8.cpp

@@ -1,29 +1,52 @@
 ﻿{
-	"name": "EnOcean",
-	"description": "Support des équipements EnOcean",
-	"configurationSchema": {
-		"SerialPort": {
-			"name": "Port série",
-			"description": "Le port série (virtuel) connecté au stick USB EnOcean"
-		}
-	},
+  "name": "EnOcean",
+  "description": "Support des équipements EnOcean",
+  "configurationSchema": {
+    "SerialPort": {
+      "name": "Port série",
+      "description": "Le port série (virtuel) connecté au stick USB EnOcean"
+    }
+  },
+  "manuallyDeviceCreationConfigurationSchema": {
+    "id": {
+      "name": "Identifiant",
+      "description": "L'identifiant unique de l'équipement",
+      "regexErrorMessage": "Doit être une chaîne de 8 caractères hexadecimaux (ex: 0x1234ABCD)"
+    },
+    "profile": {
+      "name": "Profil",
+      "description": "Sélectionner le profil de l'équipement, tel qu'indiqué sur l'étiquette ou dans le manuel utilisateur"
+    },
+    "manufacturer": {
+      "name": "Fabricant",
+      "description": "Saisir ici le fabricant de l'équipement"
+    },
+    "model": {
+      "name": "Modèle",
+      "description": "Saisir ici le modèle de l'équipement"
+    }
+  },
   "deviceConfigurationSchema": {
     "configurationSchema": {
       "profile": {
         "name": "Profil",
         "description": "Sélectionner le profil de l'équipement, tel qu'indiqué sur l'étiquette ou dans le manuel utilisateur"
       },
+      "manufacturer": {
+        "name": "Fabricant",
+        "description": "Saisir ici le fabricant de l'équipement"
+      },
       "model": {
         "name": "Modèle",
-        "description":  "Saisir ici le modèle de l'équipement" 
-      } 
+        "description": "Saisir ici le modèle de l'équipement"
+      }
     }
   },
-	"customLabels": {
-		"pluginState": {
-			"connecting": "Connexion en cours...",
-			"connectionFailed": "Erreur de connexion, réessai dans un moment...",
-			"updateConfiguration": "Mise à jour de la configuration..."
-		}
-	}
+  "customLabels": {
+    "pluginState": {
+      "connecting": "Connexion en cours...",
+      "connectionFailed": "Erreur de connexion, réessai dans un moment...",
+      "updateConfiguration": "Mise à jour de la configuration..."
+    }
+  }
 }

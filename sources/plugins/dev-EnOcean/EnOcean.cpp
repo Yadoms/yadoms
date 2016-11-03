@@ -8,6 +8,7 @@
 #include "4BSTeachinVariant2.h"
 #include "enOceanDescriptors/bitsetHelpers.hpp"
 #include <shared/exception/EmptyResult.hpp>
+#include "ProfileHelper.h"
 
 //TODO gérer un cache pour les devices connus (pour ne pas requêter Yadoms pour rien)
 
@@ -92,6 +93,24 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             break;
          }
 
+      case yApi::IYPluginApi::kBindingQuery:
+         {
+            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
+            if (request->getData().getQuery() == "profiles")
+            {
+               shared::CDataContainer result;
+               result.set("values", CProfilesList::list());
+               request->sendSuccess(result);
+            }
+            else
+            {
+               auto errorMessage = (boost::format("unknown query : %1%") % request->getData().getQuery()).str();
+               request->sendError(errorMessage);
+               std::cerr << errorMessage << std::endl;
+            }
+            break;
+         }
+
       case yApi::IYPluginApi::kEventDeviceCommand:
          {
             // Command received from Yadoms
@@ -99,6 +118,30 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             std::cout << "Command received : " << yApi::IDeviceCommand::toString(command) << std::endl;
 
             onCommand(command);
+
+            break;
+         }
+
+      case yApi::IYPluginApi::kEventManuallyDeviceCreation:
+         {
+            auto creation = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
+            try
+            {
+               auto profile = CProfileHelper(creation->getData().getConfiguration().get<std::string>("profile"));
+
+               declareDevice(creation->getData().getConfiguration().get<std::string>("id"),
+                             profile.rorg(),
+                             profile.func(),
+                             profile.type(),
+                             creation->getData().getConfiguration().get<std::string>("profile"),
+                             creation->getData().getConfiguration().get<std::string>("model"));
+
+               creation->sendSuccess(creation->getData().getConfiguration().get<std::string>("id"));
+            }
+            catch (std::exception& ex)
+            {
+               creation->sendError(ex.what());
+            }
 
             break;
          }
@@ -285,20 +328,21 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) 
    message::CRadioErp1Message erp1Message(esp3Packet);
 
    // Create associated RORG object
-   auto data = bitset_from_bytes(erp1Message.data());
-   auto rorg = CRorgs::createRorg(erp1Message.rorg(), data);
+   auto erp1Data = bitset_from_bytes(erp1Message.data());
+   auto rorg = CRorgs::createRorg(erp1Message.rorg());
+   auto deviceId = erp1Message.senderIdAsString();
 
-   if (rorg->isTeachIn())
+   if (rorg->isTeachIn(erp1Data))
    {
       // Teachin telegram
 
-      if (m_api->deviceExists(erp1Message.senderIdAsString()))
+      if (m_api->deviceExists(deviceId))
       {
-         std::cout << "Device " << erp1Message.senderIdAsString() << " already exists, message ignored." << std::endl;
+         std::cout << "Device " << deviceId << " already exists, message ignored." << std::endl;
          return;
       }
 
-      if (!rorg->isEepProvided())
+      if (!rorg->isEepProvided(erp1Data))
       {
          declareDeviceWithoutProfile(erp1Message);
          return;
@@ -308,58 +352,32 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) 
          throw std::domain_error((boost::format("Teach-in telegram is only supported for 4BS telegram for now. Please report to Yadoms-team. Telegram \"%1%\"") % erp1Message.dump()).str());
 
       // Special-case of 4BS teachin mode Variant 2 (profile is provided in the telegram)
-      C4BSTeachinVariant2 teachInData(data);
+      C4BSTeachinVariant2 teachInData(erp1Data);
 
-      auto func = rorg->createFunc(teachInData.funcId());
-      auto type = func->createType(teachInData.typeId(), data);
-
-      auto keywordsToDeclare = type->historizers();
-      if (keywordsToDeclare.empty())
-      {
-         std::cout << "Received teachin telegram for id#" << erp1Message.senderIdAsString()
-            << ", " << std::hex << erp1Message.rorg()
-            << "-" << std::hex << func->id()
-            << "-" << type->id()
-            << ", but no keyword to declare" << std::endl;
-         return;
-      }
-
-      auto model(CManufacturers::name(teachInData.manufacturerId()) + std::string(" - ") + func->title() + " (" + type->title() + ")");
-      shared::CDataContainer details;
-      details.set("manufacturer", teachInData.manufacturerId());
-      details.set("rorg", rorg->id());
-      details.set("func", func->id());
-      details.set("type", type->id());
-      m_api->declareDevice(erp1Message.senderIdAsString(), model, keywordsToDeclare, details);
-
-      std::cout << "New device declared : " << std::endl;
-      std::cout << "  - Id           : " << erp1Message.senderIdAsString() << std::endl;
-      std::cout << "  - Manufacturer : " << CManufacturers::name(teachInData.manufacturerId()) << std::endl;
-      std::cout << "  - Profile      : " << std::setfill('0') << std::setw(2) << std::uppercase << std::hex << rorg->id() << "-"
-         << std::setfill('0') << std::setw(2) << std::uppercase << std::hex << func->id() << "-"
-         << std::setfill('0') << std::setw(2) << std::uppercase << std::hex << type->id() << std::endl;
-      std::cout << "  - RORG         : " << rorg->title() << std::endl;
-      std::cout << "  - FUNC         : " << func->title() << std::endl;
-      std::cout << "  - TYPE         : " << type->title() << std::endl;
+      declareDevice(deviceId,
+                    rorg->id(),
+                    teachInData.funcId(),
+                    teachInData.typeId(),
+                    CManufacturers::name(teachInData.manufacturerId()));
    }
    else
    {
       // Data telegram
 
       // Get device details from database
-      if (!m_api->deviceExists(erp1Message.senderIdAsString()))
+      if (!m_api->deviceExists(deviceId))
       {
          declareDeviceWithoutProfile(erp1Message);
          return;
       }
 
-      auto device = retrieveDevice(erp1Message.senderIdAsString());
+      auto device = retrieveDevice(deviceId);
 
       // Create associated FUNC object
       auto func = rorg->createFunc(device.func());
-      auto type = func->createType(device.type(), data);
+      auto type = func->createType(device.type());
 
-      auto keywordsToHistorize = type->states();
+      auto keywordsToHistorize = type->states(erp1Data);
       if (keywordsToHistorize.empty())
       {
          std::cout << "Received message for id#" << device.id() << ", " << erp1Message.rorg() << "-" << device.func() << "-" << device.type() << ", but nothing to historize" << std::endl;
@@ -369,15 +387,17 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) 
       std::cout << "Received message for id#" << device.id() << " : " << std::endl;
       for (const auto& kw: keywordsToHistorize)
          std::cout << "  - " << kw->getKeyword() << " = " << kw->formatValue() << std::endl;;
-      
+
       m_api->historizeData(device.id(), keywordsToHistorize);
    }
 }
 
 void CEnOcean::declareDeviceWithoutProfile(const message::CRadioErp1Message& erp1Message) const
 {
+   auto deviceId = erp1Message.senderIdAsString();
+
    std::cout << "New device declared : " << std::endl;
-   std::cout << "  - Id           : " << erp1Message.senderIdAsString() << std::endl;
+   std::cout << "  - Id           : " << deviceId << std::endl;
    std::cout << "  - Profile      : Unknown. No historization until user enter profile." << std::endl;
 
    shared::CDataContainer details;
@@ -386,9 +406,9 @@ void CEnOcean::declareDeviceWithoutProfile(const message::CRadioErp1Message& erp
    details.set<unsigned int>("func", 0);
    details.set<unsigned int>("type", 0);
 
-   m_api->declareDevice(erp1Message.senderIdAsString(),
+   m_api->declareDevice(deviceId,
                         std::string(),
-                        std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >(),
+                        std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>(),
                         details);
 }
 
@@ -422,6 +442,7 @@ shared::CDataContainer CEnOcean::createDeviceConfigurationSchema()
 
    shared::CDataContainer configurationSchema;
    configurationSchema.set("profile", CProfilesList::list());
+   configurationSchema.set("manufacturer", manufacturer);
    configurationSchema.set("model", model);
 
    shared::CDataContainer schema;
@@ -433,25 +454,18 @@ void CEnOcean::setDeviceConfiguration(boost::shared_ptr<const yApi::ISetDeviceCo
 {
    try
    {
-      auto profile = deviceConfiguration->configuration().get<std::string>("configurationSchema.profile");
-      std::cout << "Device \"" << deviceConfiguration->device() << "\" is configurated as " << profile << std::endl;
+      auto selectedProfile = deviceConfiguration->configuration().get<std::string>("configurationSchema.profile");
+      std::cout << "Device \"" << deviceConfiguration->device() << "\" is configurated as " << selectedProfile << std::endl;
 
-      boost::regex pattern("([[:xdigit:]]{2})-([[:xdigit:]]{2})-([[:xdigit:]]{2})");
-      boost::smatch result;
-      if (!boost::regex_search(profile, result, pattern))
-         throw std::invalid_argument("Unsupported profile " + profile);
-
-      std::string rorg(result[1].first, result[1].second);
-      std::string func(result[2].first, result[2].second);
-      std::string type(result[3].first, result[3].second);
+      auto profile = CProfileHelper(selectedProfile);
 
       auto device = m_api->getDeviceDetails(deviceConfiguration->device());
       auto model(deviceConfiguration->configuration().get<std::string>("manufacturer") + std::string(" - ") + deviceConfiguration->configuration().get<std::string>("model"));
       shared::CDataContainer details;
       details.set("manufacturer", deviceConfiguration->configuration().get<std::string>("manufacturer"));
-      details.set("rorg", rorg);
-      details.set("func", func);
-      details.set("type", type);
+      details.set("rorg", profile.rorg());
+      details.set("func", profile.func());
+      details.set("type", profile.type());
 
       //TODO mettre à jour la base de donnée (mais comment faire ?)
       //m_api->declareDevice(erp1Message.senderIdAsString(), model, keywordsToDeclare, details);
@@ -469,7 +483,7 @@ void CEnOcean::setDeviceConfiguration(boost::shared_ptr<const yApi::ISetDeviceCo
 
 void CEnOcean::processResponse(const message::CReceivedEsp3Packet& esp3Packet) const
 {
-   switch(m_sentCommand)
+   switch (m_sentCommand)
    {
    case message::CO_RD_VERSION: processDongleVersionResponse(esp3Packet);
       break;
@@ -531,7 +545,7 @@ void CEnOcean::processDongleVersionResponse(const message::CReceivedEsp3Packet& 
       | esp3Packet.data()[16];
 
    std::string appDescription(esp3Packet.data().begin() + 17,
-      esp3Packet.data().end());
+                              esp3Packet.data().end());
    appDescription.erase(appDescription.find_last_not_of('\0') + 1);
 
    std::cout << "EnOcean dongle Version " << appVersion.toString() <<
@@ -577,6 +591,50 @@ void CEnOcean::processEvent(const message::CReceivedEsp3Packet& esp3Packet)
    }
 
    //TODO
+}
+
+void CEnOcean::declareDevice(const std::string& deviceId,
+                             unsigned int rorgId,
+                             unsigned int funcId,
+                             unsigned int typeId,
+                             const std::string& manufacturer,
+                             const std::string& model) const
+{
+   auto rorg = CRorgs::createRorg(rorgId);
+   auto func = rorg->createFunc(funcId);
+   auto type = func->createType(typeId);
+
+   auto keywordsToDeclare = type->historizers();
+   if (keywordsToDeclare.empty())
+   {
+      std::cout << "Received teachin telegram for id#" << deviceId
+         << ", " << std::hex << rorg->id()
+         << "-" << std::hex << func->id()
+         << "-" << std::hex << type->id()
+         << ", but no keyword to declare" << std::endl;
+      return;
+   }
+
+   shared::CDataContainer details;
+   details.set("manufacturer", manufacturer);
+   details.set("rorg", rorg->id());
+   details.set("func", func->id());
+   details.set("type", type->id());
+
+   m_api->declareDevice(deviceId,
+                        !model.empty() ? model : (manufacturer + std::string(" - ") + func->title() + " (" + type->title() + ")"),
+                        keywordsToDeclare,
+                        details);
+
+   std::cout << "New device declared : " << std::endl;
+   std::cout << "  - Id           : " << deviceId << std::endl;
+   std::cout << "  - Manufacturer : " << manufacturer << std::endl;
+   std::cout << "  - Profile      : " << std::setfill('0') << std::setw(2) << std::uppercase << std::hex << rorg->id() << "-"
+      << std::setfill('0') << std::setw(2) << std::uppercase << std::hex << func->id() << "-"
+      << std::setfill('0') << std::setw(2) << std::uppercase << std::hex << type->id() << std::endl;
+   std::cout << "  - RORG         : " << rorg->title() << std::endl;
+   std::cout << "  - FUNC         : " << func->title() << std::endl;
+   std::cout << "  - TYPE         : " << type->title() << std::endl;
 }
 
 void CEnOcean::requestDongleVersion()

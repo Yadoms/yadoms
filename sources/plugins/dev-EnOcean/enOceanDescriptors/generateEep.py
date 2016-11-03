@@ -43,8 +43,8 @@ itypeClass = cppClass.CppClass("IType", createDefaultCtor=False)
 cppTypes.append(itypeClass)
 itypeClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 itypeClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-itypeClass.addMethod(cppClass.CppMethod("states", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 itypeClass.addMethod(cppClass.CppMethod("historizers", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+itypeClass.addMethod(cppClass.CppMethod("states", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "const boost::dynamic_bitset<>& data", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 
 
 # IFunc : Func interface
@@ -52,7 +52,7 @@ ifuncClass = cppClass.CppClass("IFunc", createDefaultCtor=False)
 cppTypes.append(ifuncClass)
 ifuncClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 ifuncClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-ifuncClass.addMethod(cppClass.CppMethod("createType", "boost::shared_ptr<IType>", "unsigned int typeId, const boost::dynamic_bitset<>& data", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+ifuncClass.addMethod(cppClass.CppMethod("createType", "boost::shared_ptr<IType>", "unsigned int typeId", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 
 
 # IRorg : Rorg interface
@@ -61,9 +61,9 @@ cppTypes.append(irorgClass)
 irorgClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 irorgClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 irorgClass.addMethod(cppClass.CppMethod("fullname", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-irorgClass.addMethod(cppClass.CppMethod("dump", "std::string", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-irorgClass.addMethod(cppClass.CppMethod("isTeachIn", "bool", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-irorgClass.addMethod(cppClass.CppMethod("isEepProvided", "bool", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+irorgClass.addMethod(cppClass.CppMethod("dump", "std::string", "const boost::dynamic_bitset<>& erp1Data", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+irorgClass.addMethod(cppClass.CppMethod("isTeachIn", "bool", "const boost::dynamic_bitset<>& erp1Data", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
+irorgClass.addMethod(cppClass.CppMethod("isEepProvided", "bool", "const boost::dynamic_bitset<>& erp1Data", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 irorgClass.addMethod(cppClass.CppMethod("createFunc", "boost::shared_ptr<IFunc>", "unsigned int funcId", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
 
 
@@ -92,11 +92,13 @@ def createRorgCode(xmlProfileNode):
    for child in xmlProfileNode.findall("rorg"):
       enumValue = cppHelper.toEnumValueName(child.find("title").text)
       className = "C" + child.find("telegram").text + "Telegram"
-      code += "   case " + enumValue + ": return boost::make_shared<" + className + ">(erp1Data);\n"
+      code += "   case " + enumValue + ": return boost::make_shared<" + className + ">();\n"
    code += "   default : throw std::out_of_range(\"Invalid EOrgId\");\n"
    code += "   }\n"
    return code
-rorgsClass.addMethod(cppClass.CppMethod("createRorg", "boost::shared_ptr<IRorg>", "ERorgIds id, const boost::dynamic_bitset<>& erp1Data", cppClass.PUBLIC, cppClass.STATIC, createRorgCode(xmlProfileNode)))
+rorgsClass.addMethod(cppClass.CppMethod("createRorg", "boost::shared_ptr<IRorg>", "ERorgIds id", cppClass.PUBLIC, cppClass.STATIC, createRorgCode(xmlProfileNode)))
+rorgsClass.addMethod(cppClass.CppMethod("createRorg", "boost::shared_ptr<IRorg>", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, \
+   "   return createRorg(static_cast<ERorgIds>(id));"))
 
 
 
@@ -105,12 +107,10 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
    # Rorg telegram cppTypes
    rorgClassName = "C" + xmlRorgNode.find("telegram").text + "Telegram"
-   rorgClass = cppClass.CppClass(rorgClassName, createDefaultCtor=False)
+   rorgClass = cppClass.CppClass(rorgClassName)
    rorgClass.inheritFrom("IRorg", cppClass.PUBLIC)
    cppTypes.append(rorgClass)
    rorgClass.addSubType(cppClass.CppEnumType("EFuncIds", xmlHelper.getEnumValues(inNode=xmlRorgNode, foreachSubNode="func", enumValueNameTag="title", enumValueTag="number"), cppClass.PUBLIC))
-   rorgClass.addMember(cppClass.CppMember("m_erp1Data", "boost::dynamic_bitset<>&", cppClass.PRIVATE, cppClass.CONST))
-   rorgClass.addConstructor(cppClass.CppClassConstructor(args="const boost::dynamic_bitset<>& erp1Data", init="m_erp1Data(erp1Data)"))
    rorgClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   return " + xmlRorgNode.find("number").text + ";"))
    rorgClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, \
       "   static const std::string title(\"" + xmlRorgNode.find("title").text + "\");\n" \
@@ -118,11 +118,11 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
    rorgClass.addMethod(cppClass.CppMethod("fullname", "const std::string&", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, \
       "   static const std::string fullname(\"" + xmlRorgNode.find("fullname").text + "\");\n" \
       "   return fullname;"))
-   rorgClass.addMethod(cppClass.CppMethod("dump", "std::string", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, \
+   rorgClass.addMethod(cppClass.CppMethod("dump", "std::string", "const boost::dynamic_bitset<>& erp1Data", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, \
       "   std::stringstream ss;\n" \
       "   ss << std::setfill('0') << std::setw(2) << std::hex;\n" \
-      "   for (size_t bit = 0; bit < m_erp1Data.count(); ++bit)\n" \
-      "      ss << m_erp1Data[bit] << \" \";\n" \
+      "   for (size_t bit = 0; bit < erp1Data.count(); ++bit)\n" \
+      "      ss << erp1Data[bit] << \" \";\n" \
       "   return ss.str();")) # TODO dumper en bytes
 
    def isTeachInCode(xmlRorgNode):
@@ -136,9 +136,9 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
          if lrnBitDatafieldNode.find("bitsize").text != "1":
             util.error(xmlRorgNode.find("telegram").text + " telegram : teachin LRN Bit wrong size, expected 1")
          teachInValue = xmlHelper.findInDatafield(datafieldXmlNode=lrnBitDatafieldNode, select="value", where="description", equals="Teach-in telegram")
-         return "   return m_erp1Data[" + offset + "] == " + teachInValue + ";\n"
+         return "   return erp1Data[" + offset + "] == " + teachInValue + ";\n"
       return "   return false;"
-   rorgClass.addMethod(cppClass.CppMethod("isTeachIn", "bool", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, isTeachInCode(xmlRorgNode)))
+   rorgClass.addMethod(cppClass.CppMethod("isTeachIn", "bool", "const boost::dynamic_bitset<>& erp1Data", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, isTeachInCode(xmlRorgNode)))
 
    def isEepProvidedCode(xmlRorgNode):
       if xmlRorgNode.find("teachin") is None:
@@ -156,8 +156,8 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
       if lrnTypeDatafieldNode.find("bitsize").text != "1":
          util.error(xmlRorgNode.find("telegram").text + " telegram : teachin LRN Type wrong size, expected 1")
       eepProvidedValue = xmlHelper.findInDatafield(datafieldXmlNode=lrnTypeDatafieldNode, select="value", where="description", equals="telegram with EEP number and Manufacturer ID")
-      return "   return m_erp1Data[" + offset + "] == " + eepProvidedValue + ";\n"
-   rorgClass.addMethod(cppClass.CppMethod("isEepProvided", "bool", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, isEepProvidedCode(xmlRorgNode)))
+      return "   return erp1Data[" + offset + "] == " + eepProvidedValue + ";\n"
+   rorgClass.addMethod(cppClass.CppMethod("isEepProvided", "bool", "const boost::dynamic_bitset<>& erp1Data", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, isEepProvidedCode(xmlRorgNode)))
 
    def createFuncCode(xmlRorgNode):
       code = "   switch(static_cast<EFuncIds>(funcId))\n"
@@ -206,20 +206,19 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
          for xmlTypeNode in xmlFuncNode.findall("type"):
             enumValue = cppHelper.toEnumValueName(xmlTypeNode.find("number").text)
             className = "C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("title").text) + "_" + xmlTypeNode.find("number").text
-            code += "   case " + enumValue + ": return boost::make_shared<" + className + ">(data);\n"
+            code += "   case " + enumValue + ": return boost::make_shared<" + className + ">();\n"
          code += "   default : throw std::out_of_range(\"Invalid EFuncIds\");\n"
          code += "   }\n"
          return code
-      funcClass.addMethod(cppClass.CppMethod("createType", "boost::shared_ptr<IType>", "unsigned int typeId, const boost::dynamic_bitset<>& data", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, createTypeCode(xmlRorgNode, xmlFuncNode)))
+      funcClass.addMethod(cppClass.CppMethod("createType", "boost::shared_ptr<IType>", "unsigned int typeId", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, createTypeCode(xmlRorgNode, xmlFuncNode)))
 
 
 
       # Type cppTypes
       for xmlTypeNode in xmlFuncNode.findall("type"):
          typeClassName = "C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("title").text) + "_" + xmlTypeNode.find("number").text
-         typeClass = cppClass.CppClass(typeClassName, createDefaultCtor=False)
+         typeClass = cppClass.CppClass(typeClassName)
          typeClass.inheritFrom("IType", cppClass.PUBLIC)
-         typeClass.addMember(cppClass.CppMember("m_data", "boost::dynamic_bitset<>&", cppClass.PRIVATE, cppClass.CONST, initilizationCode="m_data(data)"))
 
          supportedProfiles.append(xmlRorgNode.find("number").text[2:] + "-" + xmlFuncNode.find("number").text[2:] + "-" + xmlTypeNode.find("number").text[2:])
 
@@ -325,19 +324,18 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
          typeClass.addMember(cppClass.CppMember("m_historizers", "std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >", cppClass.PRIVATE, cppClass.NO_QUALIFER, \
             initilizationCode="m_historizers( { " + ", ".join(historizersCppName) + " } )"))
 
-         typeClass.addMethod(cppClass.CppMethod("historizers", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   return m_historizers;"))
-         typeClass.addConstructor(cppClass.CppClassConstructor(args="const boost::dynamic_bitset<>& data"))
          typeClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, "   return " + xmlTypeNode.find("number").text + ";"))
          typeClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, \
             "   static const std::string title(\"" + xmlTypeNode.find("title").text + "\");\n" \
             "   return title;"))
+         typeClass.addMethod(cppClass.CppMethod("historizers", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   return m_historizers;"))
 
 
          def statesCodeForLinearValue(xmlDataFieldNode, applyCoef = None):
             offset = xmlDataFieldNode.find("bitoffs").text
             size = xmlDataFieldNode.find("bitsize").text
             code = "   {\n"
-            code += "      auto rawValue = bitset_extract(m_data, " + offset + ", " + size + ");\n"
+            code += "      auto rawValue = bitset_extract(data, " + offset + ", " + size + ");\n"
             rangeMin = int(xmlDataFieldNode.find("range/min").text)
             rangeMax = int(xmlDataFieldNode.find("range/max").text)
             scaleMin = float(xmlDataFieldNode.find("scale/min").text)
@@ -346,7 +344,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                scaleMin = scaleMin * float(applyCoef)
                scaleMax = scaleMax * float(applyCoef)
             multiplier = (scaleMax - scaleMin) / (rangeMax - rangeMin);
-            code += "      auto value = " + str(multiplier) + " * ((signed)rawValue - " + str(rangeMin) + ") + " + str(scaleMin) + ";\n"
+            code += "      auto value = " + str(multiplier) + " * (static_cast<signed>(rawValue) - " + str(rangeMin) + ") + " + str(scaleMin) + ";\n"
             keywordName = xmlDataFieldNode.find("shortcut").text + " - " + xmlDataFieldNode.find("data").text
             historizerCppName = "m_" + cppHelper.toCppName(keywordName)
             code += "      " + historizerCppName + "->set(value);\n"
@@ -357,7 +355,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             offset = xmlDataFieldNode.find("bitoffs").text
             keywordName = xmlDataFieldNode.find("shortcut").text + " - " + xmlDataFieldNode.find("data").text
             historizerCppName = "m_" + cppHelper.toCppName(keywordName)
-            return "   " + historizerCppName + "->set(m_data[" + offset + "]);\n"
+            return "   " + historizerCppName + "->set(data[" + offset + "]);\n"
 
          def statesCode(xmlTypeNode):
             if len(xmlTypeNode.findall("case")) != 1:
@@ -388,7 +386,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             code += "   return m_historizers;"
             return code
 
-         typeClass.addMethod(cppClass.CppMethod("states", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, statesCode(xmlTypeNode)))
+         typeClass.addMethod(cppClass.CppMethod("states", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "const boost::dynamic_bitset<>& data", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, statesCode(xmlTypeNode)))
          cppTypes.append(typeClass)
 
 
@@ -427,7 +425,6 @@ with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
    cppSourceFile.write("#include <shared/plugin/yPluginApi/StandardUnits.h>\n")
    cppSourceFile.write("\n")
    cppSourceFile.write("#include \"bitsetHelpers.hpp\"\n")
-   cppSourceFile.write("#include \"commonHelpers.hpp\"\n")
    cppSourceFile.write("\n")
 
    for oneType in cppTypes:
