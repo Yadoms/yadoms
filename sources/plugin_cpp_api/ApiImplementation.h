@@ -41,6 +41,7 @@ namespace plugin_cpp_api
                          const std::string& model,
                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& keywords,
                          const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
+      void removeDevice(const std::string& device) override;
       bool keywordExists(const std::string& device,
                          const std::string& keyword) const override;
       bool keywordExists(const std::string& device,

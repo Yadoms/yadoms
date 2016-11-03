@@ -107,6 +107,10 @@ message ExtraQueryAnswer {
 	required string result = 2;
 }
 
+message RemoveDevice {
+	required string device = 1;
+}
+
 message DeveloperModeRequest{
 }
 
@@ -128,5 +132,6 @@ message msg {
 		DeveloperModeRequest developerModeRequest = 14;
 		DeviceConfigurationSchemaAnswer deviceConfigurationSchemaAnswer = 15;
 		ExtraQueryAnswer extraQueryAnswer = 16;
+		RemoveDevice removeDevice = 17;
 	}
 }

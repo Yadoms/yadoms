@@ -230,6 +230,13 @@ namespace shared
                                        const std::vector<boost::shared_ptr<const historization::IHistorizable> >& keywords = std::vector<boost::shared_ptr<const historization::IHistorizable> >(),
                                        const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
 
+            //-----------------------------------------------------
+            ///\brief Remove device (erase all associated keywords and acquisitions)
+            ///\param    [in]    device            The device name
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual void removeDevice(const std::string& device) = 0;
+
 
             ////----------------------------------------------------------------------------------------------------------------
             ////----------------------------------------------------------------------------------------------------------------

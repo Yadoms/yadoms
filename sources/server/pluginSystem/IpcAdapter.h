@@ -89,6 +89,7 @@ namespace pluginSystem
       void processRecipientFieldExitsRequest(const toYadoms::RecipientFieldExitsRequest& msg);
       void processHistorizeData(const toYadoms::HistorizeData& msg) const;
       void processDeveloperModeRequest(const toYadoms::DeveloperModeRequest& msg);
+      void processRemoveDeviceRequest(const toYadoms::RemoveDevice& msg) const;
 
    private:
       //--------------------------------------------------------------

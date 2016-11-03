@@ -77,6 +77,14 @@ namespace pluginSystem
       declareKeywords(device, keywords);
    }
 
+   void CYPluginApiImplementation::removeDevice(const std::string& device)
+   {
+      if (!deviceExists(device))
+         throw shared::exception::CEmptyResult("Fail to remove device : device doesn't exist.");
+
+      m_deviceManager->removeDevice(getPluginId(), device);
+   }
+
    bool CYPluginApiImplementation::keywordExists(const std::string& device,
                                                  const std::string& keyword) const
    {

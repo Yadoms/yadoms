@@ -206,6 +206,8 @@ namespace pluginSystem
          break;
       case toYadoms::msg::kDeveloperModeRequest: processDeveloperModeRequest(toYadomsProtoBuffer.developermoderequest());
          break;
+      case toYadoms::msg::kRemoveDevice: processRemoveDeviceRequest(toYadomsProtoBuffer.removedevice());
+         break;
       default:
          throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
       }
@@ -330,6 +332,11 @@ namespace pluginSystem
       auto answer = ans.mutable_developermodeanswer();
       answer->set_enabled(m_pluginApi->isDeveloperMode());
       send(ans);
+   }
+
+   void CIpcAdapter::processRemoveDeviceRequest(const toYadoms::RemoveDevice& msg) const
+   {
+      m_pluginApi->removeDevice(msg.device());
    }
 
    void CIpcAdapter::postStopRequest()

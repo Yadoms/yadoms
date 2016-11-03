@@ -479,6 +479,24 @@ namespace plugin_cpp_api
       }
    }
 
+   void CApiImplementation::removeDevice(const std::string& device)
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_removedevice();
+      request->set_device(device);
+
+      shared::CDataContainer details;
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : removeDevice(" << device << ")" << std::endl;
+         throw;
+      }
+   }
+
    bool CApiImplementation::keywordExists(const std::string& device,
                                           const std::string& keyword) const
    {
