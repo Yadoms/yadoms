@@ -58,18 +58,19 @@ namespace dataAccessLayer {
          return m_deviceRequester->getDevices();
       }    
 
-      boost::shared_ptr<database::entities::CDevice> CDeviceManager::updateDeviceConfiguration(int deviceId, const shared::CDataContainer & configuration)
+      void CDeviceManager::updateDeviceConfiguration(int deviceId, const shared::CDataContainer & configuration)
       {
-         boost::shared_ptr<database::entities::CDevice> result = m_deviceRequester->updateDeviceConfiguration(deviceId, configuration);
+         m_deviceRequester->updateDeviceConfiguration(deviceId, configuration);
+
+         boost::shared_ptr<database::entities::CDevice> result = m_deviceRequester->getDevice(deviceId);
 
          //post notification
          notification::CHelpers::postChangeNotification(result, notification::change::EChangeType::kUpdate);
-         return result;
       }
 
       void CDeviceManager::updateDeviceFriendlyName(int deviceId, const std::string & newFriendlyName)
       {
-         return m_deviceRequester->updateDeviceFriendlyName(deviceId, newFriendlyName);
+         m_deviceRequester->updateDeviceFriendlyName(deviceId, newFriendlyName);
       }    
 
       

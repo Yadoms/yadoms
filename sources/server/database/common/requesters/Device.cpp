@@ -161,7 +161,7 @@ namespace database {  namespace common { namespace requesters {
       return deviceCreated;
    }
 
-   boost::shared_ptr<entities::CDevice> CDevice::updateDeviceConfiguration(int deviceId, const shared::CDataContainer & configuration)
+   void CDevice::updateDeviceConfiguration(int deviceId, const shared::CDataContainer & configuration)
    {
       if (!deviceExists(deviceId))
          throw shared::exception::CEmptyResult("The device do not exists");

@@ -44,7 +44,8 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchcapacitytype")("*")("*"), CDevice::getDeviceWithCapacityType);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*")("*"), CDevice::getDeviceKeywordsForCapacity);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CDevice::updateDeviceFriendlyName, CDevice::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("friendlyname"), CDevice::updateDeviceFriendlyName, CDevice::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("configuration"), CDevice::updateDeviceConfiguration, CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*"), CDevice::updateKeywordFriendlyName, CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keyword")("*")("command"), CDevice::sendKeywordCommand, CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("command"), CDevice::sendDeviceCommand, CDevice::transactionalMethod);
@@ -457,6 +458,43 @@ namespace web
                return CResult::GenerateError("unknown exception in updating device friendly name");
             }
          }
+
+
+         shared::CDataContainer CDevice::updateDeviceConfiguration(const std::vector<std::string>& parameters,
+            const std::string& requestContent) const
+         {
+            try
+            {
+               if (parameters.size() >= 1)
+               {
+                  //get device id from URL
+                  auto deviceId = boost::lexical_cast<int>(parameters[1]);
+
+                  database::entities::CDevice deviceToUpdate;
+                  deviceToUpdate.fillFromSerializedString(requestContent);
+                  if (deviceToUpdate.Configuration.isDefined())
+                  {
+                     //update data in base
+                     m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(deviceId, deviceToUpdate.Configuration());
+
+                     //return the device info
+                     auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId); 
+                     return CResult::GenerateSuccess(deviceFound);
+                  }
+                  return CResult::GenerateError("invalid request content. could not retreive device configuration");
+               }
+               return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in updating device configuration");
+            }
+         }
+
 
          shared::CDataContainer CDevice::updateKeywordFriendlyName(const std::vector<std::string>& parameters,
                                                                    const std::string& requestContent) const

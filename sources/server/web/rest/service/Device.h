@@ -112,6 +112,12 @@ namespace web
                                                             const std::string& requestContent) const;
 
             //-----------------------------------------
+            ///\brief   update a device configuration
+            //-----------------------------------------
+            shared::CDataContainer updateDeviceConfiguration(const std::vector<std::string>& parameters,
+                                                             const std::string& requestContent) const;
+
+            //-----------------------------------------
             ///\brief   update a keyword friendly name
             //-----------------------------------------
             shared::CDataContainer updateKeywordFriendlyName(const std::vector<std::string>& parameters,
