@@ -11,35 +11,17 @@ CIPX800Configuration::~CIPX800Configuration()
 
 void CIPX800Configuration::initializeWith(const shared::CDataContainer& data)
 {
-   // Enum type, declare keys labels
-   //static const shared::CDataContainer::EnumValuesNames EEnumTypeNames = boost::assign::map_list_of
-   //("X8R", kX8R);
-
    m_data.initializeWith(data);
+
+   data.printToLog();
+
    /*
    try {
-
-      //Analyze if extensions are present
-      auto result = m_data.get<std::vector<shared::CDataContainer> >("extensions");
-      std::vector<shared::CDataContainer>::iterator equipmentIterator;
-
-      for (equipmentIterator = result.begin(); equipmentIterator != result.end(); ++equipmentIterator)
-      {
-         switch (equipmentIterator->getEnumValue<EExtension>("content.equipment", EEnumTypeNames))
-         {
-            case kX8R:
-               m_relayQty =+8;
-               break;
-            default:
-               break;
-         }
-
-         std::cout << "equipment: " << equipmentIterator->get<std::string>("content.equipment") << " added" << std::endl;
-      }
+      std::cout << "slot1:" << data.get<std::string>("translation.position.Slot1") << std::endl;
    }
    catch (...)
    {
-      std::cerr << "erreur" << std::endl;
+      std::cout << "erreur catching creation" << std::endl;
    }*/
 }
 

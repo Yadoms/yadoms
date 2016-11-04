@@ -19,6 +19,6 @@ public:
    /// \param[in]  url                 the url to send the request
    /// \return     the answer of the request
    //--------------------------------------------------------------
-   static bool sendCommand(Poco::Net::IPAddress IPAddress, shared::CDataContainer parameters);
+   static shared::CDataContainer sendCommand(Poco::Net::IPAddress IPAddress, shared::CDataContainer parameters);
 
 };

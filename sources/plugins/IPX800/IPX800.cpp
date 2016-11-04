@@ -100,9 +100,11 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          // Yadoms ask for a binding query 
          auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
          if (data->getData().getQuery() == "X8R")
-         {
             data->sendSuccess(m_factory->bindSlotsX8R());
-         }
+         else if (data->getData().getQuery() == "X8D")
+            data->sendSuccess(m_factory->bindSlotsX8D());
+         else if (data->getData().getQuery() == "X24D")
+            data->sendSuccess(m_factory->bindSlotsX24D());
          else
          {
             std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();

@@ -4,6 +4,7 @@
 #include <shared/event/EventHandler.hpp>
 #include <Poco/Net/NetworkInterface.h>
 #include "specificHistorizers/Analog.h"
+#include "specificHistorizers/inputOutput.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -33,9 +34,11 @@ public:
    /// \param[in]  IOlist           Set a new list of IOs
    //--------------------------------------------------------------
    void Initialize(boost::shared_ptr<yApi::IYPluginApi> api, 
-                   std::map<std::string, boost::shared_ptr<yApi::historization::CSwitch> > IOlist,
-                   std::map<std::string, boost::shared_ptr<specificHistorizers::CAnalog> > virtualAnalogList,
-                   std::map<std::string, boost::shared_ptr<yApi::historization::CCounter> > counterList);
+                   std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> > RelayList,
+                   std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> > DIList,
+                   std::vector<boost::shared_ptr<specificHistorizers::CAnalog> > analogList,
+                   std::vector<boost::shared_ptr<yApi::historization::CCounter> > counterList
+                   );
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -87,17 +90,22 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywordsToDeclare;
 
    //--------------------------------------------------------------
-   /// \brief	Map of all IOs identify by the name
+   /// \brief	Map of all Relays
    //--------------------------------------------------------------
-   std::map<std::string, boost::shared_ptr<yApi::historization::CSwitch> > m_mapDigitalInputOuput;
+   std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> > m_RelayList;
+
+   //--------------------------------------------------------------
+   /// \brief	Map of all DI
+   //--------------------------------------------------------------
+   std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> > m_DIList;
 
    //--------------------------------------------------------------
    /// \brief	Map of all virtual analog input
    //--------------------------------------------------------------
-   std::map<std::string, boost::shared_ptr<specificHistorizers::CAnalog> > m_mapVirtualAnalogInput;
+   std::vector<boost::shared_ptr<specificHistorizers::CAnalog> > m_analogList;
 
    //--------------------------------------------------------------
    /// \brief	Map of all counters
    //--------------------------------------------------------------
-   std::map<std::string, boost::shared_ptr<yApi::historization::CCounter> > m_mapCounters;
+   std::vector<boost::shared_ptr<yApi::historization::CCounter> > m_countersList;
 };

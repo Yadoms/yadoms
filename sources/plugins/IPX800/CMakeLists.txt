@@ -19,18 +19,20 @@ set(IPX800_PLUGIN_SOURCES
 	stdafx.h
 	urlManager.cpp
 	urlManager.h
-	devices/IDevice.h
-	devices/X24DDevice.cpp
-	devices/X24DDevice.h	
-	devices/X8DDevice.cpp
-	devices/X8DDevice.h	
-	devices/X8RDevice.cpp
-	devices/X8RDevice.h
+	extensions/IDevice.h
+	extensions/X24DDevice.cpp
+	extensions/X24DDevice.h	
+	extensions/X8DDevice.cpp
+	extensions/X8DDevice.h	
+	extensions/X8RDevice.cpp
+	extensions/X8RDevice.h
 	specificHistorizers/Analog.cpp
 	specificHistorizers/Analog.h
+	specificHistorizers/inputOutput.cpp
+	specificHistorizers/inputOutput.h
 	)
 
-source_group(devices devices/*.*)
+source_group(extensions extensions/*.*)
 source_group(specificHistorizers specificHistorizers/*.*)
 	
 #########################################

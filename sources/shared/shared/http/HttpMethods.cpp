@@ -37,6 +37,7 @@ namespace shared
 
          Poco::Net::HTTPResponse response;
          auto& rs = session.receiveResponse(response);
+
          if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK)
          {
             if (boost::icontains(response.getContentType(), "application/json"))
@@ -59,14 +60,16 @@ namespace shared
          else
          {
             auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
-            YADOMS_LOG(error) << message;
+            //YADOMS_LOG(error) << message;
+            std::cerr << message << std::endl;
             throw exception::CException(message);
          }
       }
       catch (Poco::Exception& e) 
       {
          auto message = (boost::format("Fail to send get http request \"%1%\" : %2%") % url % e.message()).str();
-         YADOMS_LOG(error) << message;
+         //YADOMS_LOG(error) << message;
+         std::cerr << message << std::endl;
          throw exception::CException(message);
       }
       return CDataContainer();

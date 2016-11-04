@@ -8,7 +8,7 @@ namespace yApi = shared::plugin::yPluginApi;
 
 #define X24D_DI_QTY 24
 
-namespace devices
+namespace extensions
 {
    //-----------------------------------------------------
    ///\brief X24-D Extension
@@ -21,7 +21,13 @@ namespace devices
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
       CX24DDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                 const std::string& device);
+                 const std::string& device,
+                  const int& position);
+
+      // IDevice implementation
+      std::string getDeviceName() const override;
+      int getSlot() const override;
+      // [END] IDevice implementation
 
       //-----------------------------------------------------
       ///\brief                     Destructor
@@ -30,5 +36,15 @@ namespace devices
 
    private:
 
+      //-----------------------------------------------------
+      ///\brief                     The device name
+      //-----------------------------------------------------
+      std::string m_deviceName;
+
+      //-----------------------------------------------------
+      ///\brief                     The device name
+      //-----------------------------------------------------
+      int m_slotNumber;
+
    };
-} // namespace devices
+} // namespace extensions

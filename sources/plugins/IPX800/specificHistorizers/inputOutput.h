@@ -1,5 +1,5 @@
 #pragma once
-
+#include <shared/Export.h>
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 #include <shared/plugin/yPluginApi/KeywordAccessMode.h>
 
@@ -7,28 +7,33 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 namespace specificHistorizers
-{
+{   
    //-----------------------------------------------------
-   ///\brief A remote pc code historizable object
+   ///\brief A inputOutput historizable object
    //-----------------------------------------------------
-   class CAnalog : public yApi::historization::CSingleHistorizableData<unsigned int>
+   class CInputOuput : public yApi::historization::CSingleHistorizableData<bool>
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
+      ///\param[in] hardwareName    IPX800 hardware name
+      ///\param[in] accessMode      The access mode
       //-----------------------------------------------------
-      CAnalog(const std::string& keywordName,
-              const std::string& hardwareName,
-              const yApi::EKeywordAccessMode& accessMode = yApi::EKeywordAccessMode::kGet,
-              const yApi::historization::EMeasureType& measureType = yApi::historization::EMeasureType::kAbsolute,
-              yApi::historization::typeInfo::ITypeInfo& additionalInfo = yApi::historization::typeInfo::CEmptyTypeInfo::Empty);
+      CInputOuput(const std::string& keywordName,
+                  const std::string& hardwareName,
+                  const yApi::EKeywordAccessMode& accessMode = yApi::EKeywordAccessMode::kGetSet);
+
+      std::string getHardwareName();
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CAnalog();
+      virtual ~CInputOuput();
 
    private:
+      std::string m_hardwareName;
    };
-} // namespace specificHistorizer
+
+} // namespace specificHistorizers
+

@@ -6,6 +6,7 @@ namespace specificHistorizers
 {
 
    CAnalog::CAnalog(const std::string& keywordName,
+                    const std::string& hardwareName,
                    const yApi::EKeywordAccessMode& accessMode,
                    const yApi::historization::EMeasureType& measureType,
                    yApi::historization::typeInfo::ITypeInfo& additionalInfo)

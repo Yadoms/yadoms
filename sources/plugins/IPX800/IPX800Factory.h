@@ -3,11 +3,10 @@
 #include <shared/event/EventHandler.hpp>
 #include "IIPX800Configuration.h"
 #include "IOManager.h"
-//#include <Poco/Net/SocketAddress.h>
-//#include <Poco/Net/NetworkInterface.h>
 #include "specificHistorizers/Analog.h"
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
-#include "devices/IDevice.h"
+#include "specificHistorizers/inputOutput.h"
+//#include "extensions/IDevice.h"
 
 #define IPX800_RELAY_QTY 8
 #define IPX800_DI_QTY    8
@@ -59,11 +58,21 @@ public:
    shared::CDataContainer bindSlotsX8R();
 
    //--------------------------------------------------------------
+   /// \brief	    bindSlotsX8D
+   //--------------------------------------------------------------
+   shared::CDataContainer bindSlotsX8D();
+
+   //--------------------------------------------------------------
+   /// \brief	    bindSlotsX24D
+   //--------------------------------------------------------------
+   shared::CDataContainer bindSlotsX24D();
+
+   //--------------------------------------------------------------
    /// \brief	    createDeviceManually
    /// \param[in] api                  yPluginApi API
    //--------------------------------------------------------------
    std::string createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api, 
-                                    const yApi::IManuallyDeviceCreationData& data) const;
+                                    const yApi::IManuallyDeviceCreationData& data);
 
    //--------------------------------------------------------------
    /// \brief	    getIOManager
@@ -72,46 +81,48 @@ public:
    boost::shared_ptr<CIOManager> getIOManager(void);
 
 private:
-   //--------------------------------------------------------------
-   /// \brief	    createX8RDevice
-   /// \param[in] api                  yPluginApi API
-   //--------------------------------------------------------------
-   void createX8RDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                        const std::string& device);
 
    //--------------------------------------------------------------
-   /// \brief	    createX8DDevice
-   /// \param[in] api                  yPluginApi API
+   /// \brief	Map of all relays
    //--------------------------------------------------------------
-   void createX8DDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                        const std::string& device);
+   std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> > m_relaysList;
 
    //--------------------------------------------------------------
-   /// \brief	    createX24DDevice
-   /// \param[in] api                  yPluginApi API
+   /// \brief	Map of all Digital input
    //--------------------------------------------------------------
-   void createX24DDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                         const std::string& device);
+   std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> > m_DIList;
 
    //--------------------------------------------------------------
-   /// \brief	Map of all IOs identify by the name (Relays, virtual inputs, virtuals outputs)
+   /// \brief	Map of all Analog input
    //--------------------------------------------------------------
-   std::map<std::string, boost::shared_ptr<yApi::historization::CSwitch> > m_mapDigitalInputOuput;
-
-   //--------------------------------------------------------------
-   /// \brief	Map of all virtual analog input
-   //--------------------------------------------------------------
-   std::map<std::string, boost::shared_ptr<specificHistorizers::CAnalog> > m_mapVirtualAnalogInput;
+   std::vector<boost::shared_ptr<specificHistorizers::CAnalog> > m_analogList;
 
    //--------------------------------------------------------------
    /// \brief	Map of all counters
    //--------------------------------------------------------------
-   std::map<std::string, boost::shared_ptr<yApi::historization::CCounter> > m_mapCounters;
+   std::vector<boost::shared_ptr<yApi::historization::CCounter> > m_countersList;
 
    //--------------------------------------------------------------
    /// \brief	Manager for all IOs
    //--------------------------------------------------------------
    boost::shared_ptr<CIOManager> m_ioManager;
 
-   std::vector<boost::shared_ptr<devices::IDevice> > m_devicesList;
+   //--------------------------------------------------------------
+   /// \brief	X8R Slots used
+   //--------------------------------------------------------------
+   bool X8RSlotused[6];
+
+   //--------------------------------------------------------------
+   /// \brief	X8D Slots used
+   //--------------------------------------------------------------
+   bool X8DSlotused[6];
+
+   //--------------------------------------------------------------
+   /// \brief	X24D Slots used
+   //--------------------------------------------------------------
+   bool X24DSlotused[2];
+   //--------------------------------------------------------------
+   /// \brief	All extensions
+   //--------------------------------------------------------------
+   //std::vector<boost::shared_ptr<devices::IDevice> > m_devicesList;
 };
