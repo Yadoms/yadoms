@@ -73,7 +73,7 @@ namespace pluginSystem
 
    void CYPluginApiImplementation::declareDevice(const std::string& device,
                                                  const std::string& model,
-                                                 const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& keywords,
+                                                 const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords,
                                                  const shared::CDataContainer& details)
    {
       if (!deviceExists(device))
@@ -117,10 +117,20 @@ namespace pluginSystem
                                            details);
    }
 
-   void CYPluginApiImplementation::declareKeywords(const std::string& device,
-                                                   const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& keywords) const
+   void CYPluginApiImplementation::removeKeyword(const std::string& device,
+                                                 const std::string& keyword)
    {
-      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> > keywordsToDeclare;
+      if (!keywordExists(device, keyword))
+         throw shared::exception::CEmptyResult((boost::format("Fail to remove %1% keyword : keyword doesn't exists") % keyword).str());
+
+      m_keywordDataAccessLayer->removeKeyword(getPluginId(),
+                                              device);
+   }
+
+   void CYPluginApiImplementation::declareKeywords(const std::string& device,
+                                                   const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords) const
+   {
+      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> keywordsToDeclare;
 
       for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
          if (!keywordExists(device, *keyword))
@@ -186,7 +196,7 @@ namespace pluginSystem
    }
 
    void CYPluginApiImplementation::historizeData(const std::string& device,
-                                                 const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& dataVect)
+                                                 const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& dataVect)
    {
       try
       {

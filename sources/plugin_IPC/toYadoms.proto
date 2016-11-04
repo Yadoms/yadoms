@@ -117,6 +117,11 @@ message DeveloperModeRequest{
 message AllDevicesRequest {
 }
 
+message RemoveKeyword {
+	required string device = 1;
+	required string keyword = 2;
+}
+
 message msg {
 	oneof OneOf {
 		SetPluginState pluginState = 1;
@@ -137,5 +142,6 @@ message msg {
 		ExtraQueryAnswer extraQueryAnswer = 16;
 		RemoveDevice removeDevice = 17;
 		AllDevicesRequest allDevicesRequest = 18;
+		RemoveKeyword removeKeyword = 19;
 	}
 }

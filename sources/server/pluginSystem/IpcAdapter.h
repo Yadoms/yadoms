@@ -91,6 +91,7 @@ namespace pluginSystem
       void processHistorizeData(const toYadoms::HistorizeData& msg) const;
       void processDeveloperModeRequest(const toYadoms::DeveloperModeRequest& msg);
       void processRemoveDeviceRequest(const toYadoms::RemoveDevice& msg) const;
+      void processRemoveKeywordRequest(const toYadoms::RemoveKeyword& msg) const;
 
    private:
       //--------------------------------------------------------------

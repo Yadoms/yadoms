@@ -476,7 +476,7 @@ namespace plugin_cpp_api
 
    void CApiImplementation::declareDevice(const std::string& device,
                                           const std::string& model,
-                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& keywords,
+                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords,
                                           const shared::CDataContainer& details)
    {
       toYadoms::msg req;
@@ -511,7 +511,6 @@ namespace plugin_cpp_api
       auto request = req.mutable_removedevice();
       request->set_device(device);
 
-      shared::CDataContainer details;
       try
       {
          send(req);
@@ -580,8 +579,23 @@ namespace plugin_cpp_api
       }
    }
 
-   void CApiImplementation::removeKeyword(const std::string& device, const std::string& keyword)
+   void CApiImplementation::removeKeyword(const std::string& device,
+                                          const std::string& keyword)
    {
+      toYadoms::msg req;
+      auto request = req.mutable_removekeyword();
+      request->set_device(device);
+      request->set_keyword(keyword);
+
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : removeKeyword(" << keyword << ")" << std::endl;
+         throw;
+      }
    }
 
    void CApiImplementation::fillHistorizable(boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> in,
@@ -713,7 +727,7 @@ namespace plugin_cpp_api
    }
 
    void CApiImplementation::historizeData(const std::string& device,
-                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& dataVect)
+                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& dataVect)
    {
       toYadoms::msg msg;
       auto message = msg.mutable_historizedata();

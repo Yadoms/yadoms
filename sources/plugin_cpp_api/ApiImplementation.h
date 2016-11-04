@@ -51,7 +51,7 @@ namespace plugin_cpp_api
                           boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
                           const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
       void removeKeyword(const std::string& device,
-                         const std::string& keyword);
+                         const std::string& keyword) override;
       std::string getRecipientValue(int recipientId,
                                     const std::string& fieldName) const override;
       std::vector<int> findRecipientsFromField(const std::string& fieldName,
