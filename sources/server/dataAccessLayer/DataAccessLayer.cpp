@@ -9,7 +9,9 @@
 namespace dataAccessLayer
 {
    CDataAccessLayer::CDataAccessLayer(boost::shared_ptr<database::IDataProvider> dataProvider)
-      : m_deviceManager(boost::make_shared<CDeviceManager>(dataProvider->getDeviceRequester())),
+      : m_deviceManager(boost::make_shared<CDeviceManager>(dataProvider->getDeviceRequester(),
+                                                           dataProvider->getKeywordRequester(),
+                                                           dataProvider->getAcquisitionRequester())),
         m_keywordManager(boost::make_shared<CKeywordManager>(dataProvider)),
         m_acquisitionHistorizer(boost::make_shared<CAcquisitionHistorizer>(dataProvider)),
         m_configurationManager(boost::make_shared<CConfigurationManager>(dataProvider->getConfigurationRequester())),

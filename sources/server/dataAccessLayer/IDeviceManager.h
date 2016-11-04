@@ -121,6 +121,12 @@ namespace dataAccessLayer
       virtual void removeAllDeviceForPlugin(int pluginId) = 0;
 
       //--------------------------------------------------------------
+      /// \brief                 Cleanup a device (erase all related acquisitions)
+      /// \param [in] deviceId   The devide ID to cleanup
+      //--------------------------------------------------------------
+      virtual void cleanupDevice(int deviceId) = 0;
+
+      //--------------------------------------------------------------
       /// \brief       Destructor
       //--------------------------------------------------------------
       virtual ~IDeviceManager()

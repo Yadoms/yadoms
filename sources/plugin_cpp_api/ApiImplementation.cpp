@@ -580,6 +580,10 @@ namespace plugin_cpp_api
       }
    }
 
+   void CApiImplementation::removeKeyword(const std::string& device, const std::string& keyword)
+   {
+   }
+
    void CApiImplementation::fillHistorizable(boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> in,
                                              toYadoms::Historizable* out)
    {

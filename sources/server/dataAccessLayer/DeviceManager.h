@@ -1,6 +1,8 @@
 #pragma once
 #include "IDeviceManager.h"
 #include "database/IDeviceRequester.h"
+#include "database/IKeywordRequester.h"
+#include "database/IAcquisitionRequester.h"
 
 namespace dataAccessLayer
 {
@@ -10,8 +12,12 @@ namespace dataAccessLayer
       //--------------------------------------------------------------
       /// \brief                          Constructor
       /// \param [in] deviceRequester     The device requester
+      /// \param [in] keywordRequester    The keyword requester
+      /// \param [in] acquisitionRequester The acquisition requester
       //--------------------------------------------------------------
-      explicit CDeviceManager(boost::shared_ptr<database::IDeviceRequester> deviceRequester);
+      CDeviceManager(boost::shared_ptr<database::IDeviceRequester> deviceRequester,
+                     boost::shared_ptr<database::IKeywordRequester> keywordRequester,
+                     boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester);
 
       //--------------------------------------------------------------
       /// \brief       Destructor
@@ -42,6 +48,7 @@ namespace dataAccessLayer
       void removeDevice(int pluginId,
                         const std::string& deviceName) override;
       void removeAllDeviceForPlugin(int pluginId) override;
+      void cleanupDevice(int deviceId) override;
       // [END] IDeviceManager Implementation
 
    protected:
@@ -49,6 +56,8 @@ namespace dataAccessLayer
       /// \brief           The real data requester
       //--------------------------------------------------------------
       boost::shared_ptr<database::IDeviceRequester> m_deviceRequester;
+      boost::shared_ptr<database::IKeywordRequester> m_keywordRequester;
+      boost::shared_ptr<database::IAcquisitionRequester> m_acquisitionRequester;
    };
 } //namespace dataAccessLayer 
 

@@ -237,9 +237,10 @@ namespace shared
                                        const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
 
             //-----------------------------------------------------
-            ///\brief Remove device (erase all associated keywords and acquisitions)
+            ///\brief Remove device (and remove all associated keywords and acquisitions)
             ///\param    [in]    device            The device name
             ///\throw shared::exception::CEmptyResult if device dosen't exist
+            ///\note  This call will not send a kEventDeviceRemoved event
             //-----------------------------------------------------
             virtual void removeDevice(const std::string& device) = 0;
 
@@ -289,6 +290,15 @@ namespace shared
             virtual void declareKeyword(const std::string& device,
                                         boost::shared_ptr<const historization::IHistorizable> keyword,
                                         const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
+
+            //-----------------------------------------------------
+            ///\brief Remove keyword (and remove all associated acquisitions)
+            ///\param    [in]    device             The device name owner of the keyword
+            ///\param    [in]    keyword            The keyword name
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual void removeKeyword(const std::string& device,
+                                       const std::string& keyword) = 0;
 
 
             ////----------------------------------------------------------------------------------------------------------------

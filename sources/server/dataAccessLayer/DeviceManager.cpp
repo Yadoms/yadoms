@@ -1,11 +1,16 @@
 #include "stdafx.h"
 #include "DeviceManager.h"
 #include "notification/Helpers.hpp"
+#include <shared/Log.h>
 
 namespace dataAccessLayer
 {
-   CDeviceManager::CDeviceManager(boost::shared_ptr<database::IDeviceRequester> deviceRequester)
-      : m_deviceRequester(deviceRequester)
+   CDeviceManager::CDeviceManager(boost::shared_ptr<database::IDeviceRequester> deviceRequester,
+                                  boost::shared_ptr<database::IKeywordRequester> keywordRequester,
+                                  boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester)
+      : m_deviceRequester(deviceRequester),
+        m_keywordRequester(keywordRequester),
+        m_acquisitionRequester(acquisitionRequester)
    {
    }
 
@@ -83,26 +88,39 @@ namespace dataAccessLayer
    void CDeviceManager::updateDeviceFriendlyName(int deviceId,
                                                  const std::string& newFriendlyName)
    {
-      return m_deviceRequester->updateDeviceFriendlyName(deviceId,
-                                                         newFriendlyName);
+      m_deviceRequester->updateDeviceFriendlyName(deviceId,
+                                                  newFriendlyName);
    }
 
 
    void CDeviceManager::removeDevice(int deviceId)
    {
-      return m_deviceRequester->removeDevice(deviceId);
+      cleanupDevice(deviceId);
+
+      auto keywords = m_keywordRequester->getKeywords(deviceId);
+      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
+         m_keywordRequester->removeKeyword((*keyword)->Id);
+
+      m_deviceRequester->removeDevice(deviceId);
    }
 
    void CDeviceManager::removeDevice(int pluginId,
                                      const std::string& deviceName)
    {
-      return m_deviceRequester->removeDevice(pluginId,
-                                             deviceName);
+      removeDevice(m_deviceRequester->getDevice(pluginId,
+                                                deviceName)->Id());
    }
 
    void CDeviceManager::removeAllDeviceForPlugin(int pluginId)
    {
       return m_deviceRequester->removeAllDeviceForPlugin(pluginId);
+   }
+
+   void CDeviceManager::cleanupDevice(int deviceId)
+   {
+      auto keywords = m_keywordRequester->getKeywords(deviceId);
+      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
+         m_acquisitionRequester->removeKeywordData((*keyword)->Id);
    }
 } //namespace dataAccessLayer 
 

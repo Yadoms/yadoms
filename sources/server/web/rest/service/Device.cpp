@@ -16,9 +16,11 @@ namespace web
 
          CDevice::CDevice(boost::shared_ptr<database::IDataProvider> dataProvider,
                           boost::shared_ptr<pluginSystem::CManager> pluginManager,
+                          boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                           communication::ISendMessageAsync& messageSender)
             : m_dataProvider(dataProvider),
               m_pluginManager(pluginManager),
+              m_deviceManager(deviceManager),
               m_messageSender(messageSender)
          {
          }
@@ -390,22 +392,14 @@ namespace web
 
                   auto removeDevice = parameters.size() > 2 && parameters[2] == "removeDevice";
 
-                  //cleanup device in db
-                  auto keywords = m_dataProvider->getKeywordRequester()->getKeywords(deviceId);
-                  for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
-                  {
-                     // Cleanup keyword acquisitions
-                     m_dataProvider->getAcquisitionRequester()->removeKeywordData((*keyword)->Id);
-
-                     // Remove keyword if asked
-                     if (removeDevice)
-                        m_dataProvider->getKeywordRequester()->removeKeyword((*keyword)->Id);
-                  }
-
                   if (removeDevice)
                   {
-                     m_pluginManager->removeDevice(deviceId);
-                     m_dataProvider->getDeviceRequester()->removeDevice(deviceId);
+                     m_pluginManager->notifyDeviceRemoved(deviceId);
+                     m_deviceManager->removeDevice(deviceId);
+                  }
+                  else
+                  {
+                     m_deviceManager->cleanupDevice(deviceId);
                   }
 
                   return CResult::GenerateSuccess();
