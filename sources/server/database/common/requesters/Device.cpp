@@ -2,6 +2,7 @@
 #include "Device.h"
 #include <shared/exception/EmptyResult.hpp>
 #include "database/common/adapters/DatabaseAdapters.h"
+#include "database/common/adapters/SingleValueAdapter.hpp"
 #include "database/common/DatabaseTables.h"
 #include "database/common/Query.h"
 
@@ -84,7 +85,7 @@ namespace database
 
          std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDevicesIdFromFriendlyName(const std::string& friendlyName) const
          {
-            CQuery qSelect = m_databaseRequester->newQuery();
+            auto qSelect = m_databaseRequester->newQuery();
             qSelect.Select().
                    From(CDeviceTable::getTableName()).
                    Where(CDeviceTable::getFriendlyNameColumnName(), CQUERY_OP_EQUAL, friendlyName);
@@ -97,7 +98,7 @@ namespace database
          std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDeviceWithCapacity(const std::string& capacityName,
                                                                                           const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode) const
          {
-            CQuery subQuery = m_databaseRequester->newQuery();
+            auto subQuery = m_databaseRequester->newQuery();
             subQuery.Select(CKeywordTable::getDeviceIdColumnName()).
                     From(CKeywordTable::getTableName()).
                     Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, capacityName);
@@ -108,7 +109,7 @@ namespace database
                subQuery.And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, accessMode);
             }
 
-            CQuery qSelect = m_databaseRequester->newQuery();
+            auto qSelect = m_databaseRequester->newQuery();
             qSelect.Select().
                    From(CDeviceTable::getTableName()).
                    Where(CDeviceTable::getIdColumnName(), CQUERY_OP_IN, subQuery);
@@ -121,7 +122,7 @@ namespace database
          std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode,
                                                                                               const shared::plugin::yPluginApi::EKeywordDataType& capacityType) const
          {
-            CQuery subQuery = m_databaseRequester->newQuery();
+            auto subQuery = m_databaseRequester->newQuery();
             subQuery.Select(CKeywordTable::getDeviceIdColumnName()).
                     From(CKeywordTable::getTableName()).
                     Where(CKeywordTable::getTypeColumnName(), CQUERY_OP_EQUAL, capacityType);
@@ -132,7 +133,7 @@ namespace database
                subQuery.And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, capacityAccessMode);
             }
 
-            CQuery qSelect = m_databaseRequester->newQuery();
+            auto qSelect = m_databaseRequester->newQuery();
             qSelect.Select().
                    From(CDeviceTable::getTableName()).
                    Where(CDeviceTable::getIdColumnName(), CQUERY_OP_IN, subQuery);
@@ -155,12 +156,12 @@ namespace database
             //device not found, creation is enabled
 
             //get a good name
-            std::string realFriendlyName = friendlyName;
+            auto realFriendlyName = friendlyName;
             if (realFriendlyName == shared::CStringExtension::EmptyString)
                realFriendlyName = name;
 
             //insert in db
-            CQuery qInsert = m_databaseRequester->newQuery();
+            auto qInsert = m_databaseRequester->newQuery();
             qInsert.InsertInto(CDeviceTable::getTableName(),
                                CDeviceTable::getPluginIdColumnName(),
                                CDeviceTable::getNameColumnName(),
@@ -207,11 +208,23 @@ namespace database
 
          std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDevices() const
          {
-            CQuery qSelect = m_databaseRequester->newQuery();
+            auto qSelect = m_databaseRequester->newQuery();
             qSelect.Select().
                    From(CDeviceTable::getTableName());
 
             adapters::CDeviceAdapter adapter;
+            m_databaseRequester->queryEntities(&adapter, qSelect);
+            return adapter.getResults();
+         }
+
+         std::vector<std::string> CDevice::getDevicesNames(int pluginId) const
+         {
+            auto qSelect = m_databaseRequester->newQuery();
+            qSelect.Select(CDeviceTable::getNameColumnName()).
+               From(CDeviceTable::getTableName()).
+               Where(CDeviceTable::getPluginIdColumnName(), CQUERY_OP_EQUAL, pluginId);
+
+            adapters::CSingleValueAdapter<std::string> adapter;
             m_databaseRequester->queryEntities(&adapter, qSelect);
             return adapter.getResults();
          }

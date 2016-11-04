@@ -114,6 +114,9 @@ message RemoveDevice {
 message DeveloperModeRequest{
 }
 
+message AllDevicesRequest {
+}
+
 message msg {
 	oneof OneOf {
 		SetPluginState pluginState = 1;
@@ -133,5 +136,6 @@ message msg {
 		DeviceConfigurationSchemaAnswer deviceConfigurationSchemaAnswer = 15;
 		ExtraQueryAnswer extraQueryAnswer = 16;
 		RemoveDevice removeDevice = 17;
+		AllDevicesRequest allDevicesRequest = 18;
 	}
 }

@@ -82,6 +82,12 @@ namespace dataAccessLayer
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<database::entities::CDevice>> getDevices() const = 0;
 
+      //--------------------------------------------------------------
+      /// \brief           Get all devices of a plugin instance
+      /// \param [in] pluginId            The pluginId
+      /// \return          All devices of specified plugin instance
+      //--------------------------------------------------------------
+      virtual std::vector<std::string> getDevicesForPluginInstance(int pluginId) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Update a device friendly name

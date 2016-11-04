@@ -208,6 +208,8 @@ namespace pluginSystem
          break;
       case toYadoms::msg::kRemoveDevice: processRemoveDeviceRequest(toYadomsProtoBuffer.removedevice());
          break;
+      case toYadoms::msg::kAllDevicesRequest: processAllDevicesRequest(toYadomsProtoBuffer.alldevicesrequest());
+         break;
       default:
          throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
       }
@@ -261,6 +263,15 @@ namespace pluginSystem
       toPlugin::msg ans;
       auto answer = ans.mutable_devicedetails();
       answer->set_details(m_pluginApi->getDeviceDetails(msg.device()).serialize());
+      send(ans);
+   }
+
+   void CIpcAdapter::processAllDevicesRequest(const toYadoms::AllDevicesRequest& msg)
+   {
+      toPlugin::msg ans;
+      auto answer = ans.mutable_alldevicesanswer();
+      auto devices = m_pluginApi->getAllDevices();
+      std::copy(devices.begin(), devices.end(), RepeatedFieldBackInserter(answer->mutable_devices()));
       send(ans);
    }
 

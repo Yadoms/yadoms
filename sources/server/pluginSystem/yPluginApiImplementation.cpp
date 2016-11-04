@@ -54,6 +54,11 @@ namespace pluginSystem
       return m_deviceManager->getDevice(getPluginId(), device)->Details;
    }
 
+   std::vector<std::string> CYPluginApiImplementation::getAllDevices() const
+   {
+      return m_deviceManager->getDevicesForPluginInstance(getPluginId());
+   }
+
    void CYPluginApiImplementation::declareDevice(const std::string& device,
                                                  const std::string& model,
                                                  boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,

@@ -81,6 +81,7 @@ namespace pluginSystem
       void processGetConfiguration(const toYadoms::ConfigurationRequest& msg);
       void processDeviceExistsRequest(const toYadoms::DeviceExitsRequest& msg);
       void processDeviceDetailsRequest(const toYadoms::DeviceDetailsRequest& msg);
+      void processAllDevicesRequest(const toYadoms::AllDevicesRequest& msg);
       void processKeywordExistsRequest(const toYadoms::KeywordExitsRequest& msg);
       void processDeclareDevice(const toYadoms::DeclareDevice& msg) const;
       void processDeclareKeyword(const toYadoms::DeclareKeyword& msg) const;

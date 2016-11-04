@@ -51,6 +51,7 @@ namespace pluginSystem
 
       bool deviceExists(const std::string& device) const override;
       shared::CDataContainer getDeviceDetails(const std::string& device) const override;
+      std::vector<std::string> getAllDevices() const override;
       void declareDevice(const std::string& device,
                          const std::string& model,
                          boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,

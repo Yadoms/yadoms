@@ -425,6 +425,32 @@ namespace plugin_cpp_api
       return details;
    }
 
+   std::vector<std::string> CApiImplementation::getAllDevices() const
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_alldevicesrequest();
+
+      std::vector<std::string> allDevices;
+      try
+      {
+         send(req,
+              [](const toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_alldevicesanswer();
+              },
+              [&](const toPlugin::msg& ans) -> void
+              {
+                 std::copy(ans.alldevicesanswer().devices().begin(), ans.alldevicesanswer().devices().end(), std::back_inserter(allDevices));
+              });
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : getAllDevices()" << std::endl;
+         throw;
+      }
+      return allDevices;
+   }
+
    void CApiImplementation::declareDevice(const std::string& device,
                                           const std::string& model,
                                           boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,

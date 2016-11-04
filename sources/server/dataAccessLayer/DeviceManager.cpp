@@ -75,6 +75,10 @@ namespace dataAccessLayer
       return m_deviceRequester->getDevices();
    }
 
+   std::vector<std::string> CDeviceManager::getDevicesForPluginInstance(int pluginId) const
+   {
+      return m_deviceRequester->getDevicesNames(pluginId);
+   }
 
    void CDeviceManager::updateDeviceFriendlyName(int deviceId,
                                                  const std::string& newFriendlyName)

@@ -39,6 +39,7 @@ namespace database
                                                               const std::string& model,
                                                               const shared::CDataContainer& details) override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDevices() const override;
+            std::vector<std::string> getDevicesNames(int pluginId) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDevices(int pluginId) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDevicesIdFromFriendlyName(const std::string& friendlyName) const override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithCapacity(const std::string& capacityName,

@@ -205,6 +205,12 @@ namespace shared
             virtual CDataContainer getDeviceDetails(const std::string& device) const = 0;
 
             //-----------------------------------------------------
+            ///\brief Get all devices attached to this plugin instance
+            ///\return the devices list
+            //-----------------------------------------------------
+            virtual std::vector<std::string> getAllDevices() const = 0;
+
+            //-----------------------------------------------------
             ///\brief Declare new device to Yadoms, with its keyword (all-in-one function)
             ///\param    [in]    device            The device name
             ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185")

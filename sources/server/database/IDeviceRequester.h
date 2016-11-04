@@ -100,6 +100,12 @@ namespace database
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<entities::CDevice>> getDevices(int pluginId) const = 0;
 
+      //--------------------------------------------------------------
+      /// \brief           List all devices attached to a plugin instance, return only names
+      /// \param [in] pluginId            The pluginId
+      /// \return          List of devices names attached to a plugin instance
+      //--------------------------------------------------------------
+      virtual std::vector<std::string> getDevicesNames(int pluginId) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Update a device friendly name
