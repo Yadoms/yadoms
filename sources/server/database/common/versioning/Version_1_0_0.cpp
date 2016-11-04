@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Version1.h"
+#include "Version_1_0_0.h"
 #include "database/common/Query.h"
 #include "database/common/DatabaseTables.h"
 #include <shared/versioning/Version.h>
@@ -9,17 +9,17 @@
 namespace database { namespace common { namespace versioning { 
 
 
-   CVersion1::CVersion1()
+   CVersion_1_0_0::CVersion_1_0_0()
       :m_version(1, 0, 0, 0) //modify this version to a greater value, to force update of current version
    {
    }
 
-   CVersion1::~CVersion1()
+   CVersion_1_0_0::~CVersion_1_0_0()
    {
    }
 
    // ISQLiteVersionUpgrade implementation
-   void CVersion1::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester> & pRequester, const shared::versioning::CVersion & currentVersion)
+   void CVersion_1_0_0::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester> & pRequester, const shared::versioning::CVersion & currentVersion)
    {
       auto bNeedToCreateOrUpgrade = false;
 
@@ -66,7 +66,7 @@ namespace database { namespace common { namespace versioning {
    ///\param [in] pRequester : database requester object
    ///\throw      CVersionException if create database failed
    //-----------------------------------
-   void CVersion1::CreateDatabase(const boost::shared_ptr<IDatabaseRequester> & pRequester) const
+   void CVersion_1_0_0::CreateDatabase(const boost::shared_ptr<IDatabaseRequester> & pRequester) const
    {
       try
       {

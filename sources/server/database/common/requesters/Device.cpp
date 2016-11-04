@@ -161,6 +161,23 @@ namespace database {  namespace common { namespace requesters {
       return deviceCreated;
    }
 
+   boost::shared_ptr<entities::CDevice> CDevice::updateDeviceConfiguration(int deviceId, const shared::CDataContainer & configuration)
+   {
+      if (!deviceExists(deviceId))
+         throw shared::exception::CEmptyResult("The device do not exists");
+
+      //device not found, creation is enabled
+
+      //insert in db
+      CQuery qUpdate = m_databaseRequester->newQuery();
+      qUpdate.Update(CDeviceTable::getTableName()).
+         Set(CDeviceTable::getConfigurationColumnName(), configuration.serialize()).
+         Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
+
+      if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+         throw shared::exception::CEmptyResult("Fail to update device configuration");
+   }
+
    void CDevice::updateDeviceFriendlyName(int deviceId, const std::string & newFriendlyName)
    {
       if(!deviceExists(deviceId))

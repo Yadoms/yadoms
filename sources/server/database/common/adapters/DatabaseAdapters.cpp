@@ -70,6 +70,7 @@ namespace database {   namespace common {  namespace adapters {
       ((FriendlyName)(std::string)(""))
       ((Model)(std::string)(""))
       ((Details)(shared::CDataContainer)(shared::CDataContainer()))
+      ((Configuration)(shared::CDataContainer)(shared::CDataContainer()))
    );
 
    DECLARE_ADAPTER_IMPLEMENTATION(Keyword,

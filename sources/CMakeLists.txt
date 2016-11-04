@@ -708,8 +708,10 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/database/common/requesters/Acquisition.h
    server/database/common/requesters/Acquisition.cpp
    server/database/common/versioning/IVersionUpgrade.h
-   server/database/common/versioning/Version1.h
-   server/database/common/versioning/Version1.cpp
+   server/database/common/versioning/Version_1_0_0.h
+   server/database/common/versioning/Version_1_0_0.cpp
+   server/database/common/versioning/Version_1_1_0.h
+   server/database/common/versioning/Version_1_1_0.cpp
    server/database/common/versioning/VersionUpgraderFactory.h
    server/database/common/versioning/VersionUpgraderFactory.cpp
    server/database/common/versioning/VersionException.h

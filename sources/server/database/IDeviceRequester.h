@@ -80,6 +80,14 @@ namespace database {
       //--------------------------------------------------------------
 	  virtual boost::shared_ptr<entities::CDevice> createDevice(int pluginId, const std::string & name, const std::string & friendlyName, const std::string & model, const shared::CDataContainer & details) = 0;
 
+     //--------------------------------------------------------------
+     /// \brief                          Update the device configuration
+     /// \param [in] deviceId            The device id
+     /// \param [in] configuration       The device configuration
+     /// \return                         The device updated (null if update failed)
+     //--------------------------------------------------------------
+     virtual boost::shared_ptr<entities::CDevice> updateDeviceConfiguration(int deviceId, const shared::CDataContainer & configuration) = 0;
+
       //--------------------------------------------------------------
       /// \brief           List all devices
       /// \return          List of registered devices

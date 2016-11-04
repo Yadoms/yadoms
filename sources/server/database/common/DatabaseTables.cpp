@@ -71,7 +71,8 @@ namespace common {
       ((Name)("name"))
       ((FriendlyName)("friendlyName"))
       ((Model)("model"))
-	  ((Details)("details"))
+	   ((Details)("details"))
+      ((Configuration)("configuration"))
    )
 
    DECLARE_TABLE_COLUMN_NAMES(Keyword,  "Keyword",

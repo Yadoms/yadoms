@@ -242,6 +242,14 @@ namespace database { namespace common {
          return *this;
       }
 
+      CQuery & CQuery::AddTableColumn(const database::common::CDatabaseTable & tableName, const std::string & columnDefinition)
+      {
+         ChangeQueryType(kAlter);
+         std::ostringstream ss;
+         ss << " ALTER TABLE " << tableName.GetName() << " ADD COLUMN " << columnDefinition;
+         return Append(ss);
+      }
+
 
       const std::string & CQuery::str() const
       {

@@ -33,6 +33,7 @@ namespace database {  namespace common { namespace requesters {
          virtual std::vector<boost::shared_ptr<entities::CDevice> > getDevicesIdFromFriendlyName(const std::string & friendlyName) const;
          virtual std::vector<boost::shared_ptr<entities::CDevice> > getDeviceWithCapacity(const std::string & capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode & accessMode) const;
          virtual std::vector<boost::shared_ptr<entities::CDevice> > getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode & capacityAccessMode, const shared::plugin::yPluginApi::EKeywordDataType & capacityType) const;
+         virtual boost::shared_ptr<entities::CDevice> updateDeviceConfiguration(int deviceId, const shared::CDataContainer & configuration);
          virtual void updateDeviceFriendlyName(int deviceId, const std::string & newFriendlyName);
          virtual void removeDevice(int deviceId);
          virtual void removeAllDeviceForPlugin(int pluginId);

@@ -84,6 +84,14 @@ namespace dataAccessLayer {
       virtual void updateDeviceFriendlyName(int deviceId, const std::string & newFriendlyName) = 0;
 
       //--------------------------------------------------------------
+      /// \brief                          Update the device configuration
+      /// \param [in] deviceId            The device id
+      /// \param [in] configuration       The device configuration
+      /// \return                         The device updated (null if update failed)
+      //--------------------------------------------------------------
+      virtual boost::shared_ptr<database::entities::CDevice> updateDeviceConfiguration(int deviceId, const shared::CDataContainer & configuration) = 0;
+
+      //--------------------------------------------------------------
       /// \brief           Remove device 
       /// \param [in] deviceId   Device  Id
       /// \throw           shared::exception::CEmptyResult if fails

@@ -121,6 +121,7 @@ namespace database
          ((FriendlyName)(std::string))
          ((Model)(std::string))
          ((Details)(shared::CDataContainer))
+         ((Configuration)(shared::CDataContainer))
       )
 
       DECLARE_ENTITY_CLASS_HEADER(Keyword,
