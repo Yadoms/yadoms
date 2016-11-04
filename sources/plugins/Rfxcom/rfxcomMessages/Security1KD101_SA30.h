@@ -16,17 +16,20 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	                        The RFXCom subtype value
       //--------------------------------------------------------------
-      enum
+      enum SubType
       {
          rfxValueKD101 = sTypeKD101,
-         rfxValueSA30 = sTypeSA30
+         rfxValueSA30 = sTypeSA30,
+         rfxValueRM174RF = sTypeRM174RF
       };
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
+      /// \param[in] subtype              The device subtype
       /// \param[in] model                The device model
       //--------------------------------------------------------------
-      explicit CSecurity1KD101_SA30(const std::string& model);
+      CSecurity1KD101_SA30(SubType subtype,
+                           const std::string& model);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -35,7 +38,7 @@ namespace rfxcomMessages
 
       // ISecurity1Subtype implementation
       std::string getModel() const override;
-      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override;
+      const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords() const override;
       void set(const std::string& keyword, const std::string& yadomsCommand) override;
       void reset() override;
       void setFromProtocolState(unsigned char statusByte) override;
@@ -44,6 +47,11 @@ namespace rfxcomMessages
       // [END] ISecurity1Subtype implementation
 
    private:
+      //--------------------------------------------------------------
+      /// \brief	                        The device subtype
+      //--------------------------------------------------------------
+      const SubType m_subtype;
+
       //--------------------------------------------------------------
       /// \brief	                        The device model
       //--------------------------------------------------------------
@@ -56,8 +64,6 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
    };
 } // namespace rfxcomMessages
-
-

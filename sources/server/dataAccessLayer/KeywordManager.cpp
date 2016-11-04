@@ -54,30 +54,30 @@ namespace dataAccessLayer
       return m_keywordRequester->getKeyword(keywordId);
    }
 
-   std::vector<boost::shared_ptr<database::entities::CKeyword> > CKeywordManager::getKeywordIdFromFriendlyName(int deviceId,
-                                                                                                               const std::string& friendlyName) const
+   std::vector<boost::shared_ptr<database::entities::CKeyword>> CKeywordManager::getKeywordIdFromFriendlyName(int deviceId,
+                                                                                                              const std::string& friendlyName) const
    {
       return m_keywordRequester->getKeywordIdFromFriendlyName(deviceId, friendlyName);
    }
 
-   std::vector<boost::shared_ptr<database::entities::CKeyword> > CKeywordManager::getAllKeywords() const
+   std::vector<boost::shared_ptr<database::entities::CKeyword>> CKeywordManager::getAllKeywords() const
    {
       return m_keywordRequester->getAllKeywords();
    }
 
-   std::vector<boost::shared_ptr<database::entities::CKeyword> > CKeywordManager::getKeywords(int deviceId) const
+   std::vector<boost::shared_ptr<database::entities::CKeyword>> CKeywordManager::getKeywords(int deviceId) const
    {
       return m_keywordRequester->getKeywords(deviceId);
    }
 
-   std::vector<boost::shared_ptr<database::entities::CKeyword> > CKeywordManager::getKeywordsMatchingCapacity(const std::string& capacity) const
+   std::vector<boost::shared_ptr<database::entities::CKeyword>> CKeywordManager::getKeywordsMatchingCapacity(const std::string& capacity) const
    {
       return m_keywordRequester->getKeywordsMatchingCapacity(capacity);
    }
 
-   std::vector<boost::shared_ptr<database::entities::CKeyword> > CKeywordManager::getDeviceKeywordsWithCapacity(int deviceId,
-                                                                                                                const std::string& capacityName,
-                                                                                                                const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const
+   std::vector<boost::shared_ptr<database::entities::CKeyword>> CKeywordManager::getDeviceKeywordsWithCapacity(int deviceId,
+                                                                                                               const std::string& capacityName,
+                                                                                                               const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const
    {
       return m_keywordRequester->getDeviceKeywordsWithCapacity(deviceId,
                                                                capacityName,
@@ -97,7 +97,7 @@ namespace dataAccessLayer
    }
 
    void CKeywordManager::addKeywords(int deviceId,
-                                     const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& keywords)
+                                     const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords)
    {
       auto transactionalEngine = m_dataProvider->getTransactionalEngine();
 
@@ -113,7 +113,7 @@ namespace dataAccessLayer
          if (transactionalEngine)
             transactionalEngine->transactionCommit();
       }
-      catch (std::exception &)
+      catch (std::exception&)
       {
          if (transactionalEngine)
             transactionalEngine->transactionRollback();
@@ -133,24 +133,28 @@ namespace dataAccessLayer
                                 newFriendlyName);
    }
 
-   void CKeywordManager::updateKeywordFriendlyName(int keywordId, const std::string& newFriendlyName)
+   void CKeywordManager::updateKeywordFriendlyName(int keywordId,
+                                                   const std::string& newFriendlyName)
    {
       m_keywordRequester->updateKeywordFriendlyName(keywordId,
                                                     newFriendlyName);
    }
 
-   void CKeywordManager::removeKeyword(int deviceId, const std::string& keyword)
+   void CKeywordManager::removeKeyword(int deviceId,
+                                       const std::string& keyword)
    {
       auto keywordToDelete = getKeyword(deviceId, keyword);
       if (!keywordToDelete)
          throw shared::exception::CEmptyResult("Can not find keyword");
-
+      
+      m_dataProvider->getAcquisitionRequester()->removeKeywordData(keywordToDelete->Id());
       removeKeyword(keywordToDelete->Id());
    }
 
    void CKeywordManager::removeKeyword(int keywordId)
    {
-      m_keywordRequester->removeKeyword(keywordId);
+      auto kw = m_keywordRequester->getKeyword(keywordId);
+      removeKeyword(kw->DeviceId(), kw->Name());
    }
 
    boost::shared_ptr<database::entities::CKeyword> CKeywordManager::makeKeywordEntity(int deviceId,

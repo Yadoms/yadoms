@@ -205,6 +205,12 @@ namespace shared
             virtual CDataContainer getDeviceDetails(const std::string& device) const = 0;
 
             //-----------------------------------------------------
+            ///\brief Get all devices attached to this plugin instance
+            ///\return the devices list
+            //-----------------------------------------------------
+            virtual std::vector<std::string> getAllDevices() const = 0;
+
+            //-----------------------------------------------------
             ///\brief Declare new device to Yadoms, with its keyword (all-in-one function)
             ///\param    [in]    device            The device name
             ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185")
@@ -229,6 +235,14 @@ namespace shared
                                        const std::string& model,
                                        const std::vector<boost::shared_ptr<const historization::IHistorizable> >& keywords = std::vector<boost::shared_ptr<const historization::IHistorizable> >(),
                                        const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
+
+            //-----------------------------------------------------
+            ///\brief Remove device (and remove all associated keywords and acquisitions)
+            ///\param    [in]    device            The device name
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            ///\note  This call will not send a kEventDeviceRemoved event
+            //-----------------------------------------------------
+            virtual void removeDevice(const std::string& device) = 0;
 
 
             ////----------------------------------------------------------------------------------------------------------------
@@ -276,6 +290,15 @@ namespace shared
             virtual void declareKeyword(const std::string& device,
                                         boost::shared_ptr<const historization::IHistorizable> keyword,
                                         const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
+
+            //-----------------------------------------------------
+            ///\brief Remove keyword (and remove all associated acquisitions)
+            ///\param    [in]    device             The device name owner of the keyword
+            ///\param    [in]    keyword            The keyword name
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual void removeKeyword(const std::string& device,
+                                       const std::string& keyword) = 0;
 
 
             ////----------------------------------------------------------------------------------------------------------------

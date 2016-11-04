@@ -6,8 +6,9 @@ namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
-   CLighting5MdRemote::CLighting5MdRemote()
-      : m_keyword(boost::make_shared<yApi::historization::CDimmable>("state"))
+   CLighting5MdRemote::CLighting5MdRemote(const std::string& model)
+      : m_model(model),
+        m_keyword(boost::make_shared<yApi::historization::CDimmable>("state"))
    {
    }
 
@@ -17,7 +18,7 @@ namespace rfxcomMessages
 
    std::string CLighting5MdRemote::getModel() const
    {
-      return "MDREMOTE LED dimmer";
+      return m_model;
    }
 
    boost::shared_ptr<const yApi::historization::IHistorizable> CLighting5MdRemote::keyword() const
@@ -76,5 +77,3 @@ namespace rfxcomMessages
       else cmdByte = 0x04; // 100%
    }
 } // namespace rfxcomMessages
-
-

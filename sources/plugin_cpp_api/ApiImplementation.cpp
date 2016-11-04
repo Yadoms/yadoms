@@ -425,6 +425,32 @@ namespace plugin_cpp_api
       return details;
    }
 
+   std::vector<std::string> CApiImplementation::getAllDevices() const
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_alldevicesrequest();
+
+      std::vector<std::string> allDevices;
+      try
+      {
+         send(req,
+              [](const toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_alldevicesanswer();
+              },
+              [&](const toPlugin::msg& ans) -> void
+              {
+                 std::copy(ans.alldevicesanswer().devices().begin(), ans.alldevicesanswer().devices().end(), std::back_inserter(allDevices));
+              });
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : getAllDevices()" << std::endl;
+         throw;
+      }
+      return allDevices;
+   }
+
    void CApiImplementation::declareDevice(const std::string& device,
                                           const std::string& model,
                                           boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
@@ -450,7 +476,7 @@ namespace plugin_cpp_api
 
    void CApiImplementation::declareDevice(const std::string& device,
                                           const std::string& model,
-                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& keywords,
+                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords,
                                           const shared::CDataContainer& details)
    {
       toYadoms::msg req;
@@ -475,6 +501,23 @@ namespace plugin_cpp_api
                           std::cerr << keyword->getKeyword() << ", ";
                        });
          std::cerr << "}, " << details.serialize() << ")" << std::endl;
+         throw;
+      }
+   }
+
+   void CApiImplementation::removeDevice(const std::string& device)
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_removedevice();
+      request->set_device(device);
+
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : removeDevice(" << device << ")" << std::endl;
          throw;
       }
    }
@@ -532,6 +575,25 @@ namespace plugin_cpp_api
       catch (std::exception&)
       {
          std::cerr << "Call was : declareKeyword(" << device << ", " << keyword << ", " << details.serialize() << ")" << std::endl;
+         throw;
+      }
+   }
+
+   void CApiImplementation::removeKeyword(const std::string& device,
+                                          const std::string& keyword)
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_removekeyword();
+      request->set_device(device);
+      request->set_keyword(keyword);
+
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : removeKeyword(" << keyword << ")" << std::endl;
          throw;
       }
    }
@@ -665,7 +727,7 @@ namespace plugin_cpp_api
    }
 
    void CApiImplementation::historizeData(const std::string& device,
-                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& dataVect)
+                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& dataVect)
    {
       toYadoms::msg msg;
       auto message = msg.mutable_historizedata();

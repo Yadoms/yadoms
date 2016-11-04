@@ -1,5 +1,4 @@
 #pragma once
-
 #include "IRestService.h"
 #include "database/IDataProvider.h"
 #include "communication/ISendMessageAsync.h"
@@ -16,6 +15,7 @@ namespace web
          public:
             CDevice(boost::shared_ptr<database::IDataProvider> dataProvider,
                     boost::shared_ptr<pluginSystem::CManager> pluginManager,
+                    boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                     communication::ISendMessageAsync& messageSender);
             virtual ~CDevice();
 
@@ -139,6 +139,11 @@ namespace web
             ///\brief   Plugin manager (required for some operations)
             //-----------------------------------------
             boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
+
+            //-----------------------------------------
+            ///\brief   Device manager
+            //-----------------------------------------
+            boost::shared_ptr<dataAccessLayer::IDeviceManager> m_deviceManager;
 
             //-----------------------------------------
             ///\brief   The rest keyword which identifies this rule

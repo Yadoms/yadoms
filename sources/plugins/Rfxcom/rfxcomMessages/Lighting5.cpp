@@ -81,7 +81,7 @@ namespace rfxcomMessages
          break;
       case sTypeRSL: m_subTypeManager = boost::make_shared<CLighting5OnOff>("Conrad RSL2");
          break;
-      case sTypeMDREMOTE: m_subTypeManager = boost::make_shared<CLighting5MdRemote>();
+      case sTypeMDREMOTE: m_subTypeManager = boost::make_shared<CLighting5MdRemote>("MDREMOTE 106 LED dimmer");
          break;
       case sTypeLivolo: m_subTypeManager = boost::make_shared<CLighting5Livolo>();
          break; // Limited support of Livolo (just ON/OFF), as we can't know exact type of module
@@ -104,6 +104,8 @@ namespace rfxcomMessages
       case sTypeAvantek: m_subTypeManager = boost::make_shared<CLighting5OnOff>("Avantek");
          break;
       case sTypeIT: m_subTypeManager = boost::make_shared<CLighting5OnOff>("IT (Intertek,FA500,PROmax…)");
+         break;
+      case sTypeMDREMOTE108: m_subTypeManager = boost::make_shared<CLighting5MdRemote>("MDREMOTE 108 LED dimmer");
          break;
       default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");

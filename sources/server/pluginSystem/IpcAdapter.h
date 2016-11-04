@@ -81,6 +81,7 @@ namespace pluginSystem
       void processGetConfiguration(const toYadoms::ConfigurationRequest& msg);
       void processDeviceExistsRequest(const toYadoms::DeviceExitsRequest& msg);
       void processDeviceDetailsRequest(const toYadoms::DeviceDetailsRequest& msg);
+      void processAllDevicesRequest(const toYadoms::AllDevicesRequest& msg);
       void processKeywordExistsRequest(const toYadoms::KeywordExitsRequest& msg);
       void processDeclareDevice(const toYadoms::DeclareDevice& msg) const;
       void processDeclareKeyword(const toYadoms::DeclareKeyword& msg) const;
@@ -89,6 +90,8 @@ namespace pluginSystem
       void processRecipientFieldExitsRequest(const toYadoms::RecipientFieldExitsRequest& msg);
       void processHistorizeData(const toYadoms::HistorizeData& msg) const;
       void processDeveloperModeRequest(const toYadoms::DeveloperModeRequest& msg);
+      void processRemoveDeviceRequest(const toYadoms::RemoveDevice& msg) const;
+      void processRemoveKeywordRequest(const toYadoms::RemoveKeyword& msg) const;
 
    private:
       //--------------------------------------------------------------
