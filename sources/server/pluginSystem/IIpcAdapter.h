@@ -2,8 +2,11 @@
 #include <shared/plugin/information/IInformation.h>
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceCommand.h>
-#include <shared/plugin/yPluginApi/IExtraCommand.h>
+#include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
+#include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
+#include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
+#include <shared/plugin/yPluginApi/IDeviceRemoved.h>
 
 
 namespace pluginSystem
@@ -48,10 +51,22 @@ namespace pluginSystem
 
       //--------------------------------------------------------------
       /// \brief                 Post a custom query request to a plugin
-      /// \param [in] request    Request data
+      /// \param [in] request    Request
       //--------------------------------------------------------------
       virtual void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) = 0;
 
+      //--------------------------------------------------------------
+      /// \brief                 Post a device configuration schema request to a plugin
+      /// \param [in] request    Request
+      //--------------------------------------------------------------
+      virtual void postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                 Set a new device configuration to a plugin
+      /// \param [in] command    Set device configuration command
+      //--------------------------------------------------------------
+      virtual void postSetDeviceConfiguration(boost::shared_ptr<const shared::plugin::yPluginApi::ISetDeviceConfiguration>& command) = 0;
+      
       //--------------------------------------------------------------
       /// \brief                 Post a device command to a plugin
       /// \param [in] deviceCommand The command
@@ -60,9 +75,9 @@ namespace pluginSystem
 
       //--------------------------------------------------------------
       /// \brief                 Post an extra command to a plugin
-      /// \param [in] extraCommand The command
+      /// \param [in] extraQuery The command
       //--------------------------------------------------------------
-      virtual void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) = 0;
+      virtual void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Post a manually device creation request to a plugin
@@ -70,6 +85,11 @@ namespace pluginSystem
       //--------------------------------------------------------------
       virtual void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) = 0;
 
+      //--------------------------------------------------------------
+      /// \brief                 Post a device removed notification to a plugin
+      /// \param [in] event      The notification
+      //--------------------------------------------------------------
+      virtual void postDeviceRemoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event) = 0;
    };
 } // namespace pluginSystem
 

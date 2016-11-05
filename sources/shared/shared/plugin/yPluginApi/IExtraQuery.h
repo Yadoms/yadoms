@@ -1,4 +1,5 @@
 #pragma once
+#include "IExtraQueryData.h"
 #include <shared/DataContainer.h>
 
 namespace shared
@@ -10,30 +11,36 @@ namespace shared
          //-----------------------------------------------------
          ///\brief The API used for the commands on plugin
          //-----------------------------------------------------
-         class IExtraCommand
+         class IExtraQuery
          {
          public:
             //-----------------------------------------------------
             ///\brief               Destructor
             //-----------------------------------------------------
-            virtual ~IExtraCommand()
+            virtual ~IExtraQuery()
             {
             }
 
             //-----------------------------------------------------
-            ///\brief               Get the extra command name
-            ///\return              The extra command name
+            ///\brief               Get the extra query data
+            ///\return              The extra query data
             //-----------------------------------------------------
-            virtual const std::string& getCommand() const = 0;
+            virtual const shared::plugin::yPluginApi::IExtraQueryData& getData() const = 0;
 
             //-----------------------------------------------------
-            ///\brief Obtain the command data
-            ///\return a datacontainer
+            ///\brief Answer the request with success, providing query answer data
+            ///\param [in] data      The answer data
             //-----------------------------------------------------
-            virtual const CDataContainer& getData() const = 0;
+            virtual void sendSuccess(const CDataContainer& data) = 0;
+
+            //-----------------------------------------------------
+            ///\brief Answer the request with error
+            ///\param [in] errorMessage  The error message
+            //-----------------------------------------------------
+            virtual void sendError(const std::string& errorMessage) = 0;
          };
       }
    }
 } // namespace shared::plugin::yPluginApi	
-	
-	
+
+

@@ -1,6 +1,5 @@
 #pragma once
 #include "IIpcAdapter.h"
-#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/communication/MessageQueueRemover.hpp>
 #include <plugin_IPC/plugin_IPC.h>
 #include "yPluginApiImplementation.h"
@@ -32,9 +31,12 @@ namespace pluginSystem
                     const boost::filesystem::path& dataPath) override;
       void postUpdateConfiguration(const shared::CDataContainer& newConfiguration) override;
       void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) override;
+      void postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request) override;
+      void postSetDeviceConfiguration(boost::shared_ptr<const shared::plugin::yPluginApi::ISetDeviceConfiguration>& command) override;
       void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) override;
-      void postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand) override;
+      void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery) override;
       void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) override;
+      void postDeviceRemoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event) override;
       // [END] IIpcAdapter Implementation
 
       //--------------------------------------------------------------
@@ -79,6 +81,7 @@ namespace pluginSystem
       void processGetConfiguration(const toYadoms::ConfigurationRequest& msg);
       void processDeviceExistsRequest(const toYadoms::DeviceExitsRequest& msg);
       void processDeviceDetailsRequest(const toYadoms::DeviceDetailsRequest& msg);
+      void processAllDevicesRequest(const toYadoms::AllDevicesRequest& msg);
       void processKeywordExistsRequest(const toYadoms::KeywordExitsRequest& msg);
       void processDeclareDevice(const toYadoms::DeclareDevice& msg) const;
       void processDeclareKeyword(const toYadoms::DeclareKeyword& msg) const;
@@ -87,6 +90,8 @@ namespace pluginSystem
       void processRecipientFieldExitsRequest(const toYadoms::RecipientFieldExitsRequest& msg);
       void processHistorizeData(const toYadoms::HistorizeData& msg) const;
       void processDeveloperModeRequest(const toYadoms::DeveloperModeRequest& msg);
+      void processRemoveDeviceRequest(const toYadoms::RemoveDevice& msg) const;
+      void processRemoveKeywordRequest(const toYadoms::RemoveKeyword& msg) const;
 
    private:
       //--------------------------------------------------------------

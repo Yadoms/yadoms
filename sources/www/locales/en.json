@@ -199,7 +199,7 @@
       "errorDuringGettingPluginTypes": "Error during requesting plugin types"
     },
     "delete-device": {
-      "title": "Delete historic device confirmation",
+      "title": "Delete device historic",
       "text": "This operation will cleanup device __deviceName__ historic. Continue anyway ?",
       "checkDeleteDevice": "Delete the device",
       "checkDeleteDeviceNote": "Please note that device will be re-created if still transmits."
@@ -216,8 +216,8 @@
       "pluginFailToDelete": "Fail to delete plugin __pluginName__",
       "pluginFailToConfigure": "Fail to configure plugin __pluginName__"
     },
-    "extra-commands": {
-      "title": "Send extra command to plugin"
+    "extra-queries": {
+      "title": "Send extra query to plugin"
     },
     "configure-device": {
       "title": "Device configuration",

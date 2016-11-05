@@ -373,16 +373,26 @@ set(YADOMS_SRC
    
 	server/pluginSystem/BasicQualifier.h
 	server/pluginSystem/BasicQualifier.cpp
+   server/pluginSystem/BindingQueryData.cpp
+   server/pluginSystem/BindingQueryData.h
+   server/pluginSystem/BindingQueryRequest.cpp
+   server/pluginSystem/BindingQueryRequest.h
    server/pluginSystem/CommandHistorizer.h
    server/pluginSystem/CommandHistorizer.cpp
-   server/pluginSystem/IpcAdapter.h
-   server/pluginSystem/IpcAdapter.cpp
    server/pluginSystem/DeviceCommand.h
    server/pluginSystem/DeviceCommand.cpp
+   server/pluginSystem/DeviceConfigurationSchemaRequest.h
+   server/pluginSystem/DeviceConfigurationSchemaRequest.cpp
+   server/pluginSystem/DeviceRemoved.h
+   server/pluginSystem/DeviceRemoved.cpp
 	server/pluginSystem/DummyQualifier.h
 	server/pluginSystem/DummyQualifier.cpp
-	server/pluginSystem/ExtraCommand.h
-	server/pluginSystem/ExtraCommand.cpp
+	server/pluginSystem/ExtraQuery.h
+	server/pluginSystem/ExtraQuery.cpp
+   server/pluginSystem/ExtraQueryData.cpp
+   server/pluginSystem/ExtraQueryData.h
+	server/pluginSystem/Factory.cpp
+	server/pluginSystem/Factory.h
    server/pluginSystem/FromPluginHistorizer.h
    server/pluginSystem/FromPluginHistorizer.cpp
 	server/pluginSystem/IdentityForQualifier.h
@@ -405,26 +415,22 @@ set(YADOMS_SRC
 	server/pluginSystem/InstanceStateHandler.h
 	server/pluginSystem/InstanceStateHandler.cpp
 	server/pluginSystem/InvalidPluginException.hpp
+   server/pluginSystem/IpcAdapter.h
+   server/pluginSystem/IpcAdapter.cpp
 	server/pluginSystem/IQualifier.h
-	server/pluginSystem/Factory.cpp
-	server/pluginSystem/Factory.h
 	server/pluginSystem/Manager.h
 	server/pluginSystem/Manager.cpp
    server/pluginSystem/ManuallyDeviceCreationData.cpp
    server/pluginSystem/ManuallyDeviceCreationData.h
-   server/pluginSystem/BindingQueryData.cpp
-   server/pluginSystem/BindingQueryData.h
-   server/pluginSystem/BindingQueryRequest.cpp
-   server/pluginSystem/BindingQueryRequest.h
-   server/pluginSystem/ManuallyDeviceCreationTestData.cpp
-   server/pluginSystem/ManuallyDeviceCreationTestData.h
+	server/pluginSystem/ManuallyDeviceCreationRequest.h
+	server/pluginSystem/ManuallyDeviceCreationRequest.cpp
    server/pluginSystem/NativeExecutableCommandLine.cpp
    server/pluginSystem/NativeExecutableCommandLine.h
 	server/pluginSystem/PluginException.hpp
+	server/pluginSystem/SetDeviceConfiguration.h
+	server/pluginSystem/SetDeviceConfiguration.cpp
    server/pluginSystem/yPluginApiImplementation.h
    server/pluginSystem/yPluginApiImplementation.cpp
-	server/pluginSystem/ManuallyDeviceCreationRequest.h
-	server/pluginSystem/ManuallyDeviceCreationRequest.cpp
    
 	server/pluginSystem/internalPlugin/System.h
 	server/pluginSystem/internalPlugin/System.cpp
@@ -702,8 +708,10 @@ set(YADOMS_SRC ${YADOMS_SRC}
    server/database/common/requesters/Acquisition.h
    server/database/common/requesters/Acquisition.cpp
    server/database/common/versioning/IVersionUpgrade.h
-   server/database/common/versioning/Version1.h
-   server/database/common/versioning/Version1.cpp
+   server/database/common/versioning/Version_1_0_0.h
+   server/database/common/versioning/Version_1_0_0.cpp
+   server/database/common/versioning/Version_1_1_0.h
+   server/database/common/versioning/Version_1_1_0.cpp
    server/database/common/versioning/VersionUpgraderFactory.h
    server/database/common/versioning/VersionUpgraderFactory.cpp
    server/database/common/versioning/VersionException.h

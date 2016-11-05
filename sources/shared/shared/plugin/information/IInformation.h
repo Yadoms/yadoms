@@ -85,10 +85,17 @@ namespace shared
 
 
             //--------------------------------------------------------------
+            /// \brief	    indicates if the plugin supports device removed notification
+            /// \return     true if the plugin supports device removed notification
+            //--------------------------------------------------------------
+            virtual bool getSupportDeviceRemovedNotification() const = 0;
+
+
+            //--------------------------------------------------------------
             /// \brief	    Provide the package.json content
             /// \return     the package.json content
             //--------------------------------------------------------------
-            virtual CDataContainer getPackage() const = 0;
+            virtual boost::shared_ptr<const CDataContainer> getPackage() const = 0;
 
             //--------------------------------------------------------------
             /// \brief	    Get the plugin path

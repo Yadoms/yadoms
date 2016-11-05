@@ -13,10 +13,11 @@
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceCommand.h>
-#include <shared/plugin/yPluginApi/IExtraCommand.h>
+#include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include <shared/plugin/yPluginApi/historization/PluginState.h>
 #include "InstanceRemover.h"
 #include <IPathProvider.h>
+#include <server/communication/callback/ISynchronousCallback.h>
 
 namespace pluginSystem
 {
@@ -90,7 +91,7 @@ namespace pluginSystem
       /// \param [in] id   Instance to get the log
       /// \return          The log of the instance, if available (empty string if not)
       //--------------------------------------------------------------
-      std::string getInstanceLog(int id);
+      std::string getInstanceLog(int id) const;
 
       //--------------------------------------------------------------
       /// \brief           Get the plugin instances list
@@ -180,28 +181,48 @@ namespace pluginSystem
       /// \param [in] id         Plugin instance Id
       /// \param [in] command    The command to post
       //--------------------------------------------------------------
-      void postCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const;
+      void postCommand(int id,
+                       boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post an extra command to a device on a specific plugin
       /// \param [in] id         Plugin instance Id
       /// \param [in] command    The command to post
       //--------------------------------------------------------------
-      void postExtraCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command) const;
+      void postExtraQuery(int id,
+                          boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post a manually device creation request to a plugin
       /// \param [in] id         Plugin instance Id
       /// \param [in] request    Request data
       //--------------------------------------------------------------
-      void postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request) const;
+      void postManuallyDeviceCreationRequest(int id,
+                                             boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post a binding query request to a plugin
       /// \param [in] id         Plugin instance Id
       /// \param [in] request    Request data
       //--------------------------------------------------------------
-      void postBindingQueryRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request);
+      void postBindingQueryRequest(int id,
+                                   boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request) const;
+
+      //--------------------------------------------------------------
+      /// \brief                 Post a device configuration schema request to a plugin
+      /// \param [in] deviceId   Device Id
+      /// \param [in] callback   Request callback
+      //--------------------------------------------------------------
+      void postDeviceConfigurationSchemaRequest(int deviceId,
+                                                communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) const;
+
+      //--------------------------------------------------------------
+      /// \brief                       Post a new device configuration to a plugin
+      /// \param [in] deviceId         Device Id
+      /// \param [in] configuration    New device configuration
+      //--------------------------------------------------------------
+      void postSetDeviceConfiguration(int deviceId,
+                                      const shared::CDataContainer& configuration) const;
 
       //--------------------------------------------------------------
       /// \brief                 Start all instances matching the plugin name
@@ -214,6 +235,12 @@ namespace pluginSystem
       /// \param [in] pluginName The plugin name
       //--------------------------------------------------------------
       void stopAllInstancesOfPlugin(const std::string& pluginName);
+
+      //--------------------------------------------------------------
+      /// \brief                 Notify a plugin when a device is removed
+      /// \param [in] deviceId   The removed device ID
+      //--------------------------------------------------------------
+      void notifyDeviceRemoved(int deviceId) const;
 
    private:
       //-----------------------------------------------------
@@ -247,7 +274,7 @@ namespace pluginSystem
       void startInternalPlugin();
       void stopInternalPlugin();
 
-   
+
       //--------------------------------------------------------------
       /// \brief			The plugin system factory
       //--------------------------------------------------------------
@@ -297,3 +324,5 @@ namespace pluginSystem
       mutable boost::recursive_mutex m_runningInstancesMutex;
    };
 } // namespace pluginSystem
+
+

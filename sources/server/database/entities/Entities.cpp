@@ -121,6 +121,7 @@ namespace database { namespace entities {
       ((FriendlyName)(std::string)("")("friendlyName"))
       ((Model)(std::string)("")("model"))
       ((Details)(shared::CDataContainer)(shared::CDataContainer())("details"))
+      ((Configuration)(shared::CDataContainer)(shared::CDataContainer())("configuration"))
       );
 
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(

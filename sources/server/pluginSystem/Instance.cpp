@@ -53,14 +53,29 @@ namespace pluginSystem
       m_ipcAdapter->postBindingQueryRequest(request);
    }
 
+   void CInstance::postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request)
+   {
+      m_ipcAdapter->postDeviceConfigurationSchemaRequest(request);
+   }
+
    void CInstance::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request)
    {
       m_ipcAdapter->postManuallyDeviceCreationRequest(request);
    }
 
-   void CInstance::postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand)
+   void CInstance::postSetDeviceConfiguration(boost::shared_ptr<const shared::plugin::yPluginApi::ISetDeviceConfiguration> command)
    {
-      m_ipcAdapter->postExtraCommand(extraCommand);
+      m_ipcAdapter->postSetDeviceConfiguration(command);
+   }
+
+   void CInstance::postDeviceRemoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event)
+   {
+      m_ipcAdapter->postDeviceRemoved(event);
+   }
+
+   void CInstance::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery)
+   {
+      m_ipcAdapter->postExtraQuery(extraQuery);
    }
 
    void CInstance::updateConfiguration(const shared::CDataContainer& newConfiguration)

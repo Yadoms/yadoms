@@ -28,7 +28,7 @@
 			"failToStart" : "Fail to start"
 		}
 	},
-	"extraCommands" : {
+	"extraQueries" : {
 		"inclusionMode" : {
 			"name" : "Start inclusion mode"
 		},

@@ -330,7 +330,8 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Get enum parameter value
       /// \param [in] parameterName    Name of the enum parameter
-      /// \param[in]  valueNames  List of authorized values for the enum
+      /// \param [in] valuesNames      List of authorized values for the enum
+      /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       /// \return     The parameter value
       /// \throw      shared::exception::COutOfRange if parameter value is not in the provided list
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
@@ -494,7 +495,7 @@ namespace shared
    protected:
       //--------------------------------------------------------------
       /// \brief		Constructor
-      /// \param [in] initialData    Initial tree for this container
+      /// \param [in] initialTree    Initial tree for this container
       //--------------------------------------------------------------
       explicit CDataContainer(const boost::property_tree::ptree & initialTree);
 

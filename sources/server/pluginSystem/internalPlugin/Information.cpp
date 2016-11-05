@@ -10,13 +10,14 @@ namespace pluginSystem
            m_version("1.0"),
            m_releaseType(shared::versioning::EReleaseType::kStable),
            m_author("Yadoms team"),
-           m_url("http://www.yadoms.com")
+           m_url("http://www.yadoms.com"),
+           m_package(boost::make_shared<shared::CDataContainer>())
       {
-         m_package.set("type", m_type);
-         m_package.set("version", m_version);
-         m_package.set("releaseType", m_releaseType);
-         m_package.set("author", m_author);
-         m_package.set("url", m_url);
+         m_package->set("type", m_type);
+         m_package->set("version", m_version);
+         m_package->set("releaseType", m_releaseType);
+         m_package->set("author", m_author);
+         m_package->set("url", m_url);
       }
 
       CInformation::~CInformation()
@@ -81,7 +82,12 @@ namespace pluginSystem
          return false;
       }
 
-      shared::CDataContainer CInformation::getPackage() const
+      bool CInformation::getSupportDeviceRemovedNotification() const
+      {
+         return false;
+      }
+
+      boost::shared_ptr<const shared::CDataContainer> CInformation::getPackage() const
       {
          return m_package;
       }
@@ -93,5 +99,3 @@ namespace pluginSystem
       }
    }
 } // namespace pluginSystem::internalPlugin
-
-

@@ -177,7 +177,7 @@
       Yadoms.modals.deviceConfigure.loadAsync()
          .done(function () {
             Yadoms.showConfigurationDeviceModal(device, function () {
-               DeviceManager.updateToServer(device)
+               DeviceManager.updateFriendlyNameToServer(device)
                   .done(function (updateDevice) {
                      //We update the information that can have changed after the configuration
 					 
@@ -231,6 +231,9 @@
                      getDeviceDomRow(device).remove();
                   }
                }
+            })
+            .fail(function (error) {
+               notifyError($.t("objects.deviceManager.errorDeleting", { deviceName: device.friendlyName }), error);
             });
          });
       });

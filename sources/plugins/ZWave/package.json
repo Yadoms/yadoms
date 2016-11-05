@@ -22,7 +22,7 @@
 			"defaultValue": "false"
 		}
 	},
-	"extraCommands" : {
+	"extraQueries" : {
 		"inclusionMode" : {
 			"iconClass" : "fa fa-plus"
 		},

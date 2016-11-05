@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IVersionUpgrade.h"
+#include "Version_1_0_0.h"
 #include "database/IDatabaseRequester.h"
 
 
@@ -9,18 +9,18 @@ namespace database { namespace common { namespace versioning {
    //
    /// \brief Database version 1.0 update manager
    //
-   class CVersion1 : public IVersionUpgrade
+   class CVersion_1_1_0 : public CVersion_1_0_0
    {
    public:
       //
       /// \brief Constructor
       //
-      CVersion1();
+      CVersion_1_1_0();
 
       //
       /// \brief Destructor
       //
-      virtual ~CVersion1();
+      virtual ~CVersion_1_1_0();
 
       // ISQLiteVersionUpgrade implementation
       virtual void checkForUpgrade(const boost::shared_ptr<IDatabaseRequester> & pRequester, const shared::versioning::CVersion & currentVersion);
@@ -36,7 +36,7 @@ namespace database { namespace common { namespace versioning {
       /// \brief     Create the database (when tables are not found)
       ///\param [in] pRequester : database requester object
       //-----------------------------------
-      void CreateDatabase(const boost::shared_ptr<IDatabaseRequester> & pRequester) const;
+      void UpdateFrom1_0_0(const boost::shared_ptr<IDatabaseRequester> & pRequester) const;
    };
 
 } //namespace versioning

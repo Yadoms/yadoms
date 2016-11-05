@@ -294,7 +294,7 @@ namespace automation
       void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& newState)
       {
          assertExistingKeyword(keywordId);
-         m_pluginGateway->sendCommandAsync(keywordId, newState);
+         m_pluginGateway->sendKeywordCommandAsync(keywordId, newState);
       }
 
       void CYScriptApiImplementation::sendNotification(int keywordId, int recipientId, const std::string& message)
@@ -303,7 +303,7 @@ namespace automation
          assertExistingRecipient(recipientId);
 
          shared::plugin::yPluginApi::historization::CMessageFormatter body(0, recipientId, message);
-         m_pluginGateway->sendCommandAsync(keywordId, body.formatValue());
+         m_pluginGateway->sendKeywordCommandAsync(keywordId, body.formatValue());
       }
 
       std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
