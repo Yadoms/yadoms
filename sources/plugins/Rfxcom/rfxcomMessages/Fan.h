@@ -99,9 +99,9 @@ namespace rfxcomMessages
       unsigned int m_id;
 
       //--------------------------------------------------------------
-      /// \brief	Flag for light command (true) or fan command (false)
+      /// \brief	Flag for command
       //--------------------------------------------------------------
-      bool m_lightCmd;
+      std::string m_cmd;
 
       //--------------------------------------------------------------
       /// \brief	The device name
@@ -122,6 +122,14 @@ namespace rfxcomMessages
       /// \brief	The keyword associated with fan (off = speed down, on = speed up)
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CSwitch> m_fan;
+
+      //--------------------------------------------------------------
+      /// \brief	The keywords associated with SEAV TXS4 remote
+      //--------------------------------------------------------------
+      boost::shared_ptr<yApi::historization::CEvent> m_t1;
+      boost::shared_ptr<yApi::historization::CEvent> m_t2;
+      boost::shared_ptr<yApi::historization::CEvent> m_t3;
+      boost::shared_ptr<yApi::historization::CEvent> m_t4;
 
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances

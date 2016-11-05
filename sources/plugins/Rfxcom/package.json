@@ -1,6 +1,6 @@
 {
    "type": "rfxcom",
-   "version": "1.0.1",
+   "version": "1.0.2",
    "releaseType": "beta",
    "author": "Sébastien GALLOU",
    "url": "https://github.com/Yadoms/yadoms/wiki/Rfxcom",
@@ -454,7 +454,7 @@
                   }               
                }
             },            
-            "mdRemote":
+            "mdRemote106":
             {
                "type": "section",
                "content":
@@ -641,6 +641,19 @@
                   }             
                }
             },
+            "mdRemote108":
+            {
+               "type": "section",
+               "content":
+               {
+                  "id":
+                  {
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "65535"
+                  }              
+               }
+            }, 
             
             "blyss":
             {
@@ -743,7 +756,41 @@
                   {
                      "type": "int",
                      "minimumValue": "0",
-                     "maximumValue": "16777215"
+                     "maximumValue": "16"
+                  }              
+               }
+            },
+            "seavTxs4":
+            {
+               "type": "section",
+               "content":
+               {
+                  "sw2-1":
+                  {
+                     "type": "bool"
+                  },
+                  "sw2-2":
+                  {
+                     "type": "bool"
+                  },
+                  "id":
+                  {
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "32767"
+                  }              
+               }
+            },
+            "westinghouse7226640":
+            {
+               "type": "section",
+               "content":
+               {
+                  "id":
+                  {
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "16"
                   }              
                }
             },
