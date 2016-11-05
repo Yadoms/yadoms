@@ -6,7 +6,7 @@
 #include "specificHistorizers/Analog.h"
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include "specificHistorizers/inputOutput.h"
-//#include "extensions/IDevice.h"
+#include "specificHistorizers/counter.h"
 
 #define IPX800_RELAY_QTY 8
 #define IPX800_DI_QTY    8
@@ -100,7 +100,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	Map of all counters
    //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<yApi::historization::CCounter> > m_countersList;
+   std::vector<boost::shared_ptr<specificHistorizers::CCounter> > m_countersList;
 
    //--------------------------------------------------------------
    /// \brief	Manager for all IOs

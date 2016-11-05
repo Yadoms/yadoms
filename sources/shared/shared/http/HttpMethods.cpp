@@ -4,6 +4,7 @@
 #include <Poco/Net/HTTPClientSession.h>
 #include <Poco/Net/HTTPRequest.h>
 #include <Poco/Net/HTTPResponse.h>
+#include "Poco/StreamCopier.h"
 #include <Poco/URI.h>
 #include <shared/exception/Exception.hpp>
 #include <shared/Log.h>
@@ -17,7 +18,7 @@ namespace shared
       return SendGetRequest(url, parameters);
    }
 
-   CDataContainer CHttpMethods::SendGetRequest(const std::string & url, shared::CDataContainer & parameters)
+   CDataContainer CHttpMethods::SendGetRequest(const std::string & url, shared::CDataContainer & parameters, bool controlActivated)
    {
       try
       {
@@ -40,7 +41,7 @@ namespace shared
 
          if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK)
          {
-            if (boost::icontains(response.getContentType(), "application/json"))
+            if (boost::icontains(response.getContentType(), "application/json") || !controlActivated)
             {
                std::string content;
                if (response.hasContentLength())
@@ -48,6 +49,12 @@ namespace shared
                   content.resize(static_cast<unsigned int>(response.getContentLength()));
                   rs.read(const_cast<char*>(content.c_str()), response.getContentLength());
 						return CDataContainer(content);
+               }
+               else
+               {
+                  std::ostringstream oss;
+                  Poco::StreamCopier::copyStream(rs, oss);
+                  return CDataContainer(oss.str());
                }
 
                //do nothing, request content may be empty

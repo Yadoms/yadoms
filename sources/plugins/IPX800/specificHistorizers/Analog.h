@@ -24,11 +24,14 @@ namespace specificHistorizers
               const yApi::historization::EMeasureType& measureType = yApi::historization::EMeasureType::kAbsolute,
               yApi::historization::typeInfo::ITypeInfo& additionalInfo = yApi::historization::typeInfo::CEmptyTypeInfo::Empty);
 
+      std::string getHardwareName();
+
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
       virtual ~CAnalog();
 
    private:
+      std::string m_hardwareName;
    };
 } // namespace specificHistorizer

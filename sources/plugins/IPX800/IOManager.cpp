@@ -15,7 +15,7 @@ void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
                             std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> > RelayList,
                             std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> > DIList,
                             std::vector<boost::shared_ptr<specificHistorizers::CAnalog> > analogList,
-                            std::vector<boost::shared_ptr<yApi::historization::CCounter> > counterList)
+                            std::vector<boost::shared_ptr<specificHistorizers::CCounter> > counterList)
 {
    m_RelayList = RelayList;
    m_DIList = DIList;
@@ -23,7 +23,19 @@ void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
    m_countersList = counterList;
    m_keywordsToDeclare.clear();
 
-   readIOFromDevice();
+   // Initial Reading of relays
+   readIOFromDevice<specificHistorizers::CInputOuput>("R", m_RelayList);
+
+   // Initial Reading of DIs
+   readIOFromDevice<specificHistorizers::CInputOuput>("D", m_DIList);
+
+   // Initial Reading of Analog Input
+   readIOFromDevice<specificHistorizers::CAnalog>("A", m_analogList);
+
+   // Initial Reading of Counters
+   readIOFromDevice<specificHistorizers::CCounter>("C", m_countersList);
+
+   // TODO : Historization to be done
 }
 
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -113,74 +125,37 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
    //std::cerr << "Cannot find keyword : " << command->getKeyword();
 }
 
-void CIOManager::readIOFromDevice()
+template<typename T>
+void CIOManager::readIOFromDevice(const std::string& type, const std::vector<boost::shared_ptr<T> >& list)
 {
    shared::CDataContainer parameters;
    shared::CDataContainer results;
-
-   m_keywordsToDeclare.clear();
 
    // add the password if activated
    if (m_isPasswordActivated)
       parameters.set("key", m_password);
 
-   parameters.set("Get", "R");
+   parameters.set("Get", type);
 
    results = urlManager::sendCommand(m_IPAddress, parameters);
 
-   parameters.printToLog();
-   results.printToLog();
+   std::vector<boost::shared_ptr<T> >::const_iterator diIterator;
 
-   std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >::iterator relayIterator;
-
-   std::cout << "Nb Relays : " << m_RelayList.size() << std::endl;
+   std::cout << "Nb IO : " << list.size() << std::endl;
 
    try
    {
-      for (relayIterator = m_RelayList.begin(); relayIterator != m_RelayList.end(); ++relayIterator)
+      for (diIterator = list.begin(); diIterator != list.end(); ++diIterator)
       {
-         (*relayIterator)->set(results.get<bool>((*relayIterator)->getHardwareName()));
-         //std::cout << "Hardware name : " << (*relayIterator)->getHardwareName() << std::endl;
+         (*diIterator)->set(results.get<bool>((*diIterator)->getHardwareName()));
+         std::cout << "Set IO : " << (*diIterator)->getHardwareName() << std::endl;
+         m_keywordsToDeclare.push_back((*diIterator));
       }
    }
-   catch (...)
+   catch (shared::exception::CException& e)
    {
-      std::cout << "error retrieve relais" << std::endl;
+      std::cout << "error retrieve value :" << e.what() << std::endl;
    }
-
-   //{
-      // Set the value of the corresponding IO and historize if the return is success
-      //search->second->set(boost::lexical_cast<bool>(command->getBody()));
-      //api->historizeData(m_deviceName, search->second);
-   //}
-   /*
-   parameters.set("Get", "D");
-
-   results = urlManager::sendCommand(m_IPAddress, parameters);
-   //{
-      // Set the value of the corresponding IO and historize if the return is success
-      //search->second->set(boost::lexical_cast<bool>(command->getBody()));
-      //api->historizeData(m_deviceName, search->second);
-   //}
-
-   parameters.set("Get", "A");
-
-   results = urlManager::sendCommand(m_IPAddress, parameters);
-   //{
-      // Set the value of the corresponding IO and historize if the return is success
-      //search->second->set(boost::lexical_cast<bool>(command->getBody()));
-      //api->historizeData(m_deviceName, search->second);
-   //}
-
-   parameters.set("Get", "C");
-
-   results = urlManager::sendCommand(m_IPAddress, parameters);
-   //{
-      // Set the value of the corresponding IO and historize if the return is success
-      //search->second->set(boost::lexical_cast<bool>(command->getBody()));
-      //api->historizeData(m_deviceName, search->second);
-   //}
-   */
 }
 
 CIOManager::~CIOManager()

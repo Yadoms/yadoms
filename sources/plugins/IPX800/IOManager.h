@@ -5,6 +5,7 @@
 #include <Poco/Net/NetworkInterface.h>
 #include "specificHistorizers/Analog.h"
 #include "specificHistorizers/inputOutput.h"
+#include "specificHistorizers/counter.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -37,7 +38,7 @@ public:
                    std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> > RelayList,
                    std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> > DIList,
                    std::vector<boost::shared_ptr<specificHistorizers::CAnalog> > analogList,
-                   std::vector<boost::shared_ptr<yApi::historization::CCounter> > counterList
+                   std::vector<boost::shared_ptr<specificHistorizers::CCounter> > counterList
                    );
 
    //--------------------------------------------------------------
@@ -60,7 +61,9 @@ public:
    //--------------------------------------------------------------
    //void onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
    //               int receivedValue);
-   void readIOFromDevice();
+
+   template<typename T>
+   void readIOFromDevice(const std::string& type, const std::vector<boost::shared_ptr<T> >& list);
 
 private:
 
@@ -107,5 +110,5 @@ private:
    //--------------------------------------------------------------
    /// \brief	Map of all counters
    //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<yApi::historization::CCounter> > m_countersList;
+   std::vector<boost::shared_ptr<specificHistorizers::CCounter> > m_countersList;
 };

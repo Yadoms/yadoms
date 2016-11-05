@@ -4,6 +4,7 @@
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
+#include <shared/plugin/yPluginApi/IDeviceRemoved.h>
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -95,10 +96,17 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          
          break;
       }
+      case yApi::IYPluginApi::kEventDeviceRemoved:
+      {
+         auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
+         std::cout << device->device() << " was removed" << std::endl;
+         break;
+      }
       case yApi::IYPluginApi::kBindingQuery:
       {
          // Yadoms ask for a binding query 
          auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
+
          if (data->getData().getQuery() == "X8R")
             data->sendSuccess(m_factory->bindSlotsX8R());
          else if (data->getData().getQuery() == "X8D")

@@ -28,6 +28,8 @@ set(IPX800_PLUGIN_SOURCES
 	extensions/X8RDevice.h
 	specificHistorizers/Analog.cpp
 	specificHistorizers/Analog.h
+	specificHistorizers/counter.cpp
+	specificHistorizers/counter.h	
 	specificHistorizers/inputOutput.cpp
 	specificHistorizers/inputOutput.h
 	)

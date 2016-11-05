@@ -77,14 +77,14 @@ void CIPX800Factory::createIPX800Device(boost::shared_ptr<yApi::IYPluginApi> api
       keywordsToDeclare.push_back(temp);
    }
 
-   //TODO : Faire un counter aussi de mon côté
    // Counters Configuration
    for (int counter = 0; counter<IPX800_CNT_QTY; ++counter)
    {
       std::stringstream name, hardwareName;
       name << "C" << std::setfill('0') << std::setw(2) << boost::lexical_cast<int>(counter + 1);
       hardwareName << "C" << boost::lexical_cast<int>(counter + 1);
-      boost::shared_ptr<yApi::historization::CCounter> temp = boost::make_shared<yApi::historization::CCounter>(name.str(), 
+      boost::shared_ptr<specificHistorizers::CCounter> temp = boost::make_shared<specificHistorizers::CCounter>(name.str(),
+                                                                                                                hardwareName.str(),
                                                                                                                 yApi::EKeywordAccessMode::kGetSet);
       m_countersList.push_back(temp);
       keywordsToDeclare.push_back(temp);

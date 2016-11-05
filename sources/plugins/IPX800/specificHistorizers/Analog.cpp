@@ -15,8 +15,14 @@ namespace specificHistorizers
                                         accessMode,
                                         0,
                                         measureType,
-                                        additionalInfo)
+                                        additionalInfo),
+      m_hardwareName(hardwareName)
    {}
+
+   std::string CAnalog::getHardwareName()
+   {
+      return m_hardwareName;
+   }
 
    CAnalog::~CAnalog()
    {}
