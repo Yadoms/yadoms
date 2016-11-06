@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "IPX800Factory.h"
-#include "extensions/X8RDevice.h"
-#include "extensions/X8DDevice.h"
-#include "extensions/X24DDevice.h"
+#include "extensions/X8RExtension.h"
+#include "extensions/X8DExtension.h"
+#include "extensions/X24DExtension.h"
 
 CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
                                const std::string& device,
@@ -22,6 +22,7 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
    createIPX800Device(api, device);
 
    //TODO : Créer les modules suivant la liste de devices déjà existants
+   std::vector<std::string> devices = api->getAllDevices();
 
    m_ioManager->Initialize(api, m_relaysList, m_DIList, m_analogList, m_countersList);
 }
@@ -97,24 +98,24 @@ void CIPX800Factory::createIPX800Device(boost::shared_ptr<yApi::IYPluginApi> api
 std::string CIPX800Factory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
                                                  const yApi::IManuallyDeviceCreationData& data)
 {
-   boost::shared_ptr<extensions::IDevice> device;
+   boost::shared_ptr<extensions::IExtension> device;
 
    if (data.getConfiguration().get<bool>("type.content.X8R.radio"))
    {
       int position = data.getConfiguration().get<int>("type.content.X8R.content.Position");
-      device = boost::make_shared<extensions::CX8RDevice>(api, data.getDeviceName(), position);
+      device = boost::make_shared<extensions::CX8RExtension>(api, data.getDeviceName(), position);
       X8RSlotused[position] = true;
    }
    else if (data.getConfiguration().get<bool>("type.content.X8D.radio"))
    {
       int position = data.getConfiguration().get<int>("type.content.X8D.content.Position");
-      device = boost::make_shared<extensions::CX8DDevice>(api, data.getDeviceName(), position);
+      device = boost::make_shared<extensions::CX8DExtension>(api, data.getDeviceName(), position);
       X8DSlotused[position] = true;
    }
    else if (data.getConfiguration().get<bool>("type.content.X24D.radio"))
    {
       int position = data.getConfiguration().get<int>("type.content.X24D.content.Position");
-      device = boost::make_shared<extensions::CX24DDevice>(api, data.getDeviceName(), position);
+      device = boost::make_shared<extensions::CX24DExtension>(api, data.getDeviceName(), position);
       X24DSlotused[position] = true;
    }
    //m_devicesList.push_back(device);

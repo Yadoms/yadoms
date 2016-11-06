@@ -19,13 +19,13 @@ set(IPX800_PLUGIN_SOURCES
 	stdafx.h
 	urlManager.cpp
 	urlManager.h
-	extensions/IDevice.h
-	extensions/X24DDevice.cpp
-	extensions/X24DDevice.h	
-	extensions/X8DDevice.cpp
-	extensions/X8DDevice.h	
-	extensions/X8RDevice.cpp
-	extensions/X8RDevice.h
+	extensions/IExtension.h
+	extensions/X24DExtension.cpp
+	extensions/X24DExtension.h	
+	extensions/X8DExtension.cpp
+	extensions/X8DExtension.h	
+	extensions/X8RExtension.cpp
+	extensions/X8RExtension.h
 	specificHistorizers/Analog.cpp
 	specificHistorizers/Analog.h
 	specificHistorizers/counter.cpp

@@ -8,7 +8,7 @@
 //--------------------------------------------------------------
 namespace extensions
 {
-   class IDevice
+   class IExtension
    {
    public:
 
@@ -27,7 +27,7 @@ namespace extensions
       //--------------------------------------------------------------
       /// \brief	    Destructor
       //--------------------------------------------------------------
-      virtual ~IDevice()
+      virtual ~IExtension()
       {}
 
    };

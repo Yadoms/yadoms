@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "X24DDevice.h"
+#include "X24DExtension.h"
 #include <shared/DataContainer.h>
 #include "../specificHistorizers/inputOutput.h"
 
@@ -8,9 +8,9 @@ static const std::string Model("X-24D");
 namespace extensions
 {
 
-   CX24DDevice::CX24DDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                          const std::string& device,
-                            const int& position):
+   CX24DExtension::CX24DExtension(boost::shared_ptr<yApi::IYPluginApi> api,
+                                  const std::string& device,
+                                  const int& position):
       m_deviceName(device),
       m_slotNumber(position)
    {
@@ -37,16 +37,16 @@ namespace extensions
       api->declareDevice(device, Model, keywordsToDeclare, details);
    }
 
-   std::string CX24DDevice::getDeviceName() const
+   std::string CX24DExtension::getDeviceName() const
    {
       return m_deviceName;
    }
 
-   int CX24DDevice::getSlot() const
+   int CX24DExtension::getSlot() const
    {
       return m_slotNumber;
    }
 
-   CX24DDevice::~CX24DDevice()
+   CX24DExtension::~CX24DExtension()
    {}
 }// namespace extensions

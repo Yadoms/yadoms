@@ -1,7 +1,7 @@
 #pragma once
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include "IDevice.h"
+#include "IExtension.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -13,26 +13,26 @@ namespace extensions
    //-----------------------------------------------------
    ///\brief X8-D Extension
    //-----------------------------------------------------
-   class CX8DDevice : public IDevice
+   class CX8DExtension : public IExtension
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CX8DDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                 const std::string& device,
-                 const int& position);
+      CX8DExtension(boost::shared_ptr<yApi::IYPluginApi> api,
+                    const std::string& device,
+                    const int& position);
 
-      // IDevice implementation
+      // IExtension implementation
       std::string getDeviceName() const override;
       int getSlot() const override;
-      // [END] IDevice implementation
+      // [END] IExtension implementation
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CX8DDevice();
+      virtual ~CX8DExtension();
 
    private:
 
