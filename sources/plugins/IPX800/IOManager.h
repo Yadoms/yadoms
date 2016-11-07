@@ -35,10 +35,10 @@ public:
    /// \param[in]  IOlist           Set a new list of IOs
    //--------------------------------------------------------------
    void Initialize(boost::shared_ptr<yApi::IYPluginApi> api, 
-                   std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> > RelayList,
-                   std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> > DIList,
-                   std::vector<boost::shared_ptr<specificHistorizers::CAnalog> > analogList,
-                   std::vector<boost::shared_ptr<specificHistorizers::CCounter> > counterList
+                   std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& RelayList,
+                   std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& DIList,
+                   std::vector<boost::shared_ptr<specificHistorizers::CAnalog> >& analogList,
+                   std::vector<boost::shared_ptr<specificHistorizers::CCounter> >& counterList
                    );
 
    //--------------------------------------------------------------

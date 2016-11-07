@@ -104,7 +104,8 @@
 	},
 	"customLabels": {
 		"pluginState": {
-            "initializationError": "Erreur d'initialisation",		
+            "initializationError": "Erreur d'initialisation",
+            "NoConnection": "Pas de connexion Internet",			
 			"updateConfiguration": "Mise à jour de la configuration..."
 		}
 	}

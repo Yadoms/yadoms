@@ -2,6 +2,7 @@
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "IExtension.h"
+#include "../specificHistorizers/inputOutput.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -22,7 +23,8 @@ namespace extensions
       //-----------------------------------------------------
       CX8DExtension(boost::shared_ptr<yApi::IYPluginApi> api,
                     const std::string& device,
-                    const int& position);
+                    const int& position,
+                    std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& DIList);
 
       // IExtension implementation
       std::string getDeviceName() const override;

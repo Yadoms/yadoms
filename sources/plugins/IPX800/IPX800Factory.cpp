@@ -9,20 +9,54 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
                                const IIPX800Configuration& configuration):
    m_ioManager(boost::make_shared<CIOManager>(device, configuration.getIPAddress(), configuration.isPasswordActivated(), configuration.getPassword()))
 {
-   //TODO : Lire les devices déjà existants pour récupérer leur position
    for (int counter = 0; counter < 6; ++counter)
    {
       X8RSlotused[counter] = false;
       X8DSlotused[counter] = false;
    }
 
-   for (int counter = 0; counter < 6; ++counter)
+   for (int counter = 0; counter < 2; ++counter)
       X24DSlotused[counter] = false;
 
+   // Creation of the IPX800 device
    createIPX800Device(api, device);
 
-   //TODO : Créer les modules suivant la liste de devices déjà existants
    std::vector<std::string> devices = api->getAllDevices();
+   std::vector<std::string>::iterator devicesIterator;
+
+   // Create al the other devices
+   for (devicesIterator = devices.begin(); devicesIterator != devices.end(); ++devicesIterator)
+   {
+      std::cout << "Name : " << (*devicesIterator) << std::endl;
+
+      if ((*devicesIterator).compare("X8-R"))
+      {
+         auto details = api->getDeviceDetails((*devicesIterator));
+         int position = details.get<int>("position");
+         std::string deviceName = details.get<std::string>("provider");
+         X8RSlotused[position] = true;
+         boost::shared_ptr<extensions::IExtension> extension;
+         extension = boost::make_shared<extensions::CX8RExtension>(api, deviceName, position, m_relaysList);
+      }
+      if ((*devicesIterator).compare("X8-D"))
+      {
+         auto details = api->getDeviceDetails((*devicesIterator));
+         int position = details.get<int>("position");
+         std::string deviceName = details.get<std::string>("provider");
+         X8DSlotused[position] = true;
+         boost::shared_ptr<extensions::IExtension> extension;
+         extension = boost::make_shared<extensions::CX8DExtension>(api, deviceName, position, m_DIList);
+      }
+      if ((*devicesIterator).compare("X24-D"))
+      {
+         auto details = api->getDeviceDetails((*devicesIterator));
+         int position = details.get<int>("position");
+         std::string deviceName = details.get<std::string>("provider");
+         X24DSlotused[position] = true;
+         boost::shared_ptr<extensions::IExtension> extension;
+         extension = boost::make_shared<extensions::CX24DExtension>(api, deviceName, position, m_DIList);
+      }
+   }
 
    m_ioManager->Initialize(api, m_relaysList, m_DIList, m_analogList, m_countersList);
 }
@@ -103,19 +137,19 @@ std::string CIPX800Factory::createDeviceManually(boost::shared_ptr<yApi::IYPlugi
    if (data.getConfiguration().get<bool>("type.content.X8R.radio"))
    {
       int position = data.getConfiguration().get<int>("type.content.X8R.content.Position");
-      device = boost::make_shared<extensions::CX8RExtension>(api, data.getDeviceName(), position);
+      device = boost::make_shared<extensions::CX8RExtension>(api, data.getDeviceName(), position, m_relaysList);
       X8RSlotused[position] = true;
    }
    else if (data.getConfiguration().get<bool>("type.content.X8D.radio"))
    {
       int position = data.getConfiguration().get<int>("type.content.X8D.content.Position");
-      device = boost::make_shared<extensions::CX8DExtension>(api, data.getDeviceName(), position);
+      device = boost::make_shared<extensions::CX8DExtension>(api, data.getDeviceName(), position, m_DIList);
       X8DSlotused[position] = true;
    }
    else if (data.getConfiguration().get<bool>("type.content.X24D.radio"))
    {
       int position = data.getConfiguration().get<int>("type.content.X24D.content.Position");
-      device = boost::make_shared<extensions::CX24DExtension>(api, data.getDeviceName(), position);
+      device = boost::make_shared<extensions::CX24DExtension>(api, data.getDeviceName(), position, m_DIList);
       X24DSlotused[position] = true;
    }
    //m_devicesList.push_back(device);

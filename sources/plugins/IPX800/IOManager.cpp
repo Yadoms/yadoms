@@ -11,10 +11,10 @@ CIOManager::CIOManager(const std::string& device, Poco::Net::IPAddress IPAddress
 {}
 
 void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api, 
-                            std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> > RelayList,
-                            std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> > DIList,
-                            std::vector<boost::shared_ptr<specificHistorizers::CAnalog> > analogList,
-                            std::vector<boost::shared_ptr<specificHistorizers::CCounter> > counterList)
+                            std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& RelayList,
+                            std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& DIList,
+                            std::vector<boost::shared_ptr<specificHistorizers::CAnalog> >& analogList,
+                            std::vector<boost::shared_ptr<specificHistorizers::CCounter> >& counterList)
 {
    m_RelayList = RelayList;
    m_DIList = DIList;
@@ -35,6 +35,7 @@ void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
    readIOFromDevice<specificHistorizers::CCounter>("C", m_countersList);
 
    // TODO : Historization to be done
+   
 }
 
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,

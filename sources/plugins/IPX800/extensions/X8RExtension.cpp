@@ -10,7 +10,8 @@ namespace extensions
 
    CX8RExtension::CX8RExtension(boost::shared_ptr<yApi::IYPluginApi> api,
                                 const std::string& device,
-                                const int& position):
+                                const int& position,
+                                std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& relayList):
       m_deviceName(device),
       m_slotNumber(position)
    {
@@ -20,6 +21,7 @@ namespace extensions
       details.set("provider", "IPX800");
       details.set("shortProvider", "ipx");
       details.set("type", "X24-D");
+      details.set("position", boost::lexical_cast<std::string>(position));
 
       // Relay Configuration
       for (int counter = 0; counter<X8R_RELAY_QTY; ++counter)

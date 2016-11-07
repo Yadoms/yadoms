@@ -13,8 +13,6 @@ void CIPX800Configuration::initializeWith(const shared::CDataContainer& data)
 {
    m_data.initializeWith(data);
 
-   data.printToLog();
-
    /*
    try {
       std::cout << "slot1:" << data.get<std::string>("translation.position.Slot1") << std::endl;
