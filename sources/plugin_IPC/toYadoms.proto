@@ -122,6 +122,20 @@ message RemoveKeyword {
 	required string keyword = 2;
 }
 
+message UpdateDeviceDetails {
+	required string device = 1;
+	required string details = 2;
+}
+
+message DeviceModelRequest {
+	required string device = 1;
+}
+
+message UpdateDeviceModel {
+	required string device = 1;
+	required string model = 2;
+}
+
 message msg {
 	oneof OneOf {
 		SetPluginState pluginState = 1;
@@ -143,5 +157,8 @@ message msg {
 		RemoveDevice removeDevice = 17;
 		AllDevicesRequest allDevicesRequest = 18;
 		RemoveKeyword removeKeyword = 19;
+		UpdateDeviceDetails updateDeviceDetails = 20;
+		DeviceModelRequest deviceModelRequest = 21;
+		UpdateDeviceModel updateDeviceModel = 22;
 	}
 }

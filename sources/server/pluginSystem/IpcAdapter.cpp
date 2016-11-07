@@ -190,6 +190,8 @@ namespace pluginSystem
          break;
       case toYadoms::msg::kDeviceDetails: processDeviceDetailsRequest(toYadomsProtoBuffer.devicedetails());
          break;
+      case toYadoms::msg::kUpdateDeviceDetails: processUpdateDeviceDetails(toYadomsProtoBuffer.updatedevicedetails());
+         break;
       case toYadoms::msg::kKeywordExists: processKeywordExistsRequest(toYadomsProtoBuffer.keywordexists());
          break;
       case toYadoms::msg::kDeclareDevice: processDeclareDevice(toYadomsProtoBuffer.declaredevice());
@@ -211,6 +213,10 @@ namespace pluginSystem
       case toYadoms::msg::kAllDevicesRequest: processAllDevicesRequest(toYadomsProtoBuffer.alldevicesrequest());
          break;
       case toYadoms::msg::kRemoveKeyword: processRemoveKeywordRequest(toYadomsProtoBuffer.removekeyword());
+         break;
+      case toYadoms::msg::kDeviceModelRequest: processDeviceModelRequest(toYadomsProtoBuffer.devicemodelrequest());
+         break;
+      case toYadoms::msg::kUpdateDeviceModel: processUpdateDeviceModel(toYadomsProtoBuffer.updatedevicemodel());
          break;
       default:
          throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
@@ -266,6 +272,12 @@ namespace pluginSystem
       auto answer = ans.mutable_devicedetails();
       answer->set_details(m_pluginApi->getDeviceDetails(msg.device()).serialize());
       send(ans);
+   }
+
+   void CIpcAdapter::processUpdateDeviceDetails(const toYadoms::UpdateDeviceDetails& msg) const
+   {
+      m_pluginApi->updateDeviceDetails(msg.device(),
+                                       shared::CDataContainer(msg.details()));
    }
 
    void CIpcAdapter::processAllDevicesRequest(const toYadoms::AllDevicesRequest& msg)
@@ -356,6 +368,20 @@ namespace pluginSystem
    {
       m_pluginApi->removeKeyword(msg.device(),
                                  msg.keyword());
+   }
+
+   void CIpcAdapter::processDeviceModelRequest(const toYadoms::DeviceModelRequest& msg)
+   {
+      toPlugin::msg ans;
+      auto answer = ans.mutable_devicemodelanswer();
+      answer->set_model(m_pluginApi->getDeviceModel(msg.device()));
+      send(ans);
+   }
+
+   void CIpcAdapter::processUpdateDeviceModel(const toYadoms::UpdateDeviceModel& msg) const
+   {
+      m_pluginApi->updateDeviceModel(msg.device(),
+                                     msg.model());
    }
 
    void CIpcAdapter::postStopRequest()
