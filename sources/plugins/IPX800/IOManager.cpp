@@ -147,8 +147,8 @@ void CIOManager::readIOFromDevice(const std::string& type, const std::vector<boo
    {
       for (diIterator = list.begin(); diIterator != list.end(); ++diIterator)
       {
-         (*diIterator)->set(results.get<bool>((*diIterator)->getHardwareName()));
          std::cout << "Set IO : " << (*diIterator)->getHardwareName() << std::endl;
+         (*diIterator)->set(results.get<bool>((*diIterator)->getHardwareName()));
          m_keywordsToDeclare.push_back((*diIterator));
       }
    }

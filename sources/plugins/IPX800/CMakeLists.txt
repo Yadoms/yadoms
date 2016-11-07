@@ -26,6 +26,8 @@ set(IPX800_PLUGIN_SOURCES
 	extensions/X8DExtension.h	
 	extensions/X8RExtension.cpp
 	extensions/X8RExtension.h
+	http/HttpMethods.cpp
+	http/HttpMethods.h
 	specificHistorizers/Analog.cpp
 	specificHistorizers/Analog.h
 	specificHistorizers/counter.cpp
@@ -35,6 +37,7 @@ set(IPX800_PLUGIN_SOURCES
 	)
 
 source_group(extensions extensions/*.*)
+source_group(http http/*.*)
 source_group(specificHistorizers specificHistorizers/*.*)
 	
 #########################################

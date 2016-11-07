@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "urlManager.h"
-#include <shared/http/HttpMethods.h>
+#include "http/HttpMethods.h"
 
 shared::CDataContainer urlManager::sendCommand(Poco::Net::IPAddress IPAddress, shared::CDataContainer parameters)
 {
@@ -10,5 +10,5 @@ shared::CDataContainer urlManager::sendCommand(Poco::Net::IPAddress IPAddress, s
    url << "http://" << IPAddress.toString() << "/api/xdevices.json";
    std::cout << url.str();
 
-   return shared::CHttpMethods::SendGetRequest(url.str(), parameters, false);
+   return http::CHttpMethods::SendGetRequest(url.str(), parameters);
 }

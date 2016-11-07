@@ -32,6 +32,7 @@ namespace extensions
          boost::shared_ptr<specificHistorizers::CInputOuput> temp = boost::make_shared<specificHistorizers::CInputOuput>(name.str(),
                                                                                                                          hardwareName.str(),
                                                                                                                          yApi::EKeywordAccessMode::kGet);
+         DIList.push_back(temp);
          keywordsToDeclare.push_back(temp);
       }
 

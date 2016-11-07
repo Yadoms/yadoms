@@ -28,10 +28,11 @@ namespace extensions
       {
          std::stringstream name, hardwareName;
          name << "R" << std::setfill('0') << std::setw(2) << boost::lexical_cast<int>(counter + 1);
-         hardwareName << boost::lexical_cast<int>(position * 8 + counter + 1);
+         hardwareName << "R" << boost::lexical_cast<int>(position * 8 + counter + 1);
          boost::shared_ptr<specificHistorizers::CInputOuput> temp = boost::make_shared<specificHistorizers::CInputOuput>(name.str(),
                                                                                                                          hardwareName.str(),
                                                                                                                          yApi::EKeywordAccessMode::kGetSet);
+         relayList.push_back(temp);
          keywordsToDeclare.push_back(temp);
       }
 

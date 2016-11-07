@@ -27,9 +27,11 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
    // Create al the other devices
    for (devicesIterator = devices.begin(); devicesIterator != devices.end(); ++devicesIterator)
    {
+      std::string model = api->getDeviceModel(*devicesIterator);
       std::cout << "Name : " << (*devicesIterator) << std::endl;
+      std::cout << "Model : " << model << std::endl;
 
-      if ((*devicesIterator).compare("X8-R"))
+      if (model == "X-8R")
       {
          auto details = api->getDeviceDetails((*devicesIterator));
          int position = details.get<int>("position");
@@ -37,8 +39,9 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
          X8RSlotused[position] = true;
          boost::shared_ptr<extensions::IExtension> extension;
          extension = boost::make_shared<extensions::CX8RExtension>(api, deviceName, position, m_relaysList);
+         std::cout << "Nb of relays : " << m_relaysList.size() << std::endl;
       }
-      if ((*devicesIterator).compare("X8-D"))
+      else if (model == "X-8D")
       {
          auto details = api->getDeviceDetails((*devicesIterator));
          int position = details.get<int>("position");
@@ -47,7 +50,7 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
          boost::shared_ptr<extensions::IExtension> extension;
          extension = boost::make_shared<extensions::CX8DExtension>(api, deviceName, position, m_DIList);
       }
-      if ((*devicesIterator).compare("X24-D"))
+      else if (model == "X-24D")
       {
          auto details = api->getDeviceDetails((*devicesIterator));
          int position = details.get<int>("position");
@@ -77,7 +80,7 @@ void CIPX800Factory::createIPX800Device(boost::shared_ptr<yApi::IYPluginApi> api
    for (int counter = 0; counter<IPX800_RELAY_QTY; ++counter)
    {
       std::stringstream name, hardwareName;
-      name << "R" << std::setfill('0') << std::setw(1) << boost::lexical_cast<int>(counter + 1);
+      name << "R" << std::setfill('0') << std::setw(2) << boost::lexical_cast<int>(counter + 1);
       hardwareName << "R" << boost::lexical_cast<int>(counter + 1);
       boost::shared_ptr<specificHistorizers::CInputOuput> temp = boost::make_shared<specificHistorizers::CInputOuput>(name.str(), 
                                                                                                                       hardwareName.str(),
@@ -103,7 +106,7 @@ void CIPX800Factory::createIPX800Device(boost::shared_ptr<yApi::IYPluginApi> api
    for (int counter = 0; counter<IPX800_ANA_QTY; ++counter)
    {
       std::stringstream name, hardwareName;
-      name << "A" << std::setfill('0') << std::setw(1) << boost::lexical_cast<int>(counter + 1);
+      name << "A" << std::setfill('0') << std::setw(2) << boost::lexical_cast<int>(counter + 1);
       hardwareName << "A" << boost::lexical_cast<int>(counter + 1);
       boost::shared_ptr<specificHistorizers::CAnalog> temp = boost::make_shared<specificHistorizers::CAnalog>(name.str(), 
                                                                                                               hardwareName.str(),

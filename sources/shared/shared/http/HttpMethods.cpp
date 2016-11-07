@@ -18,7 +18,7 @@ namespace shared
       return SendGetRequest(url, parameters);
    }
 
-   CDataContainer CHttpMethods::SendGetRequest(const std::string & url, shared::CDataContainer & parameters, bool controlActivated)
+   CDataContainer CHttpMethods::SendGetRequest(const std::string & url, shared::CDataContainer & parameters)
    {
       try
       {
@@ -41,20 +41,15 @@ namespace shared
 
          if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK)
          {
-            if (boost::icontains(response.getContentType(), "application/json") || !controlActivated)
+            if (boost::icontains(response.getContentType(), "application/json"))
             {
                std::string content;
+
                if (response.hasContentLength())
                {
                   content.resize(static_cast<unsigned int>(response.getContentLength()));
                   rs.read(const_cast<char*>(content.c_str()), response.getContentLength());
 						return CDataContainer(content);
-               }
-               else
-               {
-                  std::ostringstream oss;
-                  Poco::StreamCopier::copyStream(rs, oss);
-                  return CDataContainer(oss.str());
                }
 
                //do nothing, request content may be empty
@@ -67,16 +62,14 @@ namespace shared
          else
          {
             auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
-            //YADOMS_LOG(error) << message;
-            std::cerr << message << std::endl;
+            YADOMS_LOG(error) << message;
             throw exception::CException(message);
          }
       }
       catch (Poco::Exception& e) 
       {
          auto message = (boost::format("Fail to send get http request \"%1%\" : %2%") % url % e.message()).str();
-         //YADOMS_LOG(error) << message;
-         std::cerr << message << std::endl;
+         YADOMS_LOG(error) << message;
          throw exception::CException(message);
       }
       return CDataContainer();
