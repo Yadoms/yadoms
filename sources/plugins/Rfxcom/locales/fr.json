@@ -1198,6 +1198,31 @@
                   }               
                }
             },
+               
+            "mcz1PelletStove":
+            {
+               "name": "MCZ Pellet Stove (modèle avec 1 ventilateur)",
+               "content":
+               {
+                  "unitCode":
+                  {
+                     "name": "Equipement",
+                     "description": "L'identifiant de l'équipement (0-16777215)"
+                  }               
+               }
+            },
+            "mcz2PelletStove":
+            {
+               "name": "MCZ Pellet Stove (modèle avec 2 ventilateurs)",
+               "content":
+               {
+                  "unitCode":
+                  {
+                     "name": "Equipement",
+                     "description": "L'identifiant de l'équipement (0-16777215)"
+                  }               
+               }
+            },
             
             "cameraX10Ninja":
             {

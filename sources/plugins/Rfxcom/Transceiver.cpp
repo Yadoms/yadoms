@@ -40,6 +40,7 @@
 #include "rfxcomMessages/Thermostat1.h"
 #include "rfxcomMessages/Thermostat2.h"
 #include "rfxcomMessages/Thermostat3.h"
+#include "rfxcomMessages/Thermostat4.h"
 #include "rfxcomMessages/TransceiverStatus.h"
 #include "rfxcomMessages/UV.h"
 #include "rfxcomMessages/Weight.h"
@@ -59,7 +60,7 @@
 
 CTransceiver::CTransceiver()
    : m_seqNumberProvider(boost::make_shared<CIncrementSequenceNumber>()),
-   m_unsecuredProtocolFilters(createUnsecuredProtocolFilters())
+     m_unsecuredProtocolFilters(createUnsecuredProtocolFilters())
 {
 }
 
@@ -67,9 +68,9 @@ CTransceiver::~CTransceiver()
 {
 }
 
-std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter> > CTransceiver::createUnsecuredProtocolFilters()
+std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter>> CTransceiver::createUnsecuredProtocolFilters()
 {
-   std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter> > filters;
+   std::map<int, boost::shared_ptr<IUnsecuredProtocolFilter>> filters;
    filters[pTypeCURRENTENERGY] = rfxcomMessages::CCurrentEnergy::createFilter();
    return filters;
 }
@@ -174,8 +175,8 @@ shared::communication::CByteBuffer CTransceiver::buildStartReceiverCmd() const
 }
 
 
-boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CTransceiver::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                                                                      boost::shared_ptr<const yApi::IDeviceCommand> command) const
+boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiver::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                                                                     boost::shared_ptr<const yApi::IDeviceCommand> command) const
 {
    try
    {
@@ -223,6 +224,8 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CTransceiver:
          return rfxcomMessages::CThermostat2(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeThermostat3:
          return rfxcomMessages::CThermostat3(api, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+      case pTypeThermostat4:
+         return rfxcomMessages::CThermostat4(api, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeRadiator1:
          return rfxcomMessages::CRadiator1(api, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       case pTypeFS20:
@@ -335,12 +338,12 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
       case pTypeFS20: message = boost::make_shared<rfxcomMessages::CFS20>(api, *buf, bufSize);
          break;
       default:
-      {
-         std::cerr << "Invalid RfxCom message received, unknown packet type " << std::setfill('0')
-            << std::setw(sizeof(unsigned char) * 2) << std::hex << static_cast<int>(buf->RXRESPONSE.packettype)
-            << std::endl;
-         break;
-      }
+         {
+            std::cerr << "Invalid RfxCom message received, unknown packet type " << std::setfill('0')
+               << std::setw(sizeof(unsigned char) * 2) << std::hex << static_cast<int>(buf->RXRESPONSE.packettype)
+               << std::endl;
+            break;
+         }
       }
       return message;
    }
@@ -528,6 +531,12 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
       else if (data.getConfiguration().get<bool>("type.content.g6rH4s.radio"))
          msg = boost::make_shared<rfxcomMessages::CThermostat3>(api, sTypeMertikG6RH4S, data.getConfiguration().get<shared::CDataContainer>("type.content.g6rH4s.content"));
 
+      // Thermostat4
+      else if (data.getConfiguration().get<bool>("type.content.mcz1PelletStove.radio"))
+         msg = boost::make_shared<rfxcomMessages::CThermostat4>(api, sTypeMCZ1, data.getConfiguration().get<shared::CDataContainer>("type.content.mcz1PelletStove.content"));
+      else if (data.getConfiguration().get<bool>("type.content.mcz2PelletStove.radio"))
+         msg = boost::make_shared<rfxcomMessages::CThermostat4>(api, sTypeMCZ2, data.getConfiguration().get<shared::CDataContainer>("type.content.mcz2PelletStove.content"));
+
       // Radiator1
       else if (data.getConfiguration().get<bool>("type.content.smartwares.radio"))
          msg = boost::make_shared<rfxcomMessages::CRadiator1>(api, sTypeSmartwares, data.getConfiguration().get<shared::CDataContainer>("type.content.smartwares.content"));
@@ -558,4 +567,3 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
 
    return msg->getDeviceName();
 }
-

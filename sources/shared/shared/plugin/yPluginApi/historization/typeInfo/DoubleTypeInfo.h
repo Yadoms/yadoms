@@ -57,7 +57,7 @@ namespace shared
 
                   //-----------------------------------------------------
                   ///\brief   Set the precision value
-                  ///\param [in] stepValue : The precision value
+                  ///\param [in] precisionValue : The precision value
                   ///\return  A reference to itself to allow method chaining
                   //-----------------------------------------------------
                   CDoubleTypeInfo& setPrecision(const double precisionValue);
