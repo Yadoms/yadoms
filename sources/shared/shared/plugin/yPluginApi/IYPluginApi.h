@@ -190,36 +190,6 @@ namespace shared
             //----------------------------------------------------------------------------------------------------------------
 
             //-----------------------------------------------------
-            ///\brief Check if a device already exists for the server
-            ///\param    [in]    device            The device name
-            ///\return true if the device exists, false if not
-            //-----------------------------------------------------
-            virtual bool deviceExists(const std::string& device) const = 0;
-
-            //-----------------------------------------------------
-            ///\brief Get the details of a device
-            ///\param    [in]    device            The device name
-            ///\return the device details
-            ///\throw shared::exception::CEmptyResult if device dosen't exist
-            //-----------------------------------------------------
-            virtual CDataContainer getDeviceDetails(const std::string& device) const = 0;
-
-            //-----------------------------------------------------
-            ///\brief Update the details of a device (replace the existing details)
-            ///\param    [in]    device            The device name
-            ///\param    [in]    details           Device details
-            ///\throw shared::exception::CEmptyResult if device dosen't exist
-            //-----------------------------------------------------
-            virtual void updateDeviceDetails(const std::string& device,
-                                             const CDataContainer& details) const = 0;
-
-            //-----------------------------------------------------
-            ///\brief Get all devices attached to this plugin instance
-            ///\return the devices list
-            //-----------------------------------------------------
-            virtual std::vector<std::string> getAllDevices() const = 0;
-
-            //-----------------------------------------------------
             ///\brief Declare new device to Yadoms, with its keyword (all-in-one function)
             ///\param    [in]    device            The device name
             ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185")
@@ -244,6 +214,53 @@ namespace shared
                                        const std::string& model,
                                        const std::vector<boost::shared_ptr<const historization::IHistorizable>>& keywords = std::vector<boost::shared_ptr<const historization::IHistorizable>>(),
                                        const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
+
+            //-----------------------------------------------------
+            ///\brief Get all devices attached to this plugin instance
+            ///\return the devices list
+            //-----------------------------------------------------
+            virtual std::vector<std::string> getAllDevices() const = 0;
+
+            //-----------------------------------------------------
+            ///\brief Check if a device already exists for the server
+            ///\param    [in]    device            The device name
+            ///\return true if the device exists, false if not
+            //-----------------------------------------------------
+            virtual bool deviceExists(const std::string& device) const = 0;
+
+            //-----------------------------------------------------
+            ///\brief Get the details of a device
+            ///\param    [in]    device            The device name
+            ///\return the device details
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual CDataContainer getDeviceDetails(const std::string& device) const = 0;
+
+            //-----------------------------------------------------
+            ///\brief Update the details of a device (replace the existing details)
+            ///\param    [in]    device            The device name
+            ///\param    [in]    details           Device details
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual void updateDeviceDetails(const std::string& device,
+                                             const CDataContainer& details) const = 0;
+
+            //-----------------------------------------------------
+            ///\brief Get the model of a device
+            ///\param    [in]    device            The device name
+            ///\return the device model
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual std::string getDeviceModel(const std::string& device) const = 0;
+
+            //-----------------------------------------------------
+            ///\brief Update the model of a device (replace the existing model)
+            ///\param    [in]    device            The device name
+            ///\param    [in]    model             Device model
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual void updateDeviceModel(const std::string& device,
+                                           const std::string& model) const = 0;
 
             //-----------------------------------------------------
             ///\brief Remove device (and remove all associated keywords and acquisitions)

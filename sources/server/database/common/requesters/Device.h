@@ -51,7 +51,8 @@ namespace database
                                            const shared::CDataContainer& configuration) override;
             void updateDeviceDetails(int deviceId,
                                      const shared::CDataContainer& details) override;
-
+            void updateDeviceModel(int deviceId,
+                                   const std::string& model) override;
             void removeDevice(int deviceId) override;
             void removeDevice(int pluginId,
                               const std::string& deviceName) override;

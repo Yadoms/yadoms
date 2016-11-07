@@ -188,7 +188,7 @@ namespace database
                                                 const std::string& newFriendlyName)
          {
             if (!deviceExists(deviceId))
-               throw shared::exception::CEmptyResult("The device do not exists");
+               throw shared::exception::CEmptyResult("The device does not exists");
 
             //device not found, creation is enabled
 
@@ -210,7 +210,7 @@ namespace database
                                                  const shared::CDataContainer& configuration)
          {
             if (!deviceExists(deviceId))
-               throw shared::exception::CEmptyResult("The device do not exists");
+               throw shared::exception::CEmptyResult("The device does not exists");
 
             auto qUpdate = m_databaseRequester->newQuery();
             qUpdate.Update(CDeviceTable::getTableName()).
@@ -225,7 +225,7 @@ namespace database
                                            const shared::CDataContainer& details)
          {
             if (!deviceExists(deviceId))
-               throw shared::exception::CEmptyResult("The device do not exists");
+               throw shared::exception::CEmptyResult("The device does not exists");
 
             auto qUpdate = m_databaseRequester->newQuery();
             qUpdate.Update(CDeviceTable::getTableName()).
@@ -234,6 +234,21 @@ namespace database
 
             if (m_databaseRequester->queryStatement(qUpdate) <= 0)
                throw shared::exception::CEmptyResult("Fail to update device details");
+         }
+
+         void CDevice::updateDeviceModel(int deviceId,
+                                         const std::string& model)
+         {
+            if (!deviceExists(deviceId))
+               throw shared::exception::CEmptyResult("The device does not exists");
+
+            auto qUpdate = m_databaseRequester->newQuery();
+            qUpdate.Update(CDeviceTable::getTableName()).
+                   Set(CDeviceTable::getModelColumnName(), model).
+                   Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
+
+            if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+               throw shared::exception::CEmptyResult("Fail to update device model");
          }
 
          std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDevices() const

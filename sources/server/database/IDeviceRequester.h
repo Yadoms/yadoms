@@ -128,11 +128,20 @@ namespace database
       //--------------------------------------------------------------
       /// \brief                          Update the device details
       /// \param [in] deviceId            The device id
-      /// \param [in] newFriendlyName     The new details
+      /// \param [in] details             The new details
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void updateDeviceDetails(int deviceId,
                                        const shared::CDataContainer& details) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                          Update the device model
+      /// \param [in] deviceId            The device id
+      /// \param [in] model               The new model
+      /// \throw  shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual void updateDeviceModel(int deviceId,
+                                     const std::string& model) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove device 

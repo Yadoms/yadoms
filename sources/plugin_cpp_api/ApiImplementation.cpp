@@ -370,6 +370,86 @@ namespace plugin_cpp_api
       }
    }
 
+   void CApiImplementation::declareDevice(const std::string& device,
+                                          const std::string& model,
+                                          boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
+                                          const shared::CDataContainer& details)
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_declaredevice();
+      request->set_device(device);
+      request->set_model(model);
+      fillHistorizable(keyword, request->add_keywords());
+      if (!details.empty())
+         request->set_details(details.serialize());
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : declareDevice(" << device << ", " << model << ", " << keyword->getKeyword() << ", " << details.serialize() << ")" << std::endl;
+         throw;
+      }
+   }
+
+   void CApiImplementation::declareDevice(const std::string& device,
+                                          const std::string& model,
+                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords,
+                                          const shared::CDataContainer& details)
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_declaredevice();
+      request->set_device(device);
+      request->set_model(model);
+      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
+         fillHistorizable(*keyword, request->add_keywords());
+      if (!details.empty())
+         request->set_details(details.serialize());
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : declareDevice(" << device << ", " << model << ", {";
+         std::for_each(keywords.begin(),
+                       keywords.end(),
+                       [](boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword)
+                       {
+                          std::cerr << keyword->getKeyword() << ", ";
+                       });
+         std::cerr << "}, " << details.serialize() << ")" << std::endl;
+         throw;
+      }
+   }
+
+   std::vector<std::string> CApiImplementation::getAllDevices() const
+   {
+      toYadoms::msg req;
+      req.mutable_alldevicesrequest();
+
+      std::vector<std::string> allDevices;
+      try
+      {
+         send(req,
+              [](const toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_alldevicesanswer();
+              },
+              [&](const toPlugin::msg& ans) -> void
+              {
+                 std::copy(ans.alldevicesanswer().devices().begin(), ans.alldevicesanswer().devices().end(), std::back_inserter(allDevices));
+              });
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : getAllDevices()" << std::endl;
+         throw;
+      }
+      return allDevices;
+   }
+
    bool CApiImplementation::deviceExists(const std::string& device) const
    {
       toYadoms::msg req;
@@ -443,82 +523,47 @@ namespace plugin_cpp_api
       }
    }
 
-   std::vector<std::string> CApiImplementation::getAllDevices() const
+   std::string CApiImplementation::getDeviceModel(const std::string& device) const
    {
       toYadoms::msg req;
-      auto request = req.mutable_alldevicesrequest();
+      auto request = req.mutable_devicemodelrequest();
+      request->set_device(device);
 
-      std::vector<std::string> allDevices;
+      std::string model;
       try
       {
          send(req,
               [](const toPlugin::msg& ans) -> bool
               {
-                 return ans.has_alldevicesanswer();
+                 return ans.has_devicemodelanswer();
               },
               [&](const toPlugin::msg& ans) -> void
               {
-                 std::copy(ans.alldevicesanswer().devices().begin(), ans.alldevicesanswer().devices().end(), std::back_inserter(allDevices));
+                 model = ans.devicemodelanswer().model();
               });
       }
       catch (std::exception&)
       {
-         std::cerr << "Call was : getAllDevices()" << std::endl;
+         std::cerr << "Call was : getDeviceModel(" << device << ")" << std::endl;
          throw;
       }
-      return allDevices;
+      return model;
    }
 
-   void CApiImplementation::declareDevice(const std::string& device,
-                                          const std::string& model,
-                                          boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
-                                          const shared::CDataContainer& details)
+   void CApiImplementation::updateDeviceModel(const std::string& device,
+                                              const std::string& model) const
    {
       toYadoms::msg req;
-      auto request = req.mutable_declaredevice();
+      auto request = req.mutable_updatedevicemodel();
       request->set_device(device);
       request->set_model(model);
-      fillHistorizable(keyword, request->add_keywords());
-      if (!details.empty())
-         request->set_details(details.serialize());
       try
       {
          send(req);
       }
       catch (std::exception&)
       {
-         std::cerr << "Call was : declareDevice(" << device << ", " << model << ", " << keyword->getKeyword() << ", " << details.serialize() << ")" << std::endl;
-         throw;
-      }
-   }
-
-   void CApiImplementation::declareDevice(const std::string& device,
-                                          const std::string& model,
-                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords,
-                                          const shared::CDataContainer& details)
-   {
-      toYadoms::msg req;
-      auto request = req.mutable_declaredevice();
-      request->set_device(device);
-      request->set_model(model);
-      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
-         fillHistorizable(*keyword, request->add_keywords());
-      if (!details.empty())
-         request->set_details(details.serialize());
-      try
-      {
-         send(req);
-      }
-      catch (std::exception&)
-      {
-         std::cerr << "Call was : declareDevice(" << device << ", " << model << ", {";
-         std::for_each(keywords.begin(),
-                       keywords.end(),
-                       [](boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword)
-                       {
-                          std::cerr << keyword->getKeyword() << ", ";
-                       });
-         std::cerr << "}, " << details.serialize() << ")" << std::endl;
+         std::cerr << "Call was : updateDeviceModel(" << device << ", " << model << ")" << std::endl;
          throw;
       }
    }

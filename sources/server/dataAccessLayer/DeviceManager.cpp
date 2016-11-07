@@ -86,13 +86,13 @@ namespace dataAccessLayer
    }
 
    void CDeviceManager::updateDeviceFriendlyName(int deviceId,
-      const std::string& newFriendlyName)
+                                                 const std::string& newFriendlyName)
    {
       m_deviceRequester->updateDeviceFriendlyName(deviceId, newFriendlyName);
    }
 
    void CDeviceManager::updateDeviceConfiguration(int deviceId,
-      const shared::CDataContainer & configuration)
+                                                  const shared::CDataContainer& configuration)
    {
       m_deviceRequester->updateDeviceConfiguration(deviceId, configuration);
 
@@ -103,9 +103,15 @@ namespace dataAccessLayer
    }
 
    void CDeviceManager::updateDeviceDetails(int deviceId,
-      const shared::CDataContainer& details)
+                                            const shared::CDataContainer& details)
    {
       m_deviceRequester->updateDeviceDetails(deviceId, details);
+   }
+
+   void CDeviceManager::updateDeviceModel(int deviceId,
+                                          const std::string& model)
+   {
+      m_deviceRequester->updateDeviceModel(deviceId, model);
    }
 
    void CDeviceManager::removeDevice(int deviceId)

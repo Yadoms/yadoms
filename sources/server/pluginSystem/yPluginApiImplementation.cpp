@@ -44,31 +44,6 @@ namespace pluginSystem
       m_instanceStateHandler->setState(state, customMessageId, customMessageDataSerialized);
    }
 
-   bool CYPluginApiImplementation::deviceExists(const std::string& device) const
-   {
-      return m_deviceManager->deviceExists(getPluginId(), device);
-   }
-
-   shared::CDataContainer CYPluginApiImplementation::getDeviceDetails(const std::string& device) const
-   {
-      return m_deviceManager->getDevice(getPluginId(), device)->Details;
-   }
-
-   void CYPluginApiImplementation::updateDeviceDetails(const std::string& device,
-                                                       const shared::CDataContainer& details) const
-   {
-      if (!deviceExists(device))
-         throw shared::exception::CEmptyResult("Fail to update device details : device doesn't exist.");
-
-      m_deviceManager->updateDeviceDetails(m_deviceManager->getDevice(getPluginId(), device)->Id(),
-                                           details);
-   }
-
-   std::vector<std::string> CYPluginApiImplementation::getAllDevices() const
-   {
-      return m_deviceManager->getDevicesForPluginInstance(getPluginId());
-   }
-
    void CYPluginApiImplementation::declareDevice(const std::string& device,
                                                  const std::string& model,
                                                  boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
@@ -90,6 +65,46 @@ namespace pluginSystem
          m_deviceManager->createDevice(getPluginId(), device, device, model, details);
 
       declareKeywords(device, keywords);
+   }
+
+   std::vector<std::string> CYPluginApiImplementation::getAllDevices() const
+   {
+      return m_deviceManager->getDevicesForPluginInstance(getPluginId());
+   }
+
+   bool CYPluginApiImplementation::deviceExists(const std::string& device) const
+   {
+      return m_deviceManager->deviceExists(getPluginId(), device);
+   }
+
+   shared::CDataContainer CYPluginApiImplementation::getDeviceDetails(const std::string& device) const
+   {
+      return m_deviceManager->getDevice(getPluginId(), device)->Details;
+   }
+
+   void CYPluginApiImplementation::updateDeviceDetails(const std::string& device,
+                                                       const shared::CDataContainer& details) const
+   {
+      if (!deviceExists(device))
+         throw shared::exception::CEmptyResult("Fail to update device details : device doesn't exist.");
+
+      m_deviceManager->updateDeviceDetails(m_deviceManager->getDevice(getPluginId(), device)->Id(),
+                                           details);
+   }
+
+   std::string CYPluginApiImplementation::getDeviceModel(const std::string& device) const
+   {
+      return m_deviceManager->getDevice(getPluginId(), device)->Model;
+   }
+
+   void CYPluginApiImplementation::updateDeviceModel(const std::string& device,
+                                                     const std::string& model) const
+   {
+      if (!deviceExists(device))
+         throw shared::exception::CEmptyResult("Fail to update device model : device doesn't exist.");
+
+      m_deviceManager->updateDeviceModel(m_deviceManager->getDevice(getPluginId(), device)->Id(),
+                                         model);
    }
 
    void CYPluginApiImplementation::removeDevice(const std::string& device)

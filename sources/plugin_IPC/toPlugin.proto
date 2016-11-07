@@ -80,6 +80,10 @@ message AllDevicesAnswer {
 	repeated string devices = 1;
 }
 
+message DeviceModelAnswer {
+	required string model = 1;
+}
+
 message msg {
 	oneof OneOf {
 		string error = 1;
@@ -102,6 +106,7 @@ message msg {
 		SetDeviceConfiguration setDeviceConfiguration = 19;
 		DeviceRemoved deviceRemoved = 20;
 		AllDevicesAnswer allDevicesAnswer = 21;
+		DeviceModelAnswer deviceModelAnswer = 22;
 	}
 }
 

@@ -214,6 +214,10 @@ namespace pluginSystem
          break;
       case toYadoms::msg::kRemoveKeyword: processRemoveKeywordRequest(toYadomsProtoBuffer.removekeyword());
          break;
+      case toYadoms::msg::kDeviceModelRequest: processDeviceModelRequest(toYadomsProtoBuffer.devicemodelrequest());
+         break;
+      case toYadoms::msg::kUpdateDeviceModel: processUpdateDeviceModel(toYadomsProtoBuffer.updatedevicemodel());
+         break;
       default:
          throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
       }
@@ -364,6 +368,20 @@ namespace pluginSystem
    {
       m_pluginApi->removeKeyword(msg.device(),
                                  msg.keyword());
+   }
+
+   void CIpcAdapter::processDeviceModelRequest(const toYadoms::DeviceModelRequest& msg)
+   {
+      toPlugin::msg ans;
+      auto answer = ans.mutable_devicemodelanswer();
+      answer->set_model(m_pluginApi->getDeviceModel(msg.device()));
+      send(ans);
+   }
+
+   void CIpcAdapter::processUpdateDeviceModel(const toYadoms::UpdateDeviceModel& msg) const
+   {
+      m_pluginApi->updateDeviceModel(msg.device(),
+                                     msg.model());
    }
 
    void CIpcAdapter::postStopRequest()
