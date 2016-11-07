@@ -85,19 +85,27 @@ namespace dataAccessLayer
       return m_deviceRequester->getDevicesNames(pluginId);
    }
 
-   void CDeviceManager::updateDeviceFriendlyName(int deviceId, const std::string& newFriendlyName)
+   void CDeviceManager::updateDeviceFriendlyName(int deviceId,
+      const std::string& newFriendlyName)
    {
       m_deviceRequester->updateDeviceFriendlyName(deviceId, newFriendlyName);
    }
 
-   void CDeviceManager::updateDeviceConfiguration(int deviceId, const shared::CDataContainer & configuration)
+   void CDeviceManager::updateDeviceConfiguration(int deviceId,
+      const shared::CDataContainer & configuration)
    {
       m_deviceRequester->updateDeviceConfiguration(deviceId, configuration);
 
-      boost::shared_ptr<database::entities::CDevice> result = m_deviceRequester->getDevice(deviceId);
+      auto result = m_deviceRequester->getDevice(deviceId);
 
       //post notification
       notification::CHelpers::postChangeNotification(result, notification::change::EChangeType::kUpdate);
+   }
+
+   void CDeviceManager::updateDeviceDetails(int deviceId,
+      const shared::CDataContainer& details)
+   {
+      m_deviceRequester->updateDeviceDetails(deviceId, details);
    }
 
    void CDeviceManager::removeDevice(int deviceId)

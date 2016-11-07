@@ -170,7 +170,7 @@ namespace shared
             //-----------------------------------------------------
             virtual void setPluginState(const historization::EPluginState& state,
                                         const std::string& customMessageId = shared::CStringExtension::EmptyString,
-                                        const std::map<std::string, std::string> & customMessageDataParams = std::map<std::string, std::string>()) = 0;
+                                        const std::map<std::string, std::string>& customMessageDataParams = std::map<std::string, std::string>()) = 0;
 
 
             //----------------------------------------------------------------------------------------------------------------
@@ -205,6 +205,15 @@ namespace shared
             virtual CDataContainer getDeviceDetails(const std::string& device) const = 0;
 
             //-----------------------------------------------------
+            ///\brief Update the details of a device (replace the existing details)
+            ///\param    [in]    device            The device name
+            ///\param    [in]    details           Device details
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual void updateDeviceDetails(const std::string& device,
+                                             const CDataContainer& details) const = 0;
+
+            //-----------------------------------------------------
             ///\brief Get all devices attached to this plugin instance
             ///\return the devices list
             //-----------------------------------------------------
@@ -233,7 +242,7 @@ namespace shared
             //-----------------------------------------------------
             virtual void declareDevice(const std::string& device,
                                        const std::string& model,
-                                       const std::vector<boost::shared_ptr<const historization::IHistorizable> >& keywords = std::vector<boost::shared_ptr<const historization::IHistorizable> >(),
+                                       const std::vector<boost::shared_ptr<const historization::IHistorizable>>& keywords = std::vector<boost::shared_ptr<const historization::IHistorizable>>(),
                                        const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
 
             //-----------------------------------------------------
@@ -376,7 +385,7 @@ namespace shared
             ///\param    [in]    datalist          The list of historizable data
             //-----------------------------------------------------    
             virtual void historizeData(const std::string& device,
-                                       const std::vector<boost::shared_ptr<const historization::IHistorizable> >& dataVect) = 0;
+                                       const std::vector<boost::shared_ptr<const historization::IHistorizable>>& dataVect) = 0;
 
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
@@ -457,3 +466,5 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi	
+
+

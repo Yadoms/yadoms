@@ -425,6 +425,24 @@ namespace plugin_cpp_api
       return details;
    }
 
+   void CApiImplementation::updateDeviceDetails(const std::string& device,
+                                                const shared::CDataContainer& details) const
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_updatedevicedetails();
+      request->set_device(device);
+      request->set_details(details.serialize());
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : updateDeviceDetails(" << device << ", " << details.serialize() << ")" << std::endl;
+         throw;
+      }
+   }
+
    std::vector<std::string> CApiImplementation::getAllDevices() const
    {
       toYadoms::msg req;

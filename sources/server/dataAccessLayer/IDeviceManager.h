@@ -104,7 +104,17 @@ namespace dataAccessLayer
       /// \param [in] configuration       The device configuration
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual void updateDeviceConfiguration(int deviceId, const shared::CDataContainer & configuration) = 0;
+      virtual void updateDeviceConfiguration(int deviceId,
+                                             const shared::CDataContainer& configuration) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                          Update the device details
+      /// \param [in] deviceId            The device id
+      /// \param [in] details             The device details
+      /// \throw  shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual void updateDeviceDetails(int deviceId,
+                                       const shared::CDataContainer& details) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove device 

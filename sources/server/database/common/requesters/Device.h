@@ -47,8 +47,11 @@ namespace database
             std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode,
                                                                                         const shared::plugin::yPluginApi::EKeywordDataType& capacityType) const override;
             void updateDeviceFriendlyName(int deviceId, const std::string& newFriendlyName) override;
-            void updateDeviceConfiguration(int deviceId, const shared::CDataContainer & configuration) override;
-            
+            void updateDeviceConfiguration(int deviceId,
+                                           const shared::CDataContainer& configuration) override;
+            void updateDeviceDetails(int deviceId,
+                                     const shared::CDataContainer& details) override;
+
             void removeDevice(int deviceId) override;
             void removeDevice(int pluginId,
                               const std::string& deviceName) override;

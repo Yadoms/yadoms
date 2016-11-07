@@ -87,14 +87,6 @@ namespace database
                                                                 const std::string& model,
                                                                 const shared::CDataContainer& details) = 0;
 
-     //--------------------------------------------------------------
-     /// \brief                          Update the device configuration
-     /// \param [in] deviceId            The device id
-     /// \param [in] configuration       The device configuration
-     /// \throw  shared::exception::CEmptyResult if fails
-     //--------------------------------------------------------------
-     virtual void updateDeviceConfiguration(int deviceId, const shared::CDataContainer & configuration) = 0;
-
       //--------------------------------------------------------------
       /// \brief           List all devices
       /// \return          List of registered devices
@@ -123,6 +115,24 @@ namespace database
       //--------------------------------------------------------------
       virtual void updateDeviceFriendlyName(int deviceId,
                                             const std::string& newFriendlyName) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                          Update the device configuration
+      /// \param [in] deviceId            The device id
+      /// \param [in] configuration       The device configuration
+      /// \throw  shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual void updateDeviceConfiguration(int deviceId,
+                                             const shared::CDataContainer& configuration) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                          Update the device details
+      /// \param [in] deviceId            The device id
+      /// \param [in] newFriendlyName     The new details
+      /// \throw  shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual void updateDeviceDetails(int deviceId,
+                                       const shared::CDataContainer& details) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove device 

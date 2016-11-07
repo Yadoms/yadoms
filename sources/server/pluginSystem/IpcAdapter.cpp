@@ -190,6 +190,8 @@ namespace pluginSystem
          break;
       case toYadoms::msg::kDeviceDetails: processDeviceDetailsRequest(toYadomsProtoBuffer.devicedetails());
          break;
+      case toYadoms::msg::kUpdateDeviceDetails: processUpdateDeviceDetails(toYadomsProtoBuffer.updatedevicedetails());
+         break;
       case toYadoms::msg::kKeywordExists: processKeywordExistsRequest(toYadomsProtoBuffer.keywordexists());
          break;
       case toYadoms::msg::kDeclareDevice: processDeclareDevice(toYadomsProtoBuffer.declaredevice());
@@ -266,6 +268,12 @@ namespace pluginSystem
       auto answer = ans.mutable_devicedetails();
       answer->set_details(m_pluginApi->getDeviceDetails(msg.device()).serialize());
       send(ans);
+   }
+
+   void CIpcAdapter::processUpdateDeviceDetails(const toYadoms::UpdateDeviceDetails& msg) const
+   {
+      m_pluginApi->updateDeviceDetails(msg.device(),
+                                       shared::CDataContainer(msg.details()));
    }
 
    void CIpcAdapter::processAllDevicesRequest(const toYadoms::AllDevicesRequest& msg)
