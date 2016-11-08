@@ -42,5 +42,90 @@
       "type": "string"
     }
   },
-  "supportDeviceConfiguration": "true"
+  "deviceConfiguration": {
+    "staticConfigurationSchema": [
+      {
+        "models": ["*"],
+        "schema": {
+          "manufacturer": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "profile": {
+            "type": "radioSection",
+            "content": {
+              "F6-02-01": {
+                "type": "section",
+                "content": ""
+              },
+              "D2-01-12": {
+                "type": "section",
+                "content": {
+                  "localControl": {
+                    "type": "enum",
+                    "values": {
+                      "enable": "",
+                      "disable": ""
+                    },
+                    "defaultValue": "enable"
+                  },
+                  "taughtIn": {
+                    "type": "enum",
+                    "values": {
+                      "allDevices": "",
+                      "yadomsOnly": ""
+                    },
+                    "defaultValue": "allDevices"
+                  },
+                  "userInterfaceMode": {
+                    "type": "enum",
+                    "values": {
+                      "dayMode": "",
+                      "nightMode": ""
+                    },
+                    "defaultValue": "dayMode"
+                  },
+                  "defaultState": {
+                    "type": "enum",
+                    "values": {
+                      "off": "",
+                      "on": "",
+                      "previousState": "",
+                      "notUsed": ""
+                    },
+                    "defaultValue": "off"
+                  },
+                  "connectedSwitchsType": {
+                    "type": "enum",
+                    "values": {
+                      "switch": "",
+                      "pushButton": "",
+                      "autodetection": ""
+                    },
+                    "defaultValue": "autodetection"
+                  },
+                  "autoOffTimer": {
+                    "type": "decimal",
+                    "minimumValue": "0",
+                    "maximumValue": "3600",
+                    "precision": "1",
+                    "defaultValue": "0"
+                  },
+                  "delayRadioOffTimer": {
+                    "type": "decimal",
+                    "minimumValue": "0",
+                    "maximumValue": "3600",
+                    "precision": "1",
+                    "defaultValue": "0"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
 }
