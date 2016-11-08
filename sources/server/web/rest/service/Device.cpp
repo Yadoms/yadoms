@@ -360,7 +360,8 @@ namespace web
 
                   try
                   {
-                     m_messageSender.sendSetDeviceConfiguration(deviceId, shared::CDataContainer(requestContent));
+                     m_messageSender.sendSetDeviceConfiguration(deviceId,
+                                                                shared::CDataContainer(requestContent));
                      return CResult::GenerateSuccess();
                   }
                   catch (shared::exception::CEmptyResult&)
@@ -455,7 +456,7 @@ namespace web
 
 
          shared::CDataContainer CDevice::updateDeviceConfiguration(const std::vector<std::string>& parameters,
-            const std::string& requestContent) const
+                                                                   const std::string& requestContent) const
          {
             try
             {
@@ -472,10 +473,10 @@ namespace web
                      m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(deviceId, deviceToUpdate.Configuration());
 
                      //return the device info
-                     auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId); 
+                     auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
                      return CResult::GenerateSuccess(deviceFound);
                   }
-                  return CResult::GenerateError("invalid request content. could not retreive device configuration");
+                  return CResult::GenerateError("invalid request content. could not retrieve device configuration");
                }
                return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
             }
