@@ -138,8 +138,15 @@
       $deviceRow.find("td.device-actions").append(actionsBtns);
 
       //we bind event on the different actions
-      $deviceRow.find("button.btn-configure").unbind('click').bind('click', function () { updateDeviceFiendlyName(device); });
-      $deviceRow.find("button.btn-delete").unbind('click').bind('click', function () { deleteDevice(device); });
+      $deviceRow.find("button.btn-configure").unbind('click').bind('click', function (e) { 
+            e.stopPropagation();
+            updateDeviceFiendlyName(device); 
+      });
+
+      $deviceRow.find("button.btn-delete").unbind('click').bind('click', function (e) { 
+            e.stopPropagation();
+            deleteDevice(device); 
+      });
 
       $deviceRow.unbind('click').bind('click', function () { clickDevice(device); });
 
