@@ -4,7 +4,7 @@
  * Creates an instance of Page
  * @constructor
  */
-function PluginInstance(id, displayName, type, configuration, autoStart, category) {
+function PluginInstance(id, displayName, type, configuration, autoStart, category, deviceConfiguration) {
     //id is optional because null is used when creating new instance
     assert(!isNullOrUndefined(displayName), "displayName of a pluginInstance must be defined");
     assert(!isNullOrUndefined(type), "type of a pluginInstance must be defined");
@@ -20,6 +20,7 @@ function PluginInstance(id, displayName, type, configuration, autoStart, categor
     this.lastState = null;
 	this.lastMessageId = null;
     this.category = category;
+    this.deviceConfiguration = deviceConfiguration;
 }
 
 /**
@@ -33,7 +34,8 @@ PluginInstance.prototype.toJSON = function () {
       type: this.type,
       configuration: this.configuration,
       autoStart: this.autoStart,
-      category: this.category
+      category: this.category,
+      deviceConfiguration : this.deviceConfiguration
    };
 };
 
@@ -68,6 +70,24 @@ PluginInstance.prototype.getBoundPackageConfigurationSchema = function() {
    }
    return d.promise();
 };
+
+/**
+ * Get the package device configuration schema
+ * @returns {*} The device configuration schema or undefined
+ */
+PluginInstance.prototype.getPackageDeviceConfigurationSchema = function() {
+   var d = new $.Deferred();
+
+   if (!isNullOrUndefined(this.package)) {
+      //if deviceConfiguration is not defined, to not try to do any binding...
+      //just resolve with undefined deviceConfiguration
+      d.resolve(this.package.deviceConfiguration);
+   } else {
+      d.reject("undefined package");
+   }
+   return d.promise();
+};
+
 
 /**
  *  Get the bound manually device creation configuration schema

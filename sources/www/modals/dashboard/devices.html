@@ -100,7 +100,7 @@
 
    function addDeviceToDom(device, positionDevice) {
       var actionsBtns = "<div class=\"btn-group\">\n" +
-              "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-pencil\"></span></button>\n" +
+              "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-cog\"></span></button>\n" +
               "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
               "</div>";
 
@@ -138,7 +138,7 @@
       $deviceRow.find("td.device-actions").append(actionsBtns);
 
       //we bind event on the different actions
-      $deviceRow.find("button.btn-configure").unbind('click').bind('click', function () { configureDevice(device); });
+      $deviceRow.find("button.btn-configure").unbind('click').bind('click', function () { updateDeviceFiendlyName(device); });
       $deviceRow.find("button.btn-delete").unbind('click').bind('click', function () { deleteDevice(device); });
 
       $deviceRow.unbind('click').bind('click', function () { clickDevice(device); });
@@ -158,6 +158,8 @@
             //we prevent from editing or renaming system devices
             $deviceRow.find("button.btn-configure").addClass("disabled");
             $deviceRow.find("button.btn-delete").addClass("disabled");
+            $deviceRow.find("button.btn-delete").unbind('click');
+            $deviceRow.find("button.btn-configure").unbind('click');
          }
 
          var attachedTo = "<img src=\"" + iconName + "\" class=\"img-thumbnail dashboard-table-icon\">&nbsp;&nbsp;" +
@@ -171,42 +173,56 @@
       });
    }
 
-   function configureDevice(device) {
+   function updateDeviceFiendlyName(device) {
       //device represent the device concerned
       //we just ask for the friendly name
       Yadoms.modals.deviceConfigure.loadAsync()
          .done(function () {
-            Yadoms.showConfigurationDeviceModal(device, function () {
-               DeviceManager.updateFriendlyNameToServer(device)
-                  .done(function (updateDevice) {
-                     //We update the information that can have changed after the configuration
-					 
-					 // Copy of the list before the new sort
-					 var TempdeviceList = deviceList.slice ( 0, deviceList.length );					 
-					 
-					 //sort after rename
-					 deviceList = sortListItemsWithFriendlyName ( deviceList );					 
-					 
-					 var isIdentical = (TempdeviceList.length == deviceList.length) && TempdeviceList.every(function(element, index) {
-						return element.friendlyName === deviceList[index].friendlyName; 					 
-					 })					 
-					 
-                     var $row = getDeviceDomRow(updateDevice);
-					 
-					 if (!isIdentical)
-					 {  // If the two lists are differents, we change the order
-						$row.remove ();
-						
-						addDeviceToDom ( device, deviceList.indexOf (device) );
-					 }else
-					 {
-                        var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + device.friendlyName + "</span>";
-                        $row.find("td.device-friendlyName").html(friendlyName);
-					 }
-                  })
-                  .fail(function (error) {
-                     notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
+
+            DeviceManager.getConfigurationSchema(device)
+            .done(function(schemaConfig) {
+                  Yadoms.showConfigurationDeviceModal(device, schemaConfig, function () {
+
+                        //update Friendly name
+                        DeviceManager.updateFriendlyNameToServer(device)
+                        .done(function (updateDevice) {
+                              //We update the information that can have changed after the configuration
+                                    
+                              // Copy of the list before the new sort
+                              var TempdeviceList = deviceList.slice ( 0, deviceList.length );					 
+                              
+                              //sort after rename
+                              deviceList = sortListItemsWithFriendlyName ( deviceList );					 
+                              
+                              var isIdentical = (TempdeviceList.length == deviceList.length) && TempdeviceList.every(function(element, index) {
+                                    return element.friendlyName === deviceList[index].friendlyName; 					 
+                              })					 
+                              
+                              var $row = getDeviceDomRow(updateDevice);
+                              
+                              if (!isIdentical)
+                              {  // If the two lists are differents, we change the order
+                                    $row.remove ();
+                                    
+                                    addDeviceToDom ( device, deviceList.indexOf (device) );
+                              } else {
+                                    var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + device.friendlyName + "</span>";
+                                    $row.find("td.device-friendlyName").html(friendlyName);
+                              }
+                        }).fail(function (error) {
+                              notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
+                        });
+
+                        //update configuration
+                        DeviceManager.updateConfigurationToServer(device)
+                        .fail(function (error) {
+                              notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
+                        });
                   });
+
+            })
+            .fail(function (error) {
+                  notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
             });
          });
    }
