@@ -237,10 +237,10 @@ namespace pluginSystem
       void stopAllInstancesOfPlugin(const std::string& pluginName);
 
       //--------------------------------------------------------------
-      /// \brief                 Remove a device from a plugin
-      /// \param [in] deviceId   The devide ID to remove
+      /// \brief                 Notify a plugin when a device is removed
+      /// \param [in] deviceId   The removed device ID
       //--------------------------------------------------------------
-      void removeDevice(int deviceId) const;
+      void notifyDeviceRemoved(int deviceId) const;
 
    private:
       //-----------------------------------------------------

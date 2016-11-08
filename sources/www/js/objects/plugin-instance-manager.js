@@ -28,7 +28,7 @@ PluginInstanceManager.factory = function (json) {
     assert(!isNullOrUndefined(json.autoStart), "json.autoStart must be defined");
     assert(!isNullOrUndefined(json.category), "json.category of a pluginInstance must be defined");
 
-    return new PluginInstance(json.id, json.displayName, json.type, json.configuration, json.autoStart, json.category);
+    return new PluginInstance(json.id, json.displayName, json.type, json.configuration, json.autoStart, json.category, json.deviceConfiguration);
 };
 
 /**
@@ -278,7 +278,7 @@ PluginInstanceManager.downloadPackage = function (pluginInstance) {
     var d = new $.Deferred();
 
     //we can't download package from system plugins
-    if (!pluginInstance.isSystemCategory()) {
+    if (!pluginInstance.isSystemCategory() && !pluginInstance.package) {
         RestEngine.getJson("plugins/" + pluginInstance.type + "/package.json")
             .done(function (data) {
                 pluginInstance.package = data;

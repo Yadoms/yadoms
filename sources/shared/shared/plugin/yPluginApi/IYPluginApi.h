@@ -175,7 +175,7 @@ namespace shared
             //-----------------------------------------------------
             virtual void setPluginState(const historization::EPluginState& state,
                                         const std::string& customMessageId = shared::CStringExtension::EmptyString,
-                                        const std::map<std::string, std::string> & customMessageDataParams = std::map<std::string, std::string>()) = 0;
+                                        const std::map<std::string, std::string>& customMessageDataParams = std::map<std::string, std::string>()) = 0;
 
 
             //----------------------------------------------------------------------------------------------------------------
@@ -193,21 +193,6 @@ namespace shared
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
-
-            //-----------------------------------------------------
-            ///\brief Check if a device already exists for the server
-            ///\param    [in]    device            The device name
-            ///\return true if the device exists, false if not
-            //-----------------------------------------------------
-            virtual bool deviceExists(const std::string& device) const = 0;
-
-            //-----------------------------------------------------
-            ///\brief Get the details of a device
-            ///\param    [in]    device            The device name
-            ///\return the device details
-            ///\throw shared::exception::CEmptyResult if device doesn't exist
-            //-----------------------------------------------------
-            virtual CDataContainer getDeviceDetails(const std::string& device) const = 0;
 
             //-----------------------------------------------------
             ///\brief Declare new device to Yadoms, with its keyword (all-in-one function)
@@ -232,8 +217,80 @@ namespace shared
             //-----------------------------------------------------
             virtual void declareDevice(const std::string& device,
                                        const std::string& model,
-                                       const std::vector<boost::shared_ptr<const historization::IHistorizable> >& keywords = std::vector<boost::shared_ptr<const historization::IHistorizable> >(),
+                                       const std::vector<boost::shared_ptr<const historization::IHistorizable>>& keywords = std::vector<boost::shared_ptr<const historization::IHistorizable>>(),
                                        const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
+
+            //-----------------------------------------------------
+            ///\brief Get all devices attached to this plugin instance
+            ///\return the devices list
+            //-----------------------------------------------------
+            virtual std::vector<std::string> getAllDevices() const = 0;
+
+            //-----------------------------------------------------
+            ///\brief Check if a device already exists for the server
+            ///\param    [in]    device            The device name
+            ///\return true if the device exists, false if not
+            //-----------------------------------------------------
+            virtual bool deviceExists(const std::string& device) const = 0;
+
+            //-----------------------------------------------------
+            ///\brief Get the configuration of a device
+            ///\param    [in]    device            The device name
+            ///\return the device configuration
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual CDataContainer getDeviceConfiguration(const std::string& device) const = 0;
+
+            //-----------------------------------------------------
+            ///\brief Update the configuration of a device (replace the existing configuration)
+            ///\param    [in]    device            The device name
+            ///\param    [in]    configuration     Device configuration
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual void updateDeviceConfiguration(const std::string& device,
+                                                   const CDataContainer& configuration) const = 0;
+
+            //-----------------------------------------------------
+            ///\brief Get the details of a device
+            ///\param    [in]    device            The device name
+            ///\return the device details
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual CDataContainer getDeviceDetails(const std::string& device) const = 0;
+
+            //-----------------------------------------------------
+            ///\brief Update the details of a device (replace the existing details)
+            ///\param    [in]    device            The device name
+            ///\param    [in]    details           Device details
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual void updateDeviceDetails(const std::string& device,
+                                             const CDataContainer& details) const = 0;
+
+            //-----------------------------------------------------
+            ///\brief Get the model of a device
+            ///\param    [in]    device            The device name
+            ///\return the device model
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual std::string getDeviceModel(const std::string& device) const = 0;
+
+            //-----------------------------------------------------
+            ///\brief Update the model of a device (replace the existing model)
+            ///\param    [in]    device            The device name
+            ///\param    [in]    model             Device model
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual void updateDeviceModel(const std::string& device,
+                                           const std::string& model) const = 0;
+
+            //-----------------------------------------------------
+            ///\brief Remove device (and remove all associated keywords and acquisitions)
+            ///\param    [in]    device            The device name
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            ///\note  This call will not send a kEventDeviceRemoved event
+            //-----------------------------------------------------
+            virtual void removeDevice(const std::string& device) = 0;
 
 
             ////----------------------------------------------------------------------------------------------------------------
@@ -281,6 +338,15 @@ namespace shared
             virtual void declareKeyword(const std::string& device,
                                         boost::shared_ptr<const historization::IHistorizable> keyword,
                                         const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
+
+            //-----------------------------------------------------
+            ///\brief Remove keyword (and remove all associated acquisitions)
+            ///\param    [in]    device             The device name owner of the keyword
+            ///\param    [in]    keyword            The keyword name
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual void removeKeyword(const std::string& device,
+                                       const std::string& keyword) = 0;
 
 
             ////----------------------------------------------------------------------------------------------------------------
@@ -358,7 +424,7 @@ namespace shared
             ///\param    [in]    dataVect          The list of historizable data
             //-----------------------------------------------------    
             virtual void historizeData(const std::string& device,
-                                       const std::vector<boost::shared_ptr<const historization::IHistorizable> >& dataVect) = 0;
+                                       const std::vector<boost::shared_ptr<const historization::IHistorizable>>& dataVect) = 0;
 
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
@@ -439,3 +505,5 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi	
+
+

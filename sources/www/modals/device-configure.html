@@ -22,7 +22,58 @@
 </div>
 
 <script>
-   Yadoms.showConfigurationDeviceModal = function(device, callback) {
+   Yadoms.showConfigurationDeviceModal = function(device, schema, callback) {
+      assert(!isNullOrUndefined(device), "device must be defined");
+      assert($.isFunction(callback), "callback must be defined");
+
+      var $modalBody = $("div#configure-device-modal .modal-body");
+      $modalBody.empty();
+
+      //we append the text section
+      var friendlyNameParameter = new StringParameterHandler("modals.configure-device.", "friendlyName-configuration", { regex: '.+' }, device.friendlyName);
+      $modalBody.append(friendlyNameParameter.getDOMObject());
+      //we finish friendlyNameParameter instantiation
+      if ($.isFunction(friendlyNameParameter.applyScript))
+         friendlyNameParameter.applyScript();
+
+      //we haven't any other configuration
+      //we append classic configuration
+      var configMgr = new ConfigurationControlManager(schema, device.configuration, "plugins/" + device.attachedPlugin.type + ":deviceConfiguration.", $modalBody);
+
+      //i18n
+      $modalBody.i18n();
+
+      //validation form
+      //erase previous jqBootstrapValidation
+      $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
+         preventSubmit: true,
+         submitError: function($form, event, errors) {
+            console.warn("Unable to validate form: " + errors);
+         },
+         submitSuccess: function($form, event) {
+            event.preventDefault();
+            device.friendlyName = friendlyNameParameter.getCurrentConfiguration();
+            device.configuration = configMgr.getCurrentConfiguration();
+
+            console.debug("End of Device Configuration : " + JSON.stringify(device));
+
+            $("div#configure-device-modal").modal("hide");
+            callback();
+         },
+         filter: function() {
+            //we check only control that have class enable-validation and are visible
+            return $(this).is(".enable-validation") && $(this).is(":visible");
+         }
+      });
+
+      //fix additional sub modals input (like icon picker search box)
+      $('div#configure-device-modal').on('shown.bs.modal', function (e) { $(document).off('focusin.modal'); });
+
+      //we display the modal
+      $('div#configure-device-modal').modal({ backdrop: 'static' });
+   };
+   
+   Yadoms.showConfigurationDeviceModal2 = function(device, callback) {
       assert(!isNullOrUndefined(device), "device must be defined");
       assert($.isFunction(callback), "callback must be defined");
 

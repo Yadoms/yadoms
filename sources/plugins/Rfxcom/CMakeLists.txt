@@ -124,6 +124,10 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Security2ClassicKeyLoq.cpp
    rfxcomMessages/Thermostat1.h
    rfxcomMessages/Thermostat1.cpp
+   rfxcomMessages/Thermostat1Digimax.h
+   rfxcomMessages/Thermostat1Digimax.cpp
+   rfxcomMessages/Thermostat1DigimaxShort.h
+   rfxcomMessages/Thermostat1DigimaxShort.cpp
    rfxcomMessages/Thermostat2.h
    rfxcomMessages/Thermostat2.cpp
    rfxcomMessages/Thermostat3.h
@@ -136,10 +140,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Thermostat3MertikG6RH4TB.cpp
    rfxcomMessages/Thermostat3MertikG6RH4TD.h
    rfxcomMessages/Thermostat3MertikG6RH4TD.cpp
-   rfxcomMessages/Thermostat1Digimax.h
-   rfxcomMessages/Thermostat1Digimax.cpp
-   rfxcomMessages/Thermostat1DigimaxShort.h
-   rfxcomMessages/Thermostat1DigimaxShort.cpp
+   rfxcomMessages/Thermostat4.h
+   rfxcomMessages/Thermostat4.cpp
    rfxcomMessages/Temp.h
    rfxcomMessages/Temp.cpp
    rfxcomMessages/TempHumidity.h
@@ -159,6 +161,10 @@ set(RFXCOM_MESSAGES_SOURCES
 )
 
 set(SPECIFIC_HISTORIZERS_SOURCES
+   rfxcomMessages/specificHistorizers/Color.h
+   rfxcomMessages/specificHistorizers/Color.cpp
+   rfxcomMessages/specificHistorizers/Period.h
+   rfxcomMessages/specificHistorizers/Period.cpp
    rfxcomMessages/specificHistorizers/RemoteAtiWonderHistorizer.h
    rfxcomMessages/specificHistorizers/RemoteAtiWonderHistorizer.cpp
    rfxcomMessages/specificHistorizers/RemoteAtiWonder2Capacity.h
@@ -173,10 +179,6 @@ set(SPECIFIC_HISTORIZERS_SOURCES
    rfxcomMessages/specificHistorizers/RemoteMedionHistorizer.cpp
    rfxcomMessages/specificHistorizers/RemotePCHistorizer.h
    rfxcomMessages/specificHistorizers/RemotePCHistorizer.cpp
-   rfxcomMessages/specificHistorizers/Color.h
-   rfxcomMessages/specificHistorizers/Color.cpp
-   rfxcomMessages/specificHistorizers/Period.h
-   rfxcomMessages/specificHistorizers/Period.cpp
 )
 
 set(RFXCOM_SOURCES

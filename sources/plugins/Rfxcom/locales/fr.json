@@ -407,9 +407,9 @@
                   }               
                }
             },
-            "mdRemote":
+            "mdRemote106":
             {
-               "name": "MDREMOTE LED dimmer",
+               "name": "MD remote 106 LED dimmer",
                "content":
                {
                   "id":
@@ -578,6 +578,18 @@
                   }              
                }
             },
+            "mdRemote108":
+            {
+               "name": "MD remote 108 LED dimmer",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (1-65535)"
+                  }              
+               }
+            },
             
             "blyss":
             {
@@ -659,7 +671,7 @@
                   "id":
                   {
                      "name": "ID",
-                     "description": "The device ID (0-32767)"
+                     "description": "L'identifiant de l'équipement (0-32767)"
                   }              
                }
             },
@@ -671,7 +683,41 @@
                   "id":
                   {
                      "name": "ID",
-                     "description": "The device ID (0-16777215)"
+                     "description": "L'identifiant de l'équipement (0-16)"
+                  }              
+               }
+            },
+            "seavTxs4":
+            {
+               "type": "section",
+               "content":
+               {
+                  "sw2-1":
+                  {
+                     "name": "sw2-1",
+                     "description": "Position du micro-interrupteur sw2-1"
+                  },
+                  "sw2-2":
+                  {
+                     "name": "sw2-2",
+                     "description": "Position du micro-interrupteur sw2-2"
+                  },
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (0-32767)"
+                  }              
+               }
+            },
+            "westinghouse7226640":
+            {
+               "name": "Westinghouse 7226640",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (0-16)"
                   }              
                }
             },
@@ -1149,6 +1195,31 @@
                   {
                      "name": "Equipement",
                      "description": "L'identifiant de l'équipement (0-262143)"
+                  }               
+               }
+            },
+               
+            "mcz1PelletStove":
+            {
+               "name": "MCZ Pellet Stove (modèle avec 1 ventilateur)",
+               "content":
+               {
+                  "unitCode":
+                  {
+                     "name": "Equipement",
+                     "description": "L'identifiant de l'équipement (0-16777215)"
+                  }               
+               }
+            },
+            "mcz2PelletStove":
+            {
+               "name": "MCZ Pellet Stove (modèle avec 2 ventilateurs)",
+               "content":
+               {
+                  "unitCode":
+                  {
+                     "name": "Equipement",
+                     "description": "L'identifiant de l'équipement (0-16777215)"
                   }               
                }
             },

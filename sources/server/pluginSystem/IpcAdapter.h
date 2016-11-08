@@ -81,6 +81,8 @@ namespace pluginSystem
       void processGetConfiguration(const toYadoms::ConfigurationRequest& msg);
       void processDeviceExistsRequest(const toYadoms::DeviceExitsRequest& msg);
       void processDeviceDetailsRequest(const toYadoms::DeviceDetailsRequest& msg);
+      void processUpdateDeviceDetails(const toYadoms::UpdateDeviceDetails& msg) const;
+      void processAllDevicesRequest(const toYadoms::AllDevicesRequest& msg);
       void processKeywordExistsRequest(const toYadoms::KeywordExitsRequest& msg);
       void processDeclareDevice(const toYadoms::DeclareDevice& msg) const;
       void processDeclareKeyword(const toYadoms::DeclareKeyword& msg) const;
@@ -89,6 +91,12 @@ namespace pluginSystem
       void processRecipientFieldExitsRequest(const toYadoms::RecipientFieldExitsRequest& msg);
       void processHistorizeData(const toYadoms::HistorizeData& msg) const;
       void processDeveloperModeRequest(const toYadoms::DeveloperModeRequest& msg);
+      void processRemoveDeviceRequest(const toYadoms::RemoveDevice& msg) const;
+      void processRemoveKeywordRequest(const toYadoms::RemoveKeyword& msg) const;
+      void processDeviceModelRequest(const toYadoms::DeviceModelRequest& msg);
+      void processUpdateDeviceModel(const toYadoms::UpdateDeviceModel& msg) const;
+      void processDeviceConfigurationRequest(const toYadoms::DeviceConfigurationRequest& msg);
+      void processUpdateDeviceConfiguration(const toYadoms::UpdateDeviceConfiguration& msg) const;
 
    private:
       //--------------------------------------------------------------

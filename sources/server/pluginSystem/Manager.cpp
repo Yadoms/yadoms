@@ -329,7 +329,7 @@ namespace pluginSystem
          requestStopInstance(*instanceToStop);
    }
 
-   void CManager::removeDevice(int deviceId) const
+   void CManager::notifyDeviceRemoved(int deviceId) const
    {
       try
       {
@@ -343,9 +343,9 @@ namespace pluginSystem
 
          if (instance->aboutPlugin()->getSupportDeviceRemovedNotification())
             instance->postDeviceRemoved(boost::make_shared<CDeviceRemoved>(device->Name(),
-                                                                           device->Details()));
+               device->Details()));
       }
-      catch(CPluginException&)
+      catch (CPluginException&)
       {
          // Plugin instance is not running
       }

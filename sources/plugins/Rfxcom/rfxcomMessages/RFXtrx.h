@@ -27,6 +27,17 @@ portions of this file.
 */
 
 /*
+SDK version 9.11
+	FAN - Westinghouse fan added
+	Security1 - RM174RF added
+	Thermostat4 added
+
+SDK version 9.10
+	FAN - SEAV remote added
+
+SDK version 9.09
+	Lighting5 - MDremote108 added
+
 SDK version 9.08
 	CARTELECTRONIC TIC and Encoder added
 	Lighting5 - Livolo dim/scene added
@@ -485,6 +496,7 @@ SDK version 4.9
 #define sTypeLegrandCAD 0x0D
 #define sTypeAvantek 0x0E
 #define sTypeIT 0x0F
+#define sTypeMDREMOTE108 0x10
 
 #define light5_sOff 0x0
 #define light5_sOn 0x1
@@ -572,6 +584,8 @@ SDK version 4.9
 #define sTypeSiemensSF01 0x0
 #define sTypeItho 0x1
 #define sTypeLucciAir 0x2
+#define sTypeSeavTXS4 0x3
+#define sTypeWestinghouse 0x4
 #define fan_sTimer 0x1
 #define fan_sMin 0x2
 #define fan_sLearn 0x3
@@ -590,6 +604,15 @@ SDK version 4.9
 #define fan_LucciLow 0x3
 #define fan_LucciOff 0x4
 #define fan_LucciLight 0x5
+#define fan_T1 0x1
+#define fan_T2 0x2
+#define fan_T3 0x3
+#define fan_T4 0x4
+#define fan_WestinghouseHi 0x1
+#define fan_WestinghouseMed 0x2
+#define fan_WestinghouseLow 0x3
+#define fan_WestinghouseOff 0x4
+#define fan_WestinghouseLight 0x5
 
 //types for Curtain
 #define pTypeCurtain 0x18
@@ -626,14 +649,14 @@ SDK version 4.9
 #define blinds_sLeft 0x8
 #define blinds_sRight 0x9
 #define blinds_s9ChangeDirection 0x6
-#define blinds_s9ImA = 0x7
-#define blinds_s9ImCenter = 0x8
-#define blinds_s9ImB = 0x9
-#define blinds_s9EraseCurrentCh = 0xA
-#define blinds_s9EraseAllCh = 0xB
-#define blinds_s10LearnMaster = 0x4
-#define blinds_s10EraseCurrentCh = 0x5
-#define blinds_s10ChangeDirection = 0x6
+#define blinds_s9ImA 0x7
+#define blinds_s9ImCenter 0x8
+#define blinds_s9ImB 0x9
+#define blinds_s9EraseCurrentCh 0xA
+#define blinds_s9EraseAllCh 0xB
+#define blinds_s10LearnMaster 0x4
+#define blinds_s10EraseCurrentCh 0x5
+#define blinds_s10ChangeDirection 0x6
 
 //types for RFY
 #define pTypeRFY 0x1A
@@ -682,6 +705,7 @@ SDK version 4.9
 #define sTypePowercodeAux 0x07		//Visonic PowerCode sensor - auxiliary contact
 #define sTypeMeiantech 0x8			//Meiantech
 #define sTypeSA30 0x9				//SA30 smoke detector
+#define sTypeRM174RF 0xA			//RM174RF smoke detector
 
 //status security
 #define sStatusNormal 0x0
@@ -775,6 +799,14 @@ SDK version 4.9
 #define thermostat3_sRunDown 0x5
 #define thermostat3_On2nd 0x5
 #define thermostat3_sStop 0x6
+
+#define pTypeThermostat4 0x43
+#define sTypeMCZ1 0x0      //MCZ 1 fan model
+#define sTypeMCZ2 0x1      //MCZ 2 fan model
+#define thermostat4_sOff 0x0
+#define thermostat4_sManual 0x1
+#define thermostat4_sAuto 0x2
+#define thermostat4_sEco 0x3
 
 //types for Radiator valve
 #define pTypeRadiator1 0x48
@@ -1484,6 +1516,28 @@ typedef union tRBUF {
 		BYTE	rssi : 4;
 #endif
 	} THERMOSTAT3;
+
+	struct {
+		BYTE	packetlength;
+		BYTE	packettype;
+		BYTE	subtype;
+		BYTE	seqnbr;
+		BYTE	unitcode1;
+		BYTE	unitcode2;
+		BYTE	unitcode3;
+		BYTE	beep;
+		BYTE	fan1_speed;
+		BYTE	fan2_speed;
+		BYTE	flame_power;
+		BYTE	mode;
+#ifdef IS_BIG_ENDIAN
+		BYTE	rssi : 4;
+		BYTE	filler : 4;
+#else
+		BYTE	filler : 4;
+		BYTE	rssi : 4;
+#endif
+	} THERMOSTAT4;
 
 	struct {
 		BYTE	packetlength;

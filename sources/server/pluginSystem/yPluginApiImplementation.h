@@ -37,27 +37,36 @@ namespace pluginSystem
                                 boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                                 boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordDataAccessLayer,
                                 boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer);
-      
+
       //-----------------------------------------------------
       ///\brief Destructor
       //-----------------------------------------------------
       virtual ~CYPluginApiImplementation();
 
       // IYPluginApi implementation
-      void setPluginState( const shared::plugin::yPluginApi::historization::EPluginState& state,
-                           const std::string& customMessageId = shared::CStringExtension::EmptyString,
-                           const std::map<std::string, std::string> & customMessageDataParams = std::map<std::string, std::string>()) override;
-
-      bool deviceExists(const std::string& device) const override;
-      shared::CDataContainer getDeviceDetails(const std::string& device) const override;
+      void setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state,
+                          const std::string& customMessageId = shared::CStringExtension::EmptyString,
+                          const std::map<std::string, std::string>& customMessageDataParams = std::map<std::string, std::string>()) override;
       void declareDevice(const std::string& device,
                          const std::string& model,
                          boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
                          const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
       void declareDevice(const std::string& device,
                          const std::string& model,
-                         const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& keywords,
+                         const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords,
                          const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
+      std::vector<std::string> getAllDevices() const override;
+      bool deviceExists(const std::string& device) const override;
+      shared::CDataContainer getDeviceConfiguration(const std::string& device) const override;
+      void updateDeviceConfiguration(const std::string& device,
+                                     const shared::CDataContainer& configuration) const override;
+      shared::CDataContainer getDeviceDetails(const std::string& device) const override;
+      void updateDeviceDetails(const std::string& device,
+                               const shared::CDataContainer& details) const override;
+      std::string getDeviceModel(const std::string& device) const override;
+      void updateDeviceModel(const std::string& device,
+                             const std::string& model) const override;
+      void removeDevice(const std::string& device) override;
       bool keywordExists(const std::string& device,
                          const std::string& keyword) const override;
       bool keywordExists(const std::string& device,
@@ -65,6 +74,8 @@ namespace pluginSystem
       void declareKeyword(const std::string& device,
                           boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
                           const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
+      void removeKeyword(const std::string& device,
+                         const std::string& keyword) override;
       std::string getRecipientValue(int recipientId,
                                     const std::string& fieldName) const override;
       std::vector<int> findRecipientsFromField(const std::string& fieldName,
@@ -73,7 +84,7 @@ namespace pluginSystem
       void historizeData(const std::string& device,
                          boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> data) override;
       void historizeData(const std::string& device,
-                         const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& dataVect) override;
+                         const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& dataVect) override;
       boost::shared_ptr<const shared::plugin::information::IInformation> getInformation() const override;
       shared::CDataContainer getConfiguration() override;
       const boost::filesystem::path& getDataPath() const override;
@@ -86,7 +97,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       int getPluginId() const;
 
-   protected:      
+   protected:
 
       void declareKeywords(const std::string& device,
                            const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords) const;
@@ -127,13 +138,12 @@ namespace pluginSystem
       /// \brief			The recipient requester
       //--------------------------------------------------------------
       boost::shared_ptr<database::IRecipientRequester> m_recipientRequester;
-      
+
       //--------------------------------------------------------------
       /// \brief			The Acquisition historizer
       //--------------------------------------------------------------
       boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> m_acquisitionHistorizer;
    };
-	
 } // namespace pluginSystem	
-	
-	
+
+

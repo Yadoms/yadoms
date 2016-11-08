@@ -72,6 +72,7 @@ namespace common {
       (FriendlyName)
       (Model)
       (Details)
+      (Configuration)
    )
 
    DECLARE_TABLE(Keyword,

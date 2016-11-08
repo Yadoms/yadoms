@@ -379,6 +379,17 @@ namespace database
          return true;
       }
 
+      bool CSQLiteRequester::addTableColumn(const common::CDatabaseTable& tableName, const std::string& columnDef)
+      {
+         if (checkTableExists(tableName))
+         {
+            CSQLiteQuery alter;
+            queryStatement(alter.AddTableColumn(tableName, columnDef));
+            return true;
+         }
+         return false;
+      }
+
       void CSQLiteRequester::createIndex(const common::CDatabaseTable& tableName,
                                          const std::string& indexScript)
       {

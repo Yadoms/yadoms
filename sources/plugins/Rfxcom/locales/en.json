@@ -407,9 +407,9 @@
                   }               
                }
             },            
-            "mdRemote":
+            "mdRemote106":
             {
-               "name": "MDREMOTE LED dimmer",
+               "name": "MD remote 106 LED dimmer",
                "content":
                {
                   "id":
@@ -577,7 +577,19 @@
                      "description": "The device ID (1-65535)"
                   }              
                }
-            },
+            },            
+            "mdRemote108":
+            {
+               "name": "MD remote 108 LED dimmer",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-65535)"
+                  }              
+               }
+            }, 
             
             "blyss":
             {
@@ -671,7 +683,41 @@
                   "id":
                   {
                      "name": "ID",
-                     "description": "The device ID (0-16777215)"
+                     "description": "The device ID (0-16)"
+                  }              
+               }
+            },
+            "seavTxs4":
+            {
+               "type": "section",
+               "content":
+               {
+                  "sw2-1":
+                  {
+                     "name": "sw2-1",
+                     "description": "The sw2-1 jumper switch state"
+                  },
+                  "sw2-2":
+                  {
+                     "name": "sw2-2",
+                     "description": "The sw2-2 jumper switch state"
+                  },
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (0-32767)"
+                  }              
+               }
+            },
+            "westinghouse7226640":
+            {
+               "name": "Westinghouse 7226640",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (0-16)"
                   }              
                }
             },
@@ -1149,6 +1195,31 @@
                   {
                      "name": "Unit Code",
                      "description": "The unit code (0-262143)"
+                  }               
+               }
+            },
+               
+            "mcz1PelletStove":
+            {
+               "name": "MCZ Pellet Stove (1 fan model)",
+               "content":
+               {
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (0-16777215)"
+                  }               
+               }
+            },
+            "mcz2PelletStove":
+            {
+               "name": "MCZ Pellet Stove (2 fans model)",
+               "content":
+               {
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (0-16777215)"
                   }               
                }
             },

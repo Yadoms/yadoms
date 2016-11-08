@@ -97,6 +97,15 @@ namespace database
                                           const std::string& tableScript) = 0;
 
       //--------------------------------------------------------------
+      /// \Brief	      Add a new column to a table
+      /// \param [in]   tableName:  the table name to alter
+      /// \param [in]   columnDef:  the column definition
+      /// \return	      true if column created with success
+      //--------------------------------------------------------------
+      virtual bool addTableColumn(const common::CDatabaseTable& tableName,
+                                 const std::string& columnDef) = 0;
+
+      //--------------------------------------------------------------
       /// \Brief	      Create an index if not exists
       /// \param [in]   tableName:  the table name to create
       /// \param [in]   indexScript:  the sql script to create the index

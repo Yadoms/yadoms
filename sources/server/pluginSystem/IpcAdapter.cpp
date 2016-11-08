@@ -190,6 +190,8 @@ namespace pluginSystem
          break;
       case toYadoms::msg::kDeviceDetails: processDeviceDetailsRequest(toYadomsProtoBuffer.devicedetails());
          break;
+      case toYadoms::msg::kUpdateDeviceDetails: processUpdateDeviceDetails(toYadomsProtoBuffer.updatedevicedetails());
+         break;
       case toYadoms::msg::kKeywordExists: processKeywordExistsRequest(toYadomsProtoBuffer.keywordexists());
          break;
       case toYadoms::msg::kDeclareDevice: processDeclareDevice(toYadomsProtoBuffer.declaredevice());
@@ -205,6 +207,20 @@ namespace pluginSystem
       case toYadoms::msg::kHistorizeData: processHistorizeData(toYadomsProtoBuffer.historizedata());
          break;
       case toYadoms::msg::kDeveloperModeRequest: processDeveloperModeRequest(toYadomsProtoBuffer.developermoderequest());
+         break;
+      case toYadoms::msg::kRemoveDevice: processRemoveDeviceRequest(toYadomsProtoBuffer.removedevice());
+         break;
+      case toYadoms::msg::kAllDevicesRequest: processAllDevicesRequest(toYadomsProtoBuffer.alldevicesrequest());
+         break;
+      case toYadoms::msg::kRemoveKeyword: processRemoveKeywordRequest(toYadomsProtoBuffer.removekeyword());
+         break;
+      case toYadoms::msg::kDeviceModelRequest: processDeviceModelRequest(toYadomsProtoBuffer.devicemodelrequest());
+         break;
+      case toYadoms::msg::kUpdateDeviceModel: processUpdateDeviceModel(toYadomsProtoBuffer.updatedevicemodel());
+         break;
+      case toYadoms::msg::kDeviceConfigurationRequest: processDeviceConfigurationRequest(toYadomsProtoBuffer.deviceconfigurationrequest());
+         break;
+      case toYadoms::msg::kUpdateDeviceConfiguration: processUpdateDeviceConfiguration(toYadomsProtoBuffer.updatedeviceconfiguration());
          break;
       default:
          throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
@@ -232,7 +248,7 @@ namespace pluginSystem
 
       shared::CDataContainer dc(msg.custommessagedata());
 
-      auto values = dc.get<std::map<std::string, std::string> >();
+      auto values = dc.get<std::map<std::string, std::string>>();
 
       m_pluginApi->setPluginState(state, msg.custommessageid(), values);
    }
@@ -269,6 +285,21 @@ namespace pluginSystem
       send(ans);
    }
 
+   void CIpcAdapter::processUpdateDeviceDetails(const toYadoms::UpdateDeviceDetails& msg) const
+   {
+      m_pluginApi->updateDeviceDetails(msg.device(),
+                                       shared::CDataContainer(msg.details()));
+   }
+
+   void CIpcAdapter::processAllDevicesRequest(const toYadoms::AllDevicesRequest& msg)
+   {
+      toPlugin::msg ans;
+      auto answer = ans.mutable_alldevicesanswer();
+      auto devices = m_pluginApi->getAllDevices();
+      std::copy(devices.begin(), devices.end(), RepeatedFieldBackInserter(answer->mutable_devices()));
+      send(ans);
+   }
+
    void CIpcAdapter::processKeywordExistsRequest(const toYadoms::KeywordExitsRequest& msg)
    {
       toPlugin::msg ans;
@@ -279,7 +310,7 @@ namespace pluginSystem
 
    void CIpcAdapter::processDeclareDevice(const toYadoms::DeclareDevice& msg) const
    {
-      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> > keywords;
+      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> keywords;
       for (auto keyword = msg.keywords().begin(); keyword != msg.keywords().end(); ++keyword)
          keywords.push_back(boost::make_shared<CFromPluginHistorizer>(*keyword));
 
@@ -330,7 +361,7 @@ namespace pluginSystem
 
    void CIpcAdapter::processHistorizeData(const toYadoms::HistorizeData& msg) const
    {
-      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> > dataVect;
+      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> dataVect;
       for (auto value = msg.value().begin(); value != msg.value().end(); ++value)
       {
          dataVect.push_back(boost::make_shared<CFromPluginHistorizer>(value->historizable(), value->formattedvalue()));
@@ -344,6 +375,45 @@ namespace pluginSystem
       auto answer = ans.mutable_developermodeanswer();
       answer->set_enabled(m_pluginApi->isDeveloperMode());
       send(ans);
+   }
+
+   void CIpcAdapter::processRemoveDeviceRequest(const toYadoms::RemoveDevice& msg) const
+   {
+      m_pluginApi->removeDevice(msg.device());
+   }
+
+   void CIpcAdapter::processRemoveKeywordRequest(const toYadoms::RemoveKeyword& msg) const
+   {
+      m_pluginApi->removeKeyword(msg.device(),
+                                 msg.keyword());
+   }
+
+   void CIpcAdapter::processDeviceModelRequest(const toYadoms::DeviceModelRequest& msg)
+   {
+      toPlugin::msg ans;
+      auto answer = ans.mutable_devicemodelanswer();
+      answer->set_model(m_pluginApi->getDeviceModel(msg.device()));
+      send(ans);
+   }
+
+   void CIpcAdapter::processUpdateDeviceModel(const toYadoms::UpdateDeviceModel& msg) const
+   {
+      m_pluginApi->updateDeviceModel(msg.device(),
+                                     msg.model());
+   }
+
+   void CIpcAdapter::processDeviceConfigurationRequest(const toYadoms::DeviceConfigurationRequest& msg)
+   {
+      toPlugin::msg ans;
+      auto answer = ans.mutable_deviceconfigurationanswer();
+      answer->set_configuration(m_pluginApi->getDeviceConfiguration(msg.device()).serialize());
+      send(ans);
+   }
+
+   void CIpcAdapter::processUpdateDeviceConfiguration(const toYadoms::UpdateDeviceConfiguration& msg) const
+   {
+      m_pluginApi->updateDeviceConfiguration(msg.device(),
+                                             shared::CDataContainer(msg.configuration()));
    }
 
    void CIpcAdapter::postStopRequest()
@@ -472,15 +542,15 @@ namespace pluginSystem
       try
       {
          send(req,
-            [&](const toYadoms::msg& ans) -> bool
-         {
-            return ans.has_extraqueryanswer();
-         },
-            [&](const toYadoms::msg& ans) -> void
-         {
-            success = ans.extraqueryanswer().success();
-            result = ans.extraqueryanswer().result();
-         });
+              [&](const toYadoms::msg& ans) -> bool
+              {
+                 return ans.has_extraqueryanswer();
+              },
+              [&](const toYadoms::msg& ans) -> void
+              {
+                 success = ans.extraqueryanswer().success();
+                 result = ans.extraqueryanswer().result();
+              });
       }
       catch (std::exception& e)
       {

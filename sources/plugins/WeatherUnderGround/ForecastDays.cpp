@@ -150,8 +150,7 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
       }
       catch (shared::exception::CException& e)
       {
-         std::cout << "Error during the parsing of the element ! : " << e.what() << std::endl;
-         throw;
+         std::cout << "Error during parsing the element ! : " << e.what() << std::endl;
       }
    }
 }

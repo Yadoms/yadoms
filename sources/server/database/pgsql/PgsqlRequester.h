@@ -31,6 +31,7 @@ namespace pgsql {
       bool checkTableExists(const database::common::CDatabaseTable & tableName) override;
       bool dropTableIfExists(const database::common::CDatabaseTable & tableName) override;
       bool createTableIfNotExists(const database::common::CDatabaseTable & tableName, const std::string & tableScript) override;
+      bool addTableColumn(const common::CDatabaseTable& tableName, const std::string& columnDef) override;
       void createIndex(const database::common::CDatabaseTable & tableName, const std::string & indexScript) override;
       void vacuum() override;
       boost::shared_ptr<ITableCreationScriptProvider> getTableCreationScriptProvider() override;
