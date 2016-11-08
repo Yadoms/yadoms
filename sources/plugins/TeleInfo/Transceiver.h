@@ -17,7 +17,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	                           Constructor
    //--------------------------------------------------------------
-   CTransceiver(boost::shared_ptr<yApi::IYPluginApi> api);
+   explicit CTransceiver(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
