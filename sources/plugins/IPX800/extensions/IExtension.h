@@ -3,6 +3,9 @@
 #include <Poco/Net/SocketAddress.h>
 #include <Poco/Net/NetworkInterface.h>
 
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
+
 //--------------------------------------------------------------
 /// \brief	Interface of device
 //--------------------------------------------------------------
@@ -23,6 +26,12 @@ namespace extensions
       /// \return  the slot position
       //--------------------------------------------------------------
       virtual int getSlot() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief      updateFromDevice
+      ///\param[in] values     New Values to enter
+      //--------------------------------------------------------------
+      virtual void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& values) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Destructor

@@ -23,12 +23,12 @@ namespace extensions
       //-----------------------------------------------------
       CX8RExtension(boost::shared_ptr<yApi::IYPluginApi> api,
                     const std::string& device,
-                    const int& position,
-                    std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& relayList);
+                    const int& position);
 
       // IExtension implementation
       std::string getDeviceName() const override;
       int getSlot() const override;
+      void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& values) const override;
       // [END] IExtension implementation
 
       //-----------------------------------------------------
@@ -44,8 +44,13 @@ namespace extensions
       std::string m_deviceName;
 
       //-----------------------------------------------------
-      ///\brief                     The device name
+      ///\brief                     The slot number
       //-----------------------------------------------------
       int m_slotNumber;
+
+      //-----------------------------------------------------
+      ///\brief                     The list of keyword
+      //-----------------------------------------------------
+      std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> > m_keywordList;
    };
 } // namespace extensions

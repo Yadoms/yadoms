@@ -15,12 +15,10 @@ IMPLEMENT_PLUGIN(CIPX800)
 
 CIPX800::CIPX800()
    : m_deviceName("IPX800")
-{
-}
+{}
 
 CIPX800::~CIPX800()
-{
-}
+{}
 
 // Event IDs
 enum

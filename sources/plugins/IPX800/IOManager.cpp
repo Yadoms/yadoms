@@ -14,28 +14,34 @@ void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
                             std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& RelayList,
                             std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& DIList,
                             std::vector<boost::shared_ptr<specificHistorizers::CAnalog> >& analogList,
-                            std::vector<boost::shared_ptr<specificHistorizers::CCounter> >& counterList)
+                            std::vector<boost::shared_ptr<specificHistorizers::CCounter> >& counterList,
+                            std::vector<boost::shared_ptr<extensions::IExtension> >& extensionList)
 {
    m_RelayList = RelayList;
    m_DIList = DIList;
    m_analogList = analogList;
    m_countersList = counterList;
+   m_devicesList = extensionList;
    m_keywordsToDeclare.clear();
 
    // Initial Reading of relays
-   readIOFromDevice<specificHistorizers::CInputOuput>("R", m_RelayList);
+   readIOFromDevice<specificHistorizers::CInputOuput, bool>(api, "R", m_RelayList);
 
    // Initial Reading of DIs
-   readIOFromDevice<specificHistorizers::CInputOuput>("D", m_DIList);
+   readIOFromDevice<specificHistorizers::CInputOuput, bool>(api, "D", m_DIList);
 
    // Initial Reading of Analog Input
-   readIOFromDevice<specificHistorizers::CAnalog>("A", m_analogList);
+   readIOFromDevice<specificHistorizers::CAnalog, unsigned int>(api, "A", m_analogList);
 
    // Initial Reading of Counters
-   readIOFromDevice<specificHistorizers::CCounter>("C", m_countersList);
+   readIOFromDevice<specificHistorizers::CCounter, Poco::Int64>(api, "C", m_countersList);
 
-   // TODO : Historization to be done
-   
+   //TODO : A réaliser dans une extension IPX800
+   m_keywordsToDeclare.insert(m_keywordsToDeclare.end(), m_RelayList.begin(), m_RelayList.end());
+   m_keywordsToDeclare.insert(m_keywordsToDeclare.end(), m_DIList.begin(), m_DIList.end());
+   m_keywordsToDeclare.insert(m_keywordsToDeclare.end(), m_analogList.begin(), m_analogList.end());
+   m_keywordsToDeclare.insert(m_keywordsToDeclare.end(), m_countersList.begin(), m_countersList.end());
+   api->historizeData(m_deviceName, m_keywordsToDeclare);
 }
 
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -125,8 +131,10 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
    //std::cerr << "Cannot find keyword : " << command->getKeyword();
 }
 
-template<typename T>
-void CIOManager::readIOFromDevice(const std::string& type, const std::vector<boost::shared_ptr<T> >& list)
+template<typename T1, typename T2>
+void CIOManager::readIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
+                                  const std::string& type,
+                                  const std::vector<boost::shared_ptr<T1> >& list)
 {
    shared::CDataContainer parameters;
    shared::CDataContainer results;
@@ -139,7 +147,7 @@ void CIOManager::readIOFromDevice(const std::string& type, const std::vector<boo
 
    results = urlManager::sendCommand(m_IPAddress, parameters);
 
-   std::vector<boost::shared_ptr<T> >::const_iterator diIterator;
+   std::vector<boost::shared_ptr<T1> >::const_iterator diIterator;
 
    std::cout << "Nb IO : " << list.size() << std::endl;
 
@@ -148,8 +156,21 @@ void CIOManager::readIOFromDevice(const std::string& type, const std::vector<boo
       for (diIterator = list.begin(); diIterator != list.end(); ++diIterator)
       {
          std::cout << "Set IO : " << (*diIterator)->getHardwareName() << std::endl;
-         (*diIterator)->set(results.get<bool>((*diIterator)->getHardwareName()));
-         m_keywordsToDeclare.push_back((*diIterator));
+         T2 newValue = results.get<T2>((*diIterator)->getHardwareName());
+
+         //historize only for new value
+         if ((*diIterator)->get() != newValue)
+         {
+             (*diIterator)->set(newValue);
+             m_keywordsToDeclare.push_back((*diIterator));
+         }
+      }
+
+      std::vector<boost::shared_ptr<extensions::IExtension> >::const_iterator iteratorExtension;
+
+      for (iteratorExtension = m_devicesList.begin(); iteratorExtension != m_devicesList.end(); ++iteratorExtension)
+      {
+         (*iteratorExtension)->updateFromDevice(api, results);
       }
    }
    catch (shared::exception::CException& e)

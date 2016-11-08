@@ -6,6 +6,7 @@
 #include "specificHistorizers/Analog.h"
 #include "specificHistorizers/inputOutput.h"
 #include "specificHistorizers/counter.h"
+#include "extensions/IExtension.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -34,11 +35,13 @@ public:
    /// \param[in]  api              Plugin execution context (Yadoms API)
    /// \param[in]  IOlist           Set a new list of IOs
    //--------------------------------------------------------------
+   // TODO : VOir pour éventuelle créer un device IPX800 et le faire passer dedans directement, cela sera peut-être le plus simple
    void Initialize(boost::shared_ptr<yApi::IYPluginApi> api, 
                    std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& RelayList,
                    std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& DIList,
                    std::vector<boost::shared_ptr<specificHistorizers::CAnalog> >& analogList,
-                   std::vector<boost::shared_ptr<specificHistorizers::CCounter> >& counterList
+                   std::vector<boost::shared_ptr<specificHistorizers::CCounter> >& counterList,
+                   std::vector<boost::shared_ptr<extensions::IExtension> >& extensionList
                    );
 
    //--------------------------------------------------------------
@@ -62,8 +65,10 @@ public:
    //void onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
    //               int receivedValue);
 
-   template<typename T>
-   void readIOFromDevice(const std::string& type, const std::vector<boost::shared_ptr<T> >& list);
+   template<typename T1, typename T2>
+   void readIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
+                         const std::string& type,
+                         const std::vector<boost::shared_ptr<T1> >& list);
 
 private:
 
@@ -111,4 +116,9 @@ private:
    /// \brief	Map of all counters
    //--------------------------------------------------------------
    std::vector<boost::shared_ptr<specificHistorizers::CCounter> > m_countersList;
+
+   //--------------------------------------------------------------
+   /// \brief	All extensions
+   //--------------------------------------------------------------
+   std::vector<boost::shared_ptr<extensions::IExtension> > m_devicesList;
 };

@@ -7,6 +7,7 @@
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include "specificHistorizers/inputOutput.h"
 #include "specificHistorizers/counter.h"
+#include "extensions/IExtension.h"
 
 #define IPX800_RELAY_QTY 8
 #define IPX800_DI_QTY    8
@@ -121,8 +122,9 @@ private:
    /// \brief	X24D Slots used
    //--------------------------------------------------------------
    bool X24DSlotused[2];
+   
    //--------------------------------------------------------------
    /// \brief	All extensions
    //--------------------------------------------------------------
-   //std::vector<boost::shared_ptr<devices::IDevice> > m_devicesList;
+   std::vector<boost::shared_ptr<extensions::IExtension> > m_devicesList;
 };

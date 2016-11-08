@@ -27,6 +27,7 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
    // Create al the other devices
    for (devicesIterator = devices.begin(); devicesIterator != devices.end(); ++devicesIterator)
    {
+      boost::shared_ptr<extensions::IExtension> extension;
       std::string model = api->getDeviceModel(*devicesIterator);
       std::cout << "Name : " << (*devicesIterator) << std::endl;
       std::cout << "Model : " << model << std::endl;
@@ -37,9 +38,7 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
          int position = details.get<int>("position");
          std::string deviceName = details.get<std::string>("provider");
          X8RSlotused[position] = true;
-         boost::shared_ptr<extensions::IExtension> extension;
-         extension = boost::make_shared<extensions::CX8RExtension>(api, deviceName, position, m_relaysList);
-         std::cout << "Nb of relays : " << m_relaysList.size() << std::endl;
+         extension = boost::make_shared<extensions::CX8RExtension>(api, deviceName, position);
       }
       else if (model == "X-8D")
       {
@@ -47,8 +46,7 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
          int position = details.get<int>("position");
          std::string deviceName = details.get<std::string>("provider");
          X8DSlotused[position] = true;
-         boost::shared_ptr<extensions::IExtension> extension;
-         extension = boost::make_shared<extensions::CX8DExtension>(api, deviceName, position, m_DIList);
+         extension = boost::make_shared<extensions::CX8DExtension>(api, deviceName, position);
       }
       else if (model == "X-24D")
       {
@@ -56,12 +54,13 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
          int position = details.get<int>("position");
          std::string deviceName = details.get<std::string>("provider");
          X24DSlotused[position] = true;
-         boost::shared_ptr<extensions::IExtension> extension;
-         extension = boost::make_shared<extensions::CX24DExtension>(api, deviceName, position, m_DIList);
+         extension = boost::make_shared<extensions::CX24DExtension>(api, deviceName, position);
       }
+
+      m_devicesList.push_back(extension);
    }
 
-   m_ioManager->Initialize(api, m_relaysList, m_DIList, m_analogList, m_countersList);
+   m_ioManager->Initialize(api, m_relaysList, m_DIList, m_analogList, m_countersList, m_devicesList);
 }
 
 void CIPX800Factory::createIPX800Device(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -135,29 +134,30 @@ void CIPX800Factory::createIPX800Device(boost::shared_ptr<yApi::IYPluginApi> api
 std::string CIPX800Factory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
                                                  const yApi::IManuallyDeviceCreationData& data)
 {
-   boost::shared_ptr<extensions::IExtension> device;
+   boost::shared_ptr<extensions::IExtension> extension;
 
    if (data.getConfiguration().get<bool>("type.content.X8R.radio"))
    {
       int position = data.getConfiguration().get<int>("type.content.X8R.content.Position");
-      device = boost::make_shared<extensions::CX8RExtension>(api, data.getDeviceName(), position, m_relaysList);
+      extension = boost::make_shared<extensions::CX8RExtension>(api, data.getDeviceName(), position);
       X8RSlotused[position] = true;
    }
    else if (data.getConfiguration().get<bool>("type.content.X8D.radio"))
    {
       int position = data.getConfiguration().get<int>("type.content.X8D.content.Position");
-      device = boost::make_shared<extensions::CX8DExtension>(api, data.getDeviceName(), position, m_DIList);
+      extension = boost::make_shared<extensions::CX8DExtension>(api, data.getDeviceName(), position);
       X8DSlotused[position] = true;
    }
    else if (data.getConfiguration().get<bool>("type.content.X24D.radio"))
    {
       int position = data.getConfiguration().get<int>("type.content.X24D.content.Position");
-      device = boost::make_shared<extensions::CX24DExtension>(api, data.getDeviceName(), position, m_DIList);
+      extension = boost::make_shared<extensions::CX24DExtension>(api, data.getDeviceName(), position);
       X24DSlotused[position] = true;
    }
-   //m_devicesList.push_back(device);
 
-   return device->getDeviceName();
+   m_devicesList.push_back(extension);
+
+   return extension->getDeviceName();
 }
 
 shared::CDataContainer CIPX800Factory::bindSlotsX8R()
@@ -168,7 +168,7 @@ shared::CDataContainer CIPX800Factory::bindSlotsX8R()
    {
       // Add only not used slots
       if (!X8RSlotused[counter])
-         ev.set(boost::lexical_cast<std::string>(counter), "");
+         ev.set(boost::lexical_cast<std::string>(counter + 1), "");
    }
 
    shared::CDataContainer en;

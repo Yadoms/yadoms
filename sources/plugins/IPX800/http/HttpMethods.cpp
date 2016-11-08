@@ -52,6 +52,5 @@ namespace http
          std::cerr << message << std::endl;
          throw shared::exception::CException(message);
       }
-      return shared::CDataContainer();
    }
 } // namespace http
