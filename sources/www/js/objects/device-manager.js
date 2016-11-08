@@ -146,27 +146,6 @@ DeviceManager.deleteFromServer = function (device, deleteDevice) {
 };
 
 /**
- * Update a device friendly name
- * @param {Object} device The device to update
- * @ return {Promise}
- */
-DeviceManager.updateFriendlyNameToServer = function (device) {
-    assert(!isNullOrUndefined(device), "device must be defined");
-
-    var d = new $.Deferred();
-
-    RestEngine.putJson("/rest/device/" + device.id + "/friendlyname", { data: JSON.stringify(device) })
-    .done(function (data) {
-        //it's okay
-        //we update our information from the server
-        device = DeviceManager.factory(data);
-        d.resolve(device);
-    }).fail(d.reject);
-
-    return d.promise();
-};
-
-/**
  * Get a device configuration schema
  * @param {Object} device The device to get the configuration schema
  * @ return {Promise}
@@ -236,7 +215,7 @@ DeviceManager.getConfigurationSchema = function(device) {
  * @param {Object} device The device to update
  * @ return {Promise}
  */
-DeviceManager.updateConfigurationToServer = function (device) {
+DeviceManager.updateToServer = function (device) {
     assert(!isNullOrUndefined(device), "device must be defined");
 
     var d = new $.Deferred();
