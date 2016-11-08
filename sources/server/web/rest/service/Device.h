@@ -94,12 +94,6 @@ namespace web
                                                      const std::string& requestContent) const;
 
             //-----------------------------------------
-            ///\brief   send a new device configuration to a plugin
-            //-----------------------------------------
-            shared::CDataContainer CDevice::setDeviceConfiguration(const std::vector<std::string>& parameters,
-                                                                   const std::string& requestContent) const;
-
-            //-----------------------------------------
             ///\brief   cleanup a device in database
             //-----------------------------------------
             shared::CDataContainer cleanupDevice(const std::vector<std::string>& parameters,

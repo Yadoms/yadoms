@@ -138,8 +138,15 @@
       $deviceRow.find("td.device-actions").append(actionsBtns);
 
       //we bind event on the different actions
-      $deviceRow.find("button.btn-configure").unbind('click').bind('click', function () { updateDeviceFiendlyName(device); });
-      $deviceRow.find("button.btn-delete").unbind('click').bind('click', function () { deleteDevice(device); });
+      $deviceRow.find("button.btn-configure").unbind('click').bind('click', function (e) { 
+            e.stopPropagation();
+            updateDeviceFiendlyName(device); 
+      });
+
+      $deviceRow.find("button.btn-delete").unbind('click').bind('click', function (e) { 
+            e.stopPropagation();
+            deleteDevice(device); 
+      });
 
       $deviceRow.unbind('click').bind('click', function () { clickDevice(device); });
 
@@ -183,8 +190,8 @@
             .done(function(schemaConfig) {
                   Yadoms.showConfigurationDeviceModal(device, schemaConfig, function () {
 
-                        //update Friendly name
-                        DeviceManager.updateFriendlyNameToServer(device)
+                        //update configuration
+                        DeviceManager.updateToServer(device)
                         .done(function (updateDevice) {
                               //We update the information that can have changed after the configuration
                                     
@@ -209,12 +216,7 @@
                                     var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + device.friendlyName + "</span>";
                                     $row.find("td.device-friendlyName").html(friendlyName);
                               }
-                        }).fail(function (error) {
-                              notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
-                        });
-
-                        //update configuration
-                        DeviceManager.updateConfigurationToServer(device)
+                        })                        
                         .fail(function (error) {
                               notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
                         });
