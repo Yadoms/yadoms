@@ -136,6 +136,15 @@ message UpdateDeviceModel {
 	required string model = 2;
 }
 
+message DeviceConfigurationRequest {
+	required string device = 1;
+}
+
+message UpdateDeviceConfiguration {
+	required string device = 1;
+	required string configuration = 2;
+}
+
 message msg {
 	oneof OneOf {
 		SetPluginState pluginState = 1;
@@ -160,5 +169,7 @@ message msg {
 		UpdateDeviceDetails updateDeviceDetails = 20;
 		DeviceModelRequest deviceModelRequest = 21;
 		UpdateDeviceModel updateDeviceModel = 22;
+		DeviceConfigurationRequest deviceConfigurationRequest = 23;
+		UpdateDeviceConfiguration updateDeviceConfiguration = 24;
 	}
 }

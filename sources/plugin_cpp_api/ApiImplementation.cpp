@@ -478,6 +478,51 @@ namespace plugin_cpp_api
       return exists;
    }
 
+   shared::CDataContainer CApiImplementation::getDeviceConfiguration(const std::string& device) const
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_deviceconfigurationrequest();
+      request->set_device(device);
+
+      shared::CDataContainer configuration;
+      try
+      {
+         send(req,
+              [](const toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_deviceconfigurationanswer();
+              },
+              [&](const toPlugin::msg& ans) -> void
+              {
+                 configuration.deserialize(ans.deviceconfigurationanswer().configuration());
+              });
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : getDeviceConfiguration(" << device << ")" << std::endl;
+         throw;
+      }
+      return configuration;
+   }
+
+   void CApiImplementation::updateDeviceConfiguration(const std::string& device,
+                                                      const shared::CDataContainer& configuration) const
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_updatedeviceconfiguration();
+      request->set_device(device);
+      request->set_configuration(configuration.serialize());
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : updateDeviceConfiguration(" << device << ", " << configuration.serialize() << ")" << std::endl;
+         throw;
+      }
+   }
+
    shared::CDataContainer CApiImplementation::getDeviceDetails(const std::string& device) const
    {
       toYadoms::msg req;

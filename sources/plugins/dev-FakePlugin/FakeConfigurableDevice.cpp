@@ -15,11 +15,22 @@ CFakeConfigurableDevice::~CFakeConfigurableDevice()
 {
 }
 
-void CFakeConfigurableDevice::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
+void CFakeConfigurableDevice::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Declare device and associated keywords (= values managed by this device)
    if (!api->deviceExists(m_deviceName))
       api->declareDevice(m_deviceName, getModel(), m_historizers);
+
+   // Get the divider value from the device configuration
+   try
+   {
+      m_divider = api->getDeviceConfiguration(m_deviceName).get<int>("CounterDivider");
+   }
+   catch(std::exception&)
+   {
+      // Configuration may not actually exist, set the default value to divider
+      m_divider = 1;
+   }
 }
 
 void CFakeConfigurableDevice::read()
