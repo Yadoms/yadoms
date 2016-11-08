@@ -27,6 +27,17 @@ portions of this file.
 */
 
 /*
+SDK version 9.11
+	FAN - Westinghouse fan added
+	Security1 - RM174RF added
+	Thermostat4 added
+
+SDK version 9.10
+	FAN - SEAV remote added
+
+SDK version 9.09
+	Lighting5 - MDremote108 added
+
 SDK version 9.08
 	CARTELECTRONIC TIC and Encoder added
 	Lighting5 - Livolo dim/scene added
@@ -789,6 +800,14 @@ SDK version 4.9
 #define thermostat3_On2nd 0x5
 #define thermostat3_sStop 0x6
 
+#define pTypeThermostat4 0x43
+#define sTypeMCZ1 0x0      //MCZ 1 fan model
+#define sTypeMCZ2 0x1      //MCZ 2 fan model
+#define thermostat4_sOff 0x0
+#define thermostat4_sManual 0x1
+#define thermostat4_sAuto 0x2
+#define thermostat4_sEco 0x3
+
 //types for Radiator valve
 #define pTypeRadiator1 0x48
 #define sTypeSmartwares 0x0	//Homewizard smartwares
@@ -1497,6 +1516,28 @@ typedef union tRBUF {
 		BYTE	rssi : 4;
 #endif
 	} THERMOSTAT3;
+
+	struct {
+		BYTE	packetlength;
+		BYTE	packettype;
+		BYTE	subtype;
+		BYTE	seqnbr;
+		BYTE	unitcode1;
+		BYTE	unitcode2;
+		BYTE	unitcode3;
+		BYTE	beep;
+		BYTE	fan1_speed;
+		BYTE	fan2_speed;
+		BYTE	flame_power;
+		BYTE	mode;
+#ifdef IS_BIG_ENDIAN
+		BYTE	rssi : 4;
+		BYTE	filler : 4;
+#else
+		BYTE	filler : 4;
+		BYTE	rssi : 4;
+#endif
+	} THERMOSTAT4;
 
 	struct {
 		BYTE	packetlength;
