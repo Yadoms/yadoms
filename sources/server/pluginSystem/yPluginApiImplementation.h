@@ -58,6 +58,9 @@ namespace pluginSystem
                          const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
       std::vector<std::string> getAllDevices() const override;
       bool deviceExists(const std::string& device) const override;
+      shared::CDataContainer getDeviceConfiguration(const std::string& device) const override;
+      void updateDeviceConfiguration(const std::string& device,
+                                     const shared::CDataContainer& configuration) const override;
       shared::CDataContainer getDeviceDetails(const std::string& device) const override;
       void updateDeviceDetails(const std::string& device,
                                const shared::CDataContainer& details) const override;

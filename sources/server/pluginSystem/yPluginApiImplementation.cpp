@@ -77,6 +77,21 @@ namespace pluginSystem
       return m_deviceManager->deviceExists(getPluginId(), device);
    }
 
+   shared::CDataContainer CYPluginApiImplementation::getDeviceConfiguration(const std::string& device) const
+   {
+      return m_deviceManager->getDevice(getPluginId(), device)->Configuration;
+   }
+
+   void CYPluginApiImplementation::updateDeviceConfiguration(const std::string& device,
+                                                             const shared::CDataContainer& configuration) const
+   {
+      if (!deviceExists(device))
+         throw shared::exception::CEmptyResult("Fail to update device configuration : device doesn't exist.");
+
+      m_deviceManager->updateDeviceConfiguration(m_deviceManager->getDevice(getPluginId(), device)->Id(),
+                                                 configuration);
+   }
+
    shared::CDataContainer CYPluginApiImplementation::getDeviceDetails(const std::string& device) const
    {
       return m_deviceManager->getDevice(getPluginId(), device)->Details;

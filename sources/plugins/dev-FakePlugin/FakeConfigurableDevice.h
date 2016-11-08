@@ -28,7 +28,7 @@ public:
    /// \brief	            Declare device and associated keywords if necessary
    /// \param[in] api      yPluginApi context
    //--------------------------------------------------------------
-   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const;
+   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)

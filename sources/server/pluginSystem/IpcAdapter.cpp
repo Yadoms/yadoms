@@ -218,6 +218,10 @@ namespace pluginSystem
          break;
       case toYadoms::msg::kUpdateDeviceModel: processUpdateDeviceModel(toYadomsProtoBuffer.updatedevicemodel());
          break;
+      case toYadoms::msg::kDeviceConfigurationRequest: processDeviceConfigurationRequest(toYadomsProtoBuffer.deviceconfigurationrequest());
+         break;
+      case toYadoms::msg::kUpdateDeviceConfiguration: processUpdateDeviceConfiguration(toYadomsProtoBuffer.updatedeviceconfiguration());
+         break;
       default:
          throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
       }
@@ -382,6 +386,20 @@ namespace pluginSystem
    {
       m_pluginApi->updateDeviceModel(msg.device(),
                                      msg.model());
+   }
+
+   void CIpcAdapter::processDeviceConfigurationRequest(const toYadoms::DeviceConfigurationRequest& msg)
+   {
+      toPlugin::msg ans;
+      auto answer = ans.mutable_deviceconfigurationanswer();
+      answer->set_configuration(m_pluginApi->getDeviceConfiguration(msg.device()).serialize());
+      send(ans);
+   }
+
+   void CIpcAdapter::processUpdateDeviceConfiguration(const toYadoms::UpdateDeviceConfiguration& msg) const
+   {
+      m_pluginApi->updateDeviceConfiguration(msg.device(),
+                                             shared::CDataContainer(msg.configuration()));
    }
 
    void CIpcAdapter::postStopRequest()

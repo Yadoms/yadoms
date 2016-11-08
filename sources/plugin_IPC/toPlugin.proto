@@ -84,6 +84,10 @@ message DeviceModelAnswer {
 	required string model = 1;
 }
 
+message DeviceConfigurationAnswer {
+	required string configuration = 1;
+}
+
 message msg {
 	oneof OneOf {
 		string error = 1;
@@ -107,6 +111,7 @@ message msg {
 		DeviceRemoved deviceRemoved = 20;
 		AllDevicesAnswer allDevicesAnswer = 21;
 		DeviceModelAnswer deviceModelAnswer = 22;
+		DeviceConfigurationAnswer deviceConfigurationAnswer = 23;
 	}
 }
 

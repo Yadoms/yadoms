@@ -229,6 +229,23 @@ namespace shared
             virtual bool deviceExists(const std::string& device) const = 0;
 
             //-----------------------------------------------------
+            ///\brief Get the configuration of a device
+            ///\param    [in]    device            The device name
+            ///\return the device configuration
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual CDataContainer getDeviceConfiguration(const std::string& device) const = 0;
+
+            //-----------------------------------------------------
+            ///\brief Update the configuration of a device (replace the existing configuration)
+            ///\param    [in]    device            The device name
+            ///\param    [in]    configuration     Device configuration
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual void updateDeviceConfiguration(const std::string& device,
+                                                   const CDataContainer& configuration) const = 0;
+
+            //-----------------------------------------------------
             ///\brief Get the details of a device
             ///\param    [in]    device            The device name
             ///\return the device details
