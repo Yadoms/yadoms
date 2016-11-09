@@ -14,3 +14,4 @@ tests/user/user.sln
 *.suo
 *.db
 sources/plugins/dev-EnOcean/enOceanDescriptors/generated-*
+sources/plugins/dev-EnOcean/package.json
