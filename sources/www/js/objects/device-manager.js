@@ -191,10 +191,14 @@ DeviceManager.getConfigurationSchema = function(device) {
                         .done(function (dynamicSchema) {
                             if(dynamicSchema)
                                 schema = _.merge(schema, dynamicSchema);
-                            d.resolve(schema);
+                            device.attachedPlugin.applyBinding(schema, true, true)
+                            .done(d.resolve)
+                            .fail(d.reject);
                         }).fail(d.reject);                        
                     } else {
-                        d.resolve(schema);
+                        device.attachedPlugin.applyBinding(schema, true, true)
+                        .done(d.resolve)
+                        .fail(d.reject);
                     }
                 } else {
                     //device configuration not exists in package.json

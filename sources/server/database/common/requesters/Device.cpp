@@ -157,7 +157,7 @@ namespace database
 
             //get a good name
             auto realFriendlyName = friendlyName;
-            if (realFriendlyName == shared::CStringExtension::EmptyString)
+            if (realFriendlyName == std::string())
                realFriendlyName = name;
 
             //insert in db
@@ -193,7 +193,7 @@ namespace database
             //device not found, creation is enabled
 
             //get a good name
-            if (newFriendlyName != shared::CStringExtension::EmptyString)
+            if (newFriendlyName != std::string())
             {
                //insert in db
                auto qUpdate = m_databaseRequester->newQuery();

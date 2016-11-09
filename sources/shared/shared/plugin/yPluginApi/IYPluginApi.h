@@ -10,7 +10,6 @@
 #include "ISetDeviceConfiguration.h"
 #include "IDeviceRemoved.h"
 #include "historization/Historizers.h"
-#include <shared/StringExtension.h>
 
 namespace shared
 {
@@ -174,7 +173,7 @@ namespace shared
             ///\note In case of setting states kError or kStopped, plugin must be effectively stopped within 10 seconds or it will be killed.
             //-----------------------------------------------------
             virtual void setPluginState(const historization::EPluginState& state,
-                                        const std::string& customMessageId = shared::CStringExtension::EmptyString,
+                                        const std::string& customMessageId = std::string(),
                                         const std::map<std::string, std::string>& customMessageDataParams = std::map<std::string, std::string>()) = 0;
 
 

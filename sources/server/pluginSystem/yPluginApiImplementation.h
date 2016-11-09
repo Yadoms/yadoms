@@ -45,7 +45,7 @@ namespace pluginSystem
 
       // IYPluginApi implementation
       void setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state,
-                          const std::string& customMessageId = shared::CStringExtension::EmptyString,
+                          const std::string& customMessageId = std::string(),
                           const std::map<std::string, std::string>& customMessageDataParams = std::map<std::string, std::string>()) override;
       void declareDevice(const std::string& device,
                          const std::string& model,

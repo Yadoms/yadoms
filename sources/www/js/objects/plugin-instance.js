@@ -88,6 +88,22 @@ PluginInstance.prototype.getPackageDeviceConfigurationSchema = function() {
    return d.promise();
 };
 
+/**
+ *  Apply binding on a configuration schema
+ * @param {Object} schema : The schema to bind
+ * @param {Boolean} plugin : true to allow plugin binding
+ * @param {Boolean} system : true to allow system binding
+ * @returns A promise
+ */
+PluginInstance.prototype.applyBinding  = function(schema, plugin, system) {
+    var allowedTypes = [];
+    if(plugin)
+        allowedTypes.push("plugin");
+    if(system)
+        allowedTypes.push("system");
+        
+    return this.applyBindingPrivate(schema, allowedTypes);
+}
 
 /**
  *  Get the bound manually device creation configuration schema
