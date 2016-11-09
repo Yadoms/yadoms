@@ -39,6 +39,7 @@ namespace web
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CDevice::getAllDevices);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CDevice::getOneDevice);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("configurationSchema"), CDevice::getDeviceConfigurationSchema);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword"), CDevice::getAllKeywords);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*"), CDevice::getKeyword);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchcapacity")("*")("*"), CDevice::getDevicesWithCapacity);
@@ -61,6 +62,55 @@ namespace web
 
             auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(boost::lexical_cast<int>(objectId));
             return CResult::GenerateSuccess(deviceFound);
+         }
+
+         shared::CDataContainer CDevice::getDeviceConfigurationSchema(const std::vector<std::string>& parameters,
+                                                                      const std::string& requestContent) const
+         {
+            try
+            {
+               if (parameters.size() > 2)
+               {
+                  auto deviceId = boost::lexical_cast<int>(parameters[1]);
+                  try
+                  {
+                     //create a callback (allow waiting for result)              
+                     communication::callback::CSynchronousCallback<shared::CDataContainer> cb;
+
+                     //send request to plugin
+                     m_messageSender.sendDeviceConfigurationSchemaRequest(deviceId, cb);
+
+                     //wait for result
+                     switch (cb.waitForResult())
+                     {
+                     case communication::callback::CSynchronousCallback<shared::CDataContainer>::kResult:
+                        {
+                           auto res = cb.getCallbackResult();
+                           if (res.Success)
+                              return CResult::GenerateSuccess(res.Result);
+                           return CResult::GenerateError(res.ErrorMessage);
+                        }
+                     case shared::event::kTimeout:
+                        return CResult::GenerateError("The plugin did not respond");
+                     default:
+                        return CResult::GenerateError("Unkown plugin result");
+                     }
+                  }
+                  catch (shared::exception::CException& ex)
+                  {
+                     return CResult::GenerateError(ex);
+                  }
+               }
+               return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in executing getDeviceConfigurationSchema query");
+            }
          }
 
          shared::CDataContainer CDevice::getAllDevices(const std::vector<std::string>& parameters,

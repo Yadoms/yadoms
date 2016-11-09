@@ -53,6 +53,11 @@ namespace pluginSystem
       m_ipcAdapter->postBindingQueryRequest(request);
    }
 
+   void CInstance::postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request)
+   {
+      m_ipcAdapter->postDeviceConfigurationSchemaRequest(request);
+   }
+
    void CInstance::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request)
    {
       m_ipcAdapter->postManuallyDeviceCreationRequest(request);

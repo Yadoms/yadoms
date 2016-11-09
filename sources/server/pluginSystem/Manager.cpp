@@ -17,6 +17,7 @@
 #include "PluginException.hpp"
 #include "InvalidPluginException.hpp"
 #include "InstanceRemoverRaii.hpp"
+#include "DeviceConfigurationSchemaRequest.h"
 #include "SetDeviceConfiguration.h"
 #include "DeviceRemoved.h"
 
@@ -649,6 +650,29 @@ namespace pluginSystem
       catch (CPluginException& e)
       {
          request->sendError((boost::format("Error when requesting binding query %1%") % e.what()).str());
+      }
+   }
+
+   void CManager::postDeviceConfigurationSchemaRequest(int deviceId,
+                                                       communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) const
+   {
+      auto device = m_dataAccessLayer->getDeviceManager()->getDevice(deviceId);
+
+      boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request(boost::make_shared<pluginSystem::CDeviceConfigurationSchemaRequest>(device->Name(),
+                                                                                                                                                                   callback));
+
+      try
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+         auto instance = getRunningInstance(device->PluginId);
+
+         YADOMS_LOG(debug) << "Send DeviceConfigurationSchema request on device \"" << device->Name() << "\" to plugin " << instance->about()->DisplayName();
+
+         instance->postDeviceConfigurationSchemaRequest(request);
+      }
+      catch (CPluginException& e)
+      {
+         request->sendError((boost::format("Error when requesting DeviceConfigurationSchema on device %1% : %2%") % device->Name() % e.what()).str());
       }
    }
 

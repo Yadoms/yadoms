@@ -70,6 +70,14 @@ namespace communication
                                            communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) = 0;
 
       //----------------------------------------------
+      ///\brief                     Send a binding query request to a plugin with a mandatory callback
+      ///\param [in] deviceId       Device ID on which ask configuration schema
+      ///\param [in] callback       The callback
+      //----------------------------------------------
+      virtual void sendDeviceConfigurationSchemaRequest(int deviceId,
+                                                        communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) = 0;
+
+      //----------------------------------------------
       ///\brief                     Send a new configuration to device on a plugin
       ///\param [in] deviceId       Device ID on which to send configuration
       ///\param [in] configuration  The new device configuration

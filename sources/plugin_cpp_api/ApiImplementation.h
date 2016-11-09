@@ -93,6 +93,7 @@ namespace plugin_cpp_api
       void processInit(const toPlugin::Init& msg);
       void processUpdateConfiguration(const toPlugin::Configuration& msg);
       void processBindingQuery(const toPlugin::BindingQuery& msg);
+      void processDeviceConfigurationSchemaRequest(const toPlugin::DeviceConfigurationSchemaRequest& msg);
       void processSetDeviceConfiguration(const toPlugin::SetDeviceConfiguration& msg);
       void processDeviceCommand(const toPlugin::DeviceCommand& msg);
       void processExtraQuery(const toPlugin::ExtraQuery& msg);

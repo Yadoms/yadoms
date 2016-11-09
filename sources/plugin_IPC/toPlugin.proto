@@ -62,6 +62,10 @@ message DeveloperModeAnswer {
     required bool enabled = 1;
 }
 
+message DeviceConfigurationSchemaRequest {
+	required string device = 1;
+}
+
 message SetDeviceConfiguration {
 	required string device = 1;
 	required string configuration = 2;
@@ -102,11 +106,12 @@ message msg {
 		RecipientFieldExitsAnswer recipientFieldExitsAnswer = 15;
 		ManuallyDeviceCreation manuallyDeviceCreation = 16;
 		DeveloperModeAnswer developerModeAnswer = 17;
-		SetDeviceConfiguration setDeviceConfiguration = 18;
-		DeviceRemoved deviceRemoved = 19;
-		AllDevicesAnswer allDevicesAnswer = 20;
-		DeviceModelAnswer deviceModelAnswer = 21;
-		DeviceConfigurationAnswer deviceConfigurationAnswer = 22;
+		DeviceConfigurationSchemaRequest deviceConfigurationSchemaRequest = 18;
+		SetDeviceConfiguration setDeviceConfiguration = 19;
+		DeviceRemoved deviceRemoved = 20;
+		AllDevicesAnswer allDevicesAnswer = 21;
+		DeviceModelAnswer deviceModelAnswer = 22;
+		DeviceConfigurationAnswer deviceConfigurationAnswer = 23;
 	}
 }
 

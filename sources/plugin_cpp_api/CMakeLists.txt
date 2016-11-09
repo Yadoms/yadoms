@@ -18,6 +18,8 @@ set(plugin_cpp_api_SOURCES
    BindingQueryData.cpp
    DeviceCommand.h
    DeviceCommand.cpp
+   DeviceConfigurationSchemaRequest.h
+   DeviceConfigurationSchemaRequest.cpp
    DeviceRemoved.h
    DeviceRemoved.cpp
    ExtraQuery.h

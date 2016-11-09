@@ -107,6 +107,14 @@ namespace shared
                kEventDeviceRemoved,
 
                //-----------------------------------------------------
+               ///\brief Yadoms ask the device configuration schema
+               ///\usage Optional, required if device configuration support is declared in package.json
+               ///\note Data : a boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest> object containing the device configuration schema request
+               ///\note Plugin must return the configation schema associated to the device (by calling request->sendSuccess or sendError)
+               //-----------------------------------------------------
+               kGetDeviceConfigurationSchemaRequest,
+
+               //-----------------------------------------------------
                ///\brief Yadoms sent the configuration of a device
                ///\usage Optional, required if device configuration support is declared in package.json
                ///\note Data : a boost::shared_ptr<const yApi::IDeviceConfiguration> object containing the new device configuration

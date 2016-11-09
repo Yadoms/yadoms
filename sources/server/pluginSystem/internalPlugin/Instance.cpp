@@ -55,6 +55,12 @@ namespace pluginSystem
                                    request);
       }
 
+      void CInstance::postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request)
+      {
+         m_eventHandler->postEvent(yApi::IYPluginApi::kGetDeviceConfigurationSchemaRequest,
+                                   request);
+      }
+
       void CInstance::postSetDeviceConfiguration(boost::shared_ptr<const shared::plugin::yPluginApi::ISetDeviceConfiguration> command)
       {
          m_eventHandler->postEvent(yApi::IYPluginApi::kSetDeviceConfiguration,

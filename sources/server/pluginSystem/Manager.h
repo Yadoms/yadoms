@@ -209,6 +209,14 @@ namespace pluginSystem
                                    boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request) const;
 
       //--------------------------------------------------------------
+      /// \brief                 Post a device configuration schema request to a plugin
+      /// \param [in] deviceId   Device Id
+      /// \param [in] callback   Request callback
+      //--------------------------------------------------------------
+      void postDeviceConfigurationSchemaRequest(int deviceId,
+                                                communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) const;
+
+      //--------------------------------------------------------------
       /// \brief                       Post a new device configuration to a plugin
       /// \param [in] deviceId         Device Id
       /// \param [in] configuration    New device configuration
