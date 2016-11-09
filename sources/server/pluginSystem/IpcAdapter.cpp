@@ -463,39 +463,6 @@ namespace pluginSystem
          request->sendError(result);
    }
 
-   void CIpcAdapter::postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request)
-   {
-      toPlugin::msg req;
-      auto message = req.mutable_deviceconfigurationschemarequest();
-      message->set_device(request->device());
-
-      bool success;
-      std::string result;
-
-      try
-      {
-         send(req,
-              [&](const toYadoms::msg& ans) -> bool
-              {
-                 return ans.has_deviceconfigurationschemaanswer();
-              },
-              [&](const toYadoms::msg& ans) -> void
-              {
-                 success = ans.deviceconfigurationschemaanswer().success();
-                 result = ans.deviceconfigurationschemaanswer().result();
-              });
-      }
-      catch (std::exception& e)
-      {
-         request->sendError((boost::format("Plugin doesn't answer to device configuration schema request : %1%") % e.what()).str());
-      }
-
-      if (success)
-         request->sendSuccess(shared::CDataContainer(result));
-      else
-         request->sendError(result);
-   }
-
    void CIpcAdapter::postSetDeviceConfiguration(boost::shared_ptr<const shared::plugin::yPluginApi::ISetDeviceConfiguration>& command)
    {
       toPlugin::msg msg;

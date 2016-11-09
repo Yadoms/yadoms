@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "MSConfiguration.h"
-#include <shared/StringExtension.h>
 #include <shared/encryption/Xor.h>
 
 CMSConfiguration::CMSConfiguration()

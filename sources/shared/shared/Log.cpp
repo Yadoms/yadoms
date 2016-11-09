@@ -32,6 +32,7 @@ namespace shared
       std::map<Poco::Thread::TID, std::string>::iterator i = m_threadNames.find(Poco::Thread::currentTid());
       if (i != m_threadNames.end())
          return i->second;
-      return CStringExtension::EmptyString;
+      static const std::string emptyString;
+      return emptyString;
    }
 } // namespace shared

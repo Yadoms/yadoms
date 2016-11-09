@@ -87,12 +87,6 @@ namespace communication
       m_pluginManager->postBindingQueryRequest(pluginId, request);
    }
 
-   void CPluginGateway::sendDeviceConfigurationSchemaRequest(int deviceId,
-                                                             communication::callback::ISynchronousCallback<shared::CDataContainer>& callback)
-   {
-      m_pluginManager->postDeviceConfigurationSchemaRequest(deviceId, callback);
-   }
-
    void CPluginGateway::sendSetDeviceConfiguration(int deviceId,
                                                    const shared::CDataContainer& configuration)
    {

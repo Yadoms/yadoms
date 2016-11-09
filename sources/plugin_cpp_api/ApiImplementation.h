@@ -28,7 +28,7 @@ namespace plugin_cpp_api
 
       // shared::script::yScriptApi::IYScriptApi implementation
       void setPluginState(const shared::plugin::yPluginApi::historization::EPluginState& state,
-                          const std::string& customMessageId = shared::CStringExtension::EmptyString,
+                          const std::string& customMessageId = std::string(),
                           const std::map<std::string, std::string>& customMessageDataParams = std::map<std::string, std::string>()) override;
       void declareDevice(const std::string& device,
                          const std::string& model,
@@ -93,7 +93,6 @@ namespace plugin_cpp_api
       void processInit(const toPlugin::Init& msg);
       void processUpdateConfiguration(const toPlugin::Configuration& msg);
       void processBindingQuery(const toPlugin::BindingQuery& msg);
-      void processDeviceConfigurationSchemaRequest(const toPlugin::DeviceConfigurationSchemaRequest& msg);
       void processSetDeviceConfiguration(const toPlugin::SetDeviceConfiguration& msg);
       void processDeviceCommand(const toPlugin::DeviceCommand& msg);
       void processExtraQuery(const toPlugin::ExtraQuery& msg);

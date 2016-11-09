@@ -5,7 +5,6 @@
 #include "IDeviceCommand.h"
 #include "IExtraQuery.h"
 #include "historization/Historizers.h"
-#include <shared/StringExtension.h>
 
 namespace shared
 {
@@ -108,14 +107,6 @@ namespace shared
                kEventDeviceRemoved,
 
                //-----------------------------------------------------
-               ///\brief Yadoms ask the device configuration schema
-               ///\usage Optional, required if device configuration support is declared in package.json
-               ///\note Data : a boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest> object containing the device configuration schema request
-               ///\note Plugin must return the configation schema associated to the device (by calling request->sendSuccess or sendError)
-               //-----------------------------------------------------
-               kGetDeviceConfigurationSchemaRequest,
-
-               //-----------------------------------------------------
                ///\brief Yadoms sent the configuration of a device
                ///\usage Optional, required if device configuration support is declared in package.json
                ///\note Data : a boost::shared_ptr<const yApi::IDeviceConfiguration> object containing the new device configuration
@@ -169,7 +160,7 @@ namespace shared
             ///\note In case of setting states kError or kStopped, plugin must be effectively stopped within 10 seconds or it will be killed.
             //-----------------------------------------------------
             virtual void setPluginState(const historization::EPluginState& state,
-                                        const std::string& customMessageId = shared::CStringExtension::EmptyString,
+                                        const std::string& customMessageId = std::string(),
                                         const std::map<std::string, std::string>& customMessageDataParams = std::map<std::string, std::string>()) = 0;
 
 

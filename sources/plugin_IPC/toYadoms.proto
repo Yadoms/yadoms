@@ -97,11 +97,6 @@ message ManuallyDeviceCreationAnswer {
 	}
 }
 
-message DeviceConfigurationSchemaAnswer {
-	required bool success = 1;
-	required string result = 2;
-}
-
 message ExtraQueryAnswer {
 	required bool success = 1;
 	required string result = 2;
@@ -161,15 +156,14 @@ message msg {
 		HistorizeData historizeData = 12;
 		ManuallyDeviceCreationAnswer manuallyDeviceCreationAnswer = 13;
 		DeveloperModeRequest developerModeRequest = 14;
-		DeviceConfigurationSchemaAnswer deviceConfigurationSchemaAnswer = 15;
-		ExtraQueryAnswer extraQueryAnswer = 16;
-		RemoveDevice removeDevice = 17;
-		AllDevicesRequest allDevicesRequest = 18;
-		RemoveKeyword removeKeyword = 19;
-		UpdateDeviceDetails updateDeviceDetails = 20;
-		DeviceModelRequest deviceModelRequest = 21;
-		UpdateDeviceModel updateDeviceModel = 22;
-		DeviceConfigurationRequest deviceConfigurationRequest = 23;
-		UpdateDeviceConfiguration updateDeviceConfiguration = 24;
+		ExtraQueryAnswer extraQueryAnswer = 15;
+		RemoveDevice removeDevice = 16;
+		AllDevicesRequest allDevicesRequest = 17;
+		RemoveKeyword removeKeyword = 18;
+		UpdateDeviceDetails updateDeviceDetails = 19;
+		DeviceModelRequest deviceModelRequest = 20;
+		UpdateDeviceModel updateDeviceModel = 21;
+		DeviceConfigurationRequest deviceConfigurationRequest = 22;
+		UpdateDeviceConfiguration updateDeviceConfiguration = 23;
 	}
 }

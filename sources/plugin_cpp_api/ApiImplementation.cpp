@@ -6,7 +6,6 @@
 #include "DeviceCommand.h"
 #include "ExtraQuery.h"
 #include "ManuallyDeviceCreation.h"
-#include "DeviceConfigurationSchemaRequest.h"
 #include "SetDeviceConfiguration.h"
 #include "DeviceRemoved.h"
 
@@ -160,8 +159,6 @@ namespace plugin_cpp_api
          break;
       case toPlugin::msg::kExtraQuery: processExtraQuery(toPluginProtoBuffer.extraquery());
          break;
-      case toPlugin::msg::kDeviceConfigurationSchemaRequest: processDeviceConfigurationSchemaRequest(toPluginProtoBuffer.deviceconfigurationschemarequest());
-         break;
       case toPlugin::msg::kSetDeviceConfiguration: processSetDeviceConfiguration(toPluginProtoBuffer.setdeviceconfiguration());
          break;
       case toPlugin::msg::kManuallyDeviceCreation: processManuallyDeviceCreation(toPluginProtoBuffer.manuallydevicecreation());
@@ -237,29 +234,6 @@ namespace plugin_cpp_api
                                                                                                                     });
 
       m_pluginEventHandler.postEvent(kBindingQuery, query);
-   }
-
-   void CApiImplementation::processDeviceConfigurationSchemaRequest(const toPlugin::DeviceConfigurationSchemaRequest& msg)
-   {
-      boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> query = boost::make_shared<CDeviceConfigurationSchemaRequest>(msg,
-                                                                                                                                                     [&](const shared::CDataContainer& r)
-                                                                                                                                                     {
-                                                                                                                                                        toYadoms::msg ans;
-                                                                                                                                                        auto answer = ans.mutable_deviceconfigurationschemaanswer();
-                                                                                                                                                        answer->set_success(true);
-                                                                                                                                                        answer->set_result(r.serialize());
-                                                                                                                                                        send(ans);
-                                                                                                                                                     },
-                                                                                                                                                     [&](const std::string& r)
-                                                                                                                                                     {
-                                                                                                                                                        toYadoms::msg ans;
-                                                                                                                                                        auto answer = ans.mutable_deviceconfigurationschemaanswer();
-                                                                                                                                                        answer->set_success(false);
-                                                                                                                                                        answer->set_result(r);
-                                                                                                                                                        send(ans);
-                                                                                                                                                     });
-
-      m_pluginEventHandler.postEvent(kGetDeviceConfigurationSchemaRequest, query);
    }
 
    void CApiImplementation::processSetDeviceConfiguration(const toPlugin::SetDeviceConfiguration& msg)

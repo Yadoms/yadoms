@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "TransceiverStatus.h"
-#include <shared/StringExtension.h>
 
 
 namespace rfxcomMessages
@@ -141,7 +140,7 @@ namespace rfxcomMessages
 
    const std::string& CTransceiverStatus::getDeviceName() const
    {
-      return shared::CStringExtension::EmptyString;
+      return std::string();
    }
 
    void CTransceiverStatus::traceEnabledProtocols() const
