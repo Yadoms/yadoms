@@ -9,6 +9,7 @@ import xml.etree.ElementTree
 import string
 import codecs
 import re
+import json
 
 import cppClass
 import cppHelper
@@ -22,6 +23,8 @@ import util
 xmlInputFilePath = sys.argv[1]
 headerPath = sys.argv[2]
 sourcePath = sys.argv[3]
+packageJsonInPath = sys.argv[4]
+packageJsonPath = sys.argv[5]
 
 
 
@@ -396,6 +399,7 @@ def profilesListCode():
    code += "   return profiles;\n"
    return code
    
+#TODO encore utile ?
 profilesListClass = cppClass.CppClass("CProfilesList", False)
 cppTypes.append(profilesListClass)
 profilesListClass.addMethod(cppClass.CppMethod("list", "const std::vector<std::string>&", "", cppClass.PUBLIC, cppClass.STATIC, profilesListCode()))
@@ -429,5 +433,20 @@ with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
 
    for oneType in cppTypes:
       oneType.generateSource(cppSourceFile)
+
+# Generate package.json
+util.createParentDir(packageJsonPath)
+with codecs.open(packageJsonInPath, 'r', 'utf_8') as packageJsonInFile, codecs.open(packageJsonPath, 'w', 'utf_8') as packageJsonFile:
+
+   from collections import OrderedDict
+   package = json.load(packageJsonInFile, object_pairs_hook=OrderedDict)
+
+   package['deviceConfiguration']['staticConfigurationSchema'][0]['schema']['profile']['content'] = OrderedDict()
+   for profile in supportedProfiles:
+      node = OrderedDict()
+      node['type']='section'
+      node['content']=''
+      package['deviceConfiguration']['staticConfigurationSchema'][0]['schema']['profile']['content'][profile] = node
+   json.dump(package, packageJsonFile, indent=2)
 
 util.finish()

@@ -57,6 +57,9 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    enOceanDescriptors/generated-manufacturers.h
    enOceanDescriptors/generated-eep.cpp
    enOceanDescriptors/generated-eep.h
+   
+   package.in.json
+   package.json
    )
 source_group(enOceanDescriptors enOceanDescriptors/*.*)
 
@@ -69,8 +72,10 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generat
 
 add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.h
                           ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.cpp
-                   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generateEep.py ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/eep${EEP_VERSION}.xml ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.h ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.cpp
+                          ${CMAKE_CURRENT_SOURCE_DIR}/package.json
+                   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generateEep.py ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/eep${EEP_VERSION}.xml ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.h ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.cpp ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json ${CMAKE_CURRENT_SOURCE_DIR}/package.json
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/eep${EEP_VERSION}.xml
+                           ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json
                            ${PYTHON_GENERATOR_FILES} 
                    COMMENT "Generating EEP profiles source code...")
 
