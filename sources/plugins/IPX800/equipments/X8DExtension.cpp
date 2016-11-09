@@ -3,21 +3,19 @@
 #include <shared/DataContainer.h>
 #include "../specificHistorizers/inputOutput.h"
 
-static const std::string Model("X-8D");
-
-namespace extensions
+namespace equipments
 {
 
    CX8DExtension::CX8DExtension(boost::shared_ptr<yApi::IYPluginApi> api,
                                 const std::string& device,
                                 const int& position):
       m_deviceName(device),
-      m_slotNumber(position)
+      m_deviceType("X8-D")
    {
       shared::CDataContainer details;
       details.set("provider", "IPX800");
-      details.set("shortProvider", "ipx");
-      details.set("type", "X8-D");
+      details.set("shortProvider", "ipx");;
+      details.set("type", m_deviceType);
       details.set("position", boost::lexical_cast<std::string>(position));
 
       // Relay Configuration
@@ -36,7 +34,7 @@ namespace extensions
       keywordsToDeclare.insert(keywordsToDeclare.end(), m_keywordList.begin(), m_keywordList.end());
 
       //Déclaration of all IOs
-      api->declareDevice(device, Model, keywordsToDeclare, details);
+      api->declareDevice(device, m_deviceType, keywordsToDeclare, details);
    }
 
    std::string CX8DExtension::getDeviceName() const
@@ -44,33 +42,55 @@ namespace extensions
       return m_deviceName;
    }
 
-   int CX8DExtension::getSlot() const
+   std::string CX8DExtension::getDeviceType() const
    {
-      return m_slotNumber;
+      return m_deviceType;
    }
 
-   void CX8DExtension::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                        shared::CDataContainer& values) const
+   void CX8DExtension::updateFromDevice(const std::string& type,
+                                        boost::shared_ptr<yApi::IYPluginApi> api,
+                                        shared::CDataContainer& values)
    {
-      std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >::const_iterator diIterator;
-      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize;
-
-      for (diIterator = m_keywordList.begin(); diIterator != m_keywordList.end(); ++diIterator)
+      if (type == "D")
       {
-         std::cout << "Set IO : " << (*diIterator)->getHardwareName() << std::endl;
-         bool newValue = values.get<bool>((*diIterator)->getHardwareName());
+         std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >::const_iterator diIterator;
+         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize;
 
-         //historize only for new value
-         if ((*diIterator)->get() != newValue)
-         {
-            (*diIterator)->set(newValue);
-            keywordsToHistorize.push_back((*diIterator));
+         try {
+            for (diIterator = m_keywordList.begin(); diIterator != m_keywordList.end(); ++diIterator)
+            {
+               std::cout << "Set IO : " << (*diIterator)->getHardwareName() << std::endl;
+               bool newValue = values.get<bool>((*diIterator)->getHardwareName());
+
+               //historize only for new value
+               if ((*diIterator)->get() != newValue)
+               {
+                  (*diIterator)->set(newValue);
+                  keywordsToHistorize.push_back((*diIterator));
+               }
+            }
          }
-      }
+         catch (shared::exception::CException& e)
+         {
+            std::cout << "error retrieve value :" << e.what() << std::endl;
+         }
 
-      api->historizeData(m_deviceName, keywordsToHistorize);
+         api->historizeData(m_deviceName, keywordsToHistorize);
+      }
    }
 
+   shared::CDataContainer CX8DExtension::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command)
+   {
+      throw shared::exception::CException("Extension module X-8D have no keyword to set");
+   }
+
+   void CX8DExtension::historizePendingCommand(boost::shared_ptr<yApi::IYPluginApi> api,
+                                               boost::shared_ptr<const yApi::IDeviceCommand> command)
+   {
+      throw shared::exception::CException("Extension module X-8D have no keyword to set");
+   }
+
+   // TODO : A remplir
    CX8DExtension::~CX8DExtension()
    {}
-}// namespace extensions
+}// namespace equipments

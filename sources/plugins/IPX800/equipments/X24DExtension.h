@@ -1,7 +1,7 @@
 #pragma once
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include "IExtension.h"
+#include "IEquipment.h"
 #include "../specificHistorizers/inputOutput.h"
 
 // Shortcut to yPluginApi namespace
@@ -9,12 +9,12 @@ namespace yApi = shared::plugin::yPluginApi;
 
 #define X24D_DI_QTY 24
 
-namespace extensions
+namespace equipments
 {
    //-----------------------------------------------------
    ///\brief X24-D Extension
    //-----------------------------------------------------
-   class CX24DExtension : public IExtension
+   class CX24DExtension : public IEquipment
    {
    public:
       //-----------------------------------------------------
@@ -27,8 +27,10 @@ namespace extensions
 
       // IExtension implementation
       std::string getDeviceName() const override;
-      int getSlot() const override;
-      void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& values) const override;
+      std::string getDeviceType() const override;
+      void historizePendingCommand(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command) override;
+      void updateFromDevice(const std::string& type, boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& values) override;
+      shared::CDataContainer buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command) override;
       // [END] IExtension implementation
 
       //-----------------------------------------------------
@@ -44,13 +46,13 @@ namespace extensions
       std::string m_deviceName;
 
       //-----------------------------------------------------
-      ///\brief                     The slot number
+      ///\brief                     The device type
       //-----------------------------------------------------
-      int m_slotNumber;
+      std::string m_deviceType;
 
       //-----------------------------------------------------
       ///\brief                     The list of keyword
       //-----------------------------------------------------
       std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> > m_keywordList;
    };
-} // namespace extensions
+} // namespace equipment

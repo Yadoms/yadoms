@@ -74,11 +74,12 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          std::cout << "Timer received" << std::endl;
          //Value received from DI
          //if (!initializationError)
-            //m_ioManager->onCommand(api, api->getEventHandler().getEventData<const int>());
+            m_ioManager->readAllIOFromDevice(api);
          break;
       }
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
       {
+         //TODO : A finir le catch
 
          // Yadoms asks for device creation
          auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
@@ -98,6 +99,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
          std::cout << device->device() << " was removed" << std::endl;
+         m_ioManager->removeDevice(api, device->device());
          break;
       }
       case yApi::IYPluginApi::kBindingQuery:

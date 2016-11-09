@@ -9,9 +9,9 @@ namespace yApi = shared::plugin::yPluginApi;
 //--------------------------------------------------------------
 /// \brief	Interface of device
 //--------------------------------------------------------------
-namespace extensions
+namespace equipments
 {
-   class IExtension
+   class IEquipment
    {
    public:
 
@@ -22,22 +22,34 @@ namespace extensions
       virtual std::string getDeviceName() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief      getSlot 
-      /// \return  the slot position
+      /// \brief      getDeviceType
+      /// \return  the device type
       //--------------------------------------------------------------
-      virtual int getSlot() const = 0;
+      virtual std::string getDeviceType() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief      historizePendingCommand
+      /// \return  the device type
+      //--------------------------------------------------------------
+      virtual void historizePendingCommand(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command) = 0;
 
       //--------------------------------------------------------------
       /// \brief      updateFromDevice
       ///\param[in] values     New Values to enter
       //--------------------------------------------------------------
-      virtual void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& values) const = 0;
+      virtual void updateFromDevice(const std::string& type, boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& values) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief      buildMessageToDevice
+      ///\param[in] values     New Values to enter
+      //--------------------------------------------------------------
+      virtual shared::CDataContainer buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command) = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Destructor
       //--------------------------------------------------------------
-      virtual ~IExtension()
+      virtual ~IEquipment()
       {}
 
    };
-}// namespace extensions
+}// namespace equipments

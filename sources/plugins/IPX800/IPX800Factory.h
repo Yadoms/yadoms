@@ -50,8 +50,8 @@ public:
    /// \brief	    createIPX800Device
    /// \param[in] api                  yPluginApi API
    //--------------------------------------------------------------
-   void createIPX800Device(boost::shared_ptr<yApi::IYPluginApi> api,
-                           const std::string& device);
+   //void createIPX800Device(boost::shared_ptr<yApi::IYPluginApi> api,
+   //                        const std::string& device);
 
    //--------------------------------------------------------------
    /// \brief	    bindSlotsX8R
@@ -84,26 +84,6 @@ public:
 private:
 
    //--------------------------------------------------------------
-   /// \brief	Map of all relays
-   //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> > m_relaysList;
-
-   //--------------------------------------------------------------
-   /// \brief	Map of all Digital input
-   //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> > m_DIList;
-
-   //--------------------------------------------------------------
-   /// \brief	Map of all Analog input
-   //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<specificHistorizers::CAnalog> > m_analogList;
-
-   //--------------------------------------------------------------
-   /// \brief	Map of all counters
-   //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<specificHistorizers::CCounter> > m_countersList;
-
-   //--------------------------------------------------------------
    /// \brief	Manager for all IOs
    //--------------------------------------------------------------
    boost::shared_ptr<CIOManager> m_ioManager;
@@ -126,5 +106,5 @@ private:
    //--------------------------------------------------------------
    /// \brief	All extensions
    //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<extensions::IExtension> > m_devicesList;
+   std::vector<boost::shared_ptr<equipments::IEquipment> > m_devicesList;
 };

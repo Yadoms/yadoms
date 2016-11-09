@@ -19,13 +19,15 @@ set(IPX800_PLUGIN_SOURCES
 	stdafx.h
 	urlManager.cpp
 	urlManager.h
-	extensions/IExtension.h
-	extensions/X24DExtension.cpp
-	extensions/X24DExtension.h	
-	extensions/X8DExtension.cpp
-	extensions/X8DExtension.h	
-	extensions/X8RExtension.cpp
-	extensions/X8RExtension.h
+	equipments/IEquipment.h
+	equipments/IPX800Equipment.cpp
+	equipments/IPX800Equipment.h		
+	equipments/X24DExtension.cpp
+	equipments/X24DExtension.h	
+	equipments/X8DExtension.cpp
+	equipments/X8DExtension.h	
+	equipments/X8RExtension.cpp
+	equipments/X8RExtension.h
 	http/HttpMethods.cpp
 	http/HttpMethods.h
 	specificHistorizers/Analog.cpp
@@ -36,7 +38,7 @@ set(IPX800_PLUGIN_SOURCES
 	specificHistorizers/inputOutput.h
 	)
 
-source_group(extensions extensions/*.*)
+source_group(equipments equipments/*.*)
 source_group(http http/*.*)
 source_group(specificHistorizers specificHistorizers/*.*)
 	
