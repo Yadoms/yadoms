@@ -444,12 +444,13 @@ namespace web
                   {
                      //update data in base
                      m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(deviceId, deviceToUpdate.Configuration());
+                     m_messageSender.sendSetDeviceConfiguration(deviceId,
+                                                                deviceToUpdate.Configuration());
                   }
 
                   //return the device info
                   auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
                   return CResult::GenerateSuccess(deviceFound);
-
                }
                return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
             }

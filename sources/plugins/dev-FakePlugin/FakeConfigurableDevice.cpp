@@ -24,7 +24,8 @@ void CFakeConfigurableDevice::declareDevice(boost::shared_ptr<yApi::IYPluginApi>
    // Get the divider value from the device configuration
    try
    {
-      m_divider = api->getDeviceConfiguration(m_deviceName).get<int>("CounterDivider");
+      std::cout << "Configuration = " << api->getDeviceConfiguration(m_deviceName).serialize() << std::endl;
+      m_divider = api->getDeviceConfiguration(m_deviceName).get<int>("CounterDivider2");
    }
    catch(std::exception&)
    {
@@ -70,5 +71,6 @@ boost::shared_ptr<shared::CDataContainer> CFakeConfigurableDevice::deviceConfigu
 
 void CFakeConfigurableDevice::setConfiguration(const shared::CDataContainer& newConfiguration)
 {
-   m_divider = newConfiguration.get<int>("CounterDivider");
+   std::cout << "Configuration = " << newConfiguration.serialize() << std::endl;
+   m_divider = newConfiguration.get<int>("CounterDivider2");
 }
