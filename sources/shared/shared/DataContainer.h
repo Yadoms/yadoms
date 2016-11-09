@@ -8,7 +8,7 @@
 #include "IDataContainable.h"
 #include "enumeration/IExtendedEnum.h"
 #include "Field.hpp"
-#include "StringExtension.h"
+
 namespace shared
 {
    //--------------------------------------------------------------
@@ -231,7 +231,7 @@ namespace shared
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<class T>
-      inline T get(const std::string& parameterName = shared::CStringExtension::EmptyString, const char pathChar = '.') const; 
+      inline T get(const std::string& parameterName = std::string(), const char pathChar = '.') const; 
       
       //--------------------------------------------------------------
       /// \brief	    Get parameter value
@@ -292,7 +292,7 @@ namespace shared
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      const char* get(const std::string & parameterName = shared::CStringExtension::EmptyString, const char pathChar = '.');
+      const char* get(const std::string & parameterName = std::string(), const char pathChar = '.');
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter value
@@ -310,7 +310,7 @@ namespace shared
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      std::map<std::string, std::string> getAsMap(const std::string& parameterName = shared::CStringExtension::EmptyString, const char pathChar = '.') const;
+      std::map<std::string, std::string> getAsMap(const std::string& parameterName = std::string(), const char pathChar = '.') const;
 
       //--------------------------------------------------------------
       //
@@ -383,7 +383,7 @@ namespace shared
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      bool containsChild(const std::string& parameterName = shared::CStringExtension::EmptyString, const char pathChar = '.') const;
+      bool containsChild(const std::string& parameterName = std::string(), const char pathChar = '.') const;
 
       //--------------------------------------------------------------
       /// \brief	    Check if a node is terminal value
@@ -393,7 +393,7 @@ namespace shared
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      bool containsValue(const std::string& parameterName = shared::CStringExtension::EmptyString, const char pathChar = '.') const;
+      bool containsValue(const std::string& parameterName = std::string(), const char pathChar = '.') const;
 
       //--------------------------------------------------------------
       /// \brief		Equality operator

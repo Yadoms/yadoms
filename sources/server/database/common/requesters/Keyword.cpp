@@ -202,7 +202,7 @@ namespace database
                                                   const std::string& newFriendlyName)
          {
             //get a good name
-            if (newFriendlyName != shared::CStringExtension::EmptyString)
+            if (newFriendlyName != std::string())
             {
                auto keywordToUpdate = getKeyword(keywordId);
                if (!keywordToUpdate)

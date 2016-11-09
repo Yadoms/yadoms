@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "BufferLogger.h"
 #include <shared/Log.h>
-#include <shared/StringExtension.h>
 
 namespace shared { namespace communication {
 
@@ -26,7 +25,7 @@ void CBufferLogger::logSent(const CByteBuffer& data)
 std::string CBufferLogger::msgToString(const CByteBuffer& data) const
 {
    if (data.size() == 0)
-      return shared::CStringExtension::EmptyString;
+      return std::string();
 
    size_t nbDigits = sizeof(data[0]) * 2;
    std::ostringstream ss;

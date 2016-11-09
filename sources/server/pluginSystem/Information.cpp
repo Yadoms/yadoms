@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Information.h"
-#include <shared/StringExtension.h>
 #include <boost/regex.hpp>
 #include "tools/SupportedPlatformsChecker.h"
 #include "InvalidPluginException.hpp"
@@ -44,7 +43,7 @@ namespace pluginSystem
          if (m_package->containsValue("url"))
             m_url = m_package->get<std::string>("url"); // No check on URL
          else
-            m_url = shared::CStringExtension::EmptyString;
+            m_url = std::string();
 
          if (m_package->containsValue("supportedPlatforms") || m_package->containsChild("supportedPlatforms"))
             m_isSupportedOnThisPlatform = tools::CSupportedPlatformsChecker::isSupported(m_package->get<shared::CDataContainer>("supportedPlatforms"));

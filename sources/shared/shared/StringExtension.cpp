@@ -3,7 +3,5 @@
 
 namespace shared
 {
-
-const std::string CStringExtension::EmptyString = "";
-
+   
 } // namespace shared

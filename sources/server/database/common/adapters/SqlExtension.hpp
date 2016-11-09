@@ -1,11 +1,5 @@
 #pragma once
-
-#include <shared/StringExtension.h>
-#include <shared/plugin/information/IInformation.h>
-#include "database/entities/Entities.h"
 #include "database/common/IResultHandler.h"
-#include <Poco/DateTimeParser.h>
-#include <Poco/DateTimeFormat.h>
 
 namespace database { 
 namespace common { 

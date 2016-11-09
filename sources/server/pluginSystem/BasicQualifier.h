@@ -46,7 +46,7 @@ namespace pluginSystem
       /// \param[in]  reason     Crash cause (exception...)
       //--------------------------------------------------------------
       void AddEventToDatabase(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-                              database::entities::EEventType eventType, const std::string& reason = shared::CStringExtension::EmptyString) const;
+                              database::entities::EEventType eventType, const std::string& reason = std::string()) const;
 
       //--------------------------------------------------------------
       /// \brief	Plugin logger access

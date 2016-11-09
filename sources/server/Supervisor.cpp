@@ -144,7 +144,7 @@ void CSupervisor::run()
       webServer->start();
 
       // Register to event logger started event
-      dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", shared::CStringExtension::EmptyString);
+      dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", std::string());
 
       //create and start the dateTime notification scheduler
       dateTime::CDateTimeNotifier dateTimeNotificationService;
@@ -182,7 +182,7 @@ void CSupervisor::run()
 
       YADOMS_LOG(information) << "Supervisor is stopped";
 
-      dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStopped, "yadoms", shared::CStringExtension::EmptyString);
+      dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStopped, "yadoms", std::string());
    }
    catch (std::exception& e)
    {
