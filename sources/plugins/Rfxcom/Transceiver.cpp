@@ -347,7 +347,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
       }
       return message;
    }
-   catch (shared::exception::CException& exception)
+   catch (std::exception& exception)
    {
       std::cerr << "Invalid RfxCom message received : " << exception.what() << std::endl;
       return boost::shared_ptr<rfxcomMessages::IRfxcomMessage>();

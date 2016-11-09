@@ -55,7 +55,7 @@ namespace rfxcomMessages
       m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
    {
       // Should not be called (transmitter-only device)
-      BOOST_ASSERT_MSG(false, "Constructing CRfy object from received buffer is not possible, CRfy is transmitter-only device");
+      throw std::logic_error("Constructing CRfy object from received buffer is not possible, CRfy is transmitter-only device");
    }
 
    CRfy::~CRfy()

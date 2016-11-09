@@ -79,7 +79,7 @@ namespace rfxcomMessages
       m_keywords({ m_day , m_setPoint , m_rssi })
    {
       // Should not be called (transmitter-only device)
-      BOOST_ASSERT_MSG(false, "Constructing CRadiator1 object from received buffer is not possible, CRadiator1 is transmitter-only device");
+      throw std::logic_error("Constructing CRadiator1 object from received buffer is not possible, CRadiator1 is transmitter-only device");
    }
 
    CRadiator1::~CRadiator1()

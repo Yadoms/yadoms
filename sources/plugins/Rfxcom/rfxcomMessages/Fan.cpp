@@ -89,7 +89,7 @@ namespace rfxcomMessages
         m_id(0)
    {
       // Should not be called (transmitter-only device)
-      BOOST_ASSERT_MSG(false, "Constructing CFan object from received buffer is not possible, Cfan is transmitter-only device");
+      throw std::logic_error("Constructing CFan object from received buffer is not possible, Cfan is transmitter-only device");
    }
 
    CFan::~CFan()
