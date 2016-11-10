@@ -119,15 +119,19 @@ namespace equipments
 
    void CX8RExtension::historizePendingCommand(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command)
    {
-      bool newValue = boost::lexical_cast<bool>(command->getBody());
-      if (m_pendingHistorizer->get() != newValue)
+      if (m_pendingHistorizer)
       {
-         m_pendingHistorizer->set(newValue);
-         api->historizeData(m_deviceName, m_pendingHistorizer);
+         bool newValue = boost::lexical_cast<bool>(command->getBody());
+         if (m_pendingHistorizer->get() != newValue)
+         {
+            m_pendingHistorizer->set(newValue);
+            api->historizeData(m_deviceName, m_pendingHistorizer);
+         }
+
+         m_pendingHistorizer.reset();
       }
    }
 
-   // TODO : A remplir
    CX8RExtension::~CX8RExtension()
    {}
 }// namespace equipments

@@ -118,9 +118,31 @@ namespace equipments
       }
    }
 
-   //TODO : A finir !
    void CIPX800Equipment::historizePendingCommand(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command)
    {
+      if (m_pendingIOHistorizer)
+      {
+         bool newValue = boost::lexical_cast<bool>(command->getBody());
+         if (m_pendingIOHistorizer->get() != newValue)
+         {
+            m_pendingIOHistorizer->set(newValue);
+            api->historizeData(m_deviceName, m_pendingIOHistorizer);
+         }
+
+         m_pendingIOHistorizer.reset();
+      }
+
+      if (m_pendingCounterHistorizer)
+      {
+         bool newValue = boost::lexical_cast<bool>(command->getBody());
+         if (m_pendingCounterHistorizer->get() != newValue)
+         {
+            m_pendingCounterHistorizer->set(newValue);
+            api->historizeData(m_deviceName, m_pendingCounterHistorizer);
+         }
+
+         m_pendingCounterHistorizer.reset();
+      }
    }
 
    shared::CDataContainer CIPX800Equipment::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command)
@@ -146,8 +168,6 @@ namespace equipments
       return parameters;
    }
 
-   //TODO : Faire les Analog et les compteurs
-   //TODO : Vérifier pour les compteurs s'il faut faire quelque chose, de même pour les extensions
    shared::CDataContainer CIPX800Equipment::setParameter(const std::string& keywordName, 
                                                          std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& keywordsList,
                                                          boost::shared_ptr<const yApi::IDeviceCommand> command,
@@ -161,19 +181,14 @@ namespace equipments
          // Keyword found
          if ((*diIterator)->getKeyword() == keywordName)
          {
-            switch (boost::lexical_cast<int>(command->getBody()))
-            {
-            case 0:
-               parameters.set("Clear" + (*diIterator)->getHardwareName(), value);
-               m_pendingHistorizer = (*diIterator);
-               break;
-            case 1:
+            bool newValue = boost::lexical_cast<bool>(command->getBody());
+
+            if (newValue)
                parameters.set("Set" + (*diIterator)->getHardwareName(), value);
-               m_pendingHistorizer = (*diIterator);
-               break;
-            default:
-               break;
-            }
+            else
+               parameters.set("Clear" + (*diIterator)->getHardwareName(), value);
+
+            m_pendingIOHistorizer = (*diIterator);
          }
       }
 
@@ -194,7 +209,7 @@ namespace equipments
          if ((*diIterator)->getKeyword() == keywordName)
          {
             parameters.set("Set" + (*diIterator)->getHardwareName(), value);
-            m_pendingHistorizer = (*diIterator);
+            m_pendingCounterHistorizer = (*diIterator);
          }
          //0   : counter is cleared
          //!=0 : the value is added of sub from the counter
@@ -203,7 +218,6 @@ namespace equipments
       return parameters;
    }
 
-   // TODO : A remplir
    CIPX800Equipment::~CIPX800Equipment()
    {}
 }// namespace equipments

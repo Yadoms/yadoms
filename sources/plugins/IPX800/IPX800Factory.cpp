@@ -10,7 +10,6 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
                                const IIPX800Configuration& configuration):
    m_ioManager(boost::make_shared<CIOManager>(device, configuration.getIPAddress(), configuration.isPasswordActivated(), configuration.getPassword()))
 {
-   //TODO : Faire les remplissages du X-8D et X-24D interdisants les slots pour les autres equipments.
    for (int counter = 0; counter < 6; ++counter)
    {
       X8RSlotused[counter] = false;
@@ -47,9 +46,6 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
          int position = details.get<int>("position");
          extension = boost::make_shared<equipments::CX8DExtension>(api, (*devicesIterator), position);
          X8DSlotused[position-1] = true;
-         
-         // The corresponding slot for X-24D could not be installed
-         X24DSlotused[position/3-1] = true;
       }
       else if (model == "X-24D")
       {
@@ -58,7 +54,7 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
          extension = boost::make_shared<equipments::CX24DExtension>(api, (*devicesIterator), position);
          X24DSlotused[position] = true;
 
-         // The corresponding slots for X8D could not be installed
+         // The corresponding slots for X-8D could not be installed
          X8DSlotused[position * 3] = true;
          X8DSlotused[position * 3 + 1] = true;
          X8DSlotused[position * 3 + 2] = true;
@@ -141,10 +137,12 @@ shared::CDataContainer CIPX800Factory::bindSlotsX24D()
 {
    shared::CDataContainer ev;
 
+   // TODO : Merger X24DSlotused et X8DSlotused
+
    for (int counter = 0; counter < 2; ++counter)
    {
       // Add only not used slots
-      if (!X24DSlotused[counter])
+      if (!X24DSlotused[counter] && !X8DSlotused[counter*3] && !X8DSlotused[counter * 3 + 1] && !X8DSlotused[counter * 3 + 2])
          ev.set(boost::lexical_cast<std::string>(counter), "");
    }
 
@@ -161,6 +159,45 @@ boost::shared_ptr<CIOManager> CIPX800Factory::getIOManager(void)
    return m_ioManager;
 }
 
+void CIPX800Factory::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved)
+{
+   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorExtension;
+
+   for (iteratorExtension = m_devicesList.begin(); iteratorExtension != m_devicesList.end(); ++iteratorExtension)
+   {
+      // Deletion from the list of the device
+      if ((*iteratorExtension)->getDeviceName() == deviceRemoved)
+      {
+
+         // If it's an extension, we delete the extension.
+         // If it's the IPX800, we delete all elements
+         if ((*iteratorExtension)->getDeviceType() != "IPX800")
+         {
+            // free slot(s) associated to this device for future configurations
+            int position = api->getDeviceDetails(deviceRemoved).get<int>("position");
+            std::string model = api->getDeviceDetails(deviceRemoved).get<std::string>("type");
+
+            // TODO : vérifier aussi bornes
+            if (model == "X-8R") X8RSlotused[position] = false;
+            if (model == "X-8D") X8DSlotused[position] = false;
+            if (model == "X-24D") 
+            { 
+               X24DSlotused[position] = false; 
+               X8DSlotused[position * 3] = false;
+               X8DSlotused[position * 3 + 1] = false;
+               X8DSlotused[position * 3 + 2] = false;
+            }
+
+            // remove the extension
+            m_devicesList.erase(iteratorExtension);
+         }
+         else
+            m_devicesList.clear();
+      }
+   }
+}
+
+//TODO : A finir
 void CIPX800Factory::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                             const IIPX800Configuration& configuration)
 {

@@ -98,6 +98,7 @@ namespace equipments
       //-----------------------------------------------------
       ///\brief                     Waiting command
       //-----------------------------------------------------
-      boost::shared_ptr<const yApi::historization::IHistorizable> m_pendingHistorizer;
+      boost::shared_ptr<specificHistorizers::CInputOuput> m_pendingIOHistorizer;
+      boost::shared_ptr<specificHistorizers::CCounter> m_pendingCounterHistorizer;
    };
 } // namespace equipments

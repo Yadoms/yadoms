@@ -47,13 +47,6 @@ public:
                               const IIPX800Configuration& configuration);
 
    //--------------------------------------------------------------
-   /// \brief	    createIPX800Device
-   /// \param[in] api                  yPluginApi API
-   //--------------------------------------------------------------
-   //void createIPX800Device(boost::shared_ptr<yApi::IYPluginApi> api,
-   //                        const std::string& device);
-
-   //--------------------------------------------------------------
    /// \brief	    bindSlotsX8R
    //--------------------------------------------------------------
    shared::CDataContainer bindSlotsX8R();
@@ -80,6 +73,13 @@ public:
    /// \return     the IOManager
    //--------------------------------------------------------------
    boost::shared_ptr<CIOManager> getIOManager(void);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Process a command received from Yadoms
+   /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \param [in] receivedValue    The received value from the interrupt
+   //--------------------------------------------------------------
+   void removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved);
 
 private:
 

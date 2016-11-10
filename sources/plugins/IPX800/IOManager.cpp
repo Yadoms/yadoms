@@ -27,7 +27,14 @@ void CIOManager::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::str
    {
       // Deletion from the list of the device
       if ((*iteratorExtension)->getDeviceName() == deviceRemoved)
-         m_devicesList.erase(iteratorExtension);
+      {
+         // If it's an extension, we delete the extension.
+         // If it's the IPX800, we delete all elements
+         if ((*iteratorExtension)->getDeviceType() != "IPX800")
+            m_devicesList.erase(iteratorExtension);
+         else
+            m_devicesList.clear();
+      }
    }
 }
 

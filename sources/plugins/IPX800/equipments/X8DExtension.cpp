@@ -90,7 +90,6 @@ namespace equipments
       throw shared::exception::CException("Extension module X-8D have no keyword to set");
    }
 
-   // TODO : A remplir
    CX8DExtension::~CX8DExtension()
    {}
 }// namespace equipments
