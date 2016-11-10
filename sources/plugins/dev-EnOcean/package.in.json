@@ -26,26 +26,21 @@
       "regex": "^[a-fA-F0-9]{8}$",
       "regexErrorMessage": "Must be a 8 characters long hexadecimal string (ie: 0x1234ABCD)"
     },
-    "profile": {
-      "type": "enum",
-      "values": {
-        "__Binding__": {
-          "type": "plugin",
-          "query": "profiles"
-        }
-      }
-    },
     "manufacturer": {
       "type": "string"
     },
     "model": {
       "type": "string"
+    },
+    "profile": {
+      "type": "radioSection",
+      "content": ""
     }
   },
   "deviceConfiguration": {
     "staticConfigurationSchema": [
       {
-        "models": ["*"],
+        "models": [ "*" ],
         "schema": {
           "manufacturer": {
             "type": "string"

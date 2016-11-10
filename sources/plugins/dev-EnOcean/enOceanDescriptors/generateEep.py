@@ -411,6 +411,7 @@ with codecs.open(headerPath, 'w', 'utf_8') as cppHeaderFile:
 
    cppHeaderFile.write("// Generated file, don't modify\n")
    cppHeaderFile.write("#pragma once\n")
+   cppHeaderFile.write("#include <boost/dynamic_bitset.hpp>\n")
    cppHeaderFile.write("#include <shared/plugin/yPluginApi/IYPluginApi.h>\n")
    cppHeaderFile.write("\n")
    cppHeaderFile.write("namespace yApi = shared::plugin::yPluginApi;\n")
@@ -435,18 +436,7 @@ with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
       oneType.generateSource(cppSourceFile)
 
 # Generate package.json
-util.createParentDir(packageJsonPath)
-with codecs.open(packageJsonInPath, 'r', 'utf_8') as packageJsonInFile, codecs.open(packageJsonPath, 'w', 'utf_8') as packageJsonFile:
-
-   from collections import OrderedDict
-   package = json.load(packageJsonInFile, object_pairs_hook=OrderedDict)
-
-   package['deviceConfiguration']['staticConfigurationSchema'][0]['schema']['profile']['content'] = OrderedDict()
-   for profile in supportedProfiles:
-      node = OrderedDict()
-      node['type']='section'
-      node['content']=''
-      package['deviceConfiguration']['staticConfigurationSchema'][0]['schema']['profile']['content'][profile] = node
-   json.dump(package, packageJsonFile, indent=2)
+import generatePackage
+generatePackage.generate(packageJsonInPath, packageJsonPath, supportedProfiles)
 
 util.finish()

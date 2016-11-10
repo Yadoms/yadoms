@@ -93,24 +93,6 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             break;
          }
 
-      case yApi::IYPluginApi::kBindingQuery:
-         {
-            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
-            if (request->getData().getQuery() == "profiles")
-            {
-               shared::CDataContainer result;
-               result.set("values", CProfilesList::list());
-               request->sendSuccess(result);
-            }
-            else
-            {
-               auto errorMessage = (boost::format("unknown query : %1%") % request->getData().getQuery()).str();
-               request->sendError(errorMessage);
-               std::cerr << errorMessage << std::endl;
-            }
-            break;
-         }
-
       case yApi::IYPluginApi::kEventDeviceCommand:
          {
             // Command received from Yadoms
