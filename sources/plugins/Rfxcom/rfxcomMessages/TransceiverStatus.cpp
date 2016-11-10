@@ -140,7 +140,8 @@ namespace rfxcomMessages
 
    const std::string& CTransceiverStatus::getDeviceName() const
    {
-      return std::string();
+      static const std::string emptyString;
+      return emptyString;
    }
 
    void CTransceiverStatus::traceEnabledProtocols() const
