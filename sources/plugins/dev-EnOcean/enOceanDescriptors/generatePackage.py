@@ -9,6 +9,7 @@ import string
 import codecs
 import re
 import json
+import copy
 
 import util
 
@@ -29,54 +30,46 @@ def sortProfiles(inProfiles):
          tempProfiles[rorg][func] = {}
       tempProfiles[rorg][func][type] = 0
    # Sort profiles
-   orderedTempProfiles = OrderedDict(sorted(tempProfiles.items()))
-   for rorg in orderedTempProfiles:
-      orderedTempProfiles[rorg] = OrderedDict(sorted(tempProfiles[rorg].items()))
-      for func in orderedTempProfiles[rorg]:
-         orderedTempProfiles[rorg][func] = OrderedDict(sorted(tempProfiles[rorg][func].items()))
-   # Format sorted profiles
-   outProfiles = []
-   for rorg in orderedTempProfiles:
-      for func in orderedTempProfiles[rorg]:
-         for type in orderedTempProfiles[rorg][func]:
-            outProfiles.append(format(rorg, '02X') + '-' + format(func, '02X') + '-' + format(type, '02X'))
-   return outProfiles
+   orderedProfiles = OrderedDict(sorted(tempProfiles.items()))
+   for rorg in orderedProfiles:
+      orderedProfiles[rorg] = OrderedDict(sorted(tempProfiles[rorg].items()))
+      for func in orderedProfiles[rorg]:
+         orderedProfiles[rorg][func] = OrderedDict(sorted(tempProfiles[rorg][func].items()))
+   return orderedProfiles
 
 
+#
+# Generate package.json from package.in.json
+#
+# Take the general structure from package.in.json, and the specific configurations for certain devices
+#
 def generate(packageJsonInPath, packageJsonPath, supportedProfiles):
    util.createParentDir(packageJsonPath)
    with codecs.open(packageJsonInPath, 'r', 'utf_8') as packageJsonInFile, codecs.open(packageJsonPath, 'w', 'utf_8') as packageJsonFile:
 
-      package = json.load(packageJsonInFile, object_pairs_hook=OrderedDict)
+      inPackage = json.load(packageJsonInFile, object_pairs_hook=OrderedDict)
 
-      supportedProfiles = sortProfiles(supportedProfiles)
+      profiles = sortProfiles(supportedProfiles)
 
-      package['manuallyDeviceCreationConfigurationSchema']['profile']['content'] = OrderedDict()
-      package['deviceConfiguration']['staticConfigurationSchema'][0]['schema']['profile']['content'] = OrderedDict()
-      for profile in supportedProfiles:
-         profileNode = OrderedDict()
-         profileNode['name']=profile
-         profileNode['type']='section'
-         if profile == 'D2-01-12':
-            paramNode = OrderedDict()
-            paramNode['localControl'] = OrderedDict()
-            paramNode['localControl']['type'] = 'enum'
-            paramNode['localControl']['name'] = 'local control'
-            paramNode['localControl']['values'] = OrderedDict()
-            paramNode['localControl']['values']['enable'] = 'enable'
-            paramNode['localControl']['values']['disable'] = 'disable'
-            paramNode['localControl']['defaultValue'] = 'enable'
-            paramNode['taughtIn'] = OrderedDict()
-            paramNode['taughtIn']['type'] = 'enum'
-            paramNode['taughtIn']['name'] = 'taught in'
-            paramNode['taughtIn']['values'] = OrderedDict()
-            paramNode['taughtIn']['values']['allDevices'] = 'all devices'
-            paramNode['taughtIn']['values']['yadomsOnly'] = 'Yadoms only'
-            paramNode['taughtIn']['defaultValue'] = 'allDevices'
-            profileNode['content'] = paramNode
-         else:
-            profileNode['content'] = ''
-         package['manuallyDeviceCreationConfigurationSchema']['profile']['content'][profile] = profileNode
-         package['deviceConfiguration']['staticConfigurationSchema'][0]['schema']['profile']['content'][profile] = profileNode
-      json.dump(package, packageJsonFile, indent=2)
+      outPackage = copy.deepcopy(inPackage)
+      outPackage['manuallyDeviceCreationConfigurationSchema']['profile']['content'] = OrderedDict()
+      outPackage['deviceConfiguration']['staticConfigurationSchema'][0]['schema']['profile']['content'] = OrderedDict()
+      del outPackage['specificProfilesConfigurations']
+
+      for rorg in profiles:
+         for func in profiles[rorg]:
+            for type in profiles[rorg][func]:
+               profileName = format(rorg, '02X') + '-' + format(func, '02X') + '-' + format(type, '02X')
+
+               profileNode = OrderedDict()
+               profileNode['name']=profileName
+               profileNode['type']='section'
+               if profileName in inPackage['specificProfilesConfigurations']:
+                  profileNode['content'] = inPackage['specificProfilesConfigurations'][profileName]['content']
+               else:
+                  profileNode['content'] = ''
+               outPackage['manuallyDeviceCreationConfigurationSchema']['profile']['content'][profileName] = profileNode
+               outPackage['deviceConfiguration']['staticConfigurationSchema'][0]['schema']['profile']['content'][profileName] = profileNode
+
+      json.dump(outPackage, packageJsonFile, indent=2)
 

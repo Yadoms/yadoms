@@ -50,77 +50,81 @@
           },
           "profile": {
             "type": "radioSection",
-            "content": {
-              "F6-02-01": {
-                "type": "section",
-                "content": ""
-              },
-              "D2-01-12": {
-                "type": "section",
-                "content": {
-                  "localControl": {
-                    "type": "enum",
-                    "values": {
-                      "enable": "",
-                      "disable": ""
-                    },
-                    "defaultValue": "enable"
-                  },
-                  "taughtIn": {
-                    "type": "enum",
-                    "values": {
-                      "allDevices": "",
-                      "yadomsOnly": ""
-                    },
-                    "defaultValue": "allDevices"
-                  },
-                  "userInterfaceMode": {
-                    "type": "enum",
-                    "values": {
-                      "dayMode": "",
-                      "nightMode": ""
-                    },
-                    "defaultValue": "dayMode"
-                  },
-                  "defaultState": {
-                    "type": "enum",
-                    "values": {
-                      "off": "",
-                      "on": "",
-                      "previousState": "",
-                      "notUsed": ""
-                    },
-                    "defaultValue": "off"
-                  },
-                  "connectedSwitchsType": {
-                    "type": "enum",
-                    "values": {
-                      "switch": "",
-                      "pushButton": "",
-                      "autodetection": ""
-                    },
-                    "defaultValue": "autodetection"
-                  },
-                  "autoOffTimer": {
-                    "type": "decimal",
-                    "minimumValue": "0",
-                    "maximumValue": "3600",
-                    "precision": "1",
-                    "defaultValue": "0"
-                  },
-                  "delayRadioOffTimer": {
-                    "type": "decimal",
-                    "minimumValue": "0",
-                    "maximumValue": "3600",
-                    "precision": "1",
-                    "defaultValue": "0"
-                  }
-                }
-              }
-            }
+            "content": ""
           }
         }
       }
     ]
+  },
+  "specificProfilesConfigurations": {
+    "D2-01-12": {
+      "type": "section",
+      "content": {
+        "localControl": {
+          "name": "Local control",
+          "type": "enum",
+          "values": {
+            "enable": "enable",
+            "disable": "disable"
+          },
+          "defaultValue": "enable"
+        },
+        "taughtIn": {
+          "name": "Taught In",
+          "type": "enum",
+          "values": {
+            "allDevices": "All devices",
+            "yadomsOnly": "Yadoms only"
+          },
+          "defaultValue": "allDevices"
+        },
+        "userInterfaceMode": {
+          "name": "User Interface Mode",
+          "type": "enum",
+          "values": {
+            "dayMode": "Day (led on)",
+            "nightMode": "Night (led off)"
+          },
+          "defaultValue": "dayMode"
+        },
+        "defaultState": {
+          "name": "Default state",
+          "type": "enum",
+          "values": {
+            "off": "Off",
+            "on": "On",
+            "previousState": "Previous state",
+            "notUsed": "Not Used"
+          },
+          "defaultValue": "off"
+        },
+        "connectedSwitchsType": {
+          "name": "Connected switchs type",
+          "type": "enum",
+          "values": {
+            "switch": "Switch",
+            "pushButton": "Push button",
+            "autodetection": "Autodetect"
+          },
+          "defaultValue": "autodetection"
+        },
+        "autoOffTimer": {
+          "name": "Auto-off timer",
+          "type": "decimal",
+          "minimumValue": "0",
+          "maximumValue": "3600",
+          "precision": "1",
+          "defaultValue": "0"
+        },
+        "delayRadioOffTimer": {
+          "name": "Radio-off delay",
+          "type": "decimal",
+          "minimumValue": "0",
+          "maximumValue": "3600",
+          "precision": "1",
+          "defaultValue": "0"
+        }
+      }
+    }
   }
 }
