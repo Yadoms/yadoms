@@ -55,17 +55,20 @@ def generate(packageJsonInPath, packageJsonPath, supportedProfiles):
       package['deviceConfiguration']['staticConfigurationSchema'][0]['schema']['profile']['content'] = OrderedDict()
       for profile in supportedProfiles:
          profileNode = OrderedDict()
+         profileNode['name']=profile
          profileNode['type']='section'
-         if profile == 'D2-01-12' or profile == 'F6-02-01':
+         if profile == 'D2-01-12':
             paramNode = OrderedDict()
             paramNode['localControl'] = OrderedDict()
             paramNode['localControl']['type'] = 'enum'
+            paramNode['localControl']['name'] = 'local control'
             paramNode['localControl']['values'] = OrderedDict()
             paramNode['localControl']['values']['enable'] = 'enable'
             paramNode['localControl']['values']['disable'] = 'disable'
             paramNode['localControl']['defaultValue'] = 'enable'
             paramNode['taughtIn'] = OrderedDict()
             paramNode['taughtIn']['type'] = 'enum'
+            paramNode['taughtIn']['name'] = 'taught in'
             paramNode['taughtIn']['values'] = OrderedDict()
             paramNode['taughtIn']['values']['allDevices'] = 'all devices'
             paramNode['taughtIn']['values']['yadomsOnly'] = 'Yadoms only'

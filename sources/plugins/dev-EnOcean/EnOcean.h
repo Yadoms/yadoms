@@ -46,14 +46,20 @@ protected:
    void onCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const;
 
    //--------------------------------------------------------------
-   /// \brief	                     Called when the UPS becomes connected
+   /// \brief	                     Called when dongle becomes connected
    //--------------------------------------------------------------
    void processConnectionEvent();
 
    //--------------------------------------------------------------
-   /// \brief	                     Called when the UPS becomes unconnected
+   /// \brief	                     Called when dongle becomes unconnected
    //--------------------------------------------------------------
    void processUnConnectionEvent();
+
+   //--------------------------------------------------------------
+   /// \brief	                     Called when device manually creation is invoked
+   /// \return                      The declared device name
+   //--------------------------------------------------------------
+   std::string processEventManuallyDeviceCreation(boost::shared_ptr<const shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> creation) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the data are received from the UPS

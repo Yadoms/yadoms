@@ -106,25 +106,16 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
          {
-            auto creation = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
+            auto creation(api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>());
             try
             {
-               auto profile = CProfileHelper(creation->getData().getConfiguration().get<std::string>("profile"));
-
-               declareDevice(creation->getData().getConfiguration().get<std::string>("id"),
-                             profile.rorg(),
-                             profile.func(),
-                             profile.type(),
-                             creation->getData().getConfiguration().get<std::string>("profile"),
-                             creation->getData().getConfiguration().get<std::string>("model"));
-
-               creation->sendSuccess(creation->getData().getConfiguration().get<std::string>("id"));
+               creation->sendSuccess(processEventManuallyDeviceCreation(creation));
             }
             catch (std::exception& ex)
             {
+               std::cerr << "Unable to create device : " << ex.what() << std::endl;
                creation->sendError(ex.what());
             }
-
             break;
          }
 
@@ -266,6 +257,44 @@ void CEnOcean::processUnConnectionEvent()
    destroyConnection();
 }
 
+std::string CEnOcean::processEventManuallyDeviceCreation(boost::shared_ptr<const shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> creation) const
+{
+   auto deviceName = creation->getData().getConfiguration().get<std::string>("id");
+
+   std::string profileName;
+   shared::CDataContainer configuration;
+   try
+   {
+      const auto found = creation->getData().getConfiguration().find("profile.content",
+                                                                     [](const shared::CDataContainer& node) -> bool
+                                                                     {
+                                                                        return node.get<bool>("radio");
+                                                                     });
+      std::cout << "==> " << found.serialize() << std::endl;
+      profileName = found.getKey();
+      configuration = found.get<shared::CDataContainer>(profileName + ".content");
+   }
+   catch (shared::exception::CEmptyResult&)
+   {
+      throw std::logic_error("Selected profile is not supported");
+   }
+
+   // Declare the device
+   auto profile = CProfileHelper(profileName);
+   declareDevice(deviceName,
+                 profile.rorg(),
+                 profile.func(),
+                 profile.type(),
+                 creation->getData().getConfiguration().get<std::string>("manufacturer"),
+                 creation->getData().getConfiguration().get<std::string>("model"));
+
+   // Add configuration if needed
+   if (!configuration.empty())
+      m_api->updateDeviceConfiguration(deviceName, configuration);
+
+   return deviceName;
+}
+
 void CEnOcean::processDataReceived(const message::CReceivedEsp3Packet& message) const
 {
    try
@@ -336,11 +365,18 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) 
       // Special-case of 4BS teachin mode Variant 2 (profile is provided in the telegram)
       C4BSTeachinVariant2 teachInData(erp1Data);
 
-      declareDevice(deviceId,
-                    rorg->id(),
-                    teachInData.funcId(),
-                    teachInData.typeId(),
-                    CManufacturers::name(teachInData.manufacturerId()));
+      try
+      {
+         declareDevice(deviceId,
+                       rorg->id(),
+                       teachInData.funcId(),
+                       teachInData.typeId(),
+                       CManufacturers::name(teachInData.manufacturerId()));
+      }
+      catch (std::exception& e)
+      {
+         std::cerr << "Unable to declare device : " << e.what() << std::endl;
+      }
    }
    else
    {
@@ -589,12 +625,13 @@ void CEnOcean::declareDevice(const std::string& deviceId,
    auto keywordsToDeclare = type->historizers();
    if (keywordsToDeclare.empty())
    {
-      std::cout << "Received teachin telegram for id#" << deviceId
+      std::stringstream s;
+      s << "Declare device id#" << deviceId
          << ", " << std::hex << rorg->id()
          << "-" << std::hex << func->id()
          << "-" << std::hex << type->id()
          << ", but no keyword to declare" << std::endl;
-      return;
+      throw std::logic_error(s.str());
    }
 
    shared::CDataContainer details;
@@ -604,7 +641,7 @@ void CEnOcean::declareDevice(const std::string& deviceId,
    details.set("type", type->id());
 
    m_api->declareDevice(deviceId,
-                        !model.empty() ? model : (manufacturer + std::string(" - ") + func->title() + " (" + type->title() + ")"),
+                        !model.empty() ? model : (!manufacturer.empty() ? (manufacturer + std::string(" - ")) : "") + func->title() + " (" + type->title() + ")",
                         keywordsToDeclare,
                         details);
 

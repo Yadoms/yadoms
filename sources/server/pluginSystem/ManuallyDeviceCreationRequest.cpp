@@ -14,7 +14,7 @@ namespace pluginSystem
    {
    }
 
-   const shared::plugin::yPluginApi::IManuallyDeviceCreationData& CManuallyDeviceCreationRequest::getData()
+   const shared::plugin::yPluginApi::IManuallyDeviceCreationData& CManuallyDeviceCreationRequest::getData() const
    {
       return m_requestPtr->getData();
    }
