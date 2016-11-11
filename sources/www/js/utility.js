@@ -419,13 +419,15 @@ function CustomSortFriendlyName(a, b) {
 	
 	if (typeof(a.friendlyName) == "undefined")
 	{
-		console.error("objet " + a + " have no parameter friendlyName");
+		console.error("objet have no parameter friendlyName");
+		console.error(a);
 		return 1;
 	}
 	
 	if (typeof(b.friendlyName) == "undefined")
 	{
-		console.error("objet " + b + "have no parameter friendlyName");
+		console.error("objet have no parameter friendlyName");
+		console.error(b);
 		return 1;
 	}
 	
@@ -448,15 +450,17 @@ function sortListItemsWithFriendlyName( arguments ) {
  */
 function CustomSortDisplayName(a, b) {
 	
-	if (typeof(a.friendlyName) == "undefined")
+	if (typeof(a.displayName) == "undefined")
 	{
-		console.error("object " + a + " have no parameter displayName");
+		console.error("object have no parameter displayName");
+		console.error(a);
 		return 1;
 	}
 	
-	if (typeof(b.friendlyName) == "undefined")
+	if (typeof(b.displayName) == "undefined")
 	{
-		console.error("object " + b + "have no parameter displayName");
+		console.error("object have no parameter displayName");
+		console.error(b);
 		return 1;
 	}
 	
