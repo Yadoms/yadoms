@@ -49,7 +49,8 @@ namespace equipments
 
    void CX8DExtension::updateFromDevice(const std::string& type,
                                         boost::shared_ptr<yApi::IYPluginApi> api,
-                                        shared::CDataContainer& values)
+                                        shared::CDataContainer& values,
+                                        bool forceHistorization)
    {
       if (type == "D")
       {
@@ -59,12 +60,12 @@ namespace equipments
          try {
             for (diIterator = m_keywordList.begin(); diIterator != m_keywordList.end(); ++diIterator)
             {
-               std::cout << "Set IO : " << (*diIterator)->getHardwareName() << std::endl;
                bool newValue = values.get<bool>((*diIterator)->getHardwareName());
 
                //historize only for new value
-               if ((*diIterator)->get() != newValue)
+               if ((*diIterator)->get() != newValue || forceHistorization)
                {
+                  std::cout << "Set IO : " << (*diIterator)->getHardwareName() << std::endl;
                   (*diIterator)->set(newValue);
                   keywordsToHistorize.push_back((*diIterator));
                }
@@ -79,7 +80,9 @@ namespace equipments
       }
    }
 
-   shared::CDataContainer CX8DExtension::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command)
+   shared::CDataContainer CX8DExtension::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
+                                                              shared::CDataContainer& parameters, 
+                                                              boost::shared_ptr<const yApi::IDeviceCommand> command)
    {
       throw shared::exception::CException("Extension module X-8D have no keyword to set");
    }

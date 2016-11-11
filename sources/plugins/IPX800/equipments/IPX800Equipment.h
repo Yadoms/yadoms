@@ -34,9 +34,10 @@ namespace equipments
       std::string getDeviceType() const override;
       void updateFromDevice(const std::string& type, 
                             boost::shared_ptr<yApi::IYPluginApi> api, 
-                            shared::CDataContainer& values) override;
+                            shared::CDataContainer& values,
+                            bool forceHistorization = false) override;
       void historizePendingCommand(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command) override;
-      shared::CDataContainer buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command) override;
+      shared::CDataContainer buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& parameters, boost::shared_ptr<const yApi::IDeviceCommand> command) override;
       // [END] IExtension implementation
 
       //-----------------------------------------------------
@@ -53,17 +54,20 @@ namespace equipments
       void updateIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                               shared::CDataContainer& values,
                               std::vector<boost::shared_ptr<T1> >& keywordsList,
-                              std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& ToHistorize);
+                              std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& ToHistorize,
+                              bool forceHistorization = false);
 
-      shared::CDataContainer CIPX800Equipment::setParameter(const std::string& keywordName,
+      /*shared::CDataContainer*/ void CIPX800Equipment::setParameter(const std::string& keywordName,
                                                             std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& keywordsList,
                                                             boost::shared_ptr<const yApi::IDeviceCommand> command,
-                                                            const std::string& value);
+                                                            const std::string& pinNumber,
+                                                            shared::CDataContainer& parameters);
 
-      shared::CDataContainer CIPX800Equipment::setParameter(const std::string& keywordName,
+      /*shared::CDataContainer*/ void CIPX800Equipment::setParameter(const std::string& keywordName,
                                                             std::vector<boost::shared_ptr<specificHistorizers::CCounter> >& keywordsList,
                                                             boost::shared_ptr<const yApi::IDeviceCommand> command,
-                                                            const std::string& value);
+                                                            const std::string& value,
+                                                            shared::CDataContainer& parameters);
 
       //-----------------------------------------------------
       ///\brief                     The device name

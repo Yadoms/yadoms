@@ -16,7 +16,7 @@ void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
    m_devicesList = extensionList;
    m_keywordsToDeclare.clear();
 
-   readAllIOFromDevice(api);
+   readAllIOFromDevice(api, true);
 }
 
 void CIOManager::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved)
@@ -38,19 +38,19 @@ void CIOManager::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::str
    }
 }
 
-void CIOManager::readAllIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api)
+void CIOManager::readAllIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, bool forceHistorization)
 {
    // Initial Reading of relays
-   readIOFromDevice(api, "R");
+   readIOFromDevice(api, "R", forceHistorization);
 
    // Initial Reading of DIs
-   readIOFromDevice(api, "D");
+   readIOFromDevice(api, "D", forceHistorization);
 
    // Initial Reading of Analog Input
-   readIOFromDevice(api, "A");
+   readIOFromDevice(api, "A", forceHistorization);
 
    // Initial Reading of Counters
-   readIOFromDevice(api, "C");
+   readIOFromDevice(api, "C", forceHistorization);
 }
 
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -72,10 +72,13 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
       if (deviceType == (*iteratorExtension)->getDeviceType())
       {
          shared::CDataContainer results;
-         results = urlManager::sendCommand(m_IPAddress, (*iteratorExtension)->buildMessageToDevice(api, command));
 
-         // If the answer is a succes, we historize the data
-         if (results.containsValue("Succes"))
+         parameters.set("key", m_password);
+
+         results = urlManager::sendCommand(m_IPAddress, (*iteratorExtension)->buildMessageToDevice(api, parameters, command));
+
+         // If the answer is a success, we historize the data
+         if (results.containsValue("Success"))
             (*iteratorExtension)->historizePendingCommand(api, command);
          else
             std::cerr << "Error return by the IPX800" << std::endl;
@@ -84,7 +87,8 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void CIOManager::readIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
-                                  const std::string& type)
+                                  const std::string& type,
+                                  bool forceHistorization)
 {
    shared::CDataContainer parameters;
    shared::CDataContainer results;
@@ -100,7 +104,7 @@ void CIOManager::readIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
    std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorExtension;
 
    for (iteratorExtension = m_devicesList.begin(); iteratorExtension != m_devicesList.end(); ++iteratorExtension)
-      (*iteratorExtension)->updateFromDevice(type, api, results);
+      (*iteratorExtension)->updateFromDevice(type, api, results, forceHistorization);
 }
 
 CIOManager::~CIOManager()

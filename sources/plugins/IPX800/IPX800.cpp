@@ -79,14 +79,18 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       }
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
       {
-         //TODO : A finir le catch
+         //TODO : A finir le catch, implémenter le CManuallyDeviceCreationException
 
          // Yadoms asks for device creation
          auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
          std::cout << "Manually device creation request received for device :" << request->getData().getDeviceName() << std::endl;
          try
          {
+            // Creation of the device
             request->sendSuccess(m_factory->createDeviceManually(api, request->getData()));
+
+            // read IOs juste after to fill all new IOs.
+            m_ioManager->readAllIOFromDevice(api);
          }
          catch (/*CManuallyDeviceCreationException& e*/...)
          {
@@ -127,7 +131,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
 
          //if (!initializationError)
-         m_ioManager->onCommand(api, command);
+            m_ioManager->onCommand(api, command);
          break;
       }
       default:

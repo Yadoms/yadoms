@@ -8,7 +8,6 @@ shared::CDataContainer urlManager::sendCommand(Poco::Net::IPAddress IPAddress, s
 
    // create the URL
    url << "http://" << IPAddress.toString() << "/api/xdevices.json";
-   std::cout << url.str();
 
    return http::CHttpMethods::SendGetRequest(url.str(), parameters);
 }

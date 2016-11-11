@@ -37,7 +37,28 @@ namespace http
          {
             std::ostringstream oss;
             Poco::StreamCopier::copyStream(rs, oss);
-            return shared::CDataContainer(oss.str());
+
+/*       The structure of this return when a command is properly executed is not JSON compliant
+            {
+               "product": "IPX800_V4",
+               "Success"
+            }
+
+         This part add a value to this parameter, to be JSON compliant
+*/       
+
+            std::string buff = oss.str();
+            size_t successFind = buff.find("Success");
+
+            if (successFind == std::string::npos)
+               return shared::CDataContainer(oss.str());
+            else
+            {
+               buff.insert(successFind + 8, ": \"0\"");
+               std::cout << buff;
+               return shared::CDataContainer(buff);
+            }
+//----------------------------------------------------------------
          }
          else
          {

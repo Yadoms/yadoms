@@ -20,7 +20,7 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
       X24DSlotused[counter] = false;
 
    // Creation of the IPX800 device
-   m_devicesList.push_back(boost::make_shared<equipments::CIPX800Equipment>(api, device));
+   //m_devicesList.push_back(boost::make_shared<equipments::CIPX800Equipment>(api, device));
 
    std::vector<std::string> devices = api->getAllDevices();
    std::vector<std::string>::iterator devicesIterator;
@@ -33,7 +33,11 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
       std::cout << "Name : " << (*devicesIterator) << std::endl;
       std::cout << "Model : " << model << std::endl;
 
-      if (model == "X-8R")
+      if (model == "IPX800")
+      {
+         extension = boost::make_shared<equipments::CIPX800Equipment>(api, device);
+      }
+      else if (model == "X-8R")
       {
          auto details = api->getDeviceDetails((*devicesIterator));
          int position = details.get<int>("position");
@@ -60,7 +64,8 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
          X8DSlotused[position * 3 + 2] = true;
       }
 
-      m_devicesList.push_back(extension);
+      if (extension)
+         m_devicesList.push_back(extension);
    }
 
    m_ioManager->Initialize(api, m_devicesList);

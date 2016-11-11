@@ -37,13 +37,15 @@ namespace equipments
       /// \brief      updateFromDevice
       ///\param[in] values     New Values to enter
       //--------------------------------------------------------------
-      virtual void updateFromDevice(const std::string& type, boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& values) = 0;
+      virtual void updateFromDevice(const std::string& type, boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& values, bool forceHistorization) = 0;
 
       //--------------------------------------------------------------
       /// \brief      buildMessageToDevice
       ///\param[in] values     New Values to enter
       //--------------------------------------------------------------
-      virtual shared::CDataContainer buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command) = 0;
+      virtual shared::CDataContainer buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                          shared::CDataContainer& parameters,
+                                                          boost::shared_ptr<const yApi::IDeviceCommand> command) = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Destructor

@@ -57,14 +57,15 @@ public:
    /// \param [in] receivedValue    The received value from the interrupt
    //--------------------------------------------------------------
    void readIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
-                         const std::string& type);
+                         const std::string& type,
+                         bool forceHistorization = false);
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
    /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] receivedValue    The received value from the interrupt
    //--------------------------------------------------------------
-   void readAllIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api);
+   void readAllIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, bool forceHistorization = false);
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
