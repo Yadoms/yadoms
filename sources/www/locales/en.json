@@ -451,6 +451,7 @@
           "ruleDeletionError": "Fail to delete rule __rule__.",
           "ruleStopError": "Fail to stop rule __rule__.",
           "ruleStartError": "Fail to start rule __rule__.",
+		  "pluginListingError": "Fail to list plugins.",
           "ruleListingError": "Fail to list rules.",
           "ruleInterpreterListingError": "Fail to list rule interpreters.",
           "ruleGetLogError": "Fail to get logs of rule __rule__.",
