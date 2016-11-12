@@ -1,5 +1,6 @@
 #pragma once
 #include "database/common/IResultHandler.h"
+#include <shared/StringExtension.h>
 
 namespace database { 
 namespace common { 
