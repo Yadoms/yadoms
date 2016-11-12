@@ -9,8 +9,8 @@ set(IPX800_PLUGIN_SOURCES
 	IOManager.cpp
 	IOManager.h
 	IIPX800Configuration.h
-    IPX800.cpp
-    IPX800.h
+   IPX800.cpp
+   IPX800.h
 	IPX800Configuration.cpp
 	IPX800Configuration.h
 	IPX800Factory.cpp
@@ -21,7 +21,8 @@ set(IPX800_PLUGIN_SOURCES
 	urlManager.h
 	equipments/IEquipment.h
 	equipments/IPX800Equipment.cpp
-	equipments/IPX800Equipment.h		
+	equipments/IPX800Equipment.h	
+   equipments/manuallyDeviceCreationException.hpp	
 	equipments/X24DExtension.cpp
 	equipments/X24DExtension.h	
 	equipments/X8DExtension.cpp
@@ -30,6 +31,8 @@ set(IPX800_PLUGIN_SOURCES
 	equipments/X8RExtension.h
 	http/HttpMethods.cpp
 	http/HttpMethods.h
+   http/failedSendingException.hpp
+   http/invalidHTTPResultException.hpp
 	specificHistorizers/Analog.cpp
 	specificHistorizers/Analog.h
 	specificHistorizers/counter.cpp

@@ -7,12 +7,6 @@
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include "specificHistorizers/inputOutput.h"
 #include "specificHistorizers/counter.h"
-#include "extensions/IExtension.h"
-
-#define IPX800_RELAY_QTY 8
-#define IPX800_DI_QTY    8
-#define IPX800_ANA_QTY   4
-#define IPX800_CNT_QTY  16
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;

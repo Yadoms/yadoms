@@ -6,6 +6,10 @@
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceRemoved.h>
 
+#include "equipments/manuallyDeviceCreationException.hpp"
+#include "http/failedSendingException.hpp"
+#include "http/invalidHTTPResultException.hpp"
+
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
 // This macro also defines the static PluginInformations value that can be used by plugin to get information values
@@ -45,11 +49,18 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       api->setPluginState(yApi::historization::EPluginState::kRunning);
       std::cout << "IPX800 plugin is running..." << std::endl;
    }
+   catch (CFailedSendingException& e)
+   {
+      api->setPluginState(yApi::historization::EPluginState::kCustom, "noConnection");
+      std::cerr << "IPX800 plugin initialization error : " << e.what() << std::endl;
+   }
    catch (...)
    {
       api->setPluginState(yApi::historization::EPluginState::kCustom, "initializationError");
       std::cerr << "IPX800 plugin initialization error..." << std::endl;
    }
+
+   // TODO : Faire le catch de l'ensemble des exceptions, et mettre en place l'état du plugin
 
    while (true)
    {
@@ -79,8 +90,6 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       }
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
       {
-         //TODO : A finir le catch, implémenter le CManuallyDeviceCreationException
-
          // Yadoms asks for device creation
          auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
          std::cout << "Manually device creation request received for device :" << request->getData().getDeviceName() << std::endl;
@@ -90,11 +99,11 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             request->sendSuccess(m_factory->createDeviceManually(api, request->getData()));
 
             // read IOs juste after to fill all new IOs.
-            m_ioManager->readAllIOFromDevice(api);
+            m_ioManager->readAllIOFromDevice(api, true);
          }
-         catch (/*CManuallyDeviceCreationException& e*/...)
+         catch (CManuallyDeviceCreationException& e)
          {
-            //request->sendError(e.what());
+            request->sendError(e.what());
          }
          
          break;

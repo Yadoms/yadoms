@@ -105,7 +105,7 @@
 	"customLabels": {
 		"pluginState": {
 			"initializationError": "Initialization error",
-            "NoConnection": "No Internet connection...",			
+         "noConnection": "Could not connect to the equipment",			
 			"updateConfiguration": "Configuration updating..."
 		}
 	}

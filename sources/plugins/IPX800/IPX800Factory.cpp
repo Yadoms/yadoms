@@ -4,6 +4,7 @@
 #include "equipments/X8RExtension.h"
 #include "equipments/X8DExtension.h"
 #include "equipments/X24DExtension.h"
+#include "equipments/manuallyDeviceCreationException.hpp"
 
 CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
                                const std::string& device,
@@ -18,9 +19,6 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
 
    for (int counter = 0; counter < 2; ++counter)
       X24DSlotused[counter] = false;
-
-   // Creation of the IPX800 device
-   //m_devicesList.push_back(boost::make_shared<equipments::CIPX800Equipment>(api, device));
 
    std::vector<std::string> devices = api->getAllDevices();
    std::vector<std::string>::iterator devicesIterator;
@@ -76,27 +74,32 @@ std::string CIPX800Factory::createDeviceManually(boost::shared_ptr<yApi::IYPlugi
 {
    boost::shared_ptr<equipments::IEquipment> extension;
 
-   if (data.getConfiguration().get<bool>("type.content.X8R.radio"))
-   {
-      int position = data.getConfiguration().get<int>("type.content.X8R.content.Position");
-      extension = boost::make_shared<equipments::CX8RExtension>(api, data.getDeviceName(), position);
-      X8RSlotused[position] = true;
-   }
-   else if (data.getConfiguration().get<bool>("type.content.X8D.radio"))
-   {
-      int position = data.getConfiguration().get<int>("type.content.X8D.content.Position");
-      extension = boost::make_shared<equipments::CX8DExtension>(api, data.getDeviceName(), position);
-      X8DSlotused[position] = true;
-   }
-   else if (data.getConfiguration().get<bool>("type.content.X24D.radio"))
-   {
-      int position = data.getConfiguration().get<int>("type.content.X24D.content.Position");
-      extension = boost::make_shared<equipments::CX24DExtension>(api, data.getDeviceName(), position);
-      X24DSlotused[position] = true;
-   }
+   try {
+      if (data.getConfiguration().get<bool>("type.content.X8R.radio"))
+      {
+         int position = data.getConfiguration().get<int>("type.content.X8R.content.Position");
+         extension = boost::make_shared<equipments::CX8RExtension>(api, data.getDeviceName(), position);
+         X8RSlotused[position] = true;
+      }
+      else if (data.getConfiguration().get<bool>("type.content.X8D.radio"))
+      {
+         int position = data.getConfiguration().get<int>("type.content.X8D.content.Position");
+         extension = boost::make_shared<equipments::CX8DExtension>(api, data.getDeviceName(), position);
+         X8DSlotused[position] = true;
+      }
+      else if (data.getConfiguration().get<bool>("type.content.X24D.radio"))
+      {
+         int position = data.getConfiguration().get<int>("type.content.X24D.content.Position");
+         extension = boost::make_shared<equipments::CX24DExtension>(api, data.getDeviceName(), position);
+         X24DSlotused[position] = true;
+      }
 
-   m_devicesList.push_back(extension);
-
+      m_devicesList.push_back(extension);
+   }
+   catch (shared::exception::CException& e)
+   {
+      throw CManuallyDeviceCreationException(e.what());
+   }
    return extension->getDeviceName();
 }
 

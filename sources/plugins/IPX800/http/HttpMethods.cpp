@@ -9,6 +9,8 @@
 #include <shared/exception/Exception.hpp>
 #include <shared/Log.h>
 
+#include "failedSendingException.hpp"
+#include "invalidHTTPResultException.hpp"
 
 namespace http
 {
@@ -64,14 +66,14 @@ namespace http
          {
             auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
             std::cerr << message << std::endl;
-            throw shared::exception::CException(message);
+            throw CInvalidHTTPResultException(message);
          }
       }
       catch (Poco::Exception& e) 
       {
          auto message = (boost::format("Fail to send get http request \"%1%\" : %2%") % url % e.message()).str();
          std::cerr << message << std::endl;
-         throw shared::exception::CException(message);
+         throw CFailedSendingException(message);
       }
    }
 } // namespace http
