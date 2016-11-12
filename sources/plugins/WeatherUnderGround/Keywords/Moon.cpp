@@ -7,8 +7,8 @@ namespace yApi = shared::plugin::yPluginApi;
 CMoon::CMoon(const std::string& pluginName,
              const std::string& keyWordName)
    : m_pluginName(pluginName),
-     m_moonCharacteristics(boost::make_shared<yApi::historization::CMoonHistorizer>(keyWordName,
-                                                                                    yApi::EKeywordAccessMode::kGet))
+     m_moonCharacteristics(boost::make_shared<specificHistorizer::CMoonHistorizer>(keyWordName,
+                                                                                   yApi::EKeywordAccessMode::kGet))
 {
 }
 

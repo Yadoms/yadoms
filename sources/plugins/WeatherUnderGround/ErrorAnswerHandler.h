@@ -25,10 +25,18 @@ public:
    //--------------------------------------------------------------
    bool ContainError() const;
 
+   yApi::historization::EPluginState getError() const;
+
 private:
+
    //--------------------------------------------------------------
    /// \brief	    Error State
    //--------------------------------------------------------------
    bool m_errorState;
+
+   //--------------------------------------------------------------
+   /// \brief	    Error State plugin
+   //--------------------------------------------------------------
+   yApi::historization::EPluginState m_errorStatePlugin;
 };
 

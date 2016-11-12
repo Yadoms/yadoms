@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ForecastDays.h"
-#include "ErrorAnswerHandler.h"
 #include <shared/exception/Exception.hpp>
 #include "Keywords/KeywordHelpers.h"
 
@@ -14,21 +13,18 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
      m_deviceName(deviceName),
      m_forecast(boost::make_shared<CForecast>(deviceName, "Forecast", weatherunderground::helper::EPeriod::kDay)),
      m_temp(boost::make_shared<yApi::historization::CTemperature>(prefix + "low_temperature")),
-     m_isDesactivated(false),
-     m_isUserDesactivated(false),
      m_isDeveloperMode(false)
 {
    try
    {
       m_url.str("");
-      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/" << m_prefix << "/q/" << m_countryOrState << "/" << m_localisation << ".json";
+      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/forecast/q/" << m_countryOrState << "/" << m_localisation << ".json";
 
       InitializeForecastDays(api, wuConfiguration);
    }
    catch (shared::exception::CException& e)
    {
       std::cout << "Configuration or initialization error of Forecast 3 Days module :" << e.what() << std::endl;
-      m_isDesactivated = true;
       throw;
    }
 }
@@ -68,11 +64,7 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
       // Declare keywords
       std::string m_URL = "www.wunderground.com/";
       api->declareDevice(m_deviceName, m_URL, m_keywords);
-
-      m_isUserDesactivated = false;
    }
-   else
-      m_isUserDesactivated = true;
 }
 
 void CForecastDays::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -95,63 +87,60 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
                           const IWUConfiguration& wuConfiguration,
                           const shared::CDataContainer dataToParse) const
 {
-   if (!m_isDesactivated && !m_isUserDesactivated)
+   try
    {
-      try
+      if (wuConfiguration.IsForecast10DaysEnabled())
       {
-         if (wuConfiguration.IsForecast10DaysEnabled())
+         auto result = dataToParse.get<std::vector<shared::CDataContainer> >("forecast.simpleforecast.forecastday");
+         std::vector<shared::CDataContainer>::iterator i;
+
+         m_forecast->clearAllPeriods();
+
+         unsigned char counter = 0;
+
+         for (i = result.begin(); i != result.end(); ++i)
          {
-            auto result = dataToParse.get<std::vector<shared::CDataContainer> >("forecast.simpleforecast.forecastday");
-            std::vector<shared::CDataContainer>::iterator i;
+            m_forecast->addPeriod(*i,
+                                    "date.year",
+                                    "date.month",
+                                    "date.day",
+                                    "icon",
+                                    "high.celsius",
+                                    "low.celsius",
+                                    "maxwind.kph",
+                                    "avewind.kph",
+                                    "avewind.degrees",
+                                    "avehumidity",
+                                    "qpf_allday.mm",
+                                    "snow_allday.cm");
 
-            m_forecast->clearAllPeriods();
-
-            unsigned char counter = 0;
-
-            for (i = result.begin(); i != result.end(); ++i)
+            if (counter == 0)
             {
-               m_forecast->addPeriod(*i,
-                                     "date.year",
-                                     "date.month",
-                                     "date.day",
-                                     "icon",
-                                     "high.celsius",
-                                     "low.celsius",
-                                     "maxwind.kph",
-                                     "avewind.kph",
-                                     "avewind.degrees",
-                                     "avehumidity",
-                                     "qpf_allday.mm",
-                                     "snow_allday.cm");
-
-               if (counter == 0)
-               {
-                  double temp = 0;
-                  if (convertDouble(temp, *i, "low.celsius"))
-                     m_temp->set(temp);
-               }
-
-               if (wuConfiguration.IsRainIndividualKeywordsEnabled())
-               {
-                  if (counter < NB_RAIN_FORECAST_DAY)
-                  {
-                     double rainRate1h = 0;
-                     if (convertDouble(rainRate1h, *i, "qpf_allday.mm"))
-                        m_forecastRain[counter]->set(rainRate1h);
-                  }
-               }
-
-               ++counter;
+               double temp = 0;
+               if (convertDouble(temp, *i, "low.celsius"))
+                  m_temp->set(temp);
             }
-         }
-         api->historizeData(m_deviceName, m_keywords);
 
-         std::cout << "Refresh Forecast Information" << std::endl;
+            if (wuConfiguration.IsRainIndividualKeywordsEnabled())
+            {
+               if (counter < NB_RAIN_FORECAST_DAY)
+               {
+                  double rainRate1h = 0;
+                  if (convertDouble(rainRate1h, *i, "qpf_allday.mm"))
+                     m_forecastRain[counter]->set(rainRate1h);
+               }
+            }
+
+            ++counter;
+         }
       }
-      catch (shared::exception::CException& e)
-      {
-         std::cout << "Error during parsing the element ! : " << e.what() << std::endl;
-      }
+      api->historizeData(m_deviceName, m_keywords);
+
+      std::cout << "Refresh Forecast Information" << std::endl;
+   }
+   catch (shared::exception::CException& e)
+   {
+      std::cout << "Error during parsing the element ! : " << e.what() << std::endl;
    }
 }
 
@@ -167,14 +156,4 @@ CForecastDays::~CForecastDays()
 std::string CForecastDays::getUrl() const
 {
    return m_url.str();
-}
-
-bool CForecastDays::isDesactivated() const
-{
-   return m_isDesactivated;
-}
-
-bool CForecastDays::isUserDesactivated() const
-{
-   return m_isUserDesactivated;
 }

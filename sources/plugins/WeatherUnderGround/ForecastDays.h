@@ -57,18 +57,6 @@ public:
    std::string getUrl() const;
 
    //--------------------------------------------------------------
-   /// \brief	  Return if the module is desactivated
-   /// \return    true if desactivated
-   //--------------------------------------------------------------
-   bool isDesactivated() const;
-
-   //--------------------------------------------------------------
-   /// \brief	  Return if the module is desactivated by the user
-   /// \return    true if desactivated
-   //--------------------------------------------------------------
-   bool isUserDesactivated() const;
-
-   //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~CForecastDays();
@@ -127,16 +115,6 @@ private:
    /// \brief  Keywords list
    //--------------------------------------------------------------
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
-
-   //--------------------------------------------------------------
-   /// \brief	    the module is desactivated by an error
-   //--------------------------------------------------------------
-   bool m_isDesactivated;
-
-   //--------------------------------------------------------------
-   /// \brief	    the module is desactivated by the user
-   //--------------------------------------------------------------
-   bool m_isUserDesactivated;
 
    //--------------------------------------------------------------
    /// \brief  developerMode state

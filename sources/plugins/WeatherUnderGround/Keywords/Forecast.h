@@ -85,6 +85,6 @@ private:
    //--------------------------------------------------------------
    /// \brief	The pressure (hPa)
    //--------------------------------------------------------------
-   boost::shared_ptr<yApi::historization::CForecastHistorizer> m_forecast;
+   boost::shared_ptr<specificHistorizer::CForecastHistorizer> m_forecast;
 };
 

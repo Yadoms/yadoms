@@ -24,9 +24,7 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
      m_windMaxSpeed(boost::make_shared<yApi::historization::CSpeed>(prefix + "windMaxSpeed")),
      m_feelsLike(boost::make_shared<yApi::historization::CTemperature>(prefix + "FeelsLike")),
      m_windchill(boost::make_shared<yApi::historization::CTemperature>(prefix + "Windchill")),
-     m_liveConditions(boost::make_shared<CCondition>(deviceName, "LiveConditions")),
-     m_isDesactivated(false),
-     m_isUserDesactivated(false)
+     m_liveConditions(boost::make_shared<CCondition>(deviceName, "LiveConditions"))
 {
    try
    {
@@ -35,7 +33,6 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
    catch (shared::exception::CException& e)
    {
       std::cout << "Configuration or initialization error of Weather condition module :" << e.what() << std::endl;
-      m_isDesactivated = true;
       throw;
    }
 }
@@ -85,11 +82,7 @@ void CWeatherConditions::initializeVariables(boost::shared_ptr<yApi::IYPluginApi
       // Declare keywords
       std::string m_URL = "www.wunderground.com/";
       api->declareDevice(m_deviceName, m_URL, m_keywords);
-
-      m_isUserDesactivated = false;
    }
-   else
-      m_isUserDesactivated = true;
 }
 
 void CWeatherConditions::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration)
@@ -107,7 +100,6 @@ void CWeatherConditions::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUC
    catch (shared::exception::CException& e)
    {
       std::cout << e.what() << std::endl;
-      m_isDesactivated = true;
       throw;
    }
 }
@@ -126,146 +118,142 @@ void CWeatherConditions::parse(boost::shared_ptr<yApi::IYPluginApi> api,
                                const IWUConfiguration& wuConfiguration,
                                const shared::CDataContainer dataToParse)
 {
-   if (!m_isDesactivated && !m_isUserDesactivated)
+   try
    {
-      try
+      m_cityConditions = dataToParse.get<std::string>("current_observation.observation_location.city");
+      m_liveConditions->setCityName(m_cityConditions);
+      std::cout << "Observation location :" << dataToParse.get<std::string>("current_observation.observation_location.full") << std::endl;
+
+      if (wuConfiguration.IsConditionsIndividualKeywordsEnabled())
       {
-         m_cityConditions = dataToParse.get<std::string>("current_observation.observation_location.city");
-         m_liveConditions->setCityName(m_cityConditions);
-         std::cout << "Observation location :" << dataToParse.get<std::string>("current_observation.observation_location.full") << std::endl;
+         //
+         //Temperature
+         //
+         double temp = 0;
+         if (convertDouble(temp, dataToParse, "current_observation.temp_c"))
+            m_temp->set(temp);
 
-         if (wuConfiguration.IsConditionsIndividualKeywordsEnabled())
-         {
-            //
-            //Temperature
-            //
-            double temp = 0;
-            if (convertDouble(temp, dataToParse, "current_observation.temp_c"))
-               m_temp->set(temp);
+         //
+         //Pressure
+         //
+         double pressure = 0;
+         if (convertDouble(pressure, dataToParse, "current_observation.pressure_mb"))
+            m_pressure->set(pressure);
 
-            //
-            //Pressure
-            //
-            double pressure = 0;
-            if (convertDouble(pressure, dataToParse, "current_observation.pressure_mb"))
-               m_pressure->set(pressure);
+         //
+         //Humidity
+         //
+         auto str_humidity = dataToParse.get<std::string>("current_observation.relative_humidity");
+         str_humidity.erase(str_humidity.end() - 1);
 
-            //
-            //Humidity
-            //
-            auto str_humidity = dataToParse.get<std::string>("current_observation.relative_humidity");
-            str_humidity.erase(str_humidity.end() - 1);
+         double humidity = 0;
+         if (convertDouble(humidity, dataToParse, "current_observation.relative_humidity"))
+            m_humidity->set(humidity);
 
-            double humidity = 0;
-            if (convertDouble(humidity, dataToParse, "current_observation.relative_humidity"))
-               m_humidity->set(humidity);
+         //
+         //Visibility
+         //
+         // x 1000 -> The visibility from the web site is in kilometer
+         double visibility = 0;
+         if (convertDouble(visibility, dataToParse, "current_observation.visibility_km"))
+            m_visibility->set(visibility * 1000);
 
-            //
-            //Visibility
-            //
-            // x 1000 -> The visibility from the web site is in kilometer
-            double visibility = 0;
-            if (convertDouble(visibility, dataToParse, "current_observation.visibility_km"))
-               m_visibility->set(visibility * 1000);
+         //
+         //UV
+         //
+         m_uv->set(static_cast<int>(dataToParse.get<double>("current_observation.UV")));
+         std::cout << m_uv->getKeyword() << "=" << m_uv->get() << std::endl;
 
-            //
-            //UV
-            //
-            m_uv->set(static_cast<int>(dataToParse.get<double>("current_observation.UV")));
-            std::cout << m_uv->getKeyword() << "=" << m_uv->get() << std::endl;
-
-            //
-            //DewPoint
-            //
-            double dewPoint = 0;
-            if (convertDouble(dewPoint, dataToParse, "current_observation.dewpoint_c"))
-               m_dewPoint->set(dewPoint);
+         //
+         //DewPoint
+         //
+         double dewPoint = 0;
+         if (convertDouble(dewPoint, dataToParse, "current_observation.dewpoint_c"))
+            m_dewPoint->set(dewPoint);
             
-            //
-            //Rain
-            //
-            double rainRate1h=0;
-            if (convertDouble(rainRate1h, dataToParse, "current_observation.precip_today_metric"))
-               m_rain1hr->set(rainRate1h);
+         //
+         //Rain
+         //
+         double rainRate1h=0;
+         if (convertDouble(rainRate1h, dataToParse, "current_observation.precip_today_metric"))
+            m_rain1hr->set(rainRate1h);
             
-            //
-            //WeatherCondition
-            //
-            m_weatherConditionUrl->setValue(dataToParse, "current_observation.icon");
+         //
+         //WeatherCondition
+         //
+         m_weatherConditionUrl->setValue(dataToParse, "current_observation.icon");
 
-            //
-            //WindDirection
-            //
-            int WindDirection = 0;
-            if (convertInt(WindDirection, dataToParse, "current_observation.wind_degrees"))
-               m_WindDirection->set(WindDirection);
+         //
+         //WindDirection
+         //
+         int WindDirection = 0;
+         if (convertInt(WindDirection, dataToParse, "current_observation.wind_degrees"))
+            m_WindDirection->set(WindDirection);
 
-            //
-            //WindAverageSpeed
-            //
-            double windAverageSpeed = 0;
-            if (convertDouble(windAverageSpeed, dataToParse, "current_observation.wind_kph"))
-               m_windAverageSpeed->set(windAverageSpeed);
+         //
+         //WindAverageSpeed
+         //
+         double windAverageSpeed = 0;
+         if (convertDouble(windAverageSpeed, dataToParse, "current_observation.wind_kph"))
+            m_windAverageSpeed->set(windAverageSpeed);
 
-            //
-            //WindMaxSpeed
-            //
-            double windMaxSpeed = 0;
-            if (convertDouble(windMaxSpeed, dataToParse, "current_observation.wind_gust_kph"))
-               m_windMaxSpeed->set(windMaxSpeed);
+         //
+         //WindMaxSpeed
+         //
+         double windMaxSpeed = 0;
+         if (convertDouble(windMaxSpeed, dataToParse, "current_observation.wind_gust_kph"))
+            m_windMaxSpeed->set(windMaxSpeed);
 
-            //
-            //FeelsLike
-            //
-            double feelsLike = 0;
-            if (convertDouble(feelsLike, dataToParse, "current_observation.feelslike_c"))
-               m_feelsLike->set(feelsLike);
+         //
+         //FeelsLike
+         //
+         double feelsLike = 0;
+         if (convertDouble(feelsLike, dataToParse, "current_observation.feelslike_c"))
+            m_feelsLike->set(feelsLike);
 
 
-            //
-            //Windchill
-            //
-            double windchill = 0;
-            if (convertDouble(windchill, dataToParse, "current_observation.windchill_c"))
-               m_windchill->set(windchill);
-         }
-
-         if (wuConfiguration.IsLiveConditionsEnabled())
-         {
-            m_liveConditions->setPeriod(dataToParse,
-                                        "current_observation.local_time_rfc822",
-                                        "current_observation.icon",
-                                        "current_observation.temp_c",
-                                        "current_observation.pressure_mb",
-                                        "current_observation.visibility_km",
-                                        "current_observation.UV",
-                                        "current_observation.dewpoint_c",
-                                        "current_observation.wind_gust_kph",
-                                        "current_observation.wind_kph",
-                                        "current_observation.wind_degrees",
-                                        "current_observation.relative_humidity",
-                                        "current_observation.precip_today_metric",
-                                        "current_observation.feelslike_c",
-                                        "current_observation.windchill_c"
-            );
-         }
-         api->historizeData(m_deviceName, m_keywords);
-
-         std::cout << "Refresh Weather Conditions" << std::endl;
+         //
+         //Windchill
+         //
+         double windchill = 0;
+         if (convertDouble(windchill, dataToParse, "current_observation.windchill_c"))
+            m_windchill->set(windchill);
       }
-      catch (CKeywordException&)
-      {}
-      catch (shared::exception::CException& e)
+
+      if (wuConfiguration.IsLiveConditionsEnabled())
       {
-         std::cout << e.what() << std::endl;
-         m_isDesactivated = true;
+         m_liveConditions->setPeriod(dataToParse,
+                                       "current_observation.local_time_rfc822",
+                                       "current_observation.icon",
+                                       "current_observation.temp_c",
+                                       "current_observation.pressure_mb",
+                                       "current_observation.visibility_km",
+                                       "current_observation.UV",
+                                       "current_observation.dewpoint_c",
+                                       "current_observation.wind_gust_kph",
+                                       "current_observation.wind_kph",
+                                       "current_observation.wind_degrees",
+                                       "current_observation.relative_humidity",
+                                       "current_observation.precip_today_metric",
+                                       "current_observation.feelslike_c",
+                                       "current_observation.windchill_c"
+         );
       }
+      api->historizeData(m_deviceName, m_keywords);
+
+      std::cout << "Refresh Weather Conditions" << std::endl;
+   }
+   catch (CKeywordException&)
+   {}
+   catch (shared::exception::CException& e)
+   {
+      std::cout << e.what() << std::endl;
    }
 }
 
 CWeatherConditions::~CWeatherConditions()
 {}
-
+/*
 bool CWeatherConditions::isDesactivated() const
 {
    return m_isDesactivated;
@@ -274,4 +262,4 @@ bool CWeatherConditions::isDesactivated() const
 bool CWeatherConditions::isUserDesactivated() const
 {
    return m_isUserDesactivated;
-}
+}*/
