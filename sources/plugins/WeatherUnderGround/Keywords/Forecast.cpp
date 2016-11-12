@@ -11,9 +11,9 @@ CForecast::CForecast(const std::string& pluginName,
                      const std::string& keyWordName,
                      const weatherunderground::helper::EPeriod& period)
    : m_pluginName(pluginName),
-     m_forecast(boost::make_shared<yApi::historization::CForecastHistorizer>(keyWordName,
-                                                                             yApi::EKeywordAccessMode::kGet,
-                                                                             period))
+     m_forecast(boost::make_shared<specificHistorizer::CForecastHistorizer>(keyWordName,
+                                                                            yApi::EKeywordAccessMode::kGet,
+                                                                            period))
 {
 }
 

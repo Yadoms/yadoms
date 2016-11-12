@@ -64,5 +64,5 @@ private:
    //--------------------------------------------------------------
    /// \brief	The historizer
    //--------------------------------------------------------------
-   boost::shared_ptr<CConditionHistorizer> m_condition;
+   boost::shared_ptr<specificHistorizer::CConditionHistorizer> m_condition;
 };

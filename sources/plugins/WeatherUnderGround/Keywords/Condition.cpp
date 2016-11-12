@@ -10,7 +10,7 @@ namespace yApi = shared::plugin::yPluginApi;
 CCondition::CCondition(const std::string& pluginName,
                        const std::string& keyWordName)
    : m_pluginName(pluginName),
-     m_condition(boost::make_shared<CConditionHistorizer>(keyWordName, yApi::EKeywordAccessMode::kGet))
+     m_condition(boost::make_shared<specificHistorizer::CConditionHistorizer>(keyWordName, yApi::EKeywordAccessMode::kGet))
 {
 }
 

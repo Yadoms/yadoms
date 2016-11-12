@@ -58,6 +58,6 @@ private:
    //--------------------------------------------------------------
    /// \brief	The plugin state
    //--------------------------------------------------------------
-   bool m_runningState;
+   yApi::historization::EPluginState m_runningState;
 };
 

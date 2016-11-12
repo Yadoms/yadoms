@@ -56,6 +56,6 @@ private:
    //--------------------------------------------------------------
    /// \brief	The pressure (hPa)
    //--------------------------------------------------------------
-   boost::shared_ptr<yApi::historization::CMoonHistorizer> m_moonCharacteristics;
+   boost::shared_ptr<specificHistorizer::CMoonHistorizer> m_moonCharacteristics;
 };
 
