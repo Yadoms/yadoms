@@ -40,7 +40,11 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    int weatherConditionsSendingRetry = 0;
    int astronomySendingRetry = 0;
-   int forcast10daysSendingRetry = 0;
+   int forecast10daysSendingRetry = 0;
+
+   bool weatherConditionsFinished = false;
+   bool astronomyFinished = false;
+   bool forecast10daysFinished = false;
 
    boost::shared_ptr<CWeatherConditions> m_WeatherConditionsRequester;
    boost::shared_ptr<CAstronomy> m_AstronomyRequester;
@@ -86,24 +90,28 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             try
             {
+               weatherConditionsFinished = false;
                shared::CDataContainer returnData = SendUrlRequest(api, m_WeatherConditionsRequester->getUrl(), kEvtTimerRefreshWeatherConditions, weatherConditionsSendingRetry);
                m_WeatherConditionsRequester->parse(api, m_configuration, returnData);
+               weatherConditionsFinished = true;
+               api->getEventHandler().createTimer(kEvtPluginState, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
             }
             catch(CRequestErrorException& )
             {}
-            api->getEventHandler().createTimer(kEvtPluginState, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
          }
          break;
       case kEvtTimerRefreshAstronomy:
          {
             try
             {
+               astronomyFinished = false;
                shared::CDataContainer returnData = SendUrlRequest(api, m_AstronomyRequester->getUrl(), kEvtTimerRefreshAstronomy, astronomySendingRetry);
                m_AstronomyRequester->parse(api, m_configuration, returnData);
+               astronomyFinished = true;
+               api->getEventHandler().createTimer(kEvtPluginState, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
             }
             catch (CRequestErrorException&)
             {}
-            api->getEventHandler().createTimer(kEvtPluginState, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
          }
          break;
       case kEvtTimerRefreshForecast10Days:
@@ -111,17 +119,20 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             try
             {
                // TODO : A modifier !
-               //if (m_WeatherConditionsRequester->isUserDesactivated())
-               //   m_Forecast10Days->setCityName(m_configuration.getLocalisation());
-               //else
-               m_Forecast10Days->setCityName(m_WeatherConditionsRequester->getCityName());
+               if (!weatherConditionsFinished)
+                  m_Forecast10Days->setCityName(m_configuration.getLocalisation());
+               else
+                  m_Forecast10Days->setCityName(m_WeatherConditionsRequester->getCityName());
 
-               shared::CDataContainer returnData = SendUrlRequest(api, m_Forecast10Days->getUrl(), kEvtTimerRefreshForecast10Days, forcast10daysSendingRetry);
+               forecast10daysFinished = false;
+
+               shared::CDataContainer returnData = SendUrlRequest(api, m_Forecast10Days->getUrl(), kEvtTimerRefreshForecast10Days, forecast10daysSendingRetry);
                m_Forecast10Days->parse(api, m_configuration, returnData);
+               forecast10daysFinished = true;
+               api->getEventHandler().createTimer(kEvtPluginState, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
             }
             catch (CRequestErrorException&)
             {}
-            api->getEventHandler().createTimer(kEvtPluginState, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
          }
          break;
       case yApi::IYPluginApi::kEventUpdateConfiguration:
@@ -142,12 +153,12 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kEvtPluginState:
          {
-            //yApi::historization::EPluginState newState = yApi::historization::EPluginState::kUnknown;
+            yApi::historization::EPluginState newState = yApi::historization::EPluginState::kUnknown;
 
             // TODO : Voi comment estimer correctement l'état du plugin
             // estimate the state of the plugin
-            /*if (!m_Forecast10Days->isDesactivated() && !m_AstronomyRequester->isDesactivated() && !m_WeatherConditionsRequester->isDesactivated())
-            newState = yApi::historization::EPluginState::kRunning;
+            if (forecast10daysFinished && astronomyFinished && weatherConditionsFinished)
+               newState = yApi::historization::EPluginState::kRunning;
 
             if (m_runningState != newState)
             {
@@ -155,7 +166,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
                if (m_runningState == yApi::historization::EPluginState::kRunning)
                   api->setPluginState(yApi::historization::EPluginState::kRunning);
-            }*/
+            }
          }
          break;
       default:
