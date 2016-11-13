@@ -55,7 +55,7 @@ public:
 private:
 
    //--------------------------------------------------------------
-   /// \brief	  Initialise LiveConditions variables
+   /// \brief	  Initialise Astronomy variables
    /// \param[in] api                pointer to the API
    /// \param[in] wuConfiguration    The Plugin configuration
    //--------------------------------------------------------------
