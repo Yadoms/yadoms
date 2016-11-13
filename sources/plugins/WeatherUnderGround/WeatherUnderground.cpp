@@ -59,12 +59,26 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       m_AstronomyRequester = boost::make_shared<CAstronomy>(api, m_configuration, m_deviceName, "astronomy.");
       m_Forecast10Days = boost::make_shared<CForecastDays>(api, m_configuration, m_deviceName, "forecast.");
 
-      api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-      api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
-      api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-      api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(9));
-      api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-      api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(3));
+      // if conditions are enabled
+      if (m_configuration.IsConditionsIndividualKeywordsEnabled() || m_configuration.IsLiveConditionsEnabled())
+      {
+         api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+         api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
+      }
+
+      // If astronomy is enabled
+      if (m_configuration.IsAstronomyEnabled())
+      {
+         api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+         api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(9));
+      }
+
+      // If forecast is enabled
+      if (m_configuration.IsForecast10DaysEnabled())
+      {
+         api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+         api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(3));
+      }
    }
    catch (...)
    {
@@ -145,10 +159,15 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             m_AstronomyRequester->onUpdate(api, m_configuration);
             m_Forecast10Days->onUpdate(api, m_configuration);
 
-            // Send a message to the corresponding module
-            api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-            api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-            api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+            if (m_configuration.IsConditionsIndividualKeywordsEnabled() || m_configuration.IsLiveConditionsEnabled())
+               api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+
+            if (m_configuration.IsAstronomyEnabled())
+               api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+
+            if (m_configuration.IsForecast10DaysEnabled())
+               api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+
             break;
          }
       case kEvtPluginState:
@@ -157,7 +176,9 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             // TODO : Voi comment estimer correctement l'état du plugin
             // estimate the state of the plugin
-            if (forecast10daysFinished && astronomyFinished && weatherConditionsFinished)
+            if ((forecast10daysFinished || !m_configuration.IsForecast10DaysEnabled()) &&
+                (astronomyFinished || !m_configuration.IsAstronomyEnabled()) &&
+                weatherConditionsFinished || (!m_configuration.IsConditionsIndividualKeywordsEnabled() && !m_configuration.IsLiveConditionsEnabled()))
                newState = yApi::historization::EPluginState::kRunning;
 
             if (m_runningState != newState)
