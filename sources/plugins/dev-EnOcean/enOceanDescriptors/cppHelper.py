@@ -3,7 +3,10 @@
 #-------------------------------------------------------------------------------
 # Util common functions for CPP generation
 
-
+import glob
+import re
+import os.path
+from sets import Set
 
 
 
@@ -32,3 +35,30 @@ def getMapInitCode(enumValues):
       initCode += ", \"" + enumValueName.strip() + "\")\n"
    initCode += ";\n"
    return initCode
+
+
+#-------------------------------------------------------------------------------
+typesHardCoded = None
+typesHardCodedFiles = Set()
+def buildTypesHardCodedList(enDescriptorPath):
+   typesHardCoded = []
+   global typesHardCodedFiles
+   pattern = re.compile(r'^class (.*) : public IType  {$')
+   for hardCodedPath in glob.glob(os.path.join(enDescriptorPath, "hardCoded", '*.h')):
+      with open(hardCodedPath, 'r') as hardCodedFile:
+         for line in hardCodedFile:
+            items = pattern.match(line)
+            if items is not None:
+               typesHardCoded.append(items.group(1))
+               typesHardCodedFiles.add(hardCodedPath)
+   return typesHardCoded
+
+def isTypeHardCoded(typeClassName, enDescriptorPath):
+   global typesHardCoded
+   if not typesHardCoded:
+      typesHardCoded = buildTypesHardCodedList(enDescriptorPath)
+   return typeClassName in typesHardCoded
+
+def getTypesHardCodedFiles():
+   global typesHardCodedFiles
+   return typesHardCodedFiles

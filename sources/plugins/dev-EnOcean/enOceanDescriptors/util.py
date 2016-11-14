@@ -31,6 +31,9 @@ def __FILE__():
 __nb_warnings__ = 0
 __nb_errors__ = 0
 
+def info(s):
+   print __FILE__() + "(" + str(__LINE__()) + "):" + " information: " + s
+
 def warning(s):
    print __FILE__() + "(" + str(__LINE__()) + "):" + " warning: " + s
    global __nb_warnings__

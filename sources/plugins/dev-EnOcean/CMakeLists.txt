@@ -60,12 +60,16 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    enOceanDescriptors/generated-eep.cpp
    enOceanDescriptors/generated-eep.h
    
+   enOceanDescriptors/hardCoded/VLD_Electronic_switches_and_dimmers_with_Energy_Measurement_and_Local_Control_0x12.cpp
+   enOceanDescriptors/hardCoded/VLD_Electronic_switches_and_dimmers_with_Energy_Measurement_and_Local_Control_0x12.h
+   
    package.in.json
    package.json
 
    ${IN_TRANSLATION_FILES}
    )
 source_group(enOceanDescriptors enOceanDescriptors/*.*)
+source_group(enOceanDescriptors\\hardCoded enOceanDescriptors/hardCoded/*.*)
 
 add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-manufacturers.h
                           ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-manufacturers.cpp
