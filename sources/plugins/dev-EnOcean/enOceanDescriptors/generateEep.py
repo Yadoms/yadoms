@@ -224,8 +224,6 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
          typeClass = cppClass.CppClass(typeClassName)
          typeClass.inheritFrom("IType", cppClass.PUBLIC)
 
-         supportedProfiles.append(xmlRorgNode.find("number").text[2:] + "-" + xmlFuncNode.find("number").text[2:] + "-" + xmlTypeNode.find("number").text[2:])
-
 
          def isLinearValue(xmlDataFieldNode):
             return True if xmlDataFieldNode.find("range/min") is not None \
@@ -333,6 +331,9 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             "   static const std::string title(\"" + xmlTypeNode.find("title").text + "\");\n" \
             "   return title;"))
          typeClass.addMethod(cppClass.CppMethod("historizers", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   return m_historizers;"))
+
+         if historizersCppName:
+            supportedProfiles.append(xmlRorgNode.find("number").text[2:] + "-" + xmlFuncNode.find("number").text[2:] + "-" + xmlTypeNode.find("number").text[2:])
 
 
          def statesCodeForLinearValue(xmlDataFieldNode, applyCoef = None):
