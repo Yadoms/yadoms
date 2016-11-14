@@ -78,8 +78,6 @@ def generate(packageJsonInPath, packageJsonPath, localesPath, supportedProfiles)
          json.dump(outPackage, packageJsonFile, indent=2, ensure_ascii=False)
 
    # Locales
-   print 'localesPath = ', localesPath
-   util.createParentDir(localesPath)
    for localesInPath in glob.glob(os.path.join(localesPath + '.in', '*.json')):
       print 'Process locales', localesInPath, 'file...',
       with codecs.open(localesInPath, 'r', 'utf_8') as localesInFile:
@@ -105,7 +103,9 @@ def generate(packageJsonInPath, packageJsonPath, localesPath, supportedProfiles)
                   outPackage['manuallyDeviceCreationConfigurationSchema']['profile']['content'][profileName] = profileNode
                   outPackage['deviceConfiguration']['profile']['content'][profileName] = profileNode
 
-         with codecs.open(os.path.join(localesPath, os.path.basename(localesInPath)), 'w', 'utf_8') as localesOutFile:
+         localesOutPath = os.path.join(localesPath, os.path.basename(localesInPath))
+         util.createParentDir(localesOutPath)
+         with codecs.open(localesOutPath, 'w', 'utf_8') as localesOutFile:
             json.dump(outPackage, localesOutFile, indent=2, ensure_ascii=False)
       print 'OK'
 
