@@ -25,6 +25,7 @@ headerPath = sys.argv[2]
 sourcePath = sys.argv[3]
 packageJsonInPath = sys.argv[4]
 packageJsonPath = sys.argv[5]
+localesPath = sys.argv[6]
 
 
 
@@ -406,37 +407,37 @@ profilesListClass.addMethod(cppClass.CppMethod("list", "const std::vector<std::s
 
 
 # Generate Header
-util.createParentDir(headerPath)
-with codecs.open(headerPath, 'w', 'utf_8') as cppHeaderFile:
+#util.createParentDir(headerPath)
+#with codecs.open(headerPath, 'w', 'utf_8') as cppHeaderFile:
 
-   cppHeaderFile.write("// Generated file, don't modify\n")
-   cppHeaderFile.write("#pragma once\n")
-   cppHeaderFile.write("#include <boost/dynamic_bitset.hpp>\n")
-   cppHeaderFile.write("#include <shared/plugin/yPluginApi/IYPluginApi.h>\n")
-   cppHeaderFile.write("\n")
-   cppHeaderFile.write("namespace yApi = shared::plugin::yPluginApi;\n")
-   cppHeaderFile.write("\n")
+#   cppHeaderFile.write("// Generated file, don't modify\n")
+#   cppHeaderFile.write("#pragma once\n")
+#   cppHeaderFile.write("#include <boost/dynamic_bitset.hpp>\n")
+#   cppHeaderFile.write("#include <shared/plugin/yPluginApi/IYPluginApi.h>\n")
+#   cppHeaderFile.write("\n")
+#   cppHeaderFile.write("namespace yApi = shared::plugin::yPluginApi;\n")
+#   cppHeaderFile.write("\n")
 
-   for oneType in cppTypes:
-      oneType.generateHeader(cppHeaderFile)
+#   for oneType in cppTypes:
+#      oneType.generateHeader(cppHeaderFile)
 
-# Generate Source
-util.createParentDir(sourcePath)
-with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
+## Generate Source
+#util.createParentDir(sourcePath)
+#with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
 
-   cppSourceFile.write("// Generated file, don't modify\n")
-   cppSourceFile.write("#include \"stdafx.h\"\n")
-   cppSourceFile.write("#include \"" + os.path.basename(headerPath) + "\"\n")
-   cppSourceFile.write("#include <shared/plugin/yPluginApi/StandardUnits.h>\n")
-   cppSourceFile.write("\n")
-   cppSourceFile.write("#include \"bitsetHelpers.hpp\"\n")
-   cppSourceFile.write("\n")
+#   cppSourceFile.write("// Generated file, don't modify\n")
+#   cppSourceFile.write("#include \"stdafx.h\"\n")
+#   cppSourceFile.write("#include \"" + os.path.basename(headerPath) + "\"\n")
+#   cppSourceFile.write("#include <shared/plugin/yPluginApi/StandardUnits.h>\n")
+#   cppSourceFile.write("\n")
+#   cppSourceFile.write("#include \"bitsetHelpers.hpp\"\n")
+#   cppSourceFile.write("\n")
 
-   for oneType in cppTypes:
-      oneType.generateSource(cppSourceFile)
+#   for oneType in cppTypes:
+#      oneType.generateSource(cppSourceFile)
 
 # Generate package.json
 import generatePackage
-generatePackage.generate(packageJsonInPath, packageJsonPath, supportedProfiles)
+generatePackage.generate(packageJsonInPath, packageJsonPath, localesPath, supportedProfiles)
 
 util.finish()

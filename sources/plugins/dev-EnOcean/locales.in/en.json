@@ -46,5 +46,55 @@
       "connectionFailed": "Connection failed, will retry in a while...",
       "updateConfiguration": "Configuration updating..."
     }
+  },
+  "specificProfilesConfigurations": {
+    "D2-01-12": {
+      "content": {
+        "localControl": {
+          "name": "Local control",
+          "values": {
+            "enable": "enable",
+            "disable": "disable"
+          }
+        },
+        "taughtIn": {
+          "name": "Taught In",
+          "values": {
+            "allDevices": "All devices",
+            "yadomsOnly": "Yadoms only"
+          }
+        },
+        "userInterfaceMode": {
+          "name": "User Interface Mode",
+          "values": {
+            "dayMode": "Day (led on)",
+            "nightMode": "Night (led off)"
+          }
+        },
+        "defaultState": {
+          "name": "Default state",
+          "values": {
+            "off": "Off",
+            "on": "On",
+            "previousState": "Previous state",
+            "notUsed": "Not Used"
+          }
+        },
+        "connectedSwitchsType": {
+          "name": "Connected switchs type",
+          "values": {
+            "switch": "Switch",
+            "pushButton": "Push button",
+            "autodetection": "Autodetect"
+          }
+        },
+        "autoOffTimer": {
+          "name": "Auto-off timer"
+        },
+        "delayRadioOffTimer": {
+          "name": "Radio-off delay"
+        }
+      }
+    }
   }
 }

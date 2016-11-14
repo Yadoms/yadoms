@@ -7,6 +7,7 @@ import sys
 import os.path
 import string
 import codecs
+import glob
 import re
 import json
 import copy
@@ -39,17 +40,19 @@ def sortProfiles(inProfiles):
 
 
 #
-# Generate package.json from package.in.json
+# Generate package.json from package.in.json, and locales XX.json files from XX.in.json files
 #
-# Take the general structure from package.in.json, and the specific configurations for certain devices
+# Take the general structure from package.in.json, and the specific configurations for certain devices (idem for locales files)
 #
-def generate(packageJsonInPath, packageJsonPath, supportedProfiles):
+def generate(packageJsonInPath, packageJsonPath, localesPath, supportedProfiles):
+   # packege.json
+
+   profiles = sortProfiles(supportedProfiles)
+
    util.createParentDir(packageJsonPath)
-   with codecs.open(packageJsonInPath, 'r', 'utf_8') as packageJsonInFile, codecs.open(packageJsonPath, 'w', 'utf_8') as packageJsonFile:
+   with codecs.open(packageJsonInPath, 'r', 'utf_8') as packageJsonInFile:
 
       inPackage = json.load(packageJsonInFile, object_pairs_hook=OrderedDict)
-
-      profiles = sortProfiles(supportedProfiles)
 
       outPackage = copy.deepcopy(inPackage)
       outPackage['manuallyDeviceCreationConfigurationSchema']['profile']['content'] = OrderedDict()
@@ -62,8 +65,8 @@ def generate(packageJsonInPath, packageJsonPath, supportedProfiles):
                profileName = format(rorg, '02X') + '-' + format(func, '02X') + '-' + format(type, '02X')
 
                profileNode = OrderedDict()
-               profileNode['name']=profileName
-               profileNode['type']='section'
+               profileNode['name'] = profileName
+               profileNode['type'] = 'section'
                if profileName in inPackage['specificProfilesConfigurations']:
                   profileNode['content'] = inPackage['specificProfilesConfigurations'][profileName]['content']
                else:
@@ -71,5 +74,38 @@ def generate(packageJsonInPath, packageJsonPath, supportedProfiles):
                outPackage['manuallyDeviceCreationConfigurationSchema']['profile']['content'][profileName] = profileNode
                outPackage['deviceConfiguration']['staticConfigurationSchema'][0]['schema']['profile']['content'][profileName] = profileNode
 
-      json.dump(outPackage, packageJsonFile, indent=2)
+      with codecs.open(packageJsonPath, 'w', 'utf_8') as packageJsonFile:
+         json.dump(outPackage, packageJsonFile, indent=2, ensure_ascii=False)
+
+   # Locales
+   print 'localesPath = ', localesPath
+   util.createParentDir(localesPath)
+   for localesInPath in glob.glob(os.path.join(localesPath + '.in', '*.json')):
+      print 'Process locales', localesInPath, 'file...',
+      with codecs.open(localesInPath, 'r', 'utf_8') as localesInFile:
+
+         inPackage = json.load(localesInFile, object_pairs_hook=OrderedDict)
+
+         outPackage = copy.deepcopy(inPackage)
+         outPackage['manuallyDeviceCreationConfigurationSchema']['profile']['content'] = OrderedDict()
+         outPackage['deviceConfiguration']['profile']['content'] = OrderedDict()
+         del outPackage['specificProfilesConfigurations']
+
+         for rorg in profiles:
+            for func in profiles[rorg]:
+               for type in profiles[rorg][func]:
+                  profileName = format(rorg, '02X') + '-' + format(func, '02X') + '-' + format(type, '02X')
+
+                  profileNode = OrderedDict()
+                  profileNode['name'] = profileName
+                  if profileName in inPackage['specificProfilesConfigurations']:
+                     profileNode['content'] = inPackage['specificProfilesConfigurations'][profileName]['content']
+                  else:
+                     profileNode['content'] = ''
+                  outPackage['manuallyDeviceCreationConfigurationSchema']['profile']['content'][profileName] = profileNode
+                  outPackage['deviceConfiguration']['profile']['content'][profileName] = profileNode
+
+         with codecs.open(os.path.join(localesPath, os.path.basename(localesInPath)), 'w', 'utf_8') as localesOutFile:
+            json.dump(outPackage, localesOutFile, indent=2, ensure_ascii=False)
+      print 'OK'
 

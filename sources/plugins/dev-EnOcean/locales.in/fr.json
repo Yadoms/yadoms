@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "EnOcean",
   "description": "Support des équipements EnOcean",
   "configurationSchema": {
@@ -45,6 +45,56 @@
       "connecting": "Connexion en cours...",
       "connectionFailed": "Erreur de connexion, réessai dans un moment...",
       "updateConfiguration": "Mise à jour de la configuration..."
+    }
+  },
+  "specificProfilesConfigurations": {
+    "D2-01-12": {
+      "content": {
+        "localControl": {
+          "name": "Contrôle local",
+          "values": {
+            "enable": "activé",
+            "disable": "désactivé"
+          }
+        },
+        "taughtIn": {
+          "name": "Piloté par",
+          "values": {
+            "allDevices": "tous les devices appairés",
+            "yadomsOnly": "Yadoms seulement"
+          }
+        },
+        "userInterfaceMode": {
+          "name": "Mode d'activation Led",
+          "values": {
+            "dayMode": "Jour (led allumée)",
+            "nightMode": "Nuit (led éteinte)"
+          }
+        },
+        "defaultState": {
+          "name": "Etat par défaut",
+          "values": {
+            "off": "Sortie inactive",
+            "on": "Sortie active",
+            "previousState": "Etat précédent",
+            "notUsed": "Non renseigné"
+          }
+        },
+        "connectedSwitchsType": {
+          "name": "Type des interrupteurs",
+          "values": {
+            "switch": "Interrupteurs",
+            "pushButton": "Poussoirs",
+            "autodetection": "Détection automatique"
+          }
+        },
+        "autoOffTimer": {
+          "name": "Temporisation d'arrêt automatique"
+        },
+        "delayRadioOffTimer": {
+          "name": "Temporisation d'arrêt après réception message"
+        }
+      }
     }
   }
 }

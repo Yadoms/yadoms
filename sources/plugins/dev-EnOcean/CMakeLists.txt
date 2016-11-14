@@ -43,6 +43,8 @@ source_group(message message/*.*)
 #########################################
 set(EEP_VERSION "2.6.5")
 file(GLOB PYTHON_GENERATOR_FILES enOceanDescriptors/*.py)
+file(GLOB IN_TRANSLATION_FILES locales.in/*.json)
+source_group(locales\\in locales.in/*.*)
 
 set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    enOceanDescriptors/manufacturers.xml
@@ -60,6 +62,8 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    
    package.in.json
    package.json
+
+   ${IN_TRANSLATION_FILES}
    )
 source_group(enOceanDescriptors enOceanDescriptors/*.*)
 
@@ -73,10 +77,11 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generat
 add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.h
                           ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.cpp
                           ${CMAKE_CURRENT_SOURCE_DIR}/package.json
-                   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generateEep.py ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/eep${EEP_VERSION}.xml ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.h ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.cpp ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json ${CMAKE_CURRENT_SOURCE_DIR}/package.json
+                   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generateEep.py ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/eep${EEP_VERSION}.xml ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.h ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.cpp ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json ${CMAKE_CURRENT_SOURCE_DIR}/package.json  ${CMAKE_CURRENT_SOURCE_DIR}/locales
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/eep${EEP_VERSION}.xml
                            ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json
-                           ${PYTHON_GENERATOR_FILES} 
+                           ${PYTHON_GENERATOR_FILES}
+						   ${IN_TRANSLATION_FILES}
                    COMMENT "Generating EEP profiles source code...")
 
 
