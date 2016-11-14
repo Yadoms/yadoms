@@ -119,22 +119,6 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             break;
          }
 
-      case yApi::IYPluginApi::kGetDeviceConfigurationSchemaRequest:
-         {
-            auto deviceConfigurationSchemaRequest = m_api->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest>>();
-            try
-            {
-               deviceConfigurationSchemaRequest->sendSuccess(m_deviceConfigurationSchema);
-            }
-            catch (shared::exception::CEmptyResult&)
-            {
-               auto error((boost::format("Unable to get device configuration schema : unknown device \"%1%\"") % deviceConfigurationSchemaRequest->device()).str());
-               std::cerr << error << std::endl;
-               deviceConfigurationSchemaRequest->sendError(error);
-            }
-            break;
-         }
-
       case yApi::IYPluginApi::kSetDeviceConfiguration:
          {
             // Yadoms sent the new device configuration. Plugin must apply this configuration to device.

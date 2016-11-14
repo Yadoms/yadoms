@@ -26,20 +26,18 @@
       "description": "Enter here the model of your device"
     }
   },
-  "deviceConfigurationSchema": {
-    "configurationSchema": {
-      "profile": {
-        "name": "Profile",
-        "description": "Select the device profile, normaly provided on the device label or manual"
-      },
-      "manufacturer": {
-        "name": "Manufacturer",
-        "description": "Enter here the manufacturer of your device"
-      },
-      "model": {
-        "name": "Model",
-        "description": "Enter here the model of your device"
-      }
+  "deviceConfiguration": {
+    "manufacturer": {
+      "name": "Manufacturer",
+      "description": "Enter here the manufacturer of your device"
+    },
+    "model": {
+      "name": "Model",
+      "description": "Enter here the model of your device"
+    },
+    "profile": {
+      "name": "Profile",
+      "description": "Select the device profile, normaly provided on the device label or manual"
     }
   },
   "customLabels": {

@@ -15,8 +15,7 @@
     },
     "profile": {
       "name": "Profil",
-      "description":
-        "Sélectionner le profil de l'équipement, tel qu'indiqué sur l'étiquette ou dans le manuel utilisateur"
+      "description": "Sélectionner le profil de l'équipement, tel qu'indiqué sur l'étiquette ou dans le manuel utilisateur"
     },
     "manufacturer": {
       "name": "Fabricant",
@@ -28,79 +27,18 @@
     }
   },
   "deviceConfiguration": {
-    "staticConfigurationSchema": [
-      {
-        "schema": {
-          "manufacturer": {
-            "name": "Fabricant",
-            "description": "Saisir ici le fabricant de l'équipement"
-          },
-          "model": {
-            "name": "Modèle",
-            "description": "Saisir ici le modèle de l'équipement"
-          },
-          "profile": {
-            "name": "Profil",
-            "description":
-              "Sélectionner le profil de l'équipement, tel qu'indiqué sur l'étiquette ou dans le manuel utilisateur",
-            "content": {
-              "F6-02-01": {
-                "name": "F6-02-01"
-              },
-              "D2-01-12": {
-                "name": "D2-01-12",
-                "content": {
-                  "localControl": {
-                    "name": "Contrôle local",
-                    "values": {
-                      "enable": "activé",
-                      "disable": "désactivé"
-                    }
-                  },
-                  "taughtIn": {
-                    "name": "Contrôle",
-                    "values": {
-                      "allDevices": "par tous les modules appairés",
-                      "yadomsOnly": "par Yadoms seulement"
-                    }
-                  },
-                  "userInterfaceMode": {
-                    "name": "Led",
-                    "values": {
-                      "dayMode": "mode jour (led allumée)",
-                      "nightMode": "mode nuit (led éteinte)"
-                    }
-                  },
-                  "defaultState": {
-                    "name": "Etat par défaut",
-                    "values": {
-                      "off": "off",
-                      "on": "on",
-                      "previousState": "état précédent",
-                      "notUsed": ""
-                    }
-                  },
-                  "connectedSwitchsType": {
-                    "name": "type d'interrupteurs connectés",
-                    "values": {
-                      "switch": "va-et-vient",
-                      "pushButton": "poussoir",
-                      "autodetection": "détection automatique"
-                    }
-                  },
-                  "autoOffTimer": {
-                    "name": "Temporisation d'allumage (0 pour désactiver)"
-                  },
-                  "delayRadioOffTimer": {
-                    "name": "Retard de désactivation par radio (0 pour désactiver)"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    ]
+    "manufacturer": {
+      "name": "Fabricant",
+      "description": "Saisir ici le fabricant de l'équipement"
+    },
+    "model": {
+      "name": "Modèle",
+      "description": "Saisir ici le modèle de l'équipement"
+    },
+    "profile": {
+      "name": "Profil",
+      "description": "Sélectionner le profil de l'équipement, tel qu'indiqué sur l'étiquette ou dans le manuel utilisateur"
+    }
   },
   "customLabels": {
     "pluginState": {
