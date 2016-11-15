@@ -37,6 +37,7 @@
       "content": ""
     }
   },
+  "supportDeviceRemovedNotification": "true",
   "deviceConfiguration": {
     "staticConfigurationSchema": [
       {
