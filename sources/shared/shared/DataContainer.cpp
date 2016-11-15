@@ -16,7 +16,7 @@ namespace shared
 
    CDataContainer::CDataContainer(const std::string & initialData)
    {
-      deserialize(initialData);
+      CDataContainer::deserialize(initialData);
    }
 
    CDataContainer::CDataContainer(const std::map<std::string, std::string> & initialData)

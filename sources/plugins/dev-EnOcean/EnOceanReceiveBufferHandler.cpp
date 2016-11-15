@@ -28,7 +28,7 @@ void CEnOceanReceiveBufferHandler::push(const shared::communication::CByteBuffer
    m_lastReceivedTime = now;
 
    // Add received buffer to actual content
-   for (auto idx = 0; idx < buffer.size(); ++ idx)
+   for (size_t idx = 0; idx < buffer.size(); ++ idx)
       m_content.push_back(buffer[idx]);
 
    // Send message if complete
