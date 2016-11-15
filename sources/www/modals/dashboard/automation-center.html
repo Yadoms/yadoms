@@ -29,34 +29,40 @@
          //we remove all rows except header
          $("table#automation-rule-list").find("tr:gt(0)").remove();
 
-         // Active "new rule" button only if at least one interpreter available
-         AutomationInterpreterManager.getAll()
-            .done(function(interpreters) {
-               if (Object.keys(interpreters).length > 0)
-                  $("#btn-add-new-automation-rule").unbind("click").bind("click", function() { addNewAutomationRule(); }).prop('disabled', false);
+		 PluginManager.getAll()
+		    .done(function (pluginlist){
+			 // Active "new rule" button only if at least one interpreter available
+			 AutomationInterpreterManager.getAll()
+				.done(function(interpreters) {
+				   if (Object.keys(interpreters).length > 0)
+					  $("#btn-add-new-automation-rule").unbind("click").bind("click", function() { addNewAutomationRule(); }).prop('disabled', false);
 
-               //we dynamically ask for automation-rule
-               AutomationRuleManager.get()
-                  .done(function(rules) {
-                     $.each(rules, function(index, value) {
-                        addAutomationRuleToDom(value);
-                     });
+				   //we dynamically ask for automation-rule
+				   AutomationRuleManager.get()
+					  .done(function(rules) {
+						 $.each(rules, function(index, value) {
+							addAutomationRuleToDom(value);
+						 });
 
-                     //we use the periodic task of the dashboard
-                     clearInterval(Yadoms.periodicDashboardTask);
-                     Yadoms.periodicDashboardTask = setInterval(periodicDashboardAutomationCenterTask, 2000);
-                     d.resolve();
-                  })
-                  .fail(function(error) {
-                     notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleListingError"), error);
-                     d.reject();
-                  });
-            })
-            .fail(function(error) {
-               notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleInterpreterListingError"), error);
-               d.reject();
-            });
-
+						 //we use the periodic task of the dashboard
+						 clearInterval(Yadoms.periodicDashboardTask);
+						 Yadoms.periodicDashboardTask = setInterval(periodicDashboardAutomationCenterTask, 2000);
+						 d.resolve();
+					  })
+					  .fail(function(error) {
+						 notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleListingError"), error);
+						 d.reject();
+					  });
+				})
+				.fail(function(error) {
+				   notifyError($.t("modals.dashboard.sub-windows.automation-center.ruleInterpreterListingError"), error);
+				   d.reject();
+				});
+			})		
+			.fail(function(error) {
+			   notifyError($.t("modals.dashboard.sub-windows.automation-center.pluginListingError"), error);
+			   d.reject();
+			});
       })
       .fail(d.reject);
 

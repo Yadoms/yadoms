@@ -240,6 +240,13 @@ Blockly.Yadoms.LoadDevices_ = function (onlyWritableKeywords, allowedKeywordType
             deviceList.push([device.friendlyName, device.id]);
         }
     });
+	
+	deviceList.sort(function(a, b){
+	   var aName = a[0].toLowerCase();
+	   var bName = b[0].toLowerCase(); 
+	   return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+	});
+	
     return deviceList;
 };
 
@@ -263,6 +270,13 @@ Blockly.Yadoms.LoadKeywords_ = function (selectedDeviceId, onlyWritableKeywords,
             }
         }
     });
+	
+	keywordList.sort(function(a, b){
+	   var aName = a[0].toLowerCase();
+	   var bName = b[0].toLowerCase(); 
+	   return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+	});
+	
     return keywordList;
 };
 
@@ -275,6 +289,13 @@ Blockly.Yadoms.LoadCapacities_ = function() {
     $.each(Blockly.Yadoms.data.capacities, function (index, keyword) {
 		capacityList.push([index, index]);
     });
+	
+	capacityList.sort(function(a, b){
+	   var aName = a[0].toLowerCase();
+	   var bName = b[0].toLowerCase(); 
+	   return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+	});
+	
     return capacityList;	
 };
 
@@ -289,5 +310,12 @@ Blockly.Yadoms.LoadRecipients_ = function () {
     $.each(Blockly.Yadoms.data.recipients, function (index, recipient) {
         recipientList.push([recipient.toString(), recipient.id]);
     });
+	
+	recipientList.sort(function(a, b){
+	   var aName = a[0].toLowerCase();
+	   var bName = b[0].toLowerCase(); 
+	   return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+	});
+	
     return recipientList;
 };
