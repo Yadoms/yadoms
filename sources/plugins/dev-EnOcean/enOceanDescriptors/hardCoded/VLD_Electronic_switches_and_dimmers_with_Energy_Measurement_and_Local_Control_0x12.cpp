@@ -17,7 +17,7 @@ unsigned int CVLD_Electronic_switches_and_dimmers_with_Energy_Measurement_and_Lo
 
 const std::string& CVLD_Electronic_switches_and_dimmers_with_Energy_Measurement_and_Local_Control_0x12::title() const
 {
-   static const std::string title("Type 0x12");
+   static const std::string title("Slot-in module with 2 channels");
    return title;
 }
 
