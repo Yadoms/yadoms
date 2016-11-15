@@ -30,7 +30,7 @@ namespace database { namespace pgsql {
       return *this;
    }
 
-   const std::string CPgsqlQuery::functionDateToIsoString(const std::string &sqlPart)
+   std::string CPgsqlQuery::functionDateToIsoString(const std::string &sqlPart)
    {
       return (boost::format("to_char(%1%, 'YYYY\"-\"MM\"-\"DD\"T\"HH24\":\"MI\":\"SS')") % sqlPart).str();
    }

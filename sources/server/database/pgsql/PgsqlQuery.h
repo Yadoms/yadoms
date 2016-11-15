@@ -37,7 +37,7 @@ namespace database { namespace pgsql {
       CPgsqlQuery & CreateDatabase(const std::string & name);
 
       // Overriding common::CQuery
-      virtual const std::string functionDateToIsoString(const std::string &sqlPart);
+      virtual std::string functionDateToIsoString(const std::string &sqlPart);
       // [END] - Overriding common::CQuery 
    };
 
