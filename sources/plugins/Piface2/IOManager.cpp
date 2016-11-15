@@ -14,18 +14,14 @@ CIOManager::CIOManager(const std::string& device)
    if (pifacedigital_open(0) == -1)
       throw CInitializationException("Initialization error - Configuration of the SPI in raspi-config ?");
 
-   //Initialization des interruptions
-   //std::cout << "pifacedigital_enable_interrupts:" << pifacedigital_enable_interrupts() << std::endl;
+   //TODO : clean-up when another Piface2
    if (pifacedigital_enable_interrupts()<0)
-	  boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
-	  
-   int ret = pifacedigital_enable_interrupts();
-     
-  //std::cout << "pifacedigital_enable_interrupts 2:" << ret << std::endl;  
-  // return -2 -> Try to include a sleep in the mcp23s17 driver ...
-  
-   //Initialization des interruptions
-   if (ret != 0)
+   //  boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
+   
+   // if the first initialization doesn't work
+   //int ret = pifacedigital_enable_interrupts();
+
+   //if (ret != 0)
       throw CInitializationException("interrupt initialization error");
 }
 
