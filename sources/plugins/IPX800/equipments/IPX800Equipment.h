@@ -50,24 +50,24 @@ namespace equipments
       //-----------------------------------------------------
       ///\brief                     Update IOs from different types
       //-----------------------------------------------------
-      template<typename T1, typename T2>
+      template<class T1, class T2>
       void updateIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                               shared::CDataContainer& values,
                               std::vector<boost::shared_ptr<T1> >& keywordsList,
                               std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& ToHistorize,
                               bool forceHistorization = false);
 
-      /*shared::CDataContainer*/ void CIPX800Equipment::setParameter(const std::string& keywordName,
-                                                            std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& keywordsList,
-                                                            boost::shared_ptr<const yApi::IDeviceCommand> command,
-                                                            const std::string& pinNumber,
-                                                            shared::CDataContainer& parameters);
+      void setParameter(const std::string& keywordName,
+                        std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& keywordsList,
+                        boost::shared_ptr<const yApi::IDeviceCommand> command,
+                        const std::string& pinNumber,
+                        shared::CDataContainer& parameters);
 
-      /*shared::CDataContainer*/ void CIPX800Equipment::setParameter(const std::string& keywordName,
-                                                            std::vector<boost::shared_ptr<specificHistorizers::CCounter> >& keywordsList,
-                                                            boost::shared_ptr<const yApi::IDeviceCommand> command,
-                                                            const std::string& value,
-                                                            shared::CDataContainer& parameters);
+       void setParameter(const std::string& keywordName,
+                         std::vector<boost::shared_ptr<specificHistorizers::CCounter> >& keywordsList,
+                         boost::shared_ptr<const yApi::IDeviceCommand> command,
+                         const std::string& value,
+                         shared::CDataContainer& parameters);
 
       //-----------------------------------------------------
       ///\brief                     The device name

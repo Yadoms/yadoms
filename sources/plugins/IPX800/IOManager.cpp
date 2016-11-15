@@ -15,8 +15,6 @@ void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    m_devicesList = extensionList;
    m_keywordsToDeclare.clear();
-
-   readAllIOFromDevice(api, true);
 }
 
 void CIOManager::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved)

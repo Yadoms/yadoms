@@ -44,15 +44,11 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       m_ioManager = m_factory->getIOManager();
 
       // Timer used to read periodically IOs from the IPX800
+      api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
       api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
 
       api->setPluginState(yApi::historization::EPluginState::kRunning);
       std::cout << "IPX800 plugin is running..." << std::endl;
-   }
-   catch (CFailedSendingException& e)
-   {
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "noConnection");
-      std::cerr << "IPX800 plugin initialization error : " << e.what() << std::endl;
    }
    catch (...)
    {
@@ -85,7 +81,14 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          std::cout << "Timer received" << std::endl;
          //Value received from DI
          //if (!initializationError)
+         try {
             m_ioManager->readAllIOFromDevice(api);
+         }
+         catch (CFailedSendingException& e)
+         {
+            api->setPluginState(yApi::historization::EPluginState::kCustom, "noConnection");
+            std::cerr << "IPX800 plugin initialization error : " << e.what() << std::endl;
+         }
          break;
       }
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
@@ -98,8 +101,8 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             // Creation of the device
             request->sendSuccess(m_factory->createDeviceManually(api, request->getData()));
 
-            // read IOs juste after to fill all new IOs.
-            m_ioManager->readAllIOFromDevice(api, true);
+            // Send an event to refresh all IOs
+            api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
          }
          catch (CManuallyDeviceCreationException& e)
          {
@@ -112,6 +115,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
          std::cout << device->device() << " was removed" << std::endl;
+         m_factory->removeDevice(api, device->device());
          m_ioManager->removeDevice(api, device->device());
          break;
       }

@@ -96,14 +96,14 @@ namespace equipments
       api->historizeData(m_deviceName, keywordsToHistorize);
    }
 
-   template<typename T1, typename T2>
+   template<class T1, class T2>
    void CIPX800Equipment::updateIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                              shared::CDataContainer& values,
                                              std::vector<boost::shared_ptr<T1> >& keywordsList,
                                              std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& ToHistorize,
                                              bool forceHistorization)
    {
-      std::vector<boost::shared_ptr<T1> >::const_iterator diIterator;
+      typename std::vector<boost::shared_ptr<T1> >::const_iterator diIterator;
 
       for (diIterator = keywordsList.begin(); diIterator != keywordsList.end(); ++diIterator)
       {

@@ -20,7 +20,6 @@
 		      }
 		 }
 	  },
-,
    "manuallyDeviceCreationConfigurationSchema": {
       "type":
       {
@@ -107,7 +106,7 @@
          "initializationError": "Erreur d'initialisation",
          "noConnection": "Pas de connexion à l'équipement",			
 			"updateConfiguration": "Mise à jour de la configuration..."
-		}
-	}
+		   }
+	   }
+   }
 }
-
