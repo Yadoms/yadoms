@@ -127,77 +127,7 @@ const std::string& CRPS_0x02::title() const {
    return title;
 }
 boost::shared_ptr<IType> CRPS_0x02::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_F6_02_01>();
-   case k0x02: return boost::make_shared<CProfile_F6_02_02>();
-   case k0x03: return boost::make_shared<CProfile_F6_02_03>();
-   case k0x04: return boost::make_shared<CProfile_F6_02_04>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_F6_02_01::CProfile_F6_02_01()
-: m_historizers( {  } )
-{}
-CProfile_F6_02_01::~CProfile_F6_02_01()
-{}
-unsigned int CProfile_F6_02_01::id() const {
-   return 0x01;
-}
-const std::string& CProfile_F6_02_01::title() const {
-   static const std::string title("Light and Blind Control - Application Style 1");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_02_01::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_02_01::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_F6_02_02::CProfile_F6_02_02()
-: m_historizers( {  } )
-{}
-CProfile_F6_02_02::~CProfile_F6_02_02()
-{}
-unsigned int CProfile_F6_02_02::id() const {
-   return 0x02;
-}
-const std::string& CProfile_F6_02_02::title() const {
-   static const std::string title("Light and Blind Control - Application Style 2");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_02_02::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_02_02::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_F6_02_03::CProfile_F6_02_03()
-: m_historizers( {  } )
-{}
-CProfile_F6_02_03::~CProfile_F6_02_03()
-{}
-unsigned int CProfile_F6_02_03::id() const {
-   return 0x03;
-}
-const std::string& CProfile_F6_02_03::title() const {
-   static const std::string title("Light Control - Application Style 1");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_02_03::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_02_03::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -218,10 +148,10 @@ const std::string& CProfile_F6_02_04::title() const {
    static const std::string title("Light and blind control ERP2");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_02_04::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_F6_02_04::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_02_04::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_F6_02_04::states(const boost::dynamic_bitset<>& data) const {
    m_EBO___Energy_Bow->set(data[0]);
    m_RBI___BI->set(data[4]);
    m_RB0___B0->set(data[5]);
@@ -243,55 +173,7 @@ const std::string& CRPS_0x03::title() const {
    return title;
 }
 boost::shared_ptr<IType> CRPS_0x03::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_F6_03_01>();
-   case k0x02: return boost::make_shared<CProfile_F6_03_02>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_F6_03_01::CProfile_F6_03_01()
-: m_historizers( {  } )
-{}
-CProfile_F6_03_01::~CProfile_F6_03_01()
-{}
-unsigned int CProfile_F6_03_01::id() const {
-   return 0x01;
-}
-const std::string& CProfile_F6_03_01::title() const {
-   static const std::string title("Light and Blind Control - Application Style 1");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_03_01::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_03_01::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_F6_03_02::CProfile_F6_03_02()
-: m_historizers( {  } )
-{}
-CProfile_F6_03_02::~CProfile_F6_03_02()
-{}
-unsigned int CProfile_F6_03_02::id() const {
-   return 0x02;
-}
-const std::string& CProfile_F6_03_02::title() const {
-   static const std::string title("Light and Blind Control - Application Style 2");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_03_02::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_03_02::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -307,34 +189,7 @@ const std::string& CRPS_0x04::title() const {
    return title;
 }
 boost::shared_ptr<IType> CRPS_0x04::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_F6_04_01>();
-   case k0x02: return boost::make_shared<CProfile_F6_04_02>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_F6_04_01::CProfile_F6_04_01()
-: m_historizers( {  } )
-{}
-CProfile_F6_04_01::~CProfile_F6_04_01()
-{}
-unsigned int CProfile_F6_04_01::id() const {
-   return 0x01;
-}
-const std::string& CProfile_F6_04_01::title() const {
-   static const std::string title("Key Card Activated Switch");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_04_01::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_04_01::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -352,10 +207,10 @@ const std::string& CProfile_F6_04_02::title() const {
    static const std::string title("Key Card Activated Switch ERP2");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_04_02::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_F6_04_02::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_04_02::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_F6_04_02::states(const boost::dynamic_bitset<>& data) const {
    m_EBO___Energy_Bow->set(data[0]);
    m_SOC___State_of_card->set(data[5]);
    return m_historizers;
@@ -374,32 +229,7 @@ const std::string& CRPS_0x05::title() const {
    return title;
 }
 boost::shared_ptr<IType> CRPS_0x05::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_F6_05_01>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_F6_05_01::CProfile_F6_05_01()
-: m_historizers( {  } )
-{}
-CProfile_F6_05_01::~CProfile_F6_05_01()
-{}
-unsigned int CProfile_F6_05_01::id() const {
-   return 0x01;
-}
-const std::string& CProfile_F6_05_01::title() const {
-   static const std::string title("Liquid Leakage Sensor (mechanic harvester)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_05_01::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_05_01::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -415,53 +245,7 @@ const std::string& CRPS_0x10::title() const {
    return title;
 }
 boost::shared_ptr<IType> CRPS_0x10::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x00: return boost::make_shared<CProfile_F6_10_00>();
-   case k0x01: return boost::make_shared<CProfile_F6_10_01>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_F6_10_00::CProfile_F6_10_00()
-: m_historizers( {  } )
-{}
-CProfile_F6_10_00::~CProfile_F6_10_00()
-{}
-unsigned int CProfile_F6_10_00::id() const {
-   return 0x00;
-}
-const std::string& CProfile_F6_10_00::title() const {
-   static const std::string title("Window Handle");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_10_00::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_10_00::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-}
-
-
-CProfile_F6_10_01::CProfile_F6_10_01()
-: m_historizers( {  } )
-{}
-CProfile_F6_10_01::~CProfile_F6_10_01()
-{}
-unsigned int CProfile_F6_10_01::id() const {
-   return 0x01;
-}
-const std::string& CProfile_F6_10_01::title() const {
-   static const std::string title("Window Handle ERP2");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_10_01::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_F6_10_01::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -534,12 +318,7 @@ const std::string& C1BS_0x00::title() const {
    return title;
 }
 boost::shared_ptr<IType> C1BS_0x00::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_D5_00_01>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -557,10 +336,10 @@ const std::string& CProfile_D5_00_01::title() const {
    static const std::string title("Single Input Contact");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D5_00_01::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D5_00_01::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D5_00_01::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D5_00_01::states(const boost::dynamic_bitset<>& data) const {
    m_CO___Contact->set(data[7]);
    m_LRN___Learn_Button->set(data[4]);
    return m_historizers;
@@ -669,36 +448,7 @@ const std::string& C4BS_0x02::title() const {
    return title;
 }
 boost::shared_ptr<IType> C4BS_0x02::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_A5_02_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_02_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_02_03>();
-   case k0x04: return boost::make_shared<CProfile_A5_02_04>();
-   case k0x05: return boost::make_shared<CProfile_A5_02_05>();
-   case k0x06: return boost::make_shared<CProfile_A5_02_06>();
-   case k0x07: return boost::make_shared<CProfile_A5_02_07>();
-   case k0x08: return boost::make_shared<CProfile_A5_02_08>();
-   case k0x09: return boost::make_shared<CProfile_A5_02_09>();
-   case k0x0A: return boost::make_shared<CProfile_A5_02_0A>();
-   case k0x0B: return boost::make_shared<CProfile_A5_02_0B>();
-   case k0x10: return boost::make_shared<CProfile_A5_02_10>();
-   case k0x11: return boost::make_shared<CProfile_A5_02_11>();
-   case k0x12: return boost::make_shared<CProfile_A5_02_12>();
-   case k0x13: return boost::make_shared<CProfile_A5_02_13>();
-   case k0x14: return boost::make_shared<CProfile_A5_02_14>();
-   case k0x15: return boost::make_shared<CProfile_A5_02_15>();
-   case k0x16: return boost::make_shared<CProfile_A5_02_16>();
-   case k0x17: return boost::make_shared<CProfile_A5_02_17>();
-   case k0x18: return boost::make_shared<CProfile_A5_02_18>();
-   case k0x19: return boost::make_shared<CProfile_A5_02_19>();
-   case k0x1A: return boost::make_shared<CProfile_A5_02_1A>();
-   case k0x1B: return boost::make_shared<CProfile_A5_02_1B>();
-   case k0x20: return boost::make_shared<CProfile_A5_02_20>();
-   case k0x30: return boost::make_shared<CProfile_A5_02_30>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -715,10 +465,10 @@ const std::string& CProfile_A5_02_01::title() const {
    static const std::string title("Temperature Sensor Range -40°C to 0°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_01::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_01::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_01::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_01::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + -40.0;
@@ -741,10 +491,10 @@ const std::string& CProfile_A5_02_02::title() const {
    static const std::string title("Temperature Sensor Range -30°C to +10°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_02::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_02::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_02::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_02::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + -30.0;
@@ -767,10 +517,10 @@ const std::string& CProfile_A5_02_03::title() const {
    static const std::string title("Temperature Sensor Range -20°C to +20°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_03::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_03::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_03::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_03::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + -20.0;
@@ -793,10 +543,10 @@ const std::string& CProfile_A5_02_04::title() const {
    static const std::string title("Temperature Sensor Range -10°C to +30°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_04::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_04::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_04::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_04::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + -10.0;
@@ -819,10 +569,10 @@ const std::string& CProfile_A5_02_05::title() const {
    static const std::string title("Temperature Sensor Range 0°C to +40°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_05::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_05::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_05::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_05::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -845,10 +595,10 @@ const std::string& CProfile_A5_02_06::title() const {
    static const std::string title("Temperature Sensor Range +10°C to +50°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_06::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_06::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_06::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_06::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 10.0;
@@ -871,10 +621,10 @@ const std::string& CProfile_A5_02_07::title() const {
    static const std::string title("Temperature Sensor Range +20°C to +60°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_07::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_07::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_07::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_07::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 20.0;
@@ -897,10 +647,10 @@ const std::string& CProfile_A5_02_08::title() const {
    static const std::string title("Temperature Sensor Range +30°C to +70°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_08::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_08::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_08::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_08::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 30.0;
@@ -923,10 +673,10 @@ const std::string& CProfile_A5_02_09::title() const {
    static const std::string title("Temperature Sensor Range +40°C to +80°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_09::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_09::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_09::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_09::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 40.0;
@@ -949,10 +699,10 @@ const std::string& CProfile_A5_02_0A::title() const {
    static const std::string title("Temperature Sensor Range +50°C to +90°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_0A::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_0A::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_0A::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_0A::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 50.0;
@@ -975,10 +725,10 @@ const std::string& CProfile_A5_02_0B::title() const {
    static const std::string title("Temperature Sensor Range +60°C to +100°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_0B::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_0B::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_0B::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_0B::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 60.0;
@@ -1001,10 +751,10 @@ const std::string& CProfile_A5_02_10::title() const {
    static const std::string title("Temperature Sensor Range -60°C to +20°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_10::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_10::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_10::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_10::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + -60.0;
@@ -1027,10 +777,10 @@ const std::string& CProfile_A5_02_11::title() const {
    static const std::string title("Temperature Sensor Range -50°C to +30°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_11::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_11::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_11::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_11::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + -50.0;
@@ -1053,10 +803,10 @@ const std::string& CProfile_A5_02_12::title() const {
    static const std::string title("Temperature Sensor Range -40°C to +40°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_12::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_12::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_12::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_12::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + -40.0;
@@ -1079,10 +829,10 @@ const std::string& CProfile_A5_02_13::title() const {
    static const std::string title("Temperature Sensor Range -30°C to +50°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_13::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_13::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_13::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_13::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + -30.0;
@@ -1105,10 +855,10 @@ const std::string& CProfile_A5_02_14::title() const {
    static const std::string title("Temperature Sensor Range -20°C to +60°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_14::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_14::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_14::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_14::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + -20.0;
@@ -1131,10 +881,10 @@ const std::string& CProfile_A5_02_15::title() const {
    static const std::string title("Temperature Sensor Range -10°C to +70°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_15::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_15::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_15::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_15::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + -10.0;
@@ -1157,10 +907,10 @@ const std::string& CProfile_A5_02_16::title() const {
    static const std::string title("Temperature Sensor Range 0°C to +80°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_16::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_16::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_16::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_16::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -1183,10 +933,10 @@ const std::string& CProfile_A5_02_17::title() const {
    static const std::string title("Temperature Sensor Range +10°C to +90°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_17::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_17::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_17::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_17::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + 10.0;
@@ -1209,10 +959,10 @@ const std::string& CProfile_A5_02_18::title() const {
    static const std::string title("Temperature Sensor Range +20°C to +100°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_18::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_18::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_18::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_18::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + 20.0;
@@ -1235,10 +985,10 @@ const std::string& CProfile_A5_02_19::title() const {
    static const std::string title("Temperature Sensor Range +30°C to +110°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_19::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_19::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_19::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_19::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + 30.0;
@@ -1261,10 +1011,10 @@ const std::string& CProfile_A5_02_1A::title() const {
    static const std::string title("Temperature Sensor Range +40°C to +120°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_1A::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_1A::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_1A::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_1A::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + 40.0;
@@ -1287,10 +1037,10 @@ const std::string& CProfile_A5_02_1B::title() const {
    static const std::string title("Temperature Sensor Range +50°C to +130°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_1B::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_1B::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_1B::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_1B::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + 50.0;
@@ -1313,10 +1063,10 @@ const std::string& CProfile_A5_02_20::title() const {
    static const std::string title("10 Bit Temperature Sensor Range -10°C to +41.2°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_20::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_20::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_20::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_20::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 14, 10);
       auto value = -0.0500488758553 * (static_cast<signed>(rawValue) - 1023) + -10.0;
@@ -1339,10 +1089,10 @@ const std::string& CProfile_A5_02_30::title() const {
    static const std::string title("10 Bit Temperature Sensor Range -40°C to +62.3°C");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_30::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_30::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_02_30::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_30::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 14, 10);
       auto value = -0.1 * (static_cast<signed>(rawValue) - 1023) + -40.0;
@@ -1364,14 +1114,7 @@ const std::string& C4BS_0x04::title() const {
    return title;
 }
 boost::shared_ptr<IType> C4BS_0x04::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_A5_04_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_04_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_04_03>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -1390,10 +1133,10 @@ const std::string& CProfile_A5_04_01::title() const {
    static const std::string title("Range 0°C to +40°C and 0% to 100%");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_04_01::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_04_01::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_04_01::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_04_01::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -1424,10 +1167,10 @@ const std::string& CProfile_A5_04_02::title() const {
    static const std::string title("Range -20°C to +60°C and 0% to 100%");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_04_02::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_04_02::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_04_02::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_04_02::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -1458,10 +1201,10 @@ const std::string& CProfile_A5_04_03::title() const {
    static const std::string title("Range -20°C to +60°C 10bit-measurement and 0% to 100%");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_04_03::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_04_03::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_04_03::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_04_03::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.392156862745 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -1489,12 +1232,7 @@ const std::string& C4BS_0x05::title() const {
    return title;
 }
 boost::shared_ptr<IType> C4BS_0x05::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_A5_05_01>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -1512,10 +1250,10 @@ const std::string& CProfile_A5_05_01::title() const {
    static const std::string title("Range 500 to 1150 hPa");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_05_01::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_05_01::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_05_01::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_05_01::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 6, 10);
       auto value = 0.635386119257 * (static_cast<signed>(rawValue) - 0) + 500.0;
@@ -1538,16 +1276,7 @@ const std::string& C4BS_0x06::title() const {
    return title;
 }
 boost::shared_ptr<IType> C4BS_0x06::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_A5_06_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_06_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_06_03>();
-   case k0x04: return boost::make_shared<CProfile_A5_06_04>();
-   case k0x05: return boost::make_shared<CProfile_A5_06_05>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -1567,10 +1296,10 @@ const std::string& CProfile_A5_06_01::title() const {
    static const std::string title("Range 300lx to 60.000lx");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_06_01::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_01::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_06_01::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_01::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -1607,10 +1336,10 @@ const std::string& CProfile_A5_06_02::title() const {
    static const std::string title("Range 0lx to 1.020lx");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_06_02::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_02::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_06_02::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_02::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -1645,10 +1374,10 @@ const std::string& CProfile_A5_06_03::title() const {
    static const std::string title("10-bit measurement (1-Lux resolution) with range 0lx to 1000lx");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_06_03::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_03::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_06_03::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_03::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -1678,10 +1407,10 @@ const std::string& CProfile_A5_06_04::title() const {
    static const std::string title("Curtain Wall Brightness Sensor");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_06_04::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_04::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_06_04::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_04::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.313725490196 * (static_cast<signed>(rawValue) - 0) + -20.0;
@@ -1709,10 +1438,10 @@ const std::string& CProfile_A5_06_05::title() const {
    static const std::string title("Range 0lx to 10.200lx");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_06_05::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_05::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_06_05::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_05::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -1745,14 +1474,7 @@ const std::string& C4BS_0x07::title() const {
    return title;
 }
 boost::shared_ptr<IType> C4BS_0x07::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_A5_07_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_07_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_07_03>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -1769,10 +1491,10 @@ const std::string& CProfile_A5_07_01::title() const {
    static const std::string title("Occupancy with Supply voltage monitor");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_07_01::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_07_01::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_07_01::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_07_01::states(const boost::dynamic_bitset<>& data) const {
    m_SVA___Supply_voltage_availability->set(data[31]);
    return m_historizers;
 }
@@ -1791,10 +1513,10 @@ const std::string& CProfile_A5_07_02::title() const {
    static const std::string title("Occupancy with Supply voltage monitor");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_07_02::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_07_02::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_07_02::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_07_02::states(const boost::dynamic_bitset<>& data) const {
    m_PIRS___PIR_Status->set(data[24]);
    return m_historizers;
 }
@@ -1814,10 +1536,10 @@ const std::string& CProfile_A5_07_03::title() const {
    static const std::string title("Occupancy with Supply voltage monitor and 10-bit illumination measurement");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_07_03::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_07_03::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_07_03::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_07_03::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 8, 10);
       auto value = 1.0 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -1840,14 +1562,7 @@ const std::string& C4BS_0x08::title() const {
    return title;
 }
 boost::shared_ptr<IType> C4BS_0x08::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_A5_08_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_08_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_08_03>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -1868,10 +1583,10 @@ const std::string& CProfile_A5_08_01::title() const {
    static const std::string title("Range 0lx to 510lx, 0°C to +51°C and Occupancy Button");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_08_01::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_08_01::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_08_01::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_08_01::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -1910,10 +1625,10 @@ const std::string& CProfile_A5_08_02::title() const {
    static const std::string title("Range 0lx to 1020lx, 0°C to +51°C and Occupancy Button");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_08_02::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_08_02::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_08_02::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_08_02::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -1952,10 +1667,10 @@ const std::string& CProfile_A5_08_03::title() const {
    static const std::string title("Range 0lx to 1530lx, -30°C to +50°C and Occupancy Button");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_08_03::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_08_03::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_08_03::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_08_03::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -1989,20 +1704,7 @@ const std::string& C4BS_0x09::title() const {
    return title;
 }
 boost::shared_ptr<IType> C4BS_0x09::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x02: return boost::make_shared<CProfile_A5_09_02>();
-   case k0x04: return boost::make_shared<CProfile_A5_09_04>();
-   case k0x05: return boost::make_shared<CProfile_A5_09_05>();
-   case k0x06: return boost::make_shared<CProfile_A5_09_06>();
-   case k0x07: return boost::make_shared<CProfile_A5_09_07>();
-   case k0x08: return boost::make_shared<CProfile_A5_09_08>();
-   case k0x09: return boost::make_shared<CProfile_A5_09_09>();
-   case k0x0A: return boost::make_shared<CProfile_A5_09_0A>();
-   case k0x0B: return boost::make_shared<CProfile_A5_09_0B>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -2021,10 +1723,10 @@ const std::string& CProfile_A5_09_02::title() const {
    static const std::string title("CO-Sensor 0 ppm to 1020 ppm");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_09_02::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_02::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_09_02::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_02::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -2056,10 +1758,10 @@ const std::string& CProfile_A5_09_04::title() const {
    static const std::string title("CO2 Sensor");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_09_04::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_04::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_09_04::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_04::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.5 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -2141,30 +1843,10 @@ const std::string& CProfile_A5_09_05::title() const {
    static const std::string title("VOC Sensor");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_09_05::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_05::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_09_05::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-}
-
-
-CProfile_A5_09_06::CProfile_A5_09_06()
-: m_historizers( {  } )
-{}
-CProfile_A5_09_06::~CProfile_A5_09_06()
-{}
-unsigned int CProfile_A5_09_06::id() const {
-   return 0x06;
-}
-const std::string& CProfile_A5_09_06::title() const {
-   static const std::string title("Radon");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_09_06::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_09_06::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_05::states(const boost::dynamic_bitset<>& data) const {
    return m_historizers;
 }
 
@@ -2184,33 +1866,13 @@ const std::string& CProfile_A5_09_07::title() const {
    static const std::string title("Particles");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_09_07::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_07::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_09_07::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_07::states(const boost::dynamic_bitset<>& data) const {
    m_PM10a___PM10_active->set(data[29]);
    m_PM2_5a___PM2_5_active->set(data[30]);
    m_PM1a___PM1_active->set(data[31]);
-   return m_historizers;
-}
-
-
-CProfile_A5_09_08::CProfile_A5_09_08()
-: m_historizers( {  } )
-{}
-CProfile_A5_09_08::~CProfile_A5_09_08()
-{}
-unsigned int CProfile_A5_09_08::id() const {
-   return 0x08;
-}
-const std::string& CProfile_A5_09_08::title() const {
-   static const std::string title("Pure CO2 Sensor");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_09_08::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_09_08::states(const boost::dynamic_bitset<>& data) const {
    return m_historizers;
 }
 
@@ -2228,10 +1890,10 @@ const std::string& CProfile_A5_09_09::title() const {
    static const std::string title("Pure CO2 Sensor with Power Failure Detection");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_09_09::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_09::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_09_09::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_09::states(const boost::dynamic_bitset<>& data) const {
    m_PFD___Power_Failure_detection->set(data[29]);
    return m_historizers;
 }
@@ -2253,10 +1915,10 @@ const std::string& CProfile_A5_09_0A::title() const {
    static const std::string title("Hydrogen Gas Sensor");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_09_0A::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_0A::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_09_0A::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_0A::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = 0.313725490196 * (static_cast<signed>(rawValue) - 0) + -20.0;
@@ -2322,10 +1984,10 @@ const std::string& CProfile_A5_09_0B::title() const {
    static const std::string title("Radioactivity Sensor");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_09_0B::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_0B::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_09_0B::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_0B::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 4);
       auto value = 0.2 * (static_cast<signed>(rawValue) - 0) + 2.0;
@@ -2348,44 +2010,7 @@ const std::string& C4BS_0x10::title() const {
    return title;
 }
 boost::shared_ptr<IType> C4BS_0x10::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_A5_10_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_10_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_10_03>();
-   case k0x04: return boost::make_shared<CProfile_A5_10_04>();
-   case k0x05: return boost::make_shared<CProfile_A5_10_05>();
-   case k0x06: return boost::make_shared<CProfile_A5_10_06>();
-   case k0x07: return boost::make_shared<CProfile_A5_10_07>();
-   case k0x08: return boost::make_shared<CProfile_A5_10_08>();
-   case k0x09: return boost::make_shared<CProfile_A5_10_09>();
-   case k0x0A: return boost::make_shared<CProfile_A5_10_0A>();
-   case k0x0B: return boost::make_shared<CProfile_A5_10_0B>();
-   case k0x0C: return boost::make_shared<CProfile_A5_10_0C>();
-   case k0x0D: return boost::make_shared<CProfile_A5_10_0D>();
-   case k0x10: return boost::make_shared<CProfile_A5_10_10>();
-   case k0x11: return boost::make_shared<CProfile_A5_10_11>();
-   case k0x12: return boost::make_shared<CProfile_A5_10_12>();
-   case k0x13: return boost::make_shared<CProfile_A5_10_13>();
-   case k0x14: return boost::make_shared<CProfile_A5_10_14>();
-   case k0x15: return boost::make_shared<CProfile_A5_10_15>();
-   case k0x16: return boost::make_shared<CProfile_A5_10_16>();
-   case k0x17: return boost::make_shared<CProfile_A5_10_17>();
-   case k0x18: return boost::make_shared<CProfile_A5_10_18>();
-   case k0x19: return boost::make_shared<CProfile_A5_10_19>();
-   case k0x1A: return boost::make_shared<CProfile_A5_10_1A>();
-   case k0x1B: return boost::make_shared<CProfile_A5_10_1B>();
-   case k0x1C: return boost::make_shared<CProfile_A5_10_1C>();
-   case k0x1D: return boost::make_shared<CProfile_A5_10_1D>();
-   case k0x1E: return boost::make_shared<CProfile_A5_10_1E>();
-   case k0x1F: return boost::make_shared<CProfile_A5_10_1F>();
-   case k0x20: return boost::make_shared<CProfile_A5_10_20>();
-   case k0x21: return boost::make_shared<CProfile_A5_10_21>();
-   case k0x22: return boost::make_shared<CProfile_A5_10_22>();
-   case k0x23: return boost::make_shared<CProfile_A5_10_23>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -2403,10 +2028,10 @@ const std::string& CProfile_A5_10_01::title() const {
    static const std::string title("Temperature Sensor, Set Point, Fan Speed and Occupancy Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_01::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_01::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_01::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_01::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2431,10 +2056,10 @@ const std::string& CProfile_A5_10_02::title() const {
    static const std::string title("Temperature Sensor, Set Point, Fan Speed and Day/Night Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_02::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_02::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_02::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_02::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2458,10 +2083,10 @@ const std::string& CProfile_A5_10_03::title() const {
    static const std::string title("Temperature Sensor, Set Point Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_03::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_03::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_03::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_03::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2484,10 +2109,10 @@ const std::string& CProfile_A5_10_04::title() const {
    static const std::string title("Temperature Sensor, Set Point and Fan Speed Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_04::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_04::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_04::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_04::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2511,10 +2136,10 @@ const std::string& CProfile_A5_10_05::title() const {
    static const std::string title("Temperature Sensor, Set Point and Occupancy Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_05::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_05::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_05::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_05::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2539,10 +2164,10 @@ const std::string& CProfile_A5_10_06::title() const {
    static const std::string title("Temperature Sensor, Set Point and Day/Night Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_06::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_06::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_06::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_06::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2566,10 +2191,10 @@ const std::string& CProfile_A5_10_07::title() const {
    static const std::string title("Temperature Sensor, Fan Speed Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_07::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_07::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_07::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_07::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2593,10 +2218,10 @@ const std::string& CProfile_A5_10_08::title() const {
    static const std::string title("Temperature Sensor, Fan Speed and Occupancy Control ");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_08::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_08::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_08::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_08::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2621,10 +2246,10 @@ const std::string& CProfile_A5_10_09::title() const {
    static const std::string title("Temperature Sensor, Fan Speed and Day/Night Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_09::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_09::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_09::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_09::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2649,10 +2274,10 @@ const std::string& CProfile_A5_10_0A::title() const {
    static const std::string title("Temperature Sensor, Set Point Adjust and Single Input Contact");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_0A::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0A::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_0A::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0A::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2677,10 +2302,10 @@ const std::string& CProfile_A5_10_0B::title() const {
    static const std::string title("Temperature Sensor and Single Input Contact");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_0B::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0B::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_0B::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0B::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2705,10 +2330,10 @@ const std::string& CProfile_A5_10_0C::title() const {
    static const std::string title("Temperature Sensor and Occupancy Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_0C::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0C::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_0C::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0C::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2733,10 +2358,10 @@ const std::string& CProfile_A5_10_0D::title() const {
    static const std::string title("Temperature Sensor and Day/Night Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_0D::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0D::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_0D::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0D::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2762,10 +2387,10 @@ const std::string& CProfile_A5_10_10::title() const {
    static const std::string title("Temperature and Humidity Sensor, Set Point and Occupancy Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_10::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_10::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_10::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_10::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -2796,10 +2421,10 @@ const std::string& CProfile_A5_10_11::title() const {
    static const std::string title("Temperature and Humidity Sensor, Set Point and Day/Night Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_11::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_11::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_11::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_11::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -2829,10 +2454,10 @@ const std::string& CProfile_A5_10_12::title() const {
    static const std::string title("Temperature and Humidity Sensor and Set Point");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_12::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_12::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_12::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_12::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -2862,10 +2487,10 @@ const std::string& CProfile_A5_10_13::title() const {
    static const std::string title("Temperature and Humidity Sensor, Occupancy Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_13::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_13::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_13::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_13::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -2896,10 +2521,10 @@ const std::string& CProfile_A5_10_14::title() const {
    static const std::string title("Temperature and Humidity Sensor, Day/Night Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_14::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_14::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_14::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_14::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -2928,10 +2553,10 @@ const std::string& CProfile_A5_10_15::title() const {
    static const std::string title("10 Bit Temperature Sensor, 6 bit Set Point Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_15::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_15::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_15::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_15::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 14, 10);
       auto value = -0.0500488758553 * (static_cast<signed>(rawValue) - 1023) + -10.0;
@@ -2955,10 +2580,10 @@ const std::string& CProfile_A5_10_16::title() const {
    static const std::string title("10 Bit Temperature Sensor, 6 bit Set Point Control;Occupancy Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_16::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_16::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_16::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_16::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 14, 10);
       auto value = -0.0500488758553 * (static_cast<signed>(rawValue) - 1023) + -10.0;
@@ -2983,10 +2608,10 @@ const std::string& CProfile_A5_10_17::title() const {
    static const std::string title("10 Bit Temperature Sensor, Occupancy Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_17::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_17::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_17::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_17::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 14, 10);
       auto value = -0.0500488758553 * (static_cast<signed>(rawValue) - 1023) + -10.0;
@@ -3032,10 +2657,10 @@ const std::string& CProfile_A5_10_18::title() const {
    static const std::string title("Illumination, Temperature Set Point, Temperature Sensor, Fan Speed and Occupancy Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_18::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_18::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_18::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_18::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 4.0 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3087,10 +2712,10 @@ const std::string& CProfile_A5_10_19::title() const {
    static const std::string title("Humidity, Temperature Set Point, Temperature Sensor, Fan Speed and Occupancy Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_19::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_19::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_19::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_19::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3141,10 +2766,10 @@ const std::string& CProfile_A5_10_1A::title() const {
    static const std::string title("Supply voltage monitor, Temperature Set Point, Temperature Sensor, Fan Speed and Occupancy Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_1A::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1A::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_1A::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1A::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.16 * (static_cast<signed>(rawValue) - 250) + 0.0;
@@ -3191,10 +2816,10 @@ const std::string& CProfile_A5_10_1B::title() const {
    static const std::string title("Supply Voltage Monitor, Illumination, Temperature Sensor, Fan Speed and Occupancy Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_1B::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1B::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_1B::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1B::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 4.0 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3246,10 +2871,10 @@ const std::string& CProfile_A5_10_1C::title() const {
    static const std::string title("Illumination, Illumination Set Point, Temperature Sensor, Fan Speed and Occupancy Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_1C::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1C::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_1C::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1C::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 4.0 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3301,10 +2926,10 @@ const std::string& CProfile_A5_10_1D::title() const {
    static const std::string title("Humidity, Humidity Set Point, Temperature Sensor, Fan Speed and Occupancy Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_1D::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1D::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_1D::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1D::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3318,27 +2943,6 @@ const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&
    m_OED___Occupancy_enable_disable->set(data[30]);
    m_OB___Occupancy_button->set(data[31]);
    return m_historizers;
-}
-
-
-CProfile_A5_10_1E::CProfile_A5_10_1E()
-: m_historizers( {  } )
-{}
-CProfile_A5_10_1E::~CProfile_A5_10_1E()
-{}
-unsigned int CProfile_A5_10_1E::id() const {
-   return 0x1E;
-}
-const std::string& CProfile_A5_10_1E::title() const {
-   static const std::string title("see A5-10-1B");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_1E::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_1E::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
 }
 
 
@@ -3360,10 +2964,10 @@ const std::string& CProfile_A5_10_1F::title() const {
    static const std::string title("Temperature Sensor, Set Point, Fan Speed, Occupancy and Unoccupancy Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_1F::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1F::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_1F::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1F::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -3408,10 +3012,10 @@ const std::string& CProfile_A5_10_20::title() const {
    static const std::string title("Temperature and Set Point with Special Heating States");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_20::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_20::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_20::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_20::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = 0.16 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3454,10 +3058,10 @@ const std::string& CProfile_A5_10_21::title() const {
    static const std::string title("Temperature, Humidity and Set Point with Special Heating States");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_21::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_21::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_21::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_21::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3488,10 +3092,10 @@ const std::string& CProfile_A5_10_22::title() const {
    static const std::string title("Temperature, Setpoint, Humidity and Fan Speed");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_22::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_22::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_22::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_22::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3521,10 +3125,10 @@ const std::string& CProfile_A5_10_23::title() const {
    static const std::string title("Temperature, Setpoint, Humidity, Fan Speed and Occupancy");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_23::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_23::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_10_23::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_23::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3552,16 +3156,7 @@ const std::string& C4BS_0x11::title() const {
    return title;
 }
 boost::shared_ptr<IType> C4BS_0x11::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_A5_11_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_11_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_11_03>();
-   case k0x04: return boost::make_shared<CProfile_A5_11_04>();
-   case k0x05: return boost::make_shared<CProfile_A5_11_05>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -3585,10 +3180,10 @@ const std::string& CProfile_A5_11_01::title() const {
    static const std::string title("Lighting Controller");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_11_01::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_01::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_11_01::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_01::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 2.0 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3669,10 +3264,10 @@ const std::string& CProfile_A5_11_02::title() const {
    static const std::string title("Temperature Controller Output");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_11_02::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_02::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_11_02::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_02::states(const boost::dynamic_bitset<>& data) const {
    m_ALR___Alarm->set(data[24]);
    m_CST___Controller_state->set(data[27]);
    m_ERH___Energy_hold_off->set(data[29]);
@@ -3742,10 +3337,10 @@ const std::string& CProfile_A5_11_03::title() const {
    static const std::string title("Blind Status");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_11_03::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_03::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_11_03::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_03::states(const boost::dynamic_bitset<>& data) const {
    m_AS___Angle_sign->set(data[8]);
    m_PVF___Position_value_flag->set(data[16]);
    m_AVF___Angle_value_flag->set(data[17]);
@@ -3800,35 +3395,14 @@ const std::string& CProfile_A5_11_04::title() const {
    static const std::string title("Extended Lighting Status");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_11_04::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_04::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_11_04::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_04::states(const boost::dynamic_bitset<>& data) const {
    m_SM___Service_Mode->set(data[24]);
    m_OHF___Operating_hours_flag->set(data[25]);
    m_ST___Status->set(data[31]);
    return m_historizers;
-}
-
-
-CProfile_A5_11_05::CProfile_A5_11_05()
-: m_historizers( {  } )
-{}
-CProfile_A5_11_05::~CProfile_A5_11_05()
-{}
-unsigned int CProfile_A5_11_05::id() const {
-   return 0x05;
-}
-const std::string& CProfile_A5_11_05::title() const {
-   static const std::string title("Dual-Channel Switch Actuator");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_11_05::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_11_05::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
 }
 
 
@@ -3844,18 +3418,7 @@ const std::string& C4BS_0x12::title() const {
    return title;
 }
 boost::shared_ptr<IType> C4BS_0x12::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x00: return boost::make_shared<CProfile_A5_12_00>();
-   case k0x01: return boost::make_shared<CProfile_A5_12_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_12_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_12_03>();
-   case k0x04: return boost::make_shared<CProfile_A5_12_04>();
-   case k0x05: return boost::make_shared<CProfile_A5_12_05>();
-   case k0x10: return boost::make_shared<CProfile_A5_12_10>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -3887,10 +3450,10 @@ const std::string& CProfile_A5_12_00::title() const {
    static const std::string title("Counter");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_12_00::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_00::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_12_00::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_00::states(const boost::dynamic_bitset<>& data) const {
    m_DT___Data_type__unit_->set(data[29]);
    return m_historizers;
 }
@@ -3924,10 +3487,10 @@ const std::string& CProfile_A5_12_01::title() const {
    static const std::string title("Electricity");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_12_01::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_01::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_12_01::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_01::states(const boost::dynamic_bitset<>& data) const {
    m_DT___Data_type__unit_->set(data[29]);
    return m_historizers;
 }
@@ -3961,10 +3524,10 @@ const std::string& CProfile_A5_12_02::title() const {
    static const std::string title("Gas");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_12_02::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_02::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_12_02::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_02::states(const boost::dynamic_bitset<>& data) const {
    m_DT___data_type__unit_->set(data[29]);
    return m_historizers;
 }
@@ -3998,10 +3561,10 @@ const std::string& CProfile_A5_12_03::title() const {
    static const std::string title("Water");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_12_03::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_03::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_12_03::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_03::states(const boost::dynamic_bitset<>& data) const {
    m_DT___Data_type__unit_->set(data[29]);
    return m_historizers;
 }
@@ -4035,10 +3598,10 @@ const std::string& CProfile_A5_12_04::title() const {
    static const std::string title("Temperature and Load Sensor");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_12_04::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_04::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_12_04::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_04::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = 0.313725490196 * (static_cast<signed>(rawValue) - 0) + -40.0;
@@ -4086,10 +3649,10 @@ const std::string& CProfile_A5_12_05::title() const {
    static const std::string title("Temperature and Container Sensor");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_12_05::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_05::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_12_05::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_05::states(const boost::dynamic_bitset<>& data) const {
    m_PS0___Position_Sensor_0->set(data[0]);
    m_PS1___Position_Sensor_1->set(data[1]);
    m_PS2___Position_Sensor_2->set(data[2]);
@@ -4137,10 +3700,10 @@ const std::string& CProfile_A5_12_10::title() const {
    static const std::string title("Current meter 16 channels");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_12_10::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_10::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_12_10::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_10::states(const boost::dynamic_bitset<>& data) const {
    m_DT___Data_type__unit_->set(data[29]);
    return m_historizers;
 }
@@ -4158,20 +3721,7 @@ const std::string& C4BS_0x13::title() const {
    return title;
 }
 boost::shared_ptr<IType> C4BS_0x13::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_A5_13_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_13_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_13_03>();
-   case k0x04: return boost::make_shared<CProfile_A5_13_04>();
-   case k0x05: return boost::make_shared<CProfile_A5_13_05>();
-   case k0x06: return boost::make_shared<CProfile_A5_13_06>();
-   case k0x07: return boost::make_shared<CProfile_A5_13_07>();
-   case k0x08: return boost::make_shared<CProfile_A5_13_08>();
-   case k0x10: return boost::make_shared<CProfile_A5_13_10>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -4190,10 +3740,10 @@ const std::string& CProfile_A5_13_01::title() const {
    static const std::string title("Weather Station");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_13_01::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_01::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_13_01::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_01::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.470588235294 * (static_cast<signed>(rawValue) - 0) + -40.0;
@@ -4221,10 +3771,10 @@ const std::string& CProfile_A5_13_02::title() const {
    static const std::string title("Sun Intensity");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_13_02::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_02::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_13_02::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_02::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 588.235294118 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -4258,10 +3808,10 @@ const std::string& CProfile_A5_13_03::title() const {
    static const std::string title("Date Exchange");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_13_03::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_03::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_13_03::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_03::states(const boost::dynamic_bitset<>& data) const {
    m_SRC___Source->set(data[31]);
    return m_historizers;
 }
@@ -4300,53 +3850,13 @@ const std::string& CProfile_A5_13_04::title() const {
    static const std::string title("Time and Day Exchange");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_13_04::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_04::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_13_04::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_04::states(const boost::dynamic_bitset<>& data) const {
    m_TMF___Time_Format->set(data[29]);
    m_A_PM___AM_PM->set(data[30]);
    m_SRC___Source->set(data[31]);
-   return m_historizers;
-}
-
-
-CProfile_A5_13_05::CProfile_A5_13_05()
-: m_historizers( {  } )
-{}
-CProfile_A5_13_05::~CProfile_A5_13_05()
-{}
-unsigned int CProfile_A5_13_05::id() const {
-   return 0x05;
-}
-const std::string& CProfile_A5_13_05::title() const {
-   static const std::string title("Direction Exchange");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_13_05::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_13_05::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-}
-
-
-CProfile_A5_13_06::CProfile_A5_13_06()
-: m_historizers( {  } )
-{}
-CProfile_A5_13_06::~CProfile_A5_13_06()
-{}
-unsigned int CProfile_A5_13_06::id() const {
-   return 0x06;
-}
-const std::string& CProfile_A5_13_06::title() const {
-   static const std::string title("Geographic Position Exchange");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_13_06::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_13_06::states(const boost::dynamic_bitset<>& data) const {
    return m_historizers;
 }
 
@@ -4391,10 +3901,10 @@ const std::string& CProfile_A5_13_07::title() const {
    static const std::string title("Wind Sensor");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_13_07::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_07::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_13_07::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_07::states(const boost::dynamic_bitset<>& data) const {
    m_BS___Battery_Status->set(data[31]);
    return m_historizers;
 }
@@ -4414,10 +3924,10 @@ const std::string& CProfile_A5_13_08::title() const {
    static const std::string title("Rain Sensor");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_13_08::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_08::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_13_08::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_08::states(const boost::dynamic_bitset<>& data) const {
    m_RAS___Rainfall_Adjust_Sign->set(data[1]);
    m_BS___Battery_Status->set(data[31]);
    return m_historizers;
@@ -4437,10 +3947,10 @@ const std::string& CProfile_A5_13_10::title() const {
    static const std::string title("Sun position and radiation");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_13_10::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_10::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_13_10::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_10::states(const boost::dynamic_bitset<>& data) const {
    m_D_N___Day___Night->set(data[7]);
    return m_historizers;
 }
@@ -4458,17 +3968,7 @@ const std::string& C4BS_0x14::title() const {
    return title;
 }
 boost::shared_ptr<IType> C4BS_0x14::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_A5_14_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_14_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_14_03>();
-   case k0x04: return boost::make_shared<CProfile_A5_14_04>();
-   case k0x05: return boost::make_shared<CProfile_A5_14_05>();
-   case k0x06: return boost::make_shared<CProfile_A5_14_06>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -4486,10 +3986,10 @@ const std::string& CProfile_A5_14_01::title() const {
    static const std::string title("Single Input Contact (Window/Door), Supply voltage monitor");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_14_01::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_01::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_14_01::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_01::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -4515,10 +4015,10 @@ const std::string& CProfile_A5_14_02::title() const {
    static const std::string title("Single Input Contact (Window/Door), Supply voltage monitor and Illumination");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_14_02::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_02::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_14_02::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_02::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -4549,10 +4049,10 @@ const std::string& CProfile_A5_14_03::title() const {
    static const std::string title("Single Input Contact (Window/Door), Supply voltage monitor and Vibration");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_14_03::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_03::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_14_03::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_03::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -4580,10 +4080,10 @@ const std::string& CProfile_A5_14_04::title() const {
    static const std::string title("Single Input Contact (Window/Door), Supply voltage monitor, Vibration and Illumination");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_14_04::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_04::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_14_04::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_04::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -4614,10 +4114,10 @@ const std::string& CProfile_A5_14_05::title() const {
    static const std::string title("Vibration/Tilt, Supply voltage monitor");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_14_05::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_05::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_14_05::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_05::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -4643,10 +4143,10 @@ const std::string& CProfile_A5_14_06::title() const {
    static const std::string title("Vibration/Tilt, Illumination and Supply voltage monitor");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_14_06::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_06::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_14_06::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_06::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -4674,144 +4174,7 @@ const std::string& C4BS_0x20::title() const {
    return title;
 }
 boost::shared_ptr<IType> C4BS_0x20::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_A5_20_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_20_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_20_03>();
-   case k0x04: return boost::make_shared<CProfile_A5_20_04>();
-   case k0x10: return boost::make_shared<CProfile_A5_20_10>();
-   case k0x11: return boost::make_shared<CProfile_A5_20_11>();
-   case k0x12: return boost::make_shared<CProfile_A5_20_12>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_A5_20_01::CProfile_A5_20_01()
-: m_historizers( {  } )
-{}
-CProfile_A5_20_01::~CProfile_A5_20_01()
-{}
-unsigned int CProfile_A5_20_01::id() const {
-   return 0x01;
-}
-const std::string& CProfile_A5_20_01::title() const {
-   static const std::string title("Battery Powered Actuator");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_20_01::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_20_01::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_A5_20_02::CProfile_A5_20_02()
-: m_historizers( {  } )
-{}
-CProfile_A5_20_02::~CProfile_A5_20_02()
-{}
-unsigned int CProfile_A5_20_02::id() const {
-   return 0x02;
-}
-const std::string& CProfile_A5_20_02::title() const {
-   static const std::string title("Basic Actuator");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_20_02::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_20_02::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_A5_20_03::CProfile_A5_20_03()
-: m_historizers( {  } )
-{}
-CProfile_A5_20_03::~CProfile_A5_20_03()
-{}
-unsigned int CProfile_A5_20_03::id() const {
-   return 0x03;
-}
-const std::string& CProfile_A5_20_03::title() const {
-   static const std::string title("Line powered Actuator");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_20_03::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_20_03::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_A5_20_04::CProfile_A5_20_04()
-: m_historizers( {  } )
-{}
-CProfile_A5_20_04::~CProfile_A5_20_04()
-{}
-unsigned int CProfile_A5_20_04::id() const {
-   return 0x04;
-}
-const std::string& CProfile_A5_20_04::title() const {
-   static const std::string title("Heating Radiator Valve Actuating Drive with Feed and Room Temperature Measurement, Local Set Point Control and Display");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_20_04::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_20_04::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_A5_20_10::CProfile_A5_20_10()
-: m_historizers( {  } )
-{}
-CProfile_A5_20_10::~CProfile_A5_20_10()
-{}
-unsigned int CProfile_A5_20_10::id() const {
-   return 0x10;
-}
-const std::string& CProfile_A5_20_10::title() const {
-   static const std::string title("Generic HVAC Interface");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_20_10::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_20_10::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_A5_20_11::CProfile_A5_20_11()
-: m_historizers( {  } )
-{}
-CProfile_A5_20_11::~CProfile_A5_20_11()
-{}
-unsigned int CProfile_A5_20_11::id() const {
-   return 0x11;
-}
-const std::string& CProfile_A5_20_11::title() const {
-   static const std::string title("Generic HVAC Interface – Error Control");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_20_11::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_20_11::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -4877,10 +4240,10 @@ const std::string& CProfile_A5_20_12::title() const {
    static const std::string title("Temperature Controller Input");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_20_12::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_20_12::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_20_12::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_20_12::states(const boost::dynamic_bitset<>& data) const {
    m_FANOR___Fan_override->set(data[24]);
    m_CST___Controller_state->set(data[27]);
    m_ERH___Energy_hold_off___Dew_point->set(data[29]);
@@ -4900,36 +4263,7 @@ const std::string& C4BS_0x30::title() const {
    return title;
 }
 boost::shared_ptr<IType> C4BS_0x30::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_A5_30_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_30_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_30_03>();
-   case k0x04: return boost::make_shared<CProfile_A5_30_04>();
-   case k0x05: return boost::make_shared<CProfile_A5_30_05>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_A5_30_01::CProfile_A5_30_01()
-: m_historizers( {  } )
-{}
-CProfile_A5_30_01::~CProfile_A5_30_01()
-{}
-unsigned int CProfile_A5_30_01::id() const {
-   return 0x01;
-}
-const std::string& CProfile_A5_30_01::title() const {
-   static const std::string title("Single Input Contact, Battery Monitor");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_30_01::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_30_01::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -4946,10 +4280,10 @@ const std::string& CProfile_A5_30_02::title() const {
    static const std::string title("Single Input Contact");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_30_02::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_02::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_30_02::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_02::states(const boost::dynamic_bitset<>& data) const {
    m_IPS___Input_State->set(data[31]);
    return m_historizers;
 }
@@ -4973,10 +4307,10 @@ const std::string& CProfile_A5_30_03::title() const {
    static const std::string title("4 Digital Inputs, Wake and Temperature");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_30_03::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_03::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_30_03::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_03::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -5006,10 +4340,10 @@ const std::string& CProfile_A5_30_04::title() const {
    static const std::string title("3 Digital Inputs, 1 Digital Input 8 Bits");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_30_04::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_04::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_30_04::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_04::states(const boost::dynamic_bitset<>& data) const {
    m_DI2___Digital_Input_2->set(data[29]);
    m_DI1___Digital_Input_1->set(data[30]);
    m_DI0___Digital_Input_0->set(data[31]);
@@ -5031,10 +4365,10 @@ const std::string& CProfile_A5_30_05::title() const {
    static const std::string title("Single Input Contact, Retransmission, Battery Monitor");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_30_05::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_05::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_30_05::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_05::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.0129411764706 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -5057,12 +4391,7 @@ const std::string& C4BS_0x37::title() const {
    return title;
 }
 boost::shared_ptr<IType> C4BS_0x37::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_A5_37_01>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -5082,10 +4411,10 @@ const std::string& CProfile_A5_37_01::title() const {
    static const std::string title("Demand Response");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_37_01::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_37_01::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_37_01::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_37_01::states(const boost::dynamic_bitset<>& data) const {
    m_SPWRU___Absolute_relative_power_usage->set(data[8]);
    m_RSD___Random_start_delay->set(data[29]);
    m_RED___Randomized_end_delay->set(data[30]);
@@ -5106,34 +4435,7 @@ const std::string& C4BS_0x38::title() const {
    return title;
 }
 boost::shared_ptr<IType> C4BS_0x38::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x08: return boost::make_shared<CProfile_A5_38_08>();
-   case k0x09: return boost::make_shared<CProfile_A5_38_09>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_A5_38_08::CProfile_A5_38_08()
-: m_historizers( {  } )
-{}
-CProfile_A5_38_08::~CProfile_A5_38_08()
-{}
-unsigned int CProfile_A5_38_08::id() const {
-   return 0x08;
-}
-const std::string& CProfile_A5_38_08::title() const {
-   static const std::string title("Gateway");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_38_08::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_38_08::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -5176,10 +4478,10 @@ const std::string& CProfile_A5_38_09::title() const {
    static const std::string title("Extended Lighting-Control");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_38_09::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_38_09::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_38_09::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_38_09::states(const boost::dynamic_bitset<>& data) const {
    m_SSF___Send_status_flag->set(data[29]);
    m_SFV___Store_final_value->set(data[30]);
    m_SMF___Service_Mode_Flag->set(data[31]);
@@ -5199,54 +4501,7 @@ const std::string& C4BS_0x3F::title() const {
    return title;
 }
 boost::shared_ptr<IType> C4BS_0x3F::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x00: return boost::make_shared<CProfile_A5_3F_00>();
-   case k0x7F: return boost::make_shared<CProfile_A5_3F_7F>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_A5_3F_00::CProfile_A5_3F_00()
-: m_historizers( {  } )
-{}
-CProfile_A5_3F_00::~CProfile_A5_3F_00()
-{}
-unsigned int CProfile_A5_3F_00::id() const {
-   return 0x00;
-}
-const std::string& CProfile_A5_3F_00::title() const {
-   static const std::string title("Radio Link Test");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_3F_00::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_3F_00::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_A5_3F_7F::CProfile_A5_3F_7F()
-: m_historizers( {  } )
-{}
-CProfile_A5_3F_7F::~CProfile_A5_3F_7F()
-{}
-unsigned int CProfile_A5_3F_7F::id() const {
-   return 0x7F;
-}
-const std::string& CProfile_A5_3F_7F::title() const {
-   static const std::string title("Universal");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_3F_7F::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_A5_3F_7F::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -5348,33 +4603,7 @@ const std::string& CVLD_0x00::title() const {
    return title;
 }
 boost::shared_ptr<IType> CVLD_0x00::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_D2_00_01>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_D2_00_01::CProfile_D2_00_01()
-: m_historizers( {  } )
-{}
-CProfile_D2_00_01::~CProfile_D2_00_01()
-{}
-unsigned int CProfile_D2_00_01::id() const {
-   return 0x01;
-}
-const std::string& CProfile_D2_00_01::title() const {
-   static const std::string title("RCP with Temperature Measurement and Display (BI-DIR)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_00_01::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_00_01::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -5390,345 +4619,7 @@ const std::string& CVLD_0x01::title() const {
    return title;
 }
 boost::shared_ptr<IType> CVLD_0x01::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x00: return boost::make_shared<CProfile_D2_01_00>();
-   case k0x01: return boost::make_shared<CProfile_D2_01_01>();
-   case k0x02: return boost::make_shared<CProfile_D2_01_02>();
-   case k0x03: return boost::make_shared<CProfile_D2_01_03>();
-   case k0x04: return boost::make_shared<CProfile_D2_01_04>();
-   case k0x05: return boost::make_shared<CProfile_D2_01_05>();
-   case k0x06: return boost::make_shared<CProfile_D2_01_06>();
-   case k0x07: return boost::make_shared<CProfile_D2_01_07>();
-   case k0x08: return boost::make_shared<CProfile_D2_01_08>();
-   case k0x09: return boost::make_shared<CProfile_D2_01_09>();
-   case k0x0A: return boost::make_shared<CProfile_D2_01_0A>();
-   case k0x0B: return boost::make_shared<CProfile_D2_01_0B>();
-   case k0x0C: return boost::make_shared<CProfile_D2_01_0C>();
-   case k0x0D: return boost::make_shared<CProfile_D2_01_0D>();
-   case k0x0E: return boost::make_shared<CProfile_D2_01_0E>();
-   case k0x0F: return boost::make_shared<CProfile_D2_01_0F>();
-   case k0x10: return boost::make_shared<CProfile_D2_01_10>();
-   case k0x11: return boost::make_shared<CProfile_D2_01_11>();
-   case k0x12: return boost::make_shared<CProfile_D2_01_12>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_D2_01_00::CProfile_D2_01_00()
-: m_historizers( {  } )
-{}
-CProfile_D2_01_00::~CProfile_D2_01_00()
-{}
-unsigned int CProfile_D2_01_00::id() const {
-   return 0x00;
-}
-const std::string& CProfile_D2_01_00::title() const {
-   static const std::string title("Type 0x00");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_00::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_00::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_01_01::CProfile_D2_01_01()
-: m_historizers( {  } )
-{}
-CProfile_D2_01_01::~CProfile_D2_01_01()
-{}
-unsigned int CProfile_D2_01_01::id() const {
-   return 0x01;
-}
-const std::string& CProfile_D2_01_01::title() const {
-   static const std::string title("Type 0x01 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_01::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_01::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_01_02::CProfile_D2_01_02()
-: m_historizers( {  } )
-{}
-CProfile_D2_01_02::~CProfile_D2_01_02()
-{}
-unsigned int CProfile_D2_01_02::id() const {
-   return 0x02;
-}
-const std::string& CProfile_D2_01_02::title() const {
-   static const std::string title("Type 0x02 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_02::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_02::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_01_03::CProfile_D2_01_03()
-: m_historizers( {  } )
-{}
-CProfile_D2_01_03::~CProfile_D2_01_03()
-{}
-unsigned int CProfile_D2_01_03::id() const {
-   return 0x03;
-}
-const std::string& CProfile_D2_01_03::title() const {
-   static const std::string title("Type 0x03 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_03::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_03::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_01_04::CProfile_D2_01_04()
-: m_historizers( {  } )
-{}
-CProfile_D2_01_04::~CProfile_D2_01_04()
-{}
-unsigned int CProfile_D2_01_04::id() const {
-   return 0x04;
-}
-const std::string& CProfile_D2_01_04::title() const {
-   static const std::string title("Type 0x04 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_04::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_04::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_01_05::CProfile_D2_01_05()
-: m_historizers( {  } )
-{}
-CProfile_D2_01_05::~CProfile_D2_01_05()
-{}
-unsigned int CProfile_D2_01_05::id() const {
-   return 0x05;
-}
-const std::string& CProfile_D2_01_05::title() const {
-   static const std::string title("Type 0x05 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_05::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_05::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_01_06::CProfile_D2_01_06()
-: m_historizers( {  } )
-{}
-CProfile_D2_01_06::~CProfile_D2_01_06()
-{}
-unsigned int CProfile_D2_01_06::id() const {
-   return 0x06;
-}
-const std::string& CProfile_D2_01_06::title() const {
-   static const std::string title("Type 0x06 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_06::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_06::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_01_07::CProfile_D2_01_07()
-: m_historizers( {  } )
-{}
-CProfile_D2_01_07::~CProfile_D2_01_07()
-{}
-unsigned int CProfile_D2_01_07::id() const {
-   return 0x07;
-}
-const std::string& CProfile_D2_01_07::title() const {
-   static const std::string title("Type 0x07 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_07::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_07::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_01_08::CProfile_D2_01_08()
-: m_historizers( {  } )
-{}
-CProfile_D2_01_08::~CProfile_D2_01_08()
-{}
-unsigned int CProfile_D2_01_08::id() const {
-   return 0x08;
-}
-const std::string& CProfile_D2_01_08::title() const {
-   static const std::string title("Type 0x08 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_08::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_08::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_01_09::CProfile_D2_01_09()
-: m_historizers( {  } )
-{}
-CProfile_D2_01_09::~CProfile_D2_01_09()
-{}
-unsigned int CProfile_D2_01_09::id() const {
-   return 0x09;
-}
-const std::string& CProfile_D2_01_09::title() const {
-   static const std::string title("Type 0x09 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_09::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_09::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_01_0A::CProfile_D2_01_0A()
-: m_historizers( {  } )
-{}
-CProfile_D2_01_0A::~CProfile_D2_01_0A()
-{}
-unsigned int CProfile_D2_01_0A::id() const {
-   return 0x0A;
-}
-const std::string& CProfile_D2_01_0A::title() const {
-   static const std::string title("Type 0x0A (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_0A::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_0A::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_01_0B::CProfile_D2_01_0B()
-: m_historizers( {  } )
-{}
-CProfile_D2_01_0B::~CProfile_D2_01_0B()
-{}
-unsigned int CProfile_D2_01_0B::id() const {
-   return 0x0B;
-}
-const std::string& CProfile_D2_01_0B::title() const {
-   static const std::string title("Type 0x0B (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_0B::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_0B::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_01_0C::CProfile_D2_01_0C()
-: m_historizers( {  } )
-{}
-CProfile_D2_01_0C::~CProfile_D2_01_0C()
-{}
-unsigned int CProfile_D2_01_0C::id() const {
-   return 0x0C;
-}
-const std::string& CProfile_D2_01_0C::title() const {
-   static const std::string title("Type 0x0C");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_0C::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_0C::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_01_10::CProfile_D2_01_10()
-: m_historizers( {  } )
-{}
-CProfile_D2_01_10::~CProfile_D2_01_10()
-{}
-unsigned int CProfile_D2_01_10::id() const {
-   return 0x10;
-}
-const std::string& CProfile_D2_01_10::title() const {
-   static const std::string title("Type 0x10 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_10::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_10::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_01_11::CProfile_D2_01_11()
-: m_historizers( {  } )
-{}
-CProfile_D2_01_11::~CProfile_D2_01_11()
-{}
-unsigned int CProfile_D2_01_11::id() const {
-   return 0x11;
-}
-const std::string& CProfile_D2_01_11::title() const {
-   static const std::string title("Type 0x11 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_11::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_01_11::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -5744,77 +4635,7 @@ const std::string& CVLD_0x02::title() const {
    return title;
 }
 boost::shared_ptr<IType> CVLD_0x02::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x00: return boost::make_shared<CProfile_D2_02_00>();
-   case k0x01: return boost::make_shared<CProfile_D2_02_01>();
-   case k0x02: return boost::make_shared<CProfile_D2_02_02>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_D2_02_00::CProfile_D2_02_00()
-: m_historizers( {  } )
-{}
-CProfile_D2_02_00::~CProfile_D2_02_00()
-{}
-unsigned int CProfile_D2_02_00::id() const {
-   return 0x00;
-}
-const std::string& CProfile_D2_02_00::title() const {
-   static const std::string title("Type 0x00");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_02_00::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_02_00::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_02_01::CProfile_D2_02_01()
-: m_historizers( {  } )
-{}
-CProfile_D2_02_01::~CProfile_D2_02_01()
-{}
-unsigned int CProfile_D2_02_01::id() const {
-   return 0x01;
-}
-const std::string& CProfile_D2_02_01::title() const {
-   static const std::string title("Type 0x01 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_02_01::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_02_01::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_02_02::CProfile_D2_02_02()
-: m_historizers( {  } )
-{}
-CProfile_D2_02_02::~CProfile_D2_02_02()
-{}
-unsigned int CProfile_D2_02_02::id() const {
-   return 0x02;
-}
-const std::string& CProfile_D2_02_02::title() const {
-   static const std::string title("Type 0x02 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_02_02::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_02_02::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -5830,54 +4651,7 @@ const std::string& CVLD_0x03::title() const {
    return title;
 }
 boost::shared_ptr<IType> CVLD_0x03::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x00: return boost::make_shared<CProfile_D2_03_00>();
-   case k0x10: return boost::make_shared<CProfile_D2_03_10>();
-   case k0x20: return boost::make_shared<CProfile_D2_03_20>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_D2_03_00::CProfile_D2_03_00()
-: m_historizers( {  } )
-{}
-CProfile_D2_03_00::~CProfile_D2_03_00()
-{}
-unsigned int CProfile_D2_03_00::id() const {
-   return 0x00;
-}
-const std::string& CProfile_D2_03_00::title() const {
-   static const std::string title("Type 0x00");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_03_00::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_03_00::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-}
-
-
-CProfile_D2_03_10::CProfile_D2_03_10()
-: m_historizers( {  } )
-{}
-CProfile_D2_03_10::~CProfile_D2_03_10()
-{}
-unsigned int CProfile_D2_03_10::id() const {
-   return 0x10;
-}
-const std::string& CProfile_D2_03_10::title() const {
-   static const std::string title("Mechanical Handle");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_03_10::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_03_10::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -5894,10 +4668,10 @@ const std::string& CProfile_D2_03_20::title() const {
    static const std::string title("Beacon with Vibration Detection");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_03_20::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_03_20::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_03_20::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_03_20::states(const boost::dynamic_bitset<>& data) const {
    m_ES___Energy_Supply->set(data[0]);
    return m_historizers;
 }
@@ -5915,27 +4689,7 @@ const std::string& CVLD_0x04::title() const {
    return title;
 }
 boost::shared_ptr<IType> CVLD_0x04::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x00: return boost::make_shared<CProfile_D2_04_00>();
-   case k0x01: return boost::make_shared<CProfile_D2_04_01>();
-   case k0x02: return boost::make_shared<CProfile_D2_04_02>();
-   case k0x03: return boost::make_shared<CProfile_D2_04_03>();
-   case k0x04: return boost::make_shared<CProfile_D2_04_04>();
-   case k0x05: return boost::make_shared<CProfile_D2_04_05>();
-   case k0x06: return boost::make_shared<CProfile_D2_04_06>();
-   case k0x07: return boost::make_shared<CProfile_D2_04_07>();
-   case k0x08: return boost::make_shared<CProfile_D2_04_08>();
-   case k0x09: return boost::make_shared<CProfile_D2_04_09>();
-   case k0x10: return boost::make_shared<CProfile_D2_04_10>();
-   case k0x1A: return boost::make_shared<CProfile_D2_04_1A>();
-   case k0x1B: return boost::make_shared<CProfile_D2_04_1B>();
-   case k0x1C: return boost::make_shared<CProfile_D2_04_1C>();
-   case k0x1D: return boost::make_shared<CProfile_D2_04_1D>();
-   case k0x1E: return boost::make_shared<CProfile_D2_04_1E>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -5973,10 +4727,10 @@ const std::string& CProfile_D2_04_00::title() const {
    static const std::string title("Type 0x00");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_00::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_04_00::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_00::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_04_00::states(const boost::dynamic_bitset<>& data) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.5 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -5992,321 +4746,6 @@ const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&
 }
 
 
-CProfile_D2_04_01::CProfile_D2_04_01()
-: m_historizers( {  } )
-{}
-CProfile_D2_04_01::~CProfile_D2_04_01()
-{}
-unsigned int CProfile_D2_04_01::id() const {
-   return 0x01;
-}
-const std::string& CProfile_D2_04_01::title() const {
-   static const std::string title("Type 0x01 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_01::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_01::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_04_02::CProfile_D2_04_02()
-: m_historizers( {  } )
-{}
-CProfile_D2_04_02::~CProfile_D2_04_02()
-{}
-unsigned int CProfile_D2_04_02::id() const {
-   return 0x02;
-}
-const std::string& CProfile_D2_04_02::title() const {
-   static const std::string title("Type 0x02 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_02::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_02::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_04_03::CProfile_D2_04_03()
-: m_historizers( {  } )
-{}
-CProfile_D2_04_03::~CProfile_D2_04_03()
-{}
-unsigned int CProfile_D2_04_03::id() const {
-   return 0x03;
-}
-const std::string& CProfile_D2_04_03::title() const {
-   static const std::string title("Type 0x03 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_03::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_03::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_04_04::CProfile_D2_04_04()
-: m_historizers( {  } )
-{}
-CProfile_D2_04_04::~CProfile_D2_04_04()
-{}
-unsigned int CProfile_D2_04_04::id() const {
-   return 0x04;
-}
-const std::string& CProfile_D2_04_04::title() const {
-   static const std::string title("Type 0x04 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_04::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_04::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_04_05::CProfile_D2_04_05()
-: m_historizers( {  } )
-{}
-CProfile_D2_04_05::~CProfile_D2_04_05()
-{}
-unsigned int CProfile_D2_04_05::id() const {
-   return 0x05;
-}
-const std::string& CProfile_D2_04_05::title() const {
-   static const std::string title("Type 0x05 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_05::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_05::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_04_06::CProfile_D2_04_06()
-: m_historizers( {  } )
-{}
-CProfile_D2_04_06::~CProfile_D2_04_06()
-{}
-unsigned int CProfile_D2_04_06::id() const {
-   return 0x06;
-}
-const std::string& CProfile_D2_04_06::title() const {
-   static const std::string title("Type 0x06 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_06::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_06::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_04_07::CProfile_D2_04_07()
-: m_historizers( {  } )
-{}
-CProfile_D2_04_07::~CProfile_D2_04_07()
-{}
-unsigned int CProfile_D2_04_07::id() const {
-   return 0x07;
-}
-const std::string& CProfile_D2_04_07::title() const {
-   static const std::string title("Type 0x07 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_07::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_07::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_04_08::CProfile_D2_04_08()
-: m_historizers( {  } )
-{}
-CProfile_D2_04_08::~CProfile_D2_04_08()
-{}
-unsigned int CProfile_D2_04_08::id() const {
-   return 0x08;
-}
-const std::string& CProfile_D2_04_08::title() const {
-   static const std::string title("Type 0x08 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_08::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_08::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_04_09::CProfile_D2_04_09()
-: m_historizers( {  } )
-{}
-CProfile_D2_04_09::~CProfile_D2_04_09()
-{}
-unsigned int CProfile_D2_04_09::id() const {
-   return 0x09;
-}
-const std::string& CProfile_D2_04_09::title() const {
-   static const std::string title("Type 0x09 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_09::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_09::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_04_10::CProfile_D2_04_10()
-: m_historizers( {  } )
-{}
-CProfile_D2_04_10::~CProfile_D2_04_10()
-{}
-unsigned int CProfile_D2_04_10::id() const {
-   return 0x10;
-}
-const std::string& CProfile_D2_04_10::title() const {
-   static const std::string title("Type 0x10 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_10::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_10::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_04_1A::CProfile_D2_04_1A()
-: m_historizers( {  } )
-{}
-CProfile_D2_04_1A::~CProfile_D2_04_1A()
-{}
-unsigned int CProfile_D2_04_1A::id() const {
-   return 0x1A;
-}
-const std::string& CProfile_D2_04_1A::title() const {
-   static const std::string title("Type 0x1A (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_1A::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_1A::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_04_1B::CProfile_D2_04_1B()
-: m_historizers( {  } )
-{}
-CProfile_D2_04_1B::~CProfile_D2_04_1B()
-{}
-unsigned int CProfile_D2_04_1B::id() const {
-   return 0x1B;
-}
-const std::string& CProfile_D2_04_1B::title() const {
-   static const std::string title("Type 0x1B (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_1B::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_1B::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_04_1C::CProfile_D2_04_1C()
-: m_historizers( {  } )
-{}
-CProfile_D2_04_1C::~CProfile_D2_04_1C()
-{}
-unsigned int CProfile_D2_04_1C::id() const {
-   return 0x1C;
-}
-const std::string& CProfile_D2_04_1C::title() const {
-   static const std::string title("Type 0x1C (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_1C::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_1C::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_04_1D::CProfile_D2_04_1D()
-: m_historizers( {  } )
-{}
-CProfile_D2_04_1D::~CProfile_D2_04_1D()
-{}
-unsigned int CProfile_D2_04_1D::id() const {
-   return 0x1D;
-}
-const std::string& CProfile_D2_04_1D::title() const {
-   static const std::string title("Type 0x1D (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_1D::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_1D::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_04_1E::CProfile_D2_04_1E()
-: m_historizers( {  } )
-{}
-CProfile_D2_04_1E::~CProfile_D2_04_1E()
-{}
-unsigned int CProfile_D2_04_1E::id() const {
-   return 0x1E;
-}
-const std::string& CProfile_D2_04_1E::title() const {
-   static const std::string title("Type 0x1E (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_1E::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_04_1E::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
 CVLD_0x05::CVLD_0x05()
 {}
 CVLD_0x05::~CVLD_0x05()
@@ -6319,33 +4758,7 @@ const std::string& CVLD_0x05::title() const {
    return title;
 }
 boost::shared_ptr<IType> CVLD_0x05::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x00: return boost::make_shared<CProfile_D2_05_00>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_D2_05_00::CProfile_D2_05_00()
-: m_historizers( {  } )
-{}
-CProfile_D2_05_00::~CProfile_D2_05_00()
-{}
-unsigned int CProfile_D2_05_00::id() const {
-   return 0x00;
-}
-const std::string& CProfile_D2_05_00::title() const {
-   static const std::string title("Type 0x00");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_05_00::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_05_00::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -6361,33 +4774,7 @@ const std::string& CVLD_0x06::title() const {
    return title;
 }
 boost::shared_ptr<IType> CVLD_0x06::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_D2_06_01>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_D2_06_01::CProfile_D2_06_01()
-: m_historizers( {  } )
-{}
-CProfile_D2_06_01::~CProfile_D2_06_01()
-{}
-unsigned int CProfile_D2_06_01::id() const {
-   return 0x01;
-}
-const std::string& CProfile_D2_06_01::title() const {
-   static const std::string title("Alarm, Position Sensor, Vacation Mode, Optional Sensors");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_06_01::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_06_01::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -6403,77 +4790,7 @@ const std::string& CVLD_0x10::title() const {
    return title;
 }
 boost::shared_ptr<IType> CVLD_0x10::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x00: return boost::make_shared<CProfile_D2_10_00>();
-   case k0x01: return boost::make_shared<CProfile_D2_10_01>();
-   case k0x02: return boost::make_shared<CProfile_D2_10_02>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_D2_10_00::CProfile_D2_10_00()
-: m_historizers( {  } )
-{}
-CProfile_D2_10_00::~CProfile_D2_10_00()
-{}
-unsigned int CProfile_D2_10_00::id() const {
-   return 0x00;
-}
-const std::string& CProfile_D2_10_00::title() const {
-   static const std::string title("Type 0x00");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_10_00::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_10_00::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_10_01::CProfile_D2_10_01()
-: m_historizers( {  } )
-{}
-CProfile_D2_10_01::~CProfile_D2_10_01()
-{}
-unsigned int CProfile_D2_10_01::id() const {
-   return 0x01;
-}
-const std::string& CProfile_D2_10_01::title() const {
-   static const std::string title("Type 0x01");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_10_01::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_10_01::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_10_02::CProfile_D2_10_02()
-: m_historizers( {  } )
-{}
-CProfile_D2_10_02::~CProfile_D2_10_02()
-{}
-unsigned int CProfile_D2_10_02::id() const {
-   return 0x02;
-}
-const std::string& CProfile_D2_10_02::title() const {
-   static const std::string title("Type 0x02");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_10_02::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_10_02::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -6489,187 +4806,7 @@ const std::string& CVLD_0x11::title() const {
    return title;
 }
 boost::shared_ptr<IType> CVLD_0x11::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_D2_11_01>();
-   case k0x02: return boost::make_shared<CProfile_D2_11_02>();
-   case k0x03: return boost::make_shared<CProfile_D2_11_03>();
-   case k0x04: return boost::make_shared<CProfile_D2_11_04>();
-   case k0x05: return boost::make_shared<CProfile_D2_11_05>();
-   case k0x06: return boost::make_shared<CProfile_D2_11_06>();
-   case k0x07: return boost::make_shared<CProfile_D2_11_07>();
-   case k0x08: return boost::make_shared<CProfile_D2_11_08>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_D2_11_01::CProfile_D2_11_01()
-: m_historizers( {  } )
-{}
-CProfile_D2_11_01::~CProfile_D2_11_01()
-{}
-unsigned int CProfile_D2_11_01::id() const {
-   return 0x01;
-}
-const std::string& CProfile_D2_11_01::title() const {
-   static const std::string title("Type 0x01");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_11_01::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_11_01::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_11_02::CProfile_D2_11_02()
-: m_historizers( {  } )
-{}
-CProfile_D2_11_02::~CProfile_D2_11_02()
-{}
-unsigned int CProfile_D2_11_02::id() const {
-   return 0x02;
-}
-const std::string& CProfile_D2_11_02::title() const {
-   static const std::string title("Type 0x02 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_11_02::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_11_02::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_11_03::CProfile_D2_11_03()
-: m_historizers( {  } )
-{}
-CProfile_D2_11_03::~CProfile_D2_11_03()
-{}
-unsigned int CProfile_D2_11_03::id() const {
-   return 0x03;
-}
-const std::string& CProfile_D2_11_03::title() const {
-   static const std::string title("Type 0x03 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_11_03::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_11_03::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_11_04::CProfile_D2_11_04()
-: m_historizers( {  } )
-{}
-CProfile_D2_11_04::~CProfile_D2_11_04()
-{}
-unsigned int CProfile_D2_11_04::id() const {
-   return 0x04;
-}
-const std::string& CProfile_D2_11_04::title() const {
-   static const std::string title("Type 0x04 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_11_04::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_11_04::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_11_05::CProfile_D2_11_05()
-: m_historizers( {  } )
-{}
-CProfile_D2_11_05::~CProfile_D2_11_05()
-{}
-unsigned int CProfile_D2_11_05::id() const {
-   return 0x05;
-}
-const std::string& CProfile_D2_11_05::title() const {
-   static const std::string title("Type 0x05 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_11_05::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_11_05::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_11_06::CProfile_D2_11_06()
-: m_historizers( {  } )
-{}
-CProfile_D2_11_06::~CProfile_D2_11_06()
-{}
-unsigned int CProfile_D2_11_06::id() const {
-   return 0x06;
-}
-const std::string& CProfile_D2_11_06::title() const {
-   static const std::string title("Type 0x06 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_11_06::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_11_06::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_11_07::CProfile_D2_11_07()
-: m_historizers( {  } )
-{}
-CProfile_D2_11_07::~CProfile_D2_11_07()
-{}
-unsigned int CProfile_D2_11_07::id() const {
-   return 0x07;
-}
-const std::string& CProfile_D2_11_07::title() const {
-   static const std::string title("Type 0x07 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_11_07::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_11_07::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_11_08::CProfile_D2_11_08()
-: m_historizers( {  } )
-{}
-CProfile_D2_11_08::~CProfile_D2_11_08()
-{}
-unsigned int CProfile_D2_11_08::id() const {
-   return 0x08;
-}
-const std::string& CProfile_D2_11_08::title() const {
-   static const std::string title("Type 0x08 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_11_08::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_11_08::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -6685,77 +4822,7 @@ const std::string& CVLD_0x20::title() const {
    return title;
 }
 boost::shared_ptr<IType> CVLD_0x20::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x00: return boost::make_shared<CProfile_D2_20_00>();
-   case k0x01: return boost::make_shared<CProfile_D2_20_01>();
-   case k0x02: return boost::make_shared<CProfile_D2_20_02>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_D2_20_00::CProfile_D2_20_00()
-: m_historizers( {  } )
-{}
-CProfile_D2_20_00::~CProfile_D2_20_00()
-{}
-unsigned int CProfile_D2_20_00::id() const {
-   return 0x00;
-}
-const std::string& CProfile_D2_20_00::title() const {
-   static const std::string title("Type 0x00");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_20_00::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_20_00::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_20_01::CProfile_D2_20_01()
-: m_historizers( {  } )
-{}
-CProfile_D2_20_01::~CProfile_D2_20_01()
-{}
-unsigned int CProfile_D2_20_01::id() const {
-   return 0x01;
-}
-const std::string& CProfile_D2_20_01::title() const {
-   static const std::string title("Type 0x01");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_20_01::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_20_01::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_20_02::CProfile_D2_20_02()
-: m_historizers( {  } )
-{}
-CProfile_D2_20_02::~CProfile_D2_20_02()
-{}
-unsigned int CProfile_D2_20_02::id() const {
-   return 0x02;
-}
-const std::string& CProfile_D2_20_02::title() const {
-   static const std::string title("Type 0x02");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_20_02::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_20_02::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -6771,165 +4838,7 @@ const std::string& CVLD_0x30::title() const {
    return title;
 }
 boost::shared_ptr<IType> CVLD_0x30::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x00: return boost::make_shared<CProfile_D2_30_00>();
-   case k0x01: return boost::make_shared<CProfile_D2_30_01>();
-   case k0x02: return boost::make_shared<CProfile_D2_30_02>();
-   case k0x03: return boost::make_shared<CProfile_D2_30_03>();
-   case k0x04: return boost::make_shared<CProfile_D2_30_04>();
-   case k0x05: return boost::make_shared<CProfile_D2_30_05>();
-   case k0x06: return boost::make_shared<CProfile_D2_30_06>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_D2_30_00::CProfile_D2_30_00()
-: m_historizers( {  } )
-{}
-CProfile_D2_30_00::~CProfile_D2_30_00()
-{}
-unsigned int CProfile_D2_30_00::id() const {
-   return 0x00;
-}
-const std::string& CProfile_D2_30_00::title() const {
-   static const std::string title("Type 0x00");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_30_00::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_30_00::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_30_01::CProfile_D2_30_01()
-: m_historizers( {  } )
-{}
-CProfile_D2_30_01::~CProfile_D2_30_01()
-{}
-unsigned int CProfile_D2_30_01::id() const {
-   return 0x01;
-}
-const std::string& CProfile_D2_30_01::title() const {
-   static const std::string title("Type 0x01 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_30_01::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_30_01::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_30_02::CProfile_D2_30_02()
-: m_historizers( {  } )
-{}
-CProfile_D2_30_02::~CProfile_D2_30_02()
-{}
-unsigned int CProfile_D2_30_02::id() const {
-   return 0x02;
-}
-const std::string& CProfile_D2_30_02::title() const {
-   static const std::string title("Type 0x02 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_30_02::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_30_02::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_30_03::CProfile_D2_30_03()
-: m_historizers( {  } )
-{}
-CProfile_D2_30_03::~CProfile_D2_30_03()
-{}
-unsigned int CProfile_D2_30_03::id() const {
-   return 0x03;
-}
-const std::string& CProfile_D2_30_03::title() const {
-   static const std::string title("Type 0x03 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_30_03::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_30_03::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_30_04::CProfile_D2_30_04()
-: m_historizers( {  } )
-{}
-CProfile_D2_30_04::~CProfile_D2_30_04()
-{}
-unsigned int CProfile_D2_30_04::id() const {
-   return 0x04;
-}
-const std::string& CProfile_D2_30_04::title() const {
-   static const std::string title("Type 0x04 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_30_04::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_30_04::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_30_05::CProfile_D2_30_05()
-: m_historizers( {  } )
-{}
-CProfile_D2_30_05::~CProfile_D2_30_05()
-{}
-unsigned int CProfile_D2_30_05::id() const {
-   return 0x05;
-}
-const std::string& CProfile_D2_30_05::title() const {
-   static const std::string title("Type 0x05 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_30_05::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_30_05::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_30_06::CProfile_D2_30_06()
-: m_historizers( {  } )
-{}
-CProfile_D2_30_06::~CProfile_D2_30_06()
-{}
-unsigned int CProfile_D2_30_06::id() const {
-   return 0x06;
-}
-const std::string& CProfile_D2_30_06::title() const {
-   static const std::string title("Type 0x06 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_30_06::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_30_06::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -6945,55 +4854,7 @@ const std::string& CVLD_0x31::title() const {
    return title;
 }
 boost::shared_ptr<IType> CVLD_0x31::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x00: return boost::make_shared<CProfile_D2_31_00>();
-   case k0x01: return boost::make_shared<CProfile_D2_31_01>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_D2_31_00::CProfile_D2_31_00()
-: m_historizers( {  } )
-{}
-CProfile_D2_31_00::~CProfile_D2_31_00()
-{}
-unsigned int CProfile_D2_31_00::id() const {
-   return 0x00;
-}
-const std::string& CProfile_D2_31_00::title() const {
-   static const std::string title("Type 0x00");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_31_00::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_31_00::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_31_01::CProfile_D2_31_01()
-: m_historizers( {  } )
-{}
-CProfile_D2_31_01::~CProfile_D2_31_01()
-{}
-unsigned int CProfile_D2_31_01::id() const {
-   return 0x01;
-}
-const std::string& CProfile_D2_31_01::title() const {
-   static const std::string title("Type 0x01 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_31_01::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_31_01::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -7009,14 +4870,7 @@ const std::string& CVLD_0x32::title() const {
    return title;
 }
 boost::shared_ptr<IType> CVLD_0x32::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x00: return boost::make_shared<CProfile_D2_32_00>();
-   case k0x01: return boost::make_shared<CProfile_D2_32_01>();
-   case k0x02: return boost::make_shared<CProfile_D2_32_02>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -7034,10 +4888,10 @@ const std::string& CProfile_D2_32_00::title() const {
    static const std::string title("Type 0x00");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_32_00::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_32_00::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_32_00::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_32_00::states(const boost::dynamic_bitset<>& data) const {
    m_PF___Power_Fail->set(data[0]);
    m_DIV___Divisor->set(data[1]);
    return m_historizers;
@@ -7058,10 +4912,10 @@ const std::string& CProfile_D2_32_01::title() const {
    static const std::string title("Type 0x01");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_32_01::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_32_01::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_32_01::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_32_01::states(const boost::dynamic_bitset<>& data) const {
    m_PF___Power_Fail->set(data[0]);
    m_DIV___Divisor->set(data[1]);
    return m_historizers;
@@ -7082,10 +4936,10 @@ const std::string& CProfile_D2_32_02::title() const {
    static const std::string title("Type 0x02");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_32_02::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_32_02::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_32_02::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_32_02::states(const boost::dynamic_bitset<>& data) const {
    m_PF___Power_Fail->set(data[0]);
    m_DIV___Divisor->set(data[1]);
    return m_historizers;
@@ -7104,13 +4958,7 @@ const std::string& CVLD_0x40::title() const {
    return title;
 }
 boost::shared_ptr<IType> CVLD_0x40::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x00: return boost::make_shared<CProfile_D2_40_00>();
-   case k0x01: return boost::make_shared<CProfile_D2_40_01>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -7144,10 +4992,10 @@ const std::string& CProfile_D2_40_00::title() const {
    static const std::string title("Type 0x00");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_40_00::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_40_00::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_40_00::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_40_00::states(const boost::dynamic_bitset<>& data) const {
    m_OUTEN___LED_output_enabled->set(data[0]);
    m_DRA___Demand_Response_mode_Active->set(data[1]);
    m_DHAR___Daylight_Harvesting_Active->set(data[2]);
@@ -7186,10 +5034,10 @@ const std::string& CProfile_D2_40_01::title() const {
    static const std::string title("Type 0x01");
    return title;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_40_01::historizers() const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_40_01::allHistorizers() const {
    return m_historizers;
 }
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_40_01::states(const boost::dynamic_bitset<>& data) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_40_01::states(const boost::dynamic_bitset<>& data) const {
    m_OUTEN___LED_output_enabled->set(data[0]);
    m_DRA___Demand_Response_mode_Active->set(data[1]);
    m_DHAR___Daylight_Harvesting_Active->set(data[2]);
@@ -7210,55 +5058,7 @@ const std::string& CVLD_0x50::title() const {
    return title;
 }
 boost::shared_ptr<IType> CVLD_0x50::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x00: return boost::make_shared<CProfile_D2_50_00>();
-   case k0x01: return boost::make_shared<CProfile_D2_50_01>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_D2_50_00::CProfile_D2_50_00()
-: m_historizers( {  } )
-{}
-CProfile_D2_50_00::~CProfile_D2_50_00()
-{}
-unsigned int CProfile_D2_50_00::id() const {
-   return 0x00;
-}
-const std::string& CProfile_D2_50_00::title() const {
-   static const std::string title("Type 0x00");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_50_00::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_50_00::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
-}
-
-
-CProfile_D2_50_01::CProfile_D2_50_01()
-: m_historizers( {  } )
-{}
-CProfile_D2_50_01::~CProfile_D2_50_01()
-{}
-unsigned int CProfile_D2_50_01::id() const {
-   return 0x01;
-}
-const std::string& CProfile_D2_50_01::title() const {
-   static const std::string title("Type 0x01 (description: see table)");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_50_01::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_50_01::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 
@@ -7274,33 +5074,7 @@ const std::string& CVLD_0xA0::title() const {
    return title;
 }
 boost::shared_ptr<IType> CVLD_0xA0::createType(unsigned int typeId) const {
-   switch(static_cast<ETypeIds>(typeId))
-   {
-   case k0x01: return boost::make_shared<CProfile_D2_A0_01>();
-   default : throw std::out_of_range("Invalid EFuncIds");
-   }
-
-}
-
-
-CProfile_D2_A0_01::CProfile_D2_A0_01()
-: m_historizers( {  } )
-{}
-CProfile_D2_A0_01::~CProfile_D2_A0_01()
-{}
-unsigned int CProfile_D2_A0_01::id() const {
-   return 0x01;
-}
-const std::string& CProfile_D2_A0_01::title() const {
-   static const std::string title("Valve Control");
-   return title;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_A0_01::historizers() const {
-   return m_historizers;
-}
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& CProfile_D2_A0_01::states(const boost::dynamic_bitset<>& data) const {
-   return m_historizers;
-
+   throw std::out_of_range("Invalid EFuncIds");
 }
 
 

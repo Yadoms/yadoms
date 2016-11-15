@@ -180,14 +180,23 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
          "   return title;"))
 
       def createTypeCode(xmlRorgNode, xmlFuncNode):
+         itemNumber = 0
+         for xmlTypeNode in xmlFuncNode.findall("type"):
+            if profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode) in supportedProfiles:
+               itemNumber += 1
+         if itemNumber == 0:
+            return "   throw std::out_of_range(\"Invalid EFuncIds\");"
+
          code = "   switch(static_cast<ETypeIds>(typeId))\n"
          code += "   {\n"
          for xmlTypeNode in xmlFuncNode.findall("type"):
+            if profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode) not in supportedProfiles:
+               continue
             enumValue = cppHelper.toEnumValueName(xmlTypeNode.find("number").text)
             className = cppHelper.toCppName("CProfile_" + profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode))
             code += "   case " + enumValue + ": return boost::make_shared<" + className + ">();\n"
          code += "   default : throw std::out_of_range(\"Invalid EFuncIds\");\n"
-         code += "   }\n"
+         code += "   }"
          return code
       funcClass.addMethod(cppClass.CppMethod("createType", "boost::shared_ptr<IType>", "unsigned int typeId", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, createTypeCode(xmlRorgNode, xmlFuncNode)))
 
@@ -308,10 +317,11 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
          typeClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, \
             "   static const std::string title(\"" + xmlTypeNode.find("title").text + "\");\n" \
             "   return title;"))
-         typeClass.addMethod(cppClass.CppMethod("historizers", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   return m_historizers;"))
+         typeClass.addMethod(cppClass.CppMethod("allHistorizers", "std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   return m_historizers;"))
 
-         if historizersCppName:
-            supportedProfiles.append(xmlRorgNode.find("number").text[2:] + "-" + xmlFuncNode.find("number").text[2:] + "-" + xmlTypeNode.find("number").text[2:])
+         if not historizersCppName:
+            util.warning("No historizer can be created for " + profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode) + " profile. Profile will be not supported.")
+            continue
 
 
          def statesCodeForLinearValue(xmlDataFieldNode, applyCoef = None):
@@ -369,8 +379,9 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             code += "   return m_historizers;"
             return code
 
-         typeClass.addMethod(cppClass.CppMethod("states", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "const boost::dynamic_bitset<>& data", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, statesCode(xmlTypeNode)))
+         typeClass.addMethod(cppClass.CppMethod("states", "std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >", "const boost::dynamic_bitset<>& data", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, statesCode(xmlTypeNode)))
          cppTypes.append(typeClass)
+         supportedProfiles.append(profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode))
 
 
 # Device configuration schema

@@ -14,10 +14,11 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& states(const boost::dynamic_bitset<>& data) const override;
-protected:
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> states(const boost::dynamic_bitset<>& data) const override;
 private:
+   boost::shared_ptr<yApi::historization::CSwitch> m_switch1;
+   boost::shared_ptr<yApi::historization::CSwitch> m_switch2;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
 };
 

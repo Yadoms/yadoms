@@ -71,48 +71,6 @@ protected:
 private:
 };
 
-class CProfile_F6_02_01 : public IType  {
-public:
-   CProfile_F6_02_01();
-   virtual ~CProfile_F6_02_01();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_F6_02_02 : public IType  {
-public:
-   CProfile_F6_02_02();
-   virtual ~CProfile_F6_02_02();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_F6_02_03 : public IType  {
-public:
-   CProfile_F6_02_03();
-   virtual ~CProfile_F6_02_03();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
 class CProfile_F6_02_04 : public IType  {
 public:
    CProfile_F6_02_04();
@@ -120,8 +78,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_EBO___Energy_Bow;
@@ -149,34 +107,6 @@ protected:
 private:
 };
 
-class CProfile_F6_03_01 : public IType  {
-public:
-   CProfile_F6_03_01();
-   virtual ~CProfile_F6_03_01();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_F6_03_02 : public IType  {
-public:
-   CProfile_F6_03_02();
-   virtual ~CProfile_F6_03_02();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
 // Position_Switch__Home_and_Office_Application
 class CRPS_0x04 : public IFunc  {
 public:
@@ -194,20 +124,6 @@ protected:
 private:
 };
 
-class CProfile_F6_04_01 : public IType  {
-public:
-   CProfile_F6_04_01();
-   virtual ~CProfile_F6_04_01();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
 class CProfile_F6_04_02 : public IType  {
 public:
    CProfile_F6_04_02();
@@ -215,8 +131,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_EBO___Energy_Bow;
@@ -240,20 +156,6 @@ protected:
 private:
 };
 
-class CProfile_F6_05_01 : public IType  {
-public:
-   CProfile_F6_05_01();
-   virtual ~CProfile_F6_05_01();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
 // Mechanical_Handle
 class CRPS_0x10 : public IFunc  {
 public:
@@ -269,34 +171,6 @@ enum ETypeIds {
    boost::shared_ptr<IType> createType(unsigned int typeId) const override;
 protected:
 private:
-};
-
-class CProfile_F6_10_00 : public IType  {
-public:
-   CProfile_F6_10_00();
-   virtual ~CProfile_F6_10_00();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_F6_10_01 : public IType  {
-public:
-   CProfile_F6_10_01();
-   virtual ~CProfile_F6_10_01();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
 class C1BSTelegram : public IRorg  {
@@ -344,8 +218,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_CO___Contact;
@@ -438,8 +312,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -453,8 +327,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -468,8 +342,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -483,8 +357,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -498,8 +372,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -513,8 +387,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -528,8 +402,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -543,8 +417,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -558,8 +432,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -573,8 +447,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -588,8 +462,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -603,8 +477,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -618,8 +492,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -633,8 +507,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -648,8 +522,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -663,8 +537,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -678,8 +552,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -693,8 +567,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -708,8 +582,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -723,8 +597,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -738,8 +612,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -753,8 +627,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -768,8 +642,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -783,8 +657,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -798,8 +672,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -831,8 +705,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CHumidity> m_HUM___Humidity;
@@ -848,8 +722,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CHumidity> m_HUM___Humidity;
@@ -865,8 +739,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CHumidity> m_HUM___Humidity;
@@ -898,8 +772,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CPressure> m_BAR___Barometer;
@@ -934,8 +808,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CVoltage> m_SVC___Supply_voltage;
@@ -952,8 +826,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CVoltage> m_SVC___Supply_voltage;
@@ -970,8 +844,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CVoltage> m_SVC___Supply_voltage;
@@ -986,8 +860,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TEMP___Temperature;
@@ -1003,8 +877,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CVoltage> m_SVC___Supply_voltage;
@@ -1039,8 +913,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_SVA___Supply_voltage_availability;
@@ -1054,8 +928,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_PIRS___PIR_Status;
@@ -1069,8 +943,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CIllumination> m_ILL___Illumination;
@@ -1103,8 +977,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CVoltage> m_SVC___Supply_voltage;
@@ -1122,8 +996,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CVoltage> m_SVC___Supply_voltage;
@@ -1141,8 +1015,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CVoltage> m_SVC___Supply_voltage;
@@ -1184,8 +1058,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CVoltage> m_SVC___Supply_voltage;
@@ -1201,8 +1075,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CHumidity> m_HUM___Humidity;
@@ -1276,26 +1150,12 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<CVOC_Sensor_VOC_IDHistorizer> m_VOC_ID___VOC_ID;
    boost::shared_ptr<CVOC_Sensor_Scale_MultiplierHistorizer> m_SCM___Scale_Multiplier;
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_A5_09_06 : public IType  {
-public:
-   CProfile_A5_09_06();
-   virtual ~CProfile_A5_09_06();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
@@ -1306,27 +1166,13 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_PM10a___PM10_active;
    boost::shared_ptr<yApi::historization::CSwitch> m_PM2_5a___PM2_5_active;
    boost::shared_ptr<yApi::historization::CSwitch> m_PM1a___PM1_active;
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_A5_09_08 : public IType  {
-public:
-   CProfile_A5_09_08();
-   virtual ~CProfile_A5_09_08();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
@@ -1337,8 +1183,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_PFD___Power_Failure_detection;
@@ -1352,8 +1198,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TEMP___Temperature;
@@ -1409,8 +1255,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CVoltage> m_SV___Supply_voltage;
@@ -1475,8 +1321,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -1491,8 +1337,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -1507,8 +1353,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -1522,8 +1368,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -1537,8 +1383,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -1553,8 +1399,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -1569,8 +1415,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -1584,8 +1430,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -1600,8 +1446,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -1616,8 +1462,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -1632,8 +1478,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -1648,8 +1494,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -1664,8 +1510,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -1680,8 +1526,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CHumidity> m_HUM___Humidity;
@@ -1697,8 +1543,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CHumidity> m_HUM___Humidity;
@@ -1714,8 +1560,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CHumidity> m_HUM___Humidity;
@@ -1730,8 +1576,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CHumidity> m_HUM___Humidity;
@@ -1747,8 +1593,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CHumidity> m_HUM___Humidity;
@@ -1764,8 +1610,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -1779,8 +1625,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -1795,8 +1641,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -1832,8 +1678,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<CIllumination__Temperature_Set_Point__Temperature_Sensor__Fan_Speed_and_Occupancy_Control_Fan_SpeedHistorizer> m_FAN___Fan_Speed;
@@ -1872,8 +1718,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CHumidity> m_HUM___Humidity;
@@ -1912,8 +1758,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -1951,8 +1797,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CIllumination> m_ILL___Illumination;
@@ -1991,8 +1837,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CIllumination> m_ILL___Illumination;
@@ -2031,8 +1877,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CHumidity> m_HUM___Humidity;
@@ -2043,20 +1889,6 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-class CProfile_A5_10_1E : public IType  {
-public:
-   CProfile_A5_10_1E();
-   virtual ~CProfile_A5_10_1E();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
 class CProfile_A5_10_1F : public IType  {
 public:
    CProfile_A5_10_1F();
@@ -2064,8 +1896,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -2101,8 +1933,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -2136,8 +1968,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CHumidity> m_HUM___Humidity;
@@ -2155,8 +1987,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CHumidity> m_HUM___Humidity;
@@ -2171,8 +2003,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CHumidity> m_HUM___Humidity;
@@ -2208,8 +2040,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CIllumination> m_ILL___Illumination;
@@ -2285,8 +2117,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<CTemperature_Controller_Output_FanStageHistorizer> m_FAN___FanStage;
@@ -2356,8 +2188,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_AS___Angle_sign;
@@ -2412,8 +2244,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_SM___Service_Mode;
@@ -2421,20 +2253,6 @@ private:
    boost::shared_ptr<CExtended_Lighting_Status_Error_stateHistorizer> m_ES___Error_state;
    boost::shared_ptr<CExtended_Lighting_Status_Parameter_ModeHistorizer> m_PM___Parameter_Mode;
    boost::shared_ptr<yApi::historization::CSwitch> m_ST___Status;
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_A5_11_05 : public IType  {
-public:
-   CProfile_A5_11_05();
-   virtual ~CProfile_A5_11_05();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
@@ -2484,8 +2302,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_DT___Data_type__unit_;
@@ -2517,8 +2335,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_DT___Data_type__unit_;
@@ -2550,8 +2368,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_DT___data_type__unit_;
@@ -2583,8 +2401,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_DT___Data_type__unit_;
@@ -2616,8 +2434,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -2649,8 +2467,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_PS0___Position_Sensor_0;
@@ -2692,8 +2510,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_DT___Data_type__unit_;
@@ -2732,8 +2550,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -2749,8 +2567,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CIllumination> m_SNW___Sun__West;
@@ -2767,8 +2585,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_SRC___Source;
@@ -2802,42 +2620,14 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<CTime_and_Day_Exchange_WeekdayHistorizer> m_WDY___Weekday;
    boost::shared_ptr<yApi::historization::CSwitch> m_TMF___Time_Format;
    boost::shared_ptr<yApi::historization::CSwitch> m_A_PM___AM_PM;
    boost::shared_ptr<yApi::historization::CSwitch> m_SRC___Source;
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_A5_13_05 : public IType  {
-public:
-   CProfile_A5_13_05();
-   virtual ~CProfile_A5_13_05();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_A5_13_06 : public IType  {
-public:
-   CProfile_A5_13_06();
-   virtual ~CProfile_A5_13_06();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
@@ -2877,8 +2667,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<CWind_Sensor_Wind_DirectionHistorizer> m_WD___Wind_Direction;
@@ -2893,8 +2683,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_RAS___Rainfall_Adjust_Sign;
@@ -2909,8 +2699,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_D_N___Day___Night;
@@ -2945,8 +2735,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CVoltage> m_SVC___Supply_voltage;
@@ -2961,8 +2751,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CVoltage> m_SVC___Supply_voltage;
@@ -2978,8 +2768,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CVoltage> m_SVC___Supply_voltage;
@@ -2995,8 +2785,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CVoltage> m_SVC___Supply_voltage;
@@ -3013,8 +2803,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CVoltage> m_SVC___Supply_voltage;
@@ -3029,8 +2819,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CVoltage> m_SVC___Supply_voltage;
@@ -3059,90 +2849,6 @@ enum ETypeIds {
    boost::shared_ptr<IType> createType(unsigned int typeId) const override;
 protected:
 private:
-};
-
-class CProfile_A5_20_01 : public IType  {
-public:
-   CProfile_A5_20_01();
-   virtual ~CProfile_A5_20_01();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_A5_20_02 : public IType  {
-public:
-   CProfile_A5_20_02();
-   virtual ~CProfile_A5_20_02();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_A5_20_03 : public IType  {
-public:
-   CProfile_A5_20_03();
-   virtual ~CProfile_A5_20_03();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_A5_20_04 : public IType  {
-public:
-   CProfile_A5_20_04();
-   virtual ~CProfile_A5_20_04();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_A5_20_10 : public IType  {
-public:
-   CProfile_A5_20_10();
-   virtual ~CProfile_A5_20_10();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_A5_20_11 : public IType  {
-public:
-   CProfile_A5_20_11();
-   virtual ~CProfile_A5_20_11();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
 DECLARE_ENUM_HEADER(ETemperature_Controller_Input_FanStage_override_FanStage_override,
@@ -3205,8 +2911,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<CTemperature_Controller_Input_FanStage_overrideHistorizer> m_FANOR___FanStage_override;
@@ -3238,20 +2944,6 @@ protected:
 private:
 };
 
-class CProfile_A5_30_01 : public IType  {
-public:
-   CProfile_A5_30_01();
-   virtual ~CProfile_A5_30_01();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
 class CProfile_A5_30_02 : public IType  {
 public:
    CProfile_A5_30_02();
@@ -3259,8 +2951,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_IPS___Input_State;
@@ -3274,8 +2966,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
@@ -3294,8 +2986,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_DI2___Digital_Input_2;
@@ -3311,8 +3003,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CVoltage> m_VDD___Supply_voltage;
@@ -3343,8 +3035,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_SPWRU___Absolute_relative_power_usage;
@@ -3369,20 +3061,6 @@ enum ETypeIds {
    boost::shared_ptr<IType> createType(unsigned int typeId) const override;
 protected:
 private:
-};
-
-class CProfile_A5_38_08 : public IType  {
-public:
-   CProfile_A5_38_08();
-   virtual ~CProfile_A5_38_08();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
 DECLARE_ENUM_HEADER(EExtended_Lighting_Control_Function_Function,
@@ -3418,8 +3096,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<CExtended_Lighting_Control_FunctionHistorizer> m_FUNC___Function;
@@ -3444,34 +3122,6 @@ enum ETypeIds {
    boost::shared_ptr<IType> createType(unsigned int typeId) const override;
 protected:
 private:
-};
-
-class CProfile_A5_3F_00 : public IType  {
-public:
-   CProfile_A5_3F_00();
-   virtual ~CProfile_A5_3F_00();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_A5_3F_7F : public IType  {
-public:
-   CProfile_A5_3F_7F();
-   virtual ~CProfile_A5_3F_7F();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
 class CVLDTelegram : public IRorg  {
@@ -3527,20 +3177,6 @@ protected:
 private:
 };
 
-class CProfile_D2_00_01 : public IType  {
-public:
-   CProfile_D2_00_01();
-   virtual ~CProfile_D2_00_01();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
 // Electronic_switches_and_dimmers_with_Energy_Measurement_and_Local_Control
 class CVLD_0x01 : public IFunc  {
 public:
@@ -3575,216 +3211,6 @@ protected:
 private:
 };
 
-class CProfile_D2_01_00 : public IType  {
-public:
-   CProfile_D2_01_00();
-   virtual ~CProfile_D2_01_00();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_01_01 : public IType  {
-public:
-   CProfile_D2_01_01();
-   virtual ~CProfile_D2_01_01();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_01_02 : public IType  {
-public:
-   CProfile_D2_01_02();
-   virtual ~CProfile_D2_01_02();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_01_03 : public IType  {
-public:
-   CProfile_D2_01_03();
-   virtual ~CProfile_D2_01_03();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_01_04 : public IType  {
-public:
-   CProfile_D2_01_04();
-   virtual ~CProfile_D2_01_04();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_01_05 : public IType  {
-public:
-   CProfile_D2_01_05();
-   virtual ~CProfile_D2_01_05();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_01_06 : public IType  {
-public:
-   CProfile_D2_01_06();
-   virtual ~CProfile_D2_01_06();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_01_07 : public IType  {
-public:
-   CProfile_D2_01_07();
-   virtual ~CProfile_D2_01_07();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_01_08 : public IType  {
-public:
-   CProfile_D2_01_08();
-   virtual ~CProfile_D2_01_08();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_01_09 : public IType  {
-public:
-   CProfile_D2_01_09();
-   virtual ~CProfile_D2_01_09();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_01_0A : public IType  {
-public:
-   CProfile_D2_01_0A();
-   virtual ~CProfile_D2_01_0A();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_01_0B : public IType  {
-public:
-   CProfile_D2_01_0B();
-   virtual ~CProfile_D2_01_0B();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_01_0C : public IType  {
-public:
-   CProfile_D2_01_0C();
-   virtual ~CProfile_D2_01_0C();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_01_10 : public IType  {
-public:
-   CProfile_D2_01_10();
-   virtual ~CProfile_D2_01_10();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_01_11 : public IType  {
-public:
-   CProfile_D2_01_11();
-   virtual ~CProfile_D2_01_11();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
 // Sensors_for_Temperature__Illumination__Occupancy_And_Smoke
 class CVLD_0x02 : public IFunc  {
 public:
@@ -3801,48 +3227,6 @@ enum ETypeIds {
    boost::shared_ptr<IType> createType(unsigned int typeId) const override;
 protected:
 private:
-};
-
-class CProfile_D2_02_00 : public IType  {
-public:
-   CProfile_D2_02_00();
-   virtual ~CProfile_D2_02_00();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_02_01 : public IType  {
-public:
-   CProfile_D2_02_01();
-   virtual ~CProfile_D2_02_01();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_02_02 : public IType  {
-public:
-   CProfile_D2_02_02();
-   virtual ~CProfile_D2_02_02();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
 // Light__Switching__plus__Blind_Control
@@ -3863,34 +3247,6 @@ protected:
 private:
 };
 
-class CProfile_D2_03_00 : public IType  {
-public:
-   CProfile_D2_03_00();
-   virtual ~CProfile_D2_03_00();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_03_10 : public IType  {
-public:
-   CProfile_D2_03_10();
-   virtual ~CProfile_D2_03_10();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
 class CProfile_D2_03_20 : public IType  {
 public:
    CProfile_D2_03_20();
@@ -3898,8 +3254,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_ES___Energy_Supply;
@@ -3965,224 +3321,14 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CHumidity> m_HUM___Humidity;
    boost::shared_ptr<yApi::historization::CTemperature> m_TMP___Temperature;
    boost::shared_ptr<yApi::historization::CSwitch> m_DN___Day_Night;
    boost::shared_ptr<CType_0x00_Battery_autonomyHistorizer> m_BA___Battery_autonomy;
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_04_01 : public IType  {
-public:
-   CProfile_D2_04_01();
-   virtual ~CProfile_D2_04_01();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_04_02 : public IType  {
-public:
-   CProfile_D2_04_02();
-   virtual ~CProfile_D2_04_02();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_04_03 : public IType  {
-public:
-   CProfile_D2_04_03();
-   virtual ~CProfile_D2_04_03();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_04_04 : public IType  {
-public:
-   CProfile_D2_04_04();
-   virtual ~CProfile_D2_04_04();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_04_05 : public IType  {
-public:
-   CProfile_D2_04_05();
-   virtual ~CProfile_D2_04_05();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_04_06 : public IType  {
-public:
-   CProfile_D2_04_06();
-   virtual ~CProfile_D2_04_06();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_04_07 : public IType  {
-public:
-   CProfile_D2_04_07();
-   virtual ~CProfile_D2_04_07();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_04_08 : public IType  {
-public:
-   CProfile_D2_04_08();
-   virtual ~CProfile_D2_04_08();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_04_09 : public IType  {
-public:
-   CProfile_D2_04_09();
-   virtual ~CProfile_D2_04_09();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_04_10 : public IType  {
-public:
-   CProfile_D2_04_10();
-   virtual ~CProfile_D2_04_10();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_04_1A : public IType  {
-public:
-   CProfile_D2_04_1A();
-   virtual ~CProfile_D2_04_1A();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_04_1B : public IType  {
-public:
-   CProfile_D2_04_1B();
-   virtual ~CProfile_D2_04_1B();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_04_1C : public IType  {
-public:
-   CProfile_D2_04_1C();
-   virtual ~CProfile_D2_04_1C();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_04_1D : public IType  {
-public:
-   CProfile_D2_04_1D();
-   virtual ~CProfile_D2_04_1D();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_04_1E : public IType  {
-public:
-   CProfile_D2_04_1E();
-   virtual ~CProfile_D2_04_1E();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
@@ -4202,20 +3348,6 @@ protected:
 private:
 };
 
-class CProfile_D2_05_00 : public IType  {
-public:
-   CProfile_D2_05_00();
-   virtual ~CProfile_D2_05_00();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
 // Multisensor_Window_Handle
 class CVLD_0x06 : public IFunc  {
 public:
@@ -4230,20 +3362,6 @@ enum ETypeIds {
    boost::shared_ptr<IType> createType(unsigned int typeId) const override;
 protected:
 private:
-};
-
-class CProfile_D2_06_01 : public IType  {
-public:
-   CProfile_D2_06_01();
-   virtual ~CProfile_D2_06_01();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
 // Room_Control_Panels_with_Temperature__and__Fan_Speed_Control__Room_Status_Information_and_Time_Program
@@ -4262,48 +3380,6 @@ enum ETypeIds {
    boost::shared_ptr<IType> createType(unsigned int typeId) const override;
 protected:
 private:
-};
-
-class CProfile_D2_10_00 : public IType  {
-public:
-   CProfile_D2_10_00();
-   virtual ~CProfile_D2_10_00();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_10_01 : public IType  {
-public:
-   CProfile_D2_10_01();
-   virtual ~CProfile_D2_10_01();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_10_02 : public IType  {
-public:
-   CProfile_D2_10_02();
-   virtual ~CProfile_D2_10_02();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
 // Bidirectional_Room_Operating_Panel
@@ -4329,118 +3405,6 @@ protected:
 private:
 };
 
-class CProfile_D2_11_01 : public IType  {
-public:
-   CProfile_D2_11_01();
-   virtual ~CProfile_D2_11_01();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_11_02 : public IType  {
-public:
-   CProfile_D2_11_02();
-   virtual ~CProfile_D2_11_02();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_11_03 : public IType  {
-public:
-   CProfile_D2_11_03();
-   virtual ~CProfile_D2_11_03();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_11_04 : public IType  {
-public:
-   CProfile_D2_11_04();
-   virtual ~CProfile_D2_11_04();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_11_05 : public IType  {
-public:
-   CProfile_D2_11_05();
-   virtual ~CProfile_D2_11_05();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_11_06 : public IType  {
-public:
-   CProfile_D2_11_06();
-   virtual ~CProfile_D2_11_06();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_11_07 : public IType  {
-public:
-   CProfile_D2_11_07();
-   virtual ~CProfile_D2_11_07();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_11_08 : public IType  {
-public:
-   CProfile_D2_11_08();
-   virtual ~CProfile_D2_11_08();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
 // Fan_Control
 class CVLD_0x20 : public IFunc  {
 public:
@@ -4457,48 +3421,6 @@ enum ETypeIds {
    boost::shared_ptr<IType> createType(unsigned int typeId) const override;
 protected:
 private:
-};
-
-class CProfile_D2_20_00 : public IType  {
-public:
-   CProfile_D2_20_00();
-   virtual ~CProfile_D2_20_00();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_20_01 : public IType  {
-public:
-   CProfile_D2_20_01();
-   virtual ~CProfile_D2_20_01();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_20_02 : public IType  {
-public:
-   CProfile_D2_20_02();
-   virtual ~CProfile_D2_20_02();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
 // Floor_Heating_Controls_and_Automated_Meter_Reading
@@ -4523,104 +3445,6 @@ protected:
 private:
 };
 
-class CProfile_D2_30_00 : public IType  {
-public:
-   CProfile_D2_30_00();
-   virtual ~CProfile_D2_30_00();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_30_01 : public IType  {
-public:
-   CProfile_D2_30_01();
-   virtual ~CProfile_D2_30_01();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_30_02 : public IType  {
-public:
-   CProfile_D2_30_02();
-   virtual ~CProfile_D2_30_02();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_30_03 : public IType  {
-public:
-   CProfile_D2_30_03();
-   virtual ~CProfile_D2_30_03();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_30_04 : public IType  {
-public:
-   CProfile_D2_30_04();
-   virtual ~CProfile_D2_30_04();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_30_05 : public IType  {
-public:
-   CProfile_D2_30_05();
-   virtual ~CProfile_D2_30_05();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_30_06 : public IType  {
-public:
-   CProfile_D2_30_06();
-   virtual ~CProfile_D2_30_06();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
 // Automated_Meter_Reading_Gateway
 class CVLD_0x31 : public IFunc  {
 public:
@@ -4636,34 +3460,6 @@ enum ETypeIds {
    boost::shared_ptr<IType> createType(unsigned int typeId) const override;
 protected:
 private:
-};
-
-class CProfile_D2_31_00 : public IType  {
-public:
-   CProfile_D2_31_00();
-   virtual ~CProfile_D2_31_00();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_31_01 : public IType  {
-public:
-   CProfile_D2_31_01();
-   virtual ~CProfile_D2_31_01();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
 // A_C__Current_Clamp
@@ -4691,8 +3487,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_PF___Power_Fail;
@@ -4707,8 +3503,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_PF___Power_Fail;
@@ -4723,8 +3519,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_PF___Power_Fail;
@@ -4772,8 +3568,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_OUTEN___LED_output_enabled;
@@ -4807,8 +3603,8 @@ public:
 public:
    unsigned int id() const override;
    const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_OUTEN___LED_output_enabled;
@@ -4836,34 +3632,6 @@ protected:
 private:
 };
 
-class CProfile_D2_50_00 : public IType  {
-public:
-   CProfile_D2_50_00();
-   virtual ~CProfile_D2_50_00();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
-class CProfile_D2_50_01 : public IType  {
-public:
-   CProfile_D2_50_01();
-   virtual ~CProfile_D2_50_01();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
-};
-
 // Standard_Valve
 class CVLD_0xA0 : public IFunc  {
 public:
@@ -4878,20 +3646,6 @@ enum ETypeIds {
    boost::shared_ptr<IType> createType(unsigned int typeId) const override;
 protected:
 private:
-};
-
-class CProfile_D2_A0_01 : public IType  {
-public:
-   CProfile_D2_A0_01();
-   virtual ~CProfile_D2_A0_01();
-public:
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& historizers() const override;
-   const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& states(const boost::dynamic_bitset<>& data) const override;
-protected:
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
 class CProfilesList {

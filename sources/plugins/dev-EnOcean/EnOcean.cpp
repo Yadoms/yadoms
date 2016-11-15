@@ -606,7 +606,7 @@ void CEnOcean::declareDevice(const std::string& deviceId,
    auto func = rorg->createFunc(funcId);
    auto type = func->createType(typeId);
 
-   auto keywordsToDeclare = type->historizers();
+   auto keywordsToDeclare = type->allHistorizers();
    if (keywordsToDeclare.empty())
    {
       std::stringstream s;

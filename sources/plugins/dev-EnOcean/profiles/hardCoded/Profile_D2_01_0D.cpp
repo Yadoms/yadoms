@@ -21,13 +21,14 @@ const std::string& CProfile_D2_01_0D::title() const
    return title;
 }
 
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CProfile_D2_01_0D::historizers() const
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_0D::allHistorizers() const
 {
    return m_historizers;
 }
 
-const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& CProfile_D2_01_0D::states(const boost::dynamic_bitset<>& data) const
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_0D::states(const boost::dynamic_bitset<>& data) const
 {
+   //TODO
    return m_historizers;
 }
 
