@@ -60,6 +60,10 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    enOceanDescriptors/generated-eep.cpp
    enOceanDescriptors/generated-eep.h
    
+   enOceanDescriptors/IRorg.h
+   enOceanDescriptors/IFunc.h
+   enOceanDescriptors/IType.h
+   
    enOceanDescriptors/hardCoded/VLD_Electronic_switches_and_dimmers_with_Energy_Measurement_and_Local_Control_0x12.cpp
    enOceanDescriptors/hardCoded/VLD_Electronic_switches_and_dimmers_with_Energy_Measurement_and_Local_Control_0x12.h
    

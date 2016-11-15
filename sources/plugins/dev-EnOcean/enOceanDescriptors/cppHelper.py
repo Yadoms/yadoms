@@ -43,14 +43,14 @@ typesHardCodedFiles = Set()
 def buildTypesHardCodedList(enDescriptorPath):
    typesHardCoded = []
    global typesHardCodedFiles
-   pattern = re.compile(r'^class (.*) : public IType  {$')
+   pattern = re.compile(r'^class (.*) : public IType')
    for hardCodedPath in glob.glob(os.path.join(enDescriptorPath, "hardCoded", '*.h')):
       with open(hardCodedPath, 'r') as hardCodedFile:
          for line in hardCodedFile:
             items = pattern.match(line)
             if items is not None:
                typesHardCoded.append(items.group(1))
-               typesHardCodedFiles.add(hardCodedPath)
+               typesHardCodedFiles.add(os.path.basename(hardCodedPath))
    return typesHardCoded
 
 def isTypeHardCoded(typeClassName, enDescriptorPath):

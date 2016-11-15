@@ -44,35 +44,6 @@ xmlProfileNode = xmlRootNode.find("profile")
 
 
 
-# IType : Type interface
-itypeClass = cppClass.CppClass("IType", createDefaultCtor=False)
-cppTypes.append(itypeClass)
-itypeClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-itypeClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-itypeClass.addMethod(cppClass.CppMethod("historizers", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-itypeClass.addMethod(cppClass.CppMethod("states", "const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >&", "const boost::dynamic_bitset<>& data", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-
-
-# IFunc : Func interface
-ifuncClass = cppClass.CppClass("IFunc", createDefaultCtor=False)
-cppTypes.append(ifuncClass)
-ifuncClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-ifuncClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-ifuncClass.addMethod(cppClass.CppMethod("createType", "boost::shared_ptr<IType>", "unsigned int typeId", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-
-
-# IRorg : Rorg interface
-irorgClass = cppClass.CppClass("IRorg", createDefaultCtor=False)
-cppTypes.append(irorgClass)
-irorgClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-irorgClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-irorgClass.addMethod(cppClass.CppMethod("fullname", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-irorgClass.addMethod(cppClass.CppMethod("dump", "std::string", "const boost::dynamic_bitset<>& erp1Data", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-irorgClass.addMethod(cppClass.CppMethod("isTeachIn", "bool", "const boost::dynamic_bitset<>& erp1Data", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-irorgClass.addMethod(cppClass.CppMethod("isEepProvided", "bool", "const boost::dynamic_bitset<>& erp1Data", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-irorgClass.addMethod(cppClass.CppMethod("createFunc", "boost::shared_ptr<IFunc>", "unsigned int funcId", cppClass.PUBLIC, cppClass.CONST | cppClass.PURE_VIRTUAL))
-
-
 # CRorgs : Main Rorgs class, listing Rorg messages
 rorgsClass = cppClass.CppClass("CRorgs")
 cppTypes.append(rorgsClass)
@@ -416,13 +387,14 @@ profilesListClass.addMethod(cppClass.CppMethod("list", "const std::vector<std::s
 util.createParentDir(headerPath)
 with codecs.open(headerPath, 'w', 'utf_8') as cppHeaderFile:
 
-   cppHeaderFile.write("// Generated file, don't modify\n")
-   cppHeaderFile.write("#pragma once\n")
-   cppHeaderFile.write("#include <boost/dynamic_bitset.hpp>\n")
-   cppHeaderFile.write("#include <shared/plugin/yPluginApi/IYPluginApi.h>\n")
-   cppHeaderFile.write("\n")
-   cppHeaderFile.write("namespace yApi = shared::plugin::yPluginApi;\n")
-   cppHeaderFile.write("\n")
+   cppHeaderFile.write('// Generated file, don\'t modify\n')
+   cppHeaderFile.write('#pragma once\n')
+   cppHeaderFile.write('#include <boost/dynamic_bitset.hpp>\n')
+   cppHeaderFile.write('#include <shared/plugin/yPluginApi/IYPluginApi.h>\n')
+   cppHeaderFile.write('#include "IRorg.h"\n')
+   cppHeaderFile.write('\n')
+   cppHeaderFile.write('namespace yApi = shared::plugin::yPluginApi;\n')
+   cppHeaderFile.write('\n')
 
    for oneType in cppTypes:
       oneType.generateHeader(cppHeaderFile)
@@ -431,13 +403,16 @@ with codecs.open(headerPath, 'w', 'utf_8') as cppHeaderFile:
 util.createParentDir(sourcePath)
 with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
 
-   cppSourceFile.write("// Generated file, don't modify\n")
-   cppSourceFile.write("#include \"stdafx.h\"\n")
-   cppSourceFile.write("#include \"" + os.path.basename(headerPath) + "\"\n")
-   cppSourceFile.write("#include <shared/plugin/yPluginApi/StandardUnits.h>\n")
-   cppSourceFile.write("\n")
-   cppSourceFile.write("#include \"bitsetHelpers.hpp\"\n")
-   cppSourceFile.write("\n")
+   cppSourceFile.write('// Generated file, don\'t modify\n')
+   cppSourceFile.write('#include "stdafx.h"\n')
+   cppSourceFile.write('#include "' + os.path.basename(headerPath) + '"\n')
+   cppSourceFile.write('#include <shared/plugin/yPluginApi/StandardUnits.h>\n')
+   cppSourceFile.write('\n')
+   cppSourceFile.write('#include "bitsetHelpers.hpp"\n')
+   cppSourceFile.write('\n')
+   for hardCodedFile in cppHelper.getTypesHardCodedFiles():
+      cppSourceFile.write('#include "' + os.path.join('hardCoded', hardCodedFile) + '"\n')
+   cppSourceFile.write('\n')
 
    for oneType in cppTypes:
       oneType.generateSource(cppSourceFile)
