@@ -1,7 +1,7 @@
 // Generated file, don't modify
 #pragma once
-#include "enOceanDescriptors/generated-manufacturers.h"
-#include "enOceanDescriptors/generated-eep.h"
+#include "profiles/generated-manufacturers.h"
+#include "profiles/generated-eep.h"
 
 class C4BSTeachinVariant2
 {

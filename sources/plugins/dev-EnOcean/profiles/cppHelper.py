@@ -40,11 +40,11 @@ def getMapInitCode(enumValues):
 #-------------------------------------------------------------------------------
 typesHardCoded = None
 typesHardCodedFiles = Set()
-def buildTypesHardCodedList(enDescriptorPath):
+def buildTypesHardCodedList(profilePath):
    typesHardCoded = []
    global typesHardCodedFiles
    pattern = re.compile(r'^class (.*) : public IType')
-   for hardCodedPath in glob.glob(os.path.join(enDescriptorPath, "hardCoded", '*.h')):
+   for hardCodedPath in glob.glob(os.path.join(profilePath, "hardCoded", '*.h')):
       with open(hardCodedPath, 'r') as hardCodedFile:
          for line in hardCodedFile:
             items = pattern.match(line)
@@ -53,10 +53,10 @@ def buildTypesHardCodedList(enDescriptorPath):
                typesHardCodedFiles.add(os.path.basename(hardCodedPath))
    return typesHardCoded
 
-def isTypeHardCoded(typeClassName, enDescriptorPath):
+def isTypeHardCoded(typeClassName, profilePath):
    global typesHardCoded
    if not typesHardCoded:
-      typesHardCoded = buildTypesHardCodedList(enDescriptorPath)
+      typesHardCoded = buildTypesHardCodedList(profilePath)
    return typeClassName in typesHardCoded
 
 def getTypesHardCodedFiles():

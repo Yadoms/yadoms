@@ -1,7 +1,7 @@
 // Generated file, don't modify
 #include "stdafx.h"
 #include "4BSTeachinVariant2.h"
-#include "enOceanDescriptors/bitsetHelpers.hpp"
+#include "profiles/bitsetHelpers.hpp"
 
 
 C4BSTeachinVariant2::C4BSTeachinVariant2(const boost::dynamic_bitset<>& data)

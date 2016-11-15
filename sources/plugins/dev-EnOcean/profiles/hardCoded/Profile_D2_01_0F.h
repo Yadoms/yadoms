@@ -6,11 +6,11 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 
-class CVLD_Electronic_switches_and_dimmers_with_Energy_Measurement_and_Local_Control_0x12 : public IType
+class CProfile_D2_01_0F : public IType
 {
 public:
-   CVLD_Electronic_switches_and_dimmers_with_Energy_Measurement_and_Local_Control_0x12();
-   virtual ~CVLD_Electronic_switches_and_dimmers_with_Energy_Measurement_and_Local_Control_0x12();
+   CProfile_D2_01_0F();
+   virtual ~CProfile_D2_01_0F();
 public:
    unsigned int id() const override;
    const std::string& title() const override;

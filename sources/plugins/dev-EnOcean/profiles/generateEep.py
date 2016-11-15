@@ -14,6 +14,7 @@ import json
 import cppClass
 import cppHelper
 import xmlHelper
+import profileHelper
 import util
 
 
@@ -27,7 +28,7 @@ packageJsonInPath = sys.argv[4]
 packageJsonPath = sys.argv[5]
 localesPath = sys.argv[6]
 
-enDescriptorPath = os.path.dirname(xmlInputFilePath)
+profilePath = os.path.dirname(xmlInputFilePath)
 
 
 
@@ -37,6 +38,7 @@ cppTypes = []
 supportedProfiles = []
 
 
+#-------------------------------------------------------------------------------
 xmlRootNode = xml.etree.ElementTree.parse(xmlInputFilePath).getroot()
 if xmlRootNode.tag != "eep":
    raise Exception("getAllNodes : Invalid root \"" + xmlRootNode.tag + "\", \"eep\" expected")
@@ -182,7 +184,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
          code += "   {\n"
          for xmlTypeNode in xmlFuncNode.findall("type"):
             enumValue = cppHelper.toEnumValueName(xmlTypeNode.find("number").text)
-            className = "C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("title").text) + "_" + xmlTypeNode.find("number").text
+            className = cppHelper.toCppName("CProfile_" + profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode))
             code += "   case " + enumValue + ": return boost::make_shared<" + className + ">();\n"
          code += "   default : throw std::out_of_range(\"Invalid EFuncIds\");\n"
          code += "   }\n"
@@ -193,8 +195,8 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
       # Type cppTypes
       for xmlTypeNode in xmlFuncNode.findall("type"):
-         typeClassName = "C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("title").text) + "_" + xmlTypeNode.find("number").text
-         if cppHelper.isTypeHardCoded(typeClassName, enDescriptorPath):
+         typeClassName = cppHelper.toCppName("CProfile_" + profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode))
+         if cppHelper.isTypeHardCoded(typeClassName, profilePath):
             util.info(typeClassName + " is hard-coded, nothing to do")
             continue
          typeClass = cppClass.CppClass(typeClassName)

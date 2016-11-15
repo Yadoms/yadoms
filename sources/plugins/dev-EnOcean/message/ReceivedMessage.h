@@ -1,6 +1,6 @@
 #pragma once
 #include "types.h"
-#include "../enOceanDescriptors/generated-eep.h"
+#include "../profiles/generated-eep.h"
 
 //TODO 3 classes dans ce fichier, faire le ménage
 namespace message

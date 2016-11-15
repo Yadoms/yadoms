@@ -42,57 +42,57 @@ source_group(message message/*.*)
 ## Code generator configuration
 #########################################
 set(EEP_VERSION "2.6.5")
-file(GLOB PYTHON_GENERATOR_FILES enOceanDescriptors/*.py)
+file(GLOB PYTHON_GENERATOR_FILES profiles/*.py)
 file(GLOB IN_TRANSLATION_FILES locales.in/*.json)
 source_group(locales\\in locales.in/*.*)
 
 set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
-   enOceanDescriptors/manufacturers.xml
-   enOceanDescriptors/eep${EEP_VERSION}.xml
+   profiles/manufacturers.xml
+   profiles/eep${EEP_VERSION}.xml
    
    ${PYTHON_GENERATOR_FILES}
 
-   enOceanDescriptors/bitsetHelpers.hpp
-   enOceanDescriptors/commonHelpers.hpp
+   profiles/bitsetHelpers.hpp
+   profiles/commonHelpers.hpp
 
-   enOceanDescriptors/generated-manufacturers.cpp
-   enOceanDescriptors/generated-manufacturers.h
-   enOceanDescriptors/generated-eep.cpp
-   enOceanDescriptors/generated-eep.h
+   profiles/generated-manufacturers.cpp
+   profiles/generated-manufacturers.h
+   profiles/generated-eep.cpp
+   profiles/generated-eep.h
    
-   enOceanDescriptors/IRorg.h
-   enOceanDescriptors/IFunc.h
-   enOceanDescriptors/IType.h
+   profiles/IRorg.h
+   profiles/IFunc.h
+   profiles/IType.h
    
-   enOceanDescriptors/hardCoded/VLD_Electronic_switches_and_dimmers_with_Energy_Measurement_and_Local_Control_0x0D.cpp
-   enOceanDescriptors/hardCoded/VLD_Electronic_switches_and_dimmers_with_Energy_Measurement_and_Local_Control_0x0D.h
-   enOceanDescriptors/hardCoded/VLD_Electronic_switches_and_dimmers_with_Energy_Measurement_and_Local_Control_0x0E.cpp
-   enOceanDescriptors/hardCoded/VLD_Electronic_switches_and_dimmers_with_Energy_Measurement_and_Local_Control_0x0E.h
-   enOceanDescriptors/hardCoded/VLD_Electronic_switches_and_dimmers_with_Energy_Measurement_and_Local_Control_0x0F.cpp
-   enOceanDescriptors/hardCoded/VLD_Electronic_switches_and_dimmers_with_Energy_Measurement_and_Local_Control_0x0F.h
-   enOceanDescriptors/hardCoded/VLD_Electronic_switches_and_dimmers_with_Energy_Measurement_and_Local_Control_0x12.cpp
-   enOceanDescriptors/hardCoded/VLD_Electronic_switches_and_dimmers_with_Energy_Measurement_and_Local_Control_0x12.h
+   profiles/hardCoded/Profile_D2_01_0D.cpp
+   profiles/hardCoded/Profile_D2_01_0D.h
+   profiles/hardCoded/Profile_D2_01_0E.cpp
+   profiles/hardCoded/Profile_D2_01_0E.h
+   profiles/hardCoded/Profile_D2_01_0F.cpp
+   profiles/hardCoded/Profile_D2_01_0F.h
+   profiles/hardCoded/Profile_D2_01_12.cpp
+   profiles/hardCoded/Profile_D2_01_12.h
    
    package.in.json
    package.json
 
    ${IN_TRANSLATION_FILES}
    )
-source_group(enOceanDescriptors enOceanDescriptors/*.*)
-source_group(enOceanDescriptors\\hardCoded enOceanDescriptors/hardCoded/*.*)
+source_group(profiles profiles/*.*)
+source_group(profiles\\hardCoded profiles/hardCoded/*.*)
 
-add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-manufacturers.h
-                          ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-manufacturers.cpp
-                   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generateManufacturers.py ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/manufacturers.xml ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-manufacturers.h ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-manufacturers.cpp
-                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/manufacturers.xml
+add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-manufacturers.h
+                          ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-manufacturers.cpp
+                   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateManufacturers.py ${CMAKE_CURRENT_SOURCE_DIR}/profiles/manufacturers.xml ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-manufacturers.h ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-manufacturers.cpp
+                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/profiles/manufacturers.xml
                            ${PYTHON_GENERATOR_FILES} 
                    COMMENT "Generating Manufacturers source code...")
 
-add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.h
-                          ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.cpp
+add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-eep.h
+                          ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-eep.cpp
                           ${CMAKE_CURRENT_SOURCE_DIR}/package.json
-                   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generateEep.py ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/eep${EEP_VERSION}.xml ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.h ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generated-eep.cpp ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json ${CMAKE_CURRENT_SOURCE_DIR}/package.json  ${CMAKE_CURRENT_SOURCE_DIR}/locales
-                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/eep${EEP_VERSION}.xml
+                   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateEep.py ${CMAKE_CURRENT_SOURCE_DIR}/profiles/eep${EEP_VERSION}.xml ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-eep.h ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-eep.cpp ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json ${CMAKE_CURRENT_SOURCE_DIR}/package.json  ${CMAKE_CURRENT_SOURCE_DIR}/locales
+                   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/profiles/eep${EEP_VERSION}.xml
                            ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json
                            ${PYTHON_GENERATOR_FILES}
 						   ${IN_TRANSLATION_FILES}
@@ -104,7 +104,7 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/enOceanDescriptors/generat
 ## (by default yadoms-shared and boost are included)
 #########################################
 set(ENOCEAN_ADDITIONAL_INC_DIR
-   ${CMAKE_CURRENT_BINARY_DIR}/enOceanDescriptors
+   ${CMAKE_CURRENT_BINARY_DIR}/profiles
 )
 
 #########################################

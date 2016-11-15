@@ -4,9 +4,9 @@
 #include "EnOceanFactory.h"
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
-#include "enOceanDescriptors/generated-manufacturers.h"
+#include "profiles/generated-manufacturers.h"
 #include "4BSTeachinVariant2.h"
-#include "enOceanDescriptors/bitsetHelpers.hpp"
+#include "profiles/bitsetHelpers.hpp"
 #include <shared/exception/EmptyResult.hpp>
 #include "ProfileHelper.h"
 
