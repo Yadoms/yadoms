@@ -3,6 +3,8 @@
  * @param block The block
  */
 Blockly.Python["yadoms_sleep"] = function (block) {
+	Blockly.Yadoms.Python.AddSleepTimeFunctions();
+	
     var valueTime = Blockly.Python.valueToCode(block, "Time", Blockly.Python.ORDER_ATOMIC);
     var dropdownName = block.getFieldValue("timeUnit");
 
@@ -22,5 +24,5 @@ Blockly.Python["yadoms_sleep"] = function (block) {
             break;
     }
 
-    return "time.sleep(" + valueInSeconds + ")\n";
+    return "sleep(" + valueInSeconds + ")\n";
 };
