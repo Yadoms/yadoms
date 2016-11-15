@@ -29,7 +29,7 @@
 #include <shared/ServiceLocator.h>
 #include "startupOptions/IStartupOptions.h"
 #include "dateTime/DateTimeNotifier.h"
-#include <poco/net/NetException.h>
+#include <Poco/Net/NetException.h>
 
 CSupervisor::CSupervisor(const IPathProvider& pathProvider)
    :m_pathProvider(pathProvider)
