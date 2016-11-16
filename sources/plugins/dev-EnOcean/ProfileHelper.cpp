@@ -14,6 +14,15 @@ CProfileHelper::CProfileHelper(const std::string& profile)
    m_type = std::stoul(std::string(result[3].first, result[3].second), nullptr, 16);
 }
 
+CProfileHelper::CProfileHelper(unsigned rorg,
+                               unsigned func,
+                               unsigned type):
+   m_rorg(rorg),
+   m_func(func),
+   m_type(type)
+{
+}
+
 CProfileHelper::~CProfileHelper()
 {
 }
@@ -31,5 +40,15 @@ unsigned int CProfileHelper::func() const
 unsigned int CProfileHelper::type() const
 {
    return m_type;
+}
+
+std::string CProfileHelper::profile() const
+{
+   std::ostringstream ss;
+   ss << std::uppercase 
+      << std::setfill('0') << std::setw(2) << std::hex << m_rorg << "-"
+      << std::setfill('0') << std::setw(2) << std::hex << m_func << "-"
+      << std::setfill('0') << std::setw(2) << std::hex << m_type;
+   return ss.str();
 }
 

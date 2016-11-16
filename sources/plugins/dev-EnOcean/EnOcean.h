@@ -33,6 +33,11 @@ public:
 protected:
    //TODO tout ce qui suit
    //--------------------------------------------------------------
+   /// \brief	                     Load all devices (create device object from devices stored in database)
+   //--------------------------------------------------------------
+   void loadAllDevices();
+
+   //--------------------------------------------------------------
    /// \brief	                     Send a message to EnOcean dongle
    /// \param [in] sendMessage      message to send
    /// \throw                       CProtocolException if timeout waiting answer
@@ -59,44 +64,58 @@ protected:
    /// \brief	                     Called when device manually creation is invoked
    /// \return                      The declared device name
    //--------------------------------------------------------------
-   std::string processEventManuallyDeviceCreation(boost::shared_ptr<const shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> creation) const;
+   std::string processEventManuallyDeviceCreation(boost::shared_ptr<const shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> creation);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Called when device was removed
+   /// \param[in] deviceRemoved     Information about device removed
+   //--------------------------------------------------------------
+   void processDeviceRemmoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> deviceRemoved);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Called when the device configuration was updated by user
+   /// \param [in] setDeviceConfigurationData The new device configuration data
+   //--------------------------------------------------------------
+   void processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDeviceConfiguration> setDeviceConfigurationData);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the data are received from the UPS
    /// \param [in] message          Message received
    //--------------------------------------------------------------
-   void processDataReceived(const message::CReceivedEsp3Packet& message) const;
+   void processDataReceived(const message::CReceivedEsp3Packet& message);
 
    //--------------------------------------------------------------
    /// \brief	                     Process received messages
    /// \param [in] esp3Packet       Message received
    //--------------------------------------------------------------
-   void processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet) const;
+   void processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet);
    void processResponse(const message::CReceivedEsp3Packet& esp3Packet) const;
    void processDongleVersionResponse(const message::CReceivedEsp3Packet& esp3Packet) const;
    static void processEvent(const message::CReceivedEsp3Packet& esp3Packet);
 
    //--------------------------------------------------------------
-   /// \brief	                     Declare a device
-   /// \param [in] deviceId         Device ID
-   /// \param [in] rorgId           Device RORG
-   /// \param [in] funcId           Device FUNC
-   /// \param [in] typeId           Device TYPE
-   /// \param [in] manufacturer     Manufacturer
-   /// \param [in] model            Device model (auto-generated if not provided)
+   /// \brief	                           Declare a device
+   /// \param [in] deviceId               Device ID
+   /// \param [in] rorgId                 Device RORG
+   /// \param [in] funcId                 Device FUNC
+   /// \param [in] typeId                 Device TYPE
+   /// \param [in] manufacturer           Manufacturer
+   /// \param [in] model                  Device model (auto-generated if not provided)
+   /// \param [in] deviceConfiguration    Device configuration (empty for non-configurable devices)
    //--------------------------------------------------------------
    void declareDevice(const std::string& deviceId,
                       unsigned int rorgId,
                       unsigned int funcId,
                       unsigned int typeId,
                       const std::string& manufacturer,
-                      const std::string& model = std::string()) const;
+                      const std::string& model = std::string(),
+                      const shared::CDataContainer& deviceConfiguration = shared::CDataContainer());
 
    //--------------------------------------------------------------
    /// \brief	                     Declare a device when ignoring profile
-   /// \param [in] erp1Message      The received ERP1 message
+   /// \param [in] deviceId         Device ID to declare
    //--------------------------------------------------------------
-   void declareDeviceWithoutProfile(const message::CRadioErp1Message& erp1Message) const;
+   void declareDeviceWithoutProfile(const std::string& deviceId) const;
 
 
    //--------------------------------------------------------------
@@ -106,25 +125,6 @@ protected:
    //--------------------------------------------------------------
    static std::string extractSenderId(const std::vector<unsigned char>& data,
                                       int startIndex);//TODO virer
-
-   //--------------------------------------------------------------
-   /// \brief	                     Retrieve device in database
-   /// \param [in] deviceId         Device ID to search
-   /// \throw std::out_of_range     If device is not found in database
-   //--------------------------------------------------------------
-   CDevice retrieveDevice(const std::string& deviceId) const;
-
-   //--------------------------------------------------------------
-   /// \brief	                     Get the device configuration schema
-   /// \return                      The device configuration schema
-   //--------------------------------------------------------------
-   static shared::CDataContainer createDeviceConfigurationSchema();
-
-   //--------------------------------------------------------------
-   /// \brief	                     Get the device configuration schema
-   /// \return                      The device configuration schema
-   //--------------------------------------------------------------
-   void setDeviceConfiguration(boost::shared_ptr<const yApi::ISetDeviceConfiguration> deviceConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	                     Requests to EnOcean
@@ -155,6 +155,21 @@ protected:
    static bool connectionsAreEqual(const CEnOceanConfiguration& conf1,
                                    const CEnOceanConfiguration& conf2);
 
+   //--------------------------------------------------------------
+   /// \brief	                     Generate a default model name if none provided
+   /// \param [in] model            Original model name
+   /// \param [in] manufacturer     Manufacturer name
+   /// \param [in] rorgId           Device rorg ID
+   /// \param [in] funcId           Device func ID
+   /// \param [in] typeId           Device type ID
+   /// \return                      The model name
+   //--------------------------------------------------------------
+   static std::string generateModel(const std::string& model,
+      const std::string& manufacturer,
+      unsigned int rorgId,
+      unsigned int funcId,
+      unsigned int typeId);
+
 private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
@@ -182,8 +197,8 @@ private:
    message::ECommonCommand m_sentCommand;
 
    //--------------------------------------------------------------
-   /// \brief  The last sent command
+   /// \brief  The known devices list
    //--------------------------------------------------------------
-   static const shared::CDataContainer m_deviceConfigurationSchema;
+   std::map<std::string, boost::shared_ptr<IType>> m_devices;
 };
 
