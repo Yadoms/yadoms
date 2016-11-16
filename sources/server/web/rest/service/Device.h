@@ -16,6 +16,7 @@ namespace web
             CDevice(boost::shared_ptr<database::IDataProvider> dataProvider,
                     boost::shared_ptr<pluginSystem::CManager> pluginManager,
                     boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
+                    boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordManager,
                     communication::ISendMessageAsync& messageSender);
             virtual ~CDevice();
 
@@ -135,6 +136,11 @@ namespace web
             ///\brief   Device manager
             //-----------------------------------------
             boost::shared_ptr<dataAccessLayer::IDeviceManager> m_deviceManager;
+            
+            //-----------------------------------------
+            ///\brief   Keyword manager
+            //-----------------------------------------
+            boost::shared_ptr<dataAccessLayer::IKeywordManager> m_keywordManager;
 
             //-----------------------------------------
             ///\brief   The rest keyword which identifies this rule

@@ -17,10 +17,12 @@ namespace web
          CDevice::CDevice(boost::shared_ptr<database::IDataProvider> dataProvider,
                           boost::shared_ptr<pluginSystem::CManager> pluginManager,
                           boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
+                          boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordManager,
                           communication::ISendMessageAsync& messageSender)
             : m_dataProvider(dataProvider),
               m_pluginManager(pluginManager),
               m_deviceManager(deviceManager),
+              m_keywordManager(keywordManager),
               m_messageSender(messageSender)
          {
          }
@@ -129,7 +131,7 @@ namespace web
                {
                   auto keywordId = boost::lexical_cast<int>(parameters[2]);
 
-                  auto keyword = m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
+                  auto keyword = m_keywordManager->getKeyword(keywordId);
                   return CResult::GenerateSuccess(keyword);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive keyword id in url");
@@ -148,7 +150,7 @@ namespace web
          {
             try
             {
-               auto result = m_dataProvider->getKeywordRequester()->getAllKeywords();
+               auto result = m_keywordManager->getAllKeywords();
                shared::CDataContainer collection;
                collection.set("keywords", result);
                return CResult::GenerateSuccess(collection);
@@ -229,7 +231,7 @@ namespace web
                   auto capacityName = parameters[3];
 
 
-                  auto result = m_dataProvider->getKeywordRequester()->getDeviceKeywordsWithCapacity(deviceId, capacityName, cam);
+                  auto result = m_keywordManager->getDeviceKeywordsWithCapacity(deviceId, capacityName, cam);
                   shared::CDataContainer collection;
                   collection.set("keyword", result);
                   return CResult::GenerateSuccess(collection);
@@ -257,7 +259,7 @@ namespace web
 
                   if (deviceInDatabase)
                   {
-                     auto allKeywordsforDevice = m_dataProvider->getKeywordRequester()->getKeywords(deviceId);
+                     auto allKeywordsforDevice = m_keywordManager->getKeywords(deviceId);
                      shared::CDataContainer collection;
                      collection.set("keyword", allKeywordsforDevice);
                      return CResult::GenerateSuccess(collection);
@@ -502,8 +504,8 @@ namespace web
                   keywordToUpdate.fillFromSerializedString(requestContent);
                   if (keywordToUpdate.FriendlyName.isDefined())
                   {
-                     m_dataProvider->getKeywordRequester()->updateKeywordFriendlyName(keywordId, keywordToUpdate.FriendlyName());
-                     return CResult::GenerateSuccess(m_dataProvider->getKeywordRequester()->getKeyword(keywordId));
+                     m_keywordManager->updateKeywordFriendlyName(keywordId, keywordToUpdate.FriendlyName());
+                     return CResult::GenerateSuccess(m_keywordManager->getKeyword(keywordId));
                   }
                   return CResult::GenerateError("invalid request content. could not retreive keyword friendlyName");
                }
@@ -532,10 +534,10 @@ namespace web
                   keywordToUpdate.fillFromSerializedString(requestContent);
                   if (keywordToUpdate.Blacklist.isDefined())
                   {
-                     m_dataProvider->getKeywordRequester()->updateKeywordFriendlyName(keywordId, keywordToUpdate.FriendlyName());
-                     return CResult::GenerateSuccess(m_dataProvider->getKeywordRequester()->getKeyword(keywordId));
+                     m_keywordManager->updateKeywordBlacklistState(keywordId, keywordToUpdate.Blacklist());
+                     return CResult::GenerateSuccess(m_keywordManager->getKeyword(keywordId));
                   }
-                  return CResult::GenerateError("invalid request content. could not retreive keyword friendlyName");
+                  return CResult::GenerateError("invalid request content. could not retreive keyword blacklist");
                }
                return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
             }
