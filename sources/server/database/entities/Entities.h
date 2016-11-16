@@ -122,6 +122,7 @@ namespace database
          ((Model)(std::string))
          ((Details)(shared::CDataContainer))
          ((Configuration)(shared::CDataContainer))
+         ((Blacklist)(bool))
       )
 
       DECLARE_ENTITY_CLASS_HEADER(Keyword,

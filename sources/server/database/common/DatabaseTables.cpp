@@ -73,6 +73,7 @@ namespace common {
       ((Model)("model"))
 	   ((Details)("details"))
       ((Configuration)("configuration"))
+      ((Blacklist)("blacklist"))
    )
 
    DECLARE_TABLE_COLUMN_NAMES(Keyword,  "Keyword",
