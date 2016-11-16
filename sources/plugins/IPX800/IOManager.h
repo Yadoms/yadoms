@@ -1,11 +1,11 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/event/EventHandler.hpp>
-#include <Poco/Net/NetworkInterface.h>
 #include "specificHistorizers/Analog.h"
 #include "specificHistorizers/inputOutput.h"
 #include "specificHistorizers/counter.h"
 #include "equipments/IEquipment.h"
+#include "IIPX800Configuration.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -25,7 +25,7 @@ public:
    /// \param[in] password          password used to access the equipment
    //--------------------------------------------------------------
    explicit CIOManager(const std::string& device, 
-                       Poco::Net::IPAddress IPAddress, 
+                       Poco::Net::SocketAddress socket,
                        bool passwordActivated, 
                        std::string password);
 
@@ -74,6 +74,14 @@ public:
    //--------------------------------------------------------------
    void removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved);
 
+   //--------------------------------------------------------------
+   /// \brief	    OnConfigurationUpdate
+   /// \param[in] api                  yPluginApi API
+   /// \param[in] IIPX800Configuration configuration
+   //--------------------------------------------------------------
+   void OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                              const IIPX800Configuration& configuration);
+
 private:
 
    //--------------------------------------------------------------
@@ -82,9 +90,9 @@ private:
    std::string m_deviceName;
 
    //--------------------------------------------------------------
-   /// \brief	IP Address of the equipment
+   /// \brief	socket and address used to access the equipment
    //--------------------------------------------------------------
-   Poco::Net::IPAddress m_IPAddress;
+   Poco::Net::SocketAddress m_socketAddress;
 
    //--------------------------------------------------------------
    /// \brief	Password activation

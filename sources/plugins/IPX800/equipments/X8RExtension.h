@@ -23,11 +23,12 @@ namespace equipments
       //-----------------------------------------------------
       CX8RExtension(boost::shared_ptr<yApi::IYPluginApi> api,
                     const std::string& device,
-                    const int& position);
+                    const int position);
 
       // IExtension implementation
       std::string getDeviceName() const override;
       std::string getDeviceType() const override;
+      int getSlot() const override;
       void updateFromDevice(const std::string& type, boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& value, bool forceHistorization = false) override;
       void historizePendingCommand(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command) override;
       shared::CDataContainer buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& parameters, boost::shared_ptr<const yApi::IDeviceCommand> command) override;
@@ -49,6 +50,11 @@ namespace equipments
       ///\brief                     The device type
       //-----------------------------------------------------
       std::string m_deviceType;
+
+      //-----------------------------------------------------
+      ///\brief                     The slot position
+      //-----------------------------------------------------
+      int m_position;
 
       //-----------------------------------------------------
       ///\brief                     The list of keyword

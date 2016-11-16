@@ -3,9 +3,9 @@
 #include "urlManager.h"
 #include <boost/regex.hpp> 
 
-CIOManager::CIOManager(const std::string& device, Poco::Net::IPAddress IPAddress, bool passwordActivated, std::string password):
+CIOManager::CIOManager(const std::string& device, Poco::Net::SocketAddress socket, bool passwordActivated, std::string password):
      m_deviceName (device),
-     m_IPAddress (IPAddress),
+     m_socketAddress(socket),
      m_isPasswordActivated(passwordActivated),
      m_password (password)
 {}
@@ -19,17 +19,15 @@ void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
 
 void CIOManager::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved)
 {
-   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorExtension;
-
-   for (iteratorExtension = m_devicesList.begin(); iteratorExtension != m_devicesList.end(); ++iteratorExtension)
+   for (unsigned char counter = 0; counter < m_devicesList.size(); ++counter)
    {
       // Deletion from the list of the device
-      if ((*iteratorExtension)->getDeviceName() == deviceRemoved)
+      if (m_devicesList[counter]->getDeviceName() == deviceRemoved)
       {
          // If it's an extension, we delete the extension.
          // If it's the IPX800, we delete all elements
-         if ((*iteratorExtension)->getDeviceType() != "IPX800")
-            m_devicesList.erase(iteratorExtension);
+         if (m_devicesList[counter]->getDeviceType() != "IPX800")
+            m_devicesList.erase(m_devicesList.begin()+counter);
          else
             m_devicesList.clear();
       }
@@ -71,9 +69,10 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
       {
          shared::CDataContainer results;
 
-         parameters.set("key", m_password);
+         if (m_isPasswordActivated)
+            parameters.set("key", m_password);
 
-         results = urlManager::sendCommand(m_IPAddress, (*iteratorExtension)->buildMessageToDevice(api, parameters, command));
+         results = urlManager::sendCommand(m_socketAddress, (*iteratorExtension)->buildMessageToDevice(api, parameters, command));
 
          // If the answer is a success, we historize the data
          if (results.containsValue("Success"))
@@ -97,12 +96,20 @@ void CIOManager::readIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
 
    parameters.set("Get", type);
 
-   results = urlManager::sendCommand(m_IPAddress, parameters);
+   results = urlManager::sendCommand( m_socketAddress, parameters);
 
    std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorExtension;
 
    for (iteratorExtension = m_devicesList.begin(); iteratorExtension != m_devicesList.end(); ++iteratorExtension)
       (*iteratorExtension)->updateFromDevice(type, api, results, forceHistorization);
+}
+
+void CIOManager::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                                           const IIPX800Configuration& configuration)
+{
+   m_socketAddress = configuration.getIPAddressWithSocket();
+   m_isPasswordActivated = configuration.isPasswordActivated();
+   m_password = configuration.getPassword();
 }
 
 CIOManager::~CIOManager()

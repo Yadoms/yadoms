@@ -1,11 +1,8 @@
 #pragma once
 
-//#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
 #include <Poco/Net/NetworkInterface.h>
-
-// Shortcut to yPluginApi namespace
-//namespace yApi = shared::plugin::yPluginApi;
+#include <Poco/Net/Socket.h>
 
 //--------------------------------------------------------------
 /// \brief	All url handling
@@ -19,6 +16,6 @@ public:
    /// \param[in]  url                 the url to send the request
    /// \return     the answer of the request
    //--------------------------------------------------------------
-   static shared::CDataContainer sendCommand(Poco::Net::IPAddress IPAddress, shared::CDataContainer parameters);
+   static shared::CDataContainer sendCommand(/*Poco::Net::IPAddress IPAddress,*/ Poco::Net::SocketAddress socket, shared::CDataContainer parameters);
 
 };

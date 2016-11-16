@@ -12,26 +12,14 @@ CIPX800Configuration::~CIPX800Configuration()
 void CIPX800Configuration::initializeWith(const shared::CDataContainer& data)
 {
    m_data.initializeWith(data);
-
-   /*
-   try {
-      std::cout << "slot1:" << data.get<std::string>("translation.position.Slot1") << std::endl;
-   }
-   catch (...)
-   {
-      std::cout << "erreur catching creation" << std::endl;
-   }*/
 }
 
-Poco::Net::IPAddress CIPX800Configuration::getIPAddress() const
-{ 
-   auto value = m_data.get<std::string>("IPAddress");
-   return Poco::Net::IPAddress(value);
-}
-
-Poco::Net::SocketAddress CIPX800Configuration::getSocket() const
+Poco::Net::SocketAddress CIPX800Configuration::getIPAddressWithSocket() const
 {
-   auto value = m_data.get<std::string>("Port");
+   auto value = m_data.get<std::string>("IPAddress");
+   value.append(":");
+   value.append(m_data.get<std::string>("Port"));
+
    return Poco::Net::SocketAddress(value);
 }
 

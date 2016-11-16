@@ -7,6 +7,7 @@
 #include <shared/plugin/yPluginApi/IDeviceRemoved.h>
 
 #include "equipments/manuallyDeviceCreationException.hpp"
+#include "equipments/noInformationException.hpp"
 #include "http/failedSendingException.hpp"
 #include "http/invalidHTTPResultException.hpp"
 
@@ -33,6 +34,8 @@ enum
 
 void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
+   bool initializationOk = false;
+
    std::cout << "IPX800 is starting..." << std::endl;
       
    try {
@@ -49,14 +52,14 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       api->setPluginState(yApi::historization::EPluginState::kRunning);
       std::cout << "IPX800 plugin is running..." << std::endl;
+      initializationOk = true;
    }
    catch (...)
    {
       api->setPluginState(yApi::historization::EPluginState::kCustom, "initializationError");
       std::cerr << "IPX800 plugin initialization error..." << std::endl;
+      initializationOk = false;
    }
-
-   // TODO : Faire le catch de l'ensemble des exceptions, et mettre en place l'état du plugin
 
    while (true)
    {
@@ -79,62 +82,79 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kRefreshStatesReceived:
       {
          std::cout << "Timer received" << std::endl;
+
          //Value received from DI
-         //if (!initializationError)
          try {
-            m_ioManager->readAllIOFromDevice(api);
+            if (initializationOk)
+            {
+               // TODO : Envoyer s'il faut forcer la data en même temps en objet !
+               static bool firstTime = true;
+               m_ioManager->readAllIOFromDevice(api, firstTime);
+               firstTime = false;
+            }
          }
-         catch (CFailedSendingException& e)
+         catch (CFailedSendingException&)
          {
             api->setPluginState(yApi::historization::EPluginState::kCustom, "noConnection");
-            std::cerr << "IPX800 plugin initialization error : " << e.what() << std::endl;
+         }
+         catch (CNoInformationException&)
+         {
+            api->setPluginState(yApi::historization::EPluginState::kCustom, "noInformation");
          }
          break;
       }
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
       {
          // Yadoms asks for device creation
-         auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
-         std::cout << "Manually device creation request received for device :" << request->getData().getDeviceName() << std::endl;
-         try
+         if (initializationOk)
          {
-            // Creation of the device
-            request->sendSuccess(m_factory->createDeviceManually(api, request->getData()));
+            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
+            std::cout << "Manually device creation request received for device :" << request->getData().getDeviceName() << std::endl;
+            try
+            {
+               // Creation of the device
+               request->sendSuccess(m_factory->createDeviceManually(api, request->getData()));
 
-            // Send an event to refresh all IOs
-            api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+               // Send an event to refresh all IOs
+               api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+            }
+            catch (CManuallyDeviceCreationException& e)
+            {
+               request->sendError(e.what());
+            }
          }
-         catch (CManuallyDeviceCreationException& e)
-         {
-            request->sendError(e.what());
-         }
-         
          break;
       }
       case yApi::IYPluginApi::kEventDeviceRemoved:
       {
-         auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
-         std::cout << device->device() << " was removed" << std::endl;
-         m_factory->removeDevice(api, device->device());
-         m_ioManager->removeDevice(api, device->device());
+         if (initializationOk)
+         {
+            auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
+            m_factory->removeDevice(api, device->device());
+            m_ioManager->removeDevice(api, device->device());
+            std::cout << device->device() << " was removed" << std::endl;
+         }
          break;
       }
       case yApi::IYPluginApi::kBindingQuery:
       {
          // Yadoms ask for a binding query 
-         auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
-
-         if (data->getData().getQuery() == "X8R")
-            data->sendSuccess(m_factory->bindSlotsX8R());
-         else if (data->getData().getQuery() == "X8D")
-            data->sendSuccess(m_factory->bindSlotsX8D());
-         else if (data->getData().getQuery() == "X24D")
-            data->sendSuccess(m_factory->bindSlotsX24D());
-         else
+         if (initializationOk)
          {
-            std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
-            data->sendError(errorMessage);
-            std::cerr << errorMessage << std::endl;
+            auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
+
+            if (data->getData().getQuery() == "X8R")
+               data->sendSuccess(m_factory->bindSlotsX8R());
+            else if (data->getData().getQuery() == "X8D")
+               data->sendSuccess(m_factory->bindSlotsX8D());
+            else if (data->getData().getQuery() == "X24D")
+               data->sendSuccess(m_factory->bindSlotsX24D());
+            else
+            {
+               std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
+               data->sendError(errorMessage);
+               std::cerr << errorMessage << std::endl;
+            }
          }
          break;
       }
@@ -143,7 +163,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          // Command received from Yadoms
          auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
 
-         //if (!initializationError)
+         if (initializationOk)
             m_ioManager->onCommand(api, command);
          break;
       }
@@ -164,4 +184,6 @@ void CIPX800::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, co
 
    // Update configuration
    m_configuration.initializeWith(newConfigurationData);
+
+   m_ioManager->OnConfigurationUpdate(api, m_configuration);
 }

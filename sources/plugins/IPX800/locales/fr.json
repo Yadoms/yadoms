@@ -92,7 +92,7 @@
                        "name" : "Position",
                        "description" : "configuration définie dans l'IPX800 (Ex:X-24D N°1)",
 					   "values": {
-					      "1" : "X24-D Slot n°1",
+					     "1" : "X24-D Slot n°1",
 						  "2" : "X24-D Slot n°2"
 					   }					   
 					}
@@ -104,7 +104,8 @@
 	"customLabels": {
 		"pluginState": {
          "initializationError": "Erreur d'initialisation",
-         "noConnection": "Pas de connexion à l'équipement",			
+         "noConnection": "Pas de connexion à l'équipement",
+         "noInformation": "L'équipement est connecté, mais aucune information n'est retournée. Vérifiez la clé apikey.",
 			"updateConfiguration": "Mise à jour de la configuration..."
 		   }
 	   }

@@ -28,6 +28,12 @@ namespace equipments
       virtual std::string getDeviceType() const = 0;
 
       //--------------------------------------------------------------
+      /// \brief      getSlot
+      /// \return  the position of a device
+      //--------------------------------------------------------------
+      virtual int getSlot() const = 0;
+
+      //--------------------------------------------------------------
       /// \brief      historizePendingCommand
       /// \return  the device type
       //--------------------------------------------------------------

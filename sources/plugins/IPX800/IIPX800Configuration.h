@@ -1,7 +1,6 @@
 #pragma once
 #include <shared/DataContainer.h>
 #include <Poco/Net/SocketAddress.h>
-#include <Poco/Net/NetworkInterface.h>
 
 //--------------------------------------------------------------
 /// \brief	Interface of plugin configuration
@@ -22,16 +21,10 @@ public:
    virtual void initializeWith(const shared::CDataContainer& data) = 0;
 
    //--------------------------------------------------------------
-   /// \brief      retrieve the IP address from the configuration
-   /// \return     the IP address
+   /// \brief      retrieve the IP address with the port from the configuration
+   /// \return     the IP address withe the port
    //--------------------------------------------------------------
-   virtual Poco::Net::IPAddress getIPAddress() const = 0;
-
-   //--------------------------------------------------------------
-   /// \brief      retrieve the socket from the configuration
-   /// \return     the socket port
-   //--------------------------------------------------------------
-   virtual Poco::Net::SocketAddress getSocket() const = 0;
+   virtual Poco::Net::SocketAddress getIPAddressWithSocket() const = 0;
 
    //--------------------------------------------------------------
    /// \brief      return if the password is activated

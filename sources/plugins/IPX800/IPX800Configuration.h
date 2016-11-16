@@ -22,8 +22,7 @@ public:
 
    // IIPX800Configuration implementation
    void initializeWith(const shared::CDataContainer& data) override;
-   Poco::Net::IPAddress getIPAddress() const override;
-   Poco::Net::SocketAddress getSocket() const override;
+   virtual Poco::Net::SocketAddress getIPAddressWithSocket() const override;
    bool isPasswordActivated() const override;
    std::string getPassword() const override;
    // [END] IIPX800Configuration implementation

@@ -33,14 +33,6 @@ public:
    virtual ~CIPX800Factory();
 
    //--------------------------------------------------------------
-   /// \brief	    OnConfigurationUpdate
-   /// \param[in] api                  yPluginApi API
-   /// \param[in] IIPX800Configuration configuration
-   //--------------------------------------------------------------
-   void OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                              const IIPX800Configuration& configuration);
-
-   //--------------------------------------------------------------
    /// \brief	    bindSlotsX8R
    //--------------------------------------------------------------
    shared::CDataContainer bindSlotsX8R();

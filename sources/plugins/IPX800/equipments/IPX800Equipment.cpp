@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "IPX800Equipment.h"
 #include <shared/DataContainer.h>
+#include "noInformationException.hpp"
 
 namespace equipments
 {
@@ -13,7 +14,7 @@ namespace equipments
       shared::CDataContainer details;
       details.set("provider", "IPX800");
       details.set("shortProvider", "ipx");
-      details.set("type", m_deviceType);
+      //details.set("type", m_deviceType);
 
       // Relay Configuration
       for (int counter = 0; counter<IPX800_RELAY_QTY; ++counter)
@@ -81,6 +82,11 @@ namespace equipments
       return m_deviceType;
    }
 
+   int CIPX800Equipment::getSlot() const
+   {
+      throw shared::exception::CException("Module IPX800 have no slot");
+   }
+
    void CIPX800Equipment::updateFromDevice(const std::string& type,
                                            boost::shared_ptr<yApi::IYPluginApi> api,
                                            shared::CDataContainer& values,
@@ -104,18 +110,28 @@ namespace equipments
                                              bool forceHistorization)
    {
       typename std::vector<boost::shared_ptr<T1> >::const_iterator diIterator;
+      std::string productRevision("");
 
-      for (diIterator = keywordsList.begin(); diIterator != keywordsList.end(); ++diIterator)
+      try
       {
-         T2 newValue = values.get<T2>((*diIterator)->getHardwareName());
-
-         //historize only for new value
-         if ((*diIterator)->get() != newValue || forceHistorization)
+         productRevision = values.getWithDefault<std::string>("product","");
+         for (diIterator = keywordsList.begin(); diIterator != keywordsList.end(); ++diIterator)
          {
-            std::cout << "Set IO : " << (*diIterator)->getHardwareName() << std::endl;
-            (*diIterator)->set(newValue);
-            ToHistorize.push_back((*diIterator));
+            T2 newValue = values.get<T2>((*diIterator)->getHardwareName());
+
+            //historize only for new value
+            if ((*diIterator)->get() != newValue || forceHistorization)
+            {
+               std::cout << "Set IO : " << (*diIterator)->getHardwareName() << std::endl;
+               (*diIterator)->set(newValue);
+               ToHistorize.push_back((*diIterator));
+            }
          }
+      }
+      catch (shared::exception::CInvalidParameter&)
+      {
+         // If we could read the product revision, IOs have not been return : so it's an error of conception, or a wrong apikey
+         if (productRevision == "IPX800_V4") throw CNoInformationException("Equipment connected, but no information received. Please check apikey");
       }
    }
 
@@ -165,9 +181,6 @@ namespace equipments
 
       std::cout << "CIPX800Equipment::buildMessageToDevice" << std::endl;
 
-      // TODO : voir comment ajouter dans un CDataContainer
-      //parameters.set("key", "apikey"); // TODO : A mettre en amont
-
       //Set parameters
       if (boost::regex_search(keywordName, match, reg))
       {
@@ -181,11 +194,11 @@ namespace equipments
       return parameters;
    }
 
-   /*shared::CDataContainer*/ void CIPX800Equipment::setParameter(const std::string& keywordName, 
-                                                         std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& keywordsList,
-                                                         boost::shared_ptr<const yApi::IDeviceCommand> command,
-                                                         const std::string& pinNumber,
-                                                         shared::CDataContainer& parameters)
+   void CIPX800Equipment::setParameter(const std::string& keywordName, 
+                                       std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& keywordsList,
+                                       boost::shared_ptr<const yApi::IDeviceCommand> command,
+                                       const std::string& pinNumber,
+                                       shared::CDataContainer& parameters)
    {
       std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >::const_iterator diIterator;
 
@@ -215,11 +228,11 @@ namespace equipments
       //return parameters;
    }
 
-   /*shared::CDataContainer*/ void CIPX800Equipment::setParameter(const std::string& keywordName,
-                                                         std::vector<boost::shared_ptr<specificHistorizers::CCounter> >& keywordsList,
-                                                         boost::shared_ptr<const yApi::IDeviceCommand> command,
-                                                         const std::string& value,
-                                                         shared::CDataContainer& parameters)
+   void CIPX800Equipment::setParameter(const std::string& keywordName,
+                                       std::vector<boost::shared_ptr<specificHistorizers::CCounter> >& keywordsList,
+                                       boost::shared_ptr<const yApi::IDeviceCommand> command,
+                                       const std::string& value,
+                                       shared::CDataContainer& parameters)
    {
       std::vector<boost::shared_ptr<specificHistorizers::CCounter> >::const_iterator diIterator;
 

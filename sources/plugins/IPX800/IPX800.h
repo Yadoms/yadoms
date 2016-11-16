@@ -36,6 +36,9 @@ public:
                               const shared::CDataContainer& newConfigurationData);
 
 private:
+   //--------------------------------------------------------------
+   /// \brief Name of the plugin
+   //--------------------------------------------------------------
    std::string m_deviceName;
 
    //--------------------------------------------------------------

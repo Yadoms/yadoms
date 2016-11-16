@@ -105,7 +105,8 @@
 	"customLabels": {
 		"pluginState": {
 			"initializationError": "Initialization error",
-         "noConnection": "Could not connect to the equipment",			
+         "noConnection": "Could not connect to the equipment",
+         "noInformation": "The equipment is connected. No information returned. Please check the apikey",
 			"updateConfiguration": "Configuration updating..."
 		}
 	}

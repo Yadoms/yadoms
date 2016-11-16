@@ -30,6 +30,7 @@
 	  }
    },
    "supportManuallyDeviceCreation": "true",
+   "supportDeviceRemovedNotification": "true",
    "manuallyDeviceCreationConfigurationSchema": {
       "type":
       {

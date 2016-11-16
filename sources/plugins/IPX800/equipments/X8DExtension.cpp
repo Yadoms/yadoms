@@ -2,20 +2,21 @@
 #include "X8DExtension.h"
 #include <shared/DataContainer.h>
 #include "../specificHistorizers/inputOutput.h"
+#include "noInformationException.hpp"
 
 namespace equipments
 {
-
    CX8DExtension::CX8DExtension(boost::shared_ptr<yApi::IYPluginApi> api,
                                 const std::string& device,
-                                const int& position):
+                                const int position):
       m_deviceName(device),
-      m_deviceType("X8-D")
+      m_deviceType("X-8D"),
+      m_position(position)
    {
       shared::CDataContainer details;
       details.set("provider", "IPX800");
       details.set("shortProvider", "ipx");;
-      details.set("type", m_deviceType);
+      //details.set("type", m_deviceType);
       details.set("position", boost::lexical_cast<std::string>(position));
 
       // Relay Configuration
@@ -47,6 +48,11 @@ namespace equipments
       return m_deviceType;
    }
 
+   int CX8DExtension::getSlot() const
+   {
+      return m_position;
+   }
+
    void CX8DExtension::updateFromDevice(const std::string& type,
                                         boost::shared_ptr<yApi::IYPluginApi> api,
                                         shared::CDataContainer& values,
@@ -56,8 +62,10 @@ namespace equipments
       {
          std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >::const_iterator diIterator;
          std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize;
+         std::string productRevision("");
 
          try {
+            productRevision = values.getWithDefault<std::string>("product", "");
             for (diIterator = m_keywordList.begin(); diIterator != m_keywordList.end(); ++diIterator)
             {
                bool newValue = values.get<bool>((*diIterator)->getHardwareName());
@@ -71,10 +79,12 @@ namespace equipments
                }
             }
          }
-         catch (shared::exception::CException& e)
+         catch (shared::exception::CInvalidParameter&)
          {
-            std::cout << "error retrieve value :" << e.what() << std::endl;
+            // If we could read the product revision, IOs have not been return : so it's an error of conception, or a wrong apikey
+            if (productRevision == "IPX800_V4") throw CNoInformationException("Equipment connected, but no information received. Please check apikey");
          }
+
 
          api->historizeData(m_deviceName, keywordsToHistorize);
       }

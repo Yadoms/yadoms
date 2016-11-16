@@ -32,6 +32,7 @@ namespace equipments
       // IExtension implementation
       std::string getDeviceName() const override;
       std::string getDeviceType() const override;
+      int getSlot() const override;
       void updateFromDevice(const std::string& type, 
                             boost::shared_ptr<yApi::IYPluginApi> api, 
                             shared::CDataContainer& values,

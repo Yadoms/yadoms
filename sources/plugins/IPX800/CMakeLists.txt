@@ -23,6 +23,7 @@ set(IPX800_PLUGIN_SOURCES
 	equipments/IPX800Equipment.cpp
 	equipments/IPX800Equipment.h	
    equipments/manuallyDeviceCreationException.hpp	
+   equipments/noInformationException.hpp
 	equipments/X24DExtension.cpp
 	equipments/X24DExtension.h	
 	equipments/X8DExtension.cpp
