@@ -46,6 +46,8 @@ namespace database { namespace common { namespace versioning {
    {
       try
       {
+         YADOMS_LOG(information) << "Upgrading database (1.0.0 -> 2.0.0)";
+
          //create transaction if supported
          if(pRequester->transactionSupport())
             pRequester->transactionBegin();
@@ -73,7 +75,7 @@ namespace database { namespace common { namespace versioning {
       }
       catch(CVersionException & ex)
       {
-         YADOMS_LOG(fatal) << "Failed to upgrade database (1.0.0 -> 1.1.0) : " << ex.what();
+         YADOMS_LOG(fatal) << "Failed to upgrade database (1.0.0 -> 2.0.0) : " << ex.what();
          YADOMS_LOG(fatal) << "Rollback transaction";
          if (pRequester->transactionSupport())
             pRequester->transactionRollback();
