@@ -365,13 +365,18 @@ void CEnOcean::processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDevi
       if (!configuration.empty())
          configuration.set("configuration", deviceConfiguration);
 
-      // If profile changed, clean all keywords
-      //if (m_api->getDeviceConfiguration(deviceId).get<std::string>("profile") != selectedProfile.profile())
-      //{
-      //   for (const auto& keywordId : m_api->getAllKeywords(deviceId))
-      //      m_api->removeKeyword(deviceId, keywordId);
-      //   //TODO
-      //}
+      // Create device
+      auto device = CRorgs::createRorg(selectedProfile.rorg())->createFunc(selectedProfile.func())->createType(selectedProfile.type());
+
+      // If profile changed, rebuild all keywords list
+      if (!m_api->getDeviceConfiguration(deviceId).empty() &&
+         m_api->getDeviceConfiguration(deviceId).get<std::string>("profile") != selectedProfile.profile())
+      {
+         for (const auto& keywordId : m_api->getAllKeywords(deviceId))
+            m_api->removeKeyword(deviceId, keywordId);
+
+         //m_api->declareKeywords(deviceId, device->allHistorizers());
+      }
 
       m_api->updateDeviceModel(deviceId,
                                model);
