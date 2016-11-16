@@ -145,6 +145,15 @@ message UpdateDeviceConfiguration {
 	required string configuration = 2;
 }
 
+message AllKeywordsRequest {
+	required string device = 1;
+}
+
+message DeclareKeywords {
+	required string device = 1;
+	repeated Historizable keywords = 3;
+}
+
 message msg {
 	oneof OneOf {
 		SetPluginState pluginState = 1;
@@ -171,5 +180,7 @@ message msg {
 		UpdateDeviceModel updateDeviceModel = 22;
 		DeviceConfigurationRequest deviceConfigurationRequest = 23;
 		UpdateDeviceConfiguration updateDeviceConfiguration = 24;
+		AllKeywordsRequest allKeywordsRequest = 25;
+		DeclareKeywords declareKeywords = 26;
 	}
 }

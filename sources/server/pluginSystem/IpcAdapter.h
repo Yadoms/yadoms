@@ -93,6 +93,8 @@ namespace pluginSystem
       void processDeveloperModeRequest(const toYadoms::DeveloperModeRequest& msg);
       void processRemoveDeviceRequest(const toYadoms::RemoveDevice& msg) const;
       void processRemoveKeywordRequest(const toYadoms::RemoveKeyword& msg) const;
+      void processAllKeywordsRequest(const toYadoms::AllKeywordsRequest& msg);
+      void processDeclareKeywords(const toYadoms::DeclareKeywords& msg) const;
       void processDeviceModelRequest(const toYadoms::DeviceModelRequest& msg);
       void processUpdateDeviceModel(const toYadoms::UpdateDeviceModel& msg) const;
       void processDeviceConfigurationRequest(const toYadoms::DeviceConfigurationRequest& msg);

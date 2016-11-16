@@ -130,6 +130,34 @@ namespace pluginSystem
       m_deviceManager->removeDevice(getPluginId(), device);
    }
 
+   void CYPluginApiImplementation::declareKeyword(const std::string& device,
+                                                  boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
+                                                  const shared::CDataContainer& details)
+   {
+      if (keywordExists(device, keyword))
+         throw shared::exception::CEmptyResult((boost::format("Fail to declare %1% keyword : keyword already exists") % keyword->getKeyword()).str());
+
+      m_keywordDataAccessLayer->addKeyword(m_deviceManager->getDevice(getPluginId(), device)->Id(),
+                                           *keyword,
+                                           details);
+   }
+
+   void CYPluginApiImplementation::declareKeywords(const std::string& device,
+                                                   const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords)
+   {
+      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> keywordsToDeclare;
+
+      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
+         if (!keywordExists(device, *keyword))
+            keywordsToDeclare.push_back(*keyword);
+
+      if (keywordsToDeclare.empty())
+         return;
+
+      m_keywordDataAccessLayer->addKeywords(m_deviceManager->getDevice(getPluginId(), device)->Id(),
+                                            keywordsToDeclare);
+   }
+
    bool CYPluginApiImplementation::keywordExists(const std::string& device,
                                                  const std::string& keyword) const
    {
@@ -145,16 +173,12 @@ namespace pluginSystem
       return keywordExists(device, keyword->getKeyword());
    }
 
-   void CYPluginApiImplementation::declareKeyword(const std::string& device,
-                                                  boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
-                                                  const shared::CDataContainer& details)
+   std::vector<std::string> CYPluginApiImplementation::getAllKeywords(const std::string& device) const
    {
-      if (keywordExists(device, keyword))
-         throw shared::exception::CEmptyResult((boost::format("Fail to declare %1% keyword : keyword already exists") % keyword->getKeyword()).str());
-
-      m_keywordDataAccessLayer->addKeyword(m_deviceManager->getDevice(getPluginId(), device)->Id(),
-                                           *keyword,
-                                           details);
+      std::vector<std::string> keywordNames;
+      for (const auto& keyword : m_keywordDataAccessLayer->getKeywords((m_deviceManager->getDevice(getPluginId(), device))->Id))
+         keywordNames.push_back(keyword->Name());
+      return keywordNames;
    }
 
    void CYPluginApiImplementation::removeKeyword(const std::string& device,
@@ -165,22 +189,6 @@ namespace pluginSystem
 
       m_keywordDataAccessLayer->removeKeyword(getPluginId(),
                                               device);
-   }
-
-   void CYPluginApiImplementation::declareKeywords(const std::string& device,
-                                                   const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords) const
-   {
-      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> keywordsToDeclare;
-
-      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
-         if (!keywordExists(device, *keyword))
-            keywordsToDeclare.push_back(*keyword);
-
-      if (keywordsToDeclare.empty())
-         return;
-
-      m_keywordDataAccessLayer->addKeywords(m_deviceManager->getDevice(getPluginId(), device)->Id(),
-                                            keywordsToDeclare);
    }
 
    std::string CYPluginApiImplementation::getRecipientValue(int recipientId,

@@ -68,13 +68,16 @@ namespace pluginSystem
       void updateDeviceModel(const std::string& device,
                              const std::string& model) const override;
       void removeDevice(const std::string& device) override;
+      void declareKeyword(const std::string& device,
+                          boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
+                          const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
+      void declareKeywords(const std::string& device,
+                           const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords) override;
       bool keywordExists(const std::string& device,
                          const std::string& keyword) const override;
       bool keywordExists(const std::string& device,
                          boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword) const override;
-      void declareKeyword(const std::string& device,
-                          boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
-                          const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
+      std::vector<std::string> getAllKeywords(const std::string& device) const override;
       void removeKeyword(const std::string& device,
                          const std::string& keyword) override;
       std::string getRecipientValue(int recipientId,
@@ -97,11 +100,6 @@ namespace pluginSystem
       ///\brief Get the plugin instance ID
       //-----------------------------------------------------
       int getPluginId() const;
-
-   protected:
-
-      void declareKeywords(const std::string& device,
-                           const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords) const;
 
 
    private:
