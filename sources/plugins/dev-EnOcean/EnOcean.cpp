@@ -10,7 +10,6 @@
 #include <shared/exception/EmptyResult.hpp>
 #include "ProfileHelper.h"
 
-//TODO gérer un cache pour les devices connus (pour ne pas requêter Yadoms pour rien)
 
 IMPLEMENT_PLUGIN(CEnOcean)
 
@@ -343,8 +342,6 @@ void CEnOcean::processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDevi
 {
    try
    {
-      //TODO gérer le cas si le device existe déjà (suppression des keyword + histo)
-
       auto deviceId = setDeviceConfigurationData->device();
       auto selectedProfile = CProfileHelper(setDeviceConfigurationData->configuration().get<std::string>("configurationSchema.profile"));
       auto manufacturer = setDeviceConfigurationData->configuration().get<std::string>("manufacturer");
@@ -365,30 +362,29 @@ void CEnOcean::processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDevi
       if (!configuration.empty())
          configuration.set("configuration", deviceConfiguration);
 
-      // Create device
-      auto device = CRorgs::createRorg(selectedProfile.rorg())->createFunc(selectedProfile.func())->createType(selectedProfile.type());
-
       // If profile changed, rebuild all keywords list
-      if (!m_api->getDeviceConfiguration(deviceId).empty() &&
-         m_api->getDeviceConfiguration(deviceId).get<std::string>("profile") != selectedProfile.profile())
+      auto oldConfiguration = m_api->getDeviceConfiguration(deviceId);
+      if (!oldConfiguration.empty() &&
+         oldConfiguration.get<std::string>("profile") != selectedProfile.profile())
       {
          for (const auto& keywordId : m_api->getAllKeywords(deviceId))
             m_api->removeKeyword(deviceId, keywordId);
-
-         //m_api->declareKeywords(deviceId, device->allHistorizers());
       }
+
+      // Create device
+      auto device = CRorgs::createRorg(selectedProfile.rorg())->createFunc(selectedProfile.func())->createType(selectedProfile.type());
+      m_devices[deviceId] = device;
+
+      m_api->declareKeywords(deviceId,
+                             device->allHistorizers());
 
       m_api->updateDeviceModel(deviceId,
                                model);
 
       m_api->updateDeviceConfiguration(deviceId,
-                                       configuration);
+                                       deviceConfiguration);
 
-      //TODO créer les kw
-
-      // TODO envoyer le message de config au device
-
-      //TODO ajouter à m_devices ou remplacer
+      device->sendConfiguration(deviceConfiguration);
    }
    catch (shared::exception::CEmptyResult&)
    {

@@ -52,3 +52,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    }
    return historizers;
 }
+
+void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceConfiguration) const
+{
+   //TODO
+}

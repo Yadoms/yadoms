@@ -16,6 +16,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> allHistorizers() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> states(const boost::dynamic_bitset<>& data) const override;
+   void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
 private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
 };
