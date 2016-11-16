@@ -122,6 +122,7 @@ namespace database { namespace entities {
       ((Model)(std::string)("")("model"))
       ((Details)(shared::CDataContainer)(shared::CDataContainer())("details"))
       ((Configuration)(shared::CDataContainer)(shared::CDataContainer())("configuration"))
+      ((Blacklist)(bool)(false)("blacklist"))
       );
 
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(
@@ -137,6 +138,7 @@ namespace database { namespace entities {
 	  ((TypeInfo)(shared::CDataContainer)(shared::CDataContainer())("typeInfo"))
       ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType)(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute)("measure"))
       ((Details)(shared::CDataContainer)(shared::CDataContainer())("details"))
+      ((Blacklist)(bool)(false)("blacklist"))
       );
 
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(

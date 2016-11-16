@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Version_1_1_0.h"
+#include "Version_2_0_0.h"
 #include "database/common/Query.h"
 #include "database/common/DatabaseTables.h"
 #include <shared/versioning/Version.h>
@@ -9,20 +9,18 @@
 namespace database { namespace common { namespace versioning { 
 
 
-   CVersion_1_1_0::CVersion_1_1_0()
-      :m_version(1, 1, 0, 0) //modify this version to a greater value, to force update of current version
+   CVersion_2_0_0::CVersion_2_0_0()
+      :m_version(2, 0, 0, 0) //modify this version to a greater value, to force update of current version
    {
    }
 
-   CVersion_1_1_0::~CVersion_1_1_0()
+   CVersion_2_0_0::~CVersion_2_0_0()
    {
    }
 
    // ISQLiteVersionUpgrade implementation
-   void CVersion_1_1_0::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester> & pRequester, const shared::versioning::CVersion & currentVersion)
+   void CVersion_2_0_0::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester> & pRequester, const shared::versioning::CVersion & currentVersion)
    {
-      auto bNeedToCreateOrUpgrade = false;
-
       if (currentVersion < m_version)
       {
          //bad version, check base class version
@@ -44,16 +42,20 @@ namespace database { namespace common { namespace versioning {
    ///\param [in] pRequester : database requester object
    ///\throw      CVersionException if create database failed
    //-----------------------------------
-   void CVersion_1_1_0::UpdateFrom1_0_0(const boost::shared_ptr<IDatabaseRequester> & pRequester) const
+   void CVersion_2_0_0::UpdateFrom1_0_0(const boost::shared_ptr<IDatabaseRequester> & pRequester) const
    {
       try
       {
+         YADOMS_LOG(information) << "Upgrading database (1.0.0 -> 2.0.0)";
+
          //create transaction if supported
          if(pRequester->transactionSupport())
             pRequester->transactionBegin();
 
          //add column
          pRequester->addTableColumn(CDeviceTable::getTableName(), "configuration TEXT");
+         pRequester->addTableColumn(CDeviceTable::getTableName(), "blacklist INTEGER DEFAULT 0");
+         pRequester->addTableColumn(CKeywordTable::getTableName(), "blacklist INTEGER DEFAULT 0");
 
          //set the database version
          auto qUpdate = pRequester->newQuery();
@@ -74,7 +76,7 @@ namespace database { namespace common { namespace versioning {
       }
       catch(CVersionException & ex)
       {
-         YADOMS_LOG(fatal) << "Failed to upgrade database (1.0.0 -> 1.1.0) : " << ex.what();
+         YADOMS_LOG(fatal) << "Failed to upgrade database (1.0.0 -> 2.0.0) : " << ex.what();
          YADOMS_LOG(fatal) << "Rollback transaction";
          if (pRequester->transactionSupport())
             pRequester->transactionRollback();

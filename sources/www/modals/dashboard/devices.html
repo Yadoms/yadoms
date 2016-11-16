@@ -7,6 +7,7 @@
          <td data-i18n="modals.dashboard.sub-windows.devices.table.name" class="col-md-2"></td>
          <td data-i18n="modals.dashboard.sub-windows.devices.table.attachedTo" class="col-md-2"></td>
          <td data-i18n="modals.dashboard.sub-windows.devices.table.model" class="long-text col-md-2"></td>
+         <td data-i18n="modals.dashboard.sub-windows.devices.table.blacklist" class="long-text col-md-2"></td>
          <td data-i18n="modals.dashboard.sub-windows.devices.table.actions" class="col-md-2"></td>
       </tr>
       <!-- devices will be listed here-->
@@ -110,7 +111,7 @@
       //we add it to the DOM
       var $deviceList = $("table#device-list");
 	  
-	  var frameworkDevice = "<tr device-id=\"" + device.id + "\" class=\"device\"><td class=\"device-friendlyName vert-align text-left\"></td><td class=\"device-attachedTo vert-align\"></td><td class=\"device-model vert-align\"></td><td class=\"device-actions vert-align\"></td></tr>";
+	  var frameworkDevice = "<tr device-id=\"" + device.id + "\" class=\"device\"><td class=\"device-friendlyName vert-align text-left\"></td><td class=\"device-attachedTo vert-align\"></td><td class=\"device-model vert-align\"></td><td class=\"device-blacklist vert-align\"><input class=\"cb-blacklist\" type=\"checkbox\"></td><td class=\"device-actions vert-align\"></td></tr>";
 
 	  if ( positionDevice == null )
          $deviceList.append( frameworkDevice );
@@ -134,9 +135,12 @@
       $deviceRow.find("td.device-friendlyName").html(friendlyName);
       $deviceRow.find("td.device-model").html(model);
 
+      $deviceRow.find("input.cb-blacklist").prop("checked", device.blacklist == "true");
+      $deviceRow.find("input.cb-blacklist").unbind('change').bind('change', function () { blacklistDevice(device); });
+
       //we add actions to the device
       $deviceRow.find("td.device-actions").append(actionsBtns);
-
+     
       //we bind event on the different actions
       $deviceRow.find("button.btn-configure").unbind('click').bind('click', function (e) { 
             e.stopPropagation();
@@ -283,6 +287,7 @@
                      "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.value\" class=\"col-md-2\"></td>" +
                      "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.units\" class=\"col-md-2\"></td>" +
                      "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.update\" class=\"col-md-2\"></td>" +
+                     "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.blacklist\" class=\"col-md-2\"></td>" +
                      "<td data-i18n=\"modals.dashboard.sub-windows.devices.details.table.actions\" class=\"col-md-2\"></td>" +
                   "</tr>" +
                   "<!-- keywords will be listed here-->" +
@@ -311,7 +316,7 @@
 			
             $.each(deviceList, function (index, keyword) {
 			
-               $deviceDetailsTable.append("<tr keyword-id=\"" + keyword.id + "\"><td class=\"keyword-friendlyName vert-align\"></td><td class=\"keyword-value vert-align\"><td class=\"keyword-units vert-align\"><td class=\"keyword-update vert-align\"></td><td class=\"keyword-actions vert-align\"></td></tr>");
+               $deviceDetailsTable.append("<tr keyword-id=\"" + keyword.id + "\"><td class=\"keyword-friendlyName vert-align\"></td><td class=\"keyword-value vert-align\"><td class=\"keyword-units vert-align\"><td class=\"keyword-update vert-align\"></td><td class=\"keyword-blacklist vert-align\"><input class=\"cb-blacklist\" type=\"checkbox\"></td><td class=\"keyword-actions vert-align\"></td></tr>");
 
                var $keywordRow = getKeywordDomRow(keyword);
 
@@ -328,6 +333,9 @@
                } else {
                   $keywordRow.find("td.keyword-actions").append(actionsBtns);
                }
+               
+               $keywordRow.find("input.cb-blacklist").prop("checked", keyword.blacklist == "true");
+               $keywordRow.find("input.cb-blacklist").unbind('change').bind('change', function () { blacklistKeyword(keyword); });
 
                //we prevent from renaming keywords on system devices
                if ((!isNullOrUndefined(device.attachedPlugin)) && (device.attachedPlugin.isSystemCategory())) {
@@ -354,6 +362,48 @@
          $deviceRow.find("span.deploy").removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
       }
    }
+   
+   
+   function blacklistDevice(device) {
+   
+      //we set blacklist attr to cb value and send it to the server as an update
+      device.blacklist = getDeviceDomRow(device).find("input.cb-blacklist").prop("disabled", true).prop("checked");
+
+      DeviceManager.updateBlacklistStateToServer(device)
+      .done(function () {
+         
+         DeviceManager.getKeywords(device, true)
+         .done(function () {   
+            getDeviceDomRow(device).find("input.cb-blacklist").prop("disabled", false).prop("checked", device.blacklist);
+            clickDevice(device);
+         })
+         .fail(function (error) {
+            getDeviceDomRow(device).find("input.cb-blacklist").prop("disabled", false).prop("checked", device.blacklist);
+         });
+      })
+      .fail(function (error) {
+         notifyError($.t("modals.dashboard.sub-windows.devices.errorBlacklistingDevice", { device: device.friendlyName }), error);
+         getDeviceDomRow(device).find("input.cb-blacklist").prop("disabled", false).prop("checked", device.blacklist);
+      });
+   }
+
+
+   
+   function blacklistKeyword(keyword) {
+   
+      //we set blacklist attr to cb value and send it to the server as an update
+      keyword.blacklist = getKeywordDomRow(keyword).find("input.cb-blacklist").prop("disabled", true).prop("checked");
+
+      KeywordManager.updateBlacklistStateToServer(keyword)
+      .done(function () {
+         getKeywordDomRow(keyword).find("input.cb-blacklist").prop("disabled", false).prop("checked", keyword.blacklist);
+      })
+      .fail(function (error) {
+         notifyError($.t("modals.dashboard.sub-windows.devices.errorBlacklistingKeyword", { keyword: keyword.friendlyName }), error);
+         getKeywordDomRow(keyword).find("input.cb-blacklist").prop("disabled", false).prop("checked", keyword.blacklist);
+      });
+   }
+
 
    function configureKeyword(keyword) {
       //keyword represent the device concerned

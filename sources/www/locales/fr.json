@@ -407,6 +407,7 @@
             "name": "Nom",
             "attachedTo": "Attaché au plugin",
             "model": "Modèle",
+            "blacklist": "Désactivé",
             "actions": "Actions"
           },
           "details": {
@@ -415,6 +416,7 @@
               "value": "Valeur",
               "units": "Unité",
               "update": "Dernier état",
+              "blacklist": "Désactivé",
               "actions": "Actions"
             }
           },
@@ -422,7 +424,9 @@
           "delete": "Suppression de l'équipement",
           "errorGettingDeviceList": "Erreur lors de la récupération de la liste des équipements",
           "errorGettingDeviceDetailsList": "Erreur lors de la récupération des détails de l'équipement",
-          "errorUpdatingKeyword": "Erreur lors de la la mise à jour de la donnée __keyword__",
+          "errorUpdatingKeyword": "Erreur lors de la mise à jour de la donnée __keyword__",
+          "errorBlacklistingDevice": "Erreur lors de la (dés)activation de l'équipement __device__",
+          "errorBlacklistingKeyword": "Erreur lors de la (dés)activation de la donnée __keyword__",
           "noAcquisition": "Aucune acquisition"
         },
         "automation-center": {

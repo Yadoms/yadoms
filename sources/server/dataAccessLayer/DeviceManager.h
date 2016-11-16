@@ -26,11 +26,9 @@ namespace dataAccessLayer
 
       // IDeviceManager Implementation
       bool deviceExists(const int deviceId) const override;
-      bool deviceExists(const int pluginId,
-                        const std::string& deviceName) const override;
+      bool deviceExists(const int pluginId, const std::string& deviceName) const override;
       boost::shared_ptr<database::entities::CDevice> getDevice(int deviceId) const override;
-      boost::shared_ptr<database::entities::CDevice> getDevice(const int pluginId,
-                                                               const std::string& name) const override;
+      boost::shared_ptr<database::entities::CDevice> getDevice(const int pluginId, const std::string& name) const override;
       std::vector<boost::shared_ptr<database::entities::CDevice>> getDeviceWithCapacity(const std::string& capacityName,
                                                                                         const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const override;
       std::vector<boost::shared_ptr<database::entities::CDevice>> getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode,
@@ -42,17 +40,13 @@ namespace dataAccessLayer
                                                                   const shared::CDataContainer& details) override;
       std::vector<boost::shared_ptr<database::entities::CDevice>> getDevices() const override;
       std::vector<std::string> getDevicesForPluginInstance(int pluginId) const override;
-      void updateDeviceFriendlyName(int deviceId,
-                                    const std::string& newFriendlyName) override;
-      void updateDeviceConfiguration(int deviceId,
-                                     const shared::CDataContainer& configuration) override;
-      void updateDeviceDetails(int deviceId,
-                               const shared::CDataContainer& details) override;
-      void updateDeviceModel(int deviceId,
-                             const std::string& model) override;
+      void updateDeviceFriendlyName(int deviceId, const std::string& newFriendlyName) override;
+      void updateDeviceConfiguration(int deviceId, const shared::CDataContainer& configuration) override;
+      void updateDeviceDetails(int deviceId, const shared::CDataContainer& details) override;
+      void updateDeviceModel(int deviceId, const std::string& model) override;
+      void updateDeviceBlacklistState(int deviceId, const bool blacklist) override;
       void removeDevice(int deviceId) override;
-      void removeDevice(int pluginId,
-                        const std::string& deviceName) override;
+      void removeDevice(int pluginId, const std::string& deviceName) override;
       void removeAllDeviceForPlugin(int pluginId) override;
       void cleanupDevice(int deviceId) override;
       // [END] IDeviceManager Implementation

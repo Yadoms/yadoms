@@ -214,6 +214,10 @@ namespace pluginSystem
          break;
       case toYadoms::msg::kRemoveKeyword: processRemoveKeywordRequest(toYadomsProtoBuffer.removekeyword());
          break;
+      case toYadoms::msg::kAllKeywordsRequest: processAllKeywordsRequest(toYadomsProtoBuffer.allkeywordsrequest());
+         break;
+      case toYadoms::msg::kDeclareKeywords: processDeclareKeywords(toYadomsProtoBuffer.declarekeywords());
+         break;
       case toYadoms::msg::kDeviceModelRequest: processDeviceModelRequest(toYadomsProtoBuffer.devicemodelrequest());
          break;
       case toYadoms::msg::kUpdateDeviceModel: processUpdateDeviceModel(toYadomsProtoBuffer.updatedevicemodel());
@@ -372,6 +376,25 @@ namespace pluginSystem
    {
       m_pluginApi->removeKeyword(msg.device(),
                                  msg.keyword());
+   }
+
+   void CIpcAdapter::processAllKeywordsRequest(const toYadoms::AllKeywordsRequest& msg)
+   {
+      toPlugin::msg ans;
+      auto answer = ans.mutable_allkeywordsanswer();
+      auto keywords = m_pluginApi->getAllKeywords(msg.device());
+      std::copy(keywords.begin(), keywords.end(), RepeatedFieldBackInserter(answer->mutable_keywords()));
+      send(ans);
+   }
+
+   void CIpcAdapter::processDeclareKeywords(const toYadoms::DeclareKeywords& msg) const
+   {
+      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> keywords;
+      for (auto keyword = msg.keywords().begin(); keyword != msg.keywords().end(); ++keyword)
+         keywords.push_back(boost::make_shared<CFromPluginHistorizer>(*keyword));
+
+      m_pluginApi->declareKeywords(msg.device(),
+                                   keywords);
    }
 
    void CIpcAdapter::processDeviceModelRequest(const toYadoms::DeviceModelRequest& msg)

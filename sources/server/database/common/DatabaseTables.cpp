@@ -73,6 +73,7 @@ namespace common {
       ((Model)("model"))
 	   ((Details)("details"))
       ((Configuration)("configuration"))
+      ((Blacklist)("blacklist"))
    )
 
    DECLARE_TABLE_COLUMN_NAMES(Keyword,  "Keyword",
@@ -84,9 +85,10 @@ namespace common {
       ((FriendlyName)("friendlyName"))
       ((Type)("type"))
       ((Units)("units"))
-	  ((TypeInfo)("typeInfo"))
+	   ((TypeInfo)("typeInfo"))
       ((Measure)("measure"))
       ((Details)("details"))
+      ((Blacklist)("blacklist"))
    )
 
    DECLARE_TABLE_COLUMN_NAMES(Acquisition, "Acquisition",

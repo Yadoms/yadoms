@@ -126,6 +126,14 @@ namespace dataAccessLayer
                                      const std::string& model) = 0;
 
       //--------------------------------------------------------------
+      /// \brief                          Update the device blacklist state
+      /// \param [in] deviceId            The device id
+      /// \param [in] blacklist           The device blacklist state (propagated to all attached keywords)
+      /// \throw  shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual void updateDeviceBlacklistState(int deviceId, const bool blacklist) = 0;
+
+      //--------------------------------------------------------------
       /// \brief           Remove device 
       /// \param [in] deviceId   Device  Id
       /// \throw           shared::exception::CEmptyResult if fails

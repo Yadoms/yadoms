@@ -35,13 +35,11 @@ namespace database
             return true;
          }
 
-         bool CDevice::deviceExists(const int pluginId,
-                                    const std::string& deviceName) const
+         bool CDevice::deviceExists(const int pluginId, const std::string& deviceName) const
          {
             try
             {
-               getDevice(pluginId,
-                         deviceName);
+               getDevice(pluginId, deviceName);
             }
             catch (shared::exception::CEmptyResult&)
             {
@@ -65,8 +63,7 @@ namespace database
             return adapter.getResults()[0];
          }
 
-         boost::shared_ptr<entities::CDevice> CDevice::getDevice(const int pluginId,
-                                                                 const std::string& name) const
+         boost::shared_ptr<entities::CDevice> CDevice::getDevice(const int pluginId, const std::string& name) const
          {
             //search for such a device
             auto qSelect = m_databaseRequester->newQuery();
@@ -95,8 +92,7 @@ namespace database
             return adapter.getResults();
          }
 
-         std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDeviceWithCapacity(const std::string& capacityName,
-                                                                                          const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode) const
+         std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDeviceWithCapacity(const std::string& capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode) const
          {
             auto subQuery = m_databaseRequester->newQuery();
             subQuery.Select(CKeywordTable::getDeviceIdColumnName()).
@@ -119,8 +115,7 @@ namespace database
             return adapter.getResults();
          }
 
-         std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode,
-                                                                                              const shared::plugin::yPluginApi::EKeywordDataType& capacityType) const
+         std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode, const shared::plugin::yPluginApi::EKeywordDataType& capacityType) const
          {
             auto subQuery = m_databaseRequester->newQuery();
             subQuery.Select(CKeywordTable::getDeviceIdColumnName()).
@@ -144,11 +139,7 @@ namespace database
          }
 
 
-         boost::shared_ptr<entities::CDevice> CDevice::createDevice(int pluginId,
-                                                                    const std::string& name,
-                                                                    const std::string& friendlyName,
-                                                                    const std::string& model,
-                                                                    const shared::CDataContainer& details)
+         boost::shared_ptr<entities::CDevice> CDevice::createDevice(int pluginId, const std::string& name, const std::string& friendlyName, const std::string& model, const shared::CDataContainer& details)
          {
             if (deviceExists(pluginId, name))
                throw shared::exception::CEmptyResult("The device already exists, cannot create it a new time");
@@ -184,8 +175,7 @@ namespace database
             return deviceCreated;
          }
 
-         void CDevice::updateDeviceFriendlyName(int deviceId,
-                                                const std::string& newFriendlyName)
+         void CDevice::updateDeviceFriendlyName(int deviceId, const std::string& newFriendlyName)
          {
             if (!deviceExists(deviceId))
                throw shared::exception::CEmptyResult("The device does not exists");
@@ -206,8 +196,7 @@ namespace database
             }
          }
 
-         void CDevice::updateDeviceConfiguration(int deviceId,
-                                                 const shared::CDataContainer& configuration)
+         void CDevice::updateDeviceConfiguration(int deviceId, const shared::CDataContainer& configuration)
          {
             if (!deviceExists(deviceId))
                throw shared::exception::CEmptyResult("The device does not exists");
@@ -221,8 +210,7 @@ namespace database
                throw shared::exception::CEmptyResult("Fail to update device configuration");
          }
 
-         void CDevice::updateDeviceDetails(int deviceId,
-                                           const shared::CDataContainer& details)
+         void CDevice::updateDeviceDetails(int deviceId, const shared::CDataContainer& details)
          {
             if (!deviceExists(deviceId))
                throw shared::exception::CEmptyResult("The device does not exists");
@@ -236,8 +224,7 @@ namespace database
                throw shared::exception::CEmptyResult("Fail to update device details");
          }
 
-         void CDevice::updateDeviceModel(int deviceId,
-                                         const std::string& model)
+         void CDevice::updateDeviceModel(int deviceId, const std::string& model)
          {
             if (!deviceExists(deviceId))
                throw shared::exception::CEmptyResult("The device does not exists");
@@ -249,6 +236,20 @@ namespace database
 
             if (m_databaseRequester->queryStatement(qUpdate) <= 0)
                throw shared::exception::CEmptyResult("Fail to update device model");
+         }
+
+         void  CDevice::updateDeviceBlacklistState(int deviceId, const bool blacklist)
+         {
+            if (!deviceExists(deviceId))
+               throw shared::exception::CEmptyResult("The device does not exists");
+
+            auto qUpdate = m_databaseRequester->newQuery();
+            qUpdate.Update(CDeviceTable::getTableName()).
+               Set(CDeviceTable::getBlacklistColumnName(), blacklist).
+               Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
+
+            if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+               throw shared::exception::CEmptyResult("Fail to update device blacklist");
          }
 
          std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDevices() const
@@ -299,8 +300,7 @@ namespace database
             m_databaseRequester->queryStatement(qDelete);
          }
 
-         void CDevice::removeDevice(int pluginId,
-                                    const std::string& deviceName)
+         void CDevice::removeDevice(int pluginId, const std::string& deviceName)
          {
             removeDevice(getDevice(pluginId, deviceName)->Id());
          }
