@@ -193,6 +193,11 @@ void CEnOcean::loadAllDevices()
       {
          // Don't add a not configured device to the m_devices list
       }
+      catch (std::exception& e)
+      {
+         // Don't add a wrong configured device to the m_devices list
+         std::cerr << "Error loading device from database : device " << deviceId << " is malformed (" << e.what() << "), will be ignored" << std::endl;
+      }
    }
 }
 
@@ -233,11 +238,7 @@ std::string CEnOcean::generateModel(const std::string& model,
    if (!manufacturer.empty())
       generatedModel += manufacturer + std::string(" - ");
 
-   auto rorg = CRorgs::createRorg(rorgId);
-   auto func = rorg->createFunc(funcId);
-   auto type = func->createType(typeId);
-
-   generatedModel += func->title() + " (" + type->title() + ")";
+   generatedModel += CRorgs::createRorg(rorgId)->createFunc(funcId)->createType(typeId)->title();
 
    return generatedModel;
 }
@@ -310,34 +311,17 @@ void CEnOcean::processUnConnectionEvent()
 
 std::string CEnOcean::processEventManuallyDeviceCreation(boost::shared_ptr<const shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> creation)
 {
-   auto deviceId = creation->getData().getConfiguration().get<std::string>("id");
-
-   std::string profileName;
-   shared::CDataContainer configuration;
-   try
-   {
-      const auto found = creation->getData().getConfiguration().find("profile.content",
-                                                                     [](const shared::CDataContainer& node) -> bool
-                                                                     {
-                                                                        return node.get<bool>("radio");
-                                                                     });
-      std::cout << "==> " << found.serialize() << std::endl;
-      profileName = found.getKey();
-      configuration = found.get<shared::CDataContainer>(profileName + ".content");
-   }
-   catch (shared::exception::CEmptyResult&)
-   {
-      throw std::logic_error("Selected profile is not supported");
-   }
+   auto configuration = creation->getData().getConfiguration();
+   auto deviceId = configuration.get<std::string>("id");
+   auto selectedProfile = CProfileHelper(configuration.get<std::string>("profile.activeSection"));
 
    // Declare the device
-   auto profile = CProfileHelper(profileName);
    declareDevice(deviceId,
-                 profile.rorg(),
-                 profile.func(),
-                 profile.type(),
-                 creation->getData().getConfiguration().get<std::string>("manufacturer"),
-                 creation->getData().getConfiguration().get<std::string>("model"),
+                 selectedProfile.rorg(),
+                 selectedProfile.func(),
+                 selectedProfile.type(),
+                 configuration.get<std::string>("manufacturer"),
+                 configuration.get<std::string>("model"),
                  configuration);
 
    return deviceId;
@@ -353,29 +337,27 @@ void CEnOcean::processDeviceRemmoved(boost::shared_ptr<const shared::plugin::yPl
 
 void CEnOcean::processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDeviceConfiguration> setDeviceConfigurationData)
 {
+   auto deviceId = setDeviceConfigurationData->device();
+   auto configuration = setDeviceConfigurationData->configuration();
+
    try
    {
-      auto deviceId = setDeviceConfigurationData->device();
-      auto selectedProfile = CProfileHelper(setDeviceConfigurationData->configuration().get<std::string>("configurationSchema.profile"));
-      auto manufacturer = setDeviceConfigurationData->configuration().get<std::string>("manufacturer");
-      auto model = generateModel(setDeviceConfigurationData->configuration().get<std::string>("model"),
+      auto selectedProfile = CProfileHelper(configuration.get<std::string>("profile.activeSection"));
+      auto manufacturer = configuration.get<std::string>("manufacturer");
+      auto model = generateModel(configuration.get<std::string>("model"),
                                  manufacturer,
                                  selectedProfile.rorg(),
                                  selectedProfile.func(),
                                  selectedProfile.type());
-      auto deviceConfiguration = shared::CDataContainer(); // TODO récupérer la conf
-      std::cout << "TODO : " << setDeviceConfigurationData->configuration().serialize() << std::endl;
-      return;
 
-      std::cout << "Device \"" << setDeviceConfigurationData->device() << "\" is configurated as " << selectedProfile.profile() << std::endl;
+      std::cout << "Device \"" << deviceId << "\" is configurated as " << selectedProfile.profile() << std::endl;
 
-      shared::CDataContainer configuration;
-      configuration.set("manufacturer", manufacturer);
-      configuration.set("profile", selectedProfile.profile());
-      if (!configuration.empty())
-         configuration.set("configuration", deviceConfiguration);
+      shared::CDataContainer databaseConfiguration;
+      databaseConfiguration.set("manufacturer", manufacturer);
+      databaseConfiguration.set("profile", selectedProfile.profile());
+      databaseConfiguration.set("configuration", configuration);
 
-      // If profile changed, rebuild all keywords list
+      // If profile changed, remove all existing keywords
       auto oldConfiguration = m_api->getDeviceConfiguration(deviceId);
       if (!oldConfiguration.empty() &&
          oldConfiguration.get<std::string>("profile") != selectedProfile.profile())
@@ -394,14 +376,14 @@ void CEnOcean::processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDevi
                                model);
 
       m_api->updateDeviceConfiguration(deviceId,
-                                       deviceConfiguration);
+                                       databaseConfiguration);
 
       m_devices[deviceId] = device;
-      device->sendConfiguration(deviceConfiguration);
+      device->sendConfiguration(configuration.get<shared::CDataContainer>("profile.content." + selectedProfile.profile() + ".content"));
    }
    catch (shared::exception::CEmptyResult&)
    {
-      std::cerr << "Unable to configure device : unknown device \"" << setDeviceConfigurationData->device() << "\"" << std::endl;
+      std::cerr << "Unable to configure device : unknown device \"" << deviceId << "\"" << std::endl;
    }
    catch (std::exception& e)
    {
@@ -701,8 +683,7 @@ void CEnOcean::declareDevice(const std::string& deviceId,
    shared::CDataContainer configuration;
    configuration.set("manufacturer", manufacturer);
    configuration.set("profile", profile);
-   if (!configuration.empty())
-      configuration.set("configuration", deviceConfiguration);
+   configuration.set("configuration", deviceConfiguration);
 
    if (m_devices.find(deviceId) != m_devices.end())
       throw std::logic_error("Device " + deviceId + " already exist");
@@ -715,7 +696,7 @@ void CEnOcean::declareDevice(const std::string& deviceId,
                                     configuration);
 
    m_devices[deviceId] = type;
-   type->sendConfiguration(deviceConfiguration);
+   type->sendConfiguration(configuration.get<shared::CDataContainer>("profile.content." + profile + ".content"));
 
    std::cout << "New device declared : " << std::endl;
    std::cout << "  - Id           : " << deviceId << std::endl;
@@ -735,4 +716,3 @@ void CEnOcean::requestDongleVersion()
 
    send(sendMessage);
 }
-

@@ -2,6 +2,19 @@
 #include "Profile_D2_01_12.h"
 #include "../bitsetHelpers.hpp"
 
+DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_01_12::EDefaultState, EDefaultState,
+   ((off))
+   ((on))
+   ((previousState))
+   ((notUsed))
+);
+
+DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_01_12::EConnectedSwitchsType, EConnectedSwitchsType,
+   ((switch))
+   ((pushButton))
+   ((autodetection))
+);
+
 CProfile_D2_01_12::CProfile_D2_01_12()
    : m_switch1(boost::make_shared<yApi::historization::CSwitch>("Switch 1")),
      m_switch2(boost::make_shared<yApi::historization::CSwitch>("Switch 2")),
@@ -61,6 +74,12 @@ void CProfile_D2_01_12::sendCommand(const std::string& keyword,
 
 void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceConfiguration) const
 {
+   auto localControl = deviceConfiguration.get<std::string>("localControl") == "enable";
+   auto taughtInAllDevices = deviceConfiguration.get<std::string>("taughtIn") == "allDevices";
+   auto userInterfaceDayMode = deviceConfiguration.get<std::string>("userInterfaceMode") == "dayMode";
+   auto defaultState = deviceConfiguration.get<EDefaultState>("defaultState");
+   auto connectedSwitchsType = deviceConfiguration.get<EConnectedSwitchsType>("connectedSwitchsType");
+   auto autoOffTimerSeconds = deviceConfiguration.get<unsigned int>("autoOffTimer");
+   auto delayRadioOffTimerSeconds = deviceConfiguration.get<unsigned int>("delayRadioOffTimer");
    //TODO
 }
-

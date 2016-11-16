@@ -26,51 +26,6 @@ private:
    static const std::map<unsigned int, std::string> RorgMap;
 };
 
-class CRPSTelegram : public IRorg  {
-public:
-   CRPSTelegram();
-   virtual ~CRPSTelegram();
-public:
-enum EFuncIds {
-   kRocker_Switch__2_Rocker = 0x02,
-   kRocker_Switch__4_Rocker = 0x03,
-   kPosition_Switch__Home_and_Office_Application = 0x04,
-   kDetectors = 0x05,
-   kMechanical_Handle = 0x10,
-};
-   unsigned int id() const override;
-   const std::string& title() const override;
-   const std::string& fullname() const override;
-   std::string dump(const boost::dynamic_bitset<>& erp1Data) const override;
-   bool isTeachIn(const boost::dynamic_bitset<>& erp1Data) const override;
-   bool isEepProvided(const boost::dynamic_bitset<>& erp1Data) const override;
-   boost::shared_ptr<IFunc> createFunc(unsigned int funcId) const override;
-   static CRPSTelegram::EFuncIds toFuncId(unsigned int id);
-   static const std::string& toFuncName(unsigned int id);
-protected:
-private:
-   static const std::map<unsigned int, std::string> FuncMap;
-};
-
-// Rocker_Switch__2_Rocker
-class CRPS_0x02 : public IFunc  {
-public:
-   CRPS_0x02();
-   virtual ~CRPS_0x02();
-public:
-enum ETypeIds {
-   k0x01 = 0x01,
-   k0x02 = 0x02,
-   k0x03 = 0x03,
-   k0x04 = 0x04,
-};
-   unsigned int id() const override;
-   const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
-protected:
-private:
-};
-
 class CProfile_F6_02_04 : public IType  {
 public:
    CProfile_F6_02_04();
@@ -92,15 +47,17 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-// Rocker_Switch__4_Rocker
-class CRPS_0x03 : public IFunc  {
+// Rocker_Switch__2_Rocker
+class CRPS_0x02 : public IFunc  {
 public:
-   CRPS_0x03();
-   virtual ~CRPS_0x03();
+   CRPS_0x02();
+   virtual ~CRPS_0x02();
 public:
 enum ETypeIds {
    k0x01 = 0x01,
    k0x02 = 0x02,
+   k0x03 = 0x03,
+   k0x04 = 0x04,
 };
    unsigned int id() const override;
    const std::string& title() const override;
@@ -109,11 +66,11 @@ protected:
 private:
 };
 
-// Position_Switch__Home_and_Office_Application
-class CRPS_0x04 : public IFunc  {
+// Rocker_Switch__4_Rocker
+class CRPS_0x03 : public IFunc  {
 public:
-   CRPS_0x04();
-   virtual ~CRPS_0x04();
+   CRPS_0x03();
+   virtual ~CRPS_0x03();
 public:
 enum ETypeIds {
    k0x01 = 0x01,
@@ -142,6 +99,23 @@ private:
    boost::shared_ptr<yApi::historization::CSwitch> m_EBO___Energy_Bow;
    boost::shared_ptr<yApi::historization::CSwitch> m_SOC___State_of_card;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
+};
+
+// Position_Switch__Home_and_Office_Application
+class CRPS_0x04 : public IFunc  {
+public:
+   CRPS_0x04();
+   virtual ~CRPS_0x04();
+public:
+enum ETypeIds {
+   k0x01 = 0x01,
+   k0x02 = 0x02,
+};
+   unsigned int id() const override;
+   const std::string& title() const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+protected:
+private:
 };
 
 // Detectors
@@ -177,13 +151,17 @@ protected:
 private:
 };
 
-class C1BSTelegram : public IRorg  {
+class CRPSTelegram : public IRorg  {
 public:
-   C1BSTelegram();
-   virtual ~C1BSTelegram();
+   CRPSTelegram();
+   virtual ~CRPSTelegram();
 public:
 enum EFuncIds {
-   kContacts_and_Switches = 0x00,
+   kRocker_Switch__2_Rocker = 0x02,
+   kRocker_Switch__4_Rocker = 0x03,
+   kPosition_Switch__Home_and_Office_Application = 0x04,
+   kDetectors = 0x05,
+   kMechanical_Handle = 0x10,
 };
    unsigned int id() const override;
    const std::string& title() const override;
@@ -192,27 +170,11 @@ enum EFuncIds {
    bool isTeachIn(const boost::dynamic_bitset<>& erp1Data) const override;
    bool isEepProvided(const boost::dynamic_bitset<>& erp1Data) const override;
    boost::shared_ptr<IFunc> createFunc(unsigned int funcId) const override;
-   static C1BSTelegram::EFuncIds toFuncId(unsigned int id);
+   static CRPSTelegram::EFuncIds toFuncId(unsigned int id);
    static const std::string& toFuncName(unsigned int id);
 protected:
 private:
    static const std::map<unsigned int, std::string> FuncMap;
-};
-
-// Contacts_and_Switches
-class C1BS_0x00 : public IFunc  {
-public:
-   C1BS_0x00();
-   virtual ~C1BS_0x00();
-public:
-enum ETypeIds {
-   k0x01 = 0x01,
-};
-   unsigned int id() const override;
-   const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
-protected:
-private:
 };
 
 class CProfile_D5_00_01 : public IType  {
@@ -233,29 +195,29 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-class C4BSTelegram : public IRorg  {
+// Contacts_and_Switches
+class C1BS_0x00 : public IFunc  {
 public:
-   C4BSTelegram();
-   virtual ~C4BSTelegram();
+   C1BS_0x00();
+   virtual ~C1BS_0x00();
+public:
+enum ETypeIds {
+   k0x01 = 0x01,
+};
+   unsigned int id() const override;
+   const std::string& title() const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+protected:
+private:
+};
+
+class C1BSTelegram : public IRorg  {
+public:
+   C1BSTelegram();
+   virtual ~C1BSTelegram();
 public:
 enum EFuncIds {
-   kTemperature_Sensors = 0x02,
-   kTemperature_and_Humidity_Sensor = 0x04,
-   kBarometric_Sensor = 0x05,
-   kLight_Sensor = 0x06,
-   kOccupancy_Sensor = 0x07,
-   kLight__Temperature_and_Occupancy_Sensor = 0x08,
-   kGas_Sensor = 0x09,
-   kRoom_Operating_Panel = 0x10,
-   kController_Status = 0x11,
-   kAutomated_Meter_Reading__AMR_ = 0x12,
-   kEnvironmental_Applications = 0x13,
-   kMulti_Func_Sensor = 0x14,
-   kHVAC_Components = 0x20,
-   kDigital_Input = 0x30,
-   kEnergy_Management = 0x37,
-   kCentral_Command = 0x38,
-   kUniversal = 0x3F,
+   kContacts_and_Switches = 0x00,
 };
    unsigned int id() const override;
    const std::string& title() const override;
@@ -264,51 +226,11 @@ enum EFuncIds {
    bool isTeachIn(const boost::dynamic_bitset<>& erp1Data) const override;
    bool isEepProvided(const boost::dynamic_bitset<>& erp1Data) const override;
    boost::shared_ptr<IFunc> createFunc(unsigned int funcId) const override;
-   static C4BSTelegram::EFuncIds toFuncId(unsigned int id);
+   static C1BSTelegram::EFuncIds toFuncId(unsigned int id);
    static const std::string& toFuncName(unsigned int id);
 protected:
 private:
    static const std::map<unsigned int, std::string> FuncMap;
-};
-
-// Temperature_Sensors
-class C4BS_0x02 : public IFunc  {
-public:
-   C4BS_0x02();
-   virtual ~C4BS_0x02();
-public:
-enum ETypeIds {
-   k0x01 = 0x01,
-   k0x02 = 0x02,
-   k0x03 = 0x03,
-   k0x04 = 0x04,
-   k0x05 = 0x05,
-   k0x06 = 0x06,
-   k0x07 = 0x07,
-   k0x08 = 0x08,
-   k0x09 = 0x09,
-   k0x0A = 0x0A,
-   k0x0B = 0x0B,
-   k0x10 = 0x10,
-   k0x11 = 0x11,
-   k0x12 = 0x12,
-   k0x13 = 0x13,
-   k0x14 = 0x14,
-   k0x15 = 0x15,
-   k0x16 = 0x16,
-   k0x17 = 0x17,
-   k0x18 = 0x18,
-   k0x19 = 0x19,
-   k0x1A = 0x1A,
-   k0x1B = 0x1B,
-   k0x20 = 0x20,
-   k0x30 = 0x30,
-};
-   unsigned int id() const override;
-   const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
-protected:
-private:
 };
 
 class CProfile_A5_02_01 : public IType  {
@@ -736,16 +658,38 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-// Temperature_and_Humidity_Sensor
-class C4BS_0x04 : public IFunc  {
+// Temperature_Sensors
+class C4BS_0x02 : public IFunc  {
 public:
-   C4BS_0x04();
-   virtual ~C4BS_0x04();
+   C4BS_0x02();
+   virtual ~C4BS_0x02();
 public:
 enum ETypeIds {
    k0x01 = 0x01,
    k0x02 = 0x02,
    k0x03 = 0x03,
+   k0x04 = 0x04,
+   k0x05 = 0x05,
+   k0x06 = 0x06,
+   k0x07 = 0x07,
+   k0x08 = 0x08,
+   k0x09 = 0x09,
+   k0x0A = 0x0A,
+   k0x0B = 0x0B,
+   k0x10 = 0x10,
+   k0x11 = 0x11,
+   k0x12 = 0x12,
+   k0x13 = 0x13,
+   k0x14 = 0x14,
+   k0x15 = 0x15,
+   k0x16 = 0x16,
+   k0x17 = 0x17,
+   k0x18 = 0x18,
+   k0x19 = 0x19,
+   k0x1A = 0x1A,
+   k0x1B = 0x1B,
+   k0x20 = 0x20,
+   k0x30 = 0x30,
 };
    unsigned int id() const override;
    const std::string& title() const override;
@@ -811,14 +755,16 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-// Barometric_Sensor
-class C4BS_0x05 : public IFunc  {
+// Temperature_and_Humidity_Sensor
+class C4BS_0x04 : public IFunc  {
 public:
-   C4BS_0x05();
-   virtual ~C4BS_0x05();
+   C4BS_0x04();
+   virtual ~C4BS_0x04();
 public:
 enum ETypeIds {
    k0x01 = 0x01,
+   k0x02 = 0x02,
+   k0x03 = 0x03,
 };
    unsigned int id() const override;
    const std::string& title() const override;
@@ -845,18 +791,14 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-// Light_Sensor
-class C4BS_0x06 : public IFunc  {
+// Barometric_Sensor
+class C4BS_0x05 : public IFunc  {
 public:
-   C4BS_0x06();
-   virtual ~C4BS_0x06();
+   C4BS_0x05();
+   virtual ~C4BS_0x05();
 public:
 enum ETypeIds {
    k0x01 = 0x01,
-   k0x02 = 0x02,
-   k0x03 = 0x03,
-   k0x04 = 0x04,
-   k0x05 = 0x05,
 };
    unsigned int id() const override;
    const std::string& title() const override;
@@ -962,16 +904,18 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-// Occupancy_Sensor
-class C4BS_0x07 : public IFunc  {
+// Light_Sensor
+class C4BS_0x06 : public IFunc  {
 public:
-   C4BS_0x07();
-   virtual ~C4BS_0x07();
+   C4BS_0x06();
+   virtual ~C4BS_0x06();
 public:
 enum ETypeIds {
    k0x01 = 0x01,
    k0x02 = 0x02,
    k0x03 = 0x03,
+   k0x04 = 0x04,
+   k0x05 = 0x05,
 };
    unsigned int id() const override;
    const std::string& title() const override;
@@ -1032,11 +976,11 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-// Light__Temperature_and_Occupancy_Sensor
-class C4BS_0x08 : public IFunc  {
+// Occupancy_Sensor
+class C4BS_0x07 : public IFunc  {
 public:
-   C4BS_0x08();
-   virtual ~C4BS_0x08();
+   C4BS_0x07();
+   virtual ~C4BS_0x07();
 public:
 enum ETypeIds {
    k0x01 = 0x01,
@@ -1113,22 +1057,16 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-// Gas_Sensor
-class C4BS_0x09 : public IFunc  {
+// Light__Temperature_and_Occupancy_Sensor
+class C4BS_0x08 : public IFunc  {
 public:
-   C4BS_0x09();
-   virtual ~C4BS_0x09();
+   C4BS_0x08();
+   virtual ~C4BS_0x08();
 public:
 enum ETypeIds {
+   k0x01 = 0x01,
    k0x02 = 0x02,
-   k0x04 = 0x04,
-   k0x05 = 0x05,
-   k0x06 = 0x06,
-   k0x07 = 0x07,
-   k0x08 = 0x08,
-   k0x09 = 0x09,
-   k0x0A = 0x0A,
-   k0x0B = 0x0B,
+   k0x03 = 0x03,
 };
    unsigned int id() const override;
    const std::string& title() const override;
@@ -1366,16 +1304,14 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-// Room_Operating_Panel
-class C4BS_0x10 : public IFunc  {
+// Gas_Sensor
+class C4BS_0x09 : public IFunc  {
 public:
-   C4BS_0x10();
-   virtual ~C4BS_0x10();
+   C4BS_0x09();
+   virtual ~C4BS_0x09();
 public:
 enum ETypeIds {
-   k0x01 = 0x01,
    k0x02 = 0x02,
-   k0x03 = 0x03,
    k0x04 = 0x04,
    k0x05 = 0x05,
    k0x06 = 0x06,
@@ -1384,28 +1320,6 @@ enum ETypeIds {
    k0x09 = 0x09,
    k0x0A = 0x0A,
    k0x0B = 0x0B,
-   k0x0C = 0x0C,
-   k0x0D = 0x0D,
-   k0x10 = 0x10,
-   k0x11 = 0x11,
-   k0x12 = 0x12,
-   k0x13 = 0x13,
-   k0x14 = 0x14,
-   k0x15 = 0x15,
-   k0x16 = 0x16,
-   k0x17 = 0x17,
-   k0x18 = 0x18,
-   k0x19 = 0x19,
-   k0x1A = 0x1A,
-   k0x1B = 0x1B,
-   k0x1C = 0x1C,
-   k0x1D = 0x1D,
-   k0x1E = 0x1E,
-   k0x1F = 0x1F,
-   k0x20 = 0x20,
-   k0x21 = 0x21,
-   k0x22 = 0x22,
-   k0x23 = 0x23,
 };
    unsigned int id() const override;
    const std::string& title() const override;
@@ -2177,11 +2091,11 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-// Controller_Status
-class C4BS_0x11 : public IFunc  {
+// Room_Operating_Panel
+class C4BS_0x10 : public IFunc  {
 public:
-   C4BS_0x11();
-   virtual ~C4BS_0x11();
+   C4BS_0x10();
+   virtual ~C4BS_0x10();
 public:
 enum ETypeIds {
    k0x01 = 0x01,
@@ -2189,6 +2103,34 @@ enum ETypeIds {
    k0x03 = 0x03,
    k0x04 = 0x04,
    k0x05 = 0x05,
+   k0x06 = 0x06,
+   k0x07 = 0x07,
+   k0x08 = 0x08,
+   k0x09 = 0x09,
+   k0x0A = 0x0A,
+   k0x0B = 0x0B,
+   k0x0C = 0x0C,
+   k0x0D = 0x0D,
+   k0x10 = 0x10,
+   k0x11 = 0x11,
+   k0x12 = 0x12,
+   k0x13 = 0x13,
+   k0x14 = 0x14,
+   k0x15 = 0x15,
+   k0x16 = 0x16,
+   k0x17 = 0x17,
+   k0x18 = 0x18,
+   k0x19 = 0x19,
+   k0x1A = 0x1A,
+   k0x1B = 0x1B,
+   k0x1C = 0x1C,
+   k0x1D = 0x1D,
+   k0x1E = 0x1E,
+   k0x1F = 0x1F,
+   k0x20 = 0x20,
+   k0x21 = 0x21,
+   k0x22 = 0x22,
+   k0x23 = 0x23,
 };
    unsigned int id() const override;
    const std::string& title() const override;
@@ -2428,20 +2370,18 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-// Automated_Meter_Reading__AMR_
-class C4BS_0x12 : public IFunc  {
+// Controller_Status
+class C4BS_0x11 : public IFunc  {
 public:
-   C4BS_0x12();
-   virtual ~C4BS_0x12();
+   C4BS_0x11();
+   virtual ~C4BS_0x11();
 public:
 enum ETypeIds {
-   k0x00 = 0x00,
    k0x01 = 0x01,
    k0x02 = 0x02,
    k0x03 = 0x03,
    k0x04 = 0x04,
    k0x05 = 0x05,
-   k0x10 = 0x10,
 };
    unsigned int id() const override;
    const std::string& title() const override;
@@ -2705,21 +2645,19 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-// Environmental_Applications
-class C4BS_0x13 : public IFunc  {
+// Automated_Meter_Reading__AMR_
+class C4BS_0x12 : public IFunc  {
 public:
-   C4BS_0x13();
-   virtual ~C4BS_0x13();
+   C4BS_0x12();
+   virtual ~C4BS_0x12();
 public:
 enum ETypeIds {
+   k0x00 = 0x00,
    k0x01 = 0x01,
    k0x02 = 0x02,
    k0x03 = 0x03,
    k0x04 = 0x04,
    k0x05 = 0x05,
-   k0x06 = 0x06,
-   k0x07 = 0x07,
-   k0x08 = 0x08,
    k0x10 = 0x10,
 };
    unsigned int id() const override;
@@ -2907,11 +2845,11 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-// Multi_Func_Sensor
-class C4BS_0x14 : public IFunc  {
+// Environmental_Applications
+class C4BS_0x13 : public IFunc  {
 public:
-   C4BS_0x14();
-   virtual ~C4BS_0x14();
+   C4BS_0x13();
+   virtual ~C4BS_0x13();
 public:
 enum ETypeIds {
    k0x01 = 0x01,
@@ -2920,6 +2858,9 @@ enum ETypeIds {
    k0x04 = 0x04,
    k0x05 = 0x05,
    k0x06 = 0x06,
+   k0x07 = 0x07,
+   k0x08 = 0x08,
+   k0x10 = 0x10,
 };
    unsigned int id() const override;
    const std::string& title() const override;
@@ -3041,20 +2982,19 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-// HVAC_Components
-class C4BS_0x20 : public IFunc  {
+// Multi_Func_Sensor
+class C4BS_0x14 : public IFunc  {
 public:
-   C4BS_0x20();
-   virtual ~C4BS_0x20();
+   C4BS_0x14();
+   virtual ~C4BS_0x14();
 public:
 enum ETypeIds {
    k0x01 = 0x01,
    k0x02 = 0x02,
    k0x03 = 0x03,
    k0x04 = 0x04,
-   k0x10 = 0x10,
-   k0x11 = 0x11,
-   k0x12 = 0x12,
+   k0x05 = 0x05,
+   k0x06 = 0x06,
 };
    unsigned int id() const override;
    const std::string& title() const override;
@@ -3138,18 +3078,20 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-// Digital_Input
-class C4BS_0x30 : public IFunc  {
+// HVAC_Components
+class C4BS_0x20 : public IFunc  {
 public:
-   C4BS_0x30();
-   virtual ~C4BS_0x30();
+   C4BS_0x20();
+   virtual ~C4BS_0x20();
 public:
 enum ETypeIds {
    k0x01 = 0x01,
    k0x02 = 0x02,
    k0x03 = 0x03,
    k0x04 = 0x04,
-   k0x05 = 0x05,
+   k0x10 = 0x10,
+   k0x11 = 0x11,
+   k0x12 = 0x12,
 };
    unsigned int id() const override;
    const std::string& title() const override;
@@ -3234,14 +3176,18 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-// Energy_Management
-class C4BS_0x37 : public IFunc  {
+// Digital_Input
+class C4BS_0x30 : public IFunc  {
 public:
-   C4BS_0x37();
-   virtual ~C4BS_0x37();
+   C4BS_0x30();
+   virtual ~C4BS_0x30();
 public:
 enum ETypeIds {
    k0x01 = 0x01,
+   k0x02 = 0x02,
+   k0x03 = 0x03,
+   k0x04 = 0x04,
+   k0x05 = 0x05,
 };
    unsigned int id() const override;
    const std::string& title() const override;
@@ -3270,15 +3216,14 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-// Central_Command
-class C4BS_0x38 : public IFunc  {
+// Energy_Management
+class C4BS_0x37 : public IFunc  {
 public:
-   C4BS_0x38();
-   virtual ~C4BS_0x38();
+   C4BS_0x37();
+   virtual ~C4BS_0x37();
 public:
 enum ETypeIds {
-   k0x08 = 0x08,
-   k0x09 = 0x09,
+   k0x01 = 0x01,
 };
    unsigned int id() const override;
    const std::string& title() const override;
@@ -3333,6 +3278,23 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
+// Central_Command
+class C4BS_0x38 : public IFunc  {
+public:
+   C4BS_0x38();
+   virtual ~C4BS_0x38();
+public:
+enum ETypeIds {
+   k0x08 = 0x08,
+   k0x09 = 0x09,
+};
+   unsigned int id() const override;
+   const std::string& title() const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+protected:
+private:
+};
+
 // Universal
 class C4BS_0x3F : public IFunc  {
 public:
@@ -3350,28 +3312,29 @@ protected:
 private:
 };
 
-class CVLDTelegram : public IRorg  {
+class C4BSTelegram : public IRorg  {
 public:
-   CVLDTelegram();
-   virtual ~CVLDTelegram();
+   C4BSTelegram();
+   virtual ~C4BSTelegram();
 public:
 enum EFuncIds {
-   kRoom_Control_Panel__RCP_ = 0x00,
-   kElectronic_switches_and_dimmers_with_Energy_Measurement_and_Local_Control = 0x01,
-   kSensors_for_Temperature__Illumination__Occupancy_And_Smoke = 0x02,
-   kLight__Switching__plus__Blind_Control = 0x03,
-   kCO2__Humidity__Temperature__Day_Night_and_Autonomy = 0x04,
-   kBlinds_Control_for_Position_and_Angle = 0x05,
-   kMultisensor_Window_Handle = 0x06,
-   kRoom_Control_Panels_with_Temperature__and__Fan_Speed_Control__Room_Status_Information_and_Time_Program = 0x10,
-   kBidirectional_Room_Operating_Panel = 0x11,
-   kFan_Control = 0x20,
-   kFloor_Heating_Controls_and_Automated_Meter_Reading = 0x30,
-   kAutomated_Meter_Reading_Gateway = 0x31,
-   kA_C__Current_Clamp = 0x32,
-   kLED_Controller_Status = 0x40,
-   kHeat_Recovery_Ventilation = 0x50,
-   kStandard_Valve = 0xA0,
+   kTemperature_Sensors = 0x02,
+   kTemperature_and_Humidity_Sensor = 0x04,
+   kBarometric_Sensor = 0x05,
+   kLight_Sensor = 0x06,
+   kOccupancy_Sensor = 0x07,
+   kLight__Temperature_and_Occupancy_Sensor = 0x08,
+   kGas_Sensor = 0x09,
+   kRoom_Operating_Panel = 0x10,
+   kController_Status = 0x11,
+   kAutomated_Meter_Reading__AMR_ = 0x12,
+   kEnvironmental_Applications = 0x13,
+   kMulti_Func_Sensor = 0x14,
+   kHVAC_Components = 0x20,
+   kDigital_Input = 0x30,
+   kEnergy_Management = 0x37,
+   kCentral_Command = 0x38,
+   kUniversal = 0x3F,
 };
    unsigned int id() const override;
    const std::string& title() const override;
@@ -3380,7 +3343,7 @@ enum EFuncIds {
    bool isTeachIn(const boost::dynamic_bitset<>& erp1Data) const override;
    bool isEepProvided(const boost::dynamic_bitset<>& erp1Data) const override;
    boost::shared_ptr<IFunc> createFunc(unsigned int funcId) const override;
-   static CVLDTelegram::EFuncIds toFuncId(unsigned int id);
+   static C4BSTelegram::EFuncIds toFuncId(unsigned int id);
    static const std::string& toFuncName(unsigned int id);
 protected:
 private:
@@ -3455,24 +3418,6 @@ protected:
 private:
 };
 
-// Light__Switching__plus__Blind_Control
-class CVLD_0x03 : public IFunc  {
-public:
-   CVLD_0x03();
-   virtual ~CVLD_0x03();
-public:
-enum ETypeIds {
-   k0x00 = 0x00,
-   k0x10 = 0x10,
-   k0x20 = 0x20,
-};
-   unsigned int id() const override;
-   const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
-protected:
-private:
-};
-
 class CProfile_D2_03_20 : public IType  {
 public:
    CProfile_D2_03_20();
@@ -3490,29 +3435,16 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-// CO2__Humidity__Temperature__Day_Night_and_Autonomy
-class CVLD_0x04 : public IFunc  {
+// Light__Switching__plus__Blind_Control
+class CVLD_0x03 : public IFunc  {
 public:
-   CVLD_0x04();
-   virtual ~CVLD_0x04();
+   CVLD_0x03();
+   virtual ~CVLD_0x03();
 public:
 enum ETypeIds {
    k0x00 = 0x00,
-   k0x01 = 0x01,
-   k0x02 = 0x02,
-   k0x03 = 0x03,
-   k0x04 = 0x04,
-   k0x05 = 0x05,
-   k0x06 = 0x06,
-   k0x07 = 0x07,
-   k0x08 = 0x08,
-   k0x09 = 0x09,
    k0x10 = 0x10,
-   k0x1A = 0x1A,
-   k0x1B = 0x1B,
-   k0x1C = 0x1C,
-   k0x1D = 0x1D,
-   k0x1E = 0x1E,
+   k0x20 = 0x20,
 };
    unsigned int id() const override;
    const std::string& title() const override;
@@ -3560,6 +3492,37 @@ private:
    boost::shared_ptr<yApi::historization::CSwitch> m_DN___Day_Night;
    boost::shared_ptr<CType_0x00_Battery_autonomyHistorizer> m_BA___Battery_autonomy;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
+};
+
+// CO2__Humidity__Temperature__Day_Night_and_Autonomy
+class CVLD_0x04 : public IFunc  {
+public:
+   CVLD_0x04();
+   virtual ~CVLD_0x04();
+public:
+enum ETypeIds {
+   k0x00 = 0x00,
+   k0x01 = 0x01,
+   k0x02 = 0x02,
+   k0x03 = 0x03,
+   k0x04 = 0x04,
+   k0x05 = 0x05,
+   k0x06 = 0x06,
+   k0x07 = 0x07,
+   k0x08 = 0x08,
+   k0x09 = 0x09,
+   k0x10 = 0x10,
+   k0x1A = 0x1A,
+   k0x1B = 0x1B,
+   k0x1C = 0x1C,
+   k0x1D = 0x1D,
+   k0x1E = 0x1E,
+};
+   unsigned int id() const override;
+   const std::string& title() const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+protected:
+private:
 };
 
 // Blinds_Control_for_Position_and_Angle
@@ -3692,24 +3655,6 @@ protected:
 private:
 };
 
-// A_C__Current_Clamp
-class CVLD_0x32 : public IFunc  {
-public:
-   CVLD_0x32();
-   virtual ~CVLD_0x32();
-public:
-enum ETypeIds {
-   k0x00 = 0x00,
-   k0x01 = 0x01,
-   k0x02 = 0x02,
-};
-   unsigned int id() const override;
-   const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
-protected:
-private:
-};
-
 class CProfile_D2_32_00 : public IType  {
 public:
    CProfile_D2_32_00();
@@ -3764,15 +3709,16 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
-// LED_Controller_Status
-class CVLD_0x40 : public IFunc  {
+// A_C__Current_Clamp
+class CVLD_0x32 : public IFunc  {
 public:
-   CVLD_0x40();
-   virtual ~CVLD_0x40();
+   CVLD_0x32();
+   virtual ~CVLD_0x32();
 public:
 enum ETypeIds {
    k0x00 = 0x00,
    k0x01 = 0x01,
+   k0x02 = 0x02,
 };
    unsigned int id() const override;
    const std::string& title() const override;
@@ -3855,6 +3801,23 @@ private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 
+// LED_Controller_Status
+class CVLD_0x40 : public IFunc  {
+public:
+   CVLD_0x40();
+   virtual ~CVLD_0x40();
+public:
+enum ETypeIds {
+   k0x00 = 0x00,
+   k0x01 = 0x01,
+};
+   unsigned int id() const override;
+   const std::string& title() const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+protected:
+private:
+};
+
 // Heat_Recovery_Ventilation
 class CVLD_0x50 : public IFunc  {
 public:
@@ -3888,12 +3851,40 @@ protected:
 private:
 };
 
-class CProfilesList {
+class CVLDTelegram : public IRorg  {
 public:
-   virtual ~CProfilesList();
+   CVLDTelegram();
+   virtual ~CVLDTelegram();
 public:
-   static const std::vector<std::string>& list();
+enum EFuncIds {
+   kRoom_Control_Panel__RCP_ = 0x00,
+   kElectronic_switches_and_dimmers_with_Energy_Measurement_and_Local_Control = 0x01,
+   kSensors_for_Temperature__Illumination__Occupancy_And_Smoke = 0x02,
+   kLight__Switching__plus__Blind_Control = 0x03,
+   kCO2__Humidity__Temperature__Day_Night_and_Autonomy = 0x04,
+   kBlinds_Control_for_Position_and_Angle = 0x05,
+   kMultisensor_Window_Handle = 0x06,
+   kRoom_Control_Panels_with_Temperature__and__Fan_Speed_Control__Room_Status_Information_and_Time_Program = 0x10,
+   kBidirectional_Room_Operating_Panel = 0x11,
+   kFan_Control = 0x20,
+   kFloor_Heating_Controls_and_Automated_Meter_Reading = 0x30,
+   kAutomated_Meter_Reading_Gateway = 0x31,
+   kA_C__Current_Clamp = 0x32,
+   kLED_Controller_Status = 0x40,
+   kHeat_Recovery_Ventilation = 0x50,
+   kStandard_Valve = 0xA0,
+};
+   unsigned int id() const override;
+   const std::string& title() const override;
+   const std::string& fullname() const override;
+   std::string dump(const boost::dynamic_bitset<>& erp1Data) const override;
+   bool isTeachIn(const boost::dynamic_bitset<>& erp1Data) const override;
+   bool isEepProvided(const boost::dynamic_bitset<>& erp1Data) const override;
+   boost::shared_ptr<IFunc> createFunc(unsigned int funcId) const override;
+   static CVLDTelegram::EFuncIds toFuncId(unsigned int id);
+   static const std::string& toFuncName(unsigned int id);
 protected:
 private:
+   static const std::map<unsigned int, std::string> FuncMap;
 };
 

@@ -10,6 +10,7 @@ import string
 import codecs
 import re
 import json
+import copy
 
 import cppClass
 import cppHelper
@@ -35,7 +36,9 @@ profilePath = os.path.dirname(xmlInputFilePath)
 
 #-------------------------------------------------------------------------------
 cppTypes = []
-supportedProfiles = []
+hardCodedProfiles = cppHelper.HardCodedProfiles(profilePath)
+# Supported profiles are at least composed of hard coded profiles
+supportedProfiles = copy.deepcopy(hardCodedProfiles.getProfilesHardCoded())
 
 
 #-------------------------------------------------------------------------------
@@ -43,6 +46,8 @@ xmlRootNode = xml.etree.ElementTree.parse(xmlInputFilePath).getroot()
 if xmlRootNode.tag != "eep":
    raise Exception("getAllNodes : Invalid root \"" + xmlRootNode.tag + "\", \"eep\" expected")
 xmlProfileNode = xmlRootNode.find("profile")
+
+util.info("Hard-coded profiles are : " + str(hardCodedProfiles.getProfilesHardCoded()))
 
 
 
@@ -81,132 +86,20 @@ rorgsClass.addMethod(cppClass.CppMethod("createRorg", "boost::shared_ptr<IRorg>"
 
 
 
+#------------------------------------------------------------------------
 # Create each Rorg telegram class
 for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
-   # Rorg telegram cppTypes
-   rorgClassName = "C" + xmlRorgNode.find("telegram").text + "Telegram"
-   rorgClass = cppClass.CppClass(rorgClassName)
-   rorgClass.inheritFrom("IRorg", cppClass.PUBLIC)
-   cppTypes.append(rorgClass)
-   rorgClass.addSubType(cppClass.CppEnumType("EFuncIds", xmlHelper.getEnumValues(inNode=xmlRorgNode, foreachSubNode="func", enumValueNameTag="title", enumValueTag="number"), cppClass.PUBLIC))
-   rorgClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   return " + xmlRorgNode.find("number").text + ";"))
-   rorgClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, \
-      "   static const std::string title(\"" + xmlRorgNode.find("title").text + "\");\n" \
-      "   return title;"))
-   rorgClass.addMethod(cppClass.CppMethod("fullname", "const std::string&", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, \
-      "   static const std::string fullname(\"" + xmlRorgNode.find("fullname").text + "\");\n" \
-      "   return fullname;"))
-   rorgClass.addMethod(cppClass.CppMethod("dump", "std::string", "const boost::dynamic_bitset<>& erp1Data", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, \
-      "   std::stringstream ss;\n" \
-      "   ss << std::setfill('0') << std::setw(2) << std::hex;\n" \
-      "   for (size_t bit = 0; bit < erp1Data.count(); ++bit)\n" \
-      "      ss << erp1Data[bit] << \" \";\n" \
-      "   return ss.str();")) # TODO dumper en bytes
-
-   def isTeachInCode(xmlRorgNode):
-      if xmlRorgNode.find("teachin") is None:
-         return "   return false;"
-      for teachinCase in xmlRorgNode.findall("teachin/type/case"):
-         lrnBitDatafieldNode = teachinCase.find("./datafield[data='LRN Bit']")
-         if lrnBitDatafieldNode is None:
-            return "   return false;"
-         offset = lrnBitDatafieldNode.find("bitoffs").text
-         if lrnBitDatafieldNode.find("bitsize").text != "1":
-            util.error(xmlRorgNode.find("telegram").text + " telegram : teachin LRN Bit wrong size, expected 1")
-         teachInValue = xmlHelper.findInDatafield(datafieldXmlNode=lrnBitDatafieldNode, select="value", where="description", equals="Teach-in telegram")
-         return "   return erp1Data[" + offset + "] == " + teachInValue + ";\n"
-      return "   return false;"
-   rorgClass.addMethod(cppClass.CppMethod("isTeachIn", "bool", "const boost::dynamic_bitset<>& erp1Data", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, isTeachInCode(xmlRorgNode)))
-
-   def isEepProvidedCode(xmlRorgNode):
-      if xmlRorgNode.find("teachin") is None:
-         return "   return false;"
-      teachinType = xmlRorgNode.find("teachin/type")
-      if teachinType is None:
-         return "   return false;"
-      variation2CaseNode = teachinType.find("./case[title='Variation 2']")
-      if variation2CaseNode is None:
-         return "   return false;"
-      lrnTypeDatafieldNode = variation2CaseNode.find("./datafield[data='LRN Type']")
-      if lrnTypeDatafieldNode is None:
-         util.error(xmlRorgNode.find("telegram").text + " teachin variation 2, \"LRN Type\" bit description not found")
-      offset = lrnTypeDatafieldNode.find("bitoffs").text
-      if lrnTypeDatafieldNode.find("bitsize").text != "1":
-         util.error(xmlRorgNode.find("telegram").text + " telegram : teachin LRN Type wrong size, expected 1")
-      eepProvidedValue = xmlHelper.findInDatafield(datafieldXmlNode=lrnTypeDatafieldNode, select="value", where="description", equals="telegram with EEP number and Manufacturer ID")
-      return "   return erp1Data[" + offset + "] == " + eepProvidedValue + ";\n"
-   rorgClass.addMethod(cppClass.CppMethod("isEepProvided", "bool", "const boost::dynamic_bitset<>& erp1Data", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, isEepProvidedCode(xmlRorgNode)))
-
-   def createFuncCode(xmlRorgNode):
-      code = "   switch(static_cast<EFuncIds>(funcId))\n"
-      code += "   {\n"
-      for xmlFuncNode in xmlRorgNode.findall("func"):
-         enumValue = cppHelper.toEnumValueName(xmlFuncNode.find("title").text)
-         className = "C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("number").text)
-         code += "   case " + enumValue + ": return boost::make_shared<" + className + ">();\n"
-      code += "   default : throw std::out_of_range(\"Invalid EFuncIds\");\n"
-      code += "   }\n"
-      return code
-   rorgClass.addMethod(cppClass.CppMethod("createFunc", "boost::shared_ptr<IFunc>", "unsigned int funcId", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, createFuncCode(xmlRorgNode)))
-
-
-
-   rorgClass.addMember(cppClass.CppMember("FuncMap", "std::map<unsigned int, std::string>", cppClass.PRIVATE, cppClass.STATIC | cppClass.CONST, \
-      cppHelper.getMapInitCode(xmlHelper.getEnumValues(inNode=xmlRorgNode, foreachSubNode="func", enumValueNameTag="title"))))
-   rorgClass.addMethod(cppClass.CppMethod("toFuncId", rorgClassName + "::EFuncIds", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, \
-      "   if (FuncMap.find(id) == FuncMap.end())\n" \
-      "      throw std::out_of_range(\"Unknown func\");\n" \
-      "   return static_cast<EFuncIds>(id);\n"))
-   rorgClass.addMethod(cppClass.CppMethod("toFuncName", "const std::string&", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, \
-      "   try {\n" \
-      "      return FuncMap.at(id);\n" \
-      "   } catch(std::out_of_range&) {\n" \
-      "      static const std::string UnknownFunc(\"Unknown func\");\n" \
-      "      return UnknownFunc;\n" \
-      "   }"))
-
-
+   #------------------------------------------------------------------------
    # Func cppTypes
    for xmlFuncNode in xmlRorgNode.findall("func"):
-      funcClass = cppClass.CppClass("C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("number").text))
-      funcClass.addComment(cppHelper.toCppName(xmlFuncNode.find("title").text))
-      funcClass.inheritFrom("IFunc", cppClass.PUBLIC)
-      cppTypes.append(funcClass)
-      funcClass.addSubType(cppClass.CppEnumType("ETypeIds", xmlHelper.getEnumValues(inNode=xmlFuncNode, foreachSubNode="type", enumValueNameTag="number", enumValueTag="number"), cppClass.PUBLIC))
-      funcClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, "   return " + xmlFuncNode.find("number").text + ";"))
-      funcClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, \
-         "   static const std::string title(\"" + xmlFuncNode.find("title").text + "\");\n" \
-         "   return title;"))
 
-      def createTypeCode(xmlRorgNode, xmlFuncNode):
-         itemNumber = 0
-         for xmlTypeNode in xmlFuncNode.findall("type"):
-            if profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode) in supportedProfiles:
-               itemNumber += 1
-         if itemNumber == 0:
-            return "   throw std::out_of_range(\"Invalid EFuncIds\");"
-
-         code = "   switch(static_cast<ETypeIds>(typeId))\n"
-         code += "   {\n"
-         for xmlTypeNode in xmlFuncNode.findall("type"):
-            if profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode) not in supportedProfiles:
-               continue
-            enumValue = cppHelper.toEnumValueName(xmlTypeNode.find("number").text)
-            className = cppHelper.toCppName("CProfile_" + profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode))
-            code += "   case " + enumValue + ": return boost::make_shared<" + className + ">();\n"
-         code += "   default : throw std::out_of_range(\"Invalid EFuncIds\");\n"
-         code += "   }"
-         return code
-      funcClass.addMethod(cppClass.CppMethod("createType", "boost::shared_ptr<IType>", "unsigned int typeId", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, createTypeCode(xmlRorgNode, xmlFuncNode)))
-
-
-
+      #------------------------------------------------------------------------
       # Type cppTypes
       for xmlTypeNode in xmlFuncNode.findall("type"):
-         typeClassName = cppHelper.toCppName("CProfile_" + profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode))
-         supportedProfiles.append(profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode))
-         if cppHelper.isTypeHardCoded(typeClassName, profilePath):
+         profileName = profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode)
+         typeClassName = cppHelper.toCppName("CProfile_" + profileName)
+         if hardCodedProfiles.isProfileHardCoded(profileName):
             util.info(typeClassName + " is hard-coded, nothing to do")
             continue
          typeClass = cppClass.CppClass(typeClassName)
@@ -319,7 +212,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             "   static const std::string title(\"" + xmlTypeNode.find("title").text + "\");\n" \
             "   return title;"))
          typeClass.addMethod(cppClass.CppMethod("allHistorizers", "std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   return m_historizers;"))
-         typeClass.addMethod(cppClass.CppMethod("sendConfiguration", "void", "const shared::CDataContainer& deviceConfiguration", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   throw std::logic_error(\"device supports no configuration\");"))
+         typeClass.addMethod(cppClass.CppMethod("sendConfiguration", "void", "const shared::CDataContainer& deviceConfiguration", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   // Device supports no configuration"))
          typeClass.addMethod(cppClass.CppMethod("sendCommand", "void", "const std::string& keyword, const std::string& commandBody", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   throw std::logic_error(\"device supports no command sending\");"))
 
          if not historizersCppName:
@@ -384,6 +277,125 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
          typeClass.addMethod(cppClass.CppMethod("states", "std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >", "const boost::dynamic_bitset<>& data", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, statesCode(xmlTypeNode)))
          cppTypes.append(typeClass)
+         supportedProfiles.append(profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode))
+
+
+
+      # Func (continuation...)
+      funcClass = cppClass.CppClass("C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("number").text))
+      funcClass.addComment(cppHelper.toCppName(xmlFuncNode.find("title").text))
+      funcClass.inheritFrom("IFunc", cppClass.PUBLIC)
+      cppTypes.append(funcClass)
+      funcClass.addSubType(cppClass.CppEnumType("ETypeIds", xmlHelper.getEnumValues(inNode=xmlFuncNode, foreachSubNode="type", enumValueNameTag="number", enumValueTag="number"), cppClass.PUBLIC))
+      funcClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, "   return " + xmlFuncNode.find("number").text + ";"))
+      funcClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, \
+         "   static const std::string title(\"" + xmlFuncNode.find("title").text + "\");\n" \
+         "   return title;"))
+
+      def createTypeCode(xmlRorgNode, xmlFuncNode):
+         itemNumber = 0
+         for xmlTypeNode in xmlFuncNode.findall("type"):
+            if profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode) in supportedProfiles:
+               itemNumber += 1
+         if itemNumber == 0:
+            return "   throw std::out_of_range(\"Invalid EFuncIds\");"
+
+         code = "   switch(static_cast<ETypeIds>(typeId))\n"
+         code += "   {\n"
+         for xmlTypeNode in xmlFuncNode.findall("type"):
+            if profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode) not in supportedProfiles:
+               continue
+            enumValue = cppHelper.toEnumValueName(xmlTypeNode.find("number").text)
+            className = cppHelper.toCppName("CProfile_" + profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode))
+            code += "   case " + enumValue + ": return boost::make_shared<" + className + ">();\n"
+         code += "   default : throw std::out_of_range(\"Invalid EFuncIds\");\n"
+         code += "   }"
+         return code
+      funcClass.addMethod(cppClass.CppMethod("createType", "boost::shared_ptr<IType>", "unsigned int typeId", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, createTypeCode(xmlRorgNode, xmlFuncNode)))
+
+
+   #------------------------------------------------------------------------
+   # Rorg (continuation...)
+   rorgClassName = "C" + xmlRorgNode.find("telegram").text + "Telegram"
+   rorgClass = cppClass.CppClass(rorgClassName)
+   rorgClass.inheritFrom("IRorg", cppClass.PUBLIC)
+   cppTypes.append(rorgClass)
+   rorgClass.addSubType(cppClass.CppEnumType("EFuncIds", xmlHelper.getEnumValues(inNode=xmlRorgNode, foreachSubNode="func", enumValueNameTag="title", enumValueTag="number"), cppClass.PUBLIC))
+   rorgClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   return " + xmlRorgNode.find("number").text + ";"))
+   rorgClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, \
+      "   static const std::string title(\"" + xmlRorgNode.find("title").text + "\");\n" \
+      "   return title;"))
+   rorgClass.addMethod(cppClass.CppMethod("fullname", "const std::string&", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, \
+      "   static const std::string fullname(\"" + xmlRorgNode.find("fullname").text + "\");\n" \
+      "   return fullname;"))
+   rorgClass.addMethod(cppClass.CppMethod("dump", "std::string", "const boost::dynamic_bitset<>& erp1Data", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, \
+      "   std::stringstream ss;\n" \
+      "   ss << std::setfill('0') << std::setw(2) << std::hex;\n" \
+      "   for (size_t bit = 0; bit < erp1Data.count(); ++bit)\n" \
+      "      ss << erp1Data[bit] << \" \";\n" \
+      "   return ss.str();")) # TODO dumper en bytes
+
+   def isTeachInCode(xmlRorgNode):
+      if xmlRorgNode.find("teachin") is None:
+         return "   return false;"
+      for teachinCase in xmlRorgNode.findall("teachin/type/case"):
+         lrnBitDatafieldNode = teachinCase.find("./datafield[data='LRN Bit']")
+         if lrnBitDatafieldNode is None:
+            return "   return false;"
+         offset = lrnBitDatafieldNode.find("bitoffs").text
+         if lrnBitDatafieldNode.find("bitsize").text != "1":
+            util.error(xmlRorgNode.find("telegram").text + " telegram : teachin LRN Bit wrong size, expected 1")
+         teachInValue = xmlHelper.findInDatafield(datafieldXmlNode=lrnBitDatafieldNode, select="value", where="description", equals="Teach-in telegram")
+         return "   return erp1Data[" + offset + "] == " + teachInValue + ";\n"
+      return "   return false;"
+   rorgClass.addMethod(cppClass.CppMethod("isTeachIn", "bool", "const boost::dynamic_bitset<>& erp1Data", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, isTeachInCode(xmlRorgNode)))
+
+   def isEepProvidedCode(xmlRorgNode):
+      if xmlRorgNode.find("teachin") is None:
+         return "   return false;"
+      teachinType = xmlRorgNode.find("teachin/type")
+      if teachinType is None:
+         return "   return false;"
+      variation2CaseNode = teachinType.find("./case[title='Variation 2']")
+      if variation2CaseNode is None:
+         return "   return false;"
+      lrnTypeDatafieldNode = variation2CaseNode.find("./datafield[data='LRN Type']")
+      if lrnTypeDatafieldNode is None:
+         util.error(xmlRorgNode.find("telegram").text + " teachin variation 2, \"LRN Type\" bit description not found")
+      offset = lrnTypeDatafieldNode.find("bitoffs").text
+      if lrnTypeDatafieldNode.find("bitsize").text != "1":
+         util.error(xmlRorgNode.find("telegram").text + " telegram : teachin LRN Type wrong size, expected 1")
+      eepProvidedValue = xmlHelper.findInDatafield(datafieldXmlNode=lrnTypeDatafieldNode, select="value", where="description", equals="telegram with EEP number and Manufacturer ID")
+      return "   return erp1Data[" + offset + "] == " + eepProvidedValue + ";\n"
+   rorgClass.addMethod(cppClass.CppMethod("isEepProvided", "bool", "const boost::dynamic_bitset<>& erp1Data", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, isEepProvidedCode(xmlRorgNode)))
+
+   def createFuncCode(xmlRorgNode):
+      code = "   switch(static_cast<EFuncIds>(funcId))\n"
+      code += "   {\n"
+      for xmlFuncNode in xmlRorgNode.findall("func"):
+         enumValue = cppHelper.toEnumValueName(xmlFuncNode.find("title").text)
+         className = "C" + xmlRorgNode.find("telegram").text + "_" + cppHelper.toCppName(xmlFuncNode.find("number").text)
+         code += "   case " + enumValue + ": return boost::make_shared<" + className + ">();\n"
+      code += "   default : throw std::out_of_range(\"Invalid EFuncIds\");\n"
+      code += "   }\n"
+      return code
+   rorgClass.addMethod(cppClass.CppMethod("createFunc", "boost::shared_ptr<IFunc>", "unsigned int funcId", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, createFuncCode(xmlRorgNode)))
+
+
+
+   rorgClass.addMember(cppClass.CppMember("FuncMap", "std::map<unsigned int, std::string>", cppClass.PRIVATE, cppClass.STATIC | cppClass.CONST, \
+      cppHelper.getMapInitCode(xmlHelper.getEnumValues(inNode=xmlRorgNode, foreachSubNode="func", enumValueNameTag="title"))))
+   rorgClass.addMethod(cppClass.CppMethod("toFuncId", rorgClassName + "::EFuncIds", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, \
+      "   if (FuncMap.find(id) == FuncMap.end())\n" \
+      "      throw std::out_of_range(\"Unknown func\");\n" \
+      "   return static_cast<EFuncIds>(id);\n"))
+   rorgClass.addMethod(cppClass.CppMethod("toFuncName", "const std::string&", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, \
+      "   try {\n" \
+      "      return FuncMap.at(id);\n" \
+      "   } catch(std::out_of_range&) {\n" \
+      "      static const std::string UnknownFunc(\"Unknown func\");\n" \
+      "      return UnknownFunc;\n" \
+      "   }"))
 
 
 
@@ -414,7 +426,7 @@ with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
    cppSourceFile.write('\n')
    cppSourceFile.write('#include "bitsetHelpers.hpp"\n')
    cppSourceFile.write('\n')
-   for hardCodedFile in cppHelper.getTypesHardCodedFiles():
+   for hardCodedFile in hardCodedProfiles.getProfileHardCodedFiles():
       cppSourceFile.write('#include "' + os.path.join('hardCoded', hardCodedFile) + '"\n')
    cppSourceFile.write('\n')
 

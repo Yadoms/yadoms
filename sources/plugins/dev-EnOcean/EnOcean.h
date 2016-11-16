@@ -165,10 +165,10 @@ protected:
    /// \return                      The model name
    //--------------------------------------------------------------
    static std::string generateModel(const std::string& model,
-      const std::string& manufacturer,
-      unsigned int rorgId,
-      unsigned int funcId,
-      unsigned int typeId);
+                                    const std::string& manufacturer,
+                                    unsigned int rorgId,
+                                    unsigned int funcId,
+                                    unsigned int typeId);
 
 private:
    //--------------------------------------------------------------
@@ -201,4 +201,3 @@ private:
    //--------------------------------------------------------------
    std::map<std::string, boost::shared_ptr<IType>> m_devices;
 };
-

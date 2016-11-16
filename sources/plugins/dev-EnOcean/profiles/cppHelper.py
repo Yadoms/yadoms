@@ -38,27 +38,26 @@ def getMapInitCode(enumValues):
 
 
 #-------------------------------------------------------------------------------
-typesHardCoded = None
-typesHardCodedFiles = Set()
-def buildTypesHardCodedList(profilePath):
-   typesHardCoded = []
-   global typesHardCodedFiles
-   pattern = re.compile(r'^class (.*) : public IType')
-   for hardCodedPath in glob.glob(os.path.join(profilePath, "hardCoded", '*.h')):
-      with open(hardCodedPath, 'r') as hardCodedFile:
-         for line in hardCodedFile:
-            items = pattern.match(line)
-            if items is not None:
-               typesHardCoded.append(items.group(1))
-               typesHardCodedFiles.add(os.path.basename(hardCodedPath))
-   return typesHardCoded
+class HardCodedProfiles():
 
-def isTypeHardCoded(typeClassName, profilePath):
-   global typesHardCoded
-   if not typesHardCoded:
-      typesHardCoded = buildTypesHardCodedList(profilePath)
-   return typeClassName in typesHardCoded
+   def __init__(self, profilePath):
+      self.__hardCodedProfiles__ = []
+      self.__profileHardCodedFiles__ = Set()
+      pattern = re.compile(r'^class CProfile_(.*) : public IType')
+      for profilePath in glob.glob(os.path.join(profilePath, "hardCoded", '*.h')):
+         with open(profilePath, 'r') as hardCodedFile:
+            for line in hardCodedFile:
+               items = pattern.match(line)
+               if items is not None:
+                  self.__hardCodedProfiles__.append(items.group(1).replace('_', '-'))
+                  self.__profileHardCodedFiles__.add(os.path.basename(profilePath))
 
-def getTypesHardCodedFiles():
-   global typesHardCodedFiles
-   return typesHardCodedFiles
+   def isProfileHardCoded(self, profile):
+      return profile in self.__hardCodedProfiles__
+
+   def getProfileHardCodedFiles(self):
+      return self.__profileHardCodedFiles__
+
+   def getProfilesHardCoded(self):
+      return self.__hardCodedProfiles__
+
