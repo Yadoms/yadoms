@@ -53,6 +53,8 @@ namespace plugin_cpp_api
       void declareKeyword(const std::string& device,
                           boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
                           const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
+      void declareKeywords(const std::string& device,
+                           const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords) override;
       bool keywordExists(const std::string& device,
                          const std::string& keyword) const override;
       bool keywordExists(const std::string& device,
