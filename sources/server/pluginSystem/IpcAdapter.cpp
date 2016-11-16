@@ -214,6 +214,8 @@ namespace pluginSystem
          break;
       case toYadoms::msg::kRemoveKeyword: processRemoveKeywordRequest(toYadomsProtoBuffer.removekeyword());
          break;
+      case toYadoms::msg::kAllKeywordsRequest: processAllKeywordsRequest(toYadomsProtoBuffer.allkeywordsrequest());
+         break;
       case toYadoms::msg::kDeviceModelRequest: processDeviceModelRequest(toYadomsProtoBuffer.devicemodelrequest());
          break;
       case toYadoms::msg::kUpdateDeviceModel: processUpdateDeviceModel(toYadomsProtoBuffer.updatedevicemodel());
@@ -372,6 +374,15 @@ namespace pluginSystem
    {
       m_pluginApi->removeKeyword(msg.device(),
                                  msg.keyword());
+   }
+
+   void CIpcAdapter::processAllKeywordsRequest(const toYadoms::AllKeywordsRequest& msg)
+   {
+      toPlugin::msg ans;
+      auto answer = ans.mutable_allkeywordsanswer();
+      auto keywords = m_pluginApi->getAllKeywords(msg.device());
+      std::copy(keywords.begin(), keywords.end(), RepeatedFieldBackInserter(answer->mutable_keywords()));
+      send(ans);
    }
 
    void CIpcAdapter::processDeviceModelRequest(const toYadoms::DeviceModelRequest& msg)

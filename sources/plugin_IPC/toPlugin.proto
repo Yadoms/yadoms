@@ -88,6 +88,10 @@ message DeviceConfigurationAnswer {
 	required string configuration = 1;
 }
 
+message AllKeywordsAnswer {
+	repeated string keywords = 1;
+}
+
 message msg {
 	oneof OneOf {
 		string error = 1;
@@ -112,6 +116,7 @@ message msg {
 		AllDevicesAnswer allDevicesAnswer = 21;
 		DeviceModelAnswer deviceModelAnswer = 22;
 		DeviceConfigurationAnswer deviceConfigurationAnswer = 23;
+		AllKeywordsAnswer allKeywordsAnswer = 24;
 	}
 }
 

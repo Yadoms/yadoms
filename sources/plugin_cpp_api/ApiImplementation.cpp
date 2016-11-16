@@ -630,6 +630,27 @@ namespace plugin_cpp_api
       }
    }
 
+   void CApiImplementation::declareKeyword(const std::string& device,
+                                           boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
+                                           const shared::CDataContainer& details)
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_declarekeyword();
+      request->set_device(device);
+      fillHistorizable(keyword, request->mutable_keyword());
+      if (!details.empty())
+         request->set_details(details.serialize());
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : declareKeyword(" << device << ", " << keyword << ", " << details.serialize() << ")" << std::endl;
+         throw;
+      }
+   }
+
    bool CApiImplementation::keywordExists(const std::string& device,
                                           const std::string& keyword) const
    {
@@ -666,25 +687,32 @@ namespace plugin_cpp_api
       return keywordExists(device, keyword->getKeyword());
    }
 
-   void CApiImplementation::declareKeyword(const std::string& device,
-                                           boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
-                                           const shared::CDataContainer& details)
+   std::vector<std::string> CApiImplementation::getAllKeywords(const std::string& device) const
    {
       toYadoms::msg req;
-      auto request = req.mutable_declarekeyword();
+      auto request = req.mutable_allkeywordsrequest();
       request->set_device(device);
-      fillHistorizable(keyword, request->mutable_keyword());
-      if (!details.empty())
-         request->set_details(details.serialize());
+
+      std::vector<std::string> keywords;
       try
       {
-         send(req);
+         send(req,
+            [](const toPlugin::msg& ans) -> bool
+         {
+            return ans.has_allkeywordsanswer();
+         },
+            [&](const toPlugin::msg& ans) -> void
+         {
+            std::copy(ans.allkeywordsanswer().keywords().begin(), ans.allkeywordsanswer().keywords().end(), std::back_inserter(keywords));
+         });
       }
       catch (std::exception&)
       {
-         std::cerr << "Call was : declareKeyword(" << device << ", " << keyword << ", " << details.serialize() << ")" << std::endl;
+         std::cerr << "Call was : getAllKeywords(" << device << ")" << std::endl;
          throw;
       }
+
+      return keywords;
    }
 
    void CApiImplementation::removeKeyword(const std::string& device,

@@ -307,6 +307,17 @@ namespace shared
 
 
             //-----------------------------------------------------
+            ///\brief Declare a standard keyword
+            ///\param    [in]    device             The device name owner of the keyword
+            ///\param    [in]    keyword            The keyword
+            ///\param    [in]    details            The keyword details (JSON string, optional. Can be used to declare specific properties like min/max values)
+            ///\note Don't change existing keyword
+            //-----------------------------------------------------   
+            virtual void declareKeyword(const std::string& device,
+                                        boost::shared_ptr<const historization::IHistorizable> keyword,
+                                        const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
+
+            //-----------------------------------------------------
             ///\brief Check if a keyword already exists for the device
             ///\param    [in]    device             The device name owner of the keyword
             ///\param    [in]    keyword            The keyword name
@@ -325,15 +336,11 @@ namespace shared
                                        boost::shared_ptr<const historization::IHistorizable> keyword) const = 0;
 
             //-----------------------------------------------------
-            ///\brief Declare a standard keyword
-            ///\param    [in]    device             The device name owner of the keyword
-            ///\param    [in]    keyword            The keyword
-            ///\param    [in]    details            The keyword details (JSON string, optional. Can be used to declare specific properties like min/max values)
-            ///\note Don't change existing keyword
-            //-----------------------------------------------------   
-            virtual void declareKeyword(const std::string& device,
-                                        boost::shared_ptr<const historization::IHistorizable> keyword,
-                                        const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
+            ///\brief Get all keywords attached to a device
+            ///\param    [in]    device             The device name owner of the keywords
+            ///\return the keywords list
+            //-----------------------------------------------------
+            virtual std::vector<std::string> getAllKeywords(const std::string& device) const = 0;
 
             //-----------------------------------------------------
             ///\brief Remove keyword (and remove all associated acquisitions)
