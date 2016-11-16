@@ -149,10 +149,7 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                {
                   auto deviceData = api->getEventHandler().getEventData<shared::CDataContainer>();
                   if (!api->deviceExists(deviceData.get<std::string>("name")))
-                     api->declareDevice(deviceData.get<std::string>("name"),
-                        deviceData.get<std::string>("friendlyName"),
-                        std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(),
-                        deviceData.get<shared::CDataContainer>("details"));
+                     api->declareDevice(deviceData.get<std::string>("name"),  deviceData.get<std::string>("friendlyName"),  std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(), deviceData.get<shared::CDataContainer>("details"));
                }
                catch (shared::exception::CException& ex)
                {
@@ -197,6 +194,29 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                }
             }
             break;
+
+            case kUpdateConfiguration:
+            {
+               try
+               {
+                  auto keywordData = api->getEventHandler().getEventData<boost::shared_ptr<CKeywordContainer> >();
+                  std::cout << "Update configuration..." << keywordData->getKeyword()->getKeyword() << " : " << keywordData->getKeyword()->formatValue() << std::endl;
+               }
+               catch (shared::exception::CException& ex)
+               {
+                  std::cerr << "Fail to update keyword : " << ex.what() << std::endl;
+               }
+               catch (std::exception& ex)
+               {
+                  std::cerr << "Fail to update keyword. exception : " << ex.what() << std::endl;
+               }
+               catch (...)
+               {
+                  std::cerr << "Fail to update keyword. unknown exception" << std::endl;
+               }
+            }
+            break;
+
 
             case kInternalStateChange:
             {

@@ -130,6 +130,18 @@ namespace pluginSystem
       m_deviceManager->removeDevice(getPluginId(), device);
    }
 
+   void CYPluginApiImplementation::declareKeyword(const std::string& device,
+                                                  boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
+                                                  const shared::CDataContainer& details)
+   {
+      if (keywordExists(device, keyword))
+         throw shared::exception::CEmptyResult((boost::format("Fail to declare %1% keyword : keyword already exists") % keyword->getKeyword()).str());
+
+      m_keywordDataAccessLayer->addKeyword(m_deviceManager->getDevice(getPluginId(), device)->Id(),
+                                           *keyword,
+                                           details);
+   }
+
    bool CYPluginApiImplementation::keywordExists(const std::string& device,
                                                  const std::string& keyword) const
    {
@@ -145,16 +157,12 @@ namespace pluginSystem
       return keywordExists(device, keyword->getKeyword());
    }
 
-   void CYPluginApiImplementation::declareKeyword(const std::string& device,
-                                                  boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
-                                                  const shared::CDataContainer& details)
+   std::vector<std::string> CYPluginApiImplementation::getAllKeywords(const std::string& device) const
    {
-      if (keywordExists(device, keyword))
-         throw shared::exception::CEmptyResult((boost::format("Fail to declare %1% keyword : keyword already exists") % keyword->getKeyword()).str());
-
-      m_keywordDataAccessLayer->addKeyword(m_deviceManager->getDevice(getPluginId(), device)->Id(),
-                                           *keyword,
-                                           details);
+      std::vector<std::string> keywordNames;
+      for (const auto& keyword : m_keywordDataAccessLayer->getKeywords((m_deviceManager->getDevice(getPluginId(), device))->Id))
+         keywordNames.push_back(keyword->Name());
+      return keywordNames;
    }
 
    void CYPluginApiImplementation::removeKeyword(const std::string& device,

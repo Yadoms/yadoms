@@ -109,5 +109,15 @@ private:
    /// \brief	      The keyword list
    //--------------------------------------------------------------    
    KeywordsContainer m_keywords;
+   
+   //--------------------------------------------------------------
+   /// \brief	      Type for configuration item list
+   //--------------------------------------------------------------    
+   typedef std::map<std::string, boost::shared_ptr<IOpenZWaveNodeKeyword> > ConfigurationItemsContainer;
+
+   //--------------------------------------------------------------
+   /// \brief	      The configuration items list list
+   //--------------------------------------------------------------    
+   ConfigurationItemsContainer m_configurationItems;
 };
 

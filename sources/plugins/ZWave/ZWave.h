@@ -45,6 +45,7 @@ public:
    {
       kDeclareDevice = yApi::IYPluginApi::kPluginFirstEventId,
       kUpdateKeyword,
+      kUpdateConfiguration,
       kInternalStateChange
    };
    

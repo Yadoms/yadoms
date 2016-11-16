@@ -73,6 +73,7 @@ namespace common {
       (Model)
       (Details)
       (Configuration)
+      (Blacklist)
    )
 
    DECLARE_TABLE(Keyword,
