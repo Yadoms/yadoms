@@ -142,6 +142,22 @@ namespace pluginSystem
                                            details);
    }
 
+   void CYPluginApiImplementation::declareKeywords(const std::string& device,
+                                                   const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords)
+   {
+      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> keywordsToDeclare;
+
+      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
+         if (!keywordExists(device, *keyword))
+            keywordsToDeclare.push_back(*keyword);
+
+      if (keywordsToDeclare.empty())
+         return;
+
+      m_keywordDataAccessLayer->addKeywords(m_deviceManager->getDevice(getPluginId(), device)->Id(),
+                                            keywordsToDeclare);
+   }
+
    bool CYPluginApiImplementation::keywordExists(const std::string& device,
                                                  const std::string& keyword) const
    {
@@ -173,22 +189,6 @@ namespace pluginSystem
 
       m_keywordDataAccessLayer->removeKeyword(getPluginId(),
                                               device);
-   }
-
-   void CYPluginApiImplementation::declareKeywords(const std::string& device,
-                                                   const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords) const
-   {
-      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> keywordsToDeclare;
-
-      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
-         if (!keywordExists(device, *keyword))
-            keywordsToDeclare.push_back(*keyword);
-
-      if (keywordsToDeclare.empty())
-         return;
-
-      m_keywordDataAccessLayer->addKeywords(m_deviceManager->getDevice(getPluginId(), device)->Id(),
-                                            keywordsToDeclare);
    }
 
    std::string CYPluginApiImplementation::getRecipientValue(int recipientId,

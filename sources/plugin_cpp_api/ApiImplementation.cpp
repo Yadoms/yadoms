@@ -630,6 +630,33 @@ namespace plugin_cpp_api
       }
    }
 
+   void CApiImplementation::declareKeywords(const std::string& device,
+                                            const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords)
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_declarekeywords();
+      request->set_device(device);
+      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
+         fillHistorizable(*keyword, request->add_keywords());
+
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : declareKeywords(" << device << ", {";
+         std::for_each(keywords.begin(),
+                       keywords.end(),
+                       [](boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword)
+                       {
+                          std::cerr << keyword->getKeyword() << ", ";
+                       });
+         std::cerr << "} )" << std::endl;
+         throw;
+      }
+   }
+
    void CApiImplementation::declareKeyword(const std::string& device,
                                            boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
                                            const shared::CDataContainer& details)
@@ -697,14 +724,14 @@ namespace plugin_cpp_api
       try
       {
          send(req,
-            [](const toPlugin::msg& ans) -> bool
-         {
-            return ans.has_allkeywordsanswer();
-         },
-            [&](const toPlugin::msg& ans) -> void
-         {
-            std::copy(ans.allkeywordsanswer().keywords().begin(), ans.allkeywordsanswer().keywords().end(), std::back_inserter(keywords));
-         });
+              [](const toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_allkeywordsanswer();
+              },
+              [&](const toPlugin::msg& ans) -> void
+              {
+                 std::copy(ans.allkeywordsanswer().keywords().begin(), ans.allkeywordsanswer().keywords().end(), std::back_inserter(keywords));
+              });
       }
       catch (std::exception&)
       {

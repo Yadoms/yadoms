@@ -307,7 +307,7 @@ namespace shared
 
 
             //-----------------------------------------------------
-            ///\brief Declare a standard keyword
+            ///\brief Declare a standard keyword (see declareKeywords to declare several keywords)
             ///\param    [in]    device             The device name owner of the keyword
             ///\param    [in]    keyword            The keyword
             ///\param    [in]    details            The keyword details (JSON string, optional. Can be used to declare specific properties like min/max values)
@@ -316,6 +316,16 @@ namespace shared
             virtual void declareKeyword(const std::string& device,
                                         boost::shared_ptr<const historization::IHistorizable> keyword,
                                         const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
+
+            //-----------------------------------------------------
+            ///\brief Declare a list of keywords for a device
+            ///\param    [in]    device             The device name owner of the keyword
+            ///\param    [in]    keywords           The keywords list
+            ///\note For performance issue use this function to declare multiple keywords instead of callin several declareKeyword
+            ///\note Don't change existing keywords
+            //-----------------------------------------------------   
+            virtual void declareKeywords(const std::string& device,
+                                         const std::vector<boost::shared_ptr<const historization::IHistorizable>>& keywords) = 0;
 
             //-----------------------------------------------------
             ///\brief Check if a keyword already exists for the device
