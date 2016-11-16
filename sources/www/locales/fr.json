@@ -455,6 +455,7 @@
           "ruleDeletionError": "Impossible de supprimer la règle __rule__.",
           "ruleStopError": "Impossible d'arrêter la règle __rule__.",
           "ruleStartError": "Impossible de démarrer la règle __rule__.",
+		  "pluginListingError": "Impossible de lister les plugins.",
           "ruleListingError": "Impossible de lister les règles.",
           "ruleInterpreterListingError": "Impossible de lister les interpréteurs de règles.",
           "ruleGetLogError": "Impossible d'obtenir le log de la règle __rule__.",

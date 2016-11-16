@@ -30,7 +30,7 @@ namespace shared
             void CPluginStateMessage::setMessage(const std::string& messageId)
             {
                setMessage(messageId,
-                          CStringExtension::EmptyString);
+                          std::string());
             }
 
             void CPluginStateMessage::setMessage(const std::string& messageId,
@@ -68,13 +68,13 @@ namespace shared
             std::string CPluginStateMessage::getMessageId() const
             {
                return get().getWithDefault("messageId",
-                                           CStringExtension::EmptyString);
+                                           std::string());
             }
 
             std::string CPluginStateMessage::getMessageData() const
             {
                return get().getWithDefault("messageData",
-                                           CStringExtension::EmptyString);
+                                           std::string());
             }
          }
       }

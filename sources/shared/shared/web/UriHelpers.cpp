@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "UriHelpers.h"
-#include <shared/StringExtension.h>
 
 namespace shared { namespace web {
 
@@ -24,7 +23,7 @@ namespace shared { namespace web {
          if (boost::icontains(maybeFile, "."))
             return maybeFile;
       }
-      return shared::CStringExtension::EmptyString;
+      return std::string();
    }
 
 

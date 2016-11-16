@@ -27,6 +27,10 @@
       assert(!isNullOrUndefined(rule), "rule must be defined");
       assert($.isFunction(getLog), "getLog must be defined");
 
+      var $modalBody = $("div#show-log-automation-rule-modal .modal-body");
+      var $logSlot = $modalBody.find("textarea");
+      $logSlot.text("");
+      
       getLog(rule);
 
       //we display the modal

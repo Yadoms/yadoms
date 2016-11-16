@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/StringExtension.h>
 #include <Poco/Path.h>
 
 namespace tools
@@ -18,7 +17,7 @@ namespace tools
       ///\param [in] eraseIfExists  If true the directory content is removed
       ///\return The temporary folder path
       //---------------------------------------------   
-      static Poco::Path getTemporaryFolder(const std::string & subFolderName = shared::CStringExtension::EmptyString, bool eraseIfExists = false);
+      static Poco::Path getTemporaryFolder(const std::string & subFolderName = std::string(), bool eraseIfExists = false);
 
       //---------------------------------------------
       ///\brief Check if a file/directory exists

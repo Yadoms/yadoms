@@ -5,7 +5,6 @@
 #include "IDeviceCommand.h"
 #include "IExtraQuery.h"
 #include "historization/Historizers.h"
-#include <shared/StringExtension.h>
 
 namespace shared
 {
@@ -70,7 +69,7 @@ namespace shared
 
                //-----------------------------------------------------
                ///\brief Yadoms send extra query to plugin
-               ///\usage Optional, required if package.json declare that plugin supports extra query
+               ///\usage Optional, required if package.json declare that plugin supports extra query(flag "extraQueries" in package.json)
                ///\note Data : a boost::shared_ptr<const yApi::IExtraQuery> object containing the extra query
                ///\note Plugin must process the specified command
                //-----------------------------------------------------
@@ -95,6 +94,7 @@ namespace shared
                //-----------------------------------------------------
                ///\brief Yadoms ask the plugin to create a device
                ///\usage Optional, required if package.json declare that plugin supports manually device creation
+               ///       (Flag "supportManuallyDeviceCreation" set to true in package.json)
                ///\note Data : a boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> object containing the device creation request
                ///\note Plugin must create the specified device
                //-----------------------------------------------------
@@ -103,13 +103,14 @@ namespace shared
                //-----------------------------------------------------
                ///\brief Yadoms notifies plugin that a device was removed
                ///\usage Optional, useful if plugin needs to do notify an adapter that one of its devices was removed
+               ///       (Flag "supportDeviceRemovedNotification" set to true in package.json)
                ///\note Data : a boost::shared_ptr<const yApi::IDeviceRemoved> object containing the device and its details
                //-----------------------------------------------------
                kEventDeviceRemoved,
 
                //-----------------------------------------------------
                ///\brief Yadoms ask the device configuration schema
-               ///\usage Optional, required if device configuration support is declared in package.json
+               ///\usage Optional, required if device configuration support is declared in package.json (flag "deviceConfiguration" in package.json)
                ///\note Data : a boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest> object containing the device configuration schema request
                ///\note Plugin must return the configation schema associated to the device (by calling request->sendSuccess or sendError)
                //-----------------------------------------------------
@@ -117,7 +118,7 @@ namespace shared
 
                //-----------------------------------------------------
                ///\brief Yadoms sent the configuration of a device
-               ///\usage Optional, required if device configuration support is declared in package.json
+               ///\usage Optional, required if device configuration support is declared in package.json (flag "deviceConfiguration" in package.json)
                ///\note Data : a boost::shared_ptr<const yApi::IDeviceConfiguration> object containing the new device configuration
                ///\note Plugin update the device
                //-----------------------------------------------------
@@ -169,7 +170,7 @@ namespace shared
             ///\note In case of setting states kError or kStopped, plugin must be effectively stopped within 10 seconds or it will be killed.
             //-----------------------------------------------------
             virtual void setPluginState(const historization::EPluginState& state,
-                                        const std::string& customMessageId = shared::CStringExtension::EmptyString,
+                                        const std::string& customMessageId = std::string(),
                                         const std::map<std::string, std::string>& customMessageDataParams = std::map<std::string, std::string>()) = 0;
 
 

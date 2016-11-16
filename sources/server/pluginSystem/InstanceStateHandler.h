@@ -61,8 +61,8 @@ namespace pluginSystem
 
       // IInstanceStateHandler Implementation
       void setState(const shared::plugin::yPluginApi::historization::EPluginState& state,
-                    const std::string& customMessageId = shared::CStringExtension::EmptyString,
-                    const std::string& customMessageData = shared::CStringExtension::EmptyString) override;
+                    const std::string& customMessageId = std::string(),
+                    const std::string& customMessageData = std::string()) override;
       // [END] IInstanceStateHandler Implementation
 
 

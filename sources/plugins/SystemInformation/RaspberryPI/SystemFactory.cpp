@@ -37,19 +37,14 @@ CSystemFactory::~CSystemFactory()
 
 void CSystemFactory::OnHighFrequencyUpdate(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   std::cout << "High frequency updates" << std::endl;
-
    m_cpuLoad->read();
    m_temperatureSensor->read();
-
    api->historizeData(m_DeviceName, m_highFrequencyUpdateKeywords);
 }
 
 void CSystemFactory::OnLowFrequencyUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                           const ISIConfiguration& configuration)
 {
-   std::cout << "Low frequency updates" << std::endl;
-
    m_memoryLoad->read();
 
    for (auto disk = m_diskUsageList.begin(); disk != m_diskUsageList.end(); ++disk)
@@ -61,6 +56,5 @@ void CSystemFactory::OnLowFrequencyUpdate(boost::shared_ptr<yApi::IYPluginApi> a
 void CSystemFactory::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                            const ISIConfiguration& configuration,
                                            shared::CDataContainer details)
-{
-}
+{}
 

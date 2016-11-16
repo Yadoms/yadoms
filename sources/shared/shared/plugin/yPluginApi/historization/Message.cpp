@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Message.h"
 #include <shared/DataContainer.h>
-#include <shared/StringExtension.h>
 #include "MessageFormatter.h"
 
 
@@ -68,7 +67,8 @@ namespace shared
 
             const std::string& CMessage::body() const
             {
-               return !m_content ? CStringExtension::EmptyString : m_content->body();
+               static const std::string emptyString;
+               return !m_content ? emptyString : m_content->body();
             }
 
             const EMeasureType& CMessage::getMeasureType() const

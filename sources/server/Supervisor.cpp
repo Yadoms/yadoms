@@ -29,7 +29,7 @@
 #include <shared/ServiceLocator.h>
 #include "startupOptions/IStartupOptions.h"
 #include "dateTime/DateTimeNotifier.h"
-
+#include <Poco/Net/NetException.h>
 
 CSupervisor::CSupervisor(const IPathProvider& pathProvider)
    :m_pathProvider(pathProvider)
@@ -144,7 +144,7 @@ void CSupervisor::run()
       webServer->start();
 
       // Register to event logger started event
-      dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", shared::CStringExtension::EmptyString);
+      dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", std::string());
 
       //create and start the dateTime notification scheduler
       dateTime::CDateTimeNotifier dateTimeNotificationService;
@@ -182,7 +182,13 @@ void CSupervisor::run()
 
       YADOMS_LOG(information) << "Supervisor is stopped";
 
-      dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStopped, "yadoms", shared::CStringExtension::EmptyString);
+      dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStopped, "yadoms", std::string());
+   }
+   catch(Poco::Net::NetException & pe)
+   {
+      YADOMS_LOG(error) << "Supervisor : net exception " << pe.displayText();
+      if (dal && dal->getEventLogger())
+         dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", pe.displayText());
    }
    catch (std::exception& e)
    {

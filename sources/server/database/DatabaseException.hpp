@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/exception/Exception.hpp>
-#include <shared/StringExtension.h>
 
 namespace database { 
 

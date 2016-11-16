@@ -74,6 +74,7 @@
       }
     }
   },
+  "supportDeviceRemovedNotification": "true",
   "enumerations": {
     "EFakeControllerValues": {
       "name": "",

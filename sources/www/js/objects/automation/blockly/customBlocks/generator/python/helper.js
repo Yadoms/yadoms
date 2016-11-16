@@ -101,12 +101,18 @@ Blockly.Yadoms.Python.getOperatorCode = function(operator) {
 };
 
 
+Blockly.Yadoms.Python.addSleepTimeFunctions_ = false;
 Blockly.Yadoms.Python.addDateTimeFunctions_ = false;
 Blockly.Yadoms.Python.scriptUtilities_ = false;
 
 Blockly.Yadoms.Python.clearAdditionalImports = function() {
+	Blockly.Yadoms.Python.addSleepTimeFunctions_ = false;
     Blockly.Yadoms.Python.addDateTimeFunctions_ = false;
 	Blockly.Yadoms.Python.scriptUtilities_ = false;
+}
+
+Blockly.Yadoms.Python.AddSleepTimeFunctions = function() {
+    Blockly.Yadoms.Python.addSleepTimeFunctions_ = true;
 }
 
 Blockly.Yadoms.Python.AddDateTimeFunctions = function() {
@@ -125,6 +131,9 @@ Blockly.Yadoms.Python.GenerateDateTimePythonCode_ = function() {
 	
 	if(Blockly.Yadoms.Python.scriptUtilities_)
 		additionalCode += "import scriptUtilities\n";
+	
+	if(Blockly.Yadoms.Python.addSleepTimeFunctions_)
+		additionalCode += "from time import sleep\n";
 	
 	if(Blockly.Yadoms.Python.addDateTimeFunctions_)
 		additionalCode += "from datetime import datetime, date, time, timedelta\n";

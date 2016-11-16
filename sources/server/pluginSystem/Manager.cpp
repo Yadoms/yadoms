@@ -519,8 +519,8 @@ namespace pluginSystem
                try
                {
                   shared::CDataContainer dc(m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
-                  defaultState.set("messageId", dc.getWithDefault("messageId", shared::CStringExtension::EmptyString));
-                  defaultState.set("messageData", dc.getWithDefault("messageData", shared::CStringExtension::EmptyString));
+                  defaultState.set("messageId", dc.getWithDefault("messageId", std::string()));
+                  defaultState.set("messageData", dc.getWithDefault("messageData", std::string()));
                }
                catch (shared::exception::CJSONParse& jsonerror)
                {
@@ -569,8 +569,8 @@ namespace pluginSystem
          try
          {
             shared::CDataContainer dc(m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
-            defaultState.set("messageId", dc.getWithDefault("messageId", shared::CStringExtension::EmptyString));
-            defaultState.set("messageData", dc.getWithDefault("messageData", shared::CStringExtension::EmptyString));
+            defaultState.set("messageId", dc.getWithDefault("messageId", std::string()));
+            defaultState.set("messageData", dc.getWithDefault("messageData", std::string()));
          }
          catch (shared::exception::CJSONParse& jsonerror)
          {
