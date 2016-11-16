@@ -55,6 +55,7 @@ namespace database { namespace common { namespace versioning {
          //add column
          pRequester->addTableColumn(CDeviceTable::getTableName(), "configuration TEXT");
          pRequester->addTableColumn(CDeviceTable::getTableName(), "blacklist INTEGER DEFAULT 0");
+         pRequester->addTableColumn(CKeywordTable::getTableName(), "blacklist INTEGER DEFAULT 0");
 
          //set the database version
          auto qUpdate = pRequester->newQuery();
