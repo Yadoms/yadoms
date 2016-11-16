@@ -205,6 +205,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
       # Type cppTypes
       for xmlTypeNode in xmlFuncNode.findall("type"):
          typeClassName = cppHelper.toCppName("CProfile_" + profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode))
+         supportedProfiles.append(profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode))
          if cppHelper.isTypeHardCoded(typeClassName, profilePath):
             util.info(typeClassName + " is hard-coded, nothing to do")
             continue
@@ -366,7 +367,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                      code += statesCodeForLinearValue(xmlDataFieldNode)
                   elif dataText.encode("utf-8") == "Sun – West" \
                      or dataText.encode("utf-8") == "Sun – South" \
-                     or dataText.encode("utf-8") == "Sun – East": # Provided as kilo-lux as Yadoms knows only lux
+                     or dataText.encode("utf-8") == "Sun – East": # Provided as kilo-lux when Yadoms knows only lux
                      code += statesCodeForLinearValue(xmlDataFieldNode, 1000)
                   else:
                      util.warning("func/type : Unsupported linear data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
@@ -381,7 +382,6 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
          typeClass.addMethod(cppClass.CppMethod("states", "std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >", "const boost::dynamic_bitset<>& data", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, statesCode(xmlTypeNode)))
          cppTypes.append(typeClass)
-         supportedProfiles.append(profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode))
 
 
 # Device configuration schema

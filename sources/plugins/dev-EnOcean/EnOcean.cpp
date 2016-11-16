@@ -354,6 +354,8 @@ void CEnOcean::processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDevi
                                  selectedProfile.func(),
                                  selectedProfile.type());
       auto deviceConfiguration = shared::CDataContainer(); // TODO récupérer la conf
+      std::cout << "TODO : " << setDeviceConfigurationData->configuration().serialize() << std::endl;
+      return;
 
       std::cout << "Device \"" << setDeviceConfigurationData->device() << "\" is configurated as " << selectedProfile.profile() << std::endl;
 
@@ -362,6 +364,14 @@ void CEnOcean::processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDevi
       configuration.set("profile", selectedProfile.profile());
       if (!configuration.empty())
          configuration.set("configuration", deviceConfiguration);
+
+      // If profile changed, clean all keywords
+      //if (m_api->getDeviceConfiguration(deviceId).get<std::string>("profile") != selectedProfile.profile())
+      //{
+      //   for (const auto& keywordId : m_api->getAllKeywords(deviceId))
+      //      m_api->removeKeyword(deviceId, keywordId);
+      //   //TODO
+      //}
 
       m_api->updateDeviceModel(deviceId,
                                model);
@@ -372,6 +382,8 @@ void CEnOcean::processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDevi
       //TODO créer les kw
 
       // TODO envoyer le message de config au device
+
+      //TODO ajouter à m_devices ou remplacer
    }
    catch (shared::exception::CEmptyResult&)
    {
