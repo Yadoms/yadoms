@@ -10,7 +10,7 @@ namespace database { namespace common { namespace versioning {
 
 
    CVersion_2_0_0::CVersion_2_0_0()
-      :m_version(1, 1, 0, 0) //modify this version to a greater value, to force update of current version
+      :m_version(2, 0, 0, 0) //modify this version to a greater value, to force update of current version
    {
    }
 
