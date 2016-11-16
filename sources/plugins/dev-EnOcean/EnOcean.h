@@ -48,7 +48,7 @@ protected:
    /// \brief	                     Process a command received from Yadoms
    /// \param [in] command          The received command
    //--------------------------------------------------------------
-   void onCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const;
+   void processDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when dongle becomes connected

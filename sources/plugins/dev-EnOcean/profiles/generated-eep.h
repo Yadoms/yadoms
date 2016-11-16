@@ -80,6 +80,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -134,6 +135,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -222,6 +224,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -317,6 +320,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -333,6 +337,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -349,6 +354,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -365,6 +371,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -381,6 +388,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -397,6 +405,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -413,6 +422,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -429,6 +439,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -445,6 +456,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -461,6 +473,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -477,6 +490,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -493,6 +507,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -509,6 +524,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -525,6 +541,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -541,6 +558,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -557,6 +575,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -573,6 +592,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -589,6 +609,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -605,6 +626,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -621,6 +643,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -637,6 +660,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -653,6 +677,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -669,6 +694,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -685,6 +711,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -701,6 +728,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -735,6 +763,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -753,6 +782,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -771,6 +801,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -805,6 +836,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -842,6 +874,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -861,6 +894,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -880,6 +914,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -897,6 +932,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -915,6 +951,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -952,6 +989,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -968,6 +1006,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -984,6 +1023,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1019,6 +1059,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1039,6 +1080,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1059,6 +1101,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1103,6 +1146,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1121,6 +1165,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1197,6 +1242,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1214,6 +1260,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1232,6 +1279,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1248,6 +1296,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1306,6 +1355,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1373,6 +1423,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1390,6 +1441,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1407,6 +1459,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1423,6 +1476,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1439,6 +1493,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1456,6 +1511,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1473,6 +1529,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1489,6 +1546,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1506,6 +1564,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1523,6 +1582,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1540,6 +1600,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1557,6 +1618,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1574,6 +1636,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1591,6 +1654,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1609,6 +1673,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1627,6 +1692,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1644,6 +1710,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1662,6 +1729,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1680,6 +1748,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1696,6 +1765,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1713,6 +1783,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1751,6 +1822,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1792,6 +1864,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1833,6 +1906,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1873,6 +1947,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1914,6 +1989,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1955,6 +2031,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -1975,6 +2052,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2013,6 +2091,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2049,6 +2128,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2069,6 +2149,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2086,6 +2167,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2124,6 +2206,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2202,6 +2285,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2274,6 +2358,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2331,6 +2416,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2390,6 +2476,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2424,6 +2511,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2458,6 +2546,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2492,6 +2581,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2526,6 +2616,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2560,6 +2651,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2604,6 +2696,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2645,6 +2738,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2663,6 +2757,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2682,6 +2777,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2718,6 +2814,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2766,6 +2863,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2783,6 +2881,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2800,6 +2899,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2837,6 +2937,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2854,6 +2955,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2872,6 +2974,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2890,6 +2993,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2909,6 +3013,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -2926,6 +3031,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -3019,6 +3125,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -3060,6 +3167,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -3076,6 +3184,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -3097,6 +3206,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -3115,6 +3225,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -3148,6 +3259,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -3210,6 +3322,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -3369,6 +3482,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -3437,6 +3551,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -3604,6 +3719,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -3621,6 +3737,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -3638,6 +3755,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -3688,6 +3806,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:
@@ -3724,6 +3843,7 @@ public:
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendCommand(const std::string& keyword, const std::string& commandBody) const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > states(const boost::dynamic_bitset<>& data) const override;
 protected:
 private:

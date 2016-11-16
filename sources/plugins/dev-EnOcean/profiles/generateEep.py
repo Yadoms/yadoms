@@ -319,7 +319,8 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             "   static const std::string title(\"" + xmlTypeNode.find("title").text + "\");\n" \
             "   return title;"))
          typeClass.addMethod(cppClass.CppMethod("allHistorizers", "std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   return m_historizers;"))
-         typeClass.addMethod(cppClass.CppMethod("sendConfiguration", "void", "const shared::CDataContainer& deviceConfiguration", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   throw std::logic_error(\"device support no configuration\");"))
+         typeClass.addMethod(cppClass.CppMethod("sendConfiguration", "void", "const shared::CDataContainer& deviceConfiguration", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   throw std::logic_error(\"device supports no configuration\");"))
+         typeClass.addMethod(cppClass.CppMethod("sendCommand", "void", "const std::string& keyword, const std::string& commandBody", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, "   throw std::logic_error(\"device supports no command sending\");"))
 
          if not historizersCppName:
             util.warning("No historizer can be created for " + profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode) + " profile. Profile will be not supported.")
@@ -384,17 +385,6 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
          typeClass.addMethod(cppClass.CppMethod("states", "std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >", "const boost::dynamic_bitset<>& data", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, statesCode(xmlTypeNode)))
          cppTypes.append(typeClass)
 
-
-# Device configuration schema
-def profilesListCode():
-   code = "   static const std::vector<std::string> profiles = {" + str(supportedProfiles).strip('[]').replace("\'", "\"") + "};\n"
-   code += "   return profiles;\n"
-   return code
-   
-#TODO encore utile ?
-profilesListClass = cppClass.CppClass("CProfilesList", False)
-cppTypes.append(profilesListClass)
-profilesListClass.addMethod(cppClass.CppMethod("list", "const std::vector<std::string>&", "", cppClass.PUBLIC, cppClass.STATIC, profilesListCode()))
 
 
 # Generate Header

@@ -99,7 +99,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             auto command(m_api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
             std::cout << "Command received : " << yApi::IDeviceCommand::toString(command) << std::endl;
 
-            onCommand(command);
+            processDeviceCommand(command);
 
             break;
          }
@@ -178,6 +178,9 @@ void CEnOcean::loadAllDevices()
       try
       {
          auto deviceConfiguration = m_api->getDeviceConfiguration(deviceId);
+         if (deviceConfiguration.empty())
+            continue; // Not configured device
+
          auto manufacturer = deviceConfiguration.get<std::string>("manufacturer");
          auto profile = deviceConfiguration.get<std::string>("profile");
 
@@ -239,12 +242,22 @@ std::string CEnOcean::generateModel(const std::string& model,
    return generatedModel;
 }
 
-void CEnOcean::onCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const
+void CEnOcean::processDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command)
 {
    if (!m_port)
+   {
       std::cout << "Unable to process command : dongle is not ready" << std::endl;
+      return;
+   }
 
-   //TODO
+   if (m_devices.find(command->getDevice()) == m_devices.end())
+   {
+      std::cerr << "Unable to process command : device " << command->getDevice() << " unknown" << std::endl;
+      return;
+   }
+
+   m_devices[command->getDevice()]->sendCommand(command->getKeyword(),
+                                                command->getBody());
 }
 
 
@@ -373,7 +386,6 @@ void CEnOcean::processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDevi
 
       // Create device
       auto device = CRorgs::createRorg(selectedProfile.rorg())->createFunc(selectedProfile.func())->createType(selectedProfile.type());
-      m_devices[deviceId] = device;
 
       m_api->declareKeywords(deviceId,
                              device->allHistorizers());
@@ -384,6 +396,7 @@ void CEnOcean::processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDevi
       m_api->updateDeviceConfiguration(deviceId,
                                        deviceConfiguration);
 
+      m_devices[deviceId] = device;
       device->sendConfiguration(deviceConfiguration);
    }
    catch (shared::exception::CEmptyResult&)
@@ -702,6 +715,7 @@ void CEnOcean::declareDevice(const std::string& deviceId,
                                     configuration);
 
    m_devices[deviceId] = type;
+   type->sendConfiguration(deviceConfiguration);
 
    std::cout << "New device declared : " << std::endl;
    std::cout << "  - Id           : " << deviceId << std::endl;
