@@ -31,7 +31,7 @@ public:
    CProfile_F6_02_04();
    virtual ~CProfile_F6_02_04();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -88,7 +88,7 @@ public:
    CProfile_F6_04_02();
    virtual ~CProfile_F6_04_02();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -182,7 +182,7 @@ public:
    CProfile_D5_00_01();
    virtual ~CProfile_D5_00_01();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -238,7 +238,7 @@ public:
    CProfile_A5_02_01();
    virtual ~CProfile_A5_02_01();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -255,7 +255,7 @@ public:
    CProfile_A5_02_02();
    virtual ~CProfile_A5_02_02();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -272,7 +272,7 @@ public:
    CProfile_A5_02_03();
    virtual ~CProfile_A5_02_03();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -289,7 +289,7 @@ public:
    CProfile_A5_02_04();
    virtual ~CProfile_A5_02_04();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -306,7 +306,7 @@ public:
    CProfile_A5_02_05();
    virtual ~CProfile_A5_02_05();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -323,7 +323,7 @@ public:
    CProfile_A5_02_06();
    virtual ~CProfile_A5_02_06();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -340,7 +340,7 @@ public:
    CProfile_A5_02_07();
    virtual ~CProfile_A5_02_07();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -357,7 +357,7 @@ public:
    CProfile_A5_02_08();
    virtual ~CProfile_A5_02_08();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -374,7 +374,7 @@ public:
    CProfile_A5_02_09();
    virtual ~CProfile_A5_02_09();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -391,7 +391,7 @@ public:
    CProfile_A5_02_0A();
    virtual ~CProfile_A5_02_0A();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -408,7 +408,7 @@ public:
    CProfile_A5_02_0B();
    virtual ~CProfile_A5_02_0B();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -425,7 +425,7 @@ public:
    CProfile_A5_02_10();
    virtual ~CProfile_A5_02_10();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -442,7 +442,7 @@ public:
    CProfile_A5_02_11();
    virtual ~CProfile_A5_02_11();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -459,7 +459,7 @@ public:
    CProfile_A5_02_12();
    virtual ~CProfile_A5_02_12();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -476,7 +476,7 @@ public:
    CProfile_A5_02_13();
    virtual ~CProfile_A5_02_13();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -493,7 +493,7 @@ public:
    CProfile_A5_02_14();
    virtual ~CProfile_A5_02_14();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -510,7 +510,7 @@ public:
    CProfile_A5_02_15();
    virtual ~CProfile_A5_02_15();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -527,7 +527,7 @@ public:
    CProfile_A5_02_16();
    virtual ~CProfile_A5_02_16();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -544,7 +544,7 @@ public:
    CProfile_A5_02_17();
    virtual ~CProfile_A5_02_17();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -561,7 +561,7 @@ public:
    CProfile_A5_02_18();
    virtual ~CProfile_A5_02_18();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -578,7 +578,7 @@ public:
    CProfile_A5_02_19();
    virtual ~CProfile_A5_02_19();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -595,7 +595,7 @@ public:
    CProfile_A5_02_1A();
    virtual ~CProfile_A5_02_1A();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -612,7 +612,7 @@ public:
    CProfile_A5_02_1B();
    virtual ~CProfile_A5_02_1B();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -629,7 +629,7 @@ public:
    CProfile_A5_02_20();
    virtual ~CProfile_A5_02_20();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -646,7 +646,7 @@ public:
    CProfile_A5_02_30();
    virtual ~CProfile_A5_02_30();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -703,7 +703,7 @@ public:
    CProfile_A5_04_01();
    virtual ~CProfile_A5_04_01();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -722,7 +722,7 @@ public:
    CProfile_A5_04_02();
    virtual ~CProfile_A5_04_02();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -741,7 +741,7 @@ public:
    CProfile_A5_04_03();
    virtual ~CProfile_A5_04_03();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -778,7 +778,7 @@ public:
    CProfile_A5_05_01();
    virtual ~CProfile_A5_05_01();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -812,7 +812,7 @@ public:
    CProfile_A5_06_01();
    virtual ~CProfile_A5_06_01();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -832,7 +832,7 @@ public:
    CProfile_A5_06_02();
    virtual ~CProfile_A5_06_02();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -852,7 +852,7 @@ public:
    CProfile_A5_06_03();
    virtual ~CProfile_A5_06_03();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -870,7 +870,7 @@ public:
    CProfile_A5_06_04();
    virtual ~CProfile_A5_06_04();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -889,7 +889,7 @@ public:
    CProfile_A5_06_05();
    virtual ~CProfile_A5_06_05();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -929,7 +929,7 @@ public:
    CProfile_A5_07_01();
    virtual ~CProfile_A5_07_01();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -946,7 +946,7 @@ public:
    CProfile_A5_07_02();
    virtual ~CProfile_A5_07_02();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -963,7 +963,7 @@ public:
    CProfile_A5_07_03();
    virtual ~CProfile_A5_07_03();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -999,7 +999,7 @@ public:
    CProfile_A5_08_01();
    virtual ~CProfile_A5_08_01();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1020,7 +1020,7 @@ public:
    CProfile_A5_08_02();
    virtual ~CProfile_A5_08_02();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1041,7 +1041,7 @@ public:
    CProfile_A5_08_03();
    virtual ~CProfile_A5_08_03();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1080,7 +1080,7 @@ public:
    CProfile_A5_09_02();
    virtual ~CProfile_A5_09_02();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1099,7 +1099,7 @@ public:
    CProfile_A5_09_04();
    virtual ~CProfile_A5_09_04();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1176,7 +1176,7 @@ public:
    CProfile_A5_09_05();
    virtual ~CProfile_A5_09_05();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1194,7 +1194,7 @@ public:
    CProfile_A5_09_07();
    virtual ~CProfile_A5_09_07();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1213,7 +1213,7 @@ public:
    CProfile_A5_09_09();
    virtual ~CProfile_A5_09_09();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1230,7 +1230,7 @@ public:
    CProfile_A5_09_0A();
    virtual ~CProfile_A5_09_0A();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1289,7 +1289,7 @@ public:
    CProfile_A5_09_0B();
    virtual ~CProfile_A5_09_0B();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1333,7 +1333,7 @@ public:
    CProfile_A5_10_01();
    virtual ~CProfile_A5_10_01();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1351,7 +1351,7 @@ public:
    CProfile_A5_10_02();
    virtual ~CProfile_A5_10_02();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1369,7 +1369,7 @@ public:
    CProfile_A5_10_03();
    virtual ~CProfile_A5_10_03();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1386,7 +1386,7 @@ public:
    CProfile_A5_10_04();
    virtual ~CProfile_A5_10_04();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1403,7 +1403,7 @@ public:
    CProfile_A5_10_05();
    virtual ~CProfile_A5_10_05();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1421,7 +1421,7 @@ public:
    CProfile_A5_10_06();
    virtual ~CProfile_A5_10_06();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1439,7 +1439,7 @@ public:
    CProfile_A5_10_07();
    virtual ~CProfile_A5_10_07();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1456,7 +1456,7 @@ public:
    CProfile_A5_10_08();
    virtual ~CProfile_A5_10_08();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1474,7 +1474,7 @@ public:
    CProfile_A5_10_09();
    virtual ~CProfile_A5_10_09();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1492,7 +1492,7 @@ public:
    CProfile_A5_10_0A();
    virtual ~CProfile_A5_10_0A();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1510,7 +1510,7 @@ public:
    CProfile_A5_10_0B();
    virtual ~CProfile_A5_10_0B();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1528,7 +1528,7 @@ public:
    CProfile_A5_10_0C();
    virtual ~CProfile_A5_10_0C();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1546,7 +1546,7 @@ public:
    CProfile_A5_10_0D();
    virtual ~CProfile_A5_10_0D();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1564,7 +1564,7 @@ public:
    CProfile_A5_10_10();
    virtual ~CProfile_A5_10_10();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1583,7 +1583,7 @@ public:
    CProfile_A5_10_11();
    virtual ~CProfile_A5_10_11();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1602,7 +1602,7 @@ public:
    CProfile_A5_10_12();
    virtual ~CProfile_A5_10_12();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1620,7 +1620,7 @@ public:
    CProfile_A5_10_13();
    virtual ~CProfile_A5_10_13();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1639,7 +1639,7 @@ public:
    CProfile_A5_10_14();
    virtual ~CProfile_A5_10_14();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1658,7 +1658,7 @@ public:
    CProfile_A5_10_15();
    virtual ~CProfile_A5_10_15();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1675,7 +1675,7 @@ public:
    CProfile_A5_10_16();
    virtual ~CProfile_A5_10_16();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1693,7 +1693,7 @@ public:
    CProfile_A5_10_17();
    virtual ~CProfile_A5_10_17();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1732,7 +1732,7 @@ public:
    CProfile_A5_10_18();
    virtual ~CProfile_A5_10_18();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1774,7 +1774,7 @@ public:
    CProfile_A5_10_19();
    virtual ~CProfile_A5_10_19();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1816,7 +1816,7 @@ public:
    CProfile_A5_10_1A();
    virtual ~CProfile_A5_10_1A();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1857,7 +1857,7 @@ public:
    CProfile_A5_10_1B();
    virtual ~CProfile_A5_10_1B();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1899,7 +1899,7 @@ public:
    CProfile_A5_10_1C();
    virtual ~CProfile_A5_10_1C();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1941,7 +1941,7 @@ public:
    CProfile_A5_10_1D();
    virtual ~CProfile_A5_10_1D();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -1962,7 +1962,7 @@ public:
    CProfile_A5_10_1F();
    virtual ~CProfile_A5_10_1F();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2001,7 +2001,7 @@ public:
    CProfile_A5_10_20();
    virtual ~CProfile_A5_10_20();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2038,7 +2038,7 @@ public:
    CProfile_A5_10_21();
    virtual ~CProfile_A5_10_21();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2059,7 +2059,7 @@ public:
    CProfile_A5_10_22();
    virtual ~CProfile_A5_10_22();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2077,7 +2077,7 @@ public:
    CProfile_A5_10_23();
    virtual ~CProfile_A5_10_23();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2144,7 +2144,7 @@ public:
    CProfile_A5_11_01();
    virtual ~CProfile_A5_11_01();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2223,7 +2223,7 @@ public:
    CProfile_A5_11_02();
    virtual ~CProfile_A5_11_02();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2296,7 +2296,7 @@ public:
    CProfile_A5_11_03();
    virtual ~CProfile_A5_11_03();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2354,7 +2354,7 @@ public:
    CProfile_A5_11_04();
    virtual ~CProfile_A5_11_04();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2412,7 +2412,7 @@ public:
    CProfile_A5_12_00();
    virtual ~CProfile_A5_12_00();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2447,7 +2447,7 @@ public:
    CProfile_A5_12_01();
    virtual ~CProfile_A5_12_01();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2482,7 +2482,7 @@ public:
    CProfile_A5_12_02();
    virtual ~CProfile_A5_12_02();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2517,7 +2517,7 @@ public:
    CProfile_A5_12_03();
    virtual ~CProfile_A5_12_03();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2552,7 +2552,7 @@ public:
    CProfile_A5_12_04();
    virtual ~CProfile_A5_12_04();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2587,7 +2587,7 @@ public:
    CProfile_A5_12_05();
    virtual ~CProfile_A5_12_05();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2632,7 +2632,7 @@ public:
    CProfile_A5_12_10();
    virtual ~CProfile_A5_12_10();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2672,7 +2672,7 @@ public:
    CProfile_A5_13_01();
    virtual ~CProfile_A5_13_01();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2691,7 +2691,7 @@ public:
    CProfile_A5_13_02();
    virtual ~CProfile_A5_13_02();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2711,7 +2711,7 @@ public:
    CProfile_A5_13_03();
    virtual ~CProfile_A5_13_03();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2748,7 +2748,7 @@ public:
    CProfile_A5_13_04();
    virtual ~CProfile_A5_13_04();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2797,7 +2797,7 @@ public:
    CProfile_A5_13_07();
    virtual ~CProfile_A5_13_07();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2815,7 +2815,7 @@ public:
    CProfile_A5_13_08();
    virtual ~CProfile_A5_13_08();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2833,7 +2833,7 @@ public:
    CProfile_A5_13_10();
    virtual ~CProfile_A5_13_10();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2874,7 +2874,7 @@ public:
    CProfile_A5_14_01();
    virtual ~CProfile_A5_14_01();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2892,7 +2892,7 @@ public:
    CProfile_A5_14_02();
    virtual ~CProfile_A5_14_02();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2911,7 +2911,7 @@ public:
    CProfile_A5_14_03();
    virtual ~CProfile_A5_14_03();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2930,7 +2930,7 @@ public:
    CProfile_A5_14_04();
    virtual ~CProfile_A5_14_04();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2950,7 +2950,7 @@ public:
    CProfile_A5_14_05();
    virtual ~CProfile_A5_14_05();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -2968,7 +2968,7 @@ public:
    CProfile_A5_14_06();
    virtual ~CProfile_A5_14_06();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -3061,7 +3061,7 @@ public:
    CProfile_A5_20_12();
    virtual ~CProfile_A5_20_12();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -3105,7 +3105,7 @@ public:
    CProfile_A5_30_02();
    virtual ~CProfile_A5_30_02();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -3122,7 +3122,7 @@ public:
    CProfile_A5_30_03();
    virtual ~CProfile_A5_30_03();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -3144,7 +3144,7 @@ public:
    CProfile_A5_30_04();
    virtual ~CProfile_A5_30_04();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -3163,7 +3163,7 @@ public:
    CProfile_A5_30_05();
    virtual ~CProfile_A5_30_05();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -3201,7 +3201,7 @@ public:
    CProfile_A5_37_01();
    virtual ~CProfile_A5_37_01();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -3263,7 +3263,7 @@ public:
    CProfile_A5_38_09();
    virtual ~CProfile_A5_38_09();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -3423,7 +3423,7 @@ public:
    CProfile_D2_03_20();
    virtual ~CProfile_D2_03_20();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -3479,7 +3479,7 @@ public:
    CProfile_D2_04_00();
    virtual ~CProfile_D2_04_00();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -3660,7 +3660,7 @@ public:
    CProfile_D2_32_00();
    virtual ~CProfile_D2_32_00();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -3678,7 +3678,7 @@ public:
    CProfile_D2_32_01();
    virtual ~CProfile_D2_32_01();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -3696,7 +3696,7 @@ public:
    CProfile_D2_32_02();
    virtual ~CProfile_D2_32_02();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -3748,7 +3748,7 @@ public:
    CProfile_D2_40_00();
    virtual ~CProfile_D2_40_00();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
@@ -3785,7 +3785,7 @@ public:
    CProfile_D2_40_01();
    virtual ~CProfile_D2_40_01();
 public:
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > allHistorizers() const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;

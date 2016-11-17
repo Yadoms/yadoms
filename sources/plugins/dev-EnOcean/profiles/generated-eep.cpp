@@ -61,8 +61,9 @@ CProfile_F6_02_04::CProfile_F6_02_04()
 {}
 CProfile_F6_02_04::~CProfile_F6_02_04()
 {}
-unsigned int CProfile_F6_02_04::id() const {
-   return 0x04;
+const std::string& CProfile_F6_02_04::profile() const {
+   static const std::string profile("F6-02-04");
+   return profile;
 }
 const std::string& CProfile_F6_02_04::title() const {
    static const std::string title("Light and blind control ERP2");
@@ -130,8 +131,9 @@ CProfile_F6_04_02::CProfile_F6_04_02()
 {}
 CProfile_F6_04_02::~CProfile_F6_04_02()
 {}
-unsigned int CProfile_F6_04_02::id() const {
-   return 0x02;
+const std::string& CProfile_F6_04_02::profile() const {
+   static const std::string profile("F6-04-02");
+   return profile;
 }
 const std::string& CProfile_F6_04_02::title() const {
    static const std::string title("Key Card Activated Switch ERP2");
@@ -276,8 +278,9 @@ CProfile_D5_00_01::CProfile_D5_00_01()
 {}
 CProfile_D5_00_01::~CProfile_D5_00_01()
 {}
-unsigned int CProfile_D5_00_01::id() const {
-   return 0x01;
+const std::string& CProfile_D5_00_01::profile() const {
+   static const std::string profile("D5-00-01");
+   return profile;
 }
 const std::string& CProfile_D5_00_01::title() const {
    static const std::string title("Single Input Contact");
@@ -382,8 +385,9 @@ CProfile_A5_02_01::CProfile_A5_02_01()
 {}
 CProfile_A5_02_01::~CProfile_A5_02_01()
 {}
-unsigned int CProfile_A5_02_01::id() const {
-   return 0x01;
+const std::string& CProfile_A5_02_01::profile() const {
+   static const std::string profile("A5-02-01");
+   return profile;
 }
 const std::string& CProfile_A5_02_01::title() const {
    static const std::string title("Temperature Sensor Range -40°C to 0°C");
@@ -414,8 +418,9 @@ CProfile_A5_02_02::CProfile_A5_02_02()
 {}
 CProfile_A5_02_02::~CProfile_A5_02_02()
 {}
-unsigned int CProfile_A5_02_02::id() const {
-   return 0x02;
+const std::string& CProfile_A5_02_02::profile() const {
+   static const std::string profile("A5-02-02");
+   return profile;
 }
 const std::string& CProfile_A5_02_02::title() const {
    static const std::string title("Temperature Sensor Range -30°C to +10°C");
@@ -446,8 +451,9 @@ CProfile_A5_02_03::CProfile_A5_02_03()
 {}
 CProfile_A5_02_03::~CProfile_A5_02_03()
 {}
-unsigned int CProfile_A5_02_03::id() const {
-   return 0x03;
+const std::string& CProfile_A5_02_03::profile() const {
+   static const std::string profile("A5-02-03");
+   return profile;
 }
 const std::string& CProfile_A5_02_03::title() const {
    static const std::string title("Temperature Sensor Range -20°C to +20°C");
@@ -478,8 +484,9 @@ CProfile_A5_02_04::CProfile_A5_02_04()
 {}
 CProfile_A5_02_04::~CProfile_A5_02_04()
 {}
-unsigned int CProfile_A5_02_04::id() const {
-   return 0x04;
+const std::string& CProfile_A5_02_04::profile() const {
+   static const std::string profile("A5-02-04");
+   return profile;
 }
 const std::string& CProfile_A5_02_04::title() const {
    static const std::string title("Temperature Sensor Range -10°C to +30°C");
@@ -510,8 +517,9 @@ CProfile_A5_02_05::CProfile_A5_02_05()
 {}
 CProfile_A5_02_05::~CProfile_A5_02_05()
 {}
-unsigned int CProfile_A5_02_05::id() const {
-   return 0x05;
+const std::string& CProfile_A5_02_05::profile() const {
+   static const std::string profile("A5-02-05");
+   return profile;
 }
 const std::string& CProfile_A5_02_05::title() const {
    static const std::string title("Temperature Sensor Range 0°C to +40°C");
@@ -542,8 +550,9 @@ CProfile_A5_02_06::CProfile_A5_02_06()
 {}
 CProfile_A5_02_06::~CProfile_A5_02_06()
 {}
-unsigned int CProfile_A5_02_06::id() const {
-   return 0x06;
+const std::string& CProfile_A5_02_06::profile() const {
+   static const std::string profile("A5-02-06");
+   return profile;
 }
 const std::string& CProfile_A5_02_06::title() const {
    static const std::string title("Temperature Sensor Range +10°C to +50°C");
@@ -574,8 +583,9 @@ CProfile_A5_02_07::CProfile_A5_02_07()
 {}
 CProfile_A5_02_07::~CProfile_A5_02_07()
 {}
-unsigned int CProfile_A5_02_07::id() const {
-   return 0x07;
+const std::string& CProfile_A5_02_07::profile() const {
+   static const std::string profile("A5-02-07");
+   return profile;
 }
 const std::string& CProfile_A5_02_07::title() const {
    static const std::string title("Temperature Sensor Range +20°C to +60°C");
@@ -606,8 +616,9 @@ CProfile_A5_02_08::CProfile_A5_02_08()
 {}
 CProfile_A5_02_08::~CProfile_A5_02_08()
 {}
-unsigned int CProfile_A5_02_08::id() const {
-   return 0x08;
+const std::string& CProfile_A5_02_08::profile() const {
+   static const std::string profile("A5-02-08");
+   return profile;
 }
 const std::string& CProfile_A5_02_08::title() const {
    static const std::string title("Temperature Sensor Range +30°C to +70°C");
@@ -638,8 +649,9 @@ CProfile_A5_02_09::CProfile_A5_02_09()
 {}
 CProfile_A5_02_09::~CProfile_A5_02_09()
 {}
-unsigned int CProfile_A5_02_09::id() const {
-   return 0x09;
+const std::string& CProfile_A5_02_09::profile() const {
+   static const std::string profile("A5-02-09");
+   return profile;
 }
 const std::string& CProfile_A5_02_09::title() const {
    static const std::string title("Temperature Sensor Range +40°C to +80°C");
@@ -670,8 +682,9 @@ CProfile_A5_02_0A::CProfile_A5_02_0A()
 {}
 CProfile_A5_02_0A::~CProfile_A5_02_0A()
 {}
-unsigned int CProfile_A5_02_0A::id() const {
-   return 0x0A;
+const std::string& CProfile_A5_02_0A::profile() const {
+   static const std::string profile("A5-02-0A");
+   return profile;
 }
 const std::string& CProfile_A5_02_0A::title() const {
    static const std::string title("Temperature Sensor Range +50°C to +90°C");
@@ -702,8 +715,9 @@ CProfile_A5_02_0B::CProfile_A5_02_0B()
 {}
 CProfile_A5_02_0B::~CProfile_A5_02_0B()
 {}
-unsigned int CProfile_A5_02_0B::id() const {
-   return 0x0B;
+const std::string& CProfile_A5_02_0B::profile() const {
+   static const std::string profile("A5-02-0B");
+   return profile;
 }
 const std::string& CProfile_A5_02_0B::title() const {
    static const std::string title("Temperature Sensor Range +60°C to +100°C");
@@ -734,8 +748,9 @@ CProfile_A5_02_10::CProfile_A5_02_10()
 {}
 CProfile_A5_02_10::~CProfile_A5_02_10()
 {}
-unsigned int CProfile_A5_02_10::id() const {
-   return 0x10;
+const std::string& CProfile_A5_02_10::profile() const {
+   static const std::string profile("A5-02-10");
+   return profile;
 }
 const std::string& CProfile_A5_02_10::title() const {
    static const std::string title("Temperature Sensor Range -60°C to +20°C");
@@ -766,8 +781,9 @@ CProfile_A5_02_11::CProfile_A5_02_11()
 {}
 CProfile_A5_02_11::~CProfile_A5_02_11()
 {}
-unsigned int CProfile_A5_02_11::id() const {
-   return 0x11;
+const std::string& CProfile_A5_02_11::profile() const {
+   static const std::string profile("A5-02-11");
+   return profile;
 }
 const std::string& CProfile_A5_02_11::title() const {
    static const std::string title("Temperature Sensor Range -50°C to +30°C");
@@ -798,8 +814,9 @@ CProfile_A5_02_12::CProfile_A5_02_12()
 {}
 CProfile_A5_02_12::~CProfile_A5_02_12()
 {}
-unsigned int CProfile_A5_02_12::id() const {
-   return 0x12;
+const std::string& CProfile_A5_02_12::profile() const {
+   static const std::string profile("A5-02-12");
+   return profile;
 }
 const std::string& CProfile_A5_02_12::title() const {
    static const std::string title("Temperature Sensor Range -40°C to +40°C");
@@ -830,8 +847,9 @@ CProfile_A5_02_13::CProfile_A5_02_13()
 {}
 CProfile_A5_02_13::~CProfile_A5_02_13()
 {}
-unsigned int CProfile_A5_02_13::id() const {
-   return 0x13;
+const std::string& CProfile_A5_02_13::profile() const {
+   static const std::string profile("A5-02-13");
+   return profile;
 }
 const std::string& CProfile_A5_02_13::title() const {
    static const std::string title("Temperature Sensor Range -30°C to +50°C");
@@ -862,8 +880,9 @@ CProfile_A5_02_14::CProfile_A5_02_14()
 {}
 CProfile_A5_02_14::~CProfile_A5_02_14()
 {}
-unsigned int CProfile_A5_02_14::id() const {
-   return 0x14;
+const std::string& CProfile_A5_02_14::profile() const {
+   static const std::string profile("A5-02-14");
+   return profile;
 }
 const std::string& CProfile_A5_02_14::title() const {
    static const std::string title("Temperature Sensor Range -20°C to +60°C");
@@ -894,8 +913,9 @@ CProfile_A5_02_15::CProfile_A5_02_15()
 {}
 CProfile_A5_02_15::~CProfile_A5_02_15()
 {}
-unsigned int CProfile_A5_02_15::id() const {
-   return 0x15;
+const std::string& CProfile_A5_02_15::profile() const {
+   static const std::string profile("A5-02-15");
+   return profile;
 }
 const std::string& CProfile_A5_02_15::title() const {
    static const std::string title("Temperature Sensor Range -10°C to +70°C");
@@ -926,8 +946,9 @@ CProfile_A5_02_16::CProfile_A5_02_16()
 {}
 CProfile_A5_02_16::~CProfile_A5_02_16()
 {}
-unsigned int CProfile_A5_02_16::id() const {
-   return 0x16;
+const std::string& CProfile_A5_02_16::profile() const {
+   static const std::string profile("A5-02-16");
+   return profile;
 }
 const std::string& CProfile_A5_02_16::title() const {
    static const std::string title("Temperature Sensor Range 0°C to +80°C");
@@ -958,8 +979,9 @@ CProfile_A5_02_17::CProfile_A5_02_17()
 {}
 CProfile_A5_02_17::~CProfile_A5_02_17()
 {}
-unsigned int CProfile_A5_02_17::id() const {
-   return 0x17;
+const std::string& CProfile_A5_02_17::profile() const {
+   static const std::string profile("A5-02-17");
+   return profile;
 }
 const std::string& CProfile_A5_02_17::title() const {
    static const std::string title("Temperature Sensor Range +10°C to +90°C");
@@ -990,8 +1012,9 @@ CProfile_A5_02_18::CProfile_A5_02_18()
 {}
 CProfile_A5_02_18::~CProfile_A5_02_18()
 {}
-unsigned int CProfile_A5_02_18::id() const {
-   return 0x18;
+const std::string& CProfile_A5_02_18::profile() const {
+   static const std::string profile("A5-02-18");
+   return profile;
 }
 const std::string& CProfile_A5_02_18::title() const {
    static const std::string title("Temperature Sensor Range +20°C to +100°C");
@@ -1022,8 +1045,9 @@ CProfile_A5_02_19::CProfile_A5_02_19()
 {}
 CProfile_A5_02_19::~CProfile_A5_02_19()
 {}
-unsigned int CProfile_A5_02_19::id() const {
-   return 0x19;
+const std::string& CProfile_A5_02_19::profile() const {
+   static const std::string profile("A5-02-19");
+   return profile;
 }
 const std::string& CProfile_A5_02_19::title() const {
    static const std::string title("Temperature Sensor Range +30°C to +110°C");
@@ -1054,8 +1078,9 @@ CProfile_A5_02_1A::CProfile_A5_02_1A()
 {}
 CProfile_A5_02_1A::~CProfile_A5_02_1A()
 {}
-unsigned int CProfile_A5_02_1A::id() const {
-   return 0x1A;
+const std::string& CProfile_A5_02_1A::profile() const {
+   static const std::string profile("A5-02-1A");
+   return profile;
 }
 const std::string& CProfile_A5_02_1A::title() const {
    static const std::string title("Temperature Sensor Range +40°C to +120°C");
@@ -1086,8 +1111,9 @@ CProfile_A5_02_1B::CProfile_A5_02_1B()
 {}
 CProfile_A5_02_1B::~CProfile_A5_02_1B()
 {}
-unsigned int CProfile_A5_02_1B::id() const {
-   return 0x1B;
+const std::string& CProfile_A5_02_1B::profile() const {
+   static const std::string profile("A5-02-1B");
+   return profile;
 }
 const std::string& CProfile_A5_02_1B::title() const {
    static const std::string title("Temperature Sensor Range +50°C to +130°C");
@@ -1118,8 +1144,9 @@ CProfile_A5_02_20::CProfile_A5_02_20()
 {}
 CProfile_A5_02_20::~CProfile_A5_02_20()
 {}
-unsigned int CProfile_A5_02_20::id() const {
-   return 0x20;
+const std::string& CProfile_A5_02_20::profile() const {
+   static const std::string profile("A5-02-20");
+   return profile;
 }
 const std::string& CProfile_A5_02_20::title() const {
    static const std::string title("10 Bit Temperature Sensor Range -10°C to +41.2°C");
@@ -1150,8 +1177,9 @@ CProfile_A5_02_30::CProfile_A5_02_30()
 {}
 CProfile_A5_02_30::~CProfile_A5_02_30()
 {}
-unsigned int CProfile_A5_02_30::id() const {
-   return 0x30;
+const std::string& CProfile_A5_02_30::profile() const {
+   static const std::string profile("A5-02-30");
+   return profile;
 }
 const std::string& CProfile_A5_02_30::title() const {
    static const std::string title("10 Bit Temperature Sensor Range -40°C to +62.3°C");
@@ -1228,8 +1256,9 @@ CProfile_A5_04_01::CProfile_A5_04_01()
 {}
 CProfile_A5_04_01::~CProfile_A5_04_01()
 {}
-unsigned int CProfile_A5_04_01::id() const {
-   return 0x01;
+const std::string& CProfile_A5_04_01::profile() const {
+   static const std::string profile("A5-04-01");
+   return profile;
 }
 const std::string& CProfile_A5_04_01::title() const {
    static const std::string title("Range 0°C to +40°C and 0% to 100%");
@@ -1268,8 +1297,9 @@ CProfile_A5_04_02::CProfile_A5_04_02()
 {}
 CProfile_A5_04_02::~CProfile_A5_04_02()
 {}
-unsigned int CProfile_A5_04_02::id() const {
-   return 0x02;
+const std::string& CProfile_A5_04_02::profile() const {
+   static const std::string profile("A5-04-02");
+   return profile;
 }
 const std::string& CProfile_A5_04_02::title() const {
    static const std::string title("Range -20°C to +60°C and 0% to 100%");
@@ -1308,8 +1338,9 @@ CProfile_A5_04_03::CProfile_A5_04_03()
 {}
 CProfile_A5_04_03::~CProfile_A5_04_03()
 {}
-unsigned int CProfile_A5_04_03::id() const {
-   return 0x03;
+const std::string& CProfile_A5_04_03::profile() const {
+   static const std::string profile("A5-04-03");
+   return profile;
 }
 const std::string& CProfile_A5_04_03::title() const {
    static const std::string title("Range -20°C to +60°C 10bit-measurement and 0% to 100%");
@@ -1369,8 +1400,9 @@ CProfile_A5_05_01::CProfile_A5_05_01()
 {}
 CProfile_A5_05_01::~CProfile_A5_05_01()
 {}
-unsigned int CProfile_A5_05_01::id() const {
-   return 0x01;
+const std::string& CProfile_A5_05_01::profile() const {
+   static const std::string profile("A5-05-01");
+   return profile;
 }
 const std::string& CProfile_A5_05_01::title() const {
    static const std::string title("Range 500 to 1150 hPa");
@@ -1425,8 +1457,9 @@ CProfile_A5_06_01::CProfile_A5_06_01()
 {}
 CProfile_A5_06_01::~CProfile_A5_06_01()
 {}
-unsigned int CProfile_A5_06_01::id() const {
-   return 0x01;
+const std::string& CProfile_A5_06_01::profile() const {
+   static const std::string profile("A5-06-01");
+   return profile;
 }
 const std::string& CProfile_A5_06_01::title() const {
    static const std::string title("Range 300lx to 60.000lx");
@@ -1471,8 +1504,9 @@ CProfile_A5_06_02::CProfile_A5_06_02()
 {}
 CProfile_A5_06_02::~CProfile_A5_06_02()
 {}
-unsigned int CProfile_A5_06_02::id() const {
-   return 0x02;
+const std::string& CProfile_A5_06_02::profile() const {
+   static const std::string profile("A5-06-02");
+   return profile;
 }
 const std::string& CProfile_A5_06_02::title() const {
    static const std::string title("Range 0lx to 1.020lx");
@@ -1515,8 +1549,9 @@ CProfile_A5_06_03::CProfile_A5_06_03()
 {}
 CProfile_A5_06_03::~CProfile_A5_06_03()
 {}
-unsigned int CProfile_A5_06_03::id() const {
-   return 0x03;
+const std::string& CProfile_A5_06_03::profile() const {
+   static const std::string profile("A5-06-03");
+   return profile;
 }
 const std::string& CProfile_A5_06_03::title() const {
    static const std::string title("10-bit measurement (1-Lux resolution) with range 0lx to 1000lx");
@@ -1554,8 +1589,9 @@ CProfile_A5_06_04::CProfile_A5_06_04()
 {}
 CProfile_A5_06_04::~CProfile_A5_06_04()
 {}
-unsigned int CProfile_A5_06_04::id() const {
-   return 0x04;
+const std::string& CProfile_A5_06_04::profile() const {
+   static const std::string profile("A5-06-04");
+   return profile;
 }
 const std::string& CProfile_A5_06_04::title() const {
    static const std::string title("Curtain Wall Brightness Sensor");
@@ -1591,8 +1627,9 @@ CProfile_A5_06_05::CProfile_A5_06_05()
 {}
 CProfile_A5_06_05::~CProfile_A5_06_05()
 {}
-unsigned int CProfile_A5_06_05::id() const {
-   return 0x05;
+const std::string& CProfile_A5_06_05::profile() const {
+   static const std::string profile("A5-06-05");
+   return profile;
 }
 const std::string& CProfile_A5_06_05::title() const {
    static const std::string title("Range 0lx to 10.200lx");
@@ -1658,8 +1695,9 @@ CProfile_A5_07_01::CProfile_A5_07_01()
 {}
 CProfile_A5_07_01::~CProfile_A5_07_01()
 {}
-unsigned int CProfile_A5_07_01::id() const {
-   return 0x01;
+const std::string& CProfile_A5_07_01::profile() const {
+   static const std::string profile("A5-07-01");
+   return profile;
 }
 const std::string& CProfile_A5_07_01::title() const {
    static const std::string title("Occupancy with Supply voltage monitor");
@@ -1686,8 +1724,9 @@ CProfile_A5_07_02::CProfile_A5_07_02()
 {}
 CProfile_A5_07_02::~CProfile_A5_07_02()
 {}
-unsigned int CProfile_A5_07_02::id() const {
-   return 0x02;
+const std::string& CProfile_A5_07_02::profile() const {
+   static const std::string profile("A5-07-02");
+   return profile;
 }
 const std::string& CProfile_A5_07_02::title() const {
    static const std::string title("Occupancy with Supply voltage monitor");
@@ -1715,8 +1754,9 @@ CProfile_A5_07_03::CProfile_A5_07_03()
 {}
 CProfile_A5_07_03::~CProfile_A5_07_03()
 {}
-unsigned int CProfile_A5_07_03::id() const {
-   return 0x03;
+const std::string& CProfile_A5_07_03::profile() const {
+   static const std::string profile("A5-07-03");
+   return profile;
 }
 const std::string& CProfile_A5_07_03::title() const {
    static const std::string title("Occupancy with Supply voltage monitor and 10-bit illumination measurement");
@@ -1774,8 +1814,9 @@ CProfile_A5_08_01::CProfile_A5_08_01()
 {}
 CProfile_A5_08_01::~CProfile_A5_08_01()
 {}
-unsigned int CProfile_A5_08_01::id() const {
-   return 0x01;
+const std::string& CProfile_A5_08_01::profile() const {
+   static const std::string profile("A5-08-01");
+   return profile;
 }
 const std::string& CProfile_A5_08_01::title() const {
    static const std::string title("Range 0lx to 510lx, 0°C to +51°C and Occupancy Button");
@@ -1822,8 +1863,9 @@ CProfile_A5_08_02::CProfile_A5_08_02()
 {}
 CProfile_A5_08_02::~CProfile_A5_08_02()
 {}
-unsigned int CProfile_A5_08_02::id() const {
-   return 0x02;
+const std::string& CProfile_A5_08_02::profile() const {
+   static const std::string profile("A5-08-02");
+   return profile;
 }
 const std::string& CProfile_A5_08_02::title() const {
    static const std::string title("Range 0lx to 1020lx, 0°C to +51°C and Occupancy Button");
@@ -1870,8 +1912,9 @@ CProfile_A5_08_03::CProfile_A5_08_03()
 {}
 CProfile_A5_08_03::~CProfile_A5_08_03()
 {}
-unsigned int CProfile_A5_08_03::id() const {
-   return 0x03;
+const std::string& CProfile_A5_08_03::profile() const {
+   static const std::string profile("A5-08-03");
+   return profile;
 }
 const std::string& CProfile_A5_08_03::title() const {
    static const std::string title("Range 0lx to 1530lx, -30°C to +50°C and Occupancy Button");
@@ -1938,8 +1981,9 @@ CProfile_A5_09_02::CProfile_A5_09_02()
 {}
 CProfile_A5_09_02::~CProfile_A5_09_02()
 {}
-unsigned int CProfile_A5_09_02::id() const {
-   return 0x02;
+const std::string& CProfile_A5_09_02::profile() const {
+   static const std::string profile("A5-09-02");
+   return profile;
 }
 const std::string& CProfile_A5_09_02::title() const {
    static const std::string title("CO-Sensor 0 ppm to 1020 ppm");
@@ -1979,8 +2023,9 @@ CProfile_A5_09_04::CProfile_A5_09_04()
 {}
 CProfile_A5_09_04::~CProfile_A5_09_04()
 {}
-unsigned int CProfile_A5_09_04::id() const {
-   return 0x04;
+const std::string& CProfile_A5_09_04::profile() const {
+   static const std::string profile("A5-09-04");
+   return profile;
 }
 const std::string& CProfile_A5_09_04::title() const {
    static const std::string title("CO2 Sensor");
@@ -2070,8 +2115,9 @@ CProfile_A5_09_05::CProfile_A5_09_05()
 {}
 CProfile_A5_09_05::~CProfile_A5_09_05()
 {}
-unsigned int CProfile_A5_09_05::id() const {
-   return 0x05;
+const std::string& CProfile_A5_09_05::profile() const {
+   static const std::string profile("A5-09-05");
+   return profile;
 }
 const std::string& CProfile_A5_09_05::title() const {
    static const std::string title("VOC Sensor");
@@ -2099,8 +2145,9 @@ CProfile_A5_09_07::CProfile_A5_09_07()
 {}
 CProfile_A5_09_07::~CProfile_A5_09_07()
 {}
-unsigned int CProfile_A5_09_07::id() const {
-   return 0x07;
+const std::string& CProfile_A5_09_07::profile() const {
+   static const std::string profile("A5-09-07");
+   return profile;
 }
 const std::string& CProfile_A5_09_07::title() const {
    static const std::string title("Particles");
@@ -2129,8 +2176,9 @@ CProfile_A5_09_09::CProfile_A5_09_09()
 {}
 CProfile_A5_09_09::~CProfile_A5_09_09()
 {}
-unsigned int CProfile_A5_09_09::id() const {
-   return 0x09;
+const std::string& CProfile_A5_09_09::profile() const {
+   static const std::string profile("A5-09-09");
+   return profile;
 }
 const std::string& CProfile_A5_09_09::title() const {
    static const std::string title("Pure CO2 Sensor with Power Failure Detection");
@@ -2160,8 +2208,9 @@ CProfile_A5_09_0A::CProfile_A5_09_0A()
 {}
 CProfile_A5_09_0A::~CProfile_A5_09_0A()
 {}
-unsigned int CProfile_A5_09_0A::id() const {
-   return 0x0A;
+const std::string& CProfile_A5_09_0A::profile() const {
+   static const std::string profile("A5-09-0A");
+   return profile;
 }
 const std::string& CProfile_A5_09_0A::title() const {
    static const std::string title("Hydrogen Gas Sensor");
@@ -2235,8 +2284,9 @@ CProfile_A5_09_0B::CProfile_A5_09_0B()
 {}
 CProfile_A5_09_0B::~CProfile_A5_09_0B()
 {}
-unsigned int CProfile_A5_09_0B::id() const {
-   return 0x0B;
+const std::string& CProfile_A5_09_0B::profile() const {
+   static const std::string profile("A5-09-0B");
+   return profile;
 }
 const std::string& CProfile_A5_09_0B::title() const {
    static const std::string title("Radioactivity Sensor");
@@ -2295,8 +2345,9 @@ CProfile_A5_10_01::CProfile_A5_10_01()
 {}
 CProfile_A5_10_01::~CProfile_A5_10_01()
 {}
-unsigned int CProfile_A5_10_01::id() const {
-   return 0x01;
+const std::string& CProfile_A5_10_01::profile() const {
+   static const std::string profile("A5-10-01");
+   return profile;
 }
 const std::string& CProfile_A5_10_01::title() const {
    static const std::string title("Temperature Sensor, Set Point, Fan Speed and Occupancy Control");
@@ -2329,8 +2380,9 @@ CProfile_A5_10_02::CProfile_A5_10_02()
 {}
 CProfile_A5_10_02::~CProfile_A5_10_02()
 {}
-unsigned int CProfile_A5_10_02::id() const {
-   return 0x02;
+const std::string& CProfile_A5_10_02::profile() const {
+   static const std::string profile("A5-10-02");
+   return profile;
 }
 const std::string& CProfile_A5_10_02::title() const {
    static const std::string title("Temperature Sensor, Set Point, Fan Speed and Day/Night Control");
@@ -2362,8 +2414,9 @@ CProfile_A5_10_03::CProfile_A5_10_03()
 {}
 CProfile_A5_10_03::~CProfile_A5_10_03()
 {}
-unsigned int CProfile_A5_10_03::id() const {
-   return 0x03;
+const std::string& CProfile_A5_10_03::profile() const {
+   static const std::string profile("A5-10-03");
+   return profile;
 }
 const std::string& CProfile_A5_10_03::title() const {
    static const std::string title("Temperature Sensor, Set Point Control");
@@ -2394,8 +2447,9 @@ CProfile_A5_10_04::CProfile_A5_10_04()
 {}
 CProfile_A5_10_04::~CProfile_A5_10_04()
 {}
-unsigned int CProfile_A5_10_04::id() const {
-   return 0x04;
+const std::string& CProfile_A5_10_04::profile() const {
+   static const std::string profile("A5-10-04");
+   return profile;
 }
 const std::string& CProfile_A5_10_04::title() const {
    static const std::string title("Temperature Sensor, Set Point and Fan Speed Control");
@@ -2427,8 +2481,9 @@ CProfile_A5_10_05::CProfile_A5_10_05()
 {}
 CProfile_A5_10_05::~CProfile_A5_10_05()
 {}
-unsigned int CProfile_A5_10_05::id() const {
-   return 0x05;
+const std::string& CProfile_A5_10_05::profile() const {
+   static const std::string profile("A5-10-05");
+   return profile;
 }
 const std::string& CProfile_A5_10_05::title() const {
    static const std::string title("Temperature Sensor, Set Point and Occupancy Control");
@@ -2461,8 +2516,9 @@ CProfile_A5_10_06::CProfile_A5_10_06()
 {}
 CProfile_A5_10_06::~CProfile_A5_10_06()
 {}
-unsigned int CProfile_A5_10_06::id() const {
-   return 0x06;
+const std::string& CProfile_A5_10_06::profile() const {
+   static const std::string profile("A5-10-06");
+   return profile;
 }
 const std::string& CProfile_A5_10_06::title() const {
    static const std::string title("Temperature Sensor, Set Point and Day/Night Control");
@@ -2494,8 +2550,9 @@ CProfile_A5_10_07::CProfile_A5_10_07()
 {}
 CProfile_A5_10_07::~CProfile_A5_10_07()
 {}
-unsigned int CProfile_A5_10_07::id() const {
-   return 0x07;
+const std::string& CProfile_A5_10_07::profile() const {
+   static const std::string profile("A5-10-07");
+   return profile;
 }
 const std::string& CProfile_A5_10_07::title() const {
    static const std::string title("Temperature Sensor, Fan Speed Control");
@@ -2527,8 +2584,9 @@ CProfile_A5_10_08::CProfile_A5_10_08()
 {}
 CProfile_A5_10_08::~CProfile_A5_10_08()
 {}
-unsigned int CProfile_A5_10_08::id() const {
-   return 0x08;
+const std::string& CProfile_A5_10_08::profile() const {
+   static const std::string profile("A5-10-08");
+   return profile;
 }
 const std::string& CProfile_A5_10_08::title() const {
    static const std::string title("Temperature Sensor, Fan Speed and Occupancy Control ");
@@ -2561,8 +2619,9 @@ CProfile_A5_10_09::CProfile_A5_10_09()
 {}
 CProfile_A5_10_09::~CProfile_A5_10_09()
 {}
-unsigned int CProfile_A5_10_09::id() const {
-   return 0x09;
+const std::string& CProfile_A5_10_09::profile() const {
+   static const std::string profile("A5-10-09");
+   return profile;
 }
 const std::string& CProfile_A5_10_09::title() const {
    static const std::string title("Temperature Sensor, Fan Speed and Day/Night Control");
@@ -2595,8 +2654,9 @@ CProfile_A5_10_0A::CProfile_A5_10_0A()
 {}
 CProfile_A5_10_0A::~CProfile_A5_10_0A()
 {}
-unsigned int CProfile_A5_10_0A::id() const {
-   return 0x0A;
+const std::string& CProfile_A5_10_0A::profile() const {
+   static const std::string profile("A5-10-0A");
+   return profile;
 }
 const std::string& CProfile_A5_10_0A::title() const {
    static const std::string title("Temperature Sensor, Set Point Adjust and Single Input Contact");
@@ -2629,8 +2689,9 @@ CProfile_A5_10_0B::CProfile_A5_10_0B()
 {}
 CProfile_A5_10_0B::~CProfile_A5_10_0B()
 {}
-unsigned int CProfile_A5_10_0B::id() const {
-   return 0x0B;
+const std::string& CProfile_A5_10_0B::profile() const {
+   static const std::string profile("A5-10-0B");
+   return profile;
 }
 const std::string& CProfile_A5_10_0B::title() const {
    static const std::string title("Temperature Sensor and Single Input Contact");
@@ -2663,8 +2724,9 @@ CProfile_A5_10_0C::CProfile_A5_10_0C()
 {}
 CProfile_A5_10_0C::~CProfile_A5_10_0C()
 {}
-unsigned int CProfile_A5_10_0C::id() const {
-   return 0x0C;
+const std::string& CProfile_A5_10_0C::profile() const {
+   static const std::string profile("A5-10-0C");
+   return profile;
 }
 const std::string& CProfile_A5_10_0C::title() const {
    static const std::string title("Temperature Sensor and Occupancy Control");
@@ -2697,8 +2759,9 @@ CProfile_A5_10_0D::CProfile_A5_10_0D()
 {}
 CProfile_A5_10_0D::~CProfile_A5_10_0D()
 {}
-unsigned int CProfile_A5_10_0D::id() const {
-   return 0x0D;
+const std::string& CProfile_A5_10_0D::profile() const {
+   static const std::string profile("A5-10-0D");
+   return profile;
 }
 const std::string& CProfile_A5_10_0D::title() const {
    static const std::string title("Temperature Sensor and Day/Night Control");
@@ -2732,8 +2795,9 @@ CProfile_A5_10_10::CProfile_A5_10_10()
 {}
 CProfile_A5_10_10::~CProfile_A5_10_10()
 {}
-unsigned int CProfile_A5_10_10::id() const {
-   return 0x10;
+const std::string& CProfile_A5_10_10::profile() const {
+   static const std::string profile("A5-10-10");
+   return profile;
 }
 const std::string& CProfile_A5_10_10::title() const {
    static const std::string title("Temperature and Humidity Sensor, Set Point and Occupancy Control");
@@ -2772,8 +2836,9 @@ CProfile_A5_10_11::CProfile_A5_10_11()
 {}
 CProfile_A5_10_11::~CProfile_A5_10_11()
 {}
-unsigned int CProfile_A5_10_11::id() const {
-   return 0x11;
+const std::string& CProfile_A5_10_11::profile() const {
+   static const std::string profile("A5-10-11");
+   return profile;
 }
 const std::string& CProfile_A5_10_11::title() const {
    static const std::string title("Temperature and Humidity Sensor, Set Point and Day/Night Control");
@@ -2811,8 +2876,9 @@ CProfile_A5_10_12::CProfile_A5_10_12()
 {}
 CProfile_A5_10_12::~CProfile_A5_10_12()
 {}
-unsigned int CProfile_A5_10_12::id() const {
-   return 0x12;
+const std::string& CProfile_A5_10_12::profile() const {
+   static const std::string profile("A5-10-12");
+   return profile;
 }
 const std::string& CProfile_A5_10_12::title() const {
    static const std::string title("Temperature and Humidity Sensor and Set Point");
@@ -2850,8 +2916,9 @@ CProfile_A5_10_13::CProfile_A5_10_13()
 {}
 CProfile_A5_10_13::~CProfile_A5_10_13()
 {}
-unsigned int CProfile_A5_10_13::id() const {
-   return 0x13;
+const std::string& CProfile_A5_10_13::profile() const {
+   static const std::string profile("A5-10-13");
+   return profile;
 }
 const std::string& CProfile_A5_10_13::title() const {
    static const std::string title("Temperature and Humidity Sensor, Occupancy Control");
@@ -2890,8 +2957,9 @@ CProfile_A5_10_14::CProfile_A5_10_14()
 {}
 CProfile_A5_10_14::~CProfile_A5_10_14()
 {}
-unsigned int CProfile_A5_10_14::id() const {
-   return 0x14;
+const std::string& CProfile_A5_10_14::profile() const {
+   static const std::string profile("A5-10-14");
+   return profile;
 }
 const std::string& CProfile_A5_10_14::title() const {
    static const std::string title("Temperature and Humidity Sensor, Day/Night Control");
@@ -2928,8 +2996,9 @@ CProfile_A5_10_15::CProfile_A5_10_15()
 {}
 CProfile_A5_10_15::~CProfile_A5_10_15()
 {}
-unsigned int CProfile_A5_10_15::id() const {
-   return 0x15;
+const std::string& CProfile_A5_10_15::profile() const {
+   static const std::string profile("A5-10-15");
+   return profile;
 }
 const std::string& CProfile_A5_10_15::title() const {
    static const std::string title("10 Bit Temperature Sensor, 6 bit Set Point Control");
@@ -2961,8 +3030,9 @@ CProfile_A5_10_16::CProfile_A5_10_16()
 {}
 CProfile_A5_10_16::~CProfile_A5_10_16()
 {}
-unsigned int CProfile_A5_10_16::id() const {
-   return 0x16;
+const std::string& CProfile_A5_10_16::profile() const {
+   static const std::string profile("A5-10-16");
+   return profile;
 }
 const std::string& CProfile_A5_10_16::title() const {
    static const std::string title("10 Bit Temperature Sensor, 6 bit Set Point Control;Occupancy Control");
@@ -2995,8 +3065,9 @@ CProfile_A5_10_17::CProfile_A5_10_17()
 {}
 CProfile_A5_10_17::~CProfile_A5_10_17()
 {}
-unsigned int CProfile_A5_10_17::id() const {
-   return 0x17;
+const std::string& CProfile_A5_10_17::profile() const {
+   static const std::string profile("A5-10-17");
+   return profile;
 }
 const std::string& CProfile_A5_10_17::title() const {
    static const std::string title("10 Bit Temperature Sensor, Occupancy Control");
@@ -3050,8 +3121,9 @@ CProfile_A5_10_18::CProfile_A5_10_18()
 {}
 CProfile_A5_10_18::~CProfile_A5_10_18()
 {}
-unsigned int CProfile_A5_10_18::id() const {
-   return 0x18;
+const std::string& CProfile_A5_10_18::profile() const {
+   static const std::string profile("A5-10-18");
+   return profile;
 }
 const std::string& CProfile_A5_10_18::title() const {
    static const std::string title("Illumination, Temperature Set Point, Temperature Sensor, Fan Speed and Occupancy Control");
@@ -3111,8 +3183,9 @@ CProfile_A5_10_19::CProfile_A5_10_19()
 {}
 CProfile_A5_10_19::~CProfile_A5_10_19()
 {}
-unsigned int CProfile_A5_10_19::id() const {
-   return 0x19;
+const std::string& CProfile_A5_10_19::profile() const {
+   static const std::string profile("A5-10-19");
+   return profile;
 }
 const std::string& CProfile_A5_10_19::title() const {
    static const std::string title("Humidity, Temperature Set Point, Temperature Sensor, Fan Speed and Occupancy Control");
@@ -3171,8 +3244,9 @@ CProfile_A5_10_1A::CProfile_A5_10_1A()
 {}
 CProfile_A5_10_1A::~CProfile_A5_10_1A()
 {}
-unsigned int CProfile_A5_10_1A::id() const {
-   return 0x1A;
+const std::string& CProfile_A5_10_1A::profile() const {
+   static const std::string profile("A5-10-1A");
+   return profile;
 }
 const std::string& CProfile_A5_10_1A::title() const {
    static const std::string title("Supply voltage monitor, Temperature Set Point, Temperature Sensor, Fan Speed and Occupancy Control");
@@ -3227,8 +3301,9 @@ CProfile_A5_10_1B::CProfile_A5_10_1B()
 {}
 CProfile_A5_10_1B::~CProfile_A5_10_1B()
 {}
-unsigned int CProfile_A5_10_1B::id() const {
-   return 0x1B;
+const std::string& CProfile_A5_10_1B::profile() const {
+   static const std::string profile("A5-10-1B");
+   return profile;
 }
 const std::string& CProfile_A5_10_1B::title() const {
    static const std::string title("Supply Voltage Monitor, Illumination, Temperature Sensor, Fan Speed and Occupancy Control");
@@ -3288,8 +3363,9 @@ CProfile_A5_10_1C::CProfile_A5_10_1C()
 {}
 CProfile_A5_10_1C::~CProfile_A5_10_1C()
 {}
-unsigned int CProfile_A5_10_1C::id() const {
-   return 0x1C;
+const std::string& CProfile_A5_10_1C::profile() const {
+   static const std::string profile("A5-10-1C");
+   return profile;
 }
 const std::string& CProfile_A5_10_1C::title() const {
    static const std::string title("Illumination, Illumination Set Point, Temperature Sensor, Fan Speed and Occupancy Control");
@@ -3349,8 +3425,9 @@ CProfile_A5_10_1D::CProfile_A5_10_1D()
 {}
 CProfile_A5_10_1D::~CProfile_A5_10_1D()
 {}
-unsigned int CProfile_A5_10_1D::id() const {
-   return 0x1D;
+const std::string& CProfile_A5_10_1D::profile() const {
+   static const std::string profile("A5-10-1D");
+   return profile;
 }
 const std::string& CProfile_A5_10_1D::title() const {
    static const std::string title("Humidity, Humidity Set Point, Temperature Sensor, Fan Speed and Occupancy Control");
@@ -3393,8 +3470,9 @@ CProfile_A5_10_1F::CProfile_A5_10_1F()
 {}
 CProfile_A5_10_1F::~CProfile_A5_10_1F()
 {}
-unsigned int CProfile_A5_10_1F::id() const {
-   return 0x1F;
+const std::string& CProfile_A5_10_1F::profile() const {
+   static const std::string profile("A5-10-1F");
+   return profile;
 }
 const std::string& CProfile_A5_10_1F::title() const {
    static const std::string title("Temperature Sensor, Set Point, Fan Speed, Occupancy and Unoccupancy Control");
@@ -3447,8 +3525,9 @@ CProfile_A5_10_20::CProfile_A5_10_20()
 {}
 CProfile_A5_10_20::~CProfile_A5_10_20()
 {}
-unsigned int CProfile_A5_10_20::id() const {
-   return 0x20;
+const std::string& CProfile_A5_10_20::profile() const {
+   static const std::string profile("A5-10-20");
+   return profile;
 }
 const std::string& CProfile_A5_10_20::title() const {
    static const std::string title("Temperature and Set Point with Special Heating States");
@@ -3499,8 +3578,9 @@ CProfile_A5_10_21::CProfile_A5_10_21()
 {}
 CProfile_A5_10_21::~CProfile_A5_10_21()
 {}
-unsigned int CProfile_A5_10_21::id() const {
-   return 0x21;
+const std::string& CProfile_A5_10_21::profile() const {
+   static const std::string profile("A5-10-21");
+   return profile;
 }
 const std::string& CProfile_A5_10_21::title() const {
    static const std::string title("Temperature, Humidity and Set Point with Special Heating States");
@@ -3539,8 +3619,9 @@ CProfile_A5_10_22::CProfile_A5_10_22()
 {}
 CProfile_A5_10_22::~CProfile_A5_10_22()
 {}
-unsigned int CProfile_A5_10_22::id() const {
-   return 0x22;
+const std::string& CProfile_A5_10_22::profile() const {
+   static const std::string profile("A5-10-22");
+   return profile;
 }
 const std::string& CProfile_A5_10_22::title() const {
    static const std::string title("Temperature, Setpoint, Humidity and Fan Speed");
@@ -3578,8 +3659,9 @@ CProfile_A5_10_23::CProfile_A5_10_23()
 {}
 CProfile_A5_10_23::~CProfile_A5_10_23()
 {}
-unsigned int CProfile_A5_10_23::id() const {
-   return 0x23;
+const std::string& CProfile_A5_10_23::profile() const {
+   static const std::string profile("A5-10-23");
+   return profile;
 }
 const std::string& CProfile_A5_10_23::title() const {
    static const std::string title("Temperature, Setpoint, Humidity, Fan Speed and Occupancy");
@@ -3674,8 +3756,9 @@ CProfile_A5_11_01::CProfile_A5_11_01()
 {}
 CProfile_A5_11_01::~CProfile_A5_11_01()
 {}
-unsigned int CProfile_A5_11_01::id() const {
-   return 0x01;
+const std::string& CProfile_A5_11_01::profile() const {
+   static const std::string profile("A5-11-01");
+   return profile;
 }
 const std::string& CProfile_A5_11_01::title() const {
    static const std::string title("Lighting Controller");
@@ -3764,8 +3847,9 @@ CProfile_A5_11_02::CProfile_A5_11_02()
 {}
 CProfile_A5_11_02::~CProfile_A5_11_02()
 {}
-unsigned int CProfile_A5_11_02::id() const {
-   return 0x02;
+const std::string& CProfile_A5_11_02::profile() const {
+   static const std::string profile("A5-11-02");
+   return profile;
 }
 const std::string& CProfile_A5_11_02::title() const {
    static const std::string title("Temperature Controller Output");
@@ -3843,8 +3927,9 @@ CProfile_A5_11_03::CProfile_A5_11_03()
 {}
 CProfile_A5_11_03::~CProfile_A5_11_03()
 {}
-unsigned int CProfile_A5_11_03::id() const {
-   return 0x03;
+const std::string& CProfile_A5_11_03::profile() const {
+   static const std::string profile("A5-11-03");
+   return profile;
 }
 const std::string& CProfile_A5_11_03::title() const {
    static const std::string title("Blind Status");
@@ -3907,8 +3992,9 @@ CProfile_A5_11_04::CProfile_A5_11_04()
 {}
 CProfile_A5_11_04::~CProfile_A5_11_04()
 {}
-unsigned int CProfile_A5_11_04::id() const {
-   return 0x04;
+const std::string& CProfile_A5_11_04::profile() const {
+   static const std::string profile("A5-11-04");
+   return profile;
 }
 const std::string& CProfile_A5_11_04::title() const {
    static const std::string title("Extended Lighting Status");
@@ -3975,8 +4061,9 @@ CProfile_A5_12_00::CProfile_A5_12_00()
 {}
 CProfile_A5_12_00::~CProfile_A5_12_00()
 {}
-unsigned int CProfile_A5_12_00::id() const {
-   return 0x00;
+const std::string& CProfile_A5_12_00::profile() const {
+   static const std::string profile("A5-12-00");
+   return profile;
 }
 const std::string& CProfile_A5_12_00::title() const {
    static const std::string title("Counter");
@@ -4018,8 +4105,9 @@ CProfile_A5_12_01::CProfile_A5_12_01()
 {}
 CProfile_A5_12_01::~CProfile_A5_12_01()
 {}
-unsigned int CProfile_A5_12_01::id() const {
-   return 0x01;
+const std::string& CProfile_A5_12_01::profile() const {
+   static const std::string profile("A5-12-01");
+   return profile;
 }
 const std::string& CProfile_A5_12_01::title() const {
    static const std::string title("Electricity");
@@ -4061,8 +4149,9 @@ CProfile_A5_12_02::CProfile_A5_12_02()
 {}
 CProfile_A5_12_02::~CProfile_A5_12_02()
 {}
-unsigned int CProfile_A5_12_02::id() const {
-   return 0x02;
+const std::string& CProfile_A5_12_02::profile() const {
+   static const std::string profile("A5-12-02");
+   return profile;
 }
 const std::string& CProfile_A5_12_02::title() const {
    static const std::string title("Gas");
@@ -4104,8 +4193,9 @@ CProfile_A5_12_03::CProfile_A5_12_03()
 {}
 CProfile_A5_12_03::~CProfile_A5_12_03()
 {}
-unsigned int CProfile_A5_12_03::id() const {
-   return 0x03;
+const std::string& CProfile_A5_12_03::profile() const {
+   static const std::string profile("A5-12-03");
+   return profile;
 }
 const std::string& CProfile_A5_12_03::title() const {
    static const std::string title("Water");
@@ -4147,8 +4237,9 @@ CProfile_A5_12_04::CProfile_A5_12_04()
 {}
 CProfile_A5_12_04::~CProfile_A5_12_04()
 {}
-unsigned int CProfile_A5_12_04::id() const {
-   return 0x04;
+const std::string& CProfile_A5_12_04::profile() const {
+   static const std::string profile("A5-12-04");
+   return profile;
 }
 const std::string& CProfile_A5_12_04::title() const {
    static const std::string title("Temperature and Load Sensor");
@@ -4204,8 +4295,9 @@ CProfile_A5_12_05::CProfile_A5_12_05()
 {}
 CProfile_A5_12_05::~CProfile_A5_12_05()
 {}
-unsigned int CProfile_A5_12_05::id() const {
-   return 0x05;
+const std::string& CProfile_A5_12_05::profile() const {
+   static const std::string profile("A5-12-05");
+   return profile;
 }
 const std::string& CProfile_A5_12_05::title() const {
    static const std::string title("Temperature and Container Sensor");
@@ -4261,8 +4353,9 @@ CProfile_A5_12_10::CProfile_A5_12_10()
 {}
 CProfile_A5_12_10::~CProfile_A5_12_10()
 {}
-unsigned int CProfile_A5_12_10::id() const {
-   return 0x10;
+const std::string& CProfile_A5_12_10::profile() const {
+   static const std::string profile("A5-12-10");
+   return profile;
 }
 const std::string& CProfile_A5_12_10::title() const {
    static const std::string title("Current meter 16 channels");
@@ -4317,8 +4410,9 @@ CProfile_A5_13_01::CProfile_A5_13_01()
 {}
 CProfile_A5_13_01::~CProfile_A5_13_01()
 {}
-unsigned int CProfile_A5_13_01::id() const {
-   return 0x01;
+const std::string& CProfile_A5_13_01::profile() const {
+   static const std::string profile("A5-13-01");
+   return profile;
 }
 const std::string& CProfile_A5_13_01::title() const {
    static const std::string title("Weather Station");
@@ -4354,8 +4448,9 @@ CProfile_A5_13_02::CProfile_A5_13_02()
 {}
 CProfile_A5_13_02::~CProfile_A5_13_02()
 {}
-unsigned int CProfile_A5_13_02::id() const {
-   return 0x02;
+const std::string& CProfile_A5_13_02::profile() const {
+   static const std::string profile("A5-13-02");
+   return profile;
 }
 const std::string& CProfile_A5_13_02::title() const {
    static const std::string title("Sun Intensity");
@@ -4397,8 +4492,9 @@ CProfile_A5_13_03::CProfile_A5_13_03()
 {}
 CProfile_A5_13_03::~CProfile_A5_13_03()
 {}
-unsigned int CProfile_A5_13_03::id() const {
-   return 0x03;
+const std::string& CProfile_A5_13_03::profile() const {
+   static const std::string profile("A5-13-03");
+   return profile;
 }
 const std::string& CProfile_A5_13_03::title() const {
    static const std::string title("Date Exchange");
@@ -4445,8 +4541,9 @@ CProfile_A5_13_04::CProfile_A5_13_04()
 {}
 CProfile_A5_13_04::~CProfile_A5_13_04()
 {}
-unsigned int CProfile_A5_13_04::id() const {
-   return 0x04;
+const std::string& CProfile_A5_13_04::profile() const {
+   static const std::string profile("A5-13-04");
+   return profile;
 }
 const std::string& CProfile_A5_13_04::title() const {
    static const std::string title("Time and Day Exchange");
@@ -4502,8 +4599,9 @@ CProfile_A5_13_07::CProfile_A5_13_07()
 {}
 CProfile_A5_13_07::~CProfile_A5_13_07()
 {}
-unsigned int CProfile_A5_13_07::id() const {
-   return 0x07;
+const std::string& CProfile_A5_13_07::profile() const {
+   static const std::string profile("A5-13-07");
+   return profile;
 }
 const std::string& CProfile_A5_13_07::title() const {
    static const std::string title("Wind Sensor");
@@ -4531,8 +4629,9 @@ CProfile_A5_13_08::CProfile_A5_13_08()
 {}
 CProfile_A5_13_08::~CProfile_A5_13_08()
 {}
-unsigned int CProfile_A5_13_08::id() const {
-   return 0x08;
+const std::string& CProfile_A5_13_08::profile() const {
+   static const std::string profile("A5-13-08");
+   return profile;
 }
 const std::string& CProfile_A5_13_08::title() const {
    static const std::string title("Rain Sensor");
@@ -4560,8 +4659,9 @@ CProfile_A5_13_10::CProfile_A5_13_10()
 {}
 CProfile_A5_13_10::~CProfile_A5_13_10()
 {}
-unsigned int CProfile_A5_13_10::id() const {
-   return 0x10;
+const std::string& CProfile_A5_13_10::profile() const {
+   static const std::string profile("A5-13-10");
+   return profile;
 }
 const std::string& CProfile_A5_13_10::title() const {
    static const std::string title("Sun position and radiation");
@@ -4615,8 +4715,9 @@ CProfile_A5_14_01::CProfile_A5_14_01()
 {}
 CProfile_A5_14_01::~CProfile_A5_14_01()
 {}
-unsigned int CProfile_A5_14_01::id() const {
-   return 0x01;
+const std::string& CProfile_A5_14_01::profile() const {
+   static const std::string profile("A5-14-01");
+   return profile;
 }
 const std::string& CProfile_A5_14_01::title() const {
    static const std::string title("Single Input Contact (Window/Door), Supply voltage monitor");
@@ -4650,8 +4751,9 @@ CProfile_A5_14_02::CProfile_A5_14_02()
 {}
 CProfile_A5_14_02::~CProfile_A5_14_02()
 {}
-unsigned int CProfile_A5_14_02::id() const {
-   return 0x02;
+const std::string& CProfile_A5_14_02::profile() const {
+   static const std::string profile("A5-14-02");
+   return profile;
 }
 const std::string& CProfile_A5_14_02::title() const {
    static const std::string title("Single Input Contact (Window/Door), Supply voltage monitor and Illumination");
@@ -4690,8 +4792,9 @@ CProfile_A5_14_03::CProfile_A5_14_03()
 {}
 CProfile_A5_14_03::~CProfile_A5_14_03()
 {}
-unsigned int CProfile_A5_14_03::id() const {
-   return 0x03;
+const std::string& CProfile_A5_14_03::profile() const {
+   static const std::string profile("A5-14-03");
+   return profile;
 }
 const std::string& CProfile_A5_14_03::title() const {
    static const std::string title("Single Input Contact (Window/Door), Supply voltage monitor and Vibration");
@@ -4727,8 +4830,9 @@ CProfile_A5_14_04::CProfile_A5_14_04()
 {}
 CProfile_A5_14_04::~CProfile_A5_14_04()
 {}
-unsigned int CProfile_A5_14_04::id() const {
-   return 0x04;
+const std::string& CProfile_A5_14_04::profile() const {
+   static const std::string profile("A5-14-04");
+   return profile;
 }
 const std::string& CProfile_A5_14_04::title() const {
    static const std::string title("Single Input Contact (Window/Door), Supply voltage monitor, Vibration and Illumination");
@@ -4767,8 +4871,9 @@ CProfile_A5_14_05::CProfile_A5_14_05()
 {}
 CProfile_A5_14_05::~CProfile_A5_14_05()
 {}
-unsigned int CProfile_A5_14_05::id() const {
-   return 0x05;
+const std::string& CProfile_A5_14_05::profile() const {
+   static const std::string profile("A5-14-05");
+   return profile;
 }
 const std::string& CProfile_A5_14_05::title() const {
    static const std::string title("Vibration/Tilt, Supply voltage monitor");
@@ -4802,8 +4907,9 @@ CProfile_A5_14_06::CProfile_A5_14_06()
 {}
 CProfile_A5_14_06::~CProfile_A5_14_06()
 {}
-unsigned int CProfile_A5_14_06::id() const {
-   return 0x06;
+const std::string& CProfile_A5_14_06::profile() const {
+   static const std::string profile("A5-14-06");
+   return profile;
 }
 const std::string& CProfile_A5_14_06::title() const {
    static const std::string title("Vibration/Tilt, Illumination and Supply voltage monitor");
@@ -4914,8 +5020,9 @@ CProfile_A5_20_12::CProfile_A5_20_12()
 {}
 CProfile_A5_20_12::~CProfile_A5_20_12()
 {}
-unsigned int CProfile_A5_20_12::id() const {
-   return 0x12;
+const std::string& CProfile_A5_20_12::profile() const {
+   static const std::string profile("A5-20-12");
+   return profile;
 }
 const std::string& CProfile_A5_20_12::title() const {
    static const std::string title("Temperature Controller Input");
@@ -4964,8 +5071,9 @@ CProfile_A5_30_02::CProfile_A5_30_02()
 {}
 CProfile_A5_30_02::~CProfile_A5_30_02()
 {}
-unsigned int CProfile_A5_30_02::id() const {
-   return 0x02;
+const std::string& CProfile_A5_30_02::profile() const {
+   static const std::string profile("A5-30-02");
+   return profile;
 }
 const std::string& CProfile_A5_30_02::title() const {
    static const std::string title("Single Input Contact");
@@ -4997,8 +5105,9 @@ CProfile_A5_30_03::CProfile_A5_30_03()
 {}
 CProfile_A5_30_03::~CProfile_A5_30_03()
 {}
-unsigned int CProfile_A5_30_03::id() const {
-   return 0x03;
+const std::string& CProfile_A5_30_03::profile() const {
+   static const std::string profile("A5-30-03");
+   return profile;
 }
 const std::string& CProfile_A5_30_03::title() const {
    static const std::string title("4 Digital Inputs, Wake and Temperature");
@@ -5036,8 +5145,9 @@ CProfile_A5_30_04::CProfile_A5_30_04()
 {}
 CProfile_A5_30_04::~CProfile_A5_30_04()
 {}
-unsigned int CProfile_A5_30_04::id() const {
-   return 0x04;
+const std::string& CProfile_A5_30_04::profile() const {
+   static const std::string profile("A5-30-04");
+   return profile;
 }
 const std::string& CProfile_A5_30_04::title() const {
    static const std::string title("3 Digital Inputs, 1 Digital Input 8 Bits");
@@ -5067,8 +5177,9 @@ CProfile_A5_30_05::CProfile_A5_30_05()
 {}
 CProfile_A5_30_05::~CProfile_A5_30_05()
 {}
-unsigned int CProfile_A5_30_05::id() const {
-   return 0x05;
+const std::string& CProfile_A5_30_05::profile() const {
+   static const std::string profile("A5-30-05");
+   return profile;
 }
 const std::string& CProfile_A5_30_05::title() const {
    static const std::string title("Single Input Contact, Retransmission, Battery Monitor");
@@ -5126,8 +5237,9 @@ CProfile_A5_37_01::CProfile_A5_37_01()
 {}
 CProfile_A5_37_01::~CProfile_A5_37_01()
 {}
-unsigned int CProfile_A5_37_01::id() const {
-   return 0x01;
+const std::string& CProfile_A5_37_01::profile() const {
+   static const std::string profile("A5-37-01");
+   return profile;
 }
 const std::string& CProfile_A5_37_01::title() const {
    static const std::string title("Demand Response");
@@ -5203,8 +5315,9 @@ CProfile_A5_38_09::CProfile_A5_38_09()
 {}
 CProfile_A5_38_09::~CProfile_A5_38_09()
 {}
-unsigned int CProfile_A5_38_09::id() const {
-   return 0x09;
+const std::string& CProfile_A5_38_09::profile() const {
+   static const std::string profile("A5-38-09");
+   return profile;
 }
 const std::string& CProfile_A5_38_09::title() const {
    static const std::string title("Extended Lighting-Control");
@@ -5414,8 +5527,9 @@ CProfile_D2_03_20::CProfile_D2_03_20()
 {}
 CProfile_D2_03_20::~CProfile_D2_03_20()
 {}
-unsigned int CProfile_D2_03_20::id() const {
-   return 0x20;
+const std::string& CProfile_D2_03_20::profile() const {
+   static const std::string profile("D2-03-20");
+   return profile;
 }
 const std::string& CProfile_D2_03_20::title() const {
    static const std::string title("Beacon with Vibration Detection");
@@ -5483,8 +5597,9 @@ CProfile_D2_04_00::CProfile_D2_04_00()
 {}
 CProfile_D2_04_00::~CProfile_D2_04_00()
 {}
-unsigned int CProfile_D2_04_00::id() const {
-   return 0x00;
+const std::string& CProfile_D2_04_00::profile() const {
+   static const std::string profile("D2-04-00");
+   return profile;
 }
 const std::string& CProfile_D2_04_00::title() const {
    static const std::string title("Type 0x00");
@@ -5654,8 +5769,9 @@ CProfile_D2_32_00::CProfile_D2_32_00()
 {}
 CProfile_D2_32_00::~CProfile_D2_32_00()
 {}
-unsigned int CProfile_D2_32_00::id() const {
-   return 0x00;
+const std::string& CProfile_D2_32_00::profile() const {
+   static const std::string profile("D2-32-00");
+   return profile;
 }
 const std::string& CProfile_D2_32_00::title() const {
    static const std::string title("Type 0x00");
@@ -5684,8 +5800,9 @@ CProfile_D2_32_01::CProfile_D2_32_01()
 {}
 CProfile_D2_32_01::~CProfile_D2_32_01()
 {}
-unsigned int CProfile_D2_32_01::id() const {
-   return 0x01;
+const std::string& CProfile_D2_32_01::profile() const {
+   static const std::string profile("D2-32-01");
+   return profile;
 }
 const std::string& CProfile_D2_32_01::title() const {
    static const std::string title("Type 0x01");
@@ -5714,8 +5831,9 @@ CProfile_D2_32_02::CProfile_D2_32_02()
 {}
 CProfile_D2_32_02::~CProfile_D2_32_02()
 {}
-unsigned int CProfile_D2_32_02::id() const {
-   return 0x02;
+const std::string& CProfile_D2_32_02::profile() const {
+   static const std::string profile("D2-32-02");
+   return profile;
 }
 const std::string& CProfile_D2_32_02::title() const {
    static const std::string title("Type 0x02");
@@ -5782,8 +5900,9 @@ CProfile_D2_40_00::CProfile_D2_40_00()
 {}
 CProfile_D2_40_00::~CProfile_D2_40_00()
 {}
-unsigned int CProfile_D2_40_00::id() const {
-   return 0x00;
+const std::string& CProfile_D2_40_00::profile() const {
+   static const std::string profile("D2-40-00");
+   return profile;
 }
 const std::string& CProfile_D2_40_00::title() const {
    static const std::string title("Type 0x00");
@@ -5830,8 +5949,9 @@ CProfile_D2_40_01::CProfile_D2_40_01()
 {}
 CProfile_D2_40_01::~CProfile_D2_40_01()
 {}
-unsigned int CProfile_D2_40_01::id() const {
-   return 0x01;
+const std::string& CProfile_D2_40_01::profile() const {
+   static const std::string profile("D2-40-01");
+   return profile;
 }
 const std::string& CProfile_D2_40_01::title() const {
    static const std::string title("Type 0x01");

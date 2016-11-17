@@ -26,9 +26,10 @@ CProfile_D2_01_12::~CProfile_D2_01_12()
 {
 }
 
-unsigned int CProfile_D2_01_12::id() const
+const std::string& CProfile_D2_01_12::profile() const
 {
-   return 0x12;
+   static const std::string profile("D2-01-12");
+   return profile;
 }
 
 const std::string& CProfile_D2_01_12::title() const

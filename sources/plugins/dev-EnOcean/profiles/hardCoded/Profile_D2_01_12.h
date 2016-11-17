@@ -27,7 +27,7 @@ public:
    virtual ~CProfile_D2_01_12();
 
    // IType implementation
-   unsigned int id() const override;
+   const std::string& profile() const override;
    const std::string& title() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> allHistorizers() const override;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> states(const boost::dynamic_bitset<>& data) const override;

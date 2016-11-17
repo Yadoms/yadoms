@@ -111,7 +111,7 @@
         },
         "autoOffTimer": {
           "name": "Auto-off timer",
-          "type": "decimal",
+          "type": "int",
           "minimumValue": "0",
           "maximumValue": "3600",
           "precision": "1",
@@ -119,7 +119,7 @@
         },
         "delayRadioOffTimer": {
           "name": "Radio-off delay",
-          "type": "decimal",
+          "type": "int",
           "minimumValue": "0",
           "maximumValue": "3600",
           "precision": "1",

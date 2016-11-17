@@ -207,7 +207,9 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
          typeClass.addMember(cppClass.CppMember("m_historizers", "std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >", cppClass.PRIVATE, cppClass.NO_QUALIFER, \
             initilizationCode="m_historizers( { " + ", ".join(historizersCppName) + " } )"))
 
-         typeClass.addMethod(cppClass.CppMethod("id", "unsigned int", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, "   return " + xmlTypeNode.find("number").text + ";"))
+         typeClass.addMethod(cppClass.CppMethod("profile", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, \
+            "   static const std::string profile(\"" + profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode) + "\");\n" \
+            "   return profile;"))
          typeClass.addMethod(cppClass.CppMethod("title", "const std::string&", "", cppClass.PUBLIC, cppClass.CONST | cppClass.OVERRIDE, \
             "   static const std::string title(\"" + xmlTypeNode.find("title").text + "\");\n" \
             "   return title;"))

@@ -109,7 +109,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             auto creation(api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>());
             try
             {
-               creation->sendSuccess(processEventManuallyDeviceCreation(creation));
+               creation->sendSuccess(processManuallyDeviceCreation(creation));
             }
             catch (std::exception& ex)
             {
@@ -178,13 +178,10 @@ void CEnOcean::loadAllDevices()
       try
       {
          auto deviceConfiguration = m_api->getDeviceConfiguration(deviceId);
-         if (deviceConfiguration.empty())
+         if (deviceId == "pluginState" || deviceConfiguration.empty())
             continue; // Not configured device
 
-         auto manufacturer = deviceConfiguration.get<std::string>("manufacturer");
-         auto profile = deviceConfiguration.get<std::string>("profile");
-
-         CProfileHelper profileHelper(profile);
+         CProfileHelper profileHelper(deviceConfiguration.get<std::string>("profile.activeSection"));
          auto device = CRorgs::createRorg(profileHelper.rorg())->createFunc(profileHelper.func())->createType(profileHelper.type());
 
          m_devices[deviceId] = device;
@@ -226,9 +223,7 @@ bool CEnOcean::connectionsAreEqual(const CEnOceanConfiguration& conf1,
 
 std::string CEnOcean::generateModel(const std::string& model,
                                     const std::string& manufacturer,
-                                    unsigned int rorgId,
-                                    unsigned int funcId,
-                                    unsigned int typeId)
+                                    const CProfileHelper& profile)
 {
    if (!model.empty())
       return model;
@@ -238,7 +233,7 @@ std::string CEnOcean::generateModel(const std::string& model,
    if (!manufacturer.empty())
       generatedModel += manufacturer + std::string(" - ");
 
-   generatedModel += CRorgs::createRorg(rorgId)->createFunc(funcId)->createType(typeId)->title();
+   generatedModel += CRorgs::createRorg(profile.rorg())->createFunc(profile.func())->createType(profile.type())->title();
 
    return generatedModel;
 }
@@ -309,20 +304,27 @@ void CEnOcean::processUnConnectionEvent()
    destroyConnection();
 }
 
-std::string CEnOcean::processEventManuallyDeviceCreation(boost::shared_ptr<const shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> creation)
+std::string CEnOcean::processManuallyDeviceCreation(boost::shared_ptr<const shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> creation)
 {
    auto configuration = creation->getData().getConfiguration();
    auto deviceId = configuration.get<std::string>("id");
    auto selectedProfile = CProfileHelper(configuration.get<std::string>("profile.activeSection"));
 
    // Declare the device
-   declareDevice(deviceId,
-                 selectedProfile.rorg(),
-                 selectedProfile.func(),
-                 selectedProfile.type(),
-                 configuration.get<std::string>("manufacturer"),
-                 configuration.get<std::string>("model"),
-                 configuration);
+   auto device = declareDevice(deviceId,
+                               selectedProfile,
+                               configuration.get<std::string>("manufacturer"),
+                               configuration.get<std::string>("model"));
+
+   // Send configuration to device
+   try
+   {
+      device->sendConfiguration(configuration.get<shared::CDataContainer>("profile.content." + selectedProfile.profile() + ".content"));
+   }
+   catch (std::exception& e)
+   {
+      throw std::runtime_error(std::string("Unable to configure device : ") + e.what());
+   }
 
    return deviceId;
 }
@@ -346,40 +348,33 @@ void CEnOcean::processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDevi
       auto manufacturer = configuration.get<std::string>("manufacturer");
       auto model = generateModel(configuration.get<std::string>("model"),
                                  manufacturer,
-                                 selectedProfile.rorg(),
-                                 selectedProfile.func(),
-                                 selectedProfile.type());
+                                 selectedProfile);
 
       std::cout << "Device \"" << deviceId << "\" is configurated as " << selectedProfile.profile() << std::endl;
 
-      shared::CDataContainer databaseConfiguration;
-      databaseConfiguration.set("manufacturer", manufacturer);
-      databaseConfiguration.set("profile", selectedProfile.profile());
-      databaseConfiguration.set("configuration", configuration);
-
-      // If profile changed, remove all existing keywords
-      auto oldConfiguration = m_api->getDeviceConfiguration(deviceId);
-      if (!oldConfiguration.empty() &&
-         oldConfiguration.get<std::string>("profile") != selectedProfile.profile())
+      if (m_devices.find(deviceId) == m_devices.end() || m_devices[deviceId]->profile() != selectedProfile.profile())
       {
-         for (const auto& keywordId : m_api->getAllKeywords(deviceId))
-            m_api->removeKeyword(deviceId, keywordId);
+         // Device was not configured or profile changed, recreate local device and all keywords
+         if (m_devices.find(deviceId) != m_devices.end())
+            for (const auto& keyword : m_api->getAllKeywords(deviceId))
+               m_api->removeKeyword(deviceId, keyword);
+
+         // Don't recreate device in Yadoms, unless it will change of ID
+         auto device = CRorgs::createRorg(selectedProfile.rorg())->createFunc(selectedProfile.func())->createType(selectedProfile.type());
+         m_api->declareKeywords(deviceId,
+                                device->allHistorizers());
+         m_devices[deviceId] = device;
       }
 
-      // Create device
-      auto device = CRorgs::createRorg(selectedProfile.rorg())->createFunc(selectedProfile.func())->createType(selectedProfile.type());
-
-      m_api->declareKeywords(deviceId,
-                             device->allHistorizers());
-
-      m_api->updateDeviceModel(deviceId,
-                               model);
-
-      m_api->updateDeviceConfiguration(deviceId,
-                                       databaseConfiguration);
-
-      m_devices[deviceId] = device;
-      device->sendConfiguration(configuration.get<shared::CDataContainer>("profile.content." + selectedProfile.profile() + ".content"));
+      // Send configuration to device
+      try
+      {
+         m_devices[deviceId]->sendConfiguration(configuration.get<shared::CDataContainer>("profile.content." + m_devices[deviceId]->profile() + ".content"));
+      }
+      catch (std::exception& e)
+      {
+         throw std::runtime_error(std::string("Unable to configure device : ") + e.what());
+      }
    }
    catch (shared::exception::CEmptyResult&)
    {
@@ -471,9 +466,9 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet)
       try
       {
          declareDevice(deviceId,
-                       rorg->id(),
-                       teachInData.funcId(),
-                       teachInData.typeId(),
+                       CProfileHelper(rorg->id(),
+                                      teachInData.funcId(),
+                                      teachInData.typeId()),
                        CManufacturers::name(teachInData.manufacturerId()));
       }
       catch (std::exception& e)
@@ -648,42 +643,28 @@ void CEnOcean::processEvent(const message::CReceivedEsp3Packet& esp3Packet)
    //TODO
 }
 
-void CEnOcean::declareDevice(const std::string& deviceId,
-                             unsigned int rorgId,
-                             unsigned int funcId,
-                             unsigned int typeId,
-                             const std::string& manufacturer,
-                             const std::string& model,
-                             const shared::CDataContainer& deviceConfiguration)
+boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
+                                                 const CProfileHelper& profile,
+                                                 const std::string& manufacturer,
+                                                 const std::string& model)
 {
-   auto rorg = CRorgs::createRorg(rorgId);
-   auto func = rorg->createFunc(funcId);
-   auto type = func->createType(typeId);
-
-   auto profile = CProfileHelper(rorg->id(),
-                                 func->id(),
-                                 type->id()).profile();
+   auto rorg = CRorgs::createRorg(profile.rorg());
+   auto func = rorg->createFunc(profile.func());
+   auto type = func->createType(profile.type());
 
    auto modelLabel = generateModel(model,
                                    manufacturer,
-                                   rorgId,
-                                   funcId,
-                                   typeId);
+                                   profile);
 
    auto keywordsToDeclare = type->allHistorizers();
    if (keywordsToDeclare.empty())
    {
       std::stringstream s;
       s << "Can not declare device id#" << deviceId
-         << " (" << profile
+         << " (" << profile.profile()
          << ") : no keyword to declare" << std::endl;
       throw std::logic_error(s.str());
    }
-
-   shared::CDataContainer configuration;
-   configuration.set("manufacturer", manufacturer);
-   configuration.set("profile", profile);
-   configuration.set("configuration", deviceConfiguration);
 
    if (m_devices.find(deviceId) != m_devices.end())
       throw std::logic_error("Device " + deviceId + " already exist");
@@ -692,20 +673,17 @@ void CEnOcean::declareDevice(const std::string& deviceId,
                         modelLabel,
                         keywordsToDeclare);
 
-   m_api->updateDeviceConfiguration(deviceId,
-                                    configuration);
-
-   m_devices[deviceId] = type;
-   type->sendConfiguration(configuration.get<shared::CDataContainer>("profile.content." + profile + ".content"));
-
    std::cout << "New device declared : " << std::endl;
    std::cout << "  - Id           : " << deviceId << std::endl;
-   std::cout << "  - Profile      : " << profile << std::endl;
+   std::cout << "  - Profile      : " << profile.profile() << std::endl;
    std::cout << "  - Manufacturer : " << manufacturer << std::endl;
    std::cout << "  - Model        : " << modelLabel << std::endl;
    std::cout << "  - RORG         : " << rorg->title() << std::endl;
    std::cout << "  - FUNC         : " << func->title() << std::endl;
    std::cout << "  - TYPE         : " << type->title() << std::endl;
+
+   m_devices[deviceId] = type;
+   return type;
 }
 
 void CEnOcean::requestDongleVersion()
@@ -716,3 +694,4 @@ void CEnOcean::requestDongleVersion()
 
    send(sendMessage);
 }
+

@@ -5,7 +5,8 @@
 #include <shared/communication/AsciiBufferLogger.h>
 #include "message/ReceivedMessage.h"
 #include "message/SendMessage.h"
-#include "Device.h"
+#include "ProfileHelper.h"
+
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -64,7 +65,7 @@ protected:
    /// \brief	                     Called when device manually creation is invoked
    /// \return                      The declared device name
    //--------------------------------------------------------------
-   std::string processEventManuallyDeviceCreation(boost::shared_ptr<const shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> creation);
+   std::string processManuallyDeviceCreation(boost::shared_ptr<const shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> creation);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when device was removed
@@ -96,20 +97,15 @@ protected:
    //--------------------------------------------------------------
    /// \brief	                           Declare a device
    /// \param [in] deviceId               Device ID
-   /// \param [in] rorgId                 Device RORG
-   /// \param [in] funcId                 Device FUNC
-   /// \param [in] typeId                 Device TYPE
+   /// \param [in] profile                Device profile
    /// \param [in] manufacturer           Manufacturer
    /// \param [in] model                  Device model (auto-generated if not provided)
-   /// \param [in] deviceConfiguration    Device configuration (empty for non-configurable devices)
+   /// \return                            The created device
    //--------------------------------------------------------------
-   void declareDevice(const std::string& deviceId,
-                      unsigned int rorgId,
-                      unsigned int funcId,
-                      unsigned int typeId,
-                      const std::string& manufacturer,
-                      const std::string& model = std::string(),
-                      const shared::CDataContainer& deviceConfiguration = shared::CDataContainer());
+   boost::shared_ptr<IType> declareDevice(const std::string& deviceId,
+                                          const CProfileHelper& profile,
+                                          const std::string& manufacturer,
+                                          const std::string& model = std::string());
 
    //--------------------------------------------------------------
    /// \brief	                     Declare a device when ignoring profile
@@ -159,16 +155,12 @@ protected:
    /// \brief	                     Generate a default model name if none provided
    /// \param [in] model            Original model name
    /// \param [in] manufacturer     Manufacturer name
-   /// \param [in] rorgId           Device rorg ID
-   /// \param [in] funcId           Device func ID
-   /// \param [in] typeId           Device type ID
+   /// \param [in] profile          Device profile
    /// \return                      The model name
    //--------------------------------------------------------------
    static std::string generateModel(const std::string& model,
                                     const std::string& manufacturer,
-                                    unsigned int rorgId,
-                                    unsigned int funcId,
-                                    unsigned int typeId);
+                                    const CProfileHelper& profile);
 
 private:
    //--------------------------------------------------------------
@@ -201,3 +193,4 @@ private:
    //--------------------------------------------------------------
    std::map<std::string, boost::shared_ptr<IType>> m_devices;
 };
+
