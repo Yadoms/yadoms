@@ -22,8 +22,7 @@ namespace database
       /// \param [in] name                The device name (plugin internal name)
       /// \return                         true if exist, else false
       //--------------------------------------------------------------
-      virtual bool deviceExists(const int pluginId,
-                                const std::string& deviceName) const = 0;
+      virtual bool deviceExists(const int pluginId, const std::string& deviceName) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Get device informations
@@ -39,8 +38,7 @@ namespace database
       /// \return                         The device found
       /// \throw                          shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CDevice> getDevice(const int pluginId,
-                                                             const std::string& name) const = 0;
+      virtual boost::shared_ptr<entities::CDevice> getDevice(const int pluginId, const std::string& name) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Get devices identified by a friendly name.
@@ -58,8 +56,7 @@ namespace database
       /// \return                         the device list which support a capacity
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithCapacity(const std::string& capacityName,
-                                                                                      const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const = 0;
+      virtual std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithCapacity(const std::string& capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Get the device list which support a capacity type
@@ -68,8 +65,7 @@ namespace database
       /// \return                         the device list which support a capacity
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode,
-                                                                                          const shared::plugin::yPluginApi::EKeywordDataType& capacityType) const = 0;
+      virtual std::vector<boost::shared_ptr<entities::CDevice>> getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode, const shared::plugin::yPluginApi::EKeywordDataType& capacityType) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Create a device identified by (pluginId and name).
@@ -81,11 +77,7 @@ namespace database
       /// \return                         The device created (null if creation failed)
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CDevice> createDevice(int pluginId,
-                                                                const std::string& name,
-                                                                const std::string& friendlyName,
-                                                                const std::string& model,
-                                                                const shared::CDataContainer& details) = 0;
+      virtual boost::shared_ptr<entities::CDevice> createDevice(int pluginId, const std::string& name, const std::string& friendlyName, const std::string& model, const shared::CDataContainer& details) = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all devices
@@ -113,8 +105,7 @@ namespace database
       /// \param [in] newFriendlyName     The new friendly name
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual void updateDeviceFriendlyName(int deviceId,
-                                            const std::string& newFriendlyName) = 0;
+      virtual void updateDeviceFriendlyName(int deviceId, const std::string& newFriendlyName) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Update the device configuration
@@ -122,8 +113,7 @@ namespace database
       /// \param [in] configuration       The device configuration
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual void updateDeviceConfiguration(int deviceId,
-                                             const shared::CDataContainer& configuration) = 0;
+      virtual void updateDeviceConfiguration(int deviceId, const shared::CDataContainer& configuration) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Update the device details
@@ -131,8 +121,7 @@ namespace database
       /// \param [in] details             The new details
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual void updateDeviceDetails(int deviceId,
-                                       const shared::CDataContainer& details) = 0;
+      virtual void updateDeviceDetails(int deviceId, const shared::CDataContainer& details) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Update the device model
@@ -140,8 +129,15 @@ namespace database
       /// \param [in] model               The new model
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual void updateDeviceModel(int deviceId,
-                                     const std::string& model) = 0;
+      virtual void updateDeviceModel(int deviceId, const std::string& model) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                          Update the device blacklist state
+      /// \param [in] deviceId            The device id
+      /// \param [in] blacklist           The device blacklist state
+      /// \throw  shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual void updateDeviceBlacklistState(int deviceId, const bool blacklist) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove device 
@@ -156,8 +152,7 @@ namespace database
       /// \param [in] deviceName Device to remove
       /// \throw           shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual void removeDevice(int pluginId,
-                                const std::string& deviceName) = 0;
+      virtual void removeDevice(int pluginId, const std::string& deviceName) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove all device for one plugin

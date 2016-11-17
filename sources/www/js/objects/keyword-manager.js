@@ -18,8 +18,9 @@ KeywordManager.factory = function(json) {
    assert(!isNullOrUndefined(json.friendlyName), "json.friendlyName must be defined");
    assert(!isNullOrUndefined(json.type), "json.type must be defined");
    assert(!isNullOrUndefined(json.units), "json.units must be defined");
+   assert(!isNullOrUndefined(json.blacklist), "json.blacklist must be defined");
 
-   return new Keyword(json.id, json.deviceId, json.capacityName, json.accessMode, json.name, json.friendlyName, json.type, json.units, json.details, json.typeInfo);
+   return new Keyword(json.id, json.deviceId, json.capacityName, json.accessMode, json.name, json.friendlyName, json.type, json.units, json.details, json.typeInfo, json.blacklist);
 };
 
 KeywordManager.updateToServer = function(keyword) {
@@ -36,6 +37,23 @@ KeywordManager.updateToServer = function(keyword) {
 
    return d.promise();
 };
+
+
+KeywordManager.updateBlacklistStateToServer = function(keyword) {
+   assert(!isNullOrUndefined(keyword), "keyword must be defined");
+
+   var d = new $.Deferred();
+
+   RestEngine.putJson("/rest/device/keyword/" + keyword.id + "/blacklist", { data: JSON.stringify(keyword) })
+   .done(function(data) {
+      keyword.blacklist = data.blacklist;
+      d.resolve();
+   })
+   .fail(d.reject);
+
+   return d.promise();
+};
+
 
 KeywordManager.get = function (keywordId) {
    assert(!isNullOrUndefined(keywordId), "keywordId must be defined");

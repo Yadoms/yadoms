@@ -10,7 +10,7 @@ namespace database { namespace common { namespace versioning {
 
 
    CVersion_2_0_0::CVersion_2_0_0()
-      :m_version(1, 1, 0, 0) //modify this version to a greater value, to force update of current version
+      :m_version(2, 0, 0, 0) //modify this version to a greater value, to force update of current version
    {
    }
 
@@ -55,6 +55,7 @@ namespace database { namespace common { namespace versioning {
          //add column
          pRequester->addTableColumn(CDeviceTable::getTableName(), "configuration TEXT");
          pRequester->addTableColumn(CDeviceTable::getTableName(), "blacklist INTEGER DEFAULT 0");
+         pRequester->addTableColumn(CKeywordTable::getTableName(), "blacklist INTEGER DEFAULT 0");
 
          //set the database version
          auto qUpdate = pRequester->newQuery();
