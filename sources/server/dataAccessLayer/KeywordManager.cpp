@@ -138,15 +138,13 @@ namespace dataAccessLayer
       auto keywordToDelete = getKeyword(deviceId, keyword);
       if (!keywordToDelete)
          throw shared::exception::CEmptyResult("Can not find keyword");
-      
-      m_dataProvider->getAcquisitionRequester()->removeKeywordData(keywordToDelete->Id());
+
       removeKeyword(keywordToDelete->Id());
    }
 
    void CKeywordManager::removeKeyword(int keywordId)
    {
-      auto kw = m_keywordRequester->getKeyword(keywordId);
-      removeKeyword(kw->DeviceId(), kw->Name());
+      m_dataProvider->getAcquisitionRequester()->removeKeywordData(keywordId);
    }
 
    boost::shared_ptr<database::entities::CKeyword> CKeywordManager::makeKeywordEntity(int deviceId, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details)
