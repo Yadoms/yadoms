@@ -53,7 +53,7 @@ namespace database { namespace pgsql {
          switch (nbBytes)
          {
          case 8:
-            result = Poco::ByteOrder::fromNetwork(*((Poco::Int64 *)valuePoint));
+            result = (int)Poco::ByteOrder::fromNetwork(*((Poco::Int64 *)valuePoint));
             break;
          default:
          case 4:
