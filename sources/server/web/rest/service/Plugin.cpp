@@ -272,12 +272,12 @@ namespace web
                   switch (cb.waitForResult())
                   {
                   case communication::callback::CSynchronousCallback<shared::CDataContainer>::kResult:
-                  {
-                     auto res = cb.getCallbackResult();
-                     if (res.Success)
-                        return CResult::GenerateSuccess(res.Result);
-                     return CResult::GenerateError(res.ErrorMessage);
-                  }
+                     {
+                        auto res = cb.getCallbackResult();
+                        if (res.Success)
+                           return CResult::GenerateSuccess(res.Result);
+                        return CResult::GenerateError(res.ErrorMessage);
+                     }
                   case shared::event::kTimeout:
                      return CResult::GenerateError("The plugin did not respond");
                   default:
@@ -369,7 +369,8 @@ namespace web
                   auto instanceId = boost::lexical_cast<int>(parameters[1]);
 
 
-                  auto devicesFound = m_dataProvider->getDeviceRequester()->getDevices(instanceId);
+                  auto devicesFound = m_dataProvider->getDeviceRequester()->getDevices(instanceId,
+                                                                                       true);
                   //send result
                   shared::CDataContainer t;
                   t.set("devices", devicesFound);
@@ -618,5 +619,3 @@ namespace web
       } //namespace service
    } //namespace rest
 } //namespace web 
-
-
