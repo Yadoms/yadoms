@@ -29,6 +29,8 @@ private:
 class CProfile_F6_02_04 : public IType  {
 public:
    CProfile_F6_02_04();
+public:
+   CProfile_F6_02_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_F6_02_04();
 public:
    const std::string& profile() const override;
@@ -61,7 +63,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -78,7 +80,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -86,6 +88,8 @@ private:
 class CProfile_F6_04_02 : public IType  {
 public:
    CProfile_F6_04_02();
+public:
+   CProfile_F6_04_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_F6_04_02();
 public:
    const std::string& profile() const override;
@@ -113,7 +117,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -129,7 +133,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -146,7 +150,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -180,6 +184,8 @@ private:
 class CProfile_D5_00_01 : public IType  {
 public:
    CProfile_D5_00_01();
+public:
+   CProfile_D5_00_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_D5_00_01();
 public:
    const std::string& profile() const override;
@@ -206,7 +212,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -236,6 +242,8 @@ private:
 class CProfile_A5_02_01 : public IType  {
 public:
    CProfile_A5_02_01();
+public:
+   CProfile_A5_02_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_01();
 public:
    const std::string& profile() const override;
@@ -253,6 +261,8 @@ private:
 class CProfile_A5_02_02 : public IType  {
 public:
    CProfile_A5_02_02();
+public:
+   CProfile_A5_02_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_02();
 public:
    const std::string& profile() const override;
@@ -270,6 +280,8 @@ private:
 class CProfile_A5_02_03 : public IType  {
 public:
    CProfile_A5_02_03();
+public:
+   CProfile_A5_02_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_03();
 public:
    const std::string& profile() const override;
@@ -287,6 +299,8 @@ private:
 class CProfile_A5_02_04 : public IType  {
 public:
    CProfile_A5_02_04();
+public:
+   CProfile_A5_02_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_04();
 public:
    const std::string& profile() const override;
@@ -304,6 +318,8 @@ private:
 class CProfile_A5_02_05 : public IType  {
 public:
    CProfile_A5_02_05();
+public:
+   CProfile_A5_02_05(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_05();
 public:
    const std::string& profile() const override;
@@ -321,6 +337,8 @@ private:
 class CProfile_A5_02_06 : public IType  {
 public:
    CProfile_A5_02_06();
+public:
+   CProfile_A5_02_06(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_06();
 public:
    const std::string& profile() const override;
@@ -338,6 +356,8 @@ private:
 class CProfile_A5_02_07 : public IType  {
 public:
    CProfile_A5_02_07();
+public:
+   CProfile_A5_02_07(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_07();
 public:
    const std::string& profile() const override;
@@ -355,6 +375,8 @@ private:
 class CProfile_A5_02_08 : public IType  {
 public:
    CProfile_A5_02_08();
+public:
+   CProfile_A5_02_08(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_08();
 public:
    const std::string& profile() const override;
@@ -372,6 +394,8 @@ private:
 class CProfile_A5_02_09 : public IType  {
 public:
    CProfile_A5_02_09();
+public:
+   CProfile_A5_02_09(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_09();
 public:
    const std::string& profile() const override;
@@ -389,6 +413,8 @@ private:
 class CProfile_A5_02_0A : public IType  {
 public:
    CProfile_A5_02_0A();
+public:
+   CProfile_A5_02_0A(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_0A();
 public:
    const std::string& profile() const override;
@@ -406,6 +432,8 @@ private:
 class CProfile_A5_02_0B : public IType  {
 public:
    CProfile_A5_02_0B();
+public:
+   CProfile_A5_02_0B(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_0B();
 public:
    const std::string& profile() const override;
@@ -423,6 +451,8 @@ private:
 class CProfile_A5_02_10 : public IType  {
 public:
    CProfile_A5_02_10();
+public:
+   CProfile_A5_02_10(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_10();
 public:
    const std::string& profile() const override;
@@ -440,6 +470,8 @@ private:
 class CProfile_A5_02_11 : public IType  {
 public:
    CProfile_A5_02_11();
+public:
+   CProfile_A5_02_11(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_11();
 public:
    const std::string& profile() const override;
@@ -457,6 +489,8 @@ private:
 class CProfile_A5_02_12 : public IType  {
 public:
    CProfile_A5_02_12();
+public:
+   CProfile_A5_02_12(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_12();
 public:
    const std::string& profile() const override;
@@ -474,6 +508,8 @@ private:
 class CProfile_A5_02_13 : public IType  {
 public:
    CProfile_A5_02_13();
+public:
+   CProfile_A5_02_13(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_13();
 public:
    const std::string& profile() const override;
@@ -491,6 +527,8 @@ private:
 class CProfile_A5_02_14 : public IType  {
 public:
    CProfile_A5_02_14();
+public:
+   CProfile_A5_02_14(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_14();
 public:
    const std::string& profile() const override;
@@ -508,6 +546,8 @@ private:
 class CProfile_A5_02_15 : public IType  {
 public:
    CProfile_A5_02_15();
+public:
+   CProfile_A5_02_15(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_15();
 public:
    const std::string& profile() const override;
@@ -525,6 +565,8 @@ private:
 class CProfile_A5_02_16 : public IType  {
 public:
    CProfile_A5_02_16();
+public:
+   CProfile_A5_02_16(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_16();
 public:
    const std::string& profile() const override;
@@ -542,6 +584,8 @@ private:
 class CProfile_A5_02_17 : public IType  {
 public:
    CProfile_A5_02_17();
+public:
+   CProfile_A5_02_17(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_17();
 public:
    const std::string& profile() const override;
@@ -559,6 +603,8 @@ private:
 class CProfile_A5_02_18 : public IType  {
 public:
    CProfile_A5_02_18();
+public:
+   CProfile_A5_02_18(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_18();
 public:
    const std::string& profile() const override;
@@ -576,6 +622,8 @@ private:
 class CProfile_A5_02_19 : public IType  {
 public:
    CProfile_A5_02_19();
+public:
+   CProfile_A5_02_19(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_19();
 public:
    const std::string& profile() const override;
@@ -593,6 +641,8 @@ private:
 class CProfile_A5_02_1A : public IType  {
 public:
    CProfile_A5_02_1A();
+public:
+   CProfile_A5_02_1A(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_1A();
 public:
    const std::string& profile() const override;
@@ -610,6 +660,8 @@ private:
 class CProfile_A5_02_1B : public IType  {
 public:
    CProfile_A5_02_1B();
+public:
+   CProfile_A5_02_1B(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_1B();
 public:
    const std::string& profile() const override;
@@ -627,6 +679,8 @@ private:
 class CProfile_A5_02_20 : public IType  {
 public:
    CProfile_A5_02_20();
+public:
+   CProfile_A5_02_20(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_20();
 public:
    const std::string& profile() const override;
@@ -644,6 +698,8 @@ private:
 class CProfile_A5_02_30 : public IType  {
 public:
    CProfile_A5_02_30();
+public:
+   CProfile_A5_02_30(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_02_30();
 public:
    const std::string& profile() const override;
@@ -693,7 +749,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -701,6 +757,8 @@ private:
 class CProfile_A5_04_01 : public IType  {
 public:
    CProfile_A5_04_01();
+public:
+   CProfile_A5_04_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_04_01();
 public:
    const std::string& profile() const override;
@@ -720,6 +778,8 @@ private:
 class CProfile_A5_04_02 : public IType  {
 public:
    CProfile_A5_04_02();
+public:
+   CProfile_A5_04_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_04_02();
 public:
    const std::string& profile() const override;
@@ -739,6 +799,8 @@ private:
 class CProfile_A5_04_03 : public IType  {
 public:
    CProfile_A5_04_03();
+public:
+   CProfile_A5_04_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_04_03();
 public:
    const std::string& profile() const override;
@@ -768,7 +830,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -776,6 +838,8 @@ private:
 class CProfile_A5_05_01 : public IType  {
 public:
    CProfile_A5_05_01();
+public:
+   CProfile_A5_05_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_05_01();
 public:
    const std::string& profile() const override;
@@ -802,7 +866,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -810,6 +874,8 @@ private:
 class CProfile_A5_06_01 : public IType  {
 public:
    CProfile_A5_06_01();
+public:
+   CProfile_A5_06_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_06_01();
 public:
    const std::string& profile() const override;
@@ -830,6 +896,8 @@ private:
 class CProfile_A5_06_02 : public IType  {
 public:
    CProfile_A5_06_02();
+public:
+   CProfile_A5_06_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_06_02();
 public:
    const std::string& profile() const override;
@@ -850,6 +918,8 @@ private:
 class CProfile_A5_06_03 : public IType  {
 public:
    CProfile_A5_06_03();
+public:
+   CProfile_A5_06_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_06_03();
 public:
    const std::string& profile() const override;
@@ -868,6 +938,8 @@ private:
 class CProfile_A5_06_04 : public IType  {
 public:
    CProfile_A5_06_04();
+public:
+   CProfile_A5_06_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_06_04();
 public:
    const std::string& profile() const override;
@@ -887,6 +959,8 @@ private:
 class CProfile_A5_06_05 : public IType  {
 public:
    CProfile_A5_06_05();
+public:
+   CProfile_A5_06_05(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_06_05();
 public:
    const std::string& profile() const override;
@@ -919,7 +993,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -927,6 +1001,8 @@ private:
 class CProfile_A5_07_01 : public IType  {
 public:
    CProfile_A5_07_01();
+public:
+   CProfile_A5_07_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_07_01();
 public:
    const std::string& profile() const override;
@@ -944,6 +1020,8 @@ private:
 class CProfile_A5_07_02 : public IType  {
 public:
    CProfile_A5_07_02();
+public:
+   CProfile_A5_07_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_07_02();
 public:
    const std::string& profile() const override;
@@ -961,6 +1039,8 @@ private:
 class CProfile_A5_07_03 : public IType  {
 public:
    CProfile_A5_07_03();
+public:
+   CProfile_A5_07_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_07_03();
 public:
    const std::string& profile() const override;
@@ -989,7 +1069,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -997,6 +1077,8 @@ private:
 class CProfile_A5_08_01 : public IType  {
 public:
    CProfile_A5_08_01();
+public:
+   CProfile_A5_08_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_08_01();
 public:
    const std::string& profile() const override;
@@ -1018,6 +1100,8 @@ private:
 class CProfile_A5_08_02 : public IType  {
 public:
    CProfile_A5_08_02();
+public:
+   CProfile_A5_08_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_08_02();
 public:
    const std::string& profile() const override;
@@ -1039,6 +1123,8 @@ private:
 class CProfile_A5_08_03 : public IType  {
 public:
    CProfile_A5_08_03();
+public:
+   CProfile_A5_08_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_08_03();
 public:
    const std::string& profile() const override;
@@ -1070,7 +1156,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -1078,6 +1164,8 @@ private:
 class CProfile_A5_09_02 : public IType  {
 public:
    CProfile_A5_09_02();
+public:
+   CProfile_A5_09_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_09_02();
 public:
    const std::string& profile() const override;
@@ -1097,6 +1185,8 @@ private:
 class CProfile_A5_09_04 : public IType  {
 public:
    CProfile_A5_09_04();
+public:
+   CProfile_A5_09_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_09_04();
 public:
    const std::string& profile() const override;
@@ -1174,6 +1264,8 @@ private:
 class CProfile_A5_09_05 : public IType  {
 public:
    CProfile_A5_09_05();
+public:
+   CProfile_A5_09_05(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_09_05();
 public:
    const std::string& profile() const override;
@@ -1192,6 +1284,8 @@ private:
 class CProfile_A5_09_07 : public IType  {
 public:
    CProfile_A5_09_07();
+public:
+   CProfile_A5_09_07(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_09_07();
 public:
    const std::string& profile() const override;
@@ -1211,6 +1305,8 @@ private:
 class CProfile_A5_09_09 : public IType  {
 public:
    CProfile_A5_09_09();
+public:
+   CProfile_A5_09_09(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_09_09();
 public:
    const std::string& profile() const override;
@@ -1228,6 +1324,8 @@ private:
 class CProfile_A5_09_0A : public IType  {
 public:
    CProfile_A5_09_0A();
+public:
+   CProfile_A5_09_0A(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_09_0A();
 public:
    const std::string& profile() const override;
@@ -1287,6 +1385,8 @@ private:
 class CProfile_A5_09_0B : public IType  {
 public:
    CProfile_A5_09_0B();
+public:
+   CProfile_A5_09_0B(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_09_0B();
 public:
    const std::string& profile() const override;
@@ -1323,7 +1423,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -1331,6 +1431,8 @@ private:
 class CProfile_A5_10_01 : public IType  {
 public:
    CProfile_A5_10_01();
+public:
+   CProfile_A5_10_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_01();
 public:
    const std::string& profile() const override;
@@ -1349,6 +1451,8 @@ private:
 class CProfile_A5_10_02 : public IType  {
 public:
    CProfile_A5_10_02();
+public:
+   CProfile_A5_10_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_02();
 public:
    const std::string& profile() const override;
@@ -1367,6 +1471,8 @@ private:
 class CProfile_A5_10_03 : public IType  {
 public:
    CProfile_A5_10_03();
+public:
+   CProfile_A5_10_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_03();
 public:
    const std::string& profile() const override;
@@ -1384,6 +1490,8 @@ private:
 class CProfile_A5_10_04 : public IType  {
 public:
    CProfile_A5_10_04();
+public:
+   CProfile_A5_10_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_04();
 public:
    const std::string& profile() const override;
@@ -1401,6 +1509,8 @@ private:
 class CProfile_A5_10_05 : public IType  {
 public:
    CProfile_A5_10_05();
+public:
+   CProfile_A5_10_05(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_05();
 public:
    const std::string& profile() const override;
@@ -1419,6 +1529,8 @@ private:
 class CProfile_A5_10_06 : public IType  {
 public:
    CProfile_A5_10_06();
+public:
+   CProfile_A5_10_06(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_06();
 public:
    const std::string& profile() const override;
@@ -1437,6 +1549,8 @@ private:
 class CProfile_A5_10_07 : public IType  {
 public:
    CProfile_A5_10_07();
+public:
+   CProfile_A5_10_07(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_07();
 public:
    const std::string& profile() const override;
@@ -1454,6 +1568,8 @@ private:
 class CProfile_A5_10_08 : public IType  {
 public:
    CProfile_A5_10_08();
+public:
+   CProfile_A5_10_08(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_08();
 public:
    const std::string& profile() const override;
@@ -1472,6 +1588,8 @@ private:
 class CProfile_A5_10_09 : public IType  {
 public:
    CProfile_A5_10_09();
+public:
+   CProfile_A5_10_09(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_09();
 public:
    const std::string& profile() const override;
@@ -1490,6 +1608,8 @@ private:
 class CProfile_A5_10_0A : public IType  {
 public:
    CProfile_A5_10_0A();
+public:
+   CProfile_A5_10_0A(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_0A();
 public:
    const std::string& profile() const override;
@@ -1508,6 +1628,8 @@ private:
 class CProfile_A5_10_0B : public IType  {
 public:
    CProfile_A5_10_0B();
+public:
+   CProfile_A5_10_0B(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_0B();
 public:
    const std::string& profile() const override;
@@ -1526,6 +1648,8 @@ private:
 class CProfile_A5_10_0C : public IType  {
 public:
    CProfile_A5_10_0C();
+public:
+   CProfile_A5_10_0C(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_0C();
 public:
    const std::string& profile() const override;
@@ -1544,6 +1668,8 @@ private:
 class CProfile_A5_10_0D : public IType  {
 public:
    CProfile_A5_10_0D();
+public:
+   CProfile_A5_10_0D(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_0D();
 public:
    const std::string& profile() const override;
@@ -1562,6 +1688,8 @@ private:
 class CProfile_A5_10_10 : public IType  {
 public:
    CProfile_A5_10_10();
+public:
+   CProfile_A5_10_10(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_10();
 public:
    const std::string& profile() const override;
@@ -1581,6 +1709,8 @@ private:
 class CProfile_A5_10_11 : public IType  {
 public:
    CProfile_A5_10_11();
+public:
+   CProfile_A5_10_11(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_11();
 public:
    const std::string& profile() const override;
@@ -1600,6 +1730,8 @@ private:
 class CProfile_A5_10_12 : public IType  {
 public:
    CProfile_A5_10_12();
+public:
+   CProfile_A5_10_12(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_12();
 public:
    const std::string& profile() const override;
@@ -1618,6 +1750,8 @@ private:
 class CProfile_A5_10_13 : public IType  {
 public:
    CProfile_A5_10_13();
+public:
+   CProfile_A5_10_13(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_13();
 public:
    const std::string& profile() const override;
@@ -1637,6 +1771,8 @@ private:
 class CProfile_A5_10_14 : public IType  {
 public:
    CProfile_A5_10_14();
+public:
+   CProfile_A5_10_14(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_14();
 public:
    const std::string& profile() const override;
@@ -1656,6 +1792,8 @@ private:
 class CProfile_A5_10_15 : public IType  {
 public:
    CProfile_A5_10_15();
+public:
+   CProfile_A5_10_15(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_15();
 public:
    const std::string& profile() const override;
@@ -1673,6 +1811,8 @@ private:
 class CProfile_A5_10_16 : public IType  {
 public:
    CProfile_A5_10_16();
+public:
+   CProfile_A5_10_16(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_16();
 public:
    const std::string& profile() const override;
@@ -1691,6 +1831,8 @@ private:
 class CProfile_A5_10_17 : public IType  {
 public:
    CProfile_A5_10_17();
+public:
+   CProfile_A5_10_17(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_17();
 public:
    const std::string& profile() const override;
@@ -1730,6 +1872,8 @@ private:
 class CProfile_A5_10_18 : public IType  {
 public:
    CProfile_A5_10_18();
+public:
+   CProfile_A5_10_18(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_18();
 public:
    const std::string& profile() const override;
@@ -1772,6 +1916,8 @@ private:
 class CProfile_A5_10_19 : public IType  {
 public:
    CProfile_A5_10_19();
+public:
+   CProfile_A5_10_19(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_19();
 public:
    const std::string& profile() const override;
@@ -1814,6 +1960,8 @@ private:
 class CProfile_A5_10_1A : public IType  {
 public:
    CProfile_A5_10_1A();
+public:
+   CProfile_A5_10_1A(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_1A();
 public:
    const std::string& profile() const override;
@@ -1855,6 +2003,8 @@ private:
 class CProfile_A5_10_1B : public IType  {
 public:
    CProfile_A5_10_1B();
+public:
+   CProfile_A5_10_1B(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_1B();
 public:
    const std::string& profile() const override;
@@ -1897,6 +2047,8 @@ private:
 class CProfile_A5_10_1C : public IType  {
 public:
    CProfile_A5_10_1C();
+public:
+   CProfile_A5_10_1C(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_1C();
 public:
    const std::string& profile() const override;
@@ -1939,6 +2091,8 @@ private:
 class CProfile_A5_10_1D : public IType  {
 public:
    CProfile_A5_10_1D();
+public:
+   CProfile_A5_10_1D(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_1D();
 public:
    const std::string& profile() const override;
@@ -1960,6 +2114,8 @@ private:
 class CProfile_A5_10_1F : public IType  {
 public:
    CProfile_A5_10_1F();
+public:
+   CProfile_A5_10_1F(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_1F();
 public:
    const std::string& profile() const override;
@@ -1999,6 +2155,8 @@ private:
 class CProfile_A5_10_20 : public IType  {
 public:
    CProfile_A5_10_20();
+public:
+   CProfile_A5_10_20(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_20();
 public:
    const std::string& profile() const override;
@@ -2036,6 +2194,8 @@ private:
 class CProfile_A5_10_21 : public IType  {
 public:
    CProfile_A5_10_21();
+public:
+   CProfile_A5_10_21(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_21();
 public:
    const std::string& profile() const override;
@@ -2057,6 +2217,8 @@ private:
 class CProfile_A5_10_22 : public IType  {
 public:
    CProfile_A5_10_22();
+public:
+   CProfile_A5_10_22(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_22();
 public:
    const std::string& profile() const override;
@@ -2075,6 +2237,8 @@ private:
 class CProfile_A5_10_23 : public IType  {
 public:
    CProfile_A5_10_23();
+public:
+   CProfile_A5_10_23(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_10_23();
 public:
    const std::string& profile() const override;
@@ -2134,7 +2298,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -2142,6 +2306,8 @@ private:
 class CProfile_A5_11_01 : public IType  {
 public:
    CProfile_A5_11_01();
+public:
+   CProfile_A5_11_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_11_01();
 public:
    const std::string& profile() const override;
@@ -2221,6 +2387,8 @@ private:
 class CProfile_A5_11_02 : public IType  {
 public:
    CProfile_A5_11_02();
+public:
+   CProfile_A5_11_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_11_02();
 public:
    const std::string& profile() const override;
@@ -2294,6 +2462,8 @@ private:
 class CProfile_A5_11_03 : public IType  {
 public:
    CProfile_A5_11_03();
+public:
+   CProfile_A5_11_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_11_03();
 public:
    const std::string& profile() const override;
@@ -2352,6 +2522,8 @@ private:
 class CProfile_A5_11_04 : public IType  {
 public:
    CProfile_A5_11_04();
+public:
+   CProfile_A5_11_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_11_04();
 public:
    const std::string& profile() const override;
@@ -2385,7 +2557,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -2410,6 +2582,8 @@ private:
 class CProfile_A5_12_00 : public IType  {
 public:
    CProfile_A5_12_00();
+public:
+   CProfile_A5_12_00(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_12_00();
 public:
    const std::string& profile() const override;
@@ -2445,6 +2619,8 @@ private:
 class CProfile_A5_12_01 : public IType  {
 public:
    CProfile_A5_12_01();
+public:
+   CProfile_A5_12_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_12_01();
 public:
    const std::string& profile() const override;
@@ -2480,6 +2656,8 @@ private:
 class CProfile_A5_12_02 : public IType  {
 public:
    CProfile_A5_12_02();
+public:
+   CProfile_A5_12_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_12_02();
 public:
    const std::string& profile() const override;
@@ -2515,6 +2693,8 @@ private:
 class CProfile_A5_12_03 : public IType  {
 public:
    CProfile_A5_12_03();
+public:
+   CProfile_A5_12_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_12_03();
 public:
    const std::string& profile() const override;
@@ -2550,6 +2730,8 @@ private:
 class CProfile_A5_12_04 : public IType  {
 public:
    CProfile_A5_12_04();
+public:
+   CProfile_A5_12_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_12_04();
 public:
    const std::string& profile() const override;
@@ -2585,6 +2767,8 @@ private:
 class CProfile_A5_12_05 : public IType  {
 public:
    CProfile_A5_12_05();
+public:
+   CProfile_A5_12_05(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_12_05();
 public:
    const std::string& profile() const override;
@@ -2630,6 +2814,8 @@ private:
 class CProfile_A5_12_10 : public IType  {
 public:
    CProfile_A5_12_10();
+public:
+   CProfile_A5_12_10(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_12_10();
 public:
    const std::string& profile() const override;
@@ -2662,7 +2848,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -2670,6 +2856,8 @@ private:
 class CProfile_A5_13_01 : public IType  {
 public:
    CProfile_A5_13_01();
+public:
+   CProfile_A5_13_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_13_01();
 public:
    const std::string& profile() const override;
@@ -2689,6 +2877,8 @@ private:
 class CProfile_A5_13_02 : public IType  {
 public:
    CProfile_A5_13_02();
+public:
+   CProfile_A5_13_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_13_02();
 public:
    const std::string& profile() const override;
@@ -2709,6 +2899,8 @@ private:
 class CProfile_A5_13_03 : public IType  {
 public:
    CProfile_A5_13_03();
+public:
+   CProfile_A5_13_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_13_03();
 public:
    const std::string& profile() const override;
@@ -2746,6 +2938,8 @@ private:
 class CProfile_A5_13_04 : public IType  {
 public:
    CProfile_A5_13_04();
+public:
+   CProfile_A5_13_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_13_04();
 public:
    const std::string& profile() const override;
@@ -2795,6 +2989,8 @@ private:
 class CProfile_A5_13_07 : public IType  {
 public:
    CProfile_A5_13_07();
+public:
+   CProfile_A5_13_07(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_13_07();
 public:
    const std::string& profile() const override;
@@ -2813,6 +3009,8 @@ private:
 class CProfile_A5_13_08 : public IType  {
 public:
    CProfile_A5_13_08();
+public:
+   CProfile_A5_13_08(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_13_08();
 public:
    const std::string& profile() const override;
@@ -2831,6 +3029,8 @@ private:
 class CProfile_A5_13_10 : public IType  {
 public:
    CProfile_A5_13_10();
+public:
+   CProfile_A5_13_10(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_13_10();
 public:
    const std::string& profile() const override;
@@ -2864,7 +3064,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -2872,6 +3072,8 @@ private:
 class CProfile_A5_14_01 : public IType  {
 public:
    CProfile_A5_14_01();
+public:
+   CProfile_A5_14_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_14_01();
 public:
    const std::string& profile() const override;
@@ -2890,6 +3092,8 @@ private:
 class CProfile_A5_14_02 : public IType  {
 public:
    CProfile_A5_14_02();
+public:
+   CProfile_A5_14_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_14_02();
 public:
    const std::string& profile() const override;
@@ -2909,6 +3113,8 @@ private:
 class CProfile_A5_14_03 : public IType  {
 public:
    CProfile_A5_14_03();
+public:
+   CProfile_A5_14_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_14_03();
 public:
    const std::string& profile() const override;
@@ -2928,6 +3134,8 @@ private:
 class CProfile_A5_14_04 : public IType  {
 public:
    CProfile_A5_14_04();
+public:
+   CProfile_A5_14_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_14_04();
 public:
    const std::string& profile() const override;
@@ -2948,6 +3156,8 @@ private:
 class CProfile_A5_14_05 : public IType  {
 public:
    CProfile_A5_14_05();
+public:
+   CProfile_A5_14_05(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_14_05();
 public:
    const std::string& profile() const override;
@@ -2966,6 +3176,8 @@ private:
 class CProfile_A5_14_06 : public IType  {
 public:
    CProfile_A5_14_06();
+public:
+   CProfile_A5_14_06(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_14_06();
 public:
    const std::string& profile() const override;
@@ -2998,7 +3210,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3059,6 +3271,8 @@ private:
 class CProfile_A5_20_12 : public IType  {
 public:
    CProfile_A5_20_12();
+public:
+   CProfile_A5_20_12(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_20_12();
 public:
    const std::string& profile() const override;
@@ -3095,7 +3309,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3103,6 +3317,8 @@ private:
 class CProfile_A5_30_02 : public IType  {
 public:
    CProfile_A5_30_02();
+public:
+   CProfile_A5_30_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_30_02();
 public:
    const std::string& profile() const override;
@@ -3120,6 +3336,8 @@ private:
 class CProfile_A5_30_03 : public IType  {
 public:
    CProfile_A5_30_03();
+public:
+   CProfile_A5_30_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_30_03();
 public:
    const std::string& profile() const override;
@@ -3142,6 +3360,8 @@ private:
 class CProfile_A5_30_04 : public IType  {
 public:
    CProfile_A5_30_04();
+public:
+   CProfile_A5_30_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_30_04();
 public:
    const std::string& profile() const override;
@@ -3161,6 +3381,8 @@ private:
 class CProfile_A5_30_05 : public IType  {
 public:
    CProfile_A5_30_05();
+public:
+   CProfile_A5_30_05(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_30_05();
 public:
    const std::string& profile() const override;
@@ -3191,7 +3413,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3199,6 +3421,8 @@ private:
 class CProfile_A5_37_01 : public IType  {
 public:
    CProfile_A5_37_01();
+public:
+   CProfile_A5_37_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_37_01();
 public:
    const std::string& profile() const override;
@@ -3227,7 +3451,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3261,6 +3485,8 @@ private:
 class CProfile_A5_38_09 : public IType  {
 public:
    CProfile_A5_38_09();
+public:
+   CProfile_A5_38_09(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_A5_38_09();
 public:
    const std::string& profile() const override;
@@ -3290,7 +3516,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3307,7 +3533,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3361,7 +3587,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3395,7 +3621,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3413,7 +3639,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3421,6 +3647,8 @@ private:
 class CProfile_D2_03_20 : public IType  {
 public:
    CProfile_D2_03_20();
+public:
+   CProfile_D2_03_20(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_D2_03_20();
 public:
    const std::string& profile() const override;
@@ -3448,7 +3676,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3477,6 +3705,8 @@ private:
 class CProfile_D2_04_00 : public IType  {
 public:
    CProfile_D2_04_00();
+public:
+   CProfile_D2_04_00(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_D2_04_00();
 public:
    const std::string& profile() const override;
@@ -3520,7 +3750,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3536,7 +3766,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3552,7 +3782,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3570,7 +3800,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3593,7 +3823,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3611,7 +3841,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3633,7 +3863,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3650,7 +3880,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3658,6 +3888,8 @@ private:
 class CProfile_D2_32_00 : public IType  {
 public:
    CProfile_D2_32_00();
+public:
+   CProfile_D2_32_00(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_D2_32_00();
 public:
    const std::string& profile() const override;
@@ -3676,6 +3908,8 @@ private:
 class CProfile_D2_32_01 : public IType  {
 public:
    CProfile_D2_32_01();
+public:
+   CProfile_D2_32_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_D2_32_01();
 public:
    const std::string& profile() const override;
@@ -3694,6 +3928,8 @@ private:
 class CProfile_D2_32_02 : public IType  {
 public:
    CProfile_D2_32_02();
+public:
+   CProfile_D2_32_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_D2_32_02();
 public:
    const std::string& profile() const override;
@@ -3722,7 +3958,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3746,6 +3982,8 @@ private:
 class CProfile_D2_40_00 : public IType  {
 public:
    CProfile_D2_40_00();
+public:
+   CProfile_D2_40_00(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_D2_40_00();
 public:
    const std::string& profile() const override;
@@ -3783,6 +4021,8 @@ private:
 class CProfile_D2_40_01 : public IType  {
 public:
    CProfile_D2_40_01();
+public:
+   CProfile_D2_40_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_D2_40_01();
 public:
    const std::string& profile() const override;
@@ -3813,7 +4053,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3830,7 +4070,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };
@@ -3846,7 +4086,7 @@ enum ETypeIds {
 };
    unsigned int id() const override;
    const std::string& title() const override;
-   boost::shared_ptr<IType> createType(unsigned int typeId) const override;
+   boost::shared_ptr<IType> createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const override;
 protected:
 private:
 };

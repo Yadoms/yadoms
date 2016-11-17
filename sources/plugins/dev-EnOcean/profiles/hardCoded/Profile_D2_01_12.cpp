@@ -15,7 +15,8 @@ DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_01_12::EConnectedSwitchsType, ECo
    ((autodetection))
 );
 
-CProfile_D2_01_12::CProfile_D2_01_12()
+CProfile_D2_01_12::CProfile_D2_01_12(const std::string& deviceId,
+                                     boost::shared_ptr<yApi::IYPluginApi> api)
    : m_switch1(boost::make_shared<yApi::historization::CSwitch>("Switch 1")),
      m_switch2(boost::make_shared<yApi::historization::CSwitch>("Switch 2")),
      m_historizers({m_switch1 , m_switch2})
@@ -61,7 +62,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       historizers.push_back(m_switch2);
       break;
    default:
-      std::cout << "Profile D2_01_12 : receive unsupported ioChannel value " << ioChannel << std::endl;
+      std::cout << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel << std::endl;
       break;
    }
    return historizers;

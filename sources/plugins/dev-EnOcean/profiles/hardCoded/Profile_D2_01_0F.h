@@ -9,7 +9,8 @@ namespace yApi = shared::plugin::yPluginApi;
 class CProfile_D2_01_0F : public IType
 {
 public:
-   CProfile_D2_01_0F();
+   CProfile_D2_01_0F(const std::string& deviceId,
+                     boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_D2_01_0F();
 
    // IType implementation
@@ -25,4 +26,3 @@ public:
 private:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
 };
-

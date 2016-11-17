@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "Profile_D2_01_0F.h"
 
-CProfile_D2_01_0F::CProfile_D2_01_0F()
+CProfile_D2_01_0F::CProfile_D2_01_0F(const std::string& deviceId,
+                                     boost::shared_ptr<yApi::IYPluginApi> api)
    : m_historizers({})
 {
 }
@@ -43,4 +44,3 @@ void CProfile_D2_01_0F::sendConfiguration(const shared::CDataContainer& deviceCo
 {
    //TODO
 }
-

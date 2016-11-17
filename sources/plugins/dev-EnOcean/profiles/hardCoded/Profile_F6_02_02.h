@@ -6,12 +6,12 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 
-class CProfile_D2_01_0E : public IType
+class CProfile_F6_02_02 : public IType
 {
 public:
-   CProfile_D2_01_0E(const std::string& deviceId,
+   CProfile_F6_02_02(const std::string& deviceId,
                      boost::shared_ptr<yApi::IYPluginApi> api);
-   virtual ~CProfile_D2_01_0E();
+   virtual ~CProfile_F6_02_02();
 
    // IType implementation
    const std::string& profile() const override;
@@ -24,5 +24,9 @@ public:
    // [END] IType implementation
 
 private:
+   boost::shared_ptr<yApi::IYPluginApi> m_api;
+   const std::string& m_deviceId;
+   boost::shared_ptr<yApi::historization::CSwitch> m_buttonA, m_buttonB, m_buttonA2ndAction, m_buttonB2ndAction;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_secondActionHistorizers;
 };

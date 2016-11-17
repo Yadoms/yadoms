@@ -152,15 +152,24 @@ protected:
                                    const CEnOceanConfiguration& conf2);
 
    //--------------------------------------------------------------
+   /// \brief	                     Create a new device (local only)
+   /// \param [in] deviceId         The device ID
+   /// \param [in] profileHelper    The device profile
+   /// \return                      New device created
+   //--------------------------------------------------------------
+   boost::shared_ptr<IType> createDevice(const std::string& deviceId,
+                                         const CProfileHelper& profileHelper) const;
+
+   //--------------------------------------------------------------
    /// \brief	                     Generate a default model name if none provided
    /// \param [in] model            Original model name
    /// \param [in] manufacturer     Manufacturer name
    /// \param [in] profile          Device profile
    /// \return                      The model name
    //--------------------------------------------------------------
-   static std::string generateModel(const std::string& model,
-                                    const std::string& manufacturer,
-                                    const CProfileHelper& profile);
+   std::string generateModel(const std::string& model,
+                             const std::string& manufacturer,
+                             const CProfileHelper& profile);
 
 private:
    //--------------------------------------------------------------
@@ -193,4 +202,3 @@ private:
    //--------------------------------------------------------------
    std::map<std::string, boost::shared_ptr<IType>> m_devices;
 };
-

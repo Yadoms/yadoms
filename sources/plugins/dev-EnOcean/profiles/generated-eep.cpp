@@ -5,6 +5,7 @@
 
 #include "bitsetHelpers.hpp"
 
+#include "hardCoded\Profile_F6_02_02.h"
 #include "hardCoded\Profile_D2_01_0D.h"
 #include "hardCoded\Profile_D2_01_0F.h"
 #include "hardCoded\Profile_D2_01_0E.h"
@@ -59,6 +60,14 @@ CProfile_F6_02_04::CProfile_F6_02_04()
   m_RA0___A0(boost::make_shared<yApi::historization::CSwitch>("RA0 - A0")),
   m_historizers( { m_EBO___Energy_Bow, m_RBI___BI, m_RB0___B0, m_RAI___AI, m_RA0___A0 } )
 {}
+CProfile_F6_02_04::CProfile_F6_02_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_EBO___Energy_Bow(boost::make_shared<yApi::historization::CSwitch>("EBO - Energy Bow")),
+  m_RBI___BI(boost::make_shared<yApi::historization::CSwitch>("RBI - BI")),
+  m_RB0___B0(boost::make_shared<yApi::historization::CSwitch>("RB0 - B0")),
+  m_RAI___AI(boost::make_shared<yApi::historization::CSwitch>("RAI - AI")),
+  m_RA0___A0(boost::make_shared<yApi::historization::CSwitch>("RA0 - A0")),
+  m_historizers( { m_EBO___Energy_Bow, m_RBI___BI, m_RB0___B0, m_RAI___AI, m_RA0___A0 } ){
+}
 CProfile_F6_02_04::~CProfile_F6_02_04()
 {}
 const std::string& CProfile_F6_02_04::profile() const {
@@ -99,10 +108,11 @@ const std::string& CRPS_0x02::title() const {
    static const std::string title("Rocker Switch, 2 Rocker");
    return title;
 }
-boost::shared_ptr<IType> CRPS_0x02::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CRPS_0x02::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x04: return boost::make_shared<CProfile_F6_02_04>();
+   case k0x02: return boost::make_shared<CProfile_F6_02_02>(deviceId, api);
+   case k0x04: return boost::make_shared<CProfile_F6_02_04>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -119,7 +129,7 @@ const std::string& CRPS_0x03::title() const {
    static const std::string title("Rocker Switch, 4 Rocker");
    return title;
 }
-boost::shared_ptr<IType> CRPS_0x03::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CRPS_0x03::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    throw std::out_of_range("Invalid EFuncIds");
 }
 
@@ -129,6 +139,11 @@ CProfile_F6_04_02::CProfile_F6_04_02()
   m_SOC___State_of_card(boost::make_shared<yApi::historization::CSwitch>("SOC - State of card")),
   m_historizers( { m_EBO___Energy_Bow, m_SOC___State_of_card } )
 {}
+CProfile_F6_04_02::CProfile_F6_04_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_EBO___Energy_Bow(boost::make_shared<yApi::historization::CSwitch>("EBO - Energy Bow")),
+  m_SOC___State_of_card(boost::make_shared<yApi::historization::CSwitch>("SOC - State of card")),
+  m_historizers( { m_EBO___Energy_Bow, m_SOC___State_of_card } ){
+}
 CProfile_F6_04_02::~CProfile_F6_04_02()
 {}
 const std::string& CProfile_F6_04_02::profile() const {
@@ -166,10 +181,10 @@ const std::string& CRPS_0x04::title() const {
    static const std::string title("Position Switch, Home and Office Application");
    return title;
 }
-boost::shared_ptr<IType> CRPS_0x04::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CRPS_0x04::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x02: return boost::make_shared<CProfile_F6_04_02>();
+   case k0x02: return boost::make_shared<CProfile_F6_04_02>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -186,7 +201,7 @@ const std::string& CRPS_0x05::title() const {
    static const std::string title("Detectors");
    return title;
 }
-boost::shared_ptr<IType> CRPS_0x05::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CRPS_0x05::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    throw std::out_of_range("Invalid EFuncIds");
 }
 
@@ -202,7 +217,7 @@ const std::string& CRPS_0x10::title() const {
    static const std::string title("Mechanical Handle");
    return title;
 }
-boost::shared_ptr<IType> CRPS_0x10::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CRPS_0x10::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    throw std::out_of_range("Invalid EFuncIds");
 }
 
@@ -276,6 +291,11 @@ CProfile_D5_00_01::CProfile_D5_00_01()
   m_LRN___Learn_Button(boost::make_shared<yApi::historization::CSwitch>("LRN - Learn Button")),
   m_historizers( { m_CO___Contact, m_LRN___Learn_Button } )
 {}
+CProfile_D5_00_01::CProfile_D5_00_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_CO___Contact(boost::make_shared<yApi::historization::CSwitch>("CO - Contact")),
+  m_LRN___Learn_Button(boost::make_shared<yApi::historization::CSwitch>("LRN - Learn Button")),
+  m_historizers( { m_CO___Contact, m_LRN___Learn_Button } ){
+}
 CProfile_D5_00_01::~CProfile_D5_00_01()
 {}
 const std::string& CProfile_D5_00_01::profile() const {
@@ -313,10 +333,10 @@ const std::string& C1BS_0x00::title() const {
    static const std::string title("Contacts and Switches");
    return title;
 }
-boost::shared_ptr<IType> C1BS_0x00::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> C1BS_0x00::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x01: return boost::make_shared<CProfile_D5_00_01>();
+   case k0x01: return boost::make_shared<CProfile_D5_00_01>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -383,6 +403,10 @@ CProfile_A5_02_01::CProfile_A5_02_01()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_01::CProfile_A5_02_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_01::~CProfile_A5_02_01()
 {}
 const std::string& CProfile_A5_02_01::profile() const {
@@ -416,6 +440,10 @@ CProfile_A5_02_02::CProfile_A5_02_02()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_02::CProfile_A5_02_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_02::~CProfile_A5_02_02()
 {}
 const std::string& CProfile_A5_02_02::profile() const {
@@ -449,6 +477,10 @@ CProfile_A5_02_03::CProfile_A5_02_03()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_03::CProfile_A5_02_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_03::~CProfile_A5_02_03()
 {}
 const std::string& CProfile_A5_02_03::profile() const {
@@ -482,6 +514,10 @@ CProfile_A5_02_04::CProfile_A5_02_04()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_04::CProfile_A5_02_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_04::~CProfile_A5_02_04()
 {}
 const std::string& CProfile_A5_02_04::profile() const {
@@ -515,6 +551,10 @@ CProfile_A5_02_05::CProfile_A5_02_05()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_05::CProfile_A5_02_05(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_05::~CProfile_A5_02_05()
 {}
 const std::string& CProfile_A5_02_05::profile() const {
@@ -548,6 +588,10 @@ CProfile_A5_02_06::CProfile_A5_02_06()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_06::CProfile_A5_02_06(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_06::~CProfile_A5_02_06()
 {}
 const std::string& CProfile_A5_02_06::profile() const {
@@ -581,6 +625,10 @@ CProfile_A5_02_07::CProfile_A5_02_07()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_07::CProfile_A5_02_07(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_07::~CProfile_A5_02_07()
 {}
 const std::string& CProfile_A5_02_07::profile() const {
@@ -614,6 +662,10 @@ CProfile_A5_02_08::CProfile_A5_02_08()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_08::CProfile_A5_02_08(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_08::~CProfile_A5_02_08()
 {}
 const std::string& CProfile_A5_02_08::profile() const {
@@ -647,6 +699,10 @@ CProfile_A5_02_09::CProfile_A5_02_09()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_09::CProfile_A5_02_09(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_09::~CProfile_A5_02_09()
 {}
 const std::string& CProfile_A5_02_09::profile() const {
@@ -680,6 +736,10 @@ CProfile_A5_02_0A::CProfile_A5_02_0A()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_0A::CProfile_A5_02_0A(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_0A::~CProfile_A5_02_0A()
 {}
 const std::string& CProfile_A5_02_0A::profile() const {
@@ -713,6 +773,10 @@ CProfile_A5_02_0B::CProfile_A5_02_0B()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_0B::CProfile_A5_02_0B(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_0B::~CProfile_A5_02_0B()
 {}
 const std::string& CProfile_A5_02_0B::profile() const {
@@ -746,6 +810,10 @@ CProfile_A5_02_10::CProfile_A5_02_10()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_10::CProfile_A5_02_10(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_10::~CProfile_A5_02_10()
 {}
 const std::string& CProfile_A5_02_10::profile() const {
@@ -779,6 +847,10 @@ CProfile_A5_02_11::CProfile_A5_02_11()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_11::CProfile_A5_02_11(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_11::~CProfile_A5_02_11()
 {}
 const std::string& CProfile_A5_02_11::profile() const {
@@ -812,6 +884,10 @@ CProfile_A5_02_12::CProfile_A5_02_12()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_12::CProfile_A5_02_12(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_12::~CProfile_A5_02_12()
 {}
 const std::string& CProfile_A5_02_12::profile() const {
@@ -845,6 +921,10 @@ CProfile_A5_02_13::CProfile_A5_02_13()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_13::CProfile_A5_02_13(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_13::~CProfile_A5_02_13()
 {}
 const std::string& CProfile_A5_02_13::profile() const {
@@ -878,6 +958,10 @@ CProfile_A5_02_14::CProfile_A5_02_14()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_14::CProfile_A5_02_14(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_14::~CProfile_A5_02_14()
 {}
 const std::string& CProfile_A5_02_14::profile() const {
@@ -911,6 +995,10 @@ CProfile_A5_02_15::CProfile_A5_02_15()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_15::CProfile_A5_02_15(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_15::~CProfile_A5_02_15()
 {}
 const std::string& CProfile_A5_02_15::profile() const {
@@ -944,6 +1032,10 @@ CProfile_A5_02_16::CProfile_A5_02_16()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_16::CProfile_A5_02_16(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_16::~CProfile_A5_02_16()
 {}
 const std::string& CProfile_A5_02_16::profile() const {
@@ -977,6 +1069,10 @@ CProfile_A5_02_17::CProfile_A5_02_17()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_17::CProfile_A5_02_17(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_17::~CProfile_A5_02_17()
 {}
 const std::string& CProfile_A5_02_17::profile() const {
@@ -1010,6 +1106,10 @@ CProfile_A5_02_18::CProfile_A5_02_18()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_18::CProfile_A5_02_18(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_18::~CProfile_A5_02_18()
 {}
 const std::string& CProfile_A5_02_18::profile() const {
@@ -1043,6 +1143,10 @@ CProfile_A5_02_19::CProfile_A5_02_19()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_19::CProfile_A5_02_19(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_19::~CProfile_A5_02_19()
 {}
 const std::string& CProfile_A5_02_19::profile() const {
@@ -1076,6 +1180,10 @@ CProfile_A5_02_1A::CProfile_A5_02_1A()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_1A::CProfile_A5_02_1A(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_1A::~CProfile_A5_02_1A()
 {}
 const std::string& CProfile_A5_02_1A::profile() const {
@@ -1109,6 +1217,10 @@ CProfile_A5_02_1B::CProfile_A5_02_1B()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_1B::CProfile_A5_02_1B(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_1B::~CProfile_A5_02_1B()
 {}
 const std::string& CProfile_A5_02_1B::profile() const {
@@ -1142,6 +1254,10 @@ CProfile_A5_02_20::CProfile_A5_02_20()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_20::CProfile_A5_02_20(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_20::~CProfile_A5_02_20()
 {}
 const std::string& CProfile_A5_02_20::profile() const {
@@ -1175,6 +1291,10 @@ CProfile_A5_02_30::CProfile_A5_02_30()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_02_30::CProfile_A5_02_30(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_02_30::~CProfile_A5_02_30()
 {}
 const std::string& CProfile_A5_02_30::profile() const {
@@ -1215,34 +1335,34 @@ const std::string& C4BS_0x02::title() const {
    static const std::string title("Temperature Sensors");
    return title;
 }
-boost::shared_ptr<IType> C4BS_0x02::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> C4BS_0x02::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x01: return boost::make_shared<CProfile_A5_02_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_02_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_02_03>();
-   case k0x04: return boost::make_shared<CProfile_A5_02_04>();
-   case k0x05: return boost::make_shared<CProfile_A5_02_05>();
-   case k0x06: return boost::make_shared<CProfile_A5_02_06>();
-   case k0x07: return boost::make_shared<CProfile_A5_02_07>();
-   case k0x08: return boost::make_shared<CProfile_A5_02_08>();
-   case k0x09: return boost::make_shared<CProfile_A5_02_09>();
-   case k0x0A: return boost::make_shared<CProfile_A5_02_0A>();
-   case k0x0B: return boost::make_shared<CProfile_A5_02_0B>();
-   case k0x10: return boost::make_shared<CProfile_A5_02_10>();
-   case k0x11: return boost::make_shared<CProfile_A5_02_11>();
-   case k0x12: return boost::make_shared<CProfile_A5_02_12>();
-   case k0x13: return boost::make_shared<CProfile_A5_02_13>();
-   case k0x14: return boost::make_shared<CProfile_A5_02_14>();
-   case k0x15: return boost::make_shared<CProfile_A5_02_15>();
-   case k0x16: return boost::make_shared<CProfile_A5_02_16>();
-   case k0x17: return boost::make_shared<CProfile_A5_02_17>();
-   case k0x18: return boost::make_shared<CProfile_A5_02_18>();
-   case k0x19: return boost::make_shared<CProfile_A5_02_19>();
-   case k0x1A: return boost::make_shared<CProfile_A5_02_1A>();
-   case k0x1B: return boost::make_shared<CProfile_A5_02_1B>();
-   case k0x20: return boost::make_shared<CProfile_A5_02_20>();
-   case k0x30: return boost::make_shared<CProfile_A5_02_30>();
+   case k0x01: return boost::make_shared<CProfile_A5_02_01>(deviceId, api);
+   case k0x02: return boost::make_shared<CProfile_A5_02_02>(deviceId, api);
+   case k0x03: return boost::make_shared<CProfile_A5_02_03>(deviceId, api);
+   case k0x04: return boost::make_shared<CProfile_A5_02_04>(deviceId, api);
+   case k0x05: return boost::make_shared<CProfile_A5_02_05>(deviceId, api);
+   case k0x06: return boost::make_shared<CProfile_A5_02_06>(deviceId, api);
+   case k0x07: return boost::make_shared<CProfile_A5_02_07>(deviceId, api);
+   case k0x08: return boost::make_shared<CProfile_A5_02_08>(deviceId, api);
+   case k0x09: return boost::make_shared<CProfile_A5_02_09>(deviceId, api);
+   case k0x0A: return boost::make_shared<CProfile_A5_02_0A>(deviceId, api);
+   case k0x0B: return boost::make_shared<CProfile_A5_02_0B>(deviceId, api);
+   case k0x10: return boost::make_shared<CProfile_A5_02_10>(deviceId, api);
+   case k0x11: return boost::make_shared<CProfile_A5_02_11>(deviceId, api);
+   case k0x12: return boost::make_shared<CProfile_A5_02_12>(deviceId, api);
+   case k0x13: return boost::make_shared<CProfile_A5_02_13>(deviceId, api);
+   case k0x14: return boost::make_shared<CProfile_A5_02_14>(deviceId, api);
+   case k0x15: return boost::make_shared<CProfile_A5_02_15>(deviceId, api);
+   case k0x16: return boost::make_shared<CProfile_A5_02_16>(deviceId, api);
+   case k0x17: return boost::make_shared<CProfile_A5_02_17>(deviceId, api);
+   case k0x18: return boost::make_shared<CProfile_A5_02_18>(deviceId, api);
+   case k0x19: return boost::make_shared<CProfile_A5_02_19>(deviceId, api);
+   case k0x1A: return boost::make_shared<CProfile_A5_02_1A>(deviceId, api);
+   case k0x1B: return boost::make_shared<CProfile_A5_02_1B>(deviceId, api);
+   case k0x20: return boost::make_shared<CProfile_A5_02_20>(deviceId, api);
+   case k0x30: return boost::make_shared<CProfile_A5_02_30>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -1254,6 +1374,12 @@ CProfile_A5_04_01::CProfile_A5_04_01()
   m_TSN___T_Sensor(boost::make_shared<yApi::historization::CSwitch>("TSN - T-Sensor")),
   m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_TSN___T_Sensor } )
 {}
+CProfile_A5_04_01::CProfile_A5_04_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_HUM___Humidity(boost::make_shared<yApi::historization::CHumidity>("HUM - Humidity")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_TSN___T_Sensor(boost::make_shared<yApi::historization::CSwitch>("TSN - T-Sensor")),
+  m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_TSN___T_Sensor } ){
+}
 CProfile_A5_04_01::~CProfile_A5_04_01()
 {}
 const std::string& CProfile_A5_04_01::profile() const {
@@ -1295,6 +1421,12 @@ CProfile_A5_04_02::CProfile_A5_04_02()
   m_TSN___T_Sensor(boost::make_shared<yApi::historization::CSwitch>("TSN - T-Sensor")),
   m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_TSN___T_Sensor } )
 {}
+CProfile_A5_04_02::CProfile_A5_04_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_HUM___Humidity(boost::make_shared<yApi::historization::CHumidity>("HUM - Humidity")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_TSN___T_Sensor(boost::make_shared<yApi::historization::CSwitch>("TSN - T-Sensor")),
+  m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_TSN___T_Sensor } ){
+}
 CProfile_A5_04_02::~CProfile_A5_04_02()
 {}
 const std::string& CProfile_A5_04_02::profile() const {
@@ -1336,6 +1468,12 @@ CProfile_A5_04_03::CProfile_A5_04_03()
   m_TTP___Telegram_Type(boost::make_shared<yApi::historization::CSwitch>("TTP - Telegram Type")),
   m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_TTP___Telegram_Type } )
 {}
+CProfile_A5_04_03::CProfile_A5_04_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_HUM___Humidity(boost::make_shared<yApi::historization::CHumidity>("HUM - Humidity")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_TTP___Telegram_Type(boost::make_shared<yApi::historization::CSwitch>("TTP - Telegram Type")),
+  m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_TTP___Telegram_Type } ){
+}
 CProfile_A5_04_03::~CProfile_A5_04_03()
 {}
 const std::string& CProfile_A5_04_03::profile() const {
@@ -1382,12 +1520,12 @@ const std::string& C4BS_0x04::title() const {
    static const std::string title("Temperature and Humidity Sensor");
    return title;
 }
-boost::shared_ptr<IType> C4BS_0x04::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> C4BS_0x04::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x01: return boost::make_shared<CProfile_A5_04_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_04_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_04_03>();
+   case k0x01: return boost::make_shared<CProfile_A5_04_01>(deviceId, api);
+   case k0x02: return boost::make_shared<CProfile_A5_04_02>(deviceId, api);
+   case k0x03: return boost::make_shared<CProfile_A5_04_03>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -1398,6 +1536,11 @@ CProfile_A5_05_01::CProfile_A5_05_01()
   m_TTP___Telegram_Type(boost::make_shared<yApi::historization::CSwitch>("TTP - Telegram Type")),
   m_historizers( { m_BAR___Barometer, m_TTP___Telegram_Type } )
 {}
+CProfile_A5_05_01::CProfile_A5_05_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_BAR___Barometer(boost::make_shared<yApi::historization::CPressure>("BAR - Barometer")),
+  m_TTP___Telegram_Type(boost::make_shared<yApi::historization::CSwitch>("TTP - Telegram Type")),
+  m_historizers( { m_BAR___Barometer, m_TTP___Telegram_Type } ){
+}
 CProfile_A5_05_01::~CProfile_A5_05_01()
 {}
 const std::string& CProfile_A5_05_01::profile() const {
@@ -1439,10 +1582,10 @@ const std::string& C4BS_0x05::title() const {
    static const std::string title("Barometric Sensor");
    return title;
 }
-boost::shared_ptr<IType> C4BS_0x05::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> C4BS_0x05::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x01: return boost::make_shared<CProfile_A5_05_01>();
+   case k0x01: return boost::make_shared<CProfile_A5_05_01>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -1455,6 +1598,13 @@ CProfile_A5_06_01::CProfile_A5_06_01()
   m_RS___Range_select(boost::make_shared<yApi::historization::CSwitch>("RS - Range select")),
   m_historizers( { m_SVC___Supply_voltage, m_ILL2___Illumination, m_ILL1___Illumination, m_RS___Range_select } )
 {}
+CProfile_A5_06_01::CProfile_A5_06_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SVC___Supply_voltage(boost::make_shared<yApi::historization::CVoltage>("SVC - Supply voltage")),
+  m_ILL2___Illumination(boost::make_shared<yApi::historization::CIllumination>("ILL2 - Illumination")),
+  m_ILL1___Illumination(boost::make_shared<yApi::historization::CIllumination>("ILL1 - Illumination")),
+  m_RS___Range_select(boost::make_shared<yApi::historization::CSwitch>("RS - Range select")),
+  m_historizers( { m_SVC___Supply_voltage, m_ILL2___Illumination, m_ILL1___Illumination, m_RS___Range_select } ){
+}
 CProfile_A5_06_01::~CProfile_A5_06_01()
 {}
 const std::string& CProfile_A5_06_01::profile() const {
@@ -1502,6 +1652,13 @@ CProfile_A5_06_02::CProfile_A5_06_02()
   m_RS___Range_select(boost::make_shared<yApi::historization::CSwitch>("RS - Range select")),
   m_historizers( { m_SVC___Supply_voltage, m_ILL2___Illumination, m_ILL1___Illumination, m_RS___Range_select } )
 {}
+CProfile_A5_06_02::CProfile_A5_06_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SVC___Supply_voltage(boost::make_shared<yApi::historization::CVoltage>("SVC - Supply voltage")),
+  m_ILL2___Illumination(boost::make_shared<yApi::historization::CIllumination>("ILL2 - Illumination")),
+  m_ILL1___Illumination(boost::make_shared<yApi::historization::CIllumination>("ILL1 - Illumination")),
+  m_RS___Range_select(boost::make_shared<yApi::historization::CSwitch>("RS - Range select")),
+  m_historizers( { m_SVC___Supply_voltage, m_ILL2___Illumination, m_ILL1___Illumination, m_RS___Range_select } ){
+}
 CProfile_A5_06_02::~CProfile_A5_06_02()
 {}
 const std::string& CProfile_A5_06_02::profile() const {
@@ -1547,6 +1704,11 @@ CProfile_A5_06_03::CProfile_A5_06_03()
   m_ILL___Illumination(boost::make_shared<yApi::historization::CIllumination>("ILL - Illumination")),
   m_historizers( { m_SVC___Supply_voltage, m_ILL___Illumination } )
 {}
+CProfile_A5_06_03::CProfile_A5_06_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SVC___Supply_voltage(boost::make_shared<yApi::historization::CVoltage>("SVC - Supply voltage")),
+  m_ILL___Illumination(boost::make_shared<yApi::historization::CIllumination>("ILL - Illumination")),
+  m_historizers( { m_SVC___Supply_voltage, m_ILL___Illumination } ){
+}
 CProfile_A5_06_03::~CProfile_A5_06_03()
 {}
 const std::string& CProfile_A5_06_03::profile() const {
@@ -1587,6 +1749,12 @@ CProfile_A5_06_04::CProfile_A5_06_04()
   m_ENAV___Energy_Storage_Availability(boost::make_shared<yApi::historization::CSwitch>("ENAV - Energy Storage Availability")),
   m_historizers( { m_TEMP___Temperature, m_TMPAV___Temperature_Availability, m_ENAV___Energy_Storage_Availability } )
 {}
+CProfile_A5_06_04::CProfile_A5_06_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TEMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TEMP - Temperature")),
+  m_TMPAV___Temperature_Availability(boost::make_shared<yApi::historization::CSwitch>("TMPAV - Temperature Availability")),
+  m_ENAV___Energy_Storage_Availability(boost::make_shared<yApi::historization::CSwitch>("ENAV - Energy Storage Availability")),
+  m_historizers( { m_TEMP___Temperature, m_TMPAV___Temperature_Availability, m_ENAV___Energy_Storage_Availability } ){
+}
 CProfile_A5_06_04::~CProfile_A5_06_04()
 {}
 const std::string& CProfile_A5_06_04::profile() const {
@@ -1625,6 +1793,13 @@ CProfile_A5_06_05::CProfile_A5_06_05()
   m_RS___Range_select(boost::make_shared<yApi::historization::CSwitch>("RS - Range select")),
   m_historizers( { m_SVC___Supply_voltage, m_ILL2___Illumination, m_ILL1___Illumination, m_RS___Range_select } )
 {}
+CProfile_A5_06_05::CProfile_A5_06_05(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SVC___Supply_voltage(boost::make_shared<yApi::historization::CVoltage>("SVC - Supply voltage")),
+  m_ILL2___Illumination(boost::make_shared<yApi::historization::CIllumination>("ILL2 - Illumination")),
+  m_ILL1___Illumination(boost::make_shared<yApi::historization::CIllumination>("ILL1 - Illumination")),
+  m_RS___Range_select(boost::make_shared<yApi::historization::CSwitch>("RS - Range select")),
+  m_historizers( { m_SVC___Supply_voltage, m_ILL2___Illumination, m_ILL1___Illumination, m_RS___Range_select } ){
+}
 CProfile_A5_06_05::~CProfile_A5_06_05()
 {}
 const std::string& CProfile_A5_06_05::profile() const {
@@ -1676,14 +1851,14 @@ const std::string& C4BS_0x06::title() const {
    static const std::string title("Light Sensor");
    return title;
 }
-boost::shared_ptr<IType> C4BS_0x06::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> C4BS_0x06::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x01: return boost::make_shared<CProfile_A5_06_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_06_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_06_03>();
-   case k0x04: return boost::make_shared<CProfile_A5_06_04>();
-   case k0x05: return boost::make_shared<CProfile_A5_06_05>();
+   case k0x01: return boost::make_shared<CProfile_A5_06_01>(deviceId, api);
+   case k0x02: return boost::make_shared<CProfile_A5_06_02>(deviceId, api);
+   case k0x03: return boost::make_shared<CProfile_A5_06_03>(deviceId, api);
+   case k0x04: return boost::make_shared<CProfile_A5_06_04>(deviceId, api);
+   case k0x05: return boost::make_shared<CProfile_A5_06_05>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -1693,6 +1868,10 @@ CProfile_A5_07_01::CProfile_A5_07_01()
 : m_SVA___Supply_voltage_availability(boost::make_shared<yApi::historization::CSwitch>("SVA - Supply voltage availability")),
   m_historizers( { m_SVA___Supply_voltage_availability } )
 {}
+CProfile_A5_07_01::CProfile_A5_07_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SVA___Supply_voltage_availability(boost::make_shared<yApi::historization::CSwitch>("SVA - Supply voltage availability")),
+  m_historizers( { m_SVA___Supply_voltage_availability } ){
+}
 CProfile_A5_07_01::~CProfile_A5_07_01()
 {}
 const std::string& CProfile_A5_07_01::profile() const {
@@ -1722,6 +1901,10 @@ CProfile_A5_07_02::CProfile_A5_07_02()
 : m_PIRS___PIR_Status(boost::make_shared<yApi::historization::CSwitch>("PIRS - PIR Status")),
   m_historizers( { m_PIRS___PIR_Status } )
 {}
+CProfile_A5_07_02::CProfile_A5_07_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_PIRS___PIR_Status(boost::make_shared<yApi::historization::CSwitch>("PIRS - PIR Status")),
+  m_historizers( { m_PIRS___PIR_Status } ){
+}
 CProfile_A5_07_02::~CProfile_A5_07_02()
 {}
 const std::string& CProfile_A5_07_02::profile() const {
@@ -1752,6 +1935,11 @@ CProfile_A5_07_03::CProfile_A5_07_03()
   m_PIRS___PIR_Status(boost::make_shared<yApi::historization::CSwitch>("PIRS - PIR Status")),
   m_historizers( { m_ILL___Illumination, m_PIRS___PIR_Status } )
 {}
+CProfile_A5_07_03::CProfile_A5_07_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_ILL___Illumination(boost::make_shared<yApi::historization::CIllumination>("ILL - Illumination")),
+  m_PIRS___PIR_Status(boost::make_shared<yApi::historization::CSwitch>("PIRS - PIR Status")),
+  m_historizers( { m_ILL___Illumination, m_PIRS___PIR_Status } ){
+}
 CProfile_A5_07_03::~CProfile_A5_07_03()
 {}
 const std::string& CProfile_A5_07_03::profile() const {
@@ -1793,12 +1981,12 @@ const std::string& C4BS_0x07::title() const {
    static const std::string title("Occupancy Sensor");
    return title;
 }
-boost::shared_ptr<IType> C4BS_0x07::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> C4BS_0x07::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x01: return boost::make_shared<CProfile_A5_07_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_07_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_07_03>();
+   case k0x01: return boost::make_shared<CProfile_A5_07_01>(deviceId, api);
+   case k0x02: return boost::make_shared<CProfile_A5_07_02>(deviceId, api);
+   case k0x03: return boost::make_shared<CProfile_A5_07_03>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -1812,6 +2000,14 @@ CProfile_A5_08_01::CProfile_A5_08_01()
   m_OCC___Occupancy_Button(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy Button")),
   m_historizers( { m_SVC___Supply_voltage, m_ILL___Illumination, m_TMP___Temperature, m_PIRS___PIR_Status, m_OCC___Occupancy_Button } )
 {}
+CProfile_A5_08_01::CProfile_A5_08_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SVC___Supply_voltage(boost::make_shared<yApi::historization::CVoltage>("SVC - Supply voltage")),
+  m_ILL___Illumination(boost::make_shared<yApi::historization::CIllumination>("ILL - Illumination")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_PIRS___PIR_Status(boost::make_shared<yApi::historization::CSwitch>("PIRS - PIR Status")),
+  m_OCC___Occupancy_Button(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy Button")),
+  m_historizers( { m_SVC___Supply_voltage, m_ILL___Illumination, m_TMP___Temperature, m_PIRS___PIR_Status, m_OCC___Occupancy_Button } ){
+}
 CProfile_A5_08_01::~CProfile_A5_08_01()
 {}
 const std::string& CProfile_A5_08_01::profile() const {
@@ -1861,6 +2057,14 @@ CProfile_A5_08_02::CProfile_A5_08_02()
   m_OCC___Occupancy_Button(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy Button")),
   m_historizers( { m_SVC___Supply_voltage, m_ILL___Illumination, m_TMP___Temperature, m_PIRS___PIR_Status, m_OCC___Occupancy_Button } )
 {}
+CProfile_A5_08_02::CProfile_A5_08_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SVC___Supply_voltage(boost::make_shared<yApi::historization::CVoltage>("SVC - Supply voltage")),
+  m_ILL___Illumination(boost::make_shared<yApi::historization::CIllumination>("ILL - Illumination")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_PIRS___PIR_Status(boost::make_shared<yApi::historization::CSwitch>("PIRS - PIR Status")),
+  m_OCC___Occupancy_Button(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy Button")),
+  m_historizers( { m_SVC___Supply_voltage, m_ILL___Illumination, m_TMP___Temperature, m_PIRS___PIR_Status, m_OCC___Occupancy_Button } ){
+}
 CProfile_A5_08_02::~CProfile_A5_08_02()
 {}
 const std::string& CProfile_A5_08_02::profile() const {
@@ -1910,6 +2114,14 @@ CProfile_A5_08_03::CProfile_A5_08_03()
   m_OCC___Occupancy_Button(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy Button")),
   m_historizers( { m_SVC___Supply_voltage, m_ILL___Illumination, m_TMP___Temperature, m_PIRS___PIR_Status, m_OCC___Occupancy_Button } )
 {}
+CProfile_A5_08_03::CProfile_A5_08_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SVC___Supply_voltage(boost::make_shared<yApi::historization::CVoltage>("SVC - Supply voltage")),
+  m_ILL___Illumination(boost::make_shared<yApi::historization::CIllumination>("ILL - Illumination")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_PIRS___PIR_Status(boost::make_shared<yApi::historization::CSwitch>("PIRS - PIR Status")),
+  m_OCC___Occupancy_Button(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy Button")),
+  m_historizers( { m_SVC___Supply_voltage, m_ILL___Illumination, m_TMP___Temperature, m_PIRS___PIR_Status, m_OCC___Occupancy_Button } ){
+}
 CProfile_A5_08_03::~CProfile_A5_08_03()
 {}
 const std::string& CProfile_A5_08_03::profile() const {
@@ -1962,12 +2174,12 @@ const std::string& C4BS_0x08::title() const {
    static const std::string title("Light, Temperature and Occupancy Sensor");
    return title;
 }
-boost::shared_ptr<IType> C4BS_0x08::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> C4BS_0x08::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x01: return boost::make_shared<CProfile_A5_08_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_08_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_08_03>();
+   case k0x01: return boost::make_shared<CProfile_A5_08_01>(deviceId, api);
+   case k0x02: return boost::make_shared<CProfile_A5_08_02>(deviceId, api);
+   case k0x03: return boost::make_shared<CProfile_A5_08_03>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -1979,6 +2191,12 @@ CProfile_A5_09_02::CProfile_A5_09_02()
   m_TSN___T_Sensor(boost::make_shared<yApi::historization::CSwitch>("TSN - T-Sensor")),
   m_historizers( { m_SVC___Supply_voltage, m_TMP___Temperature, m_TSN___T_Sensor } )
 {}
+CProfile_A5_09_02::CProfile_A5_09_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SVC___Supply_voltage(boost::make_shared<yApi::historization::CVoltage>("SVC - Supply voltage")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_TSN___T_Sensor(boost::make_shared<yApi::historization::CSwitch>("TSN - T-Sensor")),
+  m_historizers( { m_SVC___Supply_voltage, m_TMP___Temperature, m_TSN___T_Sensor } ){
+}
 CProfile_A5_09_02::~CProfile_A5_09_02()
 {}
 const std::string& CProfile_A5_09_02::profile() const {
@@ -2021,6 +2239,13 @@ CProfile_A5_09_04::CProfile_A5_09_04()
   m_TSN___T_Sensor(boost::make_shared<yApi::historization::CSwitch>("TSN - T-Sensor")),
   m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_HSN___H_Sensor, m_TSN___T_Sensor } )
 {}
+CProfile_A5_09_04::CProfile_A5_09_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_HUM___Humidity(boost::make_shared<yApi::historization::CHumidity>("HUM - Humidity")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_HSN___H_Sensor(boost::make_shared<yApi::historization::CSwitch>("HSN - H-Sensor")),
+  m_TSN___T_Sensor(boost::make_shared<yApi::historization::CSwitch>("TSN - T-Sensor")),
+  m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_HSN___H_Sensor, m_TSN___T_Sensor } ){
+}
 CProfile_A5_09_04::~CProfile_A5_09_04()
 {}
 const std::string& CProfile_A5_09_04::profile() const {
@@ -2113,6 +2338,11 @@ CProfile_A5_09_05::CProfile_A5_09_05()
   m_SCM___Scale_Multiplier(boost::make_shared<CVOC_Sensor_Scale_MultiplierHistorizer>("SCM - Scale Multiplier")),
   m_historizers( { m_VOC_ID___VOC_ID, m_SCM___Scale_Multiplier } )
 {}
+CProfile_A5_09_05::CProfile_A5_09_05(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_VOC_ID___VOC_ID(boost::make_shared<CVOC_Sensor_VOC_IDHistorizer>("VOC_ID - VOC ID")),
+  m_SCM___Scale_Multiplier(boost::make_shared<CVOC_Sensor_Scale_MultiplierHistorizer>("SCM - Scale Multiplier")),
+  m_historizers( { m_VOC_ID___VOC_ID, m_SCM___Scale_Multiplier } ){
+}
 CProfile_A5_09_05::~CProfile_A5_09_05()
 {}
 const std::string& CProfile_A5_09_05::profile() const {
@@ -2143,6 +2373,12 @@ CProfile_A5_09_07::CProfile_A5_09_07()
   m_PM1a___PM1_active(boost::make_shared<yApi::historization::CSwitch>("PM1a - PM1 active")),
   m_historizers( { m_PM10a___PM10_active, m_PM2_5a___PM2_5_active, m_PM1a___PM1_active } )
 {}
+CProfile_A5_09_07::CProfile_A5_09_07(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_PM10a___PM10_active(boost::make_shared<yApi::historization::CSwitch>("PM10a - PM10 active")),
+  m_PM2_5a___PM2_5_active(boost::make_shared<yApi::historization::CSwitch>("PM2.5a - PM2.5 active")),
+  m_PM1a___PM1_active(boost::make_shared<yApi::historization::CSwitch>("PM1a - PM1 active")),
+  m_historizers( { m_PM10a___PM10_active, m_PM2_5a___PM2_5_active, m_PM1a___PM1_active } ){
+}
 CProfile_A5_09_07::~CProfile_A5_09_07()
 {}
 const std::string& CProfile_A5_09_07::profile() const {
@@ -2174,6 +2410,10 @@ CProfile_A5_09_09::CProfile_A5_09_09()
 : m_PFD___Power_Failure_detection(boost::make_shared<yApi::historization::CSwitch>("PFD - Power Failure detection")),
   m_historizers( { m_PFD___Power_Failure_detection } )
 {}
+CProfile_A5_09_09::CProfile_A5_09_09(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_PFD___Power_Failure_detection(boost::make_shared<yApi::historization::CSwitch>("PFD - Power Failure detection")),
+  m_historizers( { m_PFD___Power_Failure_detection } ){
+}
 CProfile_A5_09_09::~CProfile_A5_09_09()
 {}
 const std::string& CProfile_A5_09_09::profile() const {
@@ -2206,6 +2446,13 @@ CProfile_A5_09_0A::CProfile_A5_09_0A()
   m_SVA___Supply_voltage_availability(boost::make_shared<yApi::historization::CSwitch>("SVA - Supply voltage availability")),
   m_historizers( { m_TEMP___Temperature, m_SV___Supply_voltage, m_TSA___Temp_sensor_availability, m_SVA___Supply_voltage_availability } )
 {}
+CProfile_A5_09_0A::CProfile_A5_09_0A(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TEMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TEMP - Temperature")),
+  m_SV___Supply_voltage(boost::make_shared<yApi::historization::CVoltage>("SV - Supply voltage")),
+  m_TSA___Temp_sensor_availability(boost::make_shared<yApi::historization::CSwitch>("TSA - Temp sensor availability")),
+  m_SVA___Supply_voltage_availability(boost::make_shared<yApi::historization::CSwitch>("SVA - Supply voltage availability")),
+  m_historizers( { m_TEMP___Temperature, m_SV___Supply_voltage, m_TSA___Temp_sensor_availability, m_SVA___Supply_voltage_availability } ){
+}
 CProfile_A5_09_0A::~CProfile_A5_09_0A()
 {}
 const std::string& CProfile_A5_09_0A::profile() const {
@@ -2282,6 +2529,13 @@ CProfile_A5_09_0B::CProfile_A5_09_0B()
   m_SVA___Supply_voltage_availability(boost::make_shared<yApi::historization::CSwitch>("SVA - Supply voltage availability")),
   m_historizers( { m_SV___Supply_voltage, m_SCM___Scale_Multiplier, m_VUNIT___Value_unit, m_SVA___Supply_voltage_availability } )
 {}
+CProfile_A5_09_0B::CProfile_A5_09_0B(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SV___Supply_voltage(boost::make_shared<yApi::historization::CVoltage>("SV - Supply voltage")),
+  m_SCM___Scale_Multiplier(boost::make_shared<CRadioactivity_Sensor_Scale_MultiplierHistorizer>("SCM - Scale Multiplier")),
+  m_VUNIT___Value_unit(boost::make_shared<CRadioactivity_Sensor_Value_unitHistorizer>("VUNIT - Value unit")),
+  m_SVA___Supply_voltage_availability(boost::make_shared<yApi::historization::CSwitch>("SVA - Supply voltage availability")),
+  m_historizers( { m_SV___Supply_voltage, m_SCM___Scale_Multiplier, m_VUNIT___Value_unit, m_SVA___Supply_voltage_availability } ){
+}
 CProfile_A5_09_0B::~CProfile_A5_09_0B()
 {}
 const std::string& CProfile_A5_09_0B::profile() const {
@@ -2323,16 +2577,16 @@ const std::string& C4BS_0x09::title() const {
    static const std::string title("Gas Sensor");
    return title;
 }
-boost::shared_ptr<IType> C4BS_0x09::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> C4BS_0x09::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x02: return boost::make_shared<CProfile_A5_09_02>();
-   case k0x04: return boost::make_shared<CProfile_A5_09_04>();
-   case k0x05: return boost::make_shared<CProfile_A5_09_05>();
-   case k0x07: return boost::make_shared<CProfile_A5_09_07>();
-   case k0x09: return boost::make_shared<CProfile_A5_09_09>();
-   case k0x0A: return boost::make_shared<CProfile_A5_09_0A>();
-   case k0x0B: return boost::make_shared<CProfile_A5_09_0B>();
+   case k0x02: return boost::make_shared<CProfile_A5_09_02>(deviceId, api);
+   case k0x04: return boost::make_shared<CProfile_A5_09_04>(deviceId, api);
+   case k0x05: return boost::make_shared<CProfile_A5_09_05>(deviceId, api);
+   case k0x07: return boost::make_shared<CProfile_A5_09_07>(deviceId, api);
+   case k0x09: return boost::make_shared<CProfile_A5_09_09>(deviceId, api);
+   case k0x0A: return boost::make_shared<CProfile_A5_09_0A>(deviceId, api);
+   case k0x0B: return boost::make_shared<CProfile_A5_09_0B>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -2343,6 +2597,11 @@ CProfile_A5_10_01::CProfile_A5_10_01()
   m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
   m_historizers( { m_TMP___Temperature, m_OCC___Occupancy } )
 {}
+CProfile_A5_10_01::CProfile_A5_10_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
+  m_historizers( { m_TMP___Temperature, m_OCC___Occupancy } ){
+}
 CProfile_A5_10_01::~CProfile_A5_10_01()
 {}
 const std::string& CProfile_A5_10_01::profile() const {
@@ -2378,6 +2637,11 @@ CProfile_A5_10_02::CProfile_A5_10_02()
   m_SLSW___Slide_switch_0_I(boost::make_shared<yApi::historization::CSwitch>("SLSW - Slide switch 0/I")),
   m_historizers( { m_TMP___Temperature, m_SLSW___Slide_switch_0_I } )
 {}
+CProfile_A5_10_02::CProfile_A5_10_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_SLSW___Slide_switch_0_I(boost::make_shared<yApi::historization::CSwitch>("SLSW - Slide switch 0/I")),
+  m_historizers( { m_TMP___Temperature, m_SLSW___Slide_switch_0_I } ){
+}
 CProfile_A5_10_02::~CProfile_A5_10_02()
 {}
 const std::string& CProfile_A5_10_02::profile() const {
@@ -2412,6 +2676,10 @@ CProfile_A5_10_03::CProfile_A5_10_03()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_10_03::CProfile_A5_10_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_10_03::~CProfile_A5_10_03()
 {}
 const std::string& CProfile_A5_10_03::profile() const {
@@ -2445,6 +2713,10 @@ CProfile_A5_10_04::CProfile_A5_10_04()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_10_04::CProfile_A5_10_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_10_04::~CProfile_A5_10_04()
 {}
 const std::string& CProfile_A5_10_04::profile() const {
@@ -2479,6 +2751,11 @@ CProfile_A5_10_05::CProfile_A5_10_05()
   m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
   m_historizers( { m_TMP___Temperature, m_OCC___Occupancy } )
 {}
+CProfile_A5_10_05::CProfile_A5_10_05(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
+  m_historizers( { m_TMP___Temperature, m_OCC___Occupancy } ){
+}
 CProfile_A5_10_05::~CProfile_A5_10_05()
 {}
 const std::string& CProfile_A5_10_05::profile() const {
@@ -2514,6 +2791,11 @@ CProfile_A5_10_06::CProfile_A5_10_06()
   m_SLSW___Slide_switch_0_I(boost::make_shared<yApi::historization::CSwitch>("SLSW - Slide switch 0/I")),
   m_historizers( { m_TMP___Temperature, m_SLSW___Slide_switch_0_I } )
 {}
+CProfile_A5_10_06::CProfile_A5_10_06(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_SLSW___Slide_switch_0_I(boost::make_shared<yApi::historization::CSwitch>("SLSW - Slide switch 0/I")),
+  m_historizers( { m_TMP___Temperature, m_SLSW___Slide_switch_0_I } ){
+}
 CProfile_A5_10_06::~CProfile_A5_10_06()
 {}
 const std::string& CProfile_A5_10_06::profile() const {
@@ -2548,6 +2830,10 @@ CProfile_A5_10_07::CProfile_A5_10_07()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_10_07::CProfile_A5_10_07(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_10_07::~CProfile_A5_10_07()
 {}
 const std::string& CProfile_A5_10_07::profile() const {
@@ -2582,6 +2868,11 @@ CProfile_A5_10_08::CProfile_A5_10_08()
   m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
   m_historizers( { m_TMP___Temperature, m_OCC___Occupancy } )
 {}
+CProfile_A5_10_08::CProfile_A5_10_08(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
+  m_historizers( { m_TMP___Temperature, m_OCC___Occupancy } ){
+}
 CProfile_A5_10_08::~CProfile_A5_10_08()
 {}
 const std::string& CProfile_A5_10_08::profile() const {
@@ -2617,6 +2908,11 @@ CProfile_A5_10_09::CProfile_A5_10_09()
   m_SLSW___Slide_switch_0_I(boost::make_shared<yApi::historization::CSwitch>("SLSW - Slide switch 0/I")),
   m_historizers( { m_TMP___Temperature, m_SLSW___Slide_switch_0_I } )
 {}
+CProfile_A5_10_09::CProfile_A5_10_09(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_SLSW___Slide_switch_0_I(boost::make_shared<yApi::historization::CSwitch>("SLSW - Slide switch 0/I")),
+  m_historizers( { m_TMP___Temperature, m_SLSW___Slide_switch_0_I } ){
+}
 CProfile_A5_10_09::~CProfile_A5_10_09()
 {}
 const std::string& CProfile_A5_10_09::profile() const {
@@ -2652,6 +2948,11 @@ CProfile_A5_10_0A::CProfile_A5_10_0A()
   m_CTST___Contact_State(boost::make_shared<yApi::historization::CSwitch>("CTST - Contact State")),
   m_historizers( { m_TMP___Temperature, m_CTST___Contact_State } )
 {}
+CProfile_A5_10_0A::CProfile_A5_10_0A(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_CTST___Contact_State(boost::make_shared<yApi::historization::CSwitch>("CTST - Contact State")),
+  m_historizers( { m_TMP___Temperature, m_CTST___Contact_State } ){
+}
 CProfile_A5_10_0A::~CProfile_A5_10_0A()
 {}
 const std::string& CProfile_A5_10_0A::profile() const {
@@ -2687,6 +2988,11 @@ CProfile_A5_10_0B::CProfile_A5_10_0B()
   m_CTST___Contact_State(boost::make_shared<yApi::historization::CSwitch>("CTST - Contact State")),
   m_historizers( { m_TMP___Temperature, m_CTST___Contact_State } )
 {}
+CProfile_A5_10_0B::CProfile_A5_10_0B(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_CTST___Contact_State(boost::make_shared<yApi::historization::CSwitch>("CTST - Contact State")),
+  m_historizers( { m_TMP___Temperature, m_CTST___Contact_State } ){
+}
 CProfile_A5_10_0B::~CProfile_A5_10_0B()
 {}
 const std::string& CProfile_A5_10_0B::profile() const {
@@ -2722,6 +3028,11 @@ CProfile_A5_10_0C::CProfile_A5_10_0C()
   m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
   m_historizers( { m_TMP___Temperature, m_OCC___Occupancy } )
 {}
+CProfile_A5_10_0C::CProfile_A5_10_0C(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
+  m_historizers( { m_TMP___Temperature, m_OCC___Occupancy } ){
+}
 CProfile_A5_10_0C::~CProfile_A5_10_0C()
 {}
 const std::string& CProfile_A5_10_0C::profile() const {
@@ -2757,6 +3068,11 @@ CProfile_A5_10_0D::CProfile_A5_10_0D()
   m_SLSW___Slide_switch(boost::make_shared<yApi::historization::CSwitch>("SLSW - Slide switch")),
   m_historizers( { m_TMP___Temperature, m_SLSW___Slide_switch } )
 {}
+CProfile_A5_10_0D::CProfile_A5_10_0D(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_SLSW___Slide_switch(boost::make_shared<yApi::historization::CSwitch>("SLSW - Slide switch")),
+  m_historizers( { m_TMP___Temperature, m_SLSW___Slide_switch } ){
+}
 CProfile_A5_10_0D::~CProfile_A5_10_0D()
 {}
 const std::string& CProfile_A5_10_0D::profile() const {
@@ -2793,6 +3109,12 @@ CProfile_A5_10_10::CProfile_A5_10_10()
   m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
   m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_OCC___Occupancy } )
 {}
+CProfile_A5_10_10::CProfile_A5_10_10(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_HUM___Humidity(boost::make_shared<yApi::historization::CHumidity>("HUM - Humidity")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
+  m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_OCC___Occupancy } ){
+}
 CProfile_A5_10_10::~CProfile_A5_10_10()
 {}
 const std::string& CProfile_A5_10_10::profile() const {
@@ -2834,6 +3156,12 @@ CProfile_A5_10_11::CProfile_A5_10_11()
   m_SLSW___Slide_switch(boost::make_shared<yApi::historization::CSwitch>("SLSW - Slide switch")),
   m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_SLSW___Slide_switch } )
 {}
+CProfile_A5_10_11::CProfile_A5_10_11(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_HUM___Humidity(boost::make_shared<yApi::historization::CHumidity>("HUM - Humidity")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_SLSW___Slide_switch(boost::make_shared<yApi::historization::CSwitch>("SLSW - Slide switch")),
+  m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_SLSW___Slide_switch } ){
+}
 CProfile_A5_10_11::~CProfile_A5_10_11()
 {}
 const std::string& CProfile_A5_10_11::profile() const {
@@ -2874,6 +3202,11 @@ CProfile_A5_10_12::CProfile_A5_10_12()
   m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_HUM___Humidity, m_TMP___Temperature } )
 {}
+CProfile_A5_10_12::CProfile_A5_10_12(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_HUM___Humidity(boost::make_shared<yApi::historization::CHumidity>("HUM - Humidity")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_HUM___Humidity, m_TMP___Temperature } ){
+}
 CProfile_A5_10_12::~CProfile_A5_10_12()
 {}
 const std::string& CProfile_A5_10_12::profile() const {
@@ -2914,6 +3247,12 @@ CProfile_A5_10_13::CProfile_A5_10_13()
   m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
   m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_OCC___Occupancy } )
 {}
+CProfile_A5_10_13::CProfile_A5_10_13(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_HUM___Humidity(boost::make_shared<yApi::historization::CHumidity>("HUM - Humidity")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
+  m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_OCC___Occupancy } ){
+}
 CProfile_A5_10_13::~CProfile_A5_10_13()
 {}
 const std::string& CProfile_A5_10_13::profile() const {
@@ -2955,6 +3294,12 @@ CProfile_A5_10_14::CProfile_A5_10_14()
   m_SLSW___Slide_switch(boost::make_shared<yApi::historization::CSwitch>("SLSW - Slide switch ")),
   m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_SLSW___Slide_switch } )
 {}
+CProfile_A5_10_14::CProfile_A5_10_14(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_HUM___Humidity(boost::make_shared<yApi::historization::CHumidity>("HUM - Humidity")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_SLSW___Slide_switch(boost::make_shared<yApi::historization::CSwitch>("SLSW - Slide switch ")),
+  m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_SLSW___Slide_switch } ){
+}
 CProfile_A5_10_14::~CProfile_A5_10_14()
 {}
 const std::string& CProfile_A5_10_14::profile() const {
@@ -2994,6 +3339,10 @@ CProfile_A5_10_15::CProfile_A5_10_15()
 : m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_TMP___Temperature } )
 {}
+CProfile_A5_10_15::CProfile_A5_10_15(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_TMP___Temperature } ){
+}
 CProfile_A5_10_15::~CProfile_A5_10_15()
 {}
 const std::string& CProfile_A5_10_15::profile() const {
@@ -3028,6 +3377,11 @@ CProfile_A5_10_16::CProfile_A5_10_16()
   m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
   m_historizers( { m_TMP___Temperature, m_OCC___Occupancy } )
 {}
+CProfile_A5_10_16::CProfile_A5_10_16(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
+  m_historizers( { m_TMP___Temperature, m_OCC___Occupancy } ){
+}
 CProfile_A5_10_16::~CProfile_A5_10_16()
 {}
 const std::string& CProfile_A5_10_16::profile() const {
@@ -3063,6 +3417,11 @@ CProfile_A5_10_17::CProfile_A5_10_17()
   m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
   m_historizers( { m_TMP___Temperature, m_OCC___Occupancy } )
 {}
+CProfile_A5_10_17::CProfile_A5_10_17(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
+  m_historizers( { m_TMP___Temperature, m_OCC___Occupancy } ){
+}
 CProfile_A5_10_17::~CProfile_A5_10_17()
 {}
 const std::string& CProfile_A5_10_17::profile() const {
@@ -3119,6 +3478,14 @@ CProfile_A5_10_18::CProfile_A5_10_18()
   m_OB___Occupancy_button(boost::make_shared<yApi::historization::CSwitch>("OB - Occupancy button")),
   m_historizers( { m_FAN___Fan_Speed, m_ILL___Illumination, m_TMP___Temperature, m_OED___Occupancy_enable_disable, m_OB___Occupancy_button } )
 {}
+CProfile_A5_10_18::CProfile_A5_10_18(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_FAN___Fan_Speed(boost::make_shared<CIllumination__Temperature_Set_Point__Temperature_Sensor__Fan_Speed_and_Occupancy_Control_Fan_SpeedHistorizer>("FAN - Fan Speed")),
+  m_ILL___Illumination(boost::make_shared<yApi::historization::CIllumination>("ILL - Illumination")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_OED___Occupancy_enable_disable(boost::make_shared<yApi::historization::CSwitch>("OED - Occupancy enable/disable")),
+  m_OB___Occupancy_button(boost::make_shared<yApi::historization::CSwitch>("OB - Occupancy button")),
+  m_historizers( { m_FAN___Fan_Speed, m_ILL___Illumination, m_TMP___Temperature, m_OED___Occupancy_enable_disable, m_OB___Occupancy_button } ){
+}
 CProfile_A5_10_18::~CProfile_A5_10_18()
 {}
 const std::string& CProfile_A5_10_18::profile() const {
@@ -3181,6 +3548,14 @@ CProfile_A5_10_19::CProfile_A5_10_19()
   m_OB___Occupancy_button(boost::make_shared<yApi::historization::CSwitch>("OB - Occupancy button")),
   m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_FAN___Fan_speed, m_OED___Occupancy_enable_disable, m_OB___Occupancy_button } )
 {}
+CProfile_A5_10_19::CProfile_A5_10_19(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_HUM___Humidity(boost::make_shared<yApi::historization::CHumidity>("HUM - Humidity")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_FAN___Fan_speed(boost::make_shared<CHumidity__Temperature_Set_Point__Temperature_Sensor__Fan_Speed_and_Occupancy_Control_Fan_speedHistorizer>("FAN - Fan speed")),
+  m_OED___Occupancy_enable_disable(boost::make_shared<yApi::historization::CSwitch>("OED - Occupancy enable/disable")),
+  m_OB___Occupancy_button(boost::make_shared<yApi::historization::CSwitch>("OB - Occupancy button")),
+  m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_FAN___Fan_speed, m_OED___Occupancy_enable_disable, m_OB___Occupancy_button } ){
+}
 CProfile_A5_10_19::~CProfile_A5_10_19()
 {}
 const std::string& CProfile_A5_10_19::profile() const {
@@ -3242,6 +3617,13 @@ CProfile_A5_10_1A::CProfile_A5_10_1A()
   m_OB___Occupancy_button(boost::make_shared<yApi::historization::CSwitch>("OB - Occupancy button")),
   m_historizers( { m_TMP___Temperature, m_FAN___Fan_speed, m_OED___Occupancy_enable_disable, m_OB___Occupancy_button } )
 {}
+CProfile_A5_10_1A::CProfile_A5_10_1A(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_FAN___Fan_speed(boost::make_shared<CSupply_voltage_monitor__Temperature_Set_Point__Temperature_Sensor__Fan_Speed_and_Occupancy_Control_Fan_speedHistorizer>("FAN - Fan speed")),
+  m_OED___Occupancy_enable_disable(boost::make_shared<yApi::historization::CSwitch>("OED - Occupancy enable/disable")),
+  m_OB___Occupancy_button(boost::make_shared<yApi::historization::CSwitch>("OB - Occupancy button")),
+  m_historizers( { m_TMP___Temperature, m_FAN___Fan_speed, m_OED___Occupancy_enable_disable, m_OB___Occupancy_button } ){
+}
 CProfile_A5_10_1A::~CProfile_A5_10_1A()
 {}
 const std::string& CProfile_A5_10_1A::profile() const {
@@ -3299,6 +3681,14 @@ CProfile_A5_10_1B::CProfile_A5_10_1B()
   m_OB___Occupancy_button(boost::make_shared<yApi::historization::CSwitch>("OB - Occupancy button")),
   m_historizers( { m_ILL___Illumination, m_TMP___Temperature, m_FAN___Fan_speed, m_OED___Occupancy_enable_disable, m_OB___Occupancy_button } )
 {}
+CProfile_A5_10_1B::CProfile_A5_10_1B(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_ILL___Illumination(boost::make_shared<yApi::historization::CIllumination>("ILL - Illumination")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_FAN___Fan_speed(boost::make_shared<CSupply_Voltage_Monitor__Illumination__Temperature_Sensor__Fan_Speed_and_Occupancy_Control_Fan_speedHistorizer>("FAN - Fan speed")),
+  m_OED___Occupancy_enable_disable(boost::make_shared<yApi::historization::CSwitch>("OED - Occupancy enable/disable")),
+  m_OB___Occupancy_button(boost::make_shared<yApi::historization::CSwitch>("OB - Occupancy button")),
+  m_historizers( { m_ILL___Illumination, m_TMP___Temperature, m_FAN___Fan_speed, m_OED___Occupancy_enable_disable, m_OB___Occupancy_button } ){
+}
 CProfile_A5_10_1B::~CProfile_A5_10_1B()
 {}
 const std::string& CProfile_A5_10_1B::profile() const {
@@ -3361,6 +3751,14 @@ CProfile_A5_10_1C::CProfile_A5_10_1C()
   m_OB___Occupancy_button(boost::make_shared<yApi::historization::CSwitch>("OB - Occupancy button")),
   m_historizers( { m_ILL___Illumination, m_TMP___Temperature, m_FAN___Fan_speed, m_OED___Occupancy_enable_disable, m_OB___Occupancy_button } )
 {}
+CProfile_A5_10_1C::CProfile_A5_10_1C(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_ILL___Illumination(boost::make_shared<yApi::historization::CIllumination>("ILL - Illumination")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_FAN___Fan_speed(boost::make_shared<CIllumination__Illumination_Set_Point__Temperature_Sensor__Fan_Speed_and_Occupancy_Control_Fan_speedHistorizer>("FAN - Fan speed")),
+  m_OED___Occupancy_enable_disable(boost::make_shared<yApi::historization::CSwitch>("OED - Occupancy enable/disable")),
+  m_OB___Occupancy_button(boost::make_shared<yApi::historization::CSwitch>("OB - Occupancy button")),
+  m_historizers( { m_ILL___Illumination, m_TMP___Temperature, m_FAN___Fan_speed, m_OED___Occupancy_enable_disable, m_OB___Occupancy_button } ){
+}
 CProfile_A5_10_1C::~CProfile_A5_10_1C()
 {}
 const std::string& CProfile_A5_10_1C::profile() const {
@@ -3423,6 +3821,14 @@ CProfile_A5_10_1D::CProfile_A5_10_1D()
   m_OB___Occupancy_button(boost::make_shared<yApi::historization::CSwitch>("OB - Occupancy button")),
   m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_FAN___Fan_speed, m_OED___Occupancy_enable_disable, m_OB___Occupancy_button } )
 {}
+CProfile_A5_10_1D::CProfile_A5_10_1D(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_HUM___Humidity(boost::make_shared<yApi::historization::CHumidity>("HUM - Humidity")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_FAN___Fan_speed(boost::make_shared<CHumidity__Humidity_Set_Point__Temperature_Sensor__Fan_Speed_and_Occupancy_Control_Fan_speedHistorizer>("FAN - Fan speed")),
+  m_OED___Occupancy_enable_disable(boost::make_shared<yApi::historization::CSwitch>("OED - Occupancy enable/disable")),
+  m_OB___Occupancy_button(boost::make_shared<yApi::historization::CSwitch>("OB - Occupancy button")),
+  m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_FAN___Fan_speed, m_OED___Occupancy_enable_disable, m_OB___Occupancy_button } ){
+}
 CProfile_A5_10_1D::~CProfile_A5_10_1D()
 {}
 const std::string& CProfile_A5_10_1D::profile() const {
@@ -3468,6 +3874,15 @@ CProfile_A5_10_1F::CProfile_A5_10_1F()
   m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
   m_historizers( { m_TMP___Temperature, m_TMP_F___Temperature_flag, m_SP_F___Set_point_flag, m_FAN_F___Fan_speed_flag, m_UNOCC___Unoccupancy, m_OCC___Occupancy } )
 {}
+CProfile_A5_10_1F::CProfile_A5_10_1F(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_TMP_F___Temperature_flag(boost::make_shared<yApi::historization::CSwitch>("TMP_F - Temperature flag")),
+  m_SP_F___Set_point_flag(boost::make_shared<yApi::historization::CSwitch>("SP_F - Set point flag")),
+  m_FAN_F___Fan_speed_flag(boost::make_shared<yApi::historization::CSwitch>("FAN_F - Fan speed flag")),
+  m_UNOCC___Unoccupancy(boost::make_shared<yApi::historization::CSwitch>("UNOCC - Unoccupancy")),
+  m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
+  m_historizers( { m_TMP___Temperature, m_TMP_F___Temperature_flag, m_SP_F___Set_point_flag, m_FAN_F___Fan_speed_flag, m_UNOCC___Unoccupancy, m_OCC___Occupancy } ){
+}
 CProfile_A5_10_1F::~CProfile_A5_10_1F()
 {}
 const std::string& CProfile_A5_10_1F::profile() const {
@@ -3523,6 +3938,13 @@ CProfile_A5_10_20::CProfile_A5_10_20()
   m_ACT___User_activity(boost::make_shared<yApi::historization::CSwitch>("ACT - User activity")),
   m_historizers( { m_TMP___Temperature, m_SPM___Set_point_mode, m_BATT___Battery_state, m_ACT___User_activity } )
 {}
+CProfile_A5_10_20::CProfile_A5_10_20(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_SPM___Set_point_mode(boost::make_shared<CTemperature_and_Set_Point_with_Special_Heating_States_Set_point_modeHistorizer>("SPM - Set point mode")),
+  m_BATT___Battery_state(boost::make_shared<yApi::historization::CSwitch>("BATT - Battery state")),
+  m_ACT___User_activity(boost::make_shared<yApi::historization::CSwitch>("ACT - User activity")),
+  m_historizers( { m_TMP___Temperature, m_SPM___Set_point_mode, m_BATT___Battery_state, m_ACT___User_activity } ){
+}
 CProfile_A5_10_20::~CProfile_A5_10_20()
 {}
 const std::string& CProfile_A5_10_20::profile() const {
@@ -3576,6 +3998,14 @@ CProfile_A5_10_21::CProfile_A5_10_21()
   m_ACT___User_activity(boost::make_shared<yApi::historization::CSwitch>("ACT - User activity")),
   m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_SPM___Set_point_mode, m_BATT___Battery_state, m_ACT___User_activity } )
 {}
+CProfile_A5_10_21::CProfile_A5_10_21(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_HUM___Humidity(boost::make_shared<yApi::historization::CHumidity>("HUM - Humidity")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_SPM___Set_point_mode(boost::make_shared<CTemperature__Humidity_and_Set_Point_with_Special_Heating_States_Set_point_modeHistorizer>("SPM - Set point mode")),
+  m_BATT___Battery_state(boost::make_shared<yApi::historization::CSwitch>("BATT - Battery state")),
+  m_ACT___User_activity(boost::make_shared<yApi::historization::CSwitch>("ACT - User activity")),
+  m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_SPM___Set_point_mode, m_BATT___Battery_state, m_ACT___User_activity } ){
+}
 CProfile_A5_10_21::~CProfile_A5_10_21()
 {}
 const std::string& CProfile_A5_10_21::profile() const {
@@ -3617,6 +4047,11 @@ CProfile_A5_10_22::CProfile_A5_10_22()
   m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
   m_historizers( { m_HUM___Humidity, m_TMP___Temperature } )
 {}
+CProfile_A5_10_22::CProfile_A5_10_22(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_HUM___Humidity(boost::make_shared<yApi::historization::CHumidity>("HUM - Humidity")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_historizers( { m_HUM___Humidity, m_TMP___Temperature } ){
+}
 CProfile_A5_10_22::~CProfile_A5_10_22()
 {}
 const std::string& CProfile_A5_10_22::profile() const {
@@ -3657,6 +4092,12 @@ CProfile_A5_10_23::CProfile_A5_10_23()
   m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
   m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_OCC___Occupancy } )
 {}
+CProfile_A5_10_23::CProfile_A5_10_23(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_HUM___Humidity(boost::make_shared<yApi::historization::CHumidity>("HUM - Humidity")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
+  m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_OCC___Occupancy } ){
+}
 CProfile_A5_10_23::~CProfile_A5_10_23()
 {}
 const std::string& CProfile_A5_10_23::profile() const {
@@ -3703,41 +4144,41 @@ const std::string& C4BS_0x10::title() const {
    static const std::string title("Room Operating Panel");
    return title;
 }
-boost::shared_ptr<IType> C4BS_0x10::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> C4BS_0x10::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x01: return boost::make_shared<CProfile_A5_10_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_10_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_10_03>();
-   case k0x04: return boost::make_shared<CProfile_A5_10_04>();
-   case k0x05: return boost::make_shared<CProfile_A5_10_05>();
-   case k0x06: return boost::make_shared<CProfile_A5_10_06>();
-   case k0x07: return boost::make_shared<CProfile_A5_10_07>();
-   case k0x08: return boost::make_shared<CProfile_A5_10_08>();
-   case k0x09: return boost::make_shared<CProfile_A5_10_09>();
-   case k0x0A: return boost::make_shared<CProfile_A5_10_0A>();
-   case k0x0B: return boost::make_shared<CProfile_A5_10_0B>();
-   case k0x0C: return boost::make_shared<CProfile_A5_10_0C>();
-   case k0x0D: return boost::make_shared<CProfile_A5_10_0D>();
-   case k0x10: return boost::make_shared<CProfile_A5_10_10>();
-   case k0x11: return boost::make_shared<CProfile_A5_10_11>();
-   case k0x12: return boost::make_shared<CProfile_A5_10_12>();
-   case k0x13: return boost::make_shared<CProfile_A5_10_13>();
-   case k0x14: return boost::make_shared<CProfile_A5_10_14>();
-   case k0x15: return boost::make_shared<CProfile_A5_10_15>();
-   case k0x16: return boost::make_shared<CProfile_A5_10_16>();
-   case k0x17: return boost::make_shared<CProfile_A5_10_17>();
-   case k0x18: return boost::make_shared<CProfile_A5_10_18>();
-   case k0x19: return boost::make_shared<CProfile_A5_10_19>();
-   case k0x1A: return boost::make_shared<CProfile_A5_10_1A>();
-   case k0x1B: return boost::make_shared<CProfile_A5_10_1B>();
-   case k0x1C: return boost::make_shared<CProfile_A5_10_1C>();
-   case k0x1D: return boost::make_shared<CProfile_A5_10_1D>();
-   case k0x1F: return boost::make_shared<CProfile_A5_10_1F>();
-   case k0x20: return boost::make_shared<CProfile_A5_10_20>();
-   case k0x21: return boost::make_shared<CProfile_A5_10_21>();
-   case k0x22: return boost::make_shared<CProfile_A5_10_22>();
-   case k0x23: return boost::make_shared<CProfile_A5_10_23>();
+   case k0x01: return boost::make_shared<CProfile_A5_10_01>(deviceId, api);
+   case k0x02: return boost::make_shared<CProfile_A5_10_02>(deviceId, api);
+   case k0x03: return boost::make_shared<CProfile_A5_10_03>(deviceId, api);
+   case k0x04: return boost::make_shared<CProfile_A5_10_04>(deviceId, api);
+   case k0x05: return boost::make_shared<CProfile_A5_10_05>(deviceId, api);
+   case k0x06: return boost::make_shared<CProfile_A5_10_06>(deviceId, api);
+   case k0x07: return boost::make_shared<CProfile_A5_10_07>(deviceId, api);
+   case k0x08: return boost::make_shared<CProfile_A5_10_08>(deviceId, api);
+   case k0x09: return boost::make_shared<CProfile_A5_10_09>(deviceId, api);
+   case k0x0A: return boost::make_shared<CProfile_A5_10_0A>(deviceId, api);
+   case k0x0B: return boost::make_shared<CProfile_A5_10_0B>(deviceId, api);
+   case k0x0C: return boost::make_shared<CProfile_A5_10_0C>(deviceId, api);
+   case k0x0D: return boost::make_shared<CProfile_A5_10_0D>(deviceId, api);
+   case k0x10: return boost::make_shared<CProfile_A5_10_10>(deviceId, api);
+   case k0x11: return boost::make_shared<CProfile_A5_10_11>(deviceId, api);
+   case k0x12: return boost::make_shared<CProfile_A5_10_12>(deviceId, api);
+   case k0x13: return boost::make_shared<CProfile_A5_10_13>(deviceId, api);
+   case k0x14: return boost::make_shared<CProfile_A5_10_14>(deviceId, api);
+   case k0x15: return boost::make_shared<CProfile_A5_10_15>(deviceId, api);
+   case k0x16: return boost::make_shared<CProfile_A5_10_16>(deviceId, api);
+   case k0x17: return boost::make_shared<CProfile_A5_10_17>(deviceId, api);
+   case k0x18: return boost::make_shared<CProfile_A5_10_18>(deviceId, api);
+   case k0x19: return boost::make_shared<CProfile_A5_10_19>(deviceId, api);
+   case k0x1A: return boost::make_shared<CProfile_A5_10_1A>(deviceId, api);
+   case k0x1B: return boost::make_shared<CProfile_A5_10_1B>(deviceId, api);
+   case k0x1C: return boost::make_shared<CProfile_A5_10_1C>(deviceId, api);
+   case k0x1D: return boost::make_shared<CProfile_A5_10_1D>(deviceId, api);
+   case k0x1F: return boost::make_shared<CProfile_A5_10_1F>(deviceId, api);
+   case k0x20: return boost::make_shared<CProfile_A5_10_20>(deviceId, api);
+   case k0x21: return boost::make_shared<CProfile_A5_10_21>(deviceId, api);
+   case k0x22: return boost::make_shared<CProfile_A5_10_22>(deviceId, api);
+   case k0x23: return boost::make_shared<CProfile_A5_10_23>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -3754,6 +4195,17 @@ CProfile_A5_11_01::CProfile_A5_11_01()
   m_PWR___Power_Relay(boost::make_shared<yApi::historization::CSwitch>("PWR - Power Relay")),
   m_historizers( { m_ILL___Illumination, m_REP___Repeater, m_PRT___Power_Relay_Timer, m_DHV___Daylight_Harvesting, m_EDIM___Dimming, m_MGC___Magnet_Contact, m_OCC___Occupancy, m_PWR___Power_Relay } )
 {}
+CProfile_A5_11_01::CProfile_A5_11_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_ILL___Illumination(boost::make_shared<yApi::historization::CIllumination>("ILL - Illumination")),
+  m_REP___Repeater(boost::make_shared<yApi::historization::CSwitch>("REP - Repeater")),
+  m_PRT___Power_Relay_Timer(boost::make_shared<yApi::historization::CSwitch>("PRT - Power Relay Timer")),
+  m_DHV___Daylight_Harvesting(boost::make_shared<yApi::historization::CSwitch>("DHV - Daylight Harvesting")),
+  m_EDIM___Dimming(boost::make_shared<yApi::historization::CSwitch>("EDIM - Dimming")),
+  m_MGC___Magnet_Contact(boost::make_shared<yApi::historization::CSwitch>("MGC - Magnet Contact")),
+  m_OCC___Occupancy(boost::make_shared<yApi::historization::CSwitch>("OCC - Occupancy")),
+  m_PWR___Power_Relay(boost::make_shared<yApi::historization::CSwitch>("PWR - Power Relay")),
+  m_historizers( { m_ILL___Illumination, m_REP___Repeater, m_PRT___Power_Relay_Timer, m_DHV___Daylight_Harvesting, m_EDIM___Dimming, m_MGC___Magnet_Contact, m_OCC___Occupancy, m_PWR___Power_Relay } ){
+}
 CProfile_A5_11_01::~CProfile_A5_11_01()
 {}
 const std::string& CProfile_A5_11_01::profile() const {
@@ -3845,6 +4297,15 @@ CProfile_A5_11_02::CProfile_A5_11_02()
   m_RO___Room_occupancy(boost::make_shared<CTemperature_Controller_Output_Room_occupancyHistorizer>("RO - Room occupancy")),
   m_historizers( { m_FAN___FanStage, m_ALR___Alarm, m_CTM___Controller_mode, m_CST___Controller_state, m_ERH___Energy_hold_off, m_RO___Room_occupancy } )
 {}
+CProfile_A5_11_02::CProfile_A5_11_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_FAN___FanStage(boost::make_shared<CTemperature_Controller_Output_FanStageHistorizer>("FAN - FanStage")),
+  m_ALR___Alarm(boost::make_shared<yApi::historization::CSwitch>("ALR - Alarm")),
+  m_CTM___Controller_mode(boost::make_shared<CTemperature_Controller_Output_Controller_modeHistorizer>("CTM - Controller mode")),
+  m_CST___Controller_state(boost::make_shared<yApi::historization::CSwitch>("CST - Controller state")),
+  m_ERH___Energy_hold_off(boost::make_shared<yApi::historization::CSwitch>("ERH - Energy hold-off")),
+  m_RO___Room_occupancy(boost::make_shared<CTemperature_Controller_Output_Room_occupancyHistorizer>("RO - Room occupancy")),
+  m_historizers( { m_FAN___FanStage, m_ALR___Alarm, m_CTM___Controller_mode, m_CST___Controller_state, m_ERH___Energy_hold_off, m_RO___Room_occupancy } ){
+}
 CProfile_A5_11_02::~CProfile_A5_11_02()
 {}
 const std::string& CProfile_A5_11_02::profile() const {
@@ -3925,6 +4386,17 @@ CProfile_A5_11_03::CProfile_A5_11_03()
   m_MOTP___Mode_of_the_position(boost::make_shared<yApi::historization::CSwitch>("MOTP - Mode of the position")),
   m_historizers( { m_AS___Angle_sign, m_PVF___Position_value_flag, m_AVF___Angle_value_flag, m_ES___Error_state, m_EP___End_position, m_ST___Status, m_SM___Service_Mode, m_MOTP___Mode_of_the_position } )
 {}
+CProfile_A5_11_03::CProfile_A5_11_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_AS___Angle_sign(boost::make_shared<yApi::historization::CSwitch>("AS - Angle sign")),
+  m_PVF___Position_value_flag(boost::make_shared<yApi::historization::CSwitch>("PVF - Position value flag")),
+  m_AVF___Angle_value_flag(boost::make_shared<yApi::historization::CSwitch>("AVF - Angle value flag")),
+  m_ES___Error_state(boost::make_shared<CBlind_Status_Error_stateHistorizer>("ES - Error state")),
+  m_EP___End_position(boost::make_shared<CBlind_Status_End_positionHistorizer>("EP - End-position")),
+  m_ST___Status(boost::make_shared<CBlind_Status_StatusHistorizer>("ST - Status")),
+  m_SM___Service_Mode(boost::make_shared<yApi::historization::CSwitch>("SM - Service Mode")),
+  m_MOTP___Mode_of_the_position(boost::make_shared<yApi::historization::CSwitch>("MOTP - Mode of the position")),
+  m_historizers( { m_AS___Angle_sign, m_PVF___Position_value_flag, m_AVF___Angle_value_flag, m_ES___Error_state, m_EP___End_position, m_ST___Status, m_SM___Service_Mode, m_MOTP___Mode_of_the_position } ){
+}
 CProfile_A5_11_03::~CProfile_A5_11_03()
 {}
 const std::string& CProfile_A5_11_03::profile() const {
@@ -3990,6 +4462,14 @@ CProfile_A5_11_04::CProfile_A5_11_04()
   m_ST___Status(boost::make_shared<yApi::historization::CSwitch>("ST - Status")),
   m_historizers( { m_SM___Service_Mode, m_OHF___Operating_hours_flag, m_ES___Error_state, m_PM___Parameter_Mode, m_ST___Status } )
 {}
+CProfile_A5_11_04::CProfile_A5_11_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SM___Service_Mode(boost::make_shared<yApi::historization::CSwitch>("SM - Service Mode")),
+  m_OHF___Operating_hours_flag(boost::make_shared<yApi::historization::CSwitch>("OHF - Operating hours flag")),
+  m_ES___Error_state(boost::make_shared<CExtended_Lighting_Status_Error_stateHistorizer>("ES - Error state")),
+  m_PM___Parameter_Mode(boost::make_shared<CExtended_Lighting_Status_Parameter_ModeHistorizer>("PM - Parameter Mode")),
+  m_ST___Status(boost::make_shared<yApi::historization::CSwitch>("ST - Status")),
+  m_historizers( { m_SM___Service_Mode, m_OHF___Operating_hours_flag, m_ES___Error_state, m_PM___Parameter_Mode, m_ST___Status } ){
+}
 CProfile_A5_11_04::~CProfile_A5_11_04()
 {}
 const std::string& CProfile_A5_11_04::profile() const {
@@ -4028,13 +4508,13 @@ const std::string& C4BS_0x11::title() const {
    static const std::string title("Controller Status");
    return title;
 }
-boost::shared_ptr<IType> C4BS_0x11::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> C4BS_0x11::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x01: return boost::make_shared<CProfile_A5_11_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_11_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_11_03>();
-   case k0x04: return boost::make_shared<CProfile_A5_11_04>();
+   case k0x01: return boost::make_shared<CProfile_A5_11_01>(deviceId, api);
+   case k0x02: return boost::make_shared<CProfile_A5_11_02>(deviceId, api);
+   case k0x03: return boost::make_shared<CProfile_A5_11_03>(deviceId, api);
+   case k0x04: return boost::make_shared<CProfile_A5_11_04>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -4059,6 +4539,11 @@ CProfile_A5_12_00::CProfile_A5_12_00()
   m_DIV___Divisor__scale_(boost::make_shared<CCounter_Divisor__scale_Historizer>("DIV - Divisor (scale)")),
   m_historizers( { m_DT___Data_type__unit_, m_DIV___Divisor__scale_ } )
 {}
+CProfile_A5_12_00::CProfile_A5_12_00(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_DT___Data_type__unit_(boost::make_shared<yApi::historization::CSwitch>("DT - Data type (unit)")),
+  m_DIV___Divisor__scale_(boost::make_shared<CCounter_Divisor__scale_Historizer>("DIV - Divisor (scale)")),
+  m_historizers( { m_DT___Data_type__unit_, m_DIV___Divisor__scale_ } ){
+}
 CProfile_A5_12_00::~CProfile_A5_12_00()
 {}
 const std::string& CProfile_A5_12_00::profile() const {
@@ -4103,6 +4588,11 @@ CProfile_A5_12_01::CProfile_A5_12_01()
   m_DIV___Divisor__scale_(boost::make_shared<CElectricity_Divisor__scale_Historizer>("DIV - Divisor (scale)")),
   m_historizers( { m_DT___Data_type__unit_, m_DIV___Divisor__scale_ } )
 {}
+CProfile_A5_12_01::CProfile_A5_12_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_DT___Data_type__unit_(boost::make_shared<yApi::historization::CSwitch>("DT - Data type (unit)")),
+  m_DIV___Divisor__scale_(boost::make_shared<CElectricity_Divisor__scale_Historizer>("DIV - Divisor (scale)")),
+  m_historizers( { m_DT___Data_type__unit_, m_DIV___Divisor__scale_ } ){
+}
 CProfile_A5_12_01::~CProfile_A5_12_01()
 {}
 const std::string& CProfile_A5_12_01::profile() const {
@@ -4147,6 +4637,11 @@ CProfile_A5_12_02::CProfile_A5_12_02()
   m_DIV___divisor__scale_(boost::make_shared<CGas_divisor__scale_Historizer>("DIV - divisor (scale)")),
   m_historizers( { m_DT___data_type__unit_, m_DIV___divisor__scale_ } )
 {}
+CProfile_A5_12_02::CProfile_A5_12_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_DT___data_type__unit_(boost::make_shared<yApi::historization::CSwitch>("DT - data type (unit)")),
+  m_DIV___divisor__scale_(boost::make_shared<CGas_divisor__scale_Historizer>("DIV - divisor (scale)")),
+  m_historizers( { m_DT___data_type__unit_, m_DIV___divisor__scale_ } ){
+}
 CProfile_A5_12_02::~CProfile_A5_12_02()
 {}
 const std::string& CProfile_A5_12_02::profile() const {
@@ -4191,6 +4686,11 @@ CProfile_A5_12_03::CProfile_A5_12_03()
   m_DIV___Divisor__scale_(boost::make_shared<CWater_Divisor__scale_Historizer>("DIV - Divisor (scale)")),
   m_historizers( { m_DT___Data_type__unit_, m_DIV___Divisor__scale_ } )
 {}
+CProfile_A5_12_03::CProfile_A5_12_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_DT___Data_type__unit_(boost::make_shared<yApi::historization::CSwitch>("DT - Data type (unit)")),
+  m_DIV___Divisor__scale_(boost::make_shared<CWater_Divisor__scale_Historizer>("DIV - Divisor (scale)")),
+  m_historizers( { m_DT___Data_type__unit_, m_DIV___Divisor__scale_ } ){
+}
 CProfile_A5_12_03::~CProfile_A5_12_03()
 {}
 const std::string& CProfile_A5_12_03::profile() const {
@@ -4235,6 +4735,11 @@ CProfile_A5_12_04::CProfile_A5_12_04()
   m_BL___Battery_Level(boost::make_shared<CTemperature_and_Load_Sensor_Battery_LevelHistorizer>("BL - Battery Level")),
   m_historizers( { m_TMP___Temperature, m_BL___Battery_Level } )
 {}
+CProfile_A5_12_04::CProfile_A5_12_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_BL___Battery_Level(boost::make_shared<CTemperature_and_Load_Sensor_Battery_LevelHistorizer>("BL - Battery Level")),
+  m_historizers( { m_TMP___Temperature, m_BL___Battery_Level } ){
+}
 CProfile_A5_12_04::~CProfile_A5_12_04()
 {}
 const std::string& CProfile_A5_12_04::profile() const {
@@ -4293,6 +4798,21 @@ CProfile_A5_12_05::CProfile_A5_12_05()
   m_BL___Battery_Level(boost::make_shared<CTemperature_and_Container_Sensor_Battery_LevelHistorizer>("BL - Battery Level")),
   m_historizers( { m_PS0___Position_Sensor_0, m_PS1___Position_Sensor_1, m_PS2___Position_Sensor_2, m_PS3___Position_Sensor_3, m_PS4___Position_Sensor_4, m_PS5___Position_Sensor_5, m_PS6___Position_Sensor_6, m_PS7___Position_Sensor_7, m_PS8___Position_Sensor_8, m_PS9___Position_Sensor_9, m_TMP___Temperature, m_BL___Battery_Level } )
 {}
+CProfile_A5_12_05::CProfile_A5_12_05(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_PS0___Position_Sensor_0(boost::make_shared<yApi::historization::CSwitch>("PS0 - Position Sensor 0")),
+  m_PS1___Position_Sensor_1(boost::make_shared<yApi::historization::CSwitch>("PS1 - Position Sensor 1")),
+  m_PS2___Position_Sensor_2(boost::make_shared<yApi::historization::CSwitch>("PS2 - Position Sensor 2")),
+  m_PS3___Position_Sensor_3(boost::make_shared<yApi::historization::CSwitch>("PS3 - Position Sensor 3")),
+  m_PS4___Position_Sensor_4(boost::make_shared<yApi::historization::CSwitch>("PS4 - Position Sensor 4")),
+  m_PS5___Position_Sensor_5(boost::make_shared<yApi::historization::CSwitch>("PS5 - Position Sensor 5")),
+  m_PS6___Position_Sensor_6(boost::make_shared<yApi::historization::CSwitch>("PS6 - Position Sensor 6")),
+  m_PS7___Position_Sensor_7(boost::make_shared<yApi::historization::CSwitch>("PS7 - Position Sensor 7")),
+  m_PS8___Position_Sensor_8(boost::make_shared<yApi::historization::CSwitch>("PS8 - Position Sensor 8")),
+  m_PS9___Position_Sensor_9(boost::make_shared<yApi::historization::CSwitch>("PS9 - Position Sensor 9")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_BL___Battery_Level(boost::make_shared<CTemperature_and_Container_Sensor_Battery_LevelHistorizer>("BL - Battery Level")),
+  m_historizers( { m_PS0___Position_Sensor_0, m_PS1___Position_Sensor_1, m_PS2___Position_Sensor_2, m_PS3___Position_Sensor_3, m_PS4___Position_Sensor_4, m_PS5___Position_Sensor_5, m_PS6___Position_Sensor_6, m_PS7___Position_Sensor_7, m_PS8___Position_Sensor_8, m_PS9___Position_Sensor_9, m_TMP___Temperature, m_BL___Battery_Level } ){
+}
 CProfile_A5_12_05::~CProfile_A5_12_05()
 {}
 const std::string& CProfile_A5_12_05::profile() const {
@@ -4351,6 +4871,11 @@ CProfile_A5_12_10::CProfile_A5_12_10()
   m_DIV___Divisor__scale_(boost::make_shared<CCurrent_meter_16_channels_Divisor__scale_Historizer>("DIV - Divisor (scale)")),
   m_historizers( { m_DT___Data_type__unit_, m_DIV___Divisor__scale_ } )
 {}
+CProfile_A5_12_10::CProfile_A5_12_10(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_DT___Data_type__unit_(boost::make_shared<yApi::historization::CSwitch>("DT - Data type (unit)")),
+  m_DIV___Divisor__scale_(boost::make_shared<CCurrent_meter_16_channels_Divisor__scale_Historizer>("DIV - Divisor (scale)")),
+  m_historizers( { m_DT___Data_type__unit_, m_DIV___Divisor__scale_ } ){
+}
 CProfile_A5_12_10::~CProfile_A5_12_10()
 {}
 const std::string& CProfile_A5_12_10::profile() const {
@@ -4387,16 +4912,16 @@ const std::string& C4BS_0x12::title() const {
    static const std::string title("Automated Meter Reading (AMR)");
    return title;
 }
-boost::shared_ptr<IType> C4BS_0x12::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> C4BS_0x12::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x00: return boost::make_shared<CProfile_A5_12_00>();
-   case k0x01: return boost::make_shared<CProfile_A5_12_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_12_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_12_03>();
-   case k0x04: return boost::make_shared<CProfile_A5_12_04>();
-   case k0x05: return boost::make_shared<CProfile_A5_12_05>();
-   case k0x10: return boost::make_shared<CProfile_A5_12_10>();
+   case k0x00: return boost::make_shared<CProfile_A5_12_00>(deviceId, api);
+   case k0x01: return boost::make_shared<CProfile_A5_12_01>(deviceId, api);
+   case k0x02: return boost::make_shared<CProfile_A5_12_02>(deviceId, api);
+   case k0x03: return boost::make_shared<CProfile_A5_12_03>(deviceId, api);
+   case k0x04: return boost::make_shared<CProfile_A5_12_04>(deviceId, api);
+   case k0x05: return boost::make_shared<CProfile_A5_12_05>(deviceId, api);
+   case k0x10: return boost::make_shared<CProfile_A5_12_10>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -4408,6 +4933,12 @@ CProfile_A5_13_01::CProfile_A5_13_01()
   m_RAN___Rain_Indication(boost::make_shared<yApi::historization::CSwitch>("RAN - Rain Indication")),
   m_historizers( { m_TMP___Temperature, m_D_N___Day___Night, m_RAN___Rain_Indication } )
 {}
+CProfile_A5_13_01::CProfile_A5_13_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_D_N___Day___Night(boost::make_shared<yApi::historization::CSwitch>("D/N - Day / Night")),
+  m_RAN___Rain_Indication(boost::make_shared<yApi::historization::CSwitch>("RAN - Rain Indication")),
+  m_historizers( { m_TMP___Temperature, m_D_N___Day___Night, m_RAN___Rain_Indication } ){
+}
 CProfile_A5_13_01::~CProfile_A5_13_01()
 {}
 const std::string& CProfile_A5_13_01::profile() const {
@@ -4446,6 +4977,13 @@ CProfile_A5_13_02::CProfile_A5_13_02()
   m_HEM___Hemisphere(boost::make_shared<yApi::historization::CSwitch>("HEM - Hemisphere")),
   m_historizers( { m_SNW___Sun__West, m_SNS___Sun__South, m_SNE___Sun__East, m_HEM___Hemisphere } )
 {}
+CProfile_A5_13_02::CProfile_A5_13_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SNW___Sun__West(boost::make_shared<yApi::historization::CIllumination>("SNW - Sun – West")),
+  m_SNS___Sun__South(boost::make_shared<yApi::historization::CIllumination>("SNS - Sun – South")),
+  m_SNE___Sun__East(boost::make_shared<yApi::historization::CIllumination>("SNE - Sun – East")),
+  m_HEM___Hemisphere(boost::make_shared<yApi::historization::CSwitch>("HEM - Hemisphere")),
+  m_historizers( { m_SNW___Sun__West, m_SNS___Sun__South, m_SNE___Sun__East, m_HEM___Hemisphere } ){
+}
 CProfile_A5_13_02::~CProfile_A5_13_02()
 {}
 const std::string& CProfile_A5_13_02::profile() const {
@@ -4490,6 +5028,10 @@ CProfile_A5_13_03::CProfile_A5_13_03()
 : m_SRC___Source(boost::make_shared<yApi::historization::CSwitch>("SRC - Source")),
   m_historizers( { m_SRC___Source } )
 {}
+CProfile_A5_13_03::CProfile_A5_13_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SRC___Source(boost::make_shared<yApi::historization::CSwitch>("SRC - Source")),
+  m_historizers( { m_SRC___Source } ){
+}
 CProfile_A5_13_03::~CProfile_A5_13_03()
 {}
 const std::string& CProfile_A5_13_03::profile() const {
@@ -4539,6 +5081,13 @@ CProfile_A5_13_04::CProfile_A5_13_04()
   m_SRC___Source(boost::make_shared<yApi::historization::CSwitch>("SRC - Source")),
   m_historizers( { m_WDY___Weekday, m_TMF___Time_Format, m_A_PM___AM_PM, m_SRC___Source } )
 {}
+CProfile_A5_13_04::CProfile_A5_13_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_WDY___Weekday(boost::make_shared<CTime_and_Day_Exchange_WeekdayHistorizer>("WDY - Weekday")),
+  m_TMF___Time_Format(boost::make_shared<yApi::historization::CSwitch>("TMF - Time Format")),
+  m_A_PM___AM_PM(boost::make_shared<yApi::historization::CSwitch>("A/PM - AM/PM")),
+  m_SRC___Source(boost::make_shared<yApi::historization::CSwitch>("SRC - Source")),
+  m_historizers( { m_WDY___Weekday, m_TMF___Time_Format, m_A_PM___AM_PM, m_SRC___Source } ){
+}
 CProfile_A5_13_04::~CProfile_A5_13_04()
 {}
 const std::string& CProfile_A5_13_04::profile() const {
@@ -4597,6 +5146,11 @@ CProfile_A5_13_07::CProfile_A5_13_07()
   m_BS___Battery_Status(boost::make_shared<yApi::historization::CSwitch>("BS - Battery Status")),
   m_historizers( { m_WD___Wind_Direction, m_BS___Battery_Status } )
 {}
+CProfile_A5_13_07::CProfile_A5_13_07(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_WD___Wind_Direction(boost::make_shared<CWind_Sensor_Wind_DirectionHistorizer>("WD - Wind Direction")),
+  m_BS___Battery_Status(boost::make_shared<yApi::historization::CSwitch>("BS - Battery Status")),
+  m_historizers( { m_WD___Wind_Direction, m_BS___Battery_Status } ){
+}
 CProfile_A5_13_07::~CProfile_A5_13_07()
 {}
 const std::string& CProfile_A5_13_07::profile() const {
@@ -4627,6 +5181,11 @@ CProfile_A5_13_08::CProfile_A5_13_08()
   m_BS___Battery_Status(boost::make_shared<yApi::historization::CSwitch>("BS - Battery Status")),
   m_historizers( { m_RAS___Rainfall_Adjust_Sign, m_BS___Battery_Status } )
 {}
+CProfile_A5_13_08::CProfile_A5_13_08(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_RAS___Rainfall_Adjust_Sign(boost::make_shared<yApi::historization::CSwitch>("RAS - Rainfall Adjust Sign")),
+  m_BS___Battery_Status(boost::make_shared<yApi::historization::CSwitch>("BS - Battery Status")),
+  m_historizers( { m_RAS___Rainfall_Adjust_Sign, m_BS___Battery_Status } ){
+}
 CProfile_A5_13_08::~CProfile_A5_13_08()
 {}
 const std::string& CProfile_A5_13_08::profile() const {
@@ -4657,6 +5216,10 @@ CProfile_A5_13_10::CProfile_A5_13_10()
 : m_D_N___Day___Night(boost::make_shared<yApi::historization::CSwitch>("D/N - Day / Night")),
   m_historizers( { m_D_N___Day___Night } )
 {}
+CProfile_A5_13_10::CProfile_A5_13_10(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_D_N___Day___Night(boost::make_shared<yApi::historization::CSwitch>("D/N - Day / Night")),
+  m_historizers( { m_D_N___Day___Night } ){
+}
 CProfile_A5_13_10::~CProfile_A5_13_10()
 {}
 const std::string& CProfile_A5_13_10::profile() const {
@@ -4693,16 +5256,16 @@ const std::string& C4BS_0x13::title() const {
    static const std::string title("Environmental Applications");
    return title;
 }
-boost::shared_ptr<IType> C4BS_0x13::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> C4BS_0x13::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x01: return boost::make_shared<CProfile_A5_13_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_13_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_13_03>();
-   case k0x04: return boost::make_shared<CProfile_A5_13_04>();
-   case k0x07: return boost::make_shared<CProfile_A5_13_07>();
-   case k0x08: return boost::make_shared<CProfile_A5_13_08>();
-   case k0x10: return boost::make_shared<CProfile_A5_13_10>();
+   case k0x01: return boost::make_shared<CProfile_A5_13_01>(deviceId, api);
+   case k0x02: return boost::make_shared<CProfile_A5_13_02>(deviceId, api);
+   case k0x03: return boost::make_shared<CProfile_A5_13_03>(deviceId, api);
+   case k0x04: return boost::make_shared<CProfile_A5_13_04>(deviceId, api);
+   case k0x07: return boost::make_shared<CProfile_A5_13_07>(deviceId, api);
+   case k0x08: return boost::make_shared<CProfile_A5_13_08>(deviceId, api);
+   case k0x10: return boost::make_shared<CProfile_A5_13_10>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -4713,6 +5276,11 @@ CProfile_A5_14_01::CProfile_A5_14_01()
   m_CT___Contact(boost::make_shared<yApi::historization::CSwitch>("CT - Contact")),
   m_historizers( { m_SVC___Supply_voltage, m_CT___Contact } )
 {}
+CProfile_A5_14_01::CProfile_A5_14_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SVC___Supply_voltage(boost::make_shared<yApi::historization::CVoltage>("SVC - Supply voltage")),
+  m_CT___Contact(boost::make_shared<yApi::historization::CSwitch>("CT - Contact")),
+  m_historizers( { m_SVC___Supply_voltage, m_CT___Contact } ){
+}
 CProfile_A5_14_01::~CProfile_A5_14_01()
 {}
 const std::string& CProfile_A5_14_01::profile() const {
@@ -4749,6 +5317,12 @@ CProfile_A5_14_02::CProfile_A5_14_02()
   m_CT___Contact(boost::make_shared<yApi::historization::CSwitch>("CT - Contact")),
   m_historizers( { m_SVC___Supply_voltage, m_ILL___Illumination, m_CT___Contact } )
 {}
+CProfile_A5_14_02::CProfile_A5_14_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SVC___Supply_voltage(boost::make_shared<yApi::historization::CVoltage>("SVC - Supply voltage")),
+  m_ILL___Illumination(boost::make_shared<yApi::historization::CIllumination>("ILL - Illumination")),
+  m_CT___Contact(boost::make_shared<yApi::historization::CSwitch>("CT - Contact")),
+  m_historizers( { m_SVC___Supply_voltage, m_ILL___Illumination, m_CT___Contact } ){
+}
 CProfile_A5_14_02::~CProfile_A5_14_02()
 {}
 const std::string& CProfile_A5_14_02::profile() const {
@@ -4790,6 +5364,12 @@ CProfile_A5_14_03::CProfile_A5_14_03()
   m_CT___Contact(boost::make_shared<yApi::historization::CSwitch>("CT - Contact")),
   m_historizers( { m_SVC___Supply_voltage, m_VIB___Vibration, m_CT___Contact } )
 {}
+CProfile_A5_14_03::CProfile_A5_14_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SVC___Supply_voltage(boost::make_shared<yApi::historization::CVoltage>("SVC - Supply voltage")),
+  m_VIB___Vibration(boost::make_shared<yApi::historization::CSwitch>("VIB - Vibration")),
+  m_CT___Contact(boost::make_shared<yApi::historization::CSwitch>("CT - Contact")),
+  m_historizers( { m_SVC___Supply_voltage, m_VIB___Vibration, m_CT___Contact } ){
+}
 CProfile_A5_14_03::~CProfile_A5_14_03()
 {}
 const std::string& CProfile_A5_14_03::profile() const {
@@ -4828,6 +5408,13 @@ CProfile_A5_14_04::CProfile_A5_14_04()
   m_CT___Contact(boost::make_shared<yApi::historization::CSwitch>("CT - Contact")),
   m_historizers( { m_SVC___Supply_voltage, m_ILL___Illumination, m_VIB___Vibration, m_CT___Contact } )
 {}
+CProfile_A5_14_04::CProfile_A5_14_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SVC___Supply_voltage(boost::make_shared<yApi::historization::CVoltage>("SVC - Supply voltage")),
+  m_ILL___Illumination(boost::make_shared<yApi::historization::CIllumination>("ILL - Illumination")),
+  m_VIB___Vibration(boost::make_shared<yApi::historization::CSwitch>("VIB - Vibration")),
+  m_CT___Contact(boost::make_shared<yApi::historization::CSwitch>("CT - Contact")),
+  m_historizers( { m_SVC___Supply_voltage, m_ILL___Illumination, m_VIB___Vibration, m_CT___Contact } ){
+}
 CProfile_A5_14_04::~CProfile_A5_14_04()
 {}
 const std::string& CProfile_A5_14_04::profile() const {
@@ -4869,6 +5456,11 @@ CProfile_A5_14_05::CProfile_A5_14_05()
   m_VIB___Vibration(boost::make_shared<yApi::historization::CSwitch>("VIB - Vibration")),
   m_historizers( { m_SVC___Supply_voltage, m_VIB___Vibration } )
 {}
+CProfile_A5_14_05::CProfile_A5_14_05(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SVC___Supply_voltage(boost::make_shared<yApi::historization::CVoltage>("SVC - Supply voltage")),
+  m_VIB___Vibration(boost::make_shared<yApi::historization::CSwitch>("VIB - Vibration")),
+  m_historizers( { m_SVC___Supply_voltage, m_VIB___Vibration } ){
+}
 CProfile_A5_14_05::~CProfile_A5_14_05()
 {}
 const std::string& CProfile_A5_14_05::profile() const {
@@ -4905,6 +5497,12 @@ CProfile_A5_14_06::CProfile_A5_14_06()
   m_VIB___Vibration(boost::make_shared<yApi::historization::CSwitch>("VIB - Vibration")),
   m_historizers( { m_SVC___Supply_voltage, m_ILL___Illumination, m_VIB___Vibration } )
 {}
+CProfile_A5_14_06::CProfile_A5_14_06(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SVC___Supply_voltage(boost::make_shared<yApi::historization::CVoltage>("SVC - Supply voltage")),
+  m_ILL___Illumination(boost::make_shared<yApi::historization::CIllumination>("ILL - Illumination")),
+  m_VIB___Vibration(boost::make_shared<yApi::historization::CSwitch>("VIB - Vibration")),
+  m_historizers( { m_SVC___Supply_voltage, m_ILL___Illumination, m_VIB___Vibration } ){
+}
 CProfile_A5_14_06::~CProfile_A5_14_06()
 {}
 const std::string& CProfile_A5_14_06::profile() const {
@@ -4951,15 +5549,15 @@ const std::string& C4BS_0x14::title() const {
    static const std::string title("Multi-Func Sensor");
    return title;
 }
-boost::shared_ptr<IType> C4BS_0x14::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> C4BS_0x14::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x01: return boost::make_shared<CProfile_A5_14_01>();
-   case k0x02: return boost::make_shared<CProfile_A5_14_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_14_03>();
-   case k0x04: return boost::make_shared<CProfile_A5_14_04>();
-   case k0x05: return boost::make_shared<CProfile_A5_14_05>();
-   case k0x06: return boost::make_shared<CProfile_A5_14_06>();
+   case k0x01: return boost::make_shared<CProfile_A5_14_01>(deviceId, api);
+   case k0x02: return boost::make_shared<CProfile_A5_14_02>(deviceId, api);
+   case k0x03: return boost::make_shared<CProfile_A5_14_03>(deviceId, api);
+   case k0x04: return boost::make_shared<CProfile_A5_14_04>(deviceId, api);
+   case k0x05: return boost::make_shared<CProfile_A5_14_05>(deviceId, api);
+   case k0x06: return boost::make_shared<CProfile_A5_14_06>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -5018,6 +5616,15 @@ CProfile_A5_20_12::CProfile_A5_20_12()
   m_RO___Room_occupancy(boost::make_shared<CTemperature_Controller_Input_Room_occupancyHistorizer>("RO - Room occupancy")),
   m_historizers( { m_FANOR___FanStage_override, m_FANOR___Fan_override, m_CTM___Controller_mode, m_CST___Controller_state, m_ERH___Energy_hold_off___Dew_point, m_RO___Room_occupancy } )
 {}
+CProfile_A5_20_12::CProfile_A5_20_12(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_FANOR___FanStage_override(boost::make_shared<CTemperature_Controller_Input_FanStage_overrideHistorizer>("FANOR - FanStage override")),
+  m_FANOR___Fan_override(boost::make_shared<yApi::historization::CSwitch>("FANOR - Fan override")),
+  m_CTM___Controller_mode(boost::make_shared<CTemperature_Controller_Input_Controller_modeHistorizer>("CTM - Controller mode")),
+  m_CST___Controller_state(boost::make_shared<yApi::historization::CSwitch>("CST - Controller state")),
+  m_ERH___Energy_hold_off___Dew_point(boost::make_shared<yApi::historization::CSwitch>("ERH - Energy hold-off / Dew point")),
+  m_RO___Room_occupancy(boost::make_shared<CTemperature_Controller_Input_Room_occupancyHistorizer>("RO - Room occupancy")),
+  m_historizers( { m_FANOR___FanStage_override, m_FANOR___Fan_override, m_CTM___Controller_mode, m_CST___Controller_state, m_ERH___Energy_hold_off___Dew_point, m_RO___Room_occupancy } ){
+}
 CProfile_A5_20_12::~CProfile_A5_20_12()
 {}
 const std::string& CProfile_A5_20_12::profile() const {
@@ -5056,10 +5663,10 @@ const std::string& C4BS_0x20::title() const {
    static const std::string title("HVAC Components");
    return title;
 }
-boost::shared_ptr<IType> C4BS_0x20::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> C4BS_0x20::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x12: return boost::make_shared<CProfile_A5_20_12>();
+   case k0x12: return boost::make_shared<CProfile_A5_20_12>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -5069,6 +5676,10 @@ CProfile_A5_30_02::CProfile_A5_30_02()
 : m_IPS___Input_State(boost::make_shared<yApi::historization::CSwitch>("IPS - Input State")),
   m_historizers( { m_IPS___Input_State } )
 {}
+CProfile_A5_30_02::CProfile_A5_30_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_IPS___Input_State(boost::make_shared<yApi::historization::CSwitch>("IPS - Input State")),
+  m_historizers( { m_IPS___Input_State } ){
+}
 CProfile_A5_30_02::~CProfile_A5_30_02()
 {}
 const std::string& CProfile_A5_30_02::profile() const {
@@ -5103,6 +5714,15 @@ CProfile_A5_30_03::CProfile_A5_30_03()
   m_DI0___Digital_Input_0(boost::make_shared<yApi::historization::CSwitch>("DI0 - Digital Input 0")),
   m_historizers( { m_TMP___Temperature, m_WA0___Status_of_Wake, m_DI3___Digital_Input_3, m_DI2___Digital_Input_2, m_DI1___Digital_Input_1, m_DI0___Digital_Input_0 } )
 {}
+CProfile_A5_30_03::CProfile_A5_30_03(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_WA0___Status_of_Wake(boost::make_shared<yApi::historization::CSwitch>("WA0 - Status of Wake")),
+  m_DI3___Digital_Input_3(boost::make_shared<yApi::historization::CSwitch>("DI3 - Digital Input 3")),
+  m_DI2___Digital_Input_2(boost::make_shared<yApi::historization::CSwitch>("DI2 - Digital Input 2")),
+  m_DI1___Digital_Input_1(boost::make_shared<yApi::historization::CSwitch>("DI1 - Digital Input 1")),
+  m_DI0___Digital_Input_0(boost::make_shared<yApi::historization::CSwitch>("DI0 - Digital Input 0")),
+  m_historizers( { m_TMP___Temperature, m_WA0___Status_of_Wake, m_DI3___Digital_Input_3, m_DI2___Digital_Input_2, m_DI1___Digital_Input_1, m_DI0___Digital_Input_0 } ){
+}
 CProfile_A5_30_03::~CProfile_A5_30_03()
 {}
 const std::string& CProfile_A5_30_03::profile() const {
@@ -5143,6 +5763,12 @@ CProfile_A5_30_04::CProfile_A5_30_04()
   m_DI0___Digital_Input_0(boost::make_shared<yApi::historization::CSwitch>("DI0 - Digital Input 0")),
   m_historizers( { m_DI2___Digital_Input_2, m_DI1___Digital_Input_1, m_DI0___Digital_Input_0 } )
 {}
+CProfile_A5_30_04::CProfile_A5_30_04(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_DI2___Digital_Input_2(boost::make_shared<yApi::historization::CSwitch>("DI2 - Digital Input 2")),
+  m_DI1___Digital_Input_1(boost::make_shared<yApi::historization::CSwitch>("DI1 - Digital Input 1")),
+  m_DI0___Digital_Input_0(boost::make_shared<yApi::historization::CSwitch>("DI0 - Digital Input 0")),
+  m_historizers( { m_DI2___Digital_Input_2, m_DI1___Digital_Input_1, m_DI0___Digital_Input_0 } ){
+}
 CProfile_A5_30_04::~CProfile_A5_30_04()
 {}
 const std::string& CProfile_A5_30_04::profile() const {
@@ -5175,6 +5801,11 @@ CProfile_A5_30_05::CProfile_A5_30_05()
   m_ST___Signal_type(boost::make_shared<yApi::historization::CSwitch>("ST - Signal type")),
   m_historizers( { m_VDD___Supply_voltage, m_ST___Signal_type } )
 {}
+CProfile_A5_30_05::CProfile_A5_30_05(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_VDD___Supply_voltage(boost::make_shared<yApi::historization::CVoltage>("VDD - Supply voltage")),
+  m_ST___Signal_type(boost::make_shared<yApi::historization::CSwitch>("ST - Signal type")),
+  m_historizers( { m_VDD___Supply_voltage, m_ST___Signal_type } ){
+}
 CProfile_A5_30_05::~CProfile_A5_30_05()
 {}
 const std::string& CProfile_A5_30_05::profile() const {
@@ -5216,13 +5847,13 @@ const std::string& C4BS_0x30::title() const {
    static const std::string title("Digital Input");
    return title;
 }
-boost::shared_ptr<IType> C4BS_0x30::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> C4BS_0x30::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x02: return boost::make_shared<CProfile_A5_30_02>();
-   case k0x03: return boost::make_shared<CProfile_A5_30_03>();
-   case k0x04: return boost::make_shared<CProfile_A5_30_04>();
-   case k0x05: return boost::make_shared<CProfile_A5_30_05>();
+   case k0x02: return boost::make_shared<CProfile_A5_30_02>(deviceId, api);
+   case k0x03: return boost::make_shared<CProfile_A5_30_03>(deviceId, api);
+   case k0x04: return boost::make_shared<CProfile_A5_30_04>(deviceId, api);
+   case k0x05: return boost::make_shared<CProfile_A5_30_05>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -5235,6 +5866,13 @@ CProfile_A5_37_01::CProfile_A5_37_01()
   m_MPWRU___Max_Min_Power_Usage_for_Default_DR_State(boost::make_shared<yApi::historization::CSwitch>("MPWRU - Max/Min Power Usage for Default DR State")),
   m_historizers( { m_SPWRU___Absolute_relative_power_usage, m_RSD___Random_start_delay, m_RED___Randomized_end_delay, m_MPWRU___Max_Min_Power_Usage_for_Default_DR_State } )
 {}
+CProfile_A5_37_01::CProfile_A5_37_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_SPWRU___Absolute_relative_power_usage(boost::make_shared<yApi::historization::CSwitch>("SPWRU - Absolute/relative power usage")),
+  m_RSD___Random_start_delay(boost::make_shared<yApi::historization::CSwitch>("RSD - Random start delay")),
+  m_RED___Randomized_end_delay(boost::make_shared<yApi::historization::CSwitch>("RED - Randomized end delay")),
+  m_MPWRU___Max_Min_Power_Usage_for_Default_DR_State(boost::make_shared<yApi::historization::CSwitch>("MPWRU - Max/Min Power Usage for Default DR State")),
+  m_historizers( { m_SPWRU___Absolute_relative_power_usage, m_RSD___Random_start_delay, m_RED___Randomized_end_delay, m_MPWRU___Max_Min_Power_Usage_for_Default_DR_State } ){
+}
 CProfile_A5_37_01::~CProfile_A5_37_01()
 {}
 const std::string& CProfile_A5_37_01::profile() const {
@@ -5274,10 +5912,10 @@ const std::string& C4BS_0x37::title() const {
    static const std::string title("Energy Management");
    return title;
 }
-boost::shared_ptr<IType> C4BS_0x37::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> C4BS_0x37::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x01: return boost::make_shared<CProfile_A5_37_01>();
+   case k0x01: return boost::make_shared<CProfile_A5_37_01>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -5313,6 +5951,13 @@ CProfile_A5_38_09::CProfile_A5_38_09()
   m_SMF___Service_Mode_Flag(boost::make_shared<yApi::historization::CSwitch>("SMF - Service Mode Flag")),
   m_historizers( { m_FUNC___Function, m_SSF___Send_status_flag, m_SFV___Store_final_value, m_SMF___Service_Mode_Flag } )
 {}
+CProfile_A5_38_09::CProfile_A5_38_09(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_FUNC___Function(boost::make_shared<CExtended_Lighting_Control_FunctionHistorizer>("FUNC - Function")),
+  m_SSF___Send_status_flag(boost::make_shared<yApi::historization::CSwitch>("SSF - Send status flag")),
+  m_SFV___Store_final_value(boost::make_shared<yApi::historization::CSwitch>("SFV - Store final value")),
+  m_SMF___Service_Mode_Flag(boost::make_shared<yApi::historization::CSwitch>("SMF - Service Mode Flag")),
+  m_historizers( { m_FUNC___Function, m_SSF___Send_status_flag, m_SFV___Store_final_value, m_SMF___Service_Mode_Flag } ){
+}
 CProfile_A5_38_09::~CProfile_A5_38_09()
 {}
 const std::string& CProfile_A5_38_09::profile() const {
@@ -5351,10 +5996,10 @@ const std::string& C4BS_0x38::title() const {
    static const std::string title("Central Command");
    return title;
 }
-boost::shared_ptr<IType> C4BS_0x38::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> C4BS_0x38::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x09: return boost::make_shared<CProfile_A5_38_09>();
+   case k0x09: return boost::make_shared<CProfile_A5_38_09>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -5371,7 +6016,7 @@ const std::string& C4BS_0x3F::title() const {
    static const std::string title("Universal");
    return title;
 }
-boost::shared_ptr<IType> C4BS_0x3F::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> C4BS_0x3F::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    throw std::out_of_range("Invalid EFuncIds");
 }
 
@@ -5477,7 +6122,7 @@ const std::string& CVLD_0x00::title() const {
    static const std::string title("Room Control Panel (RCP)");
    return title;
 }
-boost::shared_ptr<IType> CVLD_0x00::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CVLD_0x00::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    throw std::out_of_range("Invalid EFuncIds");
 }
 
@@ -5493,13 +6138,13 @@ const std::string& CVLD_0x01::title() const {
    static const std::string title("Electronic switches and dimmers with Energy Measurement and Local Control");
    return title;
 }
-boost::shared_ptr<IType> CVLD_0x01::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CVLD_0x01::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x0D: return boost::make_shared<CProfile_D2_01_0D>();
-   case k0x0E: return boost::make_shared<CProfile_D2_01_0E>();
-   case k0x0F: return boost::make_shared<CProfile_D2_01_0F>();
-   case k0x12: return boost::make_shared<CProfile_D2_01_12>();
+   case k0x0D: return boost::make_shared<CProfile_D2_01_0D>(deviceId, api);
+   case k0x0E: return boost::make_shared<CProfile_D2_01_0E>(deviceId, api);
+   case k0x0F: return boost::make_shared<CProfile_D2_01_0F>(deviceId, api);
+   case k0x12: return boost::make_shared<CProfile_D2_01_12>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -5516,7 +6161,7 @@ const std::string& CVLD_0x02::title() const {
    static const std::string title("Sensors for Temperature, Illumination, Occupancy And Smoke");
    return title;
 }
-boost::shared_ptr<IType> CVLD_0x02::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CVLD_0x02::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    throw std::out_of_range("Invalid EFuncIds");
 }
 
@@ -5525,6 +6170,10 @@ CProfile_D2_03_20::CProfile_D2_03_20()
 : m_ES___Energy_Supply(boost::make_shared<yApi::historization::CSwitch>("ES - Energy Supply")),
   m_historizers( { m_ES___Energy_Supply } )
 {}
+CProfile_D2_03_20::CProfile_D2_03_20(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_ES___Energy_Supply(boost::make_shared<yApi::historization::CSwitch>("ES - Energy Supply")),
+  m_historizers( { m_ES___Energy_Supply } ){
+}
 CProfile_D2_03_20::~CProfile_D2_03_20()
 {}
 const std::string& CProfile_D2_03_20::profile() const {
@@ -5561,10 +6210,10 @@ const std::string& CVLD_0x03::title() const {
    static const std::string title("Light, Switching + Blind Control");
    return title;
 }
-boost::shared_ptr<IType> CVLD_0x03::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CVLD_0x03::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x20: return boost::make_shared<CProfile_D2_03_20>();
+   case k0x20: return boost::make_shared<CProfile_D2_03_20>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -5595,6 +6244,13 @@ CProfile_D2_04_00::CProfile_D2_04_00()
   m_BA___Battery_autonomy(boost::make_shared<CType_0x00_Battery_autonomyHistorizer>("BA - Battery autonomy")),
   m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_DN___Day_Night, m_BA___Battery_autonomy } )
 {}
+CProfile_D2_04_00::CProfile_D2_04_00(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_HUM___Humidity(boost::make_shared<yApi::historization::CHumidity>("HUM - Humidity")),
+  m_TMP___Temperature(boost::make_shared<yApi::historization::CTemperature>("TMP - Temperature")),
+  m_DN___Day_Night(boost::make_shared<yApi::historization::CSwitch>("DN - Day/Night")),
+  m_BA___Battery_autonomy(boost::make_shared<CType_0x00_Battery_autonomyHistorizer>("BA - Battery autonomy")),
+  m_historizers( { m_HUM___Humidity, m_TMP___Temperature, m_DN___Day_Night, m_BA___Battery_autonomy } ){
+}
 CProfile_D2_04_00::~CProfile_D2_04_00()
 {}
 const std::string& CProfile_D2_04_00::profile() const {
@@ -5641,10 +6297,10 @@ const std::string& CVLD_0x04::title() const {
    static const std::string title("CO2, Humidity, Temperature, Day/Night and Autonomy");
    return title;
 }
-boost::shared_ptr<IType> CVLD_0x04::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CVLD_0x04::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x00: return boost::make_shared<CProfile_D2_04_00>();
+   case k0x00: return boost::make_shared<CProfile_D2_04_00>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -5661,7 +6317,7 @@ const std::string& CVLD_0x05::title() const {
    static const std::string title("Blinds Control for Position and Angle");
    return title;
 }
-boost::shared_ptr<IType> CVLD_0x05::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CVLD_0x05::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    throw std::out_of_range("Invalid EFuncIds");
 }
 
@@ -5677,7 +6333,7 @@ const std::string& CVLD_0x06::title() const {
    static const std::string title("Multisensor Window Handle");
    return title;
 }
-boost::shared_ptr<IType> CVLD_0x06::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CVLD_0x06::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    throw std::out_of_range("Invalid EFuncIds");
 }
 
@@ -5693,7 +6349,7 @@ const std::string& CVLD_0x10::title() const {
    static const std::string title("Room Control Panels with Temperature & Fan Speed Control, Room Status Information and Time Program");
    return title;
 }
-boost::shared_ptr<IType> CVLD_0x10::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CVLD_0x10::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    throw std::out_of_range("Invalid EFuncIds");
 }
 
@@ -5709,7 +6365,7 @@ const std::string& CVLD_0x11::title() const {
    static const std::string title("Bidirectional Room Operating Panel");
    return title;
 }
-boost::shared_ptr<IType> CVLD_0x11::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CVLD_0x11::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    throw std::out_of_range("Invalid EFuncIds");
 }
 
@@ -5725,7 +6381,7 @@ const std::string& CVLD_0x20::title() const {
    static const std::string title("Fan Control");
    return title;
 }
-boost::shared_ptr<IType> CVLD_0x20::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CVLD_0x20::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    throw std::out_of_range("Invalid EFuncIds");
 }
 
@@ -5741,7 +6397,7 @@ const std::string& CVLD_0x30::title() const {
    static const std::string title("Floor Heating Controls and Automated Meter Reading");
    return title;
 }
-boost::shared_ptr<IType> CVLD_0x30::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CVLD_0x30::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    throw std::out_of_range("Invalid EFuncIds");
 }
 
@@ -5757,7 +6413,7 @@ const std::string& CVLD_0x31::title() const {
    static const std::string title("Automated Meter Reading Gateway");
    return title;
 }
-boost::shared_ptr<IType> CVLD_0x31::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CVLD_0x31::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    throw std::out_of_range("Invalid EFuncIds");
 }
 
@@ -5767,6 +6423,11 @@ CProfile_D2_32_00::CProfile_D2_32_00()
   m_DIV___Divisor(boost::make_shared<yApi::historization::CSwitch>("DIV - Divisor")),
   m_historizers( { m_PF___Power_Fail, m_DIV___Divisor } )
 {}
+CProfile_D2_32_00::CProfile_D2_32_00(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_PF___Power_Fail(boost::make_shared<yApi::historization::CSwitch>("PF - Power Fail")),
+  m_DIV___Divisor(boost::make_shared<yApi::historization::CSwitch>("DIV - Divisor")),
+  m_historizers( { m_PF___Power_Fail, m_DIV___Divisor } ){
+}
 CProfile_D2_32_00::~CProfile_D2_32_00()
 {}
 const std::string& CProfile_D2_32_00::profile() const {
@@ -5798,6 +6459,11 @@ CProfile_D2_32_01::CProfile_D2_32_01()
   m_DIV___Divisor(boost::make_shared<yApi::historization::CSwitch>("DIV - Divisor")),
   m_historizers( { m_PF___Power_Fail, m_DIV___Divisor } )
 {}
+CProfile_D2_32_01::CProfile_D2_32_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_PF___Power_Fail(boost::make_shared<yApi::historization::CSwitch>("PF - Power Fail")),
+  m_DIV___Divisor(boost::make_shared<yApi::historization::CSwitch>("DIV - Divisor")),
+  m_historizers( { m_PF___Power_Fail, m_DIV___Divisor } ){
+}
 CProfile_D2_32_01::~CProfile_D2_32_01()
 {}
 const std::string& CProfile_D2_32_01::profile() const {
@@ -5829,6 +6495,11 @@ CProfile_D2_32_02::CProfile_D2_32_02()
   m_DIV___Divisor(boost::make_shared<yApi::historization::CSwitch>("DIV - Divisor")),
   m_historizers( { m_PF___Power_Fail, m_DIV___Divisor } )
 {}
+CProfile_D2_32_02::CProfile_D2_32_02(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_PF___Power_Fail(boost::make_shared<yApi::historization::CSwitch>("PF - Power Fail")),
+  m_DIV___Divisor(boost::make_shared<yApi::historization::CSwitch>("DIV - Divisor")),
+  m_historizers( { m_PF___Power_Fail, m_DIV___Divisor } ){
+}
 CProfile_D2_32_02::~CProfile_D2_32_02()
 {}
 const std::string& CProfile_D2_32_02::profile() const {
@@ -5866,12 +6537,12 @@ const std::string& CVLD_0x32::title() const {
    static const std::string title("A.C. Current Clamp");
    return title;
 }
-boost::shared_ptr<IType> CVLD_0x32::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CVLD_0x32::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x00: return boost::make_shared<CProfile_D2_32_00>();
-   case k0x01: return boost::make_shared<CProfile_D2_32_01>();
-   case k0x02: return boost::make_shared<CProfile_D2_32_02>();
+   case k0x00: return boost::make_shared<CProfile_D2_32_00>(deviceId, api);
+   case k0x01: return boost::make_shared<CProfile_D2_32_01>(deviceId, api);
+   case k0x02: return boost::make_shared<CProfile_D2_32_02>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -5898,6 +6569,14 @@ CProfile_D2_40_00::CProfile_D2_40_00()
   m_SREAS___Status_Tx_reason(boost::make_shared<yApi::historization::CSwitch>("SREAS - Status Tx reason")),
   m_historizers( { m_OUTEN___LED_output_enabled, m_DRA___Demand_Response_mode_Active, m_DHAR___Daylight_Harvesting_Active, m_OCC___Occupancy_State, m_SREAS___Status_Tx_reason } )
 {}
+CProfile_D2_40_00::CProfile_D2_40_00(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_OUTEN___LED_output_enabled(boost::make_shared<yApi::historization::CSwitch>("OUTEN - LED output enabled")),
+  m_DRA___Demand_Response_mode_Active(boost::make_shared<yApi::historization::CSwitch>("DRA - “Demand Response” mode Active")),
+  m_DHAR___Daylight_Harvesting_Active(boost::make_shared<yApi::historization::CSwitch>("DHAR - Daylight Harvesting Active")),
+  m_OCC___Occupancy_State(boost::make_shared<CType_0x00_Occupancy_StateHistorizer>("OCC - Occupancy State")),
+  m_SREAS___Status_Tx_reason(boost::make_shared<yApi::historization::CSwitch>("SREAS - Status Tx reason")),
+  m_historizers( { m_OUTEN___LED_output_enabled, m_DRA___Demand_Response_mode_Active, m_DHAR___Daylight_Harvesting_Active, m_OCC___Occupancy_State, m_SREAS___Status_Tx_reason } ){
+}
 CProfile_D2_40_00::~CProfile_D2_40_00()
 {}
 const std::string& CProfile_D2_40_00::profile() const {
@@ -5947,6 +6626,14 @@ CProfile_D2_40_01::CProfile_D2_40_01()
   m_SREAS___Status_Tx_reason(boost::make_shared<yApi::historization::CSwitch>("SREAS - Status Tx reason")),
   m_historizers( { m_OUTEN___LED_output_enabled, m_DRA___Demand_Response_mode_Active, m_DHAR___Daylight_Harvesting_Active, m_OCC___Occupancy_State, m_SREAS___Status_Tx_reason } )
 {}
+CProfile_D2_40_01::CProfile_D2_40_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
+: m_OUTEN___LED_output_enabled(boost::make_shared<yApi::historization::CSwitch>("OUTEN - LED output enabled")),
+  m_DRA___Demand_Response_mode_Active(boost::make_shared<yApi::historization::CSwitch>("DRA - “Demand Response” mode Active")),
+  m_DHAR___Daylight_Harvesting_Active(boost::make_shared<yApi::historization::CSwitch>("DHAR - Daylight Harvesting Active")),
+  m_OCC___Occupancy_State(boost::make_shared<CType_0x01_Occupancy_StateHistorizer>("OCC - Occupancy State")),
+  m_SREAS___Status_Tx_reason(boost::make_shared<yApi::historization::CSwitch>("SREAS - Status Tx reason")),
+  m_historizers( { m_OUTEN___LED_output_enabled, m_DRA___Demand_Response_mode_Active, m_DHAR___Daylight_Harvesting_Active, m_OCC___Occupancy_State, m_SREAS___Status_Tx_reason } ){
+}
 CProfile_D2_40_01::~CProfile_D2_40_01()
 {}
 const std::string& CProfile_D2_40_01::profile() const {
@@ -5986,11 +6673,11 @@ const std::string& CVLD_0x40::title() const {
    static const std::string title("LED Controller Status");
    return title;
 }
-boost::shared_ptr<IType> CVLD_0x40::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CVLD_0x40::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
-   case k0x00: return boost::make_shared<CProfile_D2_40_00>();
-   case k0x01: return boost::make_shared<CProfile_D2_40_01>();
+   case k0x00: return boost::make_shared<CProfile_D2_40_00>(deviceId, api);
+   case k0x01: return boost::make_shared<CProfile_D2_40_01>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
    }
 }
@@ -6007,7 +6694,7 @@ const std::string& CVLD_0x50::title() const {
    static const std::string title("Heat Recovery Ventilation");
    return title;
 }
-boost::shared_ptr<IType> CVLD_0x50::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CVLD_0x50::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    throw std::out_of_range("Invalid EFuncIds");
 }
 
@@ -6023,7 +6710,7 @@ const std::string& CVLD_0xA0::title() const {
    static const std::string title("Standard Valve");
    return title;
 }
-boost::shared_ptr<IType> CVLD_0xA0::createType(unsigned int typeId) const {
+boost::shared_ptr<IType> CVLD_0xA0::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    throw std::out_of_range("Invalid EFuncIds");
 }
 

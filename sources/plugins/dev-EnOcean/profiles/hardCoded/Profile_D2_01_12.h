@@ -23,7 +23,8 @@ public:
    );
 
 
-   CProfile_D2_01_12();
+   CProfile_D2_01_12(const std::string& deviceId,
+                     boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_D2_01_12();
 
    // IType implementation

@@ -104,6 +104,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             continue
          typeClass = cppClass.CppClass(typeClassName)
          typeClass.inheritFrom("IType", cppClass.PUBLIC)
+         typeClass.addConstructor(cppClass.CppClassConstructor("const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api"))
 
 
          def isLinearValue(xmlDataFieldNode):
@@ -309,11 +310,11 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                continue
             enumValue = cppHelper.toEnumValueName(xmlTypeNode.find("number").text)
             className = cppHelper.toCppName("CProfile_" + profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode))
-            code += "   case " + enumValue + ": return boost::make_shared<" + className + ">();\n"
+            code += "   case " + enumValue + ": return boost::make_shared<" + className + ">(deviceId, api);\n"
          code += "   default : throw std::out_of_range(\"Invalid EFuncIds\");\n"
          code += "   }"
          return code
-      funcClass.addMethod(cppClass.CppMethod("createType", "boost::shared_ptr<IType>", "unsigned int typeId", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, createTypeCode(xmlRorgNode, xmlFuncNode)))
+      funcClass.addMethod(cppClass.CppMethod("createType", "boost::shared_ptr<IType>", "unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, createTypeCode(xmlRorgNode, xmlFuncNode)))
 
 
    #------------------------------------------------------------------------

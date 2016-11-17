@@ -182,7 +182,8 @@ void CEnOcean::loadAllDevices()
             continue; // Not configured device
 
          CProfileHelper profileHelper(deviceConfiguration.get<std::string>("profile.activeSection"));
-         auto device = CRorgs::createRorg(profileHelper.rorg())->createFunc(profileHelper.func())->createType(profileHelper.type());
+         auto device = createDevice(deviceId,
+                                    profileHelper);
 
          m_devices[deviceId] = device;
       }
@@ -221,6 +222,14 @@ bool CEnOcean::connectionsAreEqual(const CEnOceanConfiguration& conf1,
    return (conf1.getSerialPort() == conf2.getSerialPort());
 }
 
+boost::shared_ptr<IType> CEnOcean::createDevice(const std::string& deviceId,
+                                                const CProfileHelper& profileHelper) const
+{
+   return CRorgs::createRorg(profileHelper.rorg())->createFunc(profileHelper.func())->createType(profileHelper.type(),
+                                                                                                 deviceId,
+                                                                                                 m_api);
+}
+
 std::string CEnOcean::generateModel(const std::string& model,
                                     const std::string& manufacturer,
                                     const CProfileHelper& profile)
@@ -233,7 +242,7 @@ std::string CEnOcean::generateModel(const std::string& model,
    if (!manufacturer.empty())
       generatedModel += manufacturer + std::string(" - ");
 
-   generatedModel += CRorgs::createRorg(profile.rorg())->createFunc(profile.func())->createType(profile.type())->title();
+   generatedModel += createDevice(std::string(), profile)->title();
 
    return generatedModel;
 }
@@ -360,7 +369,8 @@ void CEnOcean::processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDevi
                m_api->removeKeyword(deviceId, keyword);
 
          // Don't recreate device in Yadoms, unless it will change of ID
-         auto device = CRorgs::createRorg(selectedProfile.rorg())->createFunc(selectedProfile.func())->createType(selectedProfile.type());
+         auto device = createDevice(deviceId,
+                                    selectedProfile);
          m_api->declareKeywords(deviceId,
                                 device->allHistorizers());
          m_devices[deviceId] = device;
@@ -485,7 +495,7 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet)
       {
          if (m_api->deviceExists(deviceId))
          {
-            std::cout << "Device " << deviceId << " already declared, message ignored." << std::endl;
+            std::cout << "Device " << deviceId << " already declared but not configured, message ignored." << std::endl;
             return;
          }
 
@@ -648,15 +658,14 @@ boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
                                                  const std::string& manufacturer,
                                                  const std::string& model)
 {
-   auto rorg = CRorgs::createRorg(profile.rorg());
-   auto func = rorg->createFunc(profile.func());
-   auto type = func->createType(profile.type());
+   auto device = createDevice(deviceId,
+                              profile);
 
    auto modelLabel = generateModel(model,
                                    manufacturer,
                                    profile);
 
-   auto keywordsToDeclare = type->allHistorizers();
+   auto keywordsToDeclare = device->allHistorizers();
    if (keywordsToDeclare.empty())
    {
       std::stringstream s;
@@ -678,12 +687,12 @@ boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
    std::cout << "  - Profile      : " << profile.profile() << std::endl;
    std::cout << "  - Manufacturer : " << manufacturer << std::endl;
    std::cout << "  - Model        : " << modelLabel << std::endl;
-   std::cout << "  - RORG         : " << rorg->title() << std::endl;
-   std::cout << "  - FUNC         : " << func->title() << std::endl;
-   std::cout << "  - TYPE         : " << type->title() << std::endl;
+   std::cout << "  - RORG         : " << CRorgs::createRorg(profile.rorg())->title() << std::endl;
+   std::cout << "  - FUNC         : " << CRorgs::createRorg(profile.rorg())->createFunc(profile.func())->title() << std::endl;
+   std::cout << "  - TYPE         : " << device->title() << std::endl;
 
-   m_devices[deviceId] = type;
-   return type;
+   m_devices[deviceId] = device;
+   return device;
 }
 
 void CEnOcean::requestDongleVersion()
@@ -694,4 +703,3 @@ void CEnOcean::requestDongleVersion()
 
    send(sendMessage);
 }
-
