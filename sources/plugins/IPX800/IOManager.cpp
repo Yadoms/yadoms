@@ -10,11 +10,9 @@ CIOManager::CIOManager(const std::string& device, Poco::Net::SocketAddress socke
      m_password (password)
 {}
 
-void CIOManager::Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
-                            std::vector<boost::shared_ptr<equipments::IEquipment> >& extensionList)
+void CIOManager::Initialize(std::vector<boost::shared_ptr<equipments::IEquipment> >& extensionList)
 {
    m_devicesList = extensionList;
-   m_keywordsToDeclare.clear();
 }
 
 void CIOManager::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved)

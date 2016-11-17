@@ -31,12 +31,9 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	    Initialize all elements
-   /// \param[in]  api              Plugin execution context (Yadoms API)
-   /// \param[in]  IOlist           Set a new list of IOs
+   /// \param[in]  extensionList   Set a new list of IOs
    //--------------------------------------------------------------
-   void Initialize(boost::shared_ptr<yApi::IYPluginApi> api,
-                   std::vector<boost::shared_ptr<equipments::IEquipment> >& extensionList
-                   );
+   void Initialize(std::vector<boost::shared_ptr<equipments::IEquipment> >& extensionList);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -103,11 +100,6 @@ private:
    /// \brief	Password
    //--------------------------------------------------------------
    std::string m_password;
-
-   //--------------------------------------------------------------
-   /// \brief	The keywords lists to historize in one step for better performances
-   //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywordsToDeclare;
 
    //--------------------------------------------------------------
    /// \brief	All extensions

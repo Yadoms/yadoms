@@ -67,7 +67,7 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
       }  
    }
 
-   m_ioManager->Initialize(api, m_devicesList);
+   m_ioManager->Initialize(m_devicesList);
 }
 
 std::string CIPX800Factory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -107,6 +107,10 @@ std::string CIPX800Factory::createDeviceManually(boost::shared_ptr<yApi::IYPlugi
    {
       throw CManuallyDeviceCreationException(e.what());
    }
+
+   // Update IO list
+   m_ioManager->Initialize(m_devicesList);
+
    return extension->getDeviceName();
 }
 

@@ -46,8 +46,11 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       m_ioManager = m_factory->getIOManager();
 
+      // Send an event, with true, to force the refresh of all data
+      api->getEventHandler().postEvent<bool>(kRefreshStatesReceived, true);
+      
       // Timer used to read periodically IOs from the IPX800
-      api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+      //api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
       api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
 
       api->setPluginState(yApi::historization::EPluginState::kRunning);
@@ -83,14 +86,17 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          std::cout << "Timer received" << std::endl;
 
-         //Value received from DI
          try {
             if (initializationOk)
             {
-               // TODO : Envoyer s'il faut forcer la data en même temps en objet !
-               static bool firstTime = true;
-               m_ioManager->readAllIOFromDevice(api, firstTime);
-               firstTime = false;
+               auto forceRefresh = false;
+
+               // Retrieve event information, if any !
+               try { forceRefresh = api->getEventHandler().getEventData<bool>(); }
+               catch (shared::exception::CBadConversion&) { std::cout << "Bad dynamic cast" << std::endl; } // TODO : Question pour Jean-Mi !
+               catch (shared::exception::CNullReference&) { std::cout << "Null reference" << std::endl; }
+
+               m_ioManager->readAllIOFromDevice(api, forceRefresh);
             }
          }
          catch (CFailedSendingException&)
@@ -116,7 +122,8 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                request->sendSuccess(m_factory->createDeviceManually(api, request->getData()));
 
                // Send an event to refresh all IOs
-               api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+               //api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+               api->getEventHandler().postEvent<bool>(kRefreshStatesReceived, true);
             }
             catch (CManuallyDeviceCreationException& e)
             {
