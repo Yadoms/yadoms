@@ -176,7 +176,7 @@ namespace pluginSystem
    std::vector<std::string> CYPluginApiImplementation::getAllKeywords(const std::string& device) const
    {
       std::vector<std::string> keywordNames;
-      for (const auto& keyword : m_keywordDataAccessLayer->getKeywords((m_deviceManager->getDevice(getPluginId(), device))->Id))
+      for (const auto& keyword : m_keywordDataAccessLayer->getKeywords(m_deviceManager->getDevice(getPluginId(), device)->Id()))
          keywordNames.push_back(keyword->Name());
       return keywordNames;
    }
@@ -187,8 +187,8 @@ namespace pluginSystem
       if (!keywordExists(device, keyword))
          throw shared::exception::CEmptyResult((boost::format("Fail to remove %1% keyword : keyword doesn't exists") % keyword).str());
 
-      m_keywordDataAccessLayer->removeKeyword(getPluginId(),
-                                              device);
+      m_keywordDataAccessLayer->removeKeyword(m_deviceManager->getDevice(getPluginId(), device)->Id(),
+                                              keyword);
    }
 
    std::string CYPluginApiImplementation::getRecipientValue(int recipientId,
