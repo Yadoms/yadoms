@@ -117,7 +117,7 @@ namespace web
 
          shared::CDataContainer CDevice::getAllDevices(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
-            auto dvList = m_dataProvider->getDeviceRequester()->getDevices();
+            auto dvList = m_dataProvider->getDeviceRequester()->getDevices(true);
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), dvList);
             return CResult::GenerateSuccess(collection);
