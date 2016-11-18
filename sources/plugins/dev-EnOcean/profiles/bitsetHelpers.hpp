@@ -5,15 +5,15 @@
 //--------------------------------------------------------------
 /// \brief	Some bitset helper functions
 //--------------------------------------------------------------
-inline std::vector<unsigned char> bitset_to_bytes(const boost::dynamic_bitset<>& bs) //TODO tester cette fonction (TEST-U)
+inline std::vector<unsigned char> bitset_to_bytes(const boost::dynamic_bitset<>& bs)
 {
-   std::vector<unsigned char> byteArray(bs.size() / sizeof(unsigned char) + 1);
-   for (auto bytePos = 0; bytePos < byteArray.size(); ++bytePos)
+   std::vector<unsigned char> byteArray(bs.size() / 8);
+   for (std::vector<unsigned char>::size_type bytePos = 0; bytePos < byteArray.size(); ++bytePos)
    {
       unsigned char byte = 0;
-      for (auto bitPos = 0; bitPos < sizeof(unsigned char); ++bitPos)
-         if (bs[bytePos * sizeof(unsigned char) + bitPos])
-            byte |= 0x01 << bitPos;
+      for (auto bitPos = 0; bitPos < 8; ++bitPos)
+         if (bs[bytePos * 8 + bitPos])
+            byte |= 0x80 >> bitPos;
       byteArray[bytePos] = byte;
    }
 
