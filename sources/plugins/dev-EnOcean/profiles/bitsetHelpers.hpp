@@ -20,7 +20,7 @@ inline std::vector<unsigned char> bitset_to_bytes(const boost::dynamic_bitset<>&
    return byteArray;
 }
 
-inline void bitset_insert(boost::dynamic_bitset<>& bitset, //TODO tester cette fonction (TEST-U)
+inline void bitset_insert(boost::dynamic_bitset<>& bitset,
                           size_t position,
                           size_t size,
                           unsigned int value)
@@ -29,7 +29,7 @@ inline void bitset_insert(boost::dynamic_bitset<>& bitset, //TODO tester cette f
       bitset[position + index] = (value & (0x00000001 << index) ? true : false);
 }
 
-inline void bitset_insert(boost::dynamic_bitset<>& bitset, //TODO tester cette fonction (TEST-U)
+inline void bitset_insert(boost::dynamic_bitset<>& bitset,
                           size_t position,
                           bool value)
 {
@@ -38,7 +38,7 @@ inline void bitset_insert(boost::dynamic_bitset<>& bitset, //TODO tester cette f
 
 inline boost::dynamic_bitset<> bitset_from_bytes(const std::vector<unsigned char>& buf)
 {
-   boost::dynamic_bitset<> bitset(buf.size() * sizeof(unsigned char) * 8);
+   boost::dynamic_bitset<> bitset(buf.size() * 8);
    size_t index = 0;
    for (const auto byte : buf)
       for (auto bit = 7; bit >= 0; --bit)
