@@ -39,34 +39,34 @@ namespace message
    }
 
 
-   CReceivedEsp3Packet::CReceivedEsp3Packet(const std::vector<unsigned char>& receivedBuffer)
+   CEsp3ReceivedPacket::CEsp3ReceivedPacket(const std::vector<unsigned char>& receivedBuffer)
       : m_header(receivedBuffer),
         m_data(receivedBuffer.begin() + m_header.offsetData(), receivedBuffer.begin() + m_header.offsetData() + m_header.dataLength()),
         m_optional(receivedBuffer.begin() + m_header.offsetOptional(), receivedBuffer.begin() + m_header.offsetOptional() + m_header.optionalLength())
    {
    }
 
-   CReceivedEsp3Packet::~CReceivedEsp3Packet()
+   CEsp3ReceivedPacket::~CEsp3ReceivedPacket()
    {
    }
 
-   const CHeader& CReceivedEsp3Packet::header() const
+   const CHeader& CEsp3ReceivedPacket::header() const
    {
       return m_header;
    }
 
-   const std::vector<unsigned char>& CReceivedEsp3Packet::data() const
+   const std::vector<unsigned char>& CEsp3ReceivedPacket::data() const
    {
       return m_data;
    }
 
-   const std::vector<unsigned char>& CReceivedEsp3Packet::optional() const
+   const std::vector<unsigned char>& CEsp3ReceivedPacket::optional() const
    {
       return m_optional;
    }
 
 
-   CRadioErp1Message::CRadioErp1Message(const CReceivedEsp3Packet& esp3Packet)
+   CRadioErp1ReceivedMessage::CRadioErp1ReceivedMessage(const CEsp3ReceivedPacket& esp3Packet)
       : m_rorg(CRorgs::toRorgId(esp3Packet.data()[0])),
         m_senderId(esp3Packet.data()[esp3Packet.data().size() - 5] << 24 | esp3Packet.data()[esp3Packet.data().size() - 4] << 16 | esp3Packet.data()[esp3Packet.data().size() - 3] << 8 | esp3Packet.data()[esp3Packet.data().size() - 2]),
         m_senderIdAsString(senderIdToString(m_senderId)),
@@ -75,36 +75,36 @@ namespace message
    {
    }
 
-   CRadioErp1Message::~CRadioErp1Message()
+   CRadioErp1ReceivedMessage::~CRadioErp1ReceivedMessage()
    {
    }
 
-   CRorgs::ERorgIds CRadioErp1Message::rorg() const
+   CRorgs::ERorgIds CRadioErp1ReceivedMessage::rorg() const
    {
       return m_rorg;
    }
 
-   unsigned int CRadioErp1Message::senderId() const
+   unsigned int CRadioErp1ReceivedMessage::senderId() const
    {
       return m_senderId;
    }
 
-   std::string CRadioErp1Message::senderIdAsString() const
+   std::string CRadioErp1ReceivedMessage::senderIdAsString() const
    {
       return m_senderIdAsString;
    }
 
-   const std::vector<unsigned char>& CRadioErp1Message::data() const
+   const std::vector<unsigned char>& CRadioErp1ReceivedMessage::data() const
    {
       return m_data;
    }
 
-   unsigned char CRadioErp1Message::status() const
+   unsigned char CRadioErp1ReceivedMessage::status() const
    {
       return m_status;
    }
 
-   std::string CRadioErp1Message::dump() const
+   std::string CRadioErp1ReceivedMessage::dump() const
    {
       std::stringstream ss;
       ss << std::setfill('0') << std::setw(2) << std::hex;
@@ -113,7 +113,7 @@ namespace message
       return ss.str();
    }
 
-   std::string CRadioErp1Message::senderIdToString(unsigned senderId)
+   std::string CRadioErp1ReceivedMessage::senderIdToString(unsigned senderId)
    {
       std::stringstream ss;
       ss << std::setfill('0') << std::setw(8) << std::uppercase << std::hex << senderId;

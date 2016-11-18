@@ -5,14 +5,35 @@
 //--------------------------------------------------------------
 /// \brief	Some bitset helper functions
 //--------------------------------------------------------------
-//TODO revoir cette fonction
-template <size_t N>
-std::vector<unsigned char> bitset_to_bytes(const std::bitset<N>& bs)
+inline std::vector<unsigned char> bitset_to_bytes(const boost::dynamic_bitset<>& bs) //TODO tester cette fonction (TEST-U)
 {
-   std::vector<unsigned char> result((N + 7) >> 3);
-   for (auto j = 0; j < int(N); j++)
-      result[j >> 3] |= (bs[j] << (j & 7));
-   return result;
+   std::vector<unsigned char> byteArray(bs.size() / sizeof(unsigned char) + 1);
+   for (auto bytePos = 0; bytePos < byteArray.size(); ++bytePos)
+   {
+      unsigned char byte = 0;
+      for (auto bitPos = 0; bitPos < sizeof(unsigned char); ++bitPos)
+         if (bs[bytePos * sizeof(unsigned char) + bitPos])
+            byte |= 0x01 << bitPos;
+      byteArray[bytePos] = byte;
+   }
+
+   return byteArray;
+}
+
+inline void bitset_insert(boost::dynamic_bitset<>& bitset, //TODO tester cette fonction (TEST-U)
+                          size_t position,
+                          size_t size,
+                          unsigned int value)
+{
+   for (size_t index = 0; index < size; ++index)
+      bitset[position + index] = (value & (0x00000001 << index) ? true : false);
+}
+
+inline void bitset_insert(boost::dynamic_bitset<>& bitset, //TODO tester cette fonction (TEST-U)
+                          size_t position,
+                          bool value)
+{
+   bitset[position] = value;
 }
 
 inline boost::dynamic_bitset<> bitset_from_bytes(const std::vector<unsigned char>& buf)
@@ -46,3 +67,4 @@ inline unsigned int bitset_extract(const boost::dynamic_bitset<>& bitset,
          value |= 1 << (size - index - 1);
    return value;
 }
+

@@ -35,13 +35,13 @@ protected:
    /// \brief	                     Returns the message if complete
    /// \return                      The complete message, or null
    //--------------------------------------------------------------
-   boost::shared_ptr<const message::CReceivedEsp3Packet> getCompleteMessage();
+   boost::shared_ptr<const message::CEsp3ReceivedPacket> getCompleteMessage();
 
    //--------------------------------------------------------------
    /// \brief	                     Send a message to the target event handler
    /// \param[in] buffer            Buffer to send
    //--------------------------------------------------------------
-   void notifyEventHandler(boost::shared_ptr<const message::CReceivedEsp3Packet> message) const;
+   void notifyEventHandler(boost::shared_ptr<const message::CEsp3ReceivedPacket> message) const;
 
 private:
    //--------------------------------------------------------------

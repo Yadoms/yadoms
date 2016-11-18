@@ -4,48 +4,38 @@
 
 namespace message
 {
-   CSendMessage::CSendMessage(EPacketType packetType)
+   CEsp3SendPacket::CEsp3SendPacket(EPacketType packetType)
       :m_packetType(packetType)
    {
    }
 
-   CSendMessage::~CSendMessage()
+   CEsp3SendPacket::~CEsp3SendPacket()
    {
    }
 
-   EPacketType CSendMessage::packetType() const
+   EPacketType CEsp3SendPacket::packetType() const
    {
       return m_packetType;
    }
 
-   shared::communication::CByteBuffer CSendMessage::buildBuffer() const
+   shared::communication::CByteBuffer CEsp3SendPacket::buildBuffer() const
    {
       std::vector<unsigned char> tempBuffer;
       updateBuffer(tempBuffer);
       return shared::communication::CByteBuffer(tempBuffer);
    }
 
-   void CSendMessage::appendData(const std::vector<unsigned char>& data)
+   void CEsp3SendPacket::appendData(const std::vector<unsigned char>& data)
    {
       m_data.insert(m_data.end(), data.begin(), data.end());
    }
 
-   void CSendMessage::appendOptional(const std::vector<unsigned char>& data)
+   void CEsp3SendPacket::appendOptional(const std::vector<unsigned char>& data)
    {
       m_optional.insert(m_data.end(), data.begin(), data.end());
    }
 
-
-   CCommandSendMessage::CCommandSendMessage()
-      : CSendMessage(COMMON_COMMAND)
-   {
-   }
-
-   CCommandSendMessage::~CCommandSendMessage()
-   {
-   }
-
-   void CCommandSendMessage::updateBuffer(std::vector<unsigned char>& buffer) const
+   void CEsp3SendPacket::updateBuffer(std::vector<unsigned char>& buffer) const
    {
       buffer.clear();
 
@@ -56,7 +46,7 @@ namespace message
       buffer.push_back(m_optional.size() & 0x0FF);
       buffer.push_back(static_cast<unsigned char>(m_packetType));
       buffer.push_back(computeCrc8(buffer.begin() + kOffsetDataLength,
-                                   buffer.begin() + kOffsetCrc8Header));
+         buffer.begin() + kOffsetCrc8Header));
 
       // Data
       buffer.insert(buffer.end(), m_data.begin(), m_data.end());
@@ -66,9 +56,29 @@ namespace message
 
       // CRC8D
       buffer.push_back(computeCrc8(buffer.begin() + kOffsetData,
-                                   buffer.begin() + kOffsetData + m_data.size() + m_optional.size()));
-
+         buffer.begin() + kOffsetData + m_data.size() + m_optional.size()));
    }
+
+
+   CCommonCommandSendMessage::CCommonCommandSendMessage()
+      : CEsp3SendPacket(COMMON_COMMAND)
+   {
+   }
+
+   CCommonCommandSendMessage::~CCommonCommandSendMessage()
+   {
+   }
+
+
+   CRadioErp1SendMessage::CRadioErp1SendMessage()
+      : CEsp3SendPacket(RADIO_ERP1)
+   {
+   }
+
+   CRadioErp1SendMessage::~CRadioErp1SendMessage()
+   {
+   }
+
 } // namespace message
 
 

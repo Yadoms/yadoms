@@ -21,7 +21,8 @@ public:
                                                                                    const boost::dynamic_bitset<>& status) const override;
    void sendCommand(const std::string& keyword,
                     const std::string& commandBody) const override;
-   void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendConfiguration(const shared::CDataContainer& deviceConfiguration,
+                          boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const override;
    // [END] IType implementation
 
 private:

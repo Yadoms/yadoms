@@ -88,6 +88,14 @@
             "autodetection": "Autodetect"
           }
         },
+        "switchingState": {
+          "name": "Switching behaviour",
+          "type": "enum",
+          "values": {
+            "tooggle": "Each change on switch toogles output",
+            "specific": "Specific ON/OFF positions (ON when contacts closed)"
+          }
+        },
         "autoOffTimer": {
           "name": "Auto-off timer"
         },

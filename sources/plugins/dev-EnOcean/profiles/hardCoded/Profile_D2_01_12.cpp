@@ -75,7 +75,8 @@ void CProfile_D2_01_12::sendCommand(const std::string& keyword,
    throw std::logic_error("device supports no command sending"); //TODO
 }
 
-void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceConfiguration) const
+void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
+                                          boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const
 {
    auto localControl = deviceConfiguration.get<std::string>("localControl") == "enable";
    auto taughtInAllDevices = deviceConfiguration.get<std::string>("taughtIn") == "allDevices";
@@ -84,6 +85,42 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
    auto connectedSwitchsType = deviceConfiguration.get<EConnectedSwitchsType>("connectedSwitchsType");
    auto autoOffTimerSeconds = deviceConfiguration.get<unsigned int>("autoOffTimer");
    auto delayRadioOffTimerSeconds = deviceConfiguration.get<unsigned int>("delayRadioOffTimer");
-   //TODO
+   auto switchingStateToggle = deviceConfiguration.get<std::string>("switchingState") == "tooggle";
+
+   // CMD 0x2 - Actuator Set Local
+   {
+      message::CRadioErp1SendMessage command;
+      boost::dynamic_bitset<> data(4 * sizeof(unsigned char));
+
+      bitset_insert(data, 4, 4, 0x02); // CMD 0x2 - Actuator Set Local
+      bitset_insert(data, 0, !taughtInAllDevices);
+      bitset_insert(data, 10, localControl);
+      bitset_insert(data, 11, 5, 0x1E);   // Use all output channels supported by the device
+      bitset_insert(data, 24, !userInterfaceDayMode);
+      bitset_insert(data, 26, 2, defaultState);
+
+      command.appendData(bitset_to_bytes(data));
+
+      commandSendFct(command);
+      //TODO revoir réception ack    m_sentCommand = message::CO_RD_VERSION;
+   }
+
+   // CMD 0xB - Actuator Set External Interface Settings
+   {
+      message::CRadioErp1SendMessage command;
+      boost::dynamic_bitset<> data(7 * sizeof(unsigned char));
+
+      bitset_insert(data, 4, 4, 0x0B); // CMD 0xB - Actuator Set External Interface Settings
+      bitset_insert(data, 11, 5, 0x1E);   // Use all output channels supported by the device
+      bitset_insert(data, 16, 16, autoOffTimerSeconds);
+      bitset_insert(data, 32, 16, delayRadioOffTimerSeconds);
+      bitset_insert(data, 48, 2, connectedSwitchsType);
+      bitset_insert(data, 50, !switchingStateToggle);
+
+      command.appendData(bitset_to_bytes(data));
+
+      commandSendFct(command);
+      //TODO revoir réception ack    m_sentCommand = message::CO_RD_VERSION;
+   }
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
+#include "../message/SendMessage.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -17,6 +18,9 @@ public:
                                                                                            const boost::dynamic_bitset<>& status) const = 0;
    virtual void sendCommand(const std::string& keyword,
                             const std::string& commandBody) const = 0;
-   virtual void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const = 0;
+   virtual void sendConfiguration(const shared::CDataContainer& deviceConfiguration,
+                                  boost::function1<void, const message::CEsp3SendPacket&> commandSendFct = boost::function1<void, const message::CEsp3SendPacket&>()) const = 0;
 };
+
+
 

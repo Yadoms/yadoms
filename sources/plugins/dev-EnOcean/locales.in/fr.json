@@ -88,6 +88,14 @@
             "autodetection": "Détection automatique"
           }
         },
+        "switchingState": {
+          "name": "Comportement des interrupteurs",
+          "type": "enum",
+          "values": {
+            "tooggle": "Chanque changement inverse la sortie",
+            "specific": "Etats spécifiques (Sortie active lorsque les contacts sont fermés)"
+          }
+        },
         "autoOffTimer": {
           "name": "Temporisation d'arrêt automatique"
         },

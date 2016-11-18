@@ -43,7 +43,7 @@ protected:
    /// \param [in] sendMessage      message to send
    /// \throw                       CProtocolException if timeout waiting answer
    //--------------------------------------------------------------
-   void send(const message::CSendMessage& sendMessage) const;
+   void send(const message::CEsp3SendPacket& sendMessage) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
@@ -83,16 +83,16 @@ protected:
    /// \brief	                     Called when the data are received from the UPS
    /// \param [in] message          Message received
    //--------------------------------------------------------------
-   void processDataReceived(const message::CReceivedEsp3Packet& message);
+   void processDataReceived(const message::CEsp3ReceivedPacket& message);
 
    //--------------------------------------------------------------
    /// \brief	                     Process received messages
    /// \param [in] esp3Packet       Message received
    //--------------------------------------------------------------
-   void processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet);
-   void processResponse(const message::CReceivedEsp3Packet& esp3Packet) const;
-   void processDongleVersionResponse(const message::CReceivedEsp3Packet& esp3Packet) const;
-   static void processEvent(const message::CReceivedEsp3Packet& esp3Packet);
+   void processRadioErp1(const message::CEsp3ReceivedPacket& esp3Packet);
+   void processResponse(const message::CEsp3ReceivedPacket& esp3Packet) const;
+   void processDongleVersionResponse(const message::CEsp3ReceivedPacket& esp3Packet) const;
+   static void processEvent(const message::CEsp3ReceivedPacket& esp3Packet);
 
    //--------------------------------------------------------------
    /// \brief	                           Declare a device
@@ -169,7 +169,7 @@ protected:
    //--------------------------------------------------------------
    std::string generateModel(const std::string& model,
                              const std::string& manufacturer,
-                             const CProfileHelper& profile);
+                             const CProfileHelper& profile) const;
 
 private:
    //--------------------------------------------------------------
@@ -195,7 +195,7 @@ private:
    //--------------------------------------------------------------
    /// \brief  The last sent command
    //--------------------------------------------------------------
-   message::ECommonCommand m_sentCommand;
+   message::CCommonCommandSendMessage::ECommonCommand m_sentCommand;
 
    //--------------------------------------------------------------
    /// \brief  The known devices list

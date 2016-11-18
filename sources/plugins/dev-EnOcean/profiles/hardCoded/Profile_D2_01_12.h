@@ -17,9 +17,9 @@ public:
    ) ;
 
    DECLARE_ENUM_HEADER(EConnectedSwitchsType,
-      ((switch)(0))
-      ((pushButton)(1))
-      ((autodetection)(2))
+      ((switch)(1))
+      ((pushButton)(2))
+      ((autodetection)(3))
    ) ;
 
 
@@ -35,7 +35,8 @@ public:
                                                                                    const boost::dynamic_bitset<>& status) const override;
    void sendCommand(const std::string& keyword,
                     const std::string& commandBody) const override;
-   void sendConfiguration(const shared::CDataContainer& deviceConfiguration) const override;
+   void sendConfiguration(const shared::CDataContainer& deviceConfiguration,
+                          boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const override;
    // [END] IType implementation
 
 private:

@@ -37,19 +37,19 @@ namespace message
    ///
    /// This class manages an ESP3 EnOcean message, when receiving.
    //--------------------------------------------------------------
-   class CReceivedEsp3Packet
+   class CEsp3ReceivedPacket
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                           Constructor
       /// \param[in] receivedBuffer          The received buffer
       //--------------------------------------------------------------
-      explicit CReceivedEsp3Packet(const std::vector<unsigned char>& receivedBuffer);
+      explicit CEsp3ReceivedPacket(const std::vector<unsigned char>& receivedBuffer);
 
       //--------------------------------------------------------------
       /// \brief	                           Destructor
       //--------------------------------------------------------------
-      virtual ~CReceivedEsp3Packet();
+      virtual ~CEsp3ReceivedPacket();
 
       const CHeader& header() const;
       const std::vector<unsigned char>& data() const;
@@ -67,19 +67,19 @@ namespace message
    ///
    /// This class manages a RADIO_ERP1 EnOcean message.
    //--------------------------------------------------------------
-   class CRadioErp1Message
+   class CRadioErp1ReceivedMessage
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                           Constructor
       /// \param[in] esp3Packet              The esp3 message
       //--------------------------------------------------------------
-      explicit CRadioErp1Message(const CReceivedEsp3Packet& esp3Packet);
+      explicit CRadioErp1ReceivedMessage(const CEsp3ReceivedPacket& esp3Packet);
 
       //--------------------------------------------------------------
       /// \brief	                           Destructor
       //--------------------------------------------------------------
-      virtual ~CRadioErp1Message();
+      virtual ~CRadioErp1ReceivedMessage();
 
       CRorgs::ERorgIds rorg() const;
       unsigned int senderId() const;

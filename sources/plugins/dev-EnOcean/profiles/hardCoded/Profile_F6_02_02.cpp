@@ -119,7 +119,8 @@ void CProfile_F6_02_02::sendCommand(const std::string& keyword,
    throw std::logic_error("device supports no command sending");
 }
 
-void CProfile_F6_02_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration) const
+void CProfile_F6_02_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
+                                          boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const
 {
    // Device supports no configuration
 }

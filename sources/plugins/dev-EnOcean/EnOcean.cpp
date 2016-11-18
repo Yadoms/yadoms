@@ -26,7 +26,7 @@ enum
 
 
 CEnOcean::CEnOcean()
-   : m_sentCommand(message::CO_WR_SLEEP)
+   : m_sentCommand(message::CCommonCommandSendMessage::CO_WR_SLEEP)
 {
 }
 
@@ -146,7 +146,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kEvtPortDataReceived:
          {
-            const auto message(m_api->getEventHandler().getEventData<const message::CReceivedEsp3Packet>());
+            const auto message(m_api->getEventHandler().getEventData<const message::CEsp3ReceivedPacket>());
             processDataReceived(message);
             break;
          }
@@ -232,7 +232,7 @@ boost::shared_ptr<IType> CEnOcean::createDevice(const std::string& deviceId,
 
 std::string CEnOcean::generateModel(const std::string& model,
                                     const std::string& manufacturer,
-                                    const CProfileHelper& profile)
+                                    const CProfileHelper& profile) const
 {
    if (!model.empty())
       return model;
@@ -266,7 +266,7 @@ void CEnOcean::processDeviceCommand(boost::shared_ptr<const shared::plugin::yPlu
 }
 
 
-void CEnOcean::send(const message::CSendMessage& sendMessage) const
+void CEnOcean::send(const message::CEsp3SendPacket& sendMessage) const
 {
    if (!m_port)
    {
@@ -328,7 +328,11 @@ std::string CEnOcean::processManuallyDeviceCreation(boost::shared_ptr<const shar
    // Send configuration to device
    try
    {
-      device->sendConfiguration(configuration.get<shared::CDataContainer>("profile.content." + selectedProfile.profile() + ".content"));
+      device->sendConfiguration(configuration.get<shared::CDataContainer>("profile.content." + selectedProfile.profile() + ".content"),
+                                [&](const message::CEsp3SendPacket& esp3Message)
+                                {
+                                   send(esp3Message);
+                                });
    }
    catch (std::exception& e)
    {
@@ -397,7 +401,7 @@ void CEnOcean::processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDevi
    //TODO ajouter un catch si la regex ne se passe pas bien
 }
 
-void CEnOcean::processDataReceived(const message::CReceivedEsp3Packet& message)
+void CEnOcean::processDataReceived(const message::CEsp3ReceivedPacket& message)
 {
    try
    {
@@ -436,9 +440,9 @@ void CEnOcean::processDataReceived(const message::CReceivedEsp3Packet& message)
 }
 
 
-void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet)
+void CEnOcean::processRadioErp1(const message::CEsp3ReceivedPacket& esp3Packet)
 {
-   message::CRadioErp1Message erp1Message(esp3Packet);
+   message::CRadioErp1ReceivedMessage erp1Message(esp3Packet);
 
    // Create associated RORG object
    auto erp1Data = bitset_from_bytes(erp1Message.data());
@@ -543,18 +547,18 @@ std::string CEnOcean::extractSenderId(const std::vector<unsigned char>& data,
       (data[startIndex]));
 }
 
-void CEnOcean::processResponse(const message::CReceivedEsp3Packet& esp3Packet) const
+void CEnOcean::processResponse(const message::CEsp3ReceivedPacket& esp3Packet) const
 {
    switch (m_sentCommand)
    {
-   case message::CO_RD_VERSION: processDongleVersionResponse(esp3Packet);
+   case message::CCommonCommandSendMessage::CO_RD_VERSION: processDongleVersionResponse(esp3Packet);
       break;
    default:
       std::cout << "Receive response not supported (last command sent was " << m_sentCommand << ")" << std::endl;
    }
 }
 
-void CEnOcean::processDongleVersionResponse(const message::CReceivedEsp3Packet& esp3Packet) const
+void CEnOcean::processDongleVersionResponse(const message::CEsp3ReceivedPacket& esp3Packet) const
 {
    if (esp3Packet.header().dataLength() != 33) //TODO on peut pas mieux faire que cette valeur en dur ?
       throw CProtocolException((boost::format("Invalid data length %1%, expected 33. Request was CO_RD_VERSION.") % esp3Packet.header().dataLength()).str());
@@ -620,7 +624,7 @@ void CEnOcean::processDongleVersionResponse(const message::CReceivedEsp3Packet& 
    m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 }
 
-void CEnOcean::processEvent(const message::CReceivedEsp3Packet& esp3Packet)
+void CEnOcean::processEvent(const message::CEsp3ReceivedPacket& esp3Packet)
 {
    //TODO tout revoir pour utiliser le code généré (si dispo pour les events)
    if (esp3Packet.header().dataLength() < 1)
@@ -699,9 +703,9 @@ boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
 
 void CEnOcean::requestDongleVersion()
 {
-   message::CCommandSendMessage sendMessage;
-   sendMessage.appendData({message::CO_RD_VERSION});
-   m_sentCommand = message::CO_RD_VERSION;
+   message::CCommonCommandSendMessage sendMessage;
+   sendMessage.appendData({message::CCommonCommandSendMessage::CO_RD_VERSION});
+   m_sentCommand = message::CCommonCommandSendMessage::CO_RD_VERSION;//TODO revoir la façon de faire...
 
    send(sendMessage);
 }

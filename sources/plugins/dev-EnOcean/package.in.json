@@ -109,6 +109,14 @@
           },
           "defaultValue": "autodetection"
         },
+        "switchingState": {
+          "name": "Switching behaviour",
+          "type": "enum",
+          "values": {
+            "tooggle": "Each change on switch toogles output",
+            "specific": "Specific ON/OFF positions"
+          }
+        },
         "autoOffTimer": {
           "name": "Auto-off timer",
           "type": "int",
