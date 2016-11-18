@@ -19,7 +19,7 @@ namespace database
       //--------------------------------------------------------------
       /// \brief                          Check if device exists
       /// \param [in] pluginId            The plugin Id
-      /// \param [in] name                The device name (plugin internal name)
+      /// \param [in] deviceName          The device name (plugin internal name)
       /// \return                         true if exist, else false
       //--------------------------------------------------------------
       virtual bool deviceExists(const int pluginId, const std::string& deviceName) const = 0;
@@ -81,23 +81,26 @@ namespace database
 
       //--------------------------------------------------------------
       /// \brief           List all devices
+      /// \param [in] blacklistedIncluded Return also blacklisted devices
       /// \return          List of registered devices
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CDevice>> getDevices() const = 0;
+      virtual std::vector<boost::shared_ptr<entities::CDevice>> getDevices(bool blacklistedIncluded = false) const = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all devices attached to a plugin instance
       /// \param [in] pluginId            The pluginId
+      /// \param [in] blacklistedIncluded Return also blacklisted devices
       /// \return          List of registered devices attached to a plugin instance
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CDevice>> getDevices(int pluginId) const = 0;
+      virtual std::vector<boost::shared_ptr<entities::CDevice>> getDevices(int pluginId, bool blacklistedIncluded = false) const = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all devices attached to a plugin instance, return only names
       /// \param [in] pluginId            The pluginId
+      /// \param [in] blacklistedIncluded Return also blacklisted devices
       /// \return          List of devices names attached to a plugin instance
       //--------------------------------------------------------------
-      virtual std::vector<std::string> getDevicesNames(int pluginId) const = 0;
+      virtual std::vector<std::string> getDevicesNames(int pluginId, bool blacklistedIncluded = false) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Update a device friendly name
