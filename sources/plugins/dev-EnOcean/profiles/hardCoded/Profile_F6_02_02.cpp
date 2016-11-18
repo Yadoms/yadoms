@@ -37,13 +37,14 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return m_historizers;
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_F6_02_02::states(const boost::dynamic_bitset<>& data) const
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_F6_02_02::states(const boost::dynamic_bitset<>& data,
+                                                                                                   const boost::dynamic_bitset<>& status) const
 {
    // Return only the concerned historizer
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
-   auto T21 = bitset_extract(data, 2, 1) ? true : false; //TODO c'est pas bon, faut prendre ces 2 data dans le statusField
-   auto NU = bitset_extract(data, 3, 1) ? true : false;
+   auto T21 = bitset_extract(status, 2, 1) ? true : false;
+   auto NU = bitset_extract(status, 3, 1) ? true : false;
 
    if (!T21 || !NU)
    {
@@ -122,3 +123,4 @@ void CProfile_F6_02_02::sendConfiguration(const shared::CDataContainer& deviceCo
 {
    // Device supports no configuration
 }
+

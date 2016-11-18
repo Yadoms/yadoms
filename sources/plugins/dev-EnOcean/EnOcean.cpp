@@ -442,6 +442,7 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet)
 
    // Create associated RORG object
    auto erp1Data = bitset_from_bytes(erp1Message.data());
+   auto erp1Status = bitset_from_byte(erp1Message.status());
    auto rorg = CRorgs::createRorg(erp1Message.rorg());
    auto deviceId = erp1Message.senderIdAsString();
 
@@ -505,7 +506,8 @@ void CEnOcean::processRadioErp1(const message::CReceivedEsp3Packet& esp3Packet)
 
       auto device = m_devices[deviceId];
 
-      auto keywordsToHistorize = device->states(erp1Data);
+      auto keywordsToHistorize = device->states(erp1Data,
+                                                erp1Status);
       if (keywordsToHistorize.empty())
       {
          std::cout << "Received message for id#" << deviceId << ", but nothing to historize" << std::endl;
@@ -703,3 +705,4 @@ void CEnOcean::requestDongleVersion()
 
    send(sendMessage);
 }
+

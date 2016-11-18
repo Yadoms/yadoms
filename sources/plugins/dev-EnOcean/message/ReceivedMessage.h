@@ -85,6 +85,7 @@ namespace message
       unsigned int senderId() const;
       std::string senderIdAsString() const;
       const std::vector<unsigned char>& data() const;
+      unsigned char status() const;
       std::string dump() const;
    protected:
       static std::string senderIdToString(unsigned int senderId);

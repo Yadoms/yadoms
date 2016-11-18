@@ -44,7 +44,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return m_historizers;
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_12::states(const boost::dynamic_bitset<>& data) const
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_12::states(const boost::dynamic_bitset<>& data,
+                                                                                                   const boost::dynamic_bitset<>& status) const
 {
    // Return only the concerned historizer
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
@@ -85,3 +86,4 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
    auto delayRadioOffTimerSeconds = deviceConfiguration.get<unsigned int>("delayRadioOffTimer");
    //TODO
 }
+

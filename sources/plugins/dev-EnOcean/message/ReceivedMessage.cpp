@@ -99,6 +99,11 @@ namespace message
       return m_data;
    }
 
+   unsigned char CRadioErp1Message::status() const
+   {
+      return m_status;
+   }
+
    std::string CRadioErp1Message::dump() const
    {
       std::stringstream ss;
