@@ -46,13 +46,20 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    auto T21 = bitset_extract(status, 2, 1) ? true : false;
    auto NU = bitset_extract(status, 3, 1) ? true : false;
 
-   if (!T21 || !NU)
+   if (!T21)
    {
-      std::cout << "Unsupported message received for profile " << profile() <<
-         " : T21=" << (T21 ? "1" : "0") <<
-         ", NU=" << (NU ? "1" : "0") << std::endl;
+      std::cerr << "Unsupported message received for profile " << profile() <<
+         " : T21=" << (T21 ? "1" : "0") << std::endl;
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
+   if (!NU)
+   {
+      // This message contains nothing useful
+   }
+
+   auto nenergyBow = bitset_extract(data, 3, 1) ? true : false;
+   if (!nenergyBow)
+      return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
 
    auto rocker1stAction = bitset_extract(data, 0, 3);
    switch (rocker1stAction)
