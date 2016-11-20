@@ -39,7 +39,7 @@ namespace database
          {
             try
             {
-               getDevice(pluginId, deviceName);
+               getDeviceInPlugin(pluginId, deviceName);
             }
             catch (shared::exception::CEmptyResult&)
             {
@@ -48,13 +48,19 @@ namespace database
             return true;
          }
 
-         boost::shared_ptr<entities::CDevice> CDevice::getDevice(int deviceId) const
+         boost::shared_ptr<entities::CDevice> CDevice::getDevice(int deviceId, bool blacklistedIncluded) const
          {
             auto qSelect = m_databaseRequester->newQuery();
-            qSelect.Select().
-                   From(CDeviceTable::getTableName()).
-                   Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId).
-                   And(CDeviceTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, 0);
+
+            if (blacklistedIncluded)
+               qSelect.Select().
+                      From(CDeviceTable::getTableName()).
+                      Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
+            else
+               qSelect.Select().
+                      From(CDeviceTable::getTableName()).
+                      Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId).
+                      And(CDeviceTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, 0);
 
             adapters::CDeviceAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, qSelect);
@@ -64,15 +70,22 @@ namespace database
             return adapter.getResults()[0];
          }
 
-         boost::shared_ptr<entities::CDevice> CDevice::getDevice(const int pluginId, const std::string& name) const
+         boost::shared_ptr<entities::CDevice> CDevice::getDeviceInPlugin(int pluginId, const std::string& name, bool blacklistedIncluded) const
          {
             //search for such a device
             auto qSelect = m_databaseRequester->newQuery();
-            qSelect.Select().
-                   From(CDeviceTable::getTableName()).
-                   Where(CDeviceTable::getPluginIdColumnName(), CQUERY_OP_EQUAL, pluginId).
-                   And(CDeviceTable::getNameColumnName(), CQUERY_OP_EQUAL, name).
-                   And(CDeviceTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, 0);
+
+            if (blacklistedIncluded)
+               qSelect.Select().
+                      From(CDeviceTable::getTableName()).
+                      Where(CDeviceTable::getPluginIdColumnName(), CQUERY_OP_EQUAL, pluginId).
+                      And(CDeviceTable::getNameColumnName(), CQUERY_OP_EQUAL, name);
+            else
+               qSelect.Select().
+                      From(CDeviceTable::getTableName()).
+                      Where(CDeviceTable::getPluginIdColumnName(), CQUERY_OP_EQUAL, pluginId).
+                      And(CDeviceTable::getNameColumnName(), CQUERY_OP_EQUAL, name).
+                      And(CDeviceTable::getBlacklistColumnName(), CQUERY_OP_EQUAL, 0);
 
             adapters::CDeviceAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, qSelect);
@@ -173,7 +186,7 @@ namespace database
                throw shared::exception::CEmptyResult("Fail to insert new device");
 
             //device is created, just find it in table and return entity
-            auto deviceCreated = getDevice(pluginId, name);
+            auto deviceCreated = getDeviceInPlugin(pluginId, name);
             if (!deviceCreated)
                throw shared::exception::CEmptyResult("Fail to retrieve created device");
 
@@ -329,7 +342,7 @@ namespace database
 
          void CDevice::removeDevice(int pluginId, const std::string& deviceName)
          {
-            removeDevice(getDevice(pluginId, deviceName)->Id());
+            removeDevice(getDeviceInPlugin(pluginId, deviceName)->Id());
          }
 
          void CDevice::removeAllDeviceForPlugin(int pluginId)
@@ -340,10 +353,9 @@ namespace database
 
             adapters::CDeviceAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, qSelect);
-            std::vector<boost::shared_ptr<entities::CDevice>> devicestoDelete = adapter.getResults();
-            std::vector<boost::shared_ptr<entities::CDevice>>::iterator i;
+            auto devicestoDelete = adapter.getResults();
 
-            for (i = devicestoDelete.begin(); i != devicestoDelete.end(); ++i)
+            for (auto i = devicestoDelete.begin(); i != devicestoDelete.end(); ++i)
             {
                removeDevice((*i)->Id());
             }

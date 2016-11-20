@@ -79,7 +79,7 @@ namespace pluginSystem
 
    shared::CDataContainer CYPluginApiImplementation::getDeviceConfiguration(const std::string& device) const
    {
-      return m_deviceManager->getDevice(getPluginId(), device)->Configuration;
+      return m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Configuration;
    }
 
    void CYPluginApiImplementation::updateDeviceConfiguration(const std::string& device,
@@ -88,13 +88,13 @@ namespace pluginSystem
       if (!deviceExists(device))
          throw shared::exception::CEmptyResult("Fail to update device configuration : device doesn't exist.");
 
-      m_deviceManager->updateDeviceConfiguration(m_deviceManager->getDevice(getPluginId(), device)->Id(),
+      m_deviceManager->updateDeviceConfiguration(m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Id(),
                                                  configuration);
    }
 
    shared::CDataContainer CYPluginApiImplementation::getDeviceDetails(const std::string& device) const
    {
-      return m_deviceManager->getDevice(getPluginId(), device)->Details;
+      return m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Details;
    }
 
    void CYPluginApiImplementation::updateDeviceDetails(const std::string& device,
@@ -103,13 +103,13 @@ namespace pluginSystem
       if (!deviceExists(device))
          throw shared::exception::CEmptyResult("Fail to update device details : device doesn't exist.");
 
-      m_deviceManager->updateDeviceDetails(m_deviceManager->getDevice(getPluginId(), device)->Id(),
+      m_deviceManager->updateDeviceDetails(m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Id(),
                                            details);
    }
 
    std::string CYPluginApiImplementation::getDeviceModel(const std::string& device) const
    {
-      return m_deviceManager->getDevice(getPluginId(), device)->Model;
+      return m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Model;
    }
 
    void CYPluginApiImplementation::updateDeviceModel(const std::string& device,
@@ -118,7 +118,7 @@ namespace pluginSystem
       if (!deviceExists(device))
          throw shared::exception::CEmptyResult("Fail to update device model : device doesn't exist.");
 
-      m_deviceManager->updateDeviceModel(m_deviceManager->getDevice(getPluginId(), device)->Id(),
+      m_deviceManager->updateDeviceModel(m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Id(),
                                          model);
    }
 
@@ -137,7 +137,7 @@ namespace pluginSystem
       if (keywordExists(device, keyword))
          throw shared::exception::CEmptyResult((boost::format("Fail to declare %1% keyword : keyword already exists") % keyword->getKeyword()).str());
 
-      m_keywordDataAccessLayer->addKeyword(m_deviceManager->getDevice(getPluginId(), device)->Id(),
+      m_keywordDataAccessLayer->addKeyword(m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Id(),
                                            *keyword,
                                            details);
    }
@@ -154,7 +154,7 @@ namespace pluginSystem
       if (keywordsToDeclare.empty())
          return;
 
-      m_keywordDataAccessLayer->addKeywords(m_deviceManager->getDevice(getPluginId(), device)->Id(),
+      m_keywordDataAccessLayer->addKeywords(m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Id(),
                                             keywordsToDeclare);
    }
 
@@ -164,7 +164,7 @@ namespace pluginSystem
       if (!deviceExists(device))
          throw shared::exception::CEmptyResult("Fail to check if keyword exists : owner device doesn't exist.");
 
-      return m_keywordDataAccessLayer->keywordExists((m_deviceManager->getDevice(getPluginId(), device))->Id, keyword);
+      return m_keywordDataAccessLayer->keywordExists((m_deviceManager->getDeviceInPlugin(getPluginId(), device))->Id, keyword);
    }
 
    bool CYPluginApiImplementation::keywordExists(const std::string& device,
@@ -176,7 +176,7 @@ namespace pluginSystem
    std::vector<std::string> CYPluginApiImplementation::getAllKeywords(const std::string& device) const
    {
       std::vector<std::string> keywordNames;
-      for (const auto& keyword : m_keywordDataAccessLayer->getKeywords(m_deviceManager->getDevice(getPluginId(), device)->Id()))
+      for (const auto& keyword : m_keywordDataAccessLayer->getKeywords(m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Id()))
          keywordNames.push_back(keyword->Name());
       return keywordNames;
    }
@@ -187,7 +187,7 @@ namespace pluginSystem
       if (!keywordExists(device, keyword))
          throw shared::exception::CEmptyResult((boost::format("Fail to remove %1% keyword : keyword doesn't exists") % keyword).str());
 
-      m_keywordDataAccessLayer->removeKeyword(m_deviceManager->getDevice(getPluginId(), device)->Id(),
+      m_keywordDataAccessLayer->removeKeyword(m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Id(),
                                               keyword);
    }
 
@@ -232,7 +232,7 @@ namespace pluginSystem
    {
       try
       {
-         boost::shared_ptr<const database::entities::CDevice> deviceEntity = m_deviceManager->getDevice(getPluginId(), device);
+         boost::shared_ptr<const database::entities::CDevice> deviceEntity = m_deviceManager->getDeviceInPlugin(getPluginId(), device);
          boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordDataAccessLayer->getKeyword(deviceEntity->Id, data->getKeyword());
 
          m_acquisitionHistorizer->saveData(keywordEntity->Id, *data);
@@ -250,7 +250,7 @@ namespace pluginSystem
       {
          std::vector<int> keywordIdList;
 
-         boost::shared_ptr<const database::entities::CDevice> deviceEntity = m_deviceManager->getDevice(getPluginId(), device);
+         boost::shared_ptr<const database::entities::CDevice> deviceEntity = m_deviceManager->getDeviceInPlugin(getPluginId(), device);
          for (auto iter = dataVect.begin(); iter != dataVect.end(); ++iter)
          {
             boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordDataAccessLayer->getKeyword(deviceEntity->Id, (*iter)->getKeyword());
