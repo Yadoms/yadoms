@@ -63,7 +63,7 @@ namespace web
             if (parameters.size() > 1)
                objectId = parameters[1];
 
-            auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(boost::lexical_cast<int>(objectId));
+            auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(boost::lexical_cast<int>(objectId), true);
             return CResult::GenerateSuccess(deviceFound);
          }
 
@@ -255,7 +255,7 @@ namespace web
                if (parameters.size() > 1)
                {
                   auto deviceId = boost::lexical_cast<int>(parameters[1]);
-                  auto deviceInDatabase = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+                  auto deviceInDatabase = m_dataProvider->getDeviceRequester()->getDevice(deviceId, true);
 
                   if (deviceInDatabase)
                   {
@@ -393,7 +393,7 @@ namespace web
                      m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(deviceId, deviceToUpdate.FriendlyName());
 
                      //return the device info
-                     auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+                     auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId, true);
                      return CResult::GenerateSuccess(deviceFound);
                   }
                   return CResult::GenerateError("invalid request content. could not retreive device friendlyName");
@@ -439,7 +439,7 @@ namespace web
                   }
 
                   //return the device info
-                  auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+                  auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId, true);
                   return CResult::GenerateSuccess(deviceFound);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
@@ -475,7 +475,7 @@ namespace web
                   }
 
                   //return the device info
-                  auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+                  auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId, true);
                   return CResult::GenerateSuccess(deviceFound);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive device id in url");

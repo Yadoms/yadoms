@@ -423,8 +423,8 @@
           "errorGettingDeviceList": "An error has occurred acquiring device list",
           "errorGettingDeviceDetailsList": "An error has occurred acquiring device details list",
           "errorUpdatingKeyword": "An error occurred updating data __keyword__",
-          "errorBlacklistingDevice": "An error occurred while disabling/enabling __device__",
-          "errorBlacklistingKeyword": "An error occurred while disabling/enabling __keyword__",
+          "errorBlacklistingDevice": "An error occurred while removing/restoring __device__",
+          "errorBlacklistingKeyword": "An error occurred while removing/restoring __keyword__",
           "noAcquisition": "No acquisition",
 		  "showBlacklistedDevices" : "Show deleted devices"
         },

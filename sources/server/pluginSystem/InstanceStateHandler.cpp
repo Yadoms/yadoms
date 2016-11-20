@@ -112,7 +112,7 @@ namespace pluginSystem
       if (!m_deviceManager->deviceExists(m_instanceData->Id(), PluginStateDeviceName))
          m_deviceManager->createDevice(m_instanceData->Id(), PluginStateDeviceName, m_instanceData->DisplayName() + " plugin state", "Plugin state", shared::CDataContainer::EmptyContainer);
 
-      return m_deviceManager->getDevice(m_instanceData->Id(), PluginStateDeviceName)->Id();
+      return m_deviceManager->getDeviceInPlugin(m_instanceData->Id(), PluginStateDeviceName)->Id();
    }
 
    int CInstanceStateHandler::pluginStateKeywordId()

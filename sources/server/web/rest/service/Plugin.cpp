@@ -518,13 +518,13 @@ namespace web
                            if (res.Success)
                            {
                               //find created device
-                              auto createdDevice = m_dataProvider->getDeviceRequester()->getDevice(pluginId, res.Result);
+                              auto createdDevice = m_dataProvider->getDeviceRequester()->getDeviceInPlugin(pluginId, res.Result);
 
                               //update friendly name
                               m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(createdDevice->Id(), content.get<std::string>("name"));
 
                               //get device with friendly name updated
-                              createdDevice = m_dataProvider->getDeviceRequester()->getDevice(pluginId, res.Result);
+                              createdDevice = m_dataProvider->getDeviceRequester()->getDeviceInPlugin(pluginId, res.Result);
 
                               return CResult::GenerateSuccess(createdDevice);
                            }
