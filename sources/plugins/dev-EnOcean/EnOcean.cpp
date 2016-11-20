@@ -380,6 +380,10 @@ void CEnOcean::processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDevi
          m_devices[deviceId] = device;
       }
 
+      if (m_api->getDeviceModel(deviceId) != model)
+         m_api->updateDeviceModel(deviceId,
+                                  model);
+
       // Send configuration to device
       try
       {
@@ -398,7 +402,6 @@ void CEnOcean::processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDevi
    {
       std::cerr << "Unable to configure device : " << e.what() << std::endl;
    }
-   //TODO ajouter un catch si la regex ne se passe pas bien
 }
 
 void CEnOcean::processDataReceived(const message::CEsp3ReceivedPacket& message)
@@ -709,4 +712,3 @@ void CEnOcean::requestDongleVersion()
 
    send(sendMessage);
 }
-
