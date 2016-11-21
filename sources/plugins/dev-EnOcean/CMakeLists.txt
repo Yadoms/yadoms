@@ -18,15 +18,25 @@ set(ENOCEAN_SOURCES
    EnOcean.cpp
    EnOceanReceiveBufferHandler.h
    EnOceanReceiveBufferHandler.cpp
+   EnOceanReceiveThread.h
+   EnOceanReceiveThread.cpp
    EnOceanConfiguration.h
    EnOceanConfiguration.cpp
    EnOceanFactory.h
    EnOceanFactory.cpp
+   IEnOceanReceiveThread.h
+   IMessageHandler.h
+   MessageHandler.h
+   MessageHandler.cpp
    ProfileHelper.h
    ProfileHelper.cpp
    
    message/Crc8.h
    message/Crc8.cpp
+   message/Esp3ReceivedPacket.h
+   message/Esp3ReceivedPacket.cpp
+   message/Header.h
+   message/Header.cpp
    message/ReceivedMessage.h
    message/ReceivedMessage.cpp
    message/SendMessage.h

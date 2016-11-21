@@ -6,6 +6,8 @@
 #include "message/ReceivedMessage.h"
 #include "message/SendMessage.h"
 #include "ProfileHelper.h"
+#include "IEnOceanReceiveThread.h"
+#include "IMessageHandler.h"
 
 
 // Shortcut to yPluginApi namespace
@@ -37,13 +39,6 @@ protected:
    /// \brief	                     Load all devices (create device object from devices stored in database)
    //--------------------------------------------------------------
    void loadAllDevices();
-
-   //--------------------------------------------------------------
-   /// \brief	                     Send a message to EnOcean dongle
-   /// \param [in] sendMessage      message to send
-   /// \throw                       CProtocolException if timeout waiting answer
-   //--------------------------------------------------------------
-   void send(const message::CEsp3SendPacket& sendMessage) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
@@ -90,7 +85,7 @@ protected:
    /// \param [in] esp3Packet       Message received
    //--------------------------------------------------------------
    void processRadioErp1(const message::CEsp3ReceivedPacket& esp3Packet);
-   void processResponse(const message::CEsp3ReceivedPacket& esp3Packet) const;
+   static void processResponse(const message::CEsp3ReceivedPacket& esp3Packet);
    void processDongleVersionResponse(const message::CEsp3ReceivedPacket& esp3Packet) const;
    static void processEvent(const message::CEsp3ReceivedPacket& esp3Packet);
 
@@ -125,7 +120,7 @@ protected:
    //--------------------------------------------------------------
    /// \brief	                     Requests to EnOcean
    //--------------------------------------------------------------
-   void requestDongleVersion();
+   void requestDongleVersion() const;
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection
@@ -183,6 +178,16 @@ private:
    boost::shared_ptr<shared::communication::IAsyncPort> m_port;
 
    //--------------------------------------------------------------
+   /// \brief  The receiver thread
+   //--------------------------------------------------------------
+   boost::shared_ptr<IEnOceanReceiveThread> m_receiverThread;
+
+   //--------------------------------------------------------------
+   /// \brief  The message handler
+   //--------------------------------------------------------------
+   boost::shared_ptr<IMessageHandler> m_messageHandler;
+
+   //--------------------------------------------------------------
    /// \brief  Api access
    //--------------------------------------------------------------
    boost::shared_ptr<yApi::IYPluginApi> m_api;
@@ -193,12 +198,8 @@ private:
    shared::communication::CAsciiBufferLogger m_logger;
 
    //--------------------------------------------------------------
-   /// \brief  The last sent command
-   //--------------------------------------------------------------
-   message::CCommonCommandSendMessage::ECommonCommand m_sentCommand;
-
-   //--------------------------------------------------------------
    /// \brief  The known devices list
    //--------------------------------------------------------------
    std::map<std::string, boost::shared_ptr<IType>> m_devices;
 };
+

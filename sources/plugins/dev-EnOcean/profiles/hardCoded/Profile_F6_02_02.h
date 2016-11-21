@@ -2,6 +2,7 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <boost/dynamic_bitset.hpp>
 #include "../IType.h"
+#include "../../IMessageHandler.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -20,9 +21,10 @@ public:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> states(const boost::dynamic_bitset<>& data,
                                                                                    const boost::dynamic_bitset<>& status) const override;
    void sendCommand(const std::string& keyword,
-                    const std::string& commandBody) const override;
+                    const std::string& commandBody,
+                    boost::shared_ptr<IMessageHandler> messageHandler) const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration,
-                          boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const override;
+                          boost::shared_ptr<IMessageHandler> messageHandler) const override;
    // [END] IType implementation
 
 private:

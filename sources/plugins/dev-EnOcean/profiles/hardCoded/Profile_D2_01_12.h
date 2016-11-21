@@ -34,12 +34,14 @@ public:
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> states(const boost::dynamic_bitset<>& data,
                                                                                    const boost::dynamic_bitset<>& status) const override;
    void sendCommand(const std::string& keyword,
-                    const std::string& commandBody) const override;
+                    const std::string& commandBody,
+                    boost::shared_ptr<IMessageHandler> messageHandler) const override;
    void sendConfiguration(const shared::CDataContainer& deviceConfiguration,
-                          boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const override;
+                          boost::shared_ptr<IMessageHandler> messageHandler) const override;
    // [END] IType implementation
 
 private:
+   const std::string m_deviceId;
    boost::shared_ptr<yApi::historization::CSwitch> m_switch1;
    boost::shared_ptr<yApi::historization::CSwitch> m_switch2;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
