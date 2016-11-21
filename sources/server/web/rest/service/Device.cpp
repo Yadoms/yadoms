@@ -468,9 +468,12 @@ namespace web
                   database::entities::CDevice deviceToUpdate;
                   deviceToUpdate.fillFromSerializedString(requestContent);
 
-                  //update friendlyname
+                  //update blacklist state
                   if (deviceToUpdate.Blacklist.isDefined())
                   {
+                     if (deviceToUpdate.Blacklist())
+                        m_pluginManager->notifyDeviceRemoved(deviceId);
+
                      m_deviceManager->updateDeviceBlacklistState(deviceId, deviceToUpdate.Blacklist());
                   }
 
