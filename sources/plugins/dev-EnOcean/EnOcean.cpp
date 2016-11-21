@@ -170,6 +170,10 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
          }
       }
+      catch (std::logic_error& e)
+      {
+         std::cerr << "Logical error : " << e.what() << std::endl;
+      }
       catch (CProtocolException& e)
       {
          std::cerr << "Error communicationg with EnOcean dongle " << e.what() << std::endl;
