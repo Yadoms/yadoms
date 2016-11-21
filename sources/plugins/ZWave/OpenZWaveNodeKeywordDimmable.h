@@ -22,6 +22,7 @@ public:
    // IOpenZWaveKeyword implementation
    bool sendCommand(const std::string& commandData) override;
    boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> getLastKeywordValue() override;
+   shared::CDataContainer serialize() override;
    // [END] IOpenZWaveKeyword implementation
 
 private:

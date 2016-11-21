@@ -185,7 +185,7 @@ DeviceManager.getConfigurationSchema = function(device) {
                     }
 
                     //Manage dynamic configuration
-                    if(deviceConfig.dynamicConfigurationSchema && deviceConfig.dynamicConfigurationSchema == true) {
+                    if(deviceConfig.dynamicConfigurationSchema && parseBool(deviceConfig.dynamicConfigurationSchema) === true) {
 
                         //ask the device configuration from the plugin instance 
                         RestEngine.getJson("/rest/device/" + device.id + "/configurationSchema")

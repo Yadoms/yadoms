@@ -643,3 +643,22 @@ void COpenZWaveController::healNetwork()
    OpenZWave::Manager::Get()->HealNetwork(m_homeId, true);
 }
 
+shared::CDataContainer COpenZWaveController::getNodeConfigurationSchema(const std::string & device)
+{
+   boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+   uint32 homeId;
+   uint8 nodeId;
+   uint8 instance;
+   ECommandClass keywordClass;
+
+   retreiveOpenZWaveIds(device, "", homeId, nodeId, instance);
+
+   auto node = getNode(homeId, nodeId);
+   if (node)
+   {
+      return node->getConfigurationSchema();
+   }
+   throw shared::exception::CException((boost::format("Fail to ask configuration for device %2% ") % device).str());
+}
+

@@ -33,6 +33,7 @@ public:
    void testNetwork(int count) override;
    void cancelCurrentCommand() override;
    void healNetwork() override;
+   shared::CDataContainer getNodeConfigurationSchema(const std::string & device) override;
    // [END] IZWaveController implementation
 
 

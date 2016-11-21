@@ -78,7 +78,7 @@ namespace web {
                content.resize(static_cast<unsigned int>(request.getContentLength()));
                request.stream().read(const_cast<char*>(content.c_str()), request.getContentLength());
             }
-
+            
             //dispatch url to rest dispatcher
             shared::CDataContainer js = m_restDispatcher.dispath(request.getMethod(), parameters, content);
             return js.serialize();

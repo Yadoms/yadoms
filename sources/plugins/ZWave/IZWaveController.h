@@ -83,4 +83,11 @@ public:
    //--------------------------------------------------------------
    virtual void healNetwork() = 0;
 
+   //--------------------------------------------------------------
+   /// \brief	Ask to device configuration schema of a device
+   /// \param [in] 	device   the targetted device
+   /// \return The configuration schema
+   //--------------------------------------------------------------
+   virtual shared::CDataContainer getNodeConfigurationSchema(const std::string & device) = 0;
+
 };

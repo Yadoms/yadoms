@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Created by jeanmichelDECORET on 08/10/15.
  */
 
@@ -131,7 +131,7 @@ RestEngine.makeJsonOptions_ = function(data) {
     var completeData = data || {};
     completeData.dataType = "json";
     if (!completeData.contentType)
-        completeData.contentType = "application/json; charset=utf-8";
+        completeData.contentType = "application/x-www-form-urlencoded;charset=utf-8";
     return completeData;
 }
 

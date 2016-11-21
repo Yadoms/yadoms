@@ -20,3 +20,11 @@ const std::string COpenZWaveNodeKeywordBase::getUnit()
    return OpenZWave::Manager::Get()->GetValueUnits(m_valueId);
 }
 
+
+
+shared::CDataContainer COpenZWaveNodeKeywordBase::serialize()
+{
+   shared::CDataContainer result;
+   return result;
+}
+
