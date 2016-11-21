@@ -132,7 +132,8 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
                auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
-               processDeviceConfiguration(deviceConfiguration);
+               processDeviceConfiguration(deviceConfiguration->device(),
+                                          deviceConfiguration->configuration());
                break;
             }
 
@@ -354,11 +355,9 @@ void CEnOcean::processDeviceRemmoved(boost::shared_ptr<const shared::plugin::yPl
    m_devices.erase(deviceRemoved->device());
 }
 
-void CEnOcean::processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDeviceConfiguration> setDeviceConfigurationData)
+void CEnOcean::processDeviceConfiguration(const std::string& deviceId,
+                                          const shared::CDataContainer& configuration)
 {
-   auto deviceId = setDeviceConfigurationData->device();
-   auto configuration = setDeviceConfigurationData->configuration();
-
    try
    {
       auto selectedProfile = CProfileHelper(configuration.get<std::string>("profile.activeSection"));
@@ -462,16 +461,12 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
    {
       // Teachin telegram
 
-      if (m_devices.find(deviceId) != m_devices.end())
-      {
-         std::cout << "Device " << deviceId << " already exists, teachin message ignored." << std::endl;
-         return;
-      }
-
       if (!rorg->isEepProvided(erp1Data))
       {
          if (m_api->deviceExists(deviceId))
          {
+            // Device exist.
+            // It is ether configured or not, but this teachin message give us nothing new (no EEP is provided), so ignore it
             std::cout << "Device " << deviceId << " already declared, teachin message ignored." << std::endl;
             return;
          }
@@ -493,10 +488,6 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
                                        teachInData.typeId());
          auto manufacturerName = CManufacturers::name(teachInData.manufacturerId());
 
-         declareDevice(deviceId,
-                       profile,
-                       manufacturerName);
-
          //TODO faire un helper pour gérer la conf
          shared::CDataContainer profileNode;
          profileNode.set("content", "");
@@ -510,6 +501,23 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
          deviceConfiguration.set("manufacturer", manufacturerName);
          deviceConfiguration.set("model", m_api->getDeviceModel(deviceId));//TODO pas top, mais il faudra virer le modèle de la conf
          deviceConfiguration.set("profile", profilesNode);
+
+         if (m_api->deviceExists(deviceId))
+         {
+            // Device already exist, just reconfigure it
+            m_api->updateDeviceConfiguration(deviceId,
+                                             deviceConfiguration);
+
+            processDeviceConfiguration(deviceId,
+                                       deviceConfiguration);
+            return;
+         }
+
+         // Device not exist, declare it
+         declareDevice(deviceId,
+                       profile,
+                       manufacturerName);
+
          m_api->updateDeviceConfiguration(deviceId,
                                           deviceConfiguration);
       }

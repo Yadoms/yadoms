@@ -68,10 +68,12 @@ protected:
    void processDeviceRemmoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> deviceRemoved);
 
    //--------------------------------------------------------------
-   /// \brief	                     Called when the device configuration was updated by user
-   /// \param [in] setDeviceConfigurationData The new device configuration data
+   /// \brief	                     Reconfigure a device (configuration must be set in Yadoms first)
+   /// \param [in] deviceId         The device ID
+   /// \param [in] configuration    The device configuration
    //--------------------------------------------------------------
-   void processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDeviceConfiguration> setDeviceConfigurationData);
+   void processDeviceConfiguration(const std::string& deviceId,
+                                   const shared::CDataContainer& configuration);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the data are received from the UPS
@@ -197,8 +199,7 @@ private:
    shared::communication::CAsciiBufferLogger m_logger;
 
    //--------------------------------------------------------------
-   /// \brief  The known devices list
+   /// \brief  The known devices list (only configured devices)
    //--------------------------------------------------------------
    std::map<std::string, boost::shared_ptr<IType>> m_devices;
 };
-
