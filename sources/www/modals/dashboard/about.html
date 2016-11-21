@@ -220,31 +220,39 @@
           // Enter all Plugins into an array
           var tabPlugins = [];
         
-          Object.keys(PluginManager.packageList).forEach(function(key) {
-            if( (!data.developerMode && !key.startsWith("dev-")) || data.developerMode) {
-               var value = PluginManager.packageList[key];
+          PluginManager.getAll()
+               .done (function (packageList){
+                   Object.keys(/*PluginManager.*/packageList).forEach(function(key) {
+                     if( (!data.developerMode && !key.startsWith("dev-")) || data.developerMode) {
+                        var value = /*PluginManager.*/packageList[key];
+                        
+                        tabPlugins.push ( {plugin: value, friendlyName: $.t("plugins/" + value.type + ":name" ) });
+                     }
+                   });
+                   
+                   // sort each Plugins Name in the language selected
+                   tabPlugins = sortListItemsWithFriendlyName ( tabPlugins );
+                   
+                   //foreach element of the array
+                   $.each(tabPlugins, function(index, value) {
+                     
+                     console.log ( "package : ", value.plugin );
+                     
+                     var result = "";
+                     if ( !isNullOrUndefined ( value.plugin.package.credits ))
+                        result = md.renderInline( value.plugin.package.credits ); 
+                     
+                     AddPluginPackage ( value.plugin.type, value.friendlyName, value.plugin.package.version, value.plugin.package.releaseType, value.plugin.package.author, result, value.plugin.package.url );
+                   }); 
+               })
+               .fail(function (error) {
+                   notifyError($.t("objects.pickup.errorDuringGettingPackages"), error);
+               });
                
-               tabPlugins.push ( {plugin: value, friendlyName: $.t("plugins/" + value.type + ":name" ) });
-            }
-          });
-          
-          // sort each Plugins Name in the language selected
-          tabPlugins = sortListItemsWithFriendlyName ( tabPlugins );
-          
-          //foreach element of the array
-          $.each(tabPlugins, function(index, value) {
-            
-            var result = "";
-            if ( !isNullOrUndefined ( value.plugin.package.credits ))
-               result = md.renderInline( value.plugin.package.credits ); 
-            
-            AddPluginPackage ( value.plugin.type, value.friendlyName, value.plugin.package.version, value.plugin.package.releaseType, value.plugin.package.author, result, value.plugin.package.url );
-          });      
-         
          // delete all existing information
-         $("table#widget-package-list").find("tr:gt(0)").remove();
-        
-          var WidgetList = [];
+         $("table#widget-package-list").find("tr:gt(0)").remove();               
+               
+         var WidgetList = [];
         
          // scan all widgets packages
          for (var index in WidgetPackageManager.packageList) {

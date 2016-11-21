@@ -932,8 +932,27 @@ set_property( TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 ##################################################################################################
 target_link_libraries(yadoms yadoms-shared plugin_IPC ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
 
-
-
+##################################################################################################
+## Manifest
+## Allow Windows10 detection ability by Poco
+##################################################################################################
+if(WIN32)
+   if(MSVC)
+      # extract Yadoms version from Version.h
+      include(cmake/version.cmake)
+      
+      # apply templating to the manifest for setting the version
+      configure_file(${CMAKE_SOURCE_DIR}/../distribution/yadoms.exe.manifest.in
+         "${CMAKE_BINARY_DIR}/yadoms.exe.manifest"
+      @ONLY)
+      
+      #add a custom command
+      add_custom_command(TARGET yadoms POST_BUILD
+          COMMAND "mt.exe" -manifest \"${CMAKE_BINARY_DIR}\\yadoms.exe.manifest\" -outputresource:"$(TargetDir)$(TargetFileName)"\;\#1
+          COMMENT "Adding manifest..." 
+      )
+   endif(MSVC)
+endif(WIN32)
 
 ##################################################################################################
 ## Post build commands

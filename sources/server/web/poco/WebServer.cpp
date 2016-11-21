@@ -64,8 +64,8 @@ namespace web { namespace poco {
          bool fail = false;
 
          try {
-            Poco::Net::SocketAddress sa(address, securedPort);
-            svs = Poco::Net::SecureServerSocket(sa);
+            Poco::Net::SocketAddress sa_secure(address, securedPort);
+            svs = Poco::Net::SecureServerSocket(sa_secure);
          }
          catch (Poco::Exception & ex)
          {
@@ -91,8 +91,8 @@ namespace web { namespace poco {
             YADOMS_LOG(warning) << "**********************************************************";
             YADOMS_LOG(warning) << "Using HTTP instead of HTTPS due to malformed configuration";
             YADOMS_LOG(warning) << "**********************************************************";
-            Poco::Net::SocketAddress sa(address, port);
-            svs = Poco::Net::ServerSocket(sa);
+            Poco::Net::SocketAddress sa_http(address, port);
+            svs = Poco::Net::ServerSocket(sa_http);
          }
       }
 
