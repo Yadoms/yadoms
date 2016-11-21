@@ -10,8 +10,8 @@ namespace yApi = shared::plugin::yPluginApi;
 // Event IDs
 enum
 {
-   kEvtPortConnection = shared::event::kUserFirstId,
-   kEvtPortDataReceived,
+   kEvtConnection = shared::event::kUserFirstId,
+   kEvtDataReceived,
 };
 
 
@@ -47,12 +47,12 @@ shared::event::CEventHandler& CEnOceanReceiveThread::getEventHandler()
 
 int CEnOceanReceiveThread::getEvtPortConnection()
 {
-   return kEvtPortConnection;
+   return kEvtConnection;
 }
 
 int CEnOceanReceiveThread::getEvtPortDataReceived()
 {
-   return kEvtPortDataReceived;
+   return kEvtDataReceived;
 }
 
 void CEnOceanReceiveThread::setHook(boost::function<bool(const message::CEsp3ReceivedPacket&)> isExpectedMessageFct,
@@ -78,12 +78,12 @@ void CEnOceanReceiveThread::doWork()
          // Wait for an event
          switch (m_eventHandler.waitForEvents())
          {
-         case kEvtPortConnection:
+         case kEvtConnection:
             // Redirect to plugin
             m_mainEventHandler.postEvent(m_mainEvtPortConnection, m_eventHandler.getEventData<bool>());
             break;
 
-         case kEvtPortDataReceived:
+         case kEvtDataReceived:
             {
                auto message = m_eventHandler.getEventData<const message::CEsp3ReceivedPacket>();
                boost::lock_guard<boost::recursive_mutex> lock(m_hookMutex);

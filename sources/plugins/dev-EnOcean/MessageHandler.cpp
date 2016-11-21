@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "MessageHandler.h"
-#include "../MegatecUps/ProtocolException.hpp"
+#include "ProtocolException.hpp"
 
 
 CMessageHandler::CMessageHandler(boost::shared_ptr<shared::communication::IAsyncPort> port,

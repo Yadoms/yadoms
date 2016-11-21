@@ -67,7 +67,7 @@ boost::shared_ptr<const message::CEsp3ReceivedPacket> CEnOceanReceiveBufferHandl
    if (m_content.size() < 6)
       return uncompleteMessage; // Message too small
 
-   const auto fullMessageSize = 6 + toWord(m_content, message::kOffsetDataLength) + m_content[message::kOffsetOptionalLength] + 1;
+   const size_t fullMessageSize = 6 + toWord(m_content, message::kOffsetDataLength) + m_content[message::kOffsetOptionalLength] + 1;
 
    if (m_content.size() < fullMessageSize)
       return uncompleteMessage; // Message too small
