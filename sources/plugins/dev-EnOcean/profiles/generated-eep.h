@@ -197,7 +197,6 @@ public:
 protected:
 private:
    boost::shared_ptr<yApi::historization::CSwitch> m_CO___Contact;
-   boost::shared_ptr<yApi::historization::CSwitch> m_LRN___Learn_Button;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_historizers;
 };
 

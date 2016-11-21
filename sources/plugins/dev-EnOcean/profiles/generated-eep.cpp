@@ -288,13 +288,11 @@ const std::string& CRPSTelegram::toFuncName(unsigned int id) {
 
 CProfile_D5_00_01::CProfile_D5_00_01()
 : m_CO___Contact(boost::make_shared<yApi::historization::CSwitch>("CO - Contact")),
-  m_LRN___Learn_Button(boost::make_shared<yApi::historization::CSwitch>("LRN - Learn Button")),
-  m_historizers( { m_CO___Contact, m_LRN___Learn_Button } )
+  m_historizers( { m_CO___Contact } )
 {}
 CProfile_D5_00_01::CProfile_D5_00_01(const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api)
 : m_CO___Contact(boost::make_shared<yApi::historization::CSwitch>("CO - Contact")),
-  m_LRN___Learn_Button(boost::make_shared<yApi::historization::CSwitch>("LRN - Learn Button")),
-  m_historizers( { m_CO___Contact, m_LRN___Learn_Button } ){
+  m_historizers( { m_CO___Contact } ){
 }
 CProfile_D5_00_01::~CProfile_D5_00_01()
 {}
@@ -317,7 +315,6 @@ void CProfile_D5_00_01::sendCommand(const std::string& keyword, const std::strin
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D5_00_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_CO___Contact->set(data[7]);
-   m_LRN___Learn_Button->set(data[4]);
    return m_historizers;
 }
 

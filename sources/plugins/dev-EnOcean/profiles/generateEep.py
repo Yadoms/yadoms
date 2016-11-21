@@ -116,7 +116,8 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
          def isBoolValue(xmlDataFieldNode):
             return True if xmlDataFieldNode.find("enum") is not None \
                and len(xmlDataFieldNode.findall("enum/item")) == 2 \
-               and int(xmlDataFieldNode.find("bitsize").text) == 1 else False
+               and int(xmlDataFieldNode.find("bitsize").text) == 1 \
+               and xmlDataFieldNode.find("shortcut").text != "LRN" else False
 
          def isEnumValue(xmlDataFieldNode):
             if xmlDataFieldNode.find("enum") is None \

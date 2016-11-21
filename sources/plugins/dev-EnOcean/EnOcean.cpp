@@ -747,6 +747,7 @@ void CEnOcean::requestDongleVersion() const
                                [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
                                {
                                   answer = esp3Packet;
+                                  auto TODO = answer->header();//TODO to remove
                                }))
       throw CProtocolException("Unable to get Dongle Version, timeout waiting answer");
 
