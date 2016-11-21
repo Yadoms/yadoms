@@ -20,7 +20,7 @@ public:
    /// \return                      false if timeout waiting answer
    //--------------------------------------------------------------
    virtual bool send(const message::CEsp3SendPacket& sendMessage,
-                     boost::function<bool(const message::CEsp3ReceivedPacket&)> isExpectedMessageFct,
-                     boost::function<void(const message::CEsp3ReceivedPacket&)> onReceiveFct) = 0;
+                     boost::function<bool(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> isExpectedMessageFct,
+                     boost::function<void(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> onReceiveFct) = 0;
 };
 

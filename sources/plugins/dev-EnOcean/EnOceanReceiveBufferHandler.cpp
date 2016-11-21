@@ -123,7 +123,6 @@ boost::shared_ptr<const message::CEsp3ReceivedPacket> CEnOceanReceiveBufferHandl
 
 void CEnOceanReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<const message::CEsp3ReceivedPacket> message) const
 {
-   m_receiveDataEventHandler.postEvent<const message::CEsp3ReceivedPacket>(m_receiveDataEventId,
-                                                                           *message);
+   m_receiveDataEventHandler.postEvent<boost::shared_ptr<const message::CEsp3ReceivedPacket>>(m_receiveDataEventId,
+                                                                                              message);
 }
-

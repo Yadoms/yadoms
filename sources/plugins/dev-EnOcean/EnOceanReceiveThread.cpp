@@ -55,8 +55,8 @@ int CEnOceanReceiveThread::getEvtPortDataReceived()
    return kEvtDataReceived;
 }
 
-void CEnOceanReceiveThread::setHook(boost::function<bool(const message::CEsp3ReceivedPacket&)> isExpectedMessageFct,
-                                    boost::function<void(const message::CEsp3ReceivedPacket&)> onReceiveFct)
+void CEnOceanReceiveThread::setHook(boost::function<bool(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> isExpectedMessageFct,
+                                    boost::function<void(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> onReceiveFct)
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_hookMutex);
    m_isExpectedMessageHookFct = isExpectedMessageFct;
@@ -84,24 +84,8 @@ void CEnOceanReceiveThread::doWork()
             break;
 
          case kEvtDataReceived:
-            {
-               auto message = m_eventHandler.getEventData<const message::CEsp3ReceivedPacket>();
-               boost::lock_guard<boost::recursive_mutex> lock(m_hookMutex);
-               if (m_isExpectedMessageHookFct || !m_isExpectedMessageHookFct(message))
-               {
-                  // Redirect to plugin
-                  m_mainEventHandler.postEvent(m_mainEvtPortDataReceived, message);
-                  return;
-               }
-
-               m_isExpectedMessageHookFct.clear();
-               m_onReceiveHookFct.clear();
-               m_waitAnswerEventHandler.postEvent(shared::event::kUserFirstId);
-
-               m_onReceiveHookFct(message);
-
-               break;
-            }
+            onDataReceived(m_eventHandler.getEventData<boost::shared_ptr<const message::CEsp3ReceivedPacket>>());
+            break;
 
          default:
             break;
@@ -111,5 +95,23 @@ void CEnOceanReceiveThread::doWork()
    catch (boost::thread_interrupted&)
    {
    }
+}
+
+void CEnOceanReceiveThread::onDataReceived(boost::shared_ptr<const message::CEsp3ReceivedPacket> message)
+{
+   boost::lock_guard<boost::recursive_mutex> lock(m_hookMutex);
+   if (m_isExpectedMessageHookFct.empty() || !m_isExpectedMessageHookFct(message))
+   {
+      // Redirect to plugin
+      m_mainEventHandler.postEvent(m_mainEvtPortDataReceived, message);
+      return;
+   }
+
+   m_isExpectedMessageHookFct.clear();
+   auto onReceiveFct = m_onReceiveHookFct;
+   m_onReceiveHookFct.clear();
+   m_waitAnswerEventHandler.postEvent(shared::event::kUserFirstId);
+
+   onReceiveFct(message);
 }
 

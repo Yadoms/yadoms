@@ -103,17 +103,20 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
 
       command.appendData(bitset_to_bytes(data));
 
+      boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
       if (!messageHandler->send(command,
-                                [](const message::CEsp3ReceivedPacket& esp3Packet)
+                                [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
                                 {
-                                   return esp3Packet.header().packetType() == message::RESPONSE;
+                                   return esp3Packet->header().packetType() == message::RESPONSE;
                                 },
-                                [&](const message::CEsp3ReceivedPacket& esp3Packet)
+                                [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
                                 {
-                                   if (esp3Packet.data()[0] != message::RET_OK)
-                                      std::cerr << "Fail to send configuration to " << m_deviceId << " : Actuator Set Local command returns " << esp3Packet.data()[0] << std::endl;
+                                   answer = esp3Packet;
                                 }))
          std::cerr << "Fail to send configuration to " << m_deviceId << " : no answer to Actuator Set Local command" << std::endl;
+
+      if (answer->data()[0] != message::RET_OK)
+         std::cerr << "Fail to send configuration to " << m_deviceId << " : Actuator Set Local command returns " << answer->data()[0] << std::endl;
    }
 
    // CMD 0xB - Actuator Set External Interface Settings
@@ -130,17 +133,19 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
 
       command.appendData(bitset_to_bytes(data));
 
+      boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
       if (!messageHandler->send(command,
-                                [](const message::CEsp3ReceivedPacket& esp3Packet)
+                                [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
                                 {
-                                   return esp3Packet.header().packetType() == message::RESPONSE;
+                                   return esp3Packet->header().packetType() == message::RESPONSE;
                                 },
-                                [&](const message::CEsp3ReceivedPacket& esp3Packet)
+                                [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
                                 {
-                                   if (esp3Packet.data()[0] != message::RET_OK)
-                                      std::cerr << "Fail to send configuration to " << m_deviceId << " : Actuator Set External Interface Settings command returns " << esp3Packet.data()[0] << std::endl;
+                                   answer = esp3Packet;
                                 }))
          std::cerr << "Fail to send configuration to " << m_deviceId << " : no answer to Actuator Set External Interface Settings command" << std::endl;
+
+      if (answer->data()[0] != message::RET_OK)
+         std::cerr << "Fail to send configuration to " << m_deviceId << " : Actuator Set External Interface Settings command returns " << answer->data()[0] << std::endl;
    }
 }
-

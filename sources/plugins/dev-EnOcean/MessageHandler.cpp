@@ -16,8 +16,8 @@ CMessageHandler::~CMessageHandler()
 
 
 bool CMessageHandler::send(const message::CEsp3SendPacket& sendMessage,
-                           boost::function<bool(const message::CEsp3ReceivedPacket&)> isExpectedMessageFct,
-                           boost::function<void(const message::CEsp3ReceivedPacket&)> onReceiveFct)
+                           boost::function<bool(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> isExpectedMessageFct,
+                           boost::function<void(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> onReceiveFct)
 {
    if (!m_port)
       throw CProtocolException("Send message failed : dongle is not ready");

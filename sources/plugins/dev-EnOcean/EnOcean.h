@@ -4,7 +4,6 @@
 #include <shared/communication/IAsyncPort.h>
 #include <shared/communication/AsciiBufferLogger.h>
 #include "message/ReceivedMessage.h"
-#include "message/SendMessage.h"
 #include "ProfileHelper.h"
 #include "IEnOceanReceiveThread.h"
 #include "IMessageHandler.h"
@@ -78,16 +77,16 @@ protected:
    /// \brief	                     Called when the data are received from the UPS
    /// \param [in] message          Message received
    //--------------------------------------------------------------
-   void processDataReceived(const message::CEsp3ReceivedPacket& message);
+   void processDataReceived(boost::shared_ptr<const message::CEsp3ReceivedPacket> message);
 
    //--------------------------------------------------------------
    /// \brief	                     Process received messages
    /// \param [in] esp3Packet       Message received
    //--------------------------------------------------------------
-   void processRadioErp1(const message::CEsp3ReceivedPacket& esp3Packet);
-   static void processResponse(const message::CEsp3ReceivedPacket& esp3Packet);
-   void processDongleVersionResponse(const message::CEsp3ReceivedPacket& esp3Packet) const;
-   static void processEvent(const message::CEsp3ReceivedPacket& esp3Packet);
+   void processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
+   static void processResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
+   void processDongleVersionResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket> dongleVersionResponse) const;
+   static void processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
 
    //--------------------------------------------------------------
    /// \brief	                           Declare a device

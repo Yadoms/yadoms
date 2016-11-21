@@ -54,7 +54,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    }
    if (!NU)
    {
-      // This message contains nothing useful
+      std::cout << "Message received for profile " << profile() << " with NU=0 : this message contains nothing useful, will be ignored" << std::endl;
+      return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
 
    auto nenergyBow = bitset_extract(data, 3, 1) ? true : false;

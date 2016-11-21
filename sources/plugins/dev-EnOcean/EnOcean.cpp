@@ -147,7 +147,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
          case kEvtPortDataReceived:
             {
-               const auto message(m_api->getEventHandler().getEventData<const message::CEsp3ReceivedPacket>());
+               const auto message(m_api->getEventHandler().getEventData<boost::shared_ptr<const message::CEsp3ReceivedPacket>>());
                processDataReceived(message);
                break;
             }
@@ -409,11 +409,11 @@ void CEnOcean::processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDevi
    }
 }
 
-void CEnOcean::processDataReceived(const message::CEsp3ReceivedPacket& message)
+void CEnOcean::processDataReceived(boost::shared_ptr<const message::CEsp3ReceivedPacket> message)
 {
    try
    {
-      switch (message.header().packetType())
+      switch (message->header().packetType())
       {
       case message::RADIO_ERP1:
          processRadioErp1(message);
@@ -434,7 +434,7 @@ void CEnOcean::processDataReceived(const message::CEsp3ReceivedPacket& message)
       case message::COMMAND_2_4: break;//TODO
       case message::MESSAGES: break;//TODO
       default:
-         throw CProtocolException((boost::format("Unknown packet type %1%") % message.header().packetType()).str());
+         throw CProtocolException((boost::format("Unknown packet type %1%") % message->header().packetType()).str());
       }
    }
    catch (CProtocolException& e)
@@ -448,7 +448,7 @@ void CEnOcean::processDataReceived(const message::CEsp3ReceivedPacket& message)
 }
 
 
-void CEnOcean::processRadioErp1(const message::CEsp3ReceivedPacket& esp3Packet)
+void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
 {
    message::CRadioErp1ReceivedMessage erp1Message(esp3Packet);
 
@@ -488,13 +488,30 @@ void CEnOcean::processRadioErp1(const message::CEsp3ReceivedPacket& esp3Packet)
 
       try
       {
-         declareDevice(deviceId,
-                       CProfileHelper(rorg->id(),
-                                      teachInData.funcId(),
-                                      teachInData.typeId()),
-                       CManufacturers::name(teachInData.manufacturerId()));
+         auto profile = CProfileHelper(rorg->id(),
+                                       teachInData.funcId(),
+                                       teachInData.typeId());
+         auto manufacturerName = CManufacturers::name(teachInData.manufacturerId());
 
-//TODO créer la conf         m_api->updateDeviceConfiguration(deviceId, )
+         declareDevice(deviceId,
+                       profile,
+                       manufacturerName);
+
+         //TODO faire un helper pour gérer la conf
+         shared::CDataContainer profileNode;
+         profileNode.set("content", "");
+         profileNode.set("radio", "true");
+         shared::CDataContainer contentProfilesNode;
+         contentProfilesNode.set(profile.profile(), profileNode);
+         shared::CDataContainer profilesNode;
+         profilesNode.set("content", contentProfilesNode);
+         profilesNode.set("activeSection", profile.profile());
+         shared::CDataContainer deviceConfiguration;
+         deviceConfiguration.set("manufacturer", manufacturerName);
+         deviceConfiguration.set("model", m_api->getDeviceModel(deviceId));//TODO pas top, mais il faudra virer le modèle de la conf
+         deviceConfiguration.set("profile", profilesNode);
+         m_api->updateDeviceConfiguration(deviceId,
+                                          deviceConfiguration);
       }
       catch (std::exception& e)
       {
@@ -557,17 +574,17 @@ std::string CEnOcean::extractSenderId(const std::vector<unsigned char>& data,
       (data[startIndex]));
 }
 
-void CEnOcean::processResponse(const message::CEsp3ReceivedPacket&)
+void CEnOcean::processResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket>)
 {
    std::cerr << "Unexpected response received" << std::endl;
 }
 
-void CEnOcean::processDongleVersionResponse(const message::CEsp3ReceivedPacket& esp3Packet) const
+void CEnOcean::processDongleVersionResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket> dongleVersionResponse) const
 {
-   if (esp3Packet.header().dataLength() != 33) //TODO on peut pas mieux faire que cette valeur en dur ?
-      throw CProtocolException((boost::format("Invalid data length %1%, expected 33. Request was CO_RD_VERSION.") % esp3Packet.header().dataLength()).str());
+   if (dongleVersionResponse->header().dataLength() != 33) //TODO on peut pas mieux faire que cette valeur en dur ?
+      throw CProtocolException((boost::format("Invalid data length %1%, expected 33. Request was CO_RD_VERSION.") % dongleVersionResponse->header().dataLength()).str());
 
-   auto returnCode = static_cast<message::EReturnCode>(esp3Packet.data()[0]);
+   auto returnCode = static_cast<message::EReturnCode>(dongleVersionResponse->data()[0]);
 
    if (returnCode == message::RET_NOT_SUPPORTED)
    {
@@ -596,29 +613,29 @@ void CEnOcean::processDongleVersionResponse(const message::CEsp3ReceivedPacket& 
       }
    };
    Version appVersion;
-   appVersion.m_main = esp3Packet.data()[1];
-   appVersion.m_beta = esp3Packet.data()[2];
-   appVersion.m_alpha = esp3Packet.data()[3];
-   appVersion.m_build = esp3Packet.data()[4];
+   appVersion.m_main = dongleVersionResponse->data()[1];
+   appVersion.m_beta = dongleVersionResponse->data()[2];
+   appVersion.m_alpha = dongleVersionResponse->data()[3];
+   appVersion.m_build = dongleVersionResponse->data()[4];
 
    Version apiVersion;
-   apiVersion.m_main = esp3Packet.data()[5];
-   apiVersion.m_beta = esp3Packet.data()[6];
-   apiVersion.m_alpha = esp3Packet.data()[7];
-   apiVersion.m_build = esp3Packet.data()[8];
+   apiVersion.m_main = dongleVersionResponse->data()[5];
+   apiVersion.m_beta = dongleVersionResponse->data()[6];
+   apiVersion.m_alpha = dongleVersionResponse->data()[7];
+   apiVersion.m_build = dongleVersionResponse->data()[8];
 
-   auto chipId = esp3Packet.data()[9] << 24
-      | esp3Packet.data()[10] << 16
-      | esp3Packet.data()[11] << 8
-      | esp3Packet.data()[12];
+   auto chipId = dongleVersionResponse->data()[9] << 24
+      | dongleVersionResponse->data()[10] << 16
+      | dongleVersionResponse->data()[11] << 8
+      | dongleVersionResponse->data()[12];
 
-   auto chipVersion = esp3Packet.data()[13] << 24
-      | esp3Packet.data()[14] << 16
-      | esp3Packet.data()[15] << 8
-      | esp3Packet.data()[16];
+   auto chipVersion = dongleVersionResponse->data()[13] << 24
+      | dongleVersionResponse->data()[14] << 16
+      | dongleVersionResponse->data()[15] << 8
+      | dongleVersionResponse->data()[16];
 
-   std::string appDescription(esp3Packet.data().begin() + 17,
-                              esp3Packet.data().end());
+   std::string appDescription(dongleVersionResponse->data().begin() + 17,
+                              dongleVersionResponse->data().end());
    appDescription.erase(appDescription.find_last_not_of('\0') + 1);
 
    std::cout << "EnOcean dongle Version " << appVersion.toString() <<
@@ -631,11 +648,11 @@ void CEnOcean::processDongleVersionResponse(const message::CEsp3ReceivedPacket& 
    m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 }
 
-void CEnOcean::processEvent(const message::CEsp3ReceivedPacket& esp3Packet)
+void CEnOcean::processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
 {
    //TODO tout revoir pour utiliser le code généré (si dispo pour les events)
-   if (esp3Packet.header().dataLength() < 1)
-      throw CProtocolException((boost::format("RadioERP1 message : wrong data size (%1%, < 1)") % esp3Packet.header().dataLength()).str());
+   if (esp3Packet->header().dataLength() < 1)
+      throw CProtocolException((boost::format("RadioERP1 message : wrong data size (%1%, < 1)") % esp3Packet->header().dataLength()).str());
 
    enum
       {
@@ -648,7 +665,7 @@ void CEnOcean::processEvent(const message::CEsp3ReceivedPacket& esp3Packet)
          CO_TRANSMIT_FAILED = 0x07
       };
 
-   auto eventCode = esp3Packet.data()[0];
+   auto eventCode = esp3Packet->data()[0];
 
    switch (eventCode)
    {
@@ -713,15 +730,17 @@ void CEnOcean::requestDongleVersion() const
    message::CCommonCommandSendMessage sendMessage;
    sendMessage.appendData({message::CCommonCommandSendMessage::CO_RD_VERSION});
 
+   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!m_messageHandler->send(sendMessage,
-                               [](const message::CEsp3ReceivedPacket& esp3Packet)
+                               [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
                                {
-                                  return esp3Packet.header().packetType() == message::RESPONSE;
+                                  return esp3Packet->header().packetType() == message::RESPONSE;
                                },
-                               [&](const message::CEsp3ReceivedPacket& esp3Packet)
+                               [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
                                {
-                                  processDongleVersionResponse(esp3Packet);
+                                  answer = esp3Packet;
                                }))
       throw CProtocolException("Unable to get Dongle Version, timeout waiting answer");
-}
 
+   processDongleVersionResponse(answer);
+}

@@ -17,7 +17,7 @@ namespace message
       /// \brief	                           Constructor
       /// \param[in] esp3Packet              The esp3 message
       //--------------------------------------------------------------
-      explicit CRadioErp1ReceivedMessage(const CEsp3ReceivedPacket& esp3Packet);
+      explicit CRadioErp1ReceivedMessage(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
 
       //--------------------------------------------------------------
       /// \brief	                           Destructor
