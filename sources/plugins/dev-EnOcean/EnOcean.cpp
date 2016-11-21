@@ -26,7 +26,6 @@ enum
 
 
 CEnOcean::CEnOcean()
-   : m_sentCommand(message::CCommonCommandSendMessage::CO_WR_SLEEP)
 {
 }
 
@@ -54,118 +53,126 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    // the main loop
    while (true)
    {
-      // Wait for an event
-      switch (m_api->getEventHandler().waitForEvents())
+      try
       {
-      case yApi::IYPluginApi::kEventStopRequested:
+         // Wait for an event
+         switch (m_api->getEventHandler().waitForEvents())
          {
-            std::cout << "Stop requested" << std::endl;
-            m_api->setPluginState(yApi::historization::EPluginState::kStopped);
-            return;
-         }
+         case yApi::IYPluginApi::kEventStopRequested:
+            {
+               std::cout << "Stop requested" << std::endl;
+               m_api->setPluginState(yApi::historization::EPluginState::kStopped);
+               return;
+            }
 
-      case yApi::IYPluginApi::kEventUpdateConfiguration:
-         {
-            // Configuration was updated
-            m_api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            auto newConfigurationData = m_api->getEventHandler().getEventData<shared::CDataContainer>();
-            std::cout << "Update configuration..." << std::endl;
-            BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+         case yApi::IYPluginApi::kEventUpdateConfiguration:
+            {
+               // Configuration was updated
+               m_api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+               auto newConfigurationData = m_api->getEventHandler().getEventData<shared::CDataContainer>();
+               std::cout << "Update configuration..." << std::endl;
+               BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
-            // Close connection
-            CEnOceanConfiguration newConfiguration;
-            newConfiguration.initializeWith(newConfigurationData);
+               // Close connection
+               CEnOceanConfiguration newConfiguration;
+               newConfiguration.initializeWith(newConfigurationData);
 
-            // If port has changed, destroy and recreate connection (if any)
-            auto needToReconnect = !connectionsAreEqual(m_configuration, newConfiguration) && !!m_port;
+               // If port has changed, destroy and recreate connection (if any)
+               auto needToReconnect = !connectionsAreEqual(m_configuration, newConfiguration) && !!m_port;
 
-            if (needToReconnect)
-               destroyConnection();
+               if (needToReconnect)
+                  destroyConnection();
 
-            // Update configuration
-            m_configuration.initializeWith(newConfigurationData);
+               // Update configuration
+               m_configuration.initializeWith(newConfigurationData);
 
-            if (needToReconnect)
+               if (needToReconnect)
+                  createConnection();
+               else
+                  m_api->setPluginState(yApi::historization::EPluginState::kRunning);
+
+               break;
+            }
+
+         case yApi::IYPluginApi::kEventDeviceCommand:
+            {
+               // Command received from Yadoms
+               auto command(m_api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
+               std::cout << "Command received : " << yApi::IDeviceCommand::toString(command) << std::endl;
+
+               processDeviceCommand(command);
+
+               break;
+            }
+
+         case yApi::IYPluginApi::kEventManuallyDeviceCreation:
+            {
+               auto creation(api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>());
+               try
+               {
+                  creation->sendSuccess(processManuallyDeviceCreation(creation));
+               }
+               catch (std::exception& ex)
+               {
+                  std::cerr << "Unable to create device : " << ex.what() << std::endl;
+                  creation->sendError(ex.what());
+               }
+               break;
+            }
+
+         case yApi::IYPluginApi::kEventDeviceRemoved:
+            {
+               auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved>>();
+               std::cout << device->device() << " was removed" << std::endl;
+               processDeviceRemmoved(device);
+               break;
+            }
+
+         case yApi::IYPluginApi::kSetDeviceConfiguration:
+            {
+               // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
+               auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
+               processDeviceConfiguration(deviceConfiguration);
+               break;
+            }
+
+         case kEvtPortConnection:
+            {
+               if (m_api->getEventHandler().getEventData<bool>())
+                  processConnectionEvent();
+               else
+                  processUnConnectionEvent();
+
+               break;
+            }
+         case kEvtPortDataReceived:
+            {
+               const auto message(m_api->getEventHandler().getEventData<const message::CEsp3ReceivedPacket>());
+               processDataReceived(message);
+               break;
+            }
+         case kAnswerTimeout:
+            {
+               std::cerr << "No answer received from EnOcean dongle (timeout)" << std::endl;
+               protocolErrorProcess();
+               break;
+            }
+         case kProtocolErrorRetryTimer:
+            {
                createConnection();
-            else
-               m_api->setPluginState(yApi::historization::EPluginState::kRunning);
-
-            break;
-         }
-
-      case yApi::IYPluginApi::kEventDeviceCommand:
-         {
-            // Command received from Yadoms
-            auto command(m_api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
-            std::cout << "Command received : " << yApi::IDeviceCommand::toString(command) << std::endl;
-
-            processDeviceCommand(command);
-
-            break;
-         }
-
-      case yApi::IYPluginApi::kEventManuallyDeviceCreation:
-         {
-            auto creation(api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>());
-            try
-            {
-               creation->sendSuccess(processManuallyDeviceCreation(creation));
+               break;
             }
-            catch (std::exception& ex)
+         default:
             {
-               std::cerr << "Unable to create device : " << ex.what() << std::endl;
-               creation->sendError(ex.what());
+               std::cerr << "Unknown message id" << std::endl;
+               break;
             }
-            break;
          }
-
-      case yApi::IYPluginApi::kEventDeviceRemoved:
-         {
-            auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved>>();
-            std::cout << device->device() << " was removed" << std::endl;
-            processDeviceRemmoved(device);
-            break;
-         }
-
-      case yApi::IYPluginApi::kSetDeviceConfiguration:
-         {
-            // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
-            auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
-            processDeviceConfiguration(deviceConfiguration);
-            break;
-         }
-
-      case kEvtPortConnection:
-         {
-            if (m_api->getEventHandler().getEventData<bool>())
-               processConnectionEvent();
-            else
-               processUnConnectionEvent();
-
-            break;
-         }
-      case kEvtPortDataReceived:
-         {
-            const auto message(m_api->getEventHandler().getEventData<const message::CEsp3ReceivedPacket>());
-            processDataReceived(message);
-            break;
-         }
-      case kAnswerTimeout:
-         {
-            std::cout << "No answer received from EnOcean dongle (timeout)" << std::endl;
-            protocolErrorProcess();
-            break;
-         }
-      case kProtocolErrorRetryTimer:
-         {
-            createConnection();
-            break;
-         }
-      default:
-         {
-            std::cerr << "Unknown message id" << std::endl;
-            break;
-         }
+      }
+      catch (CProtocolException& e)
+      {
+         std::cerr << "Error communicationg with EnOcean dongle " << e.what() << std::endl;
+         protocolErrorProcess();
       }
    }
 }
@@ -203,16 +210,27 @@ void CEnOcean::createConnection()
 {
    m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
+   // Create the receiver thread
+   m_receiverThread = CEnOceanFactory::constructReceiverThread(m_api->getEventHandler(),
+                                                               kEvtPortConnection,
+                                                               kEvtPortDataReceived);
+
    // Create the port instance
    m_port = CEnOceanFactory::constructPort(m_configuration,
-                                           m_api->getEventHandler(),
-                                           kEvtPortConnection,
-                                           kEvtPortDataReceived);
+                                           m_receiverThread->getEventHandler(),
+                                           m_receiverThread->getEvtPortConnection(),
+                                           m_receiverThread->getEvtPortDataReceived());
+
+   m_messageHandler = CEnOceanFactory::constructMessageHandler(m_port,
+                                                               m_receiverThread);
+
    m_port->start();
 }
 
 void CEnOcean::destroyConnection()
 {
+   m_receiverThread.reset();
+
    m_port.reset();
 }
 
@@ -262,19 +280,8 @@ void CEnOcean::processDeviceCommand(boost::shared_ptr<const shared::plugin::yPlu
    }
 
    m_devices[command->getDevice()]->sendCommand(command->getKeyword(),
-                                                command->getBody());
-}
-
-
-void CEnOcean::send(const message::CEsp3SendPacket& sendMessage) const
-{
-   if (!m_port)
-   {
-      std::cerr << "Send message failed : dongle is not ready" << std::endl;
-      return;
-   }
-
-   m_port->send(sendMessage.buildBuffer());
+                                                command->getBody(),
+                                                m_messageHandler);
 }
 
 void CEnOcean::processConnectionEvent()
@@ -329,10 +336,7 @@ std::string CEnOcean::processManuallyDeviceCreation(boost::shared_ptr<const shar
    try
    {
       device->sendConfiguration(configuration.get<shared::CDataContainer>("profile.content." + selectedProfile.profile() + ".content"),
-                                [&](const message::CEsp3SendPacket& esp3Message)
-                                {
-                                   send(esp3Message);
-                                });
+                                m_messageHandler);
    }
    catch (std::exception& e)
    {
@@ -387,7 +391,8 @@ void CEnOcean::processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDevi
       // Send configuration to device
       try
       {
-         m_devices[deviceId]->sendConfiguration(configuration.get<shared::CDataContainer>("profile.content." + m_devices[deviceId]->profile() + ".content"));
+         m_devices[deviceId]->sendConfiguration(configuration.get<shared::CDataContainer>("profile.content." + m_devices[deviceId]->profile() + ".content"),
+                                                m_messageHandler);
       }
       catch (std::exception& e)
       {
@@ -552,15 +557,9 @@ std::string CEnOcean::extractSenderId(const std::vector<unsigned char>& data,
       (data[startIndex]));
 }
 
-void CEnOcean::processResponse(const message::CEsp3ReceivedPacket& esp3Packet) const
+void CEnOcean::processResponse(const message::CEsp3ReceivedPacket&)
 {
-   switch (m_sentCommand)
-   {
-   case message::CCommonCommandSendMessage::CO_RD_VERSION: processDongleVersionResponse(esp3Packet);
-      break;
-   default:
-      std::cout << "Receive response not supported (last command sent was " << m_sentCommand << ")" << std::endl;
-   }
+   std::cerr << "Unexpected response received" << std::endl;
 }
 
 void CEnOcean::processDongleVersionResponse(const message::CEsp3ReceivedPacket& esp3Packet) const
@@ -577,7 +576,10 @@ void CEnOcean::processDongleVersionResponse(const message::CEsp3ReceivedPacket& 
    }
 
    if (returnCode != message::RET_OK)
-      throw CProtocolException((boost::format("Unexpected return code %1%. Request was CO_RD_VERSION.") % returnCode).str());
+   {
+      std::cerr << "Unexpected return code " << returnCode << ". Request was CO_RD_VERSION." << std::endl;
+      return;
+   }
 
    struct Version
    {
@@ -706,11 +708,20 @@ boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
    return device;
 }
 
-void CEnOcean::requestDongleVersion()
+void CEnOcean::requestDongleVersion() const
 {
    message::CCommonCommandSendMessage sendMessage;
    sendMessage.appendData({message::CCommonCommandSendMessage::CO_RD_VERSION});
-   m_sentCommand = message::CCommonCommandSendMessage::CO_RD_VERSION;//TODO revoir la façon de faire...
 
-   send(sendMessage);
+   if (!m_messageHandler->send(sendMessage,
+                               [](const message::CEsp3ReceivedPacket& esp3Packet)
+                               {
+                                  return esp3Packet.header().packetType() == message::RESPONSE;
+                               },
+                               [&](const message::CEsp3ReceivedPacket& esp3Packet)
+                               {
+                                  processDongleVersionResponse(esp3Packet);
+                               }))
+      throw CProtocolException("Unable to get Dongle Version, timeout waiting answer");
 }
+

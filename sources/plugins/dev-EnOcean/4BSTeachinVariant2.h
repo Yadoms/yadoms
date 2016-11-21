@@ -1,4 +1,3 @@
-// Generated file, don't modify
 #pragma once
 #include "profiles/generated-manufacturers.h"
 #include "profiles/generated-eep.h"

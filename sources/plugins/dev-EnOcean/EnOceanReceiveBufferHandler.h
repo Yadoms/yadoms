@@ -41,7 +41,7 @@ protected:
    /// \brief	                     Send a message to the target event handler
    /// \param[in] buffer            Buffer to send
    //--------------------------------------------------------------
-   void notifyEventHandler(boost::shared_ptr<const message::CEsp3ReceivedPacket> message) const;
+   void notifyEventHandler(boost::shared_ptr<const message::CEsp3ReceivedPacket> message) const;//TODO réécrire pour merger avec le CEnOceanReceiveThread et économiser un thread
 
 private:
    //--------------------------------------------------------------

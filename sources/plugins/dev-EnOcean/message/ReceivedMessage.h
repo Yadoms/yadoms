@@ -1,67 +1,10 @@
 #pragma once
-#include "types.h"
+#include "Header.h"
 #include "../profiles/generated-eep.h"
 
 //TODO 3 classes dans ce fichier, faire le ménage
 namespace message
 {
-   class CHeader
-   {
-   public:
-      explicit CHeader(const std::vector<unsigned char>& receivedBuffer);
-
-      unsigned short dataLength() const;
-      unsigned char optionalLength() const;
-      EPacketType packetType() const;
-      int offsetData() const;
-      int offsetOptional() const;
-
-   private:
-      const unsigned short m_dataLength;
-      const unsigned char m_optionalLength;
-      const EPacketType m_packetType;
-      const int m_offsetData;
-      const int m_offsetOptional;
-   };
-
-
-   inline unsigned short toWord(const std::vector<unsigned char>& content,
-      const unsigned int offset)
-   {
-      return content[offset] + content[offset + 1];
-   }
-
-
-   //--------------------------------------------------------------
-   /// \brief	EnOcean ESP3 received message
-   ///
-   /// This class manages an ESP3 EnOcean message, when receiving.
-   //--------------------------------------------------------------
-   class CEsp3ReceivedPacket
-   {
-   public:
-      //--------------------------------------------------------------
-      /// \brief	                           Constructor
-      /// \param[in] receivedBuffer          The received buffer
-      //--------------------------------------------------------------
-      explicit CEsp3ReceivedPacket(const std::vector<unsigned char>& receivedBuffer);
-
-      //--------------------------------------------------------------
-      /// \brief	                           Destructor
-      //--------------------------------------------------------------
-      virtual ~CEsp3ReceivedPacket();
-
-      const CHeader& header() const;
-      const std::vector<unsigned char>& data() const;
-      const std::vector<unsigned char>& optional() const;
-
-   private:
-      const CHeader m_header;
-      const std::vector<unsigned char> m_data;
-      const std::vector<unsigned char> m_optional;
-   };
-
-
    //--------------------------------------------------------------
    /// \brief	EnOcean RADIO_ERP1 message
    ///
@@ -96,6 +39,6 @@ namespace message
       const unsigned char m_status;
       const std::vector<unsigned char> m_data;
    };
-
-
 } // namespace message
+
+

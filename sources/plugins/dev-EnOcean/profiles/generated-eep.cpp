@@ -81,10 +81,10 @@ const std::string& CProfile_F6_02_04::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_F6_02_04::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_F6_02_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_F6_02_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_F6_02_04::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_F6_02_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_F6_02_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -157,10 +157,10 @@ const std::string& CProfile_F6_04_02::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_F6_04_02::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_F6_04_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_F6_04_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_F6_04_02::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_F6_04_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_F6_04_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -309,10 +309,10 @@ const std::string& CProfile_D5_00_01::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D5_00_01::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_D5_00_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_D5_00_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_D5_00_01::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_D5_00_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D5_00_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -420,10 +420,10 @@ const std::string& CProfile_A5_02_01::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_01::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_01::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -457,10 +457,10 @@ const std::string& CProfile_A5_02_02::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_02::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_02::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -494,10 +494,10 @@ const std::string& CProfile_A5_02_03::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_03::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_03::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -531,10 +531,10 @@ const std::string& CProfile_A5_02_04::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_04::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_04::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -568,10 +568,10 @@ const std::string& CProfile_A5_02_05::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_05::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_05::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_05::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_05::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_05::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_05::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -605,10 +605,10 @@ const std::string& CProfile_A5_02_06::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_06::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_06::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_06::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_06::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_06::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_06::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -642,10 +642,10 @@ const std::string& CProfile_A5_02_07::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_07::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_07::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_07::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_07::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_07::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_07::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -679,10 +679,10 @@ const std::string& CProfile_A5_02_08::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_08::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_08::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_08::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_08::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_08::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_08::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -716,10 +716,10 @@ const std::string& CProfile_A5_02_09::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_09::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_09::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_09::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_09::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_09::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_09::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -753,10 +753,10 @@ const std::string& CProfile_A5_02_0A::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_0A::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_0A::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_0A::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_0A::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_0A::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_0A::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -790,10 +790,10 @@ const std::string& CProfile_A5_02_0B::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_0B::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_0B::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_0B::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_0B::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_0B::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_0B::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -827,10 +827,10 @@ const std::string& CProfile_A5_02_10::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_10::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_10::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_10::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_10::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_10::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_10::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -864,10 +864,10 @@ const std::string& CProfile_A5_02_11::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_11::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_11::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_11::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_11::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_11::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_11::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -901,10 +901,10 @@ const std::string& CProfile_A5_02_12::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_12::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_12::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_12::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_12::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_12::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_12::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -938,10 +938,10 @@ const std::string& CProfile_A5_02_13::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_13::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_13::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_13::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_13::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_13::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_13::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -975,10 +975,10 @@ const std::string& CProfile_A5_02_14::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_14::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_14::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_14::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_14::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_14::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_14::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1012,10 +1012,10 @@ const std::string& CProfile_A5_02_15::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_15::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_15::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_15::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_15::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_15::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_15::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1049,10 +1049,10 @@ const std::string& CProfile_A5_02_16::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_16::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_16::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_16::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_16::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_16::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_16::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1086,10 +1086,10 @@ const std::string& CProfile_A5_02_17::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_17::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_17::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_17::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_17::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_17::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_17::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1123,10 +1123,10 @@ const std::string& CProfile_A5_02_18::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_18::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_18::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_18::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_18::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_18::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_18::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1160,10 +1160,10 @@ const std::string& CProfile_A5_02_19::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_19::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_19::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_19::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_19::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_19::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_19::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1197,10 +1197,10 @@ const std::string& CProfile_A5_02_1A::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_1A::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_1A::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_1A::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_1A::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_1A::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_1A::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1234,10 +1234,10 @@ const std::string& CProfile_A5_02_1B::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_1B::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_1B::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_1B::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_1B::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_1B::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_1B::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1271,10 +1271,10 @@ const std::string& CProfile_A5_02_20::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_20::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_20::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_20::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_20::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_20::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_20::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1308,10 +1308,10 @@ const std::string& CProfile_A5_02_30::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_30::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_02_30::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_02_30::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_02_30::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_02_30::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_30::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1393,10 +1393,10 @@ const std::string& CProfile_A5_04_01::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_04_01::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_04_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_04_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_04_01::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_04_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_04_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1440,10 +1440,10 @@ const std::string& CProfile_A5_04_02::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_04_02::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_04_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_04_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_04_02::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_04_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_04_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1487,10 +1487,10 @@ const std::string& CProfile_A5_04_03::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_04_03::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_04_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_04_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_04_03::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_04_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_04_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1554,10 +1554,10 @@ const std::string& CProfile_A5_05_01::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_05_01::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_05_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_05_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_05_01::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_05_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_05_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1618,10 +1618,10 @@ const std::string& CProfile_A5_06_01::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_01::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_06_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_06_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_06_01::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_06_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1672,10 +1672,10 @@ const std::string& CProfile_A5_06_02::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_02::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_06_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_06_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_06_02::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_06_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1722,10 +1722,10 @@ const std::string& CProfile_A5_06_03::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_03::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_06_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_06_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_06_03::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_06_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1768,10 +1768,10 @@ const std::string& CProfile_A5_06_04::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_04::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_06_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_06_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_06_04::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_06_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1813,10 +1813,10 @@ const std::string& CProfile_A5_06_05::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_05::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_06_05::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_06_05::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_06_05::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_06_05::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_05::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1885,10 +1885,10 @@ const std::string& CProfile_A5_07_01::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_07_01::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_07_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_07_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_07_01::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_07_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_07_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1918,10 +1918,10 @@ const std::string& CProfile_A5_07_02::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_07_02::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_07_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_07_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_07_02::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_07_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_07_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -1953,10 +1953,10 @@ const std::string& CProfile_A5_07_03::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_07_03::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_07_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_07_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_07_03::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_07_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_07_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2021,10 +2021,10 @@ const std::string& CProfile_A5_08_01::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_08_01::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_08_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_08_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_08_01::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_08_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_08_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2078,10 +2078,10 @@ const std::string& CProfile_A5_08_02::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_08_02::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_08_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_08_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_08_02::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_08_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_08_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2135,10 +2135,10 @@ const std::string& CProfile_A5_08_03::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_08_03::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_08_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_08_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_08_03::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_08_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_08_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2210,10 +2210,10 @@ const std::string& CProfile_A5_09_02::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_02::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_09_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_09_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_09_02::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_09_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2259,10 +2259,10 @@ const std::string& CProfile_A5_09_04::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_04::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_09_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_09_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_09_04::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_09_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2356,10 +2356,10 @@ const std::string& CProfile_A5_09_05::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_05::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_09_05::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_09_05::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_09_05::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_09_05::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_05::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2392,10 +2392,10 @@ const std::string& CProfile_A5_09_07::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_07::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_09_07::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_09_07::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_09_07::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_09_07::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_07::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2427,10 +2427,10 @@ const std::string& CProfile_A5_09_09::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_09::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_09_09::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_09_09::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_09_09::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_09_09::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_09::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2466,10 +2466,10 @@ const std::string& CProfile_A5_09_0A::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_0A::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_09_0A::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_09_0A::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_09_0A::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_09_0A::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_0A::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2549,10 +2549,10 @@ const std::string& CProfile_A5_09_0B::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_0B::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_09_0B::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_09_0B::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_09_0B::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_09_0B::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_0B::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2615,10 +2615,10 @@ const std::string& CProfile_A5_10_01::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_01::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_01::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2655,10 +2655,10 @@ const std::string& CProfile_A5_10_02::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_02::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_02::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2693,10 +2693,10 @@ const std::string& CProfile_A5_10_03::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_03::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_03::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2730,10 +2730,10 @@ const std::string& CProfile_A5_10_04::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_04::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_04::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2769,10 +2769,10 @@ const std::string& CProfile_A5_10_05::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_05::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_05::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_05::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_05::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_05::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_05::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2809,10 +2809,10 @@ const std::string& CProfile_A5_10_06::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_06::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_06::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_06::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_06::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_06::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_06::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2847,10 +2847,10 @@ const std::string& CProfile_A5_10_07::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_07::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_07::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_07::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_07::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_07::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_07::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2886,10 +2886,10 @@ const std::string& CProfile_A5_10_08::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_08::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_08::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_08::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_08::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_08::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_08::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2926,10 +2926,10 @@ const std::string& CProfile_A5_10_09::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_09::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_09::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_09::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_09::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_09::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_09::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -2966,10 +2966,10 @@ const std::string& CProfile_A5_10_0A::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0A::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_0A::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_0A::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_0A::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_0A::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0A::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -3006,10 +3006,10 @@ const std::string& CProfile_A5_10_0B::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0B::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_0B::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_0B::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_0B::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_0B::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0B::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -3046,10 +3046,10 @@ const std::string& CProfile_A5_10_0C::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0C::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_0C::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_0C::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_0C::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_0C::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0C::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -3086,10 +3086,10 @@ const std::string& CProfile_A5_10_0D::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0D::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_0D::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_0D::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_0D::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_0D::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0D::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -3128,10 +3128,10 @@ const std::string& CProfile_A5_10_10::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_10::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_10::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_10::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_10::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_10::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_10::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -3175,10 +3175,10 @@ const std::string& CProfile_A5_10_11::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_11::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_11::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_11::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_11::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_11::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_11::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -3220,10 +3220,10 @@ const std::string& CProfile_A5_10_12::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_12::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_12::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_12::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_12::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_12::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_12::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -3266,10 +3266,10 @@ const std::string& CProfile_A5_10_13::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_13::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_13::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_13::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_13::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_13::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_13::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -3313,10 +3313,10 @@ const std::string& CProfile_A5_10_14::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_14::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_14::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_14::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_14::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_14::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_14::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -3356,10 +3356,10 @@ const std::string& CProfile_A5_10_15::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_15::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_15::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_15::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_15::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_15::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_15::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -3395,10 +3395,10 @@ const std::string& CProfile_A5_10_16::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_16::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_16::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_16::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_16::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_16::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_16::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -3435,10 +3435,10 @@ const std::string& CProfile_A5_10_17::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_17::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_17::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_17::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_17::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_17::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_17::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -3499,10 +3499,10 @@ const std::string& CProfile_A5_10_18::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_18::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_18::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_18::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_18::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_18::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_18::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -3569,10 +3569,10 @@ const std::string& CProfile_A5_10_19::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_19::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_19::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_19::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_19::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_19::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_19::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -3637,10 +3637,10 @@ const std::string& CProfile_A5_10_1A::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1A::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_1A::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_1A::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_1A::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_1A::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1A::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -3702,10 +3702,10 @@ const std::string& CProfile_A5_10_1B::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1B::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_1B::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_1B::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_1B::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_1B::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1B::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -3772,10 +3772,10 @@ const std::string& CProfile_A5_10_1C::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1C::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_1C::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_1C::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_1C::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_1C::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1C::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -3842,10 +3842,10 @@ const std::string& CProfile_A5_10_1D::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1D::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_1D::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_1D::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_1D::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_1D::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1D::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -3896,10 +3896,10 @@ const std::string& CProfile_A5_10_1F::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1F::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_1F::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_1F::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_1F::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_1F::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1F::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -3958,10 +3958,10 @@ const std::string& CProfile_A5_10_20::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_20::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_20::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_20::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_20::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_20::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_20::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -4019,10 +4019,10 @@ const std::string& CProfile_A5_10_21::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_21::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_21::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_21::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_21::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_21::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_21::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -4065,10 +4065,10 @@ const std::string& CProfile_A5_10_22::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_22::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_22::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_22::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_22::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_22::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_22::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -4111,10 +4111,10 @@ const std::string& CProfile_A5_10_23::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_23::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_10_23::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_10_23::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_10_23::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_10_23::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_23::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -4219,10 +4219,10 @@ const std::string& CProfile_A5_11_01::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_01::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_11_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_11_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_11_01::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_11_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -4319,10 +4319,10 @@ const std::string& CProfile_A5_11_02::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_02::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_11_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_11_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_11_02::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_11_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -4410,10 +4410,10 @@ const std::string& CProfile_A5_11_03::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_03::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_11_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_11_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_11_03::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_11_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -4483,10 +4483,10 @@ const std::string& CProfile_A5_11_04::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_04::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_11_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_11_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_11_04::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_11_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -4557,10 +4557,10 @@ const std::string& CProfile_A5_12_00::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_00::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_12_00::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_12_00::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_12_00::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_12_00::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_00::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -4606,10 +4606,10 @@ const std::string& CProfile_A5_12_01::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_01::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_12_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_12_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_12_01::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_12_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -4655,10 +4655,10 @@ const std::string& CProfile_A5_12_02::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_02::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_12_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_12_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_12_02::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_12_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -4704,10 +4704,10 @@ const std::string& CProfile_A5_12_03::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_03::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_12_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_12_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_12_03::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_12_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -4753,10 +4753,10 @@ const std::string& CProfile_A5_12_04::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_04::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_12_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_12_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_12_04::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_12_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -4826,10 +4826,10 @@ const std::string& CProfile_A5_12_05::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_05::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_12_05::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_12_05::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_12_05::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_12_05::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_05::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -4889,10 +4889,10 @@ const std::string& CProfile_A5_12_10::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_10::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_12_10::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_12_10::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_12_10::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_12_10::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_10::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -4952,10 +4952,10 @@ const std::string& CProfile_A5_13_01::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_01::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_13_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_13_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_13_01::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_13_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -4997,10 +4997,10 @@ const std::string& CProfile_A5_13_02::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_02::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_13_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_13_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_13_02::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_13_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -5045,10 +5045,10 @@ const std::string& CProfile_A5_13_03::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_03::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_13_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_13_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_13_03::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_13_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -5101,10 +5101,10 @@ const std::string& CProfile_A5_13_04::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_04::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_13_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_13_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_13_04::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_13_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -5164,10 +5164,10 @@ const std::string& CProfile_A5_13_07::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_07::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_13_07::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_13_07::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_13_07::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_13_07::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_07::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -5199,10 +5199,10 @@ const std::string& CProfile_A5_13_08::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_08::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_13_08::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_13_08::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_13_08::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_13_08::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_08::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -5233,10 +5233,10 @@ const std::string& CProfile_A5_13_10::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_10::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_13_10::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_13_10::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_13_10::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_13_10::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_10::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -5294,10 +5294,10 @@ const std::string& CProfile_A5_14_01::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_01::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_14_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_14_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_14_01::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_14_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -5336,10 +5336,10 @@ const std::string& CProfile_A5_14_02::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_02::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_14_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_14_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_14_02::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_14_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -5383,10 +5383,10 @@ const std::string& CProfile_A5_14_03::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_03::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_14_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_14_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_14_03::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_14_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -5428,10 +5428,10 @@ const std::string& CProfile_A5_14_04::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_04::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_14_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_14_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_14_04::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_14_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -5474,10 +5474,10 @@ const std::string& CProfile_A5_14_05::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_05::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_14_05::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_14_05::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_14_05::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_14_05::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_05::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -5516,10 +5516,10 @@ const std::string& CProfile_A5_14_06::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_06::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_14_06::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_14_06::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_14_06::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_14_06::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_06::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -5638,10 +5638,10 @@ const std::string& CProfile_A5_20_12::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_20_12::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_20_12::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_20_12::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_20_12::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_20_12::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_20_12::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -5693,10 +5693,10 @@ const std::string& CProfile_A5_30_02::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_02::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_30_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_30_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_30_02::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_30_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -5736,10 +5736,10 @@ const std::string& CProfile_A5_30_03::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_03::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_30_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_30_03::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_30_03::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_30_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -5782,10 +5782,10 @@ const std::string& CProfile_A5_30_04::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_04::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_30_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_30_04::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_30_04::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_30_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -5819,10 +5819,10 @@ const std::string& CProfile_A5_30_05::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_05::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_30_05::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_30_05::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_30_05::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_30_05::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_05::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -5886,10 +5886,10 @@ const std::string& CProfile_A5_37_01::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_37_01::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_37_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_37_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_37_01::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_37_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_37_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -5971,10 +5971,10 @@ const std::string& CProfile_A5_38_09::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_38_09::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_A5_38_09::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_A5_38_09::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_A5_38_09::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_A5_38_09::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_38_09::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -6187,10 +6187,10 @@ const std::string& CProfile_D2_03_20::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_03_20::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_D2_03_20::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_D2_03_20::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_D2_03_20::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_D2_03_20::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_03_20::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -6264,10 +6264,10 @@ const std::string& CProfile_D2_04_00::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_04_00::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_D2_04_00::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_D2_04_00::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_D2_04_00::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_D2_04_00::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_04_00::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -6441,10 +6441,10 @@ const std::string& CProfile_D2_32_00::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_32_00::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_D2_32_00::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_D2_32_00::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_D2_32_00::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_D2_32_00::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_32_00::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -6477,10 +6477,10 @@ const std::string& CProfile_D2_32_01::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_32_01::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_D2_32_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_D2_32_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_D2_32_01::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_D2_32_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_32_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -6513,10 +6513,10 @@ const std::string& CProfile_D2_32_02::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_32_02::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_D2_32_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_D2_32_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_D2_32_02::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_D2_32_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_32_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -6590,10 +6590,10 @@ const std::string& CProfile_D2_40_00::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_40_00::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_D2_40_00::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_D2_40_00::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_D2_40_00::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_D2_40_00::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_40_00::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
@@ -6647,10 +6647,10 @@ const std::string& CProfile_D2_40_01::title() const {
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_40_01::allHistorizers() const {
    return m_historizers;
 }
-void CProfile_D2_40_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::function1<void, const message::CEsp3SendPacket&> commandSendFct) const {
+void CProfile_D2_40_01::sendConfiguration(const shared::CDataContainer& deviceConfiguration, boost::shared_ptr<IMessageHandler> messageHandler) const {
    // Device supports no configuration
 }
-void CProfile_D2_40_01::sendCommand(const std::string& keyword, const std::string& commandBody) const {
+void CProfile_D2_40_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_40_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
