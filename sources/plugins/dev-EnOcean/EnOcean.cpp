@@ -382,7 +382,7 @@ void CEnOcean::processDeviceConfiguration(boost::shared_ptr<const yApi::ISetDevi
 
       if (m_api->getDeviceModel(deviceId) != model)
          m_api->updateDeviceModel(deviceId,
-                                  model);
+                                  model); //TODO le modèle est à 2 endroits en base (colonne modèle et colonne conf)
 
       // Send configuration to device
       try
@@ -488,6 +488,8 @@ void CEnOcean::processRadioErp1(const message::CEsp3ReceivedPacket& esp3Packet)
                                       teachInData.funcId(),
                                       teachInData.typeId()),
                        CManufacturers::name(teachInData.manufacturerId()));
+
+//TODO créer la conf         m_api->updateDeviceConfiguration(deviceId, )
       }
       catch (std::exception& e)
       {
