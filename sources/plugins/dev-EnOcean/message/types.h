@@ -51,4 +51,8 @@ namespace message
       RET_SEPCIAL_RC_OFFSET = 0x80,
    };
 
+
+   // Sizef of messages
+   enum { RESPONSE_DONGLE_VERSION_SIZE = 33 };
+
 } // namespace message

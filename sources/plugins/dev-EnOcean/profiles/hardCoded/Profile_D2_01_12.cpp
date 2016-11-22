@@ -74,7 +74,7 @@ void CProfile_D2_01_12::sendCommand(const std::string& keyword,
                                     const std::string& commandBody,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   throw std::logic_error("device supports no command sending"); //TODO
+   throw std::logic_error("device supports no command sending");
 }
 
 void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceConfiguration,

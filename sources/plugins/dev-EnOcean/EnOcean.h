@@ -86,7 +86,7 @@ protected:
    //--------------------------------------------------------------
    void processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
    static void processResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
-   void processDongleVersionResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket> dongleVersionResponse) const;
+   static void processDongleVersionResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket> dongleVersionResponse);
    static void processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
 
    //--------------------------------------------------------------
@@ -107,15 +107,6 @@ protected:
    /// \param [in] deviceId         Device ID to declare
    //--------------------------------------------------------------
    void declareDeviceWithoutProfile(const std::string& deviceId) const;
-
-
-   //--------------------------------------------------------------
-   /// \brief	                     Extract sender ID from buffer
-   /// \param [in] data             Buffer containing sender ID
-   /// \param [in] startIndex       Index of the first byte
-   //--------------------------------------------------------------
-   static std::string extractSenderId(const std::vector<unsigned char>& data,
-                                      int startIndex);//TODO virer
 
    //--------------------------------------------------------------
    /// \brief	                     Requests to EnOcean

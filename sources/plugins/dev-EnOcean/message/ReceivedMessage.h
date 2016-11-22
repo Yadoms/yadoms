@@ -2,7 +2,7 @@
 #include "Header.h"
 #include "../profiles/generated-eep.h"
 
-//TODO 3 classes dans ce fichier, faire le ménage
+
 namespace message
 {
    //--------------------------------------------------------------
@@ -30,8 +30,10 @@ namespace message
       const std::vector<unsigned char>& data() const;
       unsigned char status() const;
       std::string dump() const;
+
    protected:
       static std::string senderIdToString(unsigned int senderId);
+
    private:
       const CRorgs::ERorgIds m_rorg;
       const unsigned int m_senderId;

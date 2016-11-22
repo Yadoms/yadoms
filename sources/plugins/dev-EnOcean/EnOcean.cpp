@@ -17,7 +17,6 @@ IMPLEMENT_PLUGIN(CEnOcean)
 // Event IDs
 enum
 {
-   //TODO faire le ménage dans les enum
    kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId, // Always start from yApi::IYPluginApi::kPluginFirstEventId
    kEvtPortDataReceived,
    kProtocolErrorRetryTimer,
@@ -287,7 +286,6 @@ void CEnOcean::processConnectionEvent()
    try
    {
       requestDongleVersion();
-      //TODO
    }
    catch (CProtocolException& e)
    {
@@ -357,9 +355,6 @@ void CEnOcean::processDeviceConfiguration(const std::string& deviceId,
    {
       auto selectedProfile = CProfileHelper(configuration.get<std::string>("profile.activeSection"));
       auto manufacturer = configuration.get<std::string>("manufacturer");
-      auto model = generateModel(configuration.get<std::string>("model"),
-                                 manufacturer,
-                                 selectedProfile);
 
       std::cout << "Device \"" << deviceId << "\" is configurated as " << selectedProfile.profile() << std::endl;
 
@@ -377,10 +372,6 @@ void CEnOcean::processDeviceConfiguration(const std::string& deviceId,
                                 device->allHistorizers());
          m_devices[deviceId] = device;
       }
-
-      if (m_api->getDeviceModel(deviceId) != model)
-         m_api->updateDeviceModel(deviceId,
-                                  model); //TODO le modèle est à 2 endroits en base (colonne modèle et colonne conf)
 
       // Send configuration to device
       try
@@ -411,7 +402,7 @@ void CEnOcean::processDataReceived(boost::shared_ptr<const message::CEsp3Receive
       {
       case message::RADIO_ERP1:
          processRadioErp1(message);
-         break;//TODO
+         break;
       case message::RESPONSE:
          processResponse(message);
          break;
@@ -494,7 +485,6 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
          profilesNode.set("activeSection", profile.profile());
          shared::CDataContainer deviceConfiguration;
          deviceConfiguration.set("manufacturer", manufacturerName);
-         deviceConfiguration.set("model", m_api->getDeviceModel(deviceId));//TODO pas top, mais il faudra virer le modèle de la conf
          deviceConfiguration.set("profile", profilesNode);
 
          if (m_api->deviceExists(deviceId))
@@ -505,6 +495,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
 
             processDeviceConfiguration(deviceId,
                                        deviceConfiguration);
+
             return;
          }
 
@@ -567,24 +558,14 @@ void CEnOcean::declareDeviceWithoutProfile(const std::string& deviceId) const
                         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>());
 }
 
-std::string CEnOcean::extractSenderId(const std::vector<unsigned char>& data,
-                                      int startIndex)
-{
-   return std::to_string(
-      (data[startIndex + 3] << 24) +
-      (data[startIndex + 2] << 16) +
-      (data[startIndex + 1] << 8) +
-      (data[startIndex]));
-}
-
 void CEnOcean::processResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket>)
 {
    std::cerr << "Unexpected response received" << std::endl;
 }
 
-void CEnOcean::processDongleVersionResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket> dongleVersionResponse) const
+void CEnOcean::processDongleVersionResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket> dongleVersionResponse)
 {
-   if (dongleVersionResponse->header().dataLength() != 33) //TODO on peut pas mieux faire que cette valeur en dur ?
+   if (dongleVersionResponse->header().dataLength() != message::RESPONSE_DONGLE_VERSION_SIZE)
       throw CProtocolException((boost::format("Invalid data length %1%, expected 33. Request was CO_RD_VERSION.") % dongleVersionResponse->header().dataLength()).str());
 
    auto returnCode = static_cast<message::EReturnCode>(dongleVersionResponse->data()[0]);
@@ -647,8 +628,6 @@ void CEnOcean::processDongleVersionResponse(boost::shared_ptr<const message::CEs
       ", chipId " << std::hex << chipId <<
       ", chipVersion " << std::hex << chipVersion <<
       std::endl;
-
-   m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 }
 
 void CEnOcean::processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
@@ -747,4 +726,6 @@ void CEnOcean::requestDongleVersion() const
       throw CProtocolException("Unable to get Dongle Version, timeout waiting answer");
 
    processDongleVersionResponse(answer);
+
+   m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 }
