@@ -11,10 +11,7 @@ CFactory::~CFactory()
 }
 
 
-boost::shared_ptr<shared::communication::IAsyncPort> CFactory::constructPort(const IConfiguration& configuration,
-                                                                             shared::event::CEventHandler& eventHandler,
-                                                                             int evtPortConnectionId,
-                                                                             int evtPortDataReceived)
+boost::shared_ptr<shared::communication::IAsyncPort> CFactory::constructPort(const IConfiguration& configuration)
 {
    YADOMS_LOG(information) << "Connecting EnOcean dongle on serial port " << configuration.getSerialPort() << "...";
    auto port = boost::make_shared<shared::communication::CAsyncSerialPort>(configuration.getSerialPort(),
@@ -23,16 +20,6 @@ boost::shared_ptr<shared::communication::IAsyncPort> CFactory::constructPort(con
                                                                            boost::asio::serial_port_base::character_size(8),
                                                                            boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
                                                                            boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none));
-
-   port->subscribeForConnectionEvents(eventHandler,
-                                      evtPortConnectionId);
-
-   auto messageHandler = constructMessageHandler(port,
-                                                 eventHandler,
-                                                 evtPortDataReceived);
-
-   port->setReceiveBufferHandler(constructReceiveBufferHandler(messageHandler));
-
    return port;
 }
 
@@ -49,4 +36,3 @@ boost::shared_ptr<IMessageHandler> CFactory::constructMessageHandler(boost::shar
                                               eventHandler,
                                               evtPortDataReceived);
 }
-

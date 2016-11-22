@@ -217,10 +217,16 @@ void CEnOcean::createConnection()
    m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
    // Create the port instance
-   m_port = CFactory::constructPort(m_configuration,
-                                    m_api->getEventHandler(),
-                                    kEvtPortConnection,
-                                    kEvtPortDataReceived);
+   m_port = CFactory::constructPort(m_configuration);
+
+   auto messageHandler = CFactory::constructMessageHandler(m_port,
+                                                           m_api->getEventHandler(),
+                                                           kEvtPortDataReceived);
+
+   m_port->subscribeForConnectionEvents(m_api->getEventHandler(),
+                                        kEvtPortConnection);
+
+   m_port->setReceiveBufferHandler(CFactory::constructReceiveBufferHandler(messageHandler));
 
    m_port->start();
 }
@@ -730,4 +736,3 @@ void CEnOcean::requestDongleVersion() const
 
    m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 }
-
