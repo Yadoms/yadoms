@@ -430,6 +430,11 @@ namespace web
                      m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(deviceId, deviceToUpdate.FriendlyName());
                   }
 
+                  if (deviceToUpdate.Model.isDefined())
+                  {
+                     m_dataProvider->getDeviceRequester()->updateDeviceModel(deviceId, deviceToUpdate.Model());
+                  }
+
                   if (deviceToUpdate.Configuration.isDefined())
                   {
                      //update data in base

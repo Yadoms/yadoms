@@ -3,7 +3,7 @@
 #include "ApiImplementation.h"
 #include "CommandLine.h"
 #include <shared/currentTime/Local.h>
-
+#include <Poco/Debugger.h>
 
 namespace plugin_cpp_api
 {
@@ -37,6 +37,28 @@ namespace plugin_cpp_api
 
          std::cout << api->getInformation()->getType() << " started" << std::endl;
 
+         if (api->getInformation()->getPackage()->getWithDefault<bool>("waitForDebuggerAtStart", false))
+         {
+            std::cout << api->getInformation()->getType() <<
+               "**************************************************************************"  << std::endl <<
+               " wait for a debugger to attach current process"                              << std::endl <<
+               "**************************************************************************"  << std::endl;
+
+            const int waitTimeout = 120000; //120 sec = 2min
+            const int waitstep = 300; //check every 300 ms
+            int waitedTime = 0;
+            while (!Poco::Debugger::isAvailable() && waitedTime < waitTimeout) //timeout
+            {
+               Poco::Thread::sleep(waitstep);
+               waitedTime += waitstep;
+            }
+
+            if(waitedTime < waitTimeout)
+               std::cout << api->getInformation()->getType() << " attached to debugger" << std::endl;
+            else
+               std::cout << api->getInformation()->getType() << " failed to attach debugger after " << waitTimeout << " ms. Start normally." << std::endl;
+         }
+         
          // Execute plugin code
          m_plugin->doWork(api);
 

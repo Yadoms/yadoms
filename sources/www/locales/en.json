@@ -223,6 +223,11 @@
         "name": "Name",
         "description": "Friendly name of your device",
         "regexErrorMessage": "The name of the device must contains at least one character"
+      },
+      "model-configuration": {
+        "name": "Model",
+        "description": "Device model",
+        "regexErrorMessage": "Enter here the device model to easy identify the device"
       }
     },
     "configure-keyword": {
