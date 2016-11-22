@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "SendMessage.h"
 #include "Crc8.h"
 
@@ -58,27 +58,6 @@ namespace message
       buffer.push_back(computeCrc8(buffer.begin() + kOffsetData,
          buffer.begin() + kOffsetData + m_data.size() + m_optional.size()));
    }
-
-
-   CCommonCommandSendMessage::CCommonCommandSendMessage()
-      : CEsp3SendPacket(COMMON_COMMAND)
-   {
-   }
-
-   CCommonCommandSendMessage::~CCommonCommandSendMessage()
-   {
-   }
-
-
-   CRadioErp1SendMessage::CRadioErp1SendMessage()
-      : CEsp3SendPacket(RADIO_ERP1)
-   {
-   }
-
-   CRadioErp1SendMessage::~CRadioErp1SendMessage()
-   {
-   }
-
 } // namespace message
 
 

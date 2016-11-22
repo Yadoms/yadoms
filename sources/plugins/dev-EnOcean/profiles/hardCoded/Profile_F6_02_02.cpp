@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Profile_F6_02_02.h"
-#include "../bitsetHelpers.hpp"
+#include "profiles/bitsetHelpers.hpp"
 
 
 CProfile_F6_02_02::CProfile_F6_02_02(const std::string& deviceId,

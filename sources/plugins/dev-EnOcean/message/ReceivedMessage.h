@@ -1,6 +1,6 @@
 #pragma once
 #include "Header.h"
-#include "../profiles/generated-eep.h"
+#include "profiles/generated-eep.h"
 
 
 namespace message

@@ -29,12 +29,16 @@ set(ENOCEAN_SOURCES
    ProfileHelper.h
    ProfileHelper.cpp
    
+   message/CommonCommandSendMessage.h
+   message/CommonCommandSendMessage.cpp
    message/Crc8.h
    message/Crc8.cpp
    message/Esp3ReceivedPacket.h
    message/Esp3ReceivedPacket.cpp
    message/Header.h
    message/Header.cpp
+   message/RadioErp1SendMessage.h
+   message/RadioErp1SendMessage.cpp
    message/ReceivedMessage.h
    message/ReceivedMessage.cpp
    message/SendMessage.h
@@ -114,7 +118,7 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-eep.h
 ## (by default yadoms-shared and boost are included)
 #########################################
 set(ENOCEAN_ADDITIONAL_INC_DIR
-   ${CMAKE_CURRENT_BINARY_DIR}/profiles
+   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 #########################################

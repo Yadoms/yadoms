@@ -9,6 +9,7 @@
 #include "profiles/bitsetHelpers.hpp"
 #include <shared/exception/EmptyResult.hpp>
 #include "ProfileHelper.h"
+#include "message/CommonCommandSendMessage.h"
 
 
 IMPLEMENT_PLUGIN(CEnOcean)

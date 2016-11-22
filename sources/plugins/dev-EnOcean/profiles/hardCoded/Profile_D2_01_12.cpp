@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Profile_D2_01_12.h"
-#include "../bitsetHelpers.hpp"
+#include "profiles/bitsetHelpers.hpp"
+#include "message/RadioErp1SendMessage.h"
 
 DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_01_12::EDefaultState, EDefaultState,
    ((off))
