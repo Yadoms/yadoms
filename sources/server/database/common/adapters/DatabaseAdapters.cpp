@@ -90,6 +90,7 @@ namespace database
             ((TypeInfo)(shared::CDataContainer)(shared::CDataContainer()))
             ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType)(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute)(std::string))
             ((Details)(shared::CDataContainer)(shared::CDataContainer()))
+            ((Blacklist)(bool)(false))
          );
 
 

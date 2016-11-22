@@ -87,31 +87,33 @@ namespace dataAccessLayer
 		else
 			acq = m_dataProvider->getAcquisitionRequester()->saveData(keywordId, data.formatValue(), dataTime);
 
-      //only update summary data if already exists
-      //if not exists it will be created by SQLiteSummaryDataTask
-      std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > acquisitionSummary;
-
-      if (m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kHour, dataTime))
-         acquisitionSummary.push_back(m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kHour, dataTime));
-      if (m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kDay, dataTime))
-         acquisitionSummary.push_back(m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kDay, dataTime));
-      if (m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kMonth, dataTime))
-         acquisitionSummary.push_back(m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kMonth, dataTime));
-      if (m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kYear, dataTime))
-         acquisitionSummary.push_back(m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kYear, dataTime));
-
-      //post notification
-
-      //post notification
-      boost::shared_ptr<notification::acquisition::CNotification> notificationData(new notification::acquisition::CNotification(acq));
-      notification::CHelpers::postNotification(notificationData);
-
-      if (!acquisitionSummary.empty())
+      if (acq)
       {
-         boost::shared_ptr<notification::summary::CNotification> notificationDataSummary(new notification::summary::CNotification(acquisitionSummary));
-         notification::CHelpers::postNotification(notificationDataSummary);
-      }
+         //only update summary data if already exists
+         //if not exists it will be created by SQLiteSummaryDataTask
+         std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > acquisitionSummary;
 
+         if (m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kHour, dataTime))
+            acquisitionSummary.push_back(m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kHour, dataTime));
+         if (m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kDay, dataTime))
+            acquisitionSummary.push_back(m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kDay, dataTime));
+         if (m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kMonth, dataTime))
+            acquisitionSummary.push_back(m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kMonth, dataTime));
+         if (m_dataProvider->getAcquisitionRequester()->summaryDataExists(keywordId, database::entities::EAcquisitionSummaryType::kYear, dataTime))
+            acquisitionSummary.push_back(m_dataProvider->getAcquisitionRequester()->saveSummaryData(keywordId, database::entities::EAcquisitionSummaryType::kYear, dataTime));
+
+         //post notification
+
+         //post notification
+         boost::shared_ptr<notification::acquisition::CNotification> notificationData(new notification::acquisition::CNotification(acq));
+         notification::CHelpers::postNotification(notificationData);
+
+         if (!acquisitionSummary.empty())
+         {
+            boost::shared_ptr<notification::summary::CNotification> notificationDataSummary(new notification::summary::CNotification(acquisitionSummary));
+            notification::CHelpers::postNotification(notificationDataSummary);
+         }
+      }
 	}
 
 

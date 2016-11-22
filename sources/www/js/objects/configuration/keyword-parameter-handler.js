@@ -82,7 +82,7 @@ function addDeviceList(handler, tabDevice) {
      
        $.each(listDevice, function(index, value) {
           //we add device only if it is not already in the list
-          if ($deviceList.find("option[value=\"" + value.id + "\"]").length === 0) {
+          if ($deviceList.find("option[value=\"" + value.id + "\"]").length === 0 && parseBool(value.blacklist) === false) {
             $deviceList.append("<option value=\"" + value.id + "\">" + value.friendlyName + "</option>");
             //if the new element is those that we are looking for we save the position in the list
             if (value.id == handler.value.deviceId)
@@ -127,7 +127,7 @@ function populateDeviceList(handler) {
           $.each(tabDevice, function(index, value) {
 			  
              //we add device only if it is not already in the list
-             if ($deviceList.find("option[value=\"" + value.id + "\"]").length === 0) {
+             if ($deviceList.find("option[value=\"" + value.id + "\"]").length === 0 && parseBool(value.blacklist) === false) {
                $deviceList.append("<option value=\"" + value.id + "\">" + value.friendlyName + "</option>");
                //if the new element is those that we are looking for we save the position in the list
                if (value.id == handler.value.deviceId)

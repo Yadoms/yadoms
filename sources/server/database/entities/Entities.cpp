@@ -138,6 +138,7 @@ namespace database { namespace entities {
 	  ((TypeInfo)(shared::CDataContainer)(shared::CDataContainer())("typeInfo"))
       ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType)(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute)("measure"))
       ((Details)(shared::CDataContainer)(shared::CDataContainer())("details"))
+      ((Blacklist)(bool)(false)("blacklist"))
       );
 
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(

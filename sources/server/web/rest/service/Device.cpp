@@ -17,10 +17,12 @@ namespace web
          CDevice::CDevice(boost::shared_ptr<database::IDataProvider> dataProvider,
                           boost::shared_ptr<pluginSystem::CManager> pluginManager,
                           boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
+                          boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordManager,
                           communication::ISendMessageAsync& messageSender)
             : m_dataProvider(dataProvider),
               m_pluginManager(pluginManager),
               m_deviceManager(deviceManager),
+              m_keywordManager(keywordManager),
               m_messageSender(messageSender)
          {
          }
@@ -47,25 +49,25 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*")("*"), CDevice::getDeviceKeywordsForCapacity);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("configuration"), CDevice::updateDeviceConfiguration, CDevice::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("blacklist"), CDevice::updateDeviceBlacklist, CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*"), CDevice::updateKeywordFriendlyName, CDevice::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*")("blacklist"), CDevice::updateKeywordBlacklist, CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keyword")("*")("command"), CDevice::sendKeywordCommand, CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("command"), CDevice::sendDeviceCommand, CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("*"), CDevice::cleanupDevice, CDevice::transactionalMethod);
          }
 
-         shared::CDataContainer CDevice::getOneDevice(const std::vector<std::string>& parameters,
-                                                      const std::string& requestContent) const
+         shared::CDataContainer CDevice::getOneDevice(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             std::string objectId = "";
             if (parameters.size() > 1)
                objectId = parameters[1];
 
-            auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(boost::lexical_cast<int>(objectId));
+            auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(boost::lexical_cast<int>(objectId), true);
             return CResult::GenerateSuccess(deviceFound);
          }
 
-         shared::CDataContainer CDevice::getDeviceConfigurationSchema(const std::vector<std::string>& parameters,
-                                                                      const std::string& requestContent) const
+         shared::CDataContainer CDevice::getDeviceConfigurationSchema(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -113,17 +115,15 @@ namespace web
             }
          }
 
-         shared::CDataContainer CDevice::getAllDevices(const std::vector<std::string>& parameters,
-                                                       const std::string& requestContent) const
+         shared::CDataContainer CDevice::getAllDevices(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
-            auto dvList = m_dataProvider->getDeviceRequester()->getDevices();
+            auto dvList = m_dataProvider->getDeviceRequester()->getDevices(true);
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), dvList);
             return CResult::GenerateSuccess(collection);
          }
 
-         shared::CDataContainer CDevice::getKeyword(const std::vector<std::string>& parameters,
-                                                    const std::string& requestContent) const
+         shared::CDataContainer CDevice::getKeyword(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -131,7 +131,7 @@ namespace web
                {
                   auto keywordId = boost::lexical_cast<int>(parameters[2]);
 
-                  auto keyword = m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
+                  auto keyword = m_keywordManager->getKeyword(keywordId);
                   return CResult::GenerateSuccess(keyword);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive keyword id in url");
@@ -146,12 +146,11 @@ namespace web
             }
          }
 
-         shared::CDataContainer CDevice::getAllKeywords(const std::vector<std::string>& parameters,
-                                                        const std::string& requestContent) const
+         shared::CDataContainer CDevice::getAllKeywords(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
-               auto result = m_dataProvider->getKeywordRequester()->getAllKeywords();
+               auto result = m_keywordManager->getAllKeywords();
                shared::CDataContainer collection;
                collection.set("keywords", result);
                return CResult::GenerateSuccess(collection);
@@ -166,8 +165,7 @@ namespace web
             }
          }
 
-         shared::CDataContainer CDevice::getDevicesWithCapacity(const std::vector<std::string>& parameters,
-                                                                const std::string& requestContent) const
+         shared::CDataContainer CDevice::getDevicesWithCapacity(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -195,8 +193,7 @@ namespace web
             }
          }
 
-         shared::CDataContainer CDevice::getDeviceWithCapacityType(const std::vector<std::string>& parameters,
-                                                                   const std::string& requestContent) const
+         shared::CDataContainer CDevice::getDeviceWithCapacityType(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -223,8 +220,7 @@ namespace web
             }
          }
 
-         shared::CDataContainer CDevice::getDeviceKeywordsForCapacity(const std::vector<std::string>& parameters,
-                                                                      const std::string& requestContent) const
+         shared::CDataContainer CDevice::getDeviceKeywordsForCapacity(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -235,7 +231,7 @@ namespace web
                   auto capacityName = parameters[3];
 
 
-                  auto result = m_dataProvider->getKeywordRequester()->getDeviceKeywordsWithCapacity(deviceId, capacityName, cam);
+                  auto result = m_keywordManager->getDeviceKeywordsWithCapacity(deviceId, capacityName, cam);
                   shared::CDataContainer collection;
                   collection.set("keyword", result);
                   return CResult::GenerateSuccess(collection);
@@ -252,19 +248,18 @@ namespace web
             }
          }
 
-         shared::CDataContainer CDevice::getDeviceKeywords(const std::vector<std::string>& parameters,
-                                                           const std::string& requestContent) const
+         shared::CDataContainer CDevice::getDeviceKeywords(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() > 1)
                {
                   auto deviceId = boost::lexical_cast<int>(parameters[1]);
-                  auto deviceInDatabase = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+                  auto deviceInDatabase = m_dataProvider->getDeviceRequester()->getDevice(deviceId, true);
 
                   if (deviceInDatabase)
                   {
-                     auto allKeywordsforDevice = m_dataProvider->getKeywordRequester()->getKeywords(deviceId);
+                     auto allKeywordsforDevice = m_keywordManager->getKeywords(deviceId);
                      shared::CDataContainer collection;
                      collection.set("keyword", allKeywordsforDevice);
                      return CResult::GenerateSuccess(collection);
@@ -283,8 +278,7 @@ namespace web
             }
          }
 
-         shared::CDataContainer CDevice::sendKeywordCommand(const std::vector<std::string>& parameters,
-                                                            const std::string& requestContent) const
+         shared::CDataContainer CDevice::sendKeywordCommand(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -315,8 +309,7 @@ namespace web
             }
          }
 
-         shared::CDataContainer CDevice::sendDeviceCommand(const std::vector<std::string>& parameters,
-                                                           const std::string& requestContent) const
+         shared::CDataContainer CDevice::sendDeviceCommand(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -347,8 +340,7 @@ namespace web
             }
          }
 
-         shared::CDataContainer CDevice::cleanupDevice(const std::vector<std::string>& parameters,
-                                                       const std::string& requestContent) const
+         shared::CDataContainer CDevice::cleanupDevice(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -384,8 +376,7 @@ namespace web
          }
 
 
-         shared::CDataContainer CDevice::updateDeviceFriendlyName(const std::vector<std::string>& parameters,
-                                                                  const std::string& requestContent) const
+         shared::CDataContainer CDevice::updateDeviceFriendlyName(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -402,7 +393,7 @@ namespace web
                      m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(deviceId, deviceToUpdate.FriendlyName());
 
                      //return the device info
-                     auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+                     auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId, true);
                      return CResult::GenerateSuccess(deviceFound);
                   }
                   return CResult::GenerateError("invalid request content. could not retreive device friendlyName");
@@ -420,8 +411,7 @@ namespace web
          }
 
 
-         shared::CDataContainer CDevice::updateDeviceConfiguration(const std::vector<std::string>& parameters,
-                                                                   const std::string& requestContent) const
+         shared::CDataContainer CDevice::updateDeviceConfiguration(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -454,7 +444,7 @@ namespace web
                   }
 
                   //return the device info
-                  auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+                  auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId, true);
                   return CResult::GenerateSuccess(deviceFound);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
@@ -470,8 +460,46 @@ namespace web
          }
 
 
-         shared::CDataContainer CDevice::updateKeywordFriendlyName(const std::vector<std::string>& parameters,
-                                                                   const std::string& requestContent) const
+         shared::CDataContainer CDevice::updateDeviceBlacklist(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         {
+            try
+            {
+               if (parameters.size() >= 1)
+               {
+                  //get device id from URL
+                  auto deviceId = boost::lexical_cast<int>(parameters[1]);
+
+                  //deserialize device from request data
+                  database::entities::CDevice deviceToUpdate;
+                  deviceToUpdate.fillFromSerializedString(requestContent);
+
+                  //update blacklist state
+                  if (deviceToUpdate.Blacklist.isDefined())
+                  {
+                     if (deviceToUpdate.Blacklist())
+                        m_pluginManager->notifyDeviceRemoved(deviceId);
+
+                     m_deviceManager->updateDeviceBlacklistState(deviceId, deviceToUpdate.Blacklist());
+                  }
+
+                  //return the device info
+                  auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId, true);
+                  return CResult::GenerateSuccess(deviceFound);
+               }
+               return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in updating device configuration");
+            }
+         }
+
+
+         shared::CDataContainer CDevice::updateKeywordFriendlyName(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -484,8 +512,8 @@ namespace web
                   keywordToUpdate.fillFromSerializedString(requestContent);
                   if (keywordToUpdate.FriendlyName.isDefined())
                   {
-                     m_dataProvider->getKeywordRequester()->updateKeywordFriendlyName(keywordId, keywordToUpdate.FriendlyName());
-                     return CResult::GenerateSuccess(m_dataProvider->getKeywordRequester()->getKeyword(keywordId));
+                     m_keywordManager->updateKeywordFriendlyName(keywordId, keywordToUpdate.FriendlyName());
+                     return CResult::GenerateSuccess(m_keywordManager->getKeyword(keywordId));
                   }
                   return CResult::GenerateError("invalid request content. could not retreive keyword friendlyName");
                }
@@ -501,10 +529,39 @@ namespace web
             }
          }
 
+         shared::CDataContainer CDevice::updateKeywordBlacklist(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         {
+            try
+            {
+               if (parameters.size() > 2)
+               {
+                  //get keyword id from URL
+                  auto keywordId = boost::lexical_cast<int>(parameters[2]);
 
-         shared::CDataContainer CDevice::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
-                                                             const std::vector<std::string>& parameters,
-                                                             const std::string& requestContent) const
+                  database::entities::CKeyword keywordToUpdate;
+                  keywordToUpdate.fillFromSerializedString(requestContent);
+                  if (keywordToUpdate.Blacklist.isDefined())
+                  {
+                     m_keywordManager->updateKeywordBlacklistState(keywordId, keywordToUpdate.Blacklist());
+                     return CResult::GenerateSuccess(m_keywordManager->getKeyword(keywordId));
+                  }
+                  return CResult::GenerateError("invalid request content. could not retreive keyword blacklist");
+               }
+               return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in updating device friendly name");
+            }
+         }
+
+         
+
+         shared::CDataContainer CDevice::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             auto pTransactionalEngine = m_dataProvider->getTransactionalEngine();
             shared::CDataContainer result;

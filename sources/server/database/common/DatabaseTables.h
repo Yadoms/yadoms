@@ -88,6 +88,7 @@ namespace common {
       (TypeInfo)
       (Measure)
       (Details)
+      (Blacklist)
    )
 
    DECLARE_TABLE(Acquisition,
