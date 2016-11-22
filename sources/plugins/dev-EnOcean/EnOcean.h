@@ -32,7 +32,6 @@ public:
    // [END] IPlugin implementation
 
 protected:
-   //TODO tout ce qui suit
    //--------------------------------------------------------------
    /// \brief	                     Load all devices (create device object from devices stored in database)
    //--------------------------------------------------------------
@@ -177,11 +176,6 @@ private:
    /// \brief  Api access
    //--------------------------------------------------------------
    boost::shared_ptr<yApi::IYPluginApi> m_api;
-
-   //--------------------------------------------------------------
-   /// \brief  The communication port logger
-   //--------------------------------------------------------------
-   shared::communication::CAsciiBufferLogger m_logger;
 
    //--------------------------------------------------------------
    /// \brief  The known devices list (only configured devices)
