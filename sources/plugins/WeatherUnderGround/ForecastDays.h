@@ -18,13 +18,9 @@ public:
    /// \brief	  Constructor
    /// \param[in] api              pointer to the API
    /// \param[in] wuConfiguration  The Configuration of the module
-   /// \param[in] deviceName       The Name of the module
-   /// \param[in] prefix           Prefix Name used eventually to subname Keywords
    //--------------------------------------------------------------
    CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
-                 IWUConfiguration& wuConfiguration,
-                 const std::string& deviceName,
-                 const std::string& prefix);
+                 IWUConfiguration& wuConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	  Parse the answer from the web Site

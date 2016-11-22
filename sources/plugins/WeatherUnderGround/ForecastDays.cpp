@@ -4,15 +4,12 @@
 #include "Keywords/KeywordHelpers.h"
 
 CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
-                             IWUConfiguration& wuConfiguration,
-                             const std::string& deviceName,
-                             const std::string& prefix)
+                             IWUConfiguration& wuConfiguration)
    : m_localisation(wuConfiguration.getLocalisation()),
      m_countryOrState(wuConfiguration.getCountryOrState()),
-     m_prefix(prefix),
-     m_deviceName(deviceName),
-     m_forecast(boost::make_shared<CForecast>(deviceName, "Forecast", weatherunderground::helper::EPeriod::kDay)),
-     m_temp(boost::make_shared<yApi::historization::CTemperature>(prefix + "low_temperature")),
+     m_deviceName("Forecast"),
+     m_forecast(boost::make_shared<CForecast>(m_deviceName, "Forecast", weatherunderground::helper::EPeriod::kDay)),
+     m_temp(boost::make_shared<yApi::historization::CTemperature>("low_temperature")),
      m_isDeveloperMode(false)
 {
    try

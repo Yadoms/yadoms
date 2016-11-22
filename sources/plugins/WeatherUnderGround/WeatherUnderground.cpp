@@ -55,9 +55,9 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    try
    {
-      m_WeatherConditionsRequester = boost::make_shared<CWeatherConditions>(api, m_configuration, m_deviceName, "conditions.");
-      m_AstronomyRequester = boost::make_shared<CAstronomy>(api, m_configuration, m_deviceName, "astronomy.");
-      m_Forecast10Days = boost::make_shared<CForecastDays>(api, m_configuration, m_deviceName, "forecast.");
+      m_WeatherConditionsRequester = boost::make_shared<CWeatherConditions>(api, m_configuration);
+      m_AstronomyRequester         = boost::make_shared<CAstronomy>(api, m_configuration);
+      m_Forecast10Days             = boost::make_shared<CForecastDays>(api, m_configuration);
 
       // if conditions are enabled
       if (m_configuration.IsConditionsIndividualKeywordsEnabled() || m_configuration.IsLiveConditionsEnabled())
