@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ReceivedMessage.h"
+//TODO renommer le fichier
 
 namespace message
 {
@@ -39,15 +40,6 @@ namespace message
    unsigned char CRadioErp1ReceivedMessage::status() const
    {
       return m_status;
-   }
-
-   std::string CRadioErp1ReceivedMessage::dump() const
-   {
-      std::stringstream ss;
-      ss << std::setfill('0') << std::setw(2) << std::hex;
-      for (auto byte = m_data.begin(); byte != m_data.end(); ++byte)
-         ss << *byte << " ";
-      return ss.str();
    }
 
    std::string CRadioErp1ReceivedMessage::senderIdToString(unsigned int senderId)

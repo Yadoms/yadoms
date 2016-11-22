@@ -170,7 +170,6 @@ enum EFuncIds {
    unsigned int id() const override;
    const std::string& title() const override;
    const std::string& fullname() const override;
-   std::string dump(const boost::dynamic_bitset<>& erp1Data) const override;
    bool isTeachIn(const boost::dynamic_bitset<>& erp1Data) const override;
    bool isEepProvided(const boost::dynamic_bitset<>& erp1Data) const override;
    boost::shared_ptr<IFunc> createFunc(unsigned int funcId) const override;
@@ -227,7 +226,6 @@ enum EFuncIds {
    unsigned int id() const override;
    const std::string& title() const override;
    const std::string& fullname() const override;
-   std::string dump(const boost::dynamic_bitset<>& erp1Data) const override;
    bool isTeachIn(const boost::dynamic_bitset<>& erp1Data) const override;
    bool isEepProvided(const boost::dynamic_bitset<>& erp1Data) const override;
    boost::shared_ptr<IFunc> createFunc(unsigned int funcId) const override;
@@ -3564,7 +3562,6 @@ enum EFuncIds {
    unsigned int id() const override;
    const std::string& title() const override;
    const std::string& fullname() const override;
-   std::string dump(const boost::dynamic_bitset<>& erp1Data) const override;
    bool isTeachIn(const boost::dynamic_bitset<>& erp1Data) const override;
    bool isEepProvided(const boost::dynamic_bitset<>& erp1Data) const override;
    boost::shared_ptr<IFunc> createFunc(unsigned int funcId) const override;
@@ -4116,7 +4113,6 @@ enum EFuncIds {
    unsigned int id() const override;
    const std::string& title() const override;
    const std::string& fullname() const override;
-   std::string dump(const boost::dynamic_bitset<>& erp1Data) const override;
    bool isTeachIn(const boost::dynamic_bitset<>& erp1Data) const override;
    bool isEepProvided(const boost::dynamic_bitset<>& erp1Data) const override;
    boost::shared_ptr<IFunc> createFunc(unsigned int funcId) const override;

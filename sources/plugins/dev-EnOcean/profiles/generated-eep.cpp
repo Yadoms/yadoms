@@ -4,6 +4,7 @@
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 
 #include "bitsetHelpers.hpp"
+#include "ProfileHelper.h"
 
 #include "hardCoded\Profile_F6_02_02.h"
 #include "hardCoded\Profile_D2_01_0D.h"
@@ -24,7 +25,7 @@ CRorgs::~CRorgs()
 {}
 CRorgs::ERorgIds CRorgs::toRorgId(unsigned int id) {
    if (RorgMap.find(id) == RorgMap.end())
-      throw std::out_of_range("Unknown rorg");
+      throw std::out_of_range("Unknown rorg " + CProfileHelper::byteToHexString(id));
    return static_cast<ERorgIds>(id);
 
 }
@@ -245,13 +246,6 @@ const std::string& CRPSTelegram::fullname() const {
    static const std::string fullname("Repeated Switch Communication");
    return fullname;
 }
-std::string CRPSTelegram::dump(const boost::dynamic_bitset<>& erp1Data) const {
-   std::stringstream ss;
-   ss << std::setfill('0') << std::setw(2) << std::hex;
-   for (size_t bit = 0; bit < erp1Data.count(); ++bit)
-      ss << erp1Data[bit] << " ";
-   return ss.str();
-}
 bool CRPSTelegram::isTeachIn(const boost::dynamic_bitset<>& erp1Data) const {
    return false;
 }
@@ -272,7 +266,7 @@ boost::shared_ptr<IFunc> CRPSTelegram::createFunc(unsigned int funcId) const {
 }
 CRPSTelegram::EFuncIds CRPSTelegram::toFuncId(unsigned int id) {
    if (FuncMap.find(id) == FuncMap.end())
-      throw std::out_of_range("Unknown func");
+      throw std::out_of_range("Unknown func " + CProfileHelper::byteToHexString(id));
    return static_cast<EFuncIds>(id);
 
 }
@@ -358,13 +352,6 @@ const std::string& C1BSTelegram::fullname() const {
    static const std::string fullname("1 Byte Communication");
    return fullname;
 }
-std::string C1BSTelegram::dump(const boost::dynamic_bitset<>& erp1Data) const {
-   std::stringstream ss;
-   ss << std::setfill('0') << std::setw(2) << std::hex;
-   for (size_t bit = 0; bit < erp1Data.count(); ++bit)
-      ss << erp1Data[bit] << " ";
-   return ss.str();
-}
 bool C1BSTelegram::isTeachIn(const boost::dynamic_bitset<>& erp1Data) const {
    return erp1Data[4] == 0;
 
@@ -382,7 +369,7 @@ boost::shared_ptr<IFunc> C1BSTelegram::createFunc(unsigned int funcId) const {
 }
 C1BSTelegram::EFuncIds C1BSTelegram::toFuncId(unsigned int id) {
    if (FuncMap.find(id) == FuncMap.end())
-      throw std::out_of_range("Unknown func");
+      throw std::out_of_range("Unknown func " + CProfileHelper::byteToHexString(id));
    return static_cast<EFuncIds>(id);
 
 }
@@ -6053,13 +6040,6 @@ const std::string& C4BSTelegram::fullname() const {
    static const std::string fullname("4 Byte Communication");
    return fullname;
 }
-std::string C4BSTelegram::dump(const boost::dynamic_bitset<>& erp1Data) const {
-   std::stringstream ss;
-   ss << std::setfill('0') << std::setw(2) << std::hex;
-   for (size_t bit = 0; bit < erp1Data.count(); ++bit)
-      ss << erp1Data[bit] << " ";
-   return ss.str();
-}
 bool C4BSTelegram::isTeachIn(const boost::dynamic_bitset<>& erp1Data) const {
    return erp1Data[28 ] == 0;
 
@@ -6094,7 +6074,7 @@ boost::shared_ptr<IFunc> C4BSTelegram::createFunc(unsigned int funcId) const {
 }
 C4BSTelegram::EFuncIds C4BSTelegram::toFuncId(unsigned int id) {
    if (FuncMap.find(id) == FuncMap.end())
-      throw std::out_of_range("Unknown func");
+      throw std::out_of_range("Unknown func " + CProfileHelper::byteToHexString(id));
    return static_cast<EFuncIds>(id);
 
 }
@@ -6746,13 +6726,6 @@ const std::string& CVLDTelegram::fullname() const {
    static const std::string fullname("Variable Length Data");
    return fullname;
 }
-std::string CVLDTelegram::dump(const boost::dynamic_bitset<>& erp1Data) const {
-   std::stringstream ss;
-   ss << std::setfill('0') << std::setw(2) << std::hex;
-   for (size_t bit = 0; bit < erp1Data.count(); ++bit)
-      ss << erp1Data[bit] << " ";
-   return ss.str();
-}
 bool CVLDTelegram::isTeachIn(const boost::dynamic_bitset<>& erp1Data) const {
    return false;
 }
@@ -6784,7 +6757,7 @@ boost::shared_ptr<IFunc> CVLDTelegram::createFunc(unsigned int funcId) const {
 }
 CVLDTelegram::EFuncIds CVLDTelegram::toFuncId(unsigned int id) {
    if (FuncMap.find(id) == FuncMap.end())
-      throw std::out_of_range("Unknown func");
+      throw std::out_of_range("Unknown func " + CProfileHelper::byteToHexString(id));
    return static_cast<EFuncIds>(id);
 
 }

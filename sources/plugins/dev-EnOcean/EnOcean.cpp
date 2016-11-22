@@ -219,14 +219,14 @@ void CEnOcean::createConnection()
    // Create the port instance
    m_port = CFactory::constructPort(m_configuration);
 
-   auto messageHandler = CFactory::constructMessageHandler(m_port,
+   m_messageHandler = CFactory::constructMessageHandler(m_port,
                                                            m_api->getEventHandler(),
                                                            kEvtPortDataReceived);
 
    m_port->subscribeForConnectionEvents(m_api->getEventHandler(),
                                         kEvtPortConnection);
 
-   m_port->setReceiveBufferHandler(CFactory::constructReceiveBufferHandler(messageHandler));
+   m_port->setReceiveBufferHandler(CFactory::constructReceiveBufferHandler(m_messageHandler));
 
    m_port->start();
 }
@@ -310,7 +310,9 @@ void CEnOcean::protocolErrorProcess()
 {
    // Retry full connection
    processUnConnectionEvent();
-   m_api->getEventHandler().createTimer(kProtocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
+   m_api->getEventHandler().createTimer(kProtocolErrorRetryTimer,
+      shared::event::CEventTimer::kOneShot
+         , boost::posix_time::seconds(30));
 }
 
 void CEnOcean::processUnConnectionEvent()
@@ -436,6 +438,7 @@ void CEnOcean::processDataReceived(boost::shared_ptr<const message::CEsp3Receive
    catch (std::exception& e)
    {
       std::cerr << "Error processing received message : " << e.what() << std::endl;
+      std::cerr << "Message was : " << message->dump() << std::endl;
    }
 }
 
@@ -443,6 +446,12 @@ void CEnOcean::processDataReceived(boost::shared_ptr<const message::CEsp3Receive
 void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
 {
    message::CRadioErp1ReceivedMessage erp1Message(esp3Packet);
+
+   if (erp1Message.rorg() == message::RORG_UNIVERSAL_TEACH_IN)
+   {
+      processUTE(boost::make_shared<message::CUTE_ReceivedMessage>(esp3Packet));
+      return;
+   }
 
    // Create associated RORG object
    auto erp1Data = bitset_from_bytes(erp1Message.data());
@@ -469,7 +478,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
       }
 
       if (rorg->id() != CRorgs::k4BS_Telegram)
-         throw std::domain_error((boost::format("Teach-in telegram is only supported for 4BS telegram for now. Please report to Yadoms-team. Telegram \"%1%\"") % erp1Message.dump()).str());
+         throw std::domain_error("Teach-in telegram is only supported for 4BS telegram for now. Please report to Yadoms-team.");
 
       // Special-case of 4BS teachin mode Variant 2 (profile is provided in the telegram)
       C4BSTeachinVariant2 teachInData(erp1Data);
@@ -672,6 +681,11 @@ void CEnOcean::processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket
    //TODO
 }
 
+void CEnOcean::processUTE(boost::shared_ptr<const message::CUTE_ReceivedMessage> esp3Packet)
+{
+   //TODO
+}
+
 boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
                                                  const CProfileHelper& profile,
                                                  const std::string& manufacturer,
@@ -728,7 +742,6 @@ void CEnOcean::requestDongleVersion() const
                                [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
                                {
                                   answer = esp3Packet;
-                                  auto TODO = answer->header();//TODO to remove
                                }))
       throw CProtocolException("Unable to get Dongle Version, timeout waiting answer");
 

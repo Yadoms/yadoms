@@ -22,9 +22,10 @@ public:
    unsigned int type() const;
    std::string profile() const;
 
+   static std::string byteToHexString(unsigned int value);
+
 private:
    unsigned int m_rorg;
    unsigned int m_func;
    unsigned int m_type;
 };
-

@@ -59,8 +59,9 @@ void CMessageHandler::onReceived(boost::shared_ptr<const message::CEsp3ReceivedP
    m_isExpectedMessageHookFct.clear();
    auto onReceiveFct = m_onReceiveHookFct;
    m_onReceiveHookFct.clear();
-   m_waitAnswerEventHandler.postEvent(shared::event::kUserFirstId);
 
    onReceiveFct(receivedMessage);
+
+   m_waitAnswerEventHandler.postEvent(shared::event::kUserFirstId);
 }
 

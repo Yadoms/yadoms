@@ -43,6 +43,8 @@ set(ENOCEAN_SOURCES
    message/SendMessage.h
    message/SendMessage.cpp
    message/types.h
+   message/UTE_ReceivedMessage.h
+   message/UTE_ReceivedMessage.cpp
    )
    
    

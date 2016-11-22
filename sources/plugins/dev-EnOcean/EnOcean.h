@@ -4,6 +4,7 @@
 #include <shared/communication/IAsyncPort.h>
 #include <shared/communication/AsciiBufferLogger.h>
 #include "message/ReceivedMessage.h"
+#include "message/UTE_ReceivedMessage.h"
 #include "ProfileHelper.h"
 #include "IMessageHandler.h"
 
@@ -87,6 +88,7 @@ protected:
    static void processResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
    static void processDongleVersionResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket> dongleVersionResponse);
    static void processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
+   void processUTE(boost::shared_ptr<const message::CUTE_ReceivedMessage> esp3Packet);
 
    //--------------------------------------------------------------
    /// \brief	                           Declare a device

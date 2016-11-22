@@ -26,7 +26,10 @@ namespace message
       const std::vector<unsigned char>& data() const;
       const std::vector<unsigned char>& optional() const;
 
+      std::string dump() const;
+
    private:
+      const std::vector<unsigned char> m_receivedBuffer;
       const CHeader m_header;
       const std::vector<unsigned char> m_data;
       const std::vector<unsigned char> m_optional;

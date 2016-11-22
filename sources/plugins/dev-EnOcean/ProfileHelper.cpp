@@ -45,10 +45,17 @@ unsigned int CProfileHelper::type() const
 std::string CProfileHelper::profile() const
 {
    std::ostringstream ss;
-   ss << std::uppercase
-      << std::setfill('0') << std::setw(2) << std::hex << m_rorg << "-"
-      << std::setfill('0') << std::setw(2) << std::hex << m_func << "-"
-      << std::setfill('0') << std::setw(2) << std::hex << m_type;
+   ss << byteToHexString(m_rorg) << "-"
+      << byteToHexString(m_func) << "-"
+      << byteToHexString(m_type);
    return ss.str();
 }
 
+std::string CProfileHelper::byteToHexString(unsigned int value)
+{
+   std::stringstream ss;
+   ss << std::uppercase
+      << std::setfill('0') << std::setw(2)
+      << std::hex << value;
+   return ss.str();
+}

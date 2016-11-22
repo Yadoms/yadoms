@@ -60,7 +60,7 @@ rorgsClass.addMember(cppClass.CppMember("RorgMap", "std::map<unsigned int, std::
    cppHelper.getMapInitCode(xmlHelper.getEnumValues(inNode=xmlProfileNode, foreachSubNode="rorg", enumValueNameTag="title"))))
 rorgsClass.addMethod(cppClass.CppMethod("toRorgId", "CRorgs::ERorgIds", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, \
    "   if (RorgMap.find(id) == RorgMap.end())\n" \
-   "      throw std::out_of_range(\"Unknown rorg\");\n" \
+   "      throw std::out_of_range(\"Unknown rorg \" + CProfileHelper::byteToHexString(id));\n" \
    "   return static_cast<ERorgIds>(id);\n"))
 rorgsClass.addMethod(cppClass.CppMethod("name", "const std::string&", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, \
    "   try {\n" \
@@ -332,12 +332,6 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
    rorgClass.addMethod(cppClass.CppMethod("fullname", "const std::string&", "", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, \
       "   static const std::string fullname(\"" + xmlRorgNode.find("fullname").text + "\");\n" \
       "   return fullname;"))
-   rorgClass.addMethod(cppClass.CppMethod("dump", "std::string", "const boost::dynamic_bitset<>& erp1Data", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, \
-      "   std::stringstream ss;\n" \
-      "   ss << std::setfill('0') << std::setw(2) << std::hex;\n" \
-      "   for (size_t bit = 0; bit < erp1Data.count(); ++bit)\n" \
-      "      ss << erp1Data[bit] << \" \";\n" \
-      "   return ss.str();")) # TODO dumper en bytes
 
    def isTeachInCode(xmlRorgNode):
       if xmlRorgNode.find("teachin") is None:
@@ -391,7 +385,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
       cppHelper.getMapInitCode(xmlHelper.getEnumValues(inNode=xmlRorgNode, foreachSubNode="func", enumValueNameTag="title"))))
    rorgClass.addMethod(cppClass.CppMethod("toFuncId", rorgClassName + "::EFuncIds", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, \
       "   if (FuncMap.find(id) == FuncMap.end())\n" \
-      "      throw std::out_of_range(\"Unknown func\");\n" \
+      "      throw std::out_of_range(\"Unknown func \" + CProfileHelper::byteToHexString(id));\n" \
       "   return static_cast<EFuncIds>(id);\n"))
    rorgClass.addMethod(cppClass.CppMethod("toFuncName", "const std::string&", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, \
       "   try {\n" \
@@ -429,6 +423,7 @@ with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
    cppSourceFile.write('#include <shared/plugin/yPluginApi/StandardUnits.h>\n')
    cppSourceFile.write('\n')
    cppSourceFile.write('#include "bitsetHelpers.hpp"\n')
+   cppSourceFile.write('#include "ProfileHelper.h"\n')
    cppSourceFile.write('\n')
    for hardCodedFile in hardCodedProfiles.getProfileHardCodedFiles():
       cppSourceFile.write('#include "' + os.path.join('hardCoded', hardCodedFile) + '"\n')
