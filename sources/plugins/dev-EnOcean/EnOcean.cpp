@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "EnOcean.h"
 #include <plugin_cpp_api/ImplementationHelper.h>
-#include "EnOceanFactory.h"
+#include "Factory.h"
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
 #include "profiles/generated-manufacturers.h"
@@ -74,7 +74,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
                // Close connection
-               CEnOceanConfiguration newConfiguration;
+               CConfiguration newConfiguration;
                newConfiguration.initializeWith(newConfigurationData);
 
                // If port has changed, destroy and recreate connection (if any)
@@ -107,7 +107,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
          case yApi::IYPluginApi::kEventManuallyDeviceCreation:
             {
-            //TODO est-ce que ça a du sens en EnOcean ?
+               //TODO est-ce que ça a du sens en EnOcean ?
                auto creation(api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>());
                try
                {
@@ -217,10 +217,10 @@ void CEnOcean::createConnection()
    m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
    // Create the port instance
-   m_port = CEnOceanFactory::constructPort(m_configuration,
-      m_api->getEventHandler(),
-      kEvtPortConnection,
-      kEvtPortDataReceived);
+   m_port = CFactory::constructPort(m_configuration,
+                                    m_api->getEventHandler(),
+                                    kEvtPortConnection,
+                                    kEvtPortDataReceived);
 
    m_port->start();
 }
@@ -230,8 +230,8 @@ void CEnOcean::destroyConnection()
    m_port.reset();
 }
 
-bool CEnOcean::connectionsAreEqual(const CEnOceanConfiguration& conf1,
-                                   const CEnOceanConfiguration& conf2)
+bool CEnOcean::connectionsAreEqual(const CConfiguration& conf1,
+                                   const CConfiguration& conf2)
 {
    return (conf1.getSerialPort() == conf2.getSerialPort());
 }
@@ -730,3 +730,4 @@ void CEnOcean::requestDongleVersion() const
 
    m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 }
+

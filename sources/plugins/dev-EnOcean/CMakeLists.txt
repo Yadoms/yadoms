@@ -11,18 +11,17 @@ set(ENOCEAN_SOURCES
 
    4BSTeachinVariant2.h
    4BSTeachinVariant2.cpp
-   IEnOceanConfiguration.h
+   IConfiguration.h
    Device.h
    Device.cpp
    EnOcean.h
    EnOcean.cpp
-   EnOceanReceiveBufferHandler.h
-   EnOceanReceiveBufferHandler.cpp
-   EnOceanConfiguration.h
-   EnOceanConfiguration.cpp
-   EnOceanFactory.h
-   EnOceanFactory.cpp
-   IEnOceanReceiveThread.h
+   ReceiveBufferHandler.h
+   ReceiveBufferHandler.cpp
+   Configuration.h
+   Configuration.cpp
+   Factory.h
+   Factory.cpp
    IMessageHandler.h
    MessageHandler.h
    MessageHandler.cpp

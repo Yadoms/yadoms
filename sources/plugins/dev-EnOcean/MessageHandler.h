@@ -1,6 +1,5 @@
 #pragma once
 #include "IMessageHandler.h"
-#include "IEnOceanReceiveThread.h"
 #include <shared/communication/IAsyncPort.h>
 
 //--------------------------------------------------------------

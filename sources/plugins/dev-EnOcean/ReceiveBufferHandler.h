@@ -8,19 +8,19 @@
 /// This class manages the EnOcean receive buffer.
 /// A message is considered complete from its content (see protocol specification)
 //--------------------------------------------------------------
-class CEnOceanReceiveBufferHandler : public shared::communication::IReceiveBufferHandler
+class CReceiveBufferHandler : public shared::communication::IReceiveBufferHandler
 {
 public:
    //--------------------------------------------------------------
    /// \brief	                           Constructor
    /// \param[in] messageHandler          The called message handler when a message is received
    //--------------------------------------------------------------
-   explicit CEnOceanReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler);
+   explicit CReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
    //--------------------------------------------------------------
-   virtual ~CEnOceanReceiveBufferHandler();
+   virtual ~CReceiveBufferHandler();
 
    // IReceiveBufferHandler implementation
    void push(const shared::communication::CByteBuffer& buffer) override;

@@ -1,20 +1,20 @@
 #include "stdafx.h"
-#include "EnOceanFactory.h"
+#include "Factory.h"
 #include <shared/communication/AsyncSerialPort.h>
 #include <shared/communication/EOFReceiveBufferHandler.h>
-#include "EnOceanReceiveBufferHandler.h"
+#include "ReceiveBufferHandler.h"
 #include "MessageHandler.h"
 
 
-CEnOceanFactory::~CEnOceanFactory()
+CFactory::~CFactory()
 {
 }
 
 
-boost::shared_ptr<shared::communication::IAsyncPort> CEnOceanFactory::constructPort(const IEnOceanConfiguration& configuration,
-                                                                                    shared::event::CEventHandler& eventHandler,
-                                                                                    int evtPortConnectionId,
-                                                                                    int evtPortDataReceived)
+boost::shared_ptr<shared::communication::IAsyncPort> CFactory::constructPort(const IConfiguration& configuration,
+                                                                             shared::event::CEventHandler& eventHandler,
+                                                                             int evtPortConnectionId,
+                                                                             int evtPortDataReceived)
 {
    YADOMS_LOG(information) << "Connecting EnOcean dongle on serial port " << configuration.getSerialPort() << "...";
    auto port = boost::make_shared<shared::communication::CAsyncSerialPort>(configuration.getSerialPort(),
@@ -36,14 +36,14 @@ boost::shared_ptr<shared::communication::IAsyncPort> CEnOceanFactory::constructP
    return port;
 }
 
-boost::shared_ptr<shared::communication::IReceiveBufferHandler> CEnOceanFactory::constructReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler)
+boost::shared_ptr<shared::communication::IReceiveBufferHandler> CFactory::constructReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler)
 {
-   return boost::make_shared<CEnOceanReceiveBufferHandler>(messageHandler);
+   return boost::make_shared<CReceiveBufferHandler>(messageHandler);
 }
 
-boost::shared_ptr<IMessageHandler> CEnOceanFactory::constructMessageHandler(boost::shared_ptr<shared::communication::IAsyncPort> port,
-                                                                            shared::event::CEventHandler& eventHandler,
-                                                                            int evtPortDataReceived)
+boost::shared_ptr<IMessageHandler> CFactory::constructMessageHandler(boost::shared_ptr<shared::communication::IAsyncPort> port,
+                                                                     shared::event::CEventHandler& eventHandler,
+                                                                     int evtPortDataReceived)
 {
    return boost::make_shared<CMessageHandler>(port,
                                               eventHandler,

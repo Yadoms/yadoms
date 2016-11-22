@@ -1,19 +1,19 @@
 #include "stdafx.h"
-#include "EnOceanReceiveBufferHandler.h"
+#include "ReceiveBufferHandler.h"
 #include "message/Crc8.h"
 
 
-CEnOceanReceiveBufferHandler::CEnOceanReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler)
+CReceiveBufferHandler::CReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler)
    : m_lastReceivedTime(shared::currentTime::Provider().now()),
-   m_messageHandler(messageHandler)
+     m_messageHandler(messageHandler)
 {
 }
 
-CEnOceanReceiveBufferHandler::~CEnOceanReceiveBufferHandler()
+CReceiveBufferHandler::~CReceiveBufferHandler()
 {
 }
 
-void CEnOceanReceiveBufferHandler::push(const shared::communication::CByteBuffer& buffer)
+void CReceiveBufferHandler::push(const shared::communication::CByteBuffer& buffer)
 {
    // Manage timeout
    const auto now = shared::currentTime::Provider().now();
@@ -35,13 +35,13 @@ void CEnOceanReceiveBufferHandler::push(const shared::communication::CByteBuffer
       m_messageHandler->onReceived(completeMessage);
 }
 
-void CEnOceanReceiveBufferHandler::flush()
+void CReceiveBufferHandler::flush()
 {
    m_content.clear();
 }
 
 
-boost::shared_ptr<const message::CEsp3ReceivedPacket> CEnOceanReceiveBufferHandler::getCompleteMessage()
+boost::shared_ptr<const message::CEsp3ReceivedPacket> CReceiveBufferHandler::getCompleteMessage()
 {
    static const boost::shared_ptr<const message::CEsp3ReceivedPacket> uncompleteMessage;
 
@@ -118,3 +118,4 @@ boost::shared_ptr<const message::CEsp3ReceivedPacket> CEnOceanReceiveBufferHandl
 
    return message;
 }
+

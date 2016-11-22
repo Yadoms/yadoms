@@ -45,7 +45,7 @@ unsigned int CProfileHelper::type() const
 std::string CProfileHelper::profile() const
 {
    std::ostringstream ss;
-   ss << std::uppercase 
+   ss << std::uppercase
       << std::setfill('0') << std::setw(2) << std::hex << m_rorg << "-"
       << std::setfill('0') << std::setw(2) << std::hex << m_func << "-"
       << std::setfill('0') << std::setw(2) << std::hex << m_type;

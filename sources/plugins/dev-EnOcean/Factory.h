@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IEnOceanConfiguration.h"
+#include "IConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
 #include "IMessageHandler.h"
 
@@ -8,13 +8,13 @@
 //--------------------------------------------------------------
 /// \brief	General factory
 //--------------------------------------------------------------
-class CEnOceanFactory
+class CFactory
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CEnOceanFactory();
+   virtual ~CFactory();
 
    //--------------------------------------------------------------
    /// \brief	                           Create a port instance and connect to the dongle
@@ -24,7 +24,7 @@ public:
    /// \param[in] evtPortDataReceived     The event id raised on data receive events
    /// \return                            The created port
    //--------------------------------------------------------------
-   static boost::shared_ptr<shared::communication::IAsyncPort> constructPort(const IEnOceanConfiguration& configuration,
+   static boost::shared_ptr<shared::communication::IAsyncPort> constructPort(const IConfiguration& configuration,
                                                                              shared::event::CEventHandler& eventHandler,
                                                                              int evtPortConnectionId,
                                                                              int evtPortDataReceived);
@@ -34,7 +34,7 @@ public:
    /// \param[in] messageHandler          The message handler to redirect a received message
    /// \return                            The receive buffer handler
    //--------------------------------------------------------------
-   static boost::shared_ptr<shared::communication::IReceiveBufferHandler> CEnOceanFactory::constructReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler);
+   static boost::shared_ptr<shared::communication::IReceiveBufferHandler> CFactory::constructReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler);
 
    //--------------------------------------------------------------
    /// \brief	                           Create the message handler

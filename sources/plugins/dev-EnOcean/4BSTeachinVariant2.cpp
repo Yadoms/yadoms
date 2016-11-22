@@ -27,3 +27,4 @@ unsigned int C4BSTeachinVariant2::typeId() const
 {
    return bitset_extract(m_data, 6, 7);
 }
+

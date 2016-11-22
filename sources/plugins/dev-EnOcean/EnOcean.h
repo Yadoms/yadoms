@@ -1,6 +1,6 @@
 #pragma once
 #include <plugin_cpp_api/IPlugin.h>
-#include "EnOceanConfiguration.h"
+#include "Configuration.h"
 #include <shared/communication/IAsyncPort.h>
 #include <shared/communication/AsciiBufferLogger.h>
 #include "message/ReceivedMessage.h"
@@ -133,8 +133,8 @@ protected:
    /// \param [in] conf2            Second configuration to compare
    /// \return                      true is connection data are all the same in the both configurations
    //--------------------------------------------------------------
-   static bool connectionsAreEqual(const CEnOceanConfiguration& conf1,
-                                   const CEnOceanConfiguration& conf2);
+   static bool connectionsAreEqual(const CConfiguration& conf1,
+                                   const CConfiguration& conf2);
 
    //--------------------------------------------------------------
    /// \brief	                     Create a new device (local only)
@@ -160,7 +160,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
-   CEnOceanConfiguration m_configuration;
+   CConfiguration m_configuration;
 
    //--------------------------------------------------------------
    /// \brief  The communication port
@@ -182,3 +182,4 @@ private:
    //--------------------------------------------------------------
    std::map<std::string, boost::shared_ptr<IType>> m_devices;
 };
+

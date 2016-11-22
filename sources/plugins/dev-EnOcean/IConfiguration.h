@@ -4,13 +4,13 @@
 //--------------------------------------------------------------
 /// \brief	Interface of plugin configuration
 //--------------------------------------------------------------
-class IEnOceanConfiguration
+class IConfiguration
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~IEnOceanConfiguration()
+   virtual ~IConfiguration()
    {
    }
 

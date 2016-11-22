@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IEnOceanConfiguration.h"
+#include "IConfiguration.h"
 #include <shared/plugin/yPluginApi/YPluginConfiguration.hpp>
 
 // Shortcut to yPluginApi namespace
@@ -10,18 +10,18 @@ namespace yApi = shared::plugin::yPluginApi;
 //--------------------------------------------------------------
 /// \brief	Configuration of the plugin
 //--------------------------------------------------------------
-class CEnOceanConfiguration : public IEnOceanConfiguration
+class CConfiguration : public IConfiguration
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CEnOceanConfiguration();
+   virtual ~CConfiguration();
 
-   // IEnOceanConfiguration implementation
+   // IConfiguration implementation
    void initializeWith(const shared::CDataContainer& data) override;
    std::string getSerialPort() const override;
-   // [END] IEnOceanConfiguration implementation
+   // [END] IConfiguration implementation
 
 private:
    //--------------------------------------------------------------
