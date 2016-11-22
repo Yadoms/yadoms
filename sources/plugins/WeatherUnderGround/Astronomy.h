@@ -19,9 +19,7 @@ public:
    /// \param[in] wuConfiguration  The Configuration of the module
    //--------------------------------------------------------------
    CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
-              IWUConfiguration& wuConfiguration,
-              const std::string& deviceName,
-              const std::string& prefix);
+              IWUConfiguration& wuConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	  Parse the answer from the web Site

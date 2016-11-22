@@ -5,26 +5,24 @@
 #include "Keywords/KeywordHelpers.h"
 
 CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
-                                       IWUConfiguration& wuConfiguration,
-                                       const std::string& deviceName,
-                                       const std::string& prefix)
+                                       IWUConfiguration& wuConfiguration)
    : m_localisation(wuConfiguration.getLocalisation()),
      m_countryOrState(wuConfiguration.getCountryOrState()),
-     m_deviceName(deviceName),
-     m_temp(boost::make_shared<yApi::historization::CTemperature>(prefix + "temperature")),
-     m_pressure(boost::make_shared<yApi::historization::CPressure>(prefix + "pressure")),
-     m_humidity(boost::make_shared<yApi::historization::CHumidity>(prefix + "Humidity")),
-     m_visibility(boost::make_shared<yApi::historization::CDistance>(prefix + "Visibility")),
-     m_uv(boost::make_shared<yApi::historization::CDirection>(prefix + "UV")),
-     m_WindDirection(boost::make_shared<yApi::historization::CDirection>(prefix + "WindDirection")),
-     m_dewPoint(boost::make_shared<yApi::historization::CTemperature>(prefix + "DewPoint")),
-     m_rain1hr(boost::make_shared<yApi::historization::CRainRate>(prefix + "Rain_1hr")),
-     m_weatherConditionUrl(boost::make_shared<CWeatherIcon>(deviceName, prefix + "WeatherCondition")),
-     m_windAverageSpeed(boost::make_shared<yApi::historization::CSpeed>(prefix + "windAverageSpeed")),
-     m_windMaxSpeed(boost::make_shared<yApi::historization::CSpeed>(prefix + "windMaxSpeed")),
-     m_feelsLike(boost::make_shared<yApi::historization::CTemperature>(prefix + "FeelsLike")),
-     m_windchill(boost::make_shared<yApi::historization::CTemperature>(prefix + "Windchill")),
-     m_liveConditions(boost::make_shared<CCondition>(deviceName, "LiveConditions"))
+     m_deviceName("Conditions"),
+     m_temp(boost::make_shared<yApi::historization::CTemperature>("temperature")),
+     m_pressure(boost::make_shared<yApi::historization::CPressure>("pressure")),
+     m_humidity(boost::make_shared<yApi::historization::CHumidity>("Humidity")),
+     m_visibility(boost::make_shared<yApi::historization::CDistance>("Visibility")),
+     m_uv(boost::make_shared<yApi::historization::CDirection>("UV")),
+     m_WindDirection(boost::make_shared<yApi::historization::CDirection>("WindDirection")),
+     m_dewPoint(boost::make_shared<yApi::historization::CTemperature>("DewPoint")),
+     m_rain1hr(boost::make_shared<yApi::historization::CRainRate>("Rain_1hr")),
+     m_weatherConditionUrl(boost::make_shared<CWeatherIcon>(m_deviceName,"WeatherCondition")),
+     m_windAverageSpeed(boost::make_shared<yApi::historization::CSpeed>("windAverageSpeed")),
+     m_windMaxSpeed(boost::make_shared<yApi::historization::CSpeed>("windMaxSpeed")),
+     m_feelsLike(boost::make_shared<yApi::historization::CTemperature>("FeelsLike")),
+     m_windchill(boost::make_shared<yApi::historization::CTemperature>("Windchill")),
+     m_liveConditions(boost::make_shared<CCondition>(m_deviceName, "LiveConditions"))
 {
    try
    {

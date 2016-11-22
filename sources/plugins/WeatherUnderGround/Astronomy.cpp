@@ -3,13 +3,11 @@
 #include <shared/exception/Exception.hpp>
 
 CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
-                       IWUConfiguration& wuConfiguration,
-                       const std::string& deviceName,
-                       const std::string& prefix)
+                       IWUConfiguration& wuConfiguration)
    : m_localisation(wuConfiguration.getLocalisation()),
      m_countryOrState(wuConfiguration.getCountryOrState()),
-     m_deviceName(deviceName),
-     m_moonCharacteristics(boost::make_shared<CMoon>(deviceName, prefix + "Moon"))
+     m_deviceName("Astronomy"),
+     m_moonCharacteristics(boost::make_shared<CMoon>(m_deviceName, "Moon"))
 {
    try
    {
