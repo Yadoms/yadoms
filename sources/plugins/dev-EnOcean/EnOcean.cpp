@@ -107,6 +107,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
          case yApi::IYPluginApi::kEventManuallyDeviceCreation:
             {
+            //TODO est-ce que ça a du sens en EnOcean ?
                auto creation(api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>());
                try
                {
