@@ -5,7 +5,6 @@
 #include <shared/communication/AsciiBufferLogger.h>
 #include "message/ReceivedMessage.h"
 #include "ProfileHelper.h"
-#include "IEnOceanReceiveThread.h"
 #include "IMessageHandler.h"
 
 
@@ -177,11 +176,6 @@ private:
    /// \brief  The communication port
    //--------------------------------------------------------------
    boost::shared_ptr<shared::communication::IAsyncPort> m_port;
-
-   //--------------------------------------------------------------
-   /// \brief  The receiver thread
-   //--------------------------------------------------------------
-   boost::shared_ptr<IEnOceanReceiveThread> m_receiverThread;
 
    //--------------------------------------------------------------
    /// \brief  The message handler

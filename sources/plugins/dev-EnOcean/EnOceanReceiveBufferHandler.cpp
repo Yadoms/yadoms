@@ -3,11 +3,9 @@
 #include "message/Crc8.h"
 
 
-CEnOceanReceiveBufferHandler::CEnOceanReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
-                                                           int receiveDataEventId)
+CEnOceanReceiveBufferHandler::CEnOceanReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler)
    : m_lastReceivedTime(shared::currentTime::Provider().now()),
-     m_receiveDataEventHandler(receiveDataEventHandler),
-     m_receiveDataEventId(receiveDataEventId)
+   m_messageHandler(messageHandler)
 {
 }
 
@@ -34,7 +32,7 @@ void CEnOceanReceiveBufferHandler::push(const shared::communication::CByteBuffer
    // Send message if complete
    auto completeMessage = getCompleteMessage();
    if (!!completeMessage)
-      notifyEventHandler(completeMessage);
+      m_messageHandler->onReceived(completeMessage);
 }
 
 void CEnOceanReceiveBufferHandler::flush()
@@ -119,10 +117,4 @@ boost::shared_ptr<const message::CEsp3ReceivedPacket> CEnOceanReceiveBufferHandl
    m_content.erase(m_content.begin(), m_content.begin() + fullMessageSize);
 
    return message;
-}
-
-void CEnOceanReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<const message::CEsp3ReceivedPacket> message) const
-{
-   m_receiveDataEventHandler.postEvent<boost::shared_ptr<const message::CEsp3ReceivedPacket>>(m_receiveDataEventId,
-                                                                                              message);
 }

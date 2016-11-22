@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/event/EventHandler.hpp>
 #include <shared/communication/IReceiveBufferHandler.h>
 #include "message/ReceivedMessage.h"
 
@@ -14,11 +13,9 @@ class CEnOceanReceiveBufferHandler : public shared::communication::IReceiveBuffe
 public:
    //--------------------------------------------------------------
    /// \brief	                           Constructor
-   /// \param[in] receiveDataEventHandler The event handler to notify for received data event
-   /// \param[in] receiveDataEventId      The event id to notify for received data event
+   /// \param[in] messageHandler          The called message handler when a message is received
    //--------------------------------------------------------------
-   CEnOceanReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
-                                int receiveDataEventId);
+   explicit CEnOceanReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
@@ -37,12 +34,6 @@ protected:
    //--------------------------------------------------------------
    boost::shared_ptr<const message::CEsp3ReceivedPacket> getCompleteMessage();
 
-   //--------------------------------------------------------------
-   /// \brief	                     Send a message to the target event handler
-   /// \param[in] message           Message to send
-   //--------------------------------------------------------------
-   void notifyEventHandler(boost::shared_ptr<const message::CEsp3ReceivedPacket> message) const;//TODO réécrire pour merger avec le CEnOceanReceiveThread et économiser un thread
-
 private:
    //--------------------------------------------------------------
    /// \brief	Last received time for timout computation
@@ -55,13 +46,8 @@ private:
    std::vector<unsigned char> m_content;
 
    //--------------------------------------------------------------
-   /// \brief	The event handler to notify for received data event   
+   /// \brief	The called message handler when a message is received
    //--------------------------------------------------------------
-   shared::event::CEventHandler& m_receiveDataEventHandler;
-
-   //--------------------------------------------------------------
-   /// \brief	The event id to notify for received data event  
-   //--------------------------------------------------------------
-   int m_receiveDataEventId;
+   boost::shared_ptr<IMessageHandler> m_messageHandler;
 };
 

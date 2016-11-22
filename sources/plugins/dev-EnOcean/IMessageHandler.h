@@ -22,5 +22,11 @@ public:
    virtual bool send(const message::CEsp3SendPacket& sendMessage,
                      boost::function<bool(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> isExpectedMessageFct,
                      boost::function<void(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> onReceiveFct) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Function called when message is received
+   /// \param [in] receivedMessage  Received message
+   //--------------------------------------------------------------
+   virtual void onReceived(boost::shared_ptr<const message::CEsp3ReceivedPacket> receivedMessage) = 0;
 };
 

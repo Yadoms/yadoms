@@ -3,7 +3,6 @@
 #include <shared/communication/AsyncSerialPort.h>
 #include <shared/communication/EOFReceiveBufferHandler.h>
 #include "EnOceanReceiveBufferHandler.h"
-#include "EnOceanReceiveThread.h"
 #include "MessageHandler.h"
 
 
@@ -28,27 +27,26 @@ boost::shared_ptr<shared::communication::IAsyncPort> CEnOceanFactory::constructP
    port->subscribeForConnectionEvents(eventHandler,
                                       evtPortConnectionId);
 
-   port->setReceiveBufferHandler(boost::make_shared<CEnOceanReceiveBufferHandler>(eventHandler,
-                                                                                  evtPortDataReceived));
+   auto messageHandler = constructMessageHandler(port,
+                                                 eventHandler,
+                                                 evtPortDataReceived);
+
+   port->setReceiveBufferHandler(constructReceiveBufferHandler(messageHandler));
 
    return port;
 }
 
-boost::shared_ptr<IEnOceanReceiveThread> CEnOceanFactory::constructReceiverThread(shared::event::CEventHandler& eventHandler,
-                                                                                  int mainEvtPortConnection,
-                                                                                  int mainEvtPortDataReceived)
+boost::shared_ptr<shared::communication::IReceiveBufferHandler> CEnOceanFactory::constructReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler)
 {
-   auto thread = boost::make_shared<CEnOceanReceiveThread>(eventHandler,
-                                                           mainEvtPortConnection,
-                                                           mainEvtPortDataReceived);
-   thread->start();
-   return thread;
+   return boost::make_shared<CEnOceanReceiveBufferHandler>(messageHandler);
 }
 
 boost::shared_ptr<IMessageHandler> CEnOceanFactory::constructMessageHandler(boost::shared_ptr<shared::communication::IAsyncPort> port,
-                                                                            boost::shared_ptr<IEnOceanReceiveThread> receiverThread)
+                                                                            shared::event::CEventHandler& eventHandler,
+                                                                            int evtPortDataReceived)
 {
    return boost::make_shared<CMessageHandler>(port,
-                                              receiverThread);
+                                              eventHandler,
+                                              evtPortDataReceived);
 }
 

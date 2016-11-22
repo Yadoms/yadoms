@@ -2,7 +2,6 @@
 
 #include "IEnOceanConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
-#include "IEnOceanReceiveThread.h"
 #include "IMessageHandler.h"
 
 
@@ -31,23 +30,21 @@ public:
                                                                              int evtPortDataReceived);
 
    //--------------------------------------------------------------
-   /// \brief	                           Create the receive thread
-   /// \param[in] eventHandler            The event handler to receive notifications in main thread
-   /// \param[in] mainEvtPortConnection   The event id raised on connection events on main event handler
-   /// \param[in] mainEvtPortDataReceived The event id raised on data receive events on main event handler
-   /// \return                            The created thread
+   /// \brief	                           Create the receive buffer handler
+   /// \param[in] messageHandler          The message handler to redirect a received message
+   /// \return                            The receive buffer handler
    //--------------------------------------------------------------
-   static boost::shared_ptr<IEnOceanReceiveThread> constructReceiverThread(shared::event::CEventHandler& eventHandler,
-                                                                           int mainEvtPortConnection,
-                                                                           int mainEvtPortDataReceived);
+   static boost::shared_ptr<shared::communication::IReceiveBufferHandler> CEnOceanFactory::constructReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler);
 
    //--------------------------------------------------------------
    /// \brief	                           Create the message handler
    /// \param[in] port                    Serial port used to send/receive to dongle
-   /// \param[in] receiverThread          The receiver thread
+   /// \param[in] eventHandler            The event handler to receive notifications from port
+   /// \param[in] evtPortDataReceived     The event id raised on data receive events
    /// \return                            The message handler
    //--------------------------------------------------------------
    static boost::shared_ptr<IMessageHandler> constructMessageHandler(boost::shared_ptr<shared::communication::IAsyncPort> port,
-                                                                     boost::shared_ptr<IEnOceanReceiveThread> receiverThread);
+                                                                     shared::event::CEventHandler& eventHandler,
+                                                                     int evtPortDataReceived);
 };
 

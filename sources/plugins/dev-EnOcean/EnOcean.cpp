@@ -215,27 +215,17 @@ void CEnOcean::createConnection()
 {
    m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-   // Create the receiver thread
-   m_receiverThread = CEnOceanFactory::constructReceiverThread(m_api->getEventHandler(),
-                                                               kEvtPortConnection,
-                                                               kEvtPortDataReceived);
-
    // Create the port instance
    m_port = CEnOceanFactory::constructPort(m_configuration,
-                                           m_receiverThread->getEventHandler(),
-                                           m_receiverThread->getEvtPortConnection(),
-                                           m_receiverThread->getEvtPortDataReceived());
-
-   m_messageHandler = CEnOceanFactory::constructMessageHandler(m_port,
-                                                               m_receiverThread);
+      m_api->getEventHandler(),
+      kEvtPortConnection,
+      kEvtPortDataReceived);
 
    m_port->start();
 }
 
 void CEnOcean::destroyConnection()
 {
-   m_receiverThread.reset();
-
    m_port.reset();
 }
 

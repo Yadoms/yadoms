@@ -18,8 +18,6 @@ set(ENOCEAN_SOURCES
    EnOcean.cpp
    EnOceanReceiveBufferHandler.h
    EnOceanReceiveBufferHandler.cpp
-   EnOceanReceiveThread.h
-   EnOceanReceiveThread.cpp
    EnOceanConfiguration.h
    EnOceanConfiguration.cpp
    EnOceanFactory.h
