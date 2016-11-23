@@ -18,6 +18,7 @@ MACRO(PLUGIN_SOURCES _targetName)
       )
       
    add_executable(${_targetName} ${PLUGIN_SOURCE_FILES})
+   project(${_targetName})
 	
 	IF(MSVC OR XCODE)
 		SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "plugins")
