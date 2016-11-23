@@ -34,15 +34,17 @@ set(ENOCEAN_SOURCES
    message/Crc8.cpp
    message/Esp3ReceivedPacket.h
    message/Esp3ReceivedPacket.cpp
+   message/Esp3SendPacket.h
+   message/Esp3SendPacket.cpp
    message/Header.h
    message/Header.cpp
+   message/RadioErp1ReceivedMessage.h
+   message/RadioErp1ReceivedMessage.cpp
    message/RadioErp1SendMessage.h
    message/RadioErp1SendMessage.cpp
-   message/ReceivedMessage.h
-   message/ReceivedMessage.cpp
-   message/SendMessage.h
-   message/SendMessage.cpp
    message/types.h
+   message/UTE_AnswerSendMessage.h
+   message/UTE_AnswerSendMessage.cpp
    message/UTE_ReceivedMessage.h
    message/UTE_ReceivedMessage.cpp
    )

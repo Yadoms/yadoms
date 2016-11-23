@@ -1,6 +1,5 @@
 #pragma once
-#include "Header.h"
-#include "profiles/generated-eep.h"
+#include "RadioErp1ReceivedMessage.h"
 
 
 namespace message
@@ -21,16 +20,23 @@ namespace message
          kNotUsed
       };
 
+      enum ECommand
+      {
+         kTeachInQuery = 0
+      };
+
       //--------------------------------------------------------------
       /// \brief	                           Constructor
-      /// \param[in] esp3Packet              The esp3 message
+      /// \param[in] message                 The ERP1 radio message
       //--------------------------------------------------------------
-      explicit CUTE_ReceivedMessage(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
+      explicit CUTE_ReceivedMessage(const message::CRadioErp1ReceivedMessage& message);
 
       //--------------------------------------------------------------
       /// \brief	                           Destructor
       //--------------------------------------------------------------
       virtual ~CUTE_ReceivedMessage();
+
+      const CRadioErp1ReceivedMessage& erp1() const;
 
       bool bidirectionalCommunication() const;
       bool teachInResponseExpected() const;
@@ -43,15 +49,7 @@ namespace message
       unsigned char rorg() const;
 
    private:
-      const bool m_bidirectionalCommunication;
-      const bool m_teachInResponseExpected;
-      const ETeachInRequest m_teachInRequest;
-      const unsigned char m_command;
-      const unsigned char m_channelNumber;
-      const unsigned int m_manufacturerId;
-      const unsigned char m_type;
-      const unsigned char m_func;
-      const unsigned char m_rorg;
+      const CRadioErp1ReceivedMessage& m_erp1;
    };
 } // namespace message
 

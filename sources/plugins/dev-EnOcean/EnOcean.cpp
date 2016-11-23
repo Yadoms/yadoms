@@ -10,6 +10,7 @@
 #include <shared/exception/EmptyResult.hpp>
 #include "ProfileHelper.h"
 #include "message/CommonCommandSendMessage.h"
+#include "message/UTE_AnswerSendMessage.h"
 
 
 IMPLEMENT_PLUGIN(CEnOcean)
@@ -220,8 +221,8 @@ void CEnOcean::createConnection()
    m_port = CFactory::constructPort(m_configuration);
 
    m_messageHandler = CFactory::constructMessageHandler(m_port,
-                                                           m_api->getEventHandler(),
-                                                           kEvtPortDataReceived);
+                                                        m_api->getEventHandler(),
+                                                        kEvtPortDataReceived);
 
    m_port->subscribeForConnectionEvents(m_api->getEventHandler(),
                                         kEvtPortConnection);
@@ -311,8 +312,8 @@ void CEnOcean::protocolErrorProcess()
    // Retry full connection
    processUnConnectionEvent();
    m_api->getEventHandler().createTimer(kProtocolErrorRetryTimer,
-      shared::event::CEventTimer::kOneShot
-         , boost::posix_time::seconds(30));
+                                        shared::event::CEventTimer::kOneShot
+                                        , boost::posix_time::seconds(30));
 }
 
 void CEnOcean::processUnConnectionEvent()
@@ -449,7 +450,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
 
    if (erp1Message.rorg() == message::RORG_UNIVERSAL_TEACH_IN)
    {
-      processUTE(boost::make_shared<message::CUTE_ReceivedMessage>(esp3Packet));
+      processUTE(message::CUTE_ReceivedMessage(erp1Message));
       return;
    }
 
@@ -457,7 +458,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
    auto erp1Data = bitset_from_bytes(erp1Message.data());
    auto erp1Status = bitset_from_byte(erp1Message.status());
    auto rorg = CRorgs::createRorg(erp1Message.rorg());
-   auto deviceId = erp1Message.senderIdAsString();
+   auto deviceId = erp1Message.senderId();
 
    if (rorg->isTeachIn(erp1Data))
    {
@@ -681,8 +682,44 @@ void CEnOcean::processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket
    //TODO
 }
 
-void CEnOcean::processUTE(boost::shared_ptr<const message::CUTE_ReceivedMessage> esp3Packet)
+void CEnOcean::processUTE(const message::CUTE_ReceivedMessage& uteMessage)
 {
+   if (uteMessage.teachInRequest() != message::CUTE_ReceivedMessage::kTeachInRequest)
+   {
+      std::cout << "UTE message : teach-in request type " << uteMessage.teachInRequest() << "not supported, message ignored" << std::endl;
+      return;
+   }
+
+   if (uteMessage.command() != message::CUTE_ReceivedMessage::kTeachInQuery)
+   {
+      std::cout << "UTE message : command type " << uteMessage.command() << "not supported, message ignored" << std::endl;
+      return;
+   }
+
+   auto manufacturerName = CManufacturers::name(uteMessage.manufacturerId());
+   auto profile = CProfileHelper(uteMessage.rorg(), uteMessage.func(), uteMessage.type());
+   declareDevice(uteMessage.erp1().senderId(),//TODO catcher les exceptions et gérer la réponse (erreur, device existant, etc...)
+                 profile,
+                 manufacturerName,
+                 generateModel(std::string(), manufacturerName, profile));
+
+   if (uteMessage.teachInResponseExpected())
+   {
+      //TODO
+      message::CUTE_AnswerSendMessage sendMessage;
+      sendMessage.bidirectionalCommunication(uteMessage.bidirectionalCommunication());
+      sendMessage.teachInResponse(message::CUTE_AnswerSendMessage::kRequestNotAccepted/*TODO*/);
+      sendMessage.channelNumber(uteMessage.channelNumber());
+      sendMessage.manufacturerId(uteMessage.manufacturerId());
+      sendMessage.type(uteMessage.type());
+      sendMessage.func(uteMessage.func());
+      sendMessage.rorg(uteMessage.rorg());
+
+      //TODO y a-t-il des optionalData ?
+
+      m_messageHandler->send(sendMessage);
+   }
+
    //TODO
 }
 
@@ -749,3 +786,4 @@ void CEnOcean::requestDongleVersion() const
 
    m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 }
+

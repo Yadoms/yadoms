@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/communication/IReceiveBufferHandler.h>
-#include "message/ReceivedMessage.h"
+#include "IMessageHandler.h"
+#include "message/Esp3ReceivedPacket.h"
 
 //--------------------------------------------------------------
 /// \brief	Receive buffer handler for EnOcean

@@ -1,5 +1,5 @@
 #pragma once
-#include "message/SendMessage.h"
+#include "message/Esp3SendPacket.h"
 #include "message/Esp3ReceivedPacket.h"
 
 //--------------------------------------------------------------
@@ -14,6 +14,12 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	                     Send a message to EnOcean dongle
+   /// \param [in] sendMessage      message to send
+   //--------------------------------------------------------------
+   virtual void send(const message::CEsp3SendPacket& sendMessage) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Send a message to EnOcean dongle and wait answer
    /// \param [in] sendMessage      message to send
    /// \param [in] isExpectedMessageFct  Lambda to identify the expected message. Must return true if received message is the expected one. (called by different thread).
    /// \param [in] onReceiveFct     Lambda to process received message. (called by different thread).

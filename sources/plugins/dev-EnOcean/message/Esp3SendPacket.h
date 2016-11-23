@@ -24,7 +24,7 @@ namespace message
       virtual void appendOptional(const std::vector<unsigned char>& data);
 
    protected:
-      void updateBuffer(std::vector<unsigned char>& buffer) const;
+      virtual void updateBuffer(std::vector<unsigned char>& buffer) const;
 
       const EPacketType m_packetType;
       std::vector<unsigned char> m_data;

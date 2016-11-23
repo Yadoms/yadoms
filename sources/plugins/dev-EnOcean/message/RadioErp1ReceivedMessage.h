@@ -1,5 +1,4 @@
 #pragma once
-#include "Header.h"
 #include "profiles/generated-eep.h"
 
 
@@ -25,8 +24,7 @@ namespace message
       virtual ~CRadioErp1ReceivedMessage();
 
       CRorgs::ERorgIds rorg() const;
-      unsigned int senderId() const;
-      std::string senderIdAsString() const;
+      std::string senderId() const;
       const std::vector<unsigned char>& data() const;
       unsigned char status() const;
 
@@ -35,8 +33,7 @@ namespace message
 
    private:
       const CRorgs::ERorgIds m_rorg;
-      const unsigned int m_senderId;
-      const std::string m_senderIdAsString;
+      const std::string m_senderId;
       const unsigned char m_status;
       const std::vector<unsigned char> m_data;
    };
