@@ -16,6 +16,7 @@ enum ERorgIds {
    k1BS_Telegram = 0xD5,
    k4BS_Telegram = 0xA5,
    kVLD_Telegram = 0xD2,
+   kUTE_Telegram = 0xD4,
 };
    static CRorgs::ERorgIds toRorgId(unsigned int id);
    static const std::string& name(unsigned int id);

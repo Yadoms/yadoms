@@ -29,9 +29,6 @@
     "manufacturer": {
       "type": "string"
     },
-    "model": {
-      "type": "string"
-    },
     "profile": {
       "type": "radioSection",
       "content": ""
@@ -44,9 +41,6 @@
         "models": [ "*" ],
         "schema": {
           "manufacturer": {
-            "type": "string"
-          },
-          "model": {
             "type": "string"
           },
           "profile": {

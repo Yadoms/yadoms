@@ -17,6 +17,7 @@ const std::map<unsigned int, std::string> CRorgs::RorgMap = boost::assign::map_l
    (k1BS_Telegram, "1BS Telegram")
    (k4BS_Telegram, "4BS Telegram")
    (kVLD_Telegram, "VLD Telegram")
+   (kUTE_Telegram, "UTE Telegram")
 ;
 
 CRorgs::CRorgs()

@@ -14,6 +14,8 @@ set(ENOCEAN_SOURCES
    IConfiguration.h
    Device.h
    Device.cpp
+   DeviceConfigurationHelper.h
+   DeviceConfigurationHelper.cpp
    EnOcean.h
    EnOcean.cpp
    ReceiveBufferHandler.h

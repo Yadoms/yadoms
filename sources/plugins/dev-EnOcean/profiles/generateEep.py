@@ -54,10 +54,12 @@ util.info("Hard-coded profiles are : " + str(hardCodedProfiles.getProfilesHardCo
 # CRorgs : Main Rorgs class, listing Rorg messages
 rorgsClass = cppClass.CppClass("CRorgs")
 cppTypes.append(rorgsClass)
-rorgsClass.addSubType(cppClass.CppEnumType("ERorgIds", \
-   xmlHelper.getEnumValues(inNode=xmlProfileNode, foreachSubNode="rorg", enumValueNameTag="title", enumValueTag="number"), cppClass.PUBLIC))
+rorgsItems = xmlHelper.getEnumValues(inNode=xmlProfileNode, foreachSubNode="rorg", enumValueNameTag="title", enumValueTag="number")
+# Add 0xD4 (Universal Teach-in message) to RORG list as it doesn't not appear in eepXX.xml file
+rorgsItems.append(['UTE Telegram ', '0xD4'])
+rorgsClass.addSubType(cppClass.CppEnumType("ERorgIds", rorgsItems, cppClass.PUBLIC))
 rorgsClass.addMember(cppClass.CppMember("RorgMap", "std::map<unsigned int, std::string>", cppClass.PRIVATE, cppClass.STATIC | cppClass.CONST, \
-   cppHelper.getMapInitCode(xmlHelper.getEnumValues(inNode=xmlProfileNode, foreachSubNode="rorg", enumValueNameTag="title"))))
+   cppHelper.getMapInitCode(rorgsItems)))
 rorgsClass.addMethod(cppClass.CppMethod("toRorgId", "CRorgs::ERorgIds", "unsigned int id", cppClass.PUBLIC, cppClass.STATIC, \
    "   if (RorgMap.find(id) == RorgMap.end())\n" \
    "      throw std::out_of_range(\"Unknown rorg \" + CProfileHelper::byteToHexString(id));\n" \

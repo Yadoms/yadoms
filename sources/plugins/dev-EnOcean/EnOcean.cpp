@@ -11,6 +11,7 @@
 #include "ProfileHelper.h"
 #include "message/CommonCommandSendMessage.h"
 #include "message/UTE_AnswerSendMessage.h"
+#include "DeviceConfigurationHelper.h"
 
 
 IMPLEMENT_PLUGIN(CEnOcean)
@@ -491,27 +492,17 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
                                        teachInData.typeId());
          auto manufacturerName = CManufacturers::name(teachInData.manufacturerId());
 
-         //TODO faire un helper pour gérer la conf
-         shared::CDataContainer profileNode;
-         profileNode.set("content", "");
-         profileNode.set("radio", "true");
-         shared::CDataContainer contentProfilesNode;
-         contentProfilesNode.set(profile.profile(), profileNode);
-         shared::CDataContainer profilesNode;
-         profilesNode.set("content", contentProfilesNode);
-         profilesNode.set("activeSection", profile.profile());
-         shared::CDataContainer deviceConfiguration;
-         deviceConfiguration.set("manufacturer", manufacturerName);
-         deviceConfiguration.set("profile", profilesNode);
+         CDeviceConfigurationHelper deviceConfiguration(profile,
+                                                        manufacturerName);
 
          if (m_api->deviceExists(deviceId))
          {
             // Device already exist, just reconfigure it
             m_api->updateDeviceConfiguration(deviceId,
-                                             deviceConfiguration);
+                                             deviceConfiguration.configuration());
 
             processDeviceConfiguration(deviceId,
-                                       deviceConfiguration);
+                                       deviceConfiguration.configuration());
 
             return;
          }
@@ -522,7 +513,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
                        manufacturerName);
 
          m_api->updateDeviceConfiguration(deviceId,
-                                          deviceConfiguration);
+                                          deviceConfiguration.configuration());
       }
       catch (std::exception& e)
       {
@@ -684,7 +675,8 @@ void CEnOcean::processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket
 
 void CEnOcean::processUTE(const message::CUTE_ReceivedMessage& uteMessage)
 {
-   if (uteMessage.teachInRequest() != message::CUTE_ReceivedMessage::kTeachInRequest)
+   if (uteMessage.teachInRequest() != message::CUTE_ReceivedMessage::kTeachInRequest &&
+      uteMessage.teachInRequest() != message::CUTE_ReceivedMessage::kNotSpecified)
    {
       std::cout << "UTE message : teach-in request type " << uteMessage.teachInRequest() << "not supported, message ignored" << std::endl;
       return;
@@ -696,12 +688,16 @@ void CEnOcean::processUTE(const message::CUTE_ReceivedMessage& uteMessage)
       return;
    }
 
-   auto manufacturerName = CManufacturers::name(uteMessage.manufacturerId());
+   auto deviceId = uteMessage.erp1().senderId();
    auto profile = CProfileHelper(uteMessage.rorg(), uteMessage.func(), uteMessage.type());
-   declareDevice(uteMessage.erp1().senderId(),//TODO catcher les exceptions et gérer la réponse (erreur, device existant, etc...)
+   auto manufacturerName = CManufacturers::name(uteMessage.manufacturerId());
+   declareDevice(deviceId,//TODO catcher les exceptions et gérer la réponse (erreur, device existant, etc...)
                  profile,
                  manufacturerName,
                  generateModel(std::string(), manufacturerName, profile));
+
+   m_api->updateDeviceConfiguration(deviceId,
+                                    CDeviceConfigurationHelper(profile, manufacturerName).configuration());
 
    if (uteMessage.teachInResponseExpected())
    {
@@ -786,4 +782,3 @@ void CEnOcean::requestDongleVersion() const
 
    m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 }
-
