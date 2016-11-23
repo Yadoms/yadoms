@@ -4,15 +4,12 @@
 #include <Manager.h>
 
 COpenZWaveEnumHandler::COpenZWaveEnumHandler()
-   : m_value(static_cast<uint32>(0),
-             static_cast<uint64>(0))
+   : m_value(static_cast<uint32>(0), static_cast<uint64>(0))
 {
 }
 
 COpenZWaveEnumHandler::COpenZWaveEnumHandler(const std::string& str)
-   : m_value(static_cast<uint32>(0),
-             static_cast<uint64>(0)),
-     m_valueString(str)
+   : m_value(static_cast<uint32>(0), static_cast<uint64>(0)), m_valueString(str)
 {
 }
 
@@ -22,18 +19,14 @@ COpenZWaveEnumHandler::COpenZWaveEnumHandler(OpenZWave::ValueID& vID)
      m_value(vID)
 {
    //get values
-   OpenZWave::Manager::Get()->GetValueListSelection(vID,
-                                                    &m_valueString);
-   OpenZWave::Manager::Get()->GetValueListSelection(vID,
-                                                    &m_valueInteger);
+   OpenZWave::Manager::Get()->GetValueListSelection(vID, &m_valueString);
+   OpenZWave::Manager::Get()->GetValueListSelection(vID, &m_valueInteger);
 
    //get all values Integer
-   OpenZWave::Manager::Get()->GetValueListValues(vID,
-                                                 &m_integers);
+   OpenZWave::Manager::Get()->GetValueListValues(vID, &m_integers);
 
    //get all values Strings
-   OpenZWave::Manager::Get()->GetValueListItems(vID,
-                                                &m_strings);
+   OpenZWave::Manager::Get()->GetValueListItems(vID, &m_strings);
 }
 
 
@@ -76,8 +69,7 @@ const std::vector<std::string> COpenZWaveEnumHandler::getAllStrings() const
    return m_strings;
 }
 
-bool COpenZWaveEnumHandler::getTextOfValue(const std::string& integerValueInString,
-                                           std::string& result)
+bool COpenZWaveEnumHandler::getTextOfValue(const std::string& integerValueInString, std::string& result)
 {
    auto value = atoi(integerValueInString.c_str());
    for (auto i = 0; i < m_strings.size(); ++i)

@@ -2,6 +2,7 @@
 #include "OpenZWaveNodeConfiguration.h"
 #include "OpenZWaveNodeKeywordFactory.h"
 #include "OpenZWaveHelpers.h"
+#include "ConfigurationSchemaFactory.h"
 
 COpenZWaveNodeConfiguration::COpenZWaveNodeConfiguration(const uint32 homeId, const uint8 nodeId)
    : m_homeId(homeId), m_nodeId(nodeId)
@@ -52,7 +53,7 @@ shared::CDataContainer COpenZWaveNodeConfiguration::generateConfigurationSchema(
    {
       if (i->second != NULL)
       {
-         result.set(i->first, i->second->serialize());
+         result.set(i->first, CConfigurationSchemaFactory::generateForHistorizer(i->second.get()));
       }
    }
 

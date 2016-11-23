@@ -2,6 +2,7 @@
 #include <shared/Export.h>
 #include <shared/DataContainer.h>
 #include "IHistorizable.h"
+#include "typeInfo/IntTypeInfo.h"
 
 namespace shared
 {
@@ -25,7 +26,8 @@ namespace shared
                //-----------------------------------------------------
                explicit CDimmable(const std::string& keywordName,
                                   const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGetSet,
-                                  const EMeasureType& measureType = EMeasureType::kAbsolute);
+                                  const EMeasureType& measureType = EMeasureType::kAbsolute,
+                                  typeInfo::CIntTypeInfo& additionalInfo = typeInfo::CIntTypeInfo::Empty);
 
                //-----------------------------------------------------
                ///\brief                     Destructor
@@ -101,6 +103,11 @@ namespace shared
                ///\brief                     The access mode
                //-----------------------------------------------------
                const EKeywordAccessMode& m_accessMode;
+
+               //-----------------------------------------------------
+               ///\brief                     The additionnal type info
+               //-----------------------------------------------------
+               const typeInfo::CIntTypeInfo m_additionalInfo;
             };
          }
       }

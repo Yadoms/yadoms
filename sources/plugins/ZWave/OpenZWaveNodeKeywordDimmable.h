@@ -2,6 +2,7 @@
 
 #include "OpenZWaveNodeKeywordBase.h"
 #include <shared/plugin/yPluginApi/historization/Dimmable.h>
+#include "../typeinfo/IntegerTypeInfo.h"
 
 
 class COpenZWaveNodeKeywordDimmable : public COpenZWaveNodeKeywordBase
@@ -10,9 +11,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    //--------------------------------------------------------------
-   COpenZWaveNodeKeywordDimmable(OpenZWave::ValueID& valueId,
-                                 const std::string& vLabel,
-                                 shared::plugin::yPluginApi::EKeywordAccessMode accessMode);
+   COpenZWaveNodeKeywordDimmable(OpenZWave::ValueID& valueId, const std::string& vLabel, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CIntegerTypeInfo &ti);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
