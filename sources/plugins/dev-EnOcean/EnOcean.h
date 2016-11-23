@@ -2,7 +2,6 @@
 #include <plugin_cpp_api/IPlugin.h>
 #include "Configuration.h"
 #include <shared/communication/IAsyncPort.h>
-#include <shared/communication/AsciiBufferLogger.h>
 #include "message/Esp3ReceivedPacket.h"
 #include "message/UTE_ReceivedMessage.h"
 #include "ProfileHelper.h"

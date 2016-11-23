@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "UTE_ReceivedMessage.h"
 
-//TODO aligner tous les messsages en réception suivant cette syntaxe
+
 namespace message
 {
    CUTE_ReceivedMessage::CUTE_ReceivedMessage(const message::CRadioErp1ReceivedMessage& message)
