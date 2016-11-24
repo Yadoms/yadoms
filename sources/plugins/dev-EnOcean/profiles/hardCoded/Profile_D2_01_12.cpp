@@ -19,9 +19,9 @@ DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_01_12::EConnectedSwitchsType, ECo
 CProfile_D2_01_12::CProfile_D2_01_12(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_deviceId(deviceId),
-     m_switch1(boost::make_shared<yApi::historization::CSwitch>("Switch 1")),
-     m_switch2(boost::make_shared<yApi::historization::CSwitch>("Switch 2")),
-     m_historizers({m_switch1 , m_switch2})
+     m_channel1(boost::make_shared<yApi::historization::CSwitch>("Channel 1", yApi::EKeywordAccessMode::kGet)),
+     m_channel2(boost::make_shared<yApi::historization::CSwitch>("Channel 2", yApi::EKeywordAccessMode::kGet)),
+     m_historizers({m_channel1 , m_channel2 })
 {
 }
 
@@ -57,12 +57,12 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    switch (ioChannel)
    {
    case 0:
-      m_switch1->set(state);
-      historizers.push_back(m_switch1);
+      m_channel1->set(state);
+      historizers.push_back(m_channel1);
       break;
    case 1:
-      m_switch2->set(state);
-      historizers.push_back(m_switch2);
+      m_channel2->set(state);
+      historizers.push_back(m_channel2);
       break;
    default:
       std::cout << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel << std::endl;
