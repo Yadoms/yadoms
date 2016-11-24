@@ -17,23 +17,6 @@
       }
     }
   },
-  "supportManuallyDeviceCreation": "true",
-  "manuallyDeviceCreationConfigurationSchema": {
-    "id": {
-      "type": "string",
-      "maximumLength": "8",
-      "required": "true",
-      "regex": "^[a-fA-F0-9]{8}$",
-      "regexErrorMessage": "Must be a 8 characters long hexadecimal string (ie: 0x1234ABCD)"
-    },
-    "manufacturer": {
-      "type": "string"
-    },
-    "profile": {
-      "type": "radioSection",
-      "content": ""
-    }
-  },
   "supportDeviceRemovedNotification": "true",
   "deviceConfiguration": {
     "staticConfigurationSchema": [

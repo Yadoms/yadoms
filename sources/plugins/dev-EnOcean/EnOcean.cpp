@@ -107,22 +107,6 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                break;
             }
 
-         case yApi::IYPluginApi::kEventManuallyDeviceCreation:
-            {
-               //TODO est-ce que ça a du sens en EnOcean ?
-               auto creation(api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>());
-               try
-               {
-                  creation->sendSuccess(processManuallyDeviceCreation(creation));
-               }
-               catch (std::exception& ex)
-               {
-                  std::cerr << "Unable to create device : " << ex.what() << std::endl;
-                  creation->sendError(ex.what());
-               }
-               break;
-            }
-
          case yApi::IYPluginApi::kEventDeviceRemoved:
             {
                auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved>>();
@@ -323,32 +307,6 @@ void CEnOcean::processUnConnectionEvent()
    m_api->setPluginState(yApi::historization::EPluginState::kError, "connectionFailed");
 
    destroyConnection();
-}
-
-std::string CEnOcean::processManuallyDeviceCreation(boost::shared_ptr<const shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> creation)
-{
-   auto configuration = creation->getData().getConfiguration();
-   auto deviceId = configuration.get<std::string>("id");
-   auto selectedProfile = CProfileHelper(configuration.get<std::string>("profile.activeSection"));
-
-   // Declare the device
-   auto device = declareDevice(deviceId,
-                               selectedProfile,
-                               configuration.get<std::string>("manufacturer"),
-                               configuration.get<std::string>("model"));
-
-   // Send configuration to device
-   try
-   {
-      device->sendConfiguration(configuration.get<shared::CDataContainer>("profile.content." + selectedProfile.profile() + ".content"),
-                                m_messageHandler);
-   }
-   catch (std::exception& e)
-   {
-      throw std::runtime_error(std::string("Unable to configure device : ") + e.what());
-   }
-
-   return deviceId;
 }
 
 void CEnOcean::processDeviceRemmoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> deviceRemoved)

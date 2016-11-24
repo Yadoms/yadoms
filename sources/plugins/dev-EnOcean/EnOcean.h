@@ -54,12 +54,6 @@ protected:
    void processUnConnectionEvent();
 
    //--------------------------------------------------------------
-   /// \brief	                     Called when device manually creation is invoked
-   /// \return                      The declared device name
-   //--------------------------------------------------------------
-   std::string processManuallyDeviceCreation(boost::shared_ptr<const shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> creation);
-
-   //--------------------------------------------------------------
    /// \brief	                     Called when device was removed
    /// \param[in] deviceRemoved     Information about device removed
    //--------------------------------------------------------------

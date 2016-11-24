@@ -55,7 +55,6 @@ def generate(packageJsonInPath, packageJsonPath, localesPath, supportedProfiles)
       inPackage = json.load(packageJsonInFile, object_pairs_hook=OrderedDict)
 
       outPackage = copy.deepcopy(inPackage)
-      outPackage['manuallyDeviceCreationConfigurationSchema']['profile']['content'] = OrderedDict()
       outPackage['deviceConfiguration']['staticConfigurationSchema'][0]['schema']['profile']['content'] = OrderedDict()
       del outPackage['specificProfilesConfigurations']
 
@@ -71,7 +70,6 @@ def generate(packageJsonInPath, packageJsonPath, localesPath, supportedProfiles)
                   profileNode['content'] = inPackage['specificProfilesConfigurations'][profileName]['content']
                else:
                   profileNode['content'] = ''
-               outPackage['manuallyDeviceCreationConfigurationSchema']['profile']['content'][profileName] = profileNode
                outPackage['deviceConfiguration']['staticConfigurationSchema'][0]['schema']['profile']['content'][profileName] = profileNode
 
       with codecs.open(packageJsonPath, 'w', 'utf_8') as packageJsonFile:
@@ -85,7 +83,6 @@ def generate(packageJsonInPath, packageJsonPath, localesPath, supportedProfiles)
          inPackage = json.load(localesInFile, object_pairs_hook=OrderedDict)
 
          outPackage = copy.deepcopy(inPackage)
-         outPackage['manuallyDeviceCreationConfigurationSchema']['profile']['content'] = OrderedDict()
          outPackage['deviceConfiguration']['profile']['content'] = OrderedDict()
          del outPackage['specificProfilesConfigurations']
 
@@ -100,7 +97,6 @@ def generate(packageJsonInPath, packageJsonPath, localesPath, supportedProfiles)
                      profileNode['content'] = inPackage['specificProfilesConfigurations'][profileName]['content']
                   else:
                      profileNode['content'] = ''
-                  outPackage['manuallyDeviceCreationConfigurationSchema']['profile']['content'][profileName] = profileNode
                   outPackage['deviceConfiguration']['profile']['content'][profileName] = profileNode
 
          localesOutPath = os.path.join(localesPath, os.path.basename(localesInPath))
