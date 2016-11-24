@@ -375,20 +375,11 @@ void CEnOcean::processDataReceived(boost::shared_ptr<const message::CEsp3Receive
       case message::RESPONSE:
          processResponse(message);
          break;
-      case message::RADIO_SUB_TEL: break;//TODO
       case message::EVENT:
          processEvent(message);
-         break;//TODO
-      case message::COMMON_COMMAND: break;//TODO
-      case message::SMART_ACK_COMMAND: break;//TODO
-      case message::REMOTE_MAN_COMMAND: break;//TODO
-      case message::RADIO_MESSAGE: break;//TODO
-      case message::RADIO_ERP2: break;//TODO
-      case message::RADIO_802_15_4: break;//TODO
-      case message::COMMAND_2_4: break;//TODO
-      case message::MESSAGES: break;//TODO
+         break;
       default:
-         throw CProtocolException((boost::format("Unknown packet type %1%") % message->header().packetType()).str());
+         throw CProtocolException((boost::format("Unknown or unsupported received packet type %1%") % message->header().packetType()).str());
       }
    }
    catch (CProtocolException& e)
@@ -614,21 +605,7 @@ void CEnOcean::processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket
       };
 
    auto eventCode = esp3Packet->data()[0];
-
-   switch (eventCode)
-   {
-   case SA_RECLAIM_NOT_SUCCESSFUL: break; //TODO
-   case SA_CONFIRM_LEARN: break; //TODO
-   case SA_LEARN_ACK: break; //TODO
-   case CO_READY: break; //TODO
-   case CO_EVENT_SECUREDEVICES: break; //TODO
-   case CO_DUTYCYCLE_LIMIT: break; //TODO
-   case CO_TRANSMIT_FAILED: break; //TODO
-   default:
-      throw CProtocolException((boost::format("Unknown event code %1%") % eventCode).str());
-   }
-
-   //TODO
+   std::cout << "Event " << eventCode << " received" << std::endl;
 }
 
 void CEnOcean::processUTE(const message::CUTE_ReceivedMessage& uteMessage)

@@ -34,7 +34,7 @@ namespace message
       RADIO_802_15_4 = 0x10,
       COMMAND_2_4 = 0x11,
 
-      MESSAGES = 0x80
+      MESSAGES_OFFSET = 0x80
    };
 
    enum EReturnCode
