@@ -93,7 +93,7 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
    // CMD 0x2 - Actuator Set Local
    {
       message::CRadioErp1SendMessage command;
-      boost::dynamic_bitset<> data(4 * sizeof(unsigned char));
+      boost::dynamic_bitset<> data(4 * 8);
 
       bitset_insert(data, 4, 4, 0x02); // CMD 0x2 - Actuator Set Local
       bitset_insert(data, 0, !taughtInAllDevices);
@@ -123,7 +123,7 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
    // CMD 0xB - Actuator Set External Interface Settings
    {
       message::CRadioErp1SendMessage command;
-      boost::dynamic_bitset<> data(7 * sizeof(unsigned char));
+      boost::dynamic_bitset<> data(7 * 8);
 
       bitset_insert(data, 4, 4, 0x0B); // CMD 0xB - Actuator Set External Interface Settings
       bitset_insert(data, 11, 5, 0x1E); // Use all output channels supported by the device

@@ -9,9 +9,14 @@ namespace message
    ///
    /// This class manages a UTE EnOcean answer message.
    //--------------------------------------------------------------
-   class CUTE_AnswerSendMessage : public CRadioErp1SendMessage
+   class CUTE_AnswerSendMessage : public CEsp3SendPacket
    {
    public:
+      enum
+      {
+         kTeachInResponse = 0x01
+      };
+
       enum EResponse
       {
          kRequestNotAccepted = 0,
@@ -23,25 +28,24 @@ namespace message
       //--------------------------------------------------------------
       /// \brief	                           Constructor
       //--------------------------------------------------------------
-      CUTE_AnswerSendMessage();
+      CUTE_AnswerSendMessage(const std::string& destinationId,
+                             bool bidirectionnalCommunication,
+                             EResponse response,
+                             unsigned char channelNumber,
+                             unsigned int manufacturerId,
+                             unsigned char type,
+                             unsigned char func,
+                             unsigned char rorg);
 
       //--------------------------------------------------------------
       /// \brief	                           Destructor
       //--------------------------------------------------------------
       virtual ~CUTE_AnswerSendMessage();
 
-      void bidirectionalCommunication(bool bidirectionnalCommunication);
-      void teachInResponse(EResponse response);
-      void channelNumber(unsigned char channelNumber);
-      void manufacturerId(unsigned int manufacturerId);
-      void type(unsigned char type);
-      void func(unsigned char func);
-      void rorg(unsigned char rorg);
-
-   protected:
-      virtual void updateBuffer(std::vector<unsigned char>& buffer) const;
+      boost::shared_ptr<const std::vector<unsigned char>> buffer() override;
 
    private:
+      const std::string& m_destinationId;
       bool m_bidirectionalCommunication;
       EResponse m_response;
       const unsigned char m_command;

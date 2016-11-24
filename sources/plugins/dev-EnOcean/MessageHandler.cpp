@@ -17,15 +17,15 @@ CMessageHandler::~CMessageHandler()
 }
 
 
-void CMessageHandler::send(const message::CEsp3SendPacket& sendMessage)
+void CMessageHandler::send(message::CEsp3SendPacket& sendMessage)
 {
    if (!m_port)
       throw CProtocolException("Send message failed : dongle is not ready");
 
-   m_port->send(sendMessage.buildBuffer());
+   m_port->send(shared::communication::CByteBuffer(*sendMessage.buffer()));
 }
 
-bool CMessageHandler::send(const message::CEsp3SendPacket& sendMessage,
+bool CMessageHandler::send(message::CEsp3SendPacket& sendMessage,
                            boost::function<bool(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> isExpectedMessageFct,
                            boost::function<void(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> onReceiveFct)
 {
@@ -35,7 +35,7 @@ bool CMessageHandler::send(const message::CEsp3SendPacket& sendMessage,
    setHook(isExpectedMessageFct,
            onReceiveFct);
 
-   m_port->send(sendMessage.buildBuffer());
+   m_port->send(shared::communication::CByteBuffer(*sendMessage.buffer()));
 
    return waitAnswer(message::EnOceanAnswerTimeout);
 }

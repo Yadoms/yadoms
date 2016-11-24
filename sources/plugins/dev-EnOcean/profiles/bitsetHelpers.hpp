@@ -1,10 +1,11 @@
 #pragma once
-#include <boost/dynamic_bitset.hpp>
 
 
 //--------------------------------------------------------------
 /// \brief	Some bitset helper functions
 //--------------------------------------------------------------
+
+
 inline std::vector<unsigned char> bitset_to_bytes(const boost::dynamic_bitset<>& bs)
 {
    std::vector<unsigned char> byteArray(bs.size() / 8);
@@ -18,6 +19,15 @@ inline std::vector<unsigned char> bitset_to_bytes(const boost::dynamic_bitset<>&
    }
 
    return byteArray;
+}
+
+inline unsigned char bitset_to_byte(const boost::dynamic_bitset<>& bs)
+{
+   unsigned char byte = 0;
+   for (auto bitPos = 0; bitPos < 8; ++bitPos)
+      if (bs[bitPos])
+         byte |= 0x80 >> bitPos;
+   return byte;
 }
 
 inline void bitset_insert(boost::dynamic_bitset<>& bitset,

@@ -16,7 +16,7 @@ public:
    /// \brief	                     Send a message to EnOcean dongle
    /// \param [in] sendMessage      message to send
    //--------------------------------------------------------------
-   virtual void send(const message::CEsp3SendPacket& sendMessage) = 0;
+   virtual void send(message::CEsp3SendPacket& sendMessage) = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Send a message to EnOcean dongle and wait answer
@@ -25,7 +25,7 @@ public:
    /// \param [in] onReceiveFct     Lambda to process received message. (called by different thread).
    /// \return                      false if timeout waiting answer
    //--------------------------------------------------------------
-   virtual bool send(const message::CEsp3SendPacket& sendMessage,
+   virtual bool send(message::CEsp3SendPacket& sendMessage,
                      boost::function<bool(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> isExpectedMessageFct,
                      boost::function<void(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> onReceiveFct) = 0;
 

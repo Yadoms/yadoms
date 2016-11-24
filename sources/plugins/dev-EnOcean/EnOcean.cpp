@@ -691,32 +691,40 @@ void CEnOcean::processUTE(const message::CUTE_ReceivedMessage& uteMessage)
    auto deviceId = uteMessage.erp1().senderId();
    auto profile = CProfileHelper(uteMessage.rorg(), uteMessage.func(), uteMessage.type());
    auto manufacturerName = CManufacturers::name(uteMessage.manufacturerId());
-   declareDevice(deviceId,//TODO catcher les exceptions et gérer la réponse (erreur, device existant, etc...)
-                 profile,
-                 manufacturerName,
-                 generateModel(std::string(), manufacturerName, profile));
 
-   m_api->updateDeviceConfiguration(deviceId,
-                                    CDeviceConfigurationHelper(profile, manufacturerName).configuration());
+   auto response = message::CUTE_AnswerSendMessage::kRequestAccepted;
+   if (m_devices.find(deviceId) == m_devices.end())
+   {
+      try
+      {
+         declareDevice(deviceId,
+                       profile,
+                       manufacturerName,
+                       generateModel(std::string(), manufacturerName, profile));
+
+         m_api->updateDeviceConfiguration(deviceId,
+                                          CDeviceConfigurationHelper(profile, manufacturerName).configuration());
+      }
+      catch (std::exception& e)
+      {
+         std::cerr << "Fail to declare device (Universal teachin) : " << e.what() << std::endl;
+         response = message::CUTE_AnswerSendMessage::kRequestNotAccepted;
+      }
+   }
 
    if (uteMessage.teachInResponseExpected())
    {
-      //TODO
-      message::CUTE_AnswerSendMessage sendMessage;
-      sendMessage.bidirectionalCommunication(uteMessage.bidirectionalCommunication());
-      sendMessage.teachInResponse(message::CUTE_AnswerSendMessage::kRequestNotAccepted/*TODO*/);
-      sendMessage.channelNumber(uteMessage.channelNumber());
-      sendMessage.manufacturerId(uteMessage.manufacturerId());
-      sendMessage.type(uteMessage.type());
-      sendMessage.func(uteMessage.func());
-      sendMessage.rorg(uteMessage.rorg());
-
-      //TODO y a-t-il des optionalData ?
+      message::CUTE_AnswerSendMessage sendMessage(deviceId,
+                                                  uteMessage.bidirectionalCommunication(),
+                                                  response,
+                                                  uteMessage.channelNumber(),
+                                                  uteMessage.manufacturerId(),
+                                                  uteMessage.type(),
+                                                  uteMessage.func(),
+                                                  uteMessage.rorg());
 
       m_messageHandler->send(sendMessage);
    }
-
-   //TODO
 }
 
 boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
@@ -782,3 +790,4 @@ void CEnOcean::requestDongleVersion() const
 
    m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 }
+

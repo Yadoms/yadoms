@@ -22,10 +22,10 @@ public:
 
    // IMessageHandler implementation
    void onReceived(boost::shared_ptr<const message::CEsp3ReceivedPacket> receivedMessage) override;
-   bool send(const message::CEsp3SendPacket& sendMessage,
+   bool send(message::CEsp3SendPacket& sendMessage,
              boost::function<bool(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> isExpectedMessageFct,
              boost::function<void(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> onReceiveFct) override;
-   void send(const message::CEsp3SendPacket& sendMessage) override;
+   void send(message::CEsp3SendPacket& sendMessage) override;
 
    // [END] IMessageHandler implementation
 
