@@ -16,6 +16,8 @@ DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_01_12::EConnectedSwitchsType, ECo
    ((autodetection))
 );
 
+const CRorgs::ERorgIds CProfile_D2_01_12::m_rorg(CRorgs::kVLD_Telegram);
+
 CProfile_D2_01_12::CProfile_D2_01_12(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_deviceId(deviceId),
@@ -92,7 +94,9 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
 
    // CMD 0x2 - Actuator Set Local
    {
-      message::CRadioErp1SendMessage command;
+      message::CRadioErp1SendMessage command(m_rorg,
+                                             "000000",//TODO mettre constant
+                                             0);
       boost::dynamic_bitset<> data(4 * 8);
 
       bitset_insert(data, 4, 4, 0x02); // CMD 0x2 - Actuator Set Local
@@ -102,7 +106,7 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
       bitset_insert(data, 24, !userInterfaceDayMode);
       bitset_insert(data, 26, 2, defaultState);
 
-      command.appendData(bitset_to_bytes(data));
+      command.data(bitset_to_bytes(data));
 
       boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
       if (!messageHandler->send(command,
@@ -116,13 +120,15 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
                                 }))
          std::cerr << "Fail to send configuration to " << m_deviceId << " : no answer to Actuator Set Local command" << std::endl;
 
-      if (answer->data()[0] != message::RET_OK)
+      if (answer->data()[0] != message::RET_OK)//TODO utiliser CResponseReceivedMessage (voir EnOcean.cpp(669))
          std::cerr << "Fail to send configuration to " << m_deviceId << " : Actuator Set Local command returns " << answer->data()[0] << std::endl;
    }
 
    // CMD 0xB - Actuator Set External Interface Settings
    {
-      message::CRadioErp1SendMessage command;
+      message::CRadioErp1SendMessage command(m_rorg,
+                                             "000000",//TODO mettre constant
+                                             0);
       boost::dynamic_bitset<> data(7 * 8);
 
       bitset_insert(data, 4, 4, 0x0B); // CMD 0xB - Actuator Set External Interface Settings
@@ -132,7 +138,7 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
       bitset_insert(data, 48, 2, connectedSwitchsType);
       bitset_insert(data, 50, !switchingStateToggle);
 
-      command.appendData(bitset_to_bytes(data));
+      command.data(bitset_to_bytes(data));
 
       boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
       if (!messageHandler->send(command,
@@ -146,7 +152,7 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
                                 }))
          std::cerr << "Fail to send configuration to " << m_deviceId << " : no answer to Actuator Set External Interface Settings command" << std::endl;
 
-      if (answer->data()[0] != message::RET_OK)
+      if (answer->data()[0] != message::RET_OK)//TODO utiliser CResponseReceivedMessage (voir EnOcean.cpp(669))
          std::cerr << "Fail to send configuration to " << m_deviceId << " : Actuator Set External Interface Settings command returns " << answer->data()[0] << std::endl;
    }
 }

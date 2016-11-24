@@ -9,7 +9,7 @@ namespace message
    ///
    /// This class manages a UTE EnOcean answer message.
    //--------------------------------------------------------------
-   class CUTE_AnswerSendMessage : public CEsp3SendPacket
+   class CUTE_AnswerSendMessage : public CRadioErp1SendMessage
    {
    public:
       enum
@@ -28,7 +28,8 @@ namespace message
       //--------------------------------------------------------------
       /// \brief	                           Constructor
       //--------------------------------------------------------------
-      CUTE_AnswerSendMessage(const std::string& destinationId,
+      CUTE_AnswerSendMessage(unsigned char status,
+                             const std::string& destinationId,
                              bool bidirectionnalCommunication,
                              EResponse response,
                              unsigned char channelNumber,
@@ -56,5 +57,3 @@ namespace message
       unsigned char m_rorg;
    };
 } // namespace message
-
-

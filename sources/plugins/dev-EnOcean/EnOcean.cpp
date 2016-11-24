@@ -11,6 +11,7 @@
 #include "ProfileHelper.h"
 #include "message/CommonCommandSendMessage.h"
 #include "message/UTE_AnswerSendMessage.h"
+#include "message/ResponseReceivedMessage.h"
 #include "DeviceConfigurationHelper.h"
 
 
@@ -398,7 +399,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
 {
    message::CRadioErp1ReceivedMessage erp1Message(esp3Packet);
 
-   if (erp1Message.rorg() == message::RORG_UNIVERSAL_TEACH_IN)
+   if (erp1Message.rorg() == CRorgs::kUTE_Telegram)
    {
       processUTE(message::CUTE_ReceivedMessage(erp1Message));
       return;
@@ -533,7 +534,7 @@ void CEnOcean::processDongleVersionResponse(boost::shared_ptr<const message::CEs
       return;
    }
 
-   if (returnCode != message::RET_OK)
+   if (returnCode != message::RET_OK)//TODO utiliser CResponseReceivedMessage (voir EnOcean.cpp(669))
    {
       std::cerr << "Unexpected return code " << returnCode << ". Request was CO_RD_VERSION." << std::endl;
       return;
@@ -648,7 +649,8 @@ void CEnOcean::processUTE(const message::CUTE_ReceivedMessage& uteMessage)
 
    if (uteMessage.teachInResponseExpected())
    {
-      message::CUTE_AnswerSendMessage sendMessage(deviceId,
+      message::CUTE_AnswerSendMessage sendMessage(0,
+                                                  deviceId,
                                                   uteMessage.bidirectionalCommunication(),
                                                   response,
                                                   uteMessage.channelNumber(),
@@ -657,7 +659,19 @@ void CEnOcean::processUTE(const message::CUTE_ReceivedMessage& uteMessage)
                                                   uteMessage.func(),
                                                   uteMessage.rorg());
 
-      m_messageHandler->send(sendMessage);
+      unsigned char returnCode;
+      m_messageHandler->send(sendMessage,
+                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                             {
+                                return esp3Packet->header().packetType() == message::RESPONSE;
+                             },
+                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                             {
+                                returnCode = message::CResponseReceivedMessage(esp3Packet).returnCode();
+                             });
+
+      if (returnCode != message::RET_OK)
+         std::cerr << "TeachIn response not successfully acknowledged : " << returnCode << std::endl;
    }
 }
 
@@ -705,8 +719,7 @@ boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
 
 void CEnOcean::requestDongleVersion() const
 {
-   message::CCommonCommandSendMessage sendMessage;
-   sendMessage.appendData({message::CCommonCommandSendMessage::CO_RD_VERSION});
+   message::CCommonCommandSendMessage sendMessage(message::CCommonCommandSendMessage::CO_RD_VERSION);
 
    boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
    if (!m_messageHandler->send(sendMessage,
@@ -724,4 +737,3 @@ void CEnOcean::requestDongleVersion() const
 
    m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 }
-

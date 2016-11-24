@@ -18,14 +18,14 @@ namespace message
 
       EPacketType packetType() const;
 
-      void appendData(const std::vector<unsigned char>& data);
-      void appendOptional(const std::vector<unsigned char>& data);
+      void data(const std::vector<unsigned char>& data);
+      void optionalData(const std::vector<unsigned char>& optionalData);
 
       virtual boost::shared_ptr<const std::vector<unsigned char>> buffer();
 
    protected:
       const EPacketType m_packetType;
       std::vector<unsigned char> m_data;
-      std::vector<unsigned char> m_optional;
+      std::vector<unsigned char> m_optionalData;
    };
 } // namespace message

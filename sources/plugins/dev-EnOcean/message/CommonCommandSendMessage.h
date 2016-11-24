@@ -48,7 +48,12 @@ namespace message
          CO_RD_DUTYCYCLE_LIMIT = 35,
       };
 
-      CCommonCommandSendMessage();
-      virtual ~CCommonCommandSendMessage();   
+      explicit CCommonCommandSendMessage(ECommonCommand command);
+      virtual ~CCommonCommandSendMessage();
+
+      boost::shared_ptr<const std::vector<unsigned char>> buffer() override;
+      
+   private:
+      ECommonCommand m_command;
    };
 } // namespace message

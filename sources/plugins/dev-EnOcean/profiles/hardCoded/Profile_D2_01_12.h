@@ -2,6 +2,7 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <boost/dynamic_bitset.hpp>
 #include "profiles/IType.h"
+#include "profiles/generated-eep.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -41,6 +42,7 @@ public:
    // [END] IType implementation
 
 private:
+   static const CRorgs::ERorgIds m_rorg;
    const std::string m_deviceId;
    boost::shared_ptr<yApi::historization::CSwitch> m_channel1;
    boost::shared_ptr<yApi::historization::CSwitch> m_channel2;

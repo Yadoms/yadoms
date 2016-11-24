@@ -44,6 +44,8 @@ set(ENOCEAN_SOURCES
    message/RadioErp1ReceivedMessage.cpp
    message/RadioErp1SendMessage.h
    message/RadioErp1SendMessage.cpp
+   message/ResponseReceivedMessage.h
+   message/ResponseReceivedMessage.cpp
    message/types.h
    message/UTE_AnswerSendMessage.h
    message/UTE_AnswerSendMessage.cpp

@@ -4,7 +4,8 @@
 
 namespace message
 {
-   CUTE_AnswerSendMessage::CUTE_AnswerSendMessage(const std::string& destinationId,
+   CUTE_AnswerSendMessage::CUTE_AnswerSendMessage(unsigned char status,
+                                                  const std::string& destinationId,
                                                   bool bidirectionnalCommunication,
                                                   EResponse response,
                                                   unsigned char channelNumber,
@@ -12,7 +13,9 @@ namespace message
                                                   unsigned char type,
                                                   unsigned char func,
                                                   unsigned char rorg)
-      : CEsp3SendPacket(RESPONSE),//TODO pas sûr...
+      : CRadioErp1SendMessage(CRorgs::kUTE_Telegram,
+                              "000000",//TODO mettre constant
+                              status),
         m_destinationId(destinationId),
         m_bidirectionalCommunication(bidirectionnalCommunication),
         m_response(response),
@@ -36,16 +39,17 @@ namespace message
       bitset_insert(db6, 2, 2, m_response);
       bitset_insert(db6, 4, 4, m_command);
 
-      std::vector<unsigned char> data(7);
-      data[0] = bitset_to_byte(db6);
-      data[1] = m_channelNumber;
-      data[2] = m_manufacturerId & 0xFF;
-      data[3] = (m_manufacturerId >> 8) & 0x07;
-      data[4] = m_type;
-      data[5] = m_func;
-      data[6] = m_rorg;
+      std::vector<unsigned char> userData(7);
+      userData[0] = bitset_to_byte(db6);
+      userData[1] = m_channelNumber;
+      userData[2] = m_manufacturerId & 0xFF;
+      userData[3] = (m_manufacturerId >> 8) & 0x07;
+      userData[4] = m_type;
+      userData[5] = m_func;
+      userData[6] = m_rorg;
 
-      std::vector<unsigned char> optionalData(7);
+      CRadioErp1SendMessage::userData(userData);
+
 
       enum
          {
@@ -60,6 +64,7 @@ namespace message
             kTelegramUnencrypted = 0
          };
 
+      std::vector<unsigned char> optionalData(7);
       optionalData[0] = kSubTelNumSend;
       optionalData[0] = static_cast<unsigned char>(std::stoul(m_destinationId.substr(0, 2), nullptr, 16));
       optionalData[1] = static_cast<unsigned char>(std::stoul(m_destinationId.substr(2, 2), nullptr, 16));
@@ -68,11 +73,8 @@ namespace message
       optionalData[4] = kDBmSubCase;
       optionalData[5] = kTelegramUnencrypted;
 
-      appendData(data);
-      appendOptional(optionalData);
+      CRadioErp1SendMessage::optionalData(optionalData);
 
-      return CEsp3SendPacket::buffer();
+      return CRadioErp1SendMessage::buffer();
    }
 } // namespace message
-
-

@@ -55,7 +55,4 @@ namespace message
    // Sizef of messages
    enum { RESPONSE_DONGLE_VERSION_SIZE = 33 };
 
-   // Specific RORG value
-   enum { RORG_UNIVERSAL_TEACH_IN = 0xD4 };
-
 } // namespace message

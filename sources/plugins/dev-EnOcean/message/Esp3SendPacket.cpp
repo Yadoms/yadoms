@@ -5,7 +5,7 @@
 namespace message
 {
    CEsp3SendPacket::CEsp3SendPacket(EPacketType packetType)
-      :m_packetType(packetType)
+      : m_packetType(packetType)
    {
    }
 
@@ -18,41 +18,42 @@ namespace message
       return m_packetType;
    }
 
-   void CEsp3SendPacket::appendData(const std::vector<unsigned char>& data)
+   void CEsp3SendPacket::data(const std::vector<unsigned char>& data)
    {
-      m_data.insert(m_data.end(), data.begin(), data.end());
+      m_data = data;
    }
 
-   void CEsp3SendPacket::appendOptional(const std::vector<unsigned char>& data)
+   void CEsp3SendPacket::optionalData(const std::vector<unsigned char>& optionalData)
    {
-      m_optional.insert(m_optional.end(), data.begin(), data.end());
+      m_optionalData = optionalData;
    }
 
    boost::shared_ptr<const std::vector<unsigned char>> CEsp3SendPacket::buffer()
    {
-      auto buffer = boost::make_shared<std::vector<unsigned char>>();
+      auto buffer = boost::make_shared<std::vector<unsigned char>>(6 + m_data.size() + m_optionalData.size() + 1);
 
       // Header
-      buffer->push_back(SYNC_BYTE_VALUE);
-      buffer->push_back((m_data.size() >> 8) & 0xFF);
-      buffer->push_back(m_data.size() & 0x0FF);
-      buffer->push_back(m_optional.size() & 0x0FF);
-      buffer->push_back(static_cast<unsigned char>(m_packetType));
-      buffer->push_back(computeCrc8(buffer->begin() + kOffsetDataLength,
-         buffer->begin() + kOffsetCrc8Header));
+      size_t index = 0;
+      (*buffer)[index++] = SYNC_BYTE_VALUE;
+      (*buffer)[index++] = (m_data.size() >> 8) & 0xFF;
+      (*buffer)[index++] = m_data.size() & 0x0FF;
+      (*buffer)[index++] = m_optionalData.size() & 0x0FF;
+      (*buffer)[index++] = static_cast<unsigned char>(m_packetType);
+      (*buffer)[index++] = computeCrc8(buffer->begin() + kOffsetDataLength,
+                                       buffer->begin() + kOffsetCrc8Header);
 
       // Data
-      buffer->insert(buffer->end(), m_data.begin(), m_data.end());
+      for (const auto dataByte : m_data)
+         (*buffer)[index++] = dataByte;
 
       // Optional
-      buffer->insert(buffer->end(), m_optional.begin(), m_optional.end());
+      for (const auto optionalDataByte : m_optionalData)
+         (*buffer)[index++] = optionalDataByte;
 
       // CRC8D
-      buffer->push_back(computeCrc8(buffer->begin() + kOffsetData,
-         buffer->begin() + kOffsetData + m_data.size() + m_optional.size()));
+      (*buffer)[index] = computeCrc8(buffer->begin() + kOffsetData,
+                                     buffer->begin() + kOffsetData + m_data.size() + m_optionalData.size());
 
       return buffer;
    }
 } // namespace message
-
-
