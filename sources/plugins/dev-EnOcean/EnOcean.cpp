@@ -589,7 +589,6 @@ void CEnOcean::processDongleVersionResponse(boost::shared_ptr<const message::CEs
 
 void CEnOcean::processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
 {
-   //TODO tout revoir pour utiliser le code généré (si dispo pour les events)
    if (esp3Packet->header().dataLength() < 1)
       throw CProtocolException((boost::format("RadioERP1 message : wrong data size (%1%, < 1)") % esp3Packet->header().dataLength()).str());
 
