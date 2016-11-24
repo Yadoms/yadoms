@@ -522,6 +522,9 @@ namespace web
                               //update friendly name
                               m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(createdDevice->Id(), content.get<std::string>("name"));
 
+                              //update model
+                              m_dataProvider->getDeviceRequester()->updateDeviceModel(createdDevice->Id(), content.get<std::string>("model"));
+
                               //get device with friendly name updated
                               createdDevice = m_dataProvider->getDeviceRequester()->getDeviceInPlugin(pluginId, res.Result);
 

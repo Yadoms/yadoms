@@ -24,8 +24,8 @@ namespace pluginSystem
       virtual ~CManuallyDeviceCreationData();
 
       // IManuallyDeviceCreationData implementation
-      virtual const std::string& getDeviceName() const;
-      virtual const shared::CDataContainer & getConfiguration() const;
+      const std::string& getDeviceName() const override;
+      const shared::CDataContainer & getConfiguration() const override;
       // [END] IManuallyDeviceCreationData implementation
 
    private:

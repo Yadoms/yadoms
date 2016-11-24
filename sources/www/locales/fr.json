@@ -222,7 +222,12 @@
       "friendlyName-configuration": {
         "name": "Nom",
         "description": "Nom l'équipement",
-        "regexErrorMessage": "Le nom de l'équipement doit contenir au minimum 1 caractère"
+        "regexErrorMessage": "Le nom de l'équipement doit être renseigné"
+      },
+      "model-configuration": {
+        "name": "Modèle",
+        "description": "Modèle de l'équipement",
+        "regexErrorMessage": "Vous permet d'identifier l'équipement"
       }
     },
     "configure-keyword": {

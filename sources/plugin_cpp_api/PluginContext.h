@@ -44,6 +44,11 @@ namespace plugin_cpp_api
       //--------------------------------------------------------------
       static void closeMessageQueues();
 
+      //--------------------------------------------------------------
+      ///\brief               Wait for debugger (debug only)
+      //--------------------------------------------------------------
+      void waitDebugger(boost::shared_ptr<CApiImplementation> api) const;
+
    private:
       //--------------------------------------------------------------
       ///\brief               The command line used to start the plugin

@@ -430,6 +430,11 @@ namespace web
                      m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(deviceId, deviceToUpdate.FriendlyName());
                   }
 
+                  if (deviceToUpdate.Model.isDefined())
+                  {
+                     m_dataProvider->getDeviceRequester()->updateDeviceModel(deviceId, deviceToUpdate.Model());
+                  }
+
                   if (deviceToUpdate.Configuration.isDefined())
                   {
                      //update data in base
@@ -468,9 +473,12 @@ namespace web
                   database::entities::CDevice deviceToUpdate;
                   deviceToUpdate.fillFromSerializedString(requestContent);
 
-                  //update friendlyname
+                  //update blacklist state
                   if (deviceToUpdate.Blacklist.isDefined())
                   {
+                     if (deviceToUpdate.Blacklist())
+                        m_pluginManager->notifyDeviceRemoved(deviceId);
+
                      m_deviceManager->updateDeviceBlacklistState(deviceId, deviceToUpdate.Blacklist());
                   }
 
