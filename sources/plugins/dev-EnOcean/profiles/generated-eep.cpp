@@ -6,11 +6,12 @@
 #include "bitsetHelpers.hpp"
 #include "ProfileHelper.h"
 
-#include "hardCoded\Profile_F6_02_02.h"
 #include "hardCoded\Profile_D2_01_0D.h"
-#include "hardCoded\Profile_D2_01_0F.h"
 #include "hardCoded\Profile_D2_01_0E.h"
+#include "hardCoded\Profile_F6_02_01.h"
+#include "hardCoded\Profile_F6_02_02.h"
 #include "hardCoded\Profile_D2_01_12.h"
+#include "hardCoded\Profile_D2_01_0F.h"
 
 const std::map<unsigned int, std::string> CRorgs::RorgMap = boost::assign::map_list_of
    (kRPS_Telegram, "RPS Telegram")
@@ -113,6 +114,7 @@ const std::string& CRPS_0x02::title() const {
 boost::shared_ptr<IType> CRPS_0x02::createType(unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api) const {
    switch(static_cast<ETypeIds>(typeId))
    {
+   case k0x01: return boost::make_shared<CProfile_F6_02_01>(deviceId, api);
    case k0x02: return boost::make_shared<CProfile_F6_02_02>(deviceId, api);
    case k0x04: return boost::make_shared<CProfile_F6_02_04>(deviceId, api);
    default : throw std::out_of_range("Invalid EFuncIds");
