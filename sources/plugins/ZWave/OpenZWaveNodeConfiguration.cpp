@@ -3,6 +3,7 @@
 #include "OpenZWaveNodeKeywordFactory.h"
 #include "OpenZWaveHelpers.h"
 #include "ConfigurationSchemaFactory.h"
+#include <shared/exception/NotSupported.hpp>
 
 COpenZWaveNodeConfiguration::COpenZWaveNodeConfiguration(const uint32 homeId, const uint8 nodeId)
    : m_homeId(homeId), m_nodeId(nodeId)
@@ -53,7 +54,20 @@ shared::CDataContainer COpenZWaveNodeConfiguration::generateConfigurationSchema(
    {
       if (i->second != NULL)
       {
-         result.set(i->first, CConfigurationSchemaFactory::generateForHistorizer(i->second.get()));
+         try
+         {
+            auto itemSchema = CConfigurationSchemaFactory::generateForHistorizer(i->second);
+            result.set(CConfigurationSchemaFactory::generateValidKeyName(i->first), itemSchema);
+         }
+         catch (shared::exception::CNotSupported &)
+         {
+            std::cout << "Fail to generate configuration schema for : " << i->first << " : historizer not supported" << std::endl;
+         }
+         catch (std::exception & ex)
+         {
+            std::cout << "Exception in generating configuration schema for : " << i->first << " : " << ex.what() << std::endl;
+         }
+         
       }
    }
 

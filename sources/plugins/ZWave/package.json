@@ -5,7 +5,6 @@
 	"author": "Jean-Michel DECORET",
    "url": "https://github.com/Yadoms/yadoms/wiki/Zwave",
 	"credits": "[openzwave](http://www.openzwave.com/)",
-   "waitForDebuggerAtStart":"true",
 	"supportedPlatforms": "all",
 	"configurationSchema": {
 		"Serial Port": {

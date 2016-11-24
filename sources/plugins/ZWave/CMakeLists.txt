@@ -86,8 +86,9 @@ set(ZWAVE_PLUGIN_SOURCES
 	${OPENZWAVE_MAIN_SOURCES}
 )
 
-source_group(historizers historizers/*.*)
-source_group(typeinfo typeinfo/*.*)
+source_group(sources ./*.*)
+source_group(sources\\historizers historizers/*.*)
+source_group(sources\\typeinfo typeinfo/*.*)
 
 ADD_SUBDIRECTORY(OpenZWave)
 IF(MSVC OR XCODE)

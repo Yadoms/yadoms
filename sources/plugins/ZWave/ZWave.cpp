@@ -91,7 +91,22 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                // we just take the schema from package.json, in case of configuration is supported by device.
                auto deviceConfigurationSchemaRequest = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest> >();
                shared::CDataContainer schema = m_controller->getNodeConfigurationSchema(deviceConfigurationSchemaRequest->device());
+
+               std::cout << "Config schema : " << schema.serialize() << std::endl;
+               std::string debugFile = (boost::format("%1%\\%2%.json") % api->getDataPath().string() % deviceConfigurationSchemaRequest->device()).str();
+               schema.serializeToFile(debugFile);
+
+
+
+               std::string test = "Configuration_Input 1 switch type_1";
+               shared::CDataContainer t1 = schema.get<shared::CDataContainer>(test);
+               std::string type = t1.get<std::string>("type");
+               std::string name = t1.get<std::string>("name");
+               std::cout << "Type : " << type << std::endl;
+               std::cout << "Name : " << name << std::endl;
+
                deviceConfigurationSchemaRequest->sendSuccess(schema);
+               break;
             }
 
             case yApi::IYPluginApi::kSetDeviceConfiguration:

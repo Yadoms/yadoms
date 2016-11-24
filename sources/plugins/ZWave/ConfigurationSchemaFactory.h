@@ -1,12 +1,7 @@
 #pragma once
 
 #include <shared/DataContainer.h>
-#include <shared/exception/NotSupported.hpp>
-
-
-#include "OpenZWaveNodeKeywordBase.h"
-#include "OpenZWaveNodeKeywordGeneric.h"
-#include "OpenZWaveNodeKeywordDimmable.h"
+#include "IOpenZWaveNodeKeyword.h"
 
 //--------------------------------------------------------------
 /// \brief	Interface for ZWave controller
@@ -19,87 +14,13 @@ public:
    //--------------------------------------------------------------
    virtual ~CConfigurationSchemaFactory() {}
 
-   template<class T>
-   static inline shared::CDataContainer generateForHistorizer(const T & historizer);
-
+   
+   static shared::CDataContainer generateForHistorizer(boost::shared_ptr<IOpenZWaveNodeKeyword> historizer);
+   static std::string generateValidKeyName(const std::string & keyname);
 private:
-   static shared::CDataContainer generateForDouble(const std::string & name, const std::string & description, double min, double max, double units, double precision);
+   static shared::CDataContainer generateForDouble(shared::CDataContainer zwaveTypeInfo);
+   static shared::CDataContainer generateForInteger(shared::CDataContainer zwaveTypeInfo);
+   static shared::CDataContainer generateForBool(shared::CDataContainer zwaveTypeInfo);
+   static shared::CDataContainer generateForString(shared::CDataContainer zwaveTypeInfo);
+   static shared::CDataContainer generateForEnum(shared::CDataContainer zwaveTypeInfo);
 };
-
-
-template<class T>
-inline shared::CDataContainer CConfigurationSchemaFactory::generateForHistorizer(const T & historizer)
-{
-   throw shared::exception::CNotSupported("This historizer");
-}
-
-template<>
-inline shared::CDataContainer CConfigurationSchemaFactory::generateForHistorizer(const COpenZWaveNodeKeywordGeneric<double> & historizer)
-{
-   throw shared::exception::CNotSupported("This historizer");
-   //return CConfigurationSchemaFactory::generateForDouble(historizer.getKeyword()->getKeyword());
-}
-
-template<>
-inline shared::CDataContainer CConfigurationSchemaFactory::generateForHistorizer(const COpenZWaveNodeKeywordGeneric<Poco::Int8> & historizer)
-{
-   throw shared::exception::CNotSupported("This historizer");
-}
-
-template<>
-inline shared::CDataContainer CConfigurationSchemaFactory::generateForHistorizer(const COpenZWaveNodeKeywordGeneric<Poco::Int16> & historizer)
-{
-   throw shared::exception::CNotSupported("This historizer");
-}
-
-template<>
-inline shared::CDataContainer CConfigurationSchemaFactory::generateForHistorizer(const COpenZWaveNodeKeywordGeneric<Poco::Int32> & historizer)
-{
-   throw shared::exception::CNotSupported("This historizer");
-}
-
-
-template<>
-inline shared::CDataContainer CConfigurationSchemaFactory::generateForHistorizer(const COpenZWaveNodeKeywordGeneric<Poco::UInt8> & historizer)
-{
-   throw shared::exception::CNotSupported("This historizer");
-}
-
-template<>
-inline shared::CDataContainer CConfigurationSchemaFactory::generateForHistorizer(const COpenZWaveNodeKeywordGeneric<Poco::UInt16> & historizer)
-{
-   throw shared::exception::CNotSupported("This historizer");
-}
-
-template<>
-inline shared::CDataContainer CConfigurationSchemaFactory::generateForHistorizer(const COpenZWaveNodeKeywordGeneric<Poco::UInt32> & historizer)
-{
-   throw shared::exception::CNotSupported("This historizer");
-}
-
-
-
-template<>
-inline shared::CDataContainer CConfigurationSchemaFactory::generateForHistorizer(const COpenZWaveNodeKeywordGeneric<bool> & historizer)
-{
-   throw shared::exception::CNotSupported("This historizer");
-}
-
-
-
-template<>
-inline shared::CDataContainer CConfigurationSchemaFactory::generateForHistorizer(const COpenZWaveNodeKeywordGeneric<std::string> & historizer)
-{
-   throw shared::exception::CNotSupported("This historizer");
-}
-
-
-
-
-template<>
-inline shared::CDataContainer CConfigurationSchemaFactory::generateForHistorizer(const COpenZWaveNodeKeywordGeneric<COpenZWaveEnumHandler> & historizer)
-{
-   throw shared::exception::CNotSupported("This historizer");
-}
-
-
