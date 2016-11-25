@@ -521,71 +521,22 @@ void CEnOcean::processResponse(boost::shared_ptr<const message::CEsp3ReceivedPac
    std::cerr << "Unexpected response received" << std::endl;
 }
 
-void CEnOcean::processDongleVersionResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket> dongleVersionResponse)
+void CEnOcean::processDongleVersionResponse(unsigned char returnCode,
+                                            const message::CDongleVersionResponseReceivedMessage& dongleVersionResponse)
 {
-   if (dongleVersionResponse->header().dataLength() != message::RESPONSE_DONGLE_VERSION_SIZE)
-      throw CProtocolException((boost::format("Invalid data length %1%, expected 33. Request was CO_RD_VERSION.") % dongleVersionResponse->header().dataLength()).str());
-
-   auto returnCode = static_cast<message::EReturnCode>(dongleVersionResponse->data()[0]);
-
    if (returnCode == message::RET_NOT_SUPPORTED)
    {
       std::cout << "CO_RD_VERSION request returned not supported" << std::endl;
       return;
    }
 
-   if (returnCode != message::RET_OK)//TODO utiliser CResponseReceivedMessage (voir EnOcean.cpp(669))
+   if (returnCode != message::RET_OK)
    {
       std::cerr << "Unexpected return code " << returnCode << ". Request was CO_RD_VERSION." << std::endl;
       return;
    }
 
-   struct Version
-   {
-      unsigned int m_main;
-      unsigned int m_beta;
-      unsigned int m_alpha;
-      unsigned int m_build;
-
-      std::string toString() const
-      {
-         std::ostringstream str;
-         str << m_main << '.' << m_beta << '.' << m_alpha << '.' << m_build;
-         return str.str();
-      }
-   };
-   Version appVersion;
-   appVersion.m_main = dongleVersionResponse->data()[1];
-   appVersion.m_beta = dongleVersionResponse->data()[2];
-   appVersion.m_alpha = dongleVersionResponse->data()[3];
-   appVersion.m_build = dongleVersionResponse->data()[4];
-
-   Version apiVersion;
-   apiVersion.m_main = dongleVersionResponse->data()[5];
-   apiVersion.m_beta = dongleVersionResponse->data()[6];
-   apiVersion.m_alpha = dongleVersionResponse->data()[7];
-   apiVersion.m_build = dongleVersionResponse->data()[8];
-
-   auto chipId = dongleVersionResponse->data()[9] << 24
-      | dongleVersionResponse->data()[10] << 16
-      | dongleVersionResponse->data()[11] << 8
-      | dongleVersionResponse->data()[12];
-
-   auto chipVersion = dongleVersionResponse->data()[13] << 24
-      | dongleVersionResponse->data()[14] << 16
-      | dongleVersionResponse->data()[15] << 8
-      | dongleVersionResponse->data()[16];
-
-   std::string appDescription(dongleVersionResponse->data().begin() + 17,
-                              dongleVersionResponse->data().end());
-   appDescription.erase(appDescription.find_last_not_of('\0') + 1);
-
-   std::cout << "EnOcean dongle Version " << appVersion.toString() <<
-      " " << appDescription << "" <<
-      ", api " << apiVersion.toString() <<
-      ", chipId " << std::hex << chipId <<
-      ", chipVersion " << std::hex << chipVersion <<
-      std::endl;
+   std::cout << dongleVersionResponse.fullVersion() << std::endl;
 }
 
 void CEnOcean::processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
@@ -660,15 +611,16 @@ void CEnOcean::processUTE(const message::CUTE_ReceivedMessage& uteMessage)
                                                   uteMessage.rorg());
 
       unsigned char returnCode;
-      m_messageHandler->send(sendMessage,
-                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                return esp3Packet->header().packetType() == message::RESPONSE;
-                             },
-                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
-                             {
-                                returnCode = message::CResponseReceivedMessage(esp3Packet).returnCode();
-                             });
+      if (!m_messageHandler->send(sendMessage,
+                                  [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                                  {
+                                     return esp3Packet->header().packetType() == message::RESPONSE;
+                                  },
+                                  [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                                  {
+                                     returnCode = message::CResponseReceivedMessage(esp3Packet).returnCode();
+                                  }))
+         throw CProtocolException("Unable to send UTE response, timeout waiting acknowledge");
 
       if (returnCode != message::RET_OK)
          std::cerr << "TeachIn response not successfully acknowledged : " << returnCode << std::endl;
@@ -733,7 +685,13 @@ void CEnOcean::requestDongleVersion() const
                                }))
       throw CProtocolException("Unable to get Dongle Version, timeout waiting answer");
 
-   processDongleVersionResponse(answer);
+   if (answer->header().dataLength() != message::RESPONSE_DONGLE_VERSION_SIZE)
+      throw CProtocolException((boost::format("Invalid data length %1%, expected 33. Request was CO_RD_VERSION.") % answer->header().dataLength()).str());
+
+   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
+   processDongleVersionResponse(response->returnCode(),
+                                message::CDongleVersionResponseReceivedMessage(response));
 
    m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 }
+

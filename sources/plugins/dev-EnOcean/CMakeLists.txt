@@ -32,6 +32,8 @@ set(ENOCEAN_SOURCES
    
    message/CommonCommandSendMessage.h
    message/CommonCommandSendMessage.cpp
+   message/DongleVersionResponseReceivedMessage.h
+   message/DongleVersionResponseReceivedMessage.cpp
    message/Crc8.h
    message/Crc8.cpp
    message/Esp3ReceivedPacket.h

@@ -4,6 +4,8 @@
 #include <shared/communication/IAsyncPort.h>
 #include "message/Esp3ReceivedPacket.h"
 #include "message/UTE_ReceivedMessage.h"
+#include "message/ResponseReceivedMessage.h"
+#include "message/DongleVersionResponseReceivedMessage.h"
 #include "ProfileHelper.h"
 #include "IMessageHandler.h"
 
@@ -79,7 +81,8 @@ protected:
    //--------------------------------------------------------------
    void processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
    static void processResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
-   static void processDongleVersionResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket> dongleVersionResponse);
+   static void processDongleVersionResponse(unsigned char returnCode,
+                                            const message::CDongleVersionResponseReceivedMessage& dongleVersionResponse);
    static void processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
    void processUTE(const message::CUTE_ReceivedMessage& uteMessage);
 
