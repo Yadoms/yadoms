@@ -103,3 +103,8 @@ shared::CDataContainer COpenZWaveNode::getConfigurationValues()
 {
    return m_configuration.saveValuesToDatabase();
 }
+
+void COpenZWaveNode::setConfigurationValues(const shared::CDataContainer &configuration)
+{
+   m_configuration.setConfigurationValues(configuration);
+}

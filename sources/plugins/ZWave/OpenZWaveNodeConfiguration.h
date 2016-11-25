@@ -52,6 +52,13 @@ public:
    /// \return       The configuration values (all conf-keyword values)
    //--------------------------------------------------------------   
    shared::CDataContainer saveValuesToDatabase();
+
+   //--------------------------------------------------------------
+   /// \brief	      Set the configuration values
+   /// \param [in]   configuration     the configuration values
+   //--------------------------------------------------------------      
+   void setConfigurationValues(const shared::CDataContainer &configuration);
+
 private:
    //--------------------------------------------------------------
    /// \brief	      homeId

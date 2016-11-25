@@ -100,3 +100,31 @@ shared::CDataContainer COpenZWaveNodeConfiguration::saveValuesToDatabase()
 
    return result;
 }
+
+void COpenZWaveNodeConfiguration::setConfigurationValues(const shared::CDataContainer &configuration)
+{
+   shared::CDataContainer result;
+   for (auto i = m_configurationItems.begin(); i != m_configurationItems.end(); ++i)
+   {
+      if (i->second != NULL)
+      {
+         try
+         {
+            auto keywordKey = CConfigurationSchemaFactory::generateValidKeyName(i->first);
+            if (configuration.containsValue(keywordKey))
+            {
+               sendCommand(i->first, configuration.get<std::string>(keywordKey));
+            }
+         }
+         catch (shared::exception::CNotSupported &)
+         {
+            std::cout << "Fail to set configuration value for : " << i->first << " : historizer not supported" << std::endl;
+         }
+         catch (std::exception & ex)
+         {
+            std::cout << "Exception in setting configuration value for : " << i->first << " : " << ex.what() << std::endl;
+         }
+
+      }
+   }
+}

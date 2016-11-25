@@ -97,6 +97,13 @@ public:
    virtual shared::CDataContainer getNodeConfigurationSchema(const std::string & device) = 0;
 
    //--------------------------------------------------------------
+   /// \brief	Update device configuration
+   /// \param [in] 	device         The targetted device
+   /// \param [in]   configuration  The configuration values
+   //--------------------------------------------------------------
+   virtual void setNodeConfiguration(const std::string & device, const shared::CDataContainer &configuration) =0;
+
+   //--------------------------------------------------------------
    /// \brief	Get all the nodes
    /// \return The node list
    //--------------------------------------------------------------

@@ -2,7 +2,7 @@
 
 #include "IOpenZWaveNodeKeyword.h"
 #include <value_classes/Value.h>
-#include "OpenZwaveNodeConfiguration.h"
+#include "OpenZWaveNodeConfiguration.h"
 
 //--------------------------------------------------------------
 /// \brief     Class used to encapsulate a ZWave network node (from OpenZWave)
@@ -96,6 +96,11 @@ public:
    //--------------------------------------------------------------      
    shared::CDataContainer getConfigurationValues();
 
+   //--------------------------------------------------------------
+   /// \brief	      Set the configuration values
+   /// \param [in]   configuration     the configuration values
+   //--------------------------------------------------------------      
+   void setConfigurationValues(const shared::CDataContainer &configuration);
 
 private:
    //--------------------------------------------------------------

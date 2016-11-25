@@ -97,7 +97,13 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
 
             case yApi::IYPluginApi::kSetDeviceConfiguration:
+            {
+               // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
+               auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration> >();
+               m_controller->setNodeConfiguration(deviceConfiguration->device(), deviceConfiguration->configuration());
                break;
+            }
+
             case yApi::IYPluginApi::kEventExtraQuery:
             {
                // Command was received from Yadoms
