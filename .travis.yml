@@ -2,8 +2,8 @@ language: cpp
 
 #Manage cypher options
 env:
-- secure: "tsMzZkbGJTz+/nIWUuYNNfqTcZM9c4KS030wEa85YCEygUoWsMOriCc76RX1I0mLy5MJ+6a9hYaFEP0CRYz3mnEMcaGhs5PcaEReJkyCJojIIYnp91HTUvYWJoT0b5mjRUcMKnEpVnMphC/q5zXj/JuXdfeImCbTKtDDPhNwplcTz9UBOi/ScF1wnUS2UVytmfmDVUuyOzHsf3zcRkHHUV5l+mYNwjasuZGU6WgxgoYgRh+SM/Vx+GGLj7bPIxVuz3fWkD7z5ODWnj64Sitbmm94VwF14w2e9QRaM+W/04XkVTka54Q19ijfEEp7vPhXFcS11QemBBTOpLR7uhAbG4zLqhZr5YPEZsEbHfcYpNK/GeCua2i7ozUY6kJqeCpTffE/iq7cjBMSxBensGEej6aoEbSWsHMANVeatGhL/pEtITGfEJzY6eKCKrKPfd7jX97c0HkrC2Yi76T2cjIaFxGuARmnv4b8qM3QztvdU0ESx528w7FzQJROOZidSfF2/fHFbx/T01jzPjTURdhy03NBlb4zSYycxDzvpwjmnRwmZB4U7U39DuUql2zvs95SPPNaCcEiRhhcULb3rr4y99MKqrQDPKJ4t3Gbt08u27nOJ7jDfWuL4h5zq5/Hdrszl9V6QXyzPvjynShmtF/ARAJcYEGMZ3yTFp6SwDEtyWw="
-- secure: "IpL4SfHB6+1TG+DKybpoqmXcOHns5UVGqG7hySIFTzBCxsqowOs7k6BbPP9yyKRGpMDV7Vnyp46Kn20PmznGHcw050wRT3nIP4YK3UkKvO6ZVXcu5bpxi5Ny+nJVxxZ4tuZcIBEgY1f5Ibr8Wdpn0Mfa6RaZk1Cy40WgzEBIeDA8xjcnVeha2g3tZdeZcWnFzHocg5ckkWv289jn3YtlYqwXTkXeaVzTGpZPUrib0iEiw216xTMSpeYLqgSbip3YrDEylUz0Fon5MBk7afx4GUtVqU6yTS35/ZKIt4CTERfTcMfTHIpaMcQTOd2qB4hP/+WzInSxbRg6WXbxPJO/UbEgpFDHvWIBA7pF5Hf88dpMl7Y4SFgheaoFUbT92tR/ZrcaMAHCqtlzuiwaLw0/lrD3GeBUaKaaK4WpHcGLlUgXVDLdUAmhMRJCY3tanWqnVnuCCMx9U8un6vopSIl0LWH2mQecrnCt/tgCZ+KuR8GS5bln2qIYhlmZyAWR2cvDLf4LmFPP62w19NHkKrrAnEfVOXubH7zlF8ggGO2bT3bu+jnZVUA07ORRRelnzoEs6OSIbNnTHWhxm0LLeXaP8fUDgrRKntHLzTSdY/eh4t7a1JjYfaKCXvq4iRXeU54sRfioo4zMLlSi1tSBUuuhK6U/e3z1mVvUG62XL4/lokE="
+- secure: tsMzZkbGJTz+/nIWUuYNNfqTcZM9c4KS030wEa85YCEygUoWsMOriCc76RX1I0mLy5MJ+6a9hYaFEP0CRYz3mnEMcaGhs5PcaEReJkyCJojIIYnp91HTUvYWJoT0b5mjRUcMKnEpVnMphC/q5zXj/JuXdfeImCbTKtDDPhNwplcTz9UBOi/ScF1wnUS2UVytmfmDVUuyOzHsf3zcRkHHUV5l+mYNwjasuZGU6WgxgoYgRh+SM/Vx+GGLj7bPIxVuz3fWkD7z5ODWnj64Sitbmm94VwF14w2e9QRaM+W/04XkVTka54Q19ijfEEp7vPhXFcS11QemBBTOpLR7uhAbG4zLqhZr5YPEZsEbHfcYpNK/GeCua2i7ozUY6kJqeCpTffE/iq7cjBMSxBensGEej6aoEbSWsHMANVeatGhL/pEtITGfEJzY6eKCKrKPfd7jX97c0HkrC2Yi76T2cjIaFxGuARmnv4b8qM3QztvdU0ESx528w7FzQJROOZidSfF2/fHFbx/T01jzPjTURdhy03NBlb4zSYycxDzvpwjmnRwmZB4U7U39DuUql2zvs95SPPNaCcEiRhhcULb3rr4y99MKqrQDPKJ4t3Gbt08u27nOJ7jDfWuL4h5zq5/Hdrszl9V6QXyzPvjynShmtF/ARAJcYEGMZ3yTFp6SwDEtyWw=
+- secure: IpL4SfHB6+1TG+DKybpoqmXcOHns5UVGqG7hySIFTzBCxsqowOs7k6BbPP9yyKRGpMDV7Vnyp46Kn20PmznGHcw050wRT3nIP4YK3UkKvO6ZVXcu5bpxi5Ny+nJVxxZ4tuZcIBEgY1f5Ibr8Wdpn0Mfa6RaZk1Cy40WgzEBIeDA8xjcnVeha2g3tZdeZcWnFzHocg5ckkWv289jn3YtlYqwXTkXeaVzTGpZPUrib0iEiw216xTMSpeYLqgSbip3YrDEylUz0Fon5MBk7afx4GUtVqU6yTS35/ZKIt4CTERfTcMfTHIpaMcQTOd2qB4hP/+WzInSxbRg6WXbxPJO/UbEgpFDHvWIBA7pF5Hf88dpMl7Y4SFgheaoFUbT92tR/ZrcaMAHCqtlzuiwaLw0/lrD3GeBUaKaaK4WpHcGLlUgXVDLdUAmhMRJCY3tanWqnVnuCCMx9U8un6vopSIl0LWH2mQecrnCt/tgCZ+KuR8GS5bln2qIYhlmZyAWR2cvDLf4LmFPP62w19NHkKrrAnEfVOXubH7zlF8ggGO2bT3bu+jnZVUA07ORRRelnzoEs6OSIbNnTHWhxm0LLeXaP8fUDgrRKntHLzTSdY/eh4t7a1JjYfaKCXvq4iRXeU54sRfioo4zMLlSi1tSBUuuhK6U/e3z1mVvUG62XL4/lokE=
 
 before_install:
 
@@ -39,7 +39,7 @@ before_install:
 - ./b2 --with-atomic --with-chrono --with-date_time --with-filesystem --with-regex --with-thread --with-system link=shared > yadoms_boost.log
 - tar cjf ../boost_1_62_0-build.tar.bz2 .
 - cd ..
-- "curl --ftp-create-dirs -T boost_1_62_0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/"
+- curl --ftp-create-dirs -T boost_1_62_0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/
 - rm -f boost_1_62_0-build.tar.bz2
 
 # poco
@@ -52,7 +52,7 @@ before_install:
 - make > yadoms_poco.log
 - tar cjf ../poco-1.7.6-all-build.tar.bz2 .
 - cd ..
-- "curl --ftp-create-dirs -T poco-1.7.6-all-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/"
+- curl --ftp-create-dirs -T poco-1.7.6-all-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/
 - rm -f poco-1.7.6-all-build.tar.bz2
 
 # protobuf
