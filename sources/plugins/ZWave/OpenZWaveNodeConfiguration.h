@@ -41,8 +41,16 @@ public:
    bool sendCommand(const std::string& keyword, const std::string& commandData);
 
 
-
+   //--------------------------------------------------------------
+   /// \brief	      Generate the configuration schema for the device
+   /// \return       The configuration schema
+   //--------------------------------------------------------------   
    shared::CDataContainer generateConfigurationSchema();
+
+   //--------------------------------------------------------------
+   /// \brief	      Generate the configuration values for the device
+   /// \return       The configuration values (all conf-keyword values)
+   //--------------------------------------------------------------   
    shared::CDataContainer saveValuesToDatabase();
 private:
    //--------------------------------------------------------------

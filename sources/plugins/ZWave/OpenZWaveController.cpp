@@ -546,26 +546,6 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
 }
 
 
-void COpenZWaveController::retreiveOpenZWaveIds(const std::string& device, const std::string& keyword, uint32& homeId, uint8& nodeId, uint8& instance)
-{
-   std::vector<std::string> splittedDevice;
-   boost::split(splittedDevice, device, boost::is_any_of("."), boost::token_compress_on);
-   if (splittedDevice.size() < 2)
-   {
-      throw shared::exception::CException("The device id is invalid : not matching pattern : <homeId>.<nodeId>");
-   }
-   homeId = boost::lexical_cast<uint32>(splittedDevice[0]);
-   nodeId = static_cast<uint8>(atoi(splittedDevice[1].c_str())); //dont use lexical cast for uint8, because it realize a string to char conversion: "2" is transform in '2' = 0x32
-
-   //instance <class>.<keyword>.<instance>
-   std::vector<std::string> splittedKeyword;
-   boost::split(splittedKeyword, keyword, boost::is_any_of("."), boost::token_compress_on);
-   if (splittedKeyword.size() > 2)
-      instance = static_cast<uint8>(atoi(splittedKeyword[2].c_str())); //dont use lexical cast for uint8, because it realize a string to char conversion: "2" is transform in '2' = 0x32
-   else
-      instance = 1; //default instance value in OpenZWave
-}
-
 void COpenZWaveController::sendCommand(const std::string& device, const std::string& keyword, const std::string& value)
 {
    boost::lock_guard<boost::mutex> lock(m_treeMutex);
@@ -575,7 +555,7 @@ void COpenZWaveController::sendCommand(const std::string& device, const std::str
    uint8 instance;
    ECommandClass keywordClass;
 
-   retreiveOpenZWaveIds(device, keyword, homeId, nodeId, instance);
+   COpenZWaveHelpers::RetreiveOpenZWaveIds(device, keyword, homeId, nodeId, instance);
 
    auto node = getNode(homeId, nodeId);
    if (node)
@@ -652,7 +632,7 @@ shared::CDataContainer COpenZWaveController::getNodeConfigurationSchema(const st
    uint8 instance;
    ECommandClass keywordClass;
 
-   retreiveOpenZWaveIds(device, "", homeId, nodeId, instance);
+   COpenZWaveHelpers::RetreiveOpenZWaveIds(device, "", homeId, nodeId, instance);
 
    auto node = getNode(homeId, nodeId);
    if (node)
@@ -662,3 +642,7 @@ shared::CDataContainer COpenZWaveController::getNodeConfigurationSchema(const st
    throw shared::exception::CException((boost::format("Fail to ask configuration for device %2% ") % device).str());
 }
 
+IZWaveController::NodeListType & COpenZWaveController::getNodeList()
+{
+   return m_nodes;
+}

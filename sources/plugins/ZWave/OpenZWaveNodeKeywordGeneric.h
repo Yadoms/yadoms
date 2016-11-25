@@ -77,15 +77,6 @@ public:
       return boost::make_shared<COpenZWaveNodeKeywordGeneric<T> >(historizer, vID);
    }
 
-   //--------------------------------------------------------------
-   /// \brief	  Get the internal keyword
-   /// \return   The internal keyword
-   //--------------------------------------------------------------
-   boost::shared_ptr< COpenZWaveSingleHistorizableData<T> > getKeyword()
-   {
-      return m_keyword;
-   }
-
 private:
    //--------------------------------------------------------------
    /// \brief	    Switch value handler

@@ -69,3 +69,29 @@ void COpenZWaveHelpers::GetEnumValueInfo(OpenZWave::ValueID& value, std::string 
       values[keys[i]] = valuesList[i];
    }
 }
+
+
+void COpenZWaveHelpers::RetreiveOpenZWaveIds(const std::string& device, const std::string& keyword, uint32& homeId, uint8& nodeId, uint8& instance)
+{
+   std::vector<std::string> splittedDevice;
+   boost::split(splittedDevice, device, boost::is_any_of("."), boost::token_compress_on);
+   if (splittedDevice.size() < 2)
+   {
+      throw shared::exception::CException("The device id is invalid : not matching pattern : <homeId>.<nodeId>");
+   }
+   homeId = boost::lexical_cast<uint32>(splittedDevice[0]);
+   nodeId = static_cast<uint8>(atoi(splittedDevice[1].c_str())); //dont use lexical cast for uint8, because it realize a string to char conversion: "2" is transform in '2' = 0x32
+
+                                                                 //instance <class>.<keyword>.<instance>
+   std::vector<std::string> splittedKeyword;
+   boost::split(splittedKeyword, keyword, boost::is_any_of("."), boost::token_compress_on);
+   if (splittedKeyword.size() > 2)
+      instance = static_cast<uint8>(atoi(splittedKeyword[2].c_str())); //dont use lexical cast for uint8, because it realize a string to char conversion: "2" is transform in '2' = 0x32
+   else
+      instance = 1; //default instance value in OpenZWave
+}
+
+std::string COpenZWaveHelpers::GenerateDeviceId(const uint32 homeId, const uint8 nodeId)
+{
+   return (boost::format("%1%.%2%") % homeId % (int)nodeId).str();
+}

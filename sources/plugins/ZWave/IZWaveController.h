@@ -2,7 +2,7 @@
 
 #include <shared/event/EventHandler.hpp>
 #include "ZWaveConfiguration.h"
-
+#include "OpenZWaveNode.h"
 //--------------------------------------------------------------
 /// \brief	Interface for ZWave controller
 //--------------------------------------------------------------
@@ -16,6 +16,12 @@ public:
       kControllerError,  /// in case of controller problem
       kUnknownError      /// in case of any other problem      
    };
+
+   //--------------------------------------------------------------
+   /// \brief	   The zwave node list type
+   //--------------------------------------------------------------
+   typedef std::vector<boost::shared_ptr<COpenZWaveNode> > NodeListType;
+
    //--------------------------------------------------------------
    /// \brief	Virtual destructor
    //--------------------------------------------------------------
@@ -89,5 +95,11 @@ public:
    /// \return The configuration schema
    //--------------------------------------------------------------
    virtual shared::CDataContainer getNodeConfigurationSchema(const std::string & device) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	Get all the nodes
+   /// \return The node list
+   //--------------------------------------------------------------
+   virtual NodeListType & getNodeList() = 0;
 
 };

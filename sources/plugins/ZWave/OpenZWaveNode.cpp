@@ -98,3 +98,8 @@ shared::CDataContainer COpenZWaveNode::getConfigurationSchema()
 {
    return m_configuration.generateConfigurationSchema();
 }
+
+shared::CDataContainer COpenZWaveNode::getConfigurationValues()
+{
+   return m_configuration.saveValuesToDatabase();
+}

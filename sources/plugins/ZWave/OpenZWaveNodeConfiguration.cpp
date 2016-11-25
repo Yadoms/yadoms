@@ -76,5 +76,27 @@ shared::CDataContainer COpenZWaveNodeConfiguration::generateConfigurationSchema(
 
 shared::CDataContainer COpenZWaveNodeConfiguration::saveValuesToDatabase()
 {
-   return shared::CDataContainer();
+   shared::CDataContainer result;
+   for (auto i = m_configurationItems.begin(); i != m_configurationItems.end(); ++i)
+   {
+      if (i->second != NULL)
+      {
+         try
+         {
+            auto itemSchema = CConfigurationSchemaFactory::generateForHistorizer(i->second);
+            result.set(CConfigurationSchemaFactory::generateValidKeyName(i->first), i->second->getLastKeywordValue()->formatValue());
+         }
+         catch (shared::exception::CNotSupported &)
+         {
+            std::cout << "Fail to getting last value for : " << i->first << " : historizer not supported" << std::endl;
+         }
+         catch (std::exception & ex)
+         {
+            std::cout << "Exception in getting last value for : " << i->first << " : " << ex.what() << std::endl;
+         }
+
+      }
+   }
+
+   return result;
 }

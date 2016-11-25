@@ -22,8 +22,7 @@ public:
    /// \param [in]   homeId   The home id
    /// \param [in]   nodeId   The node id
    //--------------------------------------------------------------
-   COpenZWaveNode(const uint32 homeId,
-                  const uint8 nodeId);
+   COpenZWaveNode(const uint32 homeId, const uint8 nodeId);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -86,10 +85,17 @@ public:
    const uint8 getNodeId();
 
    //--------------------------------------------------------------
-   /// \brief	      Get the nodeId
-   /// \return       The nodeId
+   /// \brief	      Get the configuration schema
+   /// \return       the configuration schema
    //--------------------------------------------------------------      
    shared::CDataContainer getConfigurationSchema();
+
+   //--------------------------------------------------------------
+   /// \brief	      Get the configuration values
+   /// \return       the configuration values
+   //--------------------------------------------------------------      
+   shared::CDataContainer getConfigurationValues();
+
 
 private:
    //--------------------------------------------------------------

@@ -9,6 +9,7 @@
 #include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceRemoved.h>
 #include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
+#include "OpenZWaveHelpers.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -91,20 +92,6 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                // we just take the schema from package.json, in case of configuration is supported by device.
                auto deviceConfigurationSchemaRequest = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest> >();
                shared::CDataContainer schema = m_controller->getNodeConfigurationSchema(deviceConfigurationSchemaRequest->device());
-
-               std::cout << "Config schema : " << schema.serialize() << std::endl;
-               std::string debugFile = (boost::format("%1%\\%2%.json") % api->getDataPath().string() % deviceConfigurationSchemaRequest->device()).str();
-               schema.serializeToFile(debugFile);
-
-
-
-               std::string test = "Configuration_Input 1 switch type_1";
-               shared::CDataContainer t1 = schema.get<shared::CDataContainer>(test);
-               std::string type = t1.get<std::string>("type");
-               std::string name = t1.get<std::string>("name");
-               std::cout << "Type : " << type << std::endl;
-               std::cout << "Name : " << name << std::endl;
-
                deviceConfigurationSchemaRequest->sendSuccess(schema);
                break;
             }
@@ -257,7 +244,16 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                {
                case EZWaveInteralState::kCompletedValue:
                case EZWaveInteralState::kRunningValue:
-                  api->setPluginState(yApi::historization::EPluginState::kRunning);
+                  {
+                     api->setPluginState(yApi::historization::EPluginState::kRunning);
+
+                     auto & list = m_controller->getNodeList();
+                     for (auto i = list.begin(); i != list.end(); ++i)
+                     {
+                        std::string device = COpenZWaveHelpers::GenerateDeviceId((*i)->getHomeId(), (*i)->getNodeId());
+                        api->updateDeviceConfiguration(device, (*i)->getConfigurationValues());
+                     }
+                  }
                   break;
                default:
                   api->setPluginState(yApi::historization::EPluginState::kCustom, s.toString());

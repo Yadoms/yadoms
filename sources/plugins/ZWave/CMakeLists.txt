@@ -83,6 +83,8 @@ set(ZWAVE_PLUGIN_SOURCES
    typeinfo/IntegerTypeInfo.cpp
    typeinfo/StringTypeInfo.h
    typeinfo/StringTypeInfo.cpp
+   typeinfo/TypeInfoFactory.h
+   typeinfo/TypeInfoFactory.cpp
 	${OPENZWAVE_MAIN_SOURCES}
 )
 
