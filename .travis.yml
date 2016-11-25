@@ -2,6 +2,11 @@ language: cpp
 
 before_install:
 
+#Manage cypher options
+secure: "tsMzZkbGJTz+/nIWUuYNNfqTcZM9c4KS030wEa85YCEygUoWsMOriCc76RX1I0mLy5MJ+6a9hYaFEP0CRYz3mnEMcaGhs5PcaEReJkyCJojIIYnp91HTUvYWJoT0b5mjRUcMKnEpVnMphC/q5zXj/JuXdfeImCbTKtDDPhNwplcTz9UBOi/ScF1wnUS2UVytmfmDVUuyOzHsf3zcRkHHUV5l+mYNwjasuZGU6WgxgoYgRh+SM/Vx+GGLj7bPIxVuz3fWkD7z5ODWnj64Sitbmm94VwF14w2e9QRaM+W/04XkVTka54Q19ijfEEp7vPhXFcS11QemBBTOpLR7uhAbG4zLqhZr5YPEZsEbHfcYpNK/GeCua2i7ozUY6kJqeCpTffE/iq7cjBMSxBensGEej6aoEbSWsHMANVeatGhL/pEtITGfEJzY6eKCKrKPfd7jX97c0HkrC2Yi76T2cjIaFxGuARmnv4b8qM3QztvdU0ESx528w7FzQJROOZidSfF2/fHFbx/T01jzPjTURdhy03NBlb4zSYycxDzvpwjmnRwmZB4U7U39DuUql2zvs95SPPNaCcEiRhhcULb3rr4y99MKqrQDPKJ4t3Gbt08u27nOJ7jDfWuL4h5zq5/Hdrszl9V6QXyzPvjynShmtF/ARAJcYEGMZ3yTFp6SwDEtyWw="
+secure: "IpL4SfHB6+1TG+DKybpoqmXcOHns5UVGqG7hySIFTzBCxsqowOs7k6BbPP9yyKRGpMDV7Vnyp46Kn20PmznGHcw050wRT3nIP4YK3UkKvO6ZVXcu5bpxi5Ny+nJVxxZ4tuZcIBEgY1f5Ibr8Wdpn0Mfa6RaZk1Cy40WgzEBIeDA8xjcnVeha2g3tZdeZcWnFzHocg5ckkWv289jn3YtlYqwXTkXeaVzTGpZPUrib0iEiw216xTMSpeYLqgSbip3YrDEylUz0Fon5MBk7afx4GUtVqU6yTS35/ZKIt4CTERfTcMfTHIpaMcQTOd2qB4hP/+WzInSxbRg6WXbxPJO/UbEgpFDHvWIBA7pF5Hf88dpMl7Y4SFgheaoFUbT92tR/ZrcaMAHCqtlzuiwaLw0/lrD3GeBUaKaaK4WpHcGLlUgXVDLdUAmhMRJCY3tanWqnVnuCCMx9U8un6vopSIl0LWH2mQecrnCt/tgCZ+KuR8GS5bln2qIYhlmZyAWR2cvDLf4LmFPP62w19NHkKrrAnEfVOXubH7zlF8ggGO2bT3bu+jnZVUA07ORRRelnzoEs6OSIbNnTHWhxm0LLeXaP8fUDgrRKntHLzTSdY/eh4t7a1JjYfaKCXvq4iRXeU54sRfioo4zMLlSi1tSBUuuhK6U/e3z1mVvUG62XL4/lokE="
+
+
 #g++ 4.8
 - echo 'Installing G++ 4.8'
 - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
@@ -26,23 +31,29 @@ before_install:
 - cd ..
 
 # boost
-- echo 'Building Boost 1.61.0'
-- wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.61.0/boost_1_61_0.tar.bz2
-- tar xjf boost_1_61_0.tar.bz2
-- cd boost_1_61_0
+- echo 'Building Boost 1.62.0'
+- wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.62.0/boost_1_62_0.tar.bz2
+- tar xjf boost_1_62_0.tar.bz2
+- cd boost_1_62_0
 - ./bootstrap.sh > yadoms_boost.log
 - ./b2 --with-atomic --with-chrono --with-date_time --with-filesystem --with-regex --with-thread --with-system link=shared > yadoms_boost.log
+- tar cjf ../boost_1_62_0-build.tar.bz2 .
 - cd ..
+- "curl --ftp-create-dirs -T boost_1_62_0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/"
+- rm -f boost_1_62_0-build.tar.bz2
 
 # poco
-- echo 'Building Poco 1.7.3-all'
-- wget http://pocoproject.org/releases/poco-1.7.3/poco-1.7.3-all.tar.gz
-- tar xzf poco-1.7.3-all.tar.gz
+- echo 'Building Poco 1.7.6-all'
+- wget http://pocoproject.org/releases/poco-1.7.6/poco-1.7.6-all.tar.gz
+- tar xzf poco-1.7.6-all.tar.gz
 - sudo apt-get install libssl-dev
-- cd poco-1.7.3-all/
+- cd poco-1.7.6-all/
 - ./configure --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page  --no-samples --no-tests > yadoms_poco.log
 - make > yadoms_poco.log
+- tar cjf ../poco-1.7.6-all-build.tar.bz2 .
 - cd ..
+- "curl --ftp-create-dirs -T poco-1.7.6-all-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/"
+- rm -f poco-1.7.6-all-build.tar.bz2
 
 # protobuf
 - echo 'Building Protobuf 2.6.1'
@@ -91,8 +102,8 @@ script:
 # Yadoms configuration file
 - echo 'Configuring Yadoms CMakeListsUserConfig.txt'
 - cp sources/CMakeListsUserConfig.sample.txt sources/CMakeListsUserConfig.txt 
-- echo 'set(BOOST_ROOT "'$PWD'/boost_1_61_0")' > sources/CMakeListsUserConfig.txt
-- echo 'set(POCO_ROOT "'$PWD'/poco-1.7.3-all")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(BOOST_ROOT "'$PWD'/boost_1_62_0")' > sources/CMakeListsUserConfig.txt
+- echo 'set(POCO_ROOT "'$PWD'/poco-1.7.6-all")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
 - echo 'set(COTIRE_USE_UNITY ON)' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PROTOBUF_ROOT "'$PWD'/protobuf-2.6.1")' >> sources/CMakeListsUserConfig.txt
