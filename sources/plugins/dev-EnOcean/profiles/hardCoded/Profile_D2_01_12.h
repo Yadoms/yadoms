@@ -1,8 +1,8 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <boost/dynamic_bitset.hpp>
-#include "profiles/IType.h"
-#include "profiles/generated-eep.h"
+#include "../IType.h"
+#include "../generated-eep.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 

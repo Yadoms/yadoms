@@ -27,7 +27,7 @@ namespace message
       auto data = std::vector<unsigned char>(1 + m_userData.size() + 4 + 1);
 
       size_t bufferIndex = 0;
-      data[bufferIndex++] = m_rorg;
+      data[bufferIndex++] = static_cast<unsigned char>(m_rorg);
       for (const auto userDataByte: m_userData)
          data[bufferIndex++] = userDataByte;
       data[bufferIndex++] = static_cast<unsigned char>(std::stoul(m_senderId.substr(0, 2), nullptr, 16));

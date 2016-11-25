@@ -4,7 +4,7 @@
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 
 #include "bitsetHelpers.hpp"
-#include "ProfileHelper.h"
+#include "../ProfileHelper.h"
 
 #include "hardCoded\Profile_D2_01_0D.h"
 #include "hardCoded\Profile_D2_01_0E.h"

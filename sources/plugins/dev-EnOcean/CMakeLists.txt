@@ -128,7 +128,6 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-eep.h
 ## (by default yadoms-shared and boost are included)
 #########################################
 set(ENOCEAN_ADDITIONAL_INC_DIR
-   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 #########################################

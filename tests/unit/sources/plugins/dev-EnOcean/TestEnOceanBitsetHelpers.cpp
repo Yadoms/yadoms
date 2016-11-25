@@ -71,16 +71,16 @@ BOOST_AUTO_TEST_CASE(Insert)
    boost::dynamic_bitset<> bitset(10);
 
    bitset_insert(bitset, 0, 10, 0x2AA);
-   BOOST_CHECK_EQUAL(bitset[0], false);
-   BOOST_CHECK_EQUAL(bitset[1], true);
-   BOOST_CHECK_EQUAL(bitset[2], false);
-   BOOST_CHECK_EQUAL(bitset[3], true);
-   BOOST_CHECK_EQUAL(bitset[4], false);
-   BOOST_CHECK_EQUAL(bitset[5], true);
-   BOOST_CHECK_EQUAL(bitset[6], false);
-   BOOST_CHECK_EQUAL(bitset[7], true);
-   BOOST_CHECK_EQUAL(bitset[8], false);
-   BOOST_CHECK_EQUAL(bitset[9], true);
+   BOOST_CHECK_EQUAL(bitset[0], true);
+   BOOST_CHECK_EQUAL(bitset[1], false);
+   BOOST_CHECK_EQUAL(bitset[2], true);
+   BOOST_CHECK_EQUAL(bitset[3], false);
+   BOOST_CHECK_EQUAL(bitset[4], true);
+   BOOST_CHECK_EQUAL(bitset[5], false);
+   BOOST_CHECK_EQUAL(bitset[6], true);
+   BOOST_CHECK_EQUAL(bitset[7], false);
+   BOOST_CHECK_EQUAL(bitset[8], true);
+   BOOST_CHECK_EQUAL(bitset[9], false);
 
    bitset.reset();
    bitset_insert(bitset, 3, 1, 1);
@@ -129,17 +129,28 @@ BOOST_AUTO_TEST_CASE(Insert)
    BOOST_CHECK_EQUAL(bitset[7], true);
    BOOST_CHECK_EQUAL(bitset[8], false);
    BOOST_CHECK_EQUAL(bitset[9], false);
-   bitset_insert(bitset, 4, 2, 1);
+   bitset_insert(bitset, 5, 4, 14);
    BOOST_CHECK_EQUAL(bitset[0], false);
    BOOST_CHECK_EQUAL(bitset[1], false);
    BOOST_CHECK_EQUAL(bitset[2], false);
    BOOST_CHECK_EQUAL(bitset[3], false);
    BOOST_CHECK_EQUAL(bitset[4], true);
-   BOOST_CHECK_EQUAL(bitset[5], false);
-   BOOST_CHECK_EQUAL(bitset[6], false);
+   BOOST_CHECK_EQUAL(bitset[5], true);
+   BOOST_CHECK_EQUAL(bitset[6], true);
    BOOST_CHECK_EQUAL(bitset[7], true);
    BOOST_CHECK_EQUAL(bitset[8], false);
    BOOST_CHECK_EQUAL(bitset[9], false);
+}
+
+BOOST_AUTO_TEST_CASE(InsertThenExtract)
+{
+   boost::dynamic_bitset<> bitset(10);
+
+   bitset_insert(bitset, 2, 4, 5);
+
+   BOOST_CHECK_EQUAL(bitset_extract(bitset, 0, 2), static_cast<unsigned int>(0));
+   BOOST_CHECK_EQUAL(bitset_extract(bitset, 2, 4), static_cast<unsigned int>(5));
+   BOOST_CHECK_EQUAL(bitset_extract(bitset, 6, 4), static_cast<unsigned int>(0));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

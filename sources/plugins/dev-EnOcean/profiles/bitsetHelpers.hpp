@@ -36,7 +36,7 @@ inline void bitset_insert(boost::dynamic_bitset<>& bitset,
                           unsigned int value)
 {
    for (size_t index = 0; index < size; ++index)
-      bitset[position + index] = (value & (0x00000001 << index) ? true : false);
+      bitset[position + index] = (value & (0x00000001 << (size - index - 1)) ? true : false);
 }
 
 inline void bitset_insert(boost::dynamic_bitset<>& bitset,

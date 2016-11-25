@@ -1,6 +1,6 @@
 #pragma once
 #include "Esp3SendPacket.h"
-#include "profiles/generated-eep.h"
+#include "../profiles/generated-eep.h"
 
 namespace message
 {

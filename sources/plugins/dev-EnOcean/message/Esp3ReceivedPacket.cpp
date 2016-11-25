@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Esp3ReceivedPacket.h"
-#include "ProfileHelper.h"
+#include "../ProfileHelper.h"
 
 namespace message
 {

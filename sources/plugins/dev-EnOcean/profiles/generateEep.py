@@ -425,7 +425,7 @@ with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
    cppSourceFile.write('#include <shared/plugin/yPluginApi/StandardUnits.h>\n')
    cppSourceFile.write('\n')
    cppSourceFile.write('#include "bitsetHelpers.hpp"\n')
-   cppSourceFile.write('#include "ProfileHelper.h"\n')
+   cppSourceFile.write('#include "../ProfileHelper.h"\n')
    cppSourceFile.write('\n')
    for hardCodedFile in hardCodedProfiles.getProfileHardCodedFiles():
       cppSourceFile.write('#include "' + os.path.join('hardCoded', hardCodedFile) + '"\n')

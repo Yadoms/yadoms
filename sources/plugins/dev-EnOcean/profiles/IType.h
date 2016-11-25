@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include "IMessageHandler.h"
+#include "../IMessageHandler.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 

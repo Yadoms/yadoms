@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ReceiveBufferHandler.h"
 #include "message/Crc8.h"
+#include <shared/currentTime/Provider.h>
 
 
 CReceiveBufferHandler::CReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler)

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "UTE_AnswerSendMessage.h"
-#include <profiles/bitsetHelpers.hpp>
+#include "../profiles/bitsetHelpers.hpp"
 
 namespace message
 {

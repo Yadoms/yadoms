@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <boost/dynamic_bitset.hpp>
-#include "profiles/IType.h"
+#include "../IType.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
