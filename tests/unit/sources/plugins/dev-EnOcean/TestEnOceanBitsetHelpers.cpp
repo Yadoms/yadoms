@@ -140,6 +140,17 @@ BOOST_AUTO_TEST_CASE(Insert)
    BOOST_CHECK_EQUAL(bitset[7], true);
    BOOST_CHECK_EQUAL(bitset[8], false);
    BOOST_CHECK_EQUAL(bitset[9], false);
+   bitset_insert(bitset, 6, 2, 2);
+   BOOST_CHECK_EQUAL(bitset[0], false);
+   BOOST_CHECK_EQUAL(bitset[1], false);
+   BOOST_CHECK_EQUAL(bitset[2], false);
+   BOOST_CHECK_EQUAL(bitset[3], false);
+   BOOST_CHECK_EQUAL(bitset[4], true);
+   BOOST_CHECK_EQUAL(bitset[5], true);
+   BOOST_CHECK_EQUAL(bitset[6], true);
+   BOOST_CHECK_EQUAL(bitset[7], false);
+   BOOST_CHECK_EQUAL(bitset[8], false);
+   BOOST_CHECK_EQUAL(bitset[9], false);
 }
 
 BOOST_AUTO_TEST_CASE(InsertThenExtract)
