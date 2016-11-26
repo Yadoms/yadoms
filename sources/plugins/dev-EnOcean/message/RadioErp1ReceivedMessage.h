@@ -25,7 +25,7 @@ namespace message
 
       CRorgs::ERorgIds rorg() const;
       std::string senderId() const;
-      const std::vector<unsigned char>& data() const;
+      const std::vector<unsigned char>& userData() const;
       unsigned char status() const;
 
    protected:
@@ -35,7 +35,7 @@ namespace message
       const CRorgs::ERorgIds m_rorg;
       const std::string m_senderId;
       const unsigned char m_status;
-      const std::vector<unsigned char> m_data;
+      const std::vector<unsigned char> m_userData;
    };
 } // namespace message
 

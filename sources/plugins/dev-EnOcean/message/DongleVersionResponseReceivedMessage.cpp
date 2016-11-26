@@ -43,7 +43,7 @@ namespace message
            | response->responseData()[13] << 16
            | response->responseData()[14] << 8
            | response->responseData()[15]),
-        m_appDescription(response->responseData().begin() + 17,
+        m_appDescription(response->responseData().begin() + 16,
                          response->responseData().end())
    {
       m_appDescription.erase(m_appDescription.find_last_not_of('\0') + 1);

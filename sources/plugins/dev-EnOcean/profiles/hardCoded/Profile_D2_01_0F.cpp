@@ -28,7 +28,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return m_historizers;
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_0F::states(const boost::dynamic_bitset<>& data,
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_0F::states(unsigned char rorg,
+                                                                                                   const boost::dynamic_bitset<>& data,
                                                                                                    const boost::dynamic_bitset<>& status) const
 {
    //TODO
@@ -47,4 +48,3 @@ void CProfile_D2_01_0F::sendConfiguration(const shared::CDataContainer& deviceCo
 {
    //TODO
 }
-

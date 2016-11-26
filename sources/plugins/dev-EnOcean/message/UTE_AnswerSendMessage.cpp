@@ -14,7 +14,7 @@ namespace message
                                                   unsigned char func,
                                                   unsigned char rorg)
       : CRadioErp1SendMessage(CRorgs::kUTE_Telegram,
-                              "000000",//TODO mettre constant
+                              "00000000",//TODO mettre constant
                               status),
         m_destinationId(destinationId),
         m_bidirectionalCommunication(bidirectionnalCommunication),
@@ -66,12 +66,12 @@ namespace message
 
       std::vector<unsigned char> optionalData(7);
       optionalData[0] = kSubTelNumSend;
-      optionalData[0] = static_cast<unsigned char>(std::stoul(m_destinationId.substr(0, 2), nullptr, 16));
-      optionalData[1] = static_cast<unsigned char>(std::stoul(m_destinationId.substr(2, 2), nullptr, 16));
-      optionalData[2] = static_cast<unsigned char>(std::stoul(m_destinationId.substr(4, 2), nullptr, 16));
-      optionalData[3] = static_cast<unsigned char>(std::stoul(m_destinationId.substr(6, 2), nullptr, 16));
-      optionalData[4] = kDBmSubCase;
-      optionalData[5] = kTelegramUnencrypted;
+      optionalData[1] = static_cast<unsigned char>(std::stoul(m_destinationId.substr(0, 2), nullptr, 16));
+      optionalData[2] = static_cast<unsigned char>(std::stoul(m_destinationId.substr(2, 2), nullptr, 16));
+      optionalData[3] = static_cast<unsigned char>(std::stoul(m_destinationId.substr(4, 2), nullptr, 16));
+      optionalData[4] = static_cast<unsigned char>(std::stoul(m_destinationId.substr(6, 2), nullptr, 16));
+      optionalData[5] = kDBmSubCase;
+      optionalData[6] = kTelegramUnencrypted;
 
       CRadioErp1SendMessage::optionalData(optionalData);
 

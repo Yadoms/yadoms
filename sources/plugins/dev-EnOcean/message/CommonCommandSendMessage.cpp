@@ -18,7 +18,7 @@ namespace message
       auto data = std::vector<unsigned char>(1);
 
       size_t bufferIndex = 0;
-      data[bufferIndex++] = m_command;
+      data[bufferIndex++] = static_cast<unsigned char>(m_command);
 
       CEsp3SendPacket::data(data);
 

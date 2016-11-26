@@ -16,9 +16,9 @@ namespace message
       {
       public:
          Version(unsigned int main,
-            unsigned int beta,
-            unsigned int alpha,
-            unsigned int build);
+                 unsigned int beta,
+                 unsigned int alpha,
+                 unsigned int build);
          virtual ~Version();
 
          std::string toString() const;
@@ -32,7 +32,7 @@ namespace message
 
       //--------------------------------------------------------------
       /// \brief	                           Constructor
-      /// \param[in] esp3Packet              The esp3 message
+      /// \param[in] response                The response message
       //--------------------------------------------------------------
       explicit CDongleVersionResponseReceivedMessage(boost::shared_ptr<const CResponseReceivedMessage> response);
 
@@ -51,5 +51,3 @@ namespace message
       std::string m_appDescription;
    };
 } // namespace message
-
-

@@ -90,7 +90,7 @@ void CProfile_F6_02_04::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_F6_02_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_F6_02_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_F6_02_04::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_EBO___Energy_Bow->set(data[0]);
    m_RBI___BI->set(data[4]);
    m_RB0___B0->set(data[5]);
@@ -167,7 +167,7 @@ void CProfile_F6_04_02::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_F6_04_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_F6_04_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_F6_04_02::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_EBO___Energy_Bow->set(data[0]);
    m_SOC___State_of_card->set(data[5]);
    return m_historizers;
@@ -310,7 +310,7 @@ void CProfile_D5_00_01::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_D5_00_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D5_00_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D5_00_01::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_CO___Contact->set(data[7]);
    return m_historizers;
 }
@@ -413,7 +413,7 @@ void CProfile_A5_02_01::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_01::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + -40.0;
@@ -450,7 +450,7 @@ void CProfile_A5_02_02::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_02::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + -30.0;
@@ -487,7 +487,7 @@ void CProfile_A5_02_03::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_03::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + -20.0;
@@ -524,7 +524,7 @@ void CProfile_A5_02_04::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_04::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + -10.0;
@@ -561,7 +561,7 @@ void CProfile_A5_02_05::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_05::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_05::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_05::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -598,7 +598,7 @@ void CProfile_A5_02_06::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_06::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_06::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_06::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 10.0;
@@ -635,7 +635,7 @@ void CProfile_A5_02_07::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_07::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_07::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_07::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 20.0;
@@ -672,7 +672,7 @@ void CProfile_A5_02_08::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_08::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_08::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_08::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 30.0;
@@ -709,7 +709,7 @@ void CProfile_A5_02_09::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_09::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_09::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_09::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 40.0;
@@ -746,7 +746,7 @@ void CProfile_A5_02_0A::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_0A::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_0A::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_0A::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 50.0;
@@ -783,7 +783,7 @@ void CProfile_A5_02_0B::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_0B::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_0B::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_0B::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 60.0;
@@ -820,7 +820,7 @@ void CProfile_A5_02_10::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_10::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_10::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_10::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + -60.0;
@@ -857,7 +857,7 @@ void CProfile_A5_02_11::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_11::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_11::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_11::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + -50.0;
@@ -894,7 +894,7 @@ void CProfile_A5_02_12::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_12::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_12::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_12::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + -40.0;
@@ -931,7 +931,7 @@ void CProfile_A5_02_13::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_13::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_13::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_13::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + -30.0;
@@ -968,7 +968,7 @@ void CProfile_A5_02_14::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_14::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_14::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_14::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + -20.0;
@@ -1005,7 +1005,7 @@ void CProfile_A5_02_15::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_15::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_15::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_15::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + -10.0;
@@ -1042,7 +1042,7 @@ void CProfile_A5_02_16::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_16::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_16::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_16::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -1079,7 +1079,7 @@ void CProfile_A5_02_17::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_17::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_17::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_17::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + 10.0;
@@ -1116,7 +1116,7 @@ void CProfile_A5_02_18::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_18::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_18::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_18::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + 20.0;
@@ -1153,7 +1153,7 @@ void CProfile_A5_02_19::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_19::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_19::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_19::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + 30.0;
@@ -1190,7 +1190,7 @@ void CProfile_A5_02_1A::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_1A::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_1A::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_1A::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + 40.0;
@@ -1227,7 +1227,7 @@ void CProfile_A5_02_1B::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_1B::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_1B::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_1B::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.313725490196 * (static_cast<signed>(rawValue) - 255) + 50.0;
@@ -1264,7 +1264,7 @@ void CProfile_A5_02_20::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_20::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_20::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_20::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 14, 10);
       auto value = -0.0500488758553 * (static_cast<signed>(rawValue) - 1023) + -10.0;
@@ -1301,7 +1301,7 @@ void CProfile_A5_02_30::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_02_30::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_30::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_02_30::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 14, 10);
       auto value = -0.1 * (static_cast<signed>(rawValue) - 1023) + -40.0;
@@ -1386,7 +1386,7 @@ void CProfile_A5_04_01::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_04_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_04_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_04_01::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -1433,7 +1433,7 @@ void CProfile_A5_04_02::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_04_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_04_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_04_02::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -1480,7 +1480,7 @@ void CProfile_A5_04_03::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_04_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_04_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_04_03::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.392156862745 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -1547,7 +1547,7 @@ void CProfile_A5_05_01::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_05_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_05_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_05_01::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 6, 10);
       auto value = 0.635386119257 * (static_cast<signed>(rawValue) - 0) + 500.0;
@@ -1611,7 +1611,7 @@ void CProfile_A5_06_01::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_06_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_01::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -1665,7 +1665,7 @@ void CProfile_A5_06_02::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_06_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_02::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -1715,7 +1715,7 @@ void CProfile_A5_06_03::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_06_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_03::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -1761,7 +1761,7 @@ void CProfile_A5_06_04::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_06_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_04::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.313725490196 * (static_cast<signed>(rawValue) - 0) + -20.0;
@@ -1806,7 +1806,7 @@ void CProfile_A5_06_05::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_06_05::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_05::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_06_05::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -1878,7 +1878,7 @@ void CProfile_A5_07_01::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_07_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_07_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_07_01::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_SVA___Supply_voltage_availability->set(data[31]);
    return m_historizers;
 }
@@ -1911,7 +1911,7 @@ void CProfile_A5_07_02::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_07_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_07_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_07_02::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_PIRS___PIR_Status->set(data[24]);
    return m_historizers;
 }
@@ -1946,7 +1946,7 @@ void CProfile_A5_07_03::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_07_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_07_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_07_03::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 8, 10);
       auto value = 1.0 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -2014,7 +2014,7 @@ void CProfile_A5_08_01::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_08_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_08_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_08_01::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -2071,7 +2071,7 @@ void CProfile_A5_08_02::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_08_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_08_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_08_02::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -2128,7 +2128,7 @@ void CProfile_A5_08_03::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_08_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_08_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_08_03::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -2203,7 +2203,7 @@ void CProfile_A5_09_02::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_09_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_02::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -2252,7 +2252,7 @@ void CProfile_A5_09_04::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_09_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_04::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.5 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -2349,7 +2349,7 @@ void CProfile_A5_09_05::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_09_05::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_05::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_05::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    return m_historizers;
 }
 
@@ -2385,7 +2385,7 @@ void CProfile_A5_09_07::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_09_07::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_07::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_07::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_PM10a___PM10_active->set(data[29]);
    m_PM2_5a___PM2_5_active->set(data[30]);
    m_PM1a___PM1_active->set(data[31]);
@@ -2420,7 +2420,7 @@ void CProfile_A5_09_09::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_09_09::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_09::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_09::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_PFD___Power_Failure_detection->set(data[29]);
    return m_historizers;
 }
@@ -2459,7 +2459,7 @@ void CProfile_A5_09_0A::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_09_0A::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_0A::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_0A::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = 0.313725490196 * (static_cast<signed>(rawValue) - 0) + -20.0;
@@ -2542,7 +2542,7 @@ void CProfile_A5_09_0B::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_09_0B::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_0B::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_09_0B::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 4);
       auto value = 0.2 * (static_cast<signed>(rawValue) - 0) + 2.0;
@@ -2608,7 +2608,7 @@ void CProfile_A5_10_01::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_01::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2648,7 +2648,7 @@ void CProfile_A5_10_02::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_02::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2686,7 +2686,7 @@ void CProfile_A5_10_03::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_03::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2723,7 +2723,7 @@ void CProfile_A5_10_04::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_04::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2762,7 +2762,7 @@ void CProfile_A5_10_05::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_05::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_05::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_05::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2802,7 +2802,7 @@ void CProfile_A5_10_06::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_06::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_06::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_06::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2840,7 +2840,7 @@ void CProfile_A5_10_07::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_07::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_07::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_07::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2879,7 +2879,7 @@ void CProfile_A5_10_08::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_08::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_08::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_08::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2919,7 +2919,7 @@ void CProfile_A5_10_09::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_09::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_09::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_09::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2959,7 +2959,7 @@ void CProfile_A5_10_0A::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_0A::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0A::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0A::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -2999,7 +2999,7 @@ void CProfile_A5_10_0B::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_0B::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0B::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0B::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -3039,7 +3039,7 @@ void CProfile_A5_10_0C::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_0C::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0C::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0C::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -3079,7 +3079,7 @@ void CProfile_A5_10_0D::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_0D::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0D::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_0D::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -3121,7 +3121,7 @@ void CProfile_A5_10_10::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_10::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_10::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_10::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3168,7 +3168,7 @@ void CProfile_A5_10_11::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_11::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_11::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_11::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3213,7 +3213,7 @@ void CProfile_A5_10_12::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_12::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_12::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_12::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3259,7 +3259,7 @@ void CProfile_A5_10_13::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_13::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_13::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_13::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3306,7 +3306,7 @@ void CProfile_A5_10_14::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_14::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_14::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_14::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3349,7 +3349,7 @@ void CProfile_A5_10_15::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_15::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_15::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_15::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 14, 10);
       auto value = -0.0500488758553 * (static_cast<signed>(rawValue) - 1023) + -10.0;
@@ -3388,7 +3388,7 @@ void CProfile_A5_10_16::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_16::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_16::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_16::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 14, 10);
       auto value = -0.0500488758553 * (static_cast<signed>(rawValue) - 1023) + -10.0;
@@ -3428,7 +3428,7 @@ void CProfile_A5_10_17::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_17::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_17::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_17::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 14, 10);
       auto value = -0.0500488758553 * (static_cast<signed>(rawValue) - 1023) + -10.0;
@@ -3492,7 +3492,7 @@ void CProfile_A5_10_18::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_18::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_18::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_18::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 4.0 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3562,7 +3562,7 @@ void CProfile_A5_10_19::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_19::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_19::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_19::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3630,7 +3630,7 @@ void CProfile_A5_10_1A::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_1A::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1A::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1A::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.16 * (static_cast<signed>(rawValue) - 250) + 0.0;
@@ -3695,7 +3695,7 @@ void CProfile_A5_10_1B::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_1B::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1B::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1B::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 4.0 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3765,7 +3765,7 @@ void CProfile_A5_10_1C::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_1C::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1C::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1C::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 4.0 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3835,7 +3835,7 @@ void CProfile_A5_10_1D::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_1D::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1D::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1D::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -3889,7 +3889,7 @@ void CProfile_A5_10_1F::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_1F::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1F::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_1F::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -3951,7 +3951,7 @@ void CProfile_A5_10_20::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_20::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_20::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_20::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = 0.16 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -4012,7 +4012,7 @@ void CProfile_A5_10_21::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_21::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_21::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_21::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -4058,7 +4058,7 @@ void CProfile_A5_10_22::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_22::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_22::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_22::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -4104,7 +4104,7 @@ void CProfile_A5_10_23::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_10_23::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_23::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_10_23::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.4 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -4212,7 +4212,7 @@ void CProfile_A5_11_01::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_11_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_01::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 2.0 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -4312,7 +4312,7 @@ void CProfile_A5_11_02::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_11_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_02::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_ALR___Alarm->set(data[24]);
    m_CST___Controller_state->set(data[27]);
    m_ERH___Energy_hold_off->set(data[29]);
@@ -4403,7 +4403,7 @@ void CProfile_A5_11_03::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_11_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_03::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_AS___Angle_sign->set(data[8]);
    m_PVF___Position_value_flag->set(data[16]);
    m_AVF___Angle_value_flag->set(data[17]);
@@ -4476,7 +4476,7 @@ void CProfile_A5_11_04::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_11_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_11_04::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_SM___Service_Mode->set(data[24]);
    m_OHF___Operating_hours_flag->set(data[25]);
    m_ST___Status->set(data[31]);
@@ -4550,7 +4550,7 @@ void CProfile_A5_12_00::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_12_00::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_00::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_00::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_DT___Data_type__unit_->set(data[29]);
    return m_historizers;
 }
@@ -4599,7 +4599,7 @@ void CProfile_A5_12_01::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_12_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_01::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_DT___Data_type__unit_->set(data[29]);
    return m_historizers;
 }
@@ -4648,7 +4648,7 @@ void CProfile_A5_12_02::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_12_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_02::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_DT___data_type__unit_->set(data[29]);
    return m_historizers;
 }
@@ -4697,7 +4697,7 @@ void CProfile_A5_12_03::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_12_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_03::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_DT___Data_type__unit_->set(data[29]);
    return m_historizers;
 }
@@ -4746,7 +4746,7 @@ void CProfile_A5_12_04::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_12_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_04::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 16, 8);
       auto value = 0.313725490196 * (static_cast<signed>(rawValue) - 0) + -40.0;
@@ -4819,7 +4819,7 @@ void CProfile_A5_12_05::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_12_05::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_05::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_05::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_PS0___Position_Sensor_0->set(data[0]);
    m_PS1___Position_Sensor_1->set(data[1]);
    m_PS2___Position_Sensor_2->set(data[2]);
@@ -4882,7 +4882,7 @@ void CProfile_A5_12_10::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_12_10::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_10::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_12_10::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_DT___Data_type__unit_->set(data[29]);
    return m_historizers;
 }
@@ -4945,7 +4945,7 @@ void CProfile_A5_13_01::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_13_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_01::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.470588235294 * (static_cast<signed>(rawValue) - 0) + -40.0;
@@ -4990,7 +4990,7 @@ void CProfile_A5_13_02::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_13_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_02::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 588.235294118 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -5038,7 +5038,7 @@ void CProfile_A5_13_03::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_13_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_03::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_SRC___Source->set(data[31]);
    return m_historizers;
 }
@@ -5094,7 +5094,7 @@ void CProfile_A5_13_04::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_13_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_04::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_TMF___Time_Format->set(data[29]);
    m_A_PM___AM_PM->set(data[30]);
    m_SRC___Source->set(data[31]);
@@ -5157,7 +5157,7 @@ void CProfile_A5_13_07::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_13_07::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_07::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_07::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_BS___Battery_Status->set(data[31]);
    return m_historizers;
 }
@@ -5192,7 +5192,7 @@ void CProfile_A5_13_08::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_13_08::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_08::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_08::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_RAS___Rainfall_Adjust_Sign->set(data[1]);
    m_BS___Battery_Status->set(data[31]);
    return m_historizers;
@@ -5226,7 +5226,7 @@ void CProfile_A5_13_10::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_13_10::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_10::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_13_10::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_D_N___Day___Night->set(data[7]);
    return m_historizers;
 }
@@ -5287,7 +5287,7 @@ void CProfile_A5_14_01::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_14_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_01::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -5329,7 +5329,7 @@ void CProfile_A5_14_02::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_14_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_02::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -5376,7 +5376,7 @@ void CProfile_A5_14_03::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_14_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_03::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -5421,7 +5421,7 @@ void CProfile_A5_14_04::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_14_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_04::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -5467,7 +5467,7 @@ void CProfile_A5_14_05::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_14_05::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_05::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_05::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -5509,7 +5509,7 @@ void CProfile_A5_14_06::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_14_06::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_06::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_14_06::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 0, 8);
       auto value = 0.02 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -5631,7 +5631,7 @@ void CProfile_A5_20_12::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_20_12::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_20_12::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_20_12::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_FANOR___Fan_override->set(data[24]);
    m_CST___Controller_state->set(data[27]);
    m_ERH___Energy_hold_off___Dew_point->set(data[29]);
@@ -5686,7 +5686,7 @@ void CProfile_A5_30_02::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_30_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_02::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_IPS___Input_State->set(data[31]);
    return m_historizers;
 }
@@ -5729,7 +5729,7 @@ void CProfile_A5_30_03::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_30_03::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_03::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_03::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = -0.156862745098 * (static_cast<signed>(rawValue) - 255) + 0.0;
@@ -5775,7 +5775,7 @@ void CProfile_A5_30_04::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_30_04::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_04::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_04::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_DI2___Digital_Input_2->set(data[29]);
    m_DI1___Digital_Input_1->set(data[30]);
    m_DI0___Digital_Input_0->set(data[31]);
@@ -5812,7 +5812,7 @@ void CProfile_A5_30_05::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_30_05::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_05::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_30_05::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.0129411764706 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -5879,7 +5879,7 @@ void CProfile_A5_37_01::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_37_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_37_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_37_01::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_SPWRU___Absolute_relative_power_usage->set(data[8]);
    m_RSD___Random_start_delay->set(data[29]);
    m_RED___Randomized_end_delay->set(data[30]);
@@ -5964,7 +5964,7 @@ void CProfile_A5_38_09::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_A5_38_09::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_38_09::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_A5_38_09::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_SSF___Send_status_flag->set(data[29]);
    m_SFV___Store_final_value->set(data[30]);
    m_SMF___Service_Mode_Flag->set(data[31]);
@@ -6173,7 +6173,7 @@ void CProfile_D2_03_20::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_D2_03_20::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_03_20::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_03_20::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_ES___Energy_Supply->set(data[0]);
    return m_historizers;
 }
@@ -6250,7 +6250,7 @@ void CProfile_D2_04_00::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_D2_04_00::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_04_00::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_04_00::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    {
       auto rawValue = bitset_extract(data, 8, 8);
       auto value = 0.5 * (static_cast<signed>(rawValue) - 0) + 0.0;
@@ -6427,7 +6427,7 @@ void CProfile_D2_32_00::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_D2_32_00::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_32_00::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_32_00::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_PF___Power_Fail->set(data[0]);
    m_DIV___Divisor->set(data[1]);
    return m_historizers;
@@ -6463,7 +6463,7 @@ void CProfile_D2_32_01::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_D2_32_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_32_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_32_01::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_PF___Power_Fail->set(data[0]);
    m_DIV___Divisor->set(data[1]);
    return m_historizers;
@@ -6499,7 +6499,7 @@ void CProfile_D2_32_02::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_D2_32_02::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_32_02::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_32_02::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_PF___Power_Fail->set(data[0]);
    m_DIV___Divisor->set(data[1]);
    return m_historizers;
@@ -6576,7 +6576,7 @@ void CProfile_D2_40_00::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_D2_40_00::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_40_00::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_40_00::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_OUTEN___LED_output_enabled->set(data[0]);
    m_DRA___Demand_Response_mode_Active->set(data[1]);
    m_DHAR___Daylight_Harvesting_Active->set(data[2]);
@@ -6633,7 +6633,7 @@ void CProfile_D2_40_01::sendConfiguration(const shared::CDataContainer& deviceCo
 void CProfile_D2_40_01::sendCommand(const std::string& keyword, const std::string& commandBody, boost::shared_ptr<IMessageHandler> messageHandler) const {
    throw std::logic_error("device supports no command sending");
 }
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_40_01::states(const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > CProfile_D2_40_01::states(unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status) const {
    m_OUTEN___LED_output_enabled->set(data[0]);
    m_DRA___Demand_Response_mode_Active->set(data[1]);
    m_DHAR___Daylight_Harvesting_Active->set(data[2]);

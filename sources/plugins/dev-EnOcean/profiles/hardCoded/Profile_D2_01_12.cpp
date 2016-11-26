@@ -23,7 +23,7 @@ CProfile_D2_01_12::CProfile_D2_01_12(const std::string& deviceId,
    : m_deviceId(deviceId),
      m_channel1(boost::make_shared<yApi::historization::CSwitch>("Channel 1", yApi::EKeywordAccessMode::kGet)),
      m_channel2(boost::make_shared<yApi::historization::CSwitch>("Channel 2", yApi::EKeywordAccessMode::kGet)),
-     m_historizers({m_channel1 , m_channel2 })
+     m_historizers({m_channel1 , m_channel2})
 {
 }
 
@@ -48,7 +48,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return m_historizers;
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_12::states(const boost::dynamic_bitset<>& data,
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_12::states(unsigned char rorg,
+                                                                                                   const boost::dynamic_bitset<>& data,
                                                                                                    const boost::dynamic_bitset<>& status) const
 {
    // Return only the concerned historizer
@@ -95,7 +96,7 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
    // CMD 0x2 - Actuator Set Local
    {
       message::CRadioErp1SendMessage command(m_rorg,
-                                             "000000",//TODO mettre constant
+                                             "00000000",//TODO mettre constant
                                              0);
       boost::dynamic_bitset<> data(4 * 8);
 
@@ -127,7 +128,7 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
    // CMD 0xB - Actuator Set External Interface Settings
    {
       message::CRadioErp1SendMessage command(m_rorg,
-                                             "000000",//TODO mettre constant
+                                             "00000000",//TODO mettre constant
                                              0);
       boost::dynamic_bitset<> data(7 * 8);
 

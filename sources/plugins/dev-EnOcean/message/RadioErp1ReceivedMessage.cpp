@@ -11,7 +11,7 @@ namespace message
            | esp3Packet->data()[esp3Packet->data().size() - 3] << 8
            | esp3Packet->data()[esp3Packet->data().size() - 2])),
         m_status(esp3Packet->data()[esp3Packet->data().size() - 1]),
-        m_data(esp3Packet->data().begin() + 1, esp3Packet->data().begin() + esp3Packet->data().size() - 6 + 1)
+        m_userData(esp3Packet->data().begin() + 1, esp3Packet->data().begin() + esp3Packet->data().size() - 6 + 1)
    {
    }
 
@@ -29,9 +29,9 @@ namespace message
       return m_senderId;
    }
 
-   const std::vector<unsigned char>& CRadioErp1ReceivedMessage::data() const
+   const std::vector<unsigned char>& CRadioErp1ReceivedMessage::userData() const
    {
-      return m_data;
+      return m_userData;
    }
 
    unsigned char CRadioErp1ReceivedMessage::status() const

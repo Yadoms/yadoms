@@ -406,16 +406,16 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
    }
 
    // Create associated RORG object
-   auto erp1Data = bitset_from_bytes(erp1Message.data());
+   auto erp1UserData = bitset_from_bytes(erp1Message.userData());
    auto erp1Status = bitset_from_byte(erp1Message.status());
    auto rorg = CRorgs::createRorg(erp1Message.rorg());
    auto deviceId = erp1Message.senderId();
 
-   if (rorg->isTeachIn(erp1Data))
+   if (rorg->isTeachIn(erp1UserData))
    {
       // Teachin telegram
 
-      if (!rorg->isEepProvided(erp1Data))
+      if (!rorg->isEepProvided(erp1UserData))
       {
          if (m_api->deviceExists(deviceId))
          {
@@ -433,7 +433,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
          throw std::domain_error("Teach-in telegram is only supported for 4BS telegram for now. Please report to Yadoms-team.");
 
       // Special-case of 4BS teachin mode Variant 2 (profile is provided in the telegram)
-      C4BSTeachinVariant2 teachInData(erp1Data);
+      C4BSTeachinVariant2 teachInData(erp1UserData);
 
       try
       {
@@ -489,7 +489,8 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
 
       auto device = m_devices[deviceId];
 
-      auto keywordsToHistorize = device->states(erp1Data,
+      auto keywordsToHistorize = device->states(static_cast<unsigned char>(erp1Message.rorg()),
+                                                erp1UserData,
                                                 erp1Status);
       if (keywordsToHistorize.empty())
       {
@@ -694,4 +695,3 @@ void CEnOcean::requestDongleVersion() const
 
    m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 }
-

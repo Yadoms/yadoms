@@ -37,7 +37,8 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return m_historizers;
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_F6_02_01::states(const boost::dynamic_bitset<>& data,
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_F6_02_01::states(unsigned char rorg,
+                                                                                                   const boost::dynamic_bitset<>& data,
                                                                                                    const boost::dynamic_bitset<>& status) const
 {
    // Return only the concerned historizer
@@ -133,4 +134,3 @@ void CProfile_F6_02_01::sendConfiguration(const shared::CDataContainer& deviceCo
 {
    // Device supports no configuration
 }
-

@@ -281,7 +281,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             code += "   return m_historizers;"
             return code
 
-         typeClass.addMethod(cppClass.CppMethod("states", "std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >", "const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, statesCode(xmlTypeNode)))
+         typeClass.addMethod(cppClass.CppMethod("states", "std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >", "unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, statesCode(xmlTypeNode)))
          cppTypes.append(typeClass)
          supportedProfiles.append(profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode))
 
