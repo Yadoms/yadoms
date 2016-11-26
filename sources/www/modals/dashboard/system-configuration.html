@@ -118,6 +118,27 @@
                var dateFormatStringParameter = new StringParameterHandler(i18NContext, ConfigurationManager.items.system.dateFormatString, { defaultValue: Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].defaultValue, "required": "true" }, Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value);
                advancedSectionParameters.configurationHandlers.push(dateFormatStringParameter);
 
+               console.log ( Yadoms.systemConfiguration );
+               
+               //*************
+               //City section parameters
+               var cityName = Yadoms.systemConfiguration[ConfigurationManager.items.system.city].value;
+
+               //var value = {};
+               //value.checkbox = basicAuth.active;
+               var citySectionParameters = new SectionParameterHandler(i18NContext,
+                  ConfigurationManager.items.system.city, null,
+                  cityName);
+
+               //*************
+               //city name
+               var cityNameParameter = new StringParameterHandler(i18NContext,
+                  ConfigurationManager.items.system.cityName,
+                  {
+                     "defaultValue": cityNameParameter,
+                     "required": "true"
+                  },
+                  cityNameParameter);                  
 
                //and add it to the gui
                $modalBody.append(languageParameter.getDOMObject());
@@ -283,7 +304,21 @@
                                                 Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value = systemConfiguration[ConfigurationManager.items.system.dateFormatString].defaultValue;
                                                 ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString])
                                                    .done(function() {
-                                                      d.resolve();
+                                                   
+                                                      console.log ( "Save city !");
+                                                      //*************                                                   
+                                                      //city
+                                                      Yadoms.systemConfiguration[ConfigurationManager.items.system.city].value = ""; //Todo : faire ainsi : languageParameter.getCurrentConfiguration();
+
+                                                      console.log ( ConfigurationManager.items.system.city );
+                                                      console.log ( Yadoms.systemConfiguration );
+                                                      
+                                                      ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.city])
+                                                         .done(function() {
+                                                               window.location.reload();
+                                                               d.resolve();
+                                                         })
+                                                         .fail(d.reject);
                                                    })
                                                    .fail(d.reject);
                                              })
