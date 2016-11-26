@@ -357,7 +357,7 @@
               "name": "Date Format String",
               "description": "You can change date format string using momnt.js syntax (ie \"LLL\" or \"'MMMM Do YYYY, h:mm:ss a\")"
             },
-            "cityName": {
+            "city": {
               "name": "City",
               "description": "location used by plugin(s) for forecast, ..."
             }

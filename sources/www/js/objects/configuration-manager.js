@@ -39,8 +39,8 @@ ConfigurationManager.items.system.basicAuthenticationUser = "basicAuthentication
 ConfigurationManager.items.system.basicAuthenticationPassword = "basicAuthenticationPassword";
 ConfigurationManager.items.system.basicAuthenticationPassword2 = "basicAuthenticationPassword2";
 
+ConfigurationManager.items.system.location = "location";
 ConfigurationManager.items.system.city = "city";
-ConfigurationManager.items.system.cityName = "cityName";
 
 ConfigurationManager.items.system.advancedParameters = "advancedParameters";
 ConfigurationManager.items.system.dateFormatString = "dateFormatString";
