@@ -328,6 +328,10 @@
               "name": "Default Language",
               "description": "Define the language used by default for every users."
             },
+		      "timezone": {
+				   "description": "Define your Timezone.",
+				   "name": "Timezone"
+			   },	            
             "basicAuthentication": {
               "name": "Authentication",
               "description": "Use authentification method to get access to Yadoms."
@@ -353,10 +357,10 @@
               "name": "Date Format String",
               "description": "You can change date format string using momnt.js syntax (ie \"LLL\" or \"'MMMM Do YYYY, h:mm:ss a\")"
             },
-		    "timezone": {
-				"description": "Define your Timezone.",
-				"name": "Timezone"
-			}			
+            "cityName": {
+              "name": "City",
+              "description": "location used by plugin(s) for forecast, ..."
+            }
           },
           "confirmResetToDefault": "This operation will restore all default configuration. Continue ?",
           "configurationSaved": "System configuration successfully saved",
