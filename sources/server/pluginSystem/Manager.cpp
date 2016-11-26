@@ -92,6 +92,7 @@ namespace pluginSystem
                return;
             }
             break;
+         default: break;
          }
       }
    }
@@ -495,7 +496,7 @@ namespace pluginSystem
          try
          {
             // First find the pluginState device associated with the plugin
-            device = m_dataProvider->getDeviceRequester()->getDevice(id, "pluginState");
+            device = m_dataProvider->getDeviceRequester()->getDeviceInPlugin(id, "pluginState");
          }
          catch (shared::exception::CEmptyResult&)
          {
@@ -549,7 +550,7 @@ namespace pluginSystem
       try
       {
          // First find the pluginState device associated with the plugin
-         device = m_dataProvider->getDeviceRequester()->getDevice(id, "pluginState");
+         device = m_dataProvider->getDeviceRequester()->getDeviceInPlugin(id, "pluginState");
       }
       catch (shared::exception::CEmptyResult&)
       {

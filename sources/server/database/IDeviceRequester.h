@@ -27,18 +27,20 @@ namespace database
       //--------------------------------------------------------------
       /// \brief                          Get device informations
       /// \param [in] deviceId            Device Id
+      /// \param [in] blacklistedIncluded Even if device is blaklisted
       /// \throw                          shared::exception::CEmptyResult if deviceId is unknown
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CDevice> getDevice(int deviceId) const = 0;
+      virtual boost::shared_ptr<entities::CDevice> getDevice(int deviceId, bool blacklistedIncluded = false) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Get a device identified by (pluginId and name).
       /// \param [in] pluginId            The pluginId
       /// \param [in] name                The device name (plugin internal name)
+      /// \param [in] blacklistedIncluded Even if device is blaklisted
       /// \return                         The device found
       /// \throw                          shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CDevice> getDevice(const int pluginId, const std::string& name) const = 0;
+      virtual boost::shared_ptr<entities::CDevice> getDeviceInPlugin(int pluginId, const std::string& name, bool blacklistedIncluded = false) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Get devices identified by a friendly name.

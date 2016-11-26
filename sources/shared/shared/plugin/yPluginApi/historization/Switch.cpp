@@ -10,13 +10,8 @@ namespace shared
       {
          namespace historization
          {
-            CSwitch::CSwitch(const std::string& keywordName,
-                             const EKeywordAccessMode& accessMode)
-               : CSingleHistorizableData<bool>(keywordName,
-                                               CStandardCapacities::Switch,
-                                               accessMode,
-                                               false,
-                                               EMeasureType::kAbsolute)
+            CSwitch::CSwitch(const std::string& keywordName, const EKeywordAccessMode& accessMode, typeInfo::CBoolTypeInfo &ti)
+               : CSingleHistorizableData<bool>(keywordName, CStandardCapacities::Switch, accessMode, false, EMeasureType::kAbsolute, ti)
             {
             }
 

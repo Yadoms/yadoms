@@ -19,13 +19,10 @@ public:
    virtual ~COpenZWaveController();
 
    // IZWaveController implementation
-   void configure(CZWaveConfiguration* configuration,
-                  shared::event::CEventHandler* handler) override;
+   void configure(CZWaveConfiguration* configuration, shared::event::CEventHandler* handler) override;
    E_StartResult start() override;
    void stop() override;
-   void sendCommand(const std::string& device,
-                    const std::string& keyword,
-                    const std::string& value) override;
+   void sendCommand(const std::string& device, const std::string& keyword, const std::string& value) override;
    void startInclusionMode() override;
    void startExclusionMode() override;
    void hardResetController() override;
@@ -33,6 +30,9 @@ public:
    void testNetwork(int count) override;
    void cancelCurrentCommand() override;
    void healNetwork() override;
+   shared::CDataContainer getNodeConfigurationSchema(const std::string & device) override;
+   void setNodeConfiguration(const std::string & device, const shared::CDataContainer &configuration) override;
+   NodeListType & getNodeList() override;
    // [END] IZWaveController implementation
 
 
@@ -41,8 +41,7 @@ public:
    /// \param [in]    _notification    The openzwave notification
    /// \param [in]    content          The context
    //-----------------------------------------------------------------------------
-   void onNotification(OpenZWave::Notification const* _notification,
-                       void* _context);
+   void onNotification(OpenZWave::Notification const* _notification, void* _context);
 
 private:
    //-----------------------------------------------------------------------------
@@ -53,30 +52,12 @@ private:
    //-----------------------------------------------------------------------------
    /// \brief	Return the NodeInfo object matching homeId and nodeId
    //-----------------------------------------------------------------------------   
-   boost::shared_ptr<COpenZWaveNode> getNode(const uint32 homeId,
-                                             const uint8 nodeId);
+   boost::shared_ptr<COpenZWaveNode> getNode(const uint32 homeId, const uint8 nodeId);
 
    //-----------------------------------------------------------------------------
    /// \brief	Ask configuration parameters to each found node
    //-----------------------------------------------------------------------------   
    void RequestConfigurationParameters();
-
-   //--------------------------------------------------------------
-   /// \brief	   Retreive openzwave ids from yadoms data
-   /// \param [in]    device	            the yadoms device
-   /// \param [in]    keyword	            the yadoms keyword
-   /// \param [out]   homeId	            the openzwave homeid
-   /// \param [out]   nodeId	            the openzwave nodeId
-   /// \param [out]   instance            the openzwave instance
-   /// \throw shared::exception::CException if any yadoms data do not match pattern
-   /// \note:  patterns:   device = homeId.nodeId
-   /// \note:  patterns:   keyword = keywordName.keywordClass
-   //--------------------------------------------------------------
-   void retreiveOpenZWaveIds(const std::string& device,
-                             const std::string& keyword,
-                             uint32& homeId,
-                             uint8& nodeId,
-                             uint8& instance);
 
    //--------------------------------------------------------------
    /// \brief	   Mutex protecting the configuration content
@@ -103,11 +84,6 @@ private:
    /// \brief	   Contains the last successfully sent command to controller
    //--------------------------------------------------------------
    OpenZWave::Driver::ControllerCommand m_lastSuccessfullySentCommand;
-
-   //--------------------------------------------------------------
-   /// \brief	   The zwave node list type
-   //--------------------------------------------------------------
-   typedef std::vector<boost::shared_ptr<COpenZWaveNode> > NodeListType;
 
    //--------------------------------------------------------------
    /// \brief	   The zwave node list

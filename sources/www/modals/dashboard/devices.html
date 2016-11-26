@@ -114,16 +114,21 @@
    }
 
    function addDeviceToDom(device, positionDevice) {
-      var actionsBtns = "<div class=\"btn-group\">\n" +
-              "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-cog\"></span></button>\n" +
-              "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
-              "</div>";
+      var actionsBtns =   "<div class=\"btn-group\">\n" +
+                          "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-cog\"></span></button>\n" +
+                          "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
+                          "</div>";
+
+      var actionsBtnsPluginState = "<div class=\"btn-group\">\n" +
+                                   "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-pencil\"></span></button>\n" +
+                                   "</div>";
 
       var actionsBtnsBlacklist = "<div class=\"btn-group\">\n" +
-                        "<button type=\"button\" class=\"btn btn-success btn-restore\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.restore\"><span class=\"fa fa-reply\"></span></button>\n" +
-                        "</div>";
+                                 "<button type=\"button\" class=\"btn btn-success btn-restore\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.restore\"><span class=\"fa fa-reply\"></span></button>\n" +
+                                 "</div>";
 
-              
+      
+      //in case the device is blacklisted, then strike it
       var fn = device.friendlyName;
       if(parseBool(device.blacklist)===true)
          fn = "<del>"+device.friendlyName+"</del>";
@@ -164,7 +169,10 @@
       if(parseBool(device.blacklist) === true) {
          $deviceRow.find("td.device-actions").append(actionsBtnsBlacklist);
       } else {
-         $deviceRow.find("td.device-actions").append(actionsBtns);
+         if((device.name == "pluginState" || device.model == "Plugin state")) 
+           $deviceRow.find("td.device-actions").append(actionsBtnsPluginState);
+         else
+           $deviceRow.find("td.device-actions").append(actionsBtns);
       }
      
       //we bind event on the different actions
@@ -216,6 +224,7 @@
    }
 
    function updateDeviceFiendlyName(device) {
+   debugger;
       //device represent the device concerned
       //we just ask for the friendly name
       Yadoms.modals.deviceConfigure.loadAsync()
@@ -453,9 +462,9 @@
                Yadoms.modals.deviceConfigureManually.loadAsync()
                .done(function () {
                   //we launch configureInstance GUI
-                  Yadoms.showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceConfiguration) {
+                   Yadoms.showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceModel, newDeviceConfiguration) {
                      //we ask for manually device creation
-                     PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceConfiguration)
+                       PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceConfiguration)
                      .done(function () {
                         refreshDeviceList();
                      })

@@ -1,13 +1,9 @@
 #include "stdafx.h"
 #include "OpenZWaveNodeKeywordDimmable.h"
 #include "OpenZWaveHelpers.h"
-
-COpenZWaveNodeKeywordDimmable::COpenZWaveNodeKeywordDimmable(OpenZWave::ValueID& valueId,
-                                                             const std::string& vLabel,
-                                                             shared::plugin::yPluginApi::EKeywordAccessMode accessMode)
+COpenZWaveNodeKeywordDimmable::COpenZWaveNodeKeywordDimmable(OpenZWave::ValueID& valueId, const std::string& vLabel, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CIntegerTypeInfo &ti)
    : COpenZWaveNodeKeywordBase(valueId),
-     m_keyword(boost::make_shared<shared::plugin::yPluginApi::historization::CDimmable>(COpenZWaveHelpers::GenerateKeywordName(valueId),
-                                                                                        accessMode))
+     m_keyword(boost::make_shared<shared::plugin::yPluginApi::historization::CDimmable>(COpenZWaveHelpers::GenerateKeywordName(valueId), accessMode, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti))
 {
 }
 
@@ -25,5 +21,10 @@ boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> COpe
 {
    m_keyword->set(extractLastValue<int>());
    return m_keyword;
+}
+
+shared::CDataContainer COpenZWaveNodeKeywordDimmable::serialize()
+{
+   return m_keyword->getTypeInfo();
 }
 

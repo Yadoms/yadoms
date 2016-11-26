@@ -4,16 +4,13 @@
 
 namespace historizers
 {
-   CDirection::CDirection(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode)
-      : COpenZWaveSingleHistorizableData<int>(boost::make_shared<shared::plugin::yPluginApi::historization::CDirection>(name, accessMode))
+   CDirection::CDirection(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CIntegerTypeInfo &ti)
+      : COpenZWaveSingleHistorizableData<int>(boost::make_shared<shared::plugin::yPluginApi::historization::CDirection>(name, accessMode, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti))
    {
    }
 
-   CDirection::CDirection(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode,
-                          shared::plugin::yPluginApi::historization::EMeasureType measureType)
-      : COpenZWaveSingleHistorizableData<int>(boost::make_shared<shared::plugin::yPluginApi::historization::CDirection>(name,
-                                                                                                                        accessMode,
-                                                                                                                        measureType))
+   CDirection::CDirection(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::historization::EMeasureType measureType, CIntegerTypeInfo &ti)
+      : COpenZWaveSingleHistorizableData<int>(boost::make_shared<shared::plugin::yPluginApi::historization::CDirection>(name, accessMode, measureType, ti))
    {
    }
 

@@ -19,11 +19,7 @@ public:
                                       const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode,
                                       const shared::plugin::yPluginApi::historization::EMeasureType& measureType = shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute,
                                       shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo& typeInfo = shared::plugin::yPluginApi::historization::typeInfo::CEmptyTypeInfo::Empty)
-      : shared::plugin::yPluginApi::historization::CSingleHistorizableData<T>(keywordName,
-                                                                              capacity,
-                                                                              accessMode,
-                                                                              measureType,
-                                                                              typeInfo)
+      : shared::plugin::yPluginApi::historization::CSingleHistorizableData<T>(keywordName, capacity, accessMode, measureType, typeInfo)
    {
    }
 
@@ -41,12 +37,7 @@ public:
                                       const T& initialValue,
                                       const shared::plugin::yPluginApi::historization::EMeasureType& measureType = shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute,
                                       shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo& typeInfo = shared::plugin::yPluginApi::historization::typeInfo::CEmptyTypeInfo::Empty)
-      : shared::plugin::yPluginApi::historization::CSingleHistorizableData<T>(keywordName,
-                                                                              capacity,
-                                                                              accessMode,
-                                                                              initialValue,
-                                                                              measureType,
-                                                                              typeInfo)
+      : shared::plugin::yPluginApi::historization::CSingleHistorizableData<T>(keywordName, capacity, accessMode, initialValue, measureType, typeInfo)
    {
    }
 

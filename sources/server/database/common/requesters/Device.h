@@ -29,8 +29,8 @@ namespace database
             // IDeviceRequester implementation
             bool deviceExists(const int deviceId) const override;
             bool deviceExists(const int pluginId, const std::string& deviceName) const override;
-            boost::shared_ptr<entities::CDevice> getDevice(int deviceId) const override;
-            boost::shared_ptr<entities::CDevice> getDevice(const int pluginId, const std::string& name) const override;
+            boost::shared_ptr<entities::CDevice> getDevice(int deviceId, bool blacklistedIncluded = false) const override;
+            boost::shared_ptr<entities::CDevice> getDeviceInPlugin(int pluginId, const std::string& name, bool blacklistedIncluded = false) const override;
             boost::shared_ptr<entities::CDevice> createDevice(int pluginId, const std::string& name, const std::string& friendlyName, const std::string& model, const shared::CDataContainer& details) override;
             std::vector<boost::shared_ptr<entities::CDevice>> getDevices(bool blacklistedIncluded = false) const override;
             std::vector<std::string> getDevicesNames(int pluginId, bool blacklistedIncluded = false) const override;

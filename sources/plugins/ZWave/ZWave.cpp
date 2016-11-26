@@ -5,6 +5,11 @@
 #include "ZWaveControllerFactory.h"
 #include "KeywordContainer.h"
 #include "ZWaveInternalState.h"
+#include <Poco/Thread.h>
+#include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
+#include <shared/plugin/yPluginApi/IDeviceRemoved.h>
+#include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
+#include "OpenZWaveHelpers.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -80,6 +85,25 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                }
                break;
             }
+            case yApi::IYPluginApi::kGetDeviceConfigurationSchemaRequest:
+            {
+               // Yadoms ask for device configuration schema
+               // Schema can come from package.json, or built by code. In this example,
+               // we just take the schema from package.json, in case of configuration is supported by device.
+               auto deviceConfigurationSchemaRequest = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest> >();
+               shared::CDataContainer schema = m_controller->getNodeConfigurationSchema(deviceConfigurationSchemaRequest->device());
+               deviceConfigurationSchemaRequest->sendSuccess(schema);
+               break;
+            }
+
+            case yApi::IYPluginApi::kSetDeviceConfiguration:
+            {
+               // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
+               auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration> >();
+               m_controller->setNodeConfiguration(deviceConfiguration->device(), deviceConfiguration->configuration());
+               break;
+            }
+
             case yApi::IYPluginApi::kEventExtraQuery:
             {
                // Command was received from Yadoms
@@ -226,7 +250,16 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                {
                case EZWaveInteralState::kCompletedValue:
                case EZWaveInteralState::kRunningValue:
-                  api->setPluginState(yApi::historization::EPluginState::kRunning);
+                  {
+                     api->setPluginState(yApi::historization::EPluginState::kRunning);
+
+                     auto & list = m_controller->getNodeList();
+                     for (auto i = list.begin(); i != list.end(); ++i)
+                     {
+                        std::string device = COpenZWaveHelpers::GenerateDeviceId((*i)->getHomeId(), (*i)->getNodeId());
+                        api->updateDeviceConfiguration(device, (*i)->getConfigurationValues());
+                     }
+                  }
                   break;
                default:
                   api->setPluginState(yApi::historization::EPluginState::kCustom, s.toString());

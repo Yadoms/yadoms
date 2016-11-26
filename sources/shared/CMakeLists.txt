@@ -203,6 +203,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/typeInfo/ITypeInfo.h
    shared/plugin/yPluginApi/historization/typeInfo/EmptyTypeInfo.h
    shared/plugin/yPluginApi/historization/typeInfo/EmptyTypeInfo.cpp
+   shared/plugin/yPluginApi/historization/typeInfo/BoolTypeInfo.h
+   shared/plugin/yPluginApi/historization/typeInfo/BoolTypeInfo.cpp
    shared/plugin/yPluginApi/historization/typeInfo/IntTypeInfo.h
    shared/plugin/yPluginApi/historization/typeInfo/IntTypeInfo.cpp
    shared/plugin/yPluginApi/historization/typeInfo/DoubleTypeInfo.h

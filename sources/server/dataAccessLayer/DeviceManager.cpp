@@ -33,9 +33,9 @@ namespace dataAccessLayer
       return m_deviceRequester->getDevice(deviceId);
    }
 
-   boost::shared_ptr<database::entities::CDevice> CDeviceManager::getDevice(const int pluginId, const std::string& name) const
+   boost::shared_ptr<database::entities::CDevice> CDeviceManager::getDeviceInPlugin(const int pluginId, const std::string& name) const
    {
-      return m_deviceRequester->getDevice(pluginId, name);
+      return m_deviceRequester->getDeviceInPlugin(pluginId, name);
    }
 
    std::vector<boost::shared_ptr<database::entities::CDevice>> CDeviceManager::getDeviceWithCapacity(const std::string& capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const
@@ -121,7 +121,7 @@ namespace dataAccessLayer
 
    void CDeviceManager::removeDevice(int pluginId, const std::string& deviceName)
    {
-      removeDevice(m_deviceRequester->getDevice(pluginId, deviceName)->Id());
+      removeDevice(m_deviceRequester->getDeviceInPlugin(pluginId, deviceName)->Id());
    }
 
    void CDeviceManager::removeAllDeviceForPlugin(int pluginId)

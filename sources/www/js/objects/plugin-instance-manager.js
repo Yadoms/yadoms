@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Created by nicolasHILAIRE on 26/05/14.
  */
 
@@ -337,9 +337,10 @@ PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation = function (
  * Create a device manually
  * @param pluginInstance The plugin instance
  * @param deviceName The device name
+ * @param deviceModel The device model
  * @param deviceConfiguration The device configuration
  * @return {Promise} A promise for the result
  */
-PluginInstanceManager.createManuallyDevice = function (pluginInstance, deviceName, deviceConfiguration) {
-   return RestEngine.postJson("/rest/plugin/" + pluginInstance.id + "/createDevice", { data: JSON.stringify({ name: deviceName, configuration: deviceConfiguration }) });
+PluginInstanceManager.createManuallyDevice = function (pluginInstance, deviceName, deviceModel, deviceConfiguration) {
+   return RestEngine.postJson("/rest/plugin/" + pluginInstance.id + "/createDevice", { data: JSON.stringify({ name: deviceName, model: deviceModel, configuration: deviceConfiguration }) });
 };

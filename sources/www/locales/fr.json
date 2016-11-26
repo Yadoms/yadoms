@@ -222,7 +222,12 @@
       "friendlyName-configuration": {
         "name": "Nom",
         "description": "Nom l'équipement",
-        "regexErrorMessage": "Le nom de l'équipement doit contenir au minimum 1 caractère"
+        "regexErrorMessage": "Le nom de l'équipement doit être renseigné"
+      },
+      "model-configuration": {
+        "name": "Modèle",
+        "description": "Modèle de l'équipement",
+        "regexErrorMessage": "Vous permet d'identifier l'équipement"
       }
     },
     "configure-keyword": {
@@ -419,12 +424,12 @@
           },
           "configure": "Configuration de l'équipement",
           "delete": "Suppression de l'équipement",
-		  "restore" : "Réactivation de l'équipement",
+		    "restore" : "Restauration de l'équipement",
           "errorGettingDeviceList": "Erreur lors de la récupération de la liste des équipements",
           "errorGettingDeviceDetailsList": "Erreur lors de la récupération des détails de l'équipement",
           "errorUpdatingKeyword": "Erreur lors de la mise à jour de la donnée __keyword__",
-          "errorBlacklistingDevice": "Erreur lors de la (dés)activation de l'équipement __device__",
-          "errorBlacklistingKeyword": "Erreur lors de la (dés)activation de la donnée __keyword__",
+          "errorBlacklistingDevice": "Erreur lors de la suppression/restauration de l'équipement __device__",
+          "errorBlacklistingKeyword": "Erreur lors de la suppression/restauration de la donnée __keyword__",
           "noAcquisition": "Aucune acquisition",
 		  "showBlacklistedDevices" : "Afficher les équipements supprimés"
         },

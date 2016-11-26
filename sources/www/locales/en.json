@@ -223,6 +223,11 @@
         "name": "Name",
         "description": "Friendly name of your device",
         "regexErrorMessage": "The name of the device must contains at least one character"
+      },
+      "model-configuration": {
+        "name": "Model",
+        "description": "Device model",
+        "regexErrorMessage": "Enter here the device model to easy identify the device"
       }
     },
     "configure-keyword": {
@@ -423,8 +428,8 @@
           "errorGettingDeviceList": "An error has occurred acquiring device list",
           "errorGettingDeviceDetailsList": "An error has occurred acquiring device details list",
           "errorUpdatingKeyword": "An error occurred updating data __keyword__",
-          "errorBlacklistingDevice": "An error occurred while disabling/enabling __device__",
-          "errorBlacklistingKeyword": "An error occurred while disabling/enabling __keyword__",
+          "errorBlacklistingDevice": "An error occurred while removing/restoring __device__",
+          "errorBlacklistingKeyword": "An error occurred while removing/restoring __keyword__",
           "noAcquisition": "No acquisition",
 		  "showBlacklistedDevices" : "Show deleted devices"
         },

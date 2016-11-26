@@ -2,19 +2,16 @@
 #include "Counter.h"
 #include <shared/plugin/yPluginApi/historization/Counter.h>
 
+
 namespace historizers
 {
-   CCounter::CCounter(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode)
-      : COpenZWaveSingleHistorizableData<Poco::Int64>(boost::make_shared<shared::plugin::yPluginApi::historization::CCounter>(name,
-                                                                                                                              accessMode))
+   CCounter::CCounter(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CIntegerTypeInfo & ti)
+      : COpenZWaveSingleHistorizableData<Poco::Int64>(boost::make_shared<shared::plugin::yPluginApi::historization::CCounter>(name, accessMode, shared::plugin::yPluginApi::historization::EMeasureType::kCumulative, ti))
    {
    }
 
-   CCounter::CCounter(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode,
-                      shared::plugin::yPluginApi::historization::EMeasureType measureType)
-      : COpenZWaveSingleHistorizableData<Poco::Int64>(boost::make_shared<shared::plugin::yPluginApi::historization::CCounter>(name,
-                                                                                                                              accessMode,
-                                                                                                                              measureType))
+   CCounter::CCounter(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::historization::EMeasureType measureType, CIntegerTypeInfo & ti)
+      : COpenZWaveSingleHistorizableData<Poco::Int64>(boost::make_shared<shared::plugin::yPluginApi::historization::CCounter>(name, accessMode, measureType, ti))
    {
    }
 
