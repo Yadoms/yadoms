@@ -21,7 +21,9 @@
       $modalBody.empty();
 
       var promise = new $.Deferred();
-
+      var promiseLocation = new $.Deferred();
+      var i18NContext = "modals.dashboard.sub-windows.system-configuration.configuration-items.";
+      
       //get current system configuration
       ConfigurationManager.getSection(ConfigurationManager.items.systemSection)
          .done(function(configuration) {
@@ -29,7 +31,6 @@
 
                //we update system configuration to be sure to modify the latest version of the configuration
                Yadoms.systemConfiguration = configuration;
-               var i18NContext = "modals.dashboard.sub-windows.system-configuration.configuration-items.";
 
                //*************
                //language
@@ -73,7 +74,7 @@
                   basicAuth.user);
 
                //*************
-               //user authentication
+               //password authentication
                var passwordAuthenticationParameter = new StringParameterHandler(i18NContext,
                   ConfigurationManager.items.system.basicAuthenticationPassword,
                   {
@@ -85,7 +86,7 @@
                   passwordToDisplay);
 
                //*************
-               //user authentication
+               //password authentication
                var password2AuthenticationParameter = new StringParameterHandler(i18NContext,
                   ConfigurationManager.items.system.basicAuthenticationPassword2,
                   {
@@ -117,28 +118,6 @@
                //dateFormatString
                var dateFormatStringParameter = new StringParameterHandler(i18NContext, ConfigurationManager.items.system.dateFormatString, { defaultValue: Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].defaultValue, "required": "true" }, Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value);
                advancedSectionParameters.configurationHandlers.push(dateFormatStringParameter);
-
-               console.log ( Yadoms.systemConfiguration );
-               
-               //*************
-               //City section parameters
-               var cityName = Yadoms.systemConfiguration[ConfigurationManager.items.system.city].value;
-
-               //var value = {};
-               //value.checkbox = basicAuth.active;
-               var citySectionParameters = new SectionParameterHandler(i18NContext,
-                  ConfigurationManager.items.system.city, null,
-                  cityName);
-
-               //*************
-               //city name
-               var cityNameParameter = new StringParameterHandler(i18NContext,
-                  ConfigurationManager.items.system.cityName,
-                  {
-                     "defaultValue": cityNameParameter,
-                     "required": "true"
-                  },
-                  cityNameParameter);                  
 
                //and add it to the gui
                $modalBody.append(languageParameter.getDOMObject());
@@ -353,9 +332,66 @@
             promise.reject();
          });
 
+      $.when(promise).done(function() {
+      
+         ConfigurationManager.getSection(ConfigurationManager.items.system.location)
+            .done(function(configuration) {
+               console.log ( configuration );
+               
+               // If no configuration returned
+               if (configuration.length == 0)
+               {}
+                  
+               //*************
+               //City section parameters
+
+               var citySectionParameters = new SectionParameterHandler(i18NContext,
+                  ConfigurationManager.items.system.city,
+                  {},
+                  cityName);            
+                  
+               //*************
+               //city name
+               
+               var cityName = "";
+               
+               try{
+                  var cityName = Yadoms.systemConfiguration[ConfigurationManager.items.system.city].value;            
+               }
+               catch (err) {
+                  console.warn("No city name configured !");
+               }            
+               
+               var cityNameParameter = new StringParameterHandler(i18NContext,
+                  ConfigurationManager.items.system.city,
+                  {
+                     "defaultValue": cityName,
+                     "required": "true"
+                  },
+                  cityName);
+                  
+               citySectionParameters.configurationHandlers.push(cityNameParameter);
+                  
+               //and add it to the gui
+               $modalBody.append(citySectionParameters.getDOMObject());
+
+               //we finish controls instantiation
+               if ($.isFunction(citySectionParameters.applyScript))
+                  citySectionParameters.applyScript();
+
+               //we i18n the form
+               $modalBody.i18n();
+               
+               promiseLocation.resolve();
+            })
+            .fail(function(error) {
+               notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
+               promiseLocation.reject();
+            }); 
+      });
+      
+      // TODO : voir pour le retour
       return promise.promise();
    };
-
-
 
 </script>
