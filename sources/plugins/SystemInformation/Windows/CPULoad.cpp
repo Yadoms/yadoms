@@ -62,7 +62,7 @@ void CCPULoad::read()
    try
    {
       m_keyword->set(getCpuUsage());
-      std::cout << "CPU Load" << m_keyword->get() << std::endl;
+      std::cout << "CPU Load : " << m_keyword->get() << std::endl;
    }
    catch (shared::exception::CException& exception)
    {
