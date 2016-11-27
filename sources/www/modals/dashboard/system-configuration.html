@@ -118,7 +118,7 @@
                //dateFormatString
                var dateFormatStringParameter = new StringParameterHandler(i18NContext, ConfigurationManager.items.system.dateFormatString, { defaultValue: Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].defaultValue, "required": "true" }, Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value);
                advancedSectionParameters.configurationHandlers.push(dateFormatStringParameter);
-
+               
                //and add it to the gui
                $modalBody.append(languageParameter.getDOMObject());
                $modalBody.append(basicAuthenticationSectionParameters.getDOMObject());
@@ -135,118 +135,184 @@
                //we i18n the form
                $modalBody.i18n();
 
+               ConfigurationManager.getSection(ConfigurationManager.items.system.location)
+                  .done(function(configuration) {
+                     console.log ( configuration );
+                     
+                     // If no configuration returned
+                     if (configuration.length == 0)
+                     {}
+                        
+                     //*************
+                     //City section parameters
+
+                     // TODO : Modifier City -> Location
+                     
+                     var citySectionParameters = new SectionParameterHandler(i18NContext,
+                        ConfigurationManager.items.system.city,
+                        {},
+                        cityName);            
+                        
+                     //*************
+                     //city name
+                     
+                     var cityName = "";
+                     
+                     try{
+                        var cityName = Yadoms.systemConfiguration[ConfigurationManager.items.system.city].value;            
+                     }
+                     catch (err) {
+                        console.warn("No city name configured !");
+                     }            
+                     
+                     var cityNameParameter = new StringParameterHandler(i18NContext,
+                        ConfigurationManager.items.system.city,
+                        {
+                           "defaultValue": cityName,
+                           "required": "true"
+                        },
+                        cityName);
+                        
+                     citySectionParameters.configurationHandlers.push(cityNameParameter);
+                        
+                     //and add it to the gui
+                     $modalBody.append(citySectionParameters.getDOMObject());
+
+                     //we finish controls instantiation
+                     if ($.isFunction(citySectionParameters.applyScript))
+                        citySectionParameters.applyScript();
+
+                     //we i18n the form
+                     $modalBody.i18n();
+                     
+                     promiseLocation.resolve();
+                  })
+                  .fail(function(error) {
+                     notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
+                     promiseLocation.reject();
+                  });               
+               
                //validation form
                //erase previous jqBootstrapValidation
-               $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
-                  preventSubmit: true,
-                  submitError: function($form, event, errors) {
-                     console.warn("Unable to validate form: " + errors);
-                  },
-                  submitSuccess: function($form, event) {
-                     event.preventDefault();
-                     console.debug("End of system Configuration");
+               $.when(promiseLocation).done(function() {
+                  $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
+                     preventSubmit: true,
+                     submitError: function($form, event, errors) {
+                        console.warn("Unable to validate form: " + errors);
+                     },
+                     submitSuccess: function($form, event) {
+                        event.preventDefault();
+                        console.debug("End of system Configuration");
 
-                     var pageHasToBeReloaded = false;
+                        var pageHasToBeReloaded = false;
 
-                     var d = new $.Deferred();
+                        var d = new $.Deferred();
 
-                     //we save current configuration
-                     //*************
-                     //language
-                     Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value = languageParameter.getCurrentConfiguration();
+                        //we save current configuration
+                        //*************
+                        //language
+                        Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value = languageParameter.getCurrentConfiguration();
 
-                     ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.language])
-                        .done(function() {
-                           //we change language of i18n
-                           i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
-                              $("html").i18n();
-							  
-						      window.location.reload();
+                        ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.language])
+                           .done(function() {
+                              //we change language of i18n
+                              i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
+                                 $("html").i18n();
+                          
+                           window.location.reload();
+                              });
+
+
+                              //*************
+                              //advanced parameters
+                              Yadoms.systemConfiguration[ConfigurationManager.items.system.advancedParameters].value = advancedSectionParameters.getCurrentConfiguration().checkbox;
+
+                              ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.advancedParameters])
+                                 .done(function() {
+                                       //*************
+                                       //dateFormatString
+                                       Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value = dateFormatStringParameter.getCurrentConfiguration();
+                                       ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString])
+                                          .done(function() {
+
+                                             //*************
+                                             //basic authentication
+                                             var value = {};
+
+                                             value.active = basicAuthenticationSectionParameters.getCurrentConfiguration().checkbox;
+
+                                             //if we activate / deactivate the authentication we must reload the page
+                                             if (value.active !== basicAuth.active)
+                                                pageHasToBeReloaded = true;
+
+                                             if (value.active) {
+                                                //the authentication method is active
+                                                value.user = userAuthenticationParameter.getCurrentConfiguration();
+
+                                                if (value.user !== basicAuth.user)
+                                                   pageHasToBeReloaded = true;
+
+                                                //we check for password modification
+                                                var newPass = passwordAuthenticationParameter.getCurrentConfiguration();
+                                                if (newPass !== $.md5(fakePassword)) {
+                                                   //the password has been changed
+                                                   value.password = newPass;
+                                                   //we has to reload the page
+                                                   pageHasToBeReloaded = true;
+                                                } else {
+                                                   //we set the previous one
+                                                   value.password = basicAuth.password;
+                                                }
+                                             } else {
+                                                //the authentication method is inactive
+                                                value.user = userAuthenticationParameter.getCurrentConfiguration();
+                                                //we clear the password for the next re-activation
+                                                value.password = "";
+                                             }
+
+                                             Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value = value;
+
+                                             ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication])
+                                                .done(function() {
+                                                
+                                                   // TODO : Save the new location
+                                                
+                                                   d.resolve();
+                                                })
+                                                .fail(d.reject);
+                                          })
+                                          .fail(d.reject);
+                                    })
+                                    .fail(d.reject);
+                           })
+                           .fail(d.reject);
+
+                        d.promise()
+                           .done(function() {
+                              //we show that configuration has been successfully saved
+                              notifySuccess($.t("modals.dashboard.sub-windows.system-configuration.configurationSaved"));
+
+                              if (pageHasToBeReloaded) {
+                                 window.location.reload();
+                              }
+                           })
+                           .fail(function(error) {
+                              //an error has occurred during saving
+                              notifyError($.t("modals.dashboard.sub-windows.system-configuration.errorDuringSavingConfiguration"), error);
                            });
 
-
-                           //*************
-                           //advanced parameters
-                           Yadoms.systemConfiguration[ConfigurationManager.items.system.advancedParameters].value = advancedSectionParameters.getCurrentConfiguration().checkbox;
-
-                           ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.advancedParameters])
-                              .done(function() {
-                                    //*************
-                                    //dateFormatString
-                                    Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value = dateFormatStringParameter.getCurrentConfiguration();
-                                    ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString])
-                                       .done(function() {
-
-                                          //*************
-                                          //basic authentication
-                                          var value = {};
-
-                                          value.active = basicAuthenticationSectionParameters.getCurrentConfiguration().checkbox;
-
-                                          //if we activate / deactivate the authentication we must reload the page
-                                          if (value.active !== basicAuth.active)
-                                             pageHasToBeReloaded = true;
-
-                                          if (value.active) {
-                                             //the authentication method is active
-                                             value.user = userAuthenticationParameter.getCurrentConfiguration();
-
-                                             if (value.user !== basicAuth.user)
-                                                pageHasToBeReloaded = true;
-
-                                             //we check for password modification
-                                             var newPass = passwordAuthenticationParameter.getCurrentConfiguration();
-                                             if (newPass !== $.md5(fakePassword)) {
-                                                //the password has been changed
-                                                value.password = newPass;
-                                                //we has to reload the page
-                                                pageHasToBeReloaded = true;
-                                             } else {
-                                                //we set the previous one
-                                                value.password = basicAuth.password;
-                                             }
-                                          } else {
-                                             //the authentication method is inactive
-                                             value.user = userAuthenticationParameter.getCurrentConfiguration();
-                                             //we clear the password for the next re-activation
-                                             value.password = "";
-                                          }
-
-                                          Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value = value;
-
-                                          ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication])
-                                             .done(function() {
-                                                d.resolve();
-                                             })
-                                             .fail(d.reject);
-                                       })
-                                       .fail(d.reject);
-                                 })
-                                 .fail(d.reject);
-                        })
-                        .fail(d.reject);
-
-                     d.promise()
-                        .done(function() {
-                           //we show that configuration has been successfully saved
-                           notifySuccess($.t("modals.dashboard.sub-windows.system-configuration.configurationSaved"));
-
-                           if (pageHasToBeReloaded) {
-                              window.location.reload();
-                           }
-                        })
-                        .fail(function(error) {
-                           //an error has occurred during saving
-                           notifyError($.t("modals.dashboard.sub-windows.system-configuration.errorDuringSavingConfiguration"), error);
-                        });
-
-                  },
-                  filter: function() {
-                     //we check only control that have class enable-validation and are visible
-                     return $(this).is(".enable-validation") && $(this).is(":visible");
-                  }
+                     },
+                     filter: function() {
+                        //we check only control that have class enable-validation and are visible
+                        return $(this).is(".enable-validation") && $(this).is(":visible");
+                     }
+                  });
+               })
+               .fail(function(error) {
+                  notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
+                  promiseLocation.reject();
                });
-
+               
                $("button#resetSystemConfiguration").unbind('click').bind('click', function() {
                   //we ask for confirmation before resetting all system configuration
                   Yadoms.modals.confirmation.loadAsync()
@@ -332,65 +398,6 @@
             promise.reject();
          });
 
-      $.when(promise).done(function() {
-      
-         ConfigurationManager.getSection(ConfigurationManager.items.system.location)
-            .done(function(configuration) {
-               console.log ( configuration );
-               
-               // If no configuration returned
-               if (configuration.length == 0)
-               {}
-                  
-               //*************
-               //City section parameters
-
-               var citySectionParameters = new SectionParameterHandler(i18NContext,
-                  ConfigurationManager.items.system.city,
-                  {},
-                  cityName);            
-                  
-               //*************
-               //city name
-               
-               var cityName = "";
-               
-               try{
-                  var cityName = Yadoms.systemConfiguration[ConfigurationManager.items.system.city].value;            
-               }
-               catch (err) {
-                  console.warn("No city name configured !");
-               }            
-               
-               var cityNameParameter = new StringParameterHandler(i18NContext,
-                  ConfigurationManager.items.system.city,
-                  {
-                     "defaultValue": cityName,
-                     "required": "true"
-                  },
-                  cityName);
-                  
-               citySectionParameters.configurationHandlers.push(cityNameParameter);
-                  
-               //and add it to the gui
-               $modalBody.append(citySectionParameters.getDOMObject());
-
-               //we finish controls instantiation
-               if ($.isFunction(citySectionParameters.applyScript))
-                  citySectionParameters.applyScript();
-
-               //we i18n the form
-               $modalBody.i18n();
-               
-               promiseLocation.resolve();
-            })
-            .fail(function(error) {
-               notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
-               promiseLocation.reject();
-            }); 
-      });
-      
-      // TODO : voir pour le retour
       return promise.promise();
    };
 
