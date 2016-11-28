@@ -16,12 +16,12 @@ namespace shared
 
       void CBufferLogger::logReceived(const CByteBuffer& data)
       {
-         m_os << "Yadoms <<< " << msgToString(data);
+         m_os << "Yadoms <<< " << msgToString(data) << std::endl;
       }
 
       void CBufferLogger::logSent(const CByteBuffer& data)
       {
-         m_os << "Yadoms >>> " << msgToString(data);
+         m_os << "Yadoms >>> " << msgToString(data) << std::endl;
       }
 
       std::string CBufferLogger::msgToString(const CByteBuffer& data) const
