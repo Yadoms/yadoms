@@ -526,19 +526,19 @@ void CEnOcean::processResponse(boost::shared_ptr<const message::CEsp3ReceivedPac
 }
 
 void CEnOcean::processDongleVersionResponse(message::CResponseReceivedMessage::EReturnCode returnCode,
-                                            const message::CDongleVersionResponseReceivedMessage& dongleVersionResponse)
+                                            const message::CDongleVersionResponseReceivedMessage& dongleVersionResponse) const
 {
    if (returnCode == message::CResponseReceivedMessage::RET_NOT_SUPPORTED)
    {
-      std::cout << "CO_RD_VERSION request returned not supported" << std::endl;
-      return;
+      throw CProtocolException("CO_RD_VERSION request returned not supported");
    }
 
    if (returnCode != message::CResponseReceivedMessage::RET_OK)
    {
-      std::cerr << "Unexpected return code " << returnCode << ". Request was CO_RD_VERSION." << std::endl;
-      return;
+      throw CProtocolException((boost::format("Unexpected return code %1%. Request was CO_RD_VERSION.") % returnCode).str());
    }
+
+   m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 
    std::cout << dongleVersionResponse.fullVersion() << std::endl;
 }
@@ -695,6 +695,4 @@ void CEnOcean::requestDongleVersion() const
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
    processDongleVersionResponse(response->returnCode(),
                                 message::CDongleVersionResponseReceivedMessage(response));
-
-   m_api->setPluginState(yApi::historization::EPluginState::kRunning);
 }

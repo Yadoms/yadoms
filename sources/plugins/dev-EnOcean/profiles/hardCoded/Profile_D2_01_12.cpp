@@ -87,7 +87,34 @@ void CProfile_D2_01_12::sendCommand(const std::string& keyword,
                                     const std::string& commandBody,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   throw std::logic_error("device supports no command sending");
+   message::CRadioErp1SendMessage command(m_rorg,
+                                          "00000000",//TODO mettre constant
+                                          0);
+   boost::dynamic_bitset<> data(4 * 8);
+
+   //TOFIX : marche pô
+   bitset_insert(data, 4, 4, kActuatorSetOutput);
+   bitset_insert(data, 11, 5, (keyword == m_channel1->getKeyword()) ? 0 : 1);
+   bitset_insert(data, 17, 7, commandBody == "true" ? 1 : 0);
+
+   command.userData(bitset_to_bytes(data));
+
+   boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
+   if (!messageHandler->send(command,
+                             [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                             {
+                                return esp3Packet->header().packetType() == message::RESPONSE;
+                             },
+                             [&](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+                             {
+                                answer = esp3Packet;
+                             }))
+      std::cerr << "Fail to send state to " << m_deviceId << " : no answer to Actuator Set Output command" << std::endl;
+
+   auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
+
+   if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
+      std::cerr << "Fail to send state to " << m_deviceId << " : Actuator Set Output command returns " << response->returnCode() << std::endl;
 }
 
 void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
@@ -109,14 +136,14 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
                                              0);
       boost::dynamic_bitset<> data(4 * 8);
 
-      bitset_insert(data, 4, 4, 0x02); // CMD 0x2 - Actuator Set Local
+      bitset_insert(data, 4, 4, kActuatorSetLocal);
       bitset_insert(data, 0, !taughtInAllDevices);
       bitset_insert(data, 10, localControl);
       bitset_insert(data, 11, 5, 0x1E); // Use all output channels supported by the device
       bitset_insert(data, 24, !userInterfaceDayMode);
       bitset_insert(data, 26, 2, defaultState);
 
-      command.data(bitset_to_bytes(data));
+      command.userData(bitset_to_bytes(data));
 
       boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
       if (!messageHandler->send(command,
@@ -143,14 +170,14 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
                                              0);
       boost::dynamic_bitset<> data(7 * 8);
 
-      bitset_insert(data, 4, 4, 0x0B); // CMD 0xB - Actuator Set External Interface Settings
+      bitset_insert(data, 4, 4, kActuatorSetExternalInterfaceSettings);
       bitset_insert(data, 11, 5, 0x1E); // Use all output channels supported by the device
       bitset_insert(data, 16, 16, autoOffTimerSeconds);
       bitset_insert(data, 32, 16, delayRadioOffTimerSeconds);
       bitset_insert(data, 48, 2, connectedSwitchsType);
       bitset_insert(data, 50, !switchingStateToggle);
 
-      command.data(bitset_to_bytes(data));
+      command.userData(bitset_to_bytes(data));
 
       boost::shared_ptr<const message::CEsp3ReceivedPacket> answer;
       if (!messageHandler->send(command,

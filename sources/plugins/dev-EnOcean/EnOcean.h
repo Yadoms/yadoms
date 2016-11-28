@@ -81,8 +81,8 @@ protected:
    //--------------------------------------------------------------
    void processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
    static void processResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
-   static void processDongleVersionResponse(message::CResponseReceivedMessage::EReturnCode returnCode,
-                                            const message::CDongleVersionResponseReceivedMessage& dongleVersionResponse);
+   void processDongleVersionResponse(message::CResponseReceivedMessage::EReturnCode returnCode,
+                                     const message::CDongleVersionResponseReceivedMessage& dongleVersionResponse) const;
    static void processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
    void processUTE(const message::CUTE_ReceivedMessage& uteMessage);
 
@@ -180,4 +180,3 @@ private:
    //--------------------------------------------------------------
    std::map<std::string, boost::shared_ptr<IType>> m_devices;
 };
-
