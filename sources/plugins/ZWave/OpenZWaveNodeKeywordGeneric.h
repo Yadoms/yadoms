@@ -5,7 +5,7 @@
 #include "OpenZWaveHelpers.h"
 #include "OpenZWaveNodeKeywordGenericByType.h"
 #include "OpenZWaveSingleHistorizableData.h"
-
+#include "OpenZWaveNodeKeywordFactory.h"
 
 //--------------------------------------------------------------
 /// \brief	    ZWave keyword based on generic historizer
@@ -17,10 +17,8 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    //--------------------------------------------------------------
-   COpenZWaveNodeKeywordGeneric(boost::shared_ptr<COpenZWaveSingleHistorizableData<T>> keyword,
-                                OpenZWave::ValueID& valueId)
-      : COpenZWaveNodeKeywordBase(valueId),
-        m_keyword(keyword)
+   COpenZWaveNodeKeywordGeneric(boost::shared_ptr<COpenZWaveSingleHistorizableData<T>> keyword, OpenZWave::ValueID& valueId)
+      : COpenZWaveNodeKeywordBase(valueId), m_keyword(keyword)
    {
    }
 
@@ -43,7 +41,6 @@ public:
       m_keyword->setWithUnits(extractLastValue<T>(), getUnit());
       return m_keyword->getKeyword();
    }
-
    // [END] IOpenZWaveKeyword implementation
 
    //--------------------------------------------------------------
@@ -52,11 +49,9 @@ public:
    /// \param [in] vID        The keyword OpenZWave::ValueId source
    /// \return    A IOpenZWaveNodeKeyword shared pointer
    //--------------------------------------------------------------
-   static boost::shared_ptr<IOpenZWaveNodeKeyword> create(boost::shared_ptr<COpenZWaveSingleHistorizableData<T>> historizer,
-                                                          OpenZWave::ValueID& vID)
+   static boost::shared_ptr<IOpenZWaveNodeKeyword> create(boost::shared_ptr<COpenZWaveSingleHistorizableData<T>> historizer, OpenZWave::ValueID& vID)
    {
-      return boost::make_shared<COpenZWaveNodeKeywordGeneric<T>>(historizer,
-                                                                 vID);
+      return boost::make_shared<COpenZWaveNodeKeywordGeneric<T>>(historizer, vID);
    }
 
    //--------------------------------------------------------------
@@ -77,17 +72,10 @@ public:
                                                                       shared::plugin::yPluginApi::historization::EMeasureType measureType = shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute,
                                                                       shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo& ti = shared::plugin::yPluginApi::historization::typeInfo::CEmptyTypeInfo::Empty)
    {
-      auto keyword(boost::make_shared<COpenZWaveNodeKeywordGenericByType<T> >(COpenZWaveHelpers::GenerateKeywordName(vID),
-                                                                              COpenZWaveNodeKeywordFactory::getCapacity(vLabel, units, dataType),
-                                                                              accessMode,
-                                                                              measureType,
-                                                                              ti));
+      auto keyword(boost::make_shared<COpenZWaveNodeKeywordGenericByType<T> >(COpenZWaveHelpers::GenerateKeywordName(vID), COpenZWaveNodeKeywordFactory::getCapacity(vLabel, units, dataType), accessMode, measureType, ti));
       auto historizer(boost::make_shared<COpenZWaveSingleHistorizableData<T> >(keyword));
-
-      return boost::make_shared<COpenZWaveNodeKeywordGeneric<T> >(historizer,
-                                                                  vID);
+      return boost::make_shared<COpenZWaveNodeKeywordGeneric<T> >(historizer, vID);
    }
-
 
 private:
    //--------------------------------------------------------------

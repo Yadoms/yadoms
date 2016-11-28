@@ -4,15 +4,13 @@
 
 namespace historizers
 {
-   CRainRate::CRainRate(const std::string& name)
-      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CRainRate>(name))
+   CRainRate::CRainRate(const std::string& name, CDecimalTypeInfo &ti)
+      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CRainRate>(name, shared::plugin::yPluginApi::historization::EMeasureType::kCumulative, ti))
    {
    }
 
-   CRainRate::CRainRate(const std::string& name,
-                        shared::plugin::yPluginApi::historization::EMeasureType measureType)
-      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CRainRate>(name,
-                                                                                                                          measureType))
+   CRainRate::CRainRate(const std::string& name, shared::plugin::yPluginApi::historization::EMeasureType measureType, CDecimalTypeInfo &ti)
+      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CRainRate>(name, measureType, ti))
    {
    }
 
@@ -21,8 +19,7 @@ namespace historizers
    }
 
    // COpenZWaveSingleHistorizableData<Poco::Int64> override ------------------------
-   void CRainRate::setWithUnits(double value,
-                                const std::string& unit)
+   void CRainRate::setWithUnits(double value, const std::string& unit)
    {
       if (unit == "in/h")
          set(value / 0.03937008);

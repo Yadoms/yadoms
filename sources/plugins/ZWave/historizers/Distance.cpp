@@ -4,10 +4,8 @@
 
 namespace historizers
 {
-   CDistance::CDistance(const std::string& name,
-                        shared::plugin::yPluginApi::EKeywordAccessMode accessMode)
-      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CDistance>(name,
-                                                                                                                          accessMode))
+   CDistance::CDistance(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CDecimalTypeInfo &ti)
+      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CDistance>(name, accessMode, ti))
    {
    }
 
@@ -16,8 +14,7 @@ namespace historizers
    }
 
    // COpenZWaveSingleHistorizableData<Poco::Int64> override ------------------------
-   void CDistance::setWithUnits(double value,
-                                const std::string& unit)
+   void CDistance::setWithUnits(double value, const std::string& unit)
    {
       if (unit == "cm")
          set(value / 100.0);

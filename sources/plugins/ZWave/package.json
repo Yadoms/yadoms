@@ -50,5 +50,8 @@
 		"hardReset" : {
 			"iconClass" : "fa fa-fire"
 		}
-	}
+	},
+   "deviceConfiguration" : {
+      "dynamicConfigurationSchema" : "true"
+   }
 }

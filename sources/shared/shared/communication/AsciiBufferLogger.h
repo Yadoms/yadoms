@@ -2,29 +2,37 @@
 #include <shared/Export.h>
 #include "IBufferLogger.h"
 
-namespace shared { namespace communication {
-
-   //--------------------------------------------------------------
-   /// \brief	This class manage an ASCII buffer logger
-   //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CAsciiBufferLogger : public IBufferLogger
-   {  
-   public:
+namespace shared
+{
+   namespace communication
+   {
       //--------------------------------------------------------------
-      /// \brief	            Constructor
+      /// \brief	This class manage an ASCII buffer logger
       //--------------------------------------------------------------
-      CAsciiBufferLogger();
+      class YADOMS_SHARED_EXPORT CAsciiBufferLogger : public IBufferLogger
+      {
+      public:
+         //--------------------------------------------------------------
+         /// \brief	            Constructor
+         /// \param[in] os       Log target
+         //--------------------------------------------------------------
+         explicit CAsciiBufferLogger(std::ostream& os);
 
-      //--------------------------------------------------------------
-      /// \brief	            Destructor
-      //--------------------------------------------------------------
-      virtual ~CAsciiBufferLogger();
+         //--------------------------------------------------------------
+         /// \brief	            Destructor
+         //--------------------------------------------------------------
+         virtual ~CAsciiBufferLogger();
 
-      // IBufferLogger implementation
-      virtual void logReceived(const CByteBuffer& data);
-      virtual void logSent(const CByteBuffer& data);
-      virtual std::string msgToString(const CByteBuffer& data) const;
-      // [END] IBufferLogger implementation
-   };
+         // IBufferLogger implementation
+         void logReceived(const CByteBuffer& data) override;
+         void logSent(const CByteBuffer& data) override;
+         std::string msgToString(const CByteBuffer& data) const override;
+         // [END] IBufferLogger implementation
 
-} } // namespace shared::communication
+      private:
+         std::ostream& m_os;
+      };
+   }
+} // namespace shared::communication
+
+
