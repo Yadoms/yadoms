@@ -40,6 +40,12 @@ namespace equipments
       virtual void historizePendingCommand(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command) = 0;
 
       //--------------------------------------------------------------
+      /// \brief      historizePendingCommand
+      /// \return  the device type
+      //--------------------------------------------------------------
+      virtual void resetPendingCommand() = 0;
+
+      //--------------------------------------------------------------
       /// \brief      updateFromDevice
       ///\param[in] values     New Values to enter
       //--------------------------------------------------------------

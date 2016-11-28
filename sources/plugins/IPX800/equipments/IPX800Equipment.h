@@ -38,6 +38,7 @@ namespace equipments
                             shared::CDataContainer& values,
                             bool forceHistorization = false) override;
       void historizePendingCommand(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command) override;
+      void resetPendingCommand() override;
       shared::CDataContainer buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& parameters, boost::shared_ptr<const yApi::IDeviceCommand> command) override;
       // [END] IExtension implementation
 

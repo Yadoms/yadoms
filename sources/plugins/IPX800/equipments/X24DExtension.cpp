@@ -17,7 +17,7 @@ namespace equipments
       shared::CDataContainer details;
       details.set("provider", "IPX800");
       details.set("shortProvider", "ipx");
-      //details.set("type", m_deviceType);
+      details.set("type", m_deviceType);
       details.set("position", boost::lexical_cast<std::string>(position));
 
       // Relay Configuration
@@ -101,6 +101,11 @@ namespace equipments
                                                 boost::shared_ptr<const yApi::IDeviceCommand> command)
    {
       throw shared::exception::CException("Extension module X-24D have no keyword to set");
+   }
+
+   void CX24DExtension::resetPendingCommand()
+   {
+      throw shared::exception::CException("Extension module X-24D have no pending operation");
    }
 
    CX24DExtension::~CX24DExtension()

@@ -76,7 +76,12 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
          if (results.containsValue("Success"))
             (*iteratorExtension)->historizePendingCommand(api, command);
          else
-            std::cerr << "Error return by the IPX800" << std::endl;
+         {
+            std::cerr << "Command is not executed by the IPX800" << std::endl;
+            
+            // if an error is return, we reset the pending operation
+            (*iteratorExtension)->resetPendingCommand();
+         }
       }
    }
 }

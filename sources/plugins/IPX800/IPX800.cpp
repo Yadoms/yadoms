@@ -50,7 +50,6 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       api->getEventHandler().postEvent<bool>(kRefreshStatesReceived, true);
       
       // Timer used to read periodically IOs from the IPX800
-      //api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
       api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
 
       api->setPluginState(yApi::historization::EPluginState::kRunning);
@@ -93,7 +92,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
                // Retrieve event information, if any !
                try { forceRefresh = api->getEventHandler().getEventData<bool>(); }
-               catch (shared::exception::CBadConversion&) { std::cout << "Bad dynamic cast" << std::endl; } // TODO : Question pour Jean-Mi !
+               catch (shared::exception::CBadConversion&) { std::cout << "Bad dynamic cast" << std::endl; } // TODO : Voir tests CDataContainer
                catch (shared::exception::CNullReference&) { std::cout << "Null reference" << std::endl; }
 
                m_ioManager->readAllIOFromDevice(api, forceRefresh);

@@ -14,7 +14,7 @@ namespace equipments
       shared::CDataContainer details;
       details.set("provider", "IPX800");
       details.set("shortProvider", "ipx");
-      //details.set("type", m_deviceType);
+      details.set("type", m_deviceType);
 
       // Relay Configuration
       for (int counter = 0; counter<IPX800_RELAY_QTY; ++counter)
@@ -122,7 +122,7 @@ namespace equipments
             //historize only for new value
             if ((*diIterator)->get() != newValue || forceHistorization)
             {
-               std::cout << "Set IO : " << (*diIterator)->getHardwareName() << std::endl;
+               std::cout << "read IO : " << (*diIterator)->getHardwareName() << " : " << boost::lexical_cast<std::string>(newValue) << std::endl;
                (*diIterator)->set(newValue);
                ToHistorize.push_back((*diIterator));
             }
@@ -169,6 +169,12 @@ namespace equipments
       }
    }
 
+   void CIPX800Equipment::resetPendingCommand()
+   {
+      m_pendingIOHistorizer.reset();
+      m_pendingCounterHistorizer.reset();
+   }
+
    shared::CDataContainer CIPX800Equipment::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
                                                                  shared::CDataContainer& parameters, 
                                                                  boost::shared_ptr<const yApi::IDeviceCommand> command)
@@ -201,6 +207,8 @@ namespace equipments
                                        shared::CDataContainer& parameters)
    {
       std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >::const_iterator diIterator;
+
+      std::cout << "keywordName" << keywordName <<std::endl;
 
       for (diIterator = keywordsList.begin(); diIterator != keywordsList.end(); ++diIterator)
       {
@@ -243,14 +251,20 @@ namespace equipments
          // Keyword found
          if ((*diIterator)->getKeyword() == keywordName)
          {
-            parameters.set("Set" + (*diIterator)->getHardwareName(), value);
-            m_pendingCounterHistorizer = (*diIterator);
-         }
-         //0   : counter is cleared
-         //!=0 : the value is added of sub from the counter
-      }
+            if (boost::lexical_cast<int>(value) == 0)
+            {
+               // Not HardwareName ! 
+               // It's an exception for the IPX800, to set to 0, we have to enter SetC02=0 (for example !), the format is different from the json reading "C2=0"
 
-      //return parameters;
+               parameters.set("Set" + (*diIterator)->getKeyword(), value);
+               m_pendingCounterHistorizer = (*diIterator);
+            }
+            else
+               std::cerr << (*diIterator)->getKeyword() << " could not be set to a value. Only reset is possible." << std::endl;
+         }
+         //0   : counter is cleared -> Only this one is implemented
+         //!=0 : the value is added or sub from the counter
+      }
    }
 
    CIPX800Equipment::~CIPX800Equipment()

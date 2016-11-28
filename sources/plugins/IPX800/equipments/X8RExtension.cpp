@@ -17,7 +17,7 @@ namespace equipments
       shared::CDataContainer details;
       details.set("provider", "IPX800");
       details.set("shortProvider", "ipx");
-      //details.set("type", m_deviceType);
+      details.set("type", m_deviceType);
       details.set("position", boost::lexical_cast<std::string>(position));
 
       // Relay Configuration
@@ -142,6 +142,11 @@ namespace equipments
 
          m_pendingHistorizer.reset();
       }
+   }
+
+   void CX8RExtension::resetPendingCommand()
+   {
+      m_pendingHistorizer.reset();
    }
 
    CX8RExtension::~CX8RExtension()
