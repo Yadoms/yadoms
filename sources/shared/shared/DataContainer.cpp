@@ -212,25 +212,24 @@ namespace shared
       return m_tree.empty();
    }
 
-   void CDataContainer::printToLog() const
+   void CDataContainer::printToLog(std::ostream& os) const
    {
-      YADOMS_LOG(information) << "| TREE START";
-      printToLog(m_tree, 0);
-      YADOMS_LOG(information) << "| TREE END";
+      os << std::endl;
+      os << "| TREE START" << std::endl;
+      printToLog(m_tree, 0, os);
+      os << "| TREE END" << std::endl;
    }
 
-   void CDataContainer::printToLog(const boost::property_tree::ptree & pt, const int deep) const
+   void CDataContainer::printToLog(const boost::property_tree::ptree & pt, const int deep, std::ostream& os) const
    {
-      boost::property_tree::ptree::const_iterator end = pt.end();
-
       std::string prefix;
-      for (int i = 0; i < deep; ++i)
+      for (auto i = 0; i < deep; ++i)
          prefix += "   ";
 		prefix += "|-";
-      for (boost::property_tree::ptree::const_iterator it = pt.begin(); it != end; ++it) 
+      for (const auto it : pt)
       {
-         YADOMS_LOG(information) << prefix << it->first << " : " << it->second.get_value<std::string>();
-         printToLog(it->second, deep+1);
+         os << prefix << it.first << " : " << it.second.get_value<std::string>() << std::endl;
+         printToLog(it.second, deep+1, os);
       }
    }
 
@@ -266,12 +265,8 @@ namespace shared
    std::map<std::string, std::string> CDataContainer::getAsMap(const std::string& parameterName, const char pathChar) const
    {
       std::map<std::string, std::string> result;
-      boost::property_tree::ptree::const_iterator i;
-      const boost::property_tree::ptree & subtree = m_tree.get_child(generatePath(parameterName, pathChar));
-      for (i = subtree.begin(); i != subtree.end(); ++i)
-      {
-         result[i->first] = i->second.data();
-      }
+      for (const auto i : m_tree.get_child(generatePath(parameterName, pathChar)))
+         result[i.first] = i.second.data();
       return result;
    }
 

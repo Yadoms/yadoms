@@ -3,6 +3,7 @@
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/Result.h"
 #include "update/info/UpdateSite.h"
+#include <shared/Log.h>
 
 
 namespace web
@@ -72,7 +73,7 @@ namespace web
             shared::CDataContainer content(requestContent);
             if (!content.containsChild("versionData"))
             {
-               content.printToLog();
+               content.printToLog(YADOMS_LOG(information));
                return CResult::GenerateError("The request should contains the versionData.");
             }
 
