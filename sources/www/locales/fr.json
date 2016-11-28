@@ -357,10 +357,18 @@
               "name": "Format de la date",
               "description": "Vous pouvez changer le format de la date en utilisant la syntaxe mount.js (ex \"LLL\" ou \"'MMMM Do YYYY, h:mm:ss a\")"
             },
-            "city": {
-              "name": "Ville",
-              "description": "Ville utilisée pour la localisation pour les prévisions météorologiques, ..."
-            }            
+            "location": {
+              "name": "Localisation",
+              "description": "Enter below the coordonate of your city (<a href=\"http://www.latlong.net/\" target=\"_blank\">site web latlong</a>)"           
+            },
+            "latitude": {
+               "name": "Latitude",
+               "description": ""
+            },
+            "longitude": {
+               "name": "Longitude",
+               "description": ""
+            }               
           },
           "confirmResetToDefault": "Cette opération va restaurer la configuration par défaut. Continuer ?",
           "configurationSaved": "Configuration système sauvegardée",

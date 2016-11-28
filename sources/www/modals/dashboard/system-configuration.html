@@ -22,16 +22,53 @@
 
       var promise = new $.Deferred();
       var promiseLocation = new $.Deferred();
+      var locationFirstConfiguration = false;      
+      
+      Yadoms.systemConfiguration = null;
+      Yadoms.locationConfiguration = null;
+      
       var i18NContext = "modals.dashboard.sub-windows.system-configuration.configuration-items.";
       
-      //get current system configuration
+
+      // get current location information
+      ConfigurationManager.getSection(ConfigurationManager.items.locationSection)
+         .done(function(locationConfiguration) {
+         
+            Yadoms.locationConfiguration = locationConfiguration;
+            console.log ( locationConfiguration );
+            
+            // If no configuration returned
+            if (Yadoms.locationConfiguration.length == 0)
+               locationFirstConfiguration = true;
+            
+            promiseLocation.resolve();
+            })
+            .fail(function(error) {
+               notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
+               promiseLocation.reject();
+            });
+
+      //get current system configuration            
       ConfigurationManager.getSection(ConfigurationManager.items.systemSection)
          .done(function(configuration) {
             if (!isNullOrUndefined(configuration)) {
 
                //we update system configuration to be sure to modify the latest version of the configuration
                Yadoms.systemConfiguration = configuration;
+            }
+            
+            promise.resolve();
+         })
+         .fail(function(error) {
+            //an error has occurred during saving
+            notifyError($.t("modals.dashboard.sub-windows.system-configuration.errorDuringSavingConfiguration"), error);
+         });
 
+      // When systemSection and locationSection are done
+      $.when(promise, promiseLocation).done(function() {
+               
+               // TODO : tester Yadoms.systemConfiguration et Yadoms.locationConfiguration
+               
                //*************
                //language
                var languageParameter = new EnumParameterHandler(i18NContext, ConfigurationManager.items.system.language,
@@ -41,6 +78,46 @@
                   "sort": true
                }, Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value);
 
+               //*************
+               //City section parameters
+               
+               var citySectionParameters = new SectionParameterHandler(i18NContext,
+                  ConfigurationManager.items.system.locationSection,
+                  {},
+                  ConfigurationManager.items.system.locationSection);            
+                  
+               //*************
+               //city name
+               
+               var longitude = "0.0";
+               var latitude  = "0.0";
+               
+               try{
+                  latitude  = Yadoms.locationConfiguration[ConfigurationManager.items.system.location.latitude].value;
+                  longitude = Yadoms.locationConfiguration[ConfigurationManager.items.system.location.longitude].value;
+               }
+               catch (err) {
+                  console.warn("No city coordonates configured !");
+               }            
+               
+               var latitudeParameter = new StringParameterHandler(i18NContext,
+                  ConfigurationManager.items.system.location.latitude,
+                  {
+                     "required": "true"
+                  },
+                  latitude);
+                  
+               var longitudeParameter = new StringParameterHandler(i18NContext,
+                  ConfigurationManager.items.system.location.longitude,
+                  {
+                     "required": "true"
+                  },
+                  longitude);                        
+               
+               // Add sub elements to the city section
+               citySectionParameters.configurationHandlers.push(latitudeParameter);
+               citySectionParameters.configurationHandlers.push(longitudeParameter);                     
+               
                //*************
                //Basic Authentication parameters
                var basicAuth = Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value;
@@ -121,10 +198,13 @@
                
                //and add it to the gui
                $modalBody.append(languageParameter.getDOMObject());
+               $modalBody.append(citySectionParameters.getDOMObject());                                          
                $modalBody.append(basicAuthenticationSectionParameters.getDOMObject());
                $modalBody.append(advancedSectionParameters.getDOMObject());
 
                //we finish controls instantiation
+               if ($.isFunction(citySectionParameters.applyScript))
+                  citySectionParameters.applyScript();
                if ($.isFunction(languageParameter.applyScript))
                   languageParameter.applyScript();
                if ($.isFunction(basicAuthenticationSectionParameters.applyScript))
@@ -133,68 +213,10 @@
                   advancedSectionParameters.applyScript();
 
                //we i18n the form
-               $modalBody.i18n();
-
-               ConfigurationManager.getSection(ConfigurationManager.items.system.location)
-                  .done(function(configuration) {
-                     console.log ( configuration );
-                     
-                     // If no configuration returned
-                     if (configuration.length == 0)
-                     {}
-                        
-                     //*************
-                     //City section parameters
-
-                     // TODO : Modifier City -> Location
-                     
-                     var citySectionParameters = new SectionParameterHandler(i18NContext,
-                        ConfigurationManager.items.system.city,
-                        {},
-                        cityName);            
-                        
-                     //*************
-                     //city name
-                     
-                     var cityName = "";
-                     
-                     try{
-                        var cityName = Yadoms.systemConfiguration[ConfigurationManager.items.system.city].value;            
-                     }
-                     catch (err) {
-                        console.warn("No city name configured !");
-                     }            
-                     
-                     var cityNameParameter = new StringParameterHandler(i18NContext,
-                        ConfigurationManager.items.system.city,
-                        {
-                           "defaultValue": cityName,
-                           "required": "true"
-                        },
-                        cityName);
-                        
-                     citySectionParameters.configurationHandlers.push(cityNameParameter);
-                        
-                     //and add it to the gui
-                     $modalBody.append(citySectionParameters.getDOMObject());
-
-                     //we finish controls instantiation
-                     if ($.isFunction(citySectionParameters.applyScript))
-                        citySectionParameters.applyScript();
-
-                     //we i18n the form
-                     $modalBody.i18n();
-                     
-                     promiseLocation.resolve();
-                  })
-                  .fail(function(error) {
-                     notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
-                     promiseLocation.reject();
-                  });               
+               $modalBody.i18n();           
                
                //validation form
                //erase previous jqBootstrapValidation
-               $.when(promiseLocation).done(function() {
                   $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
                      preventSubmit: true,
                      submitError: function($form, event, errors) {
@@ -309,8 +331,8 @@
                   });
                })
                .fail(function(error) {
-                  notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
-                  promiseLocation.reject();
+                  //an error has occurred during saving
+                  notifyError($.t("modals.dashboard.sub-windows.system-configuration.errorDuringSavingConfiguration"), error);
                });
                
                $("button#resetSystemConfiguration").unbind('click').bind('click', function() {
@@ -389,14 +411,18 @@
                                  });
                            });
                      });
+                  promise.resolve();
                });
-            }
-            promise.resolve();
-         })
+/*         })
          .fail(function(error) {
             notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
             promise.reject();
          });
+      })
+      .fail(function(error) {
+         notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
+         promiseLocation.reject();
+      });*/
 
       return promise.promise();
    };
