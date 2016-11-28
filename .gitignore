@@ -16,3 +16,5 @@ tests/user/user.sln
 sources/plugins/dev-EnOcean/enOceanDescriptors/generated-*
 sources/plugins/dev-EnOcean/package.json
 sources/plugins/dev-EnOcean/locales
+sources/plugins/dev-EnOcean/profiles/generated*.cpp
+sources/plugins/dev-EnOcean/profiles/generated*.h

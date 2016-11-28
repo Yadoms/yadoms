@@ -188,6 +188,10 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                      if not supportedUnit(xmlDataFieldNode, u"lx"):
                         continue
                      cppHistorizerClassName = "yApi::historization::CIllumination"
+                  elif dataText == "Illuminance":
+                     if not supportedUnit(xmlDataFieldNode, u"lx"):
+                        continue
+                     cppHistorizerClassName = "yApi::historization::CIllumination"
                   elif dataText.encode("utf-8") == "Sun – West" \
                      or dataText.encode("utf-8") == "Sun – South" \
                      or dataText.encode("utf-8") == "Sun – East":            
@@ -264,7 +268,8 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                      dataText == "Humidity" or \
                      dataText == "Barometer" or \
                      dataText == "Supply voltage" or \
-                     dataText == "Illumination":
+                     dataText == "Illumination" or \
+                     dataText == "Illuminance":
                      code += statesCodeForLinearValue(xmlDataFieldNode)
                   elif dataText.encode("utf-8") == "Sun – West" \
                      or dataText.encode("utf-8") == "Sun – South" \
