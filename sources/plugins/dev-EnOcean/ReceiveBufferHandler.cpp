@@ -30,10 +30,14 @@ void CReceiveBufferHandler::push(const shared::communication::CByteBuffer& buffe
    for (size_t idx = 0; idx < buffer.size(); ++ idx)
       m_content.push_back(buffer[idx]);
 
-   // Send message if complete
-   auto completeMessage = getCompleteMessage();
-   if (!!completeMessage)
+   // Send message if complete (separate aggregated messages)
+   while(true)
+   {
+      auto completeMessage = getCompleteMessage();
+      if (!completeMessage)
+         break;
       m_messageHandler->onReceived(completeMessage);
+   }
 }
 
 void CReceiveBufferHandler::flush()

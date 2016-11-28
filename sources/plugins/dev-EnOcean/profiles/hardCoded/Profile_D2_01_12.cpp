@@ -22,8 +22,8 @@ const CRorgs::ERorgIds CProfile_D2_01_12::m_rorg(CRorgs::kVLD_Telegram);
 CProfile_D2_01_12::CProfile_D2_01_12(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_deviceId(deviceId),
-     m_channel1(boost::make_shared<yApi::historization::CSwitch>("Channel 1", yApi::EKeywordAccessMode::kGet)),
-     m_channel2(boost::make_shared<yApi::historization::CSwitch>("Channel 2", yApi::EKeywordAccessMode::kGet)),
+     m_channel1(boost::make_shared<yApi::historization::CSwitch>("Channel 1", yApi::EKeywordAccessMode::kGetSet)),
+     m_channel2(boost::make_shared<yApi::historization::CSwitch>("Channel 2", yApi::EKeywordAccessMode::kGetSet)),
      m_historizers({m_channel1 , m_channel2})
 {
 }
@@ -53,6 +53,14 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                                                                                                    const boost::dynamic_bitset<>& data,
                                                                                                    const boost::dynamic_bitset<>& status) const
 {
+   // This device supports several RORG messages
+   // We just use the VLD telegram
+   if (rorg != CRorgs::ERorgIds::kVLD_Telegram)
+      return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
+
+   if (bitset_extract(data, 4, 4) != kActuatorStatusResponse)
+      return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
+
    // Return only the concerned historizer
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> historizers;
 
@@ -162,4 +170,3 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
          std::cerr << "Fail to send configuration to " << m_deviceId << " : Actuator Set External Interface Settings command returns " << response->returnCode() << std::endl;
    }
 }
-

@@ -40,7 +40,7 @@ bool CMessageHandler::send(message::CEsp3SendPacket& sendMessage,
    setHook(isExpectedMessageFct,
            onReceiveFct);
 
-   m_port->send(shared::communication::CByteBuffer(*sendMessage.buffer()));
+   send(sendMessage);
 
    return waitAnswer(message::EnOceanAnswerTimeout);
 }
