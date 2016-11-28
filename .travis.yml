@@ -18,7 +18,7 @@ before_install:
 - echo 'Installing CMake 3.4.3'
 - sudo apt-get remove cmake
 
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && wget http://yadoms.com/travis_build/cmake-3.4.3-build.tar.bz2 && wget --no-check-certificate https://cmake.org/files/v3.4/cmake-3.4.3.tar.gz
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && wget  -U 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4' http://yadoms.com/travis_build/cmake-3.4.3-build.tar.bz2 && wget --no-check-certificate https://cmake.org/files/v3.4/cmake-3.4.3.tar.gz
 - $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && tar jxf cmake-3.4.3-build.tar.bz2 && tar zxf cmake-3.4.3.tar.gz
 - cd cmake-3.4.3 
 - $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass bootstrap" && ./bootstrap  > yadoms_cmake.log
@@ -31,7 +31,7 @@ before_install:
 
 # boost
 - echo 'Building Boost 1.62.0'
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && wget http://yadoms.com/travis_build/boost_1_62_0-build.tar.bz2 && wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.62.0/boost_1_62_0.tar.bz2
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && wget -U 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4' http://yadoms.com/travis_build/boost_1_62_0-build.tar.bz2 && wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.62.0/boost_1_62_0.tar.bz2
 - $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && tar xjf boost_1_62_0-build.tar.bz2 && tar xjf boost_1_62_0.tar.bz2
 - cd boost_1_62_0
 - $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass boost/bootstrap" && ./bootstrap.sh > yadoms_boost.log
@@ -43,7 +43,7 @@ before_install:
   
  # poco
 - echo 'Building Poco 1.7.6-all'
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && wget http://yadoms.com/travis_build/poco-1.7.6-all-build.tar.bz2 && wget http://pocoproject.org/releases/poco-1.7.6/poco-1.7.6-all.tar.gz
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && wget -U 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4' http://yadoms.com/travis_build/poco-1.7.6-all-build.tar.bz2 && wget http://pocoproject.org/releases/poco-1.7.6/poco-1.7.6-all.tar.gz
 - $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && tar xjf poco-1.7.6-all-build.tar.bz2 && tar xzf poco-1.7.6-all.tar.gz
 - sudo apt-get install libssl-dev
 - cd poco-1.7.6-all/
@@ -57,7 +57,7 @@ before_install:
 # protobuf
 - echo 'Building Protobuf 2.6.1'
 - sudo apt-get install autoconf libtool
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && wget http://yadoms.com/travis_build/protobuf-2.6.1-build.tar.bz2 && wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && wget -U 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4' http://yadoms.com/travis_build/protobuf-2.6.1-build.tar.bz2 && wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz
 - $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && tar xjf protobuf-2.6.1-build.tar.bz2 && tar xzf protobuf-2.6.1.tar.gz
 - cd protobuf-2.6.1
 - $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass protobuf/autogen" && ./autogen.sh > yadoms_protobuf.log
