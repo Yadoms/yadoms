@@ -13,6 +13,7 @@
 #include "message/UTE_AnswerSendMessage.h"
 #include "message/ResponseReceivedMessage.h"
 #include "DeviceConfigurationHelper.h"
+#include "profiles/generated-eep.h"
 
 
 IMPLEMENT_PLUGIN(CEnOcean)
@@ -522,16 +523,16 @@ void CEnOcean::processResponse(boost::shared_ptr<const message::CEsp3ReceivedPac
    std::cerr << "Unexpected response received" << std::endl;
 }
 
-void CEnOcean::processDongleVersionResponse(unsigned char returnCode,
+void CEnOcean::processDongleVersionResponse(message::CResponseReceivedMessage::EReturnCode returnCode,
                                             const message::CDongleVersionResponseReceivedMessage& dongleVersionResponse)
 {
-   if (returnCode == message::RET_NOT_SUPPORTED)
+   if (returnCode == message::CResponseReceivedMessage::RET_NOT_SUPPORTED)
    {
       std::cout << "CO_RD_VERSION request returned not supported" << std::endl;
       return;
    }
 
-   if (returnCode != message::RET_OK)
+   if (returnCode != message::CResponseReceivedMessage::RET_OK)
    {
       std::cerr << "Unexpected return code " << returnCode << ". Request was CO_RD_VERSION." << std::endl;
       return;
@@ -611,7 +612,7 @@ void CEnOcean::processUTE(const message::CUTE_ReceivedMessage& uteMessage)
                                                   uteMessage.func(),
                                                   uteMessage.rorg());
 
-      unsigned char returnCode;
+      message::CResponseReceivedMessage::EReturnCode returnCode;
       if (!m_messageHandler->send(sendMessage,
                                   [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
                                   {
@@ -623,7 +624,7 @@ void CEnOcean::processUTE(const message::CUTE_ReceivedMessage& uteMessage)
                                   }))
          throw CProtocolException("Unable to send UTE response, timeout waiting acknowledge");
 
-      if (returnCode != message::RET_OK)
+      if (returnCode != message::CResponseReceivedMessage::RET_OK)
          std::cerr << "TeachIn response not successfully acknowledged : " << returnCode << std::endl;
    }
 }

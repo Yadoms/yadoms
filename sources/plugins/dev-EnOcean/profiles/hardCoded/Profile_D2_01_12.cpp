@@ -2,6 +2,7 @@
 #include "Profile_D2_01_12.h"
 #include "../bitsetHelpers.hpp"
 #include "../../message/RadioErp1SendMessage.h"
+#include "../../message/ResponseReceivedMessage.h"
 
 DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_01_12::EDefaultState, EDefaultState,
    ((off))
@@ -121,8 +122,10 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
                                 }))
          std::cerr << "Fail to send configuration to " << m_deviceId << " : no answer to Actuator Set Local command" << std::endl;
 
-      if (answer->data()[0] != message::RET_OK)//TODO utiliser CResponseReceivedMessage (voir EnOcean.cpp(669))
-         std::cerr << "Fail to send configuration to " << m_deviceId << " : Actuator Set Local command returns " << answer->data()[0] << std::endl;
+      auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
+
+      if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
+         std::cerr << "Fail to send configuration to " << m_deviceId << " : Actuator Set Local command returns " << response->returnCode() << std::endl;
    }
 
    // CMD 0xB - Actuator Set External Interface Settings
@@ -153,7 +156,10 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
                                 }))
          std::cerr << "Fail to send configuration to " << m_deviceId << " : no answer to Actuator Set External Interface Settings command" << std::endl;
 
-      if (answer->data()[0] != message::RET_OK)//TODO utiliser CResponseReceivedMessage (voir EnOcean.cpp(669))
-         std::cerr << "Fail to send configuration to " << m_deviceId << " : Actuator Set External Interface Settings command returns " << answer->data()[0] << std::endl;
+      auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
+
+      if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
+         std::cerr << "Fail to send configuration to " << m_deviceId << " : Actuator Set External Interface Settings command returns " << response->returnCode() << std::endl;
    }
 }
+

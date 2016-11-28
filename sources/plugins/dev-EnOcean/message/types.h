@@ -37,20 +37,6 @@ namespace message
       MESSAGES_OFFSET = 0x80
    };
 
-   enum EReturnCode
-   {
-      RET_OK = 0x00,
-      RET_ERROR = 0x01,
-      RET_NOT_SUPPORTED = 0x02,
-      RET_WRONG_PARAM = 0x03,
-      RET_OPERATION_DENIED = 0x04,
-      RET_LOCK_SET = 0x05,
-      RET_BUFFER_TO_SMALL = 0x06,
-      RET_NO_FREE_BUFFER = 0x07,
-
-      RET_SEPCIAL_RC_OFFSET = 0x80,
-   };
-
 
    // Sizef of messages
    enum { RESPONSE_DONGLE_VERSION_SIZE = 33 };

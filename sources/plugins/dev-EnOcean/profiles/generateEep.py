@@ -136,7 +136,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
 
          def supportedUnit(xmlDataFieldNode, expectedUnit):
-            if expectedUnit is not None and xmlDataFieldNode.find("unit").text == expectedUnit:
+            if expectedUnit is not None and xmlDataFieldNode.find("unit") is not None and xmlDataFieldNode.find("unit").text == expectedUnit:
                return True
             util.warning("Unsupported unit \"" + xmlDataFieldNode.find("unit").text.encode("utf-8") + \
                "\" for \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" (expected \"" + expectedUnit.encode("utf-8") + "\"), corresponding data will be ignored")
@@ -198,6 +198,10 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                      if not supportedUnit(xmlDataFieldNode, u"klx"):
                         continue
                      cppHistorizerClassName = "yApi::historization::CIllumination"
+                  elif dataText == "Energy Storage":
+                     if not supportedUnit(xmlDataFieldNode, u"%"):
+                        continue
+                     cppHistorizerClassName = "yApi::historization::CBatteryLevel"
                   else:
                      util.warning("func/type : Unsupported linear data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
                      continue
@@ -230,7 +234,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             continue
 
 
-         def statesCodeForLinearValue(xmlDataFieldNode, applyCoef = None):
+         def statesCodeForLinearValue(xmlDataFieldNode, applyCoef = None, finalCast = None):
             offset = xmlDataFieldNode.find("bitoffs").text
             size = xmlDataFieldNode.find("bitsize").text
             code = "   {\n"
@@ -246,7 +250,10 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             code += "      auto value = " + str(multiplier) + " * (static_cast<signed>(rawValue) - " + str(rangeMin) + ") + " + str(scaleMin) + ";\n"
             keywordName = xmlDataFieldNode.find("shortcut").text + " - " + xmlDataFieldNode.find("data").text
             historizerCppName = "m_" + cppHelper.toCppName(keywordName)
-            code += "      " + historizerCppName + "->set(value);\n"
+            if finalCast is not None:
+               code += "      " + historizerCppName + "->set(static_cast<" + finalCast + ">(value));\n"
+            else:
+               code += "      " + historizerCppName + "->set(value);\n"
             code += "   }\n"
             return code
 
@@ -275,6 +282,8 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                      or dataText.encode("utf-8") == "Sun – South" \
                      or dataText.encode("utf-8") == "Sun – East": # Provided as kilo-lux when Yadoms knows only lux
                      code += statesCodeForLinearValue(xmlDataFieldNode, 1000)
+                  elif dataText == "Energy Storage":
+                     code += statesCodeForLinearValue(xmlDataFieldNode, applyCoef=None, finalCast="int")
                   else:
                      util.warning("func/type : Unsupported linear data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
                      continue
