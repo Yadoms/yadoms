@@ -88,6 +88,25 @@ function SectionParameterHandler(i18nContext, paramName, content, currentValue, 
  */
 SectionParameterHandler.prototype.getDOMObject = function () {
 	
+   var iterator = window.markdownitForInline;
+   
+   var md = window.markdownit({
+     html: true,
+     breaks:true,
+    highlight: function (str, lang) {
+      if (lang && hljs.getLanguage(lang)) {
+       try {
+         return hljs.highlight(lang, str).value;
+       } catch (__) {}
+      }
+
+      return ''; // use external default escaping
+    }
+   })
+   .use(iterator, 'url_new_win', 'link_open', function (tokens, idx) {
+     tokens[idx].attrPush([ 'target', '_blank' ]);
+   });   
+   
    var input = "<div class=\"control-group configuration-section well\" >" +
                   "<div class=\"configuration-header\" >";
 
@@ -125,15 +144,23 @@ SectionParameterHandler.prototype.getDOMObject = function () {
    }
    
    if (!isNullOrUndefined(this.paramName)){
+      
+   // Convert markdown for the designation field.
+      var result = md.renderInline( $.t(this.i18nContext + this.paramName + ".description", {defaultValue: ""}) );
+      
 	   input +=       "</div>" +
-					  "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.paramName + ".description\" >" +
+					  //"<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.paramName + ".description\" >" +
+                 "<div class=\"configuration-description\" >" + result +
 						 this.description +
 					  "</div>" +
 					  "<div id=\"" + this.uuid + "\" ";
    }
    else{
+      var result = md.renderInline( $.t(this.i18nContext + "description", {defaultValue: ""}) );
+      
 	   input +=       "</div>" +
-					  "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + "description\" >" +
+					  //"<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + "description\" >" +
+                 "<div class=\"configuration-description\" >" + result +
 						 this.description +
 					  "</div>" +
 					  "<div id=\"" + this.uuid + "\" ";	   

@@ -349,10 +349,18 @@
               "name": "Date Format String",
               "description": "You can change date format string using momnt.js syntax (ie \"LLL\" or \"'MMMM Do YYYY, h:mm:ss a\")"
             },
-            "city": {
-              "name": "City",
-              "description": "location used by plugin(s) for forecast, ..."
-            }
+            "location": {
+              "name": "Location",
+              "description": "Enter below coordonates of your city (<a href=\"http://www.latlong.net/\" target=\"_blank\">latlong website</a>)"
+            },
+            "latitude": {
+               "name": "Latitude",
+               "description": ""
+            },
+            "longitude": {
+               "name": "Longitude",
+               "description": ""
+            }            
           },
           "confirmResetToDefault": "This operation will restore all default configuration. Continue ?",
           "configurationSaved": "System configuration successfully saved",
