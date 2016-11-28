@@ -445,8 +445,9 @@ namespace shared
 
       //--------------------------------------------------------------
       /// \brief		Print the content to log
+      /// \param [in] os      The out stream where to print out
       //--------------------------------------------------------------
-      void printToLog() const;
+      void printToLog(std::ostream& os) const;
 
       //--------------------------------------------------------------
       //
@@ -502,9 +503,10 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief		Print the content to log
       /// \param [in] tree    The tree to print
-      /// \param [in] tree    The current tree deep
+      /// \param [in] deep    The current tree deep
+      /// \param [in] os      The out stream where to print out
       //--------------------------------------------------------------
-      void printToLog(const boost::property_tree::ptree & tree, const int deep) const;
+      void printToLog(const boost::property_tree::ptree & tree, const int deep, std::ostream& os) const;
 
       //--------------------------------------------------------------
       //

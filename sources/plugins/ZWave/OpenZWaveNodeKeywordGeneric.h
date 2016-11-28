@@ -5,7 +5,7 @@
 #include "OpenZWaveHelpers.h"
 #include "OpenZWaveNodeKeywordGenericByType.h"
 #include "OpenZWaveSingleHistorizableData.h"
-
+#include "OpenZWaveNodeKeywordFactory.h"
 
 //--------------------------------------------------------------
 /// \brief	    ZWave keyword based on generic historizer

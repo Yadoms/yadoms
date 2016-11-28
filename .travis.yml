@@ -17,51 +17,58 @@ before_install:
 #CMake
 - echo 'Installing CMake 3.4.3'
 - sudo apt-get remove cmake
-- wget --no-check-certificate https://cmake.org/files/v3.4/cmake-3.4.3.tar.gz
-- tar zxf cmake-3.4.3.tar.gz
+
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && wget  -U 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4' http://yadoms.com/travis_build/cmake-3.4.3-build.tar.bz2 && wget --no-check-certificate https://cmake.org/files/v3.4/cmake-3.4.3.tar.gz
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && tar jxf cmake-3.4.3-build.tar.bz2 && tar zxf cmake-3.4.3.tar.gz
 - cd cmake-3.4.3 
-- ./bootstrap  > yadoms_cmake.log
-- make  > yadoms_boost.log
-- sudo make install  > yadoms_boost.log
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass bootstrap" && ./bootstrap  > yadoms_cmake.log
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass make" && make  > yadoms_cmake.log
+- sudo make install  > yadoms_cmake.log
 - cd ..
+- $TRAVIS_UPLOAD_COMPONENTS == "true" && tar cjf cmake-3.4.3-build.tar.bz2 cmake-3.4.3
+- $TRAVIS_UPLOAD_COMPONENTS == "true" && curl --ftp-create-dirs -T cmake-3.4.3-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/
+- $TRAVIS_UPLOAD_COMPONENTS == "true" && rm -f cmake-3.4.3-build.tar.bz2
 
 # boost
 - echo 'Building Boost 1.62.0'
-- wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.62.0/boost_1_62_0.tar.bz2
-- tar xjf boost_1_62_0.tar.bz2
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && wget -U 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4' http://yadoms.com/travis_build/boost_1_62_0-build.tar.bz2 && wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.62.0/boost_1_62_0.tar.bz2
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && tar xjf boost_1_62_0-build.tar.bz2 && tar xjf boost_1_62_0.tar.bz2
 - cd boost_1_62_0
-- ./bootstrap.sh > yadoms_boost.log
-- ./b2 --with-atomic --with-chrono --with-date_time --with-filesystem --with-regex --with-thread --with-system link=shared > yadoms_boost.log
-- tar cjf ../boost_1_62_0-build.tar.bz2 .
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass boost/bootstrap" && ./bootstrap.sh > yadoms_boost.log
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass boost/b2" && ./b2 --with-atomic --with-chrono --with-date_time --with-filesystem --with-regex --with-thread --with-system link=shared > yadoms_boost.log
 - cd ..
-- curl --ftp-create-dirs -T boost_1_62_0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/
-- rm -f boost_1_62_0-build.tar.bz2
-
-# poco
+- $TRAVIS_UPLOAD_COMPONENTS == "true" && tar cjf boost_1_62_0-build.tar.bz2 boost_1_62_0
+- $TRAVIS_UPLOAD_COMPONENTS == "true" && curl --ftp-create-dirs -T boost_1_62_0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/
+- $TRAVIS_UPLOAD_COMPONENTS == "true" && rm -f boost_1_62_0-build.tar.bz2
+  
+ # poco
 - echo 'Building Poco 1.7.6-all'
-- wget http://pocoproject.org/releases/poco-1.7.6/poco-1.7.6-all.tar.gz
-- tar xzf poco-1.7.6-all.tar.gz
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && wget -U 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4' http://yadoms.com/travis_build/poco-1.7.6-all-build.tar.bz2 && wget http://pocoproject.org/releases/poco-1.7.6/poco-1.7.6-all.tar.gz
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && tar xjf poco-1.7.6-all-build.tar.bz2 && tar xzf poco-1.7.6-all.tar.gz
 - sudo apt-get install libssl-dev
 - cd poco-1.7.6-all/
-- ./configure --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page  --no-samples --no-tests > yadoms_poco.log
-- make > yadoms_poco.log
-- tar cjf ../poco-1.7.6-all-build.tar.bz2 .
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass poco/configure" && ./configure --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page  --no-samples --no-tests > yadoms_poco.log
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass poco/make" && make > yadoms_poco.log
 - cd ..
-- curl --ftp-create-dirs -T poco-1.7.6-all-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/
-- rm -f poco-1.7.6-all-build.tar.bz2
+- $TRAVIS_UPLOAD_COMPONENTS == "true" && tar cjf poco-1.7.6-all-build.tar.bz2 poco-1.7.6-all
+- $TRAVIS_UPLOAD_COMPONENTS == "true" && curl --ftp-create-dirs -T poco-1.7.6-all-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/
+- $TRAVIS_UPLOAD_COMPONENTS == "true" && rm -f poco-1.7.6-all-build.tar.bz2
 
 # protobuf
 - echo 'Building Protobuf 2.6.1'
 - sudo apt-get install autoconf libtool
-- wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz
-- tar xzf protobuf-2.6.1.tar.gz
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && wget -U 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4' http://yadoms.com/travis_build/protobuf-2.6.1-build.tar.bz2 && wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && tar xjf protobuf-2.6.1-build.tar.bz2 && tar xzf protobuf-2.6.1.tar.gz
 - cd protobuf-2.6.1
-- ./autogen.sh > yadoms_protobuf.log
-- ./configure > yadoms_protobuf.log
-- make > yadoms_protobuf.log
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass protobuf/autogen" && ./autogen.sh > yadoms_protobuf.log
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass protobuf/configure" && ./configure > yadoms_protobuf.log
+- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass protobuf/make" && make > yadoms_protobuf.log
 - sudo make install > yadoms_protobuf.log
 - sudo ldconfig
 - cd ..
+- $TRAVIS_UPLOAD_COMPONENTS == "true" && tar cjf protobuf-2.6.1-build.tar.bz2 protobuf-2.6.1
+- $TRAVIS_UPLOAD_COMPONENTS == "true" && curl --ftp-create-dirs -T protobuf-2.6.1-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/
+- $TRAVIS_UPLOAD_COMPONENTS == "true" && rm -f protobuf-2.6.1-build.tar.bz2
 
 #gammu
 - echo 'Building Gammu 1.36.8'
