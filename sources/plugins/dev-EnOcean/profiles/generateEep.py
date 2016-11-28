@@ -160,7 +160,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
          historizersCppName = []
          if len(xmlTypeNode.findall("case")) != 1:            
-            util.warning("func/type : Unsupported number of \"case\" tags (expected 1) for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This profile will be ignored.")#TODO
+            util.warning("func/type : Unsupported number of \"case\" tags (expected 1) for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This profile will be ignored.")
          else:
             for xmlDataFieldNode in xmlHelper.findUsefulDataFieldNodes(inXmlNode=xmlTypeNode.find("case")):
                dataText = xmlDataFieldNode.find("data").text
@@ -203,14 +203,14 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                         continue
                      cppHistorizerClassName = "yApi::historization::CBatteryLevel"
                   else:
-                     util.warning("func/type : Unsupported linear data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
+                     util.warning("func/type : Unsupported linear data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")
                      continue
                elif isBoolValue(xmlDataFieldNode):
                   cppHistorizerClassName = "yApi::historization::CSwitch"
                elif isEnumValue(xmlDataFieldNode):
                   cppHistorizerClassName = createSpecificEnumHistorizer(xmlDataFieldNode, xmlTypeNode)
                else:
-                  util.warning("func/type : Unsupported data type \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
+                  util.warning("func/type : Unsupported data type \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")
                   continue
                typeClass.addMember(cppClass.CppMember(historizerCppName, "boost::shared_ptr<" + cppHistorizerClassName + ">", \
                   cppClass.PRIVATE, cppClass.NO_QUALIFER, initilizationCode= historizerCppName + "(boost::make_shared<" + cppHistorizerClassName + ">(\"" + keywordName + "\"))"))
@@ -265,7 +265,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
          def statesCode(xmlTypeNode):
             if len(xmlTypeNode.findall("case")) != 1:
-               util.warning("func/type : Unsupported number of \"case\" tags (expected 1) for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This profile will be ignored.")#TODO
+               util.warning("func/type : Unsupported number of \"case\" tags (expected 1) for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This profile will be ignored.")
                return "   return m_historizers;\n"
             code = ""
             for xmlDataFieldNode in xmlHelper.findUsefulDataFieldNodes(inXmlNode=xmlTypeNode.find("case")):
@@ -285,12 +285,12 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                   elif dataText == "Energy Storage":
                      code += statesCodeForLinearValue(xmlDataFieldNode, applyCoef=None, finalCast="int")
                   else:
-                     util.warning("func/type : Unsupported linear data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
+                     util.warning("func/type : Unsupported linear data type \"" + dataText.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")
                      continue
                elif isBoolValue(xmlDataFieldNode):
                   code += statesCodeForBoolValue(xmlDataFieldNode)
                else:
-                  util.warning("func/type : Unsupported data type \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")#TODO
+                  util.warning("func/type : Unsupported data type \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")
                   continue
             code += "   return m_historizers;"
             return code
