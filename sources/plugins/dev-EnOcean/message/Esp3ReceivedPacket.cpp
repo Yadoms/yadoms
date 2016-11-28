@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Esp3ReceivedPacket.h"
-#include "../ProfileHelper.h"
 
 namespace message
 {
@@ -31,11 +30,8 @@ namespace message
       return m_optional;
    }
 
-   std::string CEsp3ReceivedPacket::dump() const
+   const std::vector<unsigned char>& CEsp3ReceivedPacket::buffer() const
    {
-      std::stringstream ss;
-      for (const auto byte : m_receivedBuffer)
-         ss << CProfileHelper::byteToHexString(byte) << " ";
-      return ss.str();
+      return m_receivedBuffer;
    }
 } // namespace message

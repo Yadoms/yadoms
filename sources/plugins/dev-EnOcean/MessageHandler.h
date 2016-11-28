@@ -1,6 +1,7 @@
 #pragma once
 #include "IMessageHandler.h"
 #include <shared/communication/IAsyncPort.h>
+#include <shared/communication/IBufferLogger.h>
 
 //--------------------------------------------------------------
 /// \brief	Implementation of message handler
@@ -8,16 +9,10 @@
 class CMessageHandler : public IMessageHandler
 {
 public:
-   //--------------------------------------------------------------
-   /// \brief	Constructor
-   //--------------------------------------------------------------
    CMessageHandler(boost::shared_ptr<shared::communication::IAsyncPort> port,
                    shared::event::CEventHandler& mainEventHandler,
-                   int mainEvtPortDataReceived);
-
-   //--------------------------------------------------------------
-   /// \brief	Destructor
-   //--------------------------------------------------------------
+                   int mainEvtPortDataReceived,
+                   boost::shared_ptr<shared::communication::IBufferLogger> bufferLogger);
    virtual ~CMessageHandler();
 
    // IMessageHandler implementation
@@ -39,6 +34,7 @@ private:
    boost::shared_ptr<shared::communication::IAsyncPort> m_port;
    shared::event::CEventHandler& m_mainEventHandler;
    int m_mainEvtPortDataReceived;
+   boost::shared_ptr<shared::communication::IBufferLogger> m_bufferLogger;
 
    // Hook
    mutable boost::recursive_mutex m_hookMutex;

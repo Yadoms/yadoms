@@ -1,7 +1,7 @@
 #pragma once
-
 #include "IConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
+#include <shared/communication/IBufferLogger.h>
 #include "IMessageHandler.h"
 
 
@@ -28,17 +28,25 @@ public:
    /// \param[in] messageHandler          The message handler to redirect a received message
    /// \return                            The receive buffer handler
    //--------------------------------------------------------------
-   static boost::shared_ptr<shared::communication::IReceiveBufferHandler> CFactory::constructReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler);
+   static boost::shared_ptr<shared::communication::IReceiveBufferHandler> constructReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler);
+
+   //--------------------------------------------------------------
+   /// \brief	                           Create the buffer logger (use to log in/out messages)
+   /// \return                            The buffer loger
+   //--------------------------------------------------------------
+   static boost::shared_ptr<shared::communication::IBufferLogger> constructBufferLogger();
 
    //--------------------------------------------------------------
    /// \brief	                           Create the message handler
    /// \param[in] port                    Serial port used to send/receive to dongle
    /// \param[in] eventHandler            The event handler to receive notifications from port
    /// \param[in] evtPortDataReceived     The event id raised on data receive events
+   /// \param[in] bufferLogger            The buffer loger
    /// \return                            The message handler
    //--------------------------------------------------------------
    static boost::shared_ptr<IMessageHandler> constructMessageHandler(boost::shared_ptr<shared::communication::IAsyncPort> port,
                                                                      shared::event::CEventHandler& eventHandler,
-                                                                     int evtPortDataReceived);
+                                                                     int evtPortDataReceived,
+                                                                     boost::shared_ptr<shared::communication::IBufferLogger> bufferLogger);
 };
 

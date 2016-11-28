@@ -5,10 +5,12 @@
 
 CMessageHandler::CMessageHandler(boost::shared_ptr<shared::communication::IAsyncPort> port,
                                  shared::event::CEventHandler& mainEventHandler,
-                                 int mainEvtPortDataReceived)
+                                 int mainEvtPortDataReceived,
+                                 boost::shared_ptr<shared::communication::IBufferLogger> bufferLogger)
    : m_port(port),
      m_mainEventHandler(mainEventHandler),
-     m_mainEvtPortDataReceived(mainEvtPortDataReceived)
+     m_mainEvtPortDataReceived(mainEvtPortDataReceived),
+     m_bufferLogger(bufferLogger)
 {
 }
 
@@ -22,7 +24,10 @@ void CMessageHandler::send(message::CEsp3SendPacket& sendMessage)
    if (!m_port)
       throw CProtocolException("Send message failed : dongle is not ready");
 
-   m_port->send(shared::communication::CByteBuffer(*sendMessage.buffer()));
+   auto buffer = shared::communication::CByteBuffer(*sendMessage.buffer());
+
+   m_bufferLogger->logSent(buffer);
+   m_port->send(buffer);
 }
 
 bool CMessageHandler::send(message::CEsp3SendPacket& sendMessage,
@@ -56,6 +61,8 @@ bool CMessageHandler::waitAnswer(const boost::posix_time::time_duration& enOcean
 
 void CMessageHandler::onReceived(boost::shared_ptr<const message::CEsp3ReceivedPacket> receivedMessage)
 {
+   m_bufferLogger->logReceived(shared::communication::CByteBuffer(receivedMessage->buffer()));
+
    boost::lock_guard<boost::recursive_mutex> lock(m_hookMutex);
    if (m_isExpectedMessageHookFct.empty() || !m_isExpectedMessageHookFct(receivedMessage))
    {

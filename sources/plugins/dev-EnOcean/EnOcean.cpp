@@ -207,9 +207,12 @@ void CEnOcean::createConnection()
    // Create the port instance
    m_port = CFactory::constructPort(m_configuration);
 
+   auto bufferLogger = CFactory::constructBufferLogger();
+
    m_messageHandler = CFactory::constructMessageHandler(m_port,
                                                         m_api->getEventHandler(),
-                                                        kEvtPortDataReceived);
+                                                        kEvtPortDataReceived,
+      bufferLogger);
 
    m_port->subscribeForConnectionEvents(m_api->getEventHandler(),
                                         kEvtPortConnection);
@@ -391,7 +394,6 @@ void CEnOcean::processDataReceived(boost::shared_ptr<const message::CEsp3Receive
    catch (std::exception& e)
    {
       std::cerr << "Error processing received message : " << e.what() << std::endl;
-      std::cerr << "Message was : " << message->dump() << std::endl;
    }
 }
 
