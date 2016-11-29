@@ -91,7 +91,7 @@ StringParameterHandler.prototype.getDOMObject = function () {
                         "name=\"" + this.uuid + "\" " +
                         "data-content=\"" + this.description + "\" ";
    if (this.required)
-    input +=            "required ";
+    input +=            "required aria-required ";
    var dataI18n = "data-i18n=\"";
    dataI18n += "[data-content]" + this.i18nContext + this.paramName + ".description";
 

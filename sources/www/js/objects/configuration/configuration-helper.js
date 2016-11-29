@@ -15,6 +15,7 @@ ConfigurationHelper.loadConfigurationLibs = function() {
         "js/objects/configuration/section-parameter-handler.js",
         "js/objects/configuration/keyword-parameter-handler.js",
         "js/objects/configuration/radio-section-parameter-handler.js",
+        "js/objects/configuration/combo-section-parameter-handler.js",
         "js/objects/configuration/color-parameter-handler.js",
         "js/objects/configuration/icon-parameter-handler.js",
         "js/objects/configuration/list-parameter-handler.js"
@@ -92,9 +93,11 @@ ConfigurationHelper.createControlGroup = function (parameterHandler, controlToIn
  * @param paramName
  * @param content
  * @param currentValue
+ * @param parentRadioButtonSectionName: used only for containers to add a radio button at the beginning for radiosection handler
+ * @param parentRadioSectionActive: used only for containers to add a radio button at the beginning for radiosection handler
  * @returns {*}
  */
-ConfigurationHelper.createParameterHandler = function (i18nContext, paramName, content, currentValue) {
+ConfigurationHelper.createParameterHandler = function (i18nContext, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive) {
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined in " + paramName + " parameter");
    assert(content.type !== undefined, "type field must be found in " + paramName + " parameter");
@@ -125,11 +128,15 @@ ConfigurationHelper.createParameterHandler = function (i18nContext, paramName, c
          break;
 
       case "section" :
-         return new SectionParameterHandler(i18nContext, paramName, content, currentValue, undefined, undefined);
+         return new SectionParameterHandler(i18nContext, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive);
          break;
 
       case "radiosection" :
-         return new RadioSectionParameterHandler(i18nContext, paramName, content, currentValue);
+         return new RadioSectionParameterHandler(i18nContext, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive);
+         break;
+
+      case "combosection" :
+         return new ComboSectionParameterHandler(i18nContext, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive);
          break;
 
       case "keyword" :
@@ -193,4 +200,16 @@ ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, 
       default:
          return null;
    }
+};
+
+/**
+ * Check if content item is a container (section,  radiosection, ...)
+ * @param content
+ * @returns { boolean : true if the item is a container}
+ */
+ConfigurationHelper.isContainer = function (content) {
+   assert(content !== undefined, "content must be defined");
+   assert((content.type !== undefined), "Type of the content must be defined");
+
+   return ((content.type.toLowerCase() == "section") || (content.type.toLowerCase() == "radiosection") || (content.type.toLowerCase() == "combosection"))
 };
