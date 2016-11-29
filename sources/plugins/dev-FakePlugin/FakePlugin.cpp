@@ -115,7 +115,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventExtraQuery:
          {
             // Extra-command was received from Yadoms
-            auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery> >();
+            auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
 
             if (extraQuery)
             {
@@ -156,7 +156,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kBindingQuery:
          {
             // Yadoms ask for a binding query 
-            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
+            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest>>();
             if (request->getData().getQuery() == "test")
             {
                shared::CDataContainer ev;
@@ -191,7 +191,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventDeviceCommand:
          {
             // A command was received from Yadoms
-            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
+            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
             std::cout << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
             if (command->getKeyword().empty())
                std::cout << "Specific command for a device (can be used for any purpose, unless keyword driving, device configuration (see kGetDeviceConfigurationSchemaRequest and kSetDeviceConfiguration documentation) and deletion" << std::endl;
@@ -202,7 +202,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
          {
-            auto creation = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
+            auto creation = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
             try
             {
                // Yadoms asks for device creation
@@ -212,7 +212,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                auto devId = (boost::format("%1%_%2%_0x%3$08X") % sni % dyn % shared::tools::CRandom::generateNbBits(26, false)).str();
                api->declareDevice(devId,
                                   "FakeDevice_" + devId,
-                                  std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(),
+                                  std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>(),
                                   creation->getData().getConfiguration());
 
                api->declareKeyword(devId, boost::make_shared<yApi::historization::CSwitch>("manualSwitch"));
@@ -228,7 +228,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       case yApi::IYPluginApi::kEventDeviceRemoved:
          {
-            auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
+            auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved>>();
             std::cout << device->device() << " was removed" << std::endl;
             break;
          }
@@ -238,7 +238,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             // Yadoms ask for device configuration schema
             // Schema can come from package.json, or built by code. In this example,
             // we just take the schema from package.json, in case of configuration is supported by device.
-            auto deviceConfigurationSchemaRequest = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest> >();
+            auto deviceConfigurationSchemaRequest = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest>>();
 
             if (deviceConfigurationSchemaRequest->device() == configurableDevice.getDeviceName())
             {
@@ -257,7 +257,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kSetDeviceConfiguration:
          {
             // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
-            auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration> >();
+            auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
 
             if (deviceConfiguration->device() == configurableDevice.getDeviceName())
             {

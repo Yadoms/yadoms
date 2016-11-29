@@ -63,7 +63,8 @@ namespace pluginSystem
       //--------------------------------------------------------------
       void send(const toPlugin::msg& pbMsg,
                 boost::function1<bool, const toYadoms::msg&> checkExpectedMessageFunction,
-                boost::function1<void, const toYadoms::msg&> onReceiveFunction);
+                boost::function1<void, const toYadoms::msg&> onReceiveFunction,
+                const boost::posix_time::time_duration& timeout = boost::posix_time::seconds(10));
 
       //--------------------------------------------------------------
       /// \brief	Process a received message
@@ -139,5 +140,6 @@ namespace pluginSystem
       mutable boost::recursive_mutex m_onReceiveHookMutex;
       boost::function1<bool, const toYadoms::msg&> m_onReceiveHook;
    };
-
 } // namespace pluginSystem
+
+
