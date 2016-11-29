@@ -5,8 +5,9 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CRunningPeriod::CRunningPeriod(const std::string& KeyWordName)
-   : m_runningPeriod(boost::make_shared<teleInfo::specificHistorizers::CPeriod>(KeyWordName))
+CRunningPeriod::CRunningPeriod(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& KeyWordName):
+   m_runningPeriod(boost::make_shared<teleInfo::specificHistorizers::CPeriod>(KeyWordName)),
+   m_isDeveloperMode (api->isDeveloperMode())
 {
 }
 
@@ -32,7 +33,7 @@ void CRunningPeriod::set(std::string& Value) const
       {
          m_runningPeriod->set(static_cast<teleInfo::specificHistorizers::EPeriod>(it->second));
 
-         std::cout << m_runningPeriod->getKeyword() << "=" << m_runningPeriod->get() << std::endl;
+         if (m_isDeveloperMode) std::cout << m_runningPeriod->getKeyword() << "=" << m_runningPeriod->get() << std::endl;
       }
       else
          throw CKeywordException("Keyword " + m_runningPeriod->getKeyword() + " could not be set");

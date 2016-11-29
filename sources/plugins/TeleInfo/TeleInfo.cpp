@@ -94,7 +94,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       }
       case kEvtPortDataReceived:
       {
-         std::cout << "TeleInfo plugin :  DataReceived" << std::endl;
+         if (m_isDeveloperMode) std::cout << "TeleInfo plugin :  DataReceived" << std::endl;
 
          processDataReceived(api,
                              api->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
@@ -104,7 +104,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kEvtTimerRefreshTeleInfoData:
       {
          // When received this timer, we restart the reception through the serial port
-         std::cout << "Teleinfo plugin :  Resume COM" << std::endl;
+         if (m_isDeveloperMode) std::cout << "Teleinfo plugin :  Resume COM" << std::endl;
          m_transceiver->ResetRefreshTags();
          m_receiveBufferHandler->resume();
 
@@ -203,7 +203,7 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
    // When all information are updated we stopped the reception !
    if (m_transceiver->IsInformationUpdated())
    {
-      std::cout << "Suspend COM" << std::endl;
+      if (m_isDeveloperMode) std::cout << "Suspend COM" << std::endl;
       m_receiveBufferHandler->suspend();
    }
 
