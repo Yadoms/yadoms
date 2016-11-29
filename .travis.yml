@@ -1,9 +1,13 @@
 language: cpp
 
+#limit to git depth to 1 because don't use any git command in this script
 git:
   depth: 1
   
 before_install:
+#log environment variables configuration
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "using uploaded components"; else echo "using official components and build them"; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Upload build components"; else echo "Do not upload built components"; fi
 
 #g++ 4.8
 - echo 'Installing G++ 4.8'
@@ -20,58 +24,57 @@ before_install:
 #CMake
 - echo 'Installing CMake 3.4.3'
 - sudo apt-get remove cmake
-
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && wget  -U 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4' http://yadoms.com/travis_build/cmake-3.4.3-build.tar.bz2 && wget --no-check-certificate https://cmake.org/files/v3.4/cmake-3.4.3.tar.gz
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && tar jxf cmake-3.4.3-build.tar.bz2 && tar zxf cmake-3.4.3.tar.gz
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget  -U 'Mozilla/5.0' http://yadoms.com/travis_build/cmake-3.4.3-build.tar.bz2; else wget --no-check-certificate https://cmake.org/files/v3.4/cmake-3.4.3.tar.gz; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar jxf cmake-3.4.3-build.tar.bz2; else tar zxf cmake-3.4.3.tar.gz; fi
 - cd cmake-3.4.3 
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass bootstrap" && ./bootstrap  > yadoms_cmake.log
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass make" && make  > yadoms_cmake.log
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass bootstrap" ; else ./bootstrap  > yadoms_cmake.log; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass make"; else make  > yadoms_cmake.log; fi
 - sudo make install  > yadoms_cmake.log
 - cd ..
-- $TRAVIS_UPLOAD_COMPONENTS == "true" && tar cjf cmake-3.4.3-build.tar.bz2 cmake-3.4.3 && echo "By pass packaging"
-- $TRAVIS_UPLOAD_COMPONENTS == "true" && curl --ftp-create-dirs -T cmake-3.4.3-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/  && echo "By pass upload"
-- $TRAVIS_UPLOAD_COMPONENTS == "true" && rm -f cmake-3.4.3-build.tar.bz2 && echo "By pass cleanup"
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf cmake-3.4.3-build.tar.bz2 cmake-3.4.3; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then curl --ftp-create-dirs -T cmake-3.4.3-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then rm -f cmake-3.4.3-build.tar.bz2; fi
 
 # boost
 - echo 'Building Boost 1.62.0'
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && wget -U 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4' http://yadoms.com/travis_build/boost_1_62_0-build.tar.bz2 && wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.62.0/boost_1_62_0.tar.bz2
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && tar xjf boost_1_62_0-build.tar.bz2 && tar xjf boost_1_62_0.tar.bz2
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/boost_1_62_0-build.tar.bz2; else wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.62.0/boost_1_62_0.tar.bz2; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar xjf boost_1_62_0-build.tar.bz2; else tar xjf boost_1_62_0.tar.bz2; fi
 - cd boost_1_62_0
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass boost/bootstrap" && ./bootstrap.sh > yadoms_boost.log
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass boost/b2" && ./b2 --with-atomic --with-chrono --with-date_time --with-filesystem --with-regex --with-thread --with-system link=shared > yadoms_boost.log
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass boost/bootstrap"; else ./bootstrap.sh > yadoms_boost.log; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass boost/b2"; else ./b2 --with-atomic --with-chrono --with-date_time --with-filesystem --with-regex --with-thread --with-system link=shared > yadoms_boost.log; fi
 - cd ..
-- $TRAVIS_UPLOAD_COMPONENTS == "true" && tar cjf boost_1_62_0-build.tar.bz2 boost_1_62_0 && echo "By pass packaging"
-- $TRAVIS_UPLOAD_COMPONENTS == "true" && curl --ftp-create-dirs -T boost_1_62_0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/ && echo "By pass upload"
-- $TRAVIS_UPLOAD_COMPONENTS == "true" && rm -f boost_1_62_0-build.tar.bz2 && echo "By pass cleanup"
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf boost_1_62_0-build.tar.bz2 boost_1_62_0; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then curl --ftp-create-dirs -T boost_1_62_0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then rm -f boost_1_62_0-build.tar.bz2; fi
   
  # poco
 - echo 'Building Poco 1.7.6-all'
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && wget -U 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4' http://yadoms.com/travis_build/poco-1.7.6-all-build.tar.bz2 && wget http://pocoproject.org/releases/poco-1.7.6/poco-1.7.6-all.tar.gz
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && tar xjf poco-1.7.6-all-build.tar.bz2 && tar xzf poco-1.7.6-all.tar.gz
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/poco-1.7.6-all-build.tar.bz2; else wget http://pocoproject.org/releases/poco-1.7.6/poco-1.7.6-all.tar.gz; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar xjf poco-1.7.6-all-build.tar.bz2; else tar xzf poco-1.7.6-all.tar.gz; fi
 - sudo apt-get install libssl-dev
 - cd poco-1.7.6-all/
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass poco/configure" && ./configure --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page  --no-samples --no-tests > yadoms_poco.log
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass poco/make" && make > yadoms_poco.log
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass poco/configure"; else ./configure --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page  --no-samples --no-tests > yadoms_poco.log; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass poco/make"; else make > yadoms_poco.log; fi
 - cd ..
-- $TRAVIS_UPLOAD_COMPONENTS == "true" && tar cjf poco-1.7.6-all-build.tar.bz2 poco-1.7.6-all && echo "By pass packaging"
-- $TRAVIS_UPLOAD_COMPONENTS == "true" && curl --ftp-create-dirs -T poco-1.7.6-all-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/ && echo "By pass upload"
-- $TRAVIS_UPLOAD_COMPONENTS == "true" && rm -f poco-1.7.6-all-build.tar.bz2 && echo "By pass cleanup"
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf poco-1.7.6-all-build.tar.bz2 poco-1.7.6-all; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then curl --ftp-create-dirs -T poco-1.7.6-all-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then rm -f poco-1.7.6-all-build.tar.bz2; fi
 
 # protobuf
 - echo 'Building Protobuf 2.6.1'
 - sudo apt-get install autoconf libtool
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && wget -U 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4' http://yadoms.com/travis_build/protobuf-2.6.1-build.tar.bz2 && wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && tar xjf protobuf-2.6.1-build.tar.bz2 && tar xzf protobuf-2.6.1.tar.gz
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/protobuf-2.6.1-build.tar.bz2; else wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar xjf protobuf-2.6.1-build.tar.bz2; else tar xzf protobuf-2.6.1.tar.gz; fi
 - cd protobuf-2.6.1
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass protobuf/autogen" && ./autogen.sh > yadoms_protobuf.log
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass protobuf/configure" && ./configure > yadoms_protobuf.log
-- $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && echo "Bypass protobuf/make" && make > yadoms_protobuf.log
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/autogen"; else ./autogen.sh > yadoms_protobuf.log; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/configure"; else ./configure > yadoms_protobuf.log; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/make"; else make > yadoms_protobuf.log; fi
 - sudo make install > yadoms_protobuf.log
 - sudo ldconfig
 - cd ..
-- $TRAVIS_UPLOAD_COMPONENTS == "true" && tar cjf protobuf-2.6.1-build.tar.bz2 protobuf-2.6.1  && echo "By pass packaging"
-- $TRAVIS_UPLOAD_COMPONENTS == "true" && curl --ftp-create-dirs -T protobuf-2.6.1-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/ && echo "By pass upload"
-- $TRAVIS_UPLOAD_COMPONENTS == "true" && rm -f protobuf-2.6.1-build.tar.bz2 && echo "By pass cleanup"
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf protobuf-2.6.1-build.tar.bz2 protobuf-2.6.1; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then curl --ftp-create-dirs -T protobuf-2.6.1-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then rm -f protobuf-2.6.1-build.tar.bz2; fi
 
 #gammu
 - echo 'Building Gammu 1.36.8'
