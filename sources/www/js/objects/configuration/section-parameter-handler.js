@@ -8,11 +8,11 @@
  * @param paramName
  * @param content
  * @param currentValue
- * @param radioButtonSectionName
- * @param radioSectionActive
+ * @param parentRadioButtonSectionName
+ * @param parentRadioSectionActive
  * @constructor
  */
-function SectionParameterHandler(i18nContext, paramName, content, currentValue, radioButtonSectionName, radioSectionActive) {
+function SectionParameterHandler(i18nContext, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive) {
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
@@ -26,14 +26,15 @@ function SectionParameterHandler(i18nContext, paramName, content, currentValue, 
    this.content = content;
    this.cbValue = undefined;
    this.uuid = createUUID();
+   this.containerUuid = createUUID();
    this.selectorUuid = createUUID();
 
    //we look for radio button
-   if (radioButtonSectionName !== undefined) {
-      this.radioButtonSectionName = radioButtonSectionName;
-      this.radioSectionActive = false;
-      if (radioSectionActive !== undefined)
-         this.radioSectionActive = parseBool(radioSectionActive);
+   if (parentRadioButtonSectionName !== undefined) {
+      this.parentRadioButtonSectionName = parentRadioButtonSectionName;
+      this.parentRadioSectionActive = false;
+      if (parentRadioSectionActive !== undefined)
+         this.parentRadioSectionActive = parseBool(parentRadioSectionActive);
    }
 
    var self = this;
@@ -56,8 +57,8 @@ function SectionParameterHandler(i18nContext, paramName, content, currentValue, 
          this.cbValue = false;
    }
 
-   //if radioButtonSectionName is defined enableWithCheckBox can't
-   assert((this.radioButtonSectionName === undefined) || (!this.enableWithCheckBox), "enableWithCheckBox parameter can't be used in section in radioSection");
+   //if parentRadioButtonSectionName is defined enableWithCheckBox can't
+   assert((this.parentRadioButtonSectionName === undefined) || (!this.enableWithCheckBox), "enableWithCheckBox parameter can't be used in section inside radioSection");
 
    //for each key in package
    if (!isNullOrUndefined(content.content)) {
@@ -88,7 +89,7 @@ function SectionParameterHandler(i18nContext, paramName, content, currentValue, 
  */
 SectionParameterHandler.prototype.getDOMObject = function () {
 	
-   var input = "<div class=\"control-group configuration-section well\" >" +
+   var input = "<div class=\"control-group configuration-section well\" id=\"" + this.uuid + "\">" +
                   "<div class=\"configuration-header\" >";
 
    if (this.enableWithCheckBox) {
@@ -99,11 +100,11 @@ SectionParameterHandler.prototype.getDOMObject = function () {
          input +=                "checked ";
       input +=             ">";
    }
-   if (this.radioButtonSectionName) {
+   if (this.parentRadioButtonSectionName) {
       input +=       "<div class=\"radio\">" +
                         "<label>" +
-                           "<input type=\"radio\" id=\"" + this.selectorUuid + "\" name=\"" + this.radioButtonSectionName + "\" ";
-      if (this.radioSectionActive)
+                           "<input type=\"radio\" id=\"" + this.selectorUuid + "\" name=\"" + this.parentRadioButtonSectionName + "\" ";
+      if (this.parentRadioSectionActive)
          input +=                "checked ";
       input +=             ">";
    }
@@ -119,7 +120,7 @@ SectionParameterHandler.prototype.getDOMObject = function () {
 							   "</span>";
    }
    //if it's included in a radioSection or in a checkbox section
-   if ((this.enableWithCheckBox) || (this.radioButtonSectionName)) {
+   if ((this.enableWithCheckBox) || (this.parentRadioButtonSectionName)) {
       input +=          "</label>" +
                      "</div>";
    }
@@ -129,18 +130,18 @@ SectionParameterHandler.prototype.getDOMObject = function () {
 					  "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.paramName + ".description\" >" +
 						 this.description +
 					  "</div>" +
-					  "<div id=\"" + this.uuid + "\" ";
+					  "<div id=\"" + this.containerUuid + "\" ";
    }
    else{
 	   input +=       "</div>" +
 					  "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + "description\" >" +
 						 this.description +
 					  "</div>" +
-					  "<div id=\"" + this.uuid + "\" ";	   
+					  "<div id=\"" + this.containerUuid + "\" ";	   
    }
 
    //if checkbox is unchecked or the radio button is unselected
-   if (((this.enableWithCheckBox) && (!this.cbValue)) || ((this.radioSectionActive !== undefined) && (!this.radioSectionActive))) {
+   if (((this.enableWithCheckBox) && (!this.cbValue)) || ((this.parentRadioSectionActive !== undefined) && (!this.parentRadioSectionActive))) {
       input +=       "class=\"section-content hidden\" ";
    }
    else {
@@ -169,34 +170,42 @@ SectionParameterHandler.prototype.applyScript = function () {
    if (self.enableWithCheckBox) {
       $("#" + self.selectorUuid).change(function () {
          if ($("#" + self.selectorUuid).prop("checked")) {
-            $("div#" + self.uuid).removeClass("hidden").removeClass("has-warning");
-            $("div#" + self.uuid).find("input,select,textarea").addClass("enable-validation");
+            $("div#" + self.containerUuid).removeClass("hidden").removeClass("has-warning");
+            $("div#" + self.containerUuid).find("input,select,textarea").addClass("enable-validation");
          }
          else {
-            $("div#" + self.uuid).addClass("hidden").removeClass("has-warning");
-            $("div#" + self.uuid).find("input,select,textarea").removeClass("enable-validation");
+            $("div#" + self.containerUuid).addClass("hidden").removeClass("has-warning");
+            $("div#" + self.containerUuid).find("input,select,textarea").removeClass("enable-validation");
          }
       });
    }
 
-   if (self.radioButtonSectionName) {
+   if (self.parentRadioButtonSectionName) {
       $("#" + self.selectorUuid).change(function () {
          if ($("input#" + self.selectorUuid + ":checked").val() == "on") {
             //we hide all sections-content in the radioSection\n" +
-			   var radioSections = $("div#" + self.radioButtonSectionName + " > div.toggle-btn-grp > div.configuration-section > div.section-content");
+		var $parentSection = $("div#" + self.parentRadioButtonSectionName);
+            var radioSections = $parentSection.find(" > div.toggle-btn-grp > div.configuration-section > div.section-content");
             radioSections.addClass("hidden");
-            radioSections.removeClass("has-warning");
-            radioSections.find("input,select,textarea").removeClass("enable-validation");
-			
-			//Disable all existing sub-buttons
-			radioSections.find("button").attr("disabled", true);
-			
-			//we show current
-            $("div#" + self.uuid).removeClass("hidden").removeClass("has-warning");
-            $("div#" + self.uuid).find("input,select,textarea").addClass("enable-validation");
-			
-			//Enable all existing sub-buttons
-			$("div#" + self.uuid).find("button").removeAttr("disabled");
+            $parentSection.removeClass("has-warning has-error");
+            $parentSection.find("input,select,textarea").removeClass("enable-validation");
+		//Disable all existing sub-buttons
+		$parentSection.find("button").attr("disabled", true);
+
+            //We save all items that are "required" with a special class name : required-for-validation
+            var $requiredFields = radioSections.find("[required]");
+            //we remove attr required and save it using class "required-for-validation"
+            $requiredFields.addClass("required-for-validation");
+            $requiredFields.removeAttr("required");
+
+            //we show current
+            var $activeContainer = $("div#" + self.containerUuid);
+            $activeContainer.removeClass("hidden");
+            $activeContainer.find("input,select,textarea").addClass("enable-validation");
+            //Enable all existing sub-buttons
+		$activeContainer.find("button").removeAttr("disabled");
+            //we restore required items
+            $activeContainer.find(".required-for-validation").attr("required", "required");
          }
       });
    }
@@ -239,8 +248,8 @@ SectionParameterHandler.prototype.getCurrentConfiguration = function () {
       self.configurationValues.checkbox = parseBool($("input#" + this.selectorUuid).prop("checked"));
    }
 
-   //we get the radioButton value if used
-   if (this.radioButtonSectionName) {
+   //we get the parentRadioButtonSectionName value if used
+   if (this.parentRadioButtonSectionName) {
       self.configurationValues.radio = ($("input#" + this.selectorUuid + ":checked").val() == 'on');
    }
 

@@ -119,10 +119,6 @@
                           "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
                           "</div>";
 
-      var actionsBtnsPluginState = "<div class=\"btn-group\">\n" +
-                                   "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-pencil\"></span></button>\n" +
-                                   "</div>";
-
       var actionsBtnsBlacklist = "<div class=\"btn-group\">\n" +
                                  "<button type=\"button\" class=\"btn btn-success btn-restore\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.restore\"><span class=\"fa fa-reply\"></span></button>\n" +
                                  "</div>";
@@ -169,9 +165,7 @@
       if(parseBool(device.blacklist) === true) {
          $deviceRow.find("td.device-actions").append(actionsBtnsBlacklist);
       } else {
-         if((device.name == "pluginState" || device.model == "Plugin state")) 
-           $deviceRow.find("td.device-actions").append(actionsBtnsPluginState);
-         else
+         if((device.name != "pluginState" && device.model != "Plugin state")) 
            $deviceRow.find("td.device-actions").append(actionsBtns);
       }
      
@@ -206,8 +200,8 @@
             //we use application logo
             iconName = "img/icon_256.png";
             //we prevent from editing or renaming system devices
-            $deviceRow.find("button.btn-configure").addClass("disabled");
-            $deviceRow.find("button.btn-delete").addClass("disabled");
+            $deviceRow.find("button.btn-configure").addClass("hide");
+            $deviceRow.find("button.btn-delete").addClass("hide");
             $deviceRow.find("button.btn-delete").unbind('click');
             $deviceRow.find("button.btn-configure").unbind('click');
          }
@@ -218,7 +212,7 @@
          $deviceRow.find("td.device-attachedTo").html(attachedTo);
       })
       .fail(function (error) {
-         $deviceRow.find("button.btn-configure").addClass("disabled");
+         $deviceRow.find("button.btn-configure").addClass("hide");
          $deviceRow.find("td.device-attachedTo").html(error);
       });
    }
@@ -351,7 +345,10 @@
                
                //we prevent from renaming keywords on system devices
                if ((!isNullOrUndefined(device.attachedPlugin)) && (device.attachedPlugin.isSystemCategory())) {
-                  $keywordRow.find("button.btn-configure").addClass("disabled");
+                  $keywordRow.find("button.btn-configure").addClass("hide");
+               }
+               else if (device.name == "pluginState" || device.model == "Plugin state") {
+                  $keywordRow.find("button.btn-configure").addClass("hide");
                }
                else {
                   //we bind event on the different actions

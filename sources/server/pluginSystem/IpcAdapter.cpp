@@ -130,7 +130,8 @@ namespace pluginSystem
 
    void CIpcAdapter::send(const toPlugin::msg& pbMsg,
                           boost::function1<bool, const toYadoms::msg&> checkExpectedMessageFunction,
-                          boost::function1<void, const toYadoms::msg&> onReceiveFunction)
+                          boost::function1<void, const toYadoms::msg&> onReceiveFunction,
+                          const boost::posix_time::time_duration& timeout)
    {
       shared::event::CEventHandler receivedEvtHandler;
 
@@ -148,7 +149,7 @@ namespace pluginSystem
 
       send(pbMsg);
 
-      if (receivedEvtHandler.waitForEvents(boost::posix_time::minutes(1)) == shared::event::kTimeout)
+      if (receivedEvtHandler.waitForEvents(timeout) == shared::event::kTimeout)
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
          m_onReceiveHook.clear();
@@ -473,7 +474,7 @@ namespace pluginSystem
       auto message = req.mutable_bindingquery();
       message->set_query(request->getData().getQuery());
 
-      bool success;
+      auto success = false;
       std::string result;
 
       try
@@ -506,7 +507,7 @@ namespace pluginSystem
       auto message = req.mutable_deviceconfigurationschemarequest();
       message->set_device(request->device());
 
-      bool success;
+      auto success = false;
       std::string result;
 
       try
@@ -559,7 +560,7 @@ namespace pluginSystem
       message->set_query(extraQuery->getData().query());
       message->set_data(extraQuery->getData().data().serialize());
 
-      bool success;
+      auto success = false;
       std::string result;
 
       try
@@ -593,7 +594,7 @@ namespace pluginSystem
       message->set_name(request->getData().getDeviceName());
       message->set_configuration(request->getData().getConfiguration().serialize());
 
-      bool success;
+      auto success = false;
       std::string result;
 
       try

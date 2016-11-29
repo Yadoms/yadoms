@@ -76,7 +76,7 @@ namespace shared
                ///\brief Yadoms send extra query to plugin
                ///\usage Optional, required if package.json declare that plugin supports extra query(flag "extraQueries" in package.json)
                ///\note Data : a boost::shared_ptr<const yApi::IExtraQuery> object containing the extra query
-               ///\note Plugin must process the specified command
+               ///\note Plugin must process the specified request, and return result within 10 seconds, by calling request->sendSuccess or sendError
                //-----------------------------------------------------
                kEventExtraQuery,
 
@@ -84,7 +84,7 @@ namespace shared
                ///\brief Yadoms ask the plugin a binding query
                ///\usage Optional, required if package.json used bind data ("__binding__" label, with "type" = "plugin")
                ///\note Data : a boost::shared_ptr<yApi::IBindingQueryRequest> object containing the binding request
-               ///\note Plugin must process the specified request, and return result by calling request->sendSuccess or sendError
+               ///\note Plugin must process the specified request, and return result within 10 seconds, by calling request->sendSuccess or sendError
                //-----------------------------------------------------
                kBindingQuery,
 
@@ -101,7 +101,7 @@ namespace shared
                ///\usage Optional, required if package.json declare that plugin supports manually device creation
                ///       (Flag "supportManuallyDeviceCreation" set to true in package.json)
                ///\note Data : a boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> object containing the device creation request
-               ///\note Plugin must create the specified device
+               ///\note Plugin must process the specified request, and return result within 10 seconds, by calling request->sendSuccess or sendError
                //-----------------------------------------------------
                kEventManuallyDeviceCreation,
 
@@ -117,7 +117,7 @@ namespace shared
                ///\brief Yadoms ask the device configuration schema
                ///\usage Optional, required if device configuration support is declared in package.json (flag "deviceConfiguration" in package.json)
                ///\note Data : a boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest> object containing the device configuration schema request
-               ///\note Plugin must return the configation schema associated to the device (by calling request->sendSuccess or sendError)
+               ///\note Plugin must process the specified request, and return result within 10 seconds, by calling request->sendSuccess or sendError
                //-----------------------------------------------------
                kGetDeviceConfigurationSchemaRequest,
 

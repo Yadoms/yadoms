@@ -13,10 +13,11 @@ class CForecastTomorrow : public IKeyword
 public:
    //--------------------------------------------------------------
    /// \brief	                      Constructor
-   /// \param[in] KeyWordName          The keyword name
-   /// \note                           Use this constructor initialising the keyword for this plugin
+   /// \param[in] api                Yadoms api
+   /// \param[in] KeyWordName        The keyword name
+   /// \note                         Use this constructor initialising the keyword for this plugin
    //--------------------------------------------------------------
-   explicit CForecastTomorrow(const std::string& KeyWordName);
+   explicit CForecastTomorrow(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& KeyWordName);
 
    //--------------------------------------------------------------
    /// \brief	                      Set the value of the keyword
@@ -44,5 +45,10 @@ private:
    /// \brief	The map of returned value to the IHM
    //--------------------------------------------------------------
    typedef std::map<std::string, unsigned int> EnumColorMap;
+
+   //--------------------------------------------------------------
+   /// \brief	developer mode
+   //--------------------------------------------------------------
+   bool m_isDeveloperMode;
 };
 

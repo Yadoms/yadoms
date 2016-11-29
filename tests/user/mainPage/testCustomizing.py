@@ -45,7 +45,7 @@ class Customizing(unittest.TestCase):
          mainPage.widgets.getAddWidgetButton(self.browser).click()
          newWidgetModal = mainPage.widgets.waitNewWidgetModal(self.browser)
          print 'Cancel add widget modal'
-         newWidgetModal.close()
+         newWidgetModal.cancel()
          
          print 'Immediately exit customizing mode'
          mainPage.widgets.exitCustomizingMode(self.browser)

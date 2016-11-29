@@ -13,10 +13,11 @@ class CRunningPeriod : public IKeyword
 public:
    //--------------------------------------------------------------
    /// \brief	                      Constructor
+   /// \param[in] api                Yadoms api
    /// \param[in] KeyWordName        The keyword name
    /// \note                         Use this constructor initializing the keyword for this plugin
    //--------------------------------------------------------------
-   explicit CRunningPeriod(const std::string& KeyWordName);
+   explicit CRunningPeriod(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& KeyWordName);
 
    //--------------------------------------------------------------
    /// \brief	                      Set the value of the keyword
@@ -48,5 +49,10 @@ private:
    /// \brief	The map of returned value to the IHM
    //--------------------------------------------------------------
    typedef std::map<std::string, unsigned int> EnumPeriod;
+
+   //--------------------------------------------------------------
+   /// \brief	developer mode
+   //--------------------------------------------------------------
+   bool m_isDeveloperMode;
 };
 

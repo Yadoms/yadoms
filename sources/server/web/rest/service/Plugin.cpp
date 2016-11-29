@@ -592,7 +592,6 @@ namespace web
                            if (res.Success)
                               return CResult::GenerateSuccess(res.Result);
 
-                           //the plugin failed to create the device
                            return CResult::GenerateError(res.ErrorMessage);
                         }
 
