@@ -22,6 +22,10 @@ before_install:
 - echo 'Installing CMake 3.4.3'
 - sudo apt-get remove cmake
 
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "using uploaded components"; else echo "using official components and build them"; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then echo "Upload build components"; else echo "Do not upload built components"; fi
+
+
 - $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && wget  -U 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4' http://yadoms.com/travis_build/cmake-3.4.3-build.tar.bz2 
 - $TRAVIS_USE_UPLOADED_COMPONENTS == "false" && wget --no-check-certificate https://cmake.org/files/v3.4/cmake-3.4.3.tar.gz
 - $TRAVIS_USE_UPLOADED_COMPONENTS == "true" && tar jxf cmake-3.4.3-build.tar.bz2
