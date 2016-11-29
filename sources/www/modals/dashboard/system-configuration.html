@@ -31,7 +31,7 @@
       
 
       // get current location information
-      ConfigurationManager.getSection(ConfigurationManager.items.locationSection)
+      ConfigurationManager.getSection(ConfigurationManager.items.system.locationSection)
          .done(function(locationConfiguration) {
          
             Yadoms.locationConfiguration = locationConfiguration;
@@ -89,30 +89,39 @@
                //*************
                //city name
                
-               var longitude = "0.0";
-               var latitude  = "0.0";
+               var value = {};
                
-               try{
-                  latitude  = Yadoms.locationConfiguration[ConfigurationManager.items.system.location.latitude].value;
-                  longitude = Yadoms.locationConfiguration[ConfigurationManager.items.system.location.longitude].value;
-               }
-               catch (err) {
-                  console.warn("No city coordonates configured !");
-               }            
+               if (!isNullOrUndefined ( Yadoms.locationConfiguration[ConfigurationManager.items.system.location.latitude] ))
+                  value.latitude  = Yadoms.locationConfiguration[ConfigurationManager.items.system.location.latitude];
+               else
+                  value.latitude = "0.0";
+                  
+               if (!isNullOrUndefined ( Yadoms.locationConfiguration[ConfigurationManager.items.system.location.longitude] ))
+                  value.longitude = Yadoms.locationConfiguration[ConfigurationManager.items.system.location.longitude];
+               else
+                  value.longitude = "0.0";
+                  
+               value.altitude = "0.0";
+
+               Yadoms.locationConfiguration.value = value;
+               
+               console.log ( Yadoms.locationConfiguration );
                
                var latitudeParameter = new StringParameterHandler(i18NContext,
                   ConfigurationManager.items.system.location.latitude,
                   {
+                     "regex" : "^[0-9]+(\.[0-9]+)?$",
                      "required": "true"
                   },
-                  latitude);
+                  Yadoms.locationConfiguration.value[ConfigurationManager.items.system.location.latitude]);
                   
                var longitudeParameter = new StringParameterHandler(i18NContext,
                   ConfigurationManager.items.system.location.longitude,
                   {
+                     "regex" : "^[0-9]+(\.[0-9]+)?$",
                      "required": "true"
                   },
-                  longitude);                        
+                  Yadoms.locationConfiguration.value[ConfigurationManager.items.system.location.longitude]);                        
                
                // Add sub elements to the city section
                citySectionParameters.configurationHandlers.push(latitudeParameter);
@@ -241,7 +250,7 @@
                               i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
                                  $("html").i18n();
                           
-                           window.location.reload();
+                              window.location.reload();
                               });
 
 
@@ -295,10 +304,7 @@
                                              Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value = value;
 
                                              ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication])
-                                                .done(function() {
-                                                
-                                                   // TODO : Save the new location
-                                                
+                                                .done(function() { 
                                                    d.resolve();
                                                 })
                                                 .fail(d.reject);
@@ -307,8 +313,22 @@
                                     })
                                     .fail(d.reject);
                            })
-                           .fail(d.reject);
-
+                           .fail(d.reject);                           
+                           
+                           Yadoms.locationConfiguration.value[ConfigurationManager.items.system.location.latitude]  = latitudeParameter.getCurrentConfiguration();
+                           Yadoms.locationConfiguration.value[ConfigurationManager.items.system.location.longitude] = longitudeParameter.getCurrentConfiguration();
+                              
+                           ConfigurationManager.createToServer("system", 
+                                                               "location", 
+                                                               JSON.stringify(Yadoms.locationConfiguration.value), 
+                                                               "",
+                                                               "essai",
+                                                               "none")
+                              .done(function() {
+                                 d.resolve();
+                              })
+                              .fail(d.reject);
+                           
                         d.promise()
                            .done(function() {
                               //we show that configuration has been successfully saved
@@ -376,13 +396,10 @@
                                                       //*************                                                   
                                                       //city
                                                       Yadoms.systemConfiguration[ConfigurationManager.items.system.city].value = ""; //Todo : faire ainsi : languageParameter.getCurrentConfiguration();
-
-                                                      console.log ( ConfigurationManager.items.system.city );
-                                                      console.log ( Yadoms.systemConfiguration );
                                                       
                                                       ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.city])
                                                          .done(function() {
-                                                               window.location.reload();
+                                                               //window.location.reload();
                                                                d.resolve();
                                                          })
                                                          .fail(d.reject);

@@ -53,6 +53,8 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    // Load configuration values (provided by database)
    m_configuration.initializeWith(api->getConfiguration());
 
+   //shared::CDataContainer returnMessage = SendUrlRequest(api, "http://api.wunderground.com/api" + m_configuration.getAPIKey() + "/geolookup/q/37.7762,89,-122.395234.json", 3);
+
    try
    {
       m_WeatherConditionsRequester = boost::make_shared<CWeatherConditions>(api, m_configuration);
