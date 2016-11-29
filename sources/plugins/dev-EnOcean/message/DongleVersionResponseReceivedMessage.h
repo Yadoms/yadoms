@@ -46,7 +46,7 @@ namespace message
    private:
       const Version m_appVersion;
       const Version m_apiVersion;
-      const unsigned int m_chipId;
+      const std::string m_chipId;
       const unsigned int m_chipVersion;
       std::string m_appDescription;
    };

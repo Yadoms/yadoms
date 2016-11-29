@@ -35,10 +35,10 @@ namespace message
                      response->responseData()[5],
                      response->responseData()[6],
                      response->responseData()[7]),
-        m_chipId(response->responseData()[8] << 24
+        m_chipId(deviceIdToString(response->responseData()[8] << 24
            | response->responseData()[9] << 16
            | response->responseData()[10] << 8
-           | response->responseData()[11]),
+           | response->responseData()[11])),
         m_chipVersion(response->responseData()[12] << 24
            | response->responseData()[13] << 16
            | response->responseData()[14] << 8
@@ -59,10 +59,8 @@ namespace message
       ss << "EnOcean dongle Version " << m_appVersion.toString() <<
          " " << m_appDescription << "" <<
          ", api " << m_apiVersion.toString() <<
-         ", chipId " << std::hex << m_chipId <<
+         ", chipId " << m_chipId <<
          ", chipVersion " << std::hex << m_chipVersion;
       return ss.str();
    }
 } // namespace message
-
-

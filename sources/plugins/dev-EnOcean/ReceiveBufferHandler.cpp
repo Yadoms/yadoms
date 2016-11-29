@@ -116,7 +116,7 @@ boost::shared_ptr<const message::CEsp3ReceivedPacket> CReceiveBufferHandler::get
 
    // The message is complete
 
-   auto message = boost::make_shared<message::CEsp3ReceivedPacket>(m_content);
+   auto message = boost::make_shared<message::CEsp3ReceivedPacket>(std::vector<unsigned char>(m_content.begin(), m_content.begin() + fullMessageSize));
 
    // Delete extracted data
    m_content.erase(m_content.begin(), m_content.begin() + fullMessageSize);

@@ -28,9 +28,6 @@ namespace message
       const std::vector<unsigned char>& userData() const;
       unsigned char status() const;
 
-   protected:
-      static std::string senderIdToString(unsigned int senderId);
-
    private:
       const CRorgs::ERorgIds m_rorg;
       const std::string m_senderId;

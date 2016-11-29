@@ -41,4 +41,13 @@ namespace message
    // Sizef of messages
    enum { RESPONSE_DONGLE_VERSION_SIZE = 33 };
 
+
+
+   static std::string deviceIdToString(unsigned int deviceId)
+   {
+      std::stringstream ss;
+      ss << std::setfill('0') << std::setw(8) << std::uppercase << std::hex << deviceId;
+      return ss.str();
+   }
+
 } // namespace message
