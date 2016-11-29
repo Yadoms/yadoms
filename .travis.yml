@@ -32,8 +32,8 @@ before_install:
 - sudo make install  > yadoms_cmake.log
 - cd ..
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf cmake-3.4.3-build.tar.bz2 cmake-3.4.3; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then curl --ftp-create-dirs -T cmake-3.4.3-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then rm -f cmake-3.4.3-build.tar.bz2
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then curl --ftp-create-dirs -T cmake-3.4.3-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then rm -f cmake-3.4.3-build.tar.bz2; fi
 
 # boost
 - echo 'Building Boost 1.62.0'
