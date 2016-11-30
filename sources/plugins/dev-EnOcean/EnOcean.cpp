@@ -207,7 +207,7 @@ void CEnOcean::createConnection()
    // Create the port instance
    m_port = CFactory::constructPort(m_configuration);
 
-   auto bufferLogger = CFactory::constructBufferLogger();
+   auto bufferLogger = CFactory::constructBufferLogger(m_api->isDeveloperMode());
 
    m_messageHandler = CFactory::constructMessageHandler(m_port,
                                                         m_api->getEventHandler(),
