@@ -41,6 +41,7 @@ namespace message
       //--------------------------------------------------------------
       virtual ~CDongleVersionResponseReceivedMessage();
 
+      std::string chipId() const;
       std::string fullVersion() const;
 
    private:

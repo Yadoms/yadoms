@@ -92,15 +92,15 @@
           "name": "Comportement des interrupteurs",
           "type": "enum",
           "values": {
-            "tooggle": "Chanque changement inverse la sortie",
+            "tooggle": "Chaque changement inverse la sortie",
             "specific": "Etats spécifiques (Sortie active lorsque les contacts sont fermés)"
           }
         },
         "autoOffTimer": {
-          "name": "Temporisation d'arrêt automatique"
+          "name": "Temporisation d'arrêt automatique (en secondes)"
         },
         "delayRadioOffTimer": {
-          "name": "Temporisation d'arrêt après réception message"
+          "name": "Temporisation d'arrêt après réception message (en secondes)"
         }
       }
     }

@@ -34,7 +34,4 @@ namespace message
       const std::vector<unsigned char> m_data;
       const std::vector<unsigned char> m_optional;
    };
-
 } // namespace message
-
-

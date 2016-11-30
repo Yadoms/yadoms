@@ -38,12 +38,14 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
 void CProfile_D2_01_0F::sendCommand(const std::string& keyword,
                                     const std::string& commandBody,
+                                    const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    throw std::logic_error("device supports no command sending");
 }
 
 void CProfile_D2_01_0F::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
+                                          const std::string& senderId,
                                           boost::shared_ptr<IMessageHandler> messageHandler) const
 {
    //TODO

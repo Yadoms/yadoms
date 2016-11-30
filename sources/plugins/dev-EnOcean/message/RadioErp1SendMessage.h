@@ -12,6 +12,7 @@ namespace message
    public:
       CRadioErp1SendMessage(CRorgs::ERorgIds rorg,
                             const std::string& senderId,
+                            const std::string& destinationId,
                             unsigned char status);
       virtual ~CRadioErp1SendMessage();
 
@@ -22,6 +23,7 @@ namespace message
    private:
       CRorgs::ERorgIds m_rorg;
       const std::string m_senderId;
+      const std::string m_destinationId;
       std::vector<unsigned char> m_userData;
       unsigned char m_status;
    };

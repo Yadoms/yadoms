@@ -82,7 +82,7 @@ protected:
    void processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
    static void processResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
    void processDongleVersionResponse(message::CResponseReceivedMessage::EReturnCode returnCode,
-                                     const message::CDongleVersionResponseReceivedMessage& dongleVersionResponse) const;
+                                     const message::CDongleVersionResponseReceivedMessage& dongleVersionResponse);
    static void processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
    void processUTE(const message::CUTE_ReceivedMessage& uteMessage);
 
@@ -108,7 +108,7 @@ protected:
    //--------------------------------------------------------------
    /// \brief	                     Requests to EnOcean
    //--------------------------------------------------------------
-   void requestDongleVersion() const;
+   void requestDongleVersion();
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection
@@ -179,4 +179,9 @@ private:
    /// \brief  The known devices list (only configured devices)
    //--------------------------------------------------------------
    std::map<std::string, boost::shared_ptr<IType>> m_devices;
+
+   //--------------------------------------------------------------
+   /// \brief  The send ID (ID of EnOcean chip on the USB dongle)
+   //--------------------------------------------------------------
+   std::string m_senderId;
 };

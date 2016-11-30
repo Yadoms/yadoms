@@ -25,12 +25,14 @@ namespace message
 
       CRorgs::ERorgIds rorg() const;
       std::string senderId() const;
+      std::string destinationId() const;
       const std::vector<unsigned char>& userData() const;
       unsigned char status() const;
 
    private:
       const CRorgs::ERorgIds m_rorg;
       const std::string m_senderId;
+      const std::string m_destinationId;
       const unsigned char m_status;
       const std::vector<unsigned char> m_userData;
    };

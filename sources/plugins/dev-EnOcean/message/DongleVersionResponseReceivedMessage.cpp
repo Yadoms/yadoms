@@ -53,6 +53,11 @@ namespace message
    {
    }
 
+   std::string CDongleVersionResponseReceivedMessage::chipId() const
+   {
+      return m_chipId;
+   }
+
    std::string CDongleVersionResponseReceivedMessage::fullVersion() const
    {
       std::ostringstream ss;

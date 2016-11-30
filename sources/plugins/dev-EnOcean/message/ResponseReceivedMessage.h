@@ -45,5 +45,3 @@ namespace message
       const std::vector<unsigned char> m_responseData;
    };
 } // namespace message
-
-

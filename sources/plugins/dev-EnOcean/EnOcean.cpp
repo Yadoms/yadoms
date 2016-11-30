@@ -212,7 +212,7 @@ void CEnOcean::createConnection()
    m_messageHandler = CFactory::constructMessageHandler(m_port,
                                                         m_api->getEventHandler(),
                                                         kEvtPortDataReceived,
-      bufferLogger);
+                                                        bufferLogger);
 
    m_port->subscribeForConnectionEvents(m_api->getEventHandler(),
                                         kEvtPortConnection);
@@ -274,6 +274,7 @@ void CEnOcean::processDeviceCommand(boost::shared_ptr<const shared::plugin::yPlu
 
    m_devices[command->getDevice()]->sendCommand(command->getKeyword(),
                                                 command->getBody(),
+                                                m_senderId,
                                                 m_messageHandler);
 }
 
@@ -351,6 +352,7 @@ void CEnOcean::processDeviceConfiguration(const std::string& deviceId,
       try
       {
          m_devices[deviceId]->sendConfiguration(configuration.get<shared::CDataContainer>("profile.content." + m_devices[deviceId]->profile() + ".content"),
+                                                m_senderId,
                                                 m_messageHandler);
       }
       catch (std::exception& e)
@@ -526,7 +528,7 @@ void CEnOcean::processResponse(boost::shared_ptr<const message::CEsp3ReceivedPac
 }
 
 void CEnOcean::processDongleVersionResponse(message::CResponseReceivedMessage::EReturnCode returnCode,
-                                            const message::CDongleVersionResponseReceivedMessage& dongleVersionResponse) const
+                                            const message::CDongleVersionResponseReceivedMessage& dongleVersionResponse)
 {
    if (returnCode == message::CResponseReceivedMessage::RET_NOT_SUPPORTED)
    {
@@ -539,6 +541,8 @@ void CEnOcean::processDongleVersionResponse(message::CResponseReceivedMessage::E
    }
 
    m_api->setPluginState(yApi::historization::EPluginState::kRunning);
+
+   m_senderId = dongleVersionResponse.chipId();
 
    std::cout << dongleVersionResponse.fullVersion() << std::endl;
 }
@@ -673,7 +677,7 @@ boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
    return device;
 }
 
-void CEnOcean::requestDongleVersion() const
+void CEnOcean::requestDongleVersion()
 {
    message::CCommonCommandSendMessage sendMessage(message::CCommonCommandSendMessage::CO_RD_VERSION);
 
