@@ -33,8 +33,8 @@ boost::shared_ptr<shared::communication::IReceiveBufferHandler> CFactory::constr
 boost::shared_ptr<shared::communication::IBufferLogger> CFactory::constructBufferLogger(bool fullLog)
 {
    return fullLog ?
-      (boost::shared_ptr<shared::communication::IBufferLogger>)(boost::make_shared<shared::communication::CBufferLogger>(std::cout)) :
-      (boost::shared_ptr<shared::communication::IBufferLogger>)(boost::make_shared<shared::communication::CNoBufferLogger>());
+             static_cast<boost::shared_ptr<shared::communication::IBufferLogger>>(boost::make_shared<shared::communication::CBufferLogger>(std::cout)) :
+             static_cast<boost::shared_ptr<shared::communication::IBufferLogger>>(boost::make_shared<shared::communication::CNoBufferLogger>());
 }
 
 boost::shared_ptr<IMessageHandler> CFactory::constructMessageHandler(boost::shared_ptr<shared::communication::IAsyncPort> port,
