@@ -30,13 +30,6 @@ namespace shared
          /// \param[in] log      Buffer to log
          //--------------------------------------------------------------
          virtual void logSent(const CByteBuffer& data) = 0;
-
-         //--------------------------------------------------------------
-         /// \brief	            Adapt a buffer to be loggable
-         /// \param [in] data    data
-         /// \return             Formatted buffer
-         //--------------------------------------------------------------
-         virtual std::string msgToString(const CByteBuffer& data) const = 0;
       };
    }
 } // namespace shared::communication
