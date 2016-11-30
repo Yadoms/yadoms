@@ -21,17 +21,16 @@
       $modalBody.empty();
 
       var promise = new $.Deferred();
-      var promiseLocation = new $.Deferred();
-      var locationFirstConfiguration = false;      
+      //var promiseLocation = new $.Deferred();
+      //var locationFirstConfiguration = false;      
       
       Yadoms.systemConfiguration = null;
-      Yadoms.locationConfiguration = null;
+      //Yadoms.locationConfiguration = null;
       
       var i18NContext = "modals.dashboard.sub-windows.system-configuration.configuration-items.";
       
-
       // get current location information
-      ConfigurationManager.getSection(ConfigurationManager.items.locationSection)
+      /*ConfigurationManager.getSection(ConfigurationManager.items.systemSection)
          .done(function(locationConfiguration) {
          
             Yadoms.locationConfiguration = locationConfiguration;
@@ -46,7 +45,7 @@
             .fail(function(error) {
                notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
                promiseLocation.reject();
-            });
+            });*/
 
       //get current system configuration            
       ConfigurationManager.getSection(ConfigurationManager.items.systemSection)
@@ -55,6 +54,8 @@
 
                //we update system configuration to be sure to modify the latest version of the configuration
                Yadoms.systemConfiguration = configuration;
+               
+               console.log ( configuration );
             }
             
             promise.resolve();
@@ -65,9 +66,7 @@
          });
 
       // When systemSection and locationSection are done
-      $.when(promise, promiseLocation).done(function() {
-               
-               // TODO : tester Yadoms.systemConfiguration et Yadoms.locationConfiguration
+      $.when(promise).done(function() {
                
                //*************
                //language
@@ -89,30 +88,37 @@
                //*************
                //city name
                
-               var longitude = "0.0";
-               var latitude  = "0.0";
+               var value = {};
                
-               try{
-                  latitude  = Yadoms.locationConfiguration[ConfigurationManager.items.system.location.latitude].value;
-                  longitude = Yadoms.locationConfiguration[ConfigurationManager.items.system.location.longitude].value;
-               }
-               catch (err) {
-                  console.warn("No city coordonates configured !");
-               }            
+               if (!isNullOrUndefined ( Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.latitude] ))
+                  value.latitude  = Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.latitude];
+               else
+                  value.latitude = "0.0";
+                  
+               if (!isNullOrUndefined ( Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.longitude] ))
+                  value.longitude = Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.longitude];
+               else
+                  value.longitude = "0.0";
+                  
+               value.altitude = "0.0";
+
+               Yadoms.systemConfiguration.location.value = value;
+               
+               console.log ( Yadoms.systemConfiguration );
                
                var latitudeParameter = new StringParameterHandler(i18NContext,
                   ConfigurationManager.items.system.location.latitude,
                   {
                      "required": "true"
                   },
-                  latitude);
+                  Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.latitude]);
                   
                var longitudeParameter = new StringParameterHandler(i18NContext,
                   ConfigurationManager.items.system.location.longitude,
                   {
                      "required": "true"
                   },
-                  longitude);                        
+                  Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.longitude]);                        
                
                // Add sub elements to the city section
                citySectionParameters.configurationHandlers.push(latitudeParameter);
@@ -292,14 +298,24 @@
                                                 value.password = "";
                                              }
 
-                                             Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value = value;
+                                             Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value = JSON.stringify(value);
 
                                              ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication])
-                                                .done(function() {
+                                                .done(function() { 
                                                 
-                                                   // TODO : Save the new location
+                                                   Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.latitude]  = latitudeParameter.getCurrentConfiguration();
+                                                   Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.longitude] = longitudeParameter.getCurrentConfiguration();                                                
                                                 
-                                                   d.resolve();
+                                                   ConfigurationManager.createToServer("system", 
+                                                                                       "location", 
+                                                                                       JSON.stringify(Yadoms.systemConfiguration.location.value), 
+                                                                                       "",
+                                                                                       "essai",
+                                                                                       "none")
+                                                      .done(function() {
+                                                         d.resolve();
+                                                      })
+                                                      .fail(d.reject);                                                
                                                 })
                                                 .fail(d.reject);
                                           })
@@ -372,7 +388,7 @@
                                                 ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString])
                                                    .done(function() {
                                                    
-                                                      console.log ( "Save city !");
+                                                      // TODO : Faire le reset propre
                                                       //*************                                                   
                                                       //city
                                                       Yadoms.systemConfiguration[ConfigurationManager.items.system.city].value = ""; //Todo : faire ainsi : languageParameter.getCurrentConfiguration();
