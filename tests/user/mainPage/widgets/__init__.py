@@ -35,8 +35,11 @@ def getAddWidgetButton(browser):
    
    
 def waitNewWidgetModal(browser):
-   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "new-widget-modal")))
-   return NewWidgetModal(browser.find_element_by_id("new-widget-modal"))
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "new-pickup-modal")))
+   modal = browser.find_element_by_id("new-pickup-modal")
+   if modal.find_element_by_id("myModalLabel") and modal.find_element_by_id("myModalLabel").get_attribute("data-i18n") == "modals.add-widget.title":
+      return NewWidgetModal(browser.find_element_by_id("new-pickup-modal"))
+   assert False
    
    
 def waitConfigureWidgetModal(browser):
@@ -76,34 +79,26 @@ class NewWidgetModal():
    """ Operations on new widget modal (widget selection) """
    
    def __init__(self, newWidgetModalWebElement):
-       self.__newWidgetModalWebElement = newWidgetModalWebElement
+      self.__modal = modals.PickupSelectorModal(newWidgetModalWebElement)
 
    def selectWidget(self, expectedWidgetName):
-      widgetList = WebDriverWait(self.__newWidgetModalWebElement, 10).until(Condition.visibility_of_element_located((By.ID, "ul-add-widget")))
-      for item in widgetList.find_elements_by_tag_name('button'):
-         if item.get_attribute('widget-type') == expectedWidgetName:
-            return item
+      item = self.__modal.selectItem(expectedWidgetName)
+      if item is not None:
+         return item
       print "selectWidget : Nothing to select, ", expectedWidgetName, " not found"
       assert False
 
    def getConfirmButton(self):
-      WebDriverWait(self.__newWidgetModalWebElement, 10).until(Condition.visibility_of_element_located((By.ID, "btn-confirm-add-widget")))
-      return self.__newWidgetModalWebElement.find_element_by_id("btn-confirm-add-widget")
+      return self.__modal.getConfirmButton()
          
-   def getCloseButton(self):
-      buttons = self.__newWidgetModalWebElement.find_elements_by_tag_name('button')
-      for button in buttons:
-         if button.get_attribute('data-i18n') is not None and 'common.close' in button.get_attribute('data-i18n'):
-            return button
-      assert False
+   def getCancelButton(self):
+      return self.__modal.getCancelButton()
       
    def ok(self):
-      self.getConfirmButton().click()
-      modals.waitForClosed(self.__newWidgetModalWebElement)
+      return self.__modal.ok()
       
-   def close(self):
-      self.getCloseButton().click()
-      modals.waitForClosed(self.__newWidgetModalWebElement)
+   def cancel(self):
+      return self.__modal.cancel()
 
 
 

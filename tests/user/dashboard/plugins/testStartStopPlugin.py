@@ -13,6 +13,7 @@ import scripts
 import yadomsServer
 import dashboard
 import dashboard.automation
+import dashboard.plugins
 import tools
 
 class StartStopPlugin(unittest.TestCase):

@@ -18,8 +18,8 @@ CTransceiver::CTransceiver(boost::shared_ptr<yApi::IYPluginApi> api)
      m_tempoWhiteDaysNormalCostPeriod(boost::make_shared<yApi::historization::CEnergy>("TempoWhiteDaysNormalCostPeriod")),
      m_instantCurrent(boost::make_shared<yApi::historization::CCurrent>("InstantCurrent")),
      m_apparentPower(boost::make_shared<yApi::historization::CApparentPower>("ApparentPower")),
-     m_TimePeriod(boost::make_shared<CRunningPeriod>("RunningPeriod")),
-     m_ForecastPeriod(boost::make_shared<CForecastTomorrow>("ForecastColor")),
+     m_TimePeriod(boost::make_shared<CRunningPeriod>(api, "RunningPeriod")),
+     m_ForecastPeriod(boost::make_shared<CForecastTomorrow>(api, "ForecastColor")),
      m_api(api),
      m_isdeveloperMode(false),
      m_deviceCreated(false),
@@ -265,8 +265,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       case TELEINFO_TYPE_ADCO:   //TODO_V2 : Detect the change of the counter in live
          if (!ADCORead)
          {
-            if (m_isdeveloperMode)
-               std::cout << "ADCO" << "=" << value << std::endl;
+            if (m_isdeveloperMode) std::cout << "ADCO" << "=" << value << std::endl;
 
             m_DeviceName = value;
             ADCORead = true;
@@ -275,8 +274,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       case TELEINFO_TYPE_OPTARIF:
          if (!OpTarifRead)
          {
-            if (m_isdeveloperMode)
-               std::cout << "OPTARIF" << "=" << value << std::endl;
+            if (m_isdeveloperMode) std::cout << "OPTARIF" << "=" << value << std::endl;
 
             OpTarifRead = true;
 
@@ -339,8 +337,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       case TELEINFO_TYPE_ISOUSC:
          if (!ISousRead)
          {
-            if (m_isdeveloperMode)
-               std::cout << "ISOUSC" << "=" << value << std::endl;
+            if (m_isdeveloperMode) std::cout << "ISOUSC" << "=" << value << std::endl;
 
             ISousRead = true;
          }
@@ -348,8 +345,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       case TELEINFO_TYPE_BASE:
          if (lvalueIsANumber && !m_baseUpdated)
          {
-            if (m_isdeveloperMode)
-               std::cout << "BASE" << "=" << lvalue << std::endl;
+            if (m_isdeveloperMode) std::cout << "BASE" << "=" << lvalue << std::endl;
 
             m_baseCounter->set(lvalue);
             m_baseUpdated = true;
@@ -358,8 +354,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       case TELEINFO_TYPE_HCHC:
          if (lvalueIsANumber && !m_lowCostUpdated)
          {
-            if (m_isdeveloperMode)
-               std::cout << "HCHC" << "=" << lvalue << std::endl;
+            if (m_isdeveloperMode) std::cout << "HCHC" << "=" << lvalue << std::endl;
 
             m_lowCostCounter->set(lvalue);
             m_lowCostUpdated = true;
@@ -368,8 +363,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       case TELEINFO_TYPE_HCHP:
          if (lvalueIsANumber && !m_normalCostUpdated)
          {
-            if (m_isdeveloperMode)
-               std::cout << "HCHP" << "=" << lvalue << std::endl;
+            if (m_isdeveloperMode) std::cout << "HCHP" << "=" << lvalue << std::endl;
 
             m_normalCostCounter->set(lvalue);
             m_normalCostUpdated = true;
@@ -378,8 +372,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       case TELEINFO_TYPE_EJPHPM:
          if (lvalueIsANumber && !m_eJPPeakPeriodUpdated)
          {
-            if (m_isdeveloperMode)
-               std::cout << "EJPHPM" << "=" << lvalue << std::endl;
+            if (m_isdeveloperMode) std::cout << "EJPHPM" << "=" << lvalue << std::endl;
 
             m_EJPPeakPeriod->set(lvalue);
             m_eJPPeakPeriodUpdated = true;
@@ -388,8 +381,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       case TELEINFO_TYPE_EJPHN:
          if (lvalueIsANumber && !m_eJPNormalPeriodUpdated)
          {
-            if (m_isdeveloperMode)
-               std::cout << "EJPHPN" << "=" << lvalue << std::endl;
+            if (m_isdeveloperMode) std::cout << "EJPHPN" << "=" << lvalue << std::endl;
 
             m_EJPNormalPeriod->set(lvalue);
             m_eJPNormalPeriodUpdated = true;
@@ -398,8 +390,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       case TELEINFO_TYPE_BBRHCJB:
          if (lvalueIsANumber && !m_tempoBlueDaysLowCostUpdated)
          {
-            if (m_isdeveloperMode)
-               std::cout << "BBRHCJB" << "=" << lvalue << std::endl;
+            if (m_isdeveloperMode) std::cout << "BBRHCJB" << "=" << lvalue << std::endl;
 
             m_tempoBlueDaysLowCostPeriod->set(lvalue);
             m_tempoBlueDaysLowCostUpdated = true;
@@ -408,8 +399,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       case TELEINFO_TYPE_BBRHPJB:
          if (lvalueIsANumber && !m_tempoBlueDaysNormalCostUpdated)
          {
-            if (m_isdeveloperMode)
-               std::cout << "BBRHPJB" << "=" << lvalue << std::endl;
+            if (m_isdeveloperMode) std::cout << "BBRHPJB" << "=" << lvalue << std::endl;
 
             m_tempoBlueDaysNormalCostPeriod->set(lvalue);
             m_tempoBlueDaysNormalCostUpdated = true;
@@ -418,8 +408,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       case TELEINFO_TYPE_BBRHCJW:
          if (lvalueIsANumber && !m_tempoWhiteDaysLowCostUpdated)
          {
-            if (m_isdeveloperMode)
-               std::cout << "BBRHCJW" << "=" << lvalue << std::endl;
+            if (m_isdeveloperMode) std::cout << "BBRHCJW" << "=" << lvalue << std::endl;
 
             m_tempoWhiteDaysLowCostPeriod->set(lvalue);
             m_tempoWhiteDaysLowCostUpdated = true;
@@ -428,8 +417,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       case TELEINFO_TYPE_BBRHPJW:
          if (lvalueIsANumber && !m_tempoWhiteDaysNormalCostUpdated)
          {
-            if (m_isdeveloperMode)
-               std::cout << "BBRHPJW" << "=" << lvalue << std::endl;
+            if (m_isdeveloperMode) std::cout << "BBRHPJW" << "=" << lvalue << std::endl;
 
             m_tempoWhiteDaysNormalCostPeriod->set(lvalue);
             m_tempoWhiteDaysNormalCostUpdated = true;
@@ -438,8 +426,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       case TELEINFO_TYPE_BBRHCJR:
          if (lvalueIsANumber && !m_tempoRedDaysLowCostUpdated)
          {
-            if (m_isdeveloperMode)
-               std::cout << "BBRHCJR" << "=" << lvalue << std::endl;
+            if (m_isdeveloperMode) std::cout << "BBRHCJR" << "=" << lvalue << std::endl;
 
             m_tempoRedDaysLowCostPeriod->set(lvalue);
             m_tempoRedDaysLowCostUpdated = true;
@@ -448,8 +435,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       case TELEINFO_TYPE_BBRHPJR:
          if (lvalueIsANumber && !m_tempoRedDaysNormalCostUpdated)
          {
-            if (m_isdeveloperMode)
-               std::cout << "BBRHPJR" << "=" << lvalue << std::endl;
+            if (m_isdeveloperMode) std::cout << "BBRHPJR" << "=" << lvalue << std::endl;
 
             m_tempoRedDaysNormalCostPeriod->set(lvalue);
             m_tempoRedDaysNormalCostUpdated = true;
@@ -458,8 +444,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       case TELEINFO_TYPE_PTEC:
          if (!m_timePeriodUpdated && m_deviceCreated)
          {
-            if (m_isdeveloperMode)
-               std::cout << "PTEC" << "=" << value << std::endl;
+            if (m_isdeveloperMode) std::cout << "PTEC" << "=" << value << std::endl;
 
             std::string temp(value);
             m_TimePeriod->set(temp);
@@ -469,8 +454,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       case TELEINFO_TYPE_IINST:
          if (lvalueIsANumber && !m_instantCurrentUpdated)
          {
-            if (m_isdeveloperMode)
-               std::cout << "IINST" << "=" << value << std::endl;
+            if (m_isdeveloperMode) std::cout << "IINST" << "=" << value << std::endl;
 
             m_instantCurrent->set(lvalue);
             m_instantCurrentUpdated = true;
@@ -481,8 +465,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       case TELEINFO_TYPE_PAPP:
          if (lvalueIsANumber && !m_apparentPowerUpdated)
          {
-            if (m_isdeveloperMode)
-               std::cout << "PAPP" << "=" << lvalue << std::endl;
+            if (m_isdeveloperMode) std::cout << "PAPP" << "=" << lvalue << std::endl;
 
             m_apparentPower->set(lvalue);
             m_apparentPowerUpdated = true;
@@ -495,8 +478,7 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
       case TELEINFO_TYPE_DEMAIN:
          if (!m_forecastPeriodUpdated && m_deviceCreated)
          {
-            if (m_isdeveloperMode)
-               std::cout << "DEMAIN" << "=" << value << std::endl;
+            if (m_isdeveloperMode) std::cout << "DEMAIN" << "=" << value << std::endl;
 
             std::string temp(value);
             m_ForecastPeriod->set(temp);
@@ -505,14 +487,12 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
          break;
 
       case TELEINFO_TYPE_ADPS: // Threshold warning ! If IINST > ISOUSC
-         if (m_isdeveloperMode)
-            std::cout << "ADPS" << "=" << value << std::endl;
+         if (m_isdeveloperMode) std::cout << "ADPS" << "=" << value << std::endl;
          break;
 
       case TELEINFO_TYPE_MOTDETAT:
          // This value is for the distributor. It's nevers used
-         if (m_isdeveloperMode)
-            std::cout << "MOTDETAT" << "=" << value << std::endl;
+         if (m_isdeveloperMode) std::cout << "MOTDETAT" << "=" << value << std::endl;
          break;
       default:
          break;

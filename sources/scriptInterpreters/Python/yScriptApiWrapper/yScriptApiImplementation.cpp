@@ -15,7 +15,7 @@ CYScriptApiImplementation::CYScriptApiImplementation(const std::string& yScriptA
    {
       const auto sendMessageQueueId(yScriptApiAccessorId + ".toYadoms");
       const auto receiveMessageQueueId(yScriptApiAccessorId + ".toScript");
-      m_sendMessageQueue    = boost::make_shared<boost::interprocess::message_queue>(boost::interprocess::open_only, sendMessageQueueId.c_str()   );
+      m_sendMessageQueue = boost::make_shared<boost::interprocess::message_queue>(boost::interprocess::open_only, sendMessageQueueId.c_str());
       m_receiveMessageQueue = boost::make_shared<boost::interprocess::message_queue>(boost::interprocess::open_only, receiveMessageQueueId.c_str());
    }
    catch (boost::interprocess::interprocess_exception& ex)
@@ -48,7 +48,9 @@ void CYScriptApiImplementation::sendRequest(const pbRequest::msg& request) const
       if (!request.SerializeToArray(m_mqBuffer, request.GetCachedSize()))
          throw std::overflow_error((boost::format("CYScriptApiImplementation::sendRequest \"%1%\" : fail to serialize request (too big ?)") % request.descriptor()->full_name()).str());
 
-      m_sendMessageQueue->send(m_mqBuffer, request.GetCachedSize(), 0);
+      m_sendMessageQueue->send(m_mqBuffer,
+                               request.GetCachedSize(),
+                               0);
    }
    catch (boost::interprocess::interprocess_exception& ex)
    {
@@ -63,7 +65,10 @@ void CYScriptApiImplementation::receiveAnswer(pbAnswer::msg& answer) const
    size_t messageSize;
    unsigned int messagePriority;
 
-   m_receiveMessageQueue->receive(message, m_messageQueueMessageSize, messageSize, messagePriority);
+   m_receiveMessageQueue->receive(message,
+                                  m_messageQueueMessageSize,
+                                  messageSize,
+                                  messagePriority);
 
    if (messageSize < 1)
       throw std::runtime_error("yScriptApiWrapper::receiveAnswer : received Yadoms answer is zero length");
@@ -72,10 +77,11 @@ void CYScriptApiImplementation::receiveAnswer(pbAnswer::msg& answer) const
       throw shared::exception::CInvalidParameter("message : fail to parse received answer data into protobuf format");
 }
 
-int CYScriptApiImplementation::getKeywordId(const std::string& deviceName, const std::string& keywordName) const
+int CYScriptApiImplementation::getKeywordId(const std::string& deviceName,
+                                            const std::string& keywordName) const
 {
    pbRequest::msg req;
-   pbRequest::GetKeywordId* request = req.mutable_getkeywordid();
+   auto request = req.mutable_getkeywordid();
    request->set_devicename(deviceName);
    request->set_keywordname(keywordName);
    sendRequest(req);
@@ -92,10 +98,11 @@ int CYScriptApiImplementation::getKeywordId(const std::string& deviceName, const
    return answer.getkeywordid().id();
 }
 
-int CYScriptApiImplementation::getRecipientId(const std::string& firstName, const std::string& lastName) const
+int CYScriptApiImplementation::getRecipientId(const std::string& firstName,
+                                              const std::string& lastName) const
 {
    pbRequest::msg req;
-   pbRequest::GetRecipientId* request = req.mutable_getrecipientid();
+   auto request = req.mutable_getrecipientid();
    request->set_firstname(firstName);
    request->set_lastname(lastName);
    sendRequest(req);
@@ -115,7 +122,7 @@ int CYScriptApiImplementation::getRecipientId(const std::string& firstName, cons
 std::string CYScriptApiImplementation::readKeyword(int keywordId) const
 {
    pbRequest::msg req;
-   pbRequest::ReadKeyword* request = req.mutable_readkeyword();
+   auto request = req.mutable_readkeyword();
    request->set_keywordid(keywordId);
    sendRequest(req);
 
@@ -131,10 +138,11 @@ std::string CYScriptApiImplementation::readKeyword(int keywordId) const
    return answer.readkeyword().value();
 }
 
-std::string CYScriptApiImplementation::waitForNextAcquisition(int keywordId, const std::string& timeout) const
+std::string CYScriptApiImplementation::waitForNextAcquisition(int keywordId,
+                                                              const std::string& timeout) const
 {
    pbRequest::msg req;
-   pbRequest::WaitForNextAcquisition* request = req.mutable_waitfornextacquisition();
+   auto request = req.mutable_waitfornextacquisition();
    request->set_keywordid(keywordId);
    if (!timeout.empty())
       request->set_timeout(timeout);
@@ -152,12 +160,13 @@ std::string CYScriptApiImplementation::waitForNextAcquisition(int keywordId, con
    return answer.waitfornextacquisition().acquisition();
 }
 
-std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(const std::vector<int> & keywordIdList, const std::string& timeout) const
+std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(const std::vector<int>& keywordIdList,
+                                                                               const std::string& timeout) const
 {
    pbRequest::msg req;
-   pbRequest::WaitForNextAcquisitions* request = req.mutable_waitfornextacquisitions();
-   for (std::vector<int>::const_iterator it = keywordIdList.begin(); it != keywordIdList.end(); ++it)
-      request->add_keywordid(*it);
+   auto request = req.mutable_waitfornextacquisitions();
+   for (const auto it : keywordIdList)
+      request->add_keywordid(it);
    if (!timeout.empty())
       request->set_timeout(timeout);
    sendRequest(req);
@@ -174,12 +183,14 @@ std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(c
    return std::pair<int, std::string>(answer.waitfornextacquisitions().keywordid(), answer.waitfornextacquisitions().has_acquisition() ? answer.waitfornextacquisitions().acquisition() : std::string());
 }
 
-shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int> & keywordIdList, bool receiveDateTimeEvent, const std::string& timeout) const
+shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int>& keywordIdList,
+                                                                                        bool receiveDateTimeEvent,
+                                                                                        const std::string& timeout) const
 {
    pbRequest::msg req;
-   pbRequest::WaitForEvent* request = req.mutable_waitforevent();
-   for (std::vector<int>::const_iterator it = keywordIdList.begin(); it != keywordIdList.end(); ++it)
-      request->add_keywordid(*it);
+   auto request = req.mutable_waitforevent();
+   for (const auto it : keywordIdList)
+      request->add_keywordid(it);
    request->set_receivedatetimeevent(receiveDateTimeEvent);
    if (!timeout.empty())
       request->set_timeout(timeout);
@@ -197,9 +208,12 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
    shared::script::yScriptApi::CWaitForEventResult result;
    switch (answer.waitforevent().type())
    {
-   case pbAnswer::WaitForEvent_EventType_kTimeout : result.setType(shared::script::yScriptApi::CWaitForEventResult::kTimeout); break;
-   case pbAnswer::WaitForEvent_EventType_kKeyword : result.setType(shared::script::yScriptApi::CWaitForEventResult::kKeyword); break;
-   case pbAnswer::WaitForEvent_EventType_kDateTime : result.setType(shared::script::yScriptApi::CWaitForEventResult::kDateTime); break;
+   case pbAnswer::WaitForEvent_EventType_kTimeout: result.setType(shared::script::yScriptApi::CWaitForEventResult::kTimeout);
+      break;
+   case pbAnswer::WaitForEvent_EventType_kKeyword: result.setType(shared::script::yScriptApi::CWaitForEventResult::kKeyword);
+      break;
+   case pbAnswer::WaitForEvent_EventType_kDateTime: result.setType(shared::script::yScriptApi::CWaitForEventResult::kDateTime);
+      break;
    default:
       throw shared::exception::CInvalidParameter("answer.waitforevent.type");
    }
@@ -209,10 +223,10 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
    return result;
 }
 
-std::vector<int> CYScriptApiImplementation::getKeywordsByCapacity(const std::string & capacity) const
+std::vector<int> CYScriptApiImplementation::getKeywordsByCapacity(const std::string& capacity) const
 {
    pbRequest::msg req;
-   pbRequest::GetKeywordsByCapacity * request = req.mutable_getkeywordsbycapacity();
+   auto request = req.mutable_getkeywordsbycapacity();
    request->set_capacity(capacity);
    sendRequest(req);
 
@@ -226,15 +240,16 @@ std::vector<int> CYScriptApiImplementation::getKeywordsByCapacity(const std::str
       throw std::out_of_range("yScriptApiWrapper::getKeywordsByCapacity, wrong message received");
 
    std::vector<int> keywordIdList;
-   for (google::protobuf::RepeatedField<google::protobuf::int32>::const_iterator it = answer.getkeywordsbycapacity().keywordids().begin(); it != answer.getkeywordsbycapacity().keywordids().end(); ++it)
-      keywordIdList.push_back(*it);
+   for (const auto it : answer.getkeywordsbycapacity().keywordids())
+      keywordIdList.push_back(it);
    return keywordIdList;
 }
 
-void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& newState)
+void CYScriptApiImplementation::writeKeyword(int keywordId,
+                                             const std::string& newState)
 {
    pbRequest::msg req;
-   pbRequest::WriteKeyword* request = req.mutable_writekeyword();
+   auto request = req.mutable_writekeyword();
    request->set_keywordid(keywordId);
    request->set_newstate(newState);
    sendRequest(req);
@@ -249,10 +264,12 @@ void CYScriptApiImplementation::writeKeyword(int keywordId, const std::string& n
       throw std::out_of_range("yScriptApiWrapper::writeKeyword, wrong message received");
 }
 
-void CYScriptApiImplementation::sendNotification(int keywordId, int recipientId, const std::string& message)
+void CYScriptApiImplementation::sendNotification(int keywordId,
+                                                 int recipientId,
+                                                 const std::string& message)
 {
    pbRequest::msg req;
-   pbRequest::SendNotification* request = req.mutable_sendnotification();
+   auto request = req.mutable_sendnotification();
    request->set_keywordid(keywordId);
    request->set_recipientid(recipientId);
    request->set_message(message);
@@ -271,16 +288,23 @@ void CYScriptApiImplementation::sendNotification(int keywordId, int recipientId,
 std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
 {
    pbRequest::msg req;
-   pbRequest::GetInfo* request = req.mutable_getinfo();
+   auto request = req.mutable_getinfo();
    switch (key)
    {
-   case kSunrise:request->set_key(pbRequest::GetInfo_Key_kSunrise); break;
-   case kSunset:request->set_key(pbRequest::GetInfo_Key_kSunset); break;
-   case kLatitude:request->set_key(pbRequest::GetInfo_Key_kLatitude); break;
-   case kLongitude:request->set_key(pbRequest::GetInfo_Key_kLongitude); break;
-   case kAltitude:request->set_key(pbRequest::GetInfo_Key_kAltitude); break;
-   case kYadomsServerOS:request->set_key(pbRequest::GetInfo_Key_kYadomsServerOS); break;
-   case kYadomsServerVersion:request->set_key(pbRequest::GetInfo_Key_kYadomsServerVersion); break;
+   case kSunrise: request->set_key(pbRequest::GetInfo_Key_kSunrise);
+      break;
+   case kSunset: request->set_key(pbRequest::GetInfo_Key_kSunset);
+      break;
+   case kLatitude: request->set_key(pbRequest::GetInfo_Key_kLatitude);
+      break;
+   case kLongitude: request->set_key(pbRequest::GetInfo_Key_kLongitude);
+      break;
+   case kAltitude: request->set_key(pbRequest::GetInfo_Key_kAltitude);
+      break;
+   case kYadomsServerOS: request->set_key(pbRequest::GetInfo_Key_kYadomsServerOS);
+      break;
+   case kYadomsServerVersion: request->set_key(pbRequest::GetInfo_Key_kYadomsServerVersion);
+      break;
    default:
       throw shared::exception::CInvalidParameter("answer.waitforevent.type");
    }
@@ -301,7 +325,7 @@ std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
 std::string CYScriptApiImplementation::getKeywordName(int keywordId) const
 {
    pbRequest::msg req;
-   pbRequest::GetKeywordName* request = req.mutable_getkeywordname();
+   auto request = req.mutable_getkeywordname();
    request->set_keywordid(keywordId);
 
    sendRequest(req);
@@ -321,7 +345,7 @@ std::string CYScriptApiImplementation::getKeywordName(int keywordId) const
 std::string CYScriptApiImplementation::getKeywordDeviceName(int keywordId) const
 {
    pbRequest::msg req;
-   pbRequest::GetKeywordDeviceName* request = req.mutable_getkeyworddevicename();
+   auto request = req.mutable_getkeyworddevicename();
    request->set_keywordid(keywordId);
 
    sendRequest(req);
@@ -337,3 +361,4 @@ std::string CYScriptApiImplementation::getKeywordDeviceName(int keywordId) const
 
    return answer.getkeyworddevicename().devicename();
 }
+
