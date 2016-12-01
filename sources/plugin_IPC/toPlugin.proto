@@ -58,8 +58,22 @@ message ManuallyDeviceCreation {
 	optional string configuration = 2;
 }
 
-message DeveloperModeAnswer {
-    required bool enabled = 1;
+message Location{
+	required double latitude = 1;
+	required double longitude = 2;
+	required double altitude = 3;
+}
+
+message YadomsInformationAnswer {
+	required bool developperMode = 1;
+	required string version = 2;
+	
+	enum EReleaseType {
+		Stable = 0; ReleaseCandidate = 1; Beta = 2;
+	}
+	required EReleaseType releaseType = 3;
+
+	required Location location = 4;
 }
 
 message DeviceConfigurationSchemaRequest {
@@ -109,7 +123,7 @@ message msg {
 		FindRecipientsFromFieldAnswer findRecipientsFromFieldAnswer = 14;
 		RecipientFieldExitsAnswer recipientFieldExitsAnswer = 15;
 		ManuallyDeviceCreation manuallyDeviceCreation = 16;
-		DeveloperModeAnswer developerModeAnswer = 17;
+		YadomsInformationAnswer yadomsInformationAnswer = 17;
 		DeviceConfigurationSchemaRequest deviceConfigurationSchemaRequest = 18;
 		SetDeviceConfiguration setDeviceConfiguration = 19;
 		DeviceRemoved deviceRemoved = 20;

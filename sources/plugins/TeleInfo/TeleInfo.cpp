@@ -41,7 +41,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    std::cout << "Teleinfo is starting..." << std::endl;
 
-   m_isDeveloperMode = api->isDeveloperMode();
+   m_isDeveloperMode = api->getYadomsInformation()->developperMode();
 
    // Load configuration values (provided by database)
    m_configuration.initializeWith(api->getConfiguration());
