@@ -96,7 +96,7 @@ void CProfile_D2_01_12::sendCommand(const std::string& keyword,
    boost::dynamic_bitset<> userData(3 * 8);
    bitset_insert(userData, 4, 4, kActuatorSetOutput);
    bitset_insert(userData, 11, 5, (keyword == m_channel1->getKeyword()) ? 0 : 1);
-   bitset_insert(userData, 17, 7, commandBody == "true" ? 100 : 0);
+   bitset_insert(userData, 17, 7, commandBody == "true" || commandBody == "1" ? 100 : 0);
 
    command.userData(bitset_to_bytes(userData));
 

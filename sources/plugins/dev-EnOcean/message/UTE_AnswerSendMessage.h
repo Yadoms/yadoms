@@ -28,8 +28,9 @@ namespace message
       //--------------------------------------------------------------
       /// \brief	                           Constructor
       //--------------------------------------------------------------
-      CUTE_AnswerSendMessage(unsigned char status,
+      CUTE_AnswerSendMessage(const std::string& senderId,
                              const std::string& destinationId,
+                             unsigned char status,
                              bool bidirectionnalCommunication,
                              EResponse response,
                              unsigned char channelNumber,

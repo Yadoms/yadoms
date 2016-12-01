@@ -12,8 +12,6 @@ set(ENOCEAN_SOURCES
    4BSTeachinVariant2.h
    4BSTeachinVariant2.cpp
    IConfiguration.h
-   Device.h
-   Device.cpp
    DeviceConfigurationHelper.h
    DeviceConfigurationHelper.cpp
    EnOcean.h

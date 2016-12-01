@@ -608,8 +608,9 @@ void CEnOcean::processUTE(const message::CUTE_ReceivedMessage& uteMessage)
 
    if (uteMessage.teachInResponseExpected())
    {
-      message::CUTE_AnswerSendMessage sendMessage(0,
+      message::CUTE_AnswerSendMessage sendMessage(m_senderId,
                                                   deviceId,
+                                                  0,
                                                   uteMessage.bidirectionalCommunication(),
                                                   response,
                                                   uteMessage.channelNumber(),

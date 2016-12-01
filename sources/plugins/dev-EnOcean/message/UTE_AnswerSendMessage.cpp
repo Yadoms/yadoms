@@ -5,8 +5,9 @@
 
 namespace message
 {
-   CUTE_AnswerSendMessage::CUTE_AnswerSendMessage(unsigned char status,
+   CUTE_AnswerSendMessage::CUTE_AnswerSendMessage(const std::string& senderId,
                                                   const std::string& destinationId,
+                                                  unsigned char status,
                                                   bool bidirectionnalCommunication,
                                                   EResponse response,
                                                   unsigned char channelNumber,
@@ -15,7 +16,7 @@ namespace message
                                                   unsigned char func,
                                                   unsigned char rorg)
       : CRadioErp1SendMessage(CRorgs::kUTE_Telegram,
-                              "00000000",//TODO tester avec senderId
+                              senderId,
                               destinationId,
                               status),
         m_bidirectionalCommunication(bidirectionnalCommunication),
