@@ -48,6 +48,8 @@ set(SHARED_LIB_SRC
    shared/communication/IBufferLogger.h
    shared/communication/IReceiveBufferHandler.h
    shared/communication/MessageQueueRemover.hpp
+   shared/communication/NoBufferLogger.h
+   shared/communication/NoBufferLogger.cpp
    shared/communication/PortException.hpp
 	
    shared/compression/Extract.h
