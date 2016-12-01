@@ -107,7 +107,7 @@ SectionParameterHandler.prototype.getDOMObject = function () {
    .use(iterator, 'url_new_win', 'link_open', function (tokens, idx) {
      tokens[idx].attrPush([ 'target', '_blank' ]);
    });   
-   
+
    var input = "<div class=\"control-group configuration-section well\" id=\"" + this.uuid + "\">" +
                   "<div class=\"configuration-header\" >";
 

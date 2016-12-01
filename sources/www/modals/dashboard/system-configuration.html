@@ -21,6 +21,7 @@
       $modalBody.empty();
 
       var promise = new $.Deferred();
+      
       //var promiseLocation = new $.Deferred();
       //var locationFirstConfiguration = false;      
       
@@ -31,6 +32,7 @@
       
       // get current location information
       /*ConfigurationManager.getSection(ConfigurationManager.items.systemSection)
+
          .done(function(locationConfiguration) {
          
             Yadoms.locationConfiguration = locationConfiguration;
@@ -54,7 +56,6 @@
 
                //we update system configuration to be sure to modify the latest version of the configuration
                Yadoms.systemConfiguration = configuration;
-               
                console.log ( configuration );
             }
             
@@ -66,8 +67,8 @@
          });
 
       // When systemSection and locationSection are done
-      $.when(promise).done(function() {
-               
+
+      $.when(promise).done(function() {               
                //*************
                //language
                var languageParameter = new EnumParameterHandler(i18NContext, ConfigurationManager.items.system.language,
@@ -87,7 +88,7 @@
                   
                //*************
                //city name
-               
+
                var value = {};
                
                if (!isNullOrUndefined ( Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.latitude] ))
@@ -109,6 +110,7 @@
                var latitudeParameter = new StringParameterHandler(i18NContext,
                   ConfigurationManager.items.system.location.latitude,
                   {
+                     "regex" : "^[0-9]+(\.[0-9]+)?$",
                      "required": "true"
                   },
                   Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.latitude]);
@@ -116,6 +118,7 @@
                var longitudeParameter = new StringParameterHandler(i18NContext,
                   ConfigurationManager.items.system.location.longitude,
                   {
+                     "regex" : "^[0-9]+(\.[0-9]+)?$",
                      "required": "true"
                   },
                   Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.longitude]);                        
@@ -246,8 +249,7 @@
                               //we change language of i18n
                               i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
                                  $("html").i18n();
-                          
-                           window.location.reload();
+                                 window.location.reload();
                               });
 
 
@@ -316,6 +318,13 @@
                                                          d.resolve();
                                                       })
                                                       .fail(d.reject);                                                
+/*
+                                             Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value = value;
+
+                                             ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication])
+                                                .done(function() { 
+                                                   d.resolve();
+*/
                                                 })
                                                 .fail(d.reject);
                                           })
@@ -325,7 +334,7 @@
                            })
                            .fail(d.reject);
 
-                        d.promise()
+                           d.promise()
                            .done(function() {
                               //we show that configuration has been successfully saved
                               notifySuccess($.t("modals.dashboard.sub-windows.system-configuration.configurationSaved"));
@@ -387,7 +396,7 @@
                                                 Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value = systemConfiguration[ConfigurationManager.items.system.dateFormatString].defaultValue;
                                                 ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString])
                                                    .done(function() {
-                                                   
+
                                                       // TODO : Faire le reset propre
                                                       //*************                                                   
                                                       //city

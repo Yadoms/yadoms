@@ -96,6 +96,7 @@ RestEngine.post = function (url, data) {
  * @return a promise
  */
 RestEngine.postJson = function (url, data) {
+    console.log ( data );
     return RestEngine.post(url, RestEngine.makeJsonOptions_(data));
 
 };

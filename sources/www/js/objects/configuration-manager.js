@@ -41,8 +41,9 @@ ConfigurationManager.items.system.basicAuthenticationPassword2 = "basicAuthentic
 
 ConfigurationManager.items.system.location = {};
 ConfigurationManager.items.system.locationSection = "location";
-ConfigurationManager.items.system.location.latitude = "latitude";
+ConfigurationManager.items.system.location.latitude  = "latitude";
 ConfigurationManager.items.system.location.longitude = "longitude";
+ConfigurationManager.items.system.location.altitude  = "altitude";
 
 ConfigurationManager.items.system.advancedParameters = "advancedParameters";
 ConfigurationManager.items.system.dateFormatString = "dateFormatString";
@@ -130,6 +131,8 @@ ConfigurationManager.createToServer = function(section, name, value, defaultValu
    if (isNullOrUndefined(defaultValue))
       defaultValue = value;
 
+   console.log ( value );
+   
    return RestEngine.putJson("/rest/configuration/" + section + "/" + name, {
       data: JSON.stringify({
          "section": section,
