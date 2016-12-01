@@ -91,7 +91,7 @@ namespace pluginSystem
       void processFindRecipientsFromFieldRequest(const toYadoms::FindRecipientsFromFieldRequest& msg);
       void processRecipientFieldExitsRequest(const toYadoms::RecipientFieldExitsRequest& msg);
       void processHistorizeData(const toYadoms::HistorizeData& msg) const;
-      void processDeveloperModeRequest(const toYadoms::DeveloperModeRequest& msg);
+      void processYadomsInformationRequest(const toYadoms::YadomsInformationRequest& msg);
       void processRemoveDeviceRequest(const toYadoms::RemoveDevice& msg) const;
       void processRemoveKeywordRequest(const toYadoms::RemoveKeyword& msg) const;
       void processAllKeywordsRequest(const toYadoms::AllKeywordsRequest& msg);

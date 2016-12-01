@@ -26,6 +26,8 @@ set(plugin_cpp_api_SOURCES
    ExtraQuery.cpp
    ExtraQueryData.h
    ExtraQueryData.cpp
+   Location.h
+   Location.cpp
    ManuallyDeviceCreation.h
    ManuallyDeviceCreation.cpp
    ManuallyDeviceCreationData.h
@@ -34,6 +36,8 @@ set(plugin_cpp_api_SOURCES
    PluginInformation.cpp
    SetDeviceConfiguration.h
    SetDeviceConfiguration.cpp
+   YadomsInformation.h
+   YadomsInformation.cpp
 
    PluginContext.h
    PluginContext.cpp

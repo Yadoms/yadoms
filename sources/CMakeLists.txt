@@ -259,16 +259,16 @@ set(YADOMS_SRC
 	server/Supervisor.cpp
 	server/Supervisor.h
 
-   server/authentication/IAuthentication.h
-   server/authentication/BasicAuthentication.h
-   server/authentication/BasicAuthentication.cpp
+	server/authentication/IAuthentication.h
+	server/authentication/BasicAuthentication.h
+	server/authentication/BasicAuthentication.cpp
 
-   server/dateTime/DateTimeNotifier.h
-   server/dateTime/DateTimeNotifier.cpp
+	server/dateTime/DateTimeNotifier.h
+	server/dateTime/DateTimeNotifier.cpp
    
 	server/automation/IRule.h
 	server/automation/IRuleManager.h
-   server/automation/IRuleStartErrorObserver.h
+	server/automation/IRuleStartErrorObserver.h
 	server/automation/IRuleStateHandler.h
 	server/automation/IRuleThreadHandler.h
 	server/automation/Rule.h
@@ -279,44 +279,35 @@ set(YADOMS_SRC
 	server/automation/RuleManager.h
 	server/automation/RuleManager.cpp
    
-	server/automation/script/DayLight.h
-	server/automation/script/DayLight.cpp
+	server/automation/script/DayLightProvider.h
+	server/automation/script/DayLightProvider.cpp
 	server/automation/script/GeneralInfo.h
 	server/automation/script/GeneralInfo.cpp
-	server/automation/script/IAutoLocation.h
-	server/automation/script/IDayLight.h
-	server/automation/script/ILocation.h
+	server/automation/script/IDayLightProvider.h
 	server/automation/script/IManager.h
-   server/automation/script/IObjectFactory.h
 	server/automation/script/IGeneralInfo.h
 	server/automation/script/IInterpreterLibrary.h
-	server/automation/script/IpApiAutoLocation.h
-	server/automation/script/IpApiAutoLocation.cpp
-   server/automation/script/InterpreterNotFound.hpp
+	server/automation/script/InterpreterNotFound.hpp
 	server/automation/script/InterpreterLibrary.h
 	server/automation/script/InterpreterLibrary.cpp
 	server/automation/script/IProperties.h
-	server/automation/script/Location.h
-	server/automation/script/Location.cpp
 	server/automation/script/Manager.h
 	server/automation/script/Manager.cpp
-   server/automation/script/ObjectFactory.h
-   server/automation/script/ObjectFactory.cpp
 	server/automation/script/Properties.h
 	server/automation/script/Properties.cpp
-   server/automation/script/StopNotifier.h
-   server/automation/script/StopNotifier.cpp
+	server/automation/script/StopNotifier.h
+	server/automation/script/StopNotifier.cpp
 	server/automation/script/YScriptApiImplementation.h
 	server/automation/script/YScriptApiImplementation.cpp
 
 	server/communication/ISendMessageAsync.h
- 	server/communication/PluginGateway.h
- 	server/communication/PluginGateway.cpp	
- 	server/communication/callback/CallbackRequest.h
- 	server/communication/callback/SynchronousCallback.h
- 	server/communication/callback/CallbackException.hpp
-   server/communication/callback/ICallbackRequest.h
- 	server/communication/callback/ISynchronousCallback.h
+	server/communication/PluginGateway.h
+	server/communication/PluginGateway.cpp	
+	server/communication/callback/CallbackRequest.h
+	server/communication/callback/SynchronousCallback.h
+	server/communication/callback/CallbackException.hpp
+	server/communication/callback/ICallbackRequest.h
+	server/communication/callback/ISynchronousCallback.h
 
 	server/dataAccessLayer/AcquisitionHistorizer.h
 	server/dataAccessLayer/AcquisitionHistorizer.cpp
@@ -362,75 +353,83 @@ set(YADOMS_SRC
 	server/database/entities/Entities.cpp
 	server/database/entities/EntityHelpers.hpp
   
-   server/i18n/ClientStrings.h
-   server/i18n/ClientStrings.cpp
+	server/i18n/ClientStrings.h
+	server/i18n/ClientStrings.cpp
    
-   server/logConfiguration/LogConfiguration.h
-   server/logConfiguration/LogConfiguration.cpp   
-   server/logConfiguration/LogConfigurationImpl.h
-   server/logConfiguration/LogConfigurationImpl.cpp
-   server/logConfiguration/LogConfigurationException.h
+	server/location/IAutoLocation.h
+	server/location/IpApiAutoLocation.h
+	server/location/IpApiAutoLocation.cpp
+	server/location/Location.h
+	server/location/Location.cpp
+   
+	server/logConfiguration/LogConfiguration.h
+	server/logConfiguration/LogConfiguration.cpp   
+	server/logConfiguration/LogConfigurationImpl.h
+	server/logConfiguration/LogConfigurationImpl.cpp
+	server/logConfiguration/LogConfigurationException.h
    
 	server/pluginSystem/BasicQualifier.h
 	server/pluginSystem/BasicQualifier.cpp
-   server/pluginSystem/BindingQueryData.cpp
-   server/pluginSystem/BindingQueryData.h
-   server/pluginSystem/BindingQueryRequest.cpp
-   server/pluginSystem/BindingQueryRequest.h
-   server/pluginSystem/CommandHistorizer.h
-   server/pluginSystem/CommandHistorizer.cpp
-   server/pluginSystem/DeviceCommand.h
-   server/pluginSystem/DeviceCommand.cpp
-   server/pluginSystem/DeviceConfigurationSchemaRequest.h
-   server/pluginSystem/DeviceConfigurationSchemaRequest.cpp
-   server/pluginSystem/DeviceRemoved.h
-   server/pluginSystem/DeviceRemoved.cpp
+	server/pluginSystem/BindingQueryData.cpp
+	server/pluginSystem/BindingQueryData.h
+	server/pluginSystem/BindingQueryRequest.cpp
+	server/pluginSystem/BindingQueryRequest.h
+	server/pluginSystem/CommandHistorizer.h
+	server/pluginSystem/CommandHistorizer.cpp
+	server/pluginSystem/DeviceCommand.h
+	server/pluginSystem/DeviceCommand.cpp
+	server/pluginSystem/DeviceConfigurationSchemaRequest.h
+	server/pluginSystem/DeviceConfigurationSchemaRequest.cpp
+	server/pluginSystem/DeviceRemoved.h
+	server/pluginSystem/DeviceRemoved.cpp
 	server/pluginSystem/DummyQualifier.h
 	server/pluginSystem/DummyQualifier.cpp
 	server/pluginSystem/ExtraQuery.h
 	server/pluginSystem/ExtraQuery.cpp
-   server/pluginSystem/ExtraQueryData.cpp
-   server/pluginSystem/ExtraQueryData.h
+	server/pluginSystem/ExtraQueryData.cpp
+	server/pluginSystem/ExtraQueryData.h
 	server/pluginSystem/Factory.cpp
 	server/pluginSystem/Factory.h
-   server/pluginSystem/FromPluginHistorizer.h
-   server/pluginSystem/FromPluginHistorizer.cpp
+	server/pluginSystem/FromPluginHistorizer.h
+	server/pluginSystem/FromPluginHistorizer.cpp
 	server/pluginSystem/IdentityForQualifier.h
 	server/pluginSystem/IdentityForQualifier.cpp
 	server/pluginSystem/IFactory.h
 	server/pluginSystem/IInstance.h
 	server/pluginSystem/IInstanceStartErrorObserver.h
 	server/pluginSystem/IInstanceStateHandler.h
-   server/pluginSystem/IInstanceStoppedListener.h
-   server/pluginSystem/IIpcAdapter.h
+	server/pluginSystem/IInstanceStoppedListener.h
+	server/pluginSystem/IIpcAdapter.h
 	server/pluginSystem/IndicatorQualifier.h
 	server/pluginSystem/IndicatorQualifier.cpp
 	server/pluginSystem/Information.h
 	server/pluginSystem/Information.cpp
 	server/pluginSystem/Instance.h
 	server/pluginSystem/Instance.cpp
-   server/pluginSystem/InstanceRemover.h
-   server/pluginSystem/InstanceRemover.cpp
-   server/pluginSystem/InstanceRemoverRaii.hpp
+	server/pluginSystem/InstanceRemover.h
+	server/pluginSystem/InstanceRemover.cpp
+	server/pluginSystem/InstanceRemoverRaii.hpp
 	server/pluginSystem/InstanceStateHandler.h
 	server/pluginSystem/InstanceStateHandler.cpp
 	server/pluginSystem/InvalidPluginException.hpp
-   server/pluginSystem/IpcAdapter.h
-   server/pluginSystem/IpcAdapter.cpp
+	server/pluginSystem/IpcAdapter.h
+	server/pluginSystem/IpcAdapter.cpp
 	server/pluginSystem/IQualifier.h
 	server/pluginSystem/Manager.h
 	server/pluginSystem/Manager.cpp
-   server/pluginSystem/ManuallyDeviceCreationData.cpp
-   server/pluginSystem/ManuallyDeviceCreationData.h
+	server/pluginSystem/ManuallyDeviceCreationData.cpp
+	server/pluginSystem/ManuallyDeviceCreationData.h
 	server/pluginSystem/ManuallyDeviceCreationRequest.h
 	server/pluginSystem/ManuallyDeviceCreationRequest.cpp
-   server/pluginSystem/NativeExecutableCommandLine.cpp
-   server/pluginSystem/NativeExecutableCommandLine.h
+	server/pluginSystem/NativeExecutableCommandLine.cpp
+	server/pluginSystem/NativeExecutableCommandLine.h
 	server/pluginSystem/PluginException.hpp
 	server/pluginSystem/SetDeviceConfiguration.h
 	server/pluginSystem/SetDeviceConfiguration.cpp
-   server/pluginSystem/yPluginApiImplementation.h
-   server/pluginSystem/yPluginApiImplementation.cpp
+	server/pluginSystem/yPluginApiImplementation.h
+	server/pluginSystem/yPluginApiImplementation.cpp
+	server/pluginSystem/YadomsInformation.h
+	server/pluginSystem/YadomsInformation.cpp
    
 	server/pluginSystem/internalPlugin/System.h
 	server/pluginSystem/internalPlugin/System.cpp
@@ -439,7 +438,7 @@ set(YADOMS_SRC
 	server/pluginSystem/internalPlugin/Instance.h
 	server/pluginSystem/internalPlugin/Instance.cpp
 
-   server/pluginSystem/serializers/IInformation.h
+	server/pluginSystem/serializers/IInformation.h
 	server/pluginSystem/serializers/Information.h
 	server/pluginSystem/serializers/Information.cpp
    
@@ -465,7 +464,7 @@ set(YADOMS_SRC
 	server/notification/acquisition/Observer.hpp
 	server/notification/acquisition/Notification.hpp
    
-   server/notification/summary/Notification.hpp
+	server/notification/summary/Notification.hpp
    
 	server/startupOptions/DatabaseEngine.h
 	server/startupOptions/DatabaseEngine.cpp
@@ -479,8 +478,8 @@ set(YADOMS_SRC
 	
 	server/task/FinishedInstance.h
 	server/task/FinishedInstance.cpp
-   server/task/GenericTask.h
-   server/task/GenericTask.cpp
+	server/task/GenericTask.h
+	server/task/GenericTask.cpp
 	server/task/IInstance.h
 	server/task/Instance.h
 	server/task/Instance.cpp
@@ -500,22 +499,22 @@ set(YADOMS_SRC
 	server/task/backup/Database.cpp
    
    
-   server/update/UpdateManager.h
-   server/update/UpdateManager.cpp
-   server/update/UpdateType.h
-   server/update/UpdateType.cpp
-   server/update/info/UpdateSite.h
-   server/update/info/UpdateSite.cpp
-   server/update/worker/Plugin.h
-   server/update/worker/Plugin.cpp
-   server/update/worker/ScriptInterpreter.h
-   server/update/worker/ScriptInterpreter.cpp
-   server/update/worker/Widget.h
-   server/update/worker/Widget.cpp
-   server/update/worker/Yadoms.h
-   server/update/worker/Yadoms.cpp
-   server/update/worker/WorkerTools.h
-   server/update/worker/WorkerTools.cpp
+	server/update/UpdateManager.h
+	server/update/UpdateManager.cpp
+	server/update/UpdateType.h
+	server/update/UpdateType.cpp
+	server/update/info/UpdateSite.h
+	server/update/info/UpdateSite.cpp
+	server/update/worker/Plugin.h
+	server/update/worker/Plugin.cpp
+	server/update/worker/ScriptInterpreter.h
+	server/update/worker/ScriptInterpreter.cpp
+	server/update/worker/Widget.h
+	server/update/worker/Widget.cpp
+	server/update/worker/Yadoms.h
+	server/update/worker/Yadoms.cpp
+	server/update/worker/WorkerTools.h
+	server/update/worker/WorkerTools.cpp
    
 	server/web/IRestHandler.h
 	server/web/IWebServer.h
@@ -575,7 +574,6 @@ set(YADOMS_SRC
 	server/web/ws/NewDeviceFrame.cpp
 	server/web/ws/TaskUpdateNotificationFrame.h
 	server/web/ws/TaskUpdateNotificationFrame.cpp
-
 )
 
 # Project folders
@@ -590,6 +588,7 @@ source_group(server\\database  server/database/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)
 source_group(server\\dateTime  server/dateTime/*.*)
 source_group(server\\i18n  server/i18n/*.*)
+source_group(server\\location  server/location/*.*)
 source_group(server\\logConfiguration  server/logConfiguration/*.*)
 source_group(server\\notification  server/notification/*.*)
 source_group(server\\notification\\action  server/notification/action/*.*)
@@ -661,62 +660,62 @@ source_group(server\\tools\\platformSpecific\\mac server/tools/mac/tools/*.*)
 #### Database (common)
 ################################################
 set(YADOMS_SRC ${YADOMS_SRC}
-   server/database/common/Query.h
-   server/database/common/Query.cpp
-   server/database/common/QuerySpecializations.h
+	server/database/common/Query.h
+	server/database/common/Query.cpp
+	server/database/common/QuerySpecializations.h
 	server/database/common/DataProvider.h
 	server/database/common/DataProvider.cpp
-   server/database/common/DatabaseColumn.h
-   server/database/common/DatabaseColumn.cpp
-   server/database/common/DatabaseTables.h
-   server/database/common/DatabaseTables.cpp
-   server/database/common/DatabaseTablesHelpers.hpp
-   server/database/common/SummaryDataTask.h
-   server/database/common/SummaryDataTask.cpp      
-   server/database/common/PurgeTask.h
-   server/database/common/PurgeTask.cpp      
-   server/database/common/adapters/AdapterHelpers.hpp
-   server/database/common/adapters/DatabaseAdapters.h
-   server/database/common/adapters/DatabaseAdapters.cpp
-   server/database/common/adapters/GenericAdapter.h
-   server/database/common/adapters/GenericAdapter.cpp
-   server/database/common/adapters/HighchartValueAdapter.hpp
-   server/database/common/adapters/IResultAdapter.h
-   server/database/common/adapters/MultipleValueAdapter.hpp
-   server/database/common/adapters/SingleValueAdapter.hpp
-   server/database/common/adapters/SqlExtension.hpp
-   server/database/common/requesters/Plugin.h
-   server/database/common/requesters/Plugin.cpp
-   server/database/common/requesters/Configuration.h
-   server/database/common/requesters/Configuration.cpp
-   server/database/common/requesters/Keyword.h
-   server/database/common/requesters/Keyword.cpp
-   server/database/common/requesters/Device.h
-   server/database/common/requesters/Device.cpp		
-   server/database/common/requesters/Rule.h
-   server/database/common/requesters/Rule.cpp		
-   server/database/common/requesters/Page.h
-   server/database/common/requesters/Page.cpp		
-   server/database/common/requesters/Recipient.h
-   server/database/common/requesters/Recipient.cpp		
-   server/database/common/requesters/Widget.h
-   server/database/common/requesters/Widget.cpp		
-   server/database/common/requesters/PluginEventLogger.h
-   server/database/common/requesters/PluginEventLogger.cpp
-   server/database/common/requesters/EventLogger.h
-   server/database/common/requesters/EventLogger.cpp
-   server/database/common/requesters/Acquisition.h
-   server/database/common/requesters/Acquisition.cpp
-   server/database/common/versioning/IVersionUpgrade.h
-   server/database/common/versioning/Version_1_0_0.h
-   server/database/common/versioning/Version_1_0_0.cpp
-   server/database/common/versioning/Version_2_0_0.h
-   server/database/common/versioning/Version_2_0_0.cpp
-   server/database/common/versioning/VersionUpgraderFactory.h
-   server/database/common/versioning/VersionUpgraderFactory.cpp
-   server/database/common/versioning/VersionException.h
+	server/database/common/DatabaseColumn.h
+	server/database/common/DatabaseColumn.cpp
+	server/database/common/DatabaseTables.h
+	server/database/common/DatabaseTables.cpp
+	server/database/common/DatabaseTablesHelpers.hpp
+	server/database/common/SummaryDataTask.h
+	server/database/common/SummaryDataTask.cpp      
+	server/database/common/PurgeTask.h
+	server/database/common/PurgeTask.cpp      
+	server/database/common/adapters/AdapterHelpers.hpp
+	server/database/common/adapters/DatabaseAdapters.h
+	server/database/common/adapters/DatabaseAdapters.cpp
+	server/database/common/adapters/GenericAdapter.h
+	server/database/common/adapters/GenericAdapter.cpp
+	server/database/common/adapters/HighchartValueAdapter.hpp
+	server/database/common/adapters/IResultAdapter.h
+	server/database/common/adapters/MultipleValueAdapter.hpp
+	server/database/common/adapters/SingleValueAdapter.hpp
+	server/database/common/adapters/SqlExtension.hpp
+	server/database/common/requesters/Plugin.h
+	server/database/common/requesters/Plugin.cpp
+	server/database/common/requesters/Configuration.h
+	server/database/common/requesters/Configuration.cpp
+	server/database/common/requesters/Keyword.h
+	server/database/common/requesters/Keyword.cpp
+	server/database/common/requesters/Device.h
+	server/database/common/requesters/Device.cpp		
+	server/database/common/requesters/Rule.h
+	server/database/common/requesters/Rule.cpp		
+	server/database/common/requesters/Page.h
+	server/database/common/requesters/Page.cpp		
+	server/database/common/requesters/Recipient.h
+	server/database/common/requesters/Recipient.cpp		
+	server/database/common/requesters/Widget.h
+	server/database/common/requesters/Widget.cpp		
+	server/database/common/requesters/PluginEventLogger.h
+	server/database/common/requesters/PluginEventLogger.cpp
+	server/database/common/requesters/EventLogger.h
+	server/database/common/requesters/EventLogger.cpp
+	server/database/common/requesters/Acquisition.h
+	server/database/common/requesters/Acquisition.cpp
+	server/database/common/versioning/IVersionUpgrade.h
+	server/database/common/versioning/Version_1_0_0.h
+	server/database/common/versioning/Version_1_0_0.cpp
+	server/database/common/versioning/Version_2_0_0.h
+	server/database/common/versioning/Version_2_0_0.cpp
+	server/database/common/versioning/VersionUpgraderFactory.h
+	server/database/common/versioning/VersionUpgraderFactory.cpp
+	server/database/common/versioning/VersionException.h
                    
-   server/database/common/IResultHandler.h
+	server/database/common/IResultHandler.h
 )
 
 source_group(server\\database\\common  server/database/common/*.*)
@@ -759,18 +758,18 @@ IF(USE_PGSQL_DATABASE)
       message(STATUS "Found postgresql ${PostgreSQL_VERSION_STRING}")
 
       set(YADOMS_SRC ${YADOMS_SRC}
-         server/database/pgsql/PgsqlQuery.h
-         server/database/pgsql/PgsqlQuery.cpp
-         server/database/pgsql/PgsqlRequester.h
-         server/database/pgsql/PgsqlRequester.cpp
-         server/database/pgsql/PgsqlResultHandler.h
-         server/database/pgsql/PgsqlResultHandler.cpp
-         server/database/pgsql/PgsqlSqlState.h
-         server/database/pgsql/PgsqlSqlState.cpp
-         server/database/pgsql/PgsqlSystemTables.h
-         server/database/pgsql/PgsqlSystemTables.cpp
-         server/database/pgsql/PgsqlTableCreationScriptProvider.h
-         server/database/pgsql/PgsqlTableCreationScriptProvider.cpp
+			server/database/pgsql/PgsqlQuery.h
+			server/database/pgsql/PgsqlQuery.cpp
+			server/database/pgsql/PgsqlRequester.h
+			server/database/pgsql/PgsqlRequester.cpp
+			server/database/pgsql/PgsqlResultHandler.h
+			server/database/pgsql/PgsqlResultHandler.cpp
+			server/database/pgsql/PgsqlSqlState.h
+			server/database/pgsql/PgsqlSqlState.cpp
+			server/database/pgsql/PgsqlSystemTables.h
+			server/database/pgsql/PgsqlSystemTables.cpp
+			server/database/pgsql/PgsqlTableCreationScriptProvider.h
+			server/database/pgsql/PgsqlTableCreationScriptProvider.cpp
       )
       
       source_group(server\\database\\pgsql  server/database/pgsql/*.*)
@@ -815,7 +814,7 @@ IF(USE_POCO_WEBSERVER)
 		server/web/poco/AuthenticationRequestHandler.cpp
 		server/web/poco/HttpRequestHandlerFactory.h
 		server/web/poco/HttpRequestHandlerFactory.cpp	
-      server/web/poco/HttpRequestHandlerContainer.h
+		server/web/poco/HttpRequestHandlerContainer.h
 		server/web/poco/HttpRequestHandlerContainer.cpp
 		server/web/poco/RestRequestHandler.h
 		server/web/poco/RestRequestHandler.cpp
@@ -856,8 +855,8 @@ if(WIN32)
    # If we build for windows systems, we also include the resource file
    # containing the manifest, icon and other resources
    set(YADOMS_SRC ${YADOMS_SRC} 
-      resources/windows/yadoms-generated.rc
-      resources/windows/resource.h
+		resources/windows/yadoms-generated.rc
+		resources/windows/resource.h
    )
    source_group(resources resources/windows/*.*)
 endif(WIN32)
@@ -922,8 +921,8 @@ set(YADOMS_INCL_DIR
 	${CMAKE_CURRENT_SOURCE_DIR}/server
 	${YADOMS_INCL_DIR}
 	${SHARED_INCL_DIR}
-   ${PROTOBUF_INCLUDE_DIRS}
-   ${plugin_IPC_INCLUDE_DIRS}
+	${PROTOBUF_INCLUDE_DIRS}
+	${plugin_IPC_INCLUDE_DIRS}
 )
 
 set(YADOMS_ALL_INCL_DIR
@@ -1158,68 +1157,68 @@ IF(WIN32 AND NOT UNIX)
 
 	# Custom target for packaging.
 	if(USE_NSIS)
-	  set(CPACK_GENERATOR "NSIS;ZIP")
+		set(CPACK_GENERATOR "NSIS;ZIP")
 	  
-     # There is a bug in NSI that does not handle full unix paths properly. Make
-     # sure there is at least one set of four (4) backlasshes.
-     SET(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/../distribution\\\\Yadoms.bmp")
+		# There is a bug in NSI that does not handle full unix paths properly. Make
+		# sure there is at least one set of four (4) backlasshes.
+		SET(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/../distribution\\\\Yadoms.bmp")
 
-	  set(CPACK_NSIS_PLUGINS_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/NSIS/extensions")
-	  set(CPACK_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/NSIS")
-      SET(CPACK_NSIS_INSTALLED_ICON_NAME "${INSTALL_BINDIR}\\\\yadoms.exe")
-      SET(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\yadoms.ico")
-      SET(CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\yadoms.ico")
-	  SET(CPACK_NSIS_DISPLAY_NAME "Yadoms")
-	  SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.yadoms.com")
-	  SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.yadoms.com")
-	  SET(CPACK_NSIS_CONTACT "contact@yadoms.com")
-	  SET(CPACK_NSIS_MODIFY_PATH ON)
+		set(CPACK_NSIS_PLUGINS_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/NSIS/extensions")
+		set(CPACK_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/NSIS")
+		SET(CPACK_NSIS_INSTALLED_ICON_NAME "${INSTALL_BINDIR}\\\\yadoms.exe")
+		SET(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\yadoms.ico")
+		SET(CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\yadoms.ico")
+		SET(CPACK_NSIS_DISPLAY_NAME "Yadoms")
+		SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.yadoms.com")
+		SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.yadoms.com")
+		SET(CPACK_NSIS_CONTACT "contact@yadoms.com")
+		SET(CPACK_NSIS_MODIFY_PATH ON)
 	  
-     SET(CPACK_NSIS_VCREDIST "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\NSIS\\\\vcredist_x86.exe")
+		SET(CPACK_NSIS_VCREDIST "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\NSIS\\\\vcredist_x86.exe")
 
-     set(CPACK_NSIS_CREATE_ICONS_STARTMENU
-        "SetOutPath $INSTDIR\\\\bin
-         SetShellVarContext all
-         CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Yadoms-StartServer.lnk' '\$INSTDIR\\\\bin\\\\yadoms.exe' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0
-         CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Yadoms.lnk' 'http://localhost:8080' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
-     )
+		set(CPACK_NSIS_CREATE_ICONS_STARTMENU
+			"SetOutPath $INSTDIR\\\\bin
+			SetShellVarContext all
+			CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Yadoms-StartServer.lnk' '\$INSTDIR\\\\bin\\\\yadoms.exe' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0
+			CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Yadoms.lnk' 'http://localhost:8080' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
+		)
 
-     set(CPACK_NSIS_CREATE_ICONS_DESKTOP
-        "SetOutPath $INSTDIR\\\\bin
-         SetShellVarContext all
-         CreateShortCut '\$DESKTOP\\\\Yadoms.lnk' 'http://localhost:8080' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
-     )
+		set(CPACK_NSIS_CREATE_ICONS_DESKTOP
+			"SetOutPath $INSTDIR\\\\bin
+			SetShellVarContext all
+			CreateShortCut '\$DESKTOP\\\\Yadoms.lnk' 'http://localhost:8080' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
+		)
      
-     set(CPACK_NSIS_CREATE_ICONS_DESKTOP_NOSERVICE
-        "SetOutPath $INSTDIR\\\\bin
-         SetShellVarContext all
-         CreateShortCut '\$DESKTOP\\\\Yadoms-StartServer.lnk' '\$INSTDIR\\\\bin\\\\yadoms.exe' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0
-         CreateShortCut '\$DESKTOP\\\\Yadoms.lnk' 'http://localhost:8080' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
-     )
+		set(CPACK_NSIS_CREATE_ICONS_DESKTOP_NOSERVICE
+			"SetOutPath $INSTDIR\\\\bin
+			SetShellVarContext all
+			CreateShortCut '\$DESKTOP\\\\Yadoms-StartServer.lnk' '\$INSTDIR\\\\bin\\\\yadoms.exe' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0
+			CreateShortCut '\$DESKTOP\\\\Yadoms.lnk' 'http://localhost:8080' '' '\$INSTDIR\\\\bin\\\\yadoms.exe' 0"
+		)
      
 
-     set(CPACK_NSIS_INSTALL_SERVICE
-         "ExecWait '\$INSTDIR\\\\bin\\\\yadoms.exe --registerService --displayName:Yadoms --startup:automatic' $0
-         !insertmacro SERVICE 'start' 'Yadoms' ''"
-     )   
+		set(CPACK_NSIS_INSTALL_SERVICE
+			"ExecWait '\$INSTDIR\\\\bin\\\\yadoms.exe --registerService --displayName:Yadoms --startup:automatic' $0
+			!insertmacro SERVICE 'start' 'Yadoms' ''"
+		)   
 
-     set(CPACK_NSIS_UNINSTALL_SERVICE
-         "!ifdef UN
-          !undef UN
-          !endif
-	       !define UN 'un.'         
-          !insertmacro SERVICE 'stop' 'Yadoms' ''
-          ExecWait '\$INSTDIR\\\\bin\\\\yadoms.exe --unregisterService' $0"
-     )
+		set(CPACK_NSIS_UNINSTALL_SERVICE
+			"!ifdef UN
+			!undef UN
+			!endif
+			!define UN 'un.'         
+			!insertmacro SERVICE 'stop' 'Yadoms' ''
+			ExecWait '\$INSTDIR\\\\bin\\\\yadoms.exe --unregisterService' $0"
+		)
       
-	  #d\E9fini les permissions pour le r\E9pertoire d'install pour tous les utilisateurs
-	  #pour l'utilisateur TOUT LE MONDE (identifi\E9 par (S-1-1-0) )
-	  set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
-	  	"AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1)\\\" \\\"FullAccess\\\"
-		 AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1-0)\\\" \\\"FullAccess\\\""
-	  )
+		#d\E9fini les permissions pour le r\E9pertoire d'install pour tous les utilisateurs
+		#pour l'utilisateur TOUT LE MONDE (identifi\E9 par (S-1-1-0) )
+		set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
+			"AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1)\\\" \\\"FullAccess\\\"
+			AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1-0)\\\" \\\"FullAccess\\\""
+		)
 	else(USE_NSIS)
-	  set(CPACK_GENERATOR "ZIP")
+		set(CPACK_GENERATOR "ZIP")
 	endif(USE_NSIS)
 
 ELSE(WIN32 AND NOT UNIX)

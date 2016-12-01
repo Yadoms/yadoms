@@ -18,7 +18,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			Map of all valid plugins (key are plugin file names, values are plugin information)
       //--------------------------------------------------------------
-      typedef std::map<std::string, boost::shared_ptr<const shared::plugin::information::IInformation> > AvailablePluginMap;
+      typedef std::map<std::string, boost::shared_ptr<const shared::plugin::information::IInformation>> AvailablePluginMap;
 
 
       //--------------------------------------------------------------
@@ -65,3 +65,5 @@ namespace pluginSystem
       virtual boost::filesystem::path pluginDataPath(int instanceId) const = 0;
    };
 } // namespace pluginSystem
+
+
