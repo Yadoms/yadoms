@@ -108,11 +108,11 @@ void CTransceiver::ParseData(const unsigned char* pData,
       ii++;
    }
 
-   if (!m_deviceCreated) createDeviceAndKeywords();
+   // creation of the device
+   if (!m_deviceCreated && IsInformationUpdated()) createDeviceAndKeywords();
 
-   //historizing all information pushed in the list
-   if (IsInformationUpdated())
-      m_api->historizeData(m_DeviceName, m_keywords);
+   // historizing all information pushed in the list
+   if (m_deviceCreated && IsInformationUpdated()) m_api->historizeData(m_DeviceName, m_keywords);
 }
 
 void CTransceiver::createDeviceAndKeywords( void )
@@ -121,11 +121,12 @@ void CTransceiver::createDeviceAndKeywords( void )
    if (m_apparentPowerUpdated)
       m_keywords.push_back(m_apparentPower);
 
-   if (!m_api->deviceExists(m_DeviceName))
-      m_api->declareDevice(m_DeviceName,
-                           "TeleInfoUSB : Id = " + m_DeviceName,
-                           m_keywords,
-                           m_DeviceDetails);
+   if (m_isdeveloperMode) std::cout << "Nb keywords : " << "=" << m_keywords.size() << std::endl;
+
+   m_api->declareDevice(m_DeviceName,
+                        "TeleInfoUSB : Id = " + m_DeviceName,
+                        m_keywords,
+                        m_DeviceDetails);
 
    m_deviceCreated = true;
 }
