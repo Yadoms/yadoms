@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "TeleInfoReceiveBufferHandler.h"
 
+// TODO_V2 create a receiver Handler that begin a message to a STX, and send the buffer at a EOF.
+
 CTeleInfoReceiveBufferHandler::CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
                                                              int receiveDataEventId,
                                                              size_t messageSize)

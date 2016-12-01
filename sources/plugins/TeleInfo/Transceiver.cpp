@@ -109,7 +109,7 @@ void CTransceiver::ParseData(const unsigned char* pData,
    }
 
    // creation of the device
-   if (!m_deviceCreated && IsInformationUpdated()) createDeviceAndKeywords();
+   if (!m_deviceCreated) createDeviceAndKeywords();
 
    // historizing all information pushed in the list
    if (m_deviceCreated && IsInformationUpdated()) m_api->historizeData(m_DeviceName, m_keywords);
