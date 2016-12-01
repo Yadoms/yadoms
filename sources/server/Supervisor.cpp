@@ -1,6 +1,5 @@
 ﻿#include "stdafx.h"
 #include "Supervisor.h"
-#include "automation/script/ObjectFactory.h"
 #include "pluginSystem/Manager.h"
 #include "database/Factory.h"
 #include <shared/Log.h>
@@ -30,9 +29,11 @@
 #include "startupOptions/IStartupOptions.h"
 #include "dateTime/DateTimeNotifier.h"
 #include <Poco/Net/NetException.h>
+#include "location/Location.h"
+#include "location/IpApiAutoLocation.h"
 
 CSupervisor::CSupervisor(const IPathProvider& pathProvider)
-   :m_pathProvider(pathProvider)
+   : m_pathProvider(pathProvider)
 {
 }
 
@@ -49,8 +50,6 @@ void CSupervisor::run()
    boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal;
    try
    {
-      shared::CServiceLocator::instance().push<automation::script::IObjectFactory>(boost::make_shared<automation::script::ObjectFactory>());
-
       //create the notification center
       auto notificationCenter(boost::make_shared<notification::CNotificationCenter>());
       shared::CServiceLocator::instance().push<notification::CNotificationCenter>(notificationCenter);
@@ -67,10 +66,15 @@ void CSupervisor::run()
       dal = boost::make_shared<dataAccessLayer::CDataAccessLayer>(pDataProvider);
       shared::CServiceLocator::instance().push<dataAccessLayer::IDataAccessLayer>(dal);
 
+      // Create the location provider
+      auto location = boost::make_shared<location::CLocation>(dal->getConfigurationManager(),
+                                                              boost::make_shared<location::CIpApiAutoLocation>());
+
       // Create the Plugin manager
       auto pluginManager(boost::make_shared<pluginSystem::CManager>(m_pathProvider,
                                                                     pDataProvider,
-                                                                    dal));
+                                                                    dal,
+                                                                    location));
 
       // Start Task manager
       auto taskManager(boost::make_shared<task::CScheduler>(dal->getEventLogger()));
@@ -97,7 +101,8 @@ void CSupervisor::run()
                                                                                                                       dal->getKeywordManager(),
                                                                                                                       pDataProvider->getRecipientRequester(),
                                                                                                                       dal->getConfigurationManager(),
-                                                                                                                      dal->getEventLogger()));
+                                                                                                                      dal->getEventLogger(),
+                                                                                                                      location));
       shared::CServiceLocator::instance().push<automation::IRuleManager>(automationRulesManager);
 
       // Start Web server
@@ -124,7 +129,7 @@ void CSupervisor::run()
          auto filename = m_pathProvider.databaseSqliteBackupFile().filename().string();
          webServer->getConfigurator()->websiteHandlerAddAlias(filename, m_pathProvider.databaseSqliteBackupFile().string());
       }
-            
+
       webServer->getConfigurator()->configureAuthentication(boost::make_shared<authentication::CBasicAuthentication>(dal->getConfigurationManager(), startupOptions->getNoPasswordFlag()));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CPlugin>(pDataProvider, pluginManager, *pluginGateway));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CDevice>(pDataProvider, pluginManager, dal->getDeviceManager(), dal->getKeywordManager(), *pluginGateway));
@@ -152,7 +157,9 @@ void CSupervisor::run()
 
       // Main loop
       YADOMS_LOG(information) << "Supervisor is running...";
-      while (m_EventHandler.waitForEvents() != kStopRequested){}
+      while (m_EventHandler.waitForEvents() != kStopRequested)
+      {
+      }
 
       YADOMS_LOG(information) << "Supervisor is stopping...";
 
@@ -184,7 +191,7 @@ void CSupervisor::run()
 
       dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStopped, "yadoms", std::string());
    }
-   catch(Poco::Net::NetException & pe)
+   catch (Poco::Net::NetException& pe)
    {
       YADOMS_LOG(error) << "Supervisor : net exception " << pe.displayText();
       if (dal && dal->getEventLogger())

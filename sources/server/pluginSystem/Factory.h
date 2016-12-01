@@ -20,7 +20,8 @@ namespace pluginSystem
       /// \brief	Constructor
       /// \param[in] pathProvider      The path provider
       //--------------------------------------------------------------
-      explicit CFactory(const IPathProvider& pathProvider);
+      CFactory(const IPathProvider& pathProvider,
+               boost::shared_ptr<shared::ILocation> locationProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -38,7 +39,6 @@ namespace pluginSystem
       boost::filesystem::path pluginDataPath(int instanceId) const override;
       // [END] IFactory Implementation
 
-      
 
    private:
       boost::shared_ptr<IInstance> createInternalPluginInstance(boost::shared_ptr<const database::entities::CPlugin> instanceData,
@@ -49,7 +49,6 @@ namespace pluginSystem
 
       boost::shared_ptr<const shared::plugin::information::IInformation> createInformation(const std::string& pluginName) const;
 
-      
 
       boost::shared_ptr<shared::process::ILogger> createProcessLogger(boost::shared_ptr<const database::entities::CPlugin> instanceData) const;
 
@@ -84,5 +83,8 @@ namespace pluginSystem
 
 
       const IPathProvider& m_pathProvider;
+      const boost::shared_ptr<const shared::ILocation> m_locationProvider;
    };
 } // namespace pluginSystem
+
+

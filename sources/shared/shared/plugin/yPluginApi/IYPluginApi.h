@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/event/EventHandler.hpp>
 #include <shared/plugin/information/IInformation.h>
+#include <shared/plugin/information/IYadomsInformation.h>
 #include <shared/DataContainer.h>
 #include "IDeviceCommand.h"
 #include "IExtraQuery.h"
@@ -500,7 +501,7 @@ namespace shared
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
             //--
-            //-- Yadoms options
+            //-- Yadoms informations
             //--
             //----------------------------------------------------------------------------------------------------------------
             //----------------------------------------------------------------------------------------------------------------
@@ -510,10 +511,10 @@ namespace shared
             //----------------------------------------------------------------------------------------------------------------
 
             //-----------------------------------------------------
-            /// \brief	    return if the developer mode is enabled
-            /// \return     true if developer mode is enabled
+            /// \brief	    return information on Yadoms (version, developper mode state, location...)
+            /// \return     Yadoms information
             //-----------------------------------------------------
-            virtual bool isDeveloperMode() const = 0;
+            virtual boost::shared_ptr<const information::IYadomsInformation> getYadomsInformation() const = 0;
          };
       }
    }

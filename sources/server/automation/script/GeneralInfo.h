@@ -1,5 +1,7 @@
 #pragma once
 #include "IGeneralInfo.h"
+#include "IDayLightProvider.h"
+#include <shared/ILocation.h>
 
 namespace automation
 {
@@ -14,7 +16,7 @@ namespace automation
          //-----------------------------------------------------
          ///\brief               Constructor
          //-----------------------------------------------------
-         CGeneralInfo();
+         explicit CGeneralInfo(boost::shared_ptr<shared::ILocation> locationProvider);
 
          //-----------------------------------------------------
          ///\brief               Destructor
@@ -25,6 +27,10 @@ namespace automation
          // IGeneralInfo Implementation
          std::string get(shared::script::yScriptApi::IYScriptApi::EInfoKeys key) const override;
          // [END] IGeneralInfo Implementation
+
+      private:
+         boost::shared_ptr<shared::ILocation> m_locationProvider;
+         boost::shared_ptr<IDayLightProvider> m_dayLightProvider;
       };
    }
 } // namespace automation::script

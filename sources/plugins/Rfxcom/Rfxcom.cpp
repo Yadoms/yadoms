@@ -39,7 +39,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    m_configurationUpdated = false;
 
-   m_isDeveloperMode = api->isDeveloperMode();
+   m_isDeveloperMode = api->getYadomsInformation()->developperMode();
 
    // Load configuration values (provided by database)
    m_configuration.initializeWith(api->getConfiguration());

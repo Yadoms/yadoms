@@ -29,6 +29,7 @@ namespace pluginSystem
       /// \param [in]   deviceManager              the device manager
       /// \param [in]   keywordDataAccessLayer     the database keyword access layer
       /// \param [in]   acquisitionRequester       the acquisition requester
+      /// \param [in]   locationProvider           the location provider
       //-----------------------------------------------------
       CYPluginApiImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
                                 const boost::shared_ptr<const database::entities::CPlugin> instanceData,
@@ -37,7 +38,8 @@ namespace pluginSystem
                                 boost::shared_ptr<database::IDataProvider> dataProvider,
                                 boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                                 boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordDataAccessLayer,
-                                boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer);
+                                boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
+                                const boost::shared_ptr<const shared::ILocation> locationProvider);
 
       //-----------------------------------------------------
       ///\brief Destructor
@@ -93,7 +95,7 @@ namespace pluginSystem
       shared::CDataContainer getConfiguration() override;
       const boost::filesystem::path& getDataPath() const override;
       shared::event::CEventHandler& getEventHandler() override;
-      bool isDeveloperMode() const override;
+      boost::shared_ptr<const shared::plugin::information::IYadomsInformation> getYadomsInformation() const override;
       // [END] IYPluginApi implementation 
 
       //-----------------------------------------------------
@@ -142,6 +144,11 @@ namespace pluginSystem
       /// \brief			The Acquisition historizer
       //--------------------------------------------------------------
       boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> m_acquisitionHistorizer;
+
+      //--------------------------------------------------------------
+      /// \brief			The location provider
+      //--------------------------------------------------------------
+      const boost::shared_ptr<const shared::ILocation> m_locationProvider;
    };
 } // namespace pluginSystem	
 

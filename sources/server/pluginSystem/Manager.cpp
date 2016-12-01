@@ -25,18 +25,19 @@ namespace pluginSystem
 {
    CManager::CManager(const IPathProvider& pathProvider,
                       boost::shared_ptr<database::IDataProvider> dataProvider,
-                      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer)
-      :
-      m_factory(boost::make_shared<CFactory>(pathProvider)),
-      m_dataProvider(dataProvider),
-      m_pluginDBTable(dataProvider->getPluginRequester()),
+                      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
+                      boost::shared_ptr<shared::ILocation> locationProvider)
+      : m_factory(boost::make_shared<CFactory>(pathProvider,
+                                               locationProvider)),
+        m_dataProvider(dataProvider),
+        m_pluginDBTable(dataProvider->getPluginRequester()),
 #ifdef _DEBUG
-      m_qualifier(boost::make_shared<CBasicQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
+        m_qualifier(boost::make_shared<CBasicQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
 #else
       m_qualifier(boost::make_shared<CIndicatorQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
 #endif
-      m_dataAccessLayer(dataAccessLayer),
-      m_instanceRemover(boost::make_shared<CInstanceRemover>(m_runningInstancesMutex, m_runningInstances))
+        m_dataAccessLayer(dataAccessLayer),
+        m_instanceRemover(boost::make_shared<CInstanceRemover>(m_runningInstancesMutex, m_runningInstances))
    {
    }
 
@@ -116,7 +117,7 @@ namespace pluginSystem
       startInternalPlugin();
    }
 
-   bool CManager::startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin> >& instances,
+   bool CManager::startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin>>& instances,
                                  std::set<int>& startedInstanceIds)
    {
       auto allInstancesStarted = true;
@@ -250,7 +251,7 @@ namespace pluginSystem
       }
    }
 
-   std::vector<boost::shared_ptr<database::entities::CPlugin> > CManager::getInstanceList() const
+   std::vector<boost::shared_ptr<database::entities::CPlugin>> CManager::getInstanceList() const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       return m_pluginDBTable->getInstances();
@@ -344,7 +345,7 @@ namespace pluginSystem
 
          if (instance->aboutPlugin()->getSupportDeviceRemovedNotification())
             instance->postDeviceRemoved(boost::make_shared<CDeviceRemoved>(device->Name(),
-               device->Details()));
+                                                                           device->Details()));
       }
       catch (CPluginException&)
       {
