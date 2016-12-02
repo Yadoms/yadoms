@@ -111,7 +111,7 @@ message RemoveDevice {
 	required string device = 1;
 }
 
-message DeveloperModeRequest{
+message YadomsInformationRequest {
 }
 
 message AllDevicesRequest {
@@ -169,7 +169,7 @@ message msg {
 		RecipientFieldExitsRequest recipientFieldExitsRequest = 11;
 		HistorizeData historizeData = 12;
 		ManuallyDeviceCreationAnswer manuallyDeviceCreationAnswer = 13;
-		DeveloperModeRequest developerModeRequest = 14;
+		YadomsInformationRequest yadomsInformationRequest = 14;
 		DeviceConfigurationSchemaAnswer deviceConfigurationSchemaAnswer = 15;
 		ExtraQueryAnswer extraQueryAnswer = 16;
 		RemoveDevice removeDevice = 17;

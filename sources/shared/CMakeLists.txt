@@ -9,6 +9,8 @@ set(SHARED_LIB_SRC
 
    shared/Log.h
    shared/Log.cpp
+   
+   shared/ILocation.h
 	
    shared/logInternal/ILogStream.h
    shared/logInternal/LogStreamEnhanced.h
@@ -46,6 +48,8 @@ set(SHARED_LIB_SRC
    shared/communication/IBufferLogger.h
    shared/communication/IReceiveBufferHandler.h
    shared/communication/MessageQueueRemover.hpp
+   shared/communication/NoBufferLogger.h
+   shared/communication/NoBufferLogger.cpp
    shared/communication/PortException.hpp
 	
    shared/compression/Extract.h
@@ -95,6 +99,7 @@ set(SHARED_LIB_SRC
    shared/http/HttpMethods.cpp
 
    shared/plugin/information/IInformation.h
+   shared/plugin/information/IYadomsInformation.h
 
    shared/plugin/yPluginApi/commonIncludes.h
    shared/plugin/yPluginApi/IBindingQueryData.h

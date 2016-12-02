@@ -9,6 +9,7 @@
 #include "DeviceConfigurationSchemaRequest.h"
 #include "SetDeviceConfiguration.h"
 #include "DeviceRemoved.h"
+#include "YadomsInformation.h"
 
 namespace plugin_cpp_api
 {
@@ -967,30 +968,30 @@ namespace plugin_cpp_api
       return m_pluginEventHandler;
    }
 
-   bool CApiImplementation::isDeveloperMode() const
+   boost::shared_ptr<const shared::plugin::information::IYadomsInformation> CApiImplementation::getYadomsInformation() const
    {
       toYadoms::msg req;
-      req.mutable_developermoderequest();
+      req.mutable_yadomsinformationrequest();
 
-      auto exists = false;
+      boost::shared_ptr<const shared::plugin::information::IYadomsInformation> info;
       try
       {
          send(req,
-              [](const toPlugin::msg& ans) -> bool
-              {
-                 return ans.has_developermodeanswer();
-              },
-              [&](const toPlugin::msg& ans) -> void
-              {
-                 exists = ans.developermodeanswer().enabled();
-              });
+            [](const toPlugin::msg& ans) -> bool
+         {
+            return ans.has_yadomsinformationanswer();
+         },
+            [&](const toPlugin::msg& ans) -> void
+         {
+            info = boost::make_shared<CYadomsInformation>(ans.yadomsinformationanswer());
+         });
       }
       catch (std::exception&)
       {
-         std::cerr << "Call was : isDeveloperMode()" << std::endl;
+         std::cerr << "Call was : getYadomsInformation" << std::endl;
          throw;
       }
-      return exists;
+      return info;
    }
 } // namespace plugin_cpp_api	
 

@@ -18,6 +18,7 @@
 #include "InstanceRemover.h"
 #include <IPathProvider.h>
 #include <server/communication/callback/ISynchronousCallback.h>
+#include <shared/ILocation.h>
 
 namespace pluginSystem
 {
@@ -33,10 +34,17 @@ namespace pluginSystem
       /// \param [in]   pathProvider            Yadoms paths provider
       /// \param [in]   dataProvider            Database link
       /// \param [in]   dataAccessLayer         The database access layer
+      /// \param [in]   locationProvider        The location provider
       //--------------------------------------------------------------
       CManager(const IPathProvider& pathProvider,
                boost::shared_ptr<database::IDataProvider> dataProvider,
-               boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer);
+               boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
+               boost::shared_ptr<shared::ILocation> locationProvider);
+
+      //--------------------------------------------------------------
+      /// \brief			Destructor
+      //--------------------------------------------------------------
+      virtual ~CManager();
 
       //--------------------------------------------------------------
       /// \brief			Start the manager (try to start all active plugins)
@@ -44,11 +52,6 @@ namespace pluginSystem
       /// \details      This function is blocking until all plugins are started or timeout
       //--------------------------------------------------------------
       void start(const boost::posix_time::time_duration& timeout);
-
-      //--------------------------------------------------------------
-      /// \brief			Destructor
-      //--------------------------------------------------------------
-      virtual ~CManager();
 
       //--------------------------------------------------------------
       /// \brief			Stop all plugin instance
@@ -97,7 +100,7 @@ namespace pluginSystem
       /// \brief           Get the plugin instances list
       /// \return          List of instances ID of all known instances, started or not
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<database::entities::CPlugin> > getInstanceList() const;
+      std::vector<boost::shared_ptr<database::entities::CPlugin>> getInstanceList() const;
 
       //--------------------------------------------------------------
       /// \brief           Get the instance configuration
@@ -255,7 +258,7 @@ namespace pluginSystem
       ///\param[out] startedInstanceIds Instances started
       ///\return              true if all instances were successfully started
       //-----------------------------------------------------
-      bool startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin> >& instances,
+      bool startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin>>& instances,
                           std::set<int>& startedInstanceIds);
 
       //-----------------------------------------------------
@@ -319,7 +322,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			Map of all running instances, and its mutex (key are plugin instance id)
       //--------------------------------------------------------------
-      typedef std::map<int, boost::shared_ptr<IInstance> > PluginInstanceMap;
+      typedef std::map<int, boost::shared_ptr<IInstance>> PluginInstanceMap;
       PluginInstanceMap m_runningInstances;
       mutable boost::recursive_mutex m_runningInstancesMutex;
    };

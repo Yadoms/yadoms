@@ -23,8 +23,8 @@ function RadioSectionParameterHandler(i18nContext, paramName, content, currentVa
    this.description = isNullOrUndefined(content.description)?"":content.description;
    this.i18nContext = i18nContext;
    this.content = content;
+   this.containerUuid = createUUID();
    this.uuid = createUUID();
-   this.radioGroupUuid = createUUID();
    var self = this;
 
    //we look for parent radio button
@@ -53,9 +53,8 @@ function RadioSectionParameterHandler(i18nContext, paramName, content, currentVa
       var newI18nContext = i18nContext + self.paramName + ".content.";
 
       //all items in content must be section values
-      assert((value.type !== undefined), "Content section of the configuration " + self.name + " must be defined");
-      assert((value.type.toLowerCase() == "section") || (value.type.toLowerCase() == "radiosection"), "Content section of the configuration " + self.name + " must contain only section items");
-	  
+      assert(ConfigurationHelper.isContainer(value), "Content section of the configuration " + self.name + " must contain only section items");
+
       var radioActive = false;
       if (self.configurationValues.activeSection == key)
          radioActive = true;
@@ -63,15 +62,9 @@ function RadioSectionParameterHandler(i18nContext, paramName, content, currentVa
       if (value.show !== undefined && value.show.result === "false")
          return;
       
-	   var handler;
-	   if (value.type.toLowerCase() == "section") {
-         handler = new SectionParameterHandler(newI18nContext, key, value, v, self.radioGroupUuid, radioActive);
-      }
-      else {
-         handler = new RadioSectionParameterHandler(newI18nContext, key, value, v, self.radioGroupUuid, radioActive);
-      }
-      
-      self.configurationHandlers.push(handler);
+	    var handler = ConfigurationHelper.createParameterHandler(newI18nContext, key, value, v, self.uuid, radioActive);
+      if (!isNullOrUndefined(handler))
+         self.configurationHandlers.push(handler);
    });
 }
 
@@ -81,7 +74,7 @@ function RadioSectionParameterHandler(i18nContext, paramName, content, currentVa
  */
 RadioSectionParameterHandler.prototype.getDOMObject = function () {
 
-   var input = "<div class=\"control-group configuration-radio-section well\" id=\"" + this.radioGroupUuid + "\">" +
+   var input = "<div class=\"control-group configuration-radio-section well\" id=\"" + this.uuid + "\">" +
                   "<div class=\"configuration-header\" >";
 	
    if (this.parentRadioButtonSectionName) {
@@ -106,7 +99,7 @@ RadioSectionParameterHandler.prototype.getDOMObject = function () {
                   "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.paramName + ".description\" >" +
                      this.description +
                   "</div>" +
-                  "<div class=\"toggle-btn-grp\" id=\"" + this.uuid + "\" >";
+                  "<div class=\"toggle-btn-grp\" id=\"" + this.containerUuid + "\" >";
 
    //for each param in the section we create a radio button and a div that contain the item
    $.each(this.configurationHandlers, function (key, value) {
@@ -120,7 +113,7 @@ RadioSectionParameterHandler.prototype.getDOMObject = function () {
 };
 
 RadioSectionParameterHandler.prototype.locateInDOM = function () {
-   return $("div#" + this.radioGroupUuid);
+   return $("div#" + this.uuid);
 };
 
 /**
@@ -136,18 +129,33 @@ RadioSectionParameterHandler.prototype.getParamName = function() {
  */
 RadioSectionParameterHandler.prototype.applyScript = function () {
    var self = this;
-   
+
    if (self.parentRadioButtonSectionName) {
       $("#" + self.selectorUuid).change(function () {
          if ($("input#" + self.selectorUuid + ":checked").val() == "on") {
-            //we hide all sections-content in the parent radioSection\n" +
-            var radioSections = $("div#" + self.radioButtonSectionName + " > div.toggle-btn-grp > div.configuration-section > div.section-content");
+            //we hide all sections-content in the radioSection\n" +
+		var $parentSection = $("div#" + self.parentRadioButtonSectionName);
+            var radioSections = $parentSection.find(" > div.toggle-btn-grp > div.configuration-section > div.section-content");
             radioSections.addClass("hidden");
-            radioSections.removeClass("has-warning");
-            radioSections.find("input,select,textarea").removeClass("enable-validation");
+            $parentSection.removeClass("has-warning has-error");
+            $parentSection.find("input,select,textarea").removeClass("enable-validation");
+		//Disable all existing sub-buttons
+		$parentSection.find("button").attr("disabled", true);
+
+            //We save all items that are "required" with a special class name : required-for-validation
+            var $requiredFields = radioSections.find("[required]");
+            //we remove attr required and save it using class "required-for-validation"
+            $requiredFields.addClass("required-for-validation");
+            $requiredFields.removeAttr("required");
+
             //we show current
-            $("div#" + self.uuid).removeClass("hidden").removeClass("has-warning");
-            $("div#" + self.uuid).find("input,select,textarea").addClass("enable-validation");
+            var $activeContainer = $("div#" + self.containerUuid);
+            $activeContainer.removeClass("hidden");
+            $activeContainer.find("input,select,textarea").addClass("enable-validation");
+            //Enable all existing sub-buttons
+		$activeContainer.find("button").removeAttr("disabled");
+            //we restore required items
+            $activeContainer.find(".required-for-validation").attr("required", "required");
          }
       });
    }
@@ -157,6 +165,15 @@ RadioSectionParameterHandler.prototype.applyScript = function () {
       if ($.isFunction(value.applyScript))
          value.applyScript();
    });
+debugger;
+   //can't factorize must happen after intialize all handlers
+   $.each(this.configurationHandlers, function (key, value) {
+      //if this child is the active one we fire the event that we have changed to it the radio button
+      if (value.parentRadioSectionActive)
+         $("#" + value.selectorUuid).change();
+   });
+
+ 
 };
 
 /**
@@ -176,6 +193,11 @@ RadioSectionParameterHandler.prototype.getCurrentConfiguration = function () {
          self.configurationValues.activeSection = value.getParamName();
       }
    });
+
+   //we get the parentRadioButtonSectionName value if used (only for nested radio section into another one)
+   if (this.parentRadioButtonSectionName) {
+      self.configurationValues.radio = ($("input#" + this.selectorUuid + ":checked").val() == 'on');
+   }
 
    return self.configurationValues;
 };

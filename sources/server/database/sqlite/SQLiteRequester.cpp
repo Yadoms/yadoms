@@ -254,7 +254,7 @@ namespace database
                else
                {
                   if (throwIfFails)
-                     throw CDatabaseException(errMessage);
+                     throw CDatabaseException(errMessage, fromSQLiteReturnCode(rc));
                   return -1;
                }
             }
@@ -470,6 +470,19 @@ namespace database
       boost::filesystem::path CSQLiteRequester::lastBackupData()
       {
          return boost::filesystem::path(m_dbBackupFile);
+      }
+
+      CDatabaseException::EDatabaseReturnCodes CSQLiteRequester::fromSQLiteReturnCode(int rc)
+      {
+         switch(rc)
+         {
+         case SQLITE_OK:
+            return CDatabaseException::kOk;
+         case SQLITE_CONSTRAINT:
+            return CDatabaseException::kConstraintViolation;
+         default:
+            return CDatabaseException::kError;
+         }
       }
 
       void CSQLiteRequester::vacuum()

@@ -31,11 +31,8 @@ namespace shared
             //--------------------------------------------------------------
             /// \brief	    get the plugin version
             /// \return     the plugin version
-            /// \note       Version : Note that this value must be string-comparable to let Yadoms
-            ///             know if newer version is available (for the comparison
-            ///             method, see http://www.cplusplus.com/reference/string/string/compare/).
-            ///             Mainly, don't change the version format in the plugin life.
-            ///             Recommended format is "xx.yy"
+            /// \note       Version : Note that this value is string-comparable
+            ///             to check the precedence of a version from a reference version.
             //--------------------------------------------------------------
             virtual const std::string& getVersion() const = 0;
 
