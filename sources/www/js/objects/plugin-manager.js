@@ -36,16 +36,12 @@ PluginManager.getAll = function () {
          i18n.loadNamespace("plugins/" + pluginType);
 
          var deffered = PluginManager.downloadPackage(pluginType);
-		 
-		 arrayOfDeffered.push(deffered);
-         deffered.done(function (package) {
-			
-			var defferedDownload = new $.Deferred();
+         arrayOfDeffered.push(deffered);
+         deffered
+         .done(function (package) {
             PluginManager.packageList[pluginType] = PluginManager.factory(package);
-			defferedDownload.resolve();
          })
          .fail(function (error) {
-			defferedDownload.reject();
             notifyError($.t("objects.pluginInstance.errorGettingPackage", { pluginName: pluginType }), error);
          });
       });
