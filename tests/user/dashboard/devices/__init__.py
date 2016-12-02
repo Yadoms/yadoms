@@ -36,6 +36,10 @@ def findDeviceInTable(devicesTable, expectedDeviceName):
       pass
    return None
 
+def countDevices(devicesTable):
+   # return the number of devices in the table
+   return len(devicesTable.find_elements_by_xpath('//tr[@class="device"]'))
+
 def waitDevicesTableHasDeviceNamed(browser, expectedDeviceName):
    devicesTable = waitDevicesTable(browser)
    assert tools.waitUntil(lambda: findDeviceInTable(devicesTable, expectedDeviceName) is not None)
@@ -59,14 +63,20 @@ def getDeviceButton(devicesTable, deviceId, index):
    buttons = getDeviceButtons(devicesTable, deviceId)
    return buttons[index]
    
+def getConfigureDeviceButton(devicesTable, deviceId):
+   return getDeviceButton(devicesTable, deviceId, 0)
+   
+def getRemoveDeviceButton(devicesTable, deviceId):
+   return getDeviceButton(devicesTable, deviceId, 1)
+   
 
 def waitConfigureDeviceModal(browser):
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "configure-manually-device-modal")))
    return ConfigureDeviceModal(browser.find_element_by_id("configure-manually-device-modal"))
 
 def waitRemoveDeviceConfirmationModal(browser):
-   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "confirmation-modal")))
-   return RemoveDeviceConfirmationModal(browser.find_element_by_id("confirmation-modal"))
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "device-delete-modal")))
+   return RemoveDeviceConfirmationModal(browser.find_element_by_id("device-delete-modal"))
 
    
    

@@ -8,8 +8,8 @@ import yadomsServer
 import dashboard
 from selenium import webdriver
 
-class MenuEntries(unittest.TestCase):
-   """Check entries of the dashboard main menu"""
+class NavigationAccrossPages(unittest.TestCase):
+   """Test navigation accros dashboard pages"""
    
    def setUp(self):
       database.new()
