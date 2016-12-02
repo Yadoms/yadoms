@@ -59,15 +59,17 @@ def getDeviceButtons(devicesTable, deviceId):
    buttonsGroup = devicesActionsButtonsCell.find_element_by_class_name("btn-group")
    return buttonsGroup.find_elements_by_tag_name("button")
    
-def getDeviceButton(devicesTable, deviceId, index):
-   buttons = getDeviceButtons(devicesTable, deviceId)
-   return buttons[index]
-   
 def getConfigureDeviceButton(devicesTable, deviceId):
-   return getDeviceButton(devicesTable, deviceId, 0)
+   for button in getDeviceButtons(devicesTable, deviceId):
+      if 'btn-configure' in button.get_attribute('class'):
+         return button
+   return None
    
 def getRemoveDeviceButton(devicesTable, deviceId):
-   return getDeviceButton(devicesTable, deviceId, 1)
+   for button in getDeviceButtons(devicesTable, deviceId):
+      if 'btn-delete' in button.get_attribute('class'):
+         return button
+   return None
    
 
 def waitConfigureDeviceModal(browser):
