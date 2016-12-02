@@ -68,7 +68,7 @@ DeviceManager.getAttachedPlugin = function (device, force) {
 
     var d = new $.Deferred();
 
-    if(!device.attachedPlugin || forsce === true) {
+    if(!device.attachedPlugin || force === true) {
         PluginInstanceManager.get(device.pluginId)
         .done(function (pluginInstance) {
             device.attachedPlugin = pluginInstance;
