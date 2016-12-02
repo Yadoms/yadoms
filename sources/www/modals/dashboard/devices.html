@@ -343,6 +343,11 @@
                   $keywordRow.find("td.keyword-actions").append(actionsBtns);
                }
                
+               //if keyword is boolean, just add the class keyword-value-bool
+               if(keyword.type === "Bool") {
+                  $keywordRow.find("td.keyword-value").addClass("keyword-value-bool");
+               }
+               
                //we prevent from renaming keywords on system devices
                if ((!isNullOrUndefined(device.attachedPlugin)) && (device.attachedPlugin.isSystemCategory())) {
                   $keywordRow.find("button.btn-configure").addClass("hide");
@@ -435,7 +440,18 @@
 
    function setKeywordValue(keyword) {
       var $keywordRow = getKeywordDomRow(keyword);
-      var value = $keywordRow.find("td.keyword-value span").html();
+      
+      var value = null;
+      debugger;
+      if($keywordRow.find("td.keyword-value-bool")) {
+         var $checkbox = $keywordRow.find("td.keyword-value-bool input");
+         if($checkbox)
+            value = $checkbox.is(":checked");
+         else
+            value = false;
+      } else {      
+         value = $keywordRow.find("td.keyword-value span").html();
+      }
 
       Yadoms.modals.keywordSetValue.loadAsync()
        .done(function () {
@@ -484,6 +500,11 @@
       var friendlyName = "<span>" + keyword.friendlyName + "</span>";
       var units = "<span>" + $.t(keyword.units) + "</span>";
 
+      //if keyword is boolean, just add the class keyword-value-bool
+      if(keyword.type === "Bool") {
+         $keywordRow.find("td.keyword-value").addClass("keyword-value-bool");
+      }
+      
       $keywordRow.find("td.keyword-friendlyName").html(friendlyName);
       $keywordRow.find("td.keyword-units").html(units);
 
@@ -504,7 +525,18 @@
 
          if (jsonString != null && typeof jsonString != 'object') {
             // not json
-            keywordValue = "<span>" + acquisition.value + "</span>";
+            
+            //manage boolean keyword
+            if($keywordRow.find("td.keyword-value-bool")) {
+               if(parseBool(acquisition.value) === true) {
+                  keywordValue = "<input type=\"checkbox\" disabled readonly checked/>"
+               } else {
+                  keywordValue = "<input type=\"checkbox\" disabled readonly/>"
+               }
+            }
+            else {
+               keywordValue = "<span>" + acquisition.value + "</span>";
+            }
          }
       } catch (err) {
          keywordValue = "<span>" + acquisition.value + "</span>";
