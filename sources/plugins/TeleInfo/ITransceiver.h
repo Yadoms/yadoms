@@ -29,11 +29,17 @@ public:
    /// \brief	                    Return if all information have been read
    /// \return                      If all information have been updated
    //--------------------------------------------------------------
-   virtual bool IsInformationUpdated() = 0;
+   virtual bool isInformationUpdated() const = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Refresh update boolean information
    //--------------------------------------------------------------
    virtual void ResetRefreshTags() = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Return if the ERDF counter TeleInfo is desactivated
+   /// \return                      the counter state
+   //--------------------------------------------------------------
+   virtual bool isERDFCounterDesactivated() const = 0;
 };
 

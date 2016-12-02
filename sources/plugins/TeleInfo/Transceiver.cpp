@@ -112,7 +112,7 @@ void CTransceiver::ParseData(const unsigned char* pData,
    if (!m_deviceCreated) createDeviceAndKeywords();
 
    // historizing all information pushed in the list
-   if (m_deviceCreated && IsInformationUpdated()) m_api->historizeData(m_DeviceName, m_keywords);
+   if (m_deviceCreated && isInformationUpdated()) m_api->historizeData(m_DeviceName, m_keywords);
 }
 
 void CTransceiver::createDeviceAndKeywords( void )
@@ -123,11 +123,14 @@ void CTransceiver::createDeviceAndKeywords( void )
 
    if (m_isdeveloperMode) std::cout << "Nb keywords : " << "=" << m_keywords.size() << std::endl;
 
-   m_api->declareDevice(m_DeviceName,
-                        "TeleInfoUSB : Id = " + m_DeviceName,
-                        m_keywords,
-                        m_DeviceDetails);
-
+   if (!isERDFCounterDesactivated())
+   {
+      m_api->declareDevice(m_DeviceName,
+                           "TeleInfoUSB : Id = " + m_DeviceName,
+                           m_keywords,
+                           m_DeviceDetails);
+   }
+   
    m_deviceCreated = true;
 }
 
@@ -155,7 +158,7 @@ void CTransceiver::ResetRefreshTags()
    m_forecastPeriodUpdated = false;
 }
 
-bool CTransceiver::IsInformationUpdated()
+bool CTransceiver::isInformationUpdated() const
 {
    // We do not take account about the apparent power. Some counters may not have this tag
    if ((((m_optarif == OP_BASE) && (m_baseUpdated)) ||
@@ -168,6 +171,16 @@ bool CTransceiver::IsInformationUpdated()
       return true;
 
    return false;
+}
+
+bool CTransceiver::isERDFCounterDesactivated() const
+{
+   // if only the ADCO is update, the teleInformation is not activated into the ERDF counter
+   if (m_adcoUpdated && !m_baseUpdated && m_optarif== OP_NOT_DEFINED && !m_lowCostUpdated && !m_normalCostUpdated && !m_eJPPeakPeriodUpdated && !m_eJPNormalPeriodUpdated
+       && !m_tempoBlueDaysLowCostUpdated && !m_tempoBlueDaysNormalCostUpdated && !m_tempoWhiteDaysLowCostUpdated && !m_tempoWhiteDaysNormalCostUpdated && !m_tempoRedDaysLowCostUpdated && !m_tempoRedDaysNormalCostUpdated && !m_forecastPeriodUpdated)
+      return true;
+   else
+      return false;
 }
 
 void CTransceiver::MatchLine(const unsigned char* buffer)
@@ -257,19 +270,18 @@ void CTransceiver::MatchLine(const unsigned char* buffer)
          lvalueIsANumber = false;
       }
 
-      static auto ADCORead = false;
       static auto OpTarifRead = false;
       static auto ISousRead = false;
 
       switch (it->second)
       {
       case TELEINFO_TYPE_ADCO:   //TODO_V2 : Detect the change of the counter in live
-         if (!ADCORead)
+         if (!m_adcoUpdated)
          {
             if (m_isdeveloperMode) std::cout << "ADCO" << "=" << value << std::endl;
 
             m_DeviceName = value;
-            ADCORead = true;
+            m_adcoUpdated = true;
          }
          break;
       case TELEINFO_TYPE_OPTARIF:

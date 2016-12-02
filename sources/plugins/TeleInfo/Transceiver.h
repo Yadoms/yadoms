@@ -27,8 +27,9 @@ public:
    // ITransceiver implementation
    void decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                               const shared::communication::CByteBuffer& data) override;
-   bool IsInformationUpdated() override;
+   bool isInformationUpdated() const override;
    void ResetRefreshTags() override;
+   bool isERDFCounterDesactivated() const override;
    // [END] ITransceiver implementation
 
 private:
@@ -103,6 +104,7 @@ private:
       OP_TEMPO
    } Abonnement;
 
+   bool m_adcoUpdated;
    bool m_baseUpdated;
    bool m_lowCostUpdated;
    bool m_normalCostUpdated;

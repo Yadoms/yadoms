@@ -99,11 +99,14 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          processDataReceived(api,
                              api->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
 
+         if (m_transceiver->isERDFCounterDesactivated()) api->setPluginState(yApi::historization::EPluginState::kCustom, "ErDFCounterdesactivated");
+
          break;
       }
       case kEvtTimerRefreshTeleInfoData:
       {
          // When received this timer, we restart the reception through the serial port
+
          if (m_isDeveloperMode) std::cout << "Teleinfo plugin :  Resume COM" << std::endl;
          m_transceiver->ResetRefreshTags();
          m_receiveBufferHandler->resume();
@@ -201,7 +204,7 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
    m_transceiver->decodeTeleInfoMessage(api, data);
 
    // When all information are updated we stopped the reception !
-   if (m_transceiver->IsInformationUpdated())
+   if (m_transceiver->isInformationUpdated())
    {
       if (m_isDeveloperMode) std::cout << "Suspend COM" << std::endl;
       m_receiveBufferHandler->suspend();
