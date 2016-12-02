@@ -218,7 +218,6 @@
    }
 
    function updateDeviceFiendlyName(device) {
-   debugger;
       //device represent the device concerned
       //we just ask for the friendly name
       Yadoms.modals.deviceConfigure.loadAsync()
@@ -442,7 +441,6 @@
       var $keywordRow = getKeywordDomRow(keyword);
       
       var value = null;
-      debugger;
       if($keywordRow.find("td.keyword-value-bool")) {
          var $checkbox = $keywordRow.find("td.keyword-value-bool input");
          if($checkbox)

@@ -195,7 +195,7 @@ ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, 
          return new StringParameterHandler(i18NContext, paramName, obj, currentValue);
 
       case "bool":
-         return new BoolParameterHandler(i18NContext, paramName, obj, currentValue);
+         return new BoolParameterHandler(i18NContext, paramName, obj, currentValue, true);
 
       default:
          return null;
