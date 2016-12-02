@@ -139,13 +139,16 @@ namespace equipments
    {
       if (m_pendingIOHistorizer)
       {
+         
          bool newValue = false; 
-         if (command->getBody() == "true")
-            newValue = true;
-         else if (command->getBody() == "false")
-            newValue = false;
-         else
+
+         try {
+            newValue = boost::lexical_cast<bool>(command->getBody());
+         }
+         catch (shared::exception::CException)
+         {
             shared::exception::CException("Invalid command");
+         }
 
          if (m_pendingIOHistorizer->get() != newValue)
          {
@@ -217,12 +220,13 @@ namespace equipments
          {
             bool newValue = false;
 
-            if (command->getBody() == "true")
-               newValue = true;
-            else if (command->getBody() == "false")
-               newValue = false;
-            else
+            try {
+               newValue = boost::lexical_cast<bool>(command->getBody());
+            }
+            catch (shared::exception::CException)
+            {
                shared::exception::CException("Invalid command");
+            }
 
             if (newValue)
                parameters.set("SetR", pinNumber); 
