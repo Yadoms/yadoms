@@ -97,10 +97,10 @@
           }
         },
         "autoOffTimer": {
-          "name": "Temporisation d'arrêt automatique (en secondes)"
+          "name": "Temporisation d'arrêt automatique (en secondes), 0 pour désactiver la temporisation"
         },
         "delayRadioOffTimer": {
-          "name": "Temporisation d'arrêt après réception message (en secondes)"
+          "name": "Temporisation d'arrêt après réception message (en secondes), 0 pour désactiver la temporisation"
         }
       }
     }

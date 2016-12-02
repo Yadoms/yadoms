@@ -97,10 +97,10 @@
           }
         },
         "autoOffTimer": {
-          "name": "Auto-off timer (seconds)"
+          "name": "Auto-off timer (seconds), 0 to disable timer"
         },
         "delayRadioOffTimer": {
-          "name": "Radio-off delay (seconds)"
+          "name": "Radio-off delay (seconds), 0 to disable timer"
         }
       }
     }
