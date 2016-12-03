@@ -50,8 +50,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    // Create the buffer handler
    m_receiveBufferHandler = CTeleInfoFactory::GetBufferHandler(api->getEventHandler(),
-                                                               kEvtPortDataReceived,
-                                                               512);
+                                                               kEvtPortDataReceived);
 
    m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
                                                              shared::event::CEventTimer::kOneShot,
@@ -69,7 +68,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                                       shared::event::CEventTimer::kPeriodic,
                                       boost::posix_time::seconds(30));
 
-   while (1)
+   while (true)
    {
       // Wait for an event
       switch (api->getEventHandler().waitForEvents())
@@ -97,7 +96,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          if (m_isDeveloperMode) std::cout << "TeleInfo plugin :  DataReceived" << std::endl;
 
          processDataReceived(api,
-                             api->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
+                             api->getEventHandler().getEventData<const std::vector<unsigned char>>());
 
          if (m_transceiver->isERDFCounterDesactivated()) api->setPluginState(yApi::historization::EPluginState::kCustom, "ErDFCounterdesactivated");
 
@@ -109,7 +108,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
          if (m_isDeveloperMode) std::cout << "Teleinfo plugin :  Resume COM" << std::endl;
          m_transceiver->ResetRefreshTags();
-         m_receiveBufferHandler->resume();
+         //TODO m_receiveBufferHandler->resume();
 
          //Lauch a new time the time out to detect connexion failure
          m_waitForAnswerTimer->start();
@@ -169,7 +168,7 @@ void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
    m_waitForAnswerTimer->stop();
 
    // Stop running reception, if any
-   m_receiveBufferHandler->suspend();
+//TODO   m_receiveBufferHandler->suspend();
 
    // Configuration was updated
    std::cout << "Update configuration..." << std::endl;
@@ -194,20 +193,20 @@ void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
-                                    const shared::communication::CByteBuffer& data)
+                                    const std::vector<unsigned char>& data)
 {
    // Stop timeout
    m_waitForAnswerTimer->stop();
 
-   if (m_isDeveloperMode) m_logger.logReceived(data);
+//TODO   if (m_isDeveloperMode) m_logger.logReceived(data);
 
-   m_transceiver->decodeTeleInfoMessage(api, data);
+//TODO   m_transceiver->decodeTeleInfoMessage(api, data);
 
    // When all information are updated we stopped the reception !
    if (m_transceiver->isInformationUpdated())
    {
       if (m_isDeveloperMode) std::cout << "Suspend COM" << std::endl;
-      m_receiveBufferHandler->suspend();
+//TODO      m_receiveBufferHandler->suspend();
    }
 
    bool newState = true;

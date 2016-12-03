@@ -16,11 +16,11 @@ public:
    /// \brief	                           Constructor
    /// \param[in] receiveDataEventHandler The event handler to notify for received data event
    /// \param[in] receiveDataEventId      The event id to notify for received data event
-   /// \param[in] messageSize             The number of bytes expected for a message
+   /// \param[in] suspendDelay            Mute delay, used to filter messages
    //--------------------------------------------------------------
    CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
                                  int receiveDataEventId,
-                                 size_t messageSize);
+                                 const boost::posix_time::time_duration suspendDelay);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
@@ -32,27 +32,22 @@ public:
    void flush() override;
    // [END] ITeleInfoReceiveBufferHandler implementation
 
-   void suspend();
-   void resume();
-
 protected:
    //--------------------------------------------------------------
    /// \brief	                     Check if we got a complete message
-   /// \return                      true if a message is complete
+   /// \return                      The complet message
    //--------------------------------------------------------------
-   bool isComplete() const;
+   boost::shared_ptr<const std::vector<unsigned char>> getCompleteMessage();
 
-   //--------------------------------------------------------------
-   /// \brief	                     Pop the next message from the receive buffer
-   /// \return                      The next complete message
-   //--------------------------------------------------------------
-   boost::shared_ptr<const shared::communication::CByteBuffer> popNextMessage();
+   static bool checkIntegrity(boost::shared_ptr<const std::vector<unsigned char>> frame);
+
+   static bool isCheckSumOk(const std::vector<unsigned char>& message);
 
    //--------------------------------------------------------------
    /// \brief	                     Send a message to the target event handler
    /// \param[in] buffer            Buffer to send
    //--------------------------------------------------------------
-   void notifyEventHandler(boost::shared_ptr<const shared::communication::CByteBuffer> buffer) const;
+   void notifyEventHandler(boost::shared_ptr<const std::vector<unsigned char>> buffer) const;
 
 private:
    //--------------------------------------------------------------
@@ -71,13 +66,8 @@ private:
    int m_receiveDataEventId;
 
    //--------------------------------------------------------------
-   /// \brief	The expected message size
+   /// \brief	Management of suspend delay between 2 messages
    //--------------------------------------------------------------
-   const size_t m_messageSize;
-
-   //--------------------------------------------------------------
-   /// \brief	state of the reception
-   //--------------------------------------------------------------
-   bool m_receptionSuspended;
+   boost::posix_time::ptime m_nextSendMessageDate;
+   const boost::posix_time::time_duration m_suspendDelay;
 };
-

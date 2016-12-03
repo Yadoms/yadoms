@@ -4,7 +4,6 @@
 #include <shared/communication/IAsyncPort.h>
 #include <shared/communication/AsciiBufferLogger.h>
 #include "Transceiver.h"
-#include "TeleInfoReceiveBufferHandler.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -52,11 +51,11 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	                     Called when received a message from the TeleInfo Receiver
-   /// \param [in] context           Plugin execution context (Yadoms API)
-   /// \param [in] data              The buffer with the received information
+   /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \param [in] data             The buffer with the received information
    //--------------------------------------------------------------
    void processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
-                            const shared::communication::CByteBuffer& data);
+                            const std::vector<unsigned char>& data);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the TeleInfo Receiver becomes connected
@@ -110,7 +109,7 @@ private:
    //--------------------------------------------------------------
    /// \brief  The receiver buffer
    //--------------------------------------------------------------
-   boost::shared_ptr<CTeleInfoReceiveBufferHandler> m_receiveBufferHandler;
+   boost::shared_ptr<shared::communication::IReceiveBufferHandler> m_receiveBufferHandler;
 
    //--------------------------------------------------------------
    /// \brief  developerMode state

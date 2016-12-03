@@ -1,14 +1,16 @@
 #include "stdafx.h"
 #include "TeleInfoFactory.h"
 #include <shared/communication/AsyncSerialPort.h>
+#include "TeleInfoReceiveBufferHandler.h"
 #include "Transceiver.h"
 
 CTeleInfoFactory::~CTeleInfoFactory()
-{}
+{
+}
 
 boost::shared_ptr<shared::communication::IAsyncPort> CTeleInfoFactory::constructPort(const ITeleInfoConfiguration& configuration,
                                                                                      shared::event::CEventHandler& eventHandler,
-                                                                                     boost::shared_ptr<CTeleInfoReceiveBufferHandler> receiveBufferHandler,
+                                                                                     boost::shared_ptr<shared::communication::IReceiveBufferHandler> receiveBufferHandler,
                                                                                      int evtPortConnectionId)
 {
    std::cout << "Connecting TeleInfo on serial port " << configuration.getSerialPort() << "..." << std::endl;
@@ -28,18 +30,15 @@ boost::shared_ptr<shared::communication::IAsyncPort> CTeleInfoFactory::construct
    return port;
 }
 
-boost::shared_ptr<CTeleInfoReceiveBufferHandler> CTeleInfoFactory::GetBufferHandler(shared::event::CEventHandler& eventHandler,
-                                                                                    int evtPortDataReceived,
-                                                                                    size_t messageSize
-)
+boost::shared_ptr<shared::communication::IReceiveBufferHandler> CTeleInfoFactory::GetBufferHandler(shared::event::CEventHandler& eventHandler,
+                                                                                                   int evtPortDataReceived)
 {
    return boost::make_shared<CTeleInfoReceiveBufferHandler>(eventHandler,
                                                             evtPortDataReceived,
-                                                            messageSize);
+                                                            boost::posix_time::seconds(30));
 }
 
 boost::shared_ptr<ITransceiver> CTeleInfoFactory::constructTransceiver(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    return boost::make_shared<CTransceiver>(api);
 }
-

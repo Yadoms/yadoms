@@ -57,7 +57,7 @@ Enfin, on ajoute 20 en hexadécimal. Le résultat sera donc toujours un caractère 
 lettre majuscule) allant de 20 à 5F en hexadécimal.
 */
 
-bool CTransceiver::isCheckSumOk(const unsigned char* buffer)
+bool CTransceiver::isCheckSumOk(const unsigned char* buffer)//TODO virer ?
 {
    unsigned int checksum = 0x00;
    int i;
