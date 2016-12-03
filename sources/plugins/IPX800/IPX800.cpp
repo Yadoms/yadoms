@@ -131,7 +131,6 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                request->sendSuccess(m_factory->createDeviceManually(api, request->getData()));
 
                // Send an event to refresh all IOs
-               //api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
                api->getEventHandler().postEvent<bool>(kRefreshStatesReceived, true);
             }
             catch (CManuallyDeviceCreationException& e)
