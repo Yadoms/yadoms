@@ -123,16 +123,109 @@ BOOST_AUTO_TEST_SUITE(TestTeleInfoReceiveBufferHandler)
       BOOST_CHECK_EQUAL(*out == expectedMap, true);
    }
 
+   BOOST_AUTO_TEST_CASE(extraCharactersbetweenCRetx)
+   {                                                                                                                                                                                                                                          //*******//
+	   const auto frame = normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr>D4R } $<etx>");
+
+	   shared::event::CEventHandler evtHandler;
+	   CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
+												   shared::event::kUserFirstId,
+												   boost::posix_time::seconds(1));
+	   bufferHandler.push(shared::communication::CByteBuffer(frame));
+	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
+   }
+
+   BOOST_AUTO_TEST_CASE(extraCharactersbetweenstxLF)
+   {                                         //*******//                                                                                                                                                                                                
+	   const auto frame = normalizeFrame("<stx>D4R } $<lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
+	   const std::map<std::string, std::string> expectedMap = {
+		   { "ADCO", "031428097115" },
+		   { "OPTARIF", "BASE" },
+		   { "ISOUSC", "30" },
+		   { "BASE", "006238747" },
+		   { "PTEC", "TH.." },
+		   { "IINST", "008" },
+		   { "IMAX", "025" },
+		   { "PAPP", "01940" },
+		   { "MOTDETAT", "000000" } };
+
+	   shared::event::CEventHandler evtHandler;
+	   CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
+												   shared::event::kUserFirstId,
+												   boost::posix_time::seconds(1));
+	   bufferHandler.push(shared::communication::CByteBuffer(frame));
+	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
+	   const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
+	   BOOST_CHECK_EQUAL(*out == expectedMap, true);
+   }
+
+   BOOST_AUTO_TEST_CASE(OneCRCFailed)
+   {                                                                                     //|// Here the CRC Error
+	   const auto frame = normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE Z<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
+
+	   shared::event::CEventHandler evtHandler;
+	   CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
+												   shared::event::kUserFirstId,
+												   boost::posix_time::seconds(1));
+	   bufferHandler.push(shared::communication::CByteBuffer(frame));
+	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
+   }
+
+   BOOST_AUTO_TEST_CASE(MissingCR)
+   {                                                                                                                                                    //|// Missing CR
+	   const auto frame = normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
+
+	   shared::event::CEventHandler evtHandler;
+	   CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
+												   shared::event::kUserFirstId,
+												   boost::posix_time::seconds(1));
+	   bufferHandler.push(shared::communication::CByteBuffer(frame));
+	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
+   }
+
+   BOOST_AUTO_TEST_CASE(Multiframe)
+   {
+	   const auto frame1 = normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTA");
+	   const auto frame2 = normalizeFrame("RIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE ");
+	   const auto frame3 = normalizeFrame("006238747 0<cr><lf>PTEC TH.. $<cr><lf>I");
+	   const auto frame4 = normalizeFrame("INST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 0");
+	   const auto frame5 = normalizeFrame("1940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
+
+	   const std::map<std::string, std::string> expectedMap = {
+		   { "ADCO", "031428097115" },
+		   { "OPTARIF", "BASE" },
+		   { "ISOUSC", "30" },
+		   { "BASE", "006238747" },
+		   { "PTEC", "TH.." },
+		   { "IINST", "008" },
+		   { "IMAX", "025" },
+		   { "PAPP", "01940" },
+		   { "MOTDETAT", "000000" } };
+
+	   shared::event::CEventHandler evtHandler;
+	   CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
+												   shared::event::kUserFirstId,
+												   boost::posix_time::seconds(1));
+
+	   bufferHandler.push(shared::communication::CByteBuffer(frame1));
+	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
+	   bufferHandler.push(shared::communication::CByteBuffer(frame2));
+	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
+	   bufferHandler.push(shared::communication::CByteBuffer(frame3));
+	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
+	   bufferHandler.push(shared::communication::CByteBuffer(frame4));
+	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent);
+	   bufferHandler.push(shared::communication::CByteBuffer(frame5));
+	   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
+	   const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
+	   BOOST_CHECK_EQUAL(*out == expectedMap, true);
+   }
+
    // TODO ajouter tests :
    // - caractères inattendus avant STX
    // - 2 trames enchainées
-   // - Trame arrivant en plusieurs morceaux
-   // - Trame refusée si un CRC KO sur un message
    // - Délai de suspend (utiliser le DefaultCurrentTimeMock pour simuler le temps) :
    //   - Pas de message pendant le délai
    //   - Message reçu OK et cohérent (début et fin correctes)
-   // - Caractère de fin de message <cr> manquant
-   // - Caractère inattendu entre fin de message <cr> et fin de trame <etx>
-   // - Caractère inattendu entre début de message <lf> et début de trame <stx>
 
    BOOST_AUTO_TEST_SUITE_END()

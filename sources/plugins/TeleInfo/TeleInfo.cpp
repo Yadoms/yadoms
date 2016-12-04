@@ -31,7 +31,6 @@ enum
 {
    kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId, // Always start from shared::event::CEventHandler::kUserFirstId
    kEvtPortDataReceived,
-   kEvtTimerRefreshTeleInfoData,
    kErrorRetryTimer,
    kAnswerTimeout
 };
@@ -54,7 +53,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
                                                              shared::event::CEventTimer::kOneShot,
-                                                             boost::posix_time::seconds(15));
+                                                             boost::posix_time::seconds(45));
    m_waitForAnswerTimer->stop();
 
    // Create the connection
@@ -62,11 +61,6 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    // the main loop
    std::cout << "Teleinfo plugin is running..." << std::endl;
-
-   // Timer used to read periodically information
-   api->getEventHandler().createTimer(kEvtTimerRefreshTeleInfoData,
-                                      shared::event::CEventTimer::kPeriodic,
-                                      boost::posix_time::seconds(30));
 
    while (true)
    {
@@ -93,6 +87,8 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kEvtPortDataReceived:
          {
+			 m_waitForAnswerTimer->stop();
+
             if (m_isDeveloperMode) std::cout << "TeleInfo plugin :  DataReceived" << std::endl;
 
             processDataReceived(api,
@@ -101,16 +97,8 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             if (m_transceiver->isERDFCounterDesactivated())
                api->setPluginState(yApi::historization::EPluginState::kCustom, "ErDFCounterdesactivated");
 
-            break;
-         }
-      case kEvtTimerRefreshTeleInfoData:
-         {
-            // When received this timer, we restart the reception through the serial port
-
-            if (m_isDeveloperMode) std::cout << "Teleinfo plugin :  Resume COM" << std::endl;
-
-            //Lauch a new time the time out to detect connexion failure
-            m_waitForAnswerTimer->start();
+			//Lauch a new time the time out to detect connexion failure
+			m_waitForAnswerTimer->start();
 
             break;
          }
@@ -191,9 +179,6 @@ void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const boost::shared_ptr<std::map<std::string, std::string>>& messages)
 {
-   // Stop timeout
-   m_waitForAnswerTimer->stop();
-
    //TODO   if (m_isDeveloperMode) m_logger.logReceived(messages);
 
    m_transceiver->decodeTeleInfoMessage(api, messages);
