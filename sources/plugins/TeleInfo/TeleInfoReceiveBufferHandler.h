@@ -37,17 +37,17 @@ protected:
    /// \brief	                     Check if we got a complete message
    /// \return                      The complet message
    //--------------------------------------------------------------
-   boost::shared_ptr<const std::vector<unsigned char>> getCompleteMessage();
+   boost::shared_ptr<std::map<std::string, std::string>> getCompleteMessage();
 
-   static bool checkIntegrity(boost::shared_ptr<const std::vector<unsigned char>> frame);
+   static  boost::shared_ptr<std::map<std::string, std::string>> getMessages(boost::shared_ptr<const std::vector<unsigned char>> frame);
 
-   static bool isCheckSumOk(const std::vector<unsigned char>& message);
+   static bool isCheckSumOk(const std::string& message);
 
    //--------------------------------------------------------------
    /// \brief	                     Send a message to the target event handler
-   /// \param[in] buffer            Buffer to send
+   /// \param[in] messages          Received messages as map(key, value)
    //--------------------------------------------------------------
-   void notifyEventHandler(boost::shared_ptr<const std::vector<unsigned char>> buffer) const;
+   void notifyEventHandler(boost::shared_ptr<std::map<std::string, std::string>> messages) const;
 
 private:
    //--------------------------------------------------------------

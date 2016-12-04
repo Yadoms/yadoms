@@ -33,15 +33,15 @@ public:
    {
    }
 
-   static bool isCheckSumOk(const std::vector<unsigned char>& message)
+   static bool isCheckSumOk(const std::string& message)
    {
       return CTeleInfoReceiveBufferHandler::isCheckSumOk(message);
    }
 };
 
-std::vector<unsigned char> toMessage(const std::string& content)
+std::string toMessage(const std::string& content)
 {
-   std::vector<unsigned char> message;
+   std::string message;
    message.push_back(kStartMessage);
    for (const auto car:content)
       message.push_back(car);
@@ -75,14 +75,16 @@ BOOST_AUTO_TEST_SUITE(TestTeleInfoReceiveBufferHandler)
 
 
       // Too small message
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::vector<unsigned char>{ 0x55 }), false);
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::vector<unsigned char>{ 0x55, 0xAA }), false);
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::vector<unsigned char>{ 0x55, 0xAA, 0x55 }), false);
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::vector<unsigned char>{ kStartMessage, ' ', kEndMessage }), false);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(""), false);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk("1"), false);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk("12"), false);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk("123"), false);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk("123"), false);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ kStartMessage, ' ', kEndMessage }), false);
 
       // Empty message
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::vector<unsigned char>{ kStartMessage, ' ', 0x20, kEndMessage }), true);
-      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::vector<unsigned char>{ kStartMessage, ' ', 0x21, kEndMessage }), false);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ kStartMessage, ' ', 0x20, kEndMessage }), true);
+      BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(std::string{ kStartMessage, ' ', 0x21, kEndMessage }), false);
 
       // Message OK
       BOOST_CHECK_EQUAL(bufferHandler.isCheckSumOk(toMessage("OPTARIF BASE 0")), true);
@@ -100,6 +102,16 @@ BOOST_AUTO_TEST_SUITE(TestTeleInfoReceiveBufferHandler)
    BOOST_AUTO_TEST_CASE(Nominal)
    {
       const auto frame = normalizeFrame("<stx><lf>ADCO 031428097115 @<cr><lf>OPTARIF BASE 0<cr><lf>ISOUSC 30 9<cr><lf>BASE 006238747 0<cr><lf>PTEC TH.. $<cr><lf>IINST 008 _<cr><lf>IMAX 025 F<cr><lf>PAPP 01940 /<cr><lf>MOTDETAT 000000 B<cr><etx>");
+      const std::map<std::string, std::string> expectedMap = {
+         { "ADCO", "031428097115" },
+         { "OPTARIF", "BASE" },
+         { "ISOUSC", "30" },
+         { "BASE", "006238747" },
+         { "PTEC", "TH.." },
+         { "IINST", "008" },
+         { "IMAX", "025" },
+         { "PAPP", "01940" },
+         { "MOTDETAT", "000000" } };
 
       shared::event::CEventHandler evtHandler;
       CTeleInfoReceiveBufferHandler bufferHandler(evtHandler,
@@ -107,10 +119,8 @@ BOOST_AUTO_TEST_SUITE(TestTeleInfoReceiveBufferHandler)
                                                   boost::posix_time::seconds(1));
       bufferHandler.push(shared::communication::CByteBuffer(frame));
       BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
-
-      BOOST_CHECK_NO_THROW(evtHandler.getEventData<const std::vector<unsigned char>>());
-      const auto out = evtHandler.getEventData<const std::vector<unsigned char>>();
-      BOOST_CHECK_EQUAL(std::equal(out.begin(), out.end(), frame.begin()), true);
+      const auto out = evtHandler.getEventData<boost::shared_ptr<std::map<std::string, std::string>>>();
+      BOOST_CHECK_EQUAL(*out == expectedMap, true);
    }
 
    // TODO ajouter tests :

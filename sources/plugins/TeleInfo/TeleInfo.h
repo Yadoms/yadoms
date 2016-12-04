@@ -55,7 +55,7 @@ protected:
    /// \param [in] data             The buffer with the received information
    //--------------------------------------------------------------
    void processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
-                            const std::vector<unsigned char>& data);
+                            const boost::shared_ptr<std::map<std::string, std::string>>& data);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the TeleInfo Receiver becomes connected

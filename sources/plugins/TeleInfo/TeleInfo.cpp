@@ -96,7 +96,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          if (m_isDeveloperMode) std::cout << "TeleInfo plugin :  DataReceived" << std::endl;
 
          processDataReceived(api,
-                             api->getEventHandler().getEventData<const std::vector<unsigned char>>());
+                             api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::string>>>());
 
          if (m_transceiver->isERDFCounterDesactivated()) api->setPluginState(yApi::historization::EPluginState::kCustom, "ErDFCounterdesactivated");
 
@@ -193,7 +193,7 @@ void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
-                                    const std::vector<unsigned char>& data)
+                                    const boost::shared_ptr<std::map<std::string, std::string>>& data)
 {
    // Stop timeout
    m_waitForAnswerTimer->stop();
