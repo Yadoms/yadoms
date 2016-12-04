@@ -26,8 +26,6 @@ public:
    // ITransceiver implementation
    void decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                               const boost::shared_ptr<std::map<std::string, std::string>>& messages) override;
-   bool isInformationUpdated() const override;
-   void ResetRefreshTags() override;
    bool isERDFCounterDesactivated() const override;
    // [END] ITransceiver implementation
 
@@ -35,7 +33,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	                     Create the Device with the counter Id
    //--------------------------------------------------------------
-   void createDeviceAndKeywords(void);
+   void createDeviceAndKeywords(bool apparentPowerPresent);
 
 
    void createKeywordList(const std::string& tariff);
@@ -78,39 +76,16 @@ private:
 
    bool m_isdeveloperMode;
 
-   //Contract Options -> Abonnement
-   typedef enum
+   bool m_teleinfoEnableInCounter;
+
+   bool m_deviceCreated;
+   
+   enum
    {
       OP_NOT_DEFINED,
       OP_BASE,
       OP_CREUSE,
       OP_EJP,
       OP_TEMPO
-   } Abonnement;
-
-   bool m_adcoUpdated; //TODO faire ménage dans booléens
-   bool m_baseUpdated;
-   bool m_lowCostUpdated;
-   bool m_normalCostUpdated;
-   bool m_instantCurrentUpdated;
-   bool m_apparentPowerUpdated;
-
-   bool m_eJPPeakPeriodUpdated;
-   bool m_eJPNormalPeriodUpdated;
-
-   bool m_tempoBlueDaysLowCostUpdated;
-   bool m_tempoBlueDaysNormalCostUpdated;
-
-   bool m_tempoWhiteDaysLowCostUpdated;
-   bool m_tempoWhiteDaysNormalCostUpdated;
-
-   bool m_tempoRedDaysLowCostUpdated;
-   bool m_tempoRedDaysNormalCostUpdated;
-
-   bool m_timePeriodUpdated;
-   bool m_forecastPeriodUpdated;
-
-   bool m_deviceCreated;
-
-   Abonnement m_optarif;
+   } m_optarif;
 };

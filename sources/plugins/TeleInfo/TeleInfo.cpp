@@ -98,7 +98,8 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             processDataReceived(api,
                                 api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::string>>>());
 
-            if (m_transceiver->isERDFCounterDesactivated()) api->setPluginState(yApi::historization::EPluginState::kCustom, "ErDFCounterdesactivated");
+            if (m_transceiver->isERDFCounterDesactivated())
+               api->setPluginState(yApi::historization::EPluginState::kCustom, "ErDFCounterdesactivated");
 
             break;
          }
@@ -107,8 +108,6 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             // When received this timer, we restart the reception through the serial port
 
             if (m_isDeveloperMode) std::cout << "Teleinfo plugin :  Resume COM" << std::endl;
-            m_transceiver->ResetRefreshTags();
-            //TODO m_receiveBufferHandler->resume();
 
             //Lauch a new time the time out to detect connexion failure
             m_waitForAnswerTimer->start();
@@ -167,9 +166,6 @@ void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
    // Stop running timers, if any
    m_waitForAnswerTimer->stop();
 
-   // Stop running reception, if any
-   //TODO   m_receiveBufferHandler->suspend();
-
    // Configuration was updated
    std::cout << "Update configuration..." << std::endl;
    BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
@@ -201,13 +197,6 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
    //TODO   if (m_isDeveloperMode) m_logger.logReceived(messages);
 
    m_transceiver->decodeTeleInfoMessage(api, messages);
-
-   // When all information are updated we stopped the reception !
-   if (m_transceiver->isInformationUpdated())
-   {
-      if (m_isDeveloperMode) std::cout << "Suspend COM" << std::endl;
-      //TODO      m_receiveBufferHandler->suspend();
-   }
 
    auto newState = true;
    if (m_runningState != newState)
