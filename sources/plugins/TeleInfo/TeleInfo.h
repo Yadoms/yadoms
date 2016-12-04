@@ -52,10 +52,10 @@ protected:
    //--------------------------------------------------------------
    /// \brief	                     Called when received a message from the TeleInfo Receiver
    /// \param [in] api              Plugin execution context (Yadoms API)
-   /// \param [in] data             The buffer with the received information
+   /// \param [in] messages         The buffer with the received information
    //--------------------------------------------------------------
    void processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
-                            const boost::shared_ptr<std::map<std::string, std::string>>& data);
+                            const boost::shared_ptr<std::map<std::string, std::string>>& messages);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the TeleInfo Receiver becomes connected

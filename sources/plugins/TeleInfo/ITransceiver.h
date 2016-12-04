@@ -23,7 +23,7 @@ public:
    /// \param [in] data             Data received
    //--------------------------------------------------------------
    virtual void decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> api,
-                                      const shared::communication::CByteBuffer& data) = 0;
+                                      const boost::shared_ptr<std::map<std::string, std::string>>& messages) = 0;
 
    //--------------------------------------------------------------
    /// \brief	                    Return if all information have been read
@@ -42,4 +42,3 @@ public:
    //--------------------------------------------------------------
    virtual bool isERDFCounterDesactivated() const = 0;
 };
-

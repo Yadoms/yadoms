@@ -7,8 +7,6 @@ include("../YadomsPluginsCommon.cmake")
 #########################################
 
 set(CARTELECTRONIC_TELEINFO_SOURCES
-   IncrementSequenceNumber.h
-   ISequenceNumberProvider.h
    ITeleInfoConfiguration.h
    ITeleInfoMessage.h
    ITransceiver.h

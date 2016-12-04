@@ -16,7 +16,7 @@ namespace yApi = shared::plugin::yPluginApi;
 IMPLEMENT_PLUGIN(CTeleInfo)
 
 
-CTeleInfo::CTeleInfo(): 
+CTeleInfo::CTeleInfo():
    m_isDeveloperMode(false),
    m_runningState(false)
 {
@@ -74,71 +74,71 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       switch (api->getEventHandler().waitForEvents())
       {
       case yApi::IYPluginApi::kEventStopRequested:
-      {
-         std::cout << "Stop requested" << std::endl;
-         api->setPluginState(yApi::historization::EPluginState::kStopped);
-         return;
-      }
+         {
+            std::cout << "Stop requested" << std::endl;
+            api->setPluginState(yApi::historization::EPluginState::kStopped);
+            return;
+         }
       case kEvtPortConnection:
-      {
-         std::cout << "Teleinfo plugin :  Port Connection" << std::endl;
-         api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+         {
+            std::cout << "Teleinfo plugin :  Port Connection" << std::endl;
+            api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-         if (api->getEventHandler().getEventData<bool>())
-            processTeleInfoConnectionEvent(api);
-         else
-            processTeleInfoUnConnectionEvent(api);
+            if (api->getEventHandler().getEventData<bool>())
+               processTeleInfoConnectionEvent(api);
+            else
+               processTeleInfoUnConnectionEvent(api);
 
-         break;
-      }
+            break;
+         }
       case kEvtPortDataReceived:
-      {
-         if (m_isDeveloperMode) std::cout << "TeleInfo plugin :  DataReceived" << std::endl;
+         {
+            if (m_isDeveloperMode) std::cout << "TeleInfo plugin :  DataReceived" << std::endl;
 
-         processDataReceived(api,
-                             api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::string>>>());
+            processDataReceived(api,
+                                api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::string>>>());
 
-         if (m_transceiver->isERDFCounterDesactivated()) api->setPluginState(yApi::historization::EPluginState::kCustom, "ErDFCounterdesactivated");
+            if (m_transceiver->isERDFCounterDesactivated()) api->setPluginState(yApi::historization::EPluginState::kCustom, "ErDFCounterdesactivated");
 
-         break;
-      }
+            break;
+         }
       case kEvtTimerRefreshTeleInfoData:
-      {
-         // When received this timer, we restart the reception through the serial port
+         {
+            // When received this timer, we restart the reception through the serial port
 
-         if (m_isDeveloperMode) std::cout << "Teleinfo plugin :  Resume COM" << std::endl;
-         m_transceiver->ResetRefreshTags();
-         //TODO m_receiveBufferHandler->resume();
+            if (m_isDeveloperMode) std::cout << "Teleinfo plugin :  Resume COM" << std::endl;
+            m_transceiver->ResetRefreshTags();
+            //TODO m_receiveBufferHandler->resume();
 
-         //Lauch a new time the time out to detect connexion failure
-         m_waitForAnswerTimer->start();
+            //Lauch a new time the time out to detect connexion failure
+            m_waitForAnswerTimer->start();
 
-         break;
-      }
+            break;
+         }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
-      {
-         api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-         onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
-         api->setPluginState(yApi::historization::EPluginState::kRunning);
+         {
+            api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+            api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-         break;
-      }
+            break;
+         }
       case kErrorRetryTimer:
-      {
-         createConnection(api);
-         break;
-      }
+         {
+            createConnection(api);
+            break;
+         }
       case kAnswerTimeout:
-      {
-         std::cerr << "No answer received, try to reconnect in a while..." << std::endl;
-         errorProcess(api);
-         break;
-      }
+         {
+            std::cerr << "No answer received, try to reconnect in a while..." << std::endl;
+            errorProcess(api);
+            break;
+         }
       default:
-      {
-         std::cerr << "Unknown message id" << std::endl;
-         break;
-      }
+         {
+            std::cerr << "Unknown message id" << std::endl;
+            break;
+         }
       }
    }
 }
@@ -168,7 +168,7 @@ void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
    m_waitForAnswerTimer->stop();
 
    // Stop running reception, if any
-//TODO   m_receiveBufferHandler->suspend();
+   //TODO   m_receiveBufferHandler->suspend();
 
    // Configuration was updated
    std::cout << "Update configuration..." << std::endl;
@@ -193,23 +193,23 @@ void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
-                                    const boost::shared_ptr<std::map<std::string, std::string>>& data)
+                                    const boost::shared_ptr<std::map<std::string, std::string>>& messages)
 {
    // Stop timeout
    m_waitForAnswerTimer->stop();
 
-//TODO   if (m_isDeveloperMode) m_logger.logReceived(data);
+   //TODO   if (m_isDeveloperMode) m_logger.logReceived(messages);
 
-//TODO   m_transceiver->decodeTeleInfoMessage(api, data);
+   m_transceiver->decodeTeleInfoMessage(api, messages);
 
    // When all information are updated we stopped the reception !
    if (m_transceiver->isInformationUpdated())
    {
       if (m_isDeveloperMode) std::cout << "Suspend COM" << std::endl;
-//TODO      m_receiveBufferHandler->suspend();
+      //TODO      m_receiveBufferHandler->suspend();
    }
 
-   bool newState = true;
+   auto newState = true;
    if (m_runningState != newState)
    {
       api->setPluginState(yApi::historization::EPluginState::kRunning);

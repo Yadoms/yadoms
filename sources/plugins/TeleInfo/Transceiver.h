@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ITransceiver.h"
-#include "ISequenceNumberProvider.h"
 #include "Keywords/RunningPeriod.h"
 #include "Keywords/ForecastTomorrow.h"
 
@@ -26,7 +25,7 @@ public:
 
    // ITransceiver implementation
    void decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> api,
-                              const shared::communication::CByteBuffer& data) override;
+                              const boost::shared_ptr<std::map<std::string, std::string>>& messages) override;
    bool isInformationUpdated() const override;
    void ResetRefreshTags() override;
    bool isERDFCounterDesactivated() const override;
@@ -34,34 +33,19 @@ public:
 
 private:
    //--------------------------------------------------------------
-   /// \brief	                     calculate et check the checksum of the message
-   /// \param [in] buffer            Buffer of the message
-   /// \return                       true if the checksum is valid
-   //--------------------------------------------------------------
-   static bool isCheckSumOk(const unsigned char* buffer);
-
-   //--------------------------------------------------------------
-   /// \brief	                     Parse the message received
-   /// \param [in] pData             Pointer to the buffer
-   /// \param [in] Len               Length of the buffer
-   //--------------------------------------------------------------
-   void ParseData(const unsigned char* pData, int Len);
-
-   //--------------------------------------------------------------
-   /// \brief	                     Identify the message selected
-   /// \param [in] buffer            The buffer that contains the message
-   //--------------------------------------------------------------
-   void MatchLine(const unsigned char* buffer);
-
-   //--------------------------------------------------------------
    /// \brief	                     Create the Device with the counter Id
    //--------------------------------------------------------------
-   void createDeviceAndKeywords( void );
+   void createDeviceAndKeywords(void);
+
+
+   void createKeywordList(const std::string& tariff);
+   void processMessage(const std::string& key,
+                       const std::string& value);
 
    //--------------------------------------------------------------
    /// \brief  Keywords list
    //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
 
    //--------------------------------------------------------------
    /// \brief  Details for the device
@@ -71,18 +55,18 @@ private:
    //--------------------------------------------------------------
    /// \brief  Keywords
    //--------------------------------------------------------------
-   boost::shared_ptr<yApi::historization::CEnergy>        m_baseCounter;
-   boost::shared_ptr<yApi::historization::CEnergy>        m_lowCostCounter;
-   boost::shared_ptr<yApi::historization::CEnergy>        m_normalCostCounter; 
-   boost::shared_ptr<yApi::historization::CEnergy>        m_EJPPeakPeriod;
-   boost::shared_ptr<yApi::historization::CEnergy>        m_EJPNormalPeriod;
-   boost::shared_ptr<yApi::historization::CEnergy>        m_tempoBlueDaysLowCostPeriod;
-   boost::shared_ptr<yApi::historization::CEnergy>        m_tempoBlueDaysNormalCostPeriod;
-   boost::shared_ptr<yApi::historization::CEnergy>        m_tempoRedDaysLowCostPeriod;
-   boost::shared_ptr<yApi::historization::CEnergy>        m_tempoRedDaysNormalCostPeriod;
-   boost::shared_ptr<yApi::historization::CEnergy>        m_tempoWhiteDaysLowCostPeriod;
-   boost::shared_ptr<yApi::historization::CEnergy>        m_tempoWhiteDaysNormalCostPeriod;
-   boost::shared_ptr<yApi::historization::CCurrent>       m_instantCurrent;
+   boost::shared_ptr<yApi::historization::CEnergy> m_baseCounter;
+   boost::shared_ptr<yApi::historization::CEnergy> m_lowCostCounter;
+   boost::shared_ptr<yApi::historization::CEnergy> m_normalCostCounter;
+   boost::shared_ptr<yApi::historization::CEnergy> m_EJPPeakPeriod;
+   boost::shared_ptr<yApi::historization::CEnergy> m_EJPNormalPeriod;
+   boost::shared_ptr<yApi::historization::CEnergy> m_tempoBlueDaysLowCostPeriod;
+   boost::shared_ptr<yApi::historization::CEnergy> m_tempoBlueDaysNormalCostPeriod;
+   boost::shared_ptr<yApi::historization::CEnergy> m_tempoRedDaysLowCostPeriod;
+   boost::shared_ptr<yApi::historization::CEnergy> m_tempoRedDaysNormalCostPeriod;
+   boost::shared_ptr<yApi::historization::CEnergy> m_tempoWhiteDaysLowCostPeriod;
+   boost::shared_ptr<yApi::historization::CEnergy> m_tempoWhiteDaysNormalCostPeriod;
+   boost::shared_ptr<yApi::historization::CCurrent> m_instantCurrent;
    boost::shared_ptr<yApi::historization::CApparentPower> m_apparentPower;
 
 
@@ -90,7 +74,7 @@ private:
    boost::shared_ptr<CForecastTomorrow> m_ForecastPeriod;
 
    boost::shared_ptr<yApi::IYPluginApi> m_api;
-   std::string m_DeviceName;
+   std::string m_deviceName;
 
    bool m_isdeveloperMode;
 
@@ -104,7 +88,7 @@ private:
       OP_TEMPO
    } Abonnement;
 
-   bool m_adcoUpdated;
+   bool m_adcoUpdated; //TODO faire ménage dans booléens
    bool m_baseUpdated;
    bool m_lowCostUpdated;
    bool m_normalCostUpdated;
@@ -130,4 +114,3 @@ private:
 
    Abonnement m_optarif;
 };
-
