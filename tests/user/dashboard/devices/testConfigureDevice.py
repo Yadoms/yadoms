@@ -31,7 +31,7 @@ class ConfigureDevice(unittest.TestCase):
 
    def test_notConfigurableDevice(self):
       print '=== Try to configure not configurable device ==='
-      deviceName = u'fakeDimmableReadOnlySwitch'
+      deviceName = u'fakeDimmableReadOnlySwitch' # TODO : change the package.json of fakePlugin to make this device non-configurable
       attachedPluginInstance = u'My fakePlugin instance'
      
       print '  Check that device is not configurable'
