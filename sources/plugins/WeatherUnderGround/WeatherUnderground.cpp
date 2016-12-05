@@ -53,6 +53,10 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    // Load configuration values (provided by database)
    m_configuration.initializeWith(api->getConfiguration());
 
+   //Get all forecast stations to be displayed into the menu
+   auto location = api->getYadomsInformation()->location();
+   auto forecastStations = getAllStations(api, location, m_configuration.getAPIKey());
+
    try
    {
       m_WeatherConditionsRequester = boost::make_shared<CWeatherConditions>(api, m_configuration);
@@ -245,4 +249,18 @@ shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yAp
 
       throw CRequestErrorException();
    }
+}
+
+std::vector<shared::CDataContainer> CWeatherUnderground::getAllStations(boost::shared_ptr<yApi::IYPluginApi> api,
+														   boost::shared_ptr<const shared::ILocation> location,
+														   const std::string& apikey)
+{
+	int nbRetry = 0;
+	auto response =  SendUrlRequest(api, "http://api.wunderground.com/api/" + apikey + "/geolookup/q/" + std::to_string(location->latitude()) + "," + std::to_string(location->longitude()) + ".json", 0, nbRetry);
+	
+	response.printToLog(std::cout);
+
+	auto stations = response.get<std::vector<shared::CDataContainer> >("location.station");
+
+	return stations;
 }

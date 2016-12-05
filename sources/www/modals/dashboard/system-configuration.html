@@ -21,33 +21,9 @@
       $modalBody.empty();
 
       var promise = new $.Deferred();
-      
-      //var promiseLocation = new $.Deferred();
-      //var locationFirstConfiguration = false;      
-      
       Yadoms.systemConfiguration = null;
-      //Yadoms.locationConfiguration = null;
       
       var i18NContext = "modals.dashboard.sub-windows.system-configuration.configuration-items.";
-      
-      // get current location information
-      /*ConfigurationManager.getSection(ConfigurationManager.items.systemSection)
-
-         .done(function(locationConfiguration) {
-         
-            Yadoms.locationConfiguration = locationConfiguration;
-            console.log ( locationConfiguration );
-            
-            // If no configuration returned
-            if (Yadoms.locationConfiguration.length == 0)
-               locationFirstConfiguration = true;
-            
-            promiseLocation.resolve();
-            })
-            .fail(function(error) {
-               notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
-               promiseLocation.reject();
-            });*/
 
       //get current system configuration            
       ConfigurationManager.getSection(ConfigurationManager.items.systemSection)
@@ -67,7 +43,6 @@
          });
 
       // When systemSection and locationSection are done
-
       $.when(promise).done(function() {               
                //*************
                //language
@@ -89,21 +64,20 @@
                //*************
                //city name
 
-               var value = {};
+               var location = {};
                
-               if (!isNullOrUndefined ( Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.latitude] ))
-                  value.latitude  = Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.latitude];
-               else
-                  value.latitude = "0.0";
-                  
-               if (!isNullOrUndefined ( Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.longitude] ))
-                  value.longitude = Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.longitude];
-               else
-                  value.longitude = "0.0";
-                  
-               value.altitude = "0.0";
-
-               Yadoms.systemConfiguration.location.value = value;
+               try{
+                  location.latitude  = Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.latitude];
+                  location.longitude = Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.longitude];
+               }
+               catch(err)
+               {
+                  location.latitude = "0.0";
+                  location.longitude = "0.0";
+                  location.altitude = "0.0";
+                  Yadoms.systemConfiguration.location = {};
+                  Yadoms.systemConfiguration.location.value = location;
+               }
                
                console.log ( Yadoms.systemConfiguration );
                
@@ -236,9 +210,11 @@
                         console.debug("End of system Configuration");
 
                         var pageHasToBeReloaded = false;
-
+                        
+                        console.log ("save language");
+                        
                         var d = new $.Deferred();
-
+                        
                         //we save current configuration
                         //*************
                         //language
@@ -252,6 +228,7 @@
                                  window.location.reload();
                               });
 
+                              console.debug ("advanced parameters");
 
                               //*************
                               //advanced parameters
@@ -259,6 +236,9 @@
 
                               ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.advancedParameters])
                                  .done(function() {
+                                 
+                                       console.debug ("date format String");
+                                 
                                        //*************
                                        //dateFormatString
                                        Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value = dateFormatStringParameter.getCurrentConfiguration();
@@ -299,11 +279,15 @@
                                                 //we clear the password for the next re-activation
                                                 value.password = "";
                                              }
+                                             
+                                             console.debug ("enregistrement - basic Authentication");
 
                                              Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value = JSON.stringify(value);
 
                                              ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication])
                                                 .done(function() { 
+                                                
+                                                   console.debug ("enregistrement - location");
                                                 
                                                    Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.latitude]  = latitudeParameter.getCurrentConfiguration();
                                                    Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.longitude] = longitudeParameter.getCurrentConfiguration();                                                
@@ -317,14 +301,7 @@
                                                       .done(function() {
                                                          d.resolve();
                                                       })
-                                                      .fail(d.reject);                                                
-/*
-                                             Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value = value;
-
-                                             ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication])
-                                                .done(function() { 
-                                                   d.resolve();
-*/
+                                                      .fail(d.reject);
                                                 })
                                                 .fail(d.reject);
                                           })
@@ -438,16 +415,6 @@
                      });
                   promise.resolve();
                });
-/*         })
-         .fail(function(error) {
-            notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
-            promise.reject();
-         });
-      })
-      .fail(function(error) {
-         notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);
-         promiseLocation.reject();
-      });*/
 
       return promise.promise();
    };
