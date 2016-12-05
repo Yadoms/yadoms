@@ -200,7 +200,6 @@
             $deviceRow.find("button.btn-configure").prop('disabled', true);
             PluginInstanceManager.getState(device.attachedPlugin)
             .done(function(instanceState) {
-               debugger;
                if (instanceState.state !== "Stopped" && instanceState.state !== "Error" && instanceState.state) {
                   $deviceRow.find("button.btn-configure").prop('disabled', false);
                }
@@ -452,14 +451,17 @@
       var $keywordRow = getKeywordDomRow(keyword);
       
       var value = null;
-      if($keywordRow.find("td.keyword-value-bool")) {
-         var $checkbox = $keywordRow.find("td.keyword-value-bool input");
+      
+      var $tdvalue = $keywordRow.find("td.keyword-value");
+      
+      if($tdvalue.hasClass("keyword-value-bool")) {
+         var $checkbox = $tdvalue.find("input");
          if($checkbox)
             value = $checkbox.is(":checked");
          else
             value = false;
       } else {      
-         value = $keywordRow.find("td.keyword-value span").html();
+         value = $tdvalue.find("span").html();
       }
 
       Yadoms.modals.keywordSetValue.loadAsync()
@@ -536,7 +538,9 @@
             // not json
             
             //manage boolean keyword
-            if($keywordRow.find("td.keyword-value-bool")) {
+            var $tdvalue = $keywordRow.find("td.keyword-value");
+
+            if($tdvalue.hasClass("keyword-value-bool")) {
                if(parseBool(acquisition.value) === true) {
                   keywordValue = "<input type=\"checkbox\" disabled readonly checked/>"
                } else {
