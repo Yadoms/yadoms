@@ -76,9 +76,15 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
-            api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
-            api->setPluginState(yApi::historization::EPluginState::kRunning);
+            try {
+               api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+               onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+               api->setPluginState(yApi::historization::EPluginState::kRunning);
+            }
+            catch (...)
+            {
+               std::cout << "Wrong configuration update" << std::endl;
+            }
             break;
          }
       case kRefreshStatesReceived:
@@ -106,6 +112,10 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             api->setPluginState(yApi::historization::EPluginState::kCustom, "noInformation");
          }
+         catch (shared::exception::CException &e) // final catch for other reason
+         {
+            std::cout << "Unknow error : " << e.what() << std::endl;
+         }
          break;
       }
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
@@ -121,12 +131,15 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                request->sendSuccess(m_factory->createDeviceManually(api, request->getData()));
 
                // Send an event to refresh all IOs
-               //api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
                api->getEventHandler().postEvent<bool>(kRefreshStatesReceived, true);
             }
             catch (CManuallyDeviceCreationException& e)
             {
                request->sendError(e.what());
+            }
+            catch (shared::exception::CException &e)
+            {
+               std::cout << "Unknow error : " << e.what() << std::endl;
             }
          }
          break;
@@ -135,10 +148,16 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          if (initializationOk)
          {
-            auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
-            m_factory->removeDevice(api, device->device());
-            m_ioManager->removeDevice(api, device->device());
-            std::cout << device->device() << " was removed" << std::endl;
+            try {
+               auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
+               m_factory->removeDevice(api, device->device());
+               m_ioManager->removeDevice(api, device->device());
+               std::cout << device->device() << " was removed" << std::endl;
+            }
+            catch (shared::exception::CException &e)
+            {
+               std::cout << "Unknow error : " << e.what() << std::endl;
+            }
          }
          break;
       }
@@ -147,19 +166,25 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          // Yadoms ask for a binding query 
          if (initializationOk)
          {
-            auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
+            try {
+               auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
 
-            if (data->getData().getQuery() == "X8R")
-               data->sendSuccess(m_factory->bindSlotsX8R());
-            else if (data->getData().getQuery() == "X8D")
-               data->sendSuccess(m_factory->bindSlotsX8D());
-            else if (data->getData().getQuery() == "X24D")
-               data->sendSuccess(m_factory->bindSlotsX24D());
-            else
+               if (data->getData().getQuery() == "X8R")
+                  data->sendSuccess(m_factory->bindSlotsX8R());
+               else if (data->getData().getQuery() == "X8D")
+                  data->sendSuccess(m_factory->bindSlotsX8D());
+               else if (data->getData().getQuery() == "X24D")
+                  data->sendSuccess(m_factory->bindSlotsX24D());
+               else
+               {
+                  std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
+                  data->sendError(errorMessage);
+                  std::cerr << errorMessage << std::endl;
+               }
+            }
+            catch (shared::exception::CException &e)
             {
-               std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
-               data->sendError(errorMessage);
-               std::cerr << errorMessage << std::endl;
+               std::cout << "Unknow error : " << e.what() << std::endl;
             }
          }
          break;
@@ -169,8 +194,14 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          // Command received from Yadoms
          auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
 
-         if (initializationOk)
-            m_ioManager->onCommand(api, command);
+         try {
+            if (initializationOk)
+               m_ioManager->onCommand(api, command);
+         }
+         catch (shared::exception::CException &e)
+         {
+            std::cout << "Unknow error : " << e.what() << std::endl;
+         }
          break;
       }
       default:
@@ -190,6 +221,5 @@ void CIPX800::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, co
 
    // Update configuration
    m_configuration.initializeWith(newConfigurationData);
-
    m_ioManager->OnConfigurationUpdate(api, m_configuration);
 }

@@ -139,13 +139,16 @@ namespace equipments
    {
       if (m_pendingIOHistorizer)
       {
+         
          bool newValue = false; 
-         if (command->getBody() == "true")
-            newValue = true;
-         else if (command->getBody() == "false")
-            newValue = false;
-         else
+
+         try {
+            newValue = boost::lexical_cast<bool>(command->getBody());
+         }
+         catch (shared::exception::CException)
+         {
             shared::exception::CException("Invalid command");
+         }
 
          if (m_pendingIOHistorizer->get() != newValue)
          {
@@ -185,8 +188,6 @@ namespace equipments
       boost::regex reg("([a-zA-Z]+)(\\d+)");
       boost::smatch match;
 
-      std::cout << "CIPX800Equipment::buildMessageToDevice" << std::endl;
-
       //Set parameters
       if (boost::regex_search(keywordName, match, reg))
       {
@@ -208,8 +209,6 @@ namespace equipments
    {
       std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >::const_iterator diIterator;
 
-      std::cout << "keywordName" << keywordName <<std::endl;
-
       for (diIterator = keywordsList.begin(); diIterator != keywordsList.end(); ++diIterator)
       {
          // Keyword found
@@ -217,12 +216,13 @@ namespace equipments
          {
             bool newValue = false;
 
-            if (command->getBody() == "true")
-               newValue = true;
-            else if (command->getBody() == "false")
-               newValue = false;
-            else
+            try {
+               newValue = boost::lexical_cast<bool>(command->getBody());
+            }
+            catch (shared::exception::CException)
+            {
                shared::exception::CException("Invalid command");
+            }
 
             if (newValue)
                parameters.set("SetR", pinNumber); 
@@ -243,8 +243,6 @@ namespace equipments
                                        shared::CDataContainer& parameters)
    {
       std::vector<boost::shared_ptr<specificHistorizers::CCounter> >::const_iterator diIterator;
-
-      std::cout << "CIPX800Equipment::setParameter counter" << std::endl;
 
       for (diIterator = keywordsList.begin(); diIterator != keywordsList.end(); ++diIterator)
       {
