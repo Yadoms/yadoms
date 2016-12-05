@@ -20,7 +20,8 @@ CTeleInfoReceiveBufferHandler::CTeleInfoReceiveBufferHandler(shared::event::CEve
                                                              const boost::posix_time::time_duration suspendDelay)
    : m_receiveDataEventHandler(receiveDataEventHandler),
      m_receiveDataEventId(receiveDataEventId),
-     m_nextSendMessageDate(shared::currentTime::Provider().now())
+     m_nextSendMessageDate(shared::currentTime::Provider().now()),
+     m_suspendDelay (suspendDelay)
 {
 }
 
@@ -107,7 +108,7 @@ boost::shared_ptr<std::map<std::string, std::string>> CTeleInfoReceiveBufferHand
 	  if (endPos == frame->end())
 		  return noMessages;
 
-	  endPos++;
+	  ++endPos;
       auto message = std::string(startPos, endPos);
       if (!isCheckSumOk(message))
          return noMessages;
