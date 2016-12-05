@@ -207,7 +207,7 @@ namespace pluginSystem
          break;
       case toYadoms::msg::kHistorizeData: processHistorizeData(toYadomsProtoBuffer.historizedata());
          break;
-      case toYadoms::msg::kDeveloperModeRequest: processDeveloperModeRequest(toYadomsProtoBuffer.developermoderequest());
+      case toYadoms::msg::kYadomsInformationRequest: processYadomsInformationRequest(toYadomsProtoBuffer.yadomsinformationrequest());
          break;
       case toYadoms::msg::kRemoveDevice: processRemoveDeviceRequest(toYadomsProtoBuffer.removedevice());
          break;
@@ -360,11 +360,31 @@ namespace pluginSystem
       m_pluginApi->historizeData(msg.device(), dataVect);
    }
 
-   void CIpcAdapter::processDeveloperModeRequest(const toYadoms::DeveloperModeRequest& msg)
+   void CIpcAdapter::processYadomsInformationRequest(const toYadoms::YadomsInformationRequest& msg)
    {
       toPlugin::msg ans;
-      auto answer = ans.mutable_developermodeanswer();
-      answer->set_enabled(m_pluginApi->isDeveloperMode());
+      auto answer = ans.mutable_yadomsinformationanswer();
+      auto yadomsInformation = m_pluginApi->getYadomsInformation();
+      answer->set_developpermode(yadomsInformation->developperMode());
+      answer->set_version(yadomsInformation->version());
+
+      switch (yadomsInformation->releaseType())
+      {
+      case shared::versioning::EReleaseType::kStableValue: answer->set_releasetype(toPlugin::YadomsInformationAnswer_EReleaseType_Stable);
+         break;
+      case shared::versioning::EReleaseType::kReleaseCandidateValue: answer->set_releasetype(toPlugin::YadomsInformationAnswer_EReleaseType_ReleaseCandidate);
+         break;
+      case shared::versioning::EReleaseType::kBetaValue: answer->set_releasetype(toPlugin::YadomsInformationAnswer_EReleaseType_Beta);
+         break;
+      default:
+         answer->set_releasetype(toPlugin::YadomsInformationAnswer_EReleaseType_Beta);
+         break;
+      }
+
+      auto location = answer->mutable_location();
+      location->set_longitude(yadomsInformation->location()->longitude());
+      location->set_latitude(yadomsInformation->location()->latitude());
+      location->set_altitude(yadomsInformation->location()->altitude());
       send(ans);
    }
 

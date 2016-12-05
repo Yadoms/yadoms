@@ -51,6 +51,8 @@ namespace database
          boost::filesystem::path lastBackupData() override;
          // [END] IDataBackup implementation
 
+      protected:
+         static CDatabaseException::EDatabaseReturnCodes fromSQLiteReturnCode(int rc);
 
       private:
          //--------------------------------------------------------------

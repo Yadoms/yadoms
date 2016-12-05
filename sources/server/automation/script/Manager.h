@@ -9,6 +9,7 @@
 #include "../../dataAccessLayer/IKeywordManager.h"
 #include "IGeneralInfo.h"
 #include <IPathProvider.h>
+#include <shared/ILocation.h>
 
 namespace automation
 {
@@ -30,6 +31,7 @@ namespace automation
          ///\param[in] dbDeviceRequester  Database device requester
          ///\param[in] keywordAccessLayer  Database keyword access layer
          ///\param[in] dbRecipientRequester  Database recipient requester
+         ///\param[in] location  The location provider
          //-----------------------------------------------------
          CManager(const IPathProvider& pathProvider,
                   boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
@@ -37,7 +39,8 @@ namespace automation
                   boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
                   boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
                   boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
-                  boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester);
+                  boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
+                  boost::shared_ptr<shared::ILocation> location);
 
          //-----------------------------------------------------
          ///\brief               Destructor
@@ -135,7 +138,7 @@ namespace automation
          ///\brief               List of loaded interpreters
          ///\details key is the library file name (without path and extension)
          //-----------------------------------------------------
-         std::map<std::string, boost::shared_ptr<IInterpreterLibrary> > m_loadedInterpreters;
+         std::map<std::string, boost::shared_ptr<IInterpreterLibrary>> m_loadedInterpreters;
 
          //--------------------------------------------------------------
          /// \brief			      The interpreters map mutex

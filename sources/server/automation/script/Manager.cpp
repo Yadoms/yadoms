@@ -24,7 +24,8 @@ namespace automation
                          boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
                          boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
                          boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
-                         boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester)
+                         boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
+                         boost::shared_ptr<shared::ILocation> location)
          : m_pathProvider(pathProvider),
            m_pluginGateway(pluginGateway),
            m_configurationManager(configurationManager),
@@ -32,7 +33,7 @@ namespace automation
            m_dbDeviceRequester(dbDeviceRequester),
            m_keywordAccessLayer(keywordAccessLayer),
            m_dbRecipientRequester(dbRecipientRequester),
-           m_generalInfo(new CGeneralInfo())
+           m_generalInfo(boost::make_shared<CGeneralInfo>(location))
       {
       }
 
@@ -136,7 +137,7 @@ namespace automation
          loadInterpreters();
 
          // Now find corresponding interpreter
-         for (std::map<std::string, boost::shared_ptr<IInterpreterLibrary> >::const_iterator itInterpreter = m_loadedInterpreters.begin();
+         for (std::map<std::string, boost::shared_ptr<IInterpreterLibrary>>::const_iterator itInterpreter = m_loadedInterpreters.begin();
               itInterpreter != m_loadedInterpreters.end(); ++itInterpreter)
          {
             auto interpreter(itInterpreter->second->getInterpreter());
@@ -150,7 +151,7 @@ namespace automation
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
 
-         std::map<std::string, boost::shared_ptr<IInterpreterLibrary> >::const_iterator interpreter = m_loadedInterpreters.find(interpreterName);
+         std::map<std::string, boost::shared_ptr<IInterpreterLibrary>>::const_iterator interpreter = m_loadedInterpreters.find(interpreterName);
          if (interpreter != m_loadedInterpreters.end())
             m_loadedInterpreters.erase(interpreter);
       }
@@ -163,7 +164,7 @@ namespace automation
          loadInterpreters();
 
          // Now find corresponding interpreter (warning interpreter name is the name returned by the interpreter, not the map key, which is the interpreter filename)
-         for (std::map<std::string, boost::shared_ptr<IInterpreterLibrary> >::const_iterator itInterpreter = m_loadedInterpreters.begin(); itInterpreter != m_loadedInterpreters.end(); ++itInterpreter)
+         for (std::map<std::string, boost::shared_ptr<IInterpreterLibrary>>::const_iterator itInterpreter = m_loadedInterpreters.begin(); itInterpreter != m_loadedInterpreters.end(); ++itInterpreter)
          {
             auto interpreter(itInterpreter->second->getInterpreter());
             if (interpreter->name() == interpreterName)

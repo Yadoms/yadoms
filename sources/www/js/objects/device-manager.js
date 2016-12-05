@@ -63,12 +63,12 @@ DeviceManager.getAll = function () {
  * @param {Object} device The device
  * @ return {Promise}
  */
-DeviceManager.getAttachedPlugin = function (device) {
+DeviceManager.getAttachedPlugin = function (device, force) {
     assert(!isNullOrUndefined(device), "device must be defined");
 
     var d = new $.Deferred();
 
-    if(!device.attachedPlugin) {
+    if(!device.attachedPlugin || force === true) {
         PluginInstanceManager.get(device.pluginId)
         .done(function (pluginInstance) {
             device.attachedPlugin = pluginInstance;

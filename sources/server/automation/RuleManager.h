@@ -12,6 +12,7 @@
 #include "../dataAccessLayer/IKeywordManager.h"
 #include <IPathProvider.h>
 #include <shared/event/EventHandler.hpp>
+#include <shared/ILocation.h>
 
 namespace automation
 {
@@ -32,6 +33,7 @@ namespace automation
       ///\param[in] dbRecipientRequester  Database recipient requester
       ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
       ///\param[in] eventLogger  Main event logger
+      ///\param[in] location  The location provider
       //-----------------------------------------------------
       CRuleManager(const IPathProvider& pathProvider,
                    boost::shared_ptr<database::IRuleRequester> dbRequester, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
@@ -40,7 +42,8 @@ namespace automation
                    boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                    boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                    boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
-                   boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger);
+                   boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
+                   boost::shared_ptr<shared::ILocation> location);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -50,7 +53,7 @@ namespace automation
       // IRuleManager Implementation
       void stop() override;
       std::vector<std::string> getAvailableInterpreters() override;
-      std::vector<boost::shared_ptr<database::entities::CRule> > getRules() const override;
+      std::vector<boost::shared_ptr<database::entities::CRule>> getRules() const override;
       int createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code) override;
       boost::shared_ptr<database::entities::CRule> getRule(int id) const override;
       std::string getRuleCode(int id) const override;
@@ -80,7 +83,7 @@ namespace automation
       ///\param[in] rules     Rules to start
       ///\return              true if all rules were successfully started
       //-----------------------------------------------------
-      bool startRules(const std::vector<boost::shared_ptr<database::entities::CRule> >& rules);
+      bool startRules(const std::vector<boost::shared_ptr<database::entities::CRule>>& rules);
 
       //-----------------------------------------------------
       ///\brief               Check if a rule is started
@@ -153,14 +156,14 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               The started rules list (and its mutex)
       //-----------------------------------------------------
-      std::map<int, boost::shared_ptr<IRule> > m_startedRules;
+      std::map<int, boost::shared_ptr<IRule>> m_startedRules;
       mutable boost::recursive_mutex m_startedRulesMutex;
 
       //-----------------------------------------------------
       ///\brief               The handlers to notify when a rule stop (potentially several handlers for one rule)
       //-----------------------------------------------------
       mutable boost::recursive_mutex m_ruleStopNotifiersMutex;
-      std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler> > > m_ruleStopNotifiers;
+      std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler>>> m_ruleStopNotifiers;
    };
 } // namespace automation	
 

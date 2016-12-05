@@ -75,7 +75,7 @@ namespace plugin_cpp_api
       shared::CDataContainer getConfiguration() override;
       const boost::filesystem::path& getDataPath() const override;
       shared::event::CEventHandler& getEventHandler() override;
-      bool isDeveloperMode() const override;
+      boost::shared_ptr<const shared::plugin::information::IYadomsInformation> getYadomsInformation() const override;
       // [END] shared::script::yScriptApi::IYScriptApi implementation
 
       void onReceive(boost::shared_ptr<const unsigned char[]> message, size_t messageSize);

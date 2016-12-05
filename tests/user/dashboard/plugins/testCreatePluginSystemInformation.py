@@ -25,7 +25,7 @@ class CreatePlugin(unittest.TestCase):
       print '=== Test of systemInformation plugin creation ==='
 
       pluginInstanceName = "My systemInformation instance"
-      pluginType = "systemInformation"
+      pluginType = "SystemInformation"
 
       print 'Create created plugin'
       dashboard.plugins.createPluginSequence(self.browser, pluginInstanceName, pluginType, lambda pluginInstanceName: dashboard.plugins.basicFillConfigurationSequence(self.browser, pluginInstanceName))

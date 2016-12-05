@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "yPluginApiImplementation.h"
+#include "YadomsInformation.h"
 #include <shared/exception/EmptyResult.hpp>
 #include <shared/Log.h>
-#include <startupOptions/IStartupOptions.h>
-#include <shared/ServiceLocator.h>
 
 namespace pluginSystem
 {
@@ -14,7 +13,8 @@ namespace pluginSystem
                                                         boost::shared_ptr<database::IDataProvider> dataProvider,
                                                         boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                                                         boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordDataAccessLayer,
-                                                        boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer)
+                                                        boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
+                                                        const boost::shared_ptr<const shared::ILocation> locationProvider)
       : m_informations(pluginInformations),
         m_dataPath(dataPath),
         m_instanceData(instanceData),
@@ -22,7 +22,8 @@ namespace pluginSystem
         m_deviceManager(deviceManager),
         m_keywordDataAccessLayer(keywordDataAccessLayer),
         m_recipientRequester(dataProvider->getRecipientRequester()),
-        m_acquisitionHistorizer(acquisitionHistorizer)
+        m_acquisitionHistorizer(acquisitionHistorizer),
+        m_locationProvider(locationProvider)
    {
    }
 
@@ -286,9 +287,9 @@ namespace pluginSystem
       return evtHandler;
    }
 
-   bool CYPluginApiImplementation::isDeveloperMode() const
+   boost::shared_ptr<const shared::plugin::information::IYadomsInformation> CYPluginApiImplementation::getYadomsInformation() const
    {
-      return shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getDeveloperMode();
+      return boost::make_shared<CYadomsInformation>(m_locationProvider);
    }
 
    int CYPluginApiImplementation::getPluginId() const

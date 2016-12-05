@@ -36,8 +36,28 @@ namespace database
                   q.InsertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getKeywordIdColumnName(), CAcquisitionTable::getValueColumnName()).
                      Values(dataTime, keywordId, data);
 
-                  if (m_databaseRequester->queryStatement(q) <= 0)
-                     throw shared::exception::CEmptyResult("Fail to insert new data");
+                  try
+                  {
+                     if (m_databaseRequester->queryStatement(q) <= 0)
+                        throw shared::exception::CEmptyResult("Fail to insert new data");
+                  }
+                  catch(CDatabaseException& e)
+                  {
+                     if (e.returnCode() == CDatabaseException::kConstraintViolation)
+                     {
+                        // Maybe 2 acquisitions were recorded at same time for same keyword. In this case, we prefer to keep last value
+                        q.Clear().Update(CAcquisitionTable::getTableName())
+                           .Set(CAcquisitionTable::getValueColumnName(), data)
+                           .Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_EQUAL, dataTime)
+                           .And(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId);
+                        m_databaseRequester->queryStatement(q);
+                     }
+                     else
+                     {
+                        throw;
+                     }
+                     
+                  }
 
                   return getAcquisitionByKeywordAndDate(keywordId, dataTime);
                } 
