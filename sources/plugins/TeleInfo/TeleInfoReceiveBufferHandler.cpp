@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "TeleInfoReceiveBufferHandler.h"
 
-// TODO_V2 create a receiver Handler that begin a message to a STX, and send the buffer at a EOF.
-
 enum
 {
    kSTX = 0x02,
@@ -35,8 +33,8 @@ void CTeleInfoReceiveBufferHandler::push(const shared::communication::CByteBuffe
    if (shared::currentTime::Provider().now() < m_nextSendMessageDate)
       return;
 
-   for (size_t idx = 0; idx < buffer.size(); ++ idx)
-      m_content.push_back(buffer[idx]);
+   for (size_t idx = 0; idx < buffer.size(); ++idx)
+	   m_content.push_back(buffer[idx]);
 
    // Send message if complete (separate aggregated messages)
    while (true)
@@ -68,6 +66,9 @@ boost::shared_ptr<std::map<std::string, std::string>> CTeleInfoReceiveBufferHand
 
    if (m_content.empty())
       return noMessages;
+
+   if (m_content[1] != kStartMessage)
+	   return noMessages;
 
    auto etxIterator = std::find(m_content.rbegin(), m_content.rend(), kETX);
    if (etxIterator == m_content.rend())
@@ -102,14 +103,17 @@ boost::shared_ptr<std::map<std::string, std::string>> CTeleInfoReceiveBufferHand
       if (startPos == frame->end())
          return noMessages;
 
-      endPos = std::find(startPos, frame->end(), kEndMessage) + 1;
+      endPos = std::find(startPos, frame->end(), kEndMessage);
+	  if (endPos == frame->end())
+		  return noMessages;
 
+	  endPos++;
       auto message = std::string(startPos, endPos);
       if (!isCheckSumOk(message))
          return noMessages;
 
       // Remove <cr> and <lf>
-      message.erase(message.end());
+	  message.pop_back();
       message.erase(message.begin());
 
       // Separate key/value
@@ -119,10 +123,22 @@ boost::shared_ptr<std::map<std::string, std::string>> CTeleInfoReceiveBufferHand
       try
       {
          auto iterator = tok.begin();
-         const auto key = *iterator;
-         ++iterator;
-         const auto value = *iterator;
-         (*messages)[key] = value;
+
+		 if (iterator != tok.end())
+		 {
+			 const auto key = *iterator;
+			 ++iterator;
+
+			 if (iterator != tok.end())
+			 {
+				 const auto value = *iterator;
+				 (*messages)[key] = value;
+			 }
+			 else
+				return noMessages;
+		 }
+		 else
+			return noMessages;
       }
       catch (...)
       {
