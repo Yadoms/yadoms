@@ -61,12 +61,22 @@ const std::string& CFakeConfigurableDevice::getModel()
    return model;
 }
 
-boost::shared_ptr<shared::CDataContainer> CFakeConfigurableDevice::deviceConfigurationSchema(boost::shared_ptr<yApi::IYPluginApi> api) const
+shared::CDataContainer CFakeConfigurableDevice::getDynamicConfiguration() const
 {
-   if (!api->getInformation()->getPackage()->containsChild("supportDeviceConfiguration.configurationSchema"))
-      throw shared::exception::CException("supportDeviceConfiguration node not found in package.json");
+   //this code must be runtime dynamic.
+   //in case of static configration, define the configuration schema in package.json
+   shared::CDataContainer results;
 
-   return boost::make_shared<shared::CDataContainer>(api->getInformation()->getPackage()->get<shared::CDataContainer>("supportDeviceConfiguration.configurationSchema"));
+   shared::CDataContainer options;
+   options.set("type", "decimal");
+   options.set("name", "Dynamic divider");
+   options.set("minimumValue", "0.01");
+   options.set("maximumValue", "20.0");
+   options.set("precision", "0.01");
+
+   results.set("DynamicDivider", options);
+
+   return results;
 }
 
 void CFakeConfigurableDevice::setConfiguration(const shared::CDataContainer& newConfiguration)
