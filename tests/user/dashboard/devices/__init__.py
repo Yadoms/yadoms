@@ -71,6 +71,47 @@ def getRemoveDeviceButton(devicesTable, deviceId):
          return button
    return None
    
+def getDeployKeywordsButton(devicesTable, deviceId):
+   return getDeviceDatas(devicesTable, deviceId)[0].find_element_by_class_name('deploy')
+
+def getKeywordName(keywordRow):
+   item = keywordRow.find_element_by_class_name('keyword-friendlyName')
+   if item is None:
+      return None
+   return item.find_element_by_tag_name('span').text
+
+def getKeywordValue(keywordRow):
+   try:
+      item = keywordRow.find_element_by_class_name('keyword-value')
+      if item is None:
+         return None
+      return item.find_element_by_tag_name('span').text
+   except:
+      return None
+
+def getKeywordUnit(keywordRow):
+   item = keywordRow.find_element_by_class_name('keyword-units')
+   if item is None:
+      return None
+   return item.find_element_by_tag_name('span').text
+
+def getKeywordActions(keywordRow):
+   item = keywordRow.find_element_by_class_name('keyword-actions')
+   if item is None:
+      return None
+   return item.find_elements_by_tag_name('button')
+
+
+   
+def getKeywords(devicesTable):
+   deviceDetails = devicesTable.find_element_by_class_name('device-details')
+   keywordTable = deviceDetails.find_element_by_id('keyword-list')
+   tablerows = keywordTable.find_elements_by_tag_name('tr')
+   if len(tablerows) == 0:
+      return []
+   tablerows.pop(0)
+   return tablerows
+   
 
 def waitConfigureDeviceModal(browser):
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "configure-manually-device-modal")))

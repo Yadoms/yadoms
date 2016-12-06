@@ -39,6 +39,19 @@ class ConfigureDevice(unittest.TestCase):
       deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
       assert dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId) is None
       
+
+   def test_configurableDevice(self):
+      print '=== Configure device ==='
+      deviceName = u'configurableDevice' # TODO : change the package.json of fakePlugin to make this device non-configurable
+      attachedPluginInstance = u'My fakePlugin instance'
+     
+      print '  Check that device is configurable'
+      devicesTable = dashboard.devices.waitDevicesTable(self.browser)
+      deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
+      assert dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId) is not None
+      
+      #TODO ajouter d'autres tests (ouvrir la modal de conf, etc...)
+
       
    def tearDown(self):
       self.browser.close()
