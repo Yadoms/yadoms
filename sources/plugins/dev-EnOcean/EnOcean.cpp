@@ -572,13 +572,13 @@ void CEnOcean::processUTE(const message::CUTE_ReceivedMessage& uteMessage)
    if (uteMessage.teachInRequest() != message::CUTE_ReceivedMessage::kTeachInRequest &&
       uteMessage.teachInRequest() != message::CUTE_ReceivedMessage::kNotSpecified)
    {
-      std::cout << "UTE message : teach-in request type " << uteMessage.teachInRequest() << "not supported, message ignored" << std::endl;
+      std::cout << "UTE message : teach-in request type " << uteMessage.teachInRequest() << " not supported, message ignored" << std::endl;
       return;
    }
 
    if (uteMessage.command() != message::CUTE_ReceivedMessage::kTeachInQuery)
    {
-      std::cout << "UTE message : command type " << uteMessage.command() << "not supported, message ignored" << std::endl;
+      std::cout << "UTE message : command type " << static_cast<unsigned int>(uteMessage.command()) << " not supported, message ignored" << std::endl;
       return;
    }
 
