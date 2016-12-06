@@ -57,7 +57,7 @@ boost::shared_ptr<const message::CEsp3ReceivedPacket> CReceiveBufferHandler::get
    while (!m_content.empty() && m_content[message::kOffsetSyncByte] != message::SYNC_BYTE_VALUE)
       m_content.erase(m_content.begin());
 
-   if (m_content.size() == 1)
+   if (m_content.size() == 1) //TODO Est-ce utile ? Voir Teleinfo
    {
       if (m_content[message::kOffsetSyncByte] != message::SYNC_BYTE_VALUE)
       {
