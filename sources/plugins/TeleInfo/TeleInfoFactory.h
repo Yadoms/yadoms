@@ -2,7 +2,7 @@
 
 #include "ITeleInfoConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
-#include "ITransceiver.h"
+#include "IDecoder.h"
 
 //--------------------------------------------------------------
 /// \brief	General factory
@@ -29,16 +29,20 @@ public:
                                                                              int evtPortConnectionId);
 
    //--------------------------------------------------------------
-   /// \brief	                           Create a transceiver instance
+   /// \brief	                          Create a decoder instance
    /// \param [in] api                    Plugin execution context (Yadoms API)
    /// \return                            The created transceiver
    //--------------------------------------------------------------
-   static boost::shared_ptr<ITransceiver> constructTransceiver(boost::shared_ptr<yApi::IYPluginApi> api);
+   static boost::shared_ptr<IDecoder> constructDecoder(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	                          Return the buffer handler of the teleInfo
+   /// \param [in] eventhandler           eventHandler used by the bufferHandler
+   /// \param [in] evtPortDataReceived    event sent when a packet is ready
+   /// \param [in] developerMode          running in developer mode
    /// \return                            The Buffer handler
    //--------------------------------------------------------------
    static boost::shared_ptr<shared::communication::IReceiveBufferHandler> GetBufferHandler(shared::event::CEventHandler& eventHandler,
-                                                                                           int evtPortDataReceived);
+                                                                                           int evtPortDataReceived,
+																						   bool developerMode);
 };

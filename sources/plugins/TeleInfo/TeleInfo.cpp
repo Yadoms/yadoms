@@ -45,11 +45,12 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    m_configuration.initializeWith(api->getConfiguration());
 
    // Create the transceiver
-   m_transceiver = CTeleInfoFactory::constructTransceiver(api);
+   m_decoder = CTeleInfoFactory::constructDecoder(api);
 
    // Create the buffer handler
    m_receiveBufferHandler = CTeleInfoFactory::GetBufferHandler(api->getEventHandler(),
-                                                               kEvtPortDataReceived);
+                                                               kEvtPortDataReceived,
+															   m_isDeveloperMode);
 
    m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
                                                              shared::event::CEventTimer::kOneShot,
@@ -94,7 +95,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             processDataReceived(api,
                                 api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::string>>>());
 
-            if (m_transceiver->isERDFCounterDesactivated())
+            if (m_decoder->isERDFCounterDesactivated())
                api->setPluginState(yApi::historization::EPluginState::kCustom, "ErDFCounterdesactivated");
 
 			//Lauch a new time the time out to detect connexion failure
@@ -181,7 +182,7 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    //TODO   if (m_isDeveloperMode) m_logger.logReceived(messages);
 
-   m_transceiver->decodeTeleInfoMessage(api, messages);
+   m_decoder->decodeTeleInfoMessage(api, messages);
 
    auto newState = true;
    if (m_runningState != newState)

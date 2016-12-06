@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ITransceiver.h"
+#include "IDecoder.h"
 #include "Keywords/RunningPeriod.h"
 #include "Keywords/ForecastTomorrow.h"
 
@@ -10,18 +10,18 @@ namespace yApi = shared::plugin::yPluginApi;
 //--------------------------------------------------------------
 /// \brief	This class implement the TeleInfo protocol
 //--------------------------------------------------------------
-class CTransceiver : public ITransceiver
+class CDecoder : public IDecoder
 {
 public:
    //--------------------------------------------------------------
    /// \brief	                           Constructor
    //--------------------------------------------------------------
-   explicit CTransceiver(boost::shared_ptr<yApi::IYPluginApi> api);
+   explicit CDecoder(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
    //--------------------------------------------------------------
-   virtual ~CTransceiver();
+   virtual ~CDecoder();
 
    // ITransceiver implementation
    void decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> api,

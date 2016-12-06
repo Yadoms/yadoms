@@ -3,7 +3,7 @@
 #include "TeleInfoConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
 #include <shared/communication/AsciiBufferLogger.h>
-#include "Transceiver.h"
+#include "IDecoder.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -99,7 +99,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The TeleInfo protocol implementation object
    //--------------------------------------------------------------
-   boost::shared_ptr<ITransceiver> m_transceiver;
+   boost::shared_ptr<IDecoder> m_decoder;
 
    //--------------------------------------------------------------
    /// \brief  The communication port

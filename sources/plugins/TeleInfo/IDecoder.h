@@ -7,18 +7,18 @@ namespace yApi = shared::plugin::yPluginApi;
 //--------------------------------------------------------------
 /// \brief	The TeleInfo protocol interface
 //--------------------------------------------------------------
-class ITransceiver
+class IDecoder
 {
 public:
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~ITransceiver()
+   virtual ~IDecoder()
    {
    }
 
    //--------------------------------------------------------------
-   /// \brief	                    Decode TeleInfo Reader message
+   /// \brief	                   Decode TeleInfo Reader message
    /// \param [in] api             Plugin execution context (Yadoms API)
    /// \param [in] messages        Received messages
    //--------------------------------------------------------------

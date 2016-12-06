@@ -17,10 +17,14 @@ enum
 
 CTeleInfoReceiveBufferHandler::CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
                                                              int receiveDataEventId,
-                                                             const boost::posix_time::time_duration suspendDelay)
+                                                             const boost::posix_time::time_duration suspendDelay,
+															 boost::shared_ptr<shared::communication::IBufferLogger> logger,
+															 bool developerMode)
    : m_receiveDataEventHandler(receiveDataEventHandler),
      m_receiveDataEventId(receiveDataEventId),
      m_nextSendMessageDate(shared::currentTime::Provider().now()),
+	 m_developerMode (developerMode),
+	 m_logger (logger),
      m_suspendDelay (suspendDelay)
 {
 }
@@ -40,10 +44,16 @@ void CTeleInfoReceiveBufferHandler::push(const shared::communication::CByteBuffe
    // Send message if complete (separate aggregated messages)
    while (true)
    {
+	   if (m_developerMode) 
+		   m_logger->logReceived(shared::communication::CByteBuffer(m_content));
+
       const auto messages = getCompleteMessage();
       if (messages->empty())
          break;
       notifyEventHandler(messages);
+
+	  if (m_developerMode) 
+		  std::cout << "send notification" << std::endl;
 
       m_nextSendMessageDate = shared::currentTime::Provider().now() + m_suspendDelay;
    }

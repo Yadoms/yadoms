@@ -2,6 +2,7 @@
 #include <shared/event/EventHandler.hpp>
 #include <shared/communication/IReceiveBufferHandler.h>
 #include <shared/communication/Buffer.hpp>
+#include <shared/communication/IBufferLogger.h>
 
 //--------------------------------------------------------------
 /// \brief	Receive buffer handler for TeleInfo
@@ -17,10 +18,14 @@ public:
    /// \param[in] receiveDataEventHandler The event handler to notify for received data event
    /// \param[in] receiveDataEventId      The event id to notify for received data event
    /// \param[in] suspendDelay            Mute delay, used to filter messages
+   /// \param[in] logger                  logger in developer mode
+   /// \param[in] developerMode           developer mode active
    //--------------------------------------------------------------
-   CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
-                                 int receiveDataEventId,
-                                 const boost::posix_time::time_duration suspendDelay);
+	CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
+								  int receiveDataEventId,
+								  const boost::posix_time::time_duration suspendDelay,
+								  boost::shared_ptr<shared::communication::IBufferLogger> logger,
+								  bool developerMode);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
@@ -39,8 +44,18 @@ protected:
    //--------------------------------------------------------------
    boost::shared_ptr<std::map<std::string, std::string>> getCompleteMessage();
 
+   //--------------------------------------------------------------
+   /// \brief	                     Retreive all labels/values in a frame
+   /// \param[in] frame             the frame to decode
+   /// \return                      A map containing labels/values
+   //--------------------------------------------------------------
    static  boost::shared_ptr<std::map<std::string, std::string>> getMessages(boost::shared_ptr<const std::vector<unsigned char>> frame);
 
+   //--------------------------------------------------------------
+   /// \brief	                     Check if the CRC is ok
+   /// \param[in] message           a message to be check
+   /// \return                      true if the checksum is ok
+   //--------------------------------------------------------------
    static bool isCheckSumOk(const std::string& message);
 
    //--------------------------------------------------------------
@@ -64,6 +79,16 @@ private:
    /// \brief	The event id to notify for received data event  
    //--------------------------------------------------------------
    int m_receiveDataEventId;
+
+   //--------------------------------------------------------------
+   /// \brief	The event id to notify for received data event  
+   //--------------------------------------------------------------
+   bool m_developerMode;
+
+   //--------------------------------------------------------------
+   /// \brief  The communication port
+   //--------------------------------------------------------------
+   boost::shared_ptr<shared::communication::IBufferLogger> m_logger;
 
    //--------------------------------------------------------------
    /// \brief	Management of suspend delay between 2 messages

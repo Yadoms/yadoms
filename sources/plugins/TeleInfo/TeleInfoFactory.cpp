@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "TeleInfoFactory.h"
 #include <shared/communication/AsyncSerialPort.h>
+#include <shared/communication/AsciiBufferLogger.h>
 #include "TeleInfoReceiveBufferHandler.h"
-#include "Transceiver.h"
+#include "Decoder.h"
 
 CTeleInfoFactory::~CTeleInfoFactory()
 {
@@ -31,14 +32,17 @@ boost::shared_ptr<shared::communication::IAsyncPort> CTeleInfoFactory::construct
 }
 
 boost::shared_ptr<shared::communication::IReceiveBufferHandler> CTeleInfoFactory::GetBufferHandler(shared::event::CEventHandler& eventHandler,
-                                                                                                   int evtPortDataReceived)
+                                                                                                   int evtPortDataReceived,
+																								   bool developerMode)
 {
    return boost::make_shared<CTeleInfoReceiveBufferHandler>(eventHandler,
                                                             evtPortDataReceived,
-                                                            boost::posix_time::seconds(30));
+                                                            boost::posix_time::seconds(30),
+															boost::make_shared<shared::communication::CAsciiBufferLogger>(),
+															developerMode);
 }
 
-boost::shared_ptr<ITransceiver> CTeleInfoFactory::constructTransceiver(boost::shared_ptr<yApi::IYPluginApi> api)
+boost::shared_ptr<IDecoder> CTeleInfoFactory::constructDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   return boost::make_shared<CTransceiver>(api);
+   return boost::make_shared<CDecoder>(api);
 }
