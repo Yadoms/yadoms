@@ -103,7 +103,7 @@ std::string CIPX800Factory::createDeviceManually(boost::shared_ptr<yApi::IYPlugi
       if (extension)
          m_devicesList.push_back(extension);
    }
-   catch (shared::exception::CException& e)
+   catch (std::exception& e)
    {
       throw CManuallyDeviceCreationException(e.what());
    }

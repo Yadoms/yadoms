@@ -145,7 +145,7 @@ namespace equipments
          try {
             newValue = boost::lexical_cast<bool>(command->getBody());
          }
-         catch (shared::exception::CException)
+         catch (std::exception)
          {
             shared::exception::CException("Invalid command");
          }
@@ -219,7 +219,7 @@ namespace equipments
             try {
                newValue = boost::lexical_cast<bool>(command->getBody());
             }
-            catch (shared::exception::CException)
+            catch (std::exception)
             {
                shared::exception::CException("Invalid command");
             }

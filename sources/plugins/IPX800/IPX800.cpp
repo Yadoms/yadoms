@@ -111,7 +111,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             api->setPluginState(yApi::historization::EPluginState::kCustom, "noInformation");
          }
-         catch (shared::exception::CException &e) // final catch for other reason
+         catch (std::exception &e) // final catch for other reason
          {
             std::cout << "Unknow error : " << e.what() << std::endl;
          }
@@ -136,7 +136,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                request->sendError(e.what());
             }
-            catch (shared::exception::CException &e)
+            catch (std::exception &e)
             {
                std::cout << "Unknow error : " << e.what() << std::endl;
             }
@@ -153,7 +153,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                m_ioManager->removeDevice(api, device->device());
                std::cout << device->device() << " was removed" << std::endl;
             }
-            catch (shared::exception::CException &e)
+            catch (std::exception &e)
             {
                std::cout << "Unknow error : " << e.what() << std::endl;
             }
@@ -181,7 +181,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   std::cerr << errorMessage << std::endl;
                }
             }
-            catch (shared::exception::CException &e)
+            catch (std::exception &e)
             {
                std::cout << "Unknow error : " << e.what() << std::endl;
             }
@@ -197,7 +197,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             if (initializationOk)
                m_ioManager->onCommand(api, command);
          }
-         catch (shared::exception::CException &e)
+         catch (std::exception &e)
          {
             std::cout << "Unknow error : " << e.what() << std::endl;
          }

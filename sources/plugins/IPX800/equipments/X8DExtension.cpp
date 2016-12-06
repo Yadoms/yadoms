@@ -73,7 +73,7 @@ namespace equipments
                //historize only for new value
                if ((*diIterator)->get() != newValue || forceHistorization)
                {
-                  std::cout << "Set IO : " << (*diIterator)->getHardwareName() << std::endl;
+				  std::cout << "read IO : " << (*diIterator)->getHardwareName() << " : " << boost::lexical_cast<std::string>(newValue) << std::endl;
                   (*diIterator)->set(newValue);
                   keywordsToHistorize.push_back((*diIterator));
                }
