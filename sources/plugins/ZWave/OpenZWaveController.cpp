@@ -661,6 +661,25 @@ void COpenZWaveController::setNodeConfiguration(const std::string & device, cons
    throw shared::exception::CException((boost::format("Fail to ask configuration for device %2% ") % device).str());
 }
 
+void COpenZWaveController::updateNodeConfiguration(const std::string & device, const std::string& keyword, const std::string& value, shared::CDataContainer & configuration)
+{
+   boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+   uint32 homeId;
+   uint8 nodeId;
+   uint8 instance;
+   ECommandClass keywordClass;
+
+   COpenZWaveHelpers::RetreiveOpenZWaveIds(device, "", homeId, nodeId, instance);
+
+   auto node = getNode(homeId, nodeId);
+   if (node)
+   {
+      return node->updateNodeConfiguration(keyword, value, configuration);
+   }
+   throw shared::exception::CException((boost::format("Fail to update configuration for device %2% ") % device).str());
+}
+
 IZWaveController::NodeListType & COpenZWaveController::getNodeList()
 {
    return m_nodes;

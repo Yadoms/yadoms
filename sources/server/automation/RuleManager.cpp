@@ -22,28 +22,23 @@ namespace automation
                               boost::shared_ptr<shared::ILocation> location)
       : m_ruleRequester(dbRequester),
         m_ruleEventHandler(boost::make_shared<shared::event::CEventHandler>()),
-        m_scriptManager(boost::make_shared<script::CManager>(pathProvider,
-                                                             pluginGateway,
-                                                             configurationManager,
-                                                             dbAcquisitionRequester,
-                                                             dbDeviceRequester,
-                                                             keywordAccessLayer,
-                                                             dbRecipientRequester,
-                                                             location)),
-        m_ruleStateHandler(boost::make_shared<CRuleStateHandler>(dbRequester,
-                                                                 eventLogger,
-                                                                 m_ruleEventHandler)),
+        m_scriptManager(boost::make_shared<script::CManager>(pathProvider, pluginGateway, configurationManager, dbAcquisitionRequester, dbDeviceRequester, keywordAccessLayer, dbRecipientRequester, location)),
+        m_ruleStateHandler(boost::make_shared<CRuleStateHandler>(dbRequester, eventLogger, m_ruleEventHandler)),
         m_yadomsShutdown(false),
-        m_ruleEventsThread(boost::make_shared<boost::thread>(boost::bind(&CRuleManager::ruleEventsThreadDoWork,
-                                                                         this)))
+        m_ruleEventsThread(boost::make_shared<boost::thread>(boost::bind(&CRuleManager::ruleEventsThreadDoWork, this)))
    {
-      startAllRules();
+      
    }
 
    CRuleManager::~CRuleManager()
    {
       if (!m_yadomsShutdown)
          CRuleManager::stop();
+   }
+
+   void CRuleManager::start()
+   {
+      startAllRules();
    }
 
    void CRuleManager::stop()

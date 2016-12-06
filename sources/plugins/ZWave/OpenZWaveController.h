@@ -32,6 +32,7 @@ public:
    void healNetwork() override;
    shared::CDataContainer getNodeConfigurationSchema(const std::string & device) override;
    void setNodeConfiguration(const std::string & device, const shared::CDataContainer &configuration) override;
+   void updateNodeConfiguration(const std::string & device, const std::string& keyword, const std::string& value, shared::CDataContainer & configuration) override;
    NodeListType & getNodeList() override;
    // [END] IZWaveController implementation
 

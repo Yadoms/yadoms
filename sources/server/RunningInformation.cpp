@@ -6,7 +6,8 @@
 
 CRunningInformation::CRunningInformation(const std::string & path)
    :m_startupDateTime(shared::currentTime::Provider().now()),
-   m_softwareVersion(shared::versioning::CVersion(YadomsVersion), YadomsReleaseType), m_executablePath(path)
+   m_softwareVersion(shared::versioning::CVersion(YadomsVersion), YadomsReleaseType), m_executablePath(path),
+   m_serverFullyLoaded(false)
 {
 }
 
@@ -36,4 +37,14 @@ const std::string CRunningInformation::getOperatingSystemName() const
 const std::string & CRunningInformation::getExecutablePath() const
 {
    return m_executablePath;
+}
+
+void CRunningInformation::setServerFullyLoaded()
+{
+   m_serverFullyLoaded = true;
+}
+
+bool CRunningInformation::isServerFullyLoaded() const
+{
+   return m_serverFullyLoaded;
 }

@@ -51,6 +51,7 @@ namespace automation
       virtual ~CRuleManager();
 
       // IRuleManager Implementation
+      void start() override;
       void stop() override;
       std::vector<std::string> getAvailableInterpreters() override;
       std::vector<boost::shared_ptr<database::entities::CRule>> getRules() const override;

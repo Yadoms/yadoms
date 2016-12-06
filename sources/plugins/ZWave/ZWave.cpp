@@ -221,10 +221,21 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             case kUpdateConfiguration:
             {
+               //This case is used, when the device itself send a new configuration value (maybe after reset,...)
                try
                {
                   auto keywordData = api->getEventHandler().getEventData<boost::shared_ptr<CKeywordContainer> >();
                   std::cout << "Update configuration..." << keywordData->getKeyword()->getKeyword() << " : " << keywordData->getKeyword()->formatValue() << std::endl;
+                  
+                  //get the acual device configuration
+                  auto config = api->getDeviceConfiguration(keywordData->getDeviceId());
+
+                  //update the value of the event keyword
+                  m_controller->updateNodeConfiguration(keywordData->getDeviceId(), keywordData->getKeyword()->getKeyword(), keywordData->getKeyword()->formatValue(), config);
+
+                  //update device config in database
+                  api->updateDeviceConfiguration(keywordData->getDeviceId(), config);
+
                }
                catch (shared::exception::CException& ex)
                {
