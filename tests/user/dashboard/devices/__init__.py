@@ -70,6 +70,18 @@ def getRemoveDeviceButton(devicesTable, deviceId):
       if 'btn-delete' in button.get_attribute('class'):
          return button
    return None
+
+
+# Operations on keywords   
+
+def getKeywords(devicesTable):
+   deviceDetails = devicesTable.find_element_by_class_name('device-details')
+   keywordTable = deviceDetails.find_element_by_id('keyword-list')
+   tablerows = keywordTable.find_elements_by_tag_name('tr')
+   if len(tablerows) == 0:
+      return []
+   tablerows.pop(0)
+   return tablerows
    
 def getDeployKeywordsButton(devicesTable, deviceId):
    return getDeviceDatas(devicesTable, deviceId)[0].find_element_by_class_name('deploy')
@@ -82,10 +94,16 @@ def getKeywordName(keywordRow):
 
 def getKeywordValue(keywordRow):
    try:
-      item = keywordRow.find_element_by_class_name('keyword-value')
-      if item is None:
+      items = keywordRow.find_elements_by_class_name('keyword-value')
+      if len(items) == 0:
          return None
-      return item.find_element_by_tag_name('span').text
+      item = items[0]
+      inputElement = item.find_elements_by_tag_name('input')
+      if len(inputElement) != 0:
+         return True if inputElement[0].get_attribute('checked') is not None else False
+      inputElement = item.find_elements_by_tag_name('span')
+      if len(inputElement) != 0:
+         return inputElement[0].find_element_by_tag_name('span').text
    except:
       return None
 
@@ -101,16 +119,18 @@ def getKeywordActions(keywordRow):
       return None
    return item.find_elements_by_tag_name('button')
 
+def getConfigureKeywordButton(keywordRow):
+   for button in getKeywordActions(keywordRow):
+      if 'btn-configure' in button.get_attribute('class'):
+         return button
+   return None;
 
-   
-def getKeywords(devicesTable):
-   deviceDetails = devicesTable.find_element_by_class_name('device-details')
-   keywordTable = deviceDetails.find_element_by_id('keyword-list')
-   tablerows = keywordTable.find_elements_by_tag_name('tr')
-   if len(tablerows) == 0:
-      return []
-   tablerows.pop(0)
-   return tablerows
+def getCommandKeywordButton(keywordRow):
+   for button in getKeywordActions(keywordRow):
+      if 'btn-setvalue' in button.get_attribute('class'):
+         return button
+   return None;
+
    
 
 def waitConfigureDeviceModal(browser):
@@ -120,6 +140,10 @@ def waitConfigureDeviceModal(browser):
 def waitRemoveDeviceConfirmationModal(browser):
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "device-delete-modal")))
    return RemoveDeviceConfirmationModal(browser.find_element_by_id("device-delete-modal"))
+
+def waitSetValueKeywordModal(browser):
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "set-value-keyword-modal")))
+   return SetValueKeywordModal(browser.find_element_by_id("set-value-keyword-modal"))
 
    
    
@@ -176,4 +200,46 @@ class ConfigureDeviceModal():
    def ok(self):
       self.getConfirmButton().click()
       modals.waitForClosed(self.__configureDeviceModalWebElement)
+   
+
+
+
+class SetValueKeywordModal():
+   """ Operations on set keyword value modal """
+   
+   def __init__(self, setValueKeywordModalWebElement):
+      self.__setValueKeywordModalWebElement = setValueKeywordModalWebElement
+      pass
+
+   def __getValueElement(self):
+      return self.__setValueKeywordModalWebElement.find_element_by_class_name('control-group')
+
+   def getValue(self):
+      valueElement = self.__getValueElement()
+      if 'checkbox' in valueElement.get_attribute('class'):
+         return True if valueElement.find_element_by_tag_name('input').get_attribute('checked') is not None else False
+      assert False
+      
+   def setValue(self, newValue):
+      if newValue == self.getValue():
+         return      
+      valueElement = self.__getValueElement()
+      if 'checkbox' in (valueElement.get_attribute('class')):
+         valueElement.find_element_by_tag_name('input').click()
+         return
+      assert False
+         
+   def getCancelButton(self):
+      return self.__setValueKeywordModalWebElement.find_element_by_id("btn-default")
+         
+   def getOkButton(self):
+      return self.__setValueKeywordModalWebElement.find_element_by_id("btn-confirm-set-keyword-value")
+         
+   def cancel(self):
+      self.getCancelButton().click()
+      modals.waitForClosed(self.__setValueKeywordModalWebElement)
+         
+   def ok(self):
+      self.getOkButton().click()
+      modals.waitForClosed(self.__setValueKeywordModalWebElement)
 
