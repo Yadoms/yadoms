@@ -27,8 +27,29 @@ class DriveKeyword(unittest.TestCase):
       # Open plugins dashboard
       dashboard.open(self.browser)
       dashboard.openDevice(self.browser)
-      
-#TODO ajouter test sur non-drivable keyword (ReadOnly) ==> fakeOnOffReadOnlySwitch
+
+
+   def test_notDrivableKeyword(self):
+      print '=== Check that a not drivable keyword doesnt have the drive button ==='
+      deviceName = u'fakeOnOffReadOnlySwitch'
+      keywordName = u'Switch'
+      attachedPluginInstance = u'My fakePlugin instance'
+     
+      print '  Deploy device keywords'
+      devicesTable = dashboard.devices.waitDevicesTable(self.browser)
+      deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
+      deployButton = dashboard.devices.getDeployKeywordsButton(devicesTable, deviceId)
+      deployButton.click()
+
+      print '  Select keyword'
+      tools.waitUntil(lambda: len(dashboard.devices.getKeywords(devicesTable)) == 1)
+      keyword = dashboard.devices.getKeywords(devicesTable)[0]
+      assert dashboard.devices.getKeywordName(keyword) == keywordName
+     
+      print '  Check that keyword is drivable'
+      button = dashboard.devices.getCommandKeywordButton(keyword)
+      assert button is None
+
 
    def test_driveOnOffKeyword(self):
       print '=== Try to drive a on/off keyword ==='
