@@ -171,7 +171,7 @@ ConfigurationHelper.createParameterHandler = function (i18nContext, paramName, c
  * @param currentValue
  * @returns {*}
  */
-ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, paramName, keyword, currentValue) {
+ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, paramName, keyword, currentValue, pluginInstance) {
    assert(paramName !== undefined, "paramName must be defined");
    assert(keyword !== undefined, "keyword must be defined in " + paramName + " parameter");
    assert(keyword.type !== undefined, "type field must be found in " + paramName + " parameter");
@@ -189,7 +189,12 @@ ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, 
          return new DecimalParameterHandler(i18NContext, paramName, obj, currentValue);
 
       case "enum":
-         return new EnumParameterHandler(i18NContext, paramName, obj, currentValue);
+         var enumValues = {};
+         for(var item of obj.values) {
+            enumValues[item]=item;
+         }
+         obj.values = enumValues;
+         return new EnumParameterHandler("plugins/" + pluginInstance.type + ":enumerations.", keyword.typeInfo.name, obj, currentValue);
 
       case "string":
          return new StringParameterHandler(i18NContext, paramName, obj, currentValue);
