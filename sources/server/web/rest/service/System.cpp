@@ -37,6 +37,7 @@ namespace web { namespace rest { namespace service {
       return m_restKeyword;
    }
 
+
    shared::CDataContainer CSystem::getBinding(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       if (parameters.size() > 2)
@@ -117,6 +118,7 @@ namespace web { namespace rest { namespace service {
          result.set("yadoms", m_runningInformation->getSoftwareVersion().getContainer());
          result.set("startupTime", m_runningInformation->getStartupDateTime());
          result.set("executablePath", m_runningInformation->getExecutablePath());
+         result.set("serverReady", m_runningInformation->isServerFullyLoaded());
 
          if(shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getDeveloperMode())
             result.set("developerMode", "true");

@@ -164,7 +164,7 @@
         }
       },
       {
-        "models": [ "*" ],
+        "models": [ "Fake counter" ],
         "schema": {
           "CounterDivider2": {
             "type": "int",

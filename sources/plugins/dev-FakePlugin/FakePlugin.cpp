@@ -243,7 +243,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             if (deviceConfigurationSchemaRequest->device() == configurableDevice.getDeviceName())
             {
                std::cout << "This device is configurable, return its configuration schema to device configuration schema request" << std::endl;
-               deviceConfigurationSchemaRequest->sendSuccess(*configurableDevice.deviceConfigurationSchema(api));
+               deviceConfigurationSchemaRequest->sendSuccess(configurableDevice.getDynamicConfiguration());
             }
             else
             {

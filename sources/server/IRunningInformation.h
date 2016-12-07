@@ -36,5 +36,16 @@ public:
    /// \return  	                     the full executable path (path + filename)
    //-----------------------------------------------------------------------------
    virtual const std::string & getExecutablePath() const = 0;
+
+   //-----------------------------------------------------------------------------
+   /// \brief		                     indicates if the server is fully loaded
+   /// \return  	                     true if the server is fully loaded
+   //-----------------------------------------------------------------------------
+   virtual bool isServerFullyLoaded() const = 0;
+
+   //-----------------------------------------------------------------------------
+   /// \brief		                     set the server state to fully loaded
+   //-----------------------------------------------------------------------------
+   virtual void setServerFullyLoaded() = 0;
 };
 

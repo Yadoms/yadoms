@@ -104,6 +104,15 @@ public:
    virtual void setNodeConfiguration(const std::string & device, const shared::CDataContainer &configuration) =0;
 
    //--------------------------------------------------------------
+   /// \brief	Update device configuration (self update, from a device notification) => updates only configuration container
+   /// \param [in] 	   device         The targetted device
+   /// \param [in] 	   keyword        The targetted keyword
+   /// \param [in] 	   value          The new value
+   /// \param [in-out]  configuration  The initial and output configuration values
+   //--------------------------------------------------------------
+   virtual void updateNodeConfiguration(const std::string & device, const std::string& keyword, const std::string& value, shared::CDataContainer & configuration) = 0;
+
+   //--------------------------------------------------------------
    /// \brief	Get all the nodes
    /// \return The node list
    //--------------------------------------------------------------
