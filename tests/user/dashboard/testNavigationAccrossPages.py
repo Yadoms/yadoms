@@ -46,6 +46,7 @@ class NavigationAccrossPages(unittest.TestCase):
       print '   Check that only last page is displayed'
       displayedContent = db.find_element_by_id("main-dashboard-sub-window-content")
       assert len(displayedContent.find_elements_by_xpath("div")) == 1
+      assert displayedContent.find_elements_by_xpath("div")[0].get_attribute('id') == 'dashboard-about'
             
 
       
