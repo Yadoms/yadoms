@@ -75,18 +75,54 @@ class DriveKeyword(unittest.TestCase):
       print '  Set value to True'
       button.click()
       setKeywordValueModal = dashboard.devices.waitSetValueKeywordModal(self.browser)
-      assert setKeywordValueModal.getValue() == False
-      setKeywordValueModal.setValue(True)
+      assert setKeywordValueModal.getBoolValue() == False
+      setKeywordValueModal.setBoolValue(True)
       setKeywordValueModal.ok()
-      assert tools.waitUntil(lambda: dashboard.devices.getKeywordValue(keyword) == True)
+      assert tools.waitUntil(lambda: dashboard.devices.getKeywordBoolValue(keyword) == True)
 
       print '  Set value to False'
       button.click()
       setKeywordValueModal = dashboard.devices.waitSetValueKeywordModal(self.browser)
-      assert setKeywordValueModal.getValue() == True
-      setKeywordValueModal.setValue(False)
+      assert setKeywordValueModal.getBoolValue() == True
+      setKeywordValueModal.setBoolValue(False)
       setKeywordValueModal.ok()
-      assert tools.waitUntil(lambda: dashboard.devices.getKeywordValue(keyword) == False)
+      assert tools.waitUntil(lambda: dashboard.devices.getKeywordBoolValue(keyword) == False)
+
+
+   def test_driveEnumKeyword(self):
+      print '=== Try to drive an enum keyword ==='
+      deviceName = u'fakeController1'
+      keywordName = u'controllerValue'
+      attachedPluginInstance = u'My fakePlugin instance'
+     
+      print '  Deploy device keywords'
+      devicesTable = dashboard.devices.waitDevicesTable(self.browser)
+      deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
+      deployButton = dashboard.devices.getDeployKeywordsButton(devicesTable, deviceId)
+      deployButton.click()
+
+      print '  Select keyword'
+      tools.waitUntil(lambda: len(dashboard.devices.getKeywords(devicesTable)) == 1)
+      keyword = dashboard.devices.getKeywords(devicesTable)[0]
+      assert dashboard.devices.getKeywordName(keyword) == keywordName
+     
+      print '  Check that keyword is drivable'
+      button = dashboard.devices.getCommandKeywordButton(keyword)
+      assert button is not None
+
+      print '  Set value to Run'
+      button.click()
+      setKeywordValueModal = dashboard.devices.waitSetValueKeywordModal(self.browser)
+      setKeywordValueModal.setEnumValue('Run')
+      setKeywordValueModal.ok()
+      assert tools.waitUntil(lambda: dashboard.devices.getKeywordTextValue(keyword) == 'Run')
+
+      print '  Set value to Left'
+      button.click()
+      setKeywordValueModal = dashboard.devices.waitSetValueKeywordModal(self.browser)
+      setKeywordValueModal.setEnumValue('Left')
+      setKeywordValueModal.ok()
+      assert tools.waitUntil(lambda: dashboard.devices.getKeywordTextValue(keyword) == 'Left')
 
       
    def tearDown(self):

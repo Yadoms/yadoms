@@ -48,12 +48,12 @@ class ShowKeywords(unittest.TestCase):
       keywords = dashboard.devices.getKeywords(devicesTable)
 
       print '  Wait for first acquisition'
-      assert dashboard.devices.getKeywordValue(keywords[0]) is not None
+      assert dashboard.devices.getKeywordTextValue(keywords[0]) is not None
 
       print '    Check Battery data'
       item = keywords[0]
       assert dashboard.devices.getKeywordName(item) == u'Battery'
-      assert int(dashboard.devices.getKeywordValue(item)) in range(0, 100)
+      assert int(dashboard.devices.getKeywordTextValue(item)) in range(0, 100)
       assert dashboard.devices.getKeywordUnit(item) == u'%'
       assert len(dashboard.devices.getKeywordActions(item)) == 1
       assert 'btn-configure' in dashboard.devices.getKeywordActions(item)[0].get_attribute('class')
@@ -61,7 +61,7 @@ class ShowKeywords(unittest.TestCase):
       print '    Check Current data'
       item = keywords[1]
       assert dashboard.devices.getKeywordName(item) == u'current'
-      assert float(dashboard.devices.getKeywordValue(item))
+      assert float(dashboard.devices.getKeywordTextValue(item))
       assert dashboard.devices.getKeywordUnit(item) == u'A'
       assert len(dashboard.devices.getKeywordActions(item)) == 1
       assert 'btn-configure' in dashboard.devices.getKeywordActions(item)[0].get_attribute('class')
@@ -69,7 +69,7 @@ class ShowKeywords(unittest.TestCase):
       print '    Check DateTime data'
       item = keywords[2]
       assert dashboard.devices.getKeywordName(item) == u'dateTime'
-      assert re.match(r'20[0-9]{2}-[A-Z][a-z]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6}', dashboard.devices.getKeywordValue(item))
+      assert re.match(r'20[0-9]{2}-[A-Z][a-z]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6}', dashboard.devices.getKeywordTextValue(item))
       assert dashboard.devices.getKeywordUnit(item) == u''
       assert len(dashboard.devices.getKeywordActions(item)) == 1
       assert 'btn-configure' in dashboard.devices.getKeywordActions(item)[0].get_attribute('class')
@@ -77,7 +77,7 @@ class ShowKeywords(unittest.TestCase):
       print '    Check rssi data'
       item = keywords[3]
       assert dashboard.devices.getKeywordName(item) == u'rssi'
-      assert int(dashboard.devices.getKeywordValue(item)) in range(0, 100)
+      assert int(dashboard.devices.getKeywordTextValue(item)) in range(0, 100)
       assert dashboard.devices.getKeywordUnit(item) == u'%'
       assert len(dashboard.devices.getKeywordActions(item)) == 1
       assert 'btn-configure' in dashboard.devices.getKeywordActions(item)[0].get_attribute('class')
@@ -85,7 +85,7 @@ class ShowKeywords(unittest.TestCase):
       print '    Check temp1 data'
       item = keywords[4]
       assert dashboard.devices.getKeywordName(item) == u'temp1'
-      assert float(dashboard.devices.getKeywordValue(item))
+      assert float(dashboard.devices.getKeywordTextValue(item))
       assert dashboard.devices.getKeywordUnit(item) == u'°C'
       assert len(dashboard.devices.getKeywordActions(item)) == 1
       assert 'btn-configure' in dashboard.devices.getKeywordActions(item)[0].get_attribute('class')
@@ -93,7 +93,7 @@ class ShowKeywords(unittest.TestCase):
       print '    Check temp2 data'
       item = keywords[5]
       assert dashboard.devices.getKeywordName(item) == u'temp2'
-      assert float(dashboard.devices.getKeywordValue(item))
+      assert float(dashboard.devices.getKeywordTextValue(item))
       assert dashboard.devices.getKeywordUnit(item) == u'°C'
       assert len(dashboard.devices.getKeywordActions(item)) == 1
       assert 'btn-configure' in dashboard.devices.getKeywordActions(item)[0].get_attribute('class')

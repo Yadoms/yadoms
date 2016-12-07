@@ -3,6 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as Condition
 from selenium.webdriver.common.keys import Keys
 from configurationPanel import ConfigurationPanel
+from selenium.webdriver.support.select import Select
 import modals
 import i18n
 import tools
@@ -92,20 +93,29 @@ def getKeywordName(keywordRow):
       return None
    return item.find_element_by_tag_name('span').text
 
-def getKeywordValue(keywordRow):
+def getKeywordBoolValue(keywordRow):
    try:
       items = keywordRow.find_elements_by_class_name('keyword-value')
       if len(items) == 0:
          return None
       item = items[0]
       inputElement = item.find_elements_by_tag_name('input')
-      if len(inputElement) != 0:
-         return True if inputElement[0].get_attribute('checked') is not None else False
-      inputElement = item.find_elements_by_tag_name('span')
-      if len(inputElement) != 0:
-         return inputElement[0].find_element_by_tag_name('span').text
+      return True if inputElement[0].get_attribute('checked') is not None else False
    except:
-      return None
+      pass
+   return None
+
+def getKeywordTextValue(keywordRow):
+   try:
+      items = keywordRow.find_elements_by_class_name('keyword-value')
+      if len(items) == 0:
+         return None
+      item = items[0]
+      inputElement = item.find_elements_by_tag_name('span')
+      return inputElement[0].text
+   except:
+      pass
+   return None
 
 def getKeywordUnit(keywordRow):
    item = keywordRow.find_element_by_class_name('keyword-units')
@@ -214,20 +224,34 @@ class SetValueKeywordModal():
    def __getValueElement(self):
       return self.__setValueKeywordModalWebElement.find_element_by_class_name('control-group')
 
-   def getValue(self):
+   def getBoolValue(self):
       valueElement = self.__getValueElement()
       if 'checkbox' in valueElement.get_attribute('class'):
          return True if valueElement.find_element_by_tag_name('input').get_attribute('checked') is not None else False
       assert False
       
-   def setValue(self, newValue):
-      if newValue == self.getValue():
+   def setBoolValue(self, newValue):
+      if newValue == self.getBoolValue():
          return      
       valueElement = self.__getValueElement()
       if 'checkbox' in (valueElement.get_attribute('class')):
          valueElement.find_element_by_tag_name('input').click()
          return
       assert False
+
+   def getEnumValue(self):
+      valueElement = self.__getValueElement()
+      options = valueElement.find_elements_by_tag_name('option')
+      for option in options:
+         if option.get_attribute('selected') is not None:
+            return option.text
+      assert False
+      
+   def setEnumValue(self, newValue):
+      if newValue == self.getEnumValue():
+         return      
+      valueElement = self.__getValueElement()
+      Select(valueElement.find_element_by_tag_name('select')).select_by_visible_text(newValue)
          
    def getCancelButton(self):
       return self.__setValueKeywordModalWebElement.find_element_by_id("btn-default")
