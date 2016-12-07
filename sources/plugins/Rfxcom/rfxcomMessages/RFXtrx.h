@@ -27,6 +27,9 @@ portions of this file.
 */
 
 /*
+SDK version 9.12
+	Thermostat4 updated
+
 SDK version 9.11
 	FAN - Westinghouse fan added
 	Security1 - RM174RF added
@@ -336,6 +339,9 @@ SDK version 4.9
 #define cmd835		0x59 // select 868.35MHz ASK in the 868 transceiver
 #define cmd835F		0x5A // select 868.35MHz FSK in the 868 transceiver
 #define cmd895		0x5B // select 868.95MHz in the 868 transceiver
+#define cmd830F_P	0x5C // select 868.30MHz FSK PKT in the 868 transceiver
+#define cmd835F_P	0x5D // select 868.35MHz FSK PKT in the 868 transceiver
+#define cmd840F_P	0x5E // select 868.40MHz FSK PKT in the 868 transceiver
 
 #define pTypeInterfaceMessage 0x01
 #define sTypeInterfaceResponse 0x00
@@ -356,6 +362,10 @@ SDK version 4.9
 #define recType86835 0x59
 #define recType86835FSK 0x5A
 #define recType86895 0x5B
+#define recType86830FSK_PKT 0x5C
+#define recType86835FSK_PKT 0x5D
+#define recType86840FSK_PKT 0x5E
+#define trxType43450 0x5F
 
 #define msg3_AE 0x01			//AE Blyss
 #define msg3_RUBICSON 0x02		//Rubicson,Lacrosse, Banggood
@@ -803,6 +813,7 @@ SDK version 4.9
 #define pTypeThermostat4 0x43
 #define sTypeMCZ1 0x0      //MCZ 1 fan model
 #define sTypeMCZ2 0x1      //MCZ 2 fan model
+#define sTypeMCZ3 0x2	//MCZ 3 fan model
 #define thermostat4_sOff 0x0
 #define thermostat4_sManual 0x1
 #define thermostat4_sAuto 0x2
@@ -1527,7 +1538,13 @@ typedef union tRBUF {
 		BYTE	unitcode3;
 		BYTE	beep;
 		BYTE	fan1_speed;
-		BYTE	fan2_speed;
+#ifdef IS_BIG_ENDIAN
+		BYTE	fan3_speed : 4;
+		BYTE	fan2_speed : 4;
+#else
+		BYTE	fan2_speed : 4;
+		BYTE	fan3_speed : 4;
+#endif
 		BYTE	flame_power;
 		BYTE	mode;
 #ifdef IS_BIG_ENDIAN

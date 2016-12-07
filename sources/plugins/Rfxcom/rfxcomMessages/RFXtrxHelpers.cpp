@@ -54,7 +54,7 @@ void CheckReceivedMessage(const RBUF& rbuf,
 
 int NormalizeBatteryLevel(unsigned char fromRfxcom)
 {
-   int batteryLevel = (fromRfxcom + 1) * 10;
+   auto batteryLevel = (fromRfxcom + 1) * 10;
    return (batteryLevel == 10 ? 0 : batteryLevel);  // 10% = empty ==> force it to 0%
 }
 
@@ -65,6 +65,6 @@ int NormalizeRssiLevel(unsigned char fromRfxcom)
 
 double NormalizeTemperature(unsigned char fromRfxcomTemperatureHigh, unsigned char fromRfxcomTemperatureLow, bool negative)
 {
-   double temperature = static_cast<double>((fromRfxcomTemperatureHigh << 8) | fromRfxcomTemperatureLow) / 10.0;
+   auto temperature = static_cast<double>((fromRfxcomTemperatureHigh << 8) | fromRfxcomTemperatureLow) / 10.0;
    return (negative ? -temperature : temperature);
 }
