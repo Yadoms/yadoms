@@ -84,6 +84,8 @@
         </div><!--/.nav-collapse -->
     </div>
 
+
+    
     <div id="tabContainer" class="container">
         <div class="tab-content">
             <!-- widget grids tabs will be inserted here -->
@@ -94,6 +96,12 @@
         </footer>
     </div>
 
+
+    <div id="serverNotReady" class="server-not-ready text-center">
+      <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw waiting-animation"></i>
+      <p><span data-i18n="initialization.loading">Server is loading...</span></p>
+    </div>
+    
     <div id="templates" class="hidden"></div>
 
     <!-- Bootstrap core JavaScript
@@ -450,6 +458,40 @@
             });
         });
 
+         function waitForServerReady() {
+            YadomsInformationManager.getList()
+            .done(function(data) {
+               if(parseBool(data.serverReady) === true) {
+                  whenServerReady();
+               } else {
+                  window.setTimeout(function() {
+                     waitForServerReady();
+                  }, 500);
+               }
+            })
+            .fail(function(error) {
+               window.setTimeout(function() {
+                  waitForServerReady();
+               }, 500);
+            });
+         }
+        
+         function whenServerReady() {
+            
+            $("#serverNotReady").hide();
+               
+            WebSocketEngine.initializeWebSocketEngine(function () {
+                 //we listen acquisitionupdate event
+                 $(document).on("acquisitionupdate", function (e, websocketData) {
+                     var acq = AcquisitionManager.factory(websocketData.data);
+                     dispatchToWidgets(acq);
+                 });
+
+                 //web socket opened
+                 initializeWidgetEngine();
+            });
+         }
+        
         function main() {
             //we get configuration
            ConfigurationManager.getSection(ConfigurationManager.items.systemSection)
@@ -460,16 +502,7 @@
                         i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function () {
                            $("html").i18n();
                             moment.lang(window.navigator.userLanguage || window.navigator.language);
-                            WebSocketEngine.initializeWebSocketEngine(function () {
-                                //we listen acquisitionupdate event
-                                $(document).on("acquisitionupdate", function (e, websocketData) {
-                                    var acq = AcquisitionManager.factory(websocketData.data);
-                                    dispatchToWidgets(acq);
-                                });
-
-                                //web socket opened
-                                initializeWidgetEngine();
-                            });
+                            waitForServerReady();
                         });
                     }
               })

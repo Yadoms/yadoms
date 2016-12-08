@@ -54,11 +54,10 @@ public:
    static const std::string& getModel();
 
    //--------------------------------------------------------------
-   /// \brief	            Get the device configuration schema, used to display GUI to user
-   /// \param[in] api      yPluginApi context to which historize data
-   /// \return             The device configuration schema
+   /// \brief	            Get the device dynamic configuration schema
+   /// \return             The device dynmaic configuration schema
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::CDataContainer> deviceConfigurationSchema(boost::shared_ptr<yApi::IYPluginApi> api) const;
+   shared::CDataContainer getDynamicConfiguration() const;
 
    //--------------------------------------------------------------
    /// \brief	    Change the device configuration

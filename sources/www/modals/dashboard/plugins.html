@@ -241,7 +241,6 @@
          Yadoms.modals.pluginConfigure.loadAsync()
          .done(function () {
             Yadoms.configurePluginInstance(pi, function () {
-               debugger;
                PluginInstanceManager.updateToServer(pi)
                   .done(function () {
                      //We update the information that can have changed after the configuration

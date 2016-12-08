@@ -128,3 +128,8 @@ void COpenZWaveNodeConfiguration::setConfigurationValues(const shared::CDataCont
       }
    }
 }
+
+void COpenZWaveNodeConfiguration::updateNodeConfiguration(const std::string& keyword, const std::string& value, shared::CDataContainer & configuration)
+{
+   configuration.set(CConfigurationSchemaFactory::generateValidKeyName(keyword), value);
+}

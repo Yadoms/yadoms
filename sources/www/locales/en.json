@@ -985,7 +985,8 @@
     "yadomsUpdate": "Yadoms update"
   },
   "initialization": {
-    "homePage": "Home Page"
+    "homePage": "Home Page",
+    "loading" : "Yadoms is loading..."
   },
   "inProgress": "Development in progress ...",
   "data": {

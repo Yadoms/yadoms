@@ -67,30 +67,22 @@ void CSupervisor::run()
       shared::CServiceLocator::instance().push<dataAccessLayer::IDataAccessLayer>(dal);
 
       // Create the location provider
-      auto location = boost::make_shared<location::CLocation>(dal->getConfigurationManager(),
-                                                              boost::make_shared<location::CIpApiAutoLocation>());
+      auto location = boost::make_shared<location::CLocation>(dal->getConfigurationManager(), boost::make_shared<location::CIpApiAutoLocation>());
 
       // Create the Plugin manager
-      auto pluginManager(boost::make_shared<pluginSystem::CManager>(m_pathProvider,
-                                                                    pDataProvider,
-                                                                    dal,
-                                                                    location));
+      auto pluginManager(boost::make_shared<pluginSystem::CManager>(m_pathProvider, pDataProvider, dal, location));
 
       // Start Task manager
       auto taskManager(boost::make_shared<task::CScheduler>(dal->getEventLogger()));
       taskManager->start();
 
       // Create the update manager
-      auto updateManager(boost::make_shared<update::CUpdateManager>(taskManager,
-                                                                    pluginManager));
+      auto updateManager(boost::make_shared<update::CUpdateManager>(taskManager, pluginManager));
 
       // Start the plugin gateway
-      auto pluginGateway(boost::make_shared<communication::CPluginGateway>(pDataProvider,
-                                                                           dal->getAcquisitionHistorizer(),
-                                                                           pluginManager));
+      auto pluginGateway(boost::make_shared<communication::CPluginGateway>(pDataProvider, dal->getAcquisitionHistorizer(), pluginManager));
 
-      // Start the plugin manager (start all plugin instances)
-      pluginManager->start(boost::posix_time::minutes(2));
+
 
       // Start automation rules manager
       boost::shared_ptr<automation::IRuleManager> automationRulesManager(boost::make_shared<automation::CRuleManager>(m_pathProvider,
@@ -105,6 +97,7 @@ void CSupervisor::run()
                                                                                                                       location));
       shared::CServiceLocator::instance().push<automation::IRuleManager>(automationRulesManager);
 
+
       // Start Web server
       const auto webServerIp = startupOptions->getWebServerIPAddress();
       const auto webServerUseSSL = startupOptions->getIsWebServerUseSSL();
@@ -113,13 +106,7 @@ void CSupervisor::run()
       const auto webServerPath = m_pathProvider.webServerPath().string();
       const auto scriptInterpretersPath = m_pathProvider.scriptInterpretersPath().string();
 
-      auto webServer(boost::make_shared<web::poco::CWebServer>(webServerIp,
-                                                               webServerUseSSL,
-                                                               webServerPort,
-                                                               securedWebServerPort,
-                                                               webServerPath,
-                                                               "/rest/",
-                                                               "/ws"));
+      auto webServer(boost::make_shared<web::poco::CWebServer>(webServerIp, webServerUseSSL, webServerPort, securedWebServerPort, webServerPath, "/rest/", "/ws"));
 
       webServer->getConfigurator()->websiteHandlerAddAlias("plugins", m_pathProvider.pluginsPath().string());
       webServer->getConfigurator()->websiteHandlerAddAlias("scriptInterpreters", scriptInterpretersPath);
@@ -148,12 +135,21 @@ void CSupervisor::run()
 
       webServer->start();
 
-      // Register to event logger started event
-      dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", std::string());
+      // Start the plugin manager (start all plugin instances)
+      pluginManager->start(boost::posix_time::minutes(2));
+
+      //start the rule manager
+      automationRulesManager->start();
 
       //create and start the dateTime notification scheduler
       dateTime::CDateTimeNotifier dateTimeNotificationService;
       dateTimeNotificationService.start();
+
+      // Register to event logger started event
+      dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", std::string());
+
+      //update the server state
+      shared::CServiceLocator::instance().get<IRunningInformation>()->setServerFullyLoaded();
 
       // Main loop
       YADOMS_LOG(information) << "Supervisor is running...";

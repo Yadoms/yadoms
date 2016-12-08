@@ -39,6 +39,30 @@ class ConfigureDevice(unittest.TestCase):
       deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
       assert dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId) is None
       
+
+   def test_configurableDevice(self):
+      print '=== Check that device is configurable ==='
+      deviceName = u'configurableDevice'
+      attachedPluginInstance = u'My fakePlugin instance'
+     
+      print '  Check that device is configurable'
+      devicesTable = dashboard.devices.waitDevicesTable(self.browser)
+      deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
+      assert dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId) is not None
+      
+
+   def test_configureDevice(self):
+      print '=== Configure device ==='
+      deviceName = u'configurableDevice'
+      attachedPluginInstance = u'My fakePlugin instance'
+     
+      print '  Open device configuration'
+      devicesTable = dashboard.devices.waitDevicesTable(self.browser)
+      deviceId = dashboard.devices.waitDevicesTableHasDeviceNamed(self.browser, deviceName)
+      dashboard.devices.getConfigureDeviceButton(devicesTable, deviceId).click()
+      configureDeviceModal = dashboard.devices.waitConfigureDeviceModal(self.browser)
+      #TODO à coder lorsque la conf de device du fakePlugin sera réparée
+
       
    def tearDown(self):
       self.browser.close()

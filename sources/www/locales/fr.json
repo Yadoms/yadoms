@@ -985,7 +985,8 @@
     "yadomsUpdate": "Mise à jour de yadoms"
   },
   "initialization": {
-    "homePage": "Accueil"
+    "homePage": "Accueil",
+    "loading" : "Yadoms est en cours de chargement..."
   },
   "inProgress": "Développement en cours...",
   "data": {
