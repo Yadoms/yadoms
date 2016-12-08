@@ -29,6 +29,7 @@ class NavigationAccrossPages(unittest.TestCase):
       
    def test_navigationAccrossPages(self):
       print '=== Test navigation accros dashboard pages ==='
+      print 'ref Issues : #172, #174'
 
       expectedPageTitles = [ \
          u'dashboard-summary', \
@@ -69,7 +70,7 @@ class NavigationAccrossPages(unittest.TestCase):
          if pageTitle == expectedPageTitles[page]:
             print '   [OK] Get expected page (' + expectedPageTitles[page] + ')'
             return True
-         print '    [FAIL] Displayed page is |' + pageTitle + '|, should be |' + expectedPageTitles[page] + '|'
+         print '    [FAIL] Displayed page is ' + pageTitle + ', should be ' + expectedPageTitles[page]
          return False
 
       dashboardSubWindow = db.find_element_by_id("main-dashboard-sub-window-content")
