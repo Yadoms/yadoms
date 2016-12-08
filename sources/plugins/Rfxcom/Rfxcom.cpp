@@ -56,7 +56,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    createConnection(api->getEventHandler());
 
    // the main loop
-   while (1)
+   while (true)
    {
       try
       {
