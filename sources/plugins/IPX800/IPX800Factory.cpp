@@ -33,11 +33,18 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
    // Create all extensions devices
    for (devicesIterator = devices.begin(); devicesIterator != devices.end(); ++devicesIterator)
    {
-      std::string model = api->getDeviceModel(*devicesIterator);
-      std::cout << "Name : " << (*devicesIterator) << std::endl;
-      std::cout << "Model : " << model << std::endl;
+	   std::string type = "";
+      // plugin state have no type
+	   try {
+		   type = api->getDeviceDetails(*devicesIterator).get<std::string>("type");
+	   }
+	   catch (...)
+	   {}
 
-      if (model == "X-8R")
+      std::cout << "Name : " << (*devicesIterator) << std::endl;
+      std::cout << "Model : " << type << std::endl;
+
+      if (type == "X-8R")
       {
          auto details = api->getDeviceDetails((*devicesIterator));
          int position = details.get<int>("position");
@@ -45,7 +52,7 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
          m_devicesList.push_back(extension);
          X8RSlotused[position-1] = true;
       }
-      else if (model == "X-8D")
+      else if (type == "X-8D")
       {
          auto details = api->getDeviceDetails((*devicesIterator));
          int position = details.get<int>("position");
@@ -53,7 +60,7 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
          m_devicesList.push_back(extension);
          X8DSlotused[position-1] = true;
       }
-      else if (model == "X-24D")
+      else if (type == "X-24D")
       {
          auto details = api->getDeviceDetails((*devicesIterator));
          int position = details.get<int>("position");

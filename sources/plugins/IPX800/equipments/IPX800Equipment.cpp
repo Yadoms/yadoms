@@ -139,7 +139,6 @@ namespace equipments
    {
       if (m_pendingIOHistorizer)
       {
-         
          bool newValue = false; 
 
          try {

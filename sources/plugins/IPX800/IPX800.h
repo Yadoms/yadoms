@@ -3,6 +3,7 @@
 #include "IPX800Configuration.h"
 #include "IOManager.h"
 #include "IPX800Factory.h"
+#include <shared/event/EventTimer.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -36,6 +37,13 @@ public:
                               const shared::CDataContainer& newConfigurationData);
 
 private:
+
+	//--------------------------------------------------------------
+	/// \brief Initialize the communication with the IPX800
+	/// \param[in] api                   pointer to the API
+	//--------------------------------------------------------------
+	void initIPX800(boost::shared_ptr<yApi::IYPluginApi> api);
+
    //--------------------------------------------------------------
    /// \brief Name of the plugin
    //--------------------------------------------------------------
@@ -55,5 +63,9 @@ private:
    /// \brief The IO Manager
    //--------------------------------------------------------------
    boost::shared_ptr<CIPX800Factory> m_factory;
-};
 
+   //--------------------------------------------------------------
+   /// \brief	Refresh timer
+   //--------------------------------------------------------------
+   boost::shared_ptr<shared::event::CEventTimer> m_refreshTimer;
+};
