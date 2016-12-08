@@ -1223,6 +1223,18 @@
                   }               
                }
             },
+            "mcz3PelletStove":
+            {
+               "name": "MCZ Pellet Stove (3 fans model)",
+               "content":
+               {
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (0-16777215)"
+                  }               
+               }
+            },
             
             "cameraX10Ninja":
             {
