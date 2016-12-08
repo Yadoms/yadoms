@@ -7,6 +7,7 @@ import scripts
 import yadomsServer
 import dashboard
 from selenium import webdriver
+import tools
 
 class NavigationAccrossPages(unittest.TestCase):
    """Test navigation accros dashboard pages"""
@@ -31,22 +32,52 @@ class NavigationAccrossPages(unittest.TestCase):
       print ' In some case, passing from a page to another'
       print ' make bad refresh (previous page content is not hidden.'
       print ' The aim of this test is to reproduce this problem.'
+
+      expectedPageTitles = [ \
+         u'dashboard-summary', \
+         u'dashboard-system-configuration', \
+         u'dashboard-plugins', \
+         u'dashboard-devices', \
+         u'dashboard-automation-center', \
+         u'dashboard-recipients', \
+         u'dashboard-install-update', \
+         u'dashboard-maintenance', \
+         u'dashboard-about']
       
       print '  Enter dashboard'
       db = dashboard.open(self.browser)
    
       dashboard_boutons = db.find_element_by_id("dashboard-btns")
       menuEntries = dashboard_boutons.find_elements_by_xpath("./child::*")
-      nbPages = len(menuEntries)
+      assert len(menuEntries) == len(expectedPageTitles)
 
       print '   Display all dashboard pages sequentially'
-      for page in range(0, nbPages):
-         menuEntries[page].click()
-            
-      print '   Check that only last page is displayed'
-      displayedContent = db.find_element_by_id("main-dashboard-sub-window-content")
-      assert len(displayedContent.find_elements_by_xpath("div")) == 1
-      assert displayedContent.find_elements_by_xpath("div")[0].get_attribute('id') == 'dashboard-about'
+      def click(menuEntries, pageIndex):
+         print 'click on ' + menuEntries[pageIndex].text + ' page (index ' + str(pageIndex) + ') ==>'
+         menuEntries[pageIndex].click()
+
+      # Note that the navigation is not perfect, but considered as acceptable for actual Yadoms version
+      # See https://github.com/Yadoms/yadoms/issues/172 for more information
+      def getDisplayedPages(dashboardSubWindow):
+         displayedPages = []
+         for page in dashboardSubWindow.find_elements_by_xpath("div"):
+            if 'hidden' not in page.get_attribute('class'):
+               displayedPages.append(page)
+         return displayedPages
+
+      def checkPage(dashboardSubWindow, expectedPageTitles):
+         displayedPages = getDisplayedPages(dashboardSubWindow)
+         assert len(displayedPages) == 1
+         pageTitle = displayedPages[0].get_attribute('id')
+         if pageTitle == expectedPageTitles[page]:
+            print '   [OK] Get expected page (' + expectedPageTitles[page] + ')'
+            return True
+         print '    [FAIL] Displayed page is |' + pageTitle + '|, should be |' + expectedPageTitles[page] + '|'
+         return False
+
+      dashboardSubWindow = db.find_element_by_id("main-dashboard-sub-window-content")
+      for page in range(0, len(menuEntries)):
+         assert tools.doUntil(lambda : click(menuEntries, page), lambda: checkPage(dashboardSubWindow, expectedPageTitles), 3)
             
 
       
