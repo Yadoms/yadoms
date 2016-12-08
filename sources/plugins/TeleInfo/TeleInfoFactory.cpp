@@ -35,11 +35,17 @@ boost::shared_ptr<shared::communication::IReceiveBufferHandler> CTeleInfoFactory
                                                                                                    int evtPortDataReceived,
 																								   bool developerMode)
 {
+	boost::shared_ptr<shared::communication::IBufferLogger> logger;
+
+	if (developerMode)
+		logger = boost::make_shared<shared::communication::CAsciiBufferLogger>();
+	//else
+		// TODO : A mettre en place CNoBufferLogger lors du merge de device_configuration 
+
    return boost::make_shared<CTeleInfoReceiveBufferHandler>(eventHandler,
                                                             evtPortDataReceived,
                                                             boost::posix_time::seconds(30),
-															boost::make_shared<shared::communication::CAsciiBufferLogger>(),
-															developerMode);
+															logger);
 }
 
 boost::shared_ptr<IDecoder> CTeleInfoFactory::constructDecoder(boost::shared_ptr<yApi::IYPluginApi> api)

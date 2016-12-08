@@ -19,13 +19,11 @@ public:
    /// \param[in] receiveDataEventId      The event id to notify for received data event
    /// \param[in] suspendDelay            Mute delay, used to filter messages
    /// \param[in] logger                  logger in developer mode
-   /// \param[in] developerMode           developer mode active
    //--------------------------------------------------------------
 	CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
 								  int receiveDataEventId,
 								  const boost::posix_time::time_duration suspendDelay,
-								  boost::shared_ptr<shared::communication::IBufferLogger> logger,
-								  bool developerMode);
+								  boost::shared_ptr<shared::communication::IBufferLogger> logger);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
@@ -79,11 +77,6 @@ private:
    /// \brief	The event id to notify for received data event  
    //--------------------------------------------------------------
    int m_receiveDataEventId;
-
-   //--------------------------------------------------------------
-   /// \brief	The event id to notify for received data event  
-   //--------------------------------------------------------------
-   bool m_developerMode;
 
    //--------------------------------------------------------------
    /// \brief  The communication port
