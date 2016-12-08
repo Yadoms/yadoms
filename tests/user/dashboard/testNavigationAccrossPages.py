@@ -29,9 +29,6 @@ class NavigationAccrossPages(unittest.TestCase):
       
    def test_navigationAccrossPages(self):
       print '=== Test navigation accros dashboard pages ==='
-      print ' In some case, passing from a page to another'
-      print ' make bad refresh (previous page content is not hidden.'
-      print ' The aim of this test is to reproduce this problem.'
 
       expectedPageTitles = [ \
          u'dashboard-summary', \
