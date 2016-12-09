@@ -59,23 +59,23 @@ class NavigationAccrossPages(unittest.TestCase):
       def getDisplayedPages(dashboardSubWindow):
          displayedPages = []
          for page in dashboardSubWindow.find_elements_by_xpath("div"):
-            if 'hidden' not in page.get_attribute('class'):
+            if page.get_attribute('class') is not None and 'hidden' not in page.get_attribute('class'):
                displayedPages.append(page)
          return displayedPages
 
-      def checkPage(dashboardSubWindow, expectedPageTitles):
+      def checkPage(dashboardSubWindow, expectedPageTitles, pageIndex):
          displayedPages = getDisplayedPages(dashboardSubWindow)
          assert len(displayedPages) == 1
          pageTitle = displayedPages[0].get_attribute('id')
-         if pageTitle == expectedPageTitles[page]:
-            print '   [OK] Get expected page (' + expectedPageTitles[page] + ')'
+         if pageTitle == expectedPageTitles[pageIndex]:
+            print '   [OK] Get expected page (' + expectedPageTitles[pageIndex] + ')'
             return True
-         print '    [FAIL] Displayed page is ' + pageTitle + ', should be ' + expectedPageTitles[page]
+         print '    [WARNING] Displayed page is ' + pageTitle + ', should be ' + expectedPageTitles[pageIndex]
          return False
 
       dashboardSubWindow = db.find_element_by_id("main-dashboard-sub-window-content")
       for page in range(0, len(menuEntries)):
-         assert tools.doUntil(lambda : click(menuEntries, page), lambda: checkPage(dashboardSubWindow, expectedPageTitles), 3)
+         assert tools.doUntil(lambda : click(menuEntries, page), lambda: checkPage(dashboardSubWindow, expectedPageTitles, page), 3)
             
 
       
