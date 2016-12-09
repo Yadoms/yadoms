@@ -180,6 +180,6 @@ namespace rfxcomMessages
 
    unsigned char CThermostat4::normalizeFanSpeed(int dimmableValue)
    {
-      return dimmableValue * 5 / 100 + 1;
+      return static_cast<unsigned char>(dimmableValue * 5 / 100 + 1);
    }
 } // namespace rfxcomMessages
