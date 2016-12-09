@@ -41,7 +41,7 @@ class CreateDevice(unittest.TestCase):
       newDeviceModal.ok()
       
       print '  Configure the device'
-      editDeviceModal = dashboard.devices.waitConfigureDeviceModal(self.browser)
+      editDeviceModal = dashboard.devices.waitConfigureManuallyDeviceModal(self.browser)
       editDeviceModal.setDeviceName(deviceName)
       print '  Click OK'
       editDeviceModal.ok()
