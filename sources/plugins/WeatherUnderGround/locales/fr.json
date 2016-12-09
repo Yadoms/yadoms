@@ -185,7 +185,6 @@
 				"PF": "Polynésie française",				
 				"PL": "Pologne",
 				"PO": "Portugal",
-				"PR": "Puerto Rico",
 				"QT": "Qatar",
 				"CE": "République centrafrique",		
 				"CD": "République démocratique du Congo",				
@@ -222,15 +221,13 @@
 				"SU": "Soudan",				
 				"SB": "Sri Lanka",
 				"SN": "Suède",
-				"SW": "Suisse",				
-				"SM": "Suriname",
+				"SW": "Suisse",
 				"SJ": "Svalbard et Jan Mayen",
 				"SV": "Swaziland",
 				"SY": "Syrie",
 				"TW": "Taiwan, Province de Chine",
 				"TJ": "Tajikistan",
 				"TN": "Tanzanie",
-				"CD": "Tchad",
 				"TF": "Terres australes et antartiques françaises",				
 				"BT": "Territoire britannique de l'océan Indien",
 				"TH": "Thailande",
@@ -343,5 +340,53 @@
 			"NoConnection": "Pas de connexion Internet",
 			"desactivated": "Un ou plusieurs modules sont désactivés"
 		}
-	}
+	},
+   "manuallyDeviceCreationConfigurationSchema": {
+      "LiveStations" :
+      {				 
+         "name": "Stations météorologiques",
+         "description": "Choisissez la station météorologique la plus proche de chez vous."
+      },
+      "deviceToCreate":
+      {
+         "name": "Type",
+         "description": "Type of the device",
+         "content":
+         {       
+			  "LiveConditions" :
+			  {
+                 "name": "Live conditions",
+                 "content":
+                 {
+				        "IndividualKeywords" :
+				        {				 
+                       "name": "Individual keywords",
+                       "description": ""
+					     }
+				     }
+			  },
+			  "Astronomy" :
+			  {
+                 "name": "Astronomy"
+			  },
+			  "Forecast10Days" :
+			  {
+                 "name": "Forecast",
+                 "content":
+                 {
+				        "individualRainForecast" :
+				        {				 
+                       "name": "Prévisions de précipitations individuelles",
+                       "description": ""
+					     },
+				        "individualTempForecast" :
+				        {				 
+                       "name": "Prévision de température individuelle",
+                       "description": ""
+					     }
+				     }
+			  }        
+		 }
+	  }
+   } 
 }

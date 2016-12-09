@@ -55,7 +55,6 @@
 				"CV": "Cabo Verde",
 				"GC": "Cayman Islands",
 				"CE": "Central African Republic",
-				"CD": "Tchad",
 				"CH": "Chile",
 				"CI": "China",
 				"CX": "Christmas Island",
@@ -185,7 +184,6 @@
 				"P2": "Pitcairn",
 				"PL": "Poland",
 				"PO": "Portugal",
-				"PR": "Puerto Rico",
 				"QT": "Qatar",
 				"RE": "Reunion",
 				"RO": "Romania",
@@ -214,7 +212,6 @@
 				"SP": "Spain",
 				"SB": "Sri Lanka",
 				"SU": "Sudan",
-				"SM": "Suriname",
 				"SJ": "Svalbard and Jan Mayen",
 				"SV": "Swaziland",
 				"SN": "Sweden",
@@ -344,5 +341,53 @@
 			"NoConnection": "No Internet connection...",
 			"desactivated": "One module or more are desactivated"
 		}
-	}
+	},
+   "manuallyDeviceCreationConfigurationSchema": {
+      "LiveStations" :
+      {				 
+         "name": "Live Stations",
+         "description": "Select the forecast station the closest of your city."
+      },
+      "deviceToCreate":
+      {
+         "name": "Type",
+         "description": "Type of the device",
+         "content":
+         {      
+			  "LiveConditions" :
+			  {
+                 "name": "Live conditions",
+                 "content":
+                 {
+				        "IndividualKeywords" :
+				        {				 
+                       "name": "Individual keywords",
+                       "description": ""
+					     }
+				     }
+			  },
+			  "Astronomy" :
+			  {
+                 "name": "Astronomy"
+			  },
+			  "Forecast10Days" :
+			  {
+                 "name": "Forecast",
+                 "content":
+                 {
+				        "individualRainForecast" :
+				        {				 
+                       "name": "Individual rain information",
+                       "description": ""
+					     },
+				        "individualTempForecast" :
+				        {				 
+                       "name": "Individual temperature information",
+                       "description": ""
+					     }
+				     }
+			  }        
+		 }
+	  }
+   } 
 }

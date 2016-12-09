@@ -6,7 +6,8 @@
    "url": "https://github.com/Yadoms/yadoms/wiki/WeatherUnderground",
 	"credits": "",
 	"supportedPlatforms": "all",
-	"supportManuallyDeviceCreation": "false",
+	"supportManuallyDeviceCreation": "true",
+   "supportDeviceRemovedNotification": "true",
 	"configurationSchema": {
 		"APIKey": {
 			"type": "string"
@@ -58,7 +59,6 @@
 				"CV": "",
 				"GC": "",
 				"CE": "",
-				"CD": "",
 				"CH": "",
 				"CI": "",
 				"CX": "",
@@ -188,7 +188,6 @@
 				"P2": "",
 				"PL": "",
 				"PO": "",
-				"PR": "",
 				"QT": "",
 				"RE": "",
 				"RO": "",
@@ -200,7 +199,6 @@
 				"P1": "",
 				"VC": "",
 				"ZM": "",
-				"SM": "",
 				"TP": "",
 				"SD": "",
 				"RB": "",
@@ -339,5 +337,56 @@
 			"type": "bool",
 			"defaultValue": "false"
 		}
-	}
+	},
+   "manuallyDeviceCreationConfigurationSchema": {
+         "LiveStations" : {				 
+             "type" : "enum",
+             "values": {
+                "__Binding__" : {
+                  "type" : "plugin", 
+                  "query" : "LiveStations"
+               }
+            }
+         },
+         "deviceToCreate":
+         {
+            "type": "radioSection",
+            "content":
+            {
+              "LiveConditions" :
+              {
+                    "type": "section",                 
+                    "content":
+                    {
+                       "IndividualKeywords" :
+                       {				 
+                          "type" : "bool",
+                          "defaultValue" : "true"
+                       }
+                    }
+              },
+              "Astronomy" :
+              {
+                    "type": "section"
+              },
+              "Forecast10Days" :
+              {
+                    "type": "section",
+                    "content":
+                    {
+                       "individualRainForecast" :
+                       {				 
+                          "type" : "bool",
+                          "defaultValue" : "true"
+                       },
+                       "individualTempForecast" :
+                       {				 
+                          "type" : "bool",
+                          "defaultValue" : "true"
+                       }                    
+                    }
+              }
+            }
+		 }
+   }   
 }

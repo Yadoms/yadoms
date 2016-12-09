@@ -2,6 +2,9 @@
 #include "WeatherUnderground.h"
 #include <shared/event/EventTimer.h>
 #include <plugin_cpp_api/ImplementationHelper.h>
+#include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
+#include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
+#include <shared/plugin/yPluginApi/IDeviceRemoved.h>
 #include "WeatherConditions.h"
 #include "Astronomy.h"
 #include "ForecastDays.h"
@@ -104,6 +107,47 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             api->setPluginState(yApi::historization::EPluginState::kStopped);
             return;
          }
+	  case yApi::IYPluginApi::kEventManuallyDeviceCreation:
+	  {
+		  // Yadoms asks for device creation
+		  //TODO : A remplir !
+		  auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
+		  std::cout << "Manually device creation request received for device :" << request->getData().getDeviceName() << std::endl;
+		  break;
+	  }
+	  case yApi::IYPluginApi::kEventDeviceRemoved:
+	  {
+          // TODO : A remplir !
+		  auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
+		  std::cout << device->device() << " was removed" << std::endl;
+		  break;
+	  }
+	  case yApi::IYPluginApi::kBindingQuery:
+	  {
+		  // Yadoms ask for a binding query 
+		  try {
+			auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
+
+			if (data->getData().getQuery() == "LiveStations")
+			{
+				// TODO : A remplir !
+				// Prévoir le cas où il n'y a pas possibilité d'interrogation (liaison coupée, pas de stations proches, ...)
+				shared::CDataContainer results;
+				data->sendSuccess(results);
+			}
+			else
+			{
+				std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
+				data->sendError(errorMessage);
+				std::cerr << errorMessage << std::endl;
+			}
+		  }
+		  catch (shared::exception::CException &e)
+		  {
+			std::cout << "Unknow error : " << e.what() << std::endl;
+		  }
+		  break;
+	  }
       case kEvtTimerRefreshWeatherConditions:
          {
             try
