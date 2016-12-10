@@ -53,7 +53,6 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
                                                              shared::event::CEventTimer::kOneShot,
                                                              boost::posix_time::seconds(45));
-   m_waitForAnswerTimer->stop();
 
    // Create the connection
    createConnection(api);
@@ -220,6 +219,7 @@ void CTeleInfo::processTeleInfoUnConnectionEvent(boost::shared_ptr<yApi::IYPlugi
 {
    std::cout << "TeleInfo connection was lost" << std::endl;
    api->setPluginState(yApi::historization::EPluginState::kError, "connectionLost");
+   m_runningState = kConnectionLost;
 
    destroyConnection();
 }
@@ -228,6 +228,7 @@ void CTeleInfo::errorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    api->setPluginState(yApi::historization::EPluginState::kError, "connectionLost");
    destroyConnection();
+   m_runningState = kConnectionLost;
    api->getEventHandler().createTimer(kErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
 }
 
