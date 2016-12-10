@@ -104,7 +104,7 @@ namespace rfxcomMessages
       rbuf.THERMOSTAT4.beep = 0;
       rbuf.THERMOSTAT4.fan1_speed = 6; // Auto
       rbuf.THERMOSTAT4.fan2_speed = 6; // Auto
-      rbuf.THERMOSTAT4.flame_power = (m_flame->switchLevel() == 100) ? 5 : floor(m_flame->switchLevel() / 20) + 1;
+      rbuf.THERMOSTAT4.flame_power = (m_flame->switchLevel() == 100) ? 5 : static_cast<BYTE>(floor(m_flame->switchLevel() / 20) + 1);
       rbuf.THERMOSTAT4.mode = m_onOff->get() ? thermostat4_sManual : thermostat4_sOff;
       rbuf.THERMOSTAT4.rssi = 0;
       rbuf.THERMOSTAT4.filler = 0;
