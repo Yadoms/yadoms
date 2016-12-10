@@ -21,8 +21,8 @@ CTeleInfoReceiveBufferHandler::CTeleInfoReceiveBufferHandler(shared::event::CEve
 															 boost::shared_ptr<shared::communication::IBufferLogger> logger)
    : m_receiveDataEventHandler(receiveDataEventHandler),
      m_receiveDataEventId(receiveDataEventId),
+     m_logger (logger),
      m_nextSendMessageDate(shared::currentTime::Provider().now()),
-	 m_logger (logger),
      m_suspendDelay (suspendDelay)
 {
 }
