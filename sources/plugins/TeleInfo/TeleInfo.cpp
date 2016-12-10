@@ -180,8 +180,6 @@ void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const boost::shared_ptr<std::map<std::string, std::string>>& messages)
 {
-   //TODO   if (m_isDeveloperMode) m_logger.logReceived(messages);
-
    m_decoder->decodeTeleInfoMessage(api, messages);
 
    auto newState = true;
