@@ -1,8 +1,8 @@
 #pragma once
-
 #include "callback/ISynchronousCallback.h"
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationData.h>
 #include <shared/plugin/yPluginApi/IBindingQueryData.h>
+#include <shared/plugin/yPluginApi/IExtraQueryData.h>
 #include <shared/DataContainer.h>
 
 namespace communication
@@ -21,23 +21,33 @@ namespace communication
       }
 
       //----------------------------------------------
-      ///\brief                     Send a command
+      ///\brief                     Send a command to a keyword
       ///\param [in] keywordId      Target keyword Id
       ///\param [in] body           The command body to send
       ///\throw shared::exception::CEmptyResult if keywordId not found
       //----------------------------------------------
-      virtual void sendCommandAsync(int keywordId,
-                                    const std::string& body) = 0;
+      virtual void sendKeywordCommandAsync(int keywordId,
+                                           const std::string& body) = 0;
+
+      //----------------------------------------------
+      ///\brief                     Send a command to a device
+      ///\param [in] deviceId       Target device Id
+      ///\param [in] body           The command body to send
+      ///\throw shared::exception::CEmptyResult if deviceId not found
+      //----------------------------------------------
+      virtual void sendDeviceCommandAsync(int deviceId,
+                                          const std::string& body) = 0;
 
       //----------------------------------------------
       ///\brief                     Send an extra command
       ///\param [in] pluginId       Plugin Id to send extra command
-      ///\param [in] command        The extra command 
-      ///\param [in] data           The extra command data
+      ///\param [in] query          The extra query
+      ///\param [in] data           The extra query data
+      ///\param [in] callback       The callback
       //----------------------------------------------
-      virtual void sendExtraCommandAsync(int pluginId,
-                                         const std::string& command,
-                                         const shared::CDataContainer& data = shared::CDataContainer::EmptyContainer) = 0;
+      virtual void sendExtraQueryAsync(int pluginId,
+                                       const shared::plugin::yPluginApi::IExtraQueryData& data,
+                                       communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) = 0;
 
       //----------------------------------------------
       ///\brief                     Send a manually device creation request to a plugin with a mandatory callback
@@ -46,8 +56,8 @@ namespace communication
       ///\param [in] callback       The callback
       //----------------------------------------------
       virtual void sendManuallyDeviceCreationRequest(int pluginId,
-                                                     const shared::plugin::yPluginApi::IManuallyDeviceCreationData& data
-                                                     , communication::callback::ISynchronousCallback<std::string>& callback) = 0;
+                                                     const shared::plugin::yPluginApi::IManuallyDeviceCreationData& data,
+                                                     communication::callback::ISynchronousCallback<std::string>& callback) = 0;
 
       //----------------------------------------------
       ///\brief                     Send a binding query request to a plugin with a mandatory callback
@@ -58,6 +68,22 @@ namespace communication
       virtual void sendBindingQueryRequest(int pluginId,
                                            const shared::plugin::yPluginApi::IBindingQueryData& data,
                                            communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) = 0;
+
+      //----------------------------------------------
+      ///\brief                     Send a binding query request to a plugin with a mandatory callback
+      ///\param [in] deviceId       Device ID on which ask configuration schema
+      ///\param [in] callback       The callback
+      //----------------------------------------------
+      virtual void sendDeviceConfigurationSchemaRequest(int deviceId,
+                                                        communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) = 0;
+
+      //----------------------------------------------
+      ///\brief                     Send a new configuration to device on a plugin
+      ///\param [in] deviceId       Device ID on which to send configuration
+      ///\param [in] configuration  The new device configuration
+      //----------------------------------------------
+      virtual void sendSetDeviceConfiguration(int deviceId,
+                                              const shared::CDataContainer& configuration) = 0;
    };
 } //namespace communication
 

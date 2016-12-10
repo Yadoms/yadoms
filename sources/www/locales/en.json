@@ -199,10 +199,8 @@
       "errorDuringGettingPluginTypes": "Error during requesting plugin types"
     },
     "delete-device": {
-      "title": "Delete historic device confirmation",
-      "text": "This operation will cleanup device __deviceName__ historic. Continue anyway ?",
-      "checkDeleteDevice": "Delete the device",
-      "checkDeleteDeviceNote": "Please note that device will be re-created if still transmits."
+      "title": "Delete device historic",
+      "text": "This operation will delete device __deviceName__ and its data history. Continue anyway ?"
     },
     "configure-plugin": {
       "title": "Plugin configuration",
@@ -216,8 +214,8 @@
       "pluginFailToDelete": "Fail to delete plugin __pluginName__",
       "pluginFailToConfigure": "Fail to configure plugin __pluginName__"
     },
-    "extra-commands": {
-      "title": "Send extra command to plugin"
+    "extra-queries": {
+      "title": "Send extra query to plugin"
     },
     "configure-device": {
       "title": "Device configuration",
@@ -225,6 +223,11 @@
         "name": "Name",
         "description": "Friendly name of your device",
         "regexErrorMessage": "The name of the device must contains at least one character"
+      },
+      "model-configuration": {
+        "name": "Model",
+        "description": "Device model",
+        "regexErrorMessage": "Enter here the device model to easy identify the device"
       }
     },
     "configure-keyword": {
@@ -312,7 +315,8 @@
           "databaseVersion": "Database Version",
           "startedFrom": "Started from",
           "developerMode": "Developer mode",
-          "errorRequestingDatabaseVersion": "Error requesting Database Version"
+          "errorRequestingDatabaseVersion": "Error requesting Database Version",
+		  "errorRequestingSystemInformation" : "Error requesting system information"
         },
         "user-management": {
           "title": "User management"
@@ -348,7 +352,11 @@
             "dateFormatString": {
               "name": "Date Format String",
               "description": "You can change date format string using momnt.js syntax (ie \"LLL\" or \"'MMMM Do YYYY, h:mm:ss a\")"
-            }
+            },
+		    "timezone": {
+				"description": "Define your Timezone.",
+				"name": "Timezone"
+			}			
           },
           "confirmResetToDefault": "This operation will restore all default configuration. Continue ?",
           "configurationSaved": "System configuration successfully saved",
@@ -416,10 +424,14 @@
           },
           "configure": "Configure the device",
           "delete": "Delete the device",
+		  "restore" : "Restore the device",
           "errorGettingDeviceList": "An error has occurred acquiring device list",
           "errorGettingDeviceDetailsList": "An error has occurred acquiring device details list",
           "errorUpdatingKeyword": "An error occurred updating data __keyword__",
-          "noAcquisition": "No acquisition"
+          "errorBlacklistingDevice": "An error occurred while removing/restoring __device__",
+          "errorBlacklistingKeyword": "An error occurred while removing/restoring __keyword__",
+          "noAcquisition": "No acquisition",
+		  "showBlacklistedDevices" : "Show deleted devices"
         },
         "automation-center": {
           "title": "Automation center",
@@ -470,6 +482,7 @@
           "releaseTypeChoice": "Choose the release type you want to manage",
           "releaseType": {
             "beta": "Beta version - recommended for developpers only",
+            "testing": "Testing - unstable version, use it at your own risks",
             "releaseCandidate": "Release Candidate version - use it at your own risks",
             "stable": "Stable version - the most recommended release type"
           },
@@ -960,7 +973,8 @@
     "yadomsUpdate": "Yadoms update"
   },
   "initialization": {
-    "homePage": "Home Page"
+    "homePage": "Home Page",
+    "loading" : "Yadoms is loading..."
   },
   "inProgress": "Development in progress ...",
   "data": {

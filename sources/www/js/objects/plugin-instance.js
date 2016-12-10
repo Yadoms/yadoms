@@ -4,7 +4,7 @@
  * Creates an instance of Page
  * @constructor
  */
-function PluginInstance(id, displayName, type, configuration, autoStart, category) {
+function PluginInstance(id, displayName, type, configuration, autoStart, category, deviceConfiguration) {
     //id is optional because null is used when creating new instance
     assert(!isNullOrUndefined(displayName), "displayName of a pluginInstance must be defined");
     assert(!isNullOrUndefined(type), "type of a pluginInstance must be defined");
@@ -20,6 +20,7 @@ function PluginInstance(id, displayName, type, configuration, autoStart, categor
     this.lastState = null;
 	this.lastMessageId = null;
     this.category = category;
+    this.deviceConfiguration = deviceConfiguration;
 }
 
 /**
@@ -33,7 +34,8 @@ PluginInstance.prototype.toJSON = function () {
       type: this.type,
       configuration: this.configuration,
       autoStart: this.autoStart,
-      category: this.category
+      category: this.category,
+      deviceConfiguration : this.deviceConfiguration
    };
 };
 
@@ -70,6 +72,40 @@ PluginInstance.prototype.getBoundPackageConfigurationSchema = function() {
 };
 
 /**
+ * Get the package device configuration schema
+ * @returns {*} The device configuration schema or undefined
+ */
+PluginInstance.prototype.getPackageDeviceConfigurationSchema = function() {
+   var d = new $.Deferred();
+
+   if (!isNullOrUndefined(this.package)) {
+      //if deviceConfiguration is not defined, to not try to do any binding...
+      //just resolve with undefined deviceConfiguration
+      d.resolve(this.package.deviceConfiguration);
+   } else {
+      d.reject("undefined package");
+   }
+   return d.promise();
+};
+
+/**
+ *  Apply binding on a configuration schema
+ * @param {Object} schema : The schema to bind
+ * @param {Boolean} plugin : true to allow plugin binding
+ * @param {Boolean} system : true to allow system binding
+ * @returns A promise
+ */
+PluginInstance.prototype.applyBinding  = function(schema, plugin, system) {
+    var allowedTypes = [];
+    if(plugin)
+        allowedTypes.push("plugin");
+    if(system)
+        allowedTypes.push("system");
+        
+    return this.applyBindingPrivate(schema, allowedTypes);
+}
+
+/**
  *  Get the bound manually device creation configuration schema
  * @returns {*}
  */
@@ -95,22 +131,22 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
 
 
 /**
- *  Get the bound extra command configuration schema
+ *  Get the bound extra queries configuration schema
  * @returns {*}
  */
-PluginInstance.prototype.getBoundExtraCommand = function () {
+PluginInstance.prototype.getBoundExtraQuery = function () {
    var d = new $.Deferred();
 
    if (!isNullOrUndefined(this.package)) {
-      if (this.package.extraCommands && Object.keys(this.package.extraCommands).length > 0) {
-         var tmp = this.package.extraCommands;
+      if (this.package.extraQueries && Object.keys(this.package.extraQueries).length > 0) {
+         var tmp = this.package.extraQueries;
          this.applyBindingPrivate(tmp, ["plugin", "system"])
             .done(d.resolve)
             .fail(d.reject);
       } else {
          //if extra commands are not defined, to not try to do any binding...
-         //just resolve with undefined extraCommands
-         d.resolve(this.package.extraCommands);
+         //just resolve with undefined extraQueries
+         d.resolve(this.package.extraQueries);
       }
    } else {
       d.reject("undefined package");
@@ -123,8 +159,8 @@ PluginInstance.prototype.getBoundExtraCommand = function () {
  * Tells if this instance contains extra commands
  * @returns {Boolean}
  */
-PluginInstance.prototype.containsExtraCommand = function () {
-   return (this.package && this.package.extraCommands && Object.keys(this.package.extraCommands).length > 0);
+PluginInstance.prototype.containsExtraQuery = function () {
+   return (this.package && this.package.extraQueries && Object.keys(this.package.extraQueries).length > 0);
 };
 
 

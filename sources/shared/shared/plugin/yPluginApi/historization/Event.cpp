@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Event.h"
 #include "../StandardCapacities.h"
-#include <shared/StringExtension.h>
 
 namespace shared
 {
@@ -40,7 +39,7 @@ namespace shared
             std::string CEvent::formatValue() const
             {
                // No value
-               return CStringExtension::EmptyString;
+               return std::string();
             }
 
             const EMeasureType& CEvent::getMeasureType() const

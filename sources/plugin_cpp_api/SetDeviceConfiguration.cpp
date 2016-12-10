@@ -1,0 +1,28 @@
+#include "stdafx.h"
+#include "SetDeviceConfiguration.h"
+
+
+namespace plugin_cpp_api
+{
+   CSetDeviceConfiguration::CSetDeviceConfiguration(const toPlugin::SetDeviceConfiguration& msg)
+      : m_device(msg.device()),
+        m_configuration(msg.configuration())
+   {
+   }
+
+   CSetDeviceConfiguration::~CSetDeviceConfiguration()
+   {
+   }
+
+   const std::string& CSetDeviceConfiguration::device() const
+   {
+      return m_device;
+   }
+
+   const shared::CDataContainer& CSetDeviceConfiguration::configuration() const
+   {
+      return m_configuration;
+   }
+} // namespace plugin_cpp_api	
+
+

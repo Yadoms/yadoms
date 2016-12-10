@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Created by nicolasHILAIRE on 26/05/14.
  */
 
@@ -28,7 +28,7 @@ PluginInstanceManager.factory = function (json) {
     assert(!isNullOrUndefined(json.autoStart), "json.autoStart must be defined");
     assert(!isNullOrUndefined(json.category), "json.category of a pluginInstance must be defined");
 
-    return new PluginInstance(json.id, json.displayName, json.type, json.configuration, json.autoStart, json.category);
+    return new PluginInstance(json.id, json.displayName, json.type, json.configuration, json.autoStart, json.category, json.deviceConfiguration);
 };
 
 /**
@@ -258,12 +258,12 @@ PluginInstanceManager.getLog = function (pluginInstance) {
 /**
  * Send an extra command to a plugin instance
  * @param pluginInstance The plugin instance
- * @param extraCommand   The extraCommand
+ * @param extraQuery   The extraQuery
  * @return {Promise} A promise for the result
  */
-PluginInstanceManager.postExtraCommand= function (pluginInstance, commandName, commandData) {
+PluginInstanceManager.postExtraQuery= function (pluginInstance, commandName, commandData) {
 	assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
-	return RestEngine.postJson("/rest/plugin/" + pluginInstance.id + "/extraCommand/" + commandName, { data: JSON.stringify(commandData) });
+	return RestEngine.postJson("/rest/plugin/" + pluginInstance.id + "/extraQuery/" + commandName, { data: JSON.stringify(commandData) });
 };
 
 
@@ -278,7 +278,7 @@ PluginInstanceManager.downloadPackage = function (pluginInstance) {
     var d = new $.Deferred();
 
     //we can't download package from system plugins
-    if (!pluginInstance.isSystemCategory()) {
+    if (!pluginInstance.isSystemCategory() && !pluginInstance.package) {
         RestEngine.getJson("plugins/" + pluginInstance.type + "/package.json")
             .done(function (data) {
                 pluginInstance.package = data;
@@ -337,9 +337,10 @@ PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation = function (
  * Create a device manually
  * @param pluginInstance The plugin instance
  * @param deviceName The device name
+ * @param deviceModel The device model
  * @param deviceConfiguration The device configuration
  * @return {Promise} A promise for the result
  */
-PluginInstanceManager.createManuallyDevice = function (pluginInstance, deviceName, deviceConfiguration) {
-   return RestEngine.postJson("/rest/plugin/" + pluginInstance.id + "/createDevice", { data: JSON.stringify({ name: deviceName, configuration: deviceConfiguration }) });
+PluginInstanceManager.createManuallyDevice = function (pluginInstance, deviceName, deviceModel, deviceConfiguration) {
+   return RestEngine.postJson("/rest/plugin/" + pluginInstance.id + "/createDevice", { data: JSON.stringify({ name: deviceName, model: deviceModel, configuration: deviceConfiguration }) });
 };

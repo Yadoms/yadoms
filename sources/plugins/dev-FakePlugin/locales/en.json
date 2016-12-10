@@ -90,10 +90,10 @@
 		"pluginState": {
 			"connecting": "Connecting...",
 			"updateConfiguration": "Configuration updating...",
-			"anotherMessageWithData" : "New state with message __messageFromExtraCommand__"
+			"anotherMessageWithData" : "New state with message __messageFromExtraQuery__"
 		}
 	},
-	"extraCommands" : {
+	"extraQueries" : {
 		"simpleCommand" : {
 			"name" : "Simple command"
 		},
@@ -133,5 +133,15 @@
 				}
 			}
 		}
-	}
+	},
+    "deviceConfiguration": {
+	  "CounterDivider": {
+		"name": "Divider",
+		"description": "Divider used to low the counter frequency(only for 'fake sensor')"
+	  },
+	  "CounterDivider2": {
+		"name": "Divider n°2",
+		"description": "Divider used to low the counter frequency (all devices)"
+	  }
+  }
 }

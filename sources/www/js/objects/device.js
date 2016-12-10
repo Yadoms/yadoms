@@ -4,7 +4,7 @@
  * Creates an instance of Device
  * @constructor
  */
-function Device(id, pluginId, name, friendlyName, model) {
+function Device(id, pluginId, name, friendlyName, model, configuration, blacklist) {
    assert(id !== undefined, "id of a Device must be defined");
    assert(pluginId !== undefined, "pluginId of a Device must be defined");
    assert(name !== undefined, "name of a Device must be defined");
@@ -18,6 +18,8 @@ function Device(id, pluginId, name, friendlyName, model) {
    this.model = model;
    this.attachedPlugin = undefined;
    this.keywords = undefined;
+   this.configuration = configuration;
+   this.blacklist = blacklist;
 }
 
 Device.prototype.toJSON = function () {
@@ -26,6 +28,8 @@ Device.prototype.toJSON = function () {
       pluginId: this.pluginId,
       name: this.name,
       friendlyName: this.friendlyName,
-      model: this.model
+      model: this.model,
+      configuration: this.configuration,
+	  blacklist : this.blacklist
    };
 };

@@ -8,7 +8,7 @@
 #include "IDataContainable.h"
 #include "enumeration/IExtendedEnum.h"
 #include "Field.hpp"
-#include "StringExtension.h"
+
 namespace shared
 {
    //--------------------------------------------------------------
@@ -231,7 +231,7 @@ namespace shared
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<class T>
-      inline T get(const std::string& parameterName = shared::CStringExtension::EmptyString, const char pathChar = '.') const; 
+      inline T get(const std::string& parameterName = std::string(), const char pathChar = '.') const; 
       
       //--------------------------------------------------------------
       /// \brief	    Get parameter value
@@ -292,7 +292,7 @@ namespace shared
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      const char* get(const std::string & parameterName = shared::CStringExtension::EmptyString, const char pathChar = '.');
+      const char* get(const std::string & parameterName = std::string(), const char pathChar = '.');
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter value
@@ -310,7 +310,7 @@ namespace shared
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      std::map<std::string, std::string> getAsMap(const std::string& parameterName = shared::CStringExtension::EmptyString, const char pathChar = '.') const;
+      std::map<std::string, std::string> getAsMap(const std::string& parameterName = std::string(), const char pathChar = '.') const;
 
       //--------------------------------------------------------------
       //
@@ -330,7 +330,8 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Get enum parameter value
       /// \param [in] parameterName    Name of the enum parameter
-      /// \param[in]  valueNames  List of authorized values for the enum
+      /// \param [in] valuesNames      List of authorized values for the enum
+      /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       /// \return     The parameter value
       /// \throw      shared::exception::COutOfRange if parameter value is not in the provided list
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
@@ -382,7 +383,7 @@ namespace shared
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      bool containsChild(const std::string& parameterName = shared::CStringExtension::EmptyString, const char pathChar = '.') const;
+      bool containsChild(const std::string& parameterName = std::string(), const char pathChar = '.') const;
 
       //--------------------------------------------------------------
       /// \brief	    Check if a node is terminal value
@@ -392,7 +393,7 @@ namespace shared
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      bool containsValue(const std::string& parameterName = shared::CStringExtension::EmptyString, const char pathChar = '.') const;
+      bool containsValue(const std::string& parameterName = std::string(), const char pathChar = '.') const;
 
       //--------------------------------------------------------------
       /// \brief		Equality operator
@@ -444,8 +445,9 @@ namespace shared
 
       //--------------------------------------------------------------
       /// \brief		Print the content to log
+      /// \param [in] os      The out stream where to print out
       //--------------------------------------------------------------
-      void printToLog() const;
+      void printToLog(std::ostream& os) const;
 
       //--------------------------------------------------------------
       //
@@ -494,16 +496,17 @@ namespace shared
    protected:
       //--------------------------------------------------------------
       /// \brief		Constructor
-      /// \param [in] initialData    Initial tree for this container
+      /// \param [in] initialTree    Initial tree for this container
       //--------------------------------------------------------------
       explicit CDataContainer(const boost::property_tree::ptree & initialTree);
 
       //--------------------------------------------------------------
       /// \brief		Print the content to log
       /// \param [in] tree    The tree to print
-      /// \param [in] tree    The current tree deep
+      /// \param [in] deep    The current tree deep
+      /// \param [in] os      The out stream where to print out
       //--------------------------------------------------------------
-      void printToLog(const boost::property_tree::ptree & tree, const int deep) const;
+      void printToLog(const boost::property_tree::ptree & tree, const int deep, std::ostream& os) const;
 
       //--------------------------------------------------------------
       //

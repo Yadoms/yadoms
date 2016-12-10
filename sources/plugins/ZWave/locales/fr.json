@@ -28,7 +28,7 @@
 			"failToStart" : "Impossible de démarrer"
 		}
 	},
-	"extraCommands" : {
+	"extraQueries" : {
 		"inclusionMode" : {
 			"name" : "Passage en mode appairage"
 		},

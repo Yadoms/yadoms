@@ -18,30 +18,27 @@ namespace automation
                               boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                               boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                               boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
-                              boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger)
+                              boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
+                              boost::shared_ptr<shared::ILocation> location)
       : m_ruleRequester(dbRequester),
         m_ruleEventHandler(boost::make_shared<shared::event::CEventHandler>()),
-        m_scriptManager(boost::make_shared<script::CManager>(pathProvider,
-                                                             pluginGateway,
-                                                             configurationManager,
-                                                             dbAcquisitionRequester,
-                                                             dbDeviceRequester,
-                                                             keywordAccessLayer,
-                                                             dbRecipientRequester)),
-        m_ruleStateHandler(boost::make_shared<CRuleStateHandler>(dbRequester,
-                                                                 eventLogger,
-                                                                 m_ruleEventHandler)),
+        m_scriptManager(boost::make_shared<script::CManager>(pathProvider, pluginGateway, configurationManager, dbAcquisitionRequester, dbDeviceRequester, keywordAccessLayer, dbRecipientRequester, location)),
+        m_ruleStateHandler(boost::make_shared<CRuleStateHandler>(dbRequester, eventLogger, m_ruleEventHandler)),
         m_yadomsShutdown(false),
-        m_ruleEventsThread(boost::make_shared<boost::thread>(boost::bind(&CRuleManager::ruleEventsThreadDoWork,
-                                                                         this)))
+        m_ruleEventsThread(boost::make_shared<boost::thread>(boost::bind(&CRuleManager::ruleEventsThreadDoWork, this)))
    {
-      startAllRules();
+      
    }
 
    CRuleManager::~CRuleManager()
    {
       if (!m_yadomsShutdown)
          CRuleManager::stop();
+   }
+
+   void CRuleManager::start()
+   {
+      startAllRules();
    }
 
    void CRuleManager::stop()
@@ -63,7 +60,7 @@ namespace automation
       YADOMS_LOG(error) << "One or more automation rules failed to start, check automation rules page for details";
    }
 
-   bool CRuleManager::startRules(const std::vector<boost::shared_ptr<database::entities::CRule> >& rules)
+   bool CRuleManager::startRules(const std::vector<boost::shared_ptr<database::entities::CRule>>& rules)
    {
       auto allRulesStarted = true;
       for (auto rule = rules.begin();
@@ -213,7 +210,7 @@ namespace automation
       return m_startedRules.find(ruleId) != m_startedRules.end();
    }
 
-   std::vector<boost::shared_ptr<database::entities::CRule> > CRuleManager::getRules() const
+   std::vector<boost::shared_ptr<database::entities::CRule>> CRuleManager::getRules() const
    {
       return m_ruleRequester->getRules();
    }
@@ -345,7 +342,7 @@ namespace automation
             case CRuleStateHandler::kRuleAbnormalStopped:
                {
                   // The rule has stopped in a non-conventional way (probably crashed)
-                  auto data = m_ruleEventHandler->getEventData<std::pair<int, std::string> >();
+                  auto data = m_ruleEventHandler->getEventData<std::pair<int, std::string>>();
                   onRuleStopped(data.first, data.second);
                   break;
                }
@@ -424,3 +421,5 @@ namespace automation
       m_ruleRequester->updateRule(ruleData);
    }
 } // namespace automation	
+
+

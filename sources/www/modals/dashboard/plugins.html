@@ -1,4 +1,4 @@
-<div id="dashboard-plugins">
+﻿<div id="dashboard-plugins">
    <h1 class="page-header"><span class="fa fa-rocket"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.plugins.title"></span></h1>
    <span data-i18n="modals.dashboard.sub-windows.plugins.pluginInstanceListDescription"></span><br>
    <button id="btn-add-new-plugin" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-rocket"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.plugins.new"></span></button>
@@ -80,8 +80,8 @@
              ((failToLoadPluginPackage === true) ? "" : "<button type=\"button\" class=\"btn btn-startStop\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.startStop\"><span class=\"fa fa-power-off\"></span></button>\n") +
              ((failToLoadPluginPackage === true) ? "" : "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.configure\"><span class=\"fa fa-cog\"></span></button>\n");
 
-      if (pi.containsExtraCommand() && failToLoadPluginPackage !== true) {
-         actionsBtns += "<button type=\"button\" class=\"btn btn-success btn-extraCommand\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\"><span class=\"fa fa-navicon\"></span></button>";
+      if (pi.containsExtraQuery() && failToLoadPluginPackage !== true) {
+         actionsBtns += "<button type=\"button\" class=\"btn btn-success btn-extraQuery\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\"><span class=\"fa fa-navicon\"></span></button>";
       }
 
       if(failToLoadPluginPackage !== true && developerMode)
@@ -136,9 +136,9 @@
 	  //translation of the line
 	  $pluginInstanceRow.i18n();
 
-      //setup extraCommand button initial state
-      if (pi.containsExtraCommand() && (pi.lastState === "Stopped" || pi.lastState === "Error" || !pi.lastState)) {
-         $pluginInstanceRow.find("button.btn-extraCommand").prop('disabled', true);
+      //setup extraQuery button initial state
+      if (pi.containsExtraQuery() && (pi.lastState === "Stopped" || pi.lastState === "Error" || !pi.lastState)) {
+         $pluginInstanceRow.find("button.btn-extraQuery").prop('disabled', true);
       }
 
       //we bind event on the different actions
@@ -146,7 +146,7 @@
          $pluginInstanceRow.find("button.btn-startStop").unbind('click').bind('click', function () { startStopPlugin(pi); });
          $pluginInstanceRow.find("button.btn-configure").unbind('click').bind('click', function () { configurePlugin(pi); });
          $pluginInstanceRow.find("input.cb-autoStart").unbind('change').bind('change', function () { autoStartChange(pi); });
-         $pluginInstanceRow.find("button.btn-extraCommand").unbind('click').bind('click', function () { loadExtraCommands(pi); });
+         $pluginInstanceRow.find("button.btn-extraQuery").unbind('click').bind('click', function () { loadExtraQueries(pi); });
          $pluginInstanceRow.find("button.btn-log").unbind('click').bind('click', function () { showPluginInstanceLog(pi); });
       }
       $pluginInstanceRow.find("button.btn-delete").unbind('click').bind('click', function () { deletePlugin(pi); });
@@ -171,49 +171,49 @@
       }
    }
 
-   function loadExtraCommands(pi) {
+   function loadExtraQueries(pi) {
       //manage extra commands in an async way (allow to display plugin line before all extra commands loaded; because some of them can use binding....)
       var $pluginInstanceRow = getPluginDomRow(pi);
 
-      var $extraCommandsButton = $pluginInstanceRow.find("button.btn-extraCommand");
-      if ($extraCommandsButton) {
+      var $extraQueriesButton = $pluginInstanceRow.find("button.btn-extraQuery");
+      if ($extraQueriesButton) {
 
-         $extraCommandsButton.find("span").removeClass().addClass("fa fa-spinner fa-pulse");
+         $extraQueriesButton.find("span").removeClass().addClass("fa fa-spinner fa-pulse");
 
-         pi.getBoundExtraCommand()
-            .done(function(extraCommands) {
-               if (extraCommands && Object.keys(extraCommands).length > 0) {
+         pi.getBoundExtraQuery()
+            .done(function(extraQueries) {
+               if (extraQueries && Object.keys(extraQueries).length > 0) {
                   //create DOM
-                  var extraCommandButton = "<ul class=\"dropdown-menu dropdown-extracommands\">";
-                  $.each(extraCommands, function(index, values) {
-                        extraCommandButton += "<li><a href=\"#\" class=\"btn-extraCommand-" +index +"\"><span class=\"extra-command-icon " +values.iconClass +"\"></span>&nbsp;<span data-i18n=\"plugins/" +pi.type +":extraCommands." +index +".name\"></span>" +(values.commandData ? "..." : "") +"</a></li>";
+                  var extraQueryButton = "<ul class=\"dropdown-menu dropdown-extraqueries\">";
+                  $.each(extraQueries, function(index, values) {
+                        extraQueryButton += "<li><a href=\"#\" class=\"btn-extraQuery-" +index +"\"><span class=\"extra-query-icon " +values.iconClass +"\"></span>&nbsp;<span data-i18n=\"plugins/" +pi.type +":extraQueries." +index +".name\"></span>" +(values.commandData ? "..." : "") +"</a></li>";
                   });
-                  extraCommandButton += "</ul>";
+                  extraQueryButton += "</ul>";
 
                   //delete previous loaded extrea commands menu
-                  $pluginInstanceRow.remove(".dropdown-extracommands");
+                  $pluginInstanceRow.remove(".dropdown-extraqueries");
                   
                   //insert the new menu
-                  $extraCommandsButton.after(extraCommandButton);
+                  $extraQueriesButton.after(extraQueryButton);
                }
 
                //bind each extra command to js
-               $.each(extraCommands,function(index, values) {
-                     $pluginInstanceRow.find("a.btn-extraCommand-" + index).unbind('click').bind('click', function() { onExtraCommand(pi, index, values); });
+               $.each(extraQueries,function(index, values) {
+                     $pluginInstanceRow.find("a.btn-extraQuery-" + index).unbind('click').bind('click', function() { onExtraQuery(pi, index, values); });
                });
 
                //restore extra commands button icon
-               $extraCommandsButton.find("span").removeClass().addClass("fa fa-navicon");
+               $extraQueriesButton.find("span").removeClass().addClass("fa fa-navicon");
 
                //update menu translation
                $pluginInstanceRow.i18n();
 
                //show the dropdown
-               $extraCommandsButton.dropdown();
+               $extraQueriesButton.dropdown();
             })
             .fail(function () {
                //restore extra command button icon
-               $extraCommandsButton.find("span").removeClass().addClass("fa fa-navicon");
+               $extraQueriesButton.find("span").removeClass().addClass("fa fa-navicon");
             });
       }
    }
@@ -324,17 +324,17 @@
       });
    }
 
-   function onExtraCommand(pi, commandName, commandConfig) {
+   function onExtraQuery(pi, commandName, commandConfig) {
       if (commandConfig && commandConfig.commandData) {
-         Yadoms.modals.pluginExtraCommandsConfigure.loadAsync()
+         Yadoms.modals.pluginExtraQueriesConfigure.loadAsync()
             .done(function() {
-               Yadoms.ConfigureExtraCommands(commandName, commandConfig.commandData, pi)
+               Yadoms.ConfigureExtraQueries(commandName, commandConfig.commandData, pi)
                .done(function (result) {
-                  PluginInstanceManager.postExtraCommand(pi, commandName, result);
+                  PluginInstanceManager.postExtraQuery(pi, commandName, result);
                });
             });
       } else {
-         PluginInstanceManager.postExtraCommand(pi, commandName);
+         PluginInstanceManager.postExtraQuery(pi, commandName);
       }
    }
 
@@ -383,12 +383,12 @@
                      }
 
                      //extra commands : enabled only when instance is running
-                     var $extraCommandsButton = $row.find("button.btn-extraCommand");
-                     if ($extraCommandsButton) {
+                     var $extraQueriesButton = $row.find("button.btn-extraQuery");
+                     if ($extraQueriesButton) {
                         if (status.state === "Stopped" || status.state === "Error") {
-                           $extraCommandsButton.prop('disabled', true);
+                           $extraQueriesButton.prop('disabled', true);
                         } else {
-                           $extraCommandsButton.prop('disabled', false);
+                           $extraQueriesButton.prop('disabled', false);
                         }
                      }
                   }

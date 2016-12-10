@@ -586,6 +586,17 @@ namespace pgsql {
       return true;
    }
 
+   bool CPgsqlRequester::addTableColumn(const common::CDatabaseTable& tableName, const std::string& columnDef)
+   {
+      if (checkTableExists(tableName))
+      {
+         CPgsqlQuery alter;
+         queryStatement(alter.AddTableColumn(tableName, columnDef));
+         return true;
+      }
+      return false;
+   }
+
    void CPgsqlRequester::createIndex(const database::common::CDatabaseTable & tableName, const std::string & indexScript)
    {
       queryStatement(CPgsqlQuery::CustomQuery(indexScript, CPgsqlQuery::kCreate));

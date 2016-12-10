@@ -3,7 +3,10 @@
 #include "ApiImplementation.h"
 #include "CommandLine.h"
 #include <shared/currentTime/Local.h>
+#include <Poco/Debugger.h>
 
+
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace plugin_cpp_api
 {
@@ -37,8 +40,13 @@ namespace plugin_cpp_api
 
          std::cout << api->getInformation()->getType() << " started" << std::endl;
 
-         // Execute plugin code
-         m_plugin->doWork(api);
+         waitDebugger(api);
+         
+         if (!api->stopRequested())
+         {
+            // Execute plugin code
+            m_plugin->doWork(api);
+         }
 
          if (!api->stopRequested())
          {
@@ -65,6 +73,33 @@ namespace plugin_cpp_api
       m_msgReceiverThread.timed_join(boost::posix_time::seconds(20));
 
       closeMessageQueues();
+   }
+
+   void CPluginContext::waitDebugger(boost::shared_ptr<CApiImplementation> api) const
+   {
+      if (boost::filesystem::exists(api->getInformation()->getPath() / "waitForDebuggerAtStart"))
+      {
+         std::cout << "***********************************************" << std::endl;
+         std::cout << " Wait for a debugger to attach current process " << std::endl;
+         std::cout << "***********************************************" << std::endl;
+
+         // Check every 300 ms, while 2 minutes
+         const auto endTimePoint = shared::currentTime::Provider().now() + boost::posix_time::minutes(2);
+         while (!Poco::Debugger::isAvailable() && shared::currentTime::Provider().now() < endTimePoint)
+         {
+            if (api->getEventHandler().waitForEvents(boost::posix_time::millisec(300)) == yApi::IYPluginApi::kEventStopRequested)
+            {
+               std::cout << "Stop requested" << std::endl;
+               api->setPluginState(yApi::historization::EPluginState::kStopped);
+               return;
+            }
+         }
+
+         if (Poco::Debugger::isAvailable())
+            std::cout << api->getInformation()->getType() << " attached to debugger" << std::endl;
+         else
+            std::cout << api->getInformation()->getType() << " failed to attach debugger after timeout" << std::endl;
+      }
    }
 
    IPluginContext::EProcessReturnCode CPluginContext::getReturnCode() const

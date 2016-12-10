@@ -18,14 +18,26 @@ set(plugin_cpp_api_SOURCES
    BindingQueryData.cpp
    DeviceCommand.h
    DeviceCommand.cpp
-   ExtraCommand.h
-   ExtraCommand.cpp
+   DeviceConfigurationSchemaRequest.h
+   DeviceConfigurationSchemaRequest.cpp
+   DeviceRemoved.h
+   DeviceRemoved.cpp
+   ExtraQuery.h
+   ExtraQuery.cpp
+   ExtraQueryData.h
+   ExtraQueryData.cpp
+   Location.h
+   Location.cpp
    ManuallyDeviceCreation.h
    ManuallyDeviceCreation.cpp
    ManuallyDeviceCreationData.h
    ManuallyDeviceCreationData.cpp
    PluginInformation.h
    PluginInformation.cpp
+   SetDeviceConfiguration.h
+   SetDeviceConfiguration.cpp
+   YadomsInformation.h
+   YadomsInformation.cpp
 
    PluginContext.h
    PluginContext.cpp

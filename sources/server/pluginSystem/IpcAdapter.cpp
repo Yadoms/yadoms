@@ -130,7 +130,8 @@ namespace pluginSystem
 
    void CIpcAdapter::send(const toPlugin::msg& pbMsg,
                           boost::function1<bool, const toYadoms::msg&> checkExpectedMessageFunction,
-                          boost::function1<void, const toYadoms::msg&> onReceiveFunction)
+                          boost::function1<void, const toYadoms::msg&> onReceiveFunction,
+                          const boost::posix_time::time_duration& timeout)
    {
       shared::event::CEventHandler receivedEvtHandler;
 
@@ -148,7 +149,7 @@ namespace pluginSystem
 
       send(pbMsg);
 
-      if (receivedEvtHandler.waitForEvents(boost::posix_time::minutes(1)) == shared::event::kTimeout)
+      if (receivedEvtHandler.waitForEvents(timeout) == shared::event::kTimeout)
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
          m_onReceiveHook.clear();
@@ -190,6 +191,8 @@ namespace pluginSystem
          break;
       case toYadoms::msg::kDeviceDetails: processDeviceDetailsRequest(toYadomsProtoBuffer.devicedetails());
          break;
+      case toYadoms::msg::kUpdateDeviceDetails: processUpdateDeviceDetails(toYadomsProtoBuffer.updatedevicedetails());
+         break;
       case toYadoms::msg::kKeywordExists: processKeywordExistsRequest(toYadomsProtoBuffer.keywordexists());
          break;
       case toYadoms::msg::kDeclareDevice: processDeclareDevice(toYadomsProtoBuffer.declaredevice());
@@ -204,7 +207,25 @@ namespace pluginSystem
          break;
       case toYadoms::msg::kHistorizeData: processHistorizeData(toYadomsProtoBuffer.historizedata());
          break;
-      case toYadoms::msg::kDeveloperModeRequest: processDeveloperModeRequest(toYadomsProtoBuffer.developermoderequest());
+      case toYadoms::msg::kYadomsInformationRequest: processYadomsInformationRequest(toYadomsProtoBuffer.yadomsinformationrequest());
+         break;
+      case toYadoms::msg::kRemoveDevice: processRemoveDeviceRequest(toYadomsProtoBuffer.removedevice());
+         break;
+      case toYadoms::msg::kAllDevicesRequest: processAllDevicesRequest(toYadomsProtoBuffer.alldevicesrequest());
+         break;
+      case toYadoms::msg::kRemoveKeyword: processRemoveKeywordRequest(toYadomsProtoBuffer.removekeyword());
+         break;
+      case toYadoms::msg::kAllKeywordsRequest: processAllKeywordsRequest(toYadomsProtoBuffer.allkeywordsrequest());
+         break;
+      case toYadoms::msg::kDeclareKeywords: processDeclareKeywords(toYadomsProtoBuffer.declarekeywords());
+         break;
+      case toYadoms::msg::kDeviceModelRequest: processDeviceModelRequest(toYadomsProtoBuffer.devicemodelrequest());
+         break;
+      case toYadoms::msg::kUpdateDeviceModel: processUpdateDeviceModel(toYadomsProtoBuffer.updatedevicemodel());
+         break;
+      case toYadoms::msg::kDeviceConfigurationRequest: processDeviceConfigurationRequest(toYadomsProtoBuffer.deviceconfigurationrequest());
+         break;
+      case toYadoms::msg::kUpdateDeviceConfiguration: processUpdateDeviceConfiguration(toYadomsProtoBuffer.updatedeviceconfiguration());
          break;
       default:
          throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
@@ -232,7 +253,7 @@ namespace pluginSystem
 
       shared::CDataContainer dc(msg.custommessagedata());
 
-      auto values = dc.get< std::map<std::string, std::string> >();
+      auto values = dc.get<std::map<std::string, std::string>>();
 
       m_pluginApi->setPluginState(state, msg.custommessageid(), values);
    }
@@ -262,6 +283,21 @@ namespace pluginSystem
       send(ans);
    }
 
+   void CIpcAdapter::processUpdateDeviceDetails(const toYadoms::UpdateDeviceDetails& msg) const
+   {
+      m_pluginApi->updateDeviceDetails(msg.device(),
+                                       shared::CDataContainer(msg.details()));
+   }
+
+   void CIpcAdapter::processAllDevicesRequest(const toYadoms::AllDevicesRequest& msg)
+   {
+      toPlugin::msg ans;
+      auto answer = ans.mutable_alldevicesanswer();
+      auto devices = m_pluginApi->getAllDevices();
+      std::copy(devices.begin(), devices.end(), RepeatedFieldBackInserter(answer->mutable_devices()));
+      send(ans);
+   }
+
    void CIpcAdapter::processKeywordExistsRequest(const toYadoms::KeywordExitsRequest& msg)
    {
       toPlugin::msg ans;
@@ -272,7 +308,7 @@ namespace pluginSystem
 
    void CIpcAdapter::processDeclareDevice(const toYadoms::DeclareDevice& msg) const
    {
-      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> > keywords;
+      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> keywords;
       for (auto keyword = msg.keywords().begin(); keyword != msg.keywords().end(); ++keyword)
          keywords.push_back(boost::make_shared<CFromPluginHistorizer>(*keyword));
 
@@ -316,7 +352,7 @@ namespace pluginSystem
 
    void CIpcAdapter::processHistorizeData(const toYadoms::HistorizeData& msg) const
    {
-      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> > dataVect;
+      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> dataVect;
       for (auto value = msg.value().begin(); value != msg.value().end(); ++value)
       {
          dataVect.push_back(boost::make_shared<CFromPluginHistorizer>(value->historizable(), value->formattedvalue()));
@@ -324,12 +360,90 @@ namespace pluginSystem
       m_pluginApi->historizeData(msg.device(), dataVect);
    }
 
-   void CIpcAdapter::processDeveloperModeRequest(const toYadoms::DeveloperModeRequest& msg)
+   void CIpcAdapter::processYadomsInformationRequest(const toYadoms::YadomsInformationRequest& msg)
    {
       toPlugin::msg ans;
-      auto answer = ans.mutable_developermodeanswer();
-      answer->set_enabled(m_pluginApi->isDeveloperMode());
+      auto answer = ans.mutable_yadomsinformationanswer();
+      auto yadomsInformation = m_pluginApi->getYadomsInformation();
+      answer->set_developpermode(yadomsInformation->developperMode());
+      answer->set_version(yadomsInformation->version());
+
+      switch (yadomsInformation->releaseType())
+      {
+      case shared::versioning::EReleaseType::kStableValue: answer->set_releasetype(toPlugin::YadomsInformationAnswer_EReleaseType_Stable);
+         break;
+      case shared::versioning::EReleaseType::kReleaseCandidateValue: answer->set_releasetype(toPlugin::YadomsInformationAnswer_EReleaseType_ReleaseCandidate);
+         break;
+      case shared::versioning::EReleaseType::kBetaValue: answer->set_releasetype(toPlugin::YadomsInformationAnswer_EReleaseType_Beta);
+         break;
+      default:
+         answer->set_releasetype(toPlugin::YadomsInformationAnswer_EReleaseType_Beta);
+         break;
+      }
+
+      auto location = answer->mutable_location();
+      location->set_longitude(yadomsInformation->location()->longitude());
+      location->set_latitude(yadomsInformation->location()->latitude());
+      location->set_altitude(yadomsInformation->location()->altitude());
       send(ans);
+   }
+
+   void CIpcAdapter::processRemoveDeviceRequest(const toYadoms::RemoveDevice& msg) const
+   {
+      m_pluginApi->removeDevice(msg.device());
+   }
+
+   void CIpcAdapter::processRemoveKeywordRequest(const toYadoms::RemoveKeyword& msg) const
+   {
+      m_pluginApi->removeKeyword(msg.device(),
+                                 msg.keyword());
+   }
+
+   void CIpcAdapter::processAllKeywordsRequest(const toYadoms::AllKeywordsRequest& msg)
+   {
+      toPlugin::msg ans;
+      auto answer = ans.mutable_allkeywordsanswer();
+      auto keywords = m_pluginApi->getAllKeywords(msg.device());
+      std::copy(keywords.begin(), keywords.end(), RepeatedFieldBackInserter(answer->mutable_keywords()));
+      send(ans);
+   }
+
+   void CIpcAdapter::processDeclareKeywords(const toYadoms::DeclareKeywords& msg) const
+   {
+      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> keywords;
+      for (auto keyword = msg.keywords().begin(); keyword != msg.keywords().end(); ++keyword)
+         keywords.push_back(boost::make_shared<CFromPluginHistorizer>(*keyword));
+
+      m_pluginApi->declareKeywords(msg.device(),
+                                   keywords);
+   }
+
+   void CIpcAdapter::processDeviceModelRequest(const toYadoms::DeviceModelRequest& msg)
+   {
+      toPlugin::msg ans;
+      auto answer = ans.mutable_devicemodelanswer();
+      answer->set_model(m_pluginApi->getDeviceModel(msg.device()));
+      send(ans);
+   }
+
+   void CIpcAdapter::processUpdateDeviceModel(const toYadoms::UpdateDeviceModel& msg) const
+   {
+      m_pluginApi->updateDeviceModel(msg.device(),
+                                     msg.model());
+   }
+
+   void CIpcAdapter::processDeviceConfigurationRequest(const toYadoms::DeviceConfigurationRequest& msg)
+   {
+      toPlugin::msg ans;
+      auto answer = ans.mutable_deviceconfigurationanswer();
+      answer->set_configuration(m_pluginApi->getDeviceConfiguration(msg.device()).serialize());
+      send(ans);
+   }
+
+   void CIpcAdapter::processUpdateDeviceConfiguration(const toYadoms::UpdateDeviceConfiguration& msg) const
+   {
+      m_pluginApi->updateDeviceConfiguration(msg.device(),
+                                             shared::CDataContainer(msg.configuration()));
    }
 
    void CIpcAdapter::postStopRequest()
@@ -366,7 +480,7 @@ namespace pluginSystem
       auto message = req.mutable_bindingquery();
       message->set_query(request->getData().getQuery());
 
-      bool success;
+      auto success = false;
       std::string result;
 
       try
@@ -393,6 +507,48 @@ namespace pluginSystem
          request->sendError(result);
    }
 
+   void CIpcAdapter::postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request)
+   {
+      toPlugin::msg req;
+      auto message = req.mutable_deviceconfigurationschemarequest();
+      message->set_device(request->device());
+
+      auto success = false;
+      std::string result;
+
+      try
+      {
+         send(req,
+              [&](const toYadoms::msg& ans) -> bool
+              {
+                 return ans.has_deviceconfigurationschemaanswer();
+              },
+              [&](const toYadoms::msg& ans) -> void
+              {
+                 success = ans.deviceconfigurationschemaanswer().success();
+                 result = ans.deviceconfigurationschemaanswer().result();
+              });
+      }
+      catch (std::exception& e)
+      {
+         request->sendError((boost::format("Plugin doesn't answer to device configuration schema request : %1%") % e.what()).str());
+      }
+
+      if (success)
+         request->sendSuccess(shared::CDataContainer(result));
+      else
+         request->sendError(result);
+   }
+
+   void CIpcAdapter::postSetDeviceConfiguration(boost::shared_ptr<const shared::plugin::yPluginApi::ISetDeviceConfiguration>& command)
+   {
+      toPlugin::msg msg;
+      auto message = msg.mutable_setdeviceconfiguration();
+      message->set_device(command->device());
+      message->set_configuration(command->configuration().serialize());
+      send(msg);
+   }
+
    void CIpcAdapter::postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand)
    {
       toPlugin::msg msg;
@@ -403,13 +559,38 @@ namespace pluginSystem
       send(msg);
    }
 
-   void CIpcAdapter::postExtraCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> extraCommand)
+   void CIpcAdapter::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery)
    {
-      toPlugin::msg msg;
-      auto message = msg.mutable_extracommand();
-      message->set_command(extraCommand->getCommand());
-      message->set_data(extraCommand->getData().serialize());
-      send(msg);
+      toPlugin::msg req;
+      auto message = req.mutable_extraquery();
+      message->set_query(extraQuery->getData().query());
+      message->set_data(extraQuery->getData().data().serialize());
+
+      auto success = false;
+      std::string result;
+
+      try
+      {
+         send(req,
+              [&](const toYadoms::msg& ans) -> bool
+              {
+                 return ans.has_extraqueryanswer();
+              },
+              [&](const toYadoms::msg& ans) -> void
+              {
+                 success = ans.extraqueryanswer().success();
+                 result = ans.extraqueryanswer().result();
+              });
+      }
+      catch (std::exception& e)
+      {
+         extraQuery->sendError((boost::format("Plugin doesn't answer to extra query : %1%") % e.what()).str());
+      }
+
+      if (success)
+         extraQuery->sendSuccess(shared::CDataContainer(result));
+      else
+         extraQuery->sendError(result);
    }
 
    void CIpcAdapter::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request)
@@ -419,7 +600,7 @@ namespace pluginSystem
       message->set_name(request->getData().getDeviceName());
       message->set_configuration(request->getData().getConfiguration().serialize());
 
-      bool success;
+      auto success = false;
       std::string result;
 
       try
@@ -448,5 +629,14 @@ namespace pluginSystem
          request->sendError(result);
    }
 
+   void CIpcAdapter::postDeviceRemoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event)
+   {
+      toPlugin::msg msg;
+      auto message = msg.mutable_deviceremoved();
+      message->set_device(event->device());
+      message->set_details(event->details().serialize());
+      send(msg);
+   }
 } // namespace pluginSystem
+
 

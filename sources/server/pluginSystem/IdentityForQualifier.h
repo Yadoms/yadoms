@@ -47,7 +47,7 @@ namespace pluginSystem
       /// \brief	   Release type getter
       /// \return    Plugin release type
       //--------------------------------------------------------------
-      const shared::versioning::EReleaseType getReleaseType() const;
+      shared::versioning::EReleaseType getReleaseType() const;
 
    private:
       const std::string m_type;

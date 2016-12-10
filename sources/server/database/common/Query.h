@@ -57,6 +57,7 @@ namespace database { namespace common {
          kDelete,
          kDrop,
          kCreate,
+         kAlter,
          kVacuum
       };
 
@@ -610,6 +611,14 @@ namespace database { namespace common {
       /// \return             A reference to itself to allow method chaining
       //   
       CQuery & DropTable(const database::common::CDatabaseTable & tableName);
+      
+      //
+      /// \brief              add a column to a table
+      /// \param  tableName   the table name to alter
+      /// \param  columnDefinition   the column definition
+      /// \return             A reference to itself to allow method chaining
+      //   
+      CQuery & AddTableColumn(const database::common::CDatabaseTable & tableName, const std::string & columnDefinition);
 
       //
       /// \brief              get the query type

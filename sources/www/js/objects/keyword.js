@@ -4,7 +4,7 @@
  * Creates an instance of Keyword
  * @constructor
  */
-function Keyword(id, deviceId, capacityName, accessMode, name, friendlyName, type, units, details, typeInfo) {
+function Keyword(id, deviceId, capacityName, accessMode, name, friendlyName, type, units, details, typeInfo, blacklist) {
    assert(!isNullOrUndefined(id), "id of a Keyword must be defined");
    assert(!isNullOrUndefined(deviceId), "deviceId of a Keyword must be defined");
    assert(!isNullOrUndefined(capacityName), "capacityName of a Keyword must be defined");
@@ -13,6 +13,7 @@ function Keyword(id, deviceId, capacityName, accessMode, name, friendlyName, typ
    assert(!isNullOrUndefined(friendlyName), "friendlyName of a Keyword must be defined");
    assert(!isNullOrUndefined(type), "type of a Keyword must be defined");
    assert(!isNullOrUndefined(units), "units of a Keyword must be defined");
+   assert(!isNullOrUndefined(blacklist), "blacklist of a Keyword must be defined");
 
    this.id = id;
    this.deviceId = deviceId;
@@ -24,6 +25,7 @@ function Keyword(id, deviceId, capacityName, accessMode, name, friendlyName, typ
    this.units = units;
    this.details = details;
    this.typeInfo = typeInfo;
+   this.blacklist = blacklist;
 }
 
 Keyword.prototype.toJSON = function () {
@@ -37,7 +39,8 @@ Keyword.prototype.toJSON = function () {
       type: this.type,
       units: this.units,
       details: this.details,
-      typeInfo : this.typeInfo
+      typeInfo : this.typeInfo,
+	  blacklist : this.blacklist
    };
 };
 

@@ -101,6 +101,7 @@
         "customization": {
             "addNewPage": "Ajouter une nouvelle page",
             "addNewWidget": "Ajouter un nouveau widget",
+			"dropHereToMovePage": "Glisser ici pour délpacer sur la page __pageName__",
             "moveToLeft": "Déplacer à gauche",
             "moveToRight": "Déplacer à droite",
             "rename": "Renommer",
@@ -198,10 +199,8 @@
       "errorDuringGettingPluginTypes": "Erreur lors de la récupération de la liste des types de plugins"
     },
     "delete-device": {
-      "title": "Confirmation de l'historique de l'équipement",
-      "text": "Cette opération va supprimer l'historique associé à l'équipement __deviceName__. Voulez-vous continuer ?",
-      "checkDeleteDevice": "Supprimer l'équipement",
-      "checkDeleteDeviceNote": "Attention, l'équipement sera re-créé si Yadoms reçoit à nouveau un message provenant du capteur associé."
+      "title": "Suppression d'un équipement",
+      "text": "Cette opération va supprimer l'équipement __deviceName__ ainsi que son historique de données. Voulez-vous continuer ?"
     },
     "configure-plugin": {
       "title": "Configuration du plugin",
@@ -215,15 +214,20 @@
       "pluginFailToDelete": "Impossible de supprimer le plugin __pluginName__",
       "pluginFailToConfigure": "Impossible de configurer le plugin __pluginName__"
     },
-    "extra-commands" : {
-      "title": "Envoi d'une extra commande au plugin"
+    "extra-queries" : {
+      "title": "Envoi d'une extra requête au plugin"
     },
     "configure-device": {
       "title": "Configuration de l'équipement",
       "friendlyName-configuration": {
         "name": "Nom",
         "description": "Nom l'équipement",
-        "regexErrorMessage": "Le nom de l'équipement doit contenir au minimum 1 caractère"
+        "regexErrorMessage": "Le nom de l'équipement doit être renseigné"
+      },
+      "model-configuration": {
+        "name": "Modèle",
+        "description": "Modèle de l'équipement",
+        "regexErrorMessage": "Vous permet d'identifier l'équipement"
       }
     },
     "configure-keyword": {
@@ -420,10 +424,14 @@
           },
           "configure": "Configuration de l'équipement",
           "delete": "Suppression de l'équipement",
+		    "restore" : "Restauration de l'équipement",
           "errorGettingDeviceList": "Erreur lors de la récupération de la liste des équipements",
           "errorGettingDeviceDetailsList": "Erreur lors de la récupération des détails de l'équipement",
-          "errorUpdatingKeyword": "Erreur lors de la la mise à jour de la donnée __keyword__",
-          "noAcquisition": "Aucune acquisition"
+          "errorUpdatingKeyword": "Erreur lors de la mise à jour de la donnée __keyword__",
+          "errorBlacklistingDevice": "Erreur lors de la suppression/restauration de l'équipement __device__",
+          "errorBlacklistingKeyword": "Erreur lors de la suppression/restauration de la donnée __keyword__",
+          "noAcquisition": "Aucune acquisition",
+		  "showBlacklistedDevices" : "Afficher les équipements supprimés"
         },
         "automation-center": {
           "title": "Centre d'automatisation",
@@ -482,7 +490,9 @@
             "title": "Mise à jour de Yadoms",
             "currentVersion": "Version courante",
             "availableVersion": "Version disponible",
-            "update": "Mise à jour de Yadoms"
+            "update": "Mise à jour de Yadoms",
+			"updating": "Mise à jour de Yadoms en cours. Merci de patienter ...",
+			"waitingExit": "Arrêt de Yadoms en cours. Merci de patienter ..."
           },
           "generic": {
             "name": "Nom",
@@ -507,12 +517,15 @@
           "widgets": {
             "title": "Widgets"
           },
-          "script-interpreters": {
+          "scriptInterpreters": {
             "title": "Interpréteur de règle"
           }
         },
         "maintenance": {
           "title": "Maintenance",
+  		  "database": {
+			 "title": "Base de données"
+		  },		  
           "type" : "Moteur de base de données",
           "size" : "Taille",
           "version" : "Version",
@@ -935,6 +948,18 @@
         "deployFailed": "Erreur lors du déploiement du widget",
         "finalize": "Finalisation...",
         "success": "Succès"
+      },
+      "scriptInterpreter": {
+        "install": "Installation d'un interpréteur de scripts ...",
+        "update": "Mise à jour d'un interpréteur de scripts ...",
+        "remove": "Suppression d'un interpréteur de scripts ...",
+        "removeFailed": "Erreur lors de la suppresion d'un interpréteur de scripts",
+        "download": "Téléchargement d'un interpréteur de scripts ...",
+        "downloadFailed": "Erreur lors du téléchargement d'un interpréteur de scripts",
+        "deploy": "Déploiement d'un interpréteur de scripts ...",
+        "deployFailed": "Erreur lors du déploiement  d'un interpréteur de scripts",
+        "finalize": "Finalisation ...",
+        "success": "Succès"
       }
     },
     "task": {
@@ -948,7 +973,8 @@
     "yadomsUpdate": "Mise à jour de yadoms"
   },
   "initialization": {
-    "homePage": "Accueil"
+    "homePage": "Accueil",
+    "loading" : "Yadoms est en cours de chargement..."
   },
   "inProgress": "Développement en cours...",
   "data": {

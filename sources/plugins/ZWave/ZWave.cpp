@@ -5,6 +5,11 @@
 #include "ZWaveControllerFactory.h"
 #include "KeywordContainer.h"
 #include "ZWaveInternalState.h"
+#include <Poco/Thread.h>
+#include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
+#include <shared/plugin/yPluginApi/IDeviceRemoved.h>
+#include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
+#include "OpenZWaveHelpers.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -80,44 +85,64 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                }
                break;
             }
-            case yApi::IYPluginApi::kEventExtraCommand:
+            case yApi::IYPluginApi::kGetDeviceConfigurationSchemaRequest:
+            {
+               // Yadoms ask for device configuration schema
+               // Schema can come from package.json, or built by code. In this example,
+               // we just take the schema from package.json, in case of configuration is supported by device.
+               auto deviceConfigurationSchemaRequest = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest> >();
+               shared::CDataContainer schema = m_controller->getNodeConfigurationSchema(deviceConfigurationSchemaRequest->device());
+               deviceConfigurationSchemaRequest->sendSuccess(schema);
+               break;
+            }
+
+            case yApi::IYPluginApi::kSetDeviceConfiguration:
+            {
+               // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
+               auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration> >();
+               m_controller->setNodeConfiguration(deviceConfiguration->device(), deviceConfiguration->configuration());
+               break;
+            }
+
+            case yApi::IYPluginApi::kEventExtraQuery:
             {
                // Command was received from Yadoms
-               auto extraCommand = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IExtraCommand> >();
+               auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery> >();
 
-               if (extraCommand)
+               if (extraQuery)
                {
-                  std::cout << "Extra command received : " << extraCommand->getCommand() << std::endl;
+                  std::cout << "Extra command received : " << extraQuery->getData().query() << std::endl;
 
-                  if (extraCommand->getCommand() == "inclusionMode")
+                  if (extraQuery->getData().query() == "inclusionMode")
                   {
                      m_controller->startInclusionMode();
                   }
-                  else if (extraCommand->getCommand() == "exclusionMode")
+                  else if (extraQuery->getData().query() == "exclusionMode")
                   {
                      m_controller->startExclusionMode();
                   }
-                  else if (extraCommand->getCommand() == "hardReset")
+                  else if (extraQuery->getData().query() == "hardReset")
                   {
                      m_controller->hardResetController();
                   }
-                  else if (extraCommand->getCommand() == "softReset")
+                  else if (extraQuery->getData().query() == "softReset")
                   {
                      m_controller->softResetController();
                   }
-                  else if (extraCommand->getCommand() == "testNetwork")
+                  else if (extraQuery->getData().query() == "testNetwork")
                   {
-                     m_controller->testNetwork(extraCommand->getData().get<int>("frameCount"));
+                     m_controller->testNetwork(extraQuery->getData().data().get<int>("frameCount"));
                   }
-                  else if (extraCommand->getCommand() == "healNetowrk")
+                  else if (extraQuery->getData().query() == "healNetowrk")
                   {
                      m_controller->healNetwork();
                   }
-                  else if (extraCommand->getCommand() == "cancelCommand")
+                  else if (extraQuery->getData().query() == "cancelCommand")
                   {
                      m_controller->cancelCurrentCommand();
                   }
                }
+               extraQuery->sendSuccess(shared::CDataContainer());
                break;
             }
 
@@ -148,10 +173,7 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                {
                   auto deviceData = api->getEventHandler().getEventData<shared::CDataContainer>();
                   if (!api->deviceExists(deviceData.get<std::string>("name")))
-                     api->declareDevice(deviceData.get<std::string>("name"),
-                        deviceData.get<std::string>("friendlyName"),
-                        std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(),
-                        deviceData.get<shared::CDataContainer>("details"));
+                     api->declareDevice(deviceData.get<std::string>("name"),  deviceData.get<std::string>("friendlyName"),  std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(), deviceData.get<shared::CDataContainer>("details"));
                }
                catch (shared::exception::CException& ex)
                {
@@ -197,6 +219,40 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
             break;
 
+            case kUpdateConfiguration:
+            {
+               //This case is used, when the device itself send a new configuration value (maybe after reset,...)
+               try
+               {
+                  auto keywordData = api->getEventHandler().getEventData<boost::shared_ptr<CKeywordContainer> >();
+                  std::cout << "Update configuration..." << keywordData->getKeyword()->getKeyword() << " : " << keywordData->getKeyword()->formatValue() << std::endl;
+                  
+                  //get the acual device configuration
+                  auto config = api->getDeviceConfiguration(keywordData->getDeviceId());
+
+                  //update the value of the event keyword
+                  m_controller->updateNodeConfiguration(keywordData->getDeviceId(), keywordData->getKeyword()->getKeyword(), keywordData->getKeyword()->formatValue(), config);
+
+                  //update device config in database
+                  api->updateDeviceConfiguration(keywordData->getDeviceId(), config);
+
+               }
+               catch (shared::exception::CException& ex)
+               {
+                  std::cerr << "Fail to update keyword : " << ex.what() << std::endl;
+               }
+               catch (std::exception& ex)
+               {
+                  std::cerr << "Fail to update keyword. exception : " << ex.what() << std::endl;
+               }
+               catch (...)
+               {
+                  std::cerr << "Fail to update keyword. unknown exception" << std::endl;
+               }
+            }
+            break;
+
+
             case kInternalStateChange:
             {
                auto s = EZWaveInteralState(api->getEventHandler().getEventData<std::string>());
@@ -205,7 +261,16 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                {
                case EZWaveInteralState::kCompletedValue:
                case EZWaveInteralState::kRunningValue:
-                  api->setPluginState(yApi::historization::EPluginState::kRunning);
+                  {
+                     api->setPluginState(yApi::historization::EPluginState::kRunning);
+
+                     auto & list = m_controller->getNodeList();
+                     for (auto i = list.begin(); i != list.end(); ++i)
+                     {
+                        std::string device = COpenZWaveHelpers::GenerateDeviceId((*i)->getHomeId(), (*i)->getNodeId());
+                        api->updateDeviceConfiguration(device, (*i)->getConfigurationValues());
+                     }
+                  }
                   break;
                default:
                   api->setPluginState(yApi::historization::EPluginState::kCustom, s.toString());

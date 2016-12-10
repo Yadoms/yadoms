@@ -202,7 +202,7 @@ namespace update {
          //progress is the progression of pure download (from 0 to 100)
          //so the download progress, will update the task progression between min and max
          float fullProgression = min + (((max - min) / 100.0f) * progress);
-         callback(true, fullProgression, function, shared::CStringExtension::EmptyString, callbackData);
+         callback(true, fullProgression, function, std::string(), callbackData);
       }
 
    } // namespace worker

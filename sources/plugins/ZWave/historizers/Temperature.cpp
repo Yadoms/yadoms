@@ -4,10 +4,8 @@
 
 namespace historizers
 {
-   CTemperature::CTemperature(const std::string& name,
-                              shared::plugin::yPluginApi::EKeywordAccessMode accessMode)
-      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CTemperature>(name,
-                                                                                                                             accessMode))
+   CTemperature::CTemperature(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CDecimalTypeInfo &ti)
+      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CTemperature>(name, accessMode, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti))
    {
    }
 
@@ -15,16 +13,14 @@ namespace historizers
    {
    }
 
-   void CTemperature::setWithUnits(double value,
-                                   const std::string& unit)
+   void CTemperature::setWithUnits(double value, const std::string& unit)
    {
       if (isUnitFahrenheit(unit))
          setFahrenheit(value);
       else
       {
          //default behavior
-         COpenZWaveSingleHistorizableData<double>::setWithUnits(value,
-                                                                unit);
+         COpenZWaveSingleHistorizableData<double>::setWithUnits(value, unit);
       }
    }
 

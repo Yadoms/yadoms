@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "BasicAuthentication.h"
 #include <shared/Log.h>
-#include <shared/StringExtension.h>
-#include <Poco/URI.h>
 #include <Poco/MD5Engine.h>
 
 
@@ -80,8 +78,8 @@ namespace authentication {
          boost::shared_ptr<database::entities::CConfiguration> currentConfig = m_configurationManager->getConfiguration(m_configurationSection, m_configurationName);
          
          m_isAuthenticationActive = false;
-         m_currentAuthenticationUsername = shared::CStringExtension::EmptyString;
-         m_currentAuthenticationPassword = shared::CStringExtension::EmptyString;
+         m_currentAuthenticationUsername = std::string();
+         m_currentAuthenticationPassword = std::string();
 
          if (currentConfig)
          {
@@ -116,8 +114,8 @@ namespace authentication {
       {
          YADOMS_LOG(warning) << "Can not find configuration item : system.basicAuthentication, disable authentication";
          m_isAuthenticationActive = false;
-         m_currentAuthenticationUsername = shared::CStringExtension::EmptyString;
-         m_currentAuthenticationPassword = shared::CStringExtension::EmptyString;
+         m_currentAuthenticationUsername = std::string();
+         m_currentAuthenticationPassword = std::string();
       }
    }
 

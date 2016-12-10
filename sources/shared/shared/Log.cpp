@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Log.h"
 #include "logInternal/LogStreamEnhanced.h"
-#include "StringExtension.h"
 
 namespace shared
 {
@@ -15,12 +14,12 @@ namespace shared
    
    boost::shared_ptr<logInternal::ILogStream> CLog::logStream()
    {
-      return boost::shared_ptr<logInternal::ILogStream>(new logInternal::CLogStreamEnhanced(m_logger));
+      return boost::make_shared<logInternal::CLogStreamEnhanced>(m_logger);
    }
 
    void CLog::setThreadName(const std::string & name)
    {
-      std::map<Poco::Thread::TID, std::string>::iterator i = m_threadNames.find(Poco::Thread::currentTid());
+      auto i = m_threadNames.find(Poco::Thread::currentTid());
       if (i != m_threadNames.end())
          m_threadNames.erase(i);
          
@@ -29,9 +28,10 @@ namespace shared
 
    const std::string & CLog::getCurrentThreadName()
    {
-      std::map<Poco::Thread::TID, std::string>::iterator i = m_threadNames.find(Poco::Thread::currentTid());
+      auto i = m_threadNames.find(Poco::Thread::currentTid());
       if (i != m_threadNames.end())
          return i->second;
-      return CStringExtension::EmptyString;
+      static const std::string emptyString;
+      return emptyString;
    }
 } // namespace shared
