@@ -128,6 +128,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kAnswerTimeout:
          {
+            m_waitForAnswerTimer->stop();
             std::cerr << "No answer received, try to reconnect in a while..." << std::endl;
             errorProcess(api);
             break;
@@ -150,6 +151,7 @@ void CTeleInfo::createConnection(boost::shared_ptr<yApi::IYPluginApi> api)
                                             m_receiveBufferHandler,
                                             kEvtPortConnection);
    m_port->start();
+   m_waitForAnswerTimer->start();
 }
 
 void CTeleInfo::destroyConnection()
