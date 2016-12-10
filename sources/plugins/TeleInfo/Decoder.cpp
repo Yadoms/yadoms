@@ -24,7 +24,7 @@ CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
      m_deviceCreated(false),
      m_optarif(OP_NOT_DEFINED)
 {
-   m_isdeveloperMode = api->isDeveloperMode();
+   m_isdeveloperMode = api->getYadomsInformation()->developperMode();
 }
 
 CDecoder::~CDecoder()
