@@ -5,7 +5,6 @@
 #include <shared/communication/PortException.hpp>
 #include "TeleInfoFactory.h"
 
-
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -15,10 +14,9 @@ namespace yApi = shared::plugin::yPluginApi;
 
 IMPLEMENT_PLUGIN(CTeleInfo)
 
-
 CTeleInfo::CTeleInfo():
    m_isDeveloperMode(false),
-   m_runningState(false)
+   m_runningState(ETeleInfoPluginState::kUndefined)
 {
 }
 
@@ -72,12 +70,14 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             std::cout << "Stop requested" << std::endl;
             api->setPluginState(yApi::historization::EPluginState::kStopped);
+            m_runningState = kStop;
             return;
          }
       case kEvtPortConnection:
          {
             std::cout << "Teleinfo plugin :  Port Connection" << std::endl;
             api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+            m_runningState = kConnecting;
 
             if (api->getEventHandler().getEventData<bool>())
                processTeleInfoConnectionEvent(api);
@@ -96,7 +96,13 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                                 api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::string>>>());
 
             if (m_decoder->isERDFCounterDesactivated())
-               api->setPluginState(yApi::historization::EPluginState::kCustom, "ErDFCounterdesactivated");
+            {
+               if (m_runningState != kErDFCounterdesactivated)
+               {
+                  api->setPluginState(yApi::historization::EPluginState::kCustom, "ErDFCounterdesactivated");
+                  m_runningState = kErDFCounterdesactivated;
+               }
+            }
 
 			//Lauch a new time the time out to detect connexion failure
 			m_waitForAnswerTimer->start();
@@ -105,6 +111,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
+            m_runningState = kupdateConfiguration;
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
             onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
             api->setPluginState(yApi::historization::EPluginState::kRunning);
@@ -182,11 +189,10 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    m_decoder->decodeTeleInfoMessage(api, messages);
 
-   auto newState = true;
-   if (m_runningState != newState)
+   if (m_runningState != kRunning)
    {
       api->setPluginState(yApi::historization::EPluginState::kRunning);
-      m_runningState = true;
+      m_runningState = kRunning;
    }
 }
 

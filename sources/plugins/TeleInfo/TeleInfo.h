@@ -110,9 +110,24 @@ private:
    //--------------------------------------------------------------
    bool m_isDeveloperMode;
 
+   //-----------------------------------------------------
+   ///\brief The plugin state
+   //-----------------------------------------------------
+
+   enum ETeleInfoPluginState
+   {
+      kUndefined = 0,
+      kStop,
+      kConnecting,
+      kConnectionLost,
+      kErDFCounterdesactivated,
+      kupdateConfiguration,
+      kRunning
+   };
+
    //--------------------------------------------------------------
    /// \brief	The plugin state
    //--------------------------------------------------------------
-   bool m_runningState;
+   ETeleInfoPluginState m_runningState;
 };
 
