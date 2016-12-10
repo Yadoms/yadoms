@@ -82,8 +82,12 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             if (api->getEventHandler().getEventData<bool>())
                processTeleInfoConnectionEvent(api);
             else
+            {
                processTeleInfoUnConnectionEvent(api);
 
+               // attempt a new connection
+               api->getEventHandler().createTimer(kErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
+            }
             break;
          }
       case kEvtPortDataReceived:
