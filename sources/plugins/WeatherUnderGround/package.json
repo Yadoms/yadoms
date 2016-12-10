@@ -341,11 +341,9 @@
    "manuallyDeviceCreationConfigurationSchema": {
          "LiveStations" : {				 
              "type" : "enum",
-             "values": {
-                "__Binding__" : {
-                  "type" : "plugin", 
-                  "query" : "LiveStations"
-               }
+             "__Binding__" : {
+               "type" : "plugin", 
+               "query" : "LiveStations"
             }
          },
          "deviceToCreate":

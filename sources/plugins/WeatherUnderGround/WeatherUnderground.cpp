@@ -113,6 +113,10 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 		  //TODO : A remplir !
 		  auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
 		  std::cout << "Manually device creation request received for device :" << request->getData().getDeviceName() << std::endl;
+
+        //Display the configuration
+        request->getData().getConfiguration().printToLog(std::cout);
+
 		  break;
 	  }
 	  case yApi::IYPluginApi::kEventDeviceRemoved:
@@ -125,15 +129,54 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 	  case yApi::IYPluginApi::kBindingQuery:
 	  {
 		  // Yadoms ask for a binding query 
-		  try {
-			auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
+        auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
 
+		  try {
 			if (data->getData().getQuery() == "LiveStations")
 			{
-				// TODO : A remplir !
-				// Prévoir le cas où il n'y a pas possibilité d'interrogation (liaison coupée, pas de stations proches, ...)
-				shared::CDataContainer results;
-				data->sendSuccess(results);
+				// Create the station list
+				std::vector<shared::CDataContainer>::const_iterator iterStations;
+            int counter = 1;
+            shared::CDataContainer value;
+            shared::CDataContainer stations;
+
+            try {
+               for (iterStations = forecastStations.begin(); iterStations != forecastStations.end(); ++iterStations)
+               {
+                  std::string city = (*iterStations).get<std::string>("city");
+
+                  // Only filled elements are copied
+                  if (city != "")
+                     stations.set(boost::lexical_cast<std::string>(counter + 1), city + " " + (*iterStations).get<std::string>("country"));
+
+                  ++counter;
+
+                  /* return format :
+                  -city :
+                  -state :
+                  -country :
+                  -icao :
+                  -lat :
+                  -lon :
+                  */
+               }
+            }
+            catch (std::exception& e)
+            {
+               std::cout << "exception " << e.what() << std::endl;
+               std::cout << "No Stations return in binding" << std::endl;
+
+               // reset values
+               shared::CDataContainer defaultReturn;
+               stations.initializeWith(defaultReturn);
+            }
+
+            value.set("required", "true");
+            value.set("type", "enum");
+            value.set("values", stations);
+            value.set("defaultValue", "1");
+
+				data->sendSuccess(value);
 			}
 			else
 			{
@@ -142,9 +185,12 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 				std::cerr << errorMessage << std::endl;
 			}
 		  }
-		  catch (shared::exception::CException &e)
+		  catch (std::exception& e)
 		  {
-			std::cout << "Unknow error : " << e.what() << std::endl;
+           std::string errorMessage("Unknow error : ");
+           errorMessage += e.what();
+           std::cout << errorMessage;
+           data->sendError(errorMessage);
 		  }
 		  break;
 	  }
@@ -296,15 +342,21 @@ shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yAp
 }
 
 std::vector<shared::CDataContainer> CWeatherUnderground::getAllStations(boost::shared_ptr<yApi::IYPluginApi> api,
-														   boost::shared_ptr<const shared::ILocation> location,
-														   const std::string& apikey)
+														                boost::shared_ptr<const shared::ILocation> location,
+														                const std::string& apikey)
 {
 	int nbRetry = 0;
-	auto response =  SendUrlRequest(api, "http://api.wunderground.com/api/" + apikey + "/geolookup/q/" + std::to_string(location->latitude()) + "," + std::to_string(location->longitude()) + ".json", 0, nbRetry);
-	
-	response.printToLog(std::cout);
+	shared::CDataContainer response;
+	std::vector<shared::CDataContainer> stations;
 
-	auto stations = response.get<std::vector<shared::CDataContainer> >("location.station");
+	try 
+	{
+		response = SendUrlRequest(api, "http://api.wunderground.com/api/" + apikey + "/geolookup/q/" + std::to_string(location->latitude()) + "," + std::to_string(location->longitude()) + ".json", 0, nbRetry);
+		response.printToLog(std::cout);
+		stations = response.get<std::vector<shared::CDataContainer>>("location.nearby_weather_stations.airport.station");
+	}
+	catch (std::exception)
+	{}
 
 	return stations;
 }

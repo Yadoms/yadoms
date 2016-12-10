@@ -14,6 +14,8 @@ set(WUNDERGROUND_SOURCES
    ForecastDays.cpp
    ForecastDays.h
    IWUConfiguration.h
+   LiveStations.cpp
+   LiveStations.h
    NoStateException.hpp
    RequestErrorException.hpp
    stdafx.h

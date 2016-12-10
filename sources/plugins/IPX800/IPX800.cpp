@@ -98,7 +98,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
                // Retrieve event information, if any !
                try { forceRefresh = api->getEventHandler().getEventData<bool>(); }
-               catch (shared::exception::CBadConversion&) { std::cout << "Bad dynamic cast" << std::endl; } // TODO : Voir tests CDataContainer
+               catch (shared::exception::CBadConversion&) { std::cout << "Bad dynamic cast" << std::endl; }
                catch (shared::exception::CNullReference&) { std::cout << "Null reference" << std::endl; }
 
                m_ioManager->readAllIOFromDevice(api, forceRefresh);
