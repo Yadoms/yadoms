@@ -18,6 +18,7 @@ message Information {
 	required bool supportManuallyCreatedDevice = 9;
 	required string packageFileContent = 10;
 	required string path = 11;
+	required bool supportDeviceRemovedNotification = 12;
 }
 
 message Init {

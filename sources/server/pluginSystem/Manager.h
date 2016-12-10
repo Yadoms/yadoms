@@ -13,10 +13,12 @@
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceCommand.h>
-#include <shared/plugin/yPluginApi/IExtraCommand.h>
+#include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include <shared/plugin/yPluginApi/historization/PluginState.h>
 #include "InstanceRemover.h"
 #include <IPathProvider.h>
+#include <server/communication/callback/ISynchronousCallback.h>
+#include <shared/ILocation.h>
 
 namespace pluginSystem
 {
@@ -32,10 +34,17 @@ namespace pluginSystem
       /// \param [in]   pathProvider            Yadoms paths provider
       /// \param [in]   dataProvider            Database link
       /// \param [in]   dataAccessLayer         The database access layer
+      /// \param [in]   locationProvider        The location provider
       //--------------------------------------------------------------
       CManager(const IPathProvider& pathProvider,
                boost::shared_ptr<database::IDataProvider> dataProvider,
-               boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer);
+               boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
+               boost::shared_ptr<shared::ILocation> locationProvider);
+
+      //--------------------------------------------------------------
+      /// \brief			Destructor
+      //--------------------------------------------------------------
+      virtual ~CManager();
 
       //--------------------------------------------------------------
       /// \brief			Start the manager (try to start all active plugins)
@@ -43,11 +52,6 @@ namespace pluginSystem
       /// \details      This function is blocking until all plugins are started or timeout
       //--------------------------------------------------------------
       void start(const boost::posix_time::time_duration& timeout);
-
-      //--------------------------------------------------------------
-      /// \brief			Destructor
-      //--------------------------------------------------------------
-      virtual ~CManager();
 
       //--------------------------------------------------------------
       /// \brief			Stop all plugin instance
@@ -90,13 +94,13 @@ namespace pluginSystem
       /// \param [in] id   Instance to get the log
       /// \return          The log of the instance, if available (empty string if not)
       //--------------------------------------------------------------
-      std::string getInstanceLog(int id);
+      std::string getInstanceLog(int id) const;
 
       //--------------------------------------------------------------
       /// \brief           Get the plugin instances list
       /// \return          List of instances ID of all known instances, started or not
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<database::entities::CPlugin> > getInstanceList() const;
+      std::vector<boost::shared_ptr<database::entities::CPlugin>> getInstanceList() const;
 
       //--------------------------------------------------------------
       /// \brief           Get the instance configuration
@@ -180,28 +184,48 @@ namespace pluginSystem
       /// \param [in] id         Plugin instance Id
       /// \param [in] command    The command to post
       //--------------------------------------------------------------
-      void postCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const;
+      void postCommand(int id,
+                       boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post an extra command to a device on a specific plugin
       /// \param [in] id         Plugin instance Id
       /// \param [in] command    The command to post
       //--------------------------------------------------------------
-      void postExtraCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command) const;
+      void postExtraQuery(int id,
+                          boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post a manually device creation request to a plugin
       /// \param [in] id         Plugin instance Id
       /// \param [in] request    Request data
       //--------------------------------------------------------------
-      void postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request) const;
+      void postManuallyDeviceCreationRequest(int id,
+                                             boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post a binding query request to a plugin
       /// \param [in] id         Plugin instance Id
       /// \param [in] request    Request data
       //--------------------------------------------------------------
-      void postBindingQueryRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request);
+      void postBindingQueryRequest(int id,
+                                   boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request) const;
+
+      //--------------------------------------------------------------
+      /// \brief                 Post a device configuration schema request to a plugin
+      /// \param [in] deviceId   Device Id
+      /// \param [in] callback   Request callback
+      //--------------------------------------------------------------
+      void postDeviceConfigurationSchemaRequest(int deviceId,
+                                                communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) const;
+
+      //--------------------------------------------------------------
+      /// \brief                       Post a new device configuration to a plugin
+      /// \param [in] deviceId         Device Id
+      /// \param [in] configuration    New device configuration
+      //--------------------------------------------------------------
+      void postSetDeviceConfiguration(int deviceId,
+                                      const shared::CDataContainer& configuration) const;
 
       //--------------------------------------------------------------
       /// \brief                 Start all instances matching the plugin name
@@ -214,6 +238,12 @@ namespace pluginSystem
       /// \param [in] pluginName The plugin name
       //--------------------------------------------------------------
       void stopAllInstancesOfPlugin(const std::string& pluginName);
+
+      //--------------------------------------------------------------
+      /// \brief                 Notify a plugin when a device is removed
+      /// \param [in] deviceId   The removed device ID
+      //--------------------------------------------------------------
+      void notifyDeviceRemoved(int deviceId) const;
 
    private:
       //-----------------------------------------------------
@@ -228,7 +258,7 @@ namespace pluginSystem
       ///\param[out] startedInstanceIds Instances started
       ///\return              true if all instances were successfully started
       //-----------------------------------------------------
-      bool startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin> >& instances,
+      bool startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin>>& instances,
                           std::set<int>& startedInstanceIds);
 
       //-----------------------------------------------------
@@ -247,7 +277,7 @@ namespace pluginSystem
       void startInternalPlugin();
       void stopInternalPlugin();
 
-   
+
       //--------------------------------------------------------------
       /// \brief			The plugin system factory
       //--------------------------------------------------------------
@@ -292,8 +322,10 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			Map of all running instances, and its mutex (key are plugin instance id)
       //--------------------------------------------------------------
-      typedef std::map<int, boost::shared_ptr<IInstance> > PluginInstanceMap;
+      typedef std::map<int, boost::shared_ptr<IInstance>> PluginInstanceMap;
       PluginInstanceMap m_runningInstances;
       mutable boost::recursive_mutex m_runningInstancesMutex;
    };
 } // namespace pluginSystem
+
+

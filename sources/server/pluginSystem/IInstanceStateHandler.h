@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/plugin/yPluginApi/historization/PluginState.h>
-#include <shared/StringExtension.h>
 
 namespace pluginSystem
 {
@@ -22,8 +21,8 @@ namespace pluginSystem
       ///\param    [in]    customMessageData The message data (used as translation parameters). Ignored if state != kCustom or kError.
       //-----------------------------------------------------
       virtual void setState(const shared::plugin::yPluginApi::historization::EPluginState& state,
-                            const std::string& customMessageId = shared::CStringExtension::EmptyString,
-                            const std::string& customMessageData = shared::CStringExtension::EmptyString) = 0;
+                            const std::string& customMessageId = std::string(),
+                            const std::string& customMessageData = std::string()) = 0;
    };
 
 } // namespace pluginSystem

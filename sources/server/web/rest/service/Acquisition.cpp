@@ -139,7 +139,6 @@ namespace web
                      }
                      return CResult::GenerateSuccess(result);
                   }
-                  content.printToLog();
                   return CResult::GenerateError("invalid parameter. Can not retreive keywords in request content");
                }
                return CResult::GenerateError("invalid parameter.");

@@ -2,7 +2,6 @@
 
 #include <shared/DataContainer.h>
 #include <shared/IDataContainable.h>
-#include <shared/StringExtension.h>
 
 namespace web { namespace rest { 
 
@@ -24,7 +23,7 @@ namespace web { namespace rest {
       ///\param [in] data : optionnal additionnal data
       ///\return  the message as shared::CDataContainer format
       //-----------------------------------------
-      static shared::CDataContainer GenerateError(const std::string & errorMessage = shared::CStringExtension::EmptyString, const shared::CDataContainer & data = shared::CDataContainer::EmptyContainer);
+      static shared::CDataContainer GenerateError(const std::string & errorMessage = std::string(), const shared::CDataContainer & data = shared::CDataContainer::EmptyContainer);
 
       //-----------------------------------------
       ///\brief   Generate an error JSON message
@@ -56,7 +55,7 @@ namespace web { namespace rest {
       template<class T>
       static shared::CDataContainer GenerateSuccess(boost::shared_ptr<T> dataContainableObject)
       {
-         return GenerateInternal(true, shared::CStringExtension::EmptyString, dataContainableObject);
+         return GenerateInternal(true, std::string(), dataContainableObject);
       }
 
       //-----------------------------------------

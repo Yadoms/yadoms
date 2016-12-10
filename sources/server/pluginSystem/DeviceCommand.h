@@ -16,7 +16,9 @@ namespace pluginSystem
       ///\param[in] keyword      The target keyword (ex "dim")
       ///\param[in] body         The details of the command (value)
       //-----------------------------------------------------
-      CDeviceCommand(const std::string& targetDevice, const std::string& keyword, const std::string& body);
+      CDeviceCommand(const std::string& targetDevice,
+                     const std::string& keyword,
+                     const std::string& body);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -24,7 +26,7 @@ namespace pluginSystem
       virtual ~CDeviceCommand();
 
       // IDeviceCommand implementation
-      virtual const std::string& getDevice() const;
+      const std::string& getDevice() const override;
       const std::string& getKeyword() const override;
       const std::string& getBody() const override;
       // [END] IDeviceCommand implementation

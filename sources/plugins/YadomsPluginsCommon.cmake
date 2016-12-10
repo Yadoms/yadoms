@@ -7,7 +7,18 @@ MACRO(PLUGIN_SOURCES _targetName)
        string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
        set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG}/plugins/${_targetName} )
    endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
-   add_executable(${_targetName} ${ARGN})
+   
+   FILE(GLOB TRANSLATION_FILES locales/*)
+   source_group(locales locales/*)
+   
+   set(PLUGIN_SOURCE_FILES
+      ${ARGN}
+      package.json
+      ${TRANSLATION_FILES}
+      )
+      
+   add_executable(${_targetName} ${PLUGIN_SOURCE_FILES})
+   project(${_targetName})
 	
 	IF(MSVC OR XCODE)
 		SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "plugins")

@@ -121,6 +121,8 @@ namespace database
          ((FriendlyName)(std::string))
          ((Model)(std::string))
          ((Details)(shared::CDataContainer))
+         ((Configuration)(shared::CDataContainer))
+         ((Blacklist)(bool))
       )
 
       DECLARE_ENTITY_CLASS_HEADER(Keyword,
@@ -135,6 +137,7 @@ namespace database
          ((TypeInfo)(shared::CDataContainer))
          ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType))
          ((Details)(shared::CDataContainer))
+         ((Blacklist)(bool))
       )
 
       DECLARE_ENTITY_CLASS_HEADER(Acquisition,

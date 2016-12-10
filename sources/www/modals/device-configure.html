@@ -2,71 +2,79 @@
 <div class="modal fade" id="configure-device-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-           <form class="form-horizontal" novalidate >
-              <div class="modal-header">
-                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                   <h4 class="modal-title" data-i18n="modals.configure-device.title"></h4>
-              </div>
-              <div class="modal-body form-group">
-                 <!--configuration will be inserted here-->
-              </div>
-              <div class="modal-footer">
-                 <div class="form-actions">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
-                    <button type="submit" id="btn-confirm-configure-device" class="btn btn-primary" data-i18n="common.ok"></button>
-                 </div>
-              </div>
-           </form>
+            <form class="form-horizontal" novalidate>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" data-i18n="modals.configure-device.title"></h4>
+                </div>
+                <div class="modal-body form-group">
+                    <!--configuration will be inserted here-->
+                </div>
+                <div class="modal-footer">
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
+                        <button type="submit" id="btn-confirm-configure-device" class="btn btn-primary" data-i18n="common.ok"></button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 <script>
-   Yadoms.showConfigurationDeviceModal = function(device, callback) {
-      assert(!isNullOrUndefined(device), "device must be defined");
-      assert($.isFunction(callback), "callback must be defined");
+    Yadoms.showConfigurationDeviceModal = function (device, schema, callback) {
+        assert(!isNullOrUndefined(device), "device must be defined");
+        assert($.isFunction(callback), "callback must be defined");
 
-      var $modalBody = $("div#configure-device-modal .modal-body");
-      $modalBody.empty();
+        var $modalBody = $("div#configure-device-modal .modal-body");
+        $modalBody.empty();
 
-      //we append the text section
-      var friendlyNameParameter = new StringParameterHandler("modals.configure-device.", "friendlyName-configuration", { regex: '.+' }, device.friendlyName);
-      $modalBody.append(friendlyNameParameter.getDOMObject());
-      //we finish friendlyNameParameter instantiation
-      if ($.isFunction(friendlyNameParameter.applyScript))
-         friendlyNameParameter.applyScript();
+        //we append the common parameters section
+        var friendlyNameParameter = new StringParameterHandler("modals.configure-device.", "friendlyName-configuration", { regex: '.+' }, device.friendlyName);
+        $modalBody.append(friendlyNameParameter.getDOMObject());
+        var modelParameter = new StringParameterHandler("modals.configure-device.", "model-configuration", { required: false }, device.model);
+        $modalBody.append(modelParameter.getDOMObject());
+        //we finish parmeters instantiation
+        if ($.isFunction(friendlyNameParameter.applyScript))
+            friendlyNameParameter.applyScript();
+        if ($.isFunction(modelParameter.applyScript))
+            modelParameter.applyScript();
 
-      //we haven't any other configuration
+        //we haven't any other configuration
+        //we append classic configuration
+        var configMgr = new ConfigurationControlManager(schema, device.configuration, "plugins/" + device.attachedPlugin.type + ":deviceConfiguration.", $modalBody);
 
-      //i18n
-      $modalBody.i18n();
+        //i18n
+        $modalBody.i18n();
 
-      //validation form
-      //erase previous jqBootstrapValidation
-      $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
-         preventSubmit: true,
-         submitError: function($form, event, errors) {
-            console.warn("Unable to validate form: " + errors);
-         },
-         submitSuccess: function($form, event) {
-            event.preventDefault();
-            device.friendlyName = friendlyNameParameter.getCurrentConfiguration();
+        //validation form
+        //erase previous jqBootstrapValidation
+        $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
+            preventSubmit: true,
+            submitError: function ($form, event, errors) {
+                console.warn("Unable to validate form: " + errors);
+            },
+            submitSuccess: function ($form, event) {
+                event.preventDefault();
+                device.friendlyName = friendlyNameParameter.getCurrentConfiguration();
+                device.model = modelParameter.getCurrentConfiguration();
+                device.configuration = configMgr.getCurrentConfiguration();
 
-            console.debug("End of Device Configuration : " + JSON.stringify(device));
+                console.debug("End of Device Configuration : " + JSON.stringify(device));
 
-            $("div#configure-device-modal").modal("hide");
-            callback();
-         },
-         filter: function() {
-            //we check only control that have class enable-validation and are visible
-            return $(this).is(".enable-validation") && $(this).is(":visible");
-         }
-      });
+                $("div#configure-device-modal").modal("hide");
+                callback();
+            },
+            filter: function () {
+                //we check only control that have class enable-validation and are visible
+                return $(this).is(".enable-validation") && $(this).is(":visible");
+            }
+        });
 
-      //fix additional sub modals input (like icon picker search box)
-      $('div#configure-device-modal').on('shown.bs.modal', function (e) { $(document).off('focusin.modal'); });
+        //fix additional sub modals input (like icon picker search box)
+        $('div#configure-device-modal').on('shown.bs.modal', function (e) { $(document).off('focusin.modal'); });
 
-      //we display the modal
-      $('div#configure-device-modal').modal({ backdrop: 'static' });
-   };
+        //we display the modal
+        $('div#configure-device-modal').modal({ backdrop: 'static' });
+    };
 </script>

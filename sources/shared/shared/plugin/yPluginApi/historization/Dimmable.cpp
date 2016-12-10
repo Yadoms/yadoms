@@ -10,13 +10,12 @@ namespace shared
       {
          namespace historization
          {
-            CDimmable::CDimmable(const std::string& keywordName,
-                                 const EKeywordAccessMode& accessMode,
-                                 const EMeasureType& measureType)
+            CDimmable::CDimmable(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType, typeInfo::CIntTypeInfo& additionalInfo)
                : m_keywordName(keywordName),
                  m_switchLevel(0),
                  m_measureType(measureType),
-                 m_accessMode(accessMode)
+                 m_accessMode(accessMode),
+                 m_additionalInfo(additionalInfo)
             {
             }
 
@@ -85,7 +84,7 @@ namespace shared
 
             CDataContainer CDimmable::getTypeInfo() const
             {
-               return CDataContainer();
+               return m_additionalInfo.serialize();
             }
          }
       }

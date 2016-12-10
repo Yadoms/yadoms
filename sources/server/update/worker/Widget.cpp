@@ -15,7 +15,7 @@ namespace update {
          shared::CDataContainer callbackData;
          callbackData.set("downloadUrl", downloadUrl);
 
-         progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetInstall, shared::CStringExtension::EmptyString, callbackData);
+         progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetInstall, std::string(), callbackData);
          /////////////////////////////////////////////
          //1. download package
          /////////////////////////////////////////////
@@ -23,7 +23,7 @@ namespace update {
          {
             YADOMS_LOG(information) << "Downloading widget package";
 
-            progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetDownload, shared::CStringExtension::EmptyString, callbackData);
+            progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetDownload, std::string(), callbackData);
             Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateWidgetDownload, 0.0, 90.0);
             YADOMS_LOG(information) << "Downloading widget package with sucess";
 
@@ -34,10 +34,10 @@ namespace update {
             try
             {
                YADOMS_LOG(information) << "Deploy widget package " << downloadedPackage.toString();
-               progressCallback(true, 90.0f, i18n::CClientStrings::UpdateWidgetDeploy, shared::CStringExtension::EmptyString, callbackData);
+               progressCallback(true, 90.0f, i18n::CClientStrings::UpdateWidgetDeploy, std::string(), callbackData);
                Poco::Path widgetPath = CWorkerTools::deployWidgetPackage(downloadedPackage);
                YADOMS_LOG(information) << "Widget deployed with success";
-               progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
+               progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, std::string(), shared::CDataContainer::EmptyContainer);
             }
             catch (std::exception & ex)
             {
@@ -71,14 +71,14 @@ namespace update {
          callbackData.set("widgetName", widgetName);
          callbackData.set("downloadUrl", downloadUrl);
 
-         progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetUpdate, shared::CStringExtension::EmptyString, callbackData);
+         progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetUpdate, std::string(), callbackData);
          /////////////////////////////////////////////
          //1. download package
          /////////////////////////////////////////////
          try
          {
             YADOMS_LOG(information) << "Downloading widget package";
-            progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetDownload, shared::CStringExtension::EmptyString, callbackData);
+            progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetDownload, std::string(), callbackData);
             Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdateWidgetDownload, 0.0, 90.0);
             YADOMS_LOG(information) << "Downloading widget package with sucess";
 
@@ -90,11 +90,11 @@ namespace update {
             try
             {
                YADOMS_LOG(information) << "Deploy widget package " << downloadedPackage.toString();
-               progressCallback(true, 90.0f, i18n::CClientStrings::UpdateWidgetDeploy, shared::CStringExtension::EmptyString, callbackData);
+               progressCallback(true, 90.0f, i18n::CClientStrings::UpdateWidgetDeploy, std::string(), callbackData);
                Poco::Path widgetPath = CWorkerTools::deployWidgetPackage(downloadedPackage);
 
                YADOMS_LOG(information) << "Widget installed with success";
-               progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, shared::CStringExtension::EmptyString, callbackData);
+               progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, std::string(), callbackData);
             }
             catch (std::exception & ex)
             {
@@ -125,7 +125,7 @@ namespace update {
          shared::CDataContainer callbackData;
          callbackData.set("widgetName", widgetName);
 
-         progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetRemove, shared::CStringExtension::EmptyString, callbackData);
+         progressCallback(true, 0.0f, i18n::CClientStrings::UpdateWidgetRemove, std::string(), callbackData);
 
 
          try
@@ -140,7 +140,7 @@ namespace update {
             if (toDelete.exists())
                toDelete.remove(true);
 
-            progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, shared::CStringExtension::EmptyString, callbackData);
+            progressCallback(true, 100.0f, i18n::CClientStrings::UpdateWidgetSuccess, std::string(), callbackData);
          }
          catch (std::exception & ex)
          {

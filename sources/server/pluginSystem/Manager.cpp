@@ -17,23 +17,27 @@
 #include "PluginException.hpp"
 #include "InvalidPluginException.hpp"
 #include "InstanceRemoverRaii.hpp"
+#include "DeviceConfigurationSchemaRequest.h"
+#include "SetDeviceConfiguration.h"
+#include "DeviceRemoved.h"
 
 namespace pluginSystem
 {
    CManager::CManager(const IPathProvider& pathProvider,
                       boost::shared_ptr<database::IDataProvider> dataProvider,
-                      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer)
-      :
-      m_factory(boost::make_shared<CFactory>(pathProvider)),
-      m_dataProvider(dataProvider),
-      m_pluginDBTable(dataProvider->getPluginRequester()),
+                      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
+                      boost::shared_ptr<shared::ILocation> locationProvider)
+      : m_factory(boost::make_shared<CFactory>(pathProvider,
+                                               locationProvider)),
+        m_dataProvider(dataProvider),
+        m_pluginDBTable(dataProvider->getPluginRequester()),
 #ifdef _DEBUG
-      m_qualifier(boost::make_shared<CBasicQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
+        m_qualifier(boost::make_shared<CBasicQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
 #else
       m_qualifier(boost::make_shared<CIndicatorQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
 #endif
-      m_dataAccessLayer(dataAccessLayer),
-      m_instanceRemover(boost::make_shared<CInstanceRemover>(m_runningInstancesMutex, m_runningInstances))
+        m_dataAccessLayer(dataAccessLayer),
+        m_instanceRemover(boost::make_shared<CInstanceRemover>(m_runningInstancesMutex, m_runningInstances))
    {
    }
 
@@ -59,18 +63,21 @@ namespace pluginSystem
 
       // Wait for instances started or timeout
       YADOMS_LOG(debug) << "All plugin instances are started, wait for running...";
-      enum { kStartInstancesTimeoutId = shared::event::kUserFirstId };
+      enum
+         {
+            kStartInstancesTimeoutId = shared::event::kUserFirstId
+         };
       shared::event::CEventHandler startInstancesEventHandler;
       startInstancesEventHandler.createTimePoint(kStartInstancesTimeoutId, shared::currentTime::Provider().now() + timeout);
       while (true)
       {
-         switch(startInstancesEventHandler.waitForEvents(boost::posix_time::seconds(2)))
+         switch (startInstancesEventHandler.waitForEvents(boost::posix_time::seconds(2)))
          {
          case kStartInstancesTimeoutId:
             YADOMS_LOG(error) << "Timeout starting plugin instances : some instance(s) are not running";
             return;
          case shared::event::kTimeout: // Every 2 seconds
-            for (auto it = startedInstanceIds.begin(); it != startedInstanceIds.end(); )
+            for (auto it = startedInstanceIds.begin(); it != startedInstanceIds.end();)
             {
                if (getInstanceState(*it) == shared::plugin::yPluginApi::historization::EPluginState::kRunning)
                {
@@ -86,6 +93,7 @@ namespace pluginSystem
                return;
             }
             break;
+         default: break;
          }
       }
    }
@@ -103,13 +111,13 @@ namespace pluginSystem
 
       if (!startInstances(getInstanceList(),
                           startedInstanceIds))
-         YADOMS_LOG(error) << "One or more plugins failed to start, check plugins page for details";
+      YADOMS_LOG(error) << "One or more plugins failed to start, check plugins page for details";
 
       //start the internal plugin
       startInternalPlugin();
    }
 
-   bool CManager::startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin> >& instances,
+   bool CManager::startInstances(const std::vector<boost::shared_ptr<database::entities::CPlugin>>& instances,
                                  std::set<int>& startedInstanceIds)
    {
       auto allInstancesStarted = true;
@@ -217,7 +225,7 @@ namespace pluginSystem
       }
    }
 
-   std::string CManager::getInstanceLog(int id)
+   std::string CManager::getInstanceLog(int id) const
    {
       try
       {
@@ -243,7 +251,7 @@ namespace pluginSystem
       }
    }
 
-   std::vector<boost::shared_ptr<database::entities::CPlugin> > CManager::getInstanceList() const
+   std::vector<boost::shared_ptr<database::entities::CPlugin>> CManager::getInstanceList() const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       return m_pluginDBTable->getInstances();
@@ -294,15 +302,15 @@ namespace pluginSystem
    {
       // Find instances to start
       std::vector<int> instancesToStart;
-      std::vector<boost::shared_ptr<database::entities::CPlugin> > allInstances = getInstanceList();
-      for (std::vector<boost::shared_ptr<database::entities::CPlugin> >::const_iterator instance = allInstances.begin(); instance != allInstances.end(); ++instance)
+      auto allInstances = getInstanceList();
+      for (auto instance = allInstances.begin(); instance != allInstances.end(); ++instance)
       {
          if (boost::iequals((*instance)->Type(), pluginName) && (*instance)->AutoStart())
             instancesToStart.push_back((*instance)->Id());
       }
 
       // Start all instances of this plugin
-      for (std::vector<int>::const_iterator instanceToStart = instancesToStart.begin(); instanceToStart != instancesToStart.end(); ++instanceToStart)
+      for (auto instanceToStart = instancesToStart.begin(); instanceToStart != instancesToStart.end(); ++instanceToStart)
          startInstance(*instanceToStart);
    }
 
@@ -321,6 +329,28 @@ namespace pluginSystem
       // Stop all instances of this plugin
       for (std::vector<int>::const_iterator instanceToStop = instancesToStop.begin(); instanceToStop != instancesToStop.end(); ++instanceToStop)
          requestStopInstance(*instanceToStop);
+   }
+
+   void CManager::notifyDeviceRemoved(int deviceId) const
+   {
+      try
+      {
+         auto device = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+         auto pluginInstanceId = device->PluginId();
+
+         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+         auto instance(getRunningInstance(pluginInstanceId));
+
+         YADOMS_LOG(debug) << "Send removed device notification on device " << device->Name() << " to plugin " << instance->about()->DisplayName();
+
+         if (instance->aboutPlugin()->getSupportDeviceRemovedNotification())
+            instance->postDeviceRemoved(boost::make_shared<CDeviceRemoved>(device->Name(),
+                                                                           device->Details()));
+      }
+      catch (CPluginException&)
+      {
+         // Plugin instance is not running
+      }
    }
 
    void CManager::startInstance(int id)
@@ -467,7 +497,7 @@ namespace pluginSystem
          try
          {
             // First find the pluginState device associated with the plugin
-            device = m_dataProvider->getDeviceRequester()->getDevice(id, "pluginState");
+            device = m_dataProvider->getDeviceRequester()->getDeviceInPlugin(id, "pluginState");
          }
          catch (shared::exception::CEmptyResult&)
          {
@@ -491,10 +521,10 @@ namespace pluginSystem
                try
                {
                   shared::CDataContainer dc(m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
-                  defaultState.set("messageId", dc.getWithDefault("messageId", shared::CStringExtension::EmptyString));
-                  defaultState.set("messageData", dc.getWithDefault("messageData", shared::CStringExtension::EmptyString));
+                  defaultState.set("messageId", dc.getWithDefault("messageId", std::string()));
+                  defaultState.set("messageData", dc.getWithDefault("messageData", std::string()));
                }
-               catch (shared::exception::CJSONParse & jsonerror)
+               catch (shared::exception::CJSONParse& jsonerror)
                {
                   YADOMS_LOG(debug) << "Fail to parser JSON in pluginState id=" << id << " error=" << jsonerror.what();
                   defaultState.set("messageId", m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
@@ -521,7 +551,7 @@ namespace pluginSystem
       try
       {
          // First find the pluginState device associated with the plugin
-         device = m_dataProvider->getDeviceRequester()->getDevice(id, "pluginState");
+         device = m_dataProvider->getDeviceRequester()->getDeviceInPlugin(id, "pluginState");
       }
       catch (shared::exception::CEmptyResult&)
       {
@@ -541,10 +571,10 @@ namespace pluginSystem
          try
          {
             shared::CDataContainer dc(m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
-            defaultState.set("messageId", dc.getWithDefault("messageId", shared::CStringExtension::EmptyString));
-            defaultState.set("messageData", dc.getWithDefault("messageData", shared::CStringExtension::EmptyString));
+            defaultState.set("messageId", dc.getWithDefault("messageId", std::string()));
+            defaultState.set("messageData", dc.getWithDefault("messageData", std::string()));
          }
-         catch (shared::exception::CJSONParse & jsonerror)
+         catch (shared::exception::CJSONParse& jsonerror)
          {
             YADOMS_LOG(debug) << "Fail to parser JSON in pluginState id=" << id << " error=" << jsonerror.what();
             defaultState.set("messageId", m_dataProvider->getAcquisitionRequester()->getKeywordLastData(customMessageIdKw->Id)->Value());
@@ -567,7 +597,8 @@ namespace pluginSystem
       return fullState.get<shared::plugin::yPluginApi::historization::EPluginState>("state");
    }
 
-   void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const
+   void CManager::postCommand(int id,
+                              boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       auto instance(getRunningInstance(id));
@@ -577,17 +608,19 @@ namespace pluginSystem
       instance->postDeviceCommand(command);
    }
 
-   void CManager::postExtraCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command) const
+   void CManager::postExtraQuery(int id,
+                                 boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query) const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       auto instance(getRunningInstance(id));
 
-      YADOMS_LOG(debug) << "Send extra command " << command->getCommand() << " to plugin " << instance->about()->DisplayName();
+      YADOMS_LOG(debug) << "Send extra query " << query->getData().query() << " to plugin " << instance->about()->DisplayName();
 
-      instance->postExtraCommand(command);
+      instance->postExtraQuery(query);
    }
 
-   void CManager::postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request) const
+   void CManager::postManuallyDeviceCreationRequest(int id,
+                                                    boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request) const
    {
       try
       {
@@ -604,7 +637,8 @@ namespace pluginSystem
       }
    }
 
-   void CManager::postBindingQueryRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request)
+   void CManager::postBindingQueryRequest(int id,
+                                          boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request) const
    {
       try
       {
@@ -620,4 +654,45 @@ namespace pluginSystem
          request->sendError((boost::format("Error when requesting binding query %1%") % e.what()).str());
       }
    }
+
+   void CManager::postDeviceConfigurationSchemaRequest(int deviceId,
+                                                       communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) const
+   {
+      auto device = m_dataAccessLayer->getDeviceManager()->getDevice(deviceId);
+
+      boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request(boost::make_shared<pluginSystem::CDeviceConfigurationSchemaRequest>(device->Name(),
+                                                                                                                                                                   callback));
+
+      try
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+         auto instance = getRunningInstance(device->PluginId);
+
+         YADOMS_LOG(debug) << "Send DeviceConfigurationSchema request on device \"" << device->Name() << "\" to plugin " << instance->about()->DisplayName();
+
+         instance->postDeviceConfigurationSchemaRequest(request);
+      }
+      catch (CPluginException& e)
+      {
+         request->sendError((boost::format("Error when requesting DeviceConfigurationSchema on device %1% : %2%") % device->Name() % e.what()).str());
+      }
+   }
+
+   void CManager::postSetDeviceConfiguration(int deviceId,
+                                             const shared::CDataContainer& configuration) const
+   {
+      auto device = m_dataAccessLayer->getDeviceManager()->getDevice(deviceId);
+
+      auto command(boost::make_shared<pluginSystem::CSetDeviceConfiguration>(device->Name(),
+                                                                             configuration));
+
+      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+      auto instance(getRunningInstance(device->PluginId()));
+
+      YADOMS_LOG(debug) << "Set configuration to device \"" << device->Name() << "\" to plugin " << instance->about()->DisplayName();
+
+      instance->postSetDeviceConfiguration(command);
+   }
 } // namespace pluginSystem
+
+

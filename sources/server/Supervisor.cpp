@@ -1,6 +1,5 @@
 ﻿#include "stdafx.h"
 #include "Supervisor.h"
-#include "automation/script/ObjectFactory.h"
 #include "pluginSystem/Manager.h"
 #include "database/Factory.h"
 #include <shared/Log.h>
@@ -30,9 +29,11 @@
 #include "startupOptions/IStartupOptions.h"
 #include "dateTime/DateTimeNotifier.h"
 #include <Poco/Net/NetException.h>
+#include "location/Location.h"
+#include "location/IpApiAutoLocation.h"
 
 CSupervisor::CSupervisor(const IPathProvider& pathProvider)
-   :m_pathProvider(pathProvider)
+   : m_pathProvider(pathProvider)
 {
 }
 
@@ -49,8 +50,6 @@ void CSupervisor::run()
    boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal;
    try
    {
-      shared::CServiceLocator::instance().push<automation::script::IObjectFactory>(boost::make_shared<automation::script::ObjectFactory>());
-
       //create the notification center
       auto notificationCenter(boost::make_shared<notification::CNotificationCenter>());
       shared::CServiceLocator::instance().push<notification::CNotificationCenter>(notificationCenter);
@@ -67,24 +66,23 @@ void CSupervisor::run()
       dal = boost::make_shared<dataAccessLayer::CDataAccessLayer>(pDataProvider);
       shared::CServiceLocator::instance().push<dataAccessLayer::IDataAccessLayer>(dal);
 
+      // Create the location provider
+      auto location = boost::make_shared<location::CLocation>(dal->getConfigurationManager(), boost::make_shared<location::CIpApiAutoLocation>());
+
       // Create the Plugin manager
-      auto pluginManager(boost::make_shared<pluginSystem::CManager>(m_pathProvider,
-                                                                    pDataProvider,
-                                                                    dal));
+      auto pluginManager(boost::make_shared<pluginSystem::CManager>(m_pathProvider, pDataProvider, dal, location));
 
       // Start Task manager
       auto taskManager(boost::make_shared<task::CScheduler>(dal->getEventLogger()));
       taskManager->start();
 
       // Create the update manager
-      auto updateManager(boost::make_shared<update::CUpdateManager>(taskManager,
-                                                                    pluginManager));
+      auto updateManager(boost::make_shared<update::CUpdateManager>(taskManager, pluginManager));
 
       // Start the plugin gateway
       auto pluginGateway(boost::make_shared<communication::CPluginGateway>(pDataProvider, dal->getAcquisitionHistorizer(), pluginManager));
 
-      // Start the plugin manager (start all plugin instances)
-      pluginManager->start(boost::posix_time::minutes(2));
+
 
       // Start automation rules manager
       boost::shared_ptr<automation::IRuleManager> automationRulesManager(boost::make_shared<automation::CRuleManager>(m_pathProvider,
@@ -95,37 +93,33 @@ void CSupervisor::run()
                                                                                                                       dal->getKeywordManager(),
                                                                                                                       pDataProvider->getRecipientRequester(),
                                                                                                                       dal->getConfigurationManager(),
-                                                                                                                      dal->getEventLogger()));
+                                                                                                                      dal->getEventLogger(),
+                                                                                                                      location));
       shared::CServiceLocator::instance().push<automation::IRuleManager>(automationRulesManager);
+
 
       // Start Web server
       const auto webServerIp = startupOptions->getWebServerIPAddress();
-      const bool webServerUseSSL = startupOptions->getIsWebServerUseSSL();
-      const unsigned short webServerPort = startupOptions->getWebServerPortNumber();
-      const unsigned short securedWebServerPort = startupOptions->getSSLWebServerPortNumber();
+      const auto webServerUseSSL = startupOptions->getIsWebServerUseSSL();
+      const auto webServerPort = startupOptions->getWebServerPortNumber();
+      const auto securedWebServerPort = startupOptions->getSSLWebServerPortNumber();
       const auto webServerPath = m_pathProvider.webServerPath().string();
       const auto scriptInterpretersPath = m_pathProvider.scriptInterpretersPath().string();
 
-      auto webServer(boost::make_shared<web::poco::CWebServer>(webServerIp,
-                                                               webServerUseSSL,
-                                                               webServerPort,
-                                                               securedWebServerPort,
-                                                               webServerPath,
-                                                               "/rest/",
-                                                               "/ws"));
+      auto webServer(boost::make_shared<web::poco::CWebServer>(webServerIp, webServerUseSSL, webServerPort, securedWebServerPort, webServerPath, "/rest/", "/ws"));
 
       webServer->getConfigurator()->websiteHandlerAddAlias("plugins", m_pathProvider.pluginsPath().string());
       webServer->getConfigurator()->websiteHandlerAddAlias("scriptInterpreters", scriptInterpretersPath);
 
       if (pDataProvider->getDatabaseRequester()->backupSupported())
       {
-         std::string filename = m_pathProvider.databaseSqliteBackupFile().filename().string();
+         auto filename = m_pathProvider.databaseSqliteBackupFile().filename().string();
          webServer->getConfigurator()->websiteHandlerAddAlias(filename, m_pathProvider.databaseSqliteBackupFile().string());
       }
-            
+
       webServer->getConfigurator()->configureAuthentication(boost::make_shared<authentication::CBasicAuthentication>(dal->getConfigurationManager(), startupOptions->getNoPasswordFlag()));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CPlugin>(pDataProvider, pluginManager, *pluginGateway));
-      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CDevice>(pDataProvider, *pluginGateway));
+      webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CDevice>(pDataProvider, pluginManager, dal->getDeviceManager(), dal->getKeywordManager(), *pluginGateway));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CPage>(pDataProvider));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CWidget>(pDataProvider, webServerPath));
       webServer->getConfigurator()->restHandlerRegisterService(boost::make_shared<web::rest::service::CConfiguration>(dal->getConfigurationManager()));
@@ -141,16 +135,27 @@ void CSupervisor::run()
 
       webServer->start();
 
-      // Register to event logger started event
-      dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", shared::CStringExtension::EmptyString);
+      // Start the plugin manager (start all plugin instances)
+      pluginManager->start(boost::posix_time::minutes(2));
+
+      //start the rule manager
+      automationRulesManager->start();
 
       //create and start the dateTime notification scheduler
       dateTime::CDateTimeNotifier dateTimeNotificationService;
       dateTimeNotificationService.start();
 
+      // Register to event logger started event
+      dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", std::string());
+
+      //update the server state
+      shared::CServiceLocator::instance().get<IRunningInformation>()->setServerFullyLoaded();
+
       // Main loop
       YADOMS_LOG(information) << "Supervisor is running...";
-      while (m_EventHandler.waitForEvents() != kStopRequested){}
+      while (m_EventHandler.waitForEvents() != kStopRequested)
+      {
+      }
 
       YADOMS_LOG(information) << "Supervisor is stopping...";
 
@@ -180,9 +185,9 @@ void CSupervisor::run()
 
       YADOMS_LOG(information) << "Supervisor is stopped";
 
-      dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStopped, "yadoms", shared::CStringExtension::EmptyString);
+      dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStopped, "yadoms", std::string());
    }
-   catch(Poco::Net::NetException & pe)
+   catch (Poco::Net::NetException& pe)
    {
       YADOMS_LOG(error) << "Supervisor : net exception " << pe.displayText();
       if (dal && dal->getEventLogger())

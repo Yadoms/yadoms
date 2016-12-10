@@ -30,7 +30,8 @@ namespace pluginSystem
       std::string toString() const override;
       bool isSupportedOnThisPlatform() const override;
       bool getSupportManuallyCreatedDevice() const override;
-      shared::CDataContainer getPackage() const override;
+      bool getSupportDeviceRemovedNotification() const override;
+      boost::shared_ptr<const shared::CDataContainer> getPackage() const override;
       const boost::filesystem::path& getPath() const override;
       // [END] shared::plugin::IInformation implementation
 
@@ -71,9 +72,14 @@ namespace pluginSystem
       const boost::filesystem::path m_path;
 
       //--------------------------------------------------------------
-      /// \brief	    true if the plugin support manually created devices
+      /// \brief	    true if the plugin supports manually created devices
       //--------------------------------------------------------------
       bool m_supportManuallyCreatedDevice;
+
+      //--------------------------------------------------------------
+      /// \brief	    true if the plugin supports device removed notification
+      //--------------------------------------------------------------
+      bool m_supportDeviceRemovedNotification;
       
       //--------------------------------------------------------------
       /// \brief	    Flag indicating if plugin is supported on this platform
@@ -83,7 +89,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief	    Package.json content
       //--------------------------------------------------------------
-      shared::CDataContainer m_package;
+      boost::shared_ptr<shared::CDataContainer> m_package;
    };
 
 } // namespace pluginSystem

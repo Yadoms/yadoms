@@ -27,7 +27,8 @@ namespace rfxcomMessages
 
    const std::string& CAck::getDeviceName() const
    {
-      return shared::CStringExtension::EmptyString;
+      static const std::string emptyString;
+      return emptyString;
    }
 
 } // namespace rfxcomMessages

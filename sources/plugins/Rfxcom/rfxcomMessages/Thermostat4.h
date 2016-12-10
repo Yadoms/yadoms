@@ -79,6 +79,11 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       void buildDeviceModel();
 
+      //--------------------------------------------------------------
+      /// \brief	                        Normalize the fan speed (% ==> 0-6 value
+      //--------------------------------------------------------------
+      static unsigned char normalizeFanSpeed(int dimmableValue);
+
    private:
       //--------------------------------------------------------------
       /// \brief	The device sub-type
@@ -109,6 +114,16 @@ namespace rfxcomMessages
       /// \brief	The flame power
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CDimmable> m_flame;
+
+      //--------------------------------------------------------------
+      /// \brief	Fans management
+      //--------------------------------------------------------------
+      boost::shared_ptr<yApi::historization::CDimmable> m_fan1;
+      boost::shared_ptr<yApi::historization::CSwitch> m_fan1AutoMode;
+      boost::shared_ptr<yApi::historization::CDimmable> m_fan2;
+      boost::shared_ptr<yApi::historization::CSwitch> m_fan2AutoMode;
+      boost::shared_ptr<yApi::historization::CDimmable> m_fan3;
+      boost::shared_ptr<yApi::historization::CSwitch> m_fan3AutoMode;
 
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances

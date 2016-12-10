@@ -5,9 +5,9 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CRunningPeriod::CRunningPeriod(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& KeyWordName):
-   m_runningPeriod(boost::make_shared<teleInfo::specificHistorizers::CPeriod>(KeyWordName)),
-   m_isDeveloperMode (api->isDeveloperMode())
+CRunningPeriod::CRunningPeriod(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& KeyWordName)
+   : m_runningPeriod(boost::make_shared<teleInfo::specificHistorizers::CPeriod>(KeyWordName)),
+     m_isDeveloperMode(api->getYadomsInformation()->developperMode())
 {
 }
 

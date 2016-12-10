@@ -25,8 +25,8 @@ message DeviceCommand {
 	required string body = 3;
 }
 
-message ExtraCommand {
-	required string command = 1;
+message ExtraQuery {
+	required string query = 1;
 	required string data = 2;
 }
 
@@ -59,8 +59,52 @@ message ManuallyDeviceCreation {
 	optional string configuration = 2;
 }
 
-message DeveloperModeAnswer{
-    required bool enabled = 1;
+message Location{
+	required double latitude = 1;
+	required double longitude = 2;
+	required double altitude = 3;
+}
+
+message YadomsInformationAnswer {
+	required bool developperMode = 1;
+	required string version = 2;
+	
+	enum EReleaseType {
+		Stable = 0; ReleaseCandidate = 1; Beta = 2;
+	}
+	required EReleaseType releaseType = 3;
+
+	required Location location = 4;
+}
+
+message DeviceConfigurationSchemaRequest {
+	required string device = 1;
+}
+
+message SetDeviceConfiguration {
+	required string device = 1;
+	required string configuration = 2;
+}
+
+message DeviceRemoved {
+	required string device = 1;
+	required string details = 2;
+}
+
+message AllDevicesAnswer {
+	repeated string devices = 1;
+}
+
+message DeviceModelAnswer {
+	required string model = 1;
+}
+
+message DeviceConfigurationAnswer {
+	required string configuration = 1;
+}
+
+message AllKeywordsAnswer {
+	repeated string keywords = 1;
 }
 
 message msg {
@@ -72,7 +116,7 @@ message msg {
 		Configuration updateConfiguration = 6;
 		BindingQuery bindingQuery = 7;
 		DeviceCommand deviceCommand = 8;
-		ExtraCommand extraCommand = 9;
+		ExtraQuery extraQuery = 9;
 		DeviceExitsAnswer deviceExists = 10;
 		DeviceDetailsAnswer deviceDetails = 11;
 		KeywordExitsAnswer keywordExists = 12;
@@ -80,7 +124,14 @@ message msg {
 		FindRecipientsFromFieldAnswer findRecipientsFromFieldAnswer = 14;
 		RecipientFieldExitsAnswer recipientFieldExitsAnswer = 15;
 		ManuallyDeviceCreation manuallyDeviceCreation = 16;
-		DeveloperModeAnswer developerModeAnswer = 17;
+		YadomsInformationAnswer yadomsInformationAnswer = 17;
+		DeviceConfigurationSchemaRequest deviceConfigurationSchemaRequest = 18;
+		SetDeviceConfiguration setDeviceConfiguration = 19;
+		DeviceRemoved deviceRemoved = 20;
+		AllDevicesAnswer allDevicesAnswer = 21;
+		DeviceModelAnswer deviceModelAnswer = 22;
+		DeviceConfigurationAnswer deviceConfigurationAnswer = 23;
+		AllKeywordsAnswer allKeywordsAnswer = 24;
 	}
 }
 

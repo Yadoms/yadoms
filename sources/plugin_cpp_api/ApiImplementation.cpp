@@ -4,8 +4,12 @@
 #include "PluginInformation.h"
 #include "BindingQuery.h"
 #include "DeviceCommand.h"
-#include "ExtraCommand.h"
+#include "ExtraQuery.h"
 #include "ManuallyDeviceCreation.h"
+#include "DeviceConfigurationSchemaRequest.h"
+#include "SetDeviceConfiguration.h"
+#include "DeviceRemoved.h"
+#include "YadomsInformation.h"
 
 namespace plugin_cpp_api
 {
@@ -60,7 +64,11 @@ namespace plugin_cpp_api
                                  boost::function1<void, const toPlugin::msg&> onReceiveFunction) const
    {
       shared::event::CEventHandler receivedEvtHandler;
-      enum { kExpectedEventReceived = shared::event::kUserFirstId, kErrorReceived };
+      enum
+         {
+            kExpectedEventReceived = shared::event::kUserFirstId,
+            kErrorReceived
+         };
 
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_onReceiveHookMutex);
@@ -151,9 +159,15 @@ namespace plugin_cpp_api
          break;
       case toPlugin::msg::kDeviceCommand: processDeviceCommand(toPluginProtoBuffer.devicecommand());
          break;
-      case toPlugin::msg::kExtraCommand: processExtraCommand(toPluginProtoBuffer.extracommand());
+      case toPlugin::msg::kExtraQuery: processExtraQuery(toPluginProtoBuffer.extraquery());
+         break;
+      case toPlugin::msg::kDeviceConfigurationSchemaRequest: processDeviceConfigurationSchemaRequest(toPluginProtoBuffer.deviceconfigurationschemarequest());
+         break;
+      case toPlugin::msg::kSetDeviceConfiguration: processSetDeviceConfiguration(toPluginProtoBuffer.setdeviceconfiguration());
          break;
       case toPlugin::msg::kManuallyDeviceCreation: processManuallyDeviceCreation(toPluginProtoBuffer.manuallydevicecreation());
+         break;
+      case toPlugin::msg::kDeviceRemoved: processDeviceRemoved(toPluginProtoBuffer.deviceremoved());
          break;
       default:
          throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toPluginProtoBuffer.OneOf_case()).str());
@@ -226,16 +240,61 @@ namespace plugin_cpp_api
       m_pluginEventHandler.postEvent(kBindingQuery, query);
    }
 
+   void CApiImplementation::processDeviceConfigurationSchemaRequest(const toPlugin::DeviceConfigurationSchemaRequest& msg)
+   {
+      boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> query = boost::make_shared<CDeviceConfigurationSchemaRequest>(msg,
+                                                                                                                                                     [&](const shared::CDataContainer& r)
+                                                                                                                                                     {
+                                                                                                                                                        toYadoms::msg ans;
+                                                                                                                                                        auto answer = ans.mutable_deviceconfigurationschemaanswer();
+                                                                                                                                                        answer->set_success(true);
+                                                                                                                                                        answer->set_result(r.serialize());
+                                                                                                                                                        send(ans);
+                                                                                                                                                     },
+                                                                                                                                                     [&](const std::string& r)
+                                                                                                                                                     {
+                                                                                                                                                        toYadoms::msg ans;
+                                                                                                                                                        auto answer = ans.mutable_deviceconfigurationschemaanswer();
+                                                                                                                                                        answer->set_success(false);
+                                                                                                                                                        answer->set_result(r);
+                                                                                                                                                        send(ans);
+                                                                                                                                                     });
+
+      m_pluginEventHandler.postEvent(kGetDeviceConfigurationSchemaRequest, query);
+   }
+
+   void CApiImplementation::processSetDeviceConfiguration(const toPlugin::SetDeviceConfiguration& msg)
+   {
+      boost::shared_ptr<const shared::plugin::yPluginApi::ISetDeviceConfiguration> command = boost::make_shared<CSetDeviceConfiguration>(msg);
+      m_pluginEventHandler.postEvent(kSetDeviceConfiguration, command);
+   }
+
    void CApiImplementation::processDeviceCommand(const toPlugin::DeviceCommand& msg)
    {
       boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command = boost::make_shared<CDeviceCommand>(msg);
       m_pluginEventHandler.postEvent(kEventDeviceCommand, command);
    }
 
-   void CApiImplementation::processExtraCommand(const toPlugin::ExtraCommand& msg)
+   void CApiImplementation::processExtraQuery(const toPlugin::ExtraQuery& msg)
    {
-      boost::shared_ptr<const shared::plugin::yPluginApi::IExtraCommand> command = boost::make_shared<CExtraCommand>(msg);
-      m_pluginEventHandler.postEvent(kEventExtraCommand, command);
+      boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> command = boost::make_shared<CExtraQuery>(msg,
+                                                                                                           [&](const shared::CDataContainer& r)
+                                                                                                           {
+                                                                                                              toYadoms::msg ans;
+                                                                                                              auto answer = ans.mutable_extraqueryanswer();
+                                                                                                              answer->set_success(true);
+                                                                                                              answer->set_result(r.serialize());
+                                                                                                              send(ans);
+                                                                                                           },
+                                                                                                           [&](const std::string& r)
+                                                                                                           {
+                                                                                                              toYadoms::msg ans;
+                                                                                                              auto answer = ans.mutable_extraqueryanswer();
+                                                                                                              answer->set_success(false);
+                                                                                                              answer->set_result(r);
+                                                                                                              send(ans);
+                                                                                                           });
+      m_pluginEventHandler.postEvent(kEventExtraQuery, command);
    }
 
    void CApiImplementation::processManuallyDeviceCreation(const toPlugin::ManuallyDeviceCreation& msg)
@@ -260,6 +319,12 @@ namespace plugin_cpp_api
                                                      });
 
       m_pluginEventHandler.postEvent(kEventManuallyDeviceCreation, request);
+   }
+
+   void CApiImplementation::processDeviceRemoved(const toPlugin::DeviceRemoved& msg)
+   {
+      boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event = boost::make_shared<CDeviceRemoved>(msg);
+      m_pluginEventHandler.postEvent(kEventDeviceRemoved, event);
    }
 
 
@@ -306,6 +371,86 @@ namespace plugin_cpp_api
       }
    }
 
+   void CApiImplementation::declareDevice(const std::string& device,
+                                          const std::string& model,
+                                          boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
+                                          const shared::CDataContainer& details)
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_declaredevice();
+      request->set_device(device);
+      request->set_model(model);
+      fillHistorizable(keyword, request->add_keywords());
+      if (!details.empty())
+         request->set_details(details.serialize());
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : declareDevice(" << device << ", " << model << ", " << keyword->getKeyword() << ", " << details.serialize() << ")" << std::endl;
+         throw;
+      }
+   }
+
+   void CApiImplementation::declareDevice(const std::string& device,
+                                          const std::string& model,
+                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords,
+                                          const shared::CDataContainer& details)
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_declaredevice();
+      request->set_device(device);
+      request->set_model(model);
+      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
+         fillHistorizable(*keyword, request->add_keywords());
+      if (!details.empty())
+         request->set_details(details.serialize());
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : declareDevice(" << device << ", " << model << ", {";
+         std::for_each(keywords.begin(),
+                       keywords.end(),
+                       [](boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword)
+                       {
+                          std::cerr << keyword->getKeyword() << ", ";
+                       });
+         std::cerr << "}, " << details.serialize() << ")" << std::endl;
+         throw;
+      }
+   }
+
+   std::vector<std::string> CApiImplementation::getAllDevices() const
+   {
+      toYadoms::msg req;
+      req.mutable_alldevicesrequest();
+
+      std::vector<std::string> allDevices;
+      try
+      {
+         send(req,
+              [](const toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_alldevicesanswer();
+              },
+              [&](const toPlugin::msg& ans) -> void
+              {
+                 std::copy(ans.alldevicesanswer().devices().begin(), ans.alldevicesanswer().devices().end(), std::back_inserter(allDevices));
+              });
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : getAllDevices()" << std::endl;
+         throw;
+      }
+      return allDevices;
+   }
+
    bool CApiImplementation::deviceExists(const std::string& device) const
    {
       toYadoms::msg req;
@@ -325,13 +470,58 @@ namespace plugin_cpp_api
                  exists = ans.deviceexists().exists();
               });
       }
-      catch(std::exception&)
+      catch (std::exception&)
       {
          std::cerr << "Call was : deviceExists(" << device << ")" << std::endl;
          throw;
       }
 
       return exists;
+   }
+
+   shared::CDataContainer CApiImplementation::getDeviceConfiguration(const std::string& device) const
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_deviceconfigurationrequest();
+      request->set_device(device);
+
+      shared::CDataContainer configuration;
+      try
+      {
+         send(req,
+              [](const toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_deviceconfigurationanswer();
+              },
+              [&](const toPlugin::msg& ans) -> void
+              {
+                 configuration.deserialize(ans.deviceconfigurationanswer().configuration());
+              });
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : getDeviceConfiguration(" << device << ")" << std::endl;
+         throw;
+      }
+      return configuration;
+   }
+
+   void CApiImplementation::updateDeviceConfiguration(const std::string& device,
+                                                      const shared::CDataContainer& configuration) const
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_updatedeviceconfiguration();
+      request->set_device(device);
+      request->set_configuration(configuration.serialize());
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : updateDeviceConfiguration(" << device << ", " << configuration.serialize() << ")" << std::endl;
+         throw;
+      }
    }
 
    shared::CDataContainer CApiImplementation::getDeviceDetails(const std::string& device) const
@@ -361,56 +551,130 @@ namespace plugin_cpp_api
       return details;
    }
 
-   void CApiImplementation::declareDevice(const std::string& device,
-                                          const std::string& model,
-                                          boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
-                                          const shared::CDataContainer& details)
+   void CApiImplementation::updateDeviceDetails(const std::string& device,
+                                                const shared::CDataContainer& details) const
    {
       toYadoms::msg req;
-      auto request = req.mutable_declaredevice();
+      auto request = req.mutable_updatedevicedetails();
       request->set_device(device);
-      request->set_model(model);
-      fillHistorizable(keyword, request->add_keywords());
-      if (!details.empty())
-         request->set_details(details.serialize());
+      request->set_details(details.serialize());
       try
       {
          send(req);
       }
       catch (std::exception&)
       {
-         std::cerr << "Call was : declareDevice(" << device << ", " << model << ", " << keyword->getKeyword() << ", " << details.serialize() << ")" << std::endl;
+         std::cerr << "Call was : updateDeviceDetails(" << device << ", " << details.serialize() << ")" << std::endl;
          throw;
       }
    }
 
-   void CApiImplementation::declareDevice(const std::string& device,
-                                          const std::string& model,
-                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& keywords,
-                                          const shared::CDataContainer& details)
+   std::string CApiImplementation::getDeviceModel(const std::string& device) const
    {
       toYadoms::msg req;
-      auto request = req.mutable_declaredevice();
+      auto request = req.mutable_devicemodelrequest();
+      request->set_device(device);
+
+      std::string model;
+      try
+      {
+         send(req,
+              [](const toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_devicemodelanswer();
+              },
+              [&](const toPlugin::msg& ans) -> void
+              {
+                 model = ans.devicemodelanswer().model();
+              });
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : getDeviceModel(" << device << ")" << std::endl;
+         throw;
+      }
+      return model;
+   }
+
+   void CApiImplementation::updateDeviceModel(const std::string& device,
+                                              const std::string& model) const
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_updatedevicemodel();
       request->set_device(device);
       request->set_model(model);
-      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
-         fillHistorizable(*keyword, request->add_keywords());
-      if (!details.empty())
-         request->set_details(details.serialize());
       try
       {
          send(req);
       }
       catch (std::exception&)
       {
-         std::cerr << "Call was : declareDevice(" << device << ", " << model << ", {";
+         std::cerr << "Call was : updateDeviceModel(" << device << ", " << model << ")" << std::endl;
+         throw;
+      }
+   }
+
+   void CApiImplementation::removeDevice(const std::string& device)
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_removedevice();
+      request->set_device(device);
+
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : removeDevice(" << device << ")" << std::endl;
+         throw;
+      }
+   }
+
+   void CApiImplementation::declareKeywords(const std::string& device,
+                                            const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords)
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_declarekeywords();
+      request->set_device(device);
+      for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
+         fillHistorizable(*keyword, request->add_keywords());
+
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : declareKeywords(" << device << ", {";
          std::for_each(keywords.begin(),
                        keywords.end(),
                        [](boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword)
                        {
                           std::cerr << keyword->getKeyword() << ", ";
                        });
-         std::cerr << "}, " << details.serialize() << ")" << std::endl;
+         std::cerr << "} )" << std::endl;
+         throw;
+      }
+   }
+
+   void CApiImplementation::declareKeyword(const std::string& device,
+                                           boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
+                                           const shared::CDataContainer& details)
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_declarekeyword();
+      request->set_device(device);
+      fillHistorizable(keyword, request->mutable_keyword());
+      if (!details.empty())
+         request->set_details(details.serialize());
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : declareKeyword(" << device << ", " << keyword << ", " << details.serialize() << ")" << std::endl;
          throw;
       }
    }
@@ -451,23 +715,49 @@ namespace plugin_cpp_api
       return keywordExists(device, keyword->getKeyword());
    }
 
-   void CApiImplementation::declareKeyword(const std::string& device,
-                                           boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
-                                           const shared::CDataContainer& details)
+   std::vector<std::string> CApiImplementation::getAllKeywords(const std::string& device) const
    {
       toYadoms::msg req;
-      auto request = req.mutable_declarekeyword();
+      auto request = req.mutable_allkeywordsrequest();
       request->set_device(device);
-      fillHistorizable(keyword, request->mutable_keyword());
-      if (!details.empty())
-         request->set_details(details.serialize());
+
+      std::vector<std::string> keywords;
+      try
+      {
+         send(req,
+              [](const toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_allkeywordsanswer();
+              },
+              [&](const toPlugin::msg& ans) -> void
+              {
+                 std::copy(ans.allkeywordsanswer().keywords().begin(), ans.allkeywordsanswer().keywords().end(), std::back_inserter(keywords));
+              });
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : getAllKeywords(" << device << ")" << std::endl;
+         throw;
+      }
+
+      return keywords;
+   }
+
+   void CApiImplementation::removeKeyword(const std::string& device,
+                                          const std::string& keyword)
+   {
+      toYadoms::msg req;
+      auto request = req.mutable_removekeyword();
+      request->set_device(device);
+      request->set_keyword(keyword);
+
       try
       {
          send(req);
       }
       catch (std::exception&)
       {
-         std::cerr << "Call was : declareKeyword(" << device << ", " << keyword << ", " << details.serialize() << ")" << std::endl;
+         std::cerr << "Call was : removeKeyword(" << keyword << ")" << std::endl;
          throw;
       }
    }
@@ -601,7 +891,7 @@ namespace plugin_cpp_api
    }
 
    void CApiImplementation::historizeData(const std::string& device,
-                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >& dataVect)
+                                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& dataVect)
    {
       toYadoms::msg msg;
       auto message = msg.mutable_historizedata();
@@ -678,30 +968,30 @@ namespace plugin_cpp_api
       return m_pluginEventHandler;
    }
 
-   bool CApiImplementation::isDeveloperMode() const
+   boost::shared_ptr<const shared::plugin::information::IYadomsInformation> CApiImplementation::getYadomsInformation() const
    {
       toYadoms::msg req;
-      req.mutable_developermoderequest();
+      req.mutable_yadomsinformationrequest();
 
-      auto exists = false;
+      boost::shared_ptr<const shared::plugin::information::IYadomsInformation> info;
       try
       {
          send(req,
-              [](const toPlugin::msg& ans) -> bool
+            [](const toPlugin::msg& ans) -> bool
          {
-            return ans.has_developermodeanswer();
+            return ans.has_yadomsinformationanswer();
          },
-              [&](const toPlugin::msg& ans) -> void
+            [&](const toPlugin::msg& ans) -> void
          {
-            exists = ans.developermodeanswer().enabled();
+            info = boost::make_shared<CYadomsInformation>(ans.yadomsinformationanswer());
          });
       }
       catch (std::exception&)
       {
-         std::cerr << "Call was : isDeveloperMode()" << std::endl;
+         std::cerr << "Call was : getYadomsInformation" << std::endl;
          throw;
       }
-      return exists;
+      return info;
    }
 } // namespace plugin_cpp_api	
 

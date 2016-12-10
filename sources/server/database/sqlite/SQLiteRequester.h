@@ -31,6 +31,7 @@ namespace database
          bool dropTableIfExists(const common::CDatabaseTable& tableName) override;
          bool createTableIfNotExists(const common::CDatabaseTable& tableName, const std::string& tableScript) override;
          void createIndex(const common::CDatabaseTable& tableName, const std::string& indexScript) override;
+         bool addTableColumn(const common::CDatabaseTable& tableName, const std::string& columnDef) override;
          void vacuum() override;
          boost::shared_ptr<ITableCreationScriptProvider> getTableCreationScriptProvider() override;
          bool supportInsertOrUpdateStatement() override;
@@ -50,6 +51,8 @@ namespace database
          boost::filesystem::path lastBackupData() override;
          // [END] IDataBackup implementation
 
+      protected:
+         static CDatabaseException::EDatabaseReturnCodes fromSQLiteReturnCode(int rc);
 
       private:
          //--------------------------------------------------------------

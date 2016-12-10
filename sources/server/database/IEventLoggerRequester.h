@@ -1,7 +1,6 @@
 #pragma once
 
 #include "entities/Entities.h"
-#include <shared/StringExtension.h>
 
 
 namespace database { 

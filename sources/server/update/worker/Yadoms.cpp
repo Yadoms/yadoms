@@ -23,7 +23,7 @@ namespace update
 
          YADOMS_LOG(information) << "Updating Yadoms : " << versionToUpdate.serialize();
 
-         progressCallback(true, 0.0f, i18n::CClientStrings::UpdateYadomsUpdate, shared::CStringExtension::EmptyString, versionToUpdate);
+         progressCallback(true, 0.0f, i18n::CClientStrings::UpdateYadomsUpdate, std::string(), versionToUpdate);
 
          //////////////////////////////////////////////////////////
          // STEP2 : download package file
@@ -58,7 +58,7 @@ namespace update
          try
          {
             YADOMS_LOG(information) << "Downloading package" << downloadUrl;
-            progressCallback(true, 0.0f, i18n::CClientStrings::UpdateYadomsDownload, shared::CStringExtension::EmptyString, versionToUpdate);
+            progressCallback(true, 0.0f, i18n::CClientStrings::UpdateYadomsDownload, std::string(), versionToUpdate);
             auto downloadedPackage = CWorkerTools::downloadPackageAndVerify(downloadUrl, md5HashExpected, progressCallback, i18n::CClientStrings::UpdateYadomsDownload, 0.0, 50.0);
             YADOMS_LOG(information) << "Package " << downloadUrl << " successfully downloaded";
 
@@ -69,7 +69,7 @@ namespace update
             {
                YADOMS_LOG(information) << "Extracting downloaded package ";
 
-               progressCallback(true, 50.0f, i18n::CClientStrings::UpdateYadomsExtract, shared::CStringExtension::EmptyString, versionToUpdate);
+               progressCallback(true, 50.0f, i18n::CClientStrings::UpdateYadomsExtract, std::string(), versionToUpdate);
                shared::compression::CExtract unZipper;
                auto extractedPackageLocation = unZipper.here(downloadedPackage);
 
@@ -79,7 +79,7 @@ namespace update
                try
                {
                   YADOMS_LOG(information) << "Running updater";
-                  progressCallback(true, 90.0f, i18n::CClientStrings::UpdateYadomsDeploy, shared::CStringExtension::EmptyString, versionToUpdate);
+                  progressCallback(true, 90.0f, i18n::CClientStrings::UpdateYadomsDeploy, std::string(), versionToUpdate);
                   auto commandToRun = versionToUpdate.get<std::string>("commandToRun");
                   step4RunUpdaterProcess(extractedPackageLocation, commandToRun, runningInformation);
 
@@ -89,7 +89,7 @@ namespace update
 
                   //exit yadoms
                   YADOMS_LOG(information) << "Exiting Yadoms";
-                  progressCallback(true, 100.0f, i18n::CClientStrings::UpdateYadomsExit, shared::CStringExtension::EmptyString, versionToUpdate);
+                  progressCallback(true, 100.0f, i18n::CClientStrings::UpdateYadomsExit, std::string(), versionToUpdate);
 
                   //sleep 1 sec, to ensure clients receive last notification
                   boost::this_thread::sleep(boost::posix_time::seconds(1));

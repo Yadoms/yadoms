@@ -254,7 +254,7 @@ namespace database
                else
                {
                   if (throwIfFails)
-                     throw CDatabaseException(errMessage);
+                     throw CDatabaseException(errMessage, fromSQLiteReturnCode(rc));
                   return -1;
                }
             }
@@ -379,6 +379,17 @@ namespace database
          return true;
       }
 
+      bool CSQLiteRequester::addTableColumn(const common::CDatabaseTable& tableName, const std::string& columnDef)
+      {
+         if (checkTableExists(tableName))
+         {
+            CSQLiteQuery alter;
+            queryStatement(alter.AddTableColumn(tableName, columnDef));
+            return true;
+         }
+         return false;
+      }
+
       void CSQLiteRequester::createIndex(const common::CDatabaseTable& tableName,
                                          const std::string& indexScript)
       {
@@ -459,6 +470,19 @@ namespace database
       boost::filesystem::path CSQLiteRequester::lastBackupData()
       {
          return boost::filesystem::path(m_dbBackupFile);
+      }
+
+      CDatabaseException::EDatabaseReturnCodes CSQLiteRequester::fromSQLiteReturnCode(int rc)
+      {
+         switch(rc)
+         {
+         case SQLITE_OK:
+            return CDatabaseException::kOk;
+         case SQLITE_CONSTRAINT:
+            return CDatabaseException::kConstraintViolation;
+         default:
+            return CDatabaseException::kError;
+         }
       }
 
       void CSQLiteRequester::vacuum()

@@ -2,7 +2,6 @@
 #include "task/ITask.h"
 #include "server/database/IDataBackup.h"
 #include <shared/event/EventHandler.hpp>
-#include <shared/StringExtension.h>
 
 namespace task { namespace backup {
 
@@ -32,7 +31,7 @@ namespace task { namespace backup {
       //------------------------------------------
       ///\brief   Internal progress handler
       //------------------------------------------
-      void OnProgressionUpdatedInternal(int remaining, int total, const std::string & message = shared::CStringExtension::EmptyString);
+      void OnProgressionUpdatedInternal(int remaining, int total, const std::string & message = std::string());
 
       //------------------------------------------
       ///\brief   The task name

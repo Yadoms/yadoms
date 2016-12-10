@@ -22,7 +22,7 @@
 </div>
 
 <script>
-   Yadoms.showSetKeywordValueModal = function(keyword, value) {
+   Yadoms.showSetKeywordValueModal = function(keyword, value, pluginInstance) {
 	  var d = new $.Deferred();
 	  
       assert(!isNullOrUndefined(keyword), "keyword must be defined");
@@ -30,50 +30,55 @@
       var $modalBody = $("div#set-value-keyword-modal .modal-body");
       $modalBody.empty();
 
-      var configObject = ConfigurationHelper.createKeywordValueParameterHandler("modals.set-value-keyword.", "keyword-configuration", keyword, value);
+      PluginInstanceManager.downloadPackage(pluginInstance)
+      .done(function() {
+        var configObject = ConfigurationHelper.createKeywordValueParameterHandler("modals.set-value-keyword.", "keyword-configuration", keyword, value, pluginInstance);
 
-	  if(configObject) {
-		  //we append the text section
-		  $modalBody.append(configObject.getDOMObject());
-		  //we finish configObject instantiation
-		  if ($.isFunction(configObject.applyScript))
-			 configObject.applyScript();
+        if(configObject) {
+           //we append the text section
+           $modalBody.append(configObject.getDOMObject());
+           //we finish configObject instantiation
+           if ($.isFunction(configObject.applyScript))
+             configObject.applyScript();
 
-		  //i18n
-		  $modalBody.i18n();
+           //i18n
+           $modalBody.i18n();
 
-		  //validation form
-		  //erase previous jqBootstrapValidation
-		  $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
-			 preventSubmit: true,
-			 submitError: function($form, event, errors) {
-				console.warn("Unable to validate form: " + errors);
-			 },
-			 submitSuccess: function($form, event) {
-				event.preventDefault();
-				var value = configObject.getCurrentConfiguration();
-				$("div#set-value-keyword-modal").modal("hide");
-				d.resolve(keyword, value);
-			 },
-			 filter: function() {
-				//we check only control that have class enable-validation and are visible
-				return $(this).is(".enable-validation") && $(this).is(":visible");
-			 }
-		  });
+           //validation form
+           //erase previous jqBootstrapValidation
+           $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
+             preventSubmit: true,
+             submitError: function($form, event, errors) {
+               console.warn("Unable to validate form: " + errors);
+             },
+             submitSuccess: function($form, event) {
+               event.preventDefault();
+               var value = configObject.getCurrentConfiguration();
+               $("div#set-value-keyword-modal").modal("hide");
+               d.resolve(keyword, value);
+             },
+             filter: function() {
+               //we check only control that have class enable-validation and are visible
+               return $(this).is(".enable-validation") && $(this).is(":visible");
+             }
+           });
 
-        //if modal cancelled, then reject promise
-		  $('div#set-value-keyword-modal').off("hidden.bs.modal").on("hidden.bs.modal", function () {
-		     d.reject();
-		  });
+           //if modal cancelled, then reject promise
+           $('div#set-value-keyword-modal').off("hidden.bs.modal").on("hidden.bs.modal", function () {
+              d.reject();
+           });
 
-		  //we display the modal
-		  $('div#set-value-keyword-modal').modal({ backdrop: 'static' });
+           //we display the modal
+           $('div#set-value-keyword-modal').modal({ backdrop: 'static' });
 
 
-	  } else {
-		d.reject();
-	  }
-	  
+        } else {
+         d.reject();
+        }
+              
+      })
+      .fail(d.reject);
+
 	  return d.promise();
    };
 </script>

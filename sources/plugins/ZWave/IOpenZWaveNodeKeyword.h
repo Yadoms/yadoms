@@ -2,6 +2,8 @@
 
 #include <shared/plugin/yPluginApi/historization/IHistorizable.h>
 #include <value_classes/ValueID.h>
+#include <shared/DataContainer.h>
+#include <shared/plugin/yPluginApi/historization/typeInfo/ITypeInfo.h>
 
 //--------------------------------------------------------------
 /// \brief	    Interface for keywords
@@ -33,5 +35,18 @@ public:
    /// \param [in]   value    The new keyword value
    //--------------------------------------------------------------
    virtual void updateValue(OpenZWave::ValueID & value) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	    Update the keyword value 
+   /// \param [in]   value    The new keyword value
+   //--------------------------------------------------------------
+   virtual shared::CDataContainer serialize() = 0;
+
+
+   //--------------------------------------------------------------
+   /// \brief	   Get the type information
+   /// \return    the type information about keyword
+   //--------------------------------------------------------------
+   virtual boost::shared_ptr<shared::plugin::yPluginApi::historization::typeInfo::ITypeInfo> & getTypeInformation() = 0;
 };
 

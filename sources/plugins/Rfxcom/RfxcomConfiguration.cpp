@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "RfxcomConfiguration.h"
-#include <shared/StringExtension.h>
 
 CRfxcomConfiguration::~CRfxcomConfiguration()
 {
@@ -18,12 +17,12 @@ bool CRfxcomConfiguration::comIsEthernet() const
 
 std::string CRfxcomConfiguration::getEthernetAddress() const
 {
-   return shared::CStringExtension::EmptyString;
+   return std::string();
 }
 
 std::string CRfxcomConfiguration::getEthernetPort() const
 {
-   return shared::CStringExtension::EmptyString;
+   return std::string();
 }
 
 std::string CRfxcomConfiguration::getSerialPort() const

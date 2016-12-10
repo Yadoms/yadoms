@@ -24,7 +24,7 @@ namespace update
          shared::CDataContainer callbackData;
          callbackData.set("downloadUrl", downloadUrl);
 
-         progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginInstall, shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
+         progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginInstall, std::string(), shared::CDataContainer::EmptyContainer);
 
          /////////////////////////////////////////////
          //1. download package
@@ -32,7 +32,7 @@ namespace update
          try
          {
             YADOMS_LOG(information) << "Downloading package";
-            progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginDownload, shared::CStringExtension::EmptyString, callbackData);
+            progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginDownload, std::string(), callbackData);
             Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdatePluginDownload, 0.0, 50.0);
             YADOMS_LOG(information) << "Downloading package with sucess";
 
@@ -42,20 +42,20 @@ namespace update
             try
             {
                YADOMS_LOG(information) << "Deploy package " << downloadedPackage.toString();
-               progressCallback(true, 50.0f, i18n::CClientStrings::UpdatePluginDeploy, shared::CStringExtension::EmptyString, callbackData);
+               progressCallback(true, 50.0f, i18n::CClientStrings::UpdatePluginDeploy, std::string(), callbackData);
                Poco::Path pluginPath = CWorkerTools::deployPluginPackage(downloadedPackage);
                YADOMS_LOG(information) << "Plugin deployed with success";
 
 
                YADOMS_LOG(information) << "Refresh plugin list";
 
-               progressCallback(true, 90.0f, i18n::CClientStrings::UpdatePluginFinalize, shared::CStringExtension::EmptyString, callbackData);
+               progressCallback(true, 90.0f, i18n::CClientStrings::UpdatePluginFinalize, std::string(), callbackData);
                if (pluginManager)
                   pluginManager->updatePluginList();
 
                YADOMS_LOG(information) << "Plugin installed with success";
 
-               progressCallback(true, 100.0f, i18n::CClientStrings::UpdatePluginSuccess, shared::CStringExtension::EmptyString, callbackData);
+               progressCallback(true, 100.0f, i18n::CClientStrings::UpdatePluginSuccess, std::string(), callbackData);
             }
             catch (std::exception& ex)
             {
@@ -89,14 +89,14 @@ namespace update
          callbackData.set("pluginName", pluginName);
          callbackData.set("downloadUrl", downloadUrl);
 
-         progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginUpdate, shared::CStringExtension::EmptyString, callbackData);
+         progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginUpdate, std::string(), callbackData);
          /////////////////////////////////////////////
          //1. download package
          /////////////////////////////////////////////
          try
          {
             YADOMS_LOG(information) << "Downloading package";
-            progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginDownload, shared::CStringExtension::EmptyString, callbackData);
+            progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginDownload, std::string(), callbackData);
             Poco::Path downloadedPackage = CWorkerTools::downloadPackage(downloadUrl, progressCallback, i18n::CClientStrings::UpdatePluginDownload, 0.0, 50.0);
             YADOMS_LOG(information) << "Downloading package with sucess";
 
@@ -112,18 +112,18 @@ namespace update
             try
             {
                YADOMS_LOG(information) << "Deploy package " << downloadedPackage.toString();
-               progressCallback(true, 50.0f, i18n::CClientStrings::UpdatePluginDeploy, shared::CStringExtension::EmptyString, callbackData);
+               progressCallback(true, 50.0f, i18n::CClientStrings::UpdatePluginDeploy, std::string(), callbackData);
                Poco::Path pluginPath = CWorkerTools::deployPluginPackage(downloadedPackage);
                YADOMS_LOG(information) << "Plugin deployed with success";
 
 
                YADOMS_LOG(information) << "Start instances";
-               progressCallback(true, 90.0f, i18n::CClientStrings::UpdatePluginFinalize, shared::CStringExtension::EmptyString, callbackData);
+               progressCallback(true, 90.0f, i18n::CClientStrings::UpdatePluginFinalize, std::string(), callbackData);
                if (pluginManager)
                   pluginManager->startAllInstancesOfPlugin(pluginName);
 
                YADOMS_LOG(information) << "Plugin installed with success";
-               progressCallback(true, 100.0f, i18n::CClientStrings::UpdatePluginSuccess, shared::CStringExtension::EmptyString, callbackData);
+               progressCallback(true, 100.0f, i18n::CClientStrings::UpdatePluginSuccess, std::string(), callbackData);
             }
             catch (std::exception& ex)
             {
@@ -155,7 +155,7 @@ namespace update
          shared::CDataContainer callbackData;
          callbackData.set("pluginName", pluginName);
 
-         progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginRemove, shared::CStringExtension::EmptyString, callbackData);
+         progressCallback(true, 0.0f, i18n::CClientStrings::UpdatePluginRemove, std::string(), callbackData);
 
          try
          {
@@ -182,7 +182,7 @@ namespace update
             if (pluginManager)
                pluginManager->updatePluginList();
 
-            progressCallback(true, 100.0f, i18n::CClientStrings::UpdatePluginSuccess, shared::CStringExtension::EmptyString, callbackData);
+            progressCallback(true, 100.0f, i18n::CClientStrings::UpdatePluginSuccess, std::string(), callbackData);
          }
          catch (std::exception& ex)
          {

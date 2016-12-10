@@ -92,8 +92,7 @@ namespace database
             }
          }
 
-         boost::shared_ptr<entities::CKeyword> CKeyword::getKeyword(int deviceId,
-                                                                    const std::string& keyword) const
+         boost::shared_ptr<entities::CKeyword> CKeyword::getKeyword(int deviceId, const std::string& keyword) const
          {
             adapters::CKeywordAdapter adapter;
 
@@ -127,8 +126,7 @@ namespace database
             return adapter.getResults().at(0);
          }
 
-         std::vector<boost::shared_ptr<entities::CKeyword> > CKeyword::getKeywordIdFromFriendlyName(int deviceId,
-                                                                                                    const std::string& friendlyName) const
+         std::vector<boost::shared_ptr<entities::CKeyword> > CKeyword::getKeywordIdFromFriendlyName(int deviceId, const std::string& friendlyName) const
          {
             auto qSelect = m_databaseRequester->newQuery();
             qSelect.Select().
@@ -172,9 +170,7 @@ namespace database
             return adapter.getResults();
          }
 
-         std::vector<boost::shared_ptr<entities::CKeyword> > CKeyword::getDeviceKeywordsWithCapacity(int deviceId,
-                                                                                                     const std::string& capacityName,
-                                                                                                     const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode) const
+         std::vector<boost::shared_ptr<entities::CKeyword> > CKeyword::getDeviceKeywordsWithCapacity(int deviceId, const std::string& capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode) const
          {
             adapters::CKeywordAdapter adapter;
             auto qSelect = m_databaseRequester->newQuery();
@@ -188,6 +184,23 @@ namespace database
             return adapter.getResults();
          }
 
+         void CKeyword::updateKeywordBlacklistState(int keywordId, const bool blacklist)
+         {
+            auto keywordToUpdate = getKeyword(keywordId);
+            if (!keywordToUpdate)
+               throw shared::exception::CEmptyResult("Can not find keyword");
+
+            //insert in db
+            auto qUpdate = m_databaseRequester->newQuery();
+            qUpdate.Update(CKeywordTable::getTableName()).
+               Set(CKeywordTable::getBlacklistColumnName(), blacklist).
+               Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
+
+            if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+               throw shared::exception::CEmptyResult("Fail to update keyword blacklist state");
+         }
+
+
          void CKeyword::removeKeyword(const int keywordId)
          {
             //delete keyword
@@ -198,11 +211,10 @@ namespace database
                throw shared::exception::CEmptyResult("No lines affected");
          }
 
-         void CKeyword::updateKeywordFriendlyName(int keywordId,
-                                                  const std::string& newFriendlyName)
+         void CKeyword::updateKeywordFriendlyName(int keywordId, const std::string& newFriendlyName)
          {
             //get a good name
-            if (newFriendlyName != shared::CStringExtension::EmptyString)
+            if (newFriendlyName != std::string())
             {
                auto keywordToUpdate = getKeyword(keywordId);
                if (!keywordToUpdate)

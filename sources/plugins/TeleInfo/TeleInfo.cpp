@@ -16,9 +16,10 @@ namespace yApi = shared::plugin::yPluginApi;
 IMPLEMENT_PLUGIN(CTeleInfo)
 
 
-CTeleInfo::CTeleInfo(): 
-   m_isDeveloperMode(false),
-   m_runningState(false)
+CTeleInfo::CTeleInfo()
+   : m_logger(std::cout),
+     m_isDeveloperMode(false),
+     m_runningState(false)
 {
 }
 
@@ -40,7 +41,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    std::cout << "Teleinfo is starting..." << std::endl;
 
-   m_isDeveloperMode = api->isDeveloperMode();
+   m_isDeveloperMode = api->getYadomsInformation()->developperMode();
 
    // Load configuration values (provided by database)
    m_configuration.initializeWith(api->getConfiguration());
@@ -75,68 +76,68 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       switch (api->getEventHandler().waitForEvents())
       {
       case yApi::IYPluginApi::kEventStopRequested:
-      {
-         std::cout << "Stop requested" << std::endl;
-         api->setPluginState(yApi::historization::EPluginState::kStopped);
-         return;
-      }
+         {
+            std::cout << "Stop requested" << std::endl;
+            api->setPluginState(yApi::historization::EPluginState::kStopped);
+            return;
+         }
       case kEvtPortConnection:
-      {
-         std::cout << "Teleinfo plugin :  Port Connection" << std::endl;
-         api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+         {
+            std::cout << "Teleinfo plugin :  Port Connection" << std::endl;
+            api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-         if (api->getEventHandler().getEventData<bool>())
-            processTeleInfoConnectionEvent(api);
-         else
-            processTeleInfoUnConnectionEvent(api);
+            if (api->getEventHandler().getEventData<bool>())
+               processTeleInfoConnectionEvent(api);
+            else
+               processTeleInfoUnConnectionEvent(api);
 
-         break;
-      }
+            break;
+         }
       case kEvtPortDataReceived:
-      {
+         {
          if (m_isDeveloperMode) std::cout << "TeleInfo plugin :  DataReceived" << std::endl;
 
-         processDataReceived(api,
-                             api->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
+            processDataReceived(api,
+                                api->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
 
-         break;
-      }
+            break;
+         }
       case kEvtTimerRefreshTeleInfoData:
-      {
-         // When received this timer, we restart the reception through the serial port
+         {
+            // When received this timer, we restart the reception through the serial port
          if (m_isDeveloperMode) std::cout << "Teleinfo plugin :  Resume COM" << std::endl;
-         m_transceiver->ResetRefreshTags();
-         m_receiveBufferHandler->resume();
+            m_transceiver->ResetRefreshTags();
+            m_receiveBufferHandler->resume();
 
-         //Lauch a new time the time out to detect connexion failure
-         m_waitForAnswerTimer->start();
+            //Lauch a new time the time out to detect connexion failure
+            m_waitForAnswerTimer->start();
 
-         break;
-      }
+            break;
+         }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
-      {
-         api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
-         onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
-         api->setPluginState(yApi::historization::EPluginState::kRunning);
+         {
+            api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+            api->setPluginState(yApi::historization::EPluginState::kRunning);
 
-         break;
-      }
+            break;
+         }
       case kErrorRetryTimer:
-      {
-         createConnection(api);
-         break;
-      }
+         {
+            createConnection(api);
+            break;
+         }
       case kAnswerTimeout:
-      {
-         std::cerr << "No answer received, try to reconnect in a while..." << std::endl;
-         errorProcess(api);
-         break;
-      }
+         {
+            std::cerr << "No answer received, try to reconnect in a while..." << std::endl;
+            errorProcess(api);
+            break;
+         }
       default:
-      {
-         std::cerr << "Unknown message id" << std::endl;
-         break;
-      }
+         {
+            std::cerr << "Unknown message id" << std::endl;
+            break;
+         }
       }
    }
 }
@@ -196,7 +197,8 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
    // Stop timeout
    m_waitForAnswerTimer->stop();
 
-   if (m_isDeveloperMode) m_logger.logReceived(data);
+   if (m_isDeveloperMode)
+      m_logger.logReceived(data);
 
    m_transceiver->decodeTeleInfoMessage(api, data);
 
@@ -207,7 +209,7 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
       m_receiveBufferHandler->suspend();
    }
 
-   bool newState = true;
+   auto newState = true;
    if (m_runningState != newState)
    {
       api->setPluginState(yApi::historization::EPluginState::kRunning);
@@ -253,3 +255,4 @@ void CTeleInfo::initTeleInfoReceiver() const
    // Flush receive buffer
    m_port->flush();
 }
+

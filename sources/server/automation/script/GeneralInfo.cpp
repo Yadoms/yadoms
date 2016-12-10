@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "GeneralInfo.h"
 #include <shared/ServiceLocator.h>
-#include "IObjectFactory.h"
 #include "IRunningInformation.h"
-#include "DayLight.h"
+#include "DayLightProvider.h"
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
 #include <shared/StringExtension.h>
@@ -12,7 +11,9 @@ namespace automation
 {
    namespace script
    {
-      CGeneralInfo::CGeneralInfo()
+      CGeneralInfo::CGeneralInfo(boost::shared_ptr<shared::ILocation> locationProvider)
+         : m_locationProvider(locationProvider),
+           m_dayLightProvider(boost::make_shared<CDayLightProvider>(locationProvider))
       {
       }
 
@@ -24,15 +25,13 @@ namespace automation
       {
          try
          {
-            auto objectFactory = shared::CServiceLocator::instance().get<IObjectFactory>();
-
             switch (key)
             {
             case shared::script::yScriptApi::IYScriptApi::kSunrise:
                {
                   try
                   {
-                     return CDayLight::formatSunEventTime(objectFactory->getDayLight()->sunriseTime());
+                     return CDayLightProvider::formatSunEventTime(m_dayLightProvider->sunriseTime());
                   }
                   catch (shared::exception::CEmptyResult&)
                   {
@@ -44,7 +43,7 @@ namespace automation
                {
                   try
                   {
-                     return CDayLight::formatSunEventTime(objectFactory->getDayLight()->sunsetTime());
+                     return CDayLightProvider::formatSunEventTime(m_dayLightProvider->sunsetTime());
                   }
                   catch (shared::exception::CEmptyResult&)
                   {
@@ -52,9 +51,9 @@ namespace automation
                      return std::string();
                   }
                }
-            case shared::script::yScriptApi::IYScriptApi::kLatitude: return shared::CStringExtension::cultureInvariantToString(objectFactory->getLocation()->latitude());
-            case shared::script::yScriptApi::IYScriptApi::kLongitude: return shared::CStringExtension::cultureInvariantToString(objectFactory->getLocation()->longitude());
-            case shared::script::yScriptApi::IYScriptApi::kAltitude: return shared::CStringExtension::cultureInvariantToString(objectFactory->getLocation()->altitude());
+            case shared::script::yScriptApi::IYScriptApi::kLatitude: return shared::CStringExtension::cultureInvariantToString(m_locationProvider->latitude());
+            case shared::script::yScriptApi::IYScriptApi::kLongitude: return shared::CStringExtension::cultureInvariantToString(m_locationProvider->longitude());
+            case shared::script::yScriptApi::IYScriptApi::kAltitude: return shared::CStringExtension::cultureInvariantToString(m_locationProvider->altitude());
             case shared::script::yScriptApi::IYScriptApi::kYadomsServerOS: return shared::CServiceLocator::instance().get<IRunningInformation>()->getOperatingSystemName();
             case shared::script::yScriptApi::IYScriptApi::kYadomsServerVersion: return shared::CServiceLocator::instance().get<IRunningInformation>()->getSoftwareVersion().serialize();
             default:
