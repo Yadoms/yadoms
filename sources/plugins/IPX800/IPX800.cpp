@@ -36,8 +36,6 @@ enum
 
 void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   bool initializationOk = false;
-
    std::cout << "IPX800 is starting..." << std::endl;
       
    try {
@@ -57,13 +55,11 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       api->setPluginState(yApi::historization::EPluginState::kRunning);
       std::cout << "IPX800 plugin is running..." << std::endl;
-      initializationOk = true;
    }
    catch (...)
    {
       api->setPluginState(yApi::historization::EPluginState::kCustom, "initializationError");
       std::cerr << "IPX800 plugin initialization error..." << std::endl;
-      initializationOk = false;
    }
 
    while (true)
@@ -95,7 +91,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             try {
                api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
                onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
-               api->setPluginState(yApi::historization::EPluginState::kRunning);
+               api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
             }
             catch (...)
             {
@@ -108,16 +104,13 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          std::cout << "Timer received" << std::endl;
 
          try {
-            if (initializationOk)
-            {
-               auto forceRefresh = false;
+            auto forceRefresh = false;
 
-               // Retrieve event information, if any !
-               try { forceRefresh = api->getEventHandler().getEventData<bool>(); }
-               catch (shared::exception::CBadConversion&) { }
+            // Retrieve event information, if any !
+            try { forceRefresh = api->getEventHandler().getEventData<bool>(); }
+            catch (shared::exception::CBadConversion&) { }
 
-               m_ioManager->readAllIOFromDevice(api, forceRefresh);
-            }
+            m_ioManager->readAllIOFromDevice(api, forceRefresh);
          }
          catch (CFailedSendingException&)
          {
@@ -136,43 +129,37 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
       {
          // Yadoms asks for device creation
-         if (initializationOk)
+         auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
+         std::cout << "Manually device creation request received for device :" << request->getData().getDeviceName() << std::endl;
+         try
          {
-            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
-            std::cout << "Manually device creation request received for device :" << request->getData().getDeviceName() << std::endl;
-            try
-            {
-               // Creation of the device
-               request->sendSuccess(m_factory->createDeviceManually(api, request->getData()));
+            // Creation of the device
+            request->sendSuccess(m_factory->createDeviceManually(api, request->getData()));
 
-               // Send an event to refresh all IOs
-               api->getEventHandler().postEvent<bool>(kRefreshStatesReceived, true);
-            }
-            catch (CManuallyDeviceCreationException& e)
-            {
-               request->sendError(e.what());
-            }
-            catch (std::exception &e)
-            {
-               std::cout << "Unknow error : " << e.what() << std::endl;
-            }
+            // Send an event to refresh all IOs
+            api->getEventHandler().postEvent<bool>(kRefreshStatesReceived, true);
+         }
+         catch (CManuallyDeviceCreationException& e)
+         {
+            request->sendError(e.what());
+         }
+         catch (std::exception &e)
+         {
+            std::cout << "Unknow error : " << e.what() << std::endl;
          }
          break;
       }
       case yApi::IYPluginApi::kEventDeviceRemoved:
       {
-         if (initializationOk)
+         try {
+            auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
+            m_factory->removeDevice(api, device->device());
+            m_ioManager->removeDevice(api, device->device());
+            std::cout << device->device() << " was removed" << std::endl;
+         }
+         catch (std::exception &e)
          {
-            try {
-               auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
-               m_factory->removeDevice(api, device->device());
-               m_ioManager->removeDevice(api, device->device());
-               std::cout << device->device() << " was removed" << std::endl;
-            }
-            catch (std::exception &e)
-            {
-               std::cout << "Unknow error : " << e.what() << std::endl;
-            }
+            std::cout << "Unknow error : " << e.what() << std::endl;
          }
          break;
       }
@@ -207,12 +194,11 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
 
          try {
-            if (initializationOk)
-               m_ioManager->onCommand(api, command);
+            m_ioManager->onCommand(api, command);
          }
          catch (std::exception &e)
          {
-            std::cout << "Unknow error : " << e.what() << std::endl;
+            std::cout << "Exception : " << e.what() << std::endl;
          }
          break;
       }
@@ -235,6 +221,7 @@ void CIPX800::initIPX800(boost::shared_ptr<yApi::IYPluginApi> api)
 		// first reading
 		m_ioManager->readAllIOFromDevice(api, true);
 		m_refreshTimer->start();
+      api->setPluginState(yApi::historization::EPluginState::kRunning);
 	}
 	catch (CFailedSendingException&)
 	{

@@ -30,7 +30,8 @@ namespace http
          Poco::Net::HTTPClientSession session(uri.getHost(), uri.getPort());
          Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET, uri.getPathAndQuery(), Poco::Net::HTTPMessage::HTTP_1_1);
 
-		 //session.setTimeout(Poco::Timespan(1, 0));
+         // The time out is drastically lowered. The module is considered in the same network.
+		   session.setTimeout(Poco::Timespan(2, 0));
          session.sendRequest(request);
 
          Poco::Net::HTTPResponse response;

@@ -15,7 +15,8 @@
 		"Port": {
 		  "type": "int",
 		  "required" : "true",
-		  "defaultValue": "80"
+		  "defaultValue": "80",
+        "required" : "true"
 		},
 	    "authentication": {
 		   "type": "section",
@@ -24,7 +25,8 @@
 		   "content": {
 		      "Password": {
 			     "type": "string",
-			     "encrypted": "true"
+			     "encrypted": "true",
+              "required" : "true"
 			}
 		 }
 	  }
