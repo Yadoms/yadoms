@@ -6,12 +6,12 @@ include("../YadomsPluginsCommon.cmake")
 ## Place here all the plugin source files
 #########################################
 
-set(CARTELECTRONIC_TELEINFO_SOURCES
-   IncrementSequenceNumber.h
-   ISequenceNumberProvider.h
+set(TELEINFO_SOURCES
+   Decoder.h
+   Decoder.cpp
+   IDecoder.h
    ITeleInfoConfiguration.h
    ITeleInfoMessage.h
-   ITransceiver.h
    stdafx.h
    stdafx.cpp
    TeleInfo.h
@@ -23,8 +23,6 @@ set(CARTELECTRONIC_TELEINFO_SOURCES
    TeleInfoReceiveBufferHandler.h
    TeleInfoReceiveBufferHandler.cpp
    TeleInfotrxHelpers.h
-   Transceiver.h
-   Transceiver.cpp
    Keywords/ForecastTomorrow.cpp
    Keywords/ForecastTomorrow.h
    Keywords/IKeyword.h
@@ -52,11 +50,11 @@ source_group(specificHistorizer specificHistorizer/*.*)
 
 #########################################
 ## Always leave this three lines to configure plugin correctly
-## even if CARTELECTRONIC_TELEINFO_ADDITIONAL_INC_DIR or CARTELECTRONIC_TELEINFO_ADDITIONAL_LIB are empty
+## even if TELEINFO_ADDITIONAL_INC_DIR or TELEINFO_ADDITIONAL_LIB are empty
 #########################################
-PLUGIN_SOURCES(teleinfo ${CARTELECTRONIC_TELEINFO_SOURCES})
-PLUGIN_INCLDIR(teleinfo ${CARTELECTRONIC_TELEINFO_ADDITIONAL_INC_DIR})
-PLUGIN_LINK(teleinfo ${CARTELECTRONIC_TELEINFO_ADDITIONAL_LIB})
+PLUGIN_SOURCES(teleinfo ${TELEINFO_SOURCES})
+PLUGIN_INCLDIR(teleinfo ${TELEINFO_ADDITIONAL_INC_DIR})
+PLUGIN_LINK(teleinfo ${TELEINFO_ADDITIONAL_LIB})
 
 #########################################
 ## Post-build commands
