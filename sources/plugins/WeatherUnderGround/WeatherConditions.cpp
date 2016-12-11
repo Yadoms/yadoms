@@ -5,7 +5,8 @@
 #include "Keywords/KeywordHelpers.h"
 
 CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
-                                       IWUConfiguration& wuConfiguration)
+                                       IWUConfiguration& wuConfiguration,
+                                       const IdeviceConfiguration& deviceConfiguration)
    : m_localisation(wuConfiguration.getLocalisation()),
      m_countryOrState(wuConfiguration.getCountryOrState()),
      m_deviceName("Conditions"),
@@ -22,11 +23,12 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
      m_windMaxSpeed(boost::make_shared<yApi::historization::CSpeed>("windMaxSpeed")),
      m_feelsLike(boost::make_shared<yApi::historization::CTemperature>("FeelsLike")),
      m_windchill(boost::make_shared<yApi::historization::CTemperature>("Windchill")),
-     m_liveConditions(boost::make_shared<CCondition>(m_deviceName, "LiveConditions"))
+     m_liveConditions(boost::make_shared<CCondition>(m_deviceName, "LiveConditions")),
+     m_url("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/conditions/q/" + m_countryOrState + "/" + m_localisation + ".json")
 {
    try
    {
-      initializeVariables(api, wuConfiguration);
+      initializeKeywords(api, deviceConfiguration);
    }
    catch (shared::exception::CException& e)
    {
@@ -35,13 +37,13 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
    }
 }
 
-void CWeatherConditions::initializeVariables(boost::shared_ptr<yApi::IYPluginApi> api,
-                                             IWUConfiguration& wuConfiguration)
+void CWeatherConditions::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api,
+                                            const IdeviceConfiguration& deviceConfiguration)
 {
    // Clear the list
    m_keywords.clear();
 
-   if (wuConfiguration.IsConditionsIndividualKeywordsEnabled())
+   if (deviceConfiguration.isConditionsIndividualKeywordsEnabled())
    {
       m_keywords.push_back(m_temp);
       m_keywords.push_back(m_pressure);
@@ -58,7 +60,7 @@ void CWeatherConditions::initializeVariables(boost::shared_ptr<yApi::IYPluginApi
       m_keywords.push_back(m_windchill);
    }
 
-   if (wuConfiguration.IsLiveConditionsEnabled())
+   if (deviceConfiguration.isLiveConditionsEnabled())
    {
       m_keywords.push_back(m_liveConditions->getHistorizable());
 
@@ -72,18 +74,15 @@ void CWeatherConditions::initializeVariables(boost::shared_ptr<yApi::IYPluginApi
                                shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit());
    }
 
-   if (wuConfiguration.IsConditionsIndividualKeywordsEnabled() || wuConfiguration.IsLiveConditionsEnabled())
+   if (deviceConfiguration.isConditionsIndividualKeywordsEnabled() || deviceConfiguration.isLiveConditionsEnabled())
    {
-      m_url.str("");
-      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/conditions/q/" << m_countryOrState << "/" << m_localisation << ".json";
-
       // Declare keywords
       std::string m_URL = "www.wunderground.com/";
       api->declareDevice(m_deviceName, m_URL, m_keywords);
    }
 }
 
-void CWeatherConditions::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration)
+void CWeatherConditions::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration)
 {
    try
    {
@@ -93,7 +92,21 @@ void CWeatherConditions::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUC
       //read the country or State code
       m_countryOrState = wuConfiguration.getCountryOrState();
 
-      initializeVariables(api, wuConfiguration);
+      m_url.str("");
+      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/conditions/q/" << m_countryOrState << "/" << m_localisation << ".json";
+   }
+   catch (shared::exception::CException& e)
+   {
+      std::cout << e.what() << std::endl;
+      throw;
+   }
+}
+
+void CWeatherConditions::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IdeviceConfiguration& deviceConfiguration)
+{
+   try
+   {
+      initializeKeywords(api, deviceConfiguration);
    }
    catch (shared::exception::CException& e)
    {
@@ -113,7 +126,7 @@ std::string CWeatherConditions::getCityName() const
 }
 
 void CWeatherConditions::parse(boost::shared_ptr<yApi::IYPluginApi> api,
-                               const IWUConfiguration& wuConfiguration,
+                               const IdeviceConfiguration& deviceConfiguration,
                                const shared::CDataContainer dataToParse)
 {
    try
@@ -122,7 +135,7 @@ void CWeatherConditions::parse(boost::shared_ptr<yApi::IYPluginApi> api,
       m_liveConditions->setCityName(m_cityConditions);
       std::cout << "Observation location :" << dataToParse.get<std::string>("current_observation.observation_location.full") << std::endl;
 
-      if (wuConfiguration.IsConditionsIndividualKeywordsEnabled())
+      if (deviceConfiguration.isConditionsIndividualKeywordsEnabled())
       {
          //
          //Temperature
@@ -218,7 +231,7 @@ void CWeatherConditions::parse(boost::shared_ptr<yApi::IYPluginApi> api,
             m_windchill->set(windchill);
       }
 
-      if (wuConfiguration.IsLiveConditionsEnabled())
+      if (deviceConfiguration.isLiveConditionsEnabled())
       {
          m_liveConditions->setPeriod(dataToParse,
                                        "current_observation.local_time_rfc822",

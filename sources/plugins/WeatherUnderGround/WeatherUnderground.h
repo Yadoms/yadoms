@@ -46,17 +46,6 @@ private:
    shared::CDataContainer SendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api, std::string url, int event, int &nbRetry);
 
    //--------------------------------------------------------------
-   /// \brief get All forecast stations around the location
-   /// \param[in] api       pointer to the API
-   /// \param[in] location  GPS location
-   /// \param[in] apikey    api key to weatherUnderground
-   /// \return all forecast stations if found
-   //--------------------------------------------------------------
-   std::vector<shared::CDataContainer> getAllStations(boost::shared_ptr<yApi::IYPluginApi> api, 
-													  boost::shared_ptr<const shared::ILocation> location, 
-													  const std::string& apikey);
-
-   //--------------------------------------------------------------
    /// \brief	The plugin Name
    //--------------------------------------------------------------
    std::string m_deviceName;

@@ -2,7 +2,8 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "WeatherUndergroundHelpers.h"
 #include <shared/DataContainer.h>
-#include "WUConfiguration.h"
+#include "IWUConfiguration.h"
+#include "IdeviceConfiguration.h"
 #include "Keywords/Forecast.h"
 
 namespace yApi = shared::plugin::yPluginApi;
@@ -16,11 +17,13 @@ class CForecastDays
 public:
    //--------------------------------------------------------------
    /// \brief	  Constructor
-   /// \param[in] api              pointer to the API
-   /// \param[in] wuConfiguration  The Configuration of the module
+   /// \param[in] api                  pointer to the API
+   /// \param[in] wuConfiguration      The Configuration of the module
+   /// \param[in] deviceConfiguration  The Configuration of the device
    //--------------------------------------------------------------
    CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
-                 IWUConfiguration& wuConfiguration);
+                 IWUConfiguration& wuConfiguration,
+                 IdeviceConfiguration& deviceConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	  Parse the answer from the web Site
@@ -29,16 +32,24 @@ public:
    /// \param[in] dataToParse     data to parse
    //--------------------------------------------------------------
    void parse(boost::shared_ptr<yApi::IYPluginApi> api,
-              const IWUConfiguration& wuConfiguration,
+              const IdeviceConfiguration& deviceConfiguration,
               const shared::CDataContainer dataToParse) const;
 
    //--------------------------------------------------------------
    /// \brief	  Update the configuration when something change from the HMI
-   /// \param[in] api                pointer to the API
-   /// \param[in] wuConfiguration    The Plugin configuration
+   /// \param[in] api                    pointer to the API
+   /// \param[in] wuConfiguration        The Plugin configuration
    //--------------------------------------------------------------
-   void onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                 IWUConfiguration& wuConfiguration);
+   void onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                       IWUConfiguration& wuConfiguration);
+
+   //--------------------------------------------------------------
+   /// \brief	  Update the configuration when something change from the HMI
+   /// \param[in] api                    pointer to the API
+   /// \param[in] deviceConfiguration    The configuration of the device
+   //--------------------------------------------------------------
+   void onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                       IdeviceConfiguration& deviceConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	  Set the city Name
@@ -61,11 +72,11 @@ private:
 
    //--------------------------------------------------------------
    /// \brief	  Initialise Forecast 10 Days variables
-   /// \param[in] api                pointer to the API
-   /// \param[in] wuConfiguration    The Plugin configuration
+   /// \param[in] api                    pointer to the API
+   /// \param[in] deviceConfiguration    The device configuration
    //--------------------------------------------------------------
    void InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
-                               IWUConfiguration& wuConfiguration);
+                               const IdeviceConfiguration& deviceConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site

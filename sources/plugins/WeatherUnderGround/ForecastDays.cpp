@@ -4,20 +4,19 @@
 #include "Keywords/KeywordHelpers.h"
 
 CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
-                             IWUConfiguration& wuConfiguration)
+                             IWUConfiguration& wuConfiguration,
+                             IdeviceConfiguration& deviceConfiguration)
    : m_localisation(wuConfiguration.getLocalisation()),
      m_countryOrState(wuConfiguration.getCountryOrState()),
      m_deviceName("Forecast"),
      m_forecast(boost::make_shared<CForecast>(m_deviceName, "Forecast", weatherunderground::helper::EPeriod::kDay)),
      m_temp(boost::make_shared<yApi::historization::CTemperature>("low_temperature")),
-     m_isDeveloperMode(false)
+     m_isDeveloperMode(false),
+     m_url ("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/forecast/q/" + m_countryOrState + "/" + m_localisation + ".json")
 {
    try
    {
-      m_url.str("");
-      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/forecast/q/" << m_countryOrState << "/" << m_localisation << ".json";
-
-      InitializeForecastDays(api, wuConfiguration);
+      InitializeForecastDays(api, deviceConfiguration);
    }
    catch (shared::exception::CException& e)
    {
@@ -27,10 +26,9 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
-                                           IWUConfiguration& wuConfiguration
-)
+                                           const IdeviceConfiguration& deviceConfiguration)
 {
-   if (wuConfiguration.IsForecast10DaysEnabled())
+   if (deviceConfiguration.isForecast10DaysEnabled())
    {
       m_keywords.clear();
 
@@ -45,7 +43,7 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
       m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
                           shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit());
 
-      if (wuConfiguration.IsRainIndividualKeywordsEnabled())
+      if (deviceConfiguration.isRainIndividualKeywordsEnabled())
       {
          for (auto counter = 0; counter < NB_RAIN_FORECAST_DAY; ++counter)
          {
@@ -64,8 +62,8 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
    }
 }
 
-void CForecastDays::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                             IWUConfiguration& wuConfiguration)
+void CForecastDays::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                                   IWUConfiguration& wuConfiguration)
 {
    //read the localisation
    m_localisation = wuConfiguration.getLocalisation();
@@ -74,19 +72,22 @@ void CForecastDays::onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
    m_countryOrState = wuConfiguration.getCountryOrState();
 
    m_url.str("");
-
    m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/" << m_prefix << "/q/" << m_countryOrState << "/" << m_localisation << ".json";
+}
 
-   InitializeForecastDays(api, wuConfiguration);
+void CForecastDays::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                                   IdeviceConfiguration& deviceConfiguration)
+{
+   InitializeForecastDays(api, deviceConfiguration);
 }
 
 void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
-                          const IWUConfiguration& wuConfiguration,
+                          const IdeviceConfiguration& deviceConfiguration,
                           const shared::CDataContainer dataToParse) const
 {
    try
    {
-      if (wuConfiguration.IsForecast10DaysEnabled())
+      if (deviceConfiguration.isForecast10DaysEnabled())
       {
          auto result = dataToParse.get<std::vector<shared::CDataContainer> >("forecast.simpleforecast.forecastday");
          std::vector<shared::CDataContainer>::iterator i;
@@ -118,7 +119,7 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
                   m_temp->set(temp);
             }
 
-            if (wuConfiguration.IsRainIndividualKeywordsEnabled())
+            if (deviceConfiguration.isRainIndividualKeywordsEnabled())
             {
                if (counter < NB_RAIN_FORECAST_DAY)
                {

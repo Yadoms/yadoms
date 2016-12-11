@@ -310,27 +310,7 @@
 				"WI": "Wisconsin",
 				"WY": "Wyoming"
 			}
-      },
-		"LiveConditions": {
-			"name": "Conditions actuelles",
-			"description": "Informations sur le temps actuel"
-		},
-		"IndividualKeywordsLiveConditions": {
-			"name": "Paramètres individuelles des conditions actuelles",
-			"description": "Toutes les informations sont individuellement sauvegardées dans la base de données"
-		},
-		"Astronomy": {
-			"name": "Lune",
-			"description": "Information sur les phases de la lune"
-		},
-		"Forecast10Days": {
-			"name": "Prévisions Météo",
-			"description": "Prévisions météorogiques pour les prochains 10 jours"
-		},
-		"IndividualRainKeywordsForecast10days": {
-			"name": "Prévisions pluviométriques",
-			"description": "Les prévisions pluviométriques pour les 3 prochains jours peuvent être utilisées dans Yadoms"
-		}
+      }
 	},
 	"customLabels": {
 		"pluginState": {

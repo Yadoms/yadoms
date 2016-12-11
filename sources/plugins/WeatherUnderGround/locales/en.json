@@ -311,26 +311,6 @@
 				"WI": "Wisconsin",
 				"WY": "Wyoming"
 			}
-		},
-		"LiveConditions": {
-			"name": "Live Condition",
-			"description": "Information about local weather conditions"
-		},
-		"IndividualKeywordsLiveConditions": {
-			"name": "Individual Parameters of Live Condition",
-			"description": "All informations could be individually stored into the database, and used in Yadoms"
-		},
-		"Astronomy": {
-			"name": " Moon information",
-			"description": ""
-		},
-		"Forecast10Days": {
-			"name": "Forecast",
-			"description": "Summary of the weather for the next 10 days"
-		},
-		"IndividualRainKeywordsForecast10days": {
-			"name": "Rain Forecast",
-			"description": "Individual rain forecast parameters for 3 next days could be used in Yadoms"
 		}
 	},
 	"customLabels": {

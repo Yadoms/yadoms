@@ -2,6 +2,7 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
 #include "WUConfiguration.h"
+#include "IdeviceConfiguration.h"
 #include "Keywords/Moon.h"
 
 namespace yApi = shared::plugin::yPluginApi;
@@ -15,11 +16,13 @@ class CAstronomy
 public:
    //--------------------------------------------------------------
    /// \brief	  Constructor
-   /// \param[in] api              pointer to the API
-   /// \param[in] wuConfiguration  The Configuration of the module
+   /// \param[in] api                  pointer to the API
+   /// \param[in] wuConfiguration      The Configuration of the module
+   /// \param[in] deviceconfiguration  The Configuration of the device
    //--------------------------------------------------------------
    CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
-              IWUConfiguration& wuConfiguration);
+              IWUConfiguration& wuConfiguration,
+              IdeviceConfiguration& deviceConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	  Parse the answer from the web Site
@@ -28,16 +31,24 @@ public:
    /// \param[in] dataToParse     received data to parse
    //--------------------------------------------------------------
    void parse(boost::shared_ptr<yApi::IYPluginApi> api,
-              const IWUConfiguration& wuConfiguration,
+              const IdeviceConfiguration& deviceConfiguration,
               const shared::CDataContainer dataToParse);
 
    //--------------------------------------------------------------
    /// \brief	  Update the configuration when something change from the HMI
-   /// \param[in] api                pointer to the API
-   /// \param[in] wuConfiguration    The Plugin configuration
+   /// \param[in] api                  pointer to the API
+   /// \param[in] wuConfiguration      The Plugin configuration
    //--------------------------------------------------------------
-   void onUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                 IWUConfiguration& wuConfiguration);
+   void onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                       IWUConfiguration& wuConfiguration);
+
+   //--------------------------------------------------------------
+   /// \brief	  Update the configuration when something change from the HMI
+   /// \param[in] api                  pointer to the API
+   /// \param[in] deviceconfiguration  The Configuration of the device
+   //--------------------------------------------------------------
+   void onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                       IdeviceConfiguration& deviceConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	  Return the url
@@ -53,12 +64,12 @@ public:
 private:
 
    //--------------------------------------------------------------
-   /// \brief	  Initialise Astronomy variables
-   /// \param[in] api                pointer to the API
-   /// \param[in] wuConfiguration    The Plugin configuration
+   /// \brief	  Initialise Astronomy keywords
+   /// \param[in] api                  pointer to the API
+   /// \param[in] deviceconfiguration  The Configuration of the device
    //--------------------------------------------------------------
-   void initializeVariables(boost::shared_ptr<yApi::IYPluginApi> api,
-                            IWUConfiguration& wuConfiguration);
+   void initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api,
+                           const IdeviceConfiguration& deviceConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site

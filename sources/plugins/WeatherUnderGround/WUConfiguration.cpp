@@ -69,29 +69,3 @@ std::string CWUConfiguration::getState() const
 {
    return m_data.get<std::string>("State");
 }
-
-bool CWUConfiguration::IsLiveConditionsEnabled() const
-{
-   return m_data.get<bool>("LiveConditions");
-}
-
-bool CWUConfiguration::IsAstronomyEnabled() const
-{
-   return m_data.get<bool>("Astronomy");
-}
-
-bool CWUConfiguration::IsForecast10DaysEnabled() const
-{
-   return m_data.get<bool>("Forecast10Days");
-}
-
-bool CWUConfiguration::IsConditionsIndividualKeywordsEnabled() const
-{
-   return m_data.get<bool>("IndividualKeywordsLiveConditions");
-}
-
-bool CWUConfiguration::IsRainIndividualKeywordsEnabled() const
-{
-   return m_data.get<bool>("IndividualRainKeywordsForecast10days");
-}
-

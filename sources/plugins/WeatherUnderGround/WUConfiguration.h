@@ -26,11 +26,6 @@ public:
    std::string getLocalisation() override;
    std::string getCountryOrState() override;
    std::string getState() const override;
-   bool IsConditionsIndividualKeywordsEnabled() const override;
-   bool IsLiveConditionsEnabled() const override;
-   bool IsRainIndividualKeywordsEnabled() const override;
-   bool IsAstronomyEnabled() const override;
-   bool IsForecast10DaysEnabled() const override;
    // [END] IWUConfiguration implementation
 
 private:

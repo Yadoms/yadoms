@@ -316,26 +316,6 @@
 				"WY": ""
 			},
 			"defaultValue": "NA"
-		},
-		"LiveConditions": {
-			"type": "bool",
-			"defaultValue": "true"
-		},
-		"IndividualKeywordsLiveConditions": {
-			"type": "bool",
-			"defaultValue": "false"
-		},
-		"Astronomy": {
-			"type": "bool",
-			"defaultValue": "false"
-		},
-		"Forecast10Days": {
-			"type": "bool",
-			"defaultValue": "true"
-		},
-		"IndividualRainKeywordsForecast10days": {
-			"type": "bool",
-			"defaultValue": "false"
 		}
 	},
    "manuallyDeviceCreationConfigurationSchema": {
