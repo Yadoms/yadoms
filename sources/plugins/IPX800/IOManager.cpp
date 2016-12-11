@@ -65,12 +65,10 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       if (deviceType == (*iteratorExtension)->getDeviceType())
       {
-         shared::CDataContainer results;
-
          if (m_isPasswordActivated)
             parameters.set("key", m_password);
 
-         results = urlManager::sendCommand(m_socketAddress, (*iteratorExtension)->buildMessageToDevice(api, parameters, command));
+		 shared::CDataContainer results = urlManager::sendCommand(m_socketAddress, (*iteratorExtension)->buildMessageToDevice(api, parameters, command));
 
          // If the answer is a success, we historize the data
          if (results.containsValue("Success"))

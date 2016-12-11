@@ -19,7 +19,8 @@
 		         "description": "la clé d'accès"	
 		      }
 		 }
-	  },
+	  }
+   },
    "manuallyDeviceCreationConfigurationSchema": {
       "type":
       {
@@ -94,7 +95,7 @@
 					   "values": {
 					     "1" : "X24-D Slot n°1",
 						  "2" : "X24-D Slot n°2"
-					   }					   
+					   }
 					}
 				 }
 			 }
@@ -107,7 +108,6 @@
          "noConnection": "Pas de connexion à l'équipement",
          "noInformation": "L'équipement est connecté, mais aucune information n'est retournée. Vérifiez la clé apikey.",
 			"updateConfiguration": "Mise à jour de la configuration..."
-		   }
-	   }
-   }
+		}
+	}
 }

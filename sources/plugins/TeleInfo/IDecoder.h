@@ -7,33 +7,27 @@ namespace yApi = shared::plugin::yPluginApi;
 //--------------------------------------------------------------
 /// \brief	The TeleInfo protocol interface
 //--------------------------------------------------------------
-class ITransceiver
+class IDecoder
 {
 public:
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~ITransceiver()
+   virtual ~IDecoder()
    {
    }
 
    //--------------------------------------------------------------
-   /// \brief	                    Decode TeleInfo Reader message
+   /// \brief	                   Decode TeleInfo Reader message
    /// \param [in] api             Plugin execution context (Yadoms API)
-   /// \param [in] data             Data received
+   /// \param [in] messages        Received messages
    //--------------------------------------------------------------
    virtual void decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> api,
-                                      const shared::communication::CByteBuffer& data) = 0;
-
+                                      const boost::shared_ptr<std::map<std::string, std::string>>& messages) = 0;
+   
    //--------------------------------------------------------------
-   /// \brief	                    Return if all information have been read
-   /// \return                      If all information have been updated
+   /// \brief	                     Return if the ERDF counter TeleInfo is desactivated
+   /// \return                      the counter state
    //--------------------------------------------------------------
-   virtual bool IsInformationUpdated() = 0;
-
-   //--------------------------------------------------------------
-   /// \brief	                     Refresh update boolean information
-   //--------------------------------------------------------------
-   virtual void ResetRefreshTags() = 0;
+   virtual bool isERDFCounterDesactivated() const = 0;
 };
-

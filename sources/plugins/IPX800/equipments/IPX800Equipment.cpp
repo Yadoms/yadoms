@@ -139,13 +139,12 @@ namespace equipments
    {
       if (m_pendingIOHistorizer)
       {
-         
          bool newValue = false; 
 
          try {
             newValue = boost::lexical_cast<bool>(command->getBody());
          }
-         catch (shared::exception::CException)
+         catch (std::exception)
          {
             shared::exception::CException("Invalid command");
          }
@@ -219,7 +218,7 @@ namespace equipments
             try {
                newValue = boost::lexical_cast<bool>(command->getBody());
             }
-            catch (shared::exception::CException)
+            catch (std::exception)
             {
                shared::exception::CException("Invalid command");
             }

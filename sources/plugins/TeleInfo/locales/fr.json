@@ -11,6 +11,7 @@
 		"pluginState": {
 		    "connecting": "Connexion en cours...",
 			"connectionLost": "Connexion au module TeleInfo perdue",
+         "ErDFCounterdesactivated" : "TeleInfo désactivée dans le counter ErDF. Contacter votre fournisseur d'électricité.",
 			"updateConfiguration": "Mise à jour de la configuration..."
 		}
 	}

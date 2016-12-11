@@ -4,7 +4,6 @@
 #include <Poco/Net/HTTPClientSession.h>
 #include <Poco/Net/HTTPRequest.h>
 #include <Poco/Net/HTTPResponse.h>
-#include "Poco/StreamCopier.h"
 #include <Poco/URI.h>
 #include <shared/exception/Exception.hpp>
 #include <shared/Log.h>
