@@ -143,9 +143,13 @@ def getCommandKeywordButton(keywordRow):
 
    
 
-def waitConfigureDeviceModal(browser):
+def waitConfigureManuallyDeviceModal(browser):
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "configure-manually-device-modal")))
    return ConfigureDeviceModal(browser.find_element_by_id("configure-manually-device-modal"))
+
+def waitConfigureDeviceModal(browser):
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "configure-device-modal")))
+   return ConfigureDeviceModal(browser.find_element_by_id("configure-device-modal"))
 
 def waitRemoveDeviceConfirmationModal(browser):
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "device-delete-modal")))
@@ -203,12 +207,45 @@ class ConfigureDeviceModal():
       nameField.send_keys(Keys.CONTROL + "a")
       nameField.send_keys(Keys.DELETE)
       nameField.send_keys(newName)
+
+   def getDeviceModel(self):
+      return ConfigurationPanel(self.__configureDeviceModalWebElement).getItemByName("modals.configure-manually-device.model-configuration.name")
+      
+   def setDeviceModel(self, newModel):
+      tools.waitReadyForInput(self.getDeviceName())
+      nameField = self.getDeviceModel()
+      nameField.send_keys(Keys.CONTROL + "a")
+      nameField.send_keys(Keys.DELETE)
+      nameField.send_keys(newModel)
+
+   def getConfigurationFieldsCount(self):
+      totalFieldsCount = ConfigurationPanel(self.__configureDeviceModalWebElement).getFielsCount()
+      if totalFieldsCount < 2:
+         return None
+      return totalFieldsCount - 2
+
+   def getTextField(self, field):
+      return ConfigurationPanel(self.__configureDeviceModalWebElement).getItemByName(field).get_attribute('value')
+
+   def updateTextField(self, field, value):
+      field = ConfigurationPanel(self.__configureDeviceModalWebElement).getItemByName(field)
+      tools.waitReadyForInput(field)
+      field.send_keys(Keys.CONTROL + "a")
+      field.send_keys(Keys.DELETE)
+      field.send_keys(value)
          
    def getConfirmButton(self):
       return self.__configureDeviceModalWebElement.find_element_by_id("btn-confirm-configure-device")
          
    def ok(self):
       self.getConfirmButton().click()
+      modals.waitForClosed(self.__configureDeviceModalWebElement)
+         
+   def getCancelButton(self):
+      return self.__configureDeviceModalWebElement.find_element_by_class_name("btn-default")
+         
+   def cancel(self):
+      self.getCancelButton().click()
       modals.waitForClosed(self.__configureDeviceModalWebElement)
    
 

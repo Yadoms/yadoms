@@ -14,7 +14,7 @@ class ConfigurationPanel():
       for controlGroup in controlGroups:
          label = controlGroup.find_element_by_class_name('configuration-label')
          name = label.find_element_by_class_name('configuration-label-name')
-         if (name.get_attribute('data-i18n') == dataI18nString):
+         if dataI18nString in name.get_attribute('data-i18n'):
             return controlGroup
       # Not found
       assert False  
@@ -25,10 +25,13 @@ class ConfigurationPanel():
       for section in sections:
          header = section.find_element_by_class_name('configuration-header')
          span = header.find_element_by_tag_name('span')
-         if (span.get_attribute('data-i18n') == dataI18nString):
+         if dataI18nString in span.get_attribute('data-i18n'):
             return section
       # Not found
       assert False 
+
+   def getFielsCount(self):
+      return len(self.__panelWebElement.find_elements_by_class_name('control-group'))
       
    def getAddObjectButton(self, dataI18nString):
       """ Get the Add object button of a configuration section """
