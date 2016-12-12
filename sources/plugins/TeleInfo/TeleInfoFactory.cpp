@@ -1,14 +1,18 @@
 #include "stdafx.h"
 #include "TeleInfoFactory.h"
 #include <shared/communication/AsyncSerialPort.h>
-#include "Transceiver.h"
+#include <shared/communication/AsciiBufferLogger.h>
+#include <shared/communication/NoBufferLogger.h>
+#include "TeleInfoReceiveBufferHandler.h"
+#include "Decoder.h"
 
 CTeleInfoFactory::~CTeleInfoFactory()
-{}
+{
+}
 
 boost::shared_ptr<shared::communication::IAsyncPort> CTeleInfoFactory::constructPort(const ITeleInfoConfiguration& configuration,
                                                                                      shared::event::CEventHandler& eventHandler,
-                                                                                     boost::shared_ptr<CTeleInfoReceiveBufferHandler> receiveBufferHandler,
+                                                                                     boost::shared_ptr<shared::communication::IReceiveBufferHandler> receiveBufferHandler,
                                                                                      int evtPortConnectionId)
 {
    std::cout << "Connecting TeleInfo on serial port " << configuration.getSerialPort() << "..." << std::endl;
@@ -28,18 +32,24 @@ boost::shared_ptr<shared::communication::IAsyncPort> CTeleInfoFactory::construct
    return port;
 }
 
-boost::shared_ptr<CTeleInfoReceiveBufferHandler> CTeleInfoFactory::GetBufferHandler(shared::event::CEventHandler& eventHandler,
-                                                                                    int evtPortDataReceived,
-                                                                                    size_t messageSize
-)
+boost::shared_ptr<shared::communication::IReceiveBufferHandler> CTeleInfoFactory::GetBufferHandler(shared::event::CEventHandler& eventHandler,
+                                                                                                   int evtPortDataReceived,
+																								   bool developerMode)
 {
+	boost::shared_ptr<shared::communication::IBufferLogger> logger;
+
+	if (developerMode)
+		logger = boost::make_shared<shared::communication::CAsciiBufferLogger>(std::cout);
+	else
+      logger = boost::make_shared<shared::communication::CNoBufferLogger>();
+
    return boost::make_shared<CTeleInfoReceiveBufferHandler>(eventHandler,
                                                             evtPortDataReceived,
-                                                            messageSize);
+                                                            boost::posix_time::seconds(30),
+                                                            logger);
 }
 
-boost::shared_ptr<ITransceiver> CTeleInfoFactory::constructTransceiver(boost::shared_ptr<yApi::IYPluginApi> api)
+boost::shared_ptr<IDecoder> CTeleInfoFactory::constructDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   return boost::make_shared<CTransceiver>(api);
+   return boost::make_shared<CDecoder>(api);
 }
-

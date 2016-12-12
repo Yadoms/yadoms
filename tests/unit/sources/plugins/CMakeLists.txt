@@ -5,6 +5,7 @@
 add_subdirectory(dev-FakePlugin)
 add_subdirectory(Rfxcom)
 add_subdirectory(dev-EnOcean)
+add_subdirectory(TeleInfo)
 
 
 

@@ -2,6 +2,7 @@
 #include <shared/event/EventHandler.hpp>
 #include <shared/communication/IReceiveBufferHandler.h>
 #include <shared/communication/Buffer.hpp>
+#include <shared/communication/IBufferLogger.h>
 
 //--------------------------------------------------------------
 /// \brief	Receive buffer handler for TeleInfo
@@ -16,11 +17,13 @@ public:
    /// \brief	                           Constructor
    /// \param[in] receiveDataEventHandler The event handler to notify for received data event
    /// \param[in] receiveDataEventId      The event id to notify for received data event
-   /// \param[in] messageSize             The number of bytes expected for a message
+   /// \param[in] suspendDelay            Mute delay, used to filter messages
+   /// \param[in] logger                  logger in developer mode
    //--------------------------------------------------------------
-   CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
-                                 int receiveDataEventId,
-                                 size_t messageSize);
+	CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
+								  int receiveDataEventId,
+								  const boost::posix_time::time_duration suspendDelay,
+								  boost::shared_ptr<shared::communication::IBufferLogger> logger);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
@@ -32,27 +35,32 @@ public:
    void flush() override;
    // [END] ITeleInfoReceiveBufferHandler implementation
 
-   void suspend();
-   void resume();
-
 protected:
    //--------------------------------------------------------------
    /// \brief	                     Check if we got a complete message
-   /// \return                      true if a message is complete
+   /// \return                      The complet message
    //--------------------------------------------------------------
-   bool isComplete() const;
+   boost::shared_ptr<std::map<std::string, std::string>> getCompleteMessage();
 
    //--------------------------------------------------------------
-   /// \brief	                     Pop the next message from the receive buffer
-   /// \return                      The next complete message
+   /// \brief	                     Retreive all labels/values in a frame
+   /// \param[in] frame             the frame to decode
+   /// \return                      A map containing labels/values
    //--------------------------------------------------------------
-   boost::shared_ptr<const shared::communication::CByteBuffer> popNextMessage();
+   static  boost::shared_ptr<std::map<std::string, std::string>> getMessages(boost::shared_ptr<const std::vector<unsigned char>> frame);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Check if the CRC is ok
+   /// \param[in] message           a message to be check
+   /// \return                      true if the checksum is ok
+   //--------------------------------------------------------------
+   static bool isCheckSumOk(const std::string& message);
 
    //--------------------------------------------------------------
    /// \brief	                     Send a message to the target event handler
-   /// \param[in] buffer            Buffer to send
+   /// \param[in] messages          Received messages as map(key, value)
    //--------------------------------------------------------------
-   void notifyEventHandler(boost::shared_ptr<const shared::communication::CByteBuffer> buffer) const;
+   void notifyEventHandler(boost::shared_ptr<std::map<std::string, std::string>> messages) const;
 
 private:
    //--------------------------------------------------------------
@@ -71,13 +79,13 @@ private:
    int m_receiveDataEventId;
 
    //--------------------------------------------------------------
-   /// \brief	The expected message size
+   /// \brief  The communication port
    //--------------------------------------------------------------
-   const size_t m_messageSize;
+   boost::shared_ptr<shared::communication::IBufferLogger> m_logger;
 
    //--------------------------------------------------------------
-   /// \brief	state of the reception
+   /// \brief	Management of suspend delay between 2 messages
    //--------------------------------------------------------------
-   bool m_receptionSuspended;
+   boost::posix_time::ptime m_nextSendMessageDate;
+   const boost::posix_time::time_duration m_suspendDelay;
 };
-

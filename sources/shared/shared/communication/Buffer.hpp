@@ -38,7 +38,8 @@ namespace shared
 
          //--------------------------------------------------------------
          /// \brief	                     Contructor from vector (with data copy)
-         /// \param[in] src               A raw buffer 
+         /// \param[in] buffer            A raw buffer 
+         /// \param[in] size              Buffer size
          //--------------------------------------------------------------
          explicit CBuffer(const std::vector<T>& src) :
             m_buffer(src.size())
