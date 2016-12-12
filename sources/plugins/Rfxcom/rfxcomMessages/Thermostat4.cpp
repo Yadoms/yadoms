@@ -12,7 +12,13 @@ namespace rfxcomMessages
                               const shared::CDataContainer& deviceDetails)
       : m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
         m_flame(boost::make_shared<yApi::historization::CDimmable>("flame")),
-        m_keywords({m_onOff, m_flame})
+        m_fan1(boost::make_shared<yApi::historization::CDimmable>("fan 1")),
+        m_fan1AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 1 auto mode")),
+        m_fan2(boost::make_shared<yApi::historization::CDimmable>("fan 2")),
+        m_fan2AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 2 auto mode")),
+        m_fan3(boost::make_shared<yApi::historization::CDimmable>("fan 3")),
+        m_fan3AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 3 auto mode")),
+        m_keywords({m_onOff, m_flame, m_fan1, m_fan1AutoMode, m_fan2, m_fan2AutoMode, m_fan3, m_fan3AutoMode })
    {
       if (boost::iequals(keyword, m_onOff->getKeyword()))
       {
@@ -40,13 +46,32 @@ namespace rfxcomMessages
                               const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
         m_flame(boost::make_shared<yApi::historization::CDimmable>("flame")),
-        m_keywords({m_onOff, m_flame})
+      m_fan1(boost::make_shared<yApi::historization::CDimmable>("fan 1")),
+      m_fan1AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 1 auto mode")),
+      m_fan2(boost::make_shared<yApi::historization::CDimmable>("fan 2")),
+      m_fan2AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 2 auto mode")),
+      m_fan3(boost::make_shared<yApi::historization::CDimmable>("fan 3")),
+      m_fan3AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 3 auto mode")),
+        m_keywords({m_onOff, m_flame, m_fan1, m_fan1AutoMode })
    {
       m_onOff->set(false);
       m_flame->set(0);
 
       m_subType = static_cast<unsigned char>(subType);
-      if (m_subType != sTypeMCZ1 && m_subType != sTypeMCZ2)
+
+      if (m_subType != sTypeMCZ2)
+      {
+         m_keywords.push_back(m_fan2);
+         m_keywords.push_back(m_fan2AutoMode);
+      }
+         
+      if (m_subType != sTypeMCZ3)
+      {
+         m_keywords.push_back(m_fan3);
+         m_keywords.push_back(m_fan3AutoMode);
+      }
+
+      if (m_subType != sTypeMCZ1 && m_subType != sTypeMCZ2 && m_subType != sTypeMCZ3)
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
 
       m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned int>("unitCode");
@@ -59,6 +84,12 @@ namespace rfxcomMessages
                               size_t rbufSize)
       : m_onOff(boost::make_shared<yApi::historization::CSwitch>("onOff")),
         m_flame(boost::make_shared<yApi::historization::CDimmable>("flame")),
+      m_fan1(boost::make_shared<yApi::historization::CDimmable>("fan 1")),
+      m_fan1AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 1 auto mode")),
+      m_fan2(boost::make_shared<yApi::historization::CDimmable>("fan 2")),
+      m_fan2AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 2 auto mode")),
+      m_fan3(boost::make_shared<yApi::historization::CDimmable>("fan 3")),
+      m_fan3AutoMode(boost::make_shared<yApi::historization::CSwitch>("fan 3 auto mode")),
         m_keywords({m_onOff, m_flame})
    {
       m_subType = 0;
@@ -102,9 +133,10 @@ namespace rfxcomMessages
       rbuf.THERMOSTAT4.unitcode2 = static_cast<unsigned char>(0xFF & (m_unitCode >> 8));
       rbuf.THERMOSTAT4.unitcode3 = static_cast<unsigned char>(0xFF & m_unitCode);
       rbuf.THERMOSTAT4.beep = 0;
-      rbuf.THERMOSTAT4.fan1_speed = 6; // Auto
-      rbuf.THERMOSTAT4.fan2_speed = 6; // Auto
-      rbuf.THERMOSTAT4.flame_power = (m_flame->switchLevel() == 100) ? 5 : static_cast<unsigned char>(floor(m_flame->switchLevel() / 20)) + 1;
+      rbuf.THERMOSTAT4.fan1_speed = m_fan1AutoMode->get() ? 6 : normalizeFanSpeed(m_fan1->switchLevel());
+      rbuf.THERMOSTAT4.fan2_speed = m_subType == sTypeMCZ1 ? 1 : (m_fan2AutoMode->get() ? 6 : normalizeFanSpeed(m_fan2->switchLevel()));
+      rbuf.THERMOSTAT4.fan3_speed = (m_subType == sTypeMCZ1 || m_subType == sTypeMCZ2) ? 1 : (m_fan3AutoMode->get() ? 6 : normalizeFanSpeed(m_fan3->switchLevel()));
+      rbuf.THERMOSTAT4.flame_power = (m_flame->switchLevel() == 100) ? 5 : static_cast<BYTE>(floor(m_flame->switchLevel() / 20)) + 1;
       rbuf.THERMOSTAT4.mode = m_onOff->get() ? thermostat4_sManual : thermostat4_sOff;
       rbuf.THERMOSTAT4.rssi = 0;
       rbuf.THERMOSTAT4.filler = 0;
@@ -137,11 +169,17 @@ namespace rfxcomMessages
       {
       case sTypeMCZ1: ssModel << "MCZ Pellet Stove (1 fan model)";
       case sTypeMCZ2: ssModel << "MCZ Pellet Stove (2 fans model)";
+      case sTypeMCZ3: ssModel << "MCZ Pellet Stove (3 fans model)";
          break;
       default: ssModel << std::to_string(m_subType);
          break;
       }
 
       m_deviceModel = ssModel.str();
+   }
+
+   unsigned char CThermostat4::normalizeFanSpeed(int dimmableValue)
+   {
+      return static_cast<unsigned char>(dimmableValue * 5 / 100 + 1);
    }
 } // namespace rfxcomMessages

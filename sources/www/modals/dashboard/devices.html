@@ -200,7 +200,6 @@
             $deviceRow.find("button.btn-configure").prop('disabled', true);
             PluginInstanceManager.getState(device.attachedPlugin)
             .done(function(instanceState) {
-               debugger;
                if (instanceState.state !== "Stopped" && instanceState.state !== "Error" && instanceState.state) {
                   $deviceRow.find("button.btn-configure").prop('disabled', false);
                }
@@ -316,69 +315,77 @@
          //we stop the timer task
          clearInterval(Yadoms.periodicDashboardTask);
 
-         DeviceManager.getKeywords(device)
-         .done(function () {
-            var actionsBtns = "<div class=\"btn-group\">\n" +
-                     "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-pencil\"></span></button>\n" +
-                     "</div>";
+         PluginInstanceManager.downloadPackage(device.attachedPlugin)
+         .done(function() {
 
-            var actionsBtnsWithEdit = "<div class=\"btn-group\">\n" +
-                     "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-pencil\"></span></button>\n" +
-                     "<button type=\"button\" class=\"btn btn-success btn-setvalue\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.setvalue\"><span class=\"fa fa-sign-in\"></span></button>\n" +
-                     "</div>";
-			
-			var deviceList = device.keywords;
-			deviceList = sortListItemsWithFriendlyName ( deviceList );
-			
-            $.each(deviceList, function (index, keyword) {
-			
-               $deviceDetailsTable.append("<tr keyword-id=\"" + keyword.id + "\"><td class=\"keyword-friendlyName vert-align\"></td><td class=\"keyword-value vert-align\"><td class=\"keyword-units vert-align\"><td class=\"keyword-update vert-align\"></td><td class=\"keyword-actions vert-align\"></td></tr>");
+            DeviceManager.getKeywords(device)
+            .done(function () {
+               var actionsBtns = "<div class=\"btn-group\">\n" +
+                        "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-pencil\"></span></button>\n" +
+                        "</div>";
 
-               var $keywordRow = getKeywordDomRow(keyword);
-
-               //we fill the data
-               var fn = keyword.friendlyName;
-               if(parseBool(keyword.blacklist)===true)
-                  fn = "<del>"+keyword.friendlyName+"</del>";
-               var friendlyName = "<span>" + fn + "</span>";
-               var units = "<span>" + $.t(keyword.units) + "</span>";
-
-               $keywordRow.find("td.keyword-friendlyName").html(friendlyName);
-               $keywordRow.find("td.keyword-units").html(units);
-
-               //we add actions to the keyword
-               if (keyword.accessMode && keyword.accessMode.toLowerCase() === "getset" && keyword.capacityName && keyword.capacityName.toLowerCase() !== "event") {
-                  $keywordRow.find("td.keyword-actions").append(actionsBtnsWithEdit);
-               } else {
-                  $keywordRow.find("td.keyword-actions").append(actionsBtns);
-               }
+               var actionsBtnsWithEdit = "<div class=\"btn-group\">\n" +
+                        "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"fa fa-pencil\"></span></button>\n" +
+                        "<button type=\"button\" class=\"btn btn-success btn-setvalue\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.setvalue\"><span class=\"fa fa-sign-in\"></span></button>\n" +
+                        "</div>";
+            
+               var deviceList = device.keywords;
                
-               //if keyword is boolean, just add the class keyword-value-bool
-               if(keyword.type === "Bool") {
-                  $keywordRow.find("td.keyword-value").addClass("keyword-value-bool");
-               }
                
-               //we prevent from renaming keywords on system devices
-               if ((!isNullOrUndefined(device.attachedPlugin)) && (device.attachedPlugin.isSystemCategory())) {
-                  $keywordRow.find("button.btn-configure").addClass("hide");
-               }
-               else if (device.name == "pluginState" || device.model == "Plugin state") {
-                  $keywordRow.find("button.btn-configure").addClass("hide");
-               }
-               else {
-                  //we bind event on the different actions
-                  $keywordRow.find("button.btn-configure").unbind('click').bind('click', function () { configureKeyword(keyword); });
-               }
+               deviceList = sortListItemsWithFriendlyName ( deviceList );
+               
+               $.each(deviceList, function (index, keyword) {
+            
+                  $deviceDetailsTable.append("<tr keyword-id=\"" + keyword.id + "\"><td class=\"keyword-friendlyName vert-align\"></td><td class=\"keyword-value vert-align\"><td class=\"keyword-units vert-align\"><td class=\"keyword-update vert-align\"></td><td class=\"keyword-actions vert-align\"></td></tr>");
 
-               if ($keywordRow.find("button.btn-setvalue")) {
-                  $keywordRow.find("button.btn-setvalue").unbind('click').bind('click', function () { setKeywordValue(keyword); });
-               }
+                  var $keywordRow = getKeywordDomRow(keyword);
+
+                  //we fill the data
+                  var fn = keyword.friendlyName;
+                  
+                  if(keyword.type.toLowerCase() ==="enum" && keyword.friendlyName === keyword.name) {
+                     //try translate
+                     fn = $.t("plugins/" + device.attachedPlugin.type + ":enumerations." + keyword.typeInfo.name + ".name");
+                     
+                  }
+                  
+                  if(parseBool(keyword.blacklist)===true)
+                     fn = "<del>"+keyword.friendlyName+"</del>";
+                  var friendlyName = "<span>" + fn + "</span>";
+                  var units = "<span>" + $.t(keyword.units) + "</span>";
+
+                  $keywordRow.find("td.keyword-friendlyName").html(friendlyName);
+                  $keywordRow.find("td.keyword-units").html(units);
+
+                  //we add actions to the keyword
+                  if (keyword.accessMode && keyword.accessMode.toLowerCase() === "getset" && keyword.capacityName && keyword.capacityName.toLowerCase() !== "event") {
+                     $keywordRow.find("td.keyword-actions").append(actionsBtnsWithEdit);
+                  } else {
+                     $keywordRow.find("td.keyword-actions").append(actionsBtns);
+                  }
+                  
+                  //we prevent from renaming keywords on system devices
+                  if ((!isNullOrUndefined(device.attachedPlugin)) && (device.attachedPlugin.isSystemCategory())) {
+                     $keywordRow.find("button.btn-configure").addClass("hide");
+                  }
+                  else if (device.name == "pluginState" || device.model == "Plugin state") {
+                     $keywordRow.find("button.btn-configure").addClass("hide");
+                  }
+                  else {
+                     //we bind event on the different actions
+                     $keywordRow.find("button.btn-configure").unbind('click').bind('click', function () { configureKeyword(keyword); });
+                  }
+
+                  if ($keywordRow.find("button.btn-setvalue")) {
+                     $keywordRow.find("button.btn-setvalue").unbind('click').bind('click', function () { setKeywordValue(keyword, device); });
+                  }
+               });
+
+               //we re-enable the auto update task
+               Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
+               //and start it immediately
+               periodicDashboardDevicesTask();
             });
-
-            //we re-enable the auto update task
-            Yadoms.periodicDashboardTask = setInterval(periodicDashboardDevicesTask, 5000);
-            //and start it immediately
-            periodicDashboardDevicesTask();
          });
       }
       else {
@@ -448,23 +455,27 @@
       });
    }
 
-   function setKeywordValue(keyword) {
+   function setKeywordValue(keyword, device) {
+   
       var $keywordRow = getKeywordDomRow(keyword);
       
       var value = null;
-      if($keywordRow.find("td.keyword-value-bool")) {
-         var $checkbox = $keywordRow.find("td.keyword-value-bool input");
+      
+      var $tdvalue = $keywordRow.find("td.keyword-value input");
+      
+      if(keyword.type.toLowerCase() === "bool") {
+         var $checkbox = $tdvalue.find("input");
          if($checkbox)
             value = $checkbox.is(":checked");
          else
             value = false;
       } else {      
-         value = $keywordRow.find("td.keyword-value span").html();
+         value = $tdvalue.find("span").html();
       }
 
       Yadoms.modals.keywordSetValue.loadAsync()
        .done(function () {
-          Yadoms.showSetKeywordValueModal(keyword, value)
+          Yadoms.showSetKeywordValueModal(keyword, value, device.attachedPlugin)
           .done(function (keyword, newValue) {
             KeywordManager.sendCommand(keyword.id, newValue.toString());
           })
@@ -509,11 +520,6 @@
       var friendlyName = "<span>" + keyword.friendlyName + "</span>";
       var units = "<span>" + $.t(keyword.units) + "</span>";
 
-      //if keyword is boolean, just add the class keyword-value-bool
-      if(keyword.type === "Bool") {
-         $keywordRow.find("td.keyword-value").addClass("keyword-value-bool");
-      }
-      
       $keywordRow.find("td.keyword-friendlyName").html(friendlyName);
       $keywordRow.find("td.keyword-units").html(units);
 
@@ -524,28 +530,29 @@
    /**
     *
     */
-   function updateKeywordDomLine($keywordRow, acquisition) {
+   function updateKeywordDomLine($keywordRow, acquisition, keyword, pluginInstance) {
       //$keywordRow exists
       var keywordValue = "<span></span>";
 
-      //Check if the value is a JSON string. In this case this value should not be show
       try {
-         var jsonString = $.parseJSON(acquisition.value);
+         //manage boolean keyword
+         var $tdvalue = $keywordRow.find("td.keyword-value");
 
-         if (jsonString != null && typeof jsonString != 'object') {
-            // not json
-            
-            //manage boolean keyword
-            if($keywordRow.find("td.keyword-value-bool")) {
-               if(parseBool(acquisition.value) === true) {
-                  keywordValue = "<input type=\"checkbox\" disabled readonly checked/>"
-               } else {
-                  keywordValue = "<input type=\"checkbox\" disabled readonly/>"
-               }
+         if(keyword.type.toLowerCase() === "bool") {
+            if(parseBool(acquisition.value) === true) {
+               keywordValue = "<input type=\"checkbox\" disabled readonly checked/>"
+            } else {
+               keywordValue = "<input type=\"checkbox\" disabled readonly/>"
             }
-            else {
-               keywordValue = "<span>" + acquisition.value + "</span>";
-            }
+         }
+         else if(keyword.type.toLowerCase() === "enum") {
+            var translatedEnumValue = $.t("plugins/" + pluginInstance.type + ":enumerations." + keyword.typeInfo.name + ".values." + acquisition.value, { defaultValue:acquisition.value} );
+            keywordValue = "<span>" + translatedEnumValue + "</span>";
+         }
+         else if(keyword.type.toLowerCase() === "json") {
+            keywordValue = "<span></span>";
+         } else {
+            keywordValue = "<span>" + acquisition.value + "</span>";
          }
       } catch (err) {
          keywordValue = "<span>" + acquisition.value + "</span>";
@@ -594,7 +601,7 @@
                            if (!$keywordRow) {
                               $keywordRow = createKeywordDomLine($deviceDetailsTable, keyword);
                            }
-                           updateKeywordDomLine($keywordRow, acquisition);
+                           updateKeywordDomLine($keywordRow, acquisition, keyword, device.attachedPlugin);
                         } else {
                            return; //break $.each
                         }

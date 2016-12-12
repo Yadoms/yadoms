@@ -53,8 +53,8 @@
 // RFXCOM implementation
 // =======================================================================
 // This RFXCom support was developped for :
-// - Sepcifications "RFXtrx SDK.pdf" : Version 9.11 Oct 27, 2016
-// - RFXtrx.h : version 9.11
+// - Sepcifications "RFXtrx SDK.pdf" : Version 9.12 Dec 2, 2016
+// - RFXtrx.h : version 9.12
 // =======================================================================
 //
 
@@ -536,6 +536,8 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
          msg = boost::make_shared<rfxcomMessages::CThermostat4>(api, sTypeMCZ1, data.getConfiguration().get<shared::CDataContainer>("type.content.mcz1PelletStove.content"));
       else if (data.getConfiguration().get<bool>("type.content.mcz2PelletStove.radio"))
          msg = boost::make_shared<rfxcomMessages::CThermostat4>(api, sTypeMCZ2, data.getConfiguration().get<shared::CDataContainer>("type.content.mcz2PelletStove.content"));
+      else if (data.getConfiguration().get<bool>("type.content.mcz2PelletStove.radio"))
+         msg = boost::make_shared<rfxcomMessages::CThermostat4>(api, sTypeMCZ3, data.getConfiguration().get<shared::CDataContainer>("type.content.mcz3PelletStove.content"));
 
       // Radiator1
       else if (data.getConfiguration().get<bool>("type.content.smartwares.radio"))

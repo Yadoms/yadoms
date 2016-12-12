@@ -24,6 +24,8 @@ public:
    virtual const shared::versioning::CVersionInformation  & getSoftwareVersion() const;
    virtual const std::string getOperatingSystemName() const;
    virtual const std::string & getExecutablePath() const;
+   virtual bool isServerFullyLoaded() const;
+   virtual void setServerFullyLoaded();
    // [END] IRunningInformation implementation
    
 private:
@@ -41,5 +43,10 @@ private:
    /// \brief		                     Yadoms executable path
    //-----------------------------------------------------------------------------
    std::string m_executablePath;
+
+   //-----------------------------------------------------------------------------
+   /// \brief		                     Yadoms server state
+   //-----------------------------------------------------------------------------
+   bool m_serverFullyLoaded;
 };
 

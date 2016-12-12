@@ -3,6 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as Condition
 from selenium.webdriver.common.keys import Keys
 from configurationPanel import ConfigurationPanel
+from selenium.webdriver.support.select import Select
 import modals
 import i18n
 import tools
@@ -70,15 +71,93 @@ def getRemoveDeviceButton(devicesTable, deviceId):
       if 'btn-delete' in button.get_attribute('class'):
          return button
    return None
+
+
+# Operations on keywords   
+
+def getKeywords(devicesTable):
+   deviceDetails = devicesTable.find_element_by_class_name('device-details')
+   keywordTable = deviceDetails.find_element_by_id('keyword-list')
+   tablerows = keywordTable.find_elements_by_tag_name('tr')
+   if len(tablerows) == 0:
+      return []
+   tablerows.pop(0)
+   return tablerows
+   
+def getDeployKeywordsButton(devicesTable, deviceId):
+   return getDeviceDatas(devicesTable, deviceId)[0].find_element_by_class_name('deploy')
+
+def getKeywordName(keywordRow):
+   item = keywordRow.find_element_by_class_name('keyword-friendlyName')
+   if item is None:
+      return None
+   return item.find_element_by_tag_name('span').text
+
+def getKeywordBoolValue(keywordRow):
+   try:
+      items = keywordRow.find_elements_by_class_name('keyword-value')
+      if len(items) == 0:
+         return None
+      item = items[0]
+      inputElement = item.find_elements_by_tag_name('input')
+      return True if inputElement[0].get_attribute('checked') is not None else False
+   except:
+      pass
+   return None
+
+def getKeywordTextValue(keywordRow):
+   try:
+      items = keywordRow.find_elements_by_class_name('keyword-value')
+      if len(items) == 0:
+         return None
+      item = items[0]
+      inputElement = item.find_elements_by_tag_name('span')
+      return inputElement[0].text
+   except:
+      pass
+   return None
+
+def getKeywordUnit(keywordRow):
+   item = keywordRow.find_element_by_class_name('keyword-units')
+   if item is None:
+      return None
+   return item.find_element_by_tag_name('span').text
+
+def getKeywordActions(keywordRow):
+   item = keywordRow.find_element_by_class_name('keyword-actions')
+   if item is None:
+      return None
+   return item.find_elements_by_tag_name('button')
+
+def getConfigureKeywordButton(keywordRow):
+   for button in getKeywordActions(keywordRow):
+      if 'btn-configure' in button.get_attribute('class'):
+         return button
+   return None;
+
+def getCommandKeywordButton(keywordRow):
+   for button in getKeywordActions(keywordRow):
+      if 'btn-setvalue' in button.get_attribute('class'):
+         return button
+   return None;
+
    
 
-def waitConfigureDeviceModal(browser):
+def waitConfigureManuallyDeviceModal(browser):
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "configure-manually-device-modal")))
    return ConfigureDeviceModal(browser.find_element_by_id("configure-manually-device-modal"))
+
+def waitConfigureDeviceModal(browser):
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "configure-device-modal")))
+   return ConfigureDeviceModal(browser.find_element_by_id("configure-device-modal"))
 
 def waitRemoveDeviceConfirmationModal(browser):
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "device-delete-modal")))
    return RemoveDeviceConfirmationModal(browser.find_element_by_id("device-delete-modal"))
+
+def waitSetValueKeywordModal(browser):
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "set-value-keyword-modal")))
+   return SetValueKeywordModal(browser.find_element_by_id("set-value-keyword-modal"))
 
    
    
@@ -128,6 +207,32 @@ class ConfigureDeviceModal():
       nameField.send_keys(Keys.CONTROL + "a")
       nameField.send_keys(Keys.DELETE)
       nameField.send_keys(newName)
+
+   def getDeviceModel(self):
+      return ConfigurationPanel(self.__configureDeviceModalWebElement).getItemByName("modals.configure-manually-device.model-configuration.name")
+      
+   def setDeviceModel(self, newModel):
+      tools.waitReadyForInput(self.getDeviceName())
+      nameField = self.getDeviceModel()
+      nameField.send_keys(Keys.CONTROL + "a")
+      nameField.send_keys(Keys.DELETE)
+      nameField.send_keys(newModel)
+
+   def getConfigurationFieldsCount(self):
+      totalFieldsCount = ConfigurationPanel(self.__configureDeviceModalWebElement).getFielsCount()
+      if totalFieldsCount < 2:
+         return None
+      return totalFieldsCount - 2
+
+   def getTextField(self, field):
+      return ConfigurationPanel(self.__configureDeviceModalWebElement).getItemByName(field).get_attribute('value')
+
+   def updateTextField(self, field, value):
+      field = ConfigurationPanel(self.__configureDeviceModalWebElement).getItemByName(field)
+      tools.waitReadyForInput(field)
+      field.send_keys(Keys.CONTROL + "a")
+      field.send_keys(Keys.DELETE)
+      field.send_keys(value)
          
    def getConfirmButton(self):
       return self.__configureDeviceModalWebElement.find_element_by_id("btn-confirm-configure-device")
@@ -135,4 +240,67 @@ class ConfigureDeviceModal():
    def ok(self):
       self.getConfirmButton().click()
       modals.waitForClosed(self.__configureDeviceModalWebElement)
+         
+   def getCancelButton(self):
+      return self.__configureDeviceModalWebElement.find_element_by_class_name("btn-default")
+         
+   def cancel(self):
+      self.getCancelButton().click()
+      modals.waitForClosed(self.__configureDeviceModalWebElement)
+   
+
+
+
+class SetValueKeywordModal():
+   """ Operations on set keyword value modal """
+   
+   def __init__(self, setValueKeywordModalWebElement):
+      self.__setValueKeywordModalWebElement = setValueKeywordModalWebElement
+      pass
+
+   def __getValueElement(self):
+      return self.__setValueKeywordModalWebElement.find_element_by_class_name('control-group')
+
+   def getBoolValue(self):
+      valueElement = self.__getValueElement()
+      if 'checkbox' in valueElement.get_attribute('class'):
+         return True if valueElement.find_element_by_tag_name('input').get_attribute('checked') is not None else False
+      assert False
+      
+   def setBoolValue(self, newValue):
+      if newValue == self.getBoolValue():
+         return      
+      valueElement = self.__getValueElement()
+      if 'checkbox' in (valueElement.get_attribute('class')):
+         valueElement.find_element_by_tag_name('input').click()
+         return
+      assert False
+
+   def getEnumValue(self):
+      valueElement = self.__getValueElement()
+      options = valueElement.find_elements_by_tag_name('option')
+      for option in options:
+         if option.get_attribute('selected') is not None:
+            return option.text
+      assert False
+      
+   def setEnumValue(self, newValue):
+      if newValue == self.getEnumValue():
+         return      
+      valueElement = self.__getValueElement()
+      Select(valueElement.find_element_by_tag_name('select')).select_by_visible_text(newValue)
+         
+   def getCancelButton(self):
+      return self.__setValueKeywordModalWebElement.find_element_by_id("btn-default")
+         
+   def getOkButton(self):
+      return self.__setValueKeywordModalWebElement.find_element_by_id("btn-confirm-set-keyword-value")
+         
+   def cancel(self):
+      self.getCancelButton().click()
+      modals.waitForClosed(self.__setValueKeywordModalWebElement)
+         
+   def ok(self):
+      self.getOkButton().click()
+      modals.waitForClosed(self.__setValueKeywordModalWebElement)
 

@@ -1347,6 +1347,19 @@
                      "maximumValue": "16777215"
                   }               
                }
+            },      
+            "mcz3PelletStove":
+            {
+               "type": "section",
+               "content":
+               {
+                  "unitCode":
+                  {
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "16777215"
+                  }               
+               }
             },
             
             "cameraX10Ninja":

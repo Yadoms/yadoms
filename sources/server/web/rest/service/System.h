@@ -20,6 +20,7 @@ namespace web { namespace rest { namespace service {
 
       const std::string & getRestKeyword();
 
+      
    public:
       shared::CDataContainer getBinding(const std::vector<std::string> & parameters, const std::string & requestContent);
       shared::CDataContainer getSystemInformation(const std::vector<std::string> & parameters, const std::string & requestContent);

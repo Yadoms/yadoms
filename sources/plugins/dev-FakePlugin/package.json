@@ -150,31 +150,31 @@
       }
     }
   },
-  "deviceConfiguration" : {
-	"staticConfigurationSchema" : [
-		{
-			"models" : ["Fake sensor"],
-			"schema" : {
-			  "CounterDivider": {
-				"type": "int",
-				"defaultValue": "2",
-				"minimumValue": "1",
-				"maximumValue": "10"
-			  }			
-			}
-		},{
-			"models" : ["*"],
-			"schema" : {
-			  "CounterDivider2": {
-				"type": "int",
-				"defaultValue": "2",
-				"minimumValue": "1",
-				"maximumValue": "10"
-			  }			
-			}
-			
-		}
-	],
-    "dynamicConfigurationSchema" : "true"
+  "deviceConfiguration": {
+    "staticConfigurationSchema": [
+      {
+        "models": [ "Fake sensor" ],
+        "schema": {
+          "CounterDivider": {
+            "type": "int",
+            "defaultValue": "2",
+            "minimumValue": "1",
+            "maximumValue": "10"
+          }
+        }
+      },
+      {
+        "models": [ "Fake counter" ],
+        "schema": {
+          "CounterDivider2": {
+            "type": "int",
+            "defaultValue": "2",
+            "minimumValue": "1",
+            "maximumValue": "10"
+          }
+        }
+      }
+    ],
+    "dynamicConfigurationSchema": "true"
   }
 }

@@ -165,7 +165,7 @@ RadioSectionParameterHandler.prototype.applyScript = function () {
       if ($.isFunction(value.applyScript))
          value.applyScript();
    });
-debugger;
+
    //can't factorize must happen after intialize all handlers
    $.each(this.configurationHandlers, function (key, value) {
       //if this child is the active one we fire the event that we have changed to it the radio button
