@@ -1,5 +1,6 @@
 # datetime helpers
 
+import sys
 from datetime import datetime, date, time, timedelta
 from time import strptime, mktime
 
@@ -49,3 +50,16 @@ def toDatetime(object):
 	if type(object) is date:
 		return datetime.combine(object, datetime.time(0,0,0))
 	return object
+
+def readKeywordValue(yApi, keywordId, defaultValue):
+	temp = 0
+	try:
+		temp = yApi.readKeyword(keywordId)
+		if temp == '':
+			if type(defaultValue) != str:
+				print "Could not get keyword value, using default value for the keyword type."
+			temp= defaultValue
+	except:
+		print "Exception in reading keyword value, using default value for the keyword type."
+		temp = defaultValue
+	return temp
