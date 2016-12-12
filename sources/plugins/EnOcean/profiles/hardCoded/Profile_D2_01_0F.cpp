@@ -3,7 +3,8 @@
 
 CProfile_D2_01_0F::CProfile_D2_01_0F(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
-   : m_historizers({})
+   : CProfile_D2_01_0D(deviceId,
+                       api)
 {
 }
 
@@ -19,34 +20,6 @@ const std::string& CProfile_D2_01_0F::profile() const
 
 const std::string& CProfile_D2_01_0F::title() const
 {
-   static const std::string title("Slot-in module with 1 channel");
+   static const std::string title("Slot-in module with 1 channel, no metering capabilities");
    return title;
-}
-
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_0F::allHistorizers() const
-{
-   return m_historizers;
-}
-
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_0F::states(unsigned char rorg,
-                                                                                                   const boost::dynamic_bitset<>& data,
-                                                                                                   const boost::dynamic_bitset<>& status) const
-{
-   //TODO
-   return m_historizers;
-}
-
-void CProfile_D2_01_0F::sendCommand(const std::string& keyword,
-                                    const std::string& commandBody,
-                                    const std::string& senderId,
-                                    boost::shared_ptr<IMessageHandler> messageHandler) const
-{
-   throw std::logic_error("device supports no command sending");
-}
-
-void CProfile_D2_01_0F::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
-                                          const std::string& senderId,
-                                          boost::shared_ptr<IMessageHandler> messageHandler) const
-{
-   //TODO
 }

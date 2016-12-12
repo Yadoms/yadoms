@@ -1,34 +1,19 @@
 #pragma once
-#include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <boost/dynamic_bitset.hpp>
-#include "../IType.h"
+#include "Profile_D2_01_0D.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
 
-class CProfile_D2_01_0F : public IType
+class CProfile_D2_01_0F : public CProfile_D2_01_0D
 {
 public:
    CProfile_D2_01_0F(const std::string& deviceId,
                      boost::shared_ptr<yApi::IYPluginApi> api);
    virtual ~CProfile_D2_01_0F();
 
-   // IType implementation
+protected:
+   // CProfile_D2_01_0D override
    const std::string& profile() const override;
    const std::string& title() const override;
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> allHistorizers() const override;
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> states(unsigned char rorg,
-                                                                                   const boost::dynamic_bitset<>& data,
-                                                                                   const boost::dynamic_bitset<>& status) const override;
-   void sendCommand(const std::string& keyword,
-                    const std::string& commandBody,
-                    const std::string& senderId,
-                    boost::shared_ptr<IMessageHandler> messageHandler) const override;
-   void sendConfiguration(const shared::CDataContainer& deviceConfiguration,
-                          const std::string& senderId,
-                          boost::shared_ptr<IMessageHandler> messageHandler) const override;
-   // [END] IType implementation
-
-private:
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;
+   // [END] CProfile_D2_01_0D override
 };
