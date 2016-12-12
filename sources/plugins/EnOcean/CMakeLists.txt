@@ -141,15 +141,15 @@ set(ENOCEAN_ADDITIONAL_LIB
 ## Always leave this three lines to configure plugin correctly
 ## even if ENOCEAN_ADDITIONAL_INC_DIR or ENOCEAN_ADDITIONAL_LIB are empty
 #########################################
-PLUGIN_SOURCES(dev-enOcean ${ENOCEAN_SOURCES})
-PLUGIN_INCLDIR(dev-enOcean ${ENOCEAN_ADDITIONAL_INC_DIR})
-PLUGIN_LINK(dev-enOcean ${ENOCEAN_ADDITIONAL_LIB})
+PLUGIN_SOURCES(enOcean ${ENOCEAN_SOURCES})
+PLUGIN_INCLDIR(enOcean ${ENOCEAN_ADDITIONAL_INC_DIR})
+PLUGIN_LINK(enOcean ${ENOCEAN_ADDITIONAL_LIB})
 
 #########################################
 ## Post-build commands
 ## Copy files to build directory
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
-PLUGIN_POST_BUILD_COPY_FILE(dev-enOcean package.json)
-PLUGIN_POST_BUILD_COPY_FILE(dev-enOcean icon.png)
-PLUGIN_POST_BUILD_COPY_DIRECTORY(dev-enOcean locales)
+PLUGIN_POST_BUILD_COPY_FILE(enOcean package.json)
+PLUGIN_POST_BUILD_COPY_FILE(enOcean icon.png)
+PLUGIN_POST_BUILD_COPY_DIRECTORY(enOcean locales)
