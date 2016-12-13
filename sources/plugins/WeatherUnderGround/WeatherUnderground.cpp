@@ -56,13 +56,14 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    boost::shared_ptr<CForecastDays> forecast10Days;
    std::vector<shared::CDataContainer> forecastStations;
 
+   CLiveStations liveStations(api);
+
    try
    {
       // Load configuration values (provided by database)
       m_configuration.initializeWith(api->getConfiguration());
 
       //Get all forecast stations to be displayed into the menu
-      CLiveStations liveStations(api);
       liveStations.getAllStations(api, m_configuration.getAPIKey());
    }
    catch (...)
@@ -70,6 +71,8 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       // Informs Yadoms about the plugin actual state
       api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
    }
+
+   // TODO : Recharger les devices existants !
 
    std::cout << "CWeatherUnderground plugin is running..." << std::endl;
 
@@ -87,47 +90,78 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
 	  case yApi::IYPluginApi::kEventManuallyDeviceCreation:
 	  {
-		  // Yadoms asks for device creation
-		  //TODO : A remplir !
-		  auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
-		  std::cout << "Manually device creation request received for device :" << request->getData().getDeviceName() << std::endl;
+		  // Device creation
+        auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
+        std::cout << "Manually device creation request received for device :" << request->getData().getDeviceName() << std::endl;
 
-        //Display the configuration
-        request->getData().getConfiguration().printToLog(std::cout);
+        try {
+           //Display the configuration
+           request->getData().getConfiguration().printToLog(std::cout);
 
-        boost::shared_ptr<IdeviceConfiguration> deviceConfiguration = boost::make_shared<CdeviceConfiguration>(request->getData().getConfiguration());
+           boost::shared_ptr<IdeviceConfiguration> deviceConfiguration = boost::make_shared<CdeviceConfiguration>(request->getData().getConfiguration());
 
-        // If astronomy is enabled
-        if (deviceConfiguration->isAstronomyEnabled())
-        {
-           astronomyRequester = boost::make_shared<CAstronomy>(api, m_configuration, deviceConfiguration);
+           // If astronomy is enabled
+           if (deviceConfiguration->isAstronomyEnabled())
+           {
+              if (!astronomyRequester)
+              {
+                 astronomyRequester = boost::make_shared<CAstronomy>(api, m_configuration, deviceConfiguration, request->getData().getDeviceName());
+                 request->sendSuccess(astronomyRequester->getName());
 
-           api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+                 api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
 
-           // TODO : Voir pour ne pas créer plusieurs fois ce timer
-           api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(9));
+                 // TODO : Voir pour ne pas créer plusieurs fois ce timer
+                 api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(9));
+              }
+              else
+              {
+                 std::cout << "Could not create device " << request->getData().getDeviceName() << " : already exist." << std::endl;
+                 request->sendError("device already exist !"); // TODO : Traduire en anglais
+              }
+           }
+
+           // if conditions are enabled
+           if (deviceConfiguration->isConditionsIndividualKeywordsEnabled() || deviceConfiguration->isLiveConditionsEnabled())
+           {
+              if (!weatherConditionsRequester)
+              {
+                 weatherConditionsRequester = boost::make_shared<CWeatherConditions>(api, m_configuration, deviceConfiguration, request->getData().getDeviceName());
+                 request->sendSuccess(weatherConditionsRequester->getName());
+                 api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+
+                 // TODO : Voir pour ne pas créer plusieurs fois ce timer
+                 api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
+              }
+              else
+              {
+                 std::cout << "Could not create device " << request->getData().getDeviceName() << " : already exist." << std::endl;
+                 request->sendError("device already exist !"); // TODO : Traduire en anglais
+              }
+           }
+
+           // If forecast is enabled
+           if (deviceConfiguration->isForecast10DaysEnabled())
+           {
+              if (!forecast10Days)
+              {
+                 forecast10Days = boost::make_shared<CForecastDays>(api, m_configuration, deviceConfiguration, request->getData().getDeviceName());
+                 request->sendSuccess(forecast10Days->getName());
+                 api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+
+                 // TODO : Voir pour ne pas créer plusieurs fois ce timer
+                 api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(3));
+              }
+              else
+              {
+                 std::cout << "Could not create device " << request->getData().getDeviceName() << " : already exist." << std::endl;
+                 request->sendError("device already exist !"); // TODO : Traduire en anglais
+              }
+           }
         }
-
-        // if conditions are enabled
-        if (deviceConfiguration->isConditionsIndividualKeywordsEnabled() || deviceConfiguration->isLiveConditionsEnabled())
+        catch (std::exception& e)
         {
-           weatherConditionsRequester = boost::make_shared<CWeatherConditions>(api, m_configuration, deviceConfiguration);
-           api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-
-           // TODO : Voir pour ne pas créer plusieurs fois ce timer
-           api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
+           request->sendError(e.what());
         }
-
-        // If forecast is enabled
-        if (deviceConfiguration->isForecast10DaysEnabled())
-        {
-           forecast10Days = boost::make_shared<CForecastDays>(api, m_configuration, deviceConfiguration);
-           api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-
-           // TODO : Voir pour ne pas créer plusieurs fois ce timer
-           api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(3));
-        }
-
 		  break;
 	  }
 	  case yApi::IYPluginApi::kEventDeviceRemoved:
@@ -145,49 +179,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 		  try {
 			if (data->getData().getQuery() == "LiveStations")
 			{
-				// Create the station list
-				std::vector<shared::CDataContainer>::const_iterator iterStations;
-            int counter = 1;
-            shared::CDataContainer value;
-            shared::CDataContainer stations;
-
-            try {
-               for (iterStations = forecastStations.begin(); iterStations != forecastStations.end(); ++iterStations)
-               {
-                  std::string city = (*iterStations).get<std::string>("city");
-
-                  // Only filled elements are copied
-                  if (city != "")
-                     stations.set(boost::lexical_cast<std::string>(counter + 1), city + " " + (*iterStations).get<std::string>("country"));
-
-                  ++counter;
-
-                  /* return format :
-                  -city :
-                  -state :
-                  -country :
-                  -icao :
-                  -lat :
-                  -lon :
-                  */
-               }
-            }
-            catch (std::exception& e)
-            {
-               std::cout << "exception " << e.what() << std::endl;
-               std::cout << "No Stations return in binding" << std::endl;
-
-               // reset values
-               shared::CDataContainer defaultReturn;
-               stations.initializeWith(defaultReturn);
-            }
-
-            value.set("required", "true");
-            value.set("type", "enum");
-            value.set("values", stations);
-            value.set("defaultValue", "1");
-
-				data->sendSuccess(value);
+				data->sendSuccess(liveStations.bindAvailableStations());
 			}
 			else
 			{

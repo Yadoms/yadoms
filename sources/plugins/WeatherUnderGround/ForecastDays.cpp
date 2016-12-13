@@ -5,10 +5,11 @@
 
 CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
                              IWUConfiguration& wuConfiguration,
-                             boost::shared_ptr<IdeviceConfiguration> deviceConfiguration)
+                             boost::shared_ptr<IdeviceConfiguration> deviceConfiguration,
+                             const std::string& deviceName)
    : m_localisation(wuConfiguration.getLocalisation()),
      m_countryOrState(wuConfiguration.getCountryOrState()),
-     m_deviceName("Forecast"),
+     m_deviceName(deviceName),
      m_forecast(boost::make_shared<CForecast>(m_deviceName, "Forecast", weatherunderground::helper::EPeriod::kDay)),
      m_temp(boost::make_shared<yApi::historization::CTemperature>("low_temperature")),
      m_isDeveloperMode(false),
@@ -155,4 +156,9 @@ CForecastDays::~CForecastDays()
 std::string CForecastDays::getUrl() const
 {
    return m_url.str();
+}
+
+std::string CForecastDays::getName() const
+{
+   return m_deviceName;
 }

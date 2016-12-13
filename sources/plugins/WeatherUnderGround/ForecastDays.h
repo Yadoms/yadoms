@@ -20,10 +20,12 @@ public:
    /// \param[in] api                  pointer to the API
    /// \param[in] wuConfiguration      The Configuration of the module
    /// \param[in] deviceConfiguration  The Configuration of the device
+   /// \param[in] deviceName           Name of the device
    //--------------------------------------------------------------
    CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
                  IWUConfiguration& wuConfiguration,
-                 boost::shared_ptr<IdeviceConfiguration> deviceConfiguration);
+                 boost::shared_ptr<IdeviceConfiguration> deviceConfiguration,
+                 const std::string& deviceName);
 
    //--------------------------------------------------------------
    /// \brief	  Parse the answer from the web Site
@@ -60,6 +62,12 @@ public:
    /// \return    The url string
    //--------------------------------------------------------------
    std::string getUrl() const;
+
+   //--------------------------------------------------------------
+   /// \brief	  Return the name of the device
+   /// \return    The url string
+   //--------------------------------------------------------------
+   std::string getName() const;
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

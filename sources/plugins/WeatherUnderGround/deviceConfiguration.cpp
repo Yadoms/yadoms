@@ -24,26 +24,30 @@ void CdeviceConfiguration::initializeWith(const shared::CDataContainer& data)
 
 bool CdeviceConfiguration::isLiveConditionsEnabled() const
 {
-   return m_data.get<bool>("LiveConditions");
+   return m_data.get<bool>("deviceToCreate.content.LiveConditions.radio");
 }
 
 bool CdeviceConfiguration::isAstronomyEnabled() const
 {
-   return m_data.get<bool>("Astronomy");
+   return m_data.get<bool>("deviceToCreate.content.Astronomy.radio");
 }
 
 bool CdeviceConfiguration::isForecast10DaysEnabled() const
 {
-   return m_data.get<bool>("Forecast10Days");
+   return m_data.get<bool>("deviceToCreate.content.Forecast10Days.radio");
 }
 
 bool CdeviceConfiguration::isConditionsIndividualKeywordsEnabled() const
 {
-   return m_data.get<bool>("IndividualKeywordsLiveConditions");
+   return m_data.get<bool>("deviceToCreate.content.LiveConditions.content.IndividualKeywords");
 }
 
 bool CdeviceConfiguration::isRainIndividualKeywordsEnabled() const
 {
-   return m_data.get<bool>("IndividualRainKeywordsForecast10days");
+   return m_data.get<bool>("deviceToCreate.content.Forecast10Days.content.individualRainForecast");
 }
 
+bool CdeviceConfiguration::isTempIndividualKeywordsEnabled() const
+{
+   return m_data.get<bool>("deviceToCreate.content.Forecast10Days.content.individualTempForecast");
+}

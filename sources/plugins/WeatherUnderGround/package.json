@@ -339,7 +339,7 @@
                        "IndividualKeywords" :
                        {				 
                           "type" : "bool",
-                          "defaultValue" : "true"
+                          "defaultValue" : "false"
                        }
                     }
               },
@@ -355,12 +355,12 @@
                        "individualRainForecast" :
                        {				 
                           "type" : "bool",
-                          "defaultValue" : "true"
+                          "defaultValue" : "false"
                        },
                        "individualTempForecast" :
                        {				 
                           "type" : "bool",
-                          "defaultValue" : "true"
+                          "defaultValue" : "false"
                        }                    
                     }
               }

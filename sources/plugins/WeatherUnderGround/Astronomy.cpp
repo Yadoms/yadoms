@@ -6,10 +6,11 @@
 
 CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
                        IWUConfiguration& wuConfiguration,
-                       boost::shared_ptr<IdeviceConfiguration> deviceConfiguration)
+                       boost::shared_ptr<IdeviceConfiguration> deviceConfiguration,
+                       const std::string& deviceName)
    : m_localisation(wuConfiguration.getLocalisation()),
      m_countryOrState(wuConfiguration.getCountryOrState()),
-     m_deviceName("Astronomy"),
+     m_deviceName(deviceName),
      m_url("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/astronomy/q/" + m_countryOrState + "/" + m_localisation + ".json"),
      m_moonCharacteristics(boost::make_shared<CMoon>(m_deviceName, "Moon")),
      m_deviceConfiguration(deviceConfiguration)
@@ -113,4 +114,9 @@ CAstronomy::~CAstronomy()
 std::string CAstronomy::getUrl() const
 {
    return m_url.str();
+}
+
+std::string CAstronomy::getName() const
+{
+   return m_deviceName;
 }
