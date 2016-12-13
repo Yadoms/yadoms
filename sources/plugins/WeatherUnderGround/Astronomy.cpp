@@ -2,19 +2,21 @@
 #include "Astronomy.h"
 #include <shared/exception/Exception.hpp>
 #include <shared/exception/EmptyResult.hpp>
+#include "deviceConfiguration.h"
 
 CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
                        IWUConfiguration& wuConfiguration,
-                       IdeviceConfiguration& deviceConfiguration)
+                       boost::shared_ptr<IdeviceConfiguration> deviceConfiguration)
    : m_localisation(wuConfiguration.getLocalisation()),
      m_countryOrState(wuConfiguration.getCountryOrState()),
      m_deviceName("Astronomy"),
      m_url("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/astronomy/q/" + m_countryOrState + "/" + m_localisation + ".json"),
-     m_moonCharacteristics(boost::make_shared<CMoon>(m_deviceName, "Moon"))
+     m_moonCharacteristics(boost::make_shared<CMoon>(m_deviceName, "Moon")),
+     m_deviceConfiguration(deviceConfiguration)
 {
    try
    {
-      initializeKeywords(api, deviceConfiguration);
+      initializeKeywords(api);
    }
    catch (shared::exception::CException& e)
    {
@@ -23,10 +25,9 @@ CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
    }
 }
 
-void CAstronomy::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api,
-                                    const IdeviceConfiguration& deviceConfiguration)
+void CAstronomy::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   if (deviceConfiguration.isAstronomyEnabled())
+   if (m_deviceConfiguration->isAstronomyEnabled())
    {
       // Clear the list
       m_keywords.clear();
@@ -70,11 +71,12 @@ void CAstronomy::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void CAstronomy::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                                IdeviceConfiguration& deviceConfiguration)
+                                boost::shared_ptr<IdeviceConfiguration> deviceConfiguration)
 {
    try
    {
-      initializeKeywords(api, deviceConfiguration);
+      m_deviceConfiguration = deviceConfiguration;
+      initializeKeywords(api);
    }
    catch (shared::exception::CException& e)
    {
@@ -84,12 +86,11 @@ void CAstronomy::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void CAstronomy::parse(boost::shared_ptr<yApi::IYPluginApi> api,
-                       const IdeviceConfiguration& deviceConfiguration,
                        const shared::CDataContainer dataToParse)
 {
    try
    {
-      if (deviceConfiguration.isAstronomyEnabled())
+      if (m_deviceConfiguration->isAstronomyEnabled())
       {
          m_moonCharacteristics->setParameters(dataToParse,
                                                 "moon_phase.percentIlluminated",

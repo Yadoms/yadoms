@@ -15,6 +15,8 @@ public:
    //--------------------------------------------------------------
    explicit CdeviceConfiguration(const shared::CDataContainer& data);
 
+   explicit CdeviceConfiguration(CdeviceConfiguration& newConfiguration);
+
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------

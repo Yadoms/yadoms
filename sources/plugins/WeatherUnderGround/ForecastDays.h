@@ -23,16 +23,14 @@ public:
    //--------------------------------------------------------------
    CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
                  IWUConfiguration& wuConfiguration,
-                 IdeviceConfiguration& deviceConfiguration);
+                 boost::shared_ptr<IdeviceConfiguration> deviceConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	  Parse the answer from the web Site
    /// \param[in] api             pointer to the API
-   /// \param[in] wuConfiguration The configuration of the module
    /// \param[in] dataToParse     data to parse
    //--------------------------------------------------------------
    void parse(boost::shared_ptr<yApi::IYPluginApi> api,
-              const IdeviceConfiguration& deviceConfiguration,
               const shared::CDataContainer dataToParse) const;
 
    //--------------------------------------------------------------
@@ -49,7 +47,7 @@ public:
    /// \param[in] deviceConfiguration    The configuration of the device
    //--------------------------------------------------------------
    void onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                       IdeviceConfiguration& deviceConfiguration);
+                       boost::shared_ptr<IdeviceConfiguration> deviceConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	  Set the city Name
@@ -73,10 +71,8 @@ private:
    //--------------------------------------------------------------
    /// \brief	  Initialise Forecast 10 Days variables
    /// \param[in] api                    pointer to the API
-   /// \param[in] deviceConfiguration    The device configuration
    //--------------------------------------------------------------
-   void InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
-                               const IdeviceConfiguration& deviceConfiguration);
+   void InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site
@@ -127,4 +123,9 @@ private:
    /// \brief  developerMode state
    //--------------------------------------------------------------
    bool m_isDeveloperMode;
+
+   //--------------------------------------------------------------
+   /// \brief	    The device Configuration
+   //--------------------------------------------------------------   
+   boost::shared_ptr<IdeviceConfiguration> m_deviceConfiguration;
 };

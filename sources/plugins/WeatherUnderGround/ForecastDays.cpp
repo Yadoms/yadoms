@@ -5,18 +5,19 @@
 
 CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
                              IWUConfiguration& wuConfiguration,
-                             IdeviceConfiguration& deviceConfiguration)
+                             boost::shared_ptr<IdeviceConfiguration> deviceConfiguration)
    : m_localisation(wuConfiguration.getLocalisation()),
      m_countryOrState(wuConfiguration.getCountryOrState()),
      m_deviceName("Forecast"),
      m_forecast(boost::make_shared<CForecast>(m_deviceName, "Forecast", weatherunderground::helper::EPeriod::kDay)),
      m_temp(boost::make_shared<yApi::historization::CTemperature>("low_temperature")),
      m_isDeveloperMode(false),
-     m_url ("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/forecast/q/" + m_countryOrState + "/" + m_localisation + ".json")
+     m_url ("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/forecast/q/" + m_countryOrState + "/" + m_localisation + ".json"),
+     m_deviceConfiguration(deviceConfiguration)
 {
    try
    {
-      InitializeForecastDays(api, deviceConfiguration);
+      InitializeForecastDays(api);
    }
    catch (shared::exception::CException& e)
    {
@@ -25,10 +26,9 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
    }
 }
 
-void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
-                                           const IdeviceConfiguration& deviceConfiguration)
+void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   if (deviceConfiguration.isForecast10DaysEnabled())
+   if (m_deviceConfiguration->isForecast10DaysEnabled())
    {
       m_keywords.clear();
 
@@ -43,7 +43,7 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
       m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
                           shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit());
 
-      if (deviceConfiguration.isRainIndividualKeywordsEnabled())
+      if (m_deviceConfiguration->isRainIndividualKeywordsEnabled())
       {
          for (auto counter = 0; counter < NB_RAIN_FORECAST_DAY; ++counter)
          {
@@ -76,18 +76,19 @@ void CForecastDays::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
 }
 
 void CForecastDays::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                                   IdeviceConfiguration& deviceConfiguration)
+                                   boost::shared_ptr<IdeviceConfiguration> deviceConfiguration)
 {
-   InitializeForecastDays(api, deviceConfiguration);
+   // TODO : mettre en try/catch
+   m_deviceConfiguration = deviceConfiguration;
+   InitializeForecastDays(api);
 }
 
 void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
-                          const IdeviceConfiguration& deviceConfiguration,
                           const shared::CDataContainer dataToParse) const
 {
    try
    {
-      if (deviceConfiguration.isForecast10DaysEnabled())
+      if (m_deviceConfiguration->isForecast10DaysEnabled())
       {
          auto result = dataToParse.get<std::vector<shared::CDataContainer> >("forecast.simpleforecast.forecastday");
          std::vector<shared::CDataContainer>::iterator i;
@@ -119,7 +120,7 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
                   m_temp->set(temp);
             }
 
-            if (deviceConfiguration.isRainIndividualKeywordsEnabled())
+            if (m_deviceConfiguration->isRainIndividualKeywordsEnabled())
             {
                if (counter < NB_RAIN_FORECAST_DAY)
                {

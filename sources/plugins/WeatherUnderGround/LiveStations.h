@@ -21,10 +21,15 @@ public:
    /// \brief get All forecast stations around the location
    /// \param[in] api       pointer to the API
    /// \param[in] apikey    api key to weatherUnderground
-   /// \return all forecast stations if found
    //--------------------------------------------------------------
-   std::vector<shared::CDataContainer> getAllStations(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                      const std::string& apikey);
+   void getAllStations(boost::shared_ptr<yApi::IYPluginApi> api,
+                       const std::string& apikey);
+
+   //--------------------------------------------------------------
+   /// \brief	    bindAvailableStations
+   /// \return all forecast available stations
+   //--------------------------------------------------------------
+   shared::CDataContainer bindAvailableStations();
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -37,5 +42,10 @@ private:
    /// \brief	    GPS Location
    //--------------------------------------------------------------
    boost::shared_ptr<const shared::ILocation> m_location;
+
+   //--------------------------------------------------------------
+   /// \brief	    list of all Stations return by WeatherUnderground
+   //--------------------------------------------------------------
+   std::vector<shared::CDataContainer> m_stations;
 };
 
