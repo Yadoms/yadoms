@@ -26,6 +26,7 @@ function ComboSectionParameterHandler(i18nContext, paramName, content, currentVa
    this.uuid = createUUID();
    this.containerUuid = createUUID();
    this.comboUuid = createUUID();
+   this.selectorUuid = createUUID();
    var self = this;
 
    //we look for parent radio button
@@ -59,10 +60,12 @@ function ComboSectionParameterHandler(i18nContext, paramName, content, currentVa
       if (value.show !== undefined && value.show.result === "false")
          return;
       
-	   var handler = ConfigurationHelper.createParameterHandler(newI18nContext, key, value, v);
+	    var handler = ConfigurationHelper.createParameterHandler(newI18nContext, key, value, v);
       if (!isNullOrUndefined(handler))
          self.configurationHandlers.push(handler);
    });
+
+   self.setEnabled(true);
 }
 
 /**
@@ -136,9 +139,11 @@ ComboSectionParameterHandler.prototype.getParamName = function() {
 ComboSectionParameterHandler.prototype.applyScript = function () {
   var self = this;
 
-  if (self.parentRadioButtonSectionName) {
-      $("#" + self.selectorUuid).change(function () {
-         if ($("input#" + self.selectorUuid + ":checked").val() == "on") {
+ // if (self.parentRadioButtonSectionName) {
+ //     $("#" + self.selectorUuid).change(function () {
+ //        self.setEnabled($("input#" + self.selectorUuid + ":checked").val() == "on");
+         /*if ($("input#" + self.selectorUuid + ":checked").val() == "on") {
+            
             //we hide all sections-content in the radioSection\n" +
 		        var $parentSection = $("div#" + self.parentRadioButtonSectionName);
             var radioSections = $parentSection.find(" > div.toggle-btn-grp > div.configuration-section > div.section-content");
@@ -162,36 +167,20 @@ ComboSectionParameterHandler.prototype.applyScript = function () {
 		        $activeContainer.find("button").removeAttr("disabled");
             //we restore required items
             $activeContainer.find(".required-for-validation").attr("required", "required");
-         }
-      });
-   }
+*/
+  //    });
+  // }
 
     //we manage sub containers items
     //and make all disappear except the current one
     $("#" + self.comboUuid).change(function () {
-          //we hide all sub-containers except the active one
-          var $subContainers = $("#" + self.containerUuid + " > div");
-          $subContainers.addClass("hidden");
-          $subContainers.removeClass("has-warning has-error");
-          $subContainers.find("input,select,textarea").removeClass("enable-validation");
-          //Disable all existing sub-buttons
-          $subContainers.find("button").attr("disabled", true);
-
-          //We save all items that are "required" with a special class name : required-for-validation
-          var $requiredFields = $subContainers.find("[required]");
-          //we remove attr required and save it using class "required-for-validation"
-          $requiredFields.addClass("required-for-validation");
-          $requiredFields.removeAttr("required");
-
-          //we show the active one
           var uuidOfActive = $("#" + self.comboUuid + " option:selected").val();
-          var $activeContainer = $("#" + uuidOfActive);
-          $activeContainer.removeClass("hidden").removeClass("has-warning has-error");
-          $activeContainer.find("input,select,textarea").addClass("enable-validation");
-          //Enable all existing sub-buttons
-          $activeContainer.find("button").removeAttr("disabled");
-          //we restore required items
-          $activeContainer.find(".required-for-validation").attr("required", "required");
+          //we enable sub components of active combo
+          $.each(self.configurationHandlers, function (key, value) {
+            if ($.isFunction(value.setEnabled)) {
+              value.setEnabled(value.uuid == uuidOfActive);
+            }
+          });
       });
     //we apply script in each children
     $.each(this.configurationHandlers, function (key, value) {
@@ -214,6 +203,28 @@ ComboSectionParameterHandler.prototype.applyScript = function () {
     
     $("#" + self.comboUuid).val(activeSectionUuid).change();
 };
+
+/**
+ * Enable / Disbale the content of the comnfiguration item
+ */
+ComboSectionParameterHandler.prototype.setEnabled = function (enabled) {
+    var self = this;
+
+    //we disable / enable the control of the radio or the checkbox
+    if (enabled) {
+            $("#" + self.uuid).addClass("enable-validation").removeClass("hidden");
+    } else {
+            $("#" + self.uuid).removeClass("enable-validation").addClass("hidden");
+    }
+
+    var uuidOfActive = $("#" + self.comboUuid + " option:selected").val();
+    //we enable sub components of active combo
+    $.each(self.configurationHandlers, function (key, value) {
+      if ($.isFunction(value.setEnabled)) {
+        value.setEnabled((value.uuid == uuidOfActive)  && enabled);
+      }
+    });
+}
 
 /**
  * Get the current configuration in the form

@@ -25,6 +25,7 @@ function RadioSectionParameterHandler(i18nContext, paramName, content, currentVa
    this.content = content;
    this.containerUuid = createUUID();
    this.uuid = createUUID();
+   this.selectorUuid = createUUID();
    var self = this;
 
    //we look for parent radio button
@@ -130,51 +131,55 @@ RadioSectionParameterHandler.prototype.getParamName = function() {
 RadioSectionParameterHandler.prototype.applyScript = function () {
    var self = this;
 
-   if (self.parentRadioButtonSectionName) {
-      $("#" + self.selectorUuid).change(function () {
-         if ($("input#" + self.selectorUuid + ":checked").val() == "on") {
-            //we hide all sections-content in the radioSection\n" +
-		var $parentSection = $("div#" + self.parentRadioButtonSectionName);
-            var radioSections = $parentSection.find(" > div.toggle-btn-grp > div.configuration-section > div.section-content");
-            radioSections.addClass("hidden");
-            $parentSection.removeClass("has-warning has-error");
-            $parentSection.find("input,select,textarea").removeClass("enable-validation");
-		//Disable all existing sub-buttons
-		$parentSection.find("button").attr("disabled", true);
+   //we manage change of children radio button
+   $("#" + self.containerUuid + " [name=" + self.uuid + "]").change(function (item) {
+      self.setEnabled(true);
+   });
 
-            //We save all items that are "required" with a special class name : required-for-validation
-            var $requiredFields = radioSections.find("[required]");
-            //we remove attr required and save it using class "required-for-validation"
-            $requiredFields.addClass("required-for-validation");
-            $requiredFields.removeAttr("required");
-
-            //we show current
-            var $activeContainer = $("div#" + self.containerUuid);
-            $activeContainer.removeClass("hidden");
-            $activeContainer.find("input,select,textarea").addClass("enable-validation");
-            //Enable all existing sub-buttons
-		$activeContainer.find("button").removeAttr("disabled");
-            //we restore required items
-            $activeContainer.find(".required-for-validation").attr("required", "required");
-         }
-      });
-   }
-   
    //we apply script in each children
    $.each(this.configurationHandlers, function (key, value) {
       if ($.isFunction(value.applyScript))
          value.applyScript();
    });
-debugger;
+
    //can't factorize must happen after intialize all handlers
    $.each(this.configurationHandlers, function (key, value) {
       //if this child is the active one we fire the event that we have changed to it the radio button
       if (value.parentRadioSectionActive)
          $("#" + value.selectorUuid).change();
    });
-
- 
 };
+
+/**
+ * Enable / Disbale the content of the comnfiguration item
+ */
+RadioSectionParameterHandler.prototype.setEnabled = function (enabled) {
+    var self = this;
+
+    //we disable / enable the control of the radio or the checkbox
+    if (enabled) {
+            //if there is a radio we must hide container, if not we must hide all 
+            if (self.parentRadioButtonSectionName)
+                  $("#" + self.containerUuid).addClass("enable-validation").removeClass("hidden");
+            else
+                  $("#" + self.uuid).addClass("enable-validation").removeClass("hidden");
+
+    } else {
+            //if there is a radio we must show container, if not we must show all 
+            if (self.parentRadioButtonSectionName)
+                  $("#" + self.containerUuid).removeClass("enable-validation").addClass("hidden");
+            else
+                  $("#" + self.uuid).removeClass("enable-validation").addClass("hidden");
+    }
+
+    var uuidOfActive = $("#" + self.containerUuid + " [name=" + self.uuid + "]:checked").attr('id');
+    $.each(self.configurationHandlers, function (key, value) {
+          //we set enable children with true only if it has to be neabled and if it is the active radio item selected 
+          if ($.isFunction(value.setEnabled)) {
+                value.setEnabled((value.selectorUuid == uuidOfActive) && enabled);
+          }
+    });
+}
 
 /**
  * Get the current configuration in the form

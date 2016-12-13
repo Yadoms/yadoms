@@ -138,6 +138,19 @@ EnumParameterHandler.prototype.getParamName = function() {
 };
 
 /**
+ * Enable / Disbale the content of the configuration item
+ */
+EnumParameterHandler.prototype.setEnabled = function (enabled) {
+    var self = this;
+
+    if (enabled) {
+            $("#" + self.uuid).addClass("enable-validation");
+    } else {
+            $("#" + self.uuid).removeClass("enable-validation");
+    }
+}
+
+/**
  * Get the current configuration in the form
  * @returns {string}
  */
