@@ -5,13 +5,13 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CRunningPeriod::CRunningPeriod(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& KeyWordName):
-   m_runningPeriod(boost::make_shared<teleInfo::specificHistorizers::CPeriod>(KeyWordName)),
-   m_isDeveloperMode (api->isDeveloperMode())
+CRunningPeriod::CRunningPeriod(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& KeyWordName)
+   : m_runningPeriod(boost::make_shared<teleInfo::specificHistorizers::CPeriod>(KeyWordName)),
+     m_isDeveloperMode(api->getYadomsInformation()->developperMode())
 {
 }
 
-void CRunningPeriod::set(std::string& Value) const
+void CRunningPeriod::set(const std::string& value) const
 {
    static const EnumPeriod EEnumPeriod = boost::assign::map_list_of
       ("TH..", teleInfo::specificHistorizers::EPeriod::kAllHours)
@@ -28,7 +28,7 @@ void CRunningPeriod::set(std::string& Value) const
 
    try
    {
-      auto it = EEnumPeriod.find(Value);
+      auto it = EEnumPeriod.find(value);
       if (it != EEnumPeriod.end())
       {
          m_runningPeriod->set(static_cast<teleInfo::specificHistorizers::EPeriod>(it->second));

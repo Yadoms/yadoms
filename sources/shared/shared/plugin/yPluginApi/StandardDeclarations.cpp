@@ -2,7 +2,6 @@
 #include "StandardCapacities.h"
 #include "StandardUnits.h"
 #include "StandardValues.h"
-#include "shared/StringExtension.h"
 
 namespace shared { namespace plugin { namespace yPluginApi {
 

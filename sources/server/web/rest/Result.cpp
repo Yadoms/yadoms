@@ -21,12 +21,12 @@ namespace web { namespace rest {
 
    shared::CDataContainer CResult::GenerateSuccess(const shared::CDataContainer & data)
    {
-      return GenerateInternal(true, shared::CStringExtension::EmptyString, data);
+      return GenerateInternal(true, std::string(), data);
    }
 
    shared::CDataContainer CResult::GenerateSuccess(const std::string & stringData)
    {
-      return GenerateInternal(true, shared::CStringExtension::EmptyString, stringData);
+      return GenerateInternal(true, std::string(), stringData);
    }
 
    shared::CDataContainer CResult::GenerateInternal(const bool result, const std::string & message, const shared::CDataContainer & data)

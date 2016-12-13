@@ -50,8 +50,8 @@
           "type": "system",
           "query": "platformIsWindows"
         }
-      }      
-    }    
+      }
+    }
   },
   "supportManuallyDeviceCreation": "true",
   "manuallyDeviceCreationConfigurationSchema": {
@@ -74,79 +74,107 @@
       }
     }
   },
+  "supportDeviceRemovedNotification": "true",
   "enumerations": {
     "EFakeControllerValues": {
-		"name" : "",
-		"values" : {
-		  "Stop": "",
-		  "Run": "",
-		  "Back": "",
-		  "Left": "",
-		  "Right": ""
-	   }
+      "name": "",
+      "values": {
+        "Stop": "",
+        "Run": "",
+        "Back": "",
+        "Left": "",
+        "Right": ""
+      }
     }
   },
-  "recipientFields" : {
+  "recipientFields": {
     "address": {
       "type": "string",
-      "regex" : ""
+      "regex": ""
     },
     "zipcode": {
       "type": "string",
-      "regex" : "^(F-)?((2[A|B])|[0-9]{2})[0-9]{3}$"
+      "regex": "^(F-)?((2[A|B])|[0-9]{2})[0-9]{3}$"
     },
-    "mms" : {
-      "type" : "bool",
-      "defaultValue" : "true"
+    "mms": {
+      "type": "bool",
+      "defaultValue": "true"
     }
   },
-	"extraCommands" : {
-		"simpleCommand" : {
-			"iconClass" : "fa fa-bolt"
-		},
-		"dataCommand" : {
-			"iconClass" : "fa fa-edit",
-			"commandData" : {
-				"testValue": {
-					"type": "string"
-				}			
-			}
-		},	
-		"dataBindingCommand" : {
-			"iconClass" : "fa fa-sitemap",
-			"commandData" : {
-				"networkInterface": {
-				  "type": "enum",
-				  "values": {
-					"__Binding__": {
-					  "type": "system",
-					  "query": "networkInterfaces"
-					}
-				  }
-				}			
-			}
-		},
-		"dataBindingPluginCommand" : {
-			"iconClass" : "fa fa-rocket",
-			"commandData" : {
-				"dynamicSection": {
-				  "type": "section",
-				  "content": {
-					"__Binding__": {
-					  "type": "plugin",
-					  "query": "test"
-					}
-				  }
-				}
-			}
-		},
-		"changePluginStateMessage" : {
-			"iconClass" : "fa fa-recycle",
-			"commandData" : {
-				"newStateMessage": {
-					"type": "string"
-				}			
-			}
-		}
-	}  
+  "extraQueries": {
+    "simpleCommand": {
+      "iconClass": "fa fa-bolt"
+    },
+    "dataCommand": {
+      "iconClass": "fa fa-edit",
+      "commandData": {
+        "testValue": {
+          "type": "string"
+        }
+      }
+    },
+    "dataBindingCommand": {
+      "iconClass": "fa fa-sitemap",
+      "commandData": {
+        "networkInterface": {
+          "type": "enum",
+          "values": {
+            "__Binding__": {
+              "type": "system",
+              "query": "networkInterfaces"
+            }
+          }
+        }
+      }
+    },
+    "dataBindingPluginCommand": {
+      "iconClass": "fa fa-rocket",
+      "commandData": {
+        "dynamicSection": {
+          "type": "section",
+          "content": {
+            "__Binding__": {
+              "type": "plugin",
+              "query": "test"
+            }
+          }
+        }
+      }
+    },
+    "changePluginStateMessage": {
+      "iconClass": "fa fa-recycle",
+      "commandData": {
+        "newStateMessage": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "deviceConfiguration": {
+    "staticConfigurationSchema": [
+      {
+        "models": [ "Fake sensor" ],
+        "schema": {
+          "CounterDivider": {
+            "type": "int",
+            "defaultValue": "2",
+            "minimumValue": "1",
+            "maximumValue": "10"
+          }
+        }
+      },
+      {
+        "models": [ "Fake counter" ],
+        "schema": {
+          "CounterDivider2": {
+            "type": "int",
+            "defaultValue": "2",
+            "minimumValue": "1",
+            "maximumValue": "10"
+          }
+        }
+      }
+    ],
+    "dynamicConfigurationSchema": "true"
+  }
 }

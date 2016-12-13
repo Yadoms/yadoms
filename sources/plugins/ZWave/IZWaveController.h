@@ -2,7 +2,7 @@
 
 #include <shared/event/EventHandler.hpp>
 #include "ZWaveConfiguration.h"
-
+#include "OpenZWaveNode.h"
 //--------------------------------------------------------------
 /// \brief	Interface for ZWave controller
 //--------------------------------------------------------------
@@ -16,6 +16,12 @@ public:
       kControllerError,  /// in case of controller problem
       kUnknownError      /// in case of any other problem      
    };
+
+   //--------------------------------------------------------------
+   /// \brief	   The zwave node list type
+   //--------------------------------------------------------------
+   typedef std::vector<boost::shared_ptr<COpenZWaveNode> > NodeListType;
+
    //--------------------------------------------------------------
    /// \brief	Virtual destructor
    //--------------------------------------------------------------
@@ -82,5 +88,34 @@ public:
    /// \brief	Heal network
    //--------------------------------------------------------------
    virtual void healNetwork() = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	Ask to device configuration schema of a device
+   /// \param [in] 	device   the targetted device
+   /// \return The configuration schema
+   //--------------------------------------------------------------
+   virtual shared::CDataContainer getNodeConfigurationSchema(const std::string & device) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	Update device configuration
+   /// \param [in] 	device         The targetted device
+   /// \param [in]   configuration  The configuration values
+   //--------------------------------------------------------------
+   virtual void setNodeConfiguration(const std::string & device, const shared::CDataContainer &configuration) =0;
+
+   //--------------------------------------------------------------
+   /// \brief	Update device configuration (self update, from a device notification) => updates only configuration container
+   /// \param [in] 	   device         The targetted device
+   /// \param [in] 	   keyword        The targetted keyword
+   /// \param [in] 	   value          The new value
+   /// \param [in-out]  configuration  The initial and output configuration values
+   //--------------------------------------------------------------
+   virtual void updateNodeConfiguration(const std::string & device, const std::string& keyword, const std::string& value, shared::CDataContainer & configuration) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	Get all the nodes
+   /// \return The node list
+   //--------------------------------------------------------------
+   virtual NodeListType & getNodeList() = 0;
 
 };

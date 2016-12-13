@@ -10,10 +10,8 @@ namespace historizers
    ///\param[in] accessMode      The access mode
    ///\param[in] measureType     The measure type (normally kAbsolute)
    //-----------------------------------------------------
-   CSwitch::CSwitch(const std::string& name,
-                    shared::plugin::yPluginApi::EKeywordAccessMode accessMode)
-      : COpenZWaveSingleHistorizableData<bool>(boost::make_shared<shared::plugin::yPluginApi::historization::CSwitch>(name,
-                                                                                                                      accessMode))
+   CSwitch::CSwitch(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CBoolTypeInfo & ti)
+      : COpenZWaveSingleHistorizableData<bool>(boost::make_shared<shared::plugin::yPluginApi::historization::CSwitch>(name, accessMode, ti))
    {
    }
 

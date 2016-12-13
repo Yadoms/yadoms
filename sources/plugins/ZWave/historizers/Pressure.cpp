@@ -4,19 +4,13 @@
 
 namespace historizers
 {
-   CPressure::CPressure(const std::string& name,
-                        shared::plugin::yPluginApi::EKeywordAccessMode accessMode)
-      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CPressure>(name,
-                                                                                                                          accessMode))
+   CPressure::CPressure(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CDecimalTypeInfo &ti)
+      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CPressure>(name, accessMode, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti))
    {
    }
 
-   CPressure::CPressure(const std::string& name,
-                        shared::plugin::yPluginApi::EKeywordAccessMode accessMode,
-                        shared::plugin::yPluginApi::historization::EMeasureType measureType)
-      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CPressure>(name,
-                                                                                                                          accessMode,
-                                                                                                                          measureType))
+   CPressure::CPressure(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::historization::EMeasureType measureType, CDecimalTypeInfo &ti)
+      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CPressure>(name, accessMode, measureType, ti))
    {
    }
 
@@ -25,8 +19,7 @@ namespace historizers
    }
 
    // COpenZWaveSingleHistorizableData<Poco::Int64> override ------------------------
-   void CPressure::setWithUnits(double value,
-                                const std::string& unit)
+   void CPressure::setWithUnits(double value, const std::string& unit)
    {
       if (unit == "inHg")
          set(value / 0.029613397);

@@ -97,7 +97,61 @@ message ManuallyDeviceCreationAnswer {
 	}
 }
 
-message DeveloperModeRequest{
+message DeviceConfigurationSchemaAnswer {
+	required bool success = 1;
+	required string result = 2;
+}
+
+message ExtraQueryAnswer {
+	required bool success = 1;
+	required string result = 2;
+}
+
+message RemoveDevice {
+	required string device = 1;
+}
+
+message YadomsInformationRequest {
+}
+
+message AllDevicesRequest {
+}
+
+message RemoveKeyword {
+	required string device = 1;
+	required string keyword = 2;
+}
+
+message UpdateDeviceDetails {
+	required string device = 1;
+	required string details = 2;
+}
+
+message DeviceModelRequest {
+	required string device = 1;
+}
+
+message UpdateDeviceModel {
+	required string device = 1;
+	required string model = 2;
+}
+
+message DeviceConfigurationRequest {
+	required string device = 1;
+}
+
+message UpdateDeviceConfiguration {
+	required string device = 1;
+	required string configuration = 2;
+}
+
+message AllKeywordsRequest {
+	required string device = 1;
+}
+
+message DeclareKeywords {
+	required string device = 1;
+	repeated Historizable keywords = 3;
 }
 
 message msg {
@@ -115,6 +169,18 @@ message msg {
 		RecipientFieldExitsRequest recipientFieldExitsRequest = 11;
 		HistorizeData historizeData = 12;
 		ManuallyDeviceCreationAnswer manuallyDeviceCreationAnswer = 13;
-		DeveloperModeRequest developerModeRequest = 14;
+		YadomsInformationRequest yadomsInformationRequest = 14;
+		DeviceConfigurationSchemaAnswer deviceConfigurationSchemaAnswer = 15;
+		ExtraQueryAnswer extraQueryAnswer = 16;
+		RemoveDevice removeDevice = 17;
+		AllDevicesRequest allDevicesRequest = 18;
+		RemoveKeyword removeKeyword = 19;
+		UpdateDeviceDetails updateDeviceDetails = 20;
+		DeviceModelRequest deviceModelRequest = 21;
+		UpdateDeviceModel updateDeviceModel = 22;
+		DeviceConfigurationRequest deviceConfigurationRequest = 23;
+		UpdateDeviceConfiguration updateDeviceConfiguration = 24;
+		AllKeywordsRequest allKeywordsRequest = 25;
+		DeclareKeywords declareKeywords = 26;
 	}
 }

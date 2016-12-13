@@ -4,6 +4,7 @@
 # List subdirectories here
 add_subdirectory(FakePlugin)
 add_subdirectory(Rfxcom)
+add_subdirectory(TeleInfo)
 
 
 

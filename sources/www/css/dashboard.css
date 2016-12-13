@@ -430,6 +430,10 @@ Fix dropdown menus hidden by bootstrap modal
     padding: 0;
 }
 
+.modal-dialog {
+    width: 80%;
+}
+
 .bs-callout {
     padding: 20px;
     margin: 20px 0;

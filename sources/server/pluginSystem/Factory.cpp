@@ -20,8 +20,10 @@
 
 namespace pluginSystem
 {
-   CFactory::CFactory(const IPathProvider& pathProvider)
-      : m_pathProvider(pathProvider)
+   CFactory::CFactory(const IPathProvider& pathProvider,
+                      boost::shared_ptr<shared::ILocation> locationProvider)
+      : m_pathProvider(pathProvider),
+        m_locationProvider(locationProvider)
    {
    }
 
@@ -187,7 +189,8 @@ namespace pluginSystem
                                                            dataProvider,
                                                            dataAccessLayer->getDeviceManager(),
                                                            dataAccessLayer->getKeywordManager(),
-                                                           dataAccessLayer->getAcquisitionHistorizer());
+                                                           dataAccessLayer->getAcquisitionHistorizer(),
+                                                           m_locationProvider);
    }
 
    boost::shared_ptr<IIpcAdapter> CFactory::createInstanceRunningContext(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
@@ -248,7 +251,7 @@ namespace pluginSystem
       auto pluginDirectories = findPluginDirectories();
 
       for (auto pluginDirectory = pluginDirectories.begin();
-         pluginDirectory != pluginDirectories.end(); ++pluginDirectory)
+           pluginDirectory != pluginDirectories.end(); ++pluginDirectory)
       {
          try
          {
@@ -276,7 +279,7 @@ namespace pluginSystem
             // Invalid plugin parameter
             YADOMS_LOG(warning) << "Invalid plugin parameter : " << e.what();
          }
-         catch (shared::exception::CException & e)
+         catch (shared::exception::CException& e)
          {
             // Fail to load one plugin
             YADOMS_LOG(warning) << "Invalid plugin : " << e.what();
@@ -286,3 +289,5 @@ namespace pluginSystem
       return availablePlugins;
    }
 } // namespace pluginSystem
+
+

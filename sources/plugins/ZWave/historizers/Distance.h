@@ -1,5 +1,6 @@
 #pragma once
 #include "../OpenZWaveSingleHistorizableData.h"
+#include "../typeinfo/DecimalTypeInfo.h"
 
 namespace historizers
 {
@@ -10,10 +11,9 @@ namespace historizers
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       ///\param[in] accessMode      The access mode
-      ///\param[in] measureType     The measure type (normally kAbsolute)
+      ///\param[in] ti              The measure type information
       //-----------------------------------------------------
-      CDistance(const std::string& name,
-                shared::plugin::yPluginApi::EKeywordAccessMode accessMode);
+      CDistance(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CDecimalTypeInfo &ti);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

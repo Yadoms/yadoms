@@ -8,6 +8,6 @@
       shared::CServiceLocator::instance().get<IRunningInformation>().getSoftwareVersion()
    
 */
-const std::string YadomsVersion("1.0.0.0");
+const std::string YadomsVersion("2.0.0.0");
 const shared::versioning::EReleaseType YadomsReleaseType(shared::versioning::EReleaseType::kBeta);
 

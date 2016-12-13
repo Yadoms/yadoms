@@ -8,9 +8,10 @@
  * @param paramName
  * @param content
  * @param currentValue
+ * @param useIntegerResult if true a 0/1 value is returned, else true/false
  * @constructor
  */
-function BoolParameterHandler(i18nContext, paramName, content, currentValue) {
+function BoolParameterHandler(i18nContext, paramName, content, currentValue, useIntegerResult) {
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
@@ -33,6 +34,7 @@ function BoolParameterHandler(i18nContext, paramName, content, currentValue) {
    this.description = isNullOrUndefined(content.description)?"":content.description;
    this.i18nContext = i18nContext;
    this.content = content;
+   this.useIntegerResult = useIntegerResult;
 }
 
 /**
@@ -81,5 +83,8 @@ BoolParameterHandler.prototype.setEnabled = function (enabled) {
  */
 BoolParameterHandler.prototype.getCurrentConfiguration = function () {
    this.value = parseBool($("input#" + this.uuid).prop("checked"));
+   
+   if(this.useIntegerResult && this.useIntegerResult === true)
+      return (this.value == true)?1:0;
    return this.value;
 };

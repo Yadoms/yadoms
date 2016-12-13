@@ -5,6 +5,8 @@ include("../YadomsPluginsCommon.cmake")
 set(ZWAVE_PLUGIN_SOURCES
 	stdafx.h
 	stdafx.cpp
+   ConfigurationSchemaFactory.h
+   ConfigurationSchemaFactory.cpp
 	ZWave.h
 	ZWave.cpp 
 	ZWaveConfiguration.h
@@ -18,13 +20,13 @@ set(ZWAVE_PLUGIN_SOURCES
 	OpenZWaveController.cpp 
 	OpenZWaveEnumHandler.h
 	OpenZWaveEnumHandler.cpp 
-	OpenZWaveEnumHandlerTypeInfo.h
-	OpenZWaveEnumHandlerTypeInfo.cpp 
 	OpenZWaveCommandClass.h
 	OpenZWaveCommandClass.cpp 	
 	IOpenZWaveNodeKeyword.h
 	OpenZWaveNode.h
 	OpenZWaveNode.cpp 
+	OpenZWaveNodeConfiguration.h
+	OpenZWaveNodeConfiguration.cpp 
 	OpenZWaveHelpers.h
 	OpenZWaveHelpers.cpp 
 	OpenZWaveNodeKeywordBase.h
@@ -71,10 +73,24 @@ set(ZWAVE_PLUGIN_SOURCES
    historizers/Uv.cpp
 	historizers/Switch.h
    historizers/Switch.cpp
+   typeinfo/BoolTypeInfo.h
+   typeinfo/BoolTypeInfo.cpp
+   typeinfo/DecimalTypeInfo.h
+   typeinfo/DecimalTypeInfo.cpp
+   typeinfo/EnumTypeInfo.h
+   typeinfo/EnumTypeInfo.cpp
+   typeinfo/IntegerTypeInfo.h
+   typeinfo/IntegerTypeInfo.cpp
+   typeinfo/StringTypeInfo.h
+   typeinfo/StringTypeInfo.cpp
+   typeinfo/TypeInfoFactory.h
+   typeinfo/TypeInfoFactory.cpp
 	${OPENZWAVE_MAIN_SOURCES}
 )
 
-source_group(historizers historizers/*.*)
+source_group(sources ./*.*)
+source_group(sources\\historizers historizers/*.*)
+source_group(sources\\typeinfo typeinfo/*.*)
 
 ADD_SUBDIRECTORY(OpenZWave)
 IF(MSVC OR XCODE)

@@ -72,6 +72,8 @@ namespace common {
       (FriendlyName)
       (Model)
       (Details)
+      (Configuration)
+      (Blacklist)
    )
 
    DECLARE_TABLE(Keyword,
@@ -86,6 +88,7 @@ namespace common {
       (TypeInfo)
       (Measure)
       (Details)
+      (Blacklist)
    )
 
    DECLARE_TABLE(Acquisition,

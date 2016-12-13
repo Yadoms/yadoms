@@ -31,11 +31,8 @@ namespace shared
             //--------------------------------------------------------------
             /// \brief	    get the plugin version
             /// \return     the plugin version
-            /// \note       Version : Note that this value must be string-comparable to let Yadoms
-            ///             know if newer version is available (for the comparison
-            ///             method, see http://www.cplusplus.com/reference/string/string/compare/).
-            ///             Mainly, don't change the version format in the plugin life.
-            ///             Recommended format is "xx.yy"
+            /// \note       Version : Note that this value is string-comparable
+            ///             to check the precedence of a version from a reference version.
             //--------------------------------------------------------------
             virtual const std::string& getVersion() const = 0;
 
@@ -85,10 +82,17 @@ namespace shared
 
 
             //--------------------------------------------------------------
+            /// \brief	    indicates if the plugin supports device removed notification
+            /// \return     true if the plugin supports device removed notification
+            //--------------------------------------------------------------
+            virtual bool getSupportDeviceRemovedNotification() const = 0;
+
+
+            //--------------------------------------------------------------
             /// \brief	    Provide the package.json content
             /// \return     the package.json content
             //--------------------------------------------------------------
-            virtual CDataContainer getPackage() const = 0;
+            virtual boost::shared_ptr<const CDataContainer> getPackage() const = 0;
 
             //--------------------------------------------------------------
             /// \brief	    Get the plugin path

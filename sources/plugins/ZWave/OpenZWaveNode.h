@@ -2,6 +2,7 @@
 
 #include "IOpenZWaveNodeKeyword.h"
 #include <value_classes/Value.h>
+#include "OpenZWaveNodeConfiguration.h"
 
 //--------------------------------------------------------------
 /// \brief     Class used to encapsulate a ZWave network node (from OpenZWave)
@@ -21,8 +22,7 @@ public:
    /// \param [in]   homeId   The home id
    /// \param [in]   nodeId   The node id
    //--------------------------------------------------------------
-   COpenZWaveNode(const uint32 homeId,
-                  const uint8 nodeId);
+   COpenZWaveNode(const uint32 homeId, const uint8 nodeId);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -34,24 +34,21 @@ public:
    /// \param [in]   value                   The ValueID associated to the keyword
    /// \param [in]   includeSystemKeywords   true if system keywords are supported
    //--------------------------------------------------------------   
-   void registerKeyword(OpenZWave::ValueID& value,
-                        bool includeSystemKeywords);
+   void registerKeyword(OpenZWave::ValueID& value, bool includeSystemKeywords);
 
    //--------------------------------------------------------------
    /// \brief	      Update a keyword value
    /// \param [in]   value                   The ValueID associated to the keyword
    /// \param [in]   includeSystemKeywords   true if system keywords are supported
    //--------------------------------------------------------------   
-   boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> updateKeywordValue(OpenZWave::ValueID& value,
-                                                                                                  bool includeSystemKeywords);
+   boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> updateKeywordValue(OpenZWave::ValueID& value, bool includeSystemKeywords);
 
    //--------------------------------------------------------------
    /// \brief	      Get the keyword matching the ValueID, or create it if needed
    /// \param [in]   value                   The ValueID associated to the keyword
    /// \param [in]   includeSystemKeywords   true if system keywords are supported
    //--------------------------------------------------------------   
-   boost::shared_ptr<IOpenZWaveNodeKeyword> getKeyword(OpenZWave::ValueID& value,
-                                                       bool includeSystemKeywords);
+   boost::shared_ptr<IOpenZWaveNodeKeyword> getKeyword(OpenZWave::ValueID& value, bool includeSystemKeywords);
 
    //--------------------------------------------------------------
    /// \brief	      Send a command to a keyword
@@ -59,8 +56,7 @@ public:
    /// \param [in]   keyword           The keyword name
    /// \param [in]   commandData       The command data
    //--------------------------------------------------------------   
-   bool sendCommand(const std::string& keyword,
-                    const std::string& commandData);
+   bool sendCommand(const std::string& keyword, const std::string& commandData);
 
    //--------------------------------------------------------------
    /// \brief	      get the last value of a keyword
@@ -75,8 +71,7 @@ public:
    /// \param [in]   nodeId   The node id
    /// \return       true if current node as the same homeId and nodeId
    //--------------------------------------------------------------     
-   const bool match(const uint32 homeId,
-                    const uint8 nodeId);
+   const bool match(const uint32 homeId, const uint8 nodeId);
 
    //--------------------------------------------------------------
    /// \brief	      Get the homeId
@@ -88,6 +83,32 @@ public:
    /// \return       The nodeId
    //--------------------------------------------------------------      
    const uint8 getNodeId();
+
+   //--------------------------------------------------------------
+   /// \brief	      Get the configuration schema
+   /// \return       the configuration schema
+   //--------------------------------------------------------------      
+   shared::CDataContainer getConfigurationSchema();
+
+   //--------------------------------------------------------------
+   /// \brief	      Get the configuration values
+   /// \return       the configuration values
+   //--------------------------------------------------------------      
+   shared::CDataContainer getConfigurationValues();
+
+   //--------------------------------------------------------------
+   /// \brief	      Set the configuration values
+   /// \param [in]   configuration     the configuration values
+   //--------------------------------------------------------------      
+   void setConfigurationValues(const shared::CDataContainer &configuration);
+
+   //--------------------------------------------------------------
+   /// \brief	Update device configuration (self update, from a device notification.) => updates only configuration container
+   /// \param [in] 	   keyword        The targetted keyword
+   /// \param [in] 	   value          The new value
+   /// \param [in-out]  configuration  The initial and output configuration values
+   //--------------------------------------------------------------
+   void updateNodeConfiguration(const std::string& keyword, const std::string& value, shared::CDataContainer & configuration);
 
 private:
    //--------------------------------------------------------------
@@ -109,5 +130,10 @@ private:
    /// \brief	      The keyword list
    //--------------------------------------------------------------    
    KeywordsContainer m_keywords;
+   
+   //--------------------------------------------------------------
+   /// \brief	      The configuration items list list
+   //--------------------------------------------------------------    
+   COpenZWaveNodeConfiguration m_configuration;
 };
 

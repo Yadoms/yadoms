@@ -1,118 +1,64 @@
 #pragma once
 #include "IDeviceManager.h"
 #include "database/IDeviceRequester.h"
+#include "database/IKeywordRequester.h"
+#include "database/IAcquisitionRequester.h"
 
-namespace dataAccessLayer {
-
+namespace dataAccessLayer
+{
    class CDeviceManager : public IDeviceManager
    {
    public:
       //--------------------------------------------------------------
       /// \brief                          Constructor
       /// \param [in] deviceRequester     The device requester
+      /// \param [in] keywordRequester    The keyword requester
+      /// \param [in] acquisitionRequester The acquisition requester
       //--------------------------------------------------------------
-      explicit CDeviceManager(boost::shared_ptr<database::IDeviceRequester> deviceRequester);
-   
+      CDeviceManager(boost::shared_ptr<database::IDeviceRequester> deviceRequester,
+                     boost::shared_ptr<database::IKeywordRequester> keywordRequester,
+                     boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester);
+
       //--------------------------------------------------------------
       /// \brief       Destructor
       //--------------------------------------------------------------
       virtual ~CDeviceManager();
-      
-      //--------------------------------------------------------------
-      /// \brief                          Check if device exists
-      /// \param [in] deviceId            The device Id
-      /// \return                         true if exist, else false
-      //--------------------------------------------------------------
-      virtual bool deviceExists(const int deviceId) const;
 
-      //--------------------------------------------------------------
-      /// \brief                          Check if device exists
-      /// \param [in] pluginId            The plugin Id
-      /// \param [in] name                The device name (plugin internal name)
-      /// \return                         true if exist, else false
-      //--------------------------------------------------------------
-      virtual bool deviceExists(const int pluginId, const std::string & deviceName) const;
+      // IDeviceManager Implementation
+      bool deviceExists(const int deviceId) const override;
+      bool deviceExists(const int pluginId, const std::string& deviceName) const override;
+      boost::shared_ptr<database::entities::CDevice> getDevice(int deviceId) const override;
+      boost::shared_ptr<database::entities::CDevice> getDeviceInPlugin(const int pluginId, const std::string& name) const override;
+      std::vector<boost::shared_ptr<database::entities::CDevice>> getDeviceWithCapacity(const std::string& capacityName,
+                                                                                        const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const override;
+      std::vector<boost::shared_ptr<database::entities::CDevice>> getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode,
+                                                                                            const shared::plugin::yPluginApi::EKeywordDataType& capacityType) const override;
+      boost::shared_ptr<database::entities::CDevice> createDevice(int pluginId,
+                                                                  const std::string& name,
+                                                                  const std::string& friendlyName,
+                                                                  const std::string& model,
+                                                                  const shared::CDataContainer& details) override;
+      std::vector<boost::shared_ptr<database::entities::CDevice>> getDevices() const override;
+      std::vector<std::string> getDevicesForPluginInstance(int pluginId) const override;
+      void updateDeviceFriendlyName(int deviceId, const std::string& newFriendlyName) override;
+      void updateDeviceConfiguration(int deviceId, const shared::CDataContainer& configuration) override;
+      void updateDeviceDetails(int deviceId, const shared::CDataContainer& details) override;
+      void updateDeviceModel(int deviceId, const std::string& model) override;
+      void updateDeviceBlacklistState(int deviceId, const bool blacklist) override;
+      void removeDevice(int deviceId) override;
+      void removeDevice(int pluginId, const std::string& deviceName) override;
+      void removeAllDeviceForPlugin(int pluginId) override;
+      void cleanupDevice(int deviceId) override;
+      // [END] IDeviceManager Implementation
 
-      //--------------------------------------------------------------
-      /// \brief                          Get device informations
-      /// \param [in] deviceId            Device Id
-      /// \throw                          shared::exception::CEmptyResult if deviceId is unknown
-      //--------------------------------------------------------------
-      virtual boost::shared_ptr<database::entities::CDevice> getDevice(int deviceId) const;
-
-      //--------------------------------------------------------------
-      /// \brief                          Get a device identified by (pluginId and name).
-      /// \param [in] pluginId            The pluginId
-      /// \param [in] name                The device name (plugin internal name)
-      /// \return                         The device found
-      /// \throw                          shared::exception::CEmptyResult if fails
-      //--------------------------------------------------------------
-      virtual boost::shared_ptr<database::entities::CDevice> getDevice(const int pluginId, const std::string & name) const;
-
-
-      //--------------------------------------------------------------
-      /// \brief                          Get the device list which support a capacity
-      /// \param [in] capacityName        The capacity name
-      /// \param [in] capacityAccessMode  The capacity access mode
-      /// \return                         the device list which support a capacity
-      /// \throw  shared::exception::CEmptyResult if fails
-      //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDeviceWithCapacity(const std::string & capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode & capacityAccessMode) const;
-
-      //--------------------------------------------------------------
-      /// \brief                          Get the device list which support a capacity type
-      /// \param [in] capacityAccessMode  The capacity access mode
-      /// \param [in] capacityType        The capacity capacityType
-      /// \return                         the device list which support a capacity
-      /// \throw  shared::exception::CEmptyResult if fails
-      //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode & capacityAccessMode, const shared::plugin::yPluginApi::EKeywordDataType & capacityType) const;
-
-      //--------------------------------------------------------------
-      /// \brief                          Create a device identified by (pluginId and name).
-      /// \param [in] pluginId            The pluginId
-      /// \param [in] name                The device name (plugin internal name)
-      /// \param [in] friendlyName        The user friendly device name
-      /// \param [in] model               The device model or description (ex : "Oregon Scientific CN185")
-      /// \param [in] model               A free string managed by plugin
-      /// \return                         The device created (null if creation failed)
-      /// \throw  shared::exception::CEmptyResult if fails
-      //--------------------------------------------------------------
-      virtual boost::shared_ptr<database::entities::CDevice> createDevice(int pluginId, const std::string & name, const std::string & friendlyName, const std::string & model, const shared::CDataContainer & details);
-
-      //--------------------------------------------------------------
-      /// \brief           List all devices
-      /// \return          List of registered devices
-      //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDevices() const;
-
-     
-      //--------------------------------------------------------------
-      /// \brief                          Update a device friendly name
-      /// \param [in] deviceId            The device id
-      /// \param [in] newFriendlyName     The new friendly name
-      /// \throw  shared::exception::CEmptyResult if fails
-      //--------------------------------------------------------------
-      virtual void updateDeviceFriendlyName(int deviceId, const std::string & newFriendlyName);
-
-      //--------------------------------------------------------------
-      /// \brief           Remove device 
-      /// \param [in] deviceId   Device  Id
-      /// \throw           shared::exception::CEmptyResult if fails
-      //--------------------------------------------------------------
-      virtual void removeDevice(int deviceId);
-
-      //--------------------------------------------------------------
-      /// \brief           Remove all device for one plugin
-      /// \param [in]      pluginId   plugin  Id
-      //--------------------------------------------------------------
-      virtual void removeAllDeviceForPlugin(int pluginId);
-   
    protected:
       //--------------------------------------------------------------
       /// \brief           The real data requester
       //--------------------------------------------------------------
       boost::shared_ptr<database::IDeviceRequester> m_deviceRequester;
+      boost::shared_ptr<database::IKeywordRequester> m_keywordRequester;
+      boost::shared_ptr<database::IAcquisitionRequester> m_acquisitionRequester;
    };
- 
 } //namespace dataAccessLayer 
+
+

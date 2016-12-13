@@ -21,9 +21,9 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	                      Set the value of the keyword
-   /// \param[in] Value              The new value
+   /// \param[in] value              The new value
    //--------------------------------------------------------------
-   void set(std::string& Value) const;
+   void set(const std::string& value) const;
 
    //--------------------------------------------------------------
    /// \brief	Destructor

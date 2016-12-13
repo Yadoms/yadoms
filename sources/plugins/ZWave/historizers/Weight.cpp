@@ -4,19 +4,13 @@
 
 namespace historizers
 {
-   CWeight::CWeight(const std::string& name,
-                    shared::plugin::yPluginApi::EKeywordAccessMode accessMode)
-      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CWeight>(name,
-                                                                                                                        accessMode))
+   CWeight::CWeight(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, CDecimalTypeInfo &ti)
+      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CWeight>(name, accessMode, shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute, ti))
    {
    }
 
-   CWeight::CWeight(const std::string& name,
-                    shared::plugin::yPluginApi::EKeywordAccessMode accessMode,
-                    shared::plugin::yPluginApi::historization::EMeasureType measureType)
-      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CWeight>(name,
-                                                                                                                        accessMode,
-                                                                                                                        measureType))
+   CWeight::CWeight(const std::string& name, shared::plugin::yPluginApi::EKeywordAccessMode accessMode, shared::plugin::yPluginApi::historization::EMeasureType measureType, CDecimalTypeInfo &ti)
+      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CWeight>(name, accessMode, measureType, ti))
    {
    }
 
@@ -25,8 +19,7 @@ namespace historizers
    }
 
    // COpenZWaveSingleHistorizableData<Poco::Int64> override ------------------------
-   void CWeight::setWithUnits(double value,
-                              const std::string& unit)
+   void CWeight::setWithUnits(double value, const std::string& unit)
    {
       if (unit == "lb")
          set(value / 2.204622622);

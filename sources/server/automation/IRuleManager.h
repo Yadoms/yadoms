@@ -17,6 +17,11 @@ namespace automation
       }
 
       //-----------------------------------------------------
+      ///\brief               Start the Rule manager (start all rules)
+      //-----------------------------------------------------
+      virtual void start() = 0;
+
+      //-----------------------------------------------------
       ///\brief               Stop the Rule manager (stop all rules)
       //-----------------------------------------------------
       virtual void stop() = 0;

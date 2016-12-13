@@ -8,17 +8,10 @@
            </div>
            <div class="modal-body">
                <div class="modal-text"></div>
-               <div class="delete-device">
-                  <label>
-                     <input type="checkbox" id="checkbox"/>
-                     <label for="checkbox" data-i18n="modals.delete-device.checkDeleteDevice"></label>
-                     <label data-i18n="modals.delete-device.checkDeleteDeviceNote"></label>
-                  </label>
-               </div>
            </div>
            <div class="modal-footer">
               <button type="button" class="btn btn-default btn-cancel" data-dismiss="modal" data-i18n="common.cancel"></button>
-              <button type="button" class="btn btn-primary btn-confirm" data-i18n="common.ok"></button>
+              <button type="button" class="btn btn-primary btn-confirm" data-i18n="common.confirm"></button>
            </div>
        </div>
    </div>
@@ -28,25 +21,24 @@
    Yadoms.showDeleteDeviceModal = function(device, confirmCallBack, cancelCallback) {
       assert($.isFunction(confirmCallBack), "confirmCallBack must be defined.");
 
-      $("input#checkbox").prop("checked", false);
-
+      var $modalBody = $("div#device-delete-modal");
+      
+      //i18n
+      $modalBody.i18n();
+      
       //we set text
-      $("div#device-delete-modal").find("div.modal-text").text($.t("modals.delete-device.text", { deviceName: device.friendlyName }));
-
-      //we set btn text
-      $("div#device-delete-modal").find("button.btn-cancel").text($.t("common.cancel"));
-      $("div#device-delete-modal").find("button.btn-confirm").text($.t("common.confirm"));
+      $modalBody.find("div.modal-text").text($.t("modals.delete-device.text", { deviceName: device.friendlyName }));
 
       //we bind the two callbacks
       if ($.isFunction(cancelCallback))
-         $("div#device-delete-modal").find("button.btn-cancel").unbind('click').bind('click', cancelCallback);
+         $modalBody.find("button.btn-cancel").unbind('click').bind('click', cancelCallback);
 
-      $("div#device-delete-modal").find("button.btn-confirm").unbind('click').bind('click', function() {
-         confirmCallBack($("input#checkbox").prop("checked"));
+      $modalBody.find("button.btn-confirm").unbind('click').bind('click', function() {
          $("div#device-delete-modal").modal("hide");
+         confirmCallBack();
       });
 
       //we display the modal
-      $('div#device-delete-modal').modal({ backdrop: 'static' });
+      $modalBody.modal({ backdrop: 'static' });
    };
 </script>

@@ -16,7 +16,7 @@ DeviceManager.factory = function (json) {
     assert(!isNullOrUndefined(json.friendlyName), "json.friendlyName must be defined");
     assert(!isNullOrUndefined(json.model), "json.model must be defined");
 
-    return new Device(json.id, json.pluginId, json.name, json.friendlyName, json.model);
+    return new Device(json.id, json.pluginId, json.name, json.friendlyName, json.model, json.configuration, json.blacklist);
 };
 
 /**
@@ -63,16 +63,20 @@ DeviceManager.getAll = function () {
  * @param {Object} device The device
  * @ return {Promise}
  */
-DeviceManager.getAttachedPlugin = function (device) {
+DeviceManager.getAttachedPlugin = function (device, force) {
     assert(!isNullOrUndefined(device), "device must be defined");
 
     var d = new $.Deferred();
 
-    PluginInstanceManager.get(device.pluginId)
-    .done(function (pluginInstance) {
-        device.attachedPlugin = pluginInstance;
-        d.resolve();
-    }).fail(d.reject);
+    if(!device.attachedPlugin || force === true) {
+        PluginInstanceManager.get(device.pluginId)
+        .done(function (pluginInstance) {
+            device.attachedPlugin = pluginInstance;
+            d.resolve();
+        }).fail(d.reject);
+    } else {
+       d.resolve();
+    }
 
     return d.promise();
 };
@@ -102,14 +106,15 @@ DeviceManager.getKeywordsByDeviceId = function (deviceId) {
 /**
  * Get the keywords attached to a device
  * @param {Object} device The device
+ * @param {boolean} forceReload if true force reloading keywords fro mserver
  * @ return {Promise}
  */
-DeviceManager.getKeywords = function (device) {
+DeviceManager.getKeywords = function (device, forceReload) {
     assert(!isNullOrUndefined(device), "device must be defined");
 
     var d = new $.Deferred();
 
-    if (isNullOrUndefined(device.keywords)) {
+    if (isNullOrUndefined(device.keywords) || forceReload === true) {
         DeviceManager.getKeywordsByDeviceId(device.id)
         .done(function (list) {
             device.keywords = list;
@@ -138,11 +143,80 @@ DeviceManager.deleteFromServer = function (device, deleteDevice) {
         deleteDevice = false;
     }
 
-    return RestEngine.deleteJson("/rest/device/" + device.id + (deleteDevice ? "/removeDevice" : ""));
+    return RestEngine.deleteJson("/rest/device/" + device.id + (deleteDevice ? "/removeDevice" : "/cleanupOnly"));
 };
 
 /**
- * Update a device
+ * Get a device configuration schema
+ * @param {Object} device The device to get the configuration schema
+ * @ return {Promise}
+ */
+DeviceManager.getConfigurationSchema = function(device) {
+
+    var d = new $.Deferred();
+
+    DeviceManager.getAttachedPlugin(device)   
+    .done(function () {
+        //get the plugin package.json
+        PluginInstanceManager.downloadPackage(device.attachedPlugin)
+        .done(function () {
+            //try to get schema from the device model
+            device.attachedPlugin.getPackageDeviceConfigurationSchema()
+            .done(function(deviceConfig) {
+                var schema = {};
+
+                if(deviceConfig) {
+
+                    //Manage static configuration
+                    if(deviceConfig.staticConfigurationSchema) {
+
+                        //find all static configurations matching the device model
+                        var staticConfigMatchingDevice = _.filter(deviceConfig.staticConfigurationSchema, function(o) {
+                            return _.some(o.models, function(model) {
+                                return model == "*" || model == device.model;
+                            });
+                        });
+
+                        //add it to resulting schema
+                        _.forEach(staticConfigMatchingDevice, function(value) {
+                            schema = _.merge(schema, value.schema);
+                        });
+                        
+                    }
+
+                    //Manage dynamic configuration
+                    if(deviceConfig.dynamicConfigurationSchema && parseBool(deviceConfig.dynamicConfigurationSchema) === true) {
+
+                        //ask the device configuration from the plugin instance 
+                        RestEngine.getJson("/rest/device/" + device.id + "/configurationSchema")
+                        .done(function (dynamicSchema) {
+                            if(dynamicSchema)
+                                schema = _.merge(schema, dynamicSchema);
+                            device.attachedPlugin.applyBinding(schema, true, true)
+                            .done(d.resolve)
+                            .fail(d.reject);
+                        }).fail(d.reject);                        
+                    } else {
+                        device.attachedPlugin.applyBinding(schema, true, true)
+                        .done(d.resolve)
+                        .fail(d.reject);
+                    }
+                } else {
+                    //device configuration not exists in package.json
+                    d.resolve(schema);
+                }
+
+
+            }).fail(d.reject);
+
+        }).fail(d.reject);
+    }).fail(d.reject);
+
+    return d.promise();
+}
+
+/**
+ * Update a device configuration
  * @param {Object} device The device to update
  * @ return {Promise}
  */
@@ -151,7 +225,28 @@ DeviceManager.updateToServer = function (device) {
 
     var d = new $.Deferred();
 
-    RestEngine.putJson("/rest/device/" + device.id, { data: JSON.stringify(device) })
+    RestEngine.putJson("/rest/device/" + device.id + "/configuration", { data: JSON.stringify(device) })
+    .done(function (data) {
+        //it's okay
+        //we update our information from the server
+        device = DeviceManager.factory(data);
+        d.resolve(device);
+    }).fail(d.reject);
+
+    return d.promise();
+};
+
+/**
+ * (un)blacklist a device
+ * @param {Object} device The device to (un)blacklist
+ * @ return {Promise}
+ */
+DeviceManager.updateBlacklistStateToServer = function(device) {
+    assert(!isNullOrUndefined(device), "device must be defined");
+
+    var d = new $.Deferred();
+
+    RestEngine.putJson("/rest/device/" + device.id + "/blacklist", { data: JSON.stringify(device) })
     .done(function (data) {
         //it's okay
         //we update our information from the server

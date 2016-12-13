@@ -15,10 +15,8 @@ namespace database
    {
       namespace requesters
       {
-         CAcquisition::CAcquisition(boost::shared_ptr<IDatabaseRequester> databaseRequester,
-                                    boost::shared_ptr<CKeyword> keywordRequester)
-            : m_keywordRequester(keywordRequester),
-              m_databaseRequester(databaseRequester)
+         CAcquisition::CAcquisition(boost::shared_ptr<IDatabaseRequester> databaseRequester, boost::shared_ptr<CKeyword> keywordRequester)
+            : m_keywordRequester(keywordRequester), m_databaseRequester(databaseRequester)
          {
          }
 
@@ -27,32 +25,52 @@ namespace database
          }
 
          // IAcquisitionRequester implementation
-         boost::shared_ptr<entities::CAcquisition> CAcquisition::saveData(const int keywordId,
-                                                                          const std::string& data,
-                                                                          boost::posix_time::ptime& dataTime)
+         boost::shared_ptr<entities::CAcquisition> CAcquisition::saveData(const int keywordId, const std::string& data, boost::posix_time::ptime& dataTime)
          {
-            if (m_keywordRequester->getKeyword(keywordId))
+            auto keywordEntity = m_keywordRequester->getKeyword(keywordId);
+            if(keywordEntity)
             {
-               auto q = m_databaseRequester->newQuery();
-               q.InsertInto(CAcquisitionTable::getTableName(),
-                            CAcquisitionTable::getDateColumnName(),
-                            CAcquisitionTable::getKeywordIdColumnName(),
-                            CAcquisitionTable::getValueColumnName()).
-                Values(dataTime,
-                       keywordId,
-                       data);
+               if (!keywordEntity->Blacklist())
+               {
+                  auto q = m_databaseRequester->newQuery();
+                  q.InsertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getKeywordIdColumnName(), CAcquisitionTable::getValueColumnName()).
+                     Values(dataTime, keywordId, data);
 
-               if (m_databaseRequester->queryStatement(q) <= 0)
-                  throw shared::exception::CEmptyResult("Fail to insert new data");
+                  try
+                  {
+                     if (m_databaseRequester->queryStatement(q) <= 0)
+                        throw shared::exception::CEmptyResult("Fail to insert new data");
+                  }
+                  catch(CDatabaseException& e)
+                  {
+                     if (e.returnCode() == CDatabaseException::kConstraintViolation)
+                     {
+                        // Maybe 2 acquisitions were recorded at same time for same keyword. In this case, we prefer to keep last value
+                        q.Clear().Update(CAcquisitionTable::getTableName())
+                           .Set(CAcquisitionTable::getValueColumnName(), data)
+                           .Where(CAcquisitionTable::getDateColumnName(), CQUERY_OP_EQUAL, dataTime)
+                           .And(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId);
+                        m_databaseRequester->queryStatement(q);
+                     }
+                     else
+                     {
+                        throw;
+                     }
+                     
+                  }
 
-               return getAcquisitionByKeywordAndDate(keywordId, dataTime);
+                  return getAcquisitionByKeywordAndDate(keywordId, dataTime);
+               } 
+               else
+               {
+                  //blacklisted keyword
+                  return boost::shared_ptr<entities::CAcquisition>();
+               }
             }
             throw shared::exception::CEmptyResult("The keyword do not exists, cannot add data");
          }
 
-         boost::shared_ptr<entities::CAcquisition> CAcquisition::incrementData(const int keywordId,
-                                                                               const std::string& increment,
-                                                                               boost::posix_time::ptime& dataTime)
+         boost::shared_ptr<entities::CAcquisition> CAcquisition::incrementData(const int keywordId, const std::string& increment, boost::posix_time::ptime& dataTime)
          {
             auto keywordEntity = m_keywordRequester->getKeyword(keywordId);
 
@@ -61,6 +79,9 @@ namespace database
 
             if (keywordEntity->Type() != shared::plugin::yPluginApi::EKeywordDataType::kNumeric)
                throw shared::exception::CEmptyResult("The keyword is not numeric, cannot increment data");
+
+            if (keywordEntity->Blacklist())
+               return boost::shared_ptr<entities::CAcquisition>(); //return null instead of exception for performances
 
             auto qLastKeywordValue = m_databaseRequester->newQuery();
             qLastKeywordValue.Select(qLastKeywordValue.castNumeric(CAcquisitionTable::getValueColumnName())).
@@ -73,15 +94,8 @@ namespace database
 
 
             //insert first (if fails, update )
-            q.InsertInto(CAcquisitionTable::getTableName(),
-                         CAcquisitionTable::getDateColumnName(),
-                         CAcquisitionTable::getKeywordIdColumnName(),
-                         CAcquisitionTable::getValueColumnName()).
-             Values(dataTime,
-                    keywordId,
-                    q.math(q.coalesce(qLastKeywordValue, 0),
-                           CQUERY_OP_PLUS,
-                           increment));
+            q.InsertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getKeywordIdColumnName(), CAcquisitionTable::getValueColumnName()).
+             Values(dataTime, keywordId, q.math(q.coalesce(qLastKeywordValue, 0), CQUERY_OP_PLUS, increment));
 
             if (m_databaseRequester->queryStatement(q, false) <= 0)
             {
@@ -119,8 +133,7 @@ namespace database
             }
          }
 
-         boost::shared_ptr<entities::CAcquisition> CAcquisition::getAcquisitionByKeywordAndDate(const int keywordId,
-                                                                                                boost::posix_time::ptime time)
+         boost::shared_ptr<entities::CAcquisition> CAcquisition::getAcquisitionByKeywordAndDate(const int keywordId, boost::posix_time::ptime time)
          {
             auto qSelect = m_databaseRequester->newQuery();
             qSelect.Select().
@@ -139,8 +152,7 @@ namespace database
             throw shared::exception::CEmptyResult((boost::format("Cannot retrieve acquisition for KeywordId=%1% and date=%2%  in database") % keywordId % time).str());
          }
 
-         boost::shared_ptr<entities::CAcquisition> CAcquisition::getKeywordLastData(const int keywordId,
-                                                                                    bool throwIfNotExists)
+         boost::shared_ptr<entities::CAcquisition> CAcquisition::getKeywordLastData(const int keywordId, bool throwIfNotExists)
          {
             auto qSelect = m_databaseRequester->newQuery();
             qSelect.Select().
@@ -163,9 +175,7 @@ namespace database
             return boost::shared_ptr<entities::CAcquisition>();
          }
 
-         std::vector<boost::tuple<boost::posix_time::ptime, std::string> > CAcquisition::getKeywordData(int keywordId,
-                                                                                                        boost::posix_time::ptime timeFrom,
-                                                                                                        boost::posix_time::ptime timeTo)
+         std::vector<boost::tuple<boost::posix_time::ptime, std::string> > CAcquisition::getKeywordData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
          {
             auto qSelect = m_databaseRequester->newQuery();
             qSelect.Select(CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getValueColumnName()).
@@ -189,47 +199,27 @@ namespace database
             return mva.getResults();
          }
 
-         std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > CAcquisition::getKeywordDataByHour(int keywordId,
-                                                                                                           boost::posix_time::ptime timeFrom,
-                                                                                                           boost::posix_time::ptime timeTo)
+         std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > CAcquisition::getKeywordDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
          {
-            return getKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kHour,
-                                               keywordId,
-                                               timeFrom,
-                                               timeTo);
+            return getKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kHour, keywordId, timeFrom, timeTo);
          }
 
-         std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > CAcquisition::getKeywordDataByDay(int keywordId,
-                                                                                                          boost::posix_time::ptime timeFrom,
-                                                                                                          boost::posix_time::ptime timeTo)
+         std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > CAcquisition::getKeywordDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
          {
-            return getKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kDay,
-                                               keywordId,
-                                               timeFrom,
-                                               timeTo);
+            return getKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kDay, keywordId, timeFrom, timeTo);
          }
 
-         std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > CAcquisition::getKeywordDataByMonth(int keywordId,
-                                                                                                            boost::posix_time::ptime timeFrom,
-                                                                                                            boost::posix_time::ptime timeTo)
+         std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > CAcquisition::getKeywordDataByMonth(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
          {
-            return getKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kMonth,
-                                               keywordId,
-                                               timeFrom,
-                                               timeTo);
+            return getKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kMonth, keywordId, timeFrom, timeTo);
          }
 
-         std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > CAcquisition::getKeywordDataByYear(int keywordId,
-                                                                                                           boost::posix_time::ptime timeFrom,
-                                                                                                           boost::posix_time::ptime timeTo)
+         std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > CAcquisition::getKeywordDataByYear(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
          {
             return getKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kYear, keywordId, timeFrom, timeTo);
          }
 
-         std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > CAcquisition::getKeywordSummaryDataByType(const entities::EAcquisitionSummaryType& type,
-                                                                                                                  int keywordId,
-                                                                                                                  boost::posix_time::ptime timeFrom,
-                                                                                                                  boost::posix_time::ptime timeTo) const
+         std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > CAcquisition::getKeywordSummaryDataByType(const entities::EAcquisitionSummaryType& type, int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) const
          {
             auto qSelect = m_databaseRequester->newQuery();
             qSelect.Select().
@@ -260,9 +250,7 @@ namespace database
             return adapter.getResults();
          }
 
-         std::string CAcquisition::getKeywordHighchartData(int keywordId,
-                                                           boost::posix_time::ptime timeFrom,
-                                                           boost::posix_time::ptime timeTo)
+         std::string CAcquisition::getKeywordHighchartData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
          {
             //this query is optimized to get only one field to read
             //the output data is a single column (without brackets):  ["dateiso",value]
@@ -288,10 +276,7 @@ namespace database
             return mva.getRawResults();
          }
 
-         std::string CAcquisition::getKeywordHighchartDataByType(const entities::EAcquisitionSummaryType& type,
-                                                                 int keywordId,
-                                                                 boost::posix_time::ptime timeFrom,
-                                                                 boost::posix_time::ptime timeTo) const
+         std::string CAcquisition::getKeywordHighchartDataByType(const entities::EAcquisitionSummaryType& type, int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) const
          {
             //this query is optimized to get only one field to read
             //the output data is a single column (without brackets):  ["dateiso",value]
@@ -318,49 +303,27 @@ namespace database
             return mva.getRawResults();
          }
 
-         std::string CAcquisition::getKeywordHighchartDataByHour(int keywordId,
-                                                                 boost::posix_time::ptime timeFrom,
-                                                                 boost::posix_time::ptime timeTo)
+         std::string CAcquisition::getKeywordHighchartDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
          {
-            return getKeywordHighchartDataByType(entities::EAcquisitionSummaryType::kHour,
-                                                 keywordId,
-                                                 timeFrom,
-                                                 timeTo);
+            return getKeywordHighchartDataByType(entities::EAcquisitionSummaryType::kHour, keywordId, timeFrom, timeTo);
          }
 
-         std::string CAcquisition::getKeywordHighchartDataByDay(int keywordId,
-                                                                boost::posix_time::ptime timeFrom,
-                                                                boost::posix_time::ptime timeTo)
+         std::string CAcquisition::getKeywordHighchartDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
          {
-            return getKeywordHighchartDataByType(entities::EAcquisitionSummaryType::kDay,
-                                                 keywordId,
-                                                 timeFrom,
-                                                 timeTo);
+            return getKeywordHighchartDataByType(entities::EAcquisitionSummaryType::kDay, keywordId, timeFrom, timeTo);
          }
 
-         std::string CAcquisition::getKeywordHighchartDataByMonth(int keywordId,
-                                                                  boost::posix_time::ptime timeFrom,
-                                                                  boost::posix_time::ptime timeTo)
+         std::string CAcquisition::getKeywordHighchartDataByMonth(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
          {
-            return getKeywordHighchartDataByType(entities::EAcquisitionSummaryType::kMonth,
-                                                 keywordId,
-                                                 timeFrom,
-                                                 timeTo);
+            return getKeywordHighchartDataByType(entities::EAcquisitionSummaryType::kMonth, keywordId, timeFrom, timeTo);
          }
 
-         std::string CAcquisition::getKeywordHighchartDataByYear(int keywordId,
-                                                                 boost::posix_time::ptime timeFrom,
-                                                                 boost::posix_time::ptime timeTo)
+         std::string CAcquisition::getKeywordHighchartDataByYear(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
          {
-            return getKeywordHighchartDataByType(entities::EAcquisitionSummaryType::kYear,
-                                                 keywordId,
-                                                 timeFrom,
-                                                 timeTo);
+            return getKeywordHighchartDataByType(entities::EAcquisitionSummaryType::kYear, keywordId, timeFrom, timeTo);
          }
 
-         void CAcquisition::getKeywordsHavingDate(const boost::posix_time::ptime& timeFrom,
-                                                  const boost::posix_time::ptime& timeTo,
-                                                  std::vector<int>& results)
+         void CAcquisition::getKeywordsHavingDate(const boost::posix_time::ptime& timeFrom, const boost::posix_time::ptime& timeTo, std::vector<int>& results)
          {
             /*
       
@@ -381,9 +344,7 @@ namespace database
          }
 
 
-         boost::shared_ptr<entities::CAcquisitionSummary> CAcquisition::saveSummaryData(const int keywordId,
-                                                                                        database::entities::EAcquisitionSummaryType curType,
-                                                                                        boost::posix_time::ptime& dataTime)
+         boost::shared_ptr<entities::CAcquisitionSummary> CAcquisition::saveSummaryData(const int keywordId, database::entities::EAcquisitionSummaryType curType, boost::posix_time::ptime& dataTime)
          {
             /* 
             INSERT OR REPLACE INTO AcquisitionSummary (type, date, keywordId, mean, min, max)
@@ -618,9 +579,7 @@ namespace database
             throw shared::exception::CEmptyResult("The keyword do not exists, cannot add summary data");
          }
 
-         bool CAcquisition::summaryDataExists(const int keywordId,
-                                              entities::EAcquisitionSummaryType curType,
-                                              boost::posix_time::ptime& dataTime)
+         bool CAcquisition::summaryDataExists(const int keywordId, entities::EAcquisitionSummaryType curType, boost::posix_time::ptime& dataTime)
          {
             //determine the real date of summary data 
             boost::posix_time::ptime fromDate;

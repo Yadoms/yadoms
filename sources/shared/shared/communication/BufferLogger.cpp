@@ -1,39 +1,42 @@
 #include "stdafx.h"
 #include "BufferLogger.h"
-#include <shared/Log.h>
-#include <shared/StringExtension.h>
 
-namespace shared { namespace communication {
-
-CBufferLogger::CBufferLogger()
+namespace shared
 {
-}
+   namespace communication
+   {
+      CBufferLogger::CBufferLogger(std::ostream& os)
+         : m_os(os)
+      {
+      }
 
-CBufferLogger::~CBufferLogger()
-{
-}
+      CBufferLogger::~CBufferLogger()
+      {
+      }
 
-void CBufferLogger::logReceived(const CByteBuffer& data) 
-{
-   //std::cout << "Yadoms <<< " << msgToString(data);
-}
+      void CBufferLogger::logReceived(const CByteBuffer& data)
+      {
+         m_os << "Yadoms <<< " << msgToString(data) << std::endl;
+      }
 
-void CBufferLogger::logSent(const CByteBuffer& data)
-{
-   //std::cout << "Yadoms >>> " << msgToString(data);
-}
+      void CBufferLogger::logSent(const CByteBuffer& data)
+      {
+         m_os << "Yadoms >>> " << msgToString(data) << std::endl;
+      }
 
-std::string CBufferLogger::msgToString(const CByteBuffer& data) const
-{
-   if (data.size() == 0)
-      return shared::CStringExtension::EmptyString;
+      std::string CBufferLogger::msgToString(const CByteBuffer& data) const
+      {
+         if (data.size() == 0)
+            return std::string();
 
-   size_t nbDigits = sizeof(data[0]) * 2;
-   std::ostringstream ss;
-   for (size_t idx = 0 ; idx < data.size() ; ++ idx)
-      ss << std::setfill('0') << std::setw(nbDigits) << std::hex << (int)(data[idx]) << " ";
+         auto nbDigits = sizeof(data[0]) * 2;
+         std::ostringstream ss;
+         for (size_t idx = 0; idx < data.size(); ++ idx)
+            ss << std::setfill('0') << std::setw(nbDigits) << std::hex << static_cast<int>(data[idx]) << " ";
 
-   return ss.str();
-}
+         return ss.str();
+      }
+   }
+} // namespace shared::communication
 
-} } // namespace shared::communication
+

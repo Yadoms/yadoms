@@ -7,7 +7,6 @@
 #include "database/entities/Entities.h"
 #include <shared/ServiceLocator.h>
 #include "notification/Helpers.hpp"
-#include <shared/StringExtension.h>
 #include <shared/DataContainer.h>
 #include "i18n/ClientStrings.h"
 
@@ -119,7 +118,7 @@ namespace task {
          m_currentStatus = ETaskStatus::kStarted;
          m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
 
-         OnTaskProgressUpdated(true, 0.0f, i18n::CClientStrings::TaskStarted, shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
+         OnTaskProgressUpdated(true, 0.0f, i18n::CClientStrings::TaskStarted, std::string(), shared::CDataContainer::EmptyContainer);
 
          // Execute task code
          m_task->doWork(boost::bind(&CInstance::OnTaskProgressUpdated, this, _1, _2, _3, _4, _5));
@@ -128,7 +127,7 @@ namespace task {
          if (m_currentIsRunning && m_currentStatus != ETaskStatus::kSuccess)
          {
             m_currentStatus = ETaskStatus::kSuccess;
-            OnTaskProgressUpdated(true, 100.0, i18n::CClientStrings::TaskEnd, shared::CStringExtension::EmptyString, shared::CDataContainer::EmptyContainer);
+            OnTaskProgressUpdated(true, 100.0, i18n::CClientStrings::TaskEnd, std::string(), shared::CDataContainer::EmptyContainer);
          }
 
          //task event stopped

@@ -29,7 +29,7 @@ const std::string& CIdentityForQualifier::getVersion() const
    return m_version;
 }
 
-const shared::versioning::EReleaseType CIdentityForQualifier::getReleaseType() const
+shared::versioning::EReleaseType CIdentityForQualifier::getReleaseType() const
 {
    return m_releaseType;
 }

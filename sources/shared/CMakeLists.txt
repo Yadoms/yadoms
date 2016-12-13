@@ -9,6 +9,8 @@ set(SHARED_LIB_SRC
 
    shared/Log.h
    shared/Log.cpp
+   
+   shared/ILocation.h
 	
    shared/logInternal/ILogStream.h
    shared/logInternal/LogStreamEnhanced.h
@@ -46,6 +48,8 @@ set(SHARED_LIB_SRC
    shared/communication/IBufferLogger.h
    shared/communication/IReceiveBufferHandler.h
    shared/communication/MessageQueueRemover.hpp
+   shared/communication/NoBufferLogger.h
+   shared/communication/NoBufferLogger.cpp
    shared/communication/PortException.hpp
 	
    shared/compression/Extract.h
@@ -95,27 +99,31 @@ set(SHARED_LIB_SRC
    shared/http/HttpMethods.cpp
 
    shared/plugin/information/IInformation.h
+   shared/plugin/information/IYadomsInformation.h
 
    shared/plugin/yPluginApi/commonIncludes.h
-   shared/plugin/yPluginApi/IDeviceCommand.h
-   shared/plugin/yPluginApi/IExtraCommand.h
-   shared/plugin/yPluginApi/IManuallyDeviceCreationData.h
-   shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h
    shared/plugin/yPluginApi/IBindingQueryData.h
    shared/plugin/yPluginApi/IBindingQueryRequest.h
-   shared/plugin/yPluginApi/IManuallyDeviceCreationTestData.h
+   shared/plugin/yPluginApi/IDeviceCommand.h
+   shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h
+   shared/plugin/yPluginApi/IDeviceRemoved.h
+   shared/plugin/yPluginApi/IExtraQuery.h
+   shared/plugin/yPluginApi/IExtraQueryData.h
+   shared/plugin/yPluginApi/IManuallyDeviceCreationData.h
+   shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h
+   shared/plugin/yPluginApi/ISetDeviceConfiguration.h
    shared/plugin/yPluginApi/IYPluginApi.h
-   shared/plugin/yPluginApi/KeywordAccessMode.h
    shared/plugin/yPluginApi/KeywordAccessMode.cpp
-   shared/plugin/yPluginApi/KeywordDataType.h
+   shared/plugin/yPluginApi/KeywordAccessMode.h
    shared/plugin/yPluginApi/KeywordDataType.cpp
-   shared/plugin/yPluginApi/YPluginConfiguration.hpp
-   shared/plugin/yPluginApi/StandardUnits.h
+   shared/plugin/yPluginApi/KeywordDataType.h
    shared/plugin/yPluginApi/StandardCapacities.h
-   shared/plugin/yPluginApi/StandardValues.h
-   shared/plugin/yPluginApi/StandardDeclarations.cpp
-   shared/plugin/yPluginApi/StandardCapacity.h
    shared/plugin/yPluginApi/StandardCapacity.cpp
+   shared/plugin/yPluginApi/StandardCapacity.h
+   shared/plugin/yPluginApi/StandardDeclarations.cpp
+   shared/plugin/yPluginApi/StandardUnits.h
+   shared/plugin/yPluginApi/StandardValues.h
+   shared/plugin/yPluginApi/YPluginConfiguration.hpp
 
    shared/plugin/yPluginApi/historization/IHistorizable.h
    shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp
@@ -200,6 +208,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/typeInfo/ITypeInfo.h
    shared/plugin/yPluginApi/historization/typeInfo/EmptyTypeInfo.h
    shared/plugin/yPluginApi/historization/typeInfo/EmptyTypeInfo.cpp
+   shared/plugin/yPluginApi/historization/typeInfo/BoolTypeInfo.h
+   shared/plugin/yPluginApi/historization/typeInfo/BoolTypeInfo.cpp
    shared/plugin/yPluginApi/historization/typeInfo/IntTypeInfo.h
    shared/plugin/yPluginApi/historization/typeInfo/IntTypeInfo.cpp
    shared/plugin/yPluginApi/historization/typeInfo/DoubleTypeInfo.h

@@ -17,6 +17,10 @@ body {
     min-width: 265px;
 }
 
+.waiting-animation {
+    color: #428bca;
+}
+
 /* Finesse the page header spacing */
 .page-header {
     margin-bottom: 30px;

@@ -16,8 +16,11 @@ def getCreatePluginButton(browser):
    return browser.find_element_by_id("btn-add-new-plugin")
    
 def waitNewPluginModal(browser):
-   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "new-plugin-modal")))
-   return NewPluginModal(browser.find_element_by_id("new-plugin-modal"))
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, "new-pickup-modal")))
+   modal = browser.find_element_by_id("new-pickup-modal")
+   if modal.find_element_by_id("myModalLabel") and modal.find_element_by_id("myModalLabel").get_attribute("data-i18n") == "modals.add-plugin.title":
+      return NewPluginModal(browser.find_element_by_id("new-pickup-modal"))
+   assert False
    
       
 def waitPluginsTable(browser):
@@ -71,7 +74,7 @@ def getPluginConfigureButton(pluginsTable, pluginNumber):
 def getPluginExtraCommandButton(pluginsTable, pluginNumber):
    buttons = getPluginButtons(pluginsTable, pluginNumber)
    for button in buttons:
-      if "btn-extraCommand" in button.get_attribute("class"):
+      if "btn-extraQuery" in button.get_attribute("class"):
          return button
    assert False, "Extra command button not found"
    
@@ -124,22 +127,26 @@ class NewPluginModal():
    """ Operations on new plugin modal (plugin selection) """
    
    def __init__(self, newPluginModalWebElement):
-       self.__newPluginModalWebElement = newPluginModalWebElement
+      self.__modal = modals.PickupSelectorModal(newPluginModalWebElement)
 
    def selectPlugin(self, expectedPluginName):
-      select = WebDriverWait(self.__newPluginModalWebElement, 10).until(Condition.visibility_of_element_located((By.ID, "pluginTypeList")))
-      for option in select.find_elements_by_tag_name('option'):
-         if option.text == expectedPluginName:
-            return option
+      item = self.__modal.selectItem(expectedPluginName)
+      if item is not None:
+         return item
       print "selectPlugin : Nothing to select, ", expectedPluginName, " not found"
       assert False
-         
+
    def getConfirmButton(self):
-      return self.__newPluginModalWebElement.find_element_by_id("btn-confirm-add-plugin")
+      return self.__modal.getConfirmButton()
          
+   def getCancelButton(self):
+      return self.__modal.getCancelButton()
+      
    def ok(self):
-      self.getConfirmButton().click()
-      modals.waitForClosed(self.__newPluginModalWebElement)
+      return self.__modal.ok()
+      
+   def cancel(self):
+      return self.__modal.cancel()
             
             
             
@@ -195,7 +202,7 @@ def createPluginSequence(browser, pluginInstanceName, pluginType, setPluginConfi
    tools.waitUntil(lambda: getCreatePluginButton(browser).is_enabled())
    getCreatePluginButton(browser).click()
    newPluginModal = waitNewPluginModal(browser)
-   newPluginModal.selectPlugin(i18n.getPlugin(pluginType)["name"]).click()
+   newPluginModal.selectPlugin(pluginType).click()
    newPluginModal.ok()
 
    setPluginConfigurationSequenceFct(pluginInstanceName)

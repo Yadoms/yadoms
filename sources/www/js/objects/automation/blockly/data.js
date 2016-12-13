@@ -32,14 +32,18 @@ Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_ = function () {
        DeviceManager.getAll()
        .done(function (listDevices) {
           $.each(listDevices, function (deviceKey, device) {
-             result.devices[device.id] = device;
+			 if(parseBool(device.blacklist) === false)
+				result.devices[device.id] = device;
           });
 
           KeywordManager.getAll()
           .done(function (listKeywords) {
              $.each(listKeywords, function (keywordKey, keyword) {
-                result.keywords[keyword.id] = keyword;
-				result.capacities[keyword.capacityName] = keyword;
+				 //only for not blacklisted devices
+				 if(result.devices[keyword.deviceId]) {
+					result.keywords[keyword.id] = keyword;
+					result.capacities[keyword.capacityName] = keyword;
+				 }
              });
 
              RecipientManager.getAll()
