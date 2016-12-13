@@ -77,7 +77,6 @@ ColorParameterHandler.prototype.getParamName = function() {
  */
 ColorParameterHandler.prototype.setEnabled = function (enabled) {
     var self = this;
-
     if (enabled) {
             $("#" + self.uuid + " > input").addClass("enable-validation");
             $("div#" + this.uuid).colorpicker('enable');

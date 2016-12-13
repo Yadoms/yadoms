@@ -137,39 +137,7 @@ ComboSectionParameterHandler.prototype.getParamName = function() {
  * Apply script after DOM object has been added to the page
  */
 ComboSectionParameterHandler.prototype.applyScript = function () {
-  var self = this;
-
- // if (self.parentRadioButtonSectionName) {
- //     $("#" + self.selectorUuid).change(function () {
- //        self.setEnabled($("input#" + self.selectorUuid + ":checked").val() == "on");
-         /*if ($("input#" + self.selectorUuid + ":checked").val() == "on") {
-            
-            //we hide all sections-content in the radioSection\n" +
-		        var $parentSection = $("div#" + self.parentRadioButtonSectionName);
-            var radioSections = $parentSection.find(" > div.toggle-btn-grp > div.configuration-section > div.section-content");
-            radioSections.addClass("hidden");
-            $parentSection.removeClass("has-warning has-error");
-            $parentSection.find("input,select,textarea").removeClass("enable-validation");
-		        //Disable all existing sub-buttons
-		        $parentSection.find("button").attr("disabled", true);
-
-            //We save all items that are "required" with a special class name : required-for-validation
-            var $requiredFields = radioSections.find("[required]");
-            //we remove attr required and save it using class "required-for-validation"
-            $requiredFields.addClass("required-for-validation");
-            $requiredFields.removeAttr("required");
-
-            //we show current
-            var $activeContainer = $("div#" + self.containerUuid);
-            $activeContainer.removeClass("hidden");
-            $activeContainer.find("input,select,textarea").addClass("enable-validation");
-            //Enable all existing sub-buttons
-		        $activeContainer.find("button").removeAttr("disabled");
-            //we restore required items
-            $activeContainer.find(".required-for-validation").attr("required", "required");
-*/
-  //    });
-  // }
+    var self = this;
 
     //we manage sub containers items
     //and make all disappear except the current one
