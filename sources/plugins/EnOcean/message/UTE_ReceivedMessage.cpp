@@ -13,11 +13,6 @@ namespace message
    {
    }
 
-   const CRadioErp1ReceivedMessage& CUTE_ReceivedMessage::erp1() const
-   {
-      return m_erp1;
-   }
-
    bool CUTE_ReceivedMessage::bidirectionalCommunication() const
    {
       return (m_erp1.userData()[0] & 0x80) ? true : false;
@@ -61,6 +56,11 @@ namespace message
    unsigned char CUTE_ReceivedMessage::rorg() const
    {
       return m_erp1.userData()[6];
+   }
+
+   std::string CUTE_ReceivedMessage::senderId() const
+   {
+      return m_erp1.senderId();
    }
 } // namespace message
 

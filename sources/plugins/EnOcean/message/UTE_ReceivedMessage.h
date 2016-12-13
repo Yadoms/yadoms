@@ -36,19 +36,18 @@ namespace message
       //--------------------------------------------------------------
       virtual ~CUTE_ReceivedMessage();
 
-      const CRadioErp1ReceivedMessage& erp1() const;
+      virtual bool bidirectionalCommunication() const;
+      virtual bool teachInResponseExpected() const;
+      virtual ETeachInRequest teachInRequest() const;
+      virtual unsigned char command() const;
+      virtual unsigned char channelNumber() const;
+      virtual unsigned int manufacturerId() const;
+      virtual unsigned char type() const;
+      virtual unsigned char func() const;
+      virtual unsigned char rorg() const;
+      virtual std::string senderId() const;
 
-      bool bidirectionalCommunication() const;
-      bool teachInResponseExpected() const;
-      ETeachInRequest teachInRequest() const;
-      unsigned char command() const;
-      unsigned char channelNumber() const;
-      unsigned int manufacturerId() const;
-      unsigned char type() const;
-      unsigned char func() const;
-      unsigned char rorg() const;
-
-   private:
+      protected:
       const CRadioErp1ReceivedMessage& m_erp1;
    };
 } // namespace message

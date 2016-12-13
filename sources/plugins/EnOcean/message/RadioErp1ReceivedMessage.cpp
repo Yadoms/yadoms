@@ -10,13 +10,13 @@ namespace message
            | esp3Packet->data()[esp3Packet->data().size() - 4] << 16
            | esp3Packet->data()[esp3Packet->data().size() - 3] << 8
            | esp3Packet->data()[esp3Packet->data().size() - 2])),
-        m_status(esp3Packet->data()[esp3Packet->data().size() - 1]),
-        m_userData(esp3Packet->data().begin() + 1, esp3Packet->data().begin() + esp3Packet->data().size() - 6 + 1),
         m_destinationId(deviceIdToString(
            esp3Packet->optional()[1] << 24
            | esp3Packet->optional()[2] << 16
            | esp3Packet->optional()[3] << 8
-           | esp3Packet->optional()[4]))
+           | esp3Packet->optional()[4])),
+        m_status(esp3Packet->data()[esp3Packet->data().size() - 1]),
+        m_userData(esp3Packet->data().begin() + 1, esp3Packet->data().begin() + esp3Packet->data().size() - 6 + 1)
    {
    }
 

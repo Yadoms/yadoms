@@ -84,7 +84,7 @@ protected:
    void processDongleVersionResponse(message::CResponseReceivedMessage::EReturnCode returnCode,
                                      const message::CDongleVersionResponseReceivedMessage& dongleVersionResponse);
    static void processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
-   void processUTE(const message::CUTE_ReceivedMessage& uteMessage);
+   void processUTE(boost::shared_ptr<const message::CUTE_ReceivedMessage> uteMessage);
 
    //--------------------------------------------------------------
    /// \brief	                           Declare a device

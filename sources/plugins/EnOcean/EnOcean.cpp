@@ -11,6 +11,7 @@
 #include "ProfileHelper.h"
 #include "message/CommonCommandSendMessage.h"
 #include "message/UTE_AnswerSendMessage.h"
+#include "message/UTE_GigaConceptReversedReceivedMessage.h"
 #include "message/ResponseReceivedMessage.h"
 #include "DeviceConfigurationHelper.h"
 #include "profiles/generated-eep.h"
@@ -399,14 +400,15 @@ void CEnOcean::processDataReceived(boost::shared_ptr<const message::CEsp3Receive
    }
 }
 
-
 void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
 {
    message::CRadioErp1ReceivedMessage erp1Message(esp3Packet);
 
    if (erp1Message.rorg() == CRorgs::kUTE_Telegram)
    {
-      processUTE(message::CUTE_ReceivedMessage(erp1Message));
+      processUTE(message::CUTE_GigaConceptReversedReceivedMessage::isCGigaConceptReversedUteMessage(erp1Message)
+                    ? boost::make_shared<message::CUTE_GigaConceptReversedReceivedMessage>(erp1Message)
+                    : boost::make_shared<message::CUTE_ReceivedMessage>(erp1Message));
       return;
    }
 
@@ -567,24 +569,24 @@ void CEnOcean::processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket
    std::cout << "Event " << eventCode << " received" << std::endl;
 }
 
-void CEnOcean::processUTE(const message::CUTE_ReceivedMessage& uteMessage)
+void CEnOcean::processUTE(boost::shared_ptr<const message::CUTE_ReceivedMessage> uteMessage)
 {
-   if (uteMessage.teachInRequest() != message::CUTE_ReceivedMessage::kTeachInRequest &&
-      uteMessage.teachInRequest() != message::CUTE_ReceivedMessage::kNotSpecified)
+   if (uteMessage->teachInRequest() != message::CUTE_ReceivedMessage::kTeachInRequest &&
+      uteMessage->teachInRequest() != message::CUTE_ReceivedMessage::kNotSpecified)
    {
-      std::cout << "UTE message : teach-in request type " << uteMessage.teachInRequest() << " not supported, message ignored" << std::endl;
+      std::cout << "UTE message : teach-in request type " << uteMessage->teachInRequest() << " not supported, message ignored" << std::endl;
       return;
    }
 
-   if (uteMessage.command() != message::CUTE_ReceivedMessage::kTeachInQuery)
+   if (uteMessage->command() != message::CUTE_ReceivedMessage::kTeachInQuery)
    {
-      std::cout << "UTE message : command type " << static_cast<unsigned int>(uteMessage.command()) << " not supported, message ignored" << std::endl;
+      std::cout << "UTE message : command type " << static_cast<unsigned int>(uteMessage->command()) << " not supported, message ignored" << std::endl;
       return;
    }
 
-   auto deviceId = uteMessage.erp1().senderId();
-   auto profile = CProfileHelper(uteMessage.rorg(), uteMessage.func(), uteMessage.type());
-   auto manufacturerName = CManufacturers::name(uteMessage.manufacturerId());
+   auto deviceId = uteMessage->senderId();
+   auto profile = CProfileHelper(uteMessage->rorg(), uteMessage->func(), uteMessage->type());
+   auto manufacturerName = CManufacturers::name(uteMessage->manufacturerId());
 
    auto response = message::CUTE_AnswerSendMessage::kRequestAccepted;
    if (m_devices.find(deviceId) == m_devices.end())
@@ -606,18 +608,18 @@ void CEnOcean::processUTE(const message::CUTE_ReceivedMessage& uteMessage)
       }
    }
 
-   if (uteMessage.teachInResponseExpected())
+   if (uteMessage->teachInResponseExpected())
    {
       message::CUTE_AnswerSendMessage sendMessage(m_senderId,
                                                   deviceId,
                                                   0,
-                                                  uteMessage.bidirectionalCommunication(),
+                                                  uteMessage->bidirectionalCommunication(),
                                                   response,
-                                                  uteMessage.channelNumber(),
-                                                  uteMessage.manufacturerId(),
-                                                  uteMessage.type(),
-                                                  uteMessage.func(),
-                                                  uteMessage.rorg());
+                                                  uteMessage->channelNumber(),
+                                                  uteMessage->manufacturerId(),
+                                                  uteMessage->type(),
+                                                  uteMessage->func(),
+                                                  uteMessage->rorg());
 
       message::CResponseReceivedMessage::EReturnCode returnCode;
       if (!m_messageHandler->send(sendMessage,
