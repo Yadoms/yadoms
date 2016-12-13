@@ -481,15 +481,114 @@
         }, 
         "D2-01-0D": {
           "name": "D2-01-0D", 
-          "content": ""
+          "content": {
+            "localControl": {
+              "name": "Local control", 
+              "values": {
+                "enable": "enable", 
+                "disable": "disable"
+              }
+            }, 
+            "taughtIn": {
+              "name": "Taught In", 
+              "values": {
+                "allDevices": "All devices", 
+                "yadomsOnly": "Yadoms only"
+              }
+            }, 
+            "userInterfaceMode": {
+              "name": "User Interface Mode", 
+              "values": {
+                "dayMode": "Day (led on)", 
+                "nightMode": "Night (led off)"
+              }
+            }, 
+            "defaultState": {
+              "name": "Default state", 
+              "values": {
+                "off": "Off", 
+                "on": "On", 
+                "previousState": "Previous state", 
+                "notUsed": "Not Used"
+              }
+            }
+          }
         }, 
         "D2-01-0E": {
           "name": "D2-01-0E", 
-          "content": ""
+          "content": {
+            "localControl": {
+              "name": "Local control", 
+              "values": {
+                "enable": "enable", 
+                "disable": "disable"
+              }
+            }, 
+            "taughtIn": {
+              "name": "Taught In", 
+              "values": {
+                "allDevices": "All devices", 
+                "yadomsOnly": "Yadoms only"
+              }
+            }, 
+            "userInterfaceMode": {
+              "name": "User Interface Mode", 
+              "values": {
+                "dayMode": "Day (led on)", 
+                "nightMode": "Night (led off)"
+              }
+            }, 
+            "defaultState": {
+              "name": "Default state", 
+              "values": {
+                "off": "Off", 
+                "on": "On", 
+                "previousState": "Previous state", 
+                "notUsed": "Not Used"
+              }
+            }, 
+            "minRefreshTime": {
+              "name": "Minimum refresh time (seconds), must be under maximum refresh time"
+            }, 
+            "maxRefreshTime": {
+              "name": "Maximum refresh time (seconds), must be over minimum refresh time"
+            }
+          }
         }, 
         "D2-01-0F": {
           "name": "D2-01-0F", 
-          "content": ""
+          "content": {
+            "localControl": {
+              "name": "Local control", 
+              "values": {
+                "enable": "enable", 
+                "disable": "disable"
+              }
+            }, 
+            "taughtIn": {
+              "name": "Taught In", 
+              "values": {
+                "allDevices": "All devices", 
+                "yadomsOnly": "Yadoms only"
+              }
+            }, 
+            "userInterfaceMode": {
+              "name": "User Interface Mode", 
+              "values": {
+                "dayMode": "Day (led on)", 
+                "nightMode": "Night (led off)"
+              }
+            }, 
+            "defaultState": {
+              "name": "Default state", 
+              "values": {
+                "off": "Off", 
+                "on": "On", 
+                "previousState": "Previous state", 
+                "notUsed": "Not Used"
+              }
+            }
+          }
         }, 
         "D2-01-12": {
           "name": "D2-01-12", 

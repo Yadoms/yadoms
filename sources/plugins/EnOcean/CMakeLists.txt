@@ -85,6 +85,8 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/IFunc.h
    profiles/IType.h
    
+   profiles/hardCoded/Profile_D2_01_Common.cpp
+   profiles/hardCoded/Profile_D2_01_Common.h
    profiles/hardCoded/Profile_D2_01_0D.cpp
    profiles/hardCoded/Profile_D2_01_0D.h
    profiles/hardCoded/Profile_D2_01_0E.cpp

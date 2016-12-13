@@ -6,7 +6,7 @@ namespace message
    static const auto EnOceanInterByteTimeout = boost::posix_time::milliseconds(100);
 
    // Timeout when expecting a answer from dongle
-   static const auto EnOceanAnswerTimeout(boost::posix_time::seconds(500));
+   static const auto EnOceanAnswerTimeout(boost::posix_time::milliseconds(500));
 
    static const auto SYNC_BYTE_VALUE = 0x55;
 

@@ -67,7 +67,11 @@ def generate(packageJsonInPath, packageJsonPath, localesPath, supportedProfiles)
                profileNode['name'] = profileName
                profileNode['type'] = 'section'
                if profileName in inPackage['specificProfilesConfigurations']:
-                  profileNode['content'] = inPackage['specificProfilesConfigurations'][profileName]['content']
+                  if 'sameAs' in inPackage['specificProfilesConfigurations'][profileName]:
+                     aliasProfile = inPackage['specificProfilesConfigurations'][profileName]['sameAs']
+                     profileNode['content'] = inPackage['specificProfilesConfigurations'][aliasProfile]['content']
+                  else:
+                     profileNode['content'] = inPackage['specificProfilesConfigurations'][profileName]['content']
                else:
                   profileNode['content'] = ''
                outPackage['deviceConfiguration']['staticConfigurationSchema'][0]['schema']['profile']['content'][profileName] = profileNode
@@ -94,7 +98,11 @@ def generate(packageJsonInPath, packageJsonPath, localesPath, supportedProfiles)
                   profileNode = OrderedDict()
                   profileNode['name'] = profileName
                   if profileName in inPackage['specificProfilesConfigurations']:
-                     profileNode['content'] = inPackage['specificProfilesConfigurations'][profileName]['content']
+                     if 'sameAs' in inPackage['specificProfilesConfigurations'][profileName]:
+                        aliasProfile = inPackage['specificProfilesConfigurations'][profileName]['sameAs']
+                        profileNode['content'] = inPackage['specificProfilesConfigurations'][aliasProfile]['content']
+                     else:
+                        profileNode['content'] = inPackage['specificProfilesConfigurations'][profileName]['content']
                   else:
                      profileNode['content'] = ''
                   outPackage['deviceConfiguration']['profile']['content'][profileName] = profileNode

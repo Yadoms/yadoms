@@ -584,17 +584,148 @@
               "D2-01-0D": {
                 "name": "D2-01-0D", 
                 "type": "section", 
-                "content": ""
+                "content": {
+                  "localControl": {
+                    "name": "Local control", 
+                    "type": "enum", 
+                    "values": {
+                      "enable": "enable", 
+                      "disable": "disable"
+                    }, 
+                    "defaultValue": "enable"
+                  }, 
+                  "taughtIn": {
+                    "name": "Taught In", 
+                    "type": "enum", 
+                    "values": {
+                      "allDevices": "All devices", 
+                      "yadomsOnly": "Yadoms only"
+                    }, 
+                    "defaultValue": "allDevices"
+                  }, 
+                  "userInterfaceMode": {
+                    "name": "User Interface Mode", 
+                    "type": "enum", 
+                    "values": {
+                      "dayMode": "Day (led on)", 
+                      "nightMode": "Night (led off)"
+                    }, 
+                    "defaultValue": "dayMode"
+                  }, 
+                  "defaultState": {
+                    "name": "Default state", 
+                    "type": "enum", 
+                    "values": {
+                      "off": "Off", 
+                      "on": "On", 
+                      "previousState": "Previous state", 
+                      "notUsed": "Not Used"
+                    }, 
+                    "defaultValue": "off"
+                  }
+                }
               }, 
               "D2-01-0E": {
                 "name": "D2-01-0E", 
                 "type": "section", 
-                "content": ""
+                "content": {
+                  "localControl": {
+                    "name": "Local control", 
+                    "type": "enum", 
+                    "values": {
+                      "enable": "enable", 
+                      "disable": "disable"
+                    }, 
+                    "defaultValue": "enable"
+                  }, 
+                  "taughtIn": {
+                    "name": "Taught In", 
+                    "type": "enum", 
+                    "values": {
+                      "allDevices": "All devices", 
+                      "yadomsOnly": "Yadoms only"
+                    }, 
+                    "defaultValue": "allDevices"
+                  }, 
+                  "userInterfaceMode": {
+                    "name": "User Interface Mode", 
+                    "type": "enum", 
+                    "values": {
+                      "dayMode": "Day (led on)", 
+                      "nightMode": "Night (led off)"
+                    }, 
+                    "defaultValue": "dayMode"
+                  }, 
+                  "defaultState": {
+                    "name": "Default state", 
+                    "type": "enum", 
+                    "values": {
+                      "off": "Off", 
+                      "on": "On", 
+                      "previousState": "Previous state", 
+                      "notUsed": "Not Used"
+                    }, 
+                    "defaultValue": "off"
+                  }, 
+                  "minRefreshTime": {
+                    "name": "Minimum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "0", 
+                    "maximumValue": "255", 
+                    "defaultValue": "30"
+                  }, 
+                  "maxRefreshTime": {
+                    "name": "Maximum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "10", 
+                    "maximumValue": "2550", 
+                    "defaultValue": "600"
+                  }
+                }
               }, 
               "D2-01-0F": {
                 "name": "D2-01-0F", 
                 "type": "section", 
-                "content": ""
+                "content": {
+                  "localControl": {
+                    "name": "Local control", 
+                    "type": "enum", 
+                    "values": {
+                      "enable": "enable", 
+                      "disable": "disable"
+                    }, 
+                    "defaultValue": "enable"
+                  }, 
+                  "taughtIn": {
+                    "name": "Taught In", 
+                    "type": "enum", 
+                    "values": {
+                      "allDevices": "All devices", 
+                      "yadomsOnly": "Yadoms only"
+                    }, 
+                    "defaultValue": "allDevices"
+                  }, 
+                  "userInterfaceMode": {
+                    "name": "User Interface Mode", 
+                    "type": "enum", 
+                    "values": {
+                      "dayMode": "Day (led on)", 
+                      "nightMode": "Night (led off)"
+                    }, 
+                    "defaultValue": "dayMode"
+                  }, 
+                  "defaultState": {
+                    "name": "Default state", 
+                    "type": "enum", 
+                    "values": {
+                      "off": "Off", 
+                      "on": "On", 
+                      "previousState": "Previous state", 
+                      "notUsed": "Not Used"
+                    }, 
+                    "defaultValue": "off"
+                  }
+                }
               }, 
               "D2-01-12": {
                 "name": "D2-01-12", 

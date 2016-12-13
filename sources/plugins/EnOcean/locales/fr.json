@@ -481,15 +481,114 @@
         }, 
         "D2-01-0D": {
           "name": "D2-01-0D", 
-          "content": ""
+          "content": {
+            "localControl": {
+              "name": "Contrôle local", 
+              "values": {
+                "enable": "activé", 
+                "disable": "désactivé"
+              }
+            }, 
+            "taughtIn": {
+              "name": "Piloté par", 
+              "values": {
+                "allDevices": "tous les devices appairés", 
+                "yadomsOnly": "Yadoms seulement"
+              }
+            }, 
+            "userInterfaceMode": {
+              "name": "Mode d'activation Led", 
+              "values": {
+                "dayMode": "Jour (led allumée)", 
+                "nightMode": "Nuit (led éteinte)"
+              }
+            }, 
+            "defaultState": {
+              "name": "Etat par défaut", 
+              "values": {
+                "off": "Sortie inactive", 
+                "on": "Sortie active", 
+                "previousState": "Etat précédent", 
+                "notUsed": "Non renseigné"
+              }
+            }
+          }
         }, 
         "D2-01-0E": {
           "name": "D2-01-0E", 
-          "content": ""
+          "content": {
+            "localControl": {
+              "name": "Contrôle local", 
+              "values": {
+                "enable": "activé", 
+                "disable": "désactivé"
+              }
+            }, 
+            "taughtIn": {
+              "name": "Piloté par", 
+              "values": {
+                "allDevices": "tous les devices appairés", 
+                "yadomsOnly": "Yadoms seulement"
+              }
+            }, 
+            "userInterfaceMode": {
+              "name": "Mode d'activation Led", 
+              "values": {
+                "dayMode": "Jour (led allumée)", 
+                "nightMode": "Nuit (led éteinte)"
+              }
+            }, 
+            "defaultState": {
+              "name": "Etat par défaut", 
+              "values": {
+                "off": "Sortie inactive", 
+                "on": "Sortie active", 
+                "previousState": "Etat précédent", 
+                "notUsed": "Non renseigné"
+              }
+            }, 
+            "minRefreshTime": {
+              "name": "Période minimum de raffraichissement (secondes), doit être inférieure à la période maximum de raffraichissement"
+            }, 
+            "maxRefreshTime": {
+              "name": "Période maximum de raffraichissement (secondes), doit être inférieure à la période minimum de raffraichissement"
+            }
+          }
         }, 
         "D2-01-0F": {
           "name": "D2-01-0F", 
-          "content": ""
+          "content": {
+            "localControl": {
+              "name": "Contrôle local", 
+              "values": {
+                "enable": "activé", 
+                "disable": "désactivé"
+              }
+            }, 
+            "taughtIn": {
+              "name": "Piloté par", 
+              "values": {
+                "allDevices": "tous les devices appairés", 
+                "yadomsOnly": "Yadoms seulement"
+              }
+            }, 
+            "userInterfaceMode": {
+              "name": "Mode d'activation Led", 
+              "values": {
+                "dayMode": "Jour (led allumée)", 
+                "nightMode": "Nuit (led éteinte)"
+              }
+            }, 
+            "defaultState": {
+              "name": "Etat par défaut", 
+              "values": {
+                "off": "Sortie inactive", 
+                "on": "Sortie active", 
+                "previousState": "Etat précédent", 
+                "notUsed": "Non renseigné"
+              }
+            }
+          }
         }, 
         "D2-01-12": {
           "name": "D2-01-12", 
