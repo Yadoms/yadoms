@@ -105,8 +105,8 @@
                             "allowDuplication": "true",
                             "item": {
                                 "type": "section",
-                                "name": "",
-                                "description": "",				
+                                "name": "New Item",
+                                "description": "An Item",				
                                 "content": {
                                     "string" : {
                                         "type" : "string",
