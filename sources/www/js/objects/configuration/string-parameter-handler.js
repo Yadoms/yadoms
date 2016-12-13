@@ -141,7 +141,6 @@ StringParameterHandler.prototype.getParamName = function() {
 StringParameterHandler.prototype.setEnabled = function (enabled) {
     var self = this;
 
-    //we disable / enable the control of the radio or the checkbox
     if (enabled) {
             $("#" + self.uuid).addClass("enable-validation");
     } else {
