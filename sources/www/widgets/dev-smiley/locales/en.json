@@ -1,4 +1,20 @@
 {
     "name": "Smiley",
-    "description": "A fully resizable smiley"
+    "description": "A fully resizable smiley",
+    "configurationSchema": {
+		"connection": {
+			"name": "Connection in English",
+			"description": "Connection in English Desscription",
+            "content" : {
+                "connection": {
+                    "name": "Radio Connection in English",
+                    "description": "Radio Connection in English Desscription"
+                },
+                "serial" : {
+                    "name": "Serial in English",
+                    "description": "Serial in English Desscription"
+                }
+            }
+		}
+	}
 }

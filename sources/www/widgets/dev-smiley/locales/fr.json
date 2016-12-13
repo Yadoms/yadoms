@@ -1,4 +1,20 @@
 {
    "name": "Smiley",
-   "description": "Un smiley redimensionnable"
+   "description": "Un smiley redimensionnable",
+   "configurationSchema": {
+		"connection": {
+			"name": "Connection in French",
+			"description": "Connection in French Desscription",
+            "content" : {
+                "connection": {
+                    "name": "Radio Connection in French",
+                    "description": "Radio Connection in French Desscription"
+                },
+                "serial" : {
+                    "name": "Serial in French",
+                    "description": "Serial in French Desscription"
+                }
+            }
+		}
+	}
 }
