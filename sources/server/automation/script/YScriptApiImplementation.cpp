@@ -101,14 +101,7 @@ namespace automation
       {
          assertExistingKeyword(keywordId);
 
-         try
-         {
-            return m_dbAcquisitionRequester->getKeywordLastData(keywordId)->Value;
-         }
-         catch (shared::exception::CEmptyResult&)
-         {
-            return std::string();
-         }
+         return m_dbAcquisitionRequester->getKeywordLastData(keywordId)->Value;
       }
 
       boost::shared_ptr<notification::acquisition::CNotification> CYScriptApiImplementation::waitForAction(boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification> > action,
