@@ -6,8 +6,6 @@
 #include "Profile_D2_01_Common.h"
 
 
-const CRorgs::ERorgIds CProfile_D2_01_0F::m_rorg(CRorgs::kVLD_Telegram);
-
 CProfile_D2_01_0F::CProfile_D2_01_0F(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_deviceId(deviceId),
@@ -72,7 +70,7 @@ void CProfile_D2_01_0F::sendCommand(const std::string& keyword,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   message::CRadioErp1SendMessage command(m_rorg,
+   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
                                           senderId,
                                           m_deviceId,
                                           0);
@@ -116,7 +114,7 @@ void CProfile_D2_01_0F::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
-                                                      m_rorg,
+                                                      CRorgs::kVLD_Telegram,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,

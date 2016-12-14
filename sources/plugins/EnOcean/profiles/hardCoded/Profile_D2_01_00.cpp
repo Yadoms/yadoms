@@ -1,12 +1,12 @@
 #include "stdafx.h"
-#include "Profile_D2_01_0D.h"
+#include "Profile_D2_01_00.h"
 #include "../bitsetHelpers.hpp"
 #include "../../message/RadioErp1SendMessage.h"
 #include "../../message/ResponseReceivedMessage.h"
 #include "Profile_D2_01_Common.h"
 
 
-CProfile_D2_01_0D::CProfile_D2_01_0D(const std::string& deviceId,
+CProfile_D2_01_00::CProfile_D2_01_00(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_deviceId(deviceId),
      m_channel(boost::make_shared<yApi::historization::CSwitch>("Channel", yApi::EKeywordAccessMode::kGetSet)),
@@ -14,28 +14,28 @@ CProfile_D2_01_0D::CProfile_D2_01_0D(const std::string& deviceId,
 {
 }
 
-CProfile_D2_01_0D::~CProfile_D2_01_0D()
+CProfile_D2_01_00::~CProfile_D2_01_00()
 {
 }
 
-const std::string& CProfile_D2_01_0D::profile() const
+const std::string& CProfile_D2_01_00::profile() const
 {
-   static const std::string profile("D2-01-0D");
+   static const std::string profile("D2-01-00");
    return profile;
 }
 
-const std::string& CProfile_D2_01_0D::title() const
+const std::string& CProfile_D2_01_00::title() const
 {
-   static const std::string title("Micro smart plug with 1 channel, no metering capabilities");
+   static const std::string title("Electronic switch with Energy Measurement and Local Control");
    return title;
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_0D::allHistorizers() const
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_00::allHistorizers() const
 {
    return m_historizers;
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_0D::states(unsigned char rorg,
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_00::states(unsigned char rorg,
                                                                                                    const boost::dynamic_bitset<>& data,
                                                                                                    const boost::dynamic_bitset<>& status) const
 {
@@ -65,7 +65,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return historizers;
 }
 
-void CProfile_D2_01_0D::sendCommand(const std::string& keyword,
+void CProfile_D2_01_00::sendCommand(const std::string& keyword,
                                     const std::string& commandBody,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
@@ -102,21 +102,9 @@ void CProfile_D2_01_0D::sendCommand(const std::string& keyword,
    return;
 }
 
-void CProfile_D2_01_0D::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
+void CProfile_D2_01_00::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
                                           const std::string& senderId,
                                           boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   auto localControl = deviceConfiguration.get<std::string>("localControl") == "enable";
-   auto taughtInAllDevices = deviceConfiguration.get<std::string>("taughtIn") == "allDevices";
-   auto userInterfaceDayMode = deviceConfiguration.get<std::string>("userInterfaceMode") == "dayMode";
-   auto defaultState = deviceConfiguration.get<CProfile_D2_01_Common::EDefaultState>("defaultState");
-
-   CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
-                                                      senderId,
-                                                      m_deviceId,
-                                                      CRorgs::kVLD_Telegram,
-                                                      localControl,
-                                                      taughtInAllDevices,
-                                                      userInterfaceDayMode,
-                                                      defaultState);
+   // Device supports no configuration
 }

@@ -31,7 +31,6 @@ public:
    // [END] IType implementation
 
 private:
-   static const CRorgs::ERorgIds m_rorg;
    const std::string m_deviceId;
    boost::shared_ptr<yApi::historization::CSwitch> m_channel;
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_historizers;

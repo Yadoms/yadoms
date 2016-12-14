@@ -5,8 +5,6 @@
 #include "../../message/ResponseReceivedMessage.h"
 
 
-const CRorgs::ERorgIds CProfile_D2_01_12::m_rorg(CRorgs::kVLD_Telegram);
-
 CProfile_D2_01_12::CProfile_D2_01_12(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_deviceId(deviceId),
@@ -76,7 +74,7 @@ void CProfile_D2_01_12::sendCommand(const std::string& keyword,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
-   message::CRadioErp1SendMessage command(m_rorg,
+   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
                                           senderId,
                                           m_deviceId,
                                           0);
@@ -123,7 +121,7 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
-                                                      m_rorg,
+                                                      CRorgs::kVLD_Telegram,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
@@ -133,7 +131,7 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(messageHandler,
                                                                           senderId,
                                                                           m_deviceId,
-                                                                          m_rorg,
+                                                                          CRorgs::kVLD_Telegram,
                                                                           connectedSwitchsType,
                                                                           autoOffTimerSeconds,
                                                                           delayRadioOffTimerSeconds,
