@@ -60,7 +60,7 @@
 	},
 	"enumerations": {
 		"EFakeControllerValues": {
-			"name" : "Etat controller",
+			"name" : "State",
 			"values" : {
 				"Stop": "Stop",
 				"Run": "Run",

@@ -91,6 +91,8 @@ class DriveKeyword(unittest.TestCase):
 
    def test_driveEnumKeyword(self):
       print '=== Try to drive an enum keyword ==='
+      print 'ref Issues : #176'
+
       deviceName = u'fakeController1'
       keywordName = u'controllerValue'
       attachedPluginInstance = u'My fakePlugin instance'
