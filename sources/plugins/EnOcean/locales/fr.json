@@ -514,7 +514,44 @@
         }, 
         "D2-01-08": {
           "name": "D2-01-08", 
-          "content": ""
+          "content": {
+            "localControl": {
+              "name": "Contrôle local", 
+              "values": {
+                "enable": "activé", 
+                "disable": "désactivé"
+              }
+            }, 
+            "taughtIn": {
+              "name": "Piloté par", 
+              "values": {
+                "allDevices": "tous les devices appairés", 
+                "yadomsOnly": "Yadoms seulement"
+              }
+            }, 
+            "userInterfaceMode": {
+              "name": "Mode d'activation Led", 
+              "values": {
+                "dayMode": "Jour (led allumée)", 
+                "nightMode": "Nuit (led éteinte)"
+              }
+            }, 
+            "defaultState": {
+              "name": "Etat par défaut", 
+              "values": {
+                "off": "Sortie inactive", 
+                "on": "Sortie active", 
+                "previousState": "Etat précédent", 
+                "notUsed": "Non renseigné"
+              }
+            }, 
+            "minEnergyMeasureRefreshTime": {
+              "name": "Période minimum de raffraichissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de raffraichissement"
+            }, 
+            "maxEnergyMeasureRefreshTime": {
+              "name": "Période maximum de raffraichissement de la mesure d'énergie (secondes), doit être inférieure à la période minimum de raffraichissement"
+            }
+          }
         }, 
         "D2-01-09": {
           "name": "D2-01-09", 
@@ -527,6 +564,47 @@
             }, 
             "dimTimer3": {
               "name": "Temporisation 3 de variation (secondes), par pas de 0.5s (de 0.5 à 7.5s). 0 pour désactiver la temporisation."
+            }
+          }
+        }, 
+        "D2-01-0A": {
+          "name": "D2-01-0A", 
+          "content": {
+            "localControl": {
+              "name": "Contrôle local", 
+              "values": {
+                "enable": "activé", 
+                "disable": "désactivé"
+              }
+            }, 
+            "taughtIn": {
+              "name": "Piloté par", 
+              "values": {
+                "allDevices": "tous les devices appairés", 
+                "yadomsOnly": "Yadoms seulement"
+              }
+            }, 
+            "userInterfaceMode": {
+              "name": "Mode d'activation Led", 
+              "values": {
+                "dayMode": "Jour (led allumée)", 
+                "nightMode": "Nuit (led éteinte)"
+              }
+            }, 
+            "defaultState": {
+              "name": "Etat par défaut", 
+              "values": {
+                "off": "Sortie inactive", 
+                "on": "Sortie active", 
+                "previousState": "Etat précédent", 
+                "notUsed": "Non renseigné"
+              }
+            }, 
+            "minEnergyMeasureRefreshTime": {
+              "name": "Période minimum de raffraichissement de la mesure d'énergie (secondes), doit être inférieure à la période maximum de raffraichissement"
+            }, 
+            "maxEnergyMeasureRefreshTime": {
+              "name": "Période maximum de raffraichissement de la mesure d'énergie (secondes), doit être inférieure à la période minimum de raffraichissement"
             }
           }
         }, 

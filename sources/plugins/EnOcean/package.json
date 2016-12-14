@@ -730,7 +730,60 @@
               "D2-01-08": {
                 "name": "D2-01-08", 
                 "type": "section", 
-                "content": ""
+                "content": {
+                  "localControl": {
+                    "name": "Local control", 
+                    "type": "enum", 
+                    "values": {
+                      "enable": "enable", 
+                      "disable": "disable"
+                    }, 
+                    "defaultValue": "enable"
+                  }, 
+                  "taughtIn": {
+                    "name": "Taught In", 
+                    "type": "enum", 
+                    "values": {
+                      "allDevices": "All devices", 
+                      "yadomsOnly": "Yadoms only"
+                    }, 
+                    "defaultValue": "allDevices"
+                  }, 
+                  "userInterfaceMode": {
+                    "name": "User Interface Mode", 
+                    "type": "enum", 
+                    "values": {
+                      "dayMode": "Day (led on)", 
+                      "nightMode": "Night (led off)"
+                    }, 
+                    "defaultValue": "dayMode"
+                  }, 
+                  "defaultState": {
+                    "name": "Default state", 
+                    "type": "enum", 
+                    "values": {
+                      "off": "Off", 
+                      "on": "On", 
+                      "previousState": "Previous state", 
+                      "notUsed": "Not Used"
+                    }, 
+                    "defaultValue": "off"
+                  }, 
+                  "minEnergyMeasureRefreshTime": {
+                    "name": "Minimum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "0", 
+                    "maximumValue": "255", 
+                    "defaultValue": "30"
+                  }, 
+                  "maxEnergyMeasureRefreshTime": {
+                    "name": "Maximum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "10", 
+                    "maximumValue": "2550", 
+                    "defaultValue": "600"
+                  }
+                }
               }, 
               "D2-01-09": {
                 "name": "D2-01-09", 
@@ -779,6 +832,78 @@
                     "maximumValue": "7.5", 
                     "precision": "1", 
                     "defaultValue": "6"
+                  }, 
+                  "minEnergyMeasureRefreshTime": {
+                    "name": "Minimum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "0", 
+                    "maximumValue": "255", 
+                    "defaultValue": "30"
+                  }, 
+                  "maxEnergyMeasureRefreshTime": {
+                    "name": "Maximum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "10", 
+                    "maximumValue": "2550", 
+                    "defaultValue": "600"
+                  }
+                }
+              }, 
+              "D2-01-0A": {
+                "name": "D2-01-0A", 
+                "type": "section", 
+                "content": {
+                  "localControl": {
+                    "name": "Local control", 
+                    "type": "enum", 
+                    "values": {
+                      "enable": "enable", 
+                      "disable": "disable"
+                    }, 
+                    "defaultValue": "enable"
+                  }, 
+                  "taughtIn": {
+                    "name": "Taught In", 
+                    "type": "enum", 
+                    "values": {
+                      "allDevices": "All devices", 
+                      "yadomsOnly": "Yadoms only"
+                    }, 
+                    "defaultValue": "allDevices"
+                  }, 
+                  "userInterfaceMode": {
+                    "name": "User Interface Mode", 
+                    "type": "enum", 
+                    "values": {
+                      "dayMode": "Day (led on)", 
+                      "nightMode": "Night (led off)"
+                    }, 
+                    "defaultValue": "dayMode"
+                  }, 
+                  "defaultState": {
+                    "name": "Default state", 
+                    "type": "enum", 
+                    "values": {
+                      "off": "Off", 
+                      "on": "On", 
+                      "previousState": "Previous state", 
+                      "notUsed": "Not Used"
+                    }, 
+                    "defaultValue": "off"
+                  }, 
+                  "minEnergyMeasureRefreshTime": {
+                    "name": "Minimum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "0", 
+                    "maximumValue": "255", 
+                    "defaultValue": "30"
+                  }, 
+                  "maxEnergyMeasureRefreshTime": {
+                    "name": "Maximum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "10", 
+                    "maximumValue": "2550", 
+                    "defaultValue": "600"
                   }
                 }
               }, 

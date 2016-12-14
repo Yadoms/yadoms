@@ -99,6 +99,46 @@
         }
       }
     },
+    "D2-01-08": {
+      "content": {
+        "localControl": {
+          "name": "Local control",
+          "values": {
+            "enable": "enable",
+            "disable": "disable"
+          }
+        },
+        "taughtIn": {
+          "name": "Taught In",
+          "values": {
+            "allDevices": "All devices",
+            "yadomsOnly": "Yadoms only"
+          }
+        },
+        "userInterfaceMode": {
+          "name": "User Interface Mode",
+          "values": {
+            "dayMode": "Day (led on)",
+            "nightMode": "Night (led off)"
+          }
+        },
+        "defaultState": {
+          "name": "Default state",
+          "values": {
+            "off": "Off",
+            "on": "On",
+            "previousState": "Previous state",
+            "notUsed": "Not Used"
+          }
+        },
+        "minEnergyMeasureRefreshTime": {
+          "name": "Energy measure minimum refresh time (seconds), must be under maximum refresh time"
+        },
+        "maxEnergyMeasureRefreshTime": {
+          "name": "Energy measure maximum refresh time (seconds), must be over minimum refresh time"
+        }
+      }
+    },
     "D2-01-09": {
       "content": {
         "taughtIn": {
@@ -127,6 +167,9 @@
           "name": "Dim timer 3 (seconds), by step of 0.5s (0.5 to 7.5s). 0 to disable."
         }
       }
+    },
+    "D2-01-0A": {
+      "sameAs": "D2-01-08"
     },
     "D2-01-0D": {
       "content": {

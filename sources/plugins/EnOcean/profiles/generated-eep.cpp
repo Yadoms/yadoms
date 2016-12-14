@@ -6,7 +6,7 @@
 #include "bitsetHelpers.hpp"
 #include "../ProfileHelper.h"
 
-#include "hardCoded\Profile_F6_02_01.h"
+#include "hardCoded\Profile_D2_01_0A.h"
 #include "hardCoded\Profile_F6_02_02.h"
 #include "hardCoded\Profile_D2_01_03.h"
 #include "hardCoded\Profile_D2_01_08.h"
@@ -22,6 +22,7 @@
 #include "hardCoded\Profile_D2_01_0F.h"
 #include "hardCoded\Profile_D2_01_05.h"
 #include "hardCoded\Profile_D2_01_00.h"
+#include "hardCoded\Profile_F6_02_01.h"
 
 const std::map<unsigned int, std::string> CRorgs::RorgMap = boost::assign::map_list_of
    (kRPS_Telegram, "RPS Telegram")
@@ -6155,6 +6156,7 @@ boost::shared_ptr<IType> CVLD_0x01::createType(unsigned int typeId, const std::s
    case k0x07: return boost::make_shared<CProfile_D2_01_07>(deviceId, api);
    case k0x08: return boost::make_shared<CProfile_D2_01_08>(deviceId, api);
    case k0x09: return boost::make_shared<CProfile_D2_01_09>(deviceId, api);
+   case k0x0A: return boost::make_shared<CProfile_D2_01_0A>(deviceId, api);
    case k0x0D: return boost::make_shared<CProfile_D2_01_0D>(deviceId, api);
    case k0x0E: return boost::make_shared<CProfile_D2_01_0E>(deviceId, api);
    case k0x0F: return boost::make_shared<CProfile_D2_01_0F>(deviceId, api);
