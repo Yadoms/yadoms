@@ -53,6 +53,18 @@ if(MSVC)
    #  dont use third party script to get current windows version because it fails with win10 and greaters
    #  so just specify it as Win7 (avoid link with Win8 and Win10 sdk; because they are useless for our app)
 	add_definitions(-D_WIN32_WINNT=0x0601)
+
+   # Overrides compilers flag to link with static runtime libraries
+   if (LINK_WITH_STATIC_RUNTIME)
+      foreach(flag_var
+         CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+         CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+         if(${flag_var} MATCHES "/MD")
+            string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+         endif(${flag_var} MATCHES "/MD")
+      endforeach(flag_var)
+   endif()
+
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX)

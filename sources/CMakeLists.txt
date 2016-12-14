@@ -39,6 +39,7 @@ if(WIN32)
 endif()
 
 # Compilers/IDE configurations
+set (LINK_WITH_STATIC_RUNTIME 1)
 include(cmake/compilers.cmake)
 
 # Boost built libraries copy helper
@@ -82,12 +83,9 @@ endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 # Boost
 #
 ###############################################
-set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME OFF)
-add_definitions( -DBOOST_WHATEVER_DYN_LINK )
-add_definitions( -DBOOST_ALL_NO_LIB )
-add_definitions( -DBOOST_ALL_DYN_LINK )
+set(Boost_USE_STATIC_RUNTIME ON)
 add_definitions( -DBOOST_SPIRIT_THREADSAFE )
 
 # define all needed boost libraries
@@ -148,55 +146,32 @@ endif()
 # POCO_LIBS : define all required poco libraries
 ###############################################
 
-SET ( POCO_LIBS
+SET (POCO_LIBS
 	PocoFoundation
    PocoJSON
 	PocoNet
 	PocoUtil
    PocoXML
    PocoZip
+   PocoCrypto
+   PocoNetSSL
 )
 
-#if openssl is found, just add ssl libraries (PocoCrypto and PocoNetSSL)
-if(${OPENSSL_FOUND})
-	SET ( POCO_LIBS
-      ${POCO_LIBS}
-      PocoCrypto
-      PocoNetSSL
-   )
-endif()
-
-
-set( POCO_REQUIRE_MINIMUM_VERSION "1.6.1")
+set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
+set(POCO_USE_STATIC_LIBS 1)
+set(POCO_USE_STATIC_RUNTIME 1)
 include(cmake/FindPoco.cmake)
 
 IF(NOT ${Poco_FOUND})
 	message(FATAL_ERROR "Unable to find the required POCO libraries")
 ENDIF()
 
-if(${OPENSSL_FOUND})
-   list(FIND Poco_FOUND_LIBS_NAME PocoNetSSL PocoNetSSLFoundIndex)
-   if( ${PocoNetSSLFoundIndex} GREATER -1)
-      SET(PocoNetSSLFound true)
-   endif()
-endif()
-
-
-
-#in case of OpenSSL use
-IF(${PocoNetSSLFound})
-   IF(WIN32)
-      #add libeay32.dll and ssleay32.dll as dependencies
-      IF(EXISTS "${OPENSSL_ROOT_DIR}/bin/libeay32.dll")
-         SET(PocoNetSSLDepends "${OPENSSL_ROOT_DIR}/bin/libeay32.dll")
-      ENDIF()
-       
-      IF(EXISTS "${OPENSSL_ROOT_DIR}/bin/ssleay32.dll")
-         SET(PocoNetSSLDepends ${PocoNetSSLDepends} "${OPENSSL_ROOT_DIR}/bin/ssleay32.dll")
-      ENDIF()
-       
-   ENDIF(WIN32)
-ENDIF()
+IF(WIN32)
+   SET(Poco_DEPEDENCIES_LIBS 
+      ${OPENSSL_ROOT}/lib/VC/libeay32MT.lib
+      ${OPENSSL_ROOT}/lib/VC/ssleay32MT.lib
+   )
+ENDIF(WIN32)
 
 
 ###############################################
@@ -216,7 +191,7 @@ endif()
 # define libraries to link with
 #
 ###############################################
-set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Poco_FOUND_LIBS})
+set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Poco_FOUND_LIBS} ${Poco_DEPEDENCIES_LIBS})
 
 
 
@@ -783,18 +758,6 @@ IF(USE_PGSQL_DATABASE)
          IF(EXISTS "${PostgreSQL_ROOT}/bin/intl.dll")
             SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/intl.dll")
          ENDIF()
-          
-                   
-         IF(NOT ${PocoNetSSLFound})
-            #add libeay32.dll and ssleay32.dll as dependencies
-            IF(EXISTS "${PostgreSQL_ROOT}/bin/libeay32.dll")
-               SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/libeay32.dll")
-            ENDIF()
-             
-            IF(EXISTS "${PostgreSQL_ROOT}/bin/ssleay32.dll")
-               SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/ssleay32.dll")
-            ENDIF()
-         ENDIF()
       ENDIF(WIN32)
    
       set(YADOMS_EXTERNAL_LINK ${YADOMS_EXTERNAL_LINK} ${PostgreSQL_LIBRARY})
@@ -968,13 +931,6 @@ endif(WIN32)
 POST_BUILD_COPY_BOOST_LIBRARIES(yadoms)
 POST_BUILD_COPY_POCO(yadoms)
 
-#copy PocoNetSSL depends
-FOREACH (PocoNetSSLDepend ${PocoNetSSLDepends})
-   add_custom_command(TARGET yadoms POST_BUILD
-                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                          ${PocoNetSSLDepend} $<TARGET_FILE_DIR:yadoms>/)
-ENDFOREACH(PocoNetSSLDepend)
-
 #copy PostgreSql depends
 FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
    add_custom_command(TARGET yadoms POST_BUILD
@@ -1080,15 +1036,6 @@ else()
 endif()   
    
    
-#add depends
-FOREACH (PocoNetSSLDepend ${PocoNetSSLDepends})
-   if (DEFINED CMAKE_CONFIGURATION_TYPES)
-      install(FILES ${PocoNetSSLDepend} CONFIGURATIONS Debug;Release;RelWithDebInfo;MinSizeRel RUNTIME DESTINATION ${INSTALL_BINDIR})
-   else()
-      install(FILES ${PocoNetSSLDepend} RUNTIME DESTINATION ${INSTALL_BINDIR})
-   endif()
-ENDFOREACH(PocoNetSSLDepend)
-
 #add depends
 FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
    if (DEFINED CMAKE_CONFIGURATION_TYPES)

@@ -2,7 +2,7 @@
 #
 #Input
 #  POCO_ROOT should be defined, either in env vars, or in CMakeList.txt
-#	set the POCO_LINK_STATIC to link statically, else if not defined, shared link is used
+#	set the POCO_USE_STATIC_LIBS to link statically, else if not defined, shared link is used
 #
 #Output
 # 	${Poco_INCLUDE_DIRS}		contains all the include directories for Poco
@@ -88,9 +88,15 @@ if(POCO_VERSION_CHECKED_SUCCESS)
    )
 
 
-   SET(POCO_FOUNDATION PocoFoundation)
+   SET(RUNTIME_SUFFIX "")
+   if(WIN32)
+      if(POCO_USE_STATIC_RUNTIME)
+         SET(RUNTIME_SUFFIX "mt")
+      endif()
+   endif()
+   SET(POCO_FOUNDATION PocoFoundation${RUNTIME_SUFFIX})
    if(NOT ${CMAKE_BUILD_TYPE} MATCHES "Release")
-      SET(POCO_FOUNDATION PocoFoundationd)
+      SET(POCO_FOUNDATION PocoFoundation${RUNTIME_SUFFIX}d)
    endif()		
 
    FIND_LIBRARY(Poco_LIB_DIR NAMES ${POCO_FOUNDATION}  PATH_SUFFIXES ${SUFFIX_FOR_LIBRARY_PATH} PATHS
@@ -167,11 +173,15 @@ if(POCO_VERSION_CHECKED_SUCCESS)
          ELSE()
            message(FATAL_ERROR "ERROR: cannot find ${POCOLIB} include dir. Should be : ${CURRENTINCLUDE_LIB}")
          ENDIF()
-         
+
          #find the lib to link with
          if(WIN32)
-            SET(CURRENT_DEBUG_LIB ${Poco_LIB_DIR}/${POCOLIB}d.lib)
-            SET(CURRENT_RELEASE_LIB ${Poco_LIB_DIR}/${POCOLIB}.lib)
+            SET(RUNTIME_SUFFIX "")
+            if(POCO_USE_STATIC_RUNTIME)
+               SET(RUNTIME_SUFFIX "mt")
+            endif()
+            SET(CURRENT_DEBUG_LIB ${Poco_LIB_DIR}/${POCOLIB}${RUNTIME_SUFFIX}d.lib)
+            SET(CURRENT_RELEASE_LIB ${Poco_LIB_DIR}/${POCOLIB}${RUNTIME_SUFFIX}.lib)
          elseif(APPLE)
             SET(CURRENT_DEBUG_LIB ${Poco_LIB_DIR}/lib${POCOLIB}d.dylib)
             SET(CURRENT_RELEASE_LIB ${Poco_LIB_DIR}/lib${POCOLIB}.dylib)
@@ -194,7 +204,7 @@ if(POCO_VERSION_CHECKED_SUCCESS)
          
          set(Poco_FOUND_LIBS_NAME ${Poco_FOUND_LIBS_NAME} ${POCOLIB})
                
-         if(NOT POCO_LINK_STATIC)
+         if(NOT POCO_USE_STATIC_LIBS)
             #link=shared
             if(WIN32)
                SET(CURRENT_DEBUG_BIN ${Poco_BIN_DIR}/${POCOLIB}d.dll)
@@ -223,7 +233,7 @@ if(POCO_VERSION_CHECKED_SUCCESS)
             
 
 
-         endif(NOT POCO_LINK_STATIC)
+         endif(NOT POCO_USE_STATIC_LIBS)
        ENDFOREACH(POCOLIB)
 
        SET(Poco_FOUND 1)
@@ -301,7 +311,7 @@ MACRO(POST_BUILD_COPY_POCO target)
 
 
    #Take each boost lib file, find its dll and add it to a post build command
-   if(NOT POCO_LINK_STATIC)
+   if(NOT POCO_USE_STATIC_LIBS)
 	
       MESSAGE(STATUS "Add Poco libraries to be copied as postbuild")
       FOREACH (POCOLIBRARY ${POCO_LIBS_DEBUG})
