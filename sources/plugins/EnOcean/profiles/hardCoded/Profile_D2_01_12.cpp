@@ -3,6 +3,7 @@
 #include "../bitsetHelpers.hpp"
 #include "../../message/RadioErp1SendMessage.h"
 #include "../../message/ResponseReceivedMessage.h"
+#include "Profile_D2_01_Common.h"
 
 
 CProfile_D2_01_12::CProfile_D2_01_12(const std::string& deviceId,

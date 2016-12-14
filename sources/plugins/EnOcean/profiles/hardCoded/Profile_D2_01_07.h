@@ -6,12 +6,12 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 
-class CProfile_D2_01_01 : public IType
+class CProfile_D2_01_07 : public IType
 {
 public:
-   CProfile_D2_01_01(const std::string& deviceId,
+   CProfile_D2_01_07(const std::string& deviceId,
                      boost::shared_ptr<yApi::IYPluginApi> api);
-   virtual ~CProfile_D2_01_01();
+   virtual ~CProfile_D2_01_07();
 
    // IType implementation
    const std::string& profile() const override;

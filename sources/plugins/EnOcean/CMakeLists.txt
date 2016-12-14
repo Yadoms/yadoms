@@ -97,6 +97,12 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/hardCoded/Profile_D2_01_00.h
    profiles/hardCoded/Profile_D2_01_01.cpp
    profiles/hardCoded/Profile_D2_01_01.h
+   profiles/hardCoded/Profile_D2_01_06.cpp
+   profiles/hardCoded/Profile_D2_01_06.h
+   profiles/hardCoded/Profile_D2_01_07.cpp
+   profiles/hardCoded/Profile_D2_01_07.h
+   profiles/hardCoded/Profile_D2_01_08.cpp
+   profiles/hardCoded/Profile_D2_01_08.h
    profiles/hardCoded/Profile_D2_01_12.cpp
    profiles/hardCoded/Profile_D2_01_12.h
 
