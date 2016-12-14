@@ -53,6 +53,8 @@ class DriveKeyword(unittest.TestCase):
 
    def test_driveOnOffKeyword(self):
       print '=== Try to drive a on/off keyword ==='
+      print 'ref Issues : #162'
+
       deviceName = u'fakeOnOffReadWriteSwitch'
       keywordName = u'Switch'
       attachedPluginInstance = u'My fakePlugin instance'
