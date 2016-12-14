@@ -46,21 +46,31 @@ public:
       kPowerKW = 0x04
    };
 
+   enum E_D2_01_DimValue
+   {
+      kSwitchToValue = 0x00,
+      kDimToValueWithTimer1 = 0x01,
+      kDimToValueWithTimer2 = 0x02,
+      kDimToValueWithTimer3 = 0x03,
+      kStopDimming = 0x04,
+   };
+
    // CMD 0x2 - Actuator Set Local
    static void sendActuatorSetLocalCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                            const std::string& senderId,
                                            const std::string& targetId,
-                                           const CRorgs::ERorgIds& rorg,
                                            bool localControl,
                                            bool taughtInAllDevices,
                                            bool userInterfaceDayMode,
-                                           const EDefaultState& defaultState);
+                                           const EDefaultState& defaultState,
+                                           double dimTimer1,
+                                           double dimTimer2,
+                                           double dimTimer3);
 
    // CMD 0xB - Actuator Set External Interface Settings
    static void sendActuatorSetExternalInterfaceSettingsCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                                                const std::string& senderId,
                                                                const std::string& targetId,
-                                                               const CRorgs::ERorgIds& rorg,
                                                                const EConnectedSwitchsType& connectedSwitchsType,
                                                                double autoOffTimerSeconds,
                                                                double delayRadioOffTimerSeconds,
@@ -70,9 +80,8 @@ public:
    static void sendActuatorSetMeasurementCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                                  const std::string& senderId,
                                                  const std::string& targetId,
-                                                 const CRorgs::ERorgIds& rorg,
                                                  bool powerMeasurement,
                                                  bool outputChannels,
-                                                 double minRefreshTime,
-                                                 double maxRefreshTime);
+                                                 double minEnergyMeasureRefreshTime,
+                                                 double maxEnergyMeasureRefreshTime);
 };

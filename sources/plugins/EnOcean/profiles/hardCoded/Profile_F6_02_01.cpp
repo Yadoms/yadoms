@@ -28,7 +28,7 @@ const std::string& CProfile_F6_02_01::profile() const
 
 const std::string& CProfile_F6_02_01::title() const
 {
-   static const std::string title("Rocker Switch, 2 Rocker");
+   static const std::string title("Rocker switch, 2 rockers");
    return title;
 }
 

@@ -26,7 +26,7 @@ const std::string& CProfile_D2_01_00::profile() const
 
 const std::string& CProfile_D2_01_00::title() const
 {
-   static const std::string title("Electronic switch with Energy Measurement and Local Control");
+   static const std::string title("Electronic switch with energy measurement and local control");
    return title;
 }
 

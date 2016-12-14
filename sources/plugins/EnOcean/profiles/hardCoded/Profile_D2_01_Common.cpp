@@ -21,13 +21,15 @@ DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_01_Common::EConnectedSwitchsType,
 void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                                         const std::string& senderId,
                                                         const std::string& targetId,
-                                                        const CRorgs::ERorgIds& rorg,
                                                         bool localControl,
                                                         bool taughtInAllDevices,
                                                         bool userInterfaceDayMode,
-                                                        const EDefaultState& defaultState)
+                                                        const EDefaultState& defaultState,
+                                                        double dimTimer1,
+                                                        double dimTimer2,
+                                                        double dimTimer3)
 {
-   message::CRadioErp1SendMessage command(rorg,
+   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
                                           senderId,
                                           targetId,
                                           0);
@@ -37,8 +39,11 @@ void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessa
    bitset_insert(data, 0, !taughtInAllDevices);
    bitset_insert(data, 10, localControl);
    bitset_insert(data, 11, 5, 0x1E); // Use all output channels supported by the device
+   bitset_insert(data, 16, 4, static_cast<unsigned int>(lround(dimTimer2 / 0.5)));
+   bitset_insert(data, 20, 4, static_cast<unsigned int>(lround(dimTimer3 / 0.5)));
    bitset_insert(data, 24, !userInterfaceDayMode);
    bitset_insert(data, 26, 2, defaultState);
+   bitset_insert(data, 28, 4, static_cast<unsigned int>(lround(dimTimer1 / 0.5)));
 
    command.userData(bitset_to_bytes(data));
 
@@ -63,13 +68,12 @@ void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessa
 void CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                                                             const std::string& senderId,
                                                                             const std::string& targetId,
-                                                                            const CRorgs::ERorgIds& rorg,
                                                                             const EConnectedSwitchsType& connectedSwitchsType,
                                                                             double autoOffTimerSeconds,
                                                                             double delayRadioOffTimerSeconds,
                                                                             bool switchingStateToggle)
 {
-   message::CRadioErp1SendMessage command(rorg,
+   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
                                           senderId,
                                           targetId,
                                           0);
@@ -105,13 +109,12 @@ void CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(boos
 void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                                               const std::string& senderId,
                                                               const std::string& targetId,
-                                                              const CRorgs::ERorgIds& rorg,
                                                               bool powerMeasurement,
                                                               bool outputChannels,
-                                                              double minRefreshTime,
-                                                              double maxRefreshTime)
+                                                              double minEnergyMeasureRefreshTime,
+                                                              double maxEnergyMeasureRefreshTime)
 {
-   message::CRadioErp1SendMessage command(rorg,
+   message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
                                           senderId,
                                           targetId,
                                           0);
@@ -125,8 +128,8 @@ void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<
    bitset_insert(data, 16, 4, 0); // No measurement delta
    bitset_insert(data, 21, 3, powerMeasurement ? kPowerW : kEnergyWh); // Hard-coded for now
    bitset_insert(data, 24, 8, 0); // No measurement delta
-   bitset_insert(data, 32, 8, static_cast<unsigned char>(minRefreshTime / 10));
-   bitset_insert(data, 40, 8, static_cast<unsigned char>(maxRefreshTime));
+   bitset_insert(data, 32, 8, static_cast<unsigned char>(minEnergyMeasureRefreshTime / 10));
+   bitset_insert(data, 40, 8, static_cast<unsigned char>(maxEnergyMeasureRefreshTime));
 
    command.userData(bitset_to_bytes(data));
 

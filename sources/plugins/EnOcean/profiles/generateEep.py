@@ -102,7 +102,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
          profileName = profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode)
          typeClassName = cppHelper.toCppName("CProfile_" + profileName)
          if hardCodedProfiles.isProfileHardCoded(profileName):
-            util.info(typeClassName + " is hard-coded, nothing to do")
+            # Profile is hard-coded, nothing to do
             continue
          typeClass = cppClass.CppClass(typeClassName)
          typeClass.inheritFrom("IType", cppClass.PUBLIC)

@@ -1,41 +1,43 @@
 #include "stdafx.h"
-#include "Profile_D2_01_06.h"
+#include "Profile_D2_01_02.h"
 #include "../bitsetHelpers.hpp"
 #include "../../message/RadioErp1SendMessage.h"
 #include "../../message/ResponseReceivedMessage.h"
 #include "Profile_D2_01_Common.h"
 
 
-CProfile_D2_01_06::CProfile_D2_01_06(const std::string& deviceId,
+CProfile_D2_01_02::CProfile_D2_01_02(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_deviceId(deviceId),
-     m_channel(boost::make_shared<yApi::historization::CSwitch>("Channel", yApi::EKeywordAccessMode::kGetSet)),
-     m_historizers({m_channel})
+     m_dimAtSpeed1(boost::make_shared<yApi::historization::CDimmable>("Dim at speed 1", yApi::EKeywordAccessMode::kGetSet)),
+     m_dimAtSpeed2(boost::make_shared<yApi::historization::CDimmable>("Dim at speed 2", yApi::EKeywordAccessMode::kGetSet)),
+     m_dimAtSpeed3(boost::make_shared<yApi::historization::CDimmable>("Dim at speed 3", yApi::EKeywordAccessMode::kGetSet)),
+     m_historizers({m_dimAtSpeed1 , m_dimAtSpeed2 , m_dimAtSpeed3})
 {
 }
 
-CProfile_D2_01_06::~CProfile_D2_01_06()
+CProfile_D2_01_02::~CProfile_D2_01_02()
 {
 }
 
-const std::string& CProfile_D2_01_06::profile() const
+const std::string& CProfile_D2_01_02::profile() const
 {
-   static const std::string profile("D2-01-06");
+   static const std::string profile("D2-01-02");
    return profile;
 }
 
-const std::string& CProfile_D2_01_06::title() const
+const std::string& CProfile_D2_01_02::title() const
 {
-   static const std::string title("Electronic switch with energy measurement");
+   static const std::string title("Electronic dimmer with local Control");
    return title;
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_06::allHistorizers() const
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_02::allHistorizers() const
 {
    return m_historizers;
 }
 
-std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_06::states(unsigned char rorg,
+std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfile_D2_01_02::states(unsigned char rorg,
                                                                                                    const boost::dynamic_bitset<>& data,
                                                                                                    const boost::dynamic_bitset<>& status) const
 {
@@ -55,8 +57,12 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    switch (ioChannel)
    {
    case 0:
-      m_channel->set(state);
-      historizers.push_back(m_channel);
+      m_dimAtSpeed1->set(state);
+      m_dimAtSpeed2->set(state);
+      m_dimAtSpeed3->set(state);
+      historizers.push_back(m_dimAtSpeed1);
+      historizers.push_back(m_dimAtSpeed2);
+      historizers.push_back(m_dimAtSpeed3);
       break;
    default:
       std::cout << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel << std::endl;
@@ -65,11 +71,38 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
    return historizers;
 }
 
-void CProfile_D2_01_06::sendCommand(const std::string& keyword,
+void CProfile_D2_01_02::sendCommand(const std::string& keyword,
                                     const std::string& commandBody,
                                     const std::string& senderId,
                                     boost::shared_ptr<IMessageHandler> messageHandler) const
 {
+   CProfile_D2_01_Common::E_D2_01_DimValue dimValue;
+   if (keyword == m_dimAtSpeed1->getKeyword())
+   {
+      dimValue = CProfile_D2_01_Common::kDimToValueWithTimer1;
+      m_dimAtSpeed2->set(m_dimAtSpeed1->switchLevel());
+      m_dimAtSpeed3->set(m_dimAtSpeed1->switchLevel());
+   }
+   else if (keyword == m_dimAtSpeed2->getKeyword())
+   {
+      dimValue = CProfile_D2_01_Common::kDimToValueWithTimer2;
+      m_dimAtSpeed1->set(m_dimAtSpeed2->switchLevel());
+      m_dimAtSpeed3->set(m_dimAtSpeed2->switchLevel());
+   }
+   else if (keyword == m_dimAtSpeed3->getKeyword())
+   {
+      dimValue = CProfile_D2_01_Common::kDimToValueWithTimer3;
+      m_dimAtSpeed1->set(m_dimAtSpeed3->switchLevel());
+      m_dimAtSpeed2->set(m_dimAtSpeed3->switchLevel());
+   }
+   else
+   {
+      std::ostringstream oss;
+      oss << "Device " << m_deviceId << " (" << profile() << ") : send command on unsupported keyword " << keyword;
+      std::cout << oss.str() << std::endl;
+      throw std::logic_error(oss.str());
+   }
+
    message::CRadioErp1SendMessage command(CRorgs::kVLD_Telegram,
                                           senderId,
                                           m_deviceId,
@@ -77,8 +110,9 @@ void CProfile_D2_01_06::sendCommand(const std::string& keyword,
 
    boost::dynamic_bitset<> userData(3 * 8);
    bitset_insert(userData, 4, 4, CProfile_D2_01_Common::kActuatorSetOutput);
+   bitset_insert(userData, 8, 3, dimValue);
    bitset_insert(userData, 11, 5, 0);
-   bitset_insert(userData, 17, 7, commandBody == "1" ? 100 : 0);
+   bitset_insert(userData, 17, 7, std::stoul(commandBody));
 
    command.userData(bitset_to_bytes(userData));
 
@@ -98,11 +132,9 @@ void CProfile_D2_01_06::sendCommand(const std::string& keyword,
 
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
       std::cerr << "Fail to send state to " << m_deviceId << " : Actuator Set Output command returns " << response->returnCode() << std::endl;
-
-   return;
 }
 
-void CProfile_D2_01_06::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
+void CProfile_D2_01_02::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
                                           const std::string& senderId,
                                           boost::shared_ptr<IMessageHandler> messageHandler) const
 {

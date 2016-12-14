@@ -30,7 +30,7 @@ const std::string& CProfile_D2_01_08::profile() const
 
 const std::string& CProfile_D2_01_08::title() const
 {
-   static const std::string title("Electronic switch with Energy Measurement and Local Control");
+   static const std::string title("Electronic switch with energy measurement and local control");
    return title;
 }
 
@@ -202,20 +202,22 @@ void CProfile_D2_01_08::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
-                                                      CRorgs::kVLD_Telegram,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
-                                                      defaultState);
+                                                      defaultState,
+                                                      0.0,
+                                                      0.0,
+                                                      0.0);
 
 
-   auto minRefreshTime = deviceConfiguration.get<double>("minRefreshTime");
-   auto maxRefreshTime = deviceConfiguration.get<double>("maxRefreshTime");
+   auto minEnergyMeasureRefreshTime = deviceConfiguration.get<double>("minEnergyMeasureRefreshTime");
+   auto maxEnergyMeasureRefreshTime = deviceConfiguration.get<double>("maxEnergyMeasureRefreshTime");
 
-   if (minRefreshTime > maxRefreshTime)
+   if (minEnergyMeasureRefreshTime > maxEnergyMeasureRefreshTime)
    {
       std::ostringstream oss;
-      oss << "Min refresh time (" << minRefreshTime << ") is over max refresh time (" << maxRefreshTime << ") for device " << m_deviceId << " (" << profile() << ")";
+      oss << "Min refresh time (" << minEnergyMeasureRefreshTime << ") is over max refresh time (" << maxEnergyMeasureRefreshTime << ") for device " << m_deviceId << " (" << profile() << ")";
       std::cerr << oss.str() << std::endl;
       throw std::logic_error(oss.str());
    }
@@ -224,33 +226,29 @@ void CProfile_D2_01_08::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
                                                             senderId,
                                                             m_deviceId,
-                                                            CRorgs::kVLD_Telegram,
                                                             false,
                                                             false,
-                                                            minRefreshTime,
-                                                            maxRefreshTime);
+                                                            minEnergyMeasureRefreshTime,
+                                                            maxEnergyMeasureRefreshTime);
    CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
                                                             senderId,
                                                             m_deviceId,
-                                                            CRorgs::kVLD_Telegram,
                                                             false,
                                                             true,
-                                                            minRefreshTime,
-                                                            maxRefreshTime);
+                                                            minEnergyMeasureRefreshTime,
+                                                            maxEnergyMeasureRefreshTime);
    CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
                                                             senderId,
                                                             m_deviceId,
-                                                            CRorgs::kVLD_Telegram,
                                                             true,
                                                             false,
-                                                            minRefreshTime,
-                                                            maxRefreshTime);
+                                                            minEnergyMeasureRefreshTime,
+                                                            maxEnergyMeasureRefreshTime);
    CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(messageHandler,
                                                             senderId,
                                                             m_deviceId,
-                                                            CRorgs::kVLD_Telegram,
                                                             true,
                                                             true,
-                                                            minRefreshTime,
-                                                            maxRefreshTime);
+                                                            minEnergyMeasureRefreshTime,
+                                                            maxEnergyMeasureRefreshTime);
 }

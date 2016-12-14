@@ -122,17 +122,18 @@ void CProfile_D2_01_12::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
-                                                      CRorgs::kVLD_Telegram,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
-                                                      defaultState);
+                                                      defaultState,
+                                                      0.0,
+                                                      0.0,
+                                                      0.0);
 
    // CMD 0xB - Actuator Set External Interface Settings
    CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(messageHandler,
                                                                           senderId,
                                                                           m_deviceId,
-                                                                          CRorgs::kVLD_Telegram,
                                                                           connectedSwitchsType,
                                                                           autoOffTimerSeconds,
                                                                           delayRadioOffTimerSeconds,

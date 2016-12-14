@@ -114,9 +114,11 @@ void CProfile_D2_01_0F::sendConfiguration(const shared::CDataContainer& deviceCo
    CProfile_D2_01_Common::sendActuatorSetLocalCommand(messageHandler,
                                                       senderId,
                                                       m_deviceId,
-                                                      CRorgs::kVLD_Telegram,
                                                       localControl,
                                                       taughtInAllDevices,
                                                       userInterfaceDayMode,
-                                                      defaultState);
+                                                      defaultState,
+                                                      0.0,
+                                                      0.0,
+                                                      0.0);
 }
