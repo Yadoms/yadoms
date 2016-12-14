@@ -38,8 +38,10 @@ void CAstronomy::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api)
                                      shared::plugin::yPluginApi::CStandardCapacities::Load.getUnit());
 
       // Declare keywords
-      std::string m_URL = "www.wunderground.com/";
-      api->declareDevice(m_deviceName, m_URL, m_keywords);
+      std::string m_type = "Astronomy";
+      shared::CDataContainer details;
+      details.set("type", m_type);
+      api->declareDevice(m_deviceName, m_type, m_keywords, details);
    }
    else
    {

@@ -78,8 +78,10 @@ void CWeatherConditions::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi>
    if (m_deviceConfiguration->isConditionsIndividualKeywordsEnabled() || m_deviceConfiguration->isLiveConditionsEnabled())
    {
       // Declare keywords
-      std::string m_Model = "Weather Conditions";
-      api->declareDevice(m_deviceName, m_Model, m_keywords);
+      std::string m_type = "WeatherConditions";
+      shared::CDataContainer details;
+      details.set("type", m_type);
+      api->declareDevice(m_deviceName, m_type, m_keywords, details);
    }
 }
 

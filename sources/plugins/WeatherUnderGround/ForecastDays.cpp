@@ -58,8 +58,10 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
       m_keywords.push_back(m_temp);
 
       // Declare keywords
-      std::string m_URL = "www.wunderground.com/";
-      api->declareDevice(m_deviceName, m_URL, m_keywords);
+      std::string m_type = "Forecast";
+      shared::CDataContainer details;
+      details.set("type", m_type);
+      api->declareDevice(m_deviceName, m_type, m_keywords, details);
    }
 }
 
@@ -73,19 +75,26 @@ void CForecastDays::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
    m_countryOrState = wuConfiguration.getCountryOrState();
 
    m_url.str("");
-   m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/" << m_prefix << "/q/" << m_countryOrState << "/" << m_localisation << ".json";
+   m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/forecast/q/" << m_countryOrState << "/" << m_localisation << ".json";
 }
 
 void CForecastDays::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                    boost::shared_ptr<IdeviceConfiguration> deviceConfiguration)
 {
-   // TODO : mettre en try/catch
-   m_deviceConfiguration = deviceConfiguration;
-   InitializeForecastDays(api);
+   try
+   {
+      m_deviceConfiguration = deviceConfiguration;
+      InitializeForecastDays(api);
+   }
+   catch (shared::exception::CException& e)
+   {
+      std::cout << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
+      throw;
+   }
 }
 
 void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
-                          const shared::CDataContainer dataToParse) const
+                          const shared::CDataContainer dataToParse)
 {
    try
    {
@@ -144,7 +153,7 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
    }
 }
 
-void CForecastDays::setCityName(const std::string& CityName) const
+void CForecastDays::setCityName(const std::string& CityName)
 {
    m_forecast->setCityName(CityName);
 }

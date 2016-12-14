@@ -19,6 +19,8 @@ set(WUNDERGROUND_SOURCES
    IWUConfiguration.h
    LiveStations.cpp
    LiveStations.h
+   Location.cpp
+   Location.h
    NoStateException.hpp
    RequestErrorException.hpp
    stdafx.h
@@ -31,6 +33,8 @@ set(WUNDERGROUND_SOURCES
    WeatherConditions.h
    WUConfiguration.cpp
    WUConfiguration.h
+   WUFactory.cpp
+   WUFactory.h
    Keywords/Condition.h
    Keywords/Condition.cpp
    Keywords/Forecast.h
@@ -43,6 +47,7 @@ set(WUNDERGROUND_SOURCES
    Keywords/Moon.cpp
    Keywords/WeatherIcon.h
    Keywords/WeatherIcon.cpp
+   Modules/IModule.h
    specificHistorizers/ConditionHistorizer.h
    specificHistorizers/ConditionHistorizer.cpp
    specificHistorizers/ConditionFormatter.h

@@ -31,6 +31,14 @@ public:
    //--------------------------------------------------------------
    shared::CDataContainer bindAvailableStations();
 
+
+   //--------------------------------------------------------------
+   /// \brief	    getStationLocation
+   /// \param[in] selection      list selection return by the web site
+   /// \return                   the location (longitude, latitude) structure of the selected forecast station
+   //--------------------------------------------------------------
+   boost::shared_ptr<const shared::ILocation> getStationLocation(int selection);
+
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------

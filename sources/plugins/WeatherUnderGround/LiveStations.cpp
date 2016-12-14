@@ -2,6 +2,7 @@
 #include "LiveStations.h"
 #include <shared/exception/Exception.hpp>
 #include <shared/http/HttpMethods.h>
+#include "Location.h"
 
 CLiveStations::CLiveStations(boost::shared_ptr<yApi::IYPluginApi> api)
 {
@@ -26,7 +27,7 @@ void CLiveStations::getAllStations(boost::shared_ptr<yApi::IYPluginApi> api,
 shared::CDataContainer CLiveStations::bindAvailableStations()
 {
    // Create the station list
-   std::vector<shared::CDataContainer>::const_iterator iterStations;
+   std::vector<shared::CDataContainer>::iterator iterStations;
    int counter = 0;
    shared::CDataContainer value;
    shared::CDataContainer availableStations;
@@ -38,9 +39,13 @@ shared::CDataContainer CLiveStations::bindAvailableStations()
 
          // Only filled elements are copied
          if (city != "")
+         {
             availableStations.set(boost::lexical_cast<std::string>(counter + 1), city + " " + (*iterStations).get<std::string>("country"));
 
-         ++counter;
+            // we add selectionId, the position into the list proposed to the user, to retrieve it more efficency
+            (*iterStations).set("selectionId", boost::lexical_cast<std::string>(counter + 1));
+            ++counter;
+         }
 
          /* return format :
          -city :
@@ -70,6 +75,29 @@ shared::CDataContainer CLiveStations::bindAvailableStations()
    value.set("defaultValue", "1");
 
    return value;
+}
+
+boost::shared_ptr<const shared::ILocation> CLiveStations::getStationLocation(int selection)
+{
+   std::vector<shared::CDataContainer>::const_iterator iterStations;
+   boost::shared_ptr<const shared::ILocation> location;
+
+   for (iterStations = m_stations.begin(); iterStations != m_stations.end(); ++iterStations)
+   {
+      try {
+         if ((*iterStations).get<int>("selectionId") == selection)
+         {
+            location = boost::make_shared<location::CLocation>((*iterStations).get<double>("lon"),
+                                                               (*iterStations).get<double>("lat"),
+                                                               0
+                                                               );
+         }
+      }
+      catch (std::exception)
+      {}
+   }
+
+   return location;
 }
 
 CLiveStations::~CLiveStations()

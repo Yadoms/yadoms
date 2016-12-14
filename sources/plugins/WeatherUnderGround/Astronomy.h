@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
+#include "Modules/IModule.h"
 #include "WUConfiguration.h"
 #include "IdeviceConfiguration.h"
 #include "Keywords/Moon.h"
@@ -11,7 +12,7 @@ namespace yApi = shared::plugin::yPluginApi;
 /// \brief	Astronomy Module
 /// \note   This class consist of the traitment of the astronomy information from the web site
 //--------------------------------------------------------------
-class CAstronomy
+class CAstronomy : public modules::IModule
 {
 public:
    //--------------------------------------------------------------
@@ -33,7 +34,7 @@ public:
    /// \param[in] dataToParse     received data to parse
    //--------------------------------------------------------------
    void parse(boost::shared_ptr<yApi::IYPluginApi> api,
-              const shared::CDataContainer dataToParse);
+              const shared::CDataContainer dataToParse) override;
 
    //--------------------------------------------------------------
    /// \brief	  Update the configuration when something change from the HMI
@@ -41,7 +42,7 @@ public:
    /// \param[in] wuConfiguration      The Plugin configuration
    //--------------------------------------------------------------
    void onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                       IWUConfiguration& wuConfiguration);
+                       IWUConfiguration& wuConfiguration) override;
 
    //--------------------------------------------------------------
    /// \brief	  Update the configuration when something change from the HMI
@@ -49,19 +50,19 @@ public:
    /// \param[in] deviceconfiguration  The Configuration of the device
    //--------------------------------------------------------------
    void onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                       boost::shared_ptr<IdeviceConfiguration> deviceConfiguration);
+                       boost::shared_ptr<IdeviceConfiguration> deviceConfiguration) override;
 
    //--------------------------------------------------------------
    /// \brief	  Return the url
    /// \return    The url string
    //--------------------------------------------------------------
-   std::string getUrl() const;
+   std::string getUrl() const override;
 
    //--------------------------------------------------------------
    /// \brief	  Return the name of the device
    /// \return    The url string
    //--------------------------------------------------------------
-   std::string getName() const;
+   std::string getName() const override;
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

@@ -1,9 +1,19 @@
 #pragma once
 #include "WUConfiguration.h"
 #include <plugin_cpp_api/IPlugin.h>
+#include "WUFactory.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
+
+// Event IDs
+enum
+{
+   kEvtTimerRefreshWeatherConditions = yApi::IYPluginApi::kPluginFirstEventId, // Always start from shared::event::CEventHandler::kUserFirstId
+   kEvtTimerRefreshAstronomy,
+   kEvtTimerRefreshForecast10Days,
+   kEvtPluginState
+};
 
 //--------------------------------------------------------------
 /// \brief	This class is the Weather Underground plugin
@@ -59,5 +69,10 @@ private:
    /// \brief	The plugin state
    //--------------------------------------------------------------
    yApi::historization::EPluginState m_runningState;
+
+   //--------------------------------------------------------------
+   /// \brief	The factory of the plugin
+   //--------------------------------------------------------------
+   boost::shared_ptr<CWUFactory> m_factory;
 };
 
