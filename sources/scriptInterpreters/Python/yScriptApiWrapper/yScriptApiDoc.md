@@ -53,9 +53,25 @@ Read the last known state of the keyword
 ##### keywordId (in)
 The keyword ID from which retrieve state
 #### Return
-The last known keyword state (empty if no known state)
+The last known keyword state
 #### Throw
-Error if keyword not found
+Error if keyword not found or if the keyword don't have any data
+
+### Alternative to readKeyword: scriptUtilities.readKeywordValue
+#### Description
+Read the last keyword state, and return a default value in case of error (no data, keyword not found,...)
+#### Parameters
+##### yApi (in)
+The plugin api object 
+##### keywordId (in)
+The keyword ID from which retrieve state
+##### defaultValue (in)
+The keyword default value
+#### Return
+The last known keyword state or default value in case of error
+#### Throw
+This method should not throw
+
 
 ### waitForNextAcquisition
 #### Description

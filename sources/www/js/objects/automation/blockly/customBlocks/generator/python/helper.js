@@ -30,6 +30,38 @@ Blockly.Yadoms.Python.castToPython = function(keywordId, command) {
 };
 
 /**
+ * Get the code for casting a keyword data in the python compatible type
+ * @param {Number} keywordId The target keyword id
+ * @param {String} command The command (python code) which provide a keyword data (ie: yApi.readKeyword...)
+ * @return {String} The resulting python code
+ */
+Blockly.Yadoms.Python.getKeywordDefaultValue = function(keywordId) {
+	if(keywordId) {
+		//retreive the keyword information, to apply cast if needed
+		var keyword = Blockly.Yadoms.data.keywords[keywordId];
+		if(keyword && keyword.type) {
+			switch (keyword.type.toLowerCase()) {
+				case "numeric":
+					return "0";
+            case "enum":
+               return "'" + Blockly.Yadoms.data.enumerations["enum_" + keyword.typeInfo.name].values[0][1] + "'";
+				case "bool":
+				case "boolean":
+					return "0"
+				case "string":
+					return ""
+				case "string":
+				case "json":
+					return ''
+				case "datetime":
+					return "datetime.now().replace(second=0, microsecond=0).time()"
+			}
+		}
+	}
+   return ""
+};
+
+/**
  * Get the code for casting a python value to a keyword type
  * @param {Number} keywordId The target keyword id
  * @param {String} command The command (python code) which provide python data to convert to yadoms keyword type

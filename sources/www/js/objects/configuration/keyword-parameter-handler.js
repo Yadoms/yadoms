@@ -388,6 +388,19 @@ KeywordParameterHandler.prototype.getParamName = function() {
 };
 
 /**
+ * Enable / Disbale the content of the configuration item
+ */
+KeywordParameterHandler.prototype.setEnabled = function (enabled) {
+    var self = this;
+
+    if (enabled) {
+            $("#" + self.uuidContainer + " select").addClass("enable-validation");
+    } else {
+            $("#" + self.uuidContainer + " select").removeClass("enable-validation");
+    }
+}
+
+/**
  * Get the current configuration in the form
  * @returns {string}
  */
