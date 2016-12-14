@@ -18,6 +18,7 @@
 #include "internalPlugin/Information.h"
 
 
+
 namespace pluginSystem
 {
    CFactory::CFactory(const IPathProvider& pathProvider,
@@ -58,8 +59,6 @@ namespace pluginSystem
                                                              qualifier,
                                                              instanceStoppedListener);
 
-      auto logger = createProcessLogger(instanceData);
-
       auto yPluginApi = createInstanceRunningContext(pluginInformation,
                                                      instanceData,
                                                      instanceStateHandler,
@@ -70,12 +69,12 @@ namespace pluginSystem
                                            yPluginApi->id());
 
       auto process = createInstanceProcess(commandLine,
-                                           logger,
                                            instanceStateHandler);
 
       return boost::make_shared<CInstance>(instanceData,
                                            pluginInformation,
                                            pluginDataPath(instanceData->Id()),
+                                           pluginLogFile(instanceData->Id()),
                                            process,
                                            yPluginApi);
    }
@@ -122,11 +121,6 @@ namespace pluginSystem
       return pluginDataPath;
    }
 
-   boost::shared_ptr<shared::process::ILogger> CFactory::createProcessLogger(boost::shared_ptr<const database::entities::CPlugin> instanceData) const
-   {
-      return boost::make_shared<shared::process::CLogger>("plugin/" + instanceData->Type() + " #" + std::to_string(instanceData->Id()),
-                                                          pluginLogFile(instanceData->Id()));
-   }
 
    boost::shared_ptr<CInstanceStateHandler> CFactory::createInstanceStateHandler(boost::shared_ptr<const database::entities::CPlugin> instanceData,
                                                                                  boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
@@ -157,16 +151,11 @@ namespace pluginSystem
                                                               args);
    }
 
-   boost::shared_ptr<shared::process::IProcess> CFactory::createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
-                                                                                boost::shared_ptr<shared::process::ILogger> logger,
-                                                                                boost::shared_ptr<CInstanceStateHandler> instanceStateHandler) const
+   boost::shared_ptr<shared::process::IProcess> CFactory::createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine, boost::shared_ptr<CInstanceStateHandler> instanceStateHandler) const
    {
       try
       {
-         return boost::make_shared<shared::process::CProcess>(commandLine,
-                                                              shared::CFileSystemExtension::getModulePath().string(),
-                                                              instanceStateHandler,
-                                                              logger);
+         return boost::make_shared<shared::process::CProcess>(commandLine, shared::CFileSystemExtension::getModulePath().string(), instanceStateHandler, boost::shared_ptr<shared::process::ILogger>());
       }
       catch (shared::process::CProcessException& e)
       {

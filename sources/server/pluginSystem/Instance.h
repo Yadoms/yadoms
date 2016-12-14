@@ -26,12 +26,14 @@ namespace pluginSystem
       /// \param [in]	instanceInformation        Information on the instance
       /// \param [in]	pluginInformation          Information on the plugin
       /// \param [in]   dataPath                   the instance data path
+      /// \param [in]   logPath                    the instance log path
       /// \param [in]   process                    The instance process
       /// \param [in]   ipcAdapter                 The api IPC adapter
       //--------------------------------------------------------------
       CInstance(boost::shared_ptr<const database::entities::CPlugin> instanceInformation,
                 const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                 const boost::filesystem::path& dataPath,
+                const boost::filesystem::path& logPath,
                 boost::shared_ptr<shared::process::IProcess> process,
                 boost::shared_ptr<IIpcAdapter> ipcAdapter);
 
@@ -56,8 +58,7 @@ namespace pluginSystem
       // [END] IInstance Implementation
 
    protected:
-      void postInit(boost::shared_ptr<const shared::plugin::information::IInformation> information,
-                    const boost::filesystem::path& dataPath) const;
+      void postInit(boost::shared_ptr<const shared::plugin::information::IInformation> information, const boost::filesystem::path& dataPath, const boost::filesystem::path& logPath) const;
       void postStopRequest() const;
 
    private:

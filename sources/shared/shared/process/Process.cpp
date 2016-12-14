@@ -144,13 +144,23 @@ namespace shared
       void CProcess::stdOutRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut,
                                           boost::shared_ptr<ILogger> scriptLogger)
       {
-         scriptLogger->init();
-         scriptLogger->information("#### START ####");
+         if (scriptLogger)
+         {
+            scriptLogger->init();
+            scriptLogger->information("#### START ####");
+         }
 
          char line[1024];
          while (moduleStdOut->getline(line, sizeof(line)))
          {
-            scriptLogger->information(line);
+            if (scriptLogger)
+            {
+               scriptLogger->information(line);
+            }
+            else
+            {
+               YADOMS_LOG(information) << line;
+            }
          }
       }
 
@@ -158,7 +168,8 @@ namespace shared
                                           boost::shared_ptr<ILogger> scriptLogger,
                                           boost::shared_ptr<std::string> lastError)
       {
-         scriptLogger->init();
+         if (scriptLogger)
+            scriptLogger->init();
 
          char line[1024];
          while (moduleStdErr->getline(line, sizeof(line)))
@@ -166,7 +177,14 @@ namespace shared
             if (!!lastError)
                *lastError += line;
 
-            scriptLogger->error(line);
+            if (scriptLogger)
+            {
+               scriptLogger->error(line);
+            }
+            else
+            {
+               YADOMS_LOG(error) << line;
+            }
          }
       }
    }

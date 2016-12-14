@@ -18,10 +18,12 @@ message Information {
 	required string packageFileContent = 10;
 	required string path = 11;
 	required bool supportDeviceRemovedNotification = 12;
+	optional string logLevel = 13;
 }
 
 message Init {
 	required Information pluginInformation = 1;
 	required string dataPath = 2;
+	required string logFile = 3;
 }
 

@@ -50,8 +50,6 @@ namespace pluginSystem
       boost::shared_ptr<const shared::plugin::information::IInformation> createInformation(const std::string& pluginName) const;
 
 
-      boost::shared_ptr<shared::process::ILogger> createProcessLogger(boost::shared_ptr<const database::entities::CPlugin> instanceData) const;
-
       boost::shared_ptr<shared::process::ICommandLine> createCommandLine(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                                                                          const std::string& messageQueueId) const;
 
@@ -63,7 +61,6 @@ namespace pluginSystem
                                                                           boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const;
 
       boost::shared_ptr<shared::process::IProcess> createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
-                                                                         boost::shared_ptr<shared::process::ILogger> logger,
                                                                          boost::shared_ptr<CInstanceStateHandler> instanceStatteHandler) const;
 
       boost::shared_ptr<CYPluginApiImplementation> createApiPluginImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,

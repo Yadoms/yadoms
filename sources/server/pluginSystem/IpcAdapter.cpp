@@ -455,13 +455,13 @@ namespace pluginSystem
       send(msg);
    }
 
-   void CIpcAdapter::postInit(boost::shared_ptr<const shared::plugin::information::IInformation> information,
-                              const boost::filesystem::path& dataPath)
+   void CIpcAdapter::postInit(boost::shared_ptr<const shared::plugin::information::IInformation> information, const boost::filesystem::path& dataPath, const boost::filesystem::path& logFile)
    {
       toPlugin::msg msg;
       auto message = msg.mutable_init();
       serializers::CInformation(information).toPb(message->mutable_plugininformation());
       message->set_datapath(dataPath.string());
+      message->set_logfile(logFile.string());
 
       send(msg);
    }

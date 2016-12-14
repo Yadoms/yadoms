@@ -4,7 +4,8 @@
 #include "CommandLine.h"
 #include <shared/currentTime/Local.h>
 #include <Poco/Debugger.h>
-
+#include <shared/Log.h>
+#include "PluginLogConfiguration.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -38,10 +39,17 @@ namespace plugin_cpp_api
 
          api->waitInitialized();
 
-         std::cout << api->getInformation()->getType() << " started" << std::endl;
-
+         std::cout << api->getInformation()->getType() << " starting" << std::endl;
          waitDebugger(api);
-         
+
+         auto path = api->getLogFile();
+         std::cout << api->getInformation()->getType() << " configure logger : " << path.string() << std::endl;
+         CPluginLogConfiguration logconfig;
+         logconfig.configure("debug", path);
+
+         YADOMS_LOG_CONFIGURE(api->getInformation()->getType());
+         YADOMS_LOG(information) << api->getInformation()->getType() << " started";
+
          if (!api->stopRequested())
          {
             // Execute plugin code
@@ -50,22 +58,22 @@ namespace plugin_cpp_api
 
          if (!api->stopRequested())
          {
-            std::cerr << api->getInformation()->getType() << " has stopped itself." << std::endl;
+            YADOMS_LOG(error) << api->getInformation()->getType() << " has stopped itself.";
             m_returnCode = kUnexpectedStop;
          }
 
          // Normal stop
-         std::cout << api->getInformation()->getType() << " is stopped" << std::endl;
+         YADOMS_LOG(information) << api->getInformation()->getType() << " is stopped";
          m_returnCode = kOk;
       }
       catch (std::exception& e)
       {
-         std::cerr << api->getInformation()->getType() << " crashed with exception : " << e.what();
+         YADOMS_LOG(error) << api->getInformation()->getType() << " crashed with exception : " << e.what();
          m_returnCode = kRuntimeError;
       }
       catch (...)
       {
-         std::cerr << api->getInformation()->getType() << " crashed with unknown exception" << std::endl;
+         YADOMS_LOG(error) << api->getInformation()->getType() << " crashed with unknown exception";
          m_returnCode = kRuntimeError;
       }
 
@@ -98,7 +106,7 @@ namespace plugin_cpp_api
          if (Poco::Debugger::isAvailable())
             std::cout << api->getInformation()->getType() << " attached to debugger" << std::endl;
          else
-            std::cout << api->getInformation()->getType() << " failed to attach debugger after timeout" << std::endl;
+            std::cerr << api->getInformation()->getType() << " failed to attach debugger after timeout" << std::endl;
       }
    }
 
@@ -135,7 +143,7 @@ namespace plugin_cpp_api
 
    void CPluginContext::closeMessageQueues()
    {
-      std::cout << "Close message queues" << std::endl;
+      YADOMS_LOG(information) << "Close message queues";
 
       // Delete all global objects allocated by libprotobuf.
       google::protobuf::ShutdownProtobufLibrary();
@@ -168,7 +176,7 @@ namespace plugin_cpp_api
             }
             catch (shared::exception::CInvalidParameter& ex)
             {
-               std::cerr << "Error receiving/processing queue message : " << ex.what() << std::endl;
+               YADOMS_LOG(error) << "Error receiving/processing queue message : " << ex.what();
             }
          }
       }

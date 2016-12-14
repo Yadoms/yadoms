@@ -82,6 +82,8 @@ namespace plugin_cpp_api
 
       void waitInitialized() const;
 
+      const boost::filesystem::path& getLogFile() const;
+
    protected:
       //--------------------------------------------------------------
       /// \brief	Send a request
@@ -133,6 +135,7 @@ namespace plugin_cpp_api
 
       boost::shared_ptr<shared::plugin::information::IInformation> m_pluginInformation;
       boost::shared_ptr<const boost::filesystem::path> m_dataPath;
+      boost::shared_ptr<const boost::filesystem::path> m_logFile;
    };
 } // namespace plugin_cpp_api	
 

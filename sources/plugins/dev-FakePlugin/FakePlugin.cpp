@@ -14,6 +14,8 @@
 #include "FakeConfigurableDevice.h"
 #include <Poco/Net/NetworkInterface.h>
 
+#include <shared/Log.h>
+
 // Use this macro to define all necessary to make your plugin a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
 IMPLEMENT_PLUGIN(CFakePlugin)
@@ -37,6 +39,11 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Informs Yadoms about the plugin actual state
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
+
+   YADOMS_LOG(debug) << "this is a DEBUG message";
+   YADOMS_LOG(information) << "this is an INFORMATION message";
+   YADOMS_LOG(warning) << "this is a WARNING message";
+   YADOMS_LOG(error) << "this is an ERROR message";
 
    std::cout << "CFakePlugin is starting..." << std::endl;
 
