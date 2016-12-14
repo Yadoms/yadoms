@@ -53,10 +53,14 @@ set(ENOCEAN_SOURCES
    message/UTE_GigaConceptReversedReceivedMessage.cpp
    message/UTE_ReceivedMessage.h
    message/UTE_ReceivedMessage.cpp
+   
+   specificHistorizers/PilotWireHistorizer.h
+   specificHistorizers/PilotWireHistorizer.cpp
    )
    
    
 source_group(message message/*.*)
+source_group(specificHistorizers specificHistorizers/*.*)
 
 
 #########################################
@@ -117,6 +121,8 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/hardCoded/Profile_D2_01_0A.h
    profiles/hardCoded/Profile_D2_01_0B.cpp
    profiles/hardCoded/Profile_D2_01_0B.h
+   profiles/hardCoded/Profile_D2_01_0C.cpp
+   profiles/hardCoded/Profile_D2_01_0C.h
    profiles/hardCoded/Profile_D2_01_12.cpp
    profiles/hardCoded/Profile_D2_01_12.h
 

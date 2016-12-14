@@ -55,6 +55,16 @@ public:
       kStopDimming = 0x04,
    };
 
+   enum EPilotWireMode
+   {
+      kOff = 0x00,
+      kComfort = 0x01,
+      kEco = 0x02,
+      kAntiFreeze = 0x03,
+      kComfort_1 = 0x04,
+      kComfort_2 = 0x05
+   };
+
    // CMD 0x2 - Actuator Set Local
    static void sendActuatorSetLocalCommand(boost::shared_ptr<IMessageHandler> messageHandler,
                                            const std::string& senderId,
