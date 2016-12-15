@@ -19,7 +19,9 @@ namespace equipments
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
-      ///\param[in] keywordName     Yadoms keyword name
+      ///\param[in]   api           Yadoms API
+      ///\param[in] device          The device name
+      ///\param[in] position        The position of the extension into the IPX800
       //-----------------------------------------------------
       CX24DExtension(boost::shared_ptr<yApi::IYPluginApi> api,
                      const std::string& device,
