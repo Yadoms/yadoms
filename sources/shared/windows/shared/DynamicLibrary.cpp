@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 #include "DynamicLibrary.h"
-#include <boost/log/trivial.hpp>
 #include "../../shared/Log.h"
 #include "../../shared/exception/InvalidParameter.hpp"
 #include <Windows.h>
