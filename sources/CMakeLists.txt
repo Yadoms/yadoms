@@ -295,6 +295,8 @@ set(YADOMS_SRC
 	server/automation/script/Manager.cpp
 	server/automation/script/Properties.h
 	server/automation/script/Properties.cpp
+	server/automation/script/ScriptLogConfiguration.h
+	server/automation/script/ScriptLogConfiguration.cpp
 	server/automation/script/StopNotifier.h
 	server/automation/script/StopNotifier.cpp
 	server/automation/script/YScriptApiImplementation.h

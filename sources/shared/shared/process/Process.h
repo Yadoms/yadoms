@@ -1,11 +1,11 @@
 #pragma once
 #include <shared/Export.h>
-#include "ILogger.h"
 #include "IProcess.h"
 #include "ICommandLine.h"
 #include "IProcessObserver.h"
 #include <Poco/Process.h>
 #include <Poco/PipeStream.h>
+#include <Poco/Logger.h>
 
 namespace shared
 {
@@ -22,13 +22,14 @@ namespace shared
          /// \param[in] commandLine             Process command line
          /// \param[in] workingDirectory        Working directory to use. If null, use the current working directory.
          /// \param[in] processObserver         The process life observer (can be NULL is no observer needed)
-         /// \param[in] logger                  Process out/err logger (can be NULL is no logger needed)
+         /// \param[in] logger                  The logger name
          /// \throw CProcessException if error
          //--------------------------------------------------------------
          CProcess(boost::shared_ptr<ICommandLine> commandLine,
                   const std::string& workingDirectory,
                   boost::shared_ptr<IProcessObserver> processObserver,
-                  boost::shared_ptr<ILogger> logger);
+                  const std::string & loggerName);
+
 
          //--------------------------------------------------------------
          /// \brief	Destructor
@@ -63,11 +64,8 @@ namespace shared
          /// \param[in] targetStream      Target stream
          /// \param[inout] lastError      Last error string
          //--------------------------------------------------------------
-         static void stdOutRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut,
-                                          boost::shared_ptr<ILogger> scriptLogger);
-         static void stdErrRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdErr,
-                                          boost::shared_ptr<ILogger> scriptLogger,
-                                          boost::shared_ptr<std::string> lastError);
+         static void stdOutRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut, const std::string & loggerName);
+         static void stdErrRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdErr, const std::string & loggerName, boost::shared_ptr<std::string> lastError);
 
       private:
          //--------------------------------------------------------------
@@ -90,7 +88,7 @@ namespace shared
          //--------------------------------------------------------------
          ///\brief   The logger
          //--------------------------------------------------------------
-         boost::shared_ptr<ILogger> m_logger;
+         std::string m_logger;
 
          //--------------------------------------------------------------
          /// \brief	Thread redirecting standard outputs

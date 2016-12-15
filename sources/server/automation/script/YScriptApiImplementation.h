@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/script/yScriptApi/IYScriptApi.h>
-#include <shared/process/ILogger.h>
 #include "database/IAcquisitionRequester.h"
 #include "database/IDeviceRequester.h"
 #include "database/IKeywordRequester.h"
@@ -10,6 +9,7 @@
 #include "notification/action/WaitAction.hpp"
 #include "notification/acquisition/Notification.hpp"
 #include <server/dataAccessLayer/IKeywordManager.h>
+#include <Poco/Logger.h>
 
 namespace automation
 {
@@ -31,7 +31,7 @@ namespace automation
          ///\param[in] dbRecipientRequester  Database recipient requester
          ///\param[in] generalInfo  Database acquisition requester
          //-----------------------------------------------------
-         CYScriptApiImplementation(boost::shared_ptr<shared::process::ILogger> ruleLogger,
+         CYScriptApiImplementation(Poco::Logger& ruleLogger,
                                    boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                                    boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
                                    boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
@@ -104,7 +104,7 @@ namespace automation
          //-----------------------------------------------------
          ///\brief               The rule logger
          //-----------------------------------------------------
-         boost::shared_ptr<shared::process::ILogger> m_ruleLogger;
+         Poco::Logger& m_ruleLogger;
 
          //-----------------------------------------------------
          ///\brief               The plugin access (to send commands to plugins)

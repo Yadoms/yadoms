@@ -58,8 +58,9 @@ namespace automation
          void updateScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code) override;
          void deleteScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, bool doBackup = true) override;
          std::string getScriptLogFile(boost::shared_ptr<const database::entities::CRule> ruleData) override;
-         boost::shared_ptr<shared::process::ILogger> createScriptLogger(boost::shared_ptr<const database::entities::CRule> ruleData) override;
-         boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger) override;
+         boost::filesystem::path getScriptLogFileName(boost::shared_ptr<const database::entities::CRule> ruleData) override;
+         Poco::Logger& createScriptLogger(boost::shared_ptr<const database::entities::CRule> ruleData) override;
+         boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(Poco::Logger& scriptLogger) override;
          boost::shared_ptr<shared::process::IProcessObserver> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId) override;
          // [END] IManager Implementation
 

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "FakeConfigurableDevice.h"
+#include <shared/Log.h>
 
 CFakeConfigurableDevice::CFakeConfigurableDevice(const std::string& deviceName)
    : m_deviceName(deviceName),
@@ -24,7 +25,7 @@ void CFakeConfigurableDevice::declareDevice(boost::shared_ptr<yApi::IYPluginApi>
    // Get the divider value from the device configuration
    try
    {
-      std::cout << "Configuration = " << api->getDeviceConfiguration(m_deviceName).serialize() << std::endl;
+      YADOMS_LOG(information) << "Configuration = " << api->getDeviceConfiguration(m_deviceName).serialize();
       m_divider = api->getDeviceConfiguration(m_deviceName).get<int>("CounterDivider2");
    }
    catch(std::exception&)
@@ -81,6 +82,6 @@ shared::CDataContainer CFakeConfigurableDevice::getDynamicConfiguration() const
 
 void CFakeConfigurableDevice::setConfiguration(const shared::CDataContainer& newConfiguration)
 {
-   std::cout << "Configuration = " << newConfiguration.serialize() << std::endl;
+   YADOMS_LOG(information) << "Configuration = " << newConfiguration.serialize();
    m_divider = newConfiguration.get<int>("CounterDivider2");
 }

@@ -23,7 +23,6 @@ namespace pluginSystem
         m_sendBuffer(boost::make_shared<unsigned char[]>(m_sendMessageQueue.get_max_msg_size())),
         m_messageQueueReceiveThread(boost::thread(&CIpcAdapter::messageQueueReceiveThreaded, this))
    {
-      YADOMS_LOG_CONFIGURE("pluginSystem.IpcAdapter");
    }
 
    CIpcAdapter::~CIpcAdapter()

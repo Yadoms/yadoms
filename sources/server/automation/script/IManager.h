@@ -1,11 +1,11 @@
 #pragma once
 #include "IProperties.h"
 #include "../../database/common/requesters/Rule.h"
-#include <shared/process/ILogger.h>
 #include <shared/script/yScriptApi/IYScriptApi.h>
 #include <server/automation/IRuleStateHandler.h>
 #include <shared/process/IProcess.h>
 #include <shared/script/IInterpreter.h>
+#include <Poco/Logger.h>
 
 namespace automation { namespace script
 {
@@ -83,21 +83,28 @@ namespace automation { namespace script
       ///\return              The rule log file, empty if not available
       ///\throw CInvalidParameter if rule ID not found
       //-----------------------------------------------------
-      virtual std::string getScriptLogFile(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
+      virtual std::string getScriptLogFile(boost::shared_ptr<const database::entities::CRule> ruleData) = 0; 
+      
+      //-----------------------------------------------------
+      ///\brief               Get the script log file name
+      ///\param[in] ruleData  The rule raw data
+      ///\return              The rule log file name
+      //-----------------------------------------------------
+      virtual boost::filesystem::path getScriptLogFileName(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
 
       //-----------------------------------------------------
       ///\brief               Create the script logger
       ///\param[in] ruleData  The rule raw data
       ///\return              A script logger instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::process::ILogger> createScriptLogger(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
+      virtual Poco::Logger& createScriptLogger(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
 
       //-----------------------------------------------------
       ///\brief               Create the script context (IYScriptApi implementation)
       ///\param[in] scriptLogger The logger used for rule
       ///\return              A script context instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger) = 0;
+      virtual boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(Poco::Logger& scriptLogger) = 0;
 
       //-----------------------------------------------------
       ///\brief               Create the stop notifier

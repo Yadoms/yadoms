@@ -9,7 +9,7 @@ CScriptProcess::CScriptProcess(boost::shared_ptr<IPythonExecutable> executable,
                                const boost::filesystem::path& pythonInterpreterPath,
                                boost::shared_ptr<const IScriptFile> scriptFile,
                                boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-                               boost::shared_ptr<shared::process::ILogger> scriptLogger,
+                               const std::string &scriptLogger,
                                boost::shared_ptr<shared::process::IProcessObserver> stopNotifier)
    : m_executable(executable),
      m_pythonInterpreterPath(pythonInterpreterPath),

@@ -26,7 +26,7 @@ public:
    std::string loadScriptContent(const std::string& scriptPath) const override;
    void saveScriptContent(const std::string& scriptPath, const std::string& content) const override;
    boost::shared_ptr<shared::process::IProcess> createProcess(const std::string& scriptPath,
-                                                              boost::shared_ptr<shared::process::ILogger> scriptLogger,
+                                                              const std::string & scriptLogger,
                                                               boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
                                                               boost::shared_ptr<shared::process::IProcessObserver> processObserver) const override;
   // [END] IInterpreter implementation

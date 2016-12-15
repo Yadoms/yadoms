@@ -223,9 +223,6 @@ set(SHARED_LIB_SRC
    shared/process/IProcessObserver.h
    shared/process/ICommandLine.h
    shared/process/IProcess.h
-   shared/process/ILogger.h
-   shared/process/Logger.h
-   shared/process/Logger.cpp
    shared/process/Process.h
    shared/process/Process.cpp
    shared/process/ProcessException.hpp

@@ -10,7 +10,7 @@ namespace shared
       CProcess::CProcess(boost::shared_ptr<ICommandLine> commandLine,
                          const std::string& workingDirectory,
                          boost::shared_ptr<IProcessObserver> processObserver,
-                         boost::shared_ptr<ILogger> logger)
+                         const std::string& logger)
          : m_commandLine(commandLine),
            m_processObserver(processObserver),
            m_logger(logger),
@@ -38,7 +38,7 @@ namespace shared
 
             YADOMS_LOG(debug) << "Start process " << m_commandLine->executable() << " from " << m_commandLine->workingDirectory();
 
-            if (!m_logger)
+            if (m_logger.empty())
             {
                m_process = boost::make_shared<Poco::ProcessHandle>(Poco::Process::launch(m_commandLine->executable().string(),
                                                                                          args,
@@ -141,35 +141,23 @@ namespace shared
          return *m_lastError;
       }
 
-      void CProcess::stdOutRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut,
-                                          boost::shared_ptr<ILogger> scriptLogger)
+      void CProcess::stdOutRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut, const std::string & scriptLogger)
       {
-         if (scriptLogger)
-         {
-            scriptLogger->init();
-            scriptLogger->information("#### START ####");
-         }
-
+         Poco::Logger &logger = Poco::Logger::get(scriptLogger);
+         YADOMS_LOG_CONFIGURE(scriptLogger);
+         logger.information("#### START ####");
          char line[1024];
          while (moduleStdOut->getline(line, sizeof(line)))
          {
-            if (scriptLogger)
-            {
-               scriptLogger->information(line);
-            }
-            else
-            {
-               YADOMS_LOG(information) << line;
-            }
+            logger.information(line);
+            YADOMS_LOG(information) << line;
          }
       }
 
-      void CProcess::stdErrRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdErr,
-                                          boost::shared_ptr<ILogger> scriptLogger,
-                                          boost::shared_ptr<std::string> lastError)
+      void CProcess::stdErrRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdErr, const std::string & scriptLogger, boost::shared_ptr<std::string> lastError)
       {
-         if (scriptLogger)
-            scriptLogger->init();
+         Poco::Logger &logger = Poco::Logger::get(scriptLogger);
+         YADOMS_LOG_CONFIGURE(scriptLogger);
 
          char line[1024];
          while (moduleStdErr->getline(line, sizeof(line)))
@@ -177,14 +165,8 @@ namespace shared
             if (!!lastError)
                *lastError += line;
 
-            if (scriptLogger)
-            {
-               scriptLogger->error(line);
-            }
-            else
-            {
-               YADOMS_LOG(error) << line;
-            }
+            logger.error(line);
+            YADOMS_LOG(error) << line;
          }
       }
    }

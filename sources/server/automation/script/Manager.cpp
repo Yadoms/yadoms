@@ -12,7 +12,6 @@
 #include "GeneralInfo.h"
 #include "Properties.h"
 #include "tools/SupportedPlatformsChecker.h"
-#include <shared/process/Logger.h>
 
 namespace automation
 {
@@ -256,6 +255,11 @@ namespace automation
 
          std::istreambuf_iterator<char> eos;
          return std::string(std::istreambuf_iterator<char>(file), eos);
+      } 
+      
+      boost::filesystem::path CManager::getScriptLogFileName(boost::shared_ptr<const database::entities::CRule> ruleData)
+      {
+         return scriptLogFile(ruleData->Id);
       }
 
       boost::filesystem::path CManager::scriptLogFile(int ruleId) const
@@ -263,13 +267,12 @@ namespace automation
          return m_pathProvider.scriptsLogPath() / std::to_string(ruleId) / "rule.log";
       }
 
-      boost::shared_ptr<shared::process::ILogger> CManager::createScriptLogger(boost::shared_ptr<const database::entities::CRule> ruleData)
+      Poco::Logger& CManager::createScriptLogger(boost::shared_ptr<const database::entities::CRule> ruleData)
       {
-         return boost::make_shared<shared::process::CLogger>("script/" + ruleData->Name() + " #" + std::to_string(ruleData->Id()),
-                                                             scriptLogFile(ruleData->Id()));
+         return Poco::Logger::get("script/" + ruleData->Name() + " #" + std::to_string(ruleData->Id()));
       }
 
-      boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CManager::createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger)
+      boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CManager::createScriptContext(Poco::Logger& scriptLogger)
       {
          boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi(boost::make_shared<CYScriptApiImplementation>(scriptLogger,
                                                                                                                              m_pluginGateway,

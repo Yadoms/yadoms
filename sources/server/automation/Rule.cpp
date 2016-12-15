@@ -2,7 +2,7 @@
 #include "Rule.h"
 #include <shared/Log.h>
 #include "script/IProperties.h"
-
+#include "script/ScriptLogConfiguration.h"
 namespace automation
 {
    CRule::CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
@@ -26,18 +26,27 @@ namespace automation
          YADOMS_LOG(warning) << "Can not start rule " << m_ruleData->Name() << " : already started";
          return;
       }
+      try
+      {
+         auto scriptProperties = m_scriptManager->createScriptProperties(m_ruleData);
 
-      auto scriptProperties = m_scriptManager->createScriptProperties(m_ruleData);
-      auto scriptLogger = m_scriptManager->createScriptLogger(m_ruleData);
-      auto yScriptApi = m_scriptManager->createScriptContext(scriptLogger);
-      auto stopNotifier = m_scriptManager->createStopNotifier(m_ruleStateHandler, m_ruleData->Id());
+         script::CScriptLogConfiguration config;
+         boost::filesystem::path file = m_scriptManager->getScriptLogFileName(m_ruleData);
+         const std::string loggerName = "script/" + m_ruleData->Name() + " #" + std::to_string(m_ruleData->Id());
+         Poco::Logger & scriptLogger = Poco::Logger::get(loggerName);
+         config.configure(scriptLogger, "debug", file);
 
-      auto scriptInterpreter = m_scriptManager->getAssociatedInterpreter(scriptProperties->interpreterName());
+         auto yScriptApi = m_scriptManager->createScriptContext(scriptLogger);
+         auto stopNotifier = m_scriptManager->createStopNotifier(m_ruleStateHandler, m_ruleData->Id());
 
-      m_process = scriptInterpreter->createProcess(scriptProperties->scriptPath(),
-                                                   scriptLogger,
-                                                   yScriptApi,
-                                                   stopNotifier);
+         auto scriptInterpreter = m_scriptManager->getAssociatedInterpreter(scriptProperties->interpreterName());
+         m_process = scriptInterpreter->createProcess(scriptProperties->scriptPath(), loggerName, yScriptApi, stopNotifier);
+
+      }
+      catch (std::exception &ex)
+      {
+         YADOMS_LOG(error) << "Can not start rule " << m_ruleData->Name() << " : " << ex.what();
+      }
    }
 
    void CRule::requestStop()

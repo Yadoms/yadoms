@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/process/IProcess.h>
-#include <shared/process/ILogger.h>
 #include <shared/script/yScriptApi/IYScriptApi.h>
 #include <shared/process/IProcessObserver.h>
 
@@ -64,7 +63,7 @@ namespace shared
          ///\return                 The created script process
          //-----------------------------------------------------
          virtual boost::shared_ptr<process::IProcess> createProcess(const std::string& scriptPath,
-                                                                    boost::shared_ptr<process::ILogger> scriptLogger,
+                                                                    const std::string & scriptLogger,
                                                                     boost::shared_ptr<yScriptApi::IYScriptApi> yScriptApi,
                                                                     boost::shared_ptr<process::IProcessObserver> processObserver) const = 0;
       };

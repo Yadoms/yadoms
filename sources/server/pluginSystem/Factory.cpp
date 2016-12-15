@@ -13,7 +13,6 @@
 #include <shared/process/Process.h>
 #include <shared/process/ProcessException.hpp>
 #include <shared/FileSystemExtension.h>
-#include <shared/process/Logger.h>
 #include "internalPlugin/Instance.h"
 #include "internalPlugin/Information.h"
 
@@ -155,7 +154,8 @@ namespace pluginSystem
    {
       try
       {
-         return boost::make_shared<shared::process::CProcess>(commandLine, shared::CFileSystemExtension::getModulePath().string(), instanceStateHandler, boost::shared_ptr<shared::process::ILogger>());
+         std::string loggerName = "";
+         return boost::make_shared<shared::process::CProcess>(commandLine, shared::CFileSystemExtension::getModulePath().string(), instanceStateHandler, loggerName);
       }
       catch (shared::process::CProcessException& e)
       {

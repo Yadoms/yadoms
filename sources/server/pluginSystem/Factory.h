@@ -2,7 +2,6 @@
 #include "IFactory.h"
 #include "InstanceStateHandler.h"
 #include <shared/process/IProcess.h>
-#include <shared/process/ILogger.h>
 #include <shared/process/ICommandLine.h>
 #include "IIpcAdapter.h"
 #include <IPathProvider.h>
