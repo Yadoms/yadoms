@@ -928,9 +928,6 @@ endif(WIN32)
 ## Post build commands
 ##################################################################################################
 
-POST_BUILD_COPY_BOOST_LIBRARIES(yadoms)
-POST_BUILD_COPY_POCO(yadoms)
-
 #copy PostgreSql depends
 FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
    add_custom_command(TARGET yadoms POST_BUILD
