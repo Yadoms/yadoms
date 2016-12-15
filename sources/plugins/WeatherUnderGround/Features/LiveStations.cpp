@@ -15,12 +15,15 @@ void CLiveStations::getAllStations(boost::shared_ptr<yApi::IYPluginApi> api,
    try
    {
       shared::CDataContainer response = shared::CHttpMethods::SendGetRequest("http://api.wunderground.com/api/" + apikey + "/geolookup/q/" + std::to_string(m_location->latitude()) + "," + std::to_string(m_location->longitude()) + ".json");
+      response.printToLog(std::cout);
       m_stations = response.get<std::vector<shared::CDataContainer>>("location.nearby_weather_stations.airport.station");
    }
    catch (std::exception& e)
    {
       std::cerr << "exception " << e.what() << std::endl;
       std::cout << "No Stations return by the website" << std::endl;
+      // TODO : Gérer la réponse de l'erreur qui est la même que pour les Features
+      // TODO : Gestion de l'état du plugin.
    }
 }
 
@@ -67,8 +70,6 @@ shared::CDataContainer CLiveStations::bindAvailableStations()
       availableStations.initializeWith(defaultReturn);
    }
 
-   availableStations.set(boost::lexical_cast<std::string>(counter + 1), "Essai");
-
    value.set("required", "true");
    value.set("type", "enum");
    value.set("values", availableStations);
@@ -89,8 +90,7 @@ boost::shared_ptr<const shared::ILocation> CLiveStations::getStationLocation(int
          {
             location = boost::make_shared<location::CLocation>((*iterStations).get<double>("lon"),
                                                                (*iterStations).get<double>("lat"),
-                                                               0
-                                                               );
+                                                               0);
          }
       }
       catch (std::exception)
@@ -98,6 +98,24 @@ boost::shared_ptr<const shared::ILocation> CLiveStations::getStationLocation(int
    }
 
    return location;
+}
+
+std::string CLiveStations::getStationName(int selection)
+{
+   std::vector<shared::CDataContainer>::const_iterator iterStations;
+   std::string city;
+
+   for (iterStations = m_stations.begin(); iterStations != m_stations.end(); ++iterStations)
+   {
+      try {
+         if ((*iterStations).get<int>("selectionId") == selection)
+            city = (*iterStations).get<double>("city");
+      }
+      catch (std::exception)
+      {}
+   }
+
+   return city;
 }
 
 CLiveStations::~CLiveStations()

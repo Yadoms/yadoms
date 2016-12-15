@@ -7,6 +7,7 @@
 CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
                                        IWUConfiguration& wuConfiguration,
                                        boost::shared_ptr<IdeviceConfiguration> deviceConfiguration,
+                                       boost::shared_ptr<const shared::ILocation> location,
                                        const std::string& deviceName)
    : m_localisation(wuConfiguration.getLocalisation()),
      m_countryOrState(wuConfiguration.getCountryOrState()),
@@ -30,7 +31,7 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    try
    {
-      initializeKeywords(api);
+      initializeKeywords(api, location);
    }
    catch (shared::exception::CException& e)
    {
@@ -39,7 +40,7 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
    }
 }
 
-void CWeatherConditions::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api)
+void CWeatherConditions::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const shared::ILocation> location)
 {
    // Clear the list
    m_keywords.clear();
@@ -81,11 +82,15 @@ void CWeatherConditions::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi>
       std::string m_type = "WeatherConditions";
       shared::CDataContainer details;
       details.set("type", m_type);
+      details.set("long", location->longitude());
+      details.set("lat", location->latitude());
       api->declareDevice(m_deviceName, m_type, m_keywords, details);
    }
 }
 
-void CWeatherConditions::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration)
+void CWeatherConditions::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api, 
+                                        IWUConfiguration& wuConfiguration,
+                                        boost::shared_ptr<const shared::ILocation> location)
 {
    try
    {
@@ -109,8 +114,9 @@ void CWeatherConditions::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api
 {
    try
    {
+      boost::shared_ptr<const shared::ILocation> location; // TODO : A remplir
       m_deviceConfiguration = deviceConfiguration;
-      initializeKeywords(api);
+      initializeKeywords(api, location);
    }
    catch (shared::exception::CException& e)
    {

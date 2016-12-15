@@ -40,6 +40,13 @@ public:
    boost::shared_ptr<const shared::ILocation> getStationLocation(int selection);
 
    //--------------------------------------------------------------
+   /// \brief	    getStationName
+   /// \param[in] selection      list selection return by the web site
+   /// \return                   the forecast station name
+   //--------------------------------------------------------------
+   std::string getStationName(int selection);
+
+   //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~CLiveStations();

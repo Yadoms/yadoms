@@ -32,6 +32,9 @@ public:
    //--------------------------------------------------------------
    /// \brief	    createDeviceManually
    /// \param[in] api                  yPluginApi API
+   /// \param[in] wuConfiguration     The plugin configuration
+   /// \param[in] request             The configuration received for the device
+   /// \param[in] location            The GPS location to be used for each device
    //--------------------------------------------------------------
    std::string createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
                                     IWUConfiguration& wuConfiguration,
@@ -45,6 +48,10 @@ public:
    //--------------------------------------------------------------
    void removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved);
 
+   //--------------------------------------------------------------
+   /// \brief	                     Retreive device
+   /// \return                      The device
+   //--------------------------------------------------------------
    boost::shared_ptr<features::IFeature> getWeatherConditionsDevice();
    boost::shared_ptr<features::IFeature> getAstronomyDevice();
    boost::shared_ptr<features::IFeature> getForecastDevice();

@@ -21,11 +21,13 @@ public:
    /// \param[in] api                  pointer to the API
    /// \param[in] wuConfiguration      The Configuration of the module
    /// \param[in] deviceConfiguration  The Configuration of the device
+   /// \param[in] location             GPS Position where to find weather conditions
    /// \param[in] deviceName           Name of the device
    //--------------------------------------------------------------
    CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
                       IWUConfiguration& wuConfiguration,
                       boost::shared_ptr<IdeviceConfiguration> deviceConfiguration,
+                      boost::shared_ptr<const shared::ILocation> location,
                       const std::string& deviceName);
 
    //--------------------------------------------------------------
@@ -42,7 +44,8 @@ public:
    /// \param[in] wuConfiguration    The Plugin configuration
    //--------------------------------------------------------------
    void onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                       IWUConfiguration& wuConfiguration) override;
+                       IWUConfiguration& wuConfiguration,
+                       boost::shared_ptr<const shared::ILocation> location) override;
 
    //--------------------------------------------------------------
    /// \brief	  Update the configuration when something change from the HMI
@@ -80,7 +83,7 @@ private:
    /// \brief	  Initialise LiveConditions keywords
    /// \param[in] api                    pointer to the API
    //--------------------------------------------------------------
-   void initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api);
+   void initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const shared::ILocation> location);
 
    //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site

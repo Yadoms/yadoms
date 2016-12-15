@@ -28,9 +28,11 @@ namespace features
       /// \brief	  Update the configuration when something change from the HMI
       /// \param[in] api                  pointer to the API
       /// \param[in] wuConfiguration      The Plugin configuration
+      /// \param[in] location             GPS Localization of the station
       //--------------------------------------------------------------
       virtual void onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                                  IWUConfiguration& wuConfiguration) = 0;
+                                  IWUConfiguration& wuConfiguration,
+                                  boost::shared_ptr<const shared::ILocation> location) = 0;
 
       //--------------------------------------------------------------
       /// \brief	  Update the configuration when something change from the HMI

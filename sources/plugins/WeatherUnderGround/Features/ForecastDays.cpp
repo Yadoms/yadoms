@@ -6,6 +6,7 @@
 CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
                              IWUConfiguration& wuConfiguration,
                              boost::shared_ptr<IdeviceConfiguration> deviceConfiguration,
+                             boost::shared_ptr<const shared::ILocation> location,
                              const std::string& deviceName)
    : m_localisation(wuConfiguration.getLocalisation()),
      m_countryOrState(wuConfiguration.getCountryOrState()),
@@ -18,7 +19,7 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    try
    {
-      InitializeForecastDays(api);
+      InitializeForecastDays(api, location);
    }
    catch (shared::exception::CException& e)
    {
@@ -27,7 +28,7 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
    }
 }
 
-void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> api)
+void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const shared::ILocation> location)
 {
    if (m_deviceConfiguration->isForecast10DaysEnabled())
    {
@@ -61,12 +62,15 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
       std::string m_type = "Forecast";
       shared::CDataContainer details;
       details.set("type", m_type);
+      details.set("long", location->longitude());
+      details.set("lat", location->latitude());
       api->declareDevice(m_deviceName, m_type, m_keywords, details);
    }
 }
 
 void CForecastDays::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                                   IWUConfiguration& wuConfiguration)
+                                   IWUConfiguration& wuConfiguration,
+                                   boost::shared_ptr<const shared::ILocation> location)
 {
    //read the localisation
    m_localisation = wuConfiguration.getLocalisation();
@@ -83,8 +87,9 @@ void CForecastDays::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    try
    {
+      boost::shared_ptr<const shared::ILocation> location; // TODO : A remplir
       m_deviceConfiguration = deviceConfiguration;
-      InitializeForecastDays(api);
+      InitializeForecastDays(api, location);
    }
    catch (shared::exception::CException& e)
    {

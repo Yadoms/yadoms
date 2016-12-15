@@ -5,6 +5,7 @@
 #include "Features/ForecastDays.h"
 #include "deviceConfiguration.h"
 #include "WeatherUnderground.h"
+#include "Features/Location.h"
 
 CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api, 
                        IWUConfiguration& wuConfiguration)
@@ -16,9 +17,18 @@ CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api,
    for (devicesIterator = devices.begin(); devicesIterator != devices.end(); ++devicesIterator)
    {
 	   std::string type = "";
+      boost::shared_ptr<const shared::ILocation> location;
+
       // plugin state have no type
 	   try {
+         //retrieve the type
 		   type = api->getDeviceDetails(*devicesIterator).get<std::string>("type");
+
+         //retrieve location information
+         location = boost::make_shared<location::CLocation>(
+            api->getDeviceDetails(*devicesIterator).get<double>("long"),
+            api->getDeviceDetails(*devicesIterator).get<double>("lat"),
+            0);
 	   }
 	   catch (...)
 	   {}
@@ -31,6 +41,7 @@ CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api,
          m_weatherConditions = boost::make_shared<CWeatherConditions>(api, 
                                                                       wuConfiguration, 
                                                                       boost::make_shared<CdeviceConfiguration>(api->getDeviceConfiguration(*devicesIterator)),
+                                                                      location,
                                                                       (*devicesIterator));
       }
       else if (type == "Astronomy")
@@ -38,6 +49,7 @@ CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api,
          m_astronomy = boost::make_shared<CAstronomy>(api, 
                                                       wuConfiguration, 
                                                       boost::make_shared<CdeviceConfiguration>(api->getDeviceConfiguration(*devicesIterator)),
+                                                      location,
                                                       (*devicesIterator));
       }
       else if (type == "Forecast")
@@ -45,6 +57,7 @@ CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api,
          m_forecast = boost::make_shared<CForecastDays>(api, 
                                                     wuConfiguration, 
                                                     boost::make_shared<CdeviceConfiguration>(api->getDeviceConfiguration(*devicesIterator)),
+                                                    location,
                                                     (*devicesIterator));
       }  
    }
@@ -64,7 +77,7 @@ std::string CWUFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi
    {
       if (!m_astronomy)
       {
-         m_astronomy = boost::make_shared<CAstronomy>(api, wuConfiguration, deviceConfiguration, request->getData().getDeviceName());
+         m_astronomy = boost::make_shared<CAstronomy>(api, wuConfiguration, deviceConfiguration, location, request->getData().getDeviceName());
          request->sendSuccess(m_astronomy->getName());
          returnModule = m_astronomy;
 
@@ -85,7 +98,7 @@ std::string CWUFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi
    {
       if (!m_weatherConditions)
       {
-         m_weatherConditions = boost::make_shared<CWeatherConditions>(api, wuConfiguration, deviceConfiguration, request->getData().getDeviceName());
+         m_weatherConditions = boost::make_shared<CWeatherConditions>(api, wuConfiguration, deviceConfiguration, location, request->getData().getDeviceName());
          request->sendSuccess(m_weatherConditions->getName());
          returnModule = m_astronomy;
 
@@ -106,7 +119,7 @@ std::string CWUFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi
    {
       if (!m_forecast)
       {
-         m_forecast = boost::make_shared<CForecastDays>(api, wuConfiguration, deviceConfiguration, request->getData().getDeviceName());
+         m_forecast = boost::make_shared<CForecastDays>(api, wuConfiguration, deviceConfiguration, location, request->getData().getDeviceName());
          request->sendSuccess(m_forecast->getName()); 
          returnModule = m_astronomy;
 
