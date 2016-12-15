@@ -30,47 +30,15 @@ public:
                       boost::shared_ptr<const shared::ILocation> location,
                       const std::string& deviceName);
 
-   //--------------------------------------------------------------
-   /// \brief	  Parse the answer from the web Site
-   /// \param[in] api                 pointer to the API
-   /// \param[in] dataToParse         Data to parse
-   //--------------------------------------------------------------
-   void parse(boost::shared_ptr<yApi::IYPluginApi> api,
-              const shared::CDataContainer dataToParse) override;
-
-   //--------------------------------------------------------------
-   /// \brief	  Update the configuration when something change from the HMI
-   /// \param[in] api                pointer to the API
-   /// \param[in] wuConfiguration    The Plugin configuration
-   //--------------------------------------------------------------
-   void onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                       IWUConfiguration& wuConfiguration,
-                       boost::shared_ptr<const shared::ILocation> location) override;
-
-   //--------------------------------------------------------------
-   /// \brief	  Update the configuration when something change from the HMI
-   /// \param[in] api                    pointer to the API
-   /// \param[in] deviceConfiguration    The device configuration
-   //--------------------------------------------------------------
-   void onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                       boost::shared_ptr<IdeviceConfiguration> deviceConfiguration) override;
-
-   //--------------------------------------------------------------
-   /// \brief	  Return the conditions city name
-   //--------------------------------------------------------------
-   std::string getCityName() const;
-
-   //--------------------------------------------------------------
-   /// \brief	  Return the url
-   /// \return    The url string
-   //--------------------------------------------------------------
+   // IFeature Implementation
+   void parse(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer dataToParse) override;
+   void onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration, boost::shared_ptr<const shared::ILocation> location) override;
+   void onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<IdeviceConfiguration> deviceConfiguration) override;
    std::string getUrl() const override;
-
-   //--------------------------------------------------------------
-   /// \brief	  Return the name of the device
-   /// \return    The url string
-   //--------------------------------------------------------------
    std::string getName() const override;
+   // [END] IFeature Implementation
+
+   void setCityName(const std::string& CityName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -89,11 +57,6 @@ private:
    /// \brief	    Your Location to received custom information from the web site
    //--------------------------------------------------------------
    std::string m_localisation;
-
-   //--------------------------------------------------------------
-   /// \brief	    Your Location to received custom information from the web site
-   //--------------------------------------------------------------
-   std::string m_countryOrState;
 
    //--------------------------------------------------------------
    /// \brief	    The Device Name

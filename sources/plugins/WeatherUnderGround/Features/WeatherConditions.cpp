@@ -10,7 +10,6 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
                                        boost::shared_ptr<const shared::ILocation> location,
                                        const std::string& deviceName)
    : m_localisation(wuConfiguration.getLocalisation()),
-     m_countryOrState(wuConfiguration.getCountryOrState()),
      m_deviceName(deviceName),
      m_temp(boost::make_shared<yApi::historization::CTemperature>("temperature")),
      m_pressure(boost::make_shared<yApi::historization::CPressure>("pressure")),
@@ -26,7 +25,7 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
      m_feelsLike(boost::make_shared<yApi::historization::CTemperature>("FeelsLike")),
      m_windchill(boost::make_shared<yApi::historization::CTemperature>("Windchill")),
      m_liveConditions(boost::make_shared<CCondition>(m_deviceName, "LiveConditions")),
-     m_url("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/conditions/q/" + m_countryOrState + "/" + m_localisation + ".json"),
+     m_url("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/conditions/q/" + boost::lexical_cast<std::string>(location->latitude()) + "," + boost::lexical_cast<std::string>(location->longitude()) + ".json"),
      m_deviceConfiguration(deviceConfiguration)
 {
    try
@@ -97,11 +96,9 @@ void CWeatherConditions::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api
       //read the localisation
       m_localisation = wuConfiguration.getLocalisation();
 
-      //read the country or State code
-      m_countryOrState = wuConfiguration.getCountryOrState();
-
+      //TODO : A finir
       m_url.str("");
-      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/conditions/q/" << m_countryOrState << "/" << m_localisation << ".json";
+      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/conditions/q/" << m_localisation << ".json";
    }
    catch (shared::exception::CException& e)
    {
@@ -130,9 +127,9 @@ std::string CWeatherConditions::getUrl() const
    return m_url.str();
 }
 
-std::string CWeatherConditions::getCityName() const
+void CWeatherConditions::setCityName(const std::string& CityName)
 {
-   return m_cityConditions;
+   m_cityConditions = CityName;
 }
 
 void CWeatherConditions::parse(boost::shared_ptr<yApi::IYPluginApi> api,

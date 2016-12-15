@@ -9,12 +9,11 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
                              boost::shared_ptr<const shared::ILocation> location,
                              const std::string& deviceName)
    : m_localisation(wuConfiguration.getLocalisation()),
-     m_countryOrState(wuConfiguration.getCountryOrState()),
      m_deviceName(deviceName),
      m_forecast(boost::make_shared<CForecast>(m_deviceName, "Forecast", weatherunderground::helper::EPeriod::kDay)),
      m_temp(boost::make_shared<yApi::historization::CTemperature>("low_temperature")),
      m_isDeveloperMode(false),
-     m_url ("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/forecast/q/" + m_countryOrState + "/" + m_localisation + ".json"),
+     m_url ("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/forecast/q/" + boost::lexical_cast<std::string>(location->latitude()) + "," + boost::lexical_cast<std::string>(location->longitude()) + ".json"),
      m_deviceConfiguration(deviceConfiguration)
 {
    try
@@ -75,11 +74,9 @@ void CForecastDays::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
    //read the localisation
    m_localisation = wuConfiguration.getLocalisation();
 
-   //read the country or State code
-   m_countryOrState = wuConfiguration.getCountryOrState();
-
+   //TODO : A finir ...
    m_url.str("");
-   m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/forecast/q/" << m_countryOrState << "/" << m_localisation << ".json";
+   m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/forecast/q/" << m_localisation << ".json";
 }
 
 void CForecastDays::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,

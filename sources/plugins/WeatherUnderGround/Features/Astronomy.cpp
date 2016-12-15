@@ -9,9 +9,7 @@ CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
                        boost::shared_ptr<IdeviceConfiguration> deviceConfiguration,
                        boost::shared_ptr<const shared::ILocation> location,
                        const std::string& deviceName)
-   : m_localisation(wuConfiguration.getLocalisation()),
-     m_countryOrState(wuConfiguration.getCountryOrState()),
-     m_deviceName(deviceName),
+   : m_deviceName(deviceName),
      m_url("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/astronomy/q/" + boost::lexical_cast<std::string>(location->latitude()) + "," + boost::lexical_cast<std::string>(location->longitude()) + ".json"),
      m_moonCharacteristics(boost::make_shared<CMoon>(m_deviceName, "Moon")),
      m_deviceConfiguration(deviceConfiguration)
@@ -64,9 +62,6 @@ void CAstronomy::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    try
    {
-      m_localisation = wuConfiguration.getLocalisation();
-      m_countryOrState = wuConfiguration.getCountryOrState();
-
       m_url.str("");
       m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/astronomy/q/" << boost::lexical_cast<std::string>(location->latitude()) << "," << boost::lexical_cast<std::string>(location->longitude()) << ".json";
    }

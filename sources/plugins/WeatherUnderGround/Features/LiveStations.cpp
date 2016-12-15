@@ -31,6 +31,8 @@ shared::CDataContainer CLiveStations::bindAvailableStations()
 {
    // Create the station list
    std::vector<shared::CDataContainer>::iterator iterStations;
+   std::vector<std::string> ICAOList;
+   std::vector<std::string>::const_iterator iterICAO;
    int counter = 0;
    shared::CDataContainer value;
    shared::CDataContainer availableStations;
@@ -39,15 +41,24 @@ shared::CDataContainer CLiveStations::bindAvailableStations()
       for (iterStations = m_stations.begin(); iterStations != m_stations.end(); ++iterStations)
       {
          std::string city = (*iterStations).get<std::string>("city");
+         std::string icao = (*iterStations).get<std::string>("icao");
 
          // Only filled elements are copied
          if (city != "")
          {
-            availableStations.set(boost::lexical_cast<std::string>(counter + 1), city + " " + (*iterStations).get<std::string>("country"));
+            // We add the station only if this one is not already registered
+            iterICAO = find(ICAOList.begin(), ICAOList.end(), icao);
+            if (iterICAO == ICAOList.end())
+            {
+               availableStations.set(boost::lexical_cast<std::string>(counter + 1), city + " " + (*iterStations).get<std::string>("country"));
 
-            // we add selectionId, the position into the list proposed to the user, to retrieve it more efficency
-            (*iterStations).set("selectionId", boost::lexical_cast<std::string>(counter + 1));
-            ++counter;
+               // we add selectionId, the position into the list proposed to the user, to retrieve it more efficency
+               (*iterStations).set("selectionId", boost::lexical_cast<std::string>(counter + 1));
+
+               //we register the icao number of the station. a station is send many times, with a country code, a name different. We register the icao, to keep the station unique
+               ICAOList.push_back(icao);
+               ++counter;
+            }
          }
 
          /* return format :
