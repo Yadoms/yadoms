@@ -150,7 +150,8 @@ namespace shared
          while (moduleStdOut->getline(line, sizeof(line)))
          {
             logger.information(line);
-            YADOMS_LOG(information) << line;
+            if (scriptLogger != "plugin")
+               YADOMS_LOG(information) << line;
          }
       }
 
@@ -166,7 +167,8 @@ namespace shared
                *lastError += line;
 
             logger.error(line);
-            YADOMS_LOG(error) << line;
+            if(scriptLogger != "plugin")
+               YADOMS_LOG(error) << line;
          }
       }
    }

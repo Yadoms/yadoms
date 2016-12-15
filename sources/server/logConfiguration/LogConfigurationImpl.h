@@ -23,5 +23,10 @@ namespace logConfiguration
       Poco::AutoPtr<Poco::FormattingChannel> m_formattingConsoleChannel;
       Poco::AutoPtr<Poco::FormattingChannel> m_formattingFileChannel;
       Poco::AutoPtr<Poco::SplitterChannel> m_splitterChannel;
+
+      Poco::AutoPtr<Poco::PatternFormatter> m_patternFormatterPlugin;
+      Poco::AutoPtr<Poco::FormattingChannel> m_formattingFileChannelPlugin;
+      Poco::AutoPtr<Poco::FormattingChannel> m_formattingConsoleChannelPlugin;
+      Poco::AutoPtr<Poco::SplitterChannel> m_splitterChannelPlugin;
    };
 } // namespace logConfiguration

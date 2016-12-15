@@ -154,7 +154,7 @@ namespace pluginSystem
    {
       try
       {
-         std::string loggerName = "";
+         std::string loggerName = "plugin";
          return boost::make_shared<shared::process::CProcess>(commandLine, shared::CFileSystemExtension::getModulePath().string(), instanceStateHandler, loggerName);
       }
       catch (shared::process::CProcessException& e)

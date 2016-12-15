@@ -39,6 +39,7 @@ namespace web {
 
       void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response)
       {
+         YADOMS_LOG_CONFIGURE("Websocket server")
          YADOMS_LOG(information) << "New websocket client";
 
          std::vector<boost::shared_ptr<notification::IObserver> > observers;

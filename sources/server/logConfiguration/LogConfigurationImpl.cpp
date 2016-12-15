@@ -9,7 +9,9 @@ namespace logConfiguration
    :  m_consoleChannel(new Poco::ConsoleChannel),
       m_fileChannel(new Poco::FileChannel()),
       m_patternFormatter(new Poco::PatternFormatter),
-      m_splitterChannel(new Poco::SplitterChannel)
+      m_patternFormatterPlugin(new Poco::PatternFormatter),
+      m_splitterChannel(new Poco::SplitterChannel),
+      m_splitterChannelPlugin(new Poco::SplitterChannel)
    {
 
    }
@@ -52,6 +54,13 @@ namespace logConfiguration
          Poco::Logger::get(*i).setLevel(logLevel);
       }
       loggerNames.clear();
+
+      m_patternFormatterPlugin->setProperty("pattern", "%t");
+      m_formattingFileChannelPlugin.assign(new Poco::FormattingChannel(m_patternFormatterPlugin, m_fileChannel));
+      m_formattingConsoleChannelPlugin.assign(new Poco::FormattingChannel(m_patternFormatterPlugin, m_consoleChannel));
+      m_splitterChannelPlugin->addChannel(m_formattingConsoleChannelPlugin);
+      m_splitterChannelPlugin->addChannel(m_formattingFileChannelPlugin);
+      Poco::Logger::create("plugin", m_splitterChannelPlugin);
 
       //configure root logger
       Poco::Logger::root().setChannel(m_splitterChannel);
