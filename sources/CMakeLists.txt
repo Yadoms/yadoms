@@ -42,9 +42,6 @@ endif()
 set (LINK_WITH_STATIC_RUNTIME 1)
 include(cmake/compilers.cmake)
 
-# Boost built libraries copy helper
-include(cmake/copyBoost.cmake)
-
 
 
 ##################################################################################################
