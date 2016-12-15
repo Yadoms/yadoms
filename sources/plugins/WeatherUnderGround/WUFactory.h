@@ -2,7 +2,7 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/event/EventHandler.hpp>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
-#include "Modules/IModule.h"
+#include "Features/IFeature.h"
 #include "IWUConfiguration.h"
 #include "IdeviceConfiguration.h"
 
@@ -45,24 +45,24 @@ public:
    //--------------------------------------------------------------
    void removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved);
 
-   boost::shared_ptr<modules::IModule> getWeatherConditionsDevice();
-   boost::shared_ptr<modules::IModule> getAstronomyDevice();
-   boost::shared_ptr<modules::IModule> getForecastDevice();
+   boost::shared_ptr<features::IFeature> getWeatherConditionsDevice();
+   boost::shared_ptr<features::IFeature> getAstronomyDevice();
+   boost::shared_ptr<features::IFeature> getForecastDevice();
 
 private:
 
    //--------------------------------------------------------------
    /// \brief	 Creation du device Weather Conditions
    //--------------------------------------------------------------
-   boost::shared_ptr<modules::IModule> m_weatherConditions;
+   boost::shared_ptr<features::IFeature> m_weatherConditions;
 
    //--------------------------------------------------------------
    /// \brief	 Creation du device Astronomy
    //--------------------------------------------------------------
-   boost::shared_ptr<modules::IModule> m_astronomy;
+   boost::shared_ptr<features::IFeature> m_astronomy;
 
    //--------------------------------------------------------------
    /// \brief	 Creation du device Forecast
    //--------------------------------------------------------------
-   boost::shared_ptr<modules::IModule> m_forecast;
+   boost::shared_ptr<features::IFeature> m_forecast;
 };

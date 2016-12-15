@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "WUFactory.h"
-#include "WeatherConditions.h"
-#include "Astronomy.h"
-#include "ForecastDays.h"
+#include "Features/WeatherConditions.h"
+#include "Features/Astronomy.h"
+#include "Features/ForecastDays.h"
 #include "deviceConfiguration.h"
 #include "WeatherUnderground.h"
 
@@ -55,7 +55,7 @@ std::string CWUFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi
                                              boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> request,
                                              boost::shared_ptr<const shared::ILocation> location)
 {
-   boost::shared_ptr<modules::IModule> returnModule;
+   boost::shared_ptr<features::IFeature> returnModule;
 
    boost::shared_ptr<IdeviceConfiguration> deviceConfiguration = boost::make_shared<CdeviceConfiguration>(request->getData().getConfiguration());
 
@@ -145,17 +145,17 @@ void CWUFactory::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::str
    }
 }
 
-boost::shared_ptr<modules::IModule> CWUFactory::getWeatherConditionsDevice()
+boost::shared_ptr<features::IFeature> CWUFactory::getWeatherConditionsDevice()
 {
    return m_weatherConditions;
 }
 
-boost::shared_ptr<modules::IModule> CWUFactory::getAstronomyDevice()
+boost::shared_ptr<features::IFeature> CWUFactory::getAstronomyDevice()
 {
    return m_astronomy;
 }
 
-boost::shared_ptr<modules::IModule> CWUFactory::getForecastDevice()
+boost::shared_ptr<features::IFeature> CWUFactory::getForecastDevice()
 {
    return m_forecast;
 }

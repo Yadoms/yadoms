@@ -6,14 +6,14 @@
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceRemoved.h>
-#include "WeatherConditions.h"
-#include "Astronomy.h"
-#include "ForecastDays.h"
+#include "Features/WeatherConditions.h"
+#include "Features/Astronomy.h"
+#include "Features/ForecastDays.h"
 #include <shared/http/HttpMethods.h>
 #include <shared/exception/Exception.hpp>
 #include "ErrorAnswerHandler.h"
 #include "RequestErrorException.hpp"
-#include "LiveStations.h"
+#include "Features/LiveStations.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
