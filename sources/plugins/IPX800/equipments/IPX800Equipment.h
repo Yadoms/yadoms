@@ -24,7 +24,8 @@ namespace equipments
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
-      ///\param[in] keywordName     Yadoms keyword name
+      ///\param[in]   api          Yadoms API
+      ///\param[in] device         The device name
       //-----------------------------------------------------
       CIPX800Equipment(boost::shared_ptr<yApi::IYPluginApi> api,
                        const std::string& device);
@@ -51,6 +52,11 @@ namespace equipments
 
       //-----------------------------------------------------
       ///\brief                     Update IOs from different types
+      ///\param[in]   api                 Yadoms API
+      ///\param[in] values                values received from the IPX800
+      ///\param[in] keywordsList          the list of keywords to be updated
+      ///\param[in] ToHistorize           keywords to historize at the end of the function
+      ///\param[in] forceHistorization    force the historization of all the keyword list, if necessary (initialization, ...)
       //-----------------------------------------------------
       template<class T1, class T2>
       void updateIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -59,11 +65,28 @@ namespace equipments
                               std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& ToHistorize,
                               bool forceHistorization = false);
 
+      //-----------------------------------------------------
+      ///\brief                     Create the parameter to send to the device for a CInputOuput keyword (relay type)
+      ///\param[in] keywordName           Name of the keyword to generate (from the Yadoms web client)
+      ///\param[in] keywordsList          list of keywords where to find the keyword
+      ///\param[in] command               command received from Yadoms client web
+      ///\param[in] pinNumber             index Number of the IO into the tab of the IPX800
+      ///\param[in] parameters            parameter send to the IPX800
+      //-----------------------------------------------------
       void setParameter(const std::string& keywordName,
                         std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >& keywordsList,
                         boost::shared_ptr<const yApi::IDeviceCommand> command,
                         const std::string& pinNumber,
                         shared::CDataContainer& parameters);
+
+      //-----------------------------------------------------
+      ///\brief                     Create the parameter to send to the device for a CCounter keyword (couter type)
+      ///\param[in] keywordName           Name of the keyword to generate (from the Yadoms web client)
+      ///\param[in] keywordsList          list of keywords where to find the keyword
+      ///\param[in] command               command received from Yadoms client web
+      ///\param[in] pinNumber             index Number of the IO into the tab of the IPX800
+      ///\param[in] parameters            parameter send to the IPX800
+      //-----------------------------------------------------
 
        void setParameter(const std::string& keywordName,
                          std::vector<boost::shared_ptr<specificHistorizers::CCounter> >& keywordsList,

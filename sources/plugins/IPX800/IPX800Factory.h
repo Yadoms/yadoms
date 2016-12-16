@@ -22,6 +22,7 @@ public:
    /// \brief	    Constructor
    /// \param[in] api                 yPluginApi API
    /// \param[in] device              The device name
+   /// \param[in] configuration       The plugin configuration
    //--------------------------------------------------------------
    CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
                   const std::string& device,
@@ -34,22 +35,26 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	    bindSlotsX8R
+   /// \return     slots available for X8R
    //--------------------------------------------------------------
    shared::CDataContainer bindSlotsX8R();
 
    //--------------------------------------------------------------
    /// \brief	    bindSlotsX8D
+   /// \return     slots available for X8D
    //--------------------------------------------------------------
    shared::CDataContainer bindSlotsX8D();
 
    //--------------------------------------------------------------
    /// \brief	    bindSlotsX24D
+   /// \return     slots available for X8D
    //--------------------------------------------------------------
    shared::CDataContainer bindSlotsX24D();
 
    //--------------------------------------------------------------
    /// \brief	    createDeviceManually
    /// \param[in] api                  yPluginApi API
+   /// \param[in] data                 information for the creation of the new device
    //--------------------------------------------------------------
    std::string createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api, 
                                     const yApi::IManuallyDeviceCreationData& data);
@@ -63,7 +68,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
    /// \param [in] api              Plugin execution context (Yadoms API)
-   /// \param [in] receivedValue    The received value from the interrupt
+   /// \param [in] deviceRemoved    The name of the device removed
    //--------------------------------------------------------------
    void removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved);
 

@@ -60,7 +60,7 @@ private:
    boost::shared_ptr<CIOManager> m_ioManager;
 
    //--------------------------------------------------------------
-   /// \brief The IO Manager
+   /// \brief The factory
    //--------------------------------------------------------------
    boost::shared_ptr<CIPX800Factory> m_factory;
 
