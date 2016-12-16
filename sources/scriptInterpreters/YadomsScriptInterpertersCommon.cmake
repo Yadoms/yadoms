@@ -2,10 +2,10 @@
 #
 
 MACRO(SCRIPT_INTERPRETER_SOURCES _targetName)
-   set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${youroutputdirectory}/scriptInterpreters/${_targetName} )
+   set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${YADOMS_OUTPUT_DIR}/scriptInterpreters/${_targetName} )
    foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
        string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
-       set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG}/scriptInterpreters/${_targetName} )
+       set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${YADOMS_OUTPUT_DIR}/${OUTPUTCONFIG}/scriptInterpreters/${_targetName} )
    endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 	add_library(${_targetName} MODULE ${ARGN})
 	
