@@ -59,19 +59,15 @@ set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME "YadomsCore")
 ##################################################################################################
 
 #define outputs
-set(youroutputdirectory ${PROJECT_SOURCE_DIR}/../builds)
+set(YADOMS_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/../builds)
 
 # First for the generic no-config case (e.g. with gcc)
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${youroutputdirectory} )
-set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${youroutputdirectory}/plugins )
-set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${youroutputdirectory} )
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${YADOMS_OUTPUT_DIR})
 # Second, for multi-config builds (e.g. msvc)
-foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
-    string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
-    set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG} )
-    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG}/plugins )
-    set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG} )
-endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
+foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
+   string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
+   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${YADOMS_OUTPUT_DIR}/${OUTPUTCONFIG})
+endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)
 
 
 ##################################################################################################
@@ -86,7 +82,7 @@ endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME ON)
-add_definitions( -DBOOST_SPIRIT_THREADSAFE )
+add_definitions(-DBOOST_SPIRIT_THREADSAFE)
 
 # define all needed boost libraries
 set(BOOST_LIBS 
@@ -100,7 +96,7 @@ set(BOOST_LIBS
 )
 
 # search boost libs
-find_package(Boost 1.60.0 REQUIRED COMPONENTS ${BOOST_LIBS} )
+find_package(Boost 1.60.0 REQUIRED COMPONENTS ${BOOST_LIBS})
 set(BOOST_INCL_DIR ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
 
 
@@ -1158,8 +1154,7 @@ IF(WIN32 AND NOT UNIX)
 			ExecWait '\$INSTDIR\\\\bin\\\\yadoms.exe --unregisterService' $0"
 		)
       
-		#d\E9fini les permissions pour le r\E9pertoire d'install pour tous les utilisateurs
-		#pour l'utilisateur TOUT LE MONDE (identifi\E9 par (S-1-1-0) )
+		# Grant full authorisations for install directory (all users : identified by (S-1-1-0) )
 		set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
 			"AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1)\\\" \\\"FullAccess\\\"
 			AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1-0)\\\" \\\"FullAccess\\\""
