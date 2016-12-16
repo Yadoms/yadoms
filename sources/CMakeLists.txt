@@ -60,6 +60,7 @@ set(YADOMS_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/../builds)
 
 # First for the generic no-config case (e.g. with gcc)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${YADOMS_OUTPUT_DIR})
+set(CMAKE_PDB_OUTPUT_DIRECTORY .)
 # Second, for multi-config builds (e.g. msvc)
 foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
    string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
