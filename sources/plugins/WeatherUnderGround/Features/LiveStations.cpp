@@ -9,6 +9,11 @@ CLiveStations::CLiveStations(boost::shared_ptr<yApi::IYPluginApi> api)
    m_location = api->getYadomsInformation()->location();
 }
 
+CLiveStations::CLiveStations(boost::shared_ptr<const shared::ILocation> location)
+{
+   m_location = location;
+}
+
 void CLiveStations::getAllStations(boost::shared_ptr<yApi::IYPluginApi> api,
                                    const std::string& apikey)
 {
@@ -120,7 +125,7 @@ std::string CLiveStations::getStationName(int selection)
    {
       try {
          if ((*iterStations).get<int>("selectionId") == selection)
-            city = (*iterStations).get<double>("city");
+            city = (*iterStations).get<std::string>("city");
       }
       catch (std::exception)
       {}

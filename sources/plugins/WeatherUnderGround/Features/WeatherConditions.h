@@ -23,22 +23,23 @@ public:
    /// \param[in] deviceConfiguration  The Configuration of the device
    /// \param[in] location             GPS Position where to find weather conditions
    /// \param[in] deviceName           Name of the device
+   /// \param[in] StationName          Name of the forecast station
    //--------------------------------------------------------------
    CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
                       IWUConfiguration& wuConfiguration,
                       boost::shared_ptr<IdeviceConfiguration> deviceConfiguration,
                       boost::shared_ptr<const shared::ILocation> location,
-                      const std::string& deviceName);
+                      const std::string& deviceName,
+                      const std::string& stationName);
 
    // IFeature Implementation
    void parse(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer dataToParse) override;
    void onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration, boost::shared_ptr<const shared::ILocation> location) override;
-   void onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<IdeviceConfiguration> deviceConfiguration) override;
+   void onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration, boost::shared_ptr<IdeviceConfiguration> deviceConfiguration, boost::shared_ptr<const shared::ILocation> location) override;
    std::string getUrl() const override;
    std::string getName() const override;
+   void setCityName(const std::string& CityName) override;
    // [END] IFeature Implementation
-
-   void setCityName(const std::string& CityName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

@@ -8,8 +8,9 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
                                        IWUConfiguration& wuConfiguration,
                                        boost::shared_ptr<IdeviceConfiguration> deviceConfiguration,
                                        boost::shared_ptr<const shared::ILocation> location,
-                                       const std::string& deviceName)
-   : m_localisation(wuConfiguration.getLocalisation()),
+                                       const std::string& deviceName,
+                                       const std::string& stationName)
+   : m_localisation(stationName),
      m_deviceName(deviceName),
      m_temp(boost::make_shared<yApi::historization::CTemperature>("temperature")),
      m_pressure(boost::make_shared<yApi::historization::CPressure>("pressure")),
@@ -83,6 +84,7 @@ void CWeatherConditions::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi>
       details.set("type", m_type);
       details.set("long", location->longitude());
       details.set("lat", location->latitude());
+      details.set("stationName", m_localisation);
       api->declareDevice(m_deviceName, m_type, m_keywords, details);
    }
 }
@@ -93,12 +95,8 @@ void CWeatherConditions::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api
 {
    try
    {
-      //read the localisation
-      m_localisation = wuConfiguration.getLocalisation();
-
-      //TODO : A finir
       m_url.str("");
-      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/conditions/q/" << m_localisation << ".json";
+      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/conditions/q/" << boost::lexical_cast<std::string>(location->latitude()) << "," << boost::lexical_cast<std::string>(location->longitude()) << ".json";
    }
    catch (shared::exception::CException& e)
    {
@@ -107,12 +105,15 @@ void CWeatherConditions::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api
    }
 }
 
-void CWeatherConditions::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<IdeviceConfiguration> deviceConfiguration)
+void CWeatherConditions::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration, boost::shared_ptr<IdeviceConfiguration> deviceConfiguration, boost::shared_ptr<const shared::ILocation> location)
 {
    try
    {
-      boost::shared_ptr<const shared::ILocation> location; // TODO : A remplir
       m_deviceConfiguration = deviceConfiguration;
+
+      m_url.str("");
+      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/conditions/q/" << boost::lexical_cast<std::string>(location->latitude()) << "," << boost::lexical_cast<std::string>(location->longitude()) << ".json";
+
       initializeKeywords(api, location);
    }
    catch (shared::exception::CException& e)

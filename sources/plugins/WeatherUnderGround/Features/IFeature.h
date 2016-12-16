@@ -40,7 +40,9 @@ namespace features
       /// \param[in] deviceconfiguration  The Configuration of the device
       //--------------------------------------------------------------
       virtual void onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                                  boost::shared_ptr<IdeviceConfiguration> deviceConfiguration) = 0;
+                                  IWUConfiguration& wuConfiguration,
+                                  boost::shared_ptr<IdeviceConfiguration> deviceConfiguration,
+                                  boost::shared_ptr<const shared::ILocation> location) = 0;
 
       //--------------------------------------------------------------
       /// \brief	  Return the url
@@ -53,6 +55,12 @@ namespace features
       /// \return    The url string
       //--------------------------------------------------------------
       virtual std::string getName() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	  Set the city name of the device
+      /// \param [in]    cityName   the name of the city
+      //--------------------------------------------------------------
+      virtual void setCityName(const std::string& cityName) = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Destructor

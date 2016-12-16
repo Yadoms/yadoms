@@ -67,18 +67,23 @@ void CAstronomy::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (shared::exception::CException& e)
    {
-      std::cout << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
+      std::cout << "Configuration or initialization error in Astronomy module :" << e.what() << std::endl;
       throw;
    }
 }
 
 void CAstronomy::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                                boost::shared_ptr<IdeviceConfiguration> deviceConfiguration)
+                                IWUConfiguration& wuConfiguration,
+                                boost::shared_ptr<IdeviceConfiguration> deviceConfiguration,
+                                boost::shared_ptr<const shared::ILocation> location)
 {
    try
    {
-      boost::shared_ptr<const shared::ILocation> location; // TODO : A remplir
       m_deviceConfiguration = deviceConfiguration;
+
+      m_url.str("");
+      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/astronomy/q/" << boost::lexical_cast<std::string>(location->latitude()) << "," << boost::lexical_cast<std::string>(location->longitude()) << ".json";
+
       initializeKeywords(api, location);
    }
    catch (shared::exception::CException& e)
@@ -122,3 +127,7 @@ std::string CAstronomy::getName() const
 {
    return m_deviceName;
 }
+
+// This fonction is not used
+void CAstronomy::setCityName(const std::string& CityName)
+{}

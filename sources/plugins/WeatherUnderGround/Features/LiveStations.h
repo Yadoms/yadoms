@@ -18,6 +18,12 @@ public:
    CLiveStations(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
+   /// \brief	  Constructor
+   /// \param[in] newLocation       enter directly a location
+   //--------------------------------------------------------------
+   CLiveStations(boost::shared_ptr<const shared::ILocation> location);
+
+   //--------------------------------------------------------------
    /// \brief get All forecast stations around the location
    /// \param[in] api       pointer to the API
    /// \param[in] apikey    api key to weatherUnderground

@@ -5,6 +5,7 @@
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
+#include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
 #include <shared/plugin/yPluginApi/IDeviceRemoved.h>
 #include "Features/WeatherConditions.h"
 #include "Features/Astronomy.h"
@@ -40,17 +41,12 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    boost::shared_ptr<CWeatherConditions> weatherConditionsRequester;
    boost::shared_ptr<CAstronomy> astronomyRequester;
    boost::shared_ptr<CForecastDays> forecast10Days;
-   std::vector<shared::CDataContainer> forecastStations;
-
-   CLiveStations liveStations(api);
+   //std::vector<shared::CDataContainer> forecastStations;
 
    try
    {
       // Load configuration values (provided by database)
       m_configuration.initializeWith(api->getConfiguration());
-
-      //Get all forecast stations to be displayed into the menu
-      liveStations.getAllStations(api, m_configuration.getAPIKey());
 
       // Create all existing devices
       m_factory = boost::make_shared<CWUFactory>(api, m_configuration);
@@ -84,22 +80,24 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
         request->getData().getConfiguration().printToLog(std::cout);
 
         try {
-
-           // get the location of the selected station
-           boost::shared_ptr<const shared::ILocation> location = liveStations.getStationLocation(request->getData().getConfiguration().get<int>("LiveStations"));
-
-           //TODO : Faire suivre le nom de station dans createDeviceManually, pour Forecast/weatherConditions
-
            // Device creation
-           m_factory->createDeviceManually(api, m_configuration, request, location);
+           m_factory->createDeviceManually(api, m_configuration, request);
         }
         catch (std::exception& e)
         {
            request->sendError(e.what());
         }
-
 		  break;
 	  }
+     case yApi::IYPluginApi::kSetDeviceConfiguration:
+     {
+        // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
+        auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
+
+        m_factory->onDeviceSetConfiguration(api, deviceConfiguration->device(), m_configuration, deviceConfiguration->configuration());
+
+        break;
+     }
 	  case yApi::IYPluginApi::kEventDeviceRemoved:
 	  {
 		  auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
@@ -117,7 +115,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 		  try {
 			if (data->getData().getQuery() == "LiveStations")
 			{
-				data->sendSuccess(liveStations.bindAvailableStations());
+				data->sendSuccess(m_factory->bindAvailableStations());
 			}
 			else
 			{
@@ -176,14 +174,16 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             shared::CDataContainer returnData;
             onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
 
-            // TODO : Update Live Station if any.
+            // TODO : Update Live Station if any -> Enter the new location, for example from the plugin configuration
+            // Le faire par la factory
+            // Virer les locations ci-dessous.
+            //boost::shared_ptr<CLiveStations> newLiveStation();
             boost::shared_ptr<const shared::ILocation> location;
-            // TODO : Si les stations ne sont plus les mêmes, que fait-on !
 
             // Update configurations
-            weatherConditionsRequester->onPluginUpdate(api, m_configuration, location);
-            astronomyRequester->onPluginUpdate(api, m_configuration, location);
-            forecast10Days->onPluginUpdate(api, m_configuration, location);
+            if (weatherConditionsRequester) weatherConditionsRequester->onPluginUpdate(api, m_configuration, location);
+            if (astronomyRequester) astronomyRequester->onPluginUpdate(api, m_configuration, location);
+            if (forecast10Days) forecast10Days->onPluginUpdate(api, m_configuration, location);
             break;
          }
       case kEvtPluginState:

@@ -7,8 +7,9 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
                              IWUConfiguration& wuConfiguration,
                              boost::shared_ptr<IdeviceConfiguration> deviceConfiguration,
                              boost::shared_ptr<const shared::ILocation> location,
-                             const std::string& deviceName)
-   : m_localisation(wuConfiguration.getLocalisation()),
+                             const std::string& deviceName,
+                             const std::string& stationName)
+   : m_localisation(stationName),
      m_deviceName(deviceName),
      m_forecast(boost::make_shared<CForecast>(m_deviceName, "Forecast", weatherunderground::helper::EPeriod::kDay)),
      m_temp(boost::make_shared<yApi::historization::CTemperature>("low_temperature")),
@@ -22,7 +23,7 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (shared::exception::CException& e)
    {
-      std::cout << "Configuration or initialization error of Forecast 3 Days module :" << e.what() << std::endl;
+      std::cout << "Configuration or initialization error of Forecast module :" << e.what() << std::endl;
       throw;
    }
 }
@@ -63,6 +64,7 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
       details.set("type", m_type);
       details.set("long", location->longitude());
       details.set("lat", location->latitude());
+      details.set("stationName", m_localisation);
       api->declareDevice(m_deviceName, m_type, m_keywords, details);
    }
 }
@@ -71,21 +73,30 @@ void CForecastDays::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                    IWUConfiguration& wuConfiguration,
                                    boost::shared_ptr<const shared::ILocation> location)
 {
-   //read the localisation
-   m_localisation = wuConfiguration.getLocalisation();
-
-   //TODO : A finir ...
-   m_url.str("");
-   m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/forecast/q/" << m_localisation << ".json";
+   try
+   {
+      m_url.str("");
+      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/forecast/q/" << boost::lexical_cast<std::string>(location->latitude()) << "," << boost::lexical_cast<std::string>(location->longitude()) << ".json";
+   }
+   catch (shared::exception::CException& e)
+   {
+      std::cout << "Configuration or initialization error in forecast module :" << e.what() << std::endl;
+      throw;
+   }
 }
 
 void CForecastDays::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                                   boost::shared_ptr<IdeviceConfiguration> deviceConfiguration)
+                                   IWUConfiguration& wuConfiguration,
+                                   boost::shared_ptr<IdeviceConfiguration> deviceConfiguration,
+                                   boost::shared_ptr<const shared::ILocation> location)
 {
    try
    {
-      boost::shared_ptr<const shared::ILocation> location; // TODO : A remplir
       m_deviceConfiguration = deviceConfiguration;
+
+      m_url.str("");
+      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/forecast/q/" << boost::lexical_cast<std::string>(location->latitude()) << "," << boost::lexical_cast<std::string>(location->longitude()) << ".json";
+
       InitializeForecastDays(api, location);
    }
    catch (shared::exception::CException& e)
