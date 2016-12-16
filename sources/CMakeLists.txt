@@ -42,9 +42,6 @@ endif()
 set (LINK_WITH_STATIC_RUNTIME 1)
 include(cmake/compilers.cmake)
 
-# Boost built libraries copy helper
-include(cmake/copyBoost.cmake)
-
 
 
 ##################################################################################################
@@ -923,9 +920,6 @@ endif(WIN32)
 ##################################################################################################
 ## Post build commands
 ##################################################################################################
-
-POST_BUILD_COPY_BOOST_LIBRARIES(yadoms)
-POST_BUILD_COPY_POCO(yadoms)
 
 #copy PostgreSql depends
 FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
