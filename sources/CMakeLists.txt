@@ -165,6 +165,15 @@ IF(WIN32)
       ${OPENSSL_ROOT}/lib/VC/libeay32MT.lib
       ${OPENSSL_ROOT}/lib/VC/ssleay32MT.lib
    )
+
+   #add libeay32.dll and ssleay32.dll as dependencies
+   IF(EXISTS "${OPENSSL_ROOT}/bin/libeay32.dll")
+      SET(PocoNetSSLDepends "${OPENSSL_ROOT}/bin/libeay32.dll")
+   ENDIF()
+    
+   IF(EXISTS "${OPENSSL_ROOT}/bin/ssleay32.dll")
+      SET(PocoNetSSLDepends ${PocoNetSSLDepends} "${OPENSSL_ROOT}/bin/ssleay32.dll")
+   ENDIF()
 ENDIF(WIN32)
 
 
@@ -921,6 +930,13 @@ endif(WIN32)
 ##################################################################################################
 ## Post build commands
 ##################################################################################################
+
+#copy Poco depends
+FOREACH (PocoNetSSLDepends ${PocoNetSSLDepends})
+   add_custom_command(TARGET yadoms POST_BUILD
+                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                          ${PocoNetSSLDepends} $<TARGET_FILE_DIR:yadoms>/)
+ENDFOREACH(PocoNetSSLDepends)
 
 #copy PostgreSql depends
 FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
