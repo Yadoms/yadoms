@@ -42,6 +42,8 @@ CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api,
       std::cout << "Name : " << (*devicesIterator) << std::endl;
       std::cout << "type : " << type << std::endl;
 
+      api->getDeviceConfiguration(*devicesIterator).printToLog(std::cout);
+
       if (type == "WeatherConditions")
       {
          m_weatherConditions = boost::make_shared<CWeatherConditions>(api, 

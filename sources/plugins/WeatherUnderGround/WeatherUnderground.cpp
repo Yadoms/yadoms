@@ -7,14 +7,10 @@
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
 #include <shared/plugin/yPluginApi/IDeviceRemoved.h>
-#include "Features/WeatherConditions.h"
-#include "Features/Astronomy.h"
-#include "Features/ForecastDays.h"
 #include <shared/http/HttpMethods.h>
 #include <shared/exception/Exception.hpp>
 #include "ErrorAnswerHandler.h"
 #include "RequestErrorException.hpp"
-#include "Features/LiveStations.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -38,9 +34,9 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    int astronomySendingRetry = 0;
    int forecast10daysSendingRetry = 0;
 
-   boost::shared_ptr<CWeatherConditions> weatherConditionsRequester;
-   boost::shared_ptr<CAstronomy> astronomyRequester;
-   boost::shared_ptr<CForecastDays> forecast10Days;
+   boost::shared_ptr<features::IFeature> weatherConditionsRequester;
+   boost::shared_ptr<features::IFeature> astronomyRequester;
+   boost::shared_ptr<features::IFeature> forecast10Days;
 
    try
    {
@@ -88,6 +84,10 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
         try {
            // Device creation
            m_factory->createDeviceManually(api, m_configuration, request);
+
+           weatherConditionsRequester = m_factory->getWeatherConditionsDevice();
+           astronomyRequester = m_factory->getAstronomyDevice();
+           forecast10Days = m_factory->getForecastDevice();
         }
         catch (std::exception& e)
         {
