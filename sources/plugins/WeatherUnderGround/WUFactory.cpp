@@ -8,11 +8,9 @@
 #include "Features/Location.h"
 
 CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api, 
-                       IWUConfiguration& wuConfiguration):
-   m_liveStations(boost::make_shared<CLiveStations>(api))
+                       IWUConfiguration& wuConfiguration)
 {
-   //Get all forecast stations to be displayed into the menu
-   m_liveStations->getAllStations(api, wuConfiguration.getAPIKey());
+   initializeLiveStations(api, wuConfiguration);
 
    std::vector<std::string> devices = api->getAllDevices();
    std::vector<std::string>::iterator devicesIterator;
@@ -103,7 +101,7 @@ std::string CWUFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi
       {
          m_astronomyTimer.reset();;
          std::cout << "Could not create device " << request->getData().getDeviceName() << " : already exist." << std::endl;
-         request->sendError("device already exist !"); // TODO : Traduire en anglais
+         request->sendError("device already exist !");
       }
    }
 
@@ -124,7 +122,7 @@ std::string CWUFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi
       {
          m_weatherTimer.reset();
          std::cout << "Could not create device " << request->getData().getDeviceName() << " : already exist." << std::endl;
-         request->sendError("device already exist !"); // TODO : Traduire en anglais
+         request->sendError("device already exist !");
       }
    }
 
@@ -145,11 +143,27 @@ std::string CWUFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi
       {
          m_forecastTimer.reset();
          std::cout << "Could not create device " << request->getData().getDeviceName() << " : already exist." << std::endl;
-         request->sendError("device already exist !"); // TODO : Traduire en anglais
+         request->sendError("device already exist !");
       }
    }
 
    return returnModule->getName();
+}
+
+void CWUFactory::initializeLiveStations(boost::shared_ptr<yApi::IYPluginApi> api,
+                                        IWUConfiguration& wuConfiguration)
+{
+   if (m_liveStations)
+      m_liveStations.reset();
+
+   // If the plugin location is checked, we use the the plugin location otherwise we asked Yadoms system
+   if (wuConfiguration.pluginLocationEnabled())
+      m_liveStations = boost::make_shared<CLiveStations>(wuConfiguration.getLocation());
+   else
+      m_liveStations = boost::make_shared<CLiveStations>(api);
+
+   //Get all forecast stations to be displayed into the menu (send the request to the website)
+   m_liveStations->getAllStations(api, wuConfiguration.getAPIKey());
 }
 
 void CWUFactory::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved)

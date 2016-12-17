@@ -24,7 +24,7 @@ IMPLEMENT_PLUGIN(CWeatherUnderground)
 
 CWeatherUnderground::CWeatherUnderground()
    : m_deviceName("WeatherUnderground"),
-     m_runningState(false)
+     m_runningState(EWUPluginState::kUndefined)
 {}
 
 CWeatherUnderground::~CWeatherUnderground()
@@ -41,7 +41,6 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    boost::shared_ptr<CWeatherConditions> weatherConditionsRequester;
    boost::shared_ptr<CAstronomy> astronomyRequester;
    boost::shared_ptr<CForecastDays> forecast10Days;
-   //std::vector<shared::CDataContainer> forecastStations;
 
    try
    {
@@ -50,11 +49,18 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       // Create all existing devices
       m_factory = boost::make_shared<CWUFactory>(api, m_configuration);
+
+      setPluginState(api, EWUPluginState::kRunning);
+   }
+   catch (CRequestErrorException&)
+   {
+      // Informs Yadoms about the plugin actual state
+      setPluginState(api, EWUPluginState::kNoConnection);
    }
    catch (...)
    {
       // Informs Yadoms about the plugin actual state
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
+      setPluginState(api, EWUPluginState::kInitializationError);
    }
 
    std::cout << "CWeatherUnderground plugin is running..." << std::endl;
@@ -68,7 +74,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventStopRequested:
          {
             std::cout << "Stop requested" << std::endl;
-            api->setPluginState(yApi::historization::EPluginState::kStopped);
+            setPluginState(api, EWUPluginState::kStop);
             return;
          }
 	  case yApi::IYPluginApi::kEventManuallyDeviceCreation:
@@ -86,6 +92,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
         catch (std::exception& e)
         {
            request->sendError(e.what());
+           setPluginState(api, EWUPluginState::kInitializationError);
         }
 		  break;
 	  }
@@ -94,7 +101,12 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
         // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
         auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
 
+        setPluginState(api, EWUPluginState::kupdateConfiguration);
+
+        // TODO : Faire attention au changement de nom ! Voir comment appliquer. Voir comment faire la mise à jour du nom.
         m_factory->onDeviceSetConfiguration(api, deviceConfiguration->device(), m_configuration, deviceConfiguration->configuration());
+
+        setPluginState(api, EWUPluginState::kRunning);
 
         break;
      }
@@ -139,7 +151,6 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                shared::CDataContainer returnData = SendUrlRequest(api, weatherConditionsRequester->getUrl(), kEvtTimerRefreshWeatherConditions, weatherConditionsSendingRetry);
                weatherConditionsRequester->parse(api, returnData);
-               api->getEventHandler().createTimer(kEvtPluginState, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
             }
             catch(CRequestErrorException& )
             {}
@@ -151,7 +162,6 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                shared::CDataContainer returnData = SendUrlRequest(api, astronomyRequester->getUrl(), kEvtTimerRefreshAstronomy, astronomySendingRetry);
                astronomyRequester->parse(api, returnData);
-               api->getEventHandler().createTimer(kEvtPluginState, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
             }
             catch (CRequestErrorException&)
             {}
@@ -163,7 +173,6 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                shared::CDataContainer returnData = SendUrlRequest(api, forecast10Days->getUrl(), kEvtTimerRefreshForecast10Days, forecast10daysSendingRetry);
                forecast10Days->parse(api, returnData);
-               api->getEventHandler().createTimer(kEvtPluginState, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
             }
             catch (CRequestErrorException&)
             {}
@@ -171,41 +180,26 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          break;
       case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
-            shared::CDataContainer returnData;
-            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+            setPluginState(api, EWUPluginState::kupdateConfiguration);
+            try {
+               onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
 
-            // TODO : Update Live Station if any -> Enter the new location, for example from the plugin configuration
-            // Le faire par la factory
-            // Virer les locations ci-dessous.
-            //boost::shared_ptr<CLiveStations> newLiveStation();
-            boost::shared_ptr<const shared::ILocation> location;
+               // Initialize the plugin with new forecast stations
+               m_factory->initializeLiveStations(api, m_configuration);
 
-            // Update configurations
-            if (weatherConditionsRequester) weatherConditionsRequester->onPluginUpdate(api, m_configuration, location);
-            if (astronomyRequester) astronomyRequester->onPluginUpdate(api, m_configuration, location);
-            if (forecast10Days) forecast10Days->onPluginUpdate(api, m_configuration, location);
+               // Update configurations
+               if (weatherConditionsRequester) weatherConditionsRequester->onPluginUpdate(api, m_configuration);
+               if (astronomyRequester) astronomyRequester->onPluginUpdate(api, m_configuration);
+               if (forecast10Days) forecast10Days->onPluginUpdate(api, m_configuration);
+
+               setPluginState(api, EWUPluginState::kRunning);
+            }
+            catch (std::exception&)
+            {
+               setPluginState(api, EWUPluginState::kInitializationError);
+            }
             break;
          }
-      case kEvtPluginState:
-         {
-/*
-            // TODO : Voi comment estimer correctement l'état du plugin
-            // estimate the state of the plugin
-            if ((forecast10daysFinished || !m_configuration.isForecast10DaysEnabled()) &&
-                (astronomyFinished || !m_configuration.isAstronomyEnabled()) &&
-                weatherConditionsFinished || (!m_configuration.isConditionsIndividualKeywordsEnabled() && !m_configuration.isLiveConditionsEnabled()))
-               newState = yApi::historization::EPluginState::kRunning;
-
-            if (m_runningState != newState)
-            {
-               m_runningState = newState;
-
-               if (m_runningState == yApi::historization::EPluginState::kRunning)
-                  api->setPluginState(yApi::historization::EPluginState::kRunning);
-            }
-*/
-         }
-         break;
       default:
          std::cerr << "Unknown message id" << std::endl;
          break;
@@ -224,6 +218,41 @@ void CWeatherUnderground::onUpdateConfiguration(boost::shared_ptr<yApi::IYPlugin
    m_configuration.initializeWith(newConfigurationData);
 }
 
+void CWeatherUnderground::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, EWUPluginState newState)
+{
+   if (m_runningState != newState)
+   {
+      switch (newState)
+      {
+      case EWUPluginState::kInitializationError:
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
+         break;
+      case EWUPluginState::kQueryNotFound:
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "querynotfound");
+         break;
+      case EWUPluginState::kKeyNotFound:
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "keynotfound");
+         break;
+      case EWUPluginState::kupdateConfiguration:
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "updateconfiguration");
+         break;
+      case EWUPluginState::kNoConnection:
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "NoConnection");
+         break;
+      case EWUPluginState::kRunning:
+         api->setPluginState(yApi::historization::EPluginState::kRunning);
+         break;
+      case EWUPluginState::kStop:
+         api->setPluginState(yApi::historization::EPluginState::kStopped);
+         break;
+      default:
+         break;
+      }
+
+      m_runningState = newState;
+   }
+}
+
 shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api, std::string url, int event, int &nbRetry)
 {
    try
@@ -234,8 +263,7 @@ shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yAp
 
       if (Response.ContainError())
       {
-         m_runningState = yApi::historization::EPluginState::kCustom;
-         api->setPluginState(m_runningState, Response.getError());
+         api->setPluginState(yApi::historization::EPluginState::kCustom, Response.getError());
          throw shared::exception::CException("Response contain error");
       }
       //All is ok we reinitialize the nbRetry
@@ -254,7 +282,6 @@ shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yAp
       else
       {
          std::cout << e.what() << ". Stop retry." << std::endl;
-         m_runningState = yApi::historization::EPluginState::kCustom;
          api->setPluginState(yApi::historization::EPluginState::kCustom, "NoConnection"); 
          nbRetry = 0;
       }

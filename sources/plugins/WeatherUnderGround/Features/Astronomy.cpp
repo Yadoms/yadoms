@@ -12,11 +12,12 @@ CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
    : m_deviceName(deviceName),
      m_url("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/astronomy/q/" + boost::lexical_cast<std::string>(location->latitude()) + "," + boost::lexical_cast<std::string>(location->longitude()) + ".json"),
      m_moonCharacteristics(boost::make_shared<CMoon>(m_deviceName, "Moon")),
-     m_deviceConfiguration(deviceConfiguration)
+     m_deviceConfiguration(deviceConfiguration),
+     m_location(location)
 {
    try
    {
-      initializeKeywords(api, location);
+      initializeKeywords(api);
    }
    catch (shared::exception::CException& e)
    {
@@ -25,7 +26,7 @@ CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
    }
 }
 
-void CAstronomy::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const shared::ILocation> location)
+void CAstronomy::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    if (m_deviceConfiguration->isAstronomyEnabled())
    {
@@ -40,8 +41,8 @@ void CAstronomy::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api, bo
       std::string m_type = "Astronomy";
       shared::CDataContainer details;
       details.set("type", m_type);
-      details.set("long", location->longitude());
-      details.set("lat", location->latitude());
+      details.set("long", m_location->longitude());
+      details.set("lat", m_location->latitude());
       api->declareDevice(m_deviceName, m_type, m_keywords, details);
    }
    else
@@ -57,13 +58,12 @@ void CAstronomy::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api, bo
 }
 
 void CAstronomy::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                                IWUConfiguration& wuConfiguration,
-                                boost::shared_ptr<const shared::ILocation> location)
+                                IWUConfiguration& wuConfiguration)
 {
    try
    {
       m_url.str("");
-      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/astronomy/q/" << boost::lexical_cast<std::string>(location->latitude()) << "," << boost::lexical_cast<std::string>(location->longitude()) << ".json";
+      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/astronomy/q/" << boost::lexical_cast<std::string>(m_location->latitude()) << "," << boost::lexical_cast<std::string>(m_location->longitude()) << ".json";
    }
    catch (shared::exception::CException& e)
    {
@@ -80,11 +80,12 @@ void CAstronomy::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
    try
    {
       m_deviceConfiguration = deviceConfiguration;
+      m_location = location;
 
       m_url.str("");
-      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/astronomy/q/" << boost::lexical_cast<std::string>(location->latitude()) << "," << boost::lexical_cast<std::string>(location->longitude()) << ".json";
+      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/astronomy/q/" << boost::lexical_cast<std::string>(m_location->latitude()) << "," << boost::lexical_cast<std::string>(m_location->longitude()) << ".json";
 
-      initializeKeywords(api, location);
+      initializeKeywords(api);
    }
    catch (shared::exception::CException& e)
    {
@@ -101,8 +102,8 @@ void CAstronomy::parse(boost::shared_ptr<yApi::IYPluginApi> api,
       if (m_deviceConfiguration->isAstronomyEnabled())
       {
          m_moonCharacteristics->setParameters(dataToParse,
-                                                "moon_phase.percentIlluminated",
-                                                "moon_phase.ageOfMoon");
+                                              "moon_phase.percentIlluminated",
+                                              "moon_phase.ageOfMoon");
       }
 
       api->historizeData(m_deviceName, m_keywords);

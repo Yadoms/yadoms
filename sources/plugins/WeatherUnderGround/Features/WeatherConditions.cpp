@@ -27,11 +27,12 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
      m_windchill(boost::make_shared<yApi::historization::CTemperature>("Windchill")),
      m_liveConditions(boost::make_shared<CCondition>(m_deviceName, "LiveConditions")),
      m_url("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/conditions/q/" + boost::lexical_cast<std::string>(location->latitude()) + "," + boost::lexical_cast<std::string>(location->longitude()) + ".json"),
-     m_deviceConfiguration(deviceConfiguration)
+     m_deviceConfiguration(deviceConfiguration),
+     m_location(location)
 {
    try
    {
-      initializeKeywords(api, location);
+      initializeKeywords(api);
    }
    catch (shared::exception::CException& e)
    {
@@ -40,7 +41,7 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
    }
 }
 
-void CWeatherConditions::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const shared::ILocation> location)
+void CWeatherConditions::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Clear the list
    m_keywords.clear();
@@ -82,21 +83,20 @@ void CWeatherConditions::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi>
       std::string m_type = "WeatherConditions";
       shared::CDataContainer details;
       details.set("type", m_type);
-      details.set("long", location->longitude());
-      details.set("lat", location->latitude());
+      details.set("long", m_location->longitude());
+      details.set("lat", m_location->latitude());
       details.set("stationName", m_localisation);
       api->declareDevice(m_deviceName, m_type, m_keywords, details);
    }
 }
 
 void CWeatherConditions::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api, 
-                                        IWUConfiguration& wuConfiguration,
-                                        boost::shared_ptr<const shared::ILocation> location)
+                                        IWUConfiguration& wuConfiguration)
 {
    try
    {
       m_url.str("");
-      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/conditions/q/" << boost::lexical_cast<std::string>(location->latitude()) << "," << boost::lexical_cast<std::string>(location->longitude()) << ".json";
+      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/conditions/q/" << boost::lexical_cast<std::string>(m_location->latitude()) << "," << boost::lexical_cast<std::string>(m_location->longitude()) << ".json";
    }
    catch (shared::exception::CException& e)
    {
@@ -110,11 +110,12 @@ void CWeatherConditions::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api
    try
    {
       m_deviceConfiguration = deviceConfiguration;
+      m_location = location;
 
       m_url.str("");
-      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/conditions/q/" << boost::lexical_cast<std::string>(location->latitude()) << "," << boost::lexical_cast<std::string>(location->longitude()) << ".json";
+      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/conditions/q/" << boost::lexical_cast<std::string>(m_location->latitude()) << "," << boost::lexical_cast<std::string>(m_location->longitude()) << ".json";
 
-      initializeKeywords(api, location);
+      initializeKeywords(api);
    }
    catch (shared::exception::CException& e)
    {

@@ -25,7 +25,11 @@ public:
    //--------------------------------------------------------------
    bool ContainError() const;
 
-   yApi::historization::EPluginState getError() const;
+   //--------------------------------------------------------------
+   /// \brief	  Return the error type
+   /// \return    the error name
+   //--------------------------------------------------------------
+   std::string getError() const;
 
 private:
 
@@ -37,6 +41,6 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Error State plugin
    //--------------------------------------------------------------
-   yApi::historization::EPluginState m_errorStatePlugin;
+   std::string m_errorStatePlugin;
 };
 

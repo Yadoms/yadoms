@@ -15,11 +15,12 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
      m_temp(boost::make_shared<yApi::historization::CTemperature>("low_temperature")),
      m_isDeveloperMode(false),
      m_url ("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/forecast/q/" + boost::lexical_cast<std::string>(location->latitude()) + "," + boost::lexical_cast<std::string>(location->longitude()) + ".json"),
-     m_deviceConfiguration(deviceConfiguration)
+     m_deviceConfiguration(deviceConfiguration),
+     m_location(location)
 {
    try
    {
-      InitializeForecastDays(api, location);
+      InitializeForecastDays(api);
    }
    catch (shared::exception::CException& e)
    {
@@ -28,7 +29,7 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
    }
 }
 
-void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const shared::ILocation> location)
+void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    if (m_deviceConfiguration->isForecast10DaysEnabled())
    {
@@ -62,21 +63,20 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
       std::string m_type = "Forecast";
       shared::CDataContainer details;
       details.set("type", m_type);
-      details.set("long", location->longitude());
-      details.set("lat", location->latitude());
+      details.set("long", m_location->longitude());
+      details.set("lat", m_location->latitude());
       details.set("stationName", m_localisation);
       api->declareDevice(m_deviceName, m_type, m_keywords, details);
    }
 }
 
 void CForecastDays::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                                   IWUConfiguration& wuConfiguration,
-                                   boost::shared_ptr<const shared::ILocation> location)
+                                   IWUConfiguration& wuConfiguration)
 {
    try
    {
       m_url.str("");
-      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/forecast/q/" << boost::lexical_cast<std::string>(location->latitude()) << "," << boost::lexical_cast<std::string>(location->longitude()) << ".json";
+      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/forecast/q/" << boost::lexical_cast<std::string>(m_location->latitude()) << "," << boost::lexical_cast<std::string>(m_location->longitude()) << ".json";
    }
    catch (shared::exception::CException& e)
    {
@@ -93,11 +93,12 @@ void CForecastDays::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
    try
    {
       m_deviceConfiguration = deviceConfiguration;
+      m_location = location;
 
       m_url.str("");
-      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/forecast/q/" << boost::lexical_cast<std::string>(location->latitude()) << "," << boost::lexical_cast<std::string>(location->longitude()) << ".json";
+      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/forecast/q/" << boost::lexical_cast<std::string>(m_location->latitude()) << "," << boost::lexical_cast<std::string>(m_location->longitude()) << ".json";
 
-      InitializeForecastDays(api, location);
+      InitializeForecastDays(api);
    }
    catch (shared::exception::CException& e)
    {

@@ -23,6 +23,8 @@ public:
    // IWUConfiguration implementation
    void initializeWith(const shared::CDataContainer& data) override;
    std::string getAPIKey() const override;
+   boost::shared_ptr<const shared::ILocation> getLocation() const override;
+   bool pluginLocationEnabled() const override;
    // [END] IWUConfiguration implementation
 
 private:

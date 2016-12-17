@@ -3,6 +3,7 @@
 #include <shared/exception/Exception.hpp>
 #include <shared/http/HttpMethods.h>
 #include "Location.h"
+#include "../RequestErrorException.hpp"
 
 CLiveStations::CLiveStations(boost::shared_ptr<yApi::IYPluginApi> api)
 {
@@ -27,8 +28,8 @@ void CLiveStations::getAllStations(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       std::cerr << "exception " << e.what() << std::endl;
       std::cout << "No Stations return by the website" << std::endl;
-      // TODO : Gérer la réponse de l'erreur qui est la même que pour les Features
-      // TODO : Gestion de l'état du plugin.
+      
+      throw CRequestErrorException();
    }
 }
 

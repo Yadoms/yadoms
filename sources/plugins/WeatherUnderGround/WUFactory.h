@@ -42,6 +42,14 @@ public:
                                     boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> request);
 
    //--------------------------------------------------------------
+   /// \brief	    initialize forecast stations
+   /// \param[in] api                  yPluginApi API
+   /// \param[in] wuConfiguration     The plugin configuration
+   //--------------------------------------------------------------
+   void initializeLiveStations(boost::shared_ptr<yApi::IYPluginApi> api,
+                               IWUConfiguration& wuConfiguration);
+
+   //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
    /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] receivedValue    The received value from the interrupt

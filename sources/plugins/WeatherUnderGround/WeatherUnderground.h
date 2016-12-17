@@ -11,8 +11,23 @@ enum
 {
    kEvtTimerRefreshWeatherConditions = yApi::IYPluginApi::kPluginFirstEventId, // Always start from shared::event::CEventHandler::kUserFirstId
    kEvtTimerRefreshAstronomy,
-   kEvtTimerRefreshForecast10Days,
-   kEvtPluginState
+   kEvtTimerRefreshForecast10Days
+};
+
+//-----------------------------------------------------
+///\brief The plugin state
+//-----------------------------------------------------
+
+enum EWUPluginState
+{
+   kUndefined = 0,
+   kStop,
+   kInitializationError,
+   kQueryNotFound,
+   kKeyNotFound,
+   kupdateConfiguration,
+   kNoConnection,
+   kRunning
 };
 
 //--------------------------------------------------------------
@@ -56,6 +71,12 @@ private:
    shared::CDataContainer SendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api, std::string url, int event, int &nbRetry);
 
    //--------------------------------------------------------------
+   /// \brief Manage the state of the plugin
+   /// \param[in] newState  the new state
+   //--------------------------------------------------------------
+   void setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, EWUPluginState newState);
+
+   //--------------------------------------------------------------
    /// \brief	The plugin Name
    //--------------------------------------------------------------
    std::string m_deviceName;
@@ -66,13 +87,12 @@ private:
    CWUConfiguration m_configuration;
 
    //--------------------------------------------------------------
-   /// \brief	The plugin state
-   //--------------------------------------------------------------
-   yApi::historization::EPluginState m_runningState;
-
-   //--------------------------------------------------------------
    /// \brief	The factory of the plugin
    //--------------------------------------------------------------
    boost::shared_ptr<CWUFactory> m_factory;
-};
 
+   //--------------------------------------------------------------
+   /// \brief	The plugin state
+   //--------------------------------------------------------------
+   EWUPluginState m_runningState;
+};
