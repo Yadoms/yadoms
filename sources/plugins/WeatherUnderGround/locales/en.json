@@ -19,7 +19,40 @@
 			      "description": ""
             }
          }
-      }
+      },
+      "LiveConditions" :
+      {
+           "name": "Live conditions",
+           "content":
+           {
+              "IndividualKeywords" :
+              {				 
+                 "name": "Individual keywords",
+                 "description": ""
+              }
+           }
+      },
+      "Astronomy" :
+      {
+           "name": "Astronomy"
+      },
+      "Forecast10Days" :
+      {
+           "name": "Forecast",
+           "content":
+           {
+              "individualRainForecast" :
+              {				 
+                 "name": "Individual rain information",
+                 "description": ""
+              },
+              "individualTempForecast" :
+              {				 
+                 "name": "Individual temperature information",
+                 "description": ""
+              }
+           }
+      }      
 	},
 	"customLabels": {
 		"pluginState": {
@@ -30,53 +63,5 @@
 			"desactivated": "One module or more are desactivated",
          "updateconfiguration":"Update the configuration"
 		}
-	},
-   "manuallyDeviceCreationConfigurationSchema": {
-      "LiveStations" :
-      {				 
-         "name": "Live Stations",
-         "description": "Select the forecast station the closest of your city."
-      },
-      "deviceToCreate":
-      {
-         "name": "Type",
-         "description": "Type of the device",
-         "content":
-         {      
-			  "LiveConditions" :
-			  {
-                 "name": "Live conditions",
-                 "content":
-                 {
-				        "IndividualKeywords" :
-				        {				 
-                       "name": "Individual keywords",
-                       "description": ""
-					     }
-				     }
-			  },
-			  "Astronomy" :
-			  {
-                 "name": "Astronomy"
-			  },
-			  "Forecast10Days" :
-			  {
-                 "name": "Forecast",
-                 "content":
-                 {
-				        "individualRainForecast" :
-				        {				 
-                       "name": "Individual rain information",
-                       "description": ""
-					     },
-				        "individualTempForecast" :
-				        {				 
-                       "name": "Individual temperature information",
-                       "description": ""
-					     }
-				     }
-			  }        
-		 }
-	  }
-   } 
+	}
 }

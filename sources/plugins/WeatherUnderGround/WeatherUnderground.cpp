@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "WeatherUnderground.h"
-#include "deviceConfiguration.h"
+//#include "deviceConfiguration.h"
 #include <shared/event/EventTimer.h>
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
@@ -46,6 +46,10 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       // Create all existing devices
       m_factory = boost::make_shared<CWUFactory>(api, m_configuration);
 
+      weatherConditionsRequester = m_factory->getWeatherConditionsDevice();
+      astronomyRequester = m_factory->getAstronomyDevice();
+      forecast10Days = m_factory->getForecastDevice();
+
       setPluginState(api, EWUPluginState::kRunning);
    }
    catch (CRequestErrorException&)
@@ -53,8 +57,9 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       // Informs Yadoms about the plugin actual state
       setPluginState(api, EWUPluginState::kNoConnection);
    }
-   catch (...)
+   catch (std::exception& e)
    {
+      std::cout << "exception : " << e.what() << std::endl;
       // Informs Yadoms about the plugin actual state
       setPluginState(api, EWUPluginState::kInitializationError);
    }
@@ -73,6 +78,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             setPluginState(api, EWUPluginState::kStop);
             return;
          }
+/*
 	  case yApi::IYPluginApi::kEventManuallyDeviceCreation:
 	  {
         auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
@@ -95,7 +101,8 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
            setPluginState(api, EWUPluginState::kInitializationError);
         }
 		  break;
-	  }
+	  }*/
+/*
      case yApi::IYPluginApi::kSetDeviceConfiguration:
      {
         // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
@@ -109,7 +116,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
         setPluginState(api, EWUPluginState::kRunning);
 
         break;
-     }
+     }*/
 	  case yApi::IYPluginApi::kEventDeviceRemoved:
 	  {
 		  auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
@@ -119,7 +126,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 		  break;
 	  }
-	  case yApi::IYPluginApi::kBindingQuery:
+/*	  case yApi::IYPluginApi::kBindingQuery:
 	  {
 		  // Yadoms ask for a binding query 
         auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
@@ -144,13 +151,13 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
            data->sendError(errorMessage);
 		  }
 		  break;
-	  }
+	  }*/
       case kEvtTimerRefreshWeatherConditions:
          {
             try
             {
                shared::CDataContainer returnData = SendUrlRequest(api, weatherConditionsRequester->getUrl(), kEvtTimerRefreshWeatherConditions, weatherConditionsSendingRetry);
-               weatherConditionsRequester->parse(api, returnData);
+               weatherConditionsRequester->parse(api, returnData, m_configuration);
             }
             catch(CRequestErrorException& )
             {}
@@ -161,7 +168,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             try
             {
                shared::CDataContainer returnData = SendUrlRequest(api, astronomyRequester->getUrl(), kEvtTimerRefreshAstronomy, astronomySendingRetry);
-               astronomyRequester->parse(api, returnData);
+               astronomyRequester->parse(api, returnData, m_configuration);
             }
             catch (CRequestErrorException&)
             {}
@@ -172,7 +179,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             try
             {
                shared::CDataContainer returnData = SendUrlRequest(api, forecast10Days->getUrl(), kEvtTimerRefreshForecast10Days, forecast10daysSendingRetry);
-               forecast10Days->parse(api, returnData);
+               forecast10Days->parse(api, returnData, m_configuration);
             }
             catch (CRequestErrorException&)
             {}
@@ -186,6 +193,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
                // Initialize the plugin with new forecast stations
                m_factory->initializeLiveStations(api, m_configuration);
+               m_factory->createDevice(api, m_configuration);
 
                // Update configurations
                if (weatherConditionsRequester) weatherConditionsRequester->onPluginUpdate(api, m_configuration);

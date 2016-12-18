@@ -5,7 +5,6 @@
 
 CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
                              IWUConfiguration& wuConfiguration,
-                             boost::shared_ptr<IdeviceConfiguration> deviceConfiguration,
                              boost::shared_ptr<const shared::ILocation> location,
                              const std::string& deviceName,
                              const std::string& stationName)
@@ -15,12 +14,11 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
      m_temp(boost::make_shared<yApi::historization::CTemperature>("low_temperature")),
      m_isDeveloperMode(false),
      m_url ("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/forecast/q/" + boost::lexical_cast<std::string>(location->latitude()) + "," + boost::lexical_cast<std::string>(location->longitude()) + ".json"),
-     m_deviceConfiguration(deviceConfiguration),
      m_location(location)
 {
    try
    {
-      InitializeForecastDays(api);
+      InitializeForecastDays(api, wuConfiguration);
    }
    catch (shared::exception::CException& e)
    {
@@ -29,9 +27,9 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
    }
 }
 
-void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> api)
+void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration)
 {
-   if (m_deviceConfiguration->isForecast10DaysEnabled())
+   if (wuConfiguration.isForecast10DaysEnabled())
    {
       m_keywords.clear();
 
@@ -46,7 +44,7 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
       m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
                           shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit());
 
-      if (m_deviceConfiguration->isRainIndividualKeywordsEnabled())
+      if (wuConfiguration.isRainIndividualKeywordsEnabled())
       {
          for (auto counter = 0; counter < NB_RAIN_FORECAST_DAY; ++counter)
          {
@@ -60,12 +58,9 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
       m_keywords.push_back(m_temp);
 
       // Declare keywords
-      std::string m_type = "Forecast";
+      std::string m_type = "forecast";
       shared::CDataContainer details;
       details.set("type", m_type);
-      details.set("long", m_location->longitude());
-      details.set("lat", m_location->latitude());
-      details.set("stationName", m_localisation);
       api->declareDevice(m_deviceName, m_type, m_keywords, details);
    }
 }
@@ -84,7 +79,7 @@ void CForecastDays::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
       throw;
    }
 }
-
+/*
 void CForecastDays::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                    IWUConfiguration& wuConfiguration,
                                    boost::shared_ptr<IdeviceConfiguration> deviceConfiguration,
@@ -105,14 +100,15 @@ void CForecastDays::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
       std::cout << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
       throw;
    }
-}
+}*/
 
 void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
-                          const shared::CDataContainer dataToParse)
+                          const shared::CDataContainer dataToParse,
+                          IWUConfiguration& wuConfiguration)
 {
    try
    {
-      if (m_deviceConfiguration->isForecast10DaysEnabled())
+      if (wuConfiguration.isForecast10DaysEnabled())
       {
          auto result = dataToParse.get<std::vector<shared::CDataContainer> >("forecast.simpleforecast.forecastday");
          std::vector<shared::CDataContainer>::iterator i;
@@ -144,7 +140,7 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
                   m_temp->set(temp);
             }
 
-            if (m_deviceConfiguration->isRainIndividualKeywordsEnabled())
+            if (wuConfiguration.isRainIndividualKeywordsEnabled())
             {
                if (counter < NB_RAIN_FORECAST_DAY)
                {

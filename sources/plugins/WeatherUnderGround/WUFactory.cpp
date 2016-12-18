@@ -3,7 +3,6 @@
 #include "Features/WeatherConditions.h"
 #include "Features/Astronomy.h"
 #include "Features/ForecastDays.h"
-#include "deviceConfiguration.h"
 #include "WeatherUnderground.h"
 #include "Features/Location.h"
 
@@ -15,85 +14,100 @@ CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api,
    std::vector<std::string> devices = api->getAllDevices();
    std::vector<std::string>::iterator devicesIterator;
 
+   boost::shared_ptr<const shared::ILocation> location = m_liveStations->getCityLocation();
+   std::string cityName = m_liveStations->getCity();
+
    // Create all devices if present
    for (devicesIterator = devices.begin(); devicesIterator != devices.end(); ++devicesIterator)
    {
-	   std::string type = "";
-      boost::shared_ptr<const shared::ILocation> location;
-      std::string stationName = "";
-
-      // plugin state have no type
-	   try {
-         //retrieve the type
-		   type = api->getDeviceDetails(*devicesIterator).get<std::string>("type");
-
-         //retrieve location information
-         location = boost::make_shared<location::CLocation>(
-            api->getDeviceDetails(*devicesIterator).get<double>("long"),
-            api->getDeviceDetails(*devicesIterator).get<double>("lat"),
-            0);
-
-         //retrieve the station name
-         stationName = api->getDeviceDetails(*devicesIterator).get<std::string>("stationName");
-	   }
-	   catch (...)
-	   {}
-
+      std::string type;
       std::cout << "Name : " << (*devicesIterator) << std::endl;
-      std::cout << "type : " << type << std::endl;
-
-      api->getDeviceConfiguration(*devicesIterator).printToLog(std::cout);
-
-      if (type == "WeatherConditions")
-      {
-         m_weatherConditions = boost::make_shared<CWeatherConditions>(api, 
-                                                                      wuConfiguration, 
-                                                                      boost::make_shared<CdeviceConfiguration>(api->getDeviceConfiguration(*devicesIterator)),
-                                                                      location,
-                                                                      (*devicesIterator),
-                                                                      stationName);
+      try {
+         type = api->getDeviceDetails(*devicesIterator).get<std::string>("type");
       }
-      else if (type == "Astronomy")
+      catch(std::exception&)
+      {}
+
+      if (type == "weather")
       {
-         m_astronomy = boost::make_shared<CAstronomy>(api, 
-                                                      wuConfiguration, 
-                                                      boost::make_shared<CdeviceConfiguration>(api->getDeviceConfiguration(*devicesIterator)),
-                                                      location,
-                                                      (*devicesIterator));
+         if (!m_weatherConditions)
+         {
+            m_weatherConditions = boost::make_shared<CWeatherConditions>(api,
+                                                                         wuConfiguration,
+                                                                         location,
+                                                                         (*devicesIterator),
+                                                                         cityName);
+
+            api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+            m_weatherTimer = api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
+            m_weatherTimer->start();
+         }
+         else
+         {
+            m_weatherTimer.reset();
+            std::cout << "Could not create device weather : already exist." << std::endl;
+         }
       }
-      else if (type == "Forecast")
+      
+      if (type == "astronomy")
       {
-         m_forecast = boost::make_shared<CForecastDays>(api, 
-                                                    wuConfiguration, 
-                                                    boost::make_shared<CdeviceConfiguration>(api->getDeviceConfiguration(*devicesIterator)),
-                                                    location,
-                                                    (*devicesIterator),
-                                                    stationName);
-      }  
+         if (!m_astronomy)
+         {
+            m_astronomy = boost::make_shared<CAstronomy>(api,
+                                                         wuConfiguration,
+                                                         location,
+                                                         (*devicesIterator));
+
+            api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+            m_astronomyTimer = api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(9));
+            m_astronomyTimer->start();
+         }
+         else
+         {
+            m_astronomyTimer.reset();
+            std::cout << "Could not create device astronomy : already exist." << std::endl;
+         }
+      }
+
+      if (type == "forecast")
+      {
+         if (!m_forecast)
+         {
+            m_forecast = boost::make_shared<CForecastDays>(api,
+                                                           wuConfiguration,
+                                                           location,
+                                                           (*devicesIterator),
+                                                           cityName);
+
+            api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+            m_forecastTimer = api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(3));
+            m_forecastTimer->start();
+         }
+         else
+         {
+            m_forecastTimer.reset();
+            std::cout << "Could not create device forecast : already exist." << std::endl;
+         }
+      }
    }
+
+   // Create device if any
+   createDevice(api, wuConfiguration);
 }
 
-std::string CWUFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
-                                             IWUConfiguration& wuConfiguration,
-                                             boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> request)
+void CWUFactory::createDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                              IWUConfiguration& wuConfiguration)
 {
-   boost::shared_ptr<features::IFeature> returnModule;
-   boost::shared_ptr<IdeviceConfiguration> deviceConfiguration = boost::make_shared<CdeviceConfiguration>(request->getData().getConfiguration());
-
-   auto selection = request->getData().getConfiguration().get<int>("LiveStations");
-
    // get the location and name of the selected station
-   boost::shared_ptr<const shared::ILocation> location = m_liveStations->getStationLocation(selection);
-   std::string stationName = m_liveStations->getStationName(selection);
+   initializeLiveStations(api, wuConfiguration);
+   std::string cityName = m_liveStations->getCity();
 
    // If astronomy is enabled
-   if (deviceConfiguration->isAstronomyEnabled())
+   if (wuConfiguration.isAstronomyEnabled())
    {
       if (!m_astronomy)
       {
-         m_astronomy = boost::make_shared<CAstronomy>(api, wuConfiguration, deviceConfiguration, location, request->getData().getDeviceName());
-         request->sendSuccess(m_astronomy->getName());
-         returnModule = m_astronomy;
+         m_astronomy = boost::make_shared<CAstronomy>(api, wuConfiguration, m_liveStations->getCityLocation(), "Astronomy");
 
          api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
          m_astronomyTimer = api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(9));
@@ -101,20 +115,22 @@ std::string CWUFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi
       }
       else
       {
-         m_astronomyTimer.reset();;
-         std::cout << "Could not create device " << request->getData().getDeviceName() << " : already exist." << std::endl;
-         request->sendError("device already exist !");
+         m_astronomy->onPluginUpdate(api, wuConfiguration);
+         std::cout << "Update astronomy module" << std::endl;
       }
+   }
+   else
+   {
+      m_astronomyTimer.reset();
+      m_astronomy.reset();
    }
 
    // if conditions are enabled
-   if (deviceConfiguration->isConditionsIndividualKeywordsEnabled() || deviceConfiguration->isLiveConditionsEnabled())
+   if (wuConfiguration.isConditionsIndividualKeywordsEnabled() || wuConfiguration.isLiveConditionsEnabled())
    {
       if (!m_weatherConditions)
       {
-         m_weatherConditions = boost::make_shared<CWeatherConditions>(api, wuConfiguration, deviceConfiguration, location, request->getData().getDeviceName(), stationName);
-         request->sendSuccess(m_weatherConditions->getName());
-         returnModule = m_weatherConditions;
+         m_weatherConditions = boost::make_shared<CWeatherConditions>(api, wuConfiguration, m_liveStations->getCityLocation(), "Weather", cityName);
 
          api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
          m_weatherTimer = api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
@@ -122,20 +138,22 @@ std::string CWUFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi
       }
       else
       {
-         m_weatherTimer.reset();
-         std::cout << "Could not create device " << request->getData().getDeviceName() << " : already exist." << std::endl;
-         request->sendError("device already exist !");
+         m_weatherConditions->onPluginUpdate(api, wuConfiguration);
+         std::cout << "Update weather module" << std::endl;
       }
+   }
+   else
+   {
+      m_weatherConditions.reset();
+      m_weatherTimer.reset();
    }
 
    // If forecast is enabled
-   if (deviceConfiguration->isForecast10DaysEnabled())
+   if (wuConfiguration.isForecast10DaysEnabled())
    {
       if (!m_forecast)
       {
-         m_forecast = boost::make_shared<CForecastDays>(api, wuConfiguration, deviceConfiguration, location, request->getData().getDeviceName(), stationName);
-         request->sendSuccess(m_forecast->getName()); 
-         returnModule = m_forecast;
+         m_forecast = boost::make_shared<CForecastDays>(api, wuConfiguration, m_liveStations->getCityLocation(), "Forecast", cityName);
 
          api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
          m_forecastTimer = api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(3));
@@ -143,21 +161,20 @@ std::string CWUFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi
       }
       else
       {
-         m_forecastTimer.reset();
-         std::cout << "Could not create device " << request->getData().getDeviceName() << " : already exist." << std::endl;
-         request->sendError("device already exist !");
+         m_forecast->onPluginUpdate(api, wuConfiguration);
+         std::cout << "Update forecast module" << std::endl;
       }
    }
-
-   return returnModule->getName();
+   else
+   {
+      m_forecast.reset();
+      m_forecastTimer.reset();
+   }
 }
 
 void CWUFactory::initializeLiveStations(boost::shared_ptr<yApi::IYPluginApi> api,
                                         IWUConfiguration& wuConfiguration)
 {
-   if (m_liveStations)
-      m_liveStations.reset();
-
    // If the plugin location is checked, we use the the plugin location otherwise we asked Yadoms system
    if (wuConfiguration.pluginLocationEnabled())
       m_liveStations = boost::make_shared<CLiveStations>(wuConfiguration.getLocation());
@@ -165,6 +182,7 @@ void CWUFactory::initializeLiveStations(boost::shared_ptr<yApi::IYPluginApi> api
       m_liveStations = boost::make_shared<CLiveStations>(api);
 
    //Get all forecast stations to be displayed into the menu (send the request to the website)
+   //TODO : A simplifier
    m_liveStations->getAllStations(api, wuConfiguration.getAPIKey());
 }
 
@@ -191,6 +209,7 @@ void CWUFactory::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::str
    }
 }
 
+/*
 void CWUFactory::onDeviceSetConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, 
                                           const std::string& deviceName, 
                                           IWUConfiguration& wuConfiguration, 
@@ -228,7 +247,7 @@ shared::CDataContainer CWUFactory::bindAvailableStations()
 {
    return m_liveStations->bindAvailableStations();
 }
-
+*/
 boost::shared_ptr<features::IFeature> CWUFactory::getWeatherConditionsDevice()
 {
    return m_weatherConditions;

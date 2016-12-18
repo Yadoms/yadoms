@@ -2,7 +2,6 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
 #include "../IWUConfiguration.h"
-#include "../IdeviceConfiguration.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -22,7 +21,8 @@ namespace features
       /// \param[in] dataToParse     data to parse
       //--------------------------------------------------------------
       virtual void parse(boost::shared_ptr<yApi::IYPluginApi> api,
-                         const shared::CDataContainer dataToParse) = 0;
+                         const shared::CDataContainer dataToParse,
+                         IWUConfiguration& wuConfiguration) = 0;
 
       //--------------------------------------------------------------
       /// \brief	  Update the configuration when something change from the HMI
@@ -37,10 +37,9 @@ namespace features
       /// \param[in] api                  pointer to the API
       /// \param[in] deviceconfiguration  The Configuration of the device
       //--------------------------------------------------------------
-      virtual void onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+      /*virtual void onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                   IWUConfiguration& wuConfiguration,
-                                  boost::shared_ptr<IdeviceConfiguration> deviceConfiguration,
-                                  boost::shared_ptr<const shared::ILocation> location) = 0;
+                                  boost::shared_ptr<const shared::ILocation> location) = 0;*/
 
       //--------------------------------------------------------------
       /// \brief	  Return the url

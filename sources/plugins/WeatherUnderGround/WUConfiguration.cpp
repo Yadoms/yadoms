@@ -42,3 +42,33 @@ boost::shared_ptr<const shared::ILocation> CWUConfiguration::getLocation() const
                                                   m_data.get<double>("location.content.latitude"),
                                                   0);
 }
+
+bool CWUConfiguration::isLiveConditionsEnabled() const
+{
+   return m_data.get<bool>("LiveConditions.checkbox");
+}
+
+bool CWUConfiguration::isAstronomyEnabled() const
+{
+   return m_data.get<bool>("Astronomy.checkbox");
+}
+
+bool CWUConfiguration::isForecast10DaysEnabled() const
+{
+   return m_data.get<bool>("Forecast10Days.checkbox");
+}
+
+bool CWUConfiguration::isConditionsIndividualKeywordsEnabled() const
+{
+   return m_data.get<bool>("LiveConditions.content.IndividualKeywords");
+}
+
+bool CWUConfiguration::isRainIndividualKeywordsEnabled() const
+{
+   return m_data.get<bool>("Forecast10Days.content.individualRainForecast");
+}
+
+bool CWUConfiguration::isTempIndividualKeywordsEnabled() const
+{
+   return m_data.get<bool>("Forecast10Days.content.individualTempForecast");
+}

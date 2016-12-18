@@ -12,8 +12,7 @@ public:
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~IWUConfiguration()
-   {
-   }
+   {}
 
    //--------------------------------------------------------------
    /// \brief		   Load configuration data
@@ -38,5 +37,14 @@ public:
    /// \return     The location entered in the plugin
    //--------------------------------------------------------------
    virtual boost::shared_ptr<const shared::ILocation> getLocation() const = 0;
-};
 
+   //--------------------------------------------------------------
+   /// \brief	    Get options enabled from the configuration
+   //--------------------------------------------------------------
+   virtual bool isLiveConditionsEnabled(void) const = 0;
+   virtual bool isConditionsIndividualKeywordsEnabled(void) const = 0;
+   virtual bool isRainIndividualKeywordsEnabled(void) const = 0;
+   virtual bool isTempIndividualKeywordsEnabled(void) const = 0;
+   virtual bool isAstronomyEnabled(void) const = 0;
+   virtual bool isForecast10DaysEnabled(void) const = 0;
+};

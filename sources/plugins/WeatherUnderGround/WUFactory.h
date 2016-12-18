@@ -4,7 +4,7 @@
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include "Features/IFeature.h"
 #include "IWUConfiguration.h"
-#include "IdeviceConfiguration.h"
+//#include "IdeviceConfiguration.h"
 #include "Features/LiveStations.h"
 
 // Shortcut to yPluginApi namespace
@@ -37,9 +37,8 @@ public:
    /// \param[in] request             The configuration received for the device
    /// \param[in] location            The GPS location to be used for each device
    //--------------------------------------------------------------
-   std::string createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
-                                    IWUConfiguration& wuConfiguration,
-                                    boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> request);
+   void createDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                     IWUConfiguration& wuConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	    initialize forecast stations
@@ -61,7 +60,7 @@ public:
    /// \param [in] deviceName       The name of the device where the configuration have changed
    /// \param [in] newConfiguration The new configuration
    //--------------------------------------------------------------
-   void onDeviceSetConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName, IWUConfiguration& wuConfiguration, const shared::CDataContainer newConfiguration);
+   //void onDeviceSetConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName, IWUConfiguration& wuConfiguration, const shared::CDataContainer newConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	                     Retreive device
@@ -75,7 +74,7 @@ public:
    /// \brief	    bindAvailableStations
    /// \return all forecast available stations
    //--------------------------------------------------------------
-   shared::CDataContainer bindAvailableStations();
+   //shared::CDataContainer bindAvailableStations();
 
 private:
 

@@ -25,6 +25,12 @@ public:
    std::string getAPIKey() const override;
    boost::shared_ptr<const shared::ILocation> getLocation() const override;
    bool pluginLocationEnabled() const override;
+   bool isConditionsIndividualKeywordsEnabled() const override;
+   bool isLiveConditionsEnabled() const override;
+   bool isRainIndividualKeywordsEnabled() const override;
+   bool isTempIndividualKeywordsEnabled() const override;
+   bool isAstronomyEnabled() const override;
+   bool isForecast10DaysEnabled() const override;
    // [END] IWUConfiguration implementation
 
 private:

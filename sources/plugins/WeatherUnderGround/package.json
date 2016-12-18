@@ -15,7 +15,7 @@
       "location": {
          "type": "section",
 		   "enableWithCheckBox": "true",
-		   "enableWithCheckBoxDefaultValue": "false",         
+		   "enableWithCheckBoxDefaultValue": "false",
          "content": {        
             "longitude": {
                "type": "decimal",
@@ -26,55 +26,45 @@
                "defaultValue" : "0"               
             }
          }
-      }
-	},
-   "manuallyDeviceCreationConfigurationSchema": {
-         "LiveStations" : {				 
-             "type" : "enum",
-             "__Binding__" : {
-               "type" : "plugin", 
-               "query" : "LiveStations"
-            }
-         },
-         "deviceToCreate":
-         {
-            "type": "radioSection",
-            "content":
-            {
-              "LiveConditions" :
-              {
-                    "type": "section",                 
-                    "content":
-                    {
-                       "IndividualKeywords" :
-                       {				 
-                          "type" : "bool",
-                          "defaultValue" : "false"
-                       }
-                    }
-              },
-              "Astronomy" :
-              {
-                    "type": "section"
-              },
-              "Forecast10Days" :
-              {
-                    "type": "section",
-                    "content":
-                    {
-                       "individualRainForecast" :
-                       {				 
-                          "type" : "bool",
-                          "defaultValue" : "false"
-                       },
-                       "individualTempForecast" :
-                       {				 
-                          "type" : "bool",
-                          "defaultValue" : "false"
-                       }                    
-                    }
+      },       
+      "LiveConditions" :
+      {
+           "type": "section",
+		     "enableWithCheckBox": "true",
+		     "enableWithCheckBoxDefaultValue": "false",           
+           "content":
+           {
+              "IndividualKeywords" :
+              {				 
+                 "type" : "bool",
+                 "defaultValue" : "false"
               }
-            }
-		 }
-   }   
+           }
+      },
+      "Astronomy" :
+      {
+           "type": "section",
+		     "enableWithCheckBox": "true",
+		     "enableWithCheckBoxDefaultValue": "false"
+      },
+      "Forecast10Days" :
+      {
+           "type": "section",
+		     "enableWithCheckBox": "true",
+		     "enableWithCheckBoxDefaultValue": "false",              
+           "content":
+           {
+              "individualRainForecast" :
+              {				 
+                 "type" : "bool",
+                 "defaultValue" : "false"
+              },
+              "individualTempForecast" :
+              {				 
+                 "type" : "bool",
+                 "defaultValue" : "false"
+              }                    
+           }
+      }   
+   }
 }

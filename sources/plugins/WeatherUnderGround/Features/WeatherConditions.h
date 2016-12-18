@@ -3,7 +3,6 @@
 #include <shared/DataContainer.h>
 #include "IFeature.h"
 #include "../IWUConfiguration.h"
-#include "../IdeviceConfiguration.h"
 #include "Keywords/WeatherIcon.h"
 #include "Keywords/Condition.h"
 
@@ -27,15 +26,13 @@ public:
    //--------------------------------------------------------------
    CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
                       IWUConfiguration& wuConfiguration,
-                      boost::shared_ptr<IdeviceConfiguration> deviceConfiguration,
                       boost::shared_ptr<const shared::ILocation> location,
                       const std::string& deviceName,
                       const std::string& stationName);
 
    // IFeature Implementation
-   void parse(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer dataToParse) override;
+   void parse(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer dataToParse, IWUConfiguration& wuConfiguration) override;
    void onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration) override;
-   void onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration, boost::shared_ptr<IdeviceConfiguration> deviceConfiguration, boost::shared_ptr<const shared::ILocation> location) override;
    std::string getUrl() const override;
    std::string getName() const override;
    void setCityName(const std::string& CityName) override;
@@ -52,7 +49,7 @@ private:
    /// \brief	  Initialise LiveConditions keywords
    /// \param[in] api                    pointer to the API
    //--------------------------------------------------------------
-   void initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api);
+   void initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site
@@ -96,11 +93,6 @@ private:
    /// \brief  Keywords list
    //--------------------------------------------------------------
    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
-
-   //--------------------------------------------------------------
-   /// \brief	    The device Configuration
-   //--------------------------------------------------------------   
-   boost::shared_ptr<IdeviceConfiguration> m_deviceConfiguration;
 
    //--------------------------------------------------------------
    /// \brief  the location used

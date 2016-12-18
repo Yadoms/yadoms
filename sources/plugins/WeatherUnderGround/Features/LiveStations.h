@@ -46,11 +46,23 @@ public:
    boost::shared_ptr<const shared::ILocation> getStationLocation(int selection);
 
    //--------------------------------------------------------------
+   /// \brief	    getCityLocation
+   /// \return                   the location (longitude, latitude) of the city
+   //--------------------------------------------------------------
+   boost::shared_ptr<const shared::ILocation> getCityLocation();
+
+   //--------------------------------------------------------------
    /// \brief	    getStationName
    /// \param[in] selection      list selection return by the web site
    /// \return                   the forecast station name
    //--------------------------------------------------------------
    std::string getStationName(int selection);
+
+   //--------------------------------------------------------------
+   /// \brief	    getCity
+   /// \return                   the city corresponding to the coordonates
+   //--------------------------------------------------------------
+   std::string getCity();
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -68,5 +80,10 @@ private:
    /// \brief	    list of all Stations return by WeatherUnderground
    //--------------------------------------------------------------
    std::vector<shared::CDataContainer> m_stations;
+
+   //--------------------------------------------------------------
+   /// \brief	    response return by weather underground
+   //--------------------------------------------------------------
+   shared::CDataContainer m_response;
 };
 

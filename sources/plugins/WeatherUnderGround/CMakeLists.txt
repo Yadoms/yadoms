@@ -7,11 +7,8 @@ include("../YadomsPluginsCommon.cmake")
 #########################################
 
 set(WUNDERGROUND_SOURCES
-   deviceConfiguration.cpp
-   deviceConfiguration.h
    ErrorAnswerHandler.cpp
    ErrorAnswerHandler.h
-   IdeviceConfiguration.h
    IWUConfiguration.h
    NoStateException.hpp
    RequestErrorException.hpp

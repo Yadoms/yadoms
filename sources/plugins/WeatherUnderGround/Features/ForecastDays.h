@@ -4,7 +4,6 @@
 #include <shared/DataContainer.h>
 #include "IFeature.h"
 #include "../IWUConfiguration.h"
-#include "../IdeviceConfiguration.h"
 #include "Keywords/Forecast.h"
 
 namespace yApi = shared::plugin::yPluginApi;
@@ -27,15 +26,14 @@ public:
    //--------------------------------------------------------------
    CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
                  IWUConfiguration& wuConfiguration,
-                 boost::shared_ptr<IdeviceConfiguration> deviceConfiguration,
                  boost::shared_ptr<const shared::ILocation> location,
                  const std::string& deviceName,
                  const std::string& stationName);
 
    // IFeature Implementation
-   void parse(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer dataToParse) override;
+   void parse(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer dataToParse, IWUConfiguration& wuConfiguration) override;
    void onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration) override;
-   void onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration, boost::shared_ptr<IdeviceConfiguration> deviceConfiguration, boost::shared_ptr<const shared::ILocation> location) override;
+//   void onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration, boost::shared_ptr<const shared::ILocation> location) override;
    std::string getUrl() const override;
    std::string getName() const override;
    void setCityName(const std::string& CityName) override;
@@ -52,7 +50,7 @@ private:
    /// \brief	  Initialise Forecast 10 Days variables
    /// \param[in] api                    pointer to the API
    //--------------------------------------------------------------
-   void InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> api);
+   void InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site
@@ -98,11 +96,6 @@ private:
    /// \brief  developerMode state
    //--------------------------------------------------------------
    bool m_isDeveloperMode;
-
-   //--------------------------------------------------------------
-   /// \brief	    The device Configuration
-   //--------------------------------------------------------------   
-   boost::shared_ptr<IdeviceConfiguration> m_deviceConfiguration;
 
    //--------------------------------------------------------------
    /// \brief  the location used
