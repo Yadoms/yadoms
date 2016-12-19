@@ -9,8 +9,9 @@
 	},
 	"customLabels": {
 		"pluginState": {
-		    "connecting": "Connecting...",
+         "connecting": "Connecting...",
 			"connectionLost": "Connection to TeleInfo module was lost",
+         "ErDFCounterdesactivated" : "TeleInfo desactivated in the ErDF counter. Please contact our energy supplier.",
 			"updateConfiguration": "Configuration updating..."
 		}
 	}

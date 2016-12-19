@@ -26,6 +26,7 @@ function ListParameterHandler(i18nContext, paramName, content, currentValue) {
    this.uuid = createUUID();
    this.addBtnUuid = createUUID();
    this.selectorUuid = createUUID();
+   this.containerUuid = createUUID();
    //the checkbox for validation
    this.itemNumberTextBoxUuid = createUUID();
 
@@ -97,7 +98,7 @@ ListParameterHandler.prototype.getDOMObject = function () {
                         "data-i18n-options=\'" + JSON.stringify(i18nOptions) + "\' />" +
                   "</div>" +
                   "<p class=\"help-block\"></p>" +
-                  "<div class=\"well control-group list-item-container\">";
+                  "<div id=\"" + this.containerUuid + "\" class=\"well control-group list-item-container\">";
 
    //we append each param in the section
    $.each(this.items, function (key, value) {
@@ -117,7 +118,7 @@ ListParameterHandler.prototype.createItemLine = function(item) {
                       "<div class=\"col-md-11\" >" +
                            item.getDOMObject() +
                       "</div>" +
-                      "<div class=\"col-md-1\" style =\"padding-right: 0px;\">" + //Fix here a problem with Firefox by fixing the padding-right to 0px.
+                      "<div class=\"list-item-content col-md-1\" style =\"padding-right: 0px;\">" + //Fix here a problem with Firefox by fixing the padding-right to 0px.
                           "<div class=\"btn-group-vertical btn-group-sm\" role=\"group\">";
    if (this.allowDuplication)
       itemLine +=           "<button class=\"btn btn-primary btn-sm btn-duplicate\" type=\"button\" ><span ><i class=\"fa fa-files-o \"></i></span></button>";
@@ -258,6 +259,29 @@ ListParameterHandler.prototype.locateInDOM = function () {
 ListParameterHandler.prototype.getParamName = function() {
   return this.paramName;
 };
+
+/**
+ * Enable / Disbale the content of the configuration item
+ */
+ListParameterHandler.prototype.setEnabled = function (enabled) {
+    var self = this;
+
+    if (enabled) {
+            $("#" + self.uuid).addClass("enable-validation");
+            $("#" + self.addBtnUuid).attr("disabled", false);
+            $("#" + self.containerUuid + " > div.list-item-line > div.list-item-content > div > button").attr("disabled", false);
+    } else {
+            $("#" + self.uuid).removeClass("enable-validation");
+            $("#" + self.addBtnUuid).attr("disabled", true);
+            $("#" + self.containerUuid + " > div.list-item-line > div.list-item-content > div > button").attr("disabled", true);
+    }
+
+    $.each(self.items, function (key, value) {
+      if ($.isFunction(value.setEnabled)) {
+        value.setEnabled(enabled);
+      }
+    });
+}
 
 /**
  * Get the current configuration in the form

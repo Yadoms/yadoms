@@ -13,21 +13,37 @@ namespace shared
 {
    CDataContainer CHttpMethods::SendGetRequest(const std::string & url)
    {
+      shared::CDataContainer parameters;
+      return SendGetRequest(url, parameters);
+   }
+
+   CDataContainer CHttpMethods::SendGetRequest(const std::string & url, shared::CDataContainer & parameters)
+   {
       try
       {
+         std::map<std::string, std::string> mapParameters = parameters.getAsMap();
          Poco::URI uri(url);
+
+         if (!parameters.empty())
+         {
+            for (std::map<std::string, std::string>::iterator parametersIterator = mapParameters.begin(); parametersIterator != mapParameters.end(); ++parametersIterator)
+               uri.addQueryParameter(parametersIterator->first, parametersIterator->second);
+         }
+
          Poco::Net::HTTPClientSession session(uri.getHost(), uri.getPort());
-         Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET, uri.getPath());
+         Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET, uri.getPathAndQuery(), Poco::Net::HTTPMessage::HTTP_1_1);
 
          session.sendRequest(request);
 
          Poco::Net::HTTPResponse response;
          auto& rs = session.receiveResponse(response);
+
          if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK)
          {
             if (boost::icontains(response.getContentType(), "application/json"))
             {
                std::string content;
+
                if (response.hasContentLength())
                {
                   content.resize(static_cast<unsigned int>(response.getContentLength()));

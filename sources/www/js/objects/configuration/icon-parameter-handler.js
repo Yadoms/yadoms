@@ -67,6 +67,19 @@ IconParameterHandler.prototype.getParamName = function() {
 };
 
 /**
+ * Enable / Disbale the content of the configuration item
+ */
+IconParameterHandler.prototype.setEnabled = function (enabled) {
+    var self = this;
+
+    if (enabled) {
+            $("#" + self.uuid).addClass("enable-validation").attr("disabled", false);
+    } else {
+            $("#" + self.uuid).removeClass("enable-validation").attr("disabled", true);
+    }
+}
+
+/**
  * Get the current configuration in the form
  * @returns {string}
  */

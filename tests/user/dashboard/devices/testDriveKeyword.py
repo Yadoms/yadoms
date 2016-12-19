@@ -53,6 +53,8 @@ class DriveKeyword(unittest.TestCase):
 
    def test_driveOnOffKeyword(self):
       print '=== Try to drive a on/off keyword ==='
+      print 'ref Issues : #162'
+
       deviceName = u'fakeOnOffReadWriteSwitch'
       keywordName = u'Switch'
       attachedPluginInstance = u'My fakePlugin instance'
@@ -91,6 +93,8 @@ class DriveKeyword(unittest.TestCase):
 
    def test_driveEnumKeyword(self):
       print '=== Try to drive an enum keyword ==='
+      print 'ref Issues : #176'
+
       deviceName = u'fakeController1'
       keywordName = u'controllerValue'
       attachedPluginInstance = u'My fakePlugin instance'

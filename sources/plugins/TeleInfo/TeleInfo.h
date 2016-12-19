@@ -2,9 +2,7 @@
 #include <plugin_cpp_api/IPlugin.h>
 #include "TeleInfoConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
-#include <shared/communication/AsciiBufferLogger.h>
-#include "Transceiver.h"
-#include "TeleInfoReceiveBufferHandler.h"
+#include "IDecoder.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -52,11 +50,11 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	                     Called when received a message from the TeleInfo Receiver
-   /// \param [in] context           Plugin execution context (Yadoms API)
-   /// \param [in] data              The buffer with the received information
+   /// \param [in] api              Plugin execution context (Yadoms API)
+   /// \param [in] messages         The buffer with the received information
    //--------------------------------------------------------------
    void processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
-                            const shared::communication::CByteBuffer& data);
+                            const boost::shared_ptr<std::map<std::string, std::string>>& messages);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the TeleInfo Receiver becomes connected
@@ -100,26 +98,36 @@ private:
    //--------------------------------------------------------------
    /// \brief	The TeleInfo protocol implementation object
    //--------------------------------------------------------------
-   boost::shared_ptr<ITransceiver> m_transceiver;
-
-   //--------------------------------------------------------------
-   /// \brief  The communication port
-   //--------------------------------------------------------------
-   shared::communication::CAsciiBufferLogger m_logger;
+   boost::shared_ptr<IDecoder> m_decoder;
 
    //--------------------------------------------------------------
    /// \brief  The receiver buffer
    //--------------------------------------------------------------
-   boost::shared_ptr<CTeleInfoReceiveBufferHandler> m_receiveBufferHandler;
+   boost::shared_ptr<shared::communication::IReceiveBufferHandler> m_receiveBufferHandler;
 
    //--------------------------------------------------------------
    /// \brief  developerMode state
    //--------------------------------------------------------------
    bool m_isDeveloperMode;
 
+   //-----------------------------------------------------
+   ///\brief The plugin state
+   //-----------------------------------------------------
+
+   enum ETeleInfoPluginState
+   {
+      kUndefined = 0,
+      kStop,
+      kConnecting,
+      kConnectionLost,
+      kErDFCounterdesactivated,
+      kupdateConfiguration,
+      kRunning
+   };
+
    //--------------------------------------------------------------
    /// \brief	The plugin state
    //--------------------------------------------------------------
-   bool m_runningState;
+   ETeleInfoPluginState m_runningState;
 };
 
