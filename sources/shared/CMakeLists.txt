@@ -20,7 +20,6 @@ set(SHARED_LIB_SRC
    shared/ThreadBase.h
 
    shared/StringExtension.h
-   shared/StringExtension.cpp	
 	
    shared/Field.hpp
 

@@ -23,8 +23,8 @@ namespace shared
       static std::string format(const char *szFormat, va_list &arg_ptr )
 	   {
 		   char c;
-		   int nSize = vsnprintf(&c, 1, szFormat, arg_ptr);
-		   char *str = (char *)malloc(sizeof(char) * (nSize + 1));
+	      auto nSize = vsnprintf(&c, 1, szFormat, arg_ptr);
+	      auto str = static_cast<char *>(malloc(sizeof(char) * (nSize + 1)));
 		   vsnprintf(str, nSize + 1, szFormat, arg_ptr);
 		   std::string result(str);
 
@@ -100,7 +100,7 @@ namespace shared
       /// \return       the string parsed into the templated type
       //
       template<class T>
-      static inline T parse(const char * value);
+      static T parse(const char * value);
   
 
       //
@@ -109,7 +109,7 @@ namespace shared
       /// \return              Converted value, using the C locale
       //
       template<typename T>
-      static inline std::string cultureInvariantToString(const T& value);
+      static std::string cultureInvariantToString(const T& value);
    };
 
    /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,7 +121,7 @@ namespace shared
    /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    template<class T>
-   inline T CStringExtension::parse(const char * value)
+   T CStringExtension::parse(const char * value)
    {
       return boost::lexical_cast<T>(value);
    }
@@ -145,7 +145,7 @@ namespace shared
    template<>
    inline float CStringExtension::parse(const char * value)
    {
-      return (float)atof(value);
+      return static_cast<float>(atof(value));
    }
 
    //
@@ -190,7 +190,7 @@ namespace shared
    inline bool CStringExtension::parse(const char * value)
    {
       std::istringstream iss(value);
-      bool result = false;
+      auto result = false;
       iss >> std::boolalpha >> result;      
       return result;
    }
@@ -201,7 +201,7 @@ namespace shared
    /// \return              Converted value, using the C locale
    //
    template<typename T>
-   inline std::string CStringExtension::cultureInvariantToString(const T& value)
+   std::string CStringExtension::cultureInvariantToString(const T& value)
    {
       std::ostringstream ss;
       ss.imbue(std::locale::classic()); // Use the C locale 
@@ -219,7 +219,7 @@ namespace shared
    {
       std::ostringstream ss;
       ss.imbue(std::locale::classic()); // Use the C locale 
-      ss << (int)value;
+      ss << static_cast<int>(value);
       return ss.str();
    }
 
