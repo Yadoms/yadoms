@@ -18,7 +18,7 @@ namespace rfxcomMessages
 
       CheckReceivedMessage(rbuf, rbufSize, pTypeCARTELECTRONIC, sTypeTIC, GET_RBUF_STRUCT_SIZE(TIC), DONT_CHECK_SEQUENCE_NUMBER);
 
-      if ((rbuf.TIC.state & 0x01) != 0)
+      if ((rbuf.TIC.state & 0x04) != 0)
       {
          //TeleInfo reading error - historize only on state change
          m_teleInfoError->set(true);
