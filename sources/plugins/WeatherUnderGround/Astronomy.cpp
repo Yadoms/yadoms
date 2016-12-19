@@ -40,8 +40,8 @@ void CAstronomy::initializeVariables(boost::shared_ptr<yApi::IYPluginApi> api,
       m_keywords.clear();
 
       m_keywords.push_back(m_moonCharacteristics->getHistorizable());
-      m_moonCharacteristics->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Load.getName(),
-                                     shared::plugin::yPluginApi::CStandardCapacities::Load.getUnit());
+      m_moonCharacteristics->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Load().getName(),
+                                     shared::plugin::yPluginApi::CStandardCapacities::Load().getUnit());
 
       // Declare keywords
       std::string m_URL = "www.wunderground.com/";

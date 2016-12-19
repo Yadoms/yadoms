@@ -14,9 +14,7 @@ namespace xplrules
             ((Err))
          );
 
-         static const shared::plugin::yPluginApi::CStandardCapacity LogCapacity("Log",
-                                                                                shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                shared::plugin::yPluginApi::EKeywordDataType::kString);
+         DECLARE_CAPACITY(LogCapacity, "Log", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kString);
 
 
          CLog::CLog(const std::string& keywordName,
@@ -38,7 +36,7 @@ namespace xplrules
 
          const shared::plugin::yPluginApi::CStandardCapacity& CLog::getCapacity() const
          {
-            return LogCapacity;
+            return LogCapacity();
          }
 
          const shared::plugin::yPluginApi::EKeywordAccessMode& CLog::getAccessMode() const

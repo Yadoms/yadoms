@@ -18,14 +18,12 @@ namespace xplrules
             ((Stop)("stop"))
          );
 
-         static const shared::plugin::yPluginApi::CStandardCapacity MertikStatusCapacity("mertik",
-                                                                                         shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                         shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(MertikStatusCapacity, "mertik", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CMertickStatus::CMertickStatus(const std::string& keywordName)
             : CSingleHistorizableData<EMertikStatus>(keywordName,
-                                                     MertikStatusCapacity,
+                                                     MertikStatusCapacity(),
                                                      shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
          {
          }

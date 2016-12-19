@@ -33,7 +33,7 @@ namespace shared
             CCameraMove::CCameraMove(const std::string& keywordName,
                                      const EKeywordAccessMode& accessMode)
                : CSingleHistorizableData<ECameraMoveCommand>(keywordName,
-                                                             CStandardCapacities::CameraMove,
+                                                             CStandardCapacities::CameraMove(),
                                                              accessMode,
                                                              ECameraMoveCommand::kCenterPosition)
             {

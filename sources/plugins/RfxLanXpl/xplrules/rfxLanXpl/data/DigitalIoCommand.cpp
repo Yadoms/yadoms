@@ -14,14 +14,12 @@ namespace xplrules
             ((Toggle))
          );
 
-         static const shared::plugin::yPluginApi::CStandardCapacity RfxLanDigitalIoCommandCapacity("digitalio",
-                                                                                                   shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                                   shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(RfxLanDigitalIoCommandCapacity, "digitalio", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CDigitalIoCommand::CDigitalIoCommand(const std::string& keywordName)
             : CSingleHistorizableData<EDigitalIoCommand>(keywordName,
-                                                         RfxLanDigitalIoCommandCapacity,
+                                                         RfxLanDigitalIoCommandCapacity(),
                                                          shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
          {
          }

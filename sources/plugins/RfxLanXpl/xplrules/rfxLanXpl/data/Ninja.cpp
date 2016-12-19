@@ -19,14 +19,12 @@ namespace xplrules
          );
 
 
-         static const shared::plugin::yPluginApi::CStandardCapacity NinjaCapacity("ninja",
-                                                                                  shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                  shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(NinjaCapacity, "ninja", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CNinja::CNinja(const std::string& keywordName)
             : CSingleHistorizableData<ENinjaCommand>(keywordName,
-                                                     NinjaCapacity,
+                                                     NinjaCapacity(),
                                                      shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
          {
          }

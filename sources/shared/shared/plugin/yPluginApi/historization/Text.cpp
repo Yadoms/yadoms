@@ -15,7 +15,7 @@ namespace shared
                          const EMeasureType& measureType,
                          typeInfo::CStringTypeInfo& additionalInfo)
                : CSingleHistorizableData<std::string>(keywordName,
-                                                      CStandardCapacities::Text,
+                                                      CStandardCapacities::Text(),
                                                       accessMode,
                                                       std::string(),
                                                       measureType,

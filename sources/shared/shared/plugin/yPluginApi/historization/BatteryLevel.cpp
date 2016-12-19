@@ -14,7 +14,7 @@ namespace shared
                                          const EMeasureType& measureType,
                                          typeInfo::CIntTypeInfo& additionalInfo)
                : CSingleHistorizableData<int>(keywordName,
-                                              CStandardCapacities::BatteryLevel,
+                                              CStandardCapacities::BatteryLevel(),
                                               EKeywordAccessMode::kGet,
                                               0,
                                               measureType,

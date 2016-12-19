@@ -58,14 +58,12 @@ namespace rfxcomMessages
          ((Record))
       );
 
-      static const shared::plugin::yPluginApi::CStandardCapacity RemotePCCapacity("RemotePC",
-                                                                                  shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                  shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+      DECLARE_CAPACITY(RemotePCCapacity, "RemotePC", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
       CRemotePCHistorizer::CRemotePCHistorizer(const std::string& keywordName)
          : CSingleHistorizableData<ERemotePCCodes>(keywordName,
-                                                   RemotePCCapacity,
+                                                   RemotePCCapacity(),
                                                    shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
       {
       }

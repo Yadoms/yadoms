@@ -80,14 +80,12 @@ namespace xplrules
             ((XEnd))
          )
 
-         static const shared::plugin::yPluginApi::CStandardCapacity RemoteAtiWonderCapacity("RemoteAtiWonder",
-                                                                                            shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                            shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(RemoteAtiWonderCapacity, "RemoteAtiWonder", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CRemoteAtiWonder::CRemoteAtiWonder(const std::string& keywordName)
             : CSingleHistorizableData<ERemoteAtiWonderCodes>(keywordName,
-                                                             RemoteAtiWonderCapacity,
+                                                             RemoteAtiWonderCapacity(),
                                                              shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
          {
          }

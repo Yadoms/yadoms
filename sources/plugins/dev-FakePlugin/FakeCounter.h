@@ -74,7 +74,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	Historizers vector
    //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> > m_historizers;
+   std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> m_historizers;
 
    //--------------------------------------------------------------
    /// \brief	    Random number generator, used to simulate increments

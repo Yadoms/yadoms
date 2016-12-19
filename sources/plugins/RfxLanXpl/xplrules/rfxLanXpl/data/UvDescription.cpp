@@ -16,13 +16,12 @@ namespace xplrules
             ((Dangerous)("dangerous"))
          );
 
-         static const shared::plugin::yPluginApi::CStandardCapacity UvDescriptionCapacity("UvDescription",
-                                                                                          shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                          shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(UvDescriptionCapacity, "UvDescription", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CUvDescription::CUvDescription(const std::string& keywordName)
-            : CSingleHistorizableData<EUvDescription>(keywordName, UvDescriptionCapacity,
+            : CSingleHistorizableData<EUvDescription>(keywordName,
+                                                      UvDescriptionCapacity(),
                                                       shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
          {
          }

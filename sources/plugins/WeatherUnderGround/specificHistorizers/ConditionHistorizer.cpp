@@ -2,9 +2,7 @@
 #include "ConditionHistorizer.h"
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 
-const yApi::CStandardCapacity& ConditionCapacity = yApi::CStandardCapacity("Condition"
-                                                                           , yApi::CStandardUnits::NoUnits,
-                                                                           yApi::EKeywordDataType::kNoData);
+DECLARE_CAPACITY(ConditionCapacity, "Condition", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kNoData);
 
 CConditionHistorizer::CConditionHistorizer(const std::string& keywordName,
                                            const yApi::EKeywordAccessMode& accessMode)
@@ -25,7 +23,7 @@ const std::string& CConditionHistorizer::getKeyword() const
 
 const yApi::CStandardCapacity& CConditionHistorizer::getCapacity() const
 {
-   return ConditionCapacity;
+   return ConditionCapacity();
 }
 
 const yApi::EKeywordAccessMode& CConditionHistorizer::getAccessMode() const

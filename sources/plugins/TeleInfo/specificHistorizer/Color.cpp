@@ -15,13 +15,11 @@ namespace teleInfo
          ((RED))
       );
 
-      const shared::plugin::yPluginApi::CStandardCapacity& ColorCapacity = shared::plugin::yPluginApi::CStandardCapacity("ForecastPrice",
-                                                                                                                         shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                                                         shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+      DECLARE_CAPACITY(ColorCapacity, "ForecastPrice", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
       CColor::CColor(const std::string& keywordName)
          : CSingleHistorizableData<EColor>(keywordName,
-                                           ColorCapacity,
+                                           ColorCapacity(),
                                            shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
       {
       }

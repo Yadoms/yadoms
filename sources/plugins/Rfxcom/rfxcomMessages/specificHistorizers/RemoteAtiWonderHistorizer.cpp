@@ -78,14 +78,12 @@ namespace rfxcomMessages
          ((XEnd))
       )
 
-      static const shared::plugin::yPluginApi::CStandardCapacity RemoteAtiWonderCapacity("RemoteAtiWonder",
-                                                                                         shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                         shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+      DECLARE_CAPACITY(RemoteAtiWonderCapacity, "RemoteAtiWonder", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
       CRemoteAtiWonderHistorizer::CRemoteAtiWonderHistorizer(const std::string& keywordName)
          : CSingleHistorizableData<ERemoteAtiWonderCodes>(keywordName,
-                                                          RemoteAtiWonderCapacity,
+                                                          RemoteAtiWonderCapacity(),
                                                           shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
       {
       }

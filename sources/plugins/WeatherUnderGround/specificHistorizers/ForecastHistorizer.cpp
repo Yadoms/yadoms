@@ -10,9 +10,7 @@ namespace shared
       {
          namespace historization
          {
-            const CStandardCapacity& ForecastCapacity = CStandardCapacity("Forecast",
-                                                                          CStandardUnits::NoUnits,
-                                                                          EKeywordDataType::kNoData);
+            DECLARE_CAPACITY(ForecastCapacity, "Forecast", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
 
             CForecastHistorizer::CForecastHistorizer(const std::string& keywordName,
                                                      const EKeywordAccessMode& accessMode,
@@ -34,7 +32,7 @@ namespace shared
 
             const CStandardCapacity& CForecastHistorizer::getCapacity() const
             {
-               return ForecastCapacity;
+               return ForecastCapacity();
             }
 
             const EKeywordAccessMode& CForecastHistorizer::getAccessMode() const

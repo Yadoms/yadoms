@@ -19,7 +19,7 @@ namespace shared
             CUpDownStop::CUpDownStop(const std::string& keywordName,
                                      const EKeywordAccessMode& accessMode)
                : CSingleHistorizableData<EUpDownStopCommand>(keywordName,
-                                                             CStandardCapacities::UpDownStop,
+                                                             CStandardCapacities::UpDownStop(),
                                                              accessMode,
                                                              EUpDownStopCommand::kStop)
             {

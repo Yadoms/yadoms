@@ -10,9 +10,7 @@ namespace shared
       {
          namespace historization
          {
-            const CStandardCapacity& MoonCapacity = CStandardCapacity("Moon",
-                                                                      CStandardUnits::NoUnits,
-                                                                      EKeywordDataType::kNoData);
+            DECLARE_CAPACITY(MoonCapacity, "Moon", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
 
 
             CMoonHistorizer::CMoonHistorizer(const std::string& keywordName,
@@ -34,7 +32,7 @@ namespace shared
 
             const CStandardCapacity& CMoonHistorizer::getCapacity() const
             {
-               return MoonCapacity;
+               return MoonCapacity();
             }
 
             const EKeywordAccessMode& CMoonHistorizer::getAccessMode() const

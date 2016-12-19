@@ -15,7 +15,7 @@ namespace shared
                          const EMeasureType& measureType,
                          typeInfo::CIntTypeInfo& additionalInfo)
                : CSingleHistorizableData<int>(keywordName,
-                                              CStandardCapacities::Rssi,
+                                              CStandardCapacities::Rssi(),
                                               EKeywordAccessMode::kGet,
                                               0,
                                               measureType,

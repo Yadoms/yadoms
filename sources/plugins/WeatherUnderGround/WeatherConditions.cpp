@@ -67,14 +67,14 @@ void CWeatherConditions::initializeVariables(boost::shared_ptr<yApi::IYPluginApi
    {
       m_keywords.push_back(m_liveConditions->getHistorizable());
 
-      m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
-                               shared::plugin::yPluginApi::CStandardCapacities::Temperature.getUnit());
-      m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Speed.getName(),
-                               shared::plugin::yPluginApi::CStandardCapacities::Speed.getUnit());
-      m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Humidity.getName(),
-                               shared::plugin::yPluginApi::CStandardCapacities::Humidity.getUnit());
-      m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
-                               shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit());
+      m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Temperature().getName(),
+                               shared::plugin::yPluginApi::CStandardCapacities::Temperature().getUnit());
+      m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Speed().getName(),
+                               shared::plugin::yPluginApi::CStandardCapacities::Speed().getUnit());
+      m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Humidity().getName(),
+                               shared::plugin::yPluginApi::CStandardCapacities::Humidity().getUnit());
+      m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Rain().getName(),
+                               shared::plugin::yPluginApi::CStandardCapacities::Rain().getUnit());
    }
 
    if (wuConfiguration.IsConditionsIndividualKeywordsEnabled() || wuConfiguration.IsLiveConditionsEnabled())

@@ -16,14 +16,12 @@ namespace xplrules
          );
 
 
-         static const shared::plugin::yPluginApi::CStandardCapacity HumidityDescriptionCapacity("humidityDescription",
-                                                                                                shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                                shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(HumidityDescriptionCapacity, "humidityDescription", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CHumidityDescription::CHumidityDescription(const std::string& keywordName)
             : CSingleHistorizableData<EHumidityDescription>(keywordName,
-                                                            HumidityDescriptionCapacity,
+                                                            HumidityDescriptionCapacity(),
                                                             shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
          {
          }

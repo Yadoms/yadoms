@@ -344,6 +344,7 @@
                   var fn = keyword.friendlyName;
                   
                   if(keyword.type.toLowerCase() ==="enum" && keyword.friendlyName === keyword.name) {
+                  debugger;
                      //try translate
                      fn = $.t("plugins/" + device.attachedPlugin.type + ":enumerations." + keyword.typeInfo.name + ".name");
                      
@@ -456,7 +457,7 @@
    }
 
    function setKeywordValue(keyword, device) {
-   debugger;
+   
       var $keywordRow = getKeywordDomRow(keyword);
       
       var value = null;
