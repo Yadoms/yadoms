@@ -4,10 +4,10 @@
 #include <shared/enumeration/EnumHelpers.hpp>
 
 
-namespace rfxcomMessages {
-   namespace specificHistorizers {
-
-
+namespace rfxcomMessages
+{
+   namespace specificHistorizers
+   {
       //-----------------------------------------------------
       ///\brief               The remote codes
       //-----------------------------------------------------   
@@ -70,7 +70,7 @@ namespace rfxcomMessages {
          ((CursorDownLeft)(119))
          ((LeftMouseButton)(120))
          ((RightMouseButton)(124))
-      );
+      )                                                                                                                                                                                                                                                                                                                 ;
 
 
       //-----------------------------------------------------
@@ -89,11 +89,8 @@ namespace rfxcomMessages {
          ///\brief                     Destructor
          //-----------------------------------------------------
          virtual ~CRemoteAtiWonder2CmdHistorizer();
-
       };
-
-
-
    }
 } // namespace rfxcomMessages::specificHistorizers
+
 

@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "RemoteAtiWonder2CmdHistorizer.h"
-#include <shared/plugin/yPluginApi/StandardUnits.h>
 #include "RemoteAtiWonder2Capacity.h"
 
-namespace rfxcomMessages {
-   namespace specificHistorizers {
-
+namespace rfxcomMessages
+{
+   namespace specificHistorizers
+   {
       DECLARE_ENUM_IMPLEMENTATION(ERemoteAtiWonder2Codes,
          ((A))
          ((B))
@@ -69,9 +69,9 @@ namespace rfxcomMessages {
 
 
       CRemoteAtiWonder2CmdHistorizer::CRemoteAtiWonder2CmdHistorizer(const std::string& keywordName)
-         :CSingleHistorizableData<ERemoteAtiWonder2Codes>(keywordName,
-                                                          RemoteAtiWonder2Capacity(),
-                                                          shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
+         : CSingleHistorizableData<ERemoteAtiWonder2Codes>(keywordName,
+                                                           RemoteAtiWonder2Capacity(),
+                                                           shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
       {
       }
 
@@ -80,4 +80,5 @@ namespace rfxcomMessages {
       }
    }
 } // namespace rfxcomMessages::specificHistorizers
+
 
