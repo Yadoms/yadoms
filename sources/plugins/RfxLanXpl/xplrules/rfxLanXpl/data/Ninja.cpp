@@ -19,9 +19,9 @@ namespace xplrules
          );
 
 
-         const shared::plugin::yPluginApi::CStandardCapacity& NinjaCapacity = shared::plugin::yPluginApi::CStandardCapacity("ninja",
-                                                                                                                            shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                                                            shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         static const shared::plugin::yPluginApi::CStandardCapacity NinjaCapacity("ninja",
+                                                                                  shared::plugin::yPluginApi::CStandardUnits::NoUnits,
+                                                                                  shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CNinja::CNinja(const std::string& keywordName)

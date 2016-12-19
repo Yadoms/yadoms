@@ -14,9 +14,9 @@ namespace xplrules
             ((Err))
          );
 
-         const shared::plugin::yPluginApi::CStandardCapacity& LogCapacity = shared::plugin::yPluginApi::CStandardCapacity("Log",
-                                                                                                                          shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                                                          shared::plugin::yPluginApi::EKeywordDataType::kString);
+         static const shared::plugin::yPluginApi::CStandardCapacity LogCapacity("Log",
+                                                                                shared::plugin::yPluginApi::CStandardUnits::NoUnits,
+                                                                                shared::plugin::yPluginApi::EKeywordDataType::kString);
 
 
          CLog::CLog(const std::string& keywordName,

@@ -11,7 +11,7 @@ namespace shared
          namespace historization
          {
             const std::string& ByteUnit("B");
-            const CStandardCapacity& ByteCapacity = CStandardCapacity("Byte", ByteUnit, EKeywordDataType::kNumeric);
+            static const CStandardCapacity ByteCapacity = CStandardCapacity("Byte", ByteUnit, EKeywordDataType::kNumeric);
 
             CByte::CByte(const std::string& keywordName,
                          const EKeywordAccessMode& accessMode,

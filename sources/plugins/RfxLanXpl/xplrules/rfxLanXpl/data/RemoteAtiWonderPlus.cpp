@@ -80,11 +80,11 @@ namespace xplrules
             ((VEnd))
             ((RightMouseButton))
             ((XEnd))
-         );
+         )
 
-         const shared::plugin::yPluginApi::CStandardCapacity& RemoteAtiWonderPlusCapacity = shared::plugin::yPluginApi::CStandardCapacity("RemoteAtiWonderPlus",
-                                                                                                                                          shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                                                                          shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         static const shared::plugin::yPluginApi::CStandardCapacity RemoteAtiWonderPlusCapacity("RemoteAtiWonderPlus",
+                                                                                                shared::plugin::yPluginApi::CStandardUnits::NoUnits,
+                                                                                                shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CRemoteAtiWonderPlus::CRemoteAtiWonderPlus(const std::string& keywordName)

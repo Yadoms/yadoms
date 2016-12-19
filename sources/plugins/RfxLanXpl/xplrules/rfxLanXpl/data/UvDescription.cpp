@@ -16,9 +16,9 @@ namespace xplrules
             ((Dangerous)("dangerous"))
          );
 
-         const shared::plugin::yPluginApi::CStandardCapacity& UvDescriptionCapacity = shared::plugin::yPluginApi::CStandardCapacity("UvDescription",
-                                                                                                                                    shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                                                                    shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         static const shared::plugin::yPluginApi::CStandardCapacity UvDescriptionCapacity("UvDescription",
+                                                                                          shared::plugin::yPluginApi::CStandardUnits::NoUnits,
+                                                                                          shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CUvDescription::CUvDescription(const std::string& keywordName)

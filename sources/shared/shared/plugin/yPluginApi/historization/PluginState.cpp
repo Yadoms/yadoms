@@ -20,9 +20,9 @@ namespace shared
                ((Custom))
             );
 
-            const shared::plugin::yPluginApi::CStandardCapacity& PluginStateCapacity = shared::plugin::yPluginApi::CStandardCapacity("pluginState_capacity",
-                                                                                                                                     shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                                                                     shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+            static const shared::plugin::yPluginApi::CStandardCapacity PluginStateCapacity("pluginState_capacity",
+                                                                                           shared::plugin::yPluginApi::CStandardUnits::NoUnits,
+                                                                                           shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
             CPluginState::CPluginState(const std::string& keywordName,
                                        const EKeywordAccessMode& accessMode)

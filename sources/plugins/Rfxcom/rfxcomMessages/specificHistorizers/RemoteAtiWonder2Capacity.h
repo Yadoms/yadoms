@@ -9,7 +9,7 @@ namespace rfxcomMessages {
       //-----------------------------------------------------
       ///\brief The remote ATI Wonder II capacity
       //-----------------------------------------------------
-      extern const shared::plugin::yPluginApi::CStandardCapacity& RemoteAtiWonder2Capacity;
+      extern const shared::plugin::yPluginApi::CStandardCapacity RemoteAtiWonder2Capacity;
 
 
    }

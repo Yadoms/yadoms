@@ -18,9 +18,9 @@ namespace xplrules
             ((Stop)("stop"))
          );
 
-         const shared::plugin::yPluginApi::CStandardCapacity& MertikStatusCapacity = shared::plugin::yPluginApi::CStandardCapacity("mertik",
-                                                                                                                                   shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                                                                   shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         static const shared::plugin::yPluginApi::CStandardCapacity MertikStatusCapacity("mertik",
+                                                                                         shared::plugin::yPluginApi::CStandardUnits::NoUnits,
+                                                                                         shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CMertickStatus::CMertickStatus(const std::string& keywordName)

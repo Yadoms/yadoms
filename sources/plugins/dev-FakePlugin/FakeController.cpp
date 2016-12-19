@@ -12,9 +12,9 @@ DECLARE_ENUM_IMPLEMENTATION(EFakeControllerValues,
 )
 
 
-const shared::plugin::yPluginApi::CStandardCapacity& FakeControllerCapacity = shared::plugin::yPluginApi::CStandardCapacity("fakecontroller_capacity",
-                                                                                                                            shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                                                            shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+static const shared::plugin::yPluginApi::CStandardCapacity FakeControllerCapacity(std::string("fakecontroller_capacity"),
+                                                                                  shared::plugin::yPluginApi::CStandardUnits::NoUnits,
+                                                                                  shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
 
 CControllerValue::CControllerValue(const std::string& keywordName)

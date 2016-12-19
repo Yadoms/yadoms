@@ -16,9 +16,9 @@ namespace xplrules
          );
 
 
-         const shared::plugin::yPluginApi::CStandardCapacity& HumidityDescriptionCapacity = shared::plugin::yPluginApi::CStandardCapacity("humidityDescription",
-                                                                                                                                          shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                                                                          shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         static const shared::plugin::yPluginApi::CStandardCapacity HumidityDescriptionCapacity("humidityDescription",
+                                                                                                shared::plugin::yPluginApi::CStandardUnits::NoUnits,
+                                                                                                shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CHumidityDescription::CHumidityDescription(const std::string& keywordName)

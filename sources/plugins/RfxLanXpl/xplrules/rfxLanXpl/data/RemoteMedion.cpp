@@ -78,11 +78,11 @@ namespace xplrules
             ((V2End))
             ((X))
             ((XEnd))
-         );
+         )
 
-         const shared::plugin::yPluginApi::CStandardCapacity& RemoteMedionCapacity = shared::plugin::yPluginApi::CStandardCapacity("RemoteMedion",
-                                                                                                                                   shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                                                                   shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         static const shared::plugin::yPluginApi::CStandardCapacity RemoteMedionCapacity("RemoteMedion",
+                                                                                         shared::plugin::yPluginApi::CStandardUnits::NoUnits,
+                                                                                         shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CRemoteMedion::CRemoteMedion(const std::string& keywordName)
