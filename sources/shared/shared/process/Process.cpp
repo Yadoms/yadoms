@@ -149,9 +149,13 @@ namespace shared
          char line[1024];
          while (moduleStdOut->getline(line, sizeof(line)))
          {
-            logger.information(line);
+            std::string l(line);
+            if (boost::ends_with(l, "\n"))
+               l.erase(l.size() - 1, 1);
+
+            logger.information(l);
             if (scriptLogger != "plugin")
-               YADOMS_LOG(information) << line;
+               YADOMS_LOG(information) << l;
          }
       }
 
@@ -165,10 +169,13 @@ namespace shared
          {
             if (!!lastError)
                *lastError += line;
+            std::string l(line);
+            if (boost::ends_with(l, "\n"))
+               l.erase(l.size()-1, 1);
 
-            logger.error(line);
+            logger.error(l);
             if(scriptLogger != "plugin")
-               YADOMS_LOG(error) << line;
+               YADOMS_LOG(error) << l;
          }
       }
    }
