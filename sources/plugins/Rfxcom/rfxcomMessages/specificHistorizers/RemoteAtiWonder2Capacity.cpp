@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "RemoteAtiWonder2Capacity.h"
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 namespace rfxcomMessages
 {

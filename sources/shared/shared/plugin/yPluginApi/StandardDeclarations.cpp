@@ -3,15 +3,6 @@
 #include "StandardUnits.h"
 #include "StandardValues.h"
 
-#define DECLARE_STANDARD_CAPACITY(cppName, name, unit, keywordDataType) \
-   const shared::plugin::yPluginApi::CStandardCapacity& CStandardCapacities::cppName() \
-   { \
-      static const shared::plugin::yPluginApi::CStandardCapacity capacity( \
-         name, \
-         unit, \
-         keywordDataType); \
-      return capacity; \
-   }
 
 namespace shared
 {
@@ -52,41 +43,41 @@ namespace shared
          const std::string CStandardValues::Close("close");
          const std::string CStandardValues::Stop("stop");
 
-         DECLARE_STANDARD_CAPACITY(ApparentPower, "apparentpower", CStandardUnits::VoltAmpere, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(ArmingAlarm, "armingAlarm", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
-         DECLARE_STANDARD_CAPACITY(BatteryLevel, "batteryLevel", CStandardUnits::Percent, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(CameraMove, "cameraMove", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
-         DECLARE_STANDARD_CAPACITY(Counter, "count", CStandardUnits::NoUnits, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(Current, "current", CStandardUnits::Ampere, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(Curtain, "curtain", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
-         DECLARE_STANDARD_CAPACITY(DateTime, "datetime", CStandardUnits::NoUnits, EKeywordDataType::kDateTime);
-         DECLARE_STANDARD_CAPACITY(Dimmable, "dimmable", CStandardUnits::Percent, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(Direction, "direction", CStandardUnits::Degrees, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(Distance, "distance", CStandardUnits::Meter, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(Duration, "duration", CStandardUnits::NoUnits, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(Energy, "energy", CStandardUnits::WattPerHour, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(Event, "event", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
-         DECLARE_STANDARD_CAPACITY(Frequency, "frequency", CStandardUnits::Hertz, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(Humidity, "humidity", CStandardUnits::Percent, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(Illumination, "illumination", CStandardUnits::Lux, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(Load, "load", CStandardUnits::Percent, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(Message, "message", CStandardUnits::NoUnits, EKeywordDataType::kString);
-         DECLARE_STANDARD_CAPACITY(PluginState, "pluginState", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
-         DECLARE_STANDARD_CAPACITY(Power, "power", CStandardUnits::Watt, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(PowerFactor, "powerFactor", CStandardUnits::NoUnits, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(Pressure, "pressure", CStandardUnits::hectoPascal, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(Rain, "rain", CStandardUnits::Millimeter, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(RainRate, "rainrate", CStandardUnits::MillimeterPerSecond, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(Rssi, "rssi", CStandardUnits::Percent, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(Speed, "speed", CStandardUnits::MetersPerSecond, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(Switch, "switch", CStandardUnits::NoUnits, EKeywordDataType::kBool);
-         DECLARE_STANDARD_CAPACITY(Temperature, "temperature", CStandardUnits::DegreesCelcius, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(Text, "text", CStandardUnits::NoUnits, EKeywordDataType::kString);
-         DECLARE_STANDARD_CAPACITY(UpDownStop, "upDownStop", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
-         DECLARE_STANDARD_CAPACITY(Uv, "uv", CStandardUnits::Uv, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(Voltage, "voltage", CStandardUnits::Volt, EKeywordDataType::kNumeric);
-         DECLARE_STANDARD_CAPACITY(WeatherCondition, "weathercondition", CStandardUnits::NoUnits, EKeywordDataType::kString);
-         DECLARE_STANDARD_CAPACITY(Weight, "weight", CStandardUnits::Kg, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::ApparentPower, "apparentpower", CStandardUnits::VoltAmpere, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::ArmingAlarm, "armingAlarm", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(CStandardCapacities::BatteryLevel, "batteryLevel", CStandardUnits::Percent, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::CameraMove, "cameraMove", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(CStandardCapacities::Counter, "count", CStandardUnits::NoUnits, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Current, "current", CStandardUnits::Ampere, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Curtain, "curtain", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(CStandardCapacities::DateTime, "datetime", CStandardUnits::NoUnits, EKeywordDataType::kDateTime);
+         DECLARE_CAPACITY(CStandardCapacities::Dimmable, "dimmable", CStandardUnits::Percent, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Direction, "direction", CStandardUnits::Degrees, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Distance, "distance", CStandardUnits::Meter, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Duration, "duration", CStandardUnits::NoUnits, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Energy, "energy", CStandardUnits::WattPerHour, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Event, "event", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(CStandardCapacities::Frequency, "frequency", CStandardUnits::Hertz, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Humidity, "humidity", CStandardUnits::Percent, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Illumination, "illumination", CStandardUnits::Lux, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Load, "load", CStandardUnits::Percent, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Message, "message", CStandardUnits::NoUnits, EKeywordDataType::kString);
+         DECLARE_CAPACITY(CStandardCapacities::PluginState, "pluginState", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(CStandardCapacities::Power, "power", CStandardUnits::Watt, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::PowerFactor, "powerFactor", CStandardUnits::NoUnits, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Pressure, "pressure", CStandardUnits::hectoPascal, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Rain, "rain", CStandardUnits::Millimeter, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::RainRate, "rainrate", CStandardUnits::MillimeterPerSecond, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Rssi, "rssi", CStandardUnits::Percent, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Speed, "speed", CStandardUnits::MetersPerSecond, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Switch, "switch", CStandardUnits::NoUnits, EKeywordDataType::kBool);
+         DECLARE_CAPACITY(CStandardCapacities::Temperature, "temperature", CStandardUnits::DegreesCelcius, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Text, "text", CStandardUnits::NoUnits, EKeywordDataType::kString);
+         DECLARE_CAPACITY(CStandardCapacities::UpDownStop, "upDownStop", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(CStandardCapacities::Uv, "uv", CStandardUnits::Uv, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Voltage, "voltage", CStandardUnits::Volt, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::WeatherCondition, "weathercondition", CStandardUnits::NoUnits, EKeywordDataType::kString);
+         DECLARE_CAPACITY(CStandardCapacities::Weight, "weight", CStandardUnits::Kg, EKeywordDataType::kNumeric);
       }
    }
 } // namespace shared::plugin::yPluginApi
