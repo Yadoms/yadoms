@@ -4,17 +4,16 @@
 
 namespace shared
 {
-   Poco::Logger& CLog::m_logger = Poco::Logger::get("YadomsLogger");
    std::map<Poco::Thread::TID, std::string> CLog::m_threadNames;
 
    Poco::Logger& CLog::logger()
    {
-      return m_logger;
+      return Poco::Logger::get("YadomsLogger");
    }
    
    boost::shared_ptr<logInternal::ILogStream> CLog::logStream()
    {
-      return boost::make_shared<logInternal::CLogStreamEnhanced>(m_logger);
+      return boost::make_shared<logInternal::CLogStreamEnhanced>(logger());
    }
 
    void CLog::setThreadName(const std::string & name)
