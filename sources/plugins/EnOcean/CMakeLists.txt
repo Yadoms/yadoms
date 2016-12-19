@@ -123,6 +123,10 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/hardCoded/Profile_D2_01_0B.h
    profiles/hardCoded/Profile_D2_01_0C.cpp
    profiles/hardCoded/Profile_D2_01_0C.h
+   profiles/hardCoded/Profile_D2_01_10.cpp
+   profiles/hardCoded/Profile_D2_01_10.h
+   profiles/hardCoded/Profile_D2_01_11.cpp
+   profiles/hardCoded/Profile_D2_01_11.h
    profiles/hardCoded/Profile_D2_01_12.cpp
    profiles/hardCoded/Profile_D2_01_12.h
 
