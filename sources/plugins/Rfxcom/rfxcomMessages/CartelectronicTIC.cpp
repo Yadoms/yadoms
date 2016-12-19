@@ -10,8 +10,8 @@ namespace rfxcomMessages
    CCartelectronicTIC::CCartelectronicTIC(const RBUF& rbuf,
                                           size_t rbufSize)
       : m_id(0),
-      m_teleInfoError(boost::make_shared<yApi::historization::CSwitch>("TeleInfoError", yApi::EKeywordAccessMode::kGet)), // Read-only keyword
-      m_keywords({ m_teleInfoError })
+      m_teleInfoStatus(boost::make_shared<teleInfo::specificHistorizers::CTeleInfoStatus>("TeleInfoStatus")), // Read-only keyword
+      m_keywords({ m_teleInfoStatus })
    {
       std::string NameCounter1;
       std::string NameCounter2;
@@ -20,13 +20,18 @@ namespace rfxcomMessages
 
       if ((rbuf.TIC.state & 0x04) != 0)
       {
-         //TeleInfo reading error - historize only on state change
-         m_teleInfoError->set(true);
+         //TeleInfo reading error
+         m_teleInfoStatus->set(teleInfo::specificHistorizers::EStatus::kError);
+      }
+      else if ((rbuf.TIC.state & 0x40) != 0)
+      {
+         //TeleInfo counter desactivated
+         m_teleInfoStatus->set(teleInfo::specificHistorizers::EStatus::kDesactivated);
       }
       else
       {
-         // TeleInfo reading error - historize only on state change
-         m_teleInfoError->set(false);
+         // TeleInfo reading ok
+         m_teleInfoStatus->set(teleInfo::specificHistorizers::EStatus::kOk);
 
          // Subscribe Contract
          m_subscribeContract = static_cast<Contract>(rbuf.TIC.contract_type >> 4);
