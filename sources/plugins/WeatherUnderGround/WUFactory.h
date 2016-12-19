@@ -108,5 +108,10 @@ private:
    //--------------------------------------------------------------
    boost::shared_ptr<shared::event::CEventTimer> m_forecastTimer;
 
+   //--------------------------------------------------------------
+   /// \brief
+   //--------------------------------------------------------------
    boost::shared_ptr<CLiveStations> m_liveStations;
+
+   bool m_developerMode;
 };

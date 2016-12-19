@@ -42,7 +42,7 @@
             notifyError($.t("modals.dashboard.sub-windows.system-configuration.errorDuringSavingConfiguration"), error);
          });
 
-      // When systemSection and locationSection are done
+      // When systemSection is done
       $.when(promise).done(function() {               
                //*************
                //language
@@ -55,15 +55,13 @@
 
                //*************
                //City section parameters
-               
                var citySectionParameters = new SectionParameterHandler(i18NContext,
                   ConfigurationManager.items.system.locationSection,
                   {},
                   ConfigurationManager.items.system.locationSection);            
                   
                //*************
-               //city name
-
+               //location parameters
                var location = {};
                
                try{
@@ -238,13 +236,17 @@
                                  .done(function() {
                                  
                                        console.debug ("date format String");
-                                 
+                                       console.debug ("ConfigurationManager.items.system.dateFormatString:", ConfigurationManager.items.system.dateFormatString);
+                                       console.debug ("Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value:", Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value);
+                                       debugger;
+                                       
                                        //*************
                                        //dateFormatString
                                        Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value = dateFormatStringParameter.getCurrentConfiguration();
                                        ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString])
                                           .done(function() {
 
+                                             debugger;
                                              //*************
                                              //basic authentication
                                              var value = {};
@@ -288,6 +290,7 @@
                                                 .done(function() { 
                                                 
                                                    console.debug ("enregistrement - location");
+                                                   debugger;
                                                 
                                                    Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.latitude]  = latitudeParameter.getCurrentConfiguration();
                                                    Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.longitude] = longitudeParameter.getCurrentConfiguration();                                                
@@ -299,6 +302,7 @@
                                                                                        "essai",
                                                                                        "none")
                                                       .done(function() {
+                                                         debugger;
                                                          d.resolve();
                                                       })
                                                       .fail(d.reject);
@@ -310,7 +314,7 @@
                                     .fail(d.reject);
                            })
                            .fail(d.reject);
-
+/*
                            d.promise()
                            .done(function() {
                               //we show that configuration has been successfully saved
@@ -323,7 +327,7 @@
                            .fail(function(error) {
                               //an error has occurred during saving
                               notifyError($.t("modals.dashboard.sub-windows.system-configuration.errorDuringSavingConfiguration"), error);
-                           });
+                           });*/
 
                      },
                      filter: function() {
@@ -397,7 +401,7 @@
                                  })
                                  .fail(d.reject);
 
-
+/*
                               d.promise()
                                  .done(function() {
                                     //we show that configuration has been successfully saved
@@ -410,7 +414,7 @@
                                  .always(function() {
                                     //we ask to reload the modal
                                     Yadoms.initializeSystemConfigurationDashboard();
-                                 });
+                                 });*/
                            });
                      });
                   promise.resolve();

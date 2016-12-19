@@ -7,7 +7,8 @@
 #include "Features/Location.h"
 
 CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api, 
-                       IWUConfiguration& wuConfiguration)
+                       IWUConfiguration& wuConfiguration):
+   m_developerMode(api->getYadomsInformation()->developperMode())
 {
    initializeLiveStations(api, wuConfiguration);
 
@@ -181,6 +182,12 @@ void CWUFactory::initializeLiveStations(boost::shared_ptr<yApi::IYPluginApi> api
    else
       m_liveStations = boost::make_shared<CLiveStations>(api);
 
+   if (m_developerMode)
+   {
+      std::cout << "longitude :" << m_liveStations->getCityLocation()->longitude() << std::endl;
+      std::cout << "latitude :" << m_liveStations->getCityLocation()->latitude() << std::endl;
+   }
+
    //Get all forecast stations to be displayed into the menu (send the request to the website)
    //TODO : A simplifier
    m_liveStations->getAllStations(api, wuConfiguration.getAPIKey());
@@ -209,45 +216,6 @@ void CWUFactory::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::str
    }
 }
 
-/*
-void CWUFactory::onDeviceSetConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, 
-                                          const std::string& deviceName, 
-                                          IWUConfiguration& wuConfiguration, 
-                                          const shared::CDataContainer newConfiguration)
-{
-   boost::shared_ptr<IdeviceConfiguration> deviceConfiguration = boost::make_shared<CdeviceConfiguration>(newConfiguration);
-
-   auto selection = newConfiguration.get<int>("LiveStations");
-
-   // get the location and name of the selected station
-   boost::shared_ptr<const shared::ILocation> location = m_liveStations->getStationLocation(selection);
-   std::string stationName = m_liveStations->getStationName(selection);
-
-   if (m_weatherConditions->getName() == deviceName)
-   {
-      m_weatherConditions->onDeviceUpdate(api, wuConfiguration, deviceConfiguration, location);
-      m_weatherConditions->setCityName(stationName);
-   }
-   else if (m_astronomy->getName() == deviceName)
-   {
-      m_astronomy->onDeviceUpdate(api, wuConfiguration, deviceConfiguration, location);
-   }
-   else if (m_forecast->getName() == deviceName)
-   {
-      m_forecast->onDeviceUpdate(api, wuConfiguration, deviceConfiguration, location);
-      m_forecast->setCityName(stationName);
-   }
-   else
-   {
-      std::cerr << "device " << deviceName << " not found" << std::endl;
-   }
-}
-
-shared::CDataContainer CWUFactory::bindAvailableStations()
-{
-   return m_liveStations->bindAvailableStations();
-}
-*/
 boost::shared_ptr<features::IFeature> CWUFactory::getWeatherConditionsDevice()
 {
    return m_weatherConditions;
