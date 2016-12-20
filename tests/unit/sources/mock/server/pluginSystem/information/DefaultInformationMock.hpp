@@ -62,9 +62,14 @@ public:
       return false;
    }
 
-   shared::CDataContainer getPackage() const override
+   bool getSupportDeviceRemovedNotification() const override
    {
-      return shared::CDataContainer();
+      return false;
+   }
+
+   boost::shared_ptr<const shared::CDataContainer> getPackage() const override
+   {
+      return boost::make_shared<shared::CDataContainer>();
    }
 
    const boost::filesystem::path& getPath() const override

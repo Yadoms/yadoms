@@ -36,11 +36,13 @@ if(WIN32)
 	include(${YADOMS_PATH}/cmake/windows.cmake)
 endif()
 
+if(MSVC)
+   set (LINK_WITH_STATIC_RUNTIME 1)
+   include(${YADOMS_PATH}/cmake/MSVCRuntime.cmake)
+endif()
+
 # Compilers/IDE configurations
 include(${YADOMS_PATH}/cmake/compilers.cmake)
-
-# Boost built libraries copy helper
-include(${YADOMS_PATH}/cmake/copyBoost.cmake)
 
 
 
@@ -50,18 +52,18 @@ include(${YADOMS_PATH}/cmake/copyBoost.cmake)
 ##################################################################################################
 
 #define outputs
-set(youroutputdirectory ${PROJECT_SOURCE_DIR}/../builds)
+set(YADOMS_UNITTEST_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/../builds)
 
 # First for the generic no-config case (e.g. with gcc)
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${youroutputdirectory} )
-set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${youroutputdirectory}/plugins )
-set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${youroutputdirectory} )
+set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${YADOMS_UNITTEST_OUTPUT_DIR} )
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${YADOMS_UNITTEST_OUTPUT_DIR}/plugins )
+set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${YADOMS_UNITTEST_OUTPUT_DIR} )
 # Second, for multi-config builds (e.g. msvc)
 foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
-    set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG} )
-    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG}/plugins )
-    set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG} )
+    set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${YADOMS_UNITTEST_OUTPUT_DIR}/${OUTPUTCONFIG} )
+    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${YADOMS_UNITTEST_OUTPUT_DIR}/${OUTPUTCONFIG}/plugins )
+    set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${YADOMS_UNITTEST_OUTPUT_DIR}/${OUTPUTCONFIG} )
 endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 
 
@@ -70,16 +72,10 @@ endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 ##################################################################################################
 
 # Boost (dynamic linking)
-set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME OFF)
-add_definitions( -DBOOST_WHATEVER_DYN_LINK )
-add_definitions( -DBOOST_ALL_NO_LIB )
-add_definitions( -DBOOST_ALL_DYN_LINK )
-add_definitions( -DBOOST_SPIRIT_THREADSAFE )
-
-# Boost tests units definitions
-add_definitions( -DBOOST_TEST_DYN_LINK )
+set(Boost_USE_STATIC_RUNTIME ON)
+add_definitions(-DBOOST_SPIRIT_THREADSAFE)
 
 
 # define all needed boost libraries
@@ -137,6 +133,9 @@ SET ( POCO_LIBS
    PocoZip
 )
 
+set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
+set(POCO_USE_STATIC_LIBS 1)
+set(POCO_USE_STATIC_RUNTIME 1)
 include(${YADOMS_PATH}/cmake/FindPoco.cmake)
 
 IF(NOT ${Poco_FOUND})
@@ -236,6 +235,3 @@ ENDIF()
 ##################################################################################################
 target_link_libraries(yadomsTests ${LIBS} ${CMAKE_DL_LIBS})
 
-
-POST_BUILD_COPY_BOOST_LIBRARIES(yadomsTests)
-POST_BUILD_COPY_POCO(yadomsTests)

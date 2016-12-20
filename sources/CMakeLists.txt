@@ -38,8 +38,12 @@ if(WIN32)
 	include(cmake/windows.cmake)
 endif()
 
+if(MSVC)
+   set (LINK_WITH_STATIC_RUNTIME 1)
+   include(cmake/MSVCRuntime.cmake)
+endif()
+   
 # Compilers/IDE configurations
-set (LINK_WITH_STATIC_RUNTIME 1)
 include(cmake/compilers.cmake)
 
 

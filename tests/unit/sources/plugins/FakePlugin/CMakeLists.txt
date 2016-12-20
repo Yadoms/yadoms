@@ -39,7 +39,6 @@ IF(NOT DISABLE_TEST_FAKEPLUGIN)
       shared/shared/DataContainer.h
       shared/shared/DataContainer.cpp
       shared/shared/StringExtension.h
-      shared/shared/StringExtension.cpp
       shared/shared/plugin/yPluginApi/KeywordAccessMode.h
       shared/shared/plugin/yPluginApi/KeywordAccessMode.cpp
       shared/shared/plugin/yPluginApi/KeywordDataType.h

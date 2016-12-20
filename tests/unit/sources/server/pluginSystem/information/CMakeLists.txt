@@ -2,7 +2,6 @@
 IF(NOT DISABLE_TEST_PLUGIN_INFORMATION)
    SET(ALLFILES
       shared/shared/StringExtension.h
-      shared/shared/StringExtension.cpp
       shared/shared/plugin/information/IInformation.h
       shared/shared/versioning/ReleaseType.h
       shared/shared/versioning/ReleaseType.cpp
