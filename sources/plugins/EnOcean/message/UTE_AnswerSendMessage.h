@@ -46,7 +46,7 @@ namespace message
 
       boost::shared_ptr<const std::vector<unsigned char>> buffer() override;
 
-   private:
+   protected:
       bool m_bidirectionalCommunication;
       EResponse m_response;
       const unsigned char m_command;

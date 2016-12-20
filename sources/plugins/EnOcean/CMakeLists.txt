@@ -49,6 +49,8 @@ set(ENOCEAN_SOURCES
    message/types.h
    message/UTE_AnswerSendMessage.h
    message/UTE_AnswerSendMessage.cpp
+   message/UTE_GigaConceptReversedAnswerSendMessage.h
+   message/UTE_GigaConceptReversedAnswerSendMessage.cpp
    message/UTE_GigaConceptReversedReceivedMessage.h
    message/UTE_GigaConceptReversedReceivedMessage.cpp
    message/UTE_ReceivedMessage.h

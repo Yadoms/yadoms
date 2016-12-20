@@ -15,6 +15,7 @@
 #include "message/ResponseReceivedMessage.h"
 #include "DeviceConfigurationHelper.h"
 #include "profiles/generated-eep.h"
+#include "message/UTE_GigaConceptReversedAnswerSendMessage.h"
 
 
 IMPLEMENT_PLUGIN(CEnOcean)
@@ -406,9 +407,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
 
    if (erp1Message.rorg() == CRorgs::kUTE_Telegram)
    {
-      processUTE(message::CUTE_GigaConceptReversedReceivedMessage::isCGigaConceptReversedUteMessage(erp1Message)
-                    ? boost::make_shared<message::CUTE_GigaConceptReversedReceivedMessage>(erp1Message)
-                    : boost::make_shared<message::CUTE_ReceivedMessage>(erp1Message));
+      processUTE(erp1Message);
       return;
    }
 
@@ -569,8 +568,15 @@ void CEnOcean::processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket
    std::cout << "Event " << eventCode << " received" << std::endl;
 }
 
-void CEnOcean::processUTE(boost::shared_ptr<const message::CUTE_ReceivedMessage> uteMessage)
+void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
 {
+   const auto isReversed = message::CUTE_GigaConceptReversedReceivedMessage::isCGigaConceptReversedUteMessage(erp1Message);
+
+   const auto uteMessage = isReversed
+                              ? boost::make_shared<message::CUTE_GigaConceptReversedReceivedMessage>(erp1Message)
+                              : boost::make_shared<message::CUTE_ReceivedMessage>(erp1Message);
+
+
    if (uteMessage->teachInRequest() != message::CUTE_ReceivedMessage::kTeachInRequest &&
       uteMessage->teachInRequest() != message::CUTE_ReceivedMessage::kNotSpecified)
    {
@@ -610,19 +616,30 @@ void CEnOcean::processUTE(boost::shared_ptr<const message::CUTE_ReceivedMessage>
 
    if (uteMessage->teachInResponseExpected())
    {
-      message::CUTE_AnswerSendMessage sendMessage(m_senderId,
-                                                  deviceId,
-                                                  0,
-                                                  uteMessage->bidirectionalCommunication(),
-                                                  response,
-                                                  uteMessage->channelNumber(),
-                                                  uteMessage->manufacturerId(),
-                                                  uteMessage->type(),
-                                                  uteMessage->func(),
-                                                  uteMessage->rorg());
+      auto sendMessage = isReversed
+                            ? boost::make_shared<message::CUTE_GigaConceptReversedAnswerSendMessage>(m_senderId,
+                                                                                                     deviceId,
+                                                                                                     static_cast<unsigned char>(0),
+                                                                                                     uteMessage->bidirectionalCommunication(),
+                                                                                                     response,
+                                                                                                     uteMessage->channelNumber(),
+                                                                                                     uteMessage->manufacturerId(),
+                                                                                                     uteMessage->type(),
+                                                                                                     uteMessage->func(),
+                                                                                                     uteMessage->rorg())
+                            : boost::make_shared<message::CUTE_AnswerSendMessage>(m_senderId,
+                                                                                  deviceId,
+                                                                                  static_cast<unsigned char>(0),
+                                                                                  uteMessage->bidirectionalCommunication(),
+                                                                                  response,
+                                                                                  uteMessage->channelNumber(),
+                                                                                  uteMessage->manufacturerId(),
+                                                                                  uteMessage->type(),
+                                                                                  uteMessage->func(),
+                                                                                  uteMessage->rorg());
 
       message::CResponseReceivedMessage::EReturnCode returnCode;
-      if (!m_messageHandler->send(sendMessage,
+      if (!m_messageHandler->send(*sendMessage,
                                   [](boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
                                   {
                                      return esp3Packet->header().packetType() == message::RESPONSE;
