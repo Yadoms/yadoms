@@ -762,8 +762,8 @@ IF(USE_PGSQL_DATABASE)
             SET(PostgreSqlDepends "${PostgreSQL_ROOT}/bin/libpq.dll")
          ENDIF()        
 
-         IF(EXISTS "${PostgreSQL_ROOT}/bin/intl.dll")
-            SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/intl.dll")
+         IF(EXISTS "${PostgreSQL_ROOT}/bin/libintl-8.dll")
+            SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/libintl-8.dll")
          ENDIF()
       ENDIF(WIN32)
    
