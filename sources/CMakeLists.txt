@@ -757,13 +757,21 @@ IF(USE_PGSQL_DATABASE)
       source_group(server\\database\\pgsql  server/database/pgsql/*.*)
 	
       IF(WIN32)
-         #add libpq.dll and intl.dll as dependencies
+         #add PostgreSQL as dependencies
          IF(EXISTS "${PostgreSQL_ROOT}/bin/libpq.dll")
             SET(PostgreSqlDepends "${PostgreSQL_ROOT}/bin/libpq.dll")
          ENDIF()        
 
+         IF(EXISTS "${PostgreSQL_ROOT}/bin/intl.dll")
+            SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/intl.dll")
+         ENDIF()
+
          IF(EXISTS "${PostgreSQL_ROOT}/bin/libintl-8.dll")
             SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/libintl-8.dll")
+         ENDIF()
+
+         IF(EXISTS "${PostgreSQL_ROOT}/bin/libiconv-2.dll")
+            SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/libiconv-2.dll")
          ENDIF()
       ENDIF(WIN32)
    
