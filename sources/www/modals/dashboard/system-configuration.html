@@ -209,125 +209,27 @@
 
                         var pageHasToBeReloaded = false;
                         
-                        console.log ("save language");
+                        var arrayOfDeffered = [];
                         
-                        var d = new $.Deferred();
-                        
-                        //we save current configuration
-                        //*************
-                        //language
-                        Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value = languageParameter.getCurrentConfiguration();
+                        saveLanguageParameter     (arrayOfDeffered, languageParameter);
+                        saveAdvancedParameters    (arrayOfDeffered, advancedSectionParameters);
+                        saveFormatString          (arrayOfDeffered, dateFormatStringParameter);
+                        saveBasicAuthentification (arrayOfDeffered, basicAuthenticationSectionParameters, basicAuth, userAuthenticationParameter, passwordAuthenticationParameter);
+                        saveLocation              (arrayOfDeffered, latitudeParameter, longitudeParameter);
 
-                        ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.language])
-                           .done(function() {
-                              //we change language of i18n
-                              i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
-                                 $("html").i18n();
-                                 window.location.reload();
-                              });
+                        $.whenAll(arrayOfDeffered)
+                        .done(function () {
+                           //we show that configuration has been successfully saved
+                           notifySuccess($.t("modals.dashboard.sub-windows.system-configuration.configurationSaved"));
 
-                              console.debug ("advanced parameters");
-
-                              //*************
-                              //advanced parameters
-                              Yadoms.systemConfiguration[ConfigurationManager.items.system.advancedParameters].value = advancedSectionParameters.getCurrentConfiguration().checkbox;
-
-                              ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.advancedParameters])
-                                 .done(function() {
-                                 
-                                       console.debug ("date format String");
-                                       console.debug ("ConfigurationManager.items.system.dateFormatString:", ConfigurationManager.items.system.dateFormatString);
-                                       console.debug ("Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value:", Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value);
-                                       debugger;
-                                       
-                                       //*************
-                                       //dateFormatString
-                                       Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value = dateFormatStringParameter.getCurrentConfiguration();
-                                       ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString])
-                                          .done(function() {
-
-                                             debugger;
-                                             //*************
-                                             //basic authentication
-                                             var value = {};
-
-                                             value.active = basicAuthenticationSectionParameters.getCurrentConfiguration().checkbox;
-
-                                             //if we activate / deactivate the authentication we must reload the page
-                                             if (value.active !== basicAuth.active)
-                                                pageHasToBeReloaded = true;
-
-                                             if (value.active) {
-                                                //the authentication method is active
-                                                value.user = userAuthenticationParameter.getCurrentConfiguration();
-
-                                                if (value.user !== basicAuth.user)
-                                                   pageHasToBeReloaded = true;
-
-                                                //we check for password modification
-                                                var newPass = passwordAuthenticationParameter.getCurrentConfiguration();
-                                                if (newPass !== $.md5(fakePassword)) {
-                                                   //the password has been changed
-                                                   value.password = newPass;
-                                                   //we has to reload the page
-                                                   pageHasToBeReloaded = true;
-                                                } else {
-                                                   //we set the previous one
-                                                   value.password = basicAuth.password;
-                                                }
-                                             } else {
-                                                //the authentication method is inactive
-                                                value.user = userAuthenticationParameter.getCurrentConfiguration();
-                                                //we clear the password for the next re-activation
-                                                value.password = "";
-                                             }
-                                             
-                                             console.debug ("enregistrement - basic Authentication");
-
-                                             Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value = JSON.stringify(value);
-
-                                             ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication])
-                                                .done(function() { 
-                                                
-                                                   console.debug ("enregistrement - location");
-                                                   debugger;
-                                                
-                                                   Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.latitude]  = latitudeParameter.getCurrentConfiguration();
-                                                   Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.longitude] = longitudeParameter.getCurrentConfiguration();                                                
-                                                
-                                                   ConfigurationManager.createToServer("system", 
-                                                                                       "location", 
-                                                                                       JSON.stringify(Yadoms.systemConfiguration.location.value), 
-                                                                                       "",
-                                                                                       "essai",
-                                                                                       "none")
-                                                      .done(function() {
-                                                         debugger;
-                                                         d.resolve();
-                                                      })
-                                                      .fail(d.reject);
-                                                })
-                                                .fail(d.reject);
-                                          })
-                                          .fail(d.reject);
-                                    })
-                                    .fail(d.reject);
-                           })
-                           .fail(d.reject);
-/*
-                           d.promise()
-                           .done(function() {
-                              //we show that configuration has been successfully saved
-                              notifySuccess($.t("modals.dashboard.sub-windows.system-configuration.configurationSaved"));
-
-                              if (pageHasToBeReloaded) {
-                                 window.location.reload();
-                              }
-                           })
-                           .fail(function(error) {
-                              //an error has occurred during saving
-                              notifyError($.t("modals.dashboard.sub-windows.system-configuration.errorDuringSavingConfiguration"), error);
-                           });*/
+                           if (pageHasToBeReloaded) {
+                              window.location.reload();
+                           }
+                        })
+                        .fail(function(error) {
+                           //an error has occurred during saving
+                           notifyError($.t("modals.dashboard.sub-windows.system-configuration.errorDuringSavingConfiguration"), error);
+                        });
 
                      },
                      filter: function() {
@@ -340,6 +242,150 @@
                   //an error has occurred during saving
                   notifyError($.t("modals.dashboard.sub-windows.system-configuration.errorDuringSavingConfiguration"), error);
                });
+               
+               //we save current configuration
+               //*************
+               //language
+               function saveLanguageParameter(arrayOfDeffered, languageParameter) {
+                  Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value = languageParameter.getCurrentConfiguration();
+                  
+                  var d = new $.Deferred();
+                  arrayOfDeffered.push(d);
+
+                  ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.language])
+                     .done(function() {
+                     
+                        if (i18n.lng()!= Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value)
+                        {
+                           //we change language of i18n
+                           i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function() {
+                              $("html").i18n();
+                              window.location.reload();
+                              d.resolve();
+                           });
+                        }
+                        else
+                        {
+                           d.resolve();
+                        }
+                     })
+                     .fail(function() {
+                        console.error("failed save language parameter");
+                        d.reject();
+                     })
+               };
+
+               //*************
+               //advanced parameters
+               saveAdvancedParameters = function(arrayOfDeffered, advancedSectionParameters) {
+                  Yadoms.systemConfiguration[ConfigurationManager.items.system.advancedParameters].value = advancedSectionParameters.getCurrentConfiguration().checkbox;
+
+                  var d = new $.Deferred();
+                  arrayOfDeffered.push(d);                           
+                  
+                  ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.advancedParameters])
+                     .done(function() {
+                        d.resolve();
+                     })
+                     .fail(function() {
+                        console.error("failed save advanced parameters");
+                        d.reject();
+                     })
+               };
+
+               //*************
+               //dateFormatString
+               saveFormatString = function(arrayOfDeffered, dateFormatStringParameter) {
+                  Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value = dateFormatStringParameter.getCurrentConfiguration();
+                  
+                  var d = new $.Deferred();
+                  arrayOfDeffered.push(d);                           
+                  
+                  ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString])
+                     .done(function() {
+                        d.resolve();
+                     })
+                     .fail(function() {
+                        console.error("failed save date format string");
+                        d.reject();
+                     })
+               };
+
+               //*************
+               //basic authentication
+               saveBasicAuthentification = function(arrayOfDeffered, basicAuthenticationSectionParameters, basicAuth, userAuthenticationParameter, passwordAuthenticationParameter) {
+                  var value = {};
+                  
+                  var d = new $.Deferred();
+                  arrayOfDeffered.push(d);                           
+
+                  value.active = basicAuthenticationSectionParameters.getCurrentConfiguration().checkbox;
+
+                  //if we activate / deactivate the authentication we must reload the page
+                  if (value.active !== basicAuth.active)
+                     pageHasToBeReloaded = true;
+
+                  if (value.active) {
+                     //the authentication method is active
+                     value.user = userAuthenticationParameter.getCurrentConfiguration();
+
+                     if (value.user !== basicAuth.user)
+                        pageHasToBeReloaded = true;
+
+                     //we check for password modification
+                     var newPass = passwordAuthenticationParameter.getCurrentConfiguration();
+                     if (newPass !== $.md5(fakePassword)) {
+                        //the password has been changed
+                        value.password = newPass;
+                        //we has to reload the page
+                        pageHasToBeReloaded = true;
+                     } else {
+                        //we set the previous one
+                        value.password = basicAuth.password;
+                     }
+                  } else {
+                     //the authentication method is inactive
+                     value.user = userAuthenticationParameter.getCurrentConfiguration();
+                     //we clear the password for the next re-activation
+                     value.password = "";
+                  }
+
+                  Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value = JSON.stringify(value);
+
+                  ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication])
+                     .done(function() {
+                        d.resolve();
+                     })
+                     .fail(function() {
+                        console.error("failed save basic authentification");
+                        d.reject();
+                     })
+               }                              
+
+               //*************
+               //system location
+               saveLocation = function(arrayOfDeffered, latitudeParameter, longitudeParameter) {
+               
+                  var d = new $.Deferred();
+                  arrayOfDeffered.push(d);
+               
+                  Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.latitude]  = latitudeParameter.getCurrentConfiguration();
+                  Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.longitude] = longitudeParameter.getCurrentConfiguration();                                                
+               
+                  ConfigurationManager.createToServer("system", 
+                                                      "location", 
+                                                      JSON.stringify(Yadoms.systemConfiguration.location.value), 
+                                                      "",
+                                                      "essai",
+                                                      "none")
+                     .done(function() {
+                        d.resolve();
+                     })
+                     .fail(function() {
+                        console.error("failed save location");
+                        d.reject();
+                     })
+               }
                
                $("button#resetSystemConfiguration").unbind('click').bind('click', function() {
                   //we ask for confirmation before resetting all system configuration
