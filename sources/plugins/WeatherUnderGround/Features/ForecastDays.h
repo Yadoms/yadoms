@@ -33,7 +33,6 @@ public:
    // IFeature Implementation
    void parse(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer dataToParse, IWUConfiguration& wuConfiguration) override;
    void onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration) override;
-//   void onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api, IWUConfiguration& wuConfiguration, boost::shared_ptr<const shared::ILocation> location) override;
    std::string getUrl() const override;
    std::string getName() const override;
    void setCityName(const std::string& CityName) override;

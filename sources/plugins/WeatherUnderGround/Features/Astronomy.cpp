@@ -66,27 +66,6 @@ void CAstronomy::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
       throw;
    }
 }
-/*
-void CAstronomy::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                                IWUConfiguration& wuConfiguration,
-                                boost::shared_ptr<const shared::ILocation> location)
-{
-   try
-   {
-      m_deviceConfiguration = deviceConfiguration;
-      m_location = location;
-
-      m_url.str("");
-      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/astronomy/q/" << boost::lexical_cast<std::string>(m_location->latitude()) << "," << boost::lexical_cast<std::string>(m_location->longitude()) << ".json";
-
-      initializeKeywords(api);
-   }
-   catch (shared::exception::CException& e)
-   {
-      std::cout << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
-      throw;
-   }
-}*/
 
 void CAstronomy::parse(boost::shared_ptr<yApi::IYPluginApi> api,
                        const shared::CDataContainer dataToParse,

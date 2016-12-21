@@ -67,11 +67,6 @@ private:
    std::stringstream m_url;
 
    //--------------------------------------------------------------
-   /// \brief	    The name of the city (country ? state ?)
-   //--------------------------------------------------------------
-   std::string m_cityConditions;
-
-   //--------------------------------------------------------------
    /// \brief	    Keywords
    //--------------------------------------------------------------
    boost::shared_ptr<yApi::historization::CTemperature> m_temp;

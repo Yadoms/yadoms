@@ -2,6 +2,7 @@
 #include "WUConfiguration.h"
 #include <plugin_cpp_api/IPlugin.h>
 #include "WUFactory.h"
+#include "Features/IFeature.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -11,7 +12,8 @@ enum
 {
    kEvtTimerRefreshWeatherConditions = yApi::IYPluginApi::kPluginFirstEventId, // Always start from shared::event::CEventHandler::kUserFirstId
    kEvtTimerRefreshAstronomy,
-   kEvtTimerRefreshForecast10Days
+   kEvtTimerRefreshForecast10Days,
+   kEvtInitialization
 };
 
 //-----------------------------------------------------
@@ -95,4 +97,11 @@ private:
    /// \brief	The plugin state
    //--------------------------------------------------------------
    EWUPluginState m_runningState;
+
+   //--------------------------------------------------------------
+   /// \brief	The features
+   //--------------------------------------------------------------
+   boost::shared_ptr<features::IFeature> weatherConditionsRequester;
+   boost::shared_ptr<features::IFeature> astronomyRequester;
+   boost::shared_ptr<features::IFeature> forecast10Days;
 };

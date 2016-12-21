@@ -49,20 +49,6 @@ public:
                                IWUConfiguration& wuConfiguration);
 
    //--------------------------------------------------------------
-   /// \brief	                     Process a command received from Yadoms
-   /// \param [in] api              Plugin execution context (Yadoms API)
-   /// \param [in] receivedValue    The received value from the interrupt
-   //--------------------------------------------------------------
-   void removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved);
-
-   //--------------------------------------------------------------
-   /// \brief	                     Process a command received from Yadoms
-   /// \param [in] deviceName       The name of the device where the configuration have changed
-   /// \param [in] newConfiguration The new configuration
-   //--------------------------------------------------------------
-   //void onDeviceSetConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& deviceName, IWUConfiguration& wuConfiguration, const shared::CDataContainer newConfiguration);
-
-   //--------------------------------------------------------------
    /// \brief	                     Retreive device
    /// \return                      The device
    //--------------------------------------------------------------
@@ -70,13 +56,31 @@ public:
    boost::shared_ptr<features::IFeature> getAstronomyDevice();
    boost::shared_ptr<features::IFeature> getForecastDevice();
 
-   //--------------------------------------------------------------
-   /// \brief	    bindAvailableStations
-   /// \return all forecast available stations
-   //--------------------------------------------------------------
-   //shared::CDataContainer bindAvailableStations();
-
 private:
+
+   //--------------------------------------------------------------
+   /// \brief	    create or update Weather device
+   /// \param[in] api                  yPluginApi API
+   /// \param[in] wuConfiguration     The plugin configuration
+   //--------------------------------------------------------------
+   boost::shared_ptr<features::IFeature> createorUpdateWeatherDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                                     IWUConfiguration& wuConfiguration);
+
+   //--------------------------------------------------------------
+   /// \brief	    create or update Astronomy device
+   /// \param[in] api                  yPluginApi API
+   /// \param[in] wuConfiguration     The plugin configuration
+   //--------------------------------------------------------------
+   boost::shared_ptr<features::IFeature> createorUpdateAstronomyDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                                       IWUConfiguration& wuConfiguration);
+
+   //--------------------------------------------------------------
+   /// \brief	    create or update Forecast device
+   /// \param[in] api                  yPluginApi API
+   /// \param[in] wuConfiguration     The plugin configuration
+   //--------------------------------------------------------------
+   boost::shared_ptr<features::IFeature> createorUpdateForecastDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                                      IWUConfiguration& wuConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	 Creation du device Weather Conditions
@@ -111,7 +115,7 @@ private:
    //--------------------------------------------------------------
    /// \brief
    //--------------------------------------------------------------
-   boost::shared_ptr<CLiveStations> m_liveStations;
+   boost::shared_ptr<CLiveStations> m_lookupInformation;
 
    bool m_developerMode;
 };

@@ -1,12 +1,7 @@
 #include "stdafx.h"
 #include "WeatherUnderground.h"
-//#include "deviceConfiguration.h"
 #include <shared/event/EventTimer.h>
 #include <plugin_cpp_api/ImplementationHelper.h>
-#include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
-#include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
-#include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
-#include <shared/plugin/yPluginApi/IDeviceRemoved.h>
 #include <shared/http/HttpMethods.h>
 #include <shared/exception/Exception.hpp>
 #include "ErrorAnswerHandler.h"
@@ -34,35 +29,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    int astronomySendingRetry = 0;
    int forecast10daysSendingRetry = 0;
 
-   boost::shared_ptr<features::IFeature> weatherConditionsRequester;
-   boost::shared_ptr<features::IFeature> astronomyRequester;
-   boost::shared_ptr<features::IFeature> forecast10Days;
-
-   try
-   {
-      // Load configuration values (provided by database)
-      m_configuration.initializeWith(api->getConfiguration());
-
-      // Create all existing devices
-      m_factory = boost::make_shared<CWUFactory>(api, m_configuration);
-
-      weatherConditionsRequester = m_factory->getWeatherConditionsDevice();
-      astronomyRequester = m_factory->getAstronomyDevice();
-      forecast10Days = m_factory->getForecastDevice();
-
-      setPluginState(api, EWUPluginState::kRunning);
-   }
-   catch (CRequestErrorException&)
-   {
-      // Informs Yadoms about the plugin actual state
-      setPluginState(api, EWUPluginState::kNoConnection);
-   }
-   catch (std::exception& e)
-   {
-      std::cout << "exception : " << e.what() << std::endl;
-      // Informs Yadoms about the plugin actual state
-      setPluginState(api, EWUPluginState::kInitializationError);
-   }
+   api->getEventHandler().createTimer(kEvtInitialization, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
 
    std::cout << "CWeatherUnderground plugin is running..." << std::endl;
 
@@ -78,80 +45,35 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             setPluginState(api, EWUPluginState::kStop);
             return;
          }
-/*
-	  case yApi::IYPluginApi::kEventManuallyDeviceCreation:
-	  {
-        auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
-        std::cout << "Manually device creation request received for device :" << request->getData().getDeviceName() << std::endl;
+      case kEvtInitialization:
+      {
+         try
+         {
+            // Load configuration values (provided by database)
+            m_configuration.initializeWith(api->getConfiguration());
 
-        //Display the configuration
-        request->getData().getConfiguration().printToLog(std::cout);
+            // Create all existing devices
+            m_factory = boost::make_shared<CWUFactory>(api, m_configuration);
 
-        try {
-           // Device creation
-           m_factory->createDeviceManually(api, m_configuration, request);
+            weatherConditionsRequester = m_factory->getWeatherConditionsDevice();
+            astronomyRequester = m_factory->getAstronomyDevice();
+            forecast10Days = m_factory->getForecastDevice();
 
-           weatherConditionsRequester = m_factory->getWeatherConditionsDevice();
-           astronomyRequester = m_factory->getAstronomyDevice();
-           forecast10Days = m_factory->getForecastDevice();
-        }
-        catch (std::exception& e)
-        {
-           request->sendError(e.what());
-           setPluginState(api, EWUPluginState::kInitializationError);
-        }
-		  break;
-	  }*/
-/*
-     case yApi::IYPluginApi::kSetDeviceConfiguration:
-     {
-        // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
-        auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
-
-        setPluginState(api, EWUPluginState::kupdateConfiguration);
-
-        // TODO : Faire attention au changement de nom ! Voir comment appliquer. Voir comment faire la mise à jour du nom.
-        m_factory->onDeviceSetConfiguration(api, deviceConfiguration->device(), m_configuration, deviceConfiguration->configuration());
-
-        setPluginState(api, EWUPluginState::kRunning);
-
-        break;
-     }*/
-	  case yApi::IYPluginApi::kEventDeviceRemoved:
-	  {
-		  auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
-		  std::cout << device->device() << " was removed" << std::endl;
-
-        m_factory->removeDevice(api, device->device());
-
-		  break;
-	  }
-/*	  case yApi::IYPluginApi::kBindingQuery:
-	  {
-		  // Yadoms ask for a binding query 
-        auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
-
-		  try {
-			if (data->getData().getQuery() == "LiveStations")
-			{
-				data->sendSuccess(m_factory->bindAvailableStations());
-			}
-			else
-			{
-				std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
-				data->sendError(errorMessage);
-				std::cerr << errorMessage << std::endl;
-			}
-		  }
-		  catch (std::exception& e)
-		  {
-           std::string errorMessage("Unknow error : ");
-           errorMessage += e.what();
-           std::cout << errorMessage;
-           data->sendError(errorMessage);
-		  }
-		  break;
-	  }*/
+            setPluginState(api, EWUPluginState::kRunning);
+         }
+         catch (CRequestErrorException&)
+         {
+            setPluginState(api, EWUPluginState::kNoConnection);
+            api->getEventHandler().createTimer(kEvtInitialization, shared::event::CEventTimer::kOneShot, boost::posix_time::minutes(1));
+         }
+         catch (std::exception& e)
+         {
+            std::cout << "exception : " << e.what() << std::endl;
+            // Informs Yadoms about the plugin actual state
+            setPluginState(api, EWUPluginState::kInitializationError);
+         }
+         break;
+      }
       case kEvtTimerRefreshWeatherConditions:
          {
             try
@@ -190,16 +112,6 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             setPluginState(api, EWUPluginState::kupdateConfiguration);
             try {
                onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
-
-               // Initialize the plugin with new forecast stations
-               m_factory->initializeLiveStations(api, m_configuration);
-               m_factory->createDevice(api, m_configuration);
-
-               // Update configurations
-               if (weatherConditionsRequester) weatherConditionsRequester->onPluginUpdate(api, m_configuration);
-               if (astronomyRequester) astronomyRequester->onPluginUpdate(api, m_configuration);
-               if (forecast10Days) forecast10Days->onPluginUpdate(api, m_configuration);
-
                setPluginState(api, EWUPluginState::kRunning);
             }
             catch (std::exception&)
@@ -224,6 +136,20 @@ void CWeatherUnderground::onUpdateConfiguration(boost::shared_ptr<yApi::IYPlugin
 
    // Update configuration
    m_configuration.initializeWith(newConfigurationData);
+
+   // Initialize the plugin with new forecast stations
+   if (m_factory)
+   {
+      m_factory->createDevice(api, m_configuration);
+
+      weatherConditionsRequester = m_factory->getWeatherConditionsDevice();
+      astronomyRequester = m_factory->getAstronomyDevice();
+      forecast10Days = m_factory->getForecastDevice();
+   }
+   else
+   {
+      std::cerr << "Factory not yet initialize, please check Ethernet connection" << std::endl;
+   }
 }
 
 void CWeatherUnderground::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, EWUPluginState newState)
@@ -281,18 +207,13 @@ shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yAp
    }
    catch (shared::exception::CException& e)
    {
-      if (nbRetry < 2)
-      {
-         std::cout << e.what() << ". Retry in 1 minute." << std::endl;
-         api->getEventHandler().createTimer(event, shared::event::CEventTimer::kOneShot, boost::posix_time::minutes(1));
+      std::cout << e.what() << ". Retry in 1 minute." << std::endl;
+      api->getEventHandler().createTimer(event, shared::event::CEventTimer::kOneShot, boost::posix_time::minutes(1));
+
+      if (nbRetry == 3)
          ++nbRetry;
-      }
       else
-      {
-         std::cout << e.what() << ". Stop retry." << std::endl;
-         api->setPluginState(yApi::historization::EPluginState::kCustom, "NoConnection"); 
-         nbRetry = 0;
-      }
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "NoConnection");
 
       throw CRequestErrorException();
    }

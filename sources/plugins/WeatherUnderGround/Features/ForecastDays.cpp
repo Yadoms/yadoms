@@ -57,6 +57,8 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
 
       m_keywords.push_back(m_temp);
 
+      //TODO : Prévoir la création et la suppression des keywords en plus
+
       // Declare keywords
       std::string m_type = "forecast";
       shared::CDataContainer details;
@@ -79,28 +81,6 @@ void CForecastDays::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
       throw;
    }
 }
-/*
-void CForecastDays::onDeviceUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                                   IWUConfiguration& wuConfiguration,
-                                   boost::shared_ptr<IdeviceConfiguration> deviceConfiguration,
-                                   boost::shared_ptr<const shared::ILocation> location)
-{
-   try
-   {
-      m_deviceConfiguration = deviceConfiguration;
-      m_location = location;
-
-      m_url.str("");
-      m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/forecast/q/" << boost::lexical_cast<std::string>(m_location->latitude()) << "," << boost::lexical_cast<std::string>(m_location->longitude()) << ".json";
-
-      InitializeForecastDays(api);
-   }
-   catch (shared::exception::CException& e)
-   {
-      std::cout << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
-      throw;
-   }
-}*/
 
 void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
                           const shared::CDataContainer dataToParse,

@@ -24,19 +24,12 @@ public:
    CLiveStations(boost::shared_ptr<const shared::ILocation> location);
 
    //--------------------------------------------------------------
-   /// \brief get All forecast stations around the location
+   /// \brief get All forecast stations around the location, get the city name
    /// \param[in] api       pointer to the API
    /// \param[in] apikey    api key to weatherUnderground
    //--------------------------------------------------------------
-   void getAllStations(boost::shared_ptr<yApi::IYPluginApi> api,
-                       const std::string& apikey);
-
-   //--------------------------------------------------------------
-   /// \brief	    bindAvailableStations
-   /// \return all forecast available stations
-   //--------------------------------------------------------------
-   shared::CDataContainer bindAvailableStations();
-
+   void processLookUp(boost::shared_ptr<yApi::IYPluginApi> api,
+                      const std::string& apikey);
 
    //--------------------------------------------------------------
    /// \brief	    getStationLocation
