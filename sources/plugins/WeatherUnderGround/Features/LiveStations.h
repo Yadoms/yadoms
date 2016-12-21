@@ -19,7 +19,7 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	  Constructor
-   /// \param[in] newLocation       enter directly a location
+   /// \param[in] location       enter directly a location
    //--------------------------------------------------------------
    CLiveStations(boost::shared_ptr<const shared::ILocation> location);
 

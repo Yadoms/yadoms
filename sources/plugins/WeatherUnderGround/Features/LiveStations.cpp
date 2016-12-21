@@ -7,6 +7,10 @@
 
 CLiveStations::CLiveStations(boost::shared_ptr<yApi::IYPluginApi> api)
 {
+   //TODO : api->getYadomsInformation()->location() renvoi maintenant un pointeur nul si la location
+   // est inconnue. Attention, la location peut être nulle au début (le temps de l'init), puis être
+   // correcte un peu plus tard. Il convient donc d'appeler cette fonction à chaque fois que nécessaire,
+   // et une seule fois à l'init.
    m_location = api->getYadomsInformation()->location();
 }
 

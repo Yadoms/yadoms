@@ -1,7 +1,4 @@
-#include "stdafx.h"
 #include "Location.h"
-#include <shared/Log.h>
-#include <shared/exception/EmptyResult.hpp>
 
 
 namespace location
@@ -11,8 +8,9 @@ namespace location
                         double altitude)
       : m_longitude(longitude),
         m_latitude(latitude),
-         m_altitude(altitude)
-   {}
+        m_altitude(altitude)
+   {
+   }
 
    CLocation::~CLocation()
    {

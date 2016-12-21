@@ -977,14 +977,14 @@ namespace plugin_cpp_api
       try
       {
          send(req,
-            [](const toPlugin::msg& ans) -> bool
-         {
-            return ans.has_yadomsinformationanswer();
-         },
-            [&](const toPlugin::msg& ans) -> void
-         {
-            info = boost::make_shared<CYadomsInformation>(ans.yadomsinformationanswer());
-         });
+              [](const toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_yadomsinformationanswer();
+              },
+              [&](const toPlugin::msg& ans) -> void
+              {
+                 info = boost::make_shared<CYadomsInformation>(ans.yadomsinformationanswer());
+              });
       }
       catch (std::exception&)
       {
@@ -994,5 +994,3 @@ namespace plugin_cpp_api
       return info;
    }
 } // namespace plugin_cpp_api	
-
-

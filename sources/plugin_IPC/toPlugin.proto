@@ -73,7 +73,7 @@ message YadomsInformationAnswer {
 	}
 	required EReleaseType releaseType = 3;
 
-	required Location location = 4;
+	optional Location location = 4;
 }
 
 message DeviceConfigurationSchemaRequest {
