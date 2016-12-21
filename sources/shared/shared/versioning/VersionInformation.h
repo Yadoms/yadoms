@@ -1,7 +1,6 @@
 #pragma once
 #include <shared/Export.h>
 #include "Version.h"
-#include "ReleaseType.h"
 #include <shared/DataContainer.h>
 
 namespace shared { namespace versioning {
@@ -17,7 +16,7 @@ namespace shared { namespace versioning {
       ///\param [in] version     The version
       ///\param [in] releaseType The releaseType
       //---------------------------------------------
-      CVersionInformation(const shared::versioning::CVersion & version, const shared::versioning::EReleaseType & releaseType);
+      CVersionInformation(const shared::versioning::CVersion & version);
 
       //---------------------------------------------
       ///\brief Get the version
@@ -26,17 +25,10 @@ namespace shared { namespace versioning {
       const shared::versioning::CVersion getVersion() const;
 
       //---------------------------------------------
-      ///\brief Get the releaseType
-      ///\return the releaseType
-      //---------------------------------------------
-      const shared::versioning::EReleaseType getReleaseType() const;
-
-      //---------------------------------------------
       ///\brief Serialize the object as string
       ///\return the serialized object as string (json format)
       //---------------------------------------------
       const std::string serialize() const;
-
 
       //---------------------------------------------
       ///\brief Return the container

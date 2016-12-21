@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Version_2_0_0.h"
+#include "Version_3_0_0.h"
 #include "VersionUpgraderFactory.h"
 
 namespace database { namespace common { namespace versioning { 
@@ -15,7 +15,7 @@ namespace database { namespace common { namespace versioning {
    boost::shared_ptr<IVersionUpgrade> CVersionUpgraderFactory::GetUpgrader()
    { 
       //change this line when a new SQlite version is released
-      return boost::make_shared<CVersion_2_0_0>();
+      return boost::make_shared<CVersion_3_0_0>();
    }
 
 } //namespace versioning

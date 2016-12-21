@@ -100,7 +100,6 @@ namespace database
          ((EventDate)(boost::posix_time::ptime))
          ((PluginName)(std::string))
          ((PluginVersion)(std::string))
-         ((PluginRelease)(shared::versioning::EReleaseType))
          ((EventType)(database::entities::EEventType))
          ((Message)(std::string))
       )

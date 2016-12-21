@@ -6,7 +6,8 @@ namespace plugin_cpp_api
 {
    CPluginInformation::CPluginInformation(boost::shared_ptr<const toPlugin::Information> buffer)
       : m_buffer(buffer),
-        m_path(m_buffer->path())
+        m_path(m_buffer->path()),
+        m_version(m_buffer->version())
    {
    }
 
@@ -19,19 +20,9 @@ namespace plugin_cpp_api
       return m_buffer->type();
    }
 
-   const std::string& CPluginInformation::getVersion() const
+   const shared::versioning::CVersion& CPluginInformation::getVersion() const
    {
-      return m_buffer->version();
-   }
-
-   shared::versioning::EReleaseType CPluginInformation::getReleaseType() const
-   {
-      switch (m_buffer->releasetype())
-      {
-      case toPlugin::Information_EReleaseType_kStable: return shared::versioning::EReleaseType::kStable;
-      case toPlugin::Information_EReleaseType_kReleaseCandidate: return shared::versioning::EReleaseType::kReleaseCandidate;
-      default: return shared::versioning::EReleaseType::kBeta;
-      }
+      return m_version;
    }
 
    const std::string& CPluginInformation::getAuthor() const

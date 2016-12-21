@@ -5,8 +5,7 @@ namespace shared { namespace versioning {
 
    //---------------------------------------------
    ///\brief Class which handle and parse versions
-   ///       Version format:
-   ///         major.minor.build.revision
+   ///       Version format: using SEMVER 2.0 http://semver.org/
    //---------------------------------------------
    class YADOMS_SHARED_EXPORT CVersion
    {
@@ -24,12 +23,21 @@ namespace shared { namespace versioning {
 
       //---------------------------------------------
       ///\brief Contructor
-      ///\param [in] major       the major version number
-      ///\param [in] minor       the minor version number
-      ///\param [in] buildNumber the buildNumber
-      ///\param [in] revision    the revision number
+      ///\param [in] major       the major version number (when you make incompatible API changes,)
+      ///\param [in] minor       the minor version number (when you add functionality in a backwards-compatible manner)
+      ///\param [in] revision    the patch version number (when you make backwards-compatible bug fixes)
       //---------------------------------------------
-      CVersion(int major, int minor, int buildNumber = 0, int revision = 0);
+      CVersion(int major, int minor, int patch);
+
+      //---------------------------------------------
+      ///\brief Contructor
+      ///\param [in] major          the major version number (when you make incompatible API changes,)
+      ///\param [in] minor          the minor version number (when you add functionality in a backwards-compatible manner)
+      ///\param [in] revision       the patch version number (when you make backwards-compatible bug fixes)
+      ///\param [in] prerelease     the prerelease information
+      ///\param [in] buildMetaData  the build metadata
+      //---------------------------------------------
+      CVersion(int major, int minor, int patch, const std::string & prerelease, const std::string & buildMetaData);
 
       //---------------------------------------------
       ///\brief Copy contructor
@@ -78,10 +86,9 @@ namespace shared { namespace versioning {
 
       //---------------------------------------------
       ///\brief Get the version as a string
-      ///\param [in] level the wanted level of details (from 1 to 4 :  4 => "1.2.3.4",  3 => "1.2.3", 2 => "1.2", 1 => "1")
       ///\return  the version as a string
       //---------------------------------------------
-      const std::string toString(const unsigned int level) const;
+      const std::string toString() const;
 
    protected:
       //---------------------------------------------
@@ -93,18 +100,20 @@ namespace shared { namespace versioning {
 
    private:
       //---------------------------------------------
-      ///\brief Set the version values
-      ///\param [in] major       the major version number
-      ///\param [in] minor       the minor version number
-      ///\param [in] buildNumber the buildNumber
-      ///\param [in] revision    the revision number
+      ///\brief Extract information 
+      ///\param [out] major          the major version number
+      ///\param [out] minor          the minor version number
+      ///\param [out] patch          the patch version number
+      ///\param [out] prerelease     the prerelease
+      ///\param [out] buildMetadata  the build metadata
+      ///\return true if the version is a valid SEMVER format
       //---------------------------------------------
-      void setValues(int major, int minor, int buildNumber, int revision);
+      bool extractValues(int & major, int & minor, int & patch, std::string & prerelease, std::string & buildMetadata) const;
 
       //---------------------------------------------
-      ///\brief  Container for version digits
+      ///\brief  Container for version
       //---------------------------------------------
-      std::vector<int>    m_versionInfo;
+      std::string    m_version;
    };
 
 } } // namespace shared::versioning

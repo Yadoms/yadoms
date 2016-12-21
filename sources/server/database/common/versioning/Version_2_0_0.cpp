@@ -10,7 +10,7 @@ namespace database { namespace common { namespace versioning {
 
 
    CVersion_2_0_0::CVersion_2_0_0()
-      :m_version(2, 0, 0, 0) //modify this version to a greater value, to force update of current version
+      :m_version(2, 0, 0) //modify this version to a greater value, to force update of current version
    {
    }
 
@@ -61,7 +61,7 @@ namespace database { namespace common { namespace versioning {
          auto qUpdate = pRequester->newQuery();
 
          qUpdate.Update(CConfigurationTable::getTableName())
-            .Set(CConfigurationTable::getValueColumnName(), m_version.toString(3))
+            .Set(CConfigurationTable::getValueColumnName(), m_version.toString())
             .Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "Database")
             .And(CConfigurationTable::getNameColumnName(), CQUERY_OP_EQUAL, "Version");
 

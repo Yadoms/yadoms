@@ -3,21 +3,15 @@ package toPlugin;
 message Information {
 	required string type = 1;
 	required string version = 2;
-
-	enum EReleaseType {
-		kStable = 0; kReleaseCandidate = 1; kBeta = 2;
-	}
-	required EReleaseType releaseType = 3;
-
-	required string author = 4;
-	required string url = 5;
-	required string identity = 6;
-	required string toString = 7;
-	required bool supportedOnThisPlatform = 8;
-	required bool supportManuallyCreatedDevice = 9;
-	required string packageFileContent = 10;
-	required string path = 11;
-	required bool supportDeviceRemovedNotification = 12;
+	required string author = 3;
+	required string url = 4;
+	required string identity = 5;
+	required string toString = 6;
+	required bool supportedOnThisPlatform = 7;
+	required bool supportManuallyCreatedDevice = 8;
+	required string packageFileContent = 9;
+	required string path = 10;
+	required bool supportDeviceRemovedNotification = 11;
 }
 
 message Init {
