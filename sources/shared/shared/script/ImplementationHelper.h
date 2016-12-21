@@ -1,6 +1,6 @@
 #pragma once
 
-#include <shared/Export.h>
+#include <shared/DynamicLibraryExport.h>
 #include "IInterpreter.h"
 
 
@@ -10,7 +10,7 @@
 /// \note                              This macro creates and exports needed functions for the script interpreter
 //--------------------------------------------------------------
 #define IMPLEMENT_SCRIPT_INTERPRETER(scriptInterpreterClassName)                                                           \
-   EXPORT_LIBRARY_FUNCTION shared::script::IInterpreter* construct(const boost::filesystem::path interpreterPath)          \
+   EXPORT_LIBRARY_FUNCTION shared::script::IInterpreter* construct(const boost::filesystem::path& interpreterPath)         \
    {                                                                                                                       \
       return new scriptInterpreterClassName(interpreterPath);                                                              \
    }

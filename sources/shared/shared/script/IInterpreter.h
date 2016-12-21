@@ -23,11 +23,13 @@ namespace shared
 
          //-----------------------------------------------------
          ///\brief                  Get interpreter type ("python", "tcl", etc...)
+         ///\return                 The interpreter type
          //-----------------------------------------------------
          virtual std::string type() const = 0;
 
          //-----------------------------------------------------
          ///\brief                  Get interpreter user-friendly name ("Python", "Tcl", etc...)
+         ///\return                 The interpreter name
          //-----------------------------------------------------
          virtual std::string name() const = 0;
 
@@ -52,7 +54,8 @@ namespace shared
          ///\param[in] scriptPath   Script path (without name)
          ///\param[in] content      Script content (code)
          //-----------------------------------------------------
-         virtual void saveScriptContent(const std::string& scriptPath, const std::string& content) const = 0;
+         virtual void saveScriptContent(const std::string& scriptPath,
+                                        const std::string& content) const = 0;
 
          //-----------------------------------------------------
          ///\brief                  Create a script process with associated file

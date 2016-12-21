@@ -45,12 +45,9 @@ namespace automation
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
 
-         std::vector<boost::filesystem::path> interpreterDirectories = findInterpreterDirectories();
-
-         for (std::vector<boost::filesystem::path>::const_iterator interpreterDirectory = interpreterDirectories.begin();
-              interpreterDirectory != interpreterDirectories.end(); ++interpreterDirectory)
+         for (const auto& interpreterDirectory : findInterpreterDirectories())
          {
-            std::string interperterKeyName = interpreterDirectory->filename().string();
+            auto interperterKeyName = interpreterDirectory.filename().string();
             if (m_loadedInterpreters.find(interperterKeyName) == m_loadedInterpreters.end())
             {
                // Not already loaded
@@ -59,14 +56,11 @@ namespace automation
                try
                {
                   if (isInterpreterCompatibleWithPlatform(interperterKeyName))
-                  {
-                     boost::shared_ptr<IInterpreterLibrary> library(new CInterpreterLibrary(toLibraryPath(interpreterDirectory->filename().string())));
-                     m_loadedInterpreters[interperterKeyName] = library;
-                  }
+                     m_loadedInterpreters[interperterKeyName] = boost::make_shared<CInterpreterLibrary>(toLibraryPath(interpreterDirectory.filename().string()));
                }
                catch (shared::exception::CInvalidParameter& e)
                {
-                  YADOMS_LOG(warning) << "Interpreter " << interpreterDirectory->filename().string() << " is not valid and will not be loaded : " << e.what();
+                  YADOMS_LOG(warning) << "Interpreter " << interpreterDirectory.filename().string() << " is not valid and will not be loaded : " << e.what();
                }
             }
          }
@@ -137,10 +131,9 @@ namespace automation
          loadInterpreters();
 
          // Now find corresponding interpreter
-         for (std::map<std::string, boost::shared_ptr<IInterpreterLibrary>>::const_iterator itInterpreter = m_loadedInterpreters.begin();
-              itInterpreter != m_loadedInterpreters.end(); ++itInterpreter)
+         for (const auto& itInterpreter : m_loadedInterpreters)
          {
-            auto interpreter(itInterpreter->second->getInterpreter());
+            auto interpreter(itInterpreter.second->getInterpreter());
             interpreters.push_back(interpreter->name());
          }
 
@@ -164,9 +157,9 @@ namespace automation
          loadInterpreters();
 
          // Now find corresponding interpreter (warning interpreter name is the name returned by the interpreter, not the map key, which is the interpreter filename)
-         for (std::map<std::string, boost::shared_ptr<IInterpreterLibrary>>::const_iterator itInterpreter = m_loadedInterpreters.begin(); itInterpreter != m_loadedInterpreters.end(); ++itInterpreter)
+         for (const auto& itInterpreter : m_loadedInterpreters)
          {
-            auto interpreter(itInterpreter->second->getInterpreter());
+            auto interpreter(itInterpreter.second->getInterpreter());
             if (interpreter->name() == interpreterName)
             {
                if (!interpreter->isAvailable())
@@ -188,30 +181,30 @@ namespace automation
 
       std::string CManager::getScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData)
       {
-         boost::shared_ptr<IProperties> scriptProperties(createScriptProperties(ruleData));
+         auto scriptProperties(createScriptProperties(ruleData));
 
          // Load the file content (delegated to the interpreter)
-         boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getAssociatedInterpreter(scriptProperties->interpreterName());
+         auto scriptInterpreter = getAssociatedInterpreter(scriptProperties->interpreterName());
          return scriptInterpreter->loadScriptContent(scriptProperties->scriptPath());
       }
 
       std::string CManager::getScriptTemplateFile(const std::string& interpreterName)
       {
          // Load the template file content (delegated to the interpreter)
-         boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getAssociatedInterpreter(interpreterName);
+         auto scriptInterpreter = getAssociatedInterpreter(interpreterName);
          return scriptInterpreter->loadScriptContent(std::string());
       }
 
       void CManager::updateScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code)
       {
-         boost::shared_ptr<IProperties> scriptProperties(createScriptProperties(ruleData));
+         auto scriptProperties(createScriptProperties(ruleData));
 
          // First build directory tree
          boost::filesystem::remove_all(scriptProperties->scriptPath());
 
          // Create directory chain
          boost::system::error_code ec;
-         int triesCount = 0;
+         auto triesCount = 0;
          do
          {
             // Under Windows, create_directories immediately called after remove_all can raise error. So retry until it works.
@@ -223,17 +216,17 @@ namespace automation
          while (ec != boost::system::errc::success);
 
          // Create the file and put the code in (delegated to the interpreter)
-         boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getAssociatedInterpreter(scriptProperties->interpreterName());
+         auto scriptInterpreter = getAssociatedInterpreter(scriptProperties->interpreterName());
          scriptInterpreter->saveScriptContent(scriptProperties->scriptPath(), code);
       }
 
       void CManager::deleteScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, bool doBackup)
       {
-         boost::shared_ptr<IProperties> scriptProperties(createScriptProperties(ruleData));
+         auto scriptProperties(createScriptProperties(ruleData));
 
          if (doBackup)
          {
-            const std::string backupPath(scriptProperties->scriptPath() + ".bak");
+            const auto backupPath(scriptProperties->scriptPath() + ".bak");
             boost::filesystem::remove_all(backupPath);
             boost::filesystem::rename(scriptProperties->scriptPath(), backupPath);
          }
@@ -281,7 +274,8 @@ namespace automation
          return yScriptApi;
       }
 
-      boost::shared_ptr<shared::process::IProcessObserver> CManager::createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler, int ruleId)
+      boost::shared_ptr<shared::process::IProcessObserver> CManager::createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler,
+                                                                                        int ruleId)
       {
          return boost::make_shared<StopNotifier>(ruleStateHandler, ruleId);
       }

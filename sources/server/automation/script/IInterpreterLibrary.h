@@ -1,27 +1,31 @@
 #pragma once
 #include <shared/script/IInterpreter.h>
 
-namespace automation { namespace script
+namespace automation
 {
-   //-----------------------------------------------------
-   ///\brief The script interpreter library interface
-   //-----------------------------------------------------
-   class IInterpreterLibrary
+   namespace script
    {
-   public:
       //-----------------------------------------------------
-      ///\brief               Destructor
+      ///\brief The script interpreter library interface
       //-----------------------------------------------------
-      virtual ~IInterpreterLibrary() {}
+      class IInterpreterLibrary
+      {
+      public:
+         //-----------------------------------------------------
+         ///\brief               Destructor
+         //-----------------------------------------------------
+         virtual ~IInterpreterLibrary()
+         {
+         }
 
-      //-----------------------------------------------------
-      ///\brief               Get the loaded script interpreter
-      ///\param[in] interpreterPath    Interpreter path
-      ///\return              The loaded script interpreter
-      //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::script::IInterpreter> getInterpreter() const = 0;
-   };
-	
-} } // namespace automation::script
-	
-	
+         //-----------------------------------------------------
+         ///\brief               Get the loaded script interpreter
+         ///\param[in] interpreterPath    Interpreter path
+         ///\return              The loaded script interpreter
+         //-----------------------------------------------------
+         virtual boost::shared_ptr<shared::script::IInterpreter> getInterpreter() const = 0;
+      };
+   }
+} // namespace automation::script
+
+

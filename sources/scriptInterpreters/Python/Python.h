@@ -12,7 +12,7 @@ public:
    /// \brief	Constructor
    /// \param[in] pythonInterpreterPath The path containing the current interpreter
    //--------------------------------------------------------------
-   explicit CPython(const boost::filesystem::path pythonInterpreterPath);
+   explicit CPython(const boost::filesystem::path& pythonInterpreterPath);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -24,12 +24,13 @@ public:
    std::string type() const override;
    bool isAvailable() const override;
    std::string loadScriptContent(const std::string& scriptPath) const override;
-   void saveScriptContent(const std::string& scriptPath, const std::string& content) const override;
+   void saveScriptContent(const std::string& scriptPath,
+                          const std::string& content) const override;
    boost::shared_ptr<shared::process::IProcess> createProcess(const std::string& scriptPath,
                                                               boost::shared_ptr<shared::process::ILogger> scriptLogger,
                                                               boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
                                                               boost::shared_ptr<shared::process::IProcessObserver> processObserver) const override;
-  // [END] IInterpreter implementation
+   // [END] IInterpreter implementation
 
 private:
 
@@ -43,6 +44,4 @@ private:
    //--------------------------------------------------------------
    boost::shared_ptr<IPythonExecutable> m_pythonExecutable;
 };
-
-
 

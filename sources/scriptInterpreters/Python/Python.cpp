@@ -11,9 +11,9 @@
 IMPLEMENT_SCRIPT_INTERPRETER(CPython)
 
 
-CPython::CPython(const boost::filesystem::path pythonInterpreterPath)
-   :m_pythonInterpreterPath(pythonInterpreterPath),
-    m_pythonExecutable(boost::make_shared<CPythonExecutable>())
+CPython::CPython(const boost::filesystem::path& pythonInterpreterPath)
+   : m_pythonInterpreterPath(pythonInterpreterPath),
+     m_pythonExecutable(boost::make_shared<CPythonExecutable>())
 {
 }
 
@@ -23,8 +23,8 @@ CPython::~CPython()
 
 std::string CPython::type() const
 {
-   static const std::string interpreterName("python");
-   return interpreterName;
+   static const std::string interpreterType("python");
+   return interpreterType;
 }
 
 std::string CPython::name() const
@@ -55,7 +55,8 @@ std::string CPython::loadScriptContent(const std::string& scriptPath) const
    return file.read();
 }
 
-void CPython::saveScriptContent(const std::string& scriptPath, const std::string& content) const
+void CPython::saveScriptContent(const std::string& scriptPath,
+                                const std::string& content) const
 {
    CScriptFile file(scriptPath);
    file.write(content);
@@ -81,3 +82,4 @@ boost::shared_ptr<shared::process::IProcess> CPython::createProcess(const std::s
       return boost::shared_ptr<shared::process::IProcess>();
    }
 }
+

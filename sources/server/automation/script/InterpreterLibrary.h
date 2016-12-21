@@ -2,48 +2,50 @@
 #include "IInterpreterLibrary.h"
 #include <shared/DynamicLibrary.h>
 
-namespace automation { namespace script
+namespace automation
 {
-   //-----------------------------------------------------
-   ///\brief The script interpreter library
-   //-----------------------------------------------------
-   class CInterpreterLibrary : public IInterpreterLibrary
+   namespace script
    {
-   public:
       //-----------------------------------------------------
-      ///\brief               Constructor
-      ///\param[in] interpreterPath Interpreter path
-      ///\throw CInvalidParameter if unable to load interpreter
+      ///\brief The script interpreter library
       //-----------------------------------------------------
-      explicit CInterpreterLibrary(const boost::filesystem::path& interpreterPath);
+      class CInterpreterLibrary : public IInterpreterLibrary
+      {
+      public:
+         //-----------------------------------------------------
+         ///\brief               Constructor
+         ///\param[in] interpreterPath Interpreter path
+         ///\throw CInvalidParameter if unable to load interpreter
+         //-----------------------------------------------------
+         explicit CInterpreterLibrary(const boost::filesystem::path& interpreterPath);
 
-      //-----------------------------------------------------
-      ///\brief               Destructor
-      //-----------------------------------------------------
-      virtual ~CInterpreterLibrary();
+         //-----------------------------------------------------
+         ///\brief               Destructor
+         //-----------------------------------------------------
+         virtual ~CInterpreterLibrary();
 
-   protected:
-      // IInterpreterLibrary Implementation
-      virtual boost::shared_ptr<shared::script::IInterpreter> getInterpreter() const;
-      // [END] IInterpreterLibrary Implementation
-      
-      //-----------------------------------------------------
-      ///\brief               Load the library and create interpreter
-      //-----------------------------------------------------
-      boost::shared_ptr<shared::script::IInterpreter> load(const boost::filesystem::path& interpreterPath);
+      protected:
+         // IInterpreterLibrary Implementation
+         boost::shared_ptr<shared::script::IInterpreter> getInterpreter() const override;
+         // [END] IInterpreterLibrary Implementation
 
-   private:
-      //-----------------------------------------------------
-      ///\brief               The loaded library
-      //-----------------------------------------------------
-      boost::shared_ptr<shared::CDynamicLibrary> m_library;
+         //-----------------------------------------------------
+         ///\brief               Load the library and create interpreter
+         //-----------------------------------------------------
+         boost::shared_ptr<shared::script::IInterpreter> load(const boost::filesystem::path& interpreterPath);
 
-      //-----------------------------------------------------
-      ///\brief               The created interpreter
-      //-----------------------------------------------------
-      boost::shared_ptr<shared::script::IInterpreter> m_interpreter;
-   };
+      private:
+         //-----------------------------------------------------
+         ///\brief               The loaded library
+         //-----------------------------------------------------
+         boost::shared_ptr<shared::CDynamicLibrary> m_library;
 
-} } // namespace automation::script
-	
-	
+         //-----------------------------------------------------
+         ///\brief               The created interpreter
+         //-----------------------------------------------------
+         boost::shared_ptr<shared::script::IInterpreter> m_interpreter;
+      };
+   }
+} // namespace automation::script
+
+
