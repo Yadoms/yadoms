@@ -35,6 +35,15 @@ namespace shared { namespace versioning {
       ///\param [in] minor          the minor version number (when you add functionality in a backwards-compatible manner)
       ///\param [in] revision       the patch version number (when you make backwards-compatible bug fixes)
       ///\param [in] prerelease     the prerelease information
+      //---------------------------------------------
+      CVersion(int major, int minor, int patch, const std::string & prerelease);
+      
+      //---------------------------------------------
+      ///\brief Contructor
+      ///\param [in] major          the major version number (when you make incompatible API changes,)
+      ///\param [in] minor          the minor version number (when you add functionality in a backwards-compatible manner)
+      ///\param [in] revision       the patch version number (when you make backwards-compatible bug fixes)
+      ///\param [in] prerelease     the prerelease information
       ///\param [in] buildMetaData  the build metadata
       //---------------------------------------------
       CVersion(int major, int minor, int patch, const std::string & prerelease, const std::string & buildMetaData);
@@ -90,6 +99,36 @@ namespace shared { namespace versioning {
       //---------------------------------------------
       const std::string toString() const;
 
+      //---------------------------------------------
+      ///\brief Get the MAJOR number
+      ///\return  the MAJOR number
+      //---------------------------------------------
+      const int major() const;
+
+      //---------------------------------------------
+      ///\brief Get the MINOR number
+      ///\return  the MINOR number
+      //---------------------------------------------
+      const int minor() const;
+
+      //---------------------------------------------
+      ///\brief Get the PATCH number
+      ///\return  the PATCH number
+      //---------------------------------------------
+      const int patch() const;
+
+      //---------------------------------------------
+      ///\brief Get the PRERELEASE version
+      ///\return  the PRERELEASE version
+      //---------------------------------------------
+      const std::string & prerelease() const;
+
+      //---------------------------------------------
+      ///\brief Get the BUILD metadata version
+      ///\return  the BUILD metadata version
+      //---------------------------------------------
+      const std::string & buildMetadata() const;
+
    protected:
       //---------------------------------------------
       ///\brief Compare the current object to another CVersion
@@ -99,21 +138,37 @@ namespace shared { namespace versioning {
       int compare(CVersion const& rhs) const;
 
    private:
-      //---------------------------------------------
-      ///\brief Extract information 
-      ///\param [out] major          the major version number
-      ///\param [out] minor          the minor version number
-      ///\param [out] patch          the patch version number
-      ///\param [out] prerelease     the prerelease
-      ///\param [out] buildMetadata  the build metadata
-      ///\return true if the version is a valid SEMVER format
-      //---------------------------------------------
-      bool extractValues(int & major, int & minor, int & patch, std::string & prerelease, std::string & buildMetadata) const;
 
       //---------------------------------------------
-      ///\brief  Container for version
+      ///\brief Parse a version contained in string
+      ///\throw shared::exception::CException in case of bad format
       //---------------------------------------------
-      std::string    m_version;
+      void parse(const std::string & version);
+
+      //---------------------------------------------
+      ///\brief  Major number
+      //---------------------------------------------
+      int m_major;
+
+      //---------------------------------------------
+      ///\brief  Minor number
+      //---------------------------------------------
+      int m_minor;
+
+      //---------------------------------------------
+      ///\brief  Patch number
+      //---------------------------------------------
+      int m_patch;
+
+      //---------------------------------------------
+      ///\brief  Prerelease tag
+      //---------------------------------------------
+      std::string m_prerelease;
+
+      //---------------------------------------------
+      ///\brief  Build metadata
+      //---------------------------------------------
+      std::string m_buildMetadata;
    };
 
 } } // namespace shared::versioning

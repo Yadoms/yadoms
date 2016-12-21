@@ -15,15 +15,10 @@ public:
       return str;
    }
 
-   const std::string& getVersion() const override
+   const shared::versioning::CVersion & getVersion() const override
    {
-      static const std::string str("99");
-      return str;
-   }
-
-   shared::versioning::EReleaseType getReleaseType() const override
-   {
-      return shared::versioning::EReleaseType::kBeta;
+      static const shared::versioning::CVersion version("1.0.0-beta.1");
+      return version;
    }
 
    const std::string& getAuthor() const override
@@ -41,7 +36,7 @@ public:
    std::string getIdentity() const override
    {
       std::ostringstream formatedInformations;
-      formatedInformations << getType() << " v" << getVersion() << "[" << boost::lexical_cast<std::string>(getReleaseType()) << "]";
+      formatedInformations << getType() << " v" << getVersion().toString();
       return formatedInformations.str();
    }
 
@@ -62,15 +57,20 @@ public:
       return false;
    }
 
-   shared::CDataContainer getPackage() const override
+   boost::shared_ptr<const shared::CDataContainer> getPackage() const override
    {
-      return shared::CDataContainer();
+      return boost::make_shared<shared::CDataContainer>();
    }
 
    const boost::filesystem::path& getPath() const override
    {
       static boost::filesystem::path emptyPath;
       return emptyPath;
+   }
+
+   bool getSupportDeviceRemovedNotification() const override
+   {
+      return false;
    }
 
    // [END] shared::plugin::IInformation implementation

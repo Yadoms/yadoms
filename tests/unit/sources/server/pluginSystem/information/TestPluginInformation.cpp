@@ -15,8 +15,7 @@ static const std::string DefaultPackageFileContent(
 "{"
 "   \"type\": \"FakePackage\","
 "      \"description\": \"This is just a fake package file, used to test pluginSystem::CInformation class.\","
-"      \"version\": \"0.0.1\","
-"      \"releaseType\": \"beta\","
+"      \"version\": \"0.0.1-beta\","
 "      \"author\": \"yadoms-team\","
 "     \"url\": \"https://github.com/Yadoms/yadoms/\","
 "     \"configurationSchema\":"
@@ -120,12 +119,11 @@ BOOST_AUTO_TEST_CASE(ReadDefaultInformation)
    pluginSystem::CInformation info(DefaultPackagePath);
 
    BOOST_CHECK_EQUAL(info.getType(), "FakePackage");
-   BOOST_CHECK_EQUAL(info.getVersion(), "0.0.1");
-   BOOST_CHECK_EQUAL(info.getReleaseType(), shared::versioning::EReleaseType::kBetaValue);
+   BOOST_CHECK_EQUAL(info.getVersion().toString(), "0.0.1-beta");
    BOOST_CHECK_EQUAL(info.getAuthor(), "yadoms-team");
    BOOST_CHECK_EQUAL(info.getUrl(), "https://github.com/Yadoms/yadoms/");
-   BOOST_CHECK_EQUAL(info.getIdentity(), "FakePackage v0.0.1[Beta]");
-   BOOST_CHECK_EQUAL(info.toString(), "FakePackage v0.0.1[Beta] by yadoms-team (https://github.com/Yadoms/yadoms/)");
+   BOOST_CHECK_EQUAL(info.getIdentity(), "FakePackage v0.0.1-beta");
+   BOOST_CHECK_EQUAL(info.toString(), "FakePackage v0.0.1-beta by yadoms-team (https://github.com/Yadoms/yadoms/)");
 }
 
 BOOST_AUTO_TEST_CASE(WrongPackageFileJsonFormat)
@@ -134,8 +132,7 @@ BOOST_AUTO_TEST_CASE(WrongPackageFileJsonFormat)
       "{"
       "   \"type\": \"FakePackage\","
       "   \"description\": \"This is just a fake package file, used to test pluginSystem::CInformation class.\","
-      "   \"version\": \"0.1\","
-      "   \"releaseType\": \"beta\","
+      "   \"version\": \"0.1.0-beta\","
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\","); // Closing brace is missing
 
@@ -158,8 +155,7 @@ BOOST_AUTO_TEST_CASE(NullOrEmptyPluginName)
    const std::string fileContentWithoutName(
       "{"
       "   \"description\": \"This is just a fake package file, used to test pluginSystem::CInformation class.\","
-      "   \"version\": \"0.1\","
-      "   \"releaseType\": \"beta\","
+      "   \"version\": \"0.1.0-beta\","
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
@@ -172,8 +168,7 @@ BOOST_AUTO_TEST_CASE(NullOrEmptyPluginDescription)
       "{"
       "   \"type\": \"FakePackage\","
       "   \"description\": \"\","
-      "   \"version\": \"0.1\","
-      "   \"releaseType\": \"beta\","
+      "   \"version\": \"0.1.0-beta\","
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
@@ -182,8 +177,7 @@ BOOST_AUTO_TEST_CASE(NullOrEmptyPluginDescription)
    const std::string fileContentWithoutDescription(
       "{"
       "   \"type\": \"FakePackage\","
-      "   \"version\": \"0.1\","
-      "   \"releaseType\": \"beta\","
+      "   \"version\": \"0.1.0-beta\","
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
@@ -197,7 +191,6 @@ BOOST_AUTO_TEST_CASE(BadPluginVersionFormat)
       "   \"type\": \"FakePackage\","
       "   \"description\": \"This is just a fake package file, used to test pluginSystem::CInformation class.\","
       "   \"version\": \"\","
-      "   \"releaseType\": \"beta\","
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
@@ -207,7 +200,6 @@ BOOST_AUTO_TEST_CASE(BadPluginVersionFormat)
       "{"
       "   \"type\": \"FakePackage\","
       "   \"description\": \"This is just a fake package file, used to test pluginSystem::CInformation class.\","
-      "   \"releaseType\": \"beta\","
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
@@ -218,7 +210,6 @@ BOOST_AUTO_TEST_CASE(BadPluginVersionFormat)
       "   \"type\": \"FakePackage\","
       "   \"description\": \"This is just a fake package file, used to test pluginSystem::CInformation class.\","
       "   \"version\": \"0.\","
-      "   \"releaseType\": \"beta\","
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
@@ -229,7 +220,6 @@ BOOST_AUTO_TEST_CASE(BadPluginVersionFormat)
       "   \"type\": \"FakePackage\","
       "   \"description\": \"This is just a fake package file, used to test pluginSystem::CInformation class.\","
       "   \"version\": \".1\","
-      "   \"releaseType\": \"beta\","
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
@@ -240,7 +230,6 @@ BOOST_AUTO_TEST_CASE(BadPluginVersionFormat)
       "   \"type\": \"FakePackage\","
       "   \"description\": \"This is just a fake package file, used to test pluginSystem::CInformation class.\","
       "   \"version\": \"0.a\","
-      "   \"releaseType\": \"beta\","
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
@@ -251,46 +240,10 @@ BOOST_AUTO_TEST_CASE(BadPluginVersionFormat)
       "   \"type\": \"FakePackage\","
       "   \"description\": \"This is just a fake package file, used to test pluginSystem::CInformation class.\","
       "   \"version\": \"12\","
-      "   \"releaseType\": \"beta\","
       "   \"author\": \"yadoms-team\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
    BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithBadVersion4), shared::exception::CInvalidParameter);
-}
-
-BOOST_AUTO_TEST_CASE(PluginInformationBadReleaseType)
-{
-   const std::string fileContentWithEmptyReleaseType(
-      "{"
-      "   \"type\": \"FakePackage\","
-      "   \"description\": \"This is just a fake package file, used to test pluginSystem::CInformation class.\","
-      "   \"version\": \"0.1\","
-      "   \"releaseType\": \"beta\","
-      "   \"author\": \"yadoms-team\","
-      "   \"url\": \"https://github.com/Yadoms/yadoms/\""
-      "}");
-   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithEmptyReleaseType), shared::exception::CInvalidParameter);
-
-   const std::string fileContentWithoutReleaseType(
-      "{"
-      "   \"type\": \"FakePackage\","
-      "   \"description\": \"This is just a fake package file, used to test pluginSystem::CInformation class.\","
-      "   \"version\": \"0.1\","
-      "   \"author\": \"yadoms-team\","
-      "   \"url\": \"https://github.com/Yadoms/yadoms/\""
-      "}");
-   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithoutReleaseType), shared::exception::CInvalidParameter);
-
-   const std::string fileContentWithBadReleaseType(
-      "{"
-      "   \"type\": \"FakePackage\","
-      "   \"description\": \"This is just a fake package file, used to test pluginSystem::CInformation class.\","
-      "   \"version\": \"0.1\","
-      "   \"releaseType\": \"betas\","
-      "   \"author\": \"yadoms-team\","
-      "   \"url\": \"https://github.com/Yadoms/yadoms/\""
-      "}");
-   BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithBadReleaseType), shared::exception::CInvalidParameter);
 }
 
 BOOST_AUTO_TEST_CASE(NullOrEmptyPluginAuthor)
@@ -299,8 +252,7 @@ BOOST_AUTO_TEST_CASE(NullOrEmptyPluginAuthor)
       "{"
       "   \"type\": \"FakePackage\","
       "   \"description\": \"This is just a fake package file, used to test pluginSystem::CInformation class.\","
-      "   \"version\": \"0.1\","
-      "   \"releaseType\": \"beta\","
+      "   \"version\": \"0.1.0-beta\","
       "   \"author\": \"\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
@@ -310,8 +262,7 @@ BOOST_AUTO_TEST_CASE(NullOrEmptyPluginAuthor)
       "{"
       "   \"type\": \"FakePackage\","
       "   \"description\": \"This is just a fake package file, used to test pluginSystem::CInformation class.\","
-      "   \"version\": \"0.1\","
-      "   \"releaseType\": \"beta\","
+      "   \"version\": \"0.1.0-beta\","
       "   \"url\": \"https://github.com/Yadoms/yadoms/\""
       "}");
    BOOST_REQUIRE_THROW(pluginSystem::CInformation info(fileContentWithoutAuthor), shared::exception::CInvalidParameter);

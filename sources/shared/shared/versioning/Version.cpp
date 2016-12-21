@@ -3,33 +3,39 @@
 #include <shared/exception/Exception.hpp>
 #include <Poco/RegularExpression.h>
 #include <Poco/NumberParser.h>
+#include <regex>
+#include <shared/Log.h>
 
 namespace shared { namespace versioning {
 
    CVersion::CVersion()
+      :m_major(0), m_minor(0), m_patch(0), m_prerelease(""), m_buildMetadata("")
    {
-      m_version = "0.0.0";
    }
 
    CVersion::CVersion(const std::string & stringVersion)
-      :m_version(stringVersion)
    {
-
+      parse(stringVersion);
    }
 
    CVersion::CVersion(int major, int minor, int patch)
+      :m_major(major), m_minor(minor), m_patch(patch), m_prerelease(""), m_buildMetadata("")
    {
-      m_version = (boost::format("%1%.%2%.%3%") % major % minor % patch).str();
    }
 
-   CVersion::CVersion(int major, int minor, int patch, const std::string & prerelease, const std::string & buildMetaData)
+   CVersion::CVersion(int major, int minor, int patch, const std::string & prerelease)
+      :m_major(major), m_minor(minor), m_patch(patch), m_prerelease(prerelease), m_buildMetadata("")
    {
-      m_version = (boost::format("%1%.%2%.%3%") % major % minor % patch).str();
+   }
+
+   CVersion::CVersion(int major, int minor, int patch, const std::string & prerelease, const std::string & buildMetadata)
+      : m_major(major), m_minor(minor), m_patch(patch), m_prerelease(prerelease), m_buildMetadata(buildMetadata)
+   {
    }
 
    CVersion::CVersion(const CVersion & rhs)
+      : m_major(rhs.m_major), m_minor(rhs.m_minor), m_patch(rhs.m_patch), m_prerelease(rhs.m_prerelease), m_buildMetadata(rhs.m_buildMetadata)
    {
-      m_version = rhs.m_version;
    }
 
    CVersion::~CVersion()
@@ -61,6 +67,30 @@ namespace shared { namespace versioning {
       return (compare(rhs) == 0);
    }
 
+   const int CVersion::major() const
+   {
+      return m_major;
+   }
+
+   const int CVersion::minor() const
+   {
+      return m_minor;
+   }
+
+   const int CVersion::patch() const
+   {
+      return m_patch;
+   }
+
+   const std::string & CVersion::prerelease() const
+   {
+      return m_prerelease;
+   }
+
+   const std::string & CVersion::buildMetadata() const
+   {
+      return m_buildMetadata;
+   }
 
    int CVersion::compare(CVersion const& rhs) const
    {
@@ -72,65 +102,76 @@ namespace shared { namespace versioning {
       // compare major, minor and patch
       // if the same, the preRelease field (alphabetically ordered) make the precendence
 
-      int thisMajor, thisMinor, thisPatch, rhsMajor, rhsMinor, rhsPatch;
-      std::string thisPreRelease, rhsPreRelease, thisBuild, rhsBuild;
-
-      if (!extractValues(thisMajor, thisMinor, thisPatch, thisPreRelease, thisBuild) || !rhs.extractValues(rhsMajor, rhsMinor, rhsPatch, rhsPreRelease, rhsBuild))
-         throw shared::exception::CException("Fail to extract version values");
-
-      if (thisMajor > rhsMajor)
+      if (m_major > rhs.m_major)
          return 1;
-      else if (thisMajor < rhsMajor)
+      else if (m_major < rhs.m_major)
          return -1;
       else
       {
-         if (thisMinor > rhsMinor)
+         if (m_minor > rhs.m_minor)
             return 1;
-         else if (thisMinor < rhsMinor)
+         else if (m_minor < rhs.m_minor)
             return -1;
          else
          {
-            if (thisPatch > rhsPatch)
+            if (m_patch > rhs.m_patch)
                return 1;
-            else if (thisPatch < rhsPatch)
+            else if (m_patch < rhs.m_patch)
                return -1;
             else
-               return thisPreRelease.compare(rhsPreRelease);
+            {
+               if (m_prerelease.empty() && rhs.m_prerelease.empty())
+                  return 0;
+               else
+               {
+                  if (m_prerelease.empty() && !rhs.m_prerelease.empty())
+                     return 1;
+                  if (!m_prerelease.empty() && rhs.m_prerelease.empty())
+                     return -1;
+                  return m_prerelease.compare(rhs.m_prerelease);
+               }               
+            }
          }
       }
    }
 
    const std::string CVersion::toString() const
    {
-      return m_version;
+      std::string prerelease = m_prerelease.empty() ? "" : ("-" + m_prerelease);
+      std::string buildMetadata = m_buildMetadata.empty() ? "" : ("+" + m_buildMetadata);
+      return (boost::format("%1%.%2%.%3%%4%%5%") % m_major % m_minor % m_patch % prerelease % buildMetadata).str();
    }
 
 
 
-   bool CVersion::extractValues(int & major, int & minor, int & patch, std::string & prerelease, std::string & buildMetadata) const
+   void CVersion::parse(const std::string & version)
    {
-      //Regex for SEMVER is taken from http://rgxdb.com/r/40OZ1HN5
-      Poco::RegularExpression re("/(?<=^[Vv]|^)(?:(?<major>(?:0|[1-9](?:(?:0|[1-9])+)*))[.](?<minor>(?:0|[1-9](?:(?:0|[1-9])+)*))[.](?<patch>(?:0|[1-9](?:(?:0|[1-9])+)*))(?:-(?<prerelease>(?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:0|[1-9](?:(?:0|[1-9])+)*))(?:[.](?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:0|[1-9](?:(?:0|[1-9])+)*)))*))?(?:[+](?<build>(?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:(?:0|[1-9])+))(?:[.](?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:(?:0|[1-9])+)))*))?)$/");
+      //Regex for SEMVER is taken from http://rgxdb.com/r/40OZ1HN5 (adjusted by removing leading and trailing "/" )
+      Poco::RegularExpression re("(?<=^[Vv]|^)(?:(?<major>(?:0|[1-9](?:(?:0|[1-9])+)*))[.](?<minor>(?:0|[1-9](?:(?:0|[1-9])+)*))[.](?<patch>(?:0|[1-9](?:(?:0|[1-9])+)*))(?:-(?<prerelease>(?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:0|[1-9](?:(?:0|[1-9])+)*))(?:[.](?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:0|[1-9](?:(?:0|[1-9])+)*)))*))?(?:[+](?<build>(?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:(?:0|[1-9])+))(?:[.](?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:(?:0|[1-9])+)))*))?)$");
       std::vector<std::string> strings;
-      int resultCount = re.split(m_version, strings);
+      int resultCount = re.split(version, strings);
 
-      if (resultCount > 2)
+      if (resultCount > 3)
       {
-         major = Poco::NumberParser::parse(strings[0]);
-         minor = Poco::NumberParser::parse(strings[1]);
-         patch = Poco::NumberParser::parse(strings[2]);
+         //std::string foundStr(ss.str().substr(match.offset, match.length));
 
-         if (resultCount > 3)
+         m_major = Poco::NumberParser::parse(strings[1]);
+         m_minor = Poco::NumberParser::parse(strings[2]);
+         m_patch = Poco::NumberParser::parse(strings[3]);
+
+         if (resultCount > 4)
          {
-            prerelease = strings[3];
+            m_prerelease = strings[4];
 
-            if (resultCount > 4)
+            if (resultCount > 5)
             {
-               buildMetadata = strings[4];
+               m_buildMetadata = strings[5];
             }
          }
+      } 
+      else
+      {
+         throw shared::exception::CException("Fail to parse version from " + version);
       }
-
-      return resultCount > 2;
    }
 } } // namespace shared::versioning
