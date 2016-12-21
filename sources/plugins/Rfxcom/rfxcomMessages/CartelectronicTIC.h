@@ -4,6 +4,7 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "specificHistorizers/Color.h"
 #include "specificHistorizers/Period.h"
+#include "specificHistorizers/TeleInfoStatus.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -83,9 +84,9 @@ namespace rfxcomMessages
       boost::shared_ptr<teleInfo::specificHistorizers::CPeriod> m_period;
 
       //--------------------------------------------------------------
-      /// \brief	TeleInfo Error
+      /// \brief	TeleInfo Status
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CSwitch> m_teleInfoError;
+      boost::shared_ptr<teleInfo::specificHistorizers::CTeleInfoStatus> m_teleInfoStatus;
 
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances

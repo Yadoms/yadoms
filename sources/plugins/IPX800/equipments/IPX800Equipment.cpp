@@ -231,8 +231,6 @@ namespace equipments
             m_pendingIOHistorizer = (*diIterator);
          }
       }
-
-      //return parameters;
    }
 
    void CIPX800Equipment::setParameter(const std::string& keywordName,

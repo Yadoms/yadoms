@@ -13,9 +13,10 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	    SendUrlRequest
-   /// \param[in]  url                 the url to send the request
+   /// \param[in]  socket              the IP adress with the socket where to send the frame
+   /// \param[in]  parameters          extra-parameters to the url
    /// \return     the answer of the request
    //--------------------------------------------------------------
-   static shared::CDataContainer sendCommand(/*Poco::Net::IPAddress IPAddress,*/ Poco::Net::SocketAddress socket, shared::CDataContainer parameters);
+   static shared::CDataContainer sendCommand(Poco::Net::SocketAddress socket, shared::CDataContainer parameters);
 
 };
