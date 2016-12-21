@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "WUConfiguration.h"
-#include "WeatherUndergroundHelpers.h"
 #include"NoStateException.hpp"
 #include "Features/Location.h"
 

@@ -83,7 +83,7 @@ namespace pluginSystem
 
 
       const IPathProvider& m_pathProvider;
-      const boost::shared_ptr<const shared::ILocation> m_locationProvider;
+      const boost::shared_ptr<const shared::ILocation> m_location;
    };
 } // namespace pluginSystem
 

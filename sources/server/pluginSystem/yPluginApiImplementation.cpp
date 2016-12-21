@@ -14,7 +14,7 @@ namespace pluginSystem
                                                         boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                                                         boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordDataAccessLayer,
                                                         boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
-                                                        const boost::shared_ptr<const shared::ILocation> locationProvider)
+                                                        const boost::shared_ptr<const shared::ILocation> location)
       : m_informations(pluginInformations),
         m_dataPath(dataPath),
         m_instanceData(instanceData),
@@ -23,7 +23,7 @@ namespace pluginSystem
         m_keywordDataAccessLayer(keywordDataAccessLayer),
         m_recipientRequester(dataProvider->getRecipientRequester()),
         m_acquisitionHistorizer(acquisitionHistorizer),
-        m_locationProvider(locationProvider)
+        m_location(location)
    {
    }
 
@@ -289,7 +289,7 @@ namespace pluginSystem
 
    boost::shared_ptr<const shared::plugin::information::IYadomsInformation> CYPluginApiImplementation::getYadomsInformation() const
    {
-      return boost::make_shared<CYadomsInformation>(m_locationProvider);
+      return boost::make_shared<CYadomsInformation>(m_location);
    }
 
    int CYPluginApiImplementation::getPluginId() const

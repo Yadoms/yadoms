@@ -6,28 +6,30 @@
 #include "WeatherUnderground.h"
 #include "Features/Location.h"
 
-CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api, 
+CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api,
                        IWUConfiguration& wuConfiguration):
    m_developerMode(api->getYadomsInformation()->developperMode())
 {
    initializeLiveStations(api, wuConfiguration);
 
-   std::vector<std::string> devices = api->getAllDevices();
+   auto devices = api->getAllDevices();
    std::vector<std::string>::iterator devicesIterator;
 
-   boost::shared_ptr<const shared::ILocation> location = m_liveStations->getCityLocation();
-   std::string cityName = m_liveStations->getCity();
+   auto location = m_liveStations->getCityLocation();
+   auto cityName = m_liveStations->getCity();
 
    // Create all devices if present
    for (devicesIterator = devices.begin(); devicesIterator != devices.end(); ++devicesIterator)
    {
       std::string type;
       std::cout << "Name : " << (*devicesIterator) << std::endl;
-      try {
+      try
+      {
          type = api->getDeviceDetails(*devicesIterator).get<std::string>("type");
       }
-      catch(std::exception&)
-      {}
+      catch (std::exception&)
+      {
+      }
 
       if (type == "weather")
       {
@@ -49,7 +51,7 @@ CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api,
             std::cout << "Could not create device weather : already exist." << std::endl;
          }
       }
-      
+
       if (type == "astronomy")
       {
          if (!m_astronomy)
@@ -101,7 +103,7 @@ void CWUFactory::createDevice(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    // get the location and name of the selected station
    initializeLiveStations(api, wuConfiguration);
-   std::string cityName = m_liveStations->getCity();
+   auto cityName = m_liveStations->getCity();
 
    // If astronomy is enabled
    if (wuConfiguration.isAstronomyEnabled())
@@ -232,4 +234,5 @@ boost::shared_ptr<features::IFeature> CWUFactory::getForecastDevice()
 }
 
 CWUFactory::~CWUFactory()
-{}
+{
+}
