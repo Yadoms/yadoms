@@ -1,7 +1,6 @@
 {
    "type": "system-deactivated-widget",
-	"version": "1.0.0",
-	"releaseType": "beta",
+	"version": "1.0.0-beta",
    "author": "Nicolas HILAIRE",
    "url" : "https://github.com/Yadoms/yadoms/wiki/system-deactivated-widget",
    "credits": ""

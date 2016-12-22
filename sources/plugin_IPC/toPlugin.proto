@@ -67,13 +67,7 @@ message Location{
 message YadomsInformationAnswer {
 	required bool developperMode = 1;
 	required string version = 2;
-	
-	enum EReleaseType {
-		Stable = 0; ReleaseCandidate = 1; Beta = 2;
-	}
-	required EReleaseType releaseType = 3;
-
-	required Location location = 4;
+	required Location location = 3;
 }
 
 message DeviceConfigurationSchemaRequest {

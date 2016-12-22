@@ -1,7 +1,6 @@
 {
   "type": "dimmer",
-	"version": "1.0.0",
-	"releaseType": "beta",
+  "version": "1.0.0-beta",
   "author": "Jean-Michel BERHAULT",
   "url": "https://github.com/Yadoms/yadoms/wiki/dimmer",
   "credits": "",

@@ -28,24 +28,20 @@ namespace pluginSystem
       AddEventToDatabase(pluginInformation, database::entities::EEventType::kUnload);
    }
 
-   void CBasicQualifier::signalCrash(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-                                     const std::string& reason)
+   void CBasicQualifier::signalCrash(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation, const std::string& reason)
    {
       // Insert event in database
       AddEventToDatabase(pluginInformation, database::entities::EEventType::kCrash, reason);
    }
 
-   void CBasicQualifier::AddEventToDatabase(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-                                            database::entities::EEventType eventType,
-                                            const std::string& reason) const
+   void CBasicQualifier::AddEventToDatabase(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation, database::entities::EEventType eventType, const std::string& reason) const
    {
       try
       {
          // Add event into plugin event logger table
          m_pluginLogger->addEvent(
             pluginInformation->getType(),
-            pluginInformation->getVersion(),
-            pluginInformation->getReleaseType(),
+            pluginInformation->getVersion().toString(),
             eventType,
             reason);
 

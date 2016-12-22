@@ -48,7 +48,7 @@
       .done(function(data) {
 
          $("td#dashboard-summary-platform").text(data.runningPlatform);
-         $("td#dashboard-summary-software-version").text(data.yadoms.version + " " + data.yadoms.releaseType);
+         $("td#dashboard-summary-software-version").text(data.yadoms.version);
          $("td#dashboard-summary-started-from").text(DateTimeFormatter.isoDateToDate(data.startupTime).fromNow());
 
          if (data.developerMode) {

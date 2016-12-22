@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/versioning/ReleaseType.h>
+#include <shared/versioning/Version.h>
 
 /*
    DO NOT USE use directly this file
@@ -8,6 +8,5 @@
       shared::CServiceLocator::instance().get<IRunningInformation>().getSoftwareVersion()
    
 */
-const std::string YadomsVersion("2.0.0.0");
-const shared::versioning::EReleaseType YadomsReleaseType(shared::versioning::EReleaseType::kBeta);
+const shared::versioning::CVersion YadomsVersion("2.0.0-beta.1");
 

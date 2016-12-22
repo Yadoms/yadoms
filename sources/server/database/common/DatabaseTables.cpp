@@ -50,7 +50,6 @@ namespace common {
       ((EventDate)("eventDate"))
       ((PluginName)("pluginName"))
       ((PluginVersion)("pluginVersion"))
-      ((PluginRelease)("pluginRelease"))
       ((EventType)("eventType"))
       ((Message)("message"))
    )
