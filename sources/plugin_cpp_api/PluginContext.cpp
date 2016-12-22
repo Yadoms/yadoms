@@ -115,8 +115,8 @@ namespace plugin_cpp_api
 
       try
       {
-         const auto sendMessageQueueId(m_commandLine->yPluginApiAccessorId() + ".toYadoms");
-         const auto receiveMessageQueueId(m_commandLine->yPluginApiAccessorId() + ".toPlugin");
+         const auto sendMessageQueueId(m_commandLine->yPluginApiAccessorId() + ".plugin_IPC.toYadoms");
+         const auto receiveMessageQueueId(m_commandLine->yPluginApiAccessorId() + ".plugin_IPC.toPlugin");
 
          std::cout << "Opening message queues id " << m_commandLine->yPluginApiAccessorId() << std::endl;
 

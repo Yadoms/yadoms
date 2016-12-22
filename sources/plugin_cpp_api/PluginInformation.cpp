@@ -4,7 +4,7 @@
 
 namespace plugin_cpp_api
 {
-   CPluginInformation::CPluginInformation(boost::shared_ptr<const toPlugin::Information> buffer)
+   CPluginInformation::CPluginInformation(boost::shared_ptr<const plugin_IPC::toPlugin::Information> buffer)
       : m_buffer(buffer),
         m_path(m_buffer->path())
    {
@@ -28,8 +28,8 @@ namespace plugin_cpp_api
    {
       switch (m_buffer->releasetype())
       {
-      case toPlugin::Information_EReleaseType_kStable: return shared::versioning::EReleaseType::kStable;
-      case toPlugin::Information_EReleaseType_kReleaseCandidate: return shared::versioning::EReleaseType::kReleaseCandidate;
+      case plugin_IPC::toPlugin::Information_EReleaseType_kStable: return shared::versioning::EReleaseType::kStable;
+      case plugin_IPC::toPlugin::Information_EReleaseType_kReleaseCandidate: return shared::versioning::EReleaseType::kReleaseCandidate;
       default: return shared::versioning::EReleaseType::kBeta;
       }
    }

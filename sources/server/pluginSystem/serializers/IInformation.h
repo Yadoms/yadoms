@@ -17,7 +17,7 @@ namespace pluginSystem
          {
          }
 
-         virtual void toPb(toPlugin::Information* pb) const = 0;
+         virtual void toPb(plugin_IPC::toPlugin::Information* pb) const = 0;
       };
    }
 } // namespace pluginSystem::serializers

@@ -11,7 +11,7 @@ namespace plugin_cpp_api
       /// \brief	      Constructor
       /// \param[in]    buffer : Protobuf buffer
       //--------------------------------------------------------------
-      explicit CYadomsInformation(const toPlugin::YadomsInformationAnswer& buffer);
+      explicit CYadomsInformation(const plugin_IPC::toPlugin::YadomsInformationAnswer& buffer);
 
       virtual ~CYadomsInformation();
 
@@ -23,7 +23,7 @@ namespace plugin_cpp_api
       // [END] shared::plugin::information::IYadomsInformation implementation
 
    private:
-      const toPlugin::YadomsInformationAnswer m_buffer;
+      const plugin_IPC::toPlugin::YadomsInformationAnswer m_buffer;
    };
 } // namespace plugin_cpp_api	
 

@@ -1,28 +1,28 @@
-syntax = "proto2";
-package toPlugin;
+syntax = "proto3";
+package plugin_IPC.toPlugin;
 
 message Information {
-	required string type = 1;
-	required string version = 2;
+	string type = 1;
+	string version = 2;
 
 	enum EReleaseType {
 		kStable = 0; kReleaseCandidate = 1; kBeta = 2;
 	}
-	required EReleaseType releaseType = 3;
+	EReleaseType releaseType = 3;
 
-	required string author = 4;
-	required string url = 5;
-	required string identity = 6;
-	required string toString = 7;
-	required bool supportedOnThisPlatform = 8;
-	required bool supportManuallyCreatedDevice = 9;
-	required string packageFileContent = 10;
-	required string path = 11;
-	required bool supportDeviceRemovedNotification = 12;
+	string author = 4;
+	string url = 5;
+	string identity = 6;
+	string toString = 7;
+	bool supportedOnThisPlatform = 8;
+	bool supportManuallyCreatedDevice = 9;
+	string packageFileContent = 10;
+	string path = 11;
+	bool supportDeviceRemovedNotification = 12;
 }
 
 message Init {
-	required Information pluginInformation = 1;
-	required string dataPath = 2;
+	Information pluginInformation = 1;
+	string dataPath = 2;
 }
 

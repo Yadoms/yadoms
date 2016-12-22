@@ -869,24 +869,28 @@ ENDIF()
 
 
 ##################################################################################################
-## IPC messages static library for plugins
-##################################################################################################
-add_subdirectory(plugin_IPC)
-
-##################################################################################################
 ## Plugins
 ##################################################################################################
+# IPC messages static library for plugins
+add_subdirectory(plugin_IPC)
 
-#include Plugins CMake file
+# C++ API for plugins
 add_subdirectory(plugin_cpp_api)
+
+# Plugins
 add_subdirectory(plugins)
 
 
 ##################################################################################################
 ## Script interpreters
 ##################################################################################################
+# IPC messages static library for interpreters
+add_subdirectory(interpreter_IPC)
 
-#include Script interpreters CMake file
+# C++ API for interpreters
+# add_subdirectory(interpreter_cpp_api)
+
+# Interpreters
 add_subdirectory(scriptInterpreters)
 
 

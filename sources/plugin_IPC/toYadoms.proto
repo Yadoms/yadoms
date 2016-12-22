@@ -1,95 +1,95 @@
-syntax = "proto2";
-package toYadoms;
+syntax = "proto3";
+package plugin_IPC.toYadoms;
 
 message SetPluginState {
 	enum EPluginState {
 		kUnknown = 0; kError = 1; kStopped = 2; kRunning = 3; kCustom = 4;
 	}
-	required EPluginState pluginState = 1;
-	optional string customMessageId = 2;
-	optional string customMessageData = 3;
+	EPluginState pluginState = 1;
+	string customMessageId = 2;
+	string customMessageData = 3;
 }
 
 message ConfigurationRequest {
 }
 
 message BindingQueryAnswer {
-	required bool success = 1;
-	required string result = 2;
+	bool success = 1;
+	string result = 2;
 }
 
 message DeviceExitsRequest {
-	required string device = 1;
+	string device = 1;
 }
 
 message DeviceDetailsRequest {
-	required string device = 1;
+	string device = 1;
 }
 
 message KeywordExitsRequest {
-	required string device = 1;
-	required string keyword = 2;
+	string device = 1;
+	string keyword = 2;
 }
 
 message DeclareDevice {
-	required string device = 1;
-	required string model = 2;
+	string device = 1;
+	string model = 2;
 	repeated Historizable keywords = 3;
-	optional string details = 4;
+	string details = 4;
 }
 
 message Capacity {
-	required string name = 1;
-	required string unit = 2;
-	required string type = 3;
+	string name = 1;
+	string unit = 2;
+	string type = 3;
 }
 
 message Historizable {
-	required Capacity capacity = 1;
-	required string accessMode = 2;
-	required string name = 3;
-	required string type = 4;
-	required string units = 5;
-	required string typeInfo = 6;
-	required string measure = 7;
+	Capacity capacity = 1;
+	string accessMode = 2;
+	string name = 3;
+	string type = 4;
+	string units = 5;
+	string typeInfo = 6;
+	string measure = 7;
 }
 
 message DeclareKeyword {
-	required string device = 1;
-	required Historizable keyword = 2;
-	optional string details = 3;
+	string device = 1;
+	Historizable keyword = 2;
+	string details = 3;
 }
 
 message RecipientValueRequest {
-	required int32 recipientId = 1;
-	required string fieldName = 2;
+	int32 recipientId = 1;
+	string fieldName = 2;
 }
 
 message FindRecipientsFromFieldRequest {
-	required string fieldName = 1;
-	required string expectedFieldValue = 2;
+	string fieldName = 1;
+	string expectedFieldValue = 2;
 }
 
 message RecipientFieldExitsRequest {
-	required string fieldName = 1;
+	string fieldName = 1;
 }
 
 message HistorizeData {
 	message Value {
-		required Historizable historizable = 1;
-		required string formattedValue = 2;
+		Historizable historizable = 1;
+		string formattedValue = 2;
 	}
 
-	required string device = 1;
+	string device = 1;
 	repeated Value value = 2;
 }
 
 message ManuallyDeviceCreationAnswer {
 	message Success {
-		required string NewDeviceName = 1;
+		string NewDeviceName = 1;
 	}
 	message Error {
-		required string Message = 1;
+		string Message = 1;
 	}
 
 	oneof OneOf {
@@ -99,17 +99,17 @@ message ManuallyDeviceCreationAnswer {
 }
 
 message DeviceConfigurationSchemaAnswer {
-	required bool success = 1;
-	required string result = 2;
+	bool success = 1;
+	string result = 2;
 }
 
 message ExtraQueryAnswer {
-	required bool success = 1;
-	required string result = 2;
+	bool success = 1;
+	string result = 2;
 }
 
 message RemoveDevice {
-	required string device = 1;
+	string device = 1;
 }
 
 message YadomsInformationRequest {
@@ -119,39 +119,39 @@ message AllDevicesRequest {
 }
 
 message RemoveKeyword {
-	required string device = 1;
-	required string keyword = 2;
+	string device = 1;
+	string keyword = 2;
 }
 
 message UpdateDeviceDetails {
-	required string device = 1;
-	required string details = 2;
+	string device = 1;
+	string details = 2;
 }
 
 message DeviceModelRequest {
-	required string device = 1;
+	string device = 1;
 }
 
 message UpdateDeviceModel {
-	required string device = 1;
-	required string model = 2;
+	string device = 1;
+	string model = 2;
 }
 
 message DeviceConfigurationRequest {
-	required string device = 1;
+	string device = 1;
 }
 
 message UpdateDeviceConfiguration {
-	required string device = 1;
-	required string configuration = 2;
+	string device = 1;
+	string configuration = 2;
 }
 
 message AllKeywordsRequest {
-	required string device = 1;
+	string device = 1;
 }
 
 message DeclareKeywords {
-	required string device = 1;
+	string device = 1;
 	repeated Historizable keywords = 3;
 }
 

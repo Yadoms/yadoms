@@ -5,7 +5,7 @@
 
 namespace plugin_cpp_api
 {
-   CYadomsInformation::CYadomsInformation(const toPlugin::YadomsInformationAnswer& buffer)
+   CYadomsInformation::CYadomsInformation(const plugin_IPC::toPlugin::YadomsInformationAnswer& buffer)
       : m_buffer(buffer)
    {
    }
@@ -28,9 +28,9 @@ namespace plugin_cpp_api
    {
       switch (m_buffer.releasetype())
       {
-      case toPlugin::YadomsInformationAnswer_EReleaseType_Stable: return shared::versioning::EReleaseType::kStable;
-      case toPlugin::YadomsInformationAnswer_EReleaseType_ReleaseCandidate: return shared::versioning::EReleaseType::kReleaseCandidate;
-      case toPlugin::YadomsInformationAnswer_EReleaseType_Beta: return shared::versioning::EReleaseType::kBeta;
+      case plugin_IPC::toPlugin::YadomsInformationAnswer_EReleaseType_Stable: return shared::versioning::EReleaseType::kStable;
+      case plugin_IPC::toPlugin::YadomsInformationAnswer_EReleaseType_ReleaseCandidate: return shared::versioning::EReleaseType::kReleaseCandidate;
+      case plugin_IPC::toPlugin::YadomsInformationAnswer_EReleaseType_Beta: return shared::versioning::EReleaseType::kBeta;
       default: return shared::versioning::EReleaseType::kBeta;
       }
    }

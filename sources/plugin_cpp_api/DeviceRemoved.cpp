@@ -4,7 +4,7 @@
 
 namespace plugin_cpp_api
 {
-   CDeviceRemoved::CDeviceRemoved(const toPlugin::DeviceRemoved& msg)
+   CDeviceRemoved::CDeviceRemoved(const plugin_IPC::toPlugin::DeviceRemoved& msg)
       : m_device(msg.device()),
         m_details(msg.details())
    {

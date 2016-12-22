@@ -1,5 +1,5 @@
-syntax = "proto2";
-package toPlugin;
+syntax = "proto3";
+package plugin_IPC.toPlugin;
 
 import "pluginInit.proto";
 
@@ -8,42 +8,42 @@ message System {
 	enum EventType {
 		kRequestStop = 0;
 	}
-	required EventType type = 1;
+	EventType type = 1;
 }
 
 message BindingQuery {
-	required string query = 1;
+	string query = 1;
 }
 
 message Configuration {
-	required string configuration = 1;
+	string configuration = 1;
 }
 
 message DeviceCommand {
-	required string device = 1;
-	required string keyword = 2;
-	required string body = 3;
+	string device = 1;
+	string keyword = 2;
+	string body = 3;
 }
 
 message ExtraQuery {
-	required string query = 1;
-	required string data = 2;
+	string query = 1;
+	string data = 2;
 }
 
 message DeviceExitsAnswer {
-	required bool exists = 1;
+	bool exists = 1;
 }
 
 message DeviceDetailsAnswer {
-	required string details = 1;
+	string details = 1;
 }
 
 message KeywordExitsAnswer {
-	required bool exists = 1;
+	bool exists = 1;
 }
 
 message RecipientValueAnswer {
-	required string value = 1;
+	string value = 1;
 }
 
 message FindRecipientsFromFieldAnswer {
@@ -51,44 +51,44 @@ message FindRecipientsFromFieldAnswer {
 }
 
 message RecipientFieldExitsAnswer {
-	required bool exists = 1;
+	bool exists = 1;
 }
 
 message ManuallyDeviceCreation {
-	required string name = 1;
-	optional string configuration = 2;
+	string name = 1;
+	string configuration = 2;
 }
 
 message Location{
-	required double latitude = 1;
-	required double longitude = 2;
-	required double altitude = 3;
+	double latitude = 1;
+	double longitude = 2;
+	double altitude = 3;
 }
 
 message YadomsInformationAnswer {
-	required bool developperMode = 1;
-	required string version = 2;
+	bool developperMode = 1;
+	string version = 2;
 	
 	enum EReleaseType {
 		Stable = 0; ReleaseCandidate = 1; Beta = 2;
 	}
-	required EReleaseType releaseType = 3;
+	EReleaseType releaseType = 3;
 
-	required Location location = 4;
+	Location location = 4;
 }
 
 message DeviceConfigurationSchemaRequest {
-	required string device = 1;
+	string device = 1;
 }
 
 message SetDeviceConfiguration {
-	required string device = 1;
-	required string configuration = 2;
+	string device = 1;
+	string configuration = 2;
 }
 
 message DeviceRemoved {
-	required string device = 1;
-	required string details = 2;
+	string device = 1;
+	string details = 2;
 }
 
 message AllDevicesAnswer {
@@ -96,11 +96,11 @@ message AllDevicesAnswer {
 }
 
 message DeviceModelAnswer {
-	required string model = 1;
+	string model = 1;
 }
 
 message DeviceConfigurationAnswer {
-	required string configuration = 1;
+	string configuration = 1;
 }
 
 message AllKeywordsAnswer {

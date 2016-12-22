@@ -3,7 +3,7 @@
 
 namespace pluginSystem
 {
-   CFromPluginHistorizer::CFromPluginHistorizer(const toYadoms::Historizable& historizable,
+   CFromPluginHistorizer::CFromPluginHistorizer(const plugin_IPC::toYadoms::Historizable& historizable,
                                                 const std::string& formatValue)
       : m_keyword(historizable.name()),
         m_capacity(shared::plugin::yPluginApi::CStandardCapacity(historizable.capacity().name(),

@@ -1,0 +1,32 @@
+syntax = "proto3";
+package interpreter_IPC.toInterpreter;
+
+
+message AvalaibleRequest {
+}
+
+message LoadScriptContentRequest {
+	string scriptPath = 1;
+}
+
+message SaveScriptContent {
+	string scriptPath = 1;
+	string content = 2;
+}
+
+message StartScript {
+	string scriptPath = 1;
+	string content = 2;
+}
+
+
+message msg {
+	oneof OneOf {
+		string error = 1;
+		AvalaibleRequest avalaibleRequest = 2;
+		LoadScriptContentRequest loadScriptContentRequest = 3;
+		SaveScriptContent saveScriptContent = 4;
+		StartScript startScript = 5;
+   }
+}
+

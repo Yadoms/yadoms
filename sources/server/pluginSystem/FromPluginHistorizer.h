@@ -15,7 +15,7 @@ namespace pluginSystem
       ///\param[in] historizable    Historizable data from Protobuf buffer
       ///\param[in] formatValue     Value (for historization, not need for keyword declaration)
       //-----------------------------------------------------
-      CFromPluginHistorizer(const toYadoms::Historizable& historizable,
+      CFromPluginHistorizer(const plugin_IPC::toYadoms::Historizable& historizable,
                             const std::string& formatValue = std::string());
       //-----------------------------------------------------
       ///\brief                     Destructor

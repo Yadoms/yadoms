@@ -12,7 +12,7 @@ namespace plugin_cpp_api
       /// \brief	      Constructor
       /// \param[in]    buffer : Protobuf buffer
       //--------------------------------------------------------------
-      explicit CPluginInformation(boost::shared_ptr<const toPlugin::Information> buffer);
+      explicit CPluginInformation(boost::shared_ptr<const plugin_IPC::toPlugin::Information> buffer);
 
       virtual ~CPluginInformation();
 
@@ -32,7 +32,7 @@ namespace plugin_cpp_api
       // [END] shared::plugin::information::IInformation implementation
 
    private:
-      boost::shared_ptr<const toPlugin::Information> m_buffer;
+      boost::shared_ptr<const plugin_IPC::toPlugin::Information> m_buffer;
       const boost::filesystem::path m_path;
    };
 } // namespace plugin_cpp_api	

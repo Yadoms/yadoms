@@ -11,7 +11,7 @@ namespace plugin_cpp_api
       /// \brief	      Constructor
       /// \param[in]    buffer : Protobuf buffer
       //--------------------------------------------------------------
-      explicit CLocation(const toPlugin::Location& buffer);
+      explicit CLocation(const plugin_IPC::toPlugin::Location& buffer);
 
       virtual ~CLocation();
 
@@ -22,7 +22,7 @@ namespace plugin_cpp_api
       // [END] shared::ILocation implementation
 
    private:
-      const toPlugin::Location m_buffer;
+      const plugin_IPC::toPlugin::Location m_buffer;
    };
 } // namespace plugin_cpp_api	
 
