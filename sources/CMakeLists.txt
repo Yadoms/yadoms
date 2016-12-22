@@ -888,7 +888,7 @@ add_subdirectory(plugins)
 add_subdirectory(interpreter_IPC)
 
 # C++ API for interpreters
-# add_subdirectory(interpreter_cpp_api)
+add_subdirectory(interpreter_cpp_api)
 
 # Interpreters
 add_subdirectory(scriptInterpreters)
