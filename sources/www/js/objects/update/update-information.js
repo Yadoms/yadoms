@@ -18,7 +18,7 @@ function UpdateInformation(type, name, author, description, url, credits, versio
    this.description = description;
    this.url = url;
    this.credits = credits;
-   this.version = version;
+   this.version = new Version(version);
    this.downloadUrl = downloadUrl;
    this.iconUrl = iconUrl;
 }
