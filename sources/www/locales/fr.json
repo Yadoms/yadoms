@@ -479,13 +479,7 @@
         "install-update": {
           "title": "Installation & Mise à jour",
           "description": "Installation et mise à jour des composants de Yadoms",
-          "releaseTypeChoice": "Choisir le type de version à modifier",
-          "releaseType": {
-            "beta": "Beta - pour développeur",
-            "testing": "Test - version en cours de test, utiliser à vos propres risques",
-            "releaseCandidate": "Release Candidate - version préliminaire, utilisez à vos risques et périls",
-            "stable": "Stable - Recommandée"
-          },
+          "includePreRelease": "Inclure les versions préliminaires",
           "yadoms": {
             "title": "Mise à jour de Yadoms",
             "currentVersion": "Version courante",

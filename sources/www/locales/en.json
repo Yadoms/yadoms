@@ -479,13 +479,7 @@
         "install-update": {
           "title": "Install & Update",
           "description": "This section allow you to install or update all parts of the software",
-          "releaseTypeChoice": "Choose the release type you want to manage",
-          "releaseType": {
-            "beta": "Beta version - recommended for developpers only",
-            "testing": "Testing - unstable version, use it at your own risks",
-            "releaseCandidate": "Release Candidate version - use it at your own risks",
-            "stable": "Stable version - the most recommended release type"
-          },
+          "includePreRelease": "Include pre-release versions",
           "yadoms": {
             "title": "Yadoms update",
             "currentVersion": "Current version",

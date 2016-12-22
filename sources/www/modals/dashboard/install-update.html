@@ -4,13 +4,12 @@
         <span data-i18n="modals.dashboard.sub-windows.install-update.title"></span>
         <i class="making-async-action pull-right fa fa-circle-o-notch fa-spin hidden"></i>
     </h1>
-
-    <span data-i18n="modals.dashboard.sub-windows.install-update.releaseTypeChoice"></span>
-    <select class="form-control" id="install-update-release-choice">
-        <option value="version-stable" selected data-i18n="modals.dashboard.sub-windows.install-update.releaseType.stable"></option>
-        <option value="version-releaseCandidate" data-i18n="modals.dashboard.sub-windows.install-update.releaseType.releaseCandidate"></option>
-        <option value="version-beta" data-i18n="modals.dashboard.sub-windows.install-update.releaseType.beta"></option>
-    </select>
+    <div class="checkbox">
+        <label>
+        <input type="checkbox" class="cb-release-type">&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.install-update.includePreRelease">Include pre-release versions</span>
+        </label>
+    </div>
+    <br/>
     <br/>
 
     <div class="panel-group" id="install-update-accordion" role="tablist" aria-multiselectable="true">
@@ -167,9 +166,8 @@
 
 <script>
 
-    var wantedVersion = [/*"beta", "releaseCandidate", */"stable"];
-
-    var $cbReleaseType = $("div#dashboard-install-update select.cb-release-type");
+    var $cbIncludePreReleases = $("div#dashboard-install-update select.cb-release-type")
+    var includePreReleases = false;
 
     var $asyncActionIndicator = $("div#dashboard-install-update i.making-async-action");
 
@@ -186,22 +184,17 @@
 
 
     /**
-  * Permit to update wantedVersion array from the combo box release type
-  */
+    * Permit to update includePreReleases from the checkbox
+    */
     function updateReleaseType() {
-        var selectedValue = $("#install-update-release-choice").val();
-        switch (selectedValue) {
-            case "version-beta":
-                wantedVersion = ["beta", "releaseCandidate", "stable"];
-                break;
-            case "version-releaseCandidate":
-                wantedVersion = ["releaseCandidate", "stable"];
-                break;
-            default:
-            case "version-stable":
-                wantedVersion = ["stable"];
-                break;
-        }
+        includePreReleases = $cbIncludePreReleases.prop("checked");
+    }
+
+    /**
+    * Permit to know if the version is wanted using pre release checkbox
+    */
+    function isWanted(version) {
+
     }
 
     /**
@@ -258,6 +251,7 @@
 
                           $.each(list, function (versionIndex, versionValue) {
                               //if this releasetype is wanted and is not the current version we add it to the arrays of version for this item
+                              if (isWanted(versionValue))
                               if ($.inArray(versionValue.releaseType, wantedVersion) > -1) {
                                   if ((!matchVersion(versionValue, localInformation)) &&
                                       (localInformation.version < versionValue.version)) {
@@ -1036,7 +1030,7 @@
     function versionToString(version) {
         if ((isNullOrUndefined(version)) || (isNullOrUndefined(version.version)) || (isNullOrUndefined(version.releaseType)))
             return "";
-        return "v " + version.version + " " + version.releaseType;
+        return "v " + version.version +  ((version.releaseType.toLowerCase() == "stable")?"":("-" + version.releaseType));
     }
 
     /**
