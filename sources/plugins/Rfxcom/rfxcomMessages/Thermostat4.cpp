@@ -96,7 +96,7 @@ namespace rfxcomMessages
       m_unitCode = 0;
 
       // Should not be called (transmitter-only device)
-      BOOST_ASSERT_MSG(false, "Constructing CThermostat4 object from received buffer is not possible, CThermostat4 is transmitter-only device");
+      throw std::logic_error("Constructing CThermostat4 object from received buffer is not possible, CThermostat4 is transmitter-only device");
    }
 
    CThermostat4::~CThermostat4()

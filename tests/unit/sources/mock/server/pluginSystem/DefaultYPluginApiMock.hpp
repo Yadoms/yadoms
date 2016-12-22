@@ -240,6 +240,64 @@ public:
       return m_data;
    }
 
+   std::vector<std::string> getAllDevices() const override
+   {
+      std::vector<std::string> devices;
+      for (const auto& device : m_devices)
+         devices.push_back(device.first);
+      return devices;
+   }
+
+   shared::CDataContainer getDeviceConfiguration(const std::string& device) const override
+   {
+      return shared::CDataContainer();
+   }
+
+   void updateDeviceConfiguration(const std::string& device,
+                                  const shared::CDataContainer& configuration) const override
+   {
+   }
+
+   void updateDeviceDetails(const std::string& device, const shared::CDataContainer& details) const override
+   {
+   }
+
+   std::string getDeviceModel(const std::string& device) const override
+   {
+      return "device model";
+   }
+
+   void updateDeviceModel(const std::string& device, const std::string& model) const override
+   {
+   }
+
+   void removeDevice(const std::string& device) override
+   {
+      m_devices.erase(device);
+   }
+
+   void declareKeywords(const std::string& device,
+                        const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords) override
+   {
+      for (const auto& keyword : keywords)
+         declareKeyword(device,
+                        keyword);
+   }
+
+   std::vector<std::string> getAllKeywords(const std::string& device) const override
+   {
+      std::vector<std::string> keywords;
+      for (const auto& keyword : m_keywords)
+         keywords.push_back(keyword.first);
+      return keywords;
+   }
+
+   void removeKeyword(const std::string& device,
+      const std::string& keyword) override
+   {
+      m_keywords.erase(keyword);
+   }
+
 protected:
    shared::event::CEventHandler m_defaultEventHandler;
    boost::shared_ptr<const shared::plugin::information::IInformation> m_defaultInformation;

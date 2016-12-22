@@ -30,5 +30,3 @@ namespace shared
       }
    }
 } // namespace shared::plugin::yPluginApi::historization
-
-

@@ -3,6 +3,7 @@
 #include "Log.h"
 #include <boost/property_tree/json_parser.hpp>
 #include <shared/exception/JSONParse.hpp>
+#include "exception/EmptyResult.hpp"
 
 namespace shared
 {
@@ -15,7 +16,7 @@ namespace shared
 
    CDataContainer::CDataContainer(const std::string & initialData)
    {
-      deserialize(initialData);
+      CDataContainer::deserialize(initialData);
    }
 
    CDataContainer::CDataContainer(const std::map<std::string, std::string> & initialData)
@@ -245,6 +246,11 @@ namespace shared
       set<std::string>(strParamName, strValue, pathChar);
    }
 
+   std::string CDataContainer::getKey() const
+   {
+      return m_tree.front().first;
+   }
+
    void CDataContainer::set(const std::string & parameterName, const char* value, const char pathChar)
    {
       std::string strValue(value);
@@ -268,6 +274,30 @@ namespace shared
       for (const auto i : m_tree.get_child(generatePath(parameterName, pathChar)))
          result[i.first] = i.second.data();
       return result;
+   }
+
+   std::vector<std::string> CDataContainer::getKeys(const std::string& parameterName, const char pathChar) const
+   {
+      std::vector<std::string> result;
+      for (const auto& i : m_tree.get_child(generatePath(parameterName, pathChar)))
+         result.push_back(i.first);
+      return result;
+   }
+
+   CDataContainer CDataContainer::find(const std::string& parameterName, boost::function<bool(const CDataContainer&)> whereFct, const char pathChar) const
+   {
+      for (const auto& key : getKeys(parameterName, pathChar))
+      {
+         const auto path = parameterName + pathChar + key;
+         const auto container = get<CDataContainer>(path);
+         if (whereFct(container))
+         {
+            CDataContainer result;
+            result.set(key, container);
+            return result;
+         }
+      }
+      throw exception::CEmptyResult("No parameter matches criteria");
    }
 
 

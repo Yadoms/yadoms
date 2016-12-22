@@ -20,10 +20,12 @@ IMPLEMENT_PLUGIN(CWeatherUnderground)
 CWeatherUnderground::CWeatherUnderground()
    : m_deviceName("WeatherUnderground"),
      m_runningState(false)
-{}
+{
+}
 
 CWeatherUnderground::~CWeatherUnderground()
-{}
+{
+}
 
 // Event IDs
 enum
@@ -38,9 +40,9 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    std::cout << "CWeatherUnderground is starting..." << std::endl;
 
-   int weatherConditionsSendingRetry = 0;
-   int astronomySendingRetry = 0;
-   int forcast10daysSendingRetry = 0;
+   auto weatherConditionsSendingRetry = 0;
+   auto astronomySendingRetry = 0;
+   auto forcast10daysSendingRetry = 0;
 
    boost::shared_ptr<CWeatherConditions> m_WeatherConditionsRequester;
    boost::shared_ptr<CAstronomy> m_AstronomyRequester;
@@ -82,7 +84,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    std::cout << "CWeatherUnderground plugin is running..." << std::endl;
 
    // the main loop
-   while (1)
+   while (true)
    {
       // Wait for an event
       switch (api->getEventHandler().waitForEvents())
@@ -97,11 +99,12 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             try
             {
-               shared::CDataContainer returnData = SendUrlRequest(api, m_WeatherConditionsRequester->getUrl(), kEvtTimerRefreshWeatherConditions, weatherConditionsSendingRetry);
+               auto returnData = SendUrlRequest(api, m_WeatherConditionsRequester->getUrl(), kEvtTimerRefreshWeatherConditions, weatherConditionsSendingRetry);
                m_WeatherConditionsRequester->parse(api, m_configuration, returnData);
             }
-            catch(CRequestErrorException& )
-            {}
+            catch (CRequestErrorException&)
+            {
+            }
             api->getEventHandler().createTimer(kEvtPluginState, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
          }
          break;
@@ -109,11 +112,12 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             try
             {
-               shared::CDataContainer returnData = SendUrlRequest(api, m_AstronomyRequester->getUrl(), kEvtTimerRefreshAstronomy, astronomySendingRetry);
+               auto returnData = SendUrlRequest(api, m_AstronomyRequester->getUrl(), kEvtTimerRefreshAstronomy, astronomySendingRetry);
                m_AstronomyRequester->parse(api, m_configuration, returnData);
             }
             catch (CRequestErrorException&)
-            {}
+            {
+            }
             api->getEventHandler().createTimer(kEvtPluginState, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
          }
          break;
@@ -130,7 +134,8 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                m_Forecast10Days->parse(api, m_configuration, returnData);
             }
             catch (CRequestErrorException&)
-            {}
+            {
+            }
             api->getEventHandler().createTimer(kEvtPluginState, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
          }
          break;
@@ -157,7 +162,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kEvtPluginState:
          {
-            bool newState = false;
+            auto newState = false;
 
             // estimate the state of the plugin
             if (!m_Forecast10Days->isDesactivated() && !m_AstronomyRequester->isDesactivated() && !m_WeatherConditionsRequester->isDesactivated())
@@ -169,7 +174,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                if (m_runningState)
                   api->setPluginState(yApi::historization::EPluginState::kRunning);
                else
-                 api->setPluginState(yApi::historization::EPluginState::kCustom, "desactivated");
+                  api->setPluginState(yApi::historization::EPluginState::kCustom, "desactivated");
             }
          }
          break;
@@ -191,11 +196,14 @@ void CWeatherUnderground::onUpdateConfiguration(boost::shared_ptr<yApi::IYPlugin
    m_configuration.initializeWith(newConfigurationData);
 }
 
-shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api, std::string url, int event, int &nbRetry)
+shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                           std::string url,
+                                                           int event,
+                                                           int& nbRetry)
 {
    try
    {
-      shared::CDataContainer data = shared::CHttpMethods::SendGetRequest(url);
+      auto data = shared::CHttpMethods::SendGetRequest(url);
 
       ErrorAnswerHandler Response(api, data);
 
@@ -218,7 +226,7 @@ shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yAp
       else
       {
          std::cout << e.what() << ". Stop retry." << std::endl;
-         api->setPluginState(yApi::historization::EPluginState::kCustom, "NoConnection"); 
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "NoConnection");
          nbRetry = 0;
       }
 

@@ -25,10 +25,9 @@ namespace pluginSystem
       /// \param [in]   dataPath                   the instance data path
       /// \param [in]   instanceStateHandler       the instance state handler
       /// \param [in]   dataProvider               the database accessor
-      /// \param [in]   pluginEventLoggerRequester the plugin event logger requester
       /// \param [in]   deviceManager              the device manager
       /// \param [in]   keywordDataAccessLayer     the database keyword access layer
-      /// \param [in]   acquisitionRequester       the acquisition requester
+      /// \param [in]   acquisitionHistorizer      the acquisition historizer
       /// \param [in]   locationProvider           the location provider
       //-----------------------------------------------------
       CYPluginApiImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,

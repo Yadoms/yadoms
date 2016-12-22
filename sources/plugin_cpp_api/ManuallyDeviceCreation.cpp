@@ -17,7 +17,7 @@ namespace plugin_cpp_api
    {
    }
 
-   const shared::plugin::yPluginApi::IManuallyDeviceCreationData& CManuallyDeviceCreation::getData()
+   const shared::plugin::yPluginApi::IManuallyDeviceCreationData& CManuallyDeviceCreation::getData() const
    {
       return m_data;
    }
