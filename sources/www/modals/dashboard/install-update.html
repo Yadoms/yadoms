@@ -194,7 +194,7 @@
     * Permit to know if the version is wanted using pre release checkbox
     */
     function isWanted(version) {
-
+        TODO
     }
 
     /**
@@ -237,19 +237,21 @@
 
         YadomsUpdateInformationManager.getList()
            .done(function (list) {
+               //list contains all version of yadoms available online. They are just json object not classes
                if (!isNullOrUndefined(list)) {
 
                    YadomsInformationManager.getList()
                       .done(function (data) {
                           //we manage local version
-                          var localInformation = data.yadoms;
-                          $line.find("em.local-version").text(versionToString(localInformation));
+                          var localInformation = new Version(data.yadoms.version);
+                          $line.find("em.local-version").text(localInformation.toString());
 
                           //we keep only wanted versions type
                           var serverVersions = [];
                           var latestVersion = undefined;
 
                           $.each(list, function (versionIndex, versionValue) {
+                              var 
                               //if this releasetype is wanted and is not the current version we add it to the arrays of version for this item
                               if (isWanted(versionValue))
                               if ($.inArray(versionValue.releaseType, wantedVersion) > -1) {

@@ -101,17 +101,6 @@ UpdateInformationManager.remove = function(objectType, type) {
 };
 
 /**
- * Compare the two UpdateInformationObjects. Return > 0 if item1 is lower, =0 if the same and <0 if item1 is higher
-  */
-UpdateInformationManager.compareVersion = function(item1, item2) {
-    if (item1.version < item2.version)
-        return 1;
-    if (item1.version > item2.version)
-        return -1;
-    return 0;
-};
-
-/**
  *
  * @constructor
  */
