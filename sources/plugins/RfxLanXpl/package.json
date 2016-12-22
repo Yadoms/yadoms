@@ -1,7 +1,6 @@
 {
 	"type": "RfxLanXpl",
-	"version": "1.0.0",
-	"releaseType": "beta",
+	"version": "1.0.0-beta",
 	"author": "Jean-Michel DECORET, Nicolas HILAIRE",
    "url": "https://github.com/Yadoms/yadoms/wiki/RfxLanXpl",
 	"credits": "",
