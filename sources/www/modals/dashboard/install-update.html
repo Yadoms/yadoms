@@ -40,7 +40,7 @@
                                 <img src="/img/icon_256.png" class="img-thumbnail dashboard-table-icon">
                             </td>
                             <td>
-                                <em class="local-version">v 0.1 beta</em>
+                                <em class="local-version">2.0.0-beta.42</em>
                             </td>
                             <td>
                                 <em class="latest-version"></em>
@@ -166,20 +166,14 @@
 
 <script>
 
-    var $cbIncludePreReleases = $("div#dashboard-install-update select.cb-release-type")
+    var $cbIncludePreReleases = $("div#dashboard-install-update input.cb-release-type")
     var includePreReleases = false;
 
     var $asyncActionIndicator = $("div#dashboard-install-update i.making-async-action");
 
     Yadoms.initializeInstallUpdateDashboard = function () {
-
-        $('#install-update-release-choice')
-            .on('change',
-                function (e) {
-                    refreshAllData();
-                });
-
-        return refreshAllData();
+       $cbIncludePreReleases.change(refreshAllData); 
+       return refreshAllData();
     };
 
 
@@ -194,7 +188,11 @@
     * Permit to know if the version is wanted using pre release checkbox
     */
     function isWanted(version) {
-        TODO
+        if(!version)
+            return false;
+        if(includePreReleases)
+            return true;
+        return (version.preRelease() == undefined);
     }
 
     /**
@@ -243,42 +241,40 @@
                    YadomsInformationManager.getList()
                       .done(function (data) {
                           //we manage local version
-                          var localInformation = new Version(data.yadoms.version);
-                          $line.find("em.local-version").text(localInformation.toString());
+                          var currentYadomsVersion = new Version(data.yadoms.version);
+                          $line.find("em.local-version").text(currentYadomsVersion.toString());
 
                           //we keep only wanted versions type
                           var serverVersions = [];
                           var latestVersion = undefined;
 
                           $.each(list, function (versionIndex, versionValue) {
-                              var 
                               //if this releasetype is wanted and is not the current version we add it to the arrays of version for this item
-                              if (isWanted(versionValue))
-                              if ($.inArray(versionValue.releaseType, wantedVersion) > -1) {
-                                  if ((!matchVersion(versionValue, localInformation)) &&
-                                      (localInformation.version < versionValue.version)) {
-                                      serverVersions.push(versionValue);
-                                  }
-
-                                  //we manage latest version even it lesser than actual or it is actual version
+                              if (isWanted(versionValue.version)) {
+                                 if(Version.compare(versionValue.version, currentYadomsVersion) > 0)
+                                    serverVersions.push(versionValue);
+                                    
+                                   //we manage latest version even it lesser than actual or it is actual version
                                   if (isNullOrUndefined(latestVersion)) {
                                       //latestVersion hasn't defined for the moment we take the first one
                                       latestVersion = versionValue;
                                   }
                                   else {
                                       //we compare the version with the cumulated to take the latest
-                                      if (UpdateInformationManager.compareVersion(latestVersion, versionValue) > 0) {
+                                      if (Version.compare(versionValue.version, latestVersion.version) > 0) {
                                           latestVersion = versionValue;
                                       }
-                                  }
-                              }
+                                  }                                    
+                              }                              
                           });
 
                           //we can display the latest version
-                          $line.find("em.latest-version").text(versionToString(latestVersion));
+                          $line.find("em.latest-version").text(latestVersion.version.toString());
 
                           //we order the list
-                          serverVersions.sort(UpdateInformationManager.compareVersion);
+                          serverVersions.sort(function (a, b) {
+                             return Version.compare(a.version, b.version);
+                          });
                           var canChooseVersion = false;
                           var installUpdateAllowed = false;
 
@@ -287,9 +283,9 @@
                                   //there is different versions visible
                                   canChooseVersion = true;
                               }
-                              
+
                               //the main install button is allowed only if latest version and current version are different
-                              installUpdateAllowed = (UpdateInformationManager.compareVersion(localInformation, latestVersion) !== 0);
+                              installUpdateAllowed = (Version.compare(currentYadomsVersion, latestVersion.version) !== 0);
 
                               //we create a combo that have all available versions for install or update
                               var $cbVersion = $line.find("ul.versions");
@@ -297,7 +293,7 @@
 
                               $.each(serverVersions, function (index, value) {
 
-                                  $cbVersion.append("<li><a href=\"#\"><em>" + versionToString(value) + "</em></a></li>");
+                                  $cbVersion.append("<li><a href=\"#\"><em>" + value.version.toString() + "</em></a></li>");
                                   //we manage the click event on each version
                                   $cbVersion.find("li").last().unbind('click').bind('click', function () {
                                       Yadoms.modals.confirmation.loadAsync()
@@ -360,20 +356,20 @@
         return d.promise();
     }
 
-    function askForYadomsUpdate(version) {
+    function askForYadomsUpdate(versionContainer) {
         Yadoms.modals.confirmation.loadAsync()
         .done(function () {
             Yadoms.showConfirmModal(Yadoms.btnKind.yesNo,
                   $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdateTitle"),
                   $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdate", {
                       objectName: $.t("core.yadoms.name"),
-                      version: versionToString(version)
+                      version: versionContainer.version.toString()
                   }),
                   function () {
                       //the user has confirmed the action
-                      YadomsUpdateInformationManager.update(version)
+                      YadomsUpdateInformationManager.update(versionContainer)
                       .done(function (data) {
-                          yadomsUpdateCallback(data.taskId, version);
+                          yadomsUpdateCallback(data.taskId, versionContainer);
                       })
                       .fail(function (error) {
                           notifyError($.t("objects.generic.errorUpdating", { objectName: "yadoms" }), error);
@@ -560,8 +556,6 @@
                     });
                 });
             }
-            //we enable the release type list
-            $cbReleaseType.removeClass("disabled");
             $.whenAll(deferredArray)
                  .done(function () {
                      d.resolve();

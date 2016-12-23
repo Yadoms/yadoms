@@ -9,7 +9,17 @@
  * @param sync
  */
 YadomsUpdateInformationManager.getList = function () {
-   return RestEngine.getJson("rest/update/yadoms/list/" + i18n.lng());
+   var d = new $.Deferred();
+   
+   RestEngine.getJson("rest/update/yadoms/list/" + i18n.lng())
+   .done(function(data) {
+      $.each(data, function (versionIndex, versionValue) {
+         data[versionIndex].version = new Version(data[versionIndex].version);
+      });
+      d.resolve(data);
+   }).fail(d.reject);
+   
+   return d.promise();
 };
 
 YadomsUpdateInformationManager.update = function(yadomsUpdateInformation) {
