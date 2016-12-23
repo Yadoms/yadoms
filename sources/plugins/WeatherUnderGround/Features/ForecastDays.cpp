@@ -11,7 +11,6 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
    : m_localisation(stationName),
      m_deviceName(deviceName),
      m_forecast(boost::make_shared<CForecast>(m_deviceName, "Forecast", weatherunderground::helper::EPeriod::kDay)),
-     m_temp(boost::make_shared<yApi::historization::CTemperature>("low_temperature")),
      m_isDeveloperMode(false),
      m_url ("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/forecast/q/" + boost::lexical_cast<std::string>(location->latitude()) + "," + boost::lexical_cast<std::string>(location->longitude()) + ".json"),
      m_location(location)
@@ -46,18 +45,71 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
 
       if (wuConfiguration.isRainIndividualKeywordsEnabled())
       {
-         for (auto counter = 0; counter < NB_RAIN_FORECAST_DAY; ++counter)
+         for (auto counter = 0; counter < NB_INDIVIDUAL_FORECAST_KEYWORDS; ++counter)
          {
-            std::stringstream TempString;
-            TempString << m_prefix << "Rain_Day_" << counter;
-            m_forecastRain[counter] = boost::make_shared<yApi::historization::CRainRate>(TempString.str());
+            std::string TempString;
+            TempString = "Rain_Day_" + boost::lexical_cast<std::string>(counter);
+            m_forecastRain[counter] = boost::make_shared<yApi::historization::CRainRate>(TempString);
             m_keywords.push_back(m_forecastRain[counter]);
          }
       }
+      else
+      {
+         // reset all forecast rain keywords
+         for (auto counter = 0; counter < NB_INDIVIDUAL_FORECAST_KEYWORDS; ++counter)
+         {
+            std::string TempString;
+            TempString = "Rain_Day_" + boost::lexical_cast<std::string>(counter);
+            if (m_forecastRain[counter])
+            {
+               if (api->keywordExists(m_deviceName, m_forecastRain[counter]))
+               {
+                  api->removeKeyword(m_deviceName, TempString);
+                  m_forecastRain[counter].reset();
+               }
+            }
+         }
+      }
 
-      m_keywords.push_back(m_temp);
-
-      //TODO : Prévoir la création et la suppression des keywords en plus
+      if (wuConfiguration.isTempIndividualKeywordsEnabled())
+      {
+         for (auto counter = 0; counter < NB_INDIVIDUAL_FORECAST_KEYWORDS; ++counter)
+         {
+            std::string TempString;
+            TempString = "lowtemp_Day_" + boost::lexical_cast<std::string>(counter);
+            m_lowtemp[counter] = boost::make_shared<yApi::historization::CTemperature>(TempString);
+            m_keywords.push_back(m_lowtemp[counter]);
+            TempString = "hightemp_Day_" + boost::lexical_cast<std::string>(counter);
+            m_hightemp[counter] = boost::make_shared<yApi::historization::CTemperature>(TempString);
+            m_keywords.push_back(m_hightemp[counter]);
+         }
+      }
+      else
+      {
+         // reset all temp keywords
+         for (auto counter = 0; counter < NB_INDIVIDUAL_FORECAST_KEYWORDS; ++counter)
+         {
+            std::string TempString;
+            TempString = "lowtemp_Day_" + boost::lexical_cast<std::string>(counter);
+            if (m_lowtemp[counter])
+            {
+               if (api->keywordExists(m_deviceName, m_lowtemp[counter]))
+               {
+                  api->removeKeyword(m_deviceName, TempString);
+                  m_lowtemp[counter].reset();
+               }
+            }
+            TempString = "hightemp_Day_" + boost::lexical_cast<std::string>(counter);
+            if (m_hightemp[counter])
+            {
+               if (api->keywordExists(m_deviceName, m_hightemp[counter]))
+               {
+                  api->removeKeyword(m_deviceName, TempString);
+                  m_hightemp[counter].reset();
+               }
+            }
+         }
+      }
 
       // Declare keywords
       std::string m_type = "forecast";
@@ -74,8 +126,10 @@ void CForecastDays::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       m_url.str("");
       m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/forecast/q/" << boost::lexical_cast<std::string>(m_location->latitude()) << "," << boost::lexical_cast<std::string>(m_location->longitude()) << ".json";
+
+      InitializeForecastDays(api, wuConfiguration);
    }
-   catch (shared::exception::CException& e)
+   catch (std::exception& e)
    {
       std::cout << "Configuration or initialization error in forecast module :" << e.what() << std::endl;
       throw;
@@ -113,20 +167,26 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
                                     "qpf_allday.mm",
                                     "snow_allday.cm");
 
-            if (counter == 0)
-            {
-               double temp = 0;
-               if (convertDouble(temp, *i, "low.celsius"))
-                  m_temp->set(temp);
-            }
-
             if (wuConfiguration.isRainIndividualKeywordsEnabled())
             {
-               if (counter < NB_RAIN_FORECAST_DAY)
+               if (counter < NB_INDIVIDUAL_FORECAST_KEYWORDS)
                {
                   double rainRate1h = 0;
                   if (convertDouble(rainRate1h, *i, "qpf_allday.mm"))
                      m_forecastRain[counter]->set(rainRate1h);
+               }
+            }
+
+            if (wuConfiguration.isTempIndividualKeywordsEnabled())
+            {
+               if (counter == 0)
+               {
+                  double temp = 0;
+                  if (convertDouble(temp, *i, "low.celsius"))
+                     m_lowtemp[counter]->set(temp);
+
+                  if (convertDouble(temp, *i, "high.celsius"))
+                     m_hightemp[counter]->set(temp);
                }
             }
 

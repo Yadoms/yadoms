@@ -5,7 +5,8 @@
 #include "Location.h"
 #include "../RequestErrorException.hpp"
 
-CLiveStations::CLiveStations(boost::shared_ptr<yApi::IYPluginApi> api)
+CLiveStations::CLiveStations(boost::shared_ptr<yApi::IYPluginApi> api):
+   m_lastSearchLocation(boost::make_shared<location::CLocation>(0,0,0))
 {
    //TODO : api->getYadomsInformation()->location() renvoi maintenant un pointeur nul si la location
    // est inconnue. Attention, la location peut être nulle au début (le temps de l'init), puis être
@@ -24,9 +25,13 @@ void CLiveStations::processLookUp(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    try
    {
-      m_response = shared::CHttpMethods::SendGetRequest("http://api.wunderground.com/api/" + apikey + "/geolookup/q/" + std::to_string(m_location->latitude()) + "," + std::to_string(m_location->longitude()) + ".json");
-      //m_response.printToLog(std::cout);
-      m_stations = m_response.get<std::vector<shared::CDataContainer>>("location.nearby_weather_stations.airport.station");
+      //send a new lookup only if different of the last one
+      if (m_location->latitude() != m_lastSearchLocation->latitude() || m_location->longitude() != m_lastSearchLocation->longitude())
+      {
+         m_response = shared::CHttpMethods::SendGetRequest("http://api.wunderground.com/api/" + apikey + "/geolookup/q/" + std::to_string(m_location->latitude()) + "," + std::to_string(m_location->longitude()) + ".json");
+         m_stations = m_response.get<std::vector<shared::CDataContainer>>("location.nearby_weather_stations.airport.station");
+      }
+      m_lastSearchLocation = m_location;
    }
    catch (std::exception& e)
    {

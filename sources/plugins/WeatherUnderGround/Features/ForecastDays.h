@@ -1,12 +1,15 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include "../WeatherUndergroundHelpers.h"
 #include <shared/DataContainer.h>
 #include "IFeature.h"
 #include "../IWUConfiguration.h"
 #include "Keywords/Forecast.h"
 
 namespace yApi = shared::plugin::yPluginApi;
+
+//The number of days stored in database for the forecast of the rain
+#define NB_INDIVIDUAL_FORECAST_KEYWORDS 3
+
 
 //--------------------------------------------------------------
 /// \brief	Forecast X Days Module
@@ -57,11 +60,6 @@ private:
    std::string m_localisation;
 
    //--------------------------------------------------------------
-   /// \brief	    url code between 3 or 10 days
-   //--------------------------------------------------------------
-   std::string m_prefix;
-
-   //--------------------------------------------------------------
    /// \brief	    The Device Name
    //--------------------------------------------------------------
    std::string m_deviceName;
@@ -79,12 +77,17 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Tab of rain keywords for 3 next days
    //--------------------------------------------------------------
-   boost::shared_ptr<yApi::historization::CRainRate> m_forecastRain[NB_RAIN_FORECAST_DAY];
+   boost::shared_ptr<yApi::historization::CRainRate> m_forecastRain[NB_INDIVIDUAL_FORECAST_KEYWORDS];
 
    //--------------------------------------------------------------
-   /// \brief	    the temperature for the next day
+   /// \brief	    the low temperature for 3 next day
    //--------------------------------------------------------------
-   boost::shared_ptr<yApi::historization::CTemperature> m_temp;
+   boost::shared_ptr<yApi::historization::CTemperature> m_lowtemp[NB_INDIVIDUAL_FORECAST_KEYWORDS];
+
+   //--------------------------------------------------------------
+   /// \brief	    the high temperature for 3 next day
+   //--------------------------------------------------------------
+   boost::shared_ptr<yApi::historization::CTemperature> m_hightemp[NB_INDIVIDUAL_FORECAST_KEYWORDS];
 
    //--------------------------------------------------------------
    /// \brief  Keywords list

@@ -70,6 +70,11 @@ private:
    boost::shared_ptr<const shared::ILocation> m_location;
 
    //--------------------------------------------------------------
+   /// \brief	    last search Location
+   //--------------------------------------------------------------
+   boost::shared_ptr<const shared::ILocation> m_lastSearchLocation;
+
+   //--------------------------------------------------------------
    /// \brief	    list of all Stations return by WeatherUnderground
    //--------------------------------------------------------------
    std::vector<shared::CDataContainer> m_stations;

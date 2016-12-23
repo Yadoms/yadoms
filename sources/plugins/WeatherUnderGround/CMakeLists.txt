@@ -16,8 +16,6 @@ set(WUNDERGROUND_SOURCES
    stdafx.cpp
    WeatherUnderground.h
    WeatherUnderground.cpp
-   WeatherUndergroundHelpers.h
-   WeatherUndergroundHelpers.cpp
    WUConfiguration.cpp
    WUConfiguration.h
    WUFactory.cpp

@@ -60,6 +60,22 @@ void CWeatherConditions::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi>
       m_keywords.push_back(m_feelsLike);
       m_keywords.push_back(m_windchill);
    }
+   else
+   {  // In case of configuration change, we delete no needed keywords
+      if (api->keywordExists(m_deviceName, m_temp)) api->removeKeyword(m_deviceName, "temperature");
+      if (api->keywordExists(m_deviceName, m_pressure)) api->removeKeyword(m_deviceName, "pressure");
+      if (api->keywordExists(m_deviceName, m_humidity)) api->removeKeyword(m_deviceName, "Humidity");
+      if (api->keywordExists(m_deviceName, m_visibility)) api->removeKeyword(m_deviceName, "Visibility");
+      if (api->keywordExists(m_deviceName, m_uv)) api->removeKeyword(m_deviceName, "UV");
+      if (api->keywordExists(m_deviceName, m_WindDirection)) api->removeKeyword(m_deviceName, "WindDirection");
+      if (api->keywordExists(m_deviceName, m_dewPoint)) api->removeKeyword(m_deviceName, "DewPoint");
+      if (api->keywordExists(m_deviceName, m_rain1hr)) api->removeKeyword(m_deviceName, "Rain_1hr");
+      if (api->keywordExists(m_deviceName, m_weatherConditionUrl->getHistorizable())) api->removeKeyword(m_deviceName, "Weather");
+      if (api->keywordExists(m_deviceName, m_windAverageSpeed)) api->removeKeyword(m_deviceName, "windAverageSpeed");
+      if (api->keywordExists(m_deviceName, m_windMaxSpeed)) api->removeKeyword(m_deviceName, "windMaxSpeed");
+      if (api->keywordExists(m_deviceName, m_feelsLike)) api->removeKeyword(m_deviceName, "FeelsLike");
+      if (api->keywordExists(m_deviceName, m_windchill)) api->removeKeyword(m_deviceName, "Windchill");
+   }
 
    if (wuConfiguration.isLiveConditionsEnabled())
    {

@@ -6,6 +6,7 @@
 #include <shared/exception/Exception.hpp>
 #include "ErrorAnswerHandler.h"
 #include "RequestErrorException.hpp"
+#include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -120,6 +121,13 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
             break;
          }
+      case yApi::IYPluginApi::kSetDeviceConfiguration:
+      {
+         // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
+         auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
+         std::cout << "Set device configuration received, but not used" << std::endl;
+         break;
+      }
       default:
          std::cerr << "Unknown message id" << std::endl;
          break;
@@ -187,7 +195,7 @@ void CWeatherUnderground::setPluginState(boost::shared_ptr<yApi::IYPluginApi> ap
    }
 }
 
-shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api, std::string url, int event, int &nbRetry)
+shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api, std::string url, int event, int &nbRetry) const
 {
    try
    {
