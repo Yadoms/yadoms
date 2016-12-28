@@ -9,10 +9,19 @@ message LoadScriptContentAnswer {
 	string content = 1;
 }
 
+message StartScriptAnswer {
+	string scriptId = 1;
+}
+
+message StopScriptAnswer {
+}
+
 message msg {
 	oneof OneOf {
 		string error = 1;
 		AvalaibleAnswer avalaibleAnswer = 2;
 		LoadScriptContentAnswer loadScriptContentAnswer = 3;
+		StartScriptAnswer startScriptAnswer = 4;
+		StopScriptAnswer stopScriptAnswer = 5;
 	}
 }

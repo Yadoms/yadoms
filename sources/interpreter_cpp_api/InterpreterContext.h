@@ -57,7 +57,7 @@ namespace interpreter_cpp_api
       //--------------------------------------------------------------
       ///\brief               The main interpreter object
       //--------------------------------------------------------------
-      boost::shared_ptr<IInterpreter> m_plugin;
+      boost::shared_ptr<IInterpreter> m_interpreter;
 
       //--------------------------------------------------------------
       ///\brief               The interpreter process exit code

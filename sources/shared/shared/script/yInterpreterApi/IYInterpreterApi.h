@@ -69,7 +69,7 @@ namespace shared
                ///\note Data : a boost::shared_ptr<yApi::ILoadScriptContentRequest> object containing the request
                ///\note Interpreter must process the specified request, and return result within 10 seconds, by calling request->sendSuccess or sendError
                //-----------------------------------------------------
-               kLoadScriptContentRequest,
+               kEventLoadScriptContentRequest,
 
                //-----------------------------------------------------
                ///\brief Yadoms requests to save the script content
@@ -77,7 +77,23 @@ namespace shared
                ///\note Data : a boost::shared_ptr<yApi::ISaveScriptContent> object containing the request
                ///\note Interpreter must process the specified request
                //-----------------------------------------------------
-               kSaveScriptContent,
+               kEventSaveScriptContent,
+
+               //-----------------------------------------------------
+               ///\brief Yadoms requests to start a script
+               ///\usage Required
+               ///\note Data : a boost::shared_ptr<yApi::ISaveScriptContent> object containing the request
+               ///\note Interpreter must process the specified request
+               //-----------------------------------------------------
+               kEventStartScript,
+
+               //-----------------------------------------------------
+               ///\brief Yadoms requests to stop a script
+               ///\usage Required
+               ///\note Data : a boost::shared_ptr<yApi::ISaveScriptContent> object containing the request
+               ///\note Interpreter must process the specified request
+               //-----------------------------------------------------
+               kEventStopScript,
 
                //-----------------------------------------------------
                ///\brief First event ID to use for user-defined events

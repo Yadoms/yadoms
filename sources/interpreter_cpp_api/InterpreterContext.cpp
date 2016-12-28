@@ -11,10 +11,10 @@ namespace yApi = shared::script::yInterpreterApi;
 namespace interpreter_cpp_api
 {
    CInterpreterContext::CInterpreterContext(int argc,
-                                  char** argv,
-                                  boost::shared_ptr<IInterpreter> interpreter)
+                                            char** argv,
+                                            boost::shared_ptr<IInterpreter> interpreter)
       : m_commandLine(boost::make_shared<CCommandLine>(argc, argv)),
-        m_plugin(interpreter),
+        m_interpreter(interpreter),
         m_returnCode(kOk)
    {
       shared::currentTime::Provider().setProvider(boost::make_shared<shared::currentTime::Local>());
@@ -41,11 +41,11 @@ namespace interpreter_cpp_api
          std::cout << api->getInformation()->getType() << " started" << std::endl;
 
          waitDebugger(api);
-         
+
          if (!api->stopRequested())
          {
-            // Execute plugin code
-            m_plugin->doWork(api);
+            // Execute interpreter code
+            m_interpreter->doWork(api);
          }
 
          if (!api->stopRequested())
@@ -90,7 +90,7 @@ namespace interpreter_cpp_api
             if (api->getEventHandler().waitForEvents(boost::posix_time::millisec(300)) == yApi::IYInterpreterApi::kEventStopRequested)
             {
                std::cout << "Stop requested" << std::endl;
-//TODO à garder ?               api->setPluginState(yApi::historization::EPluginState::kStopped);
+               //TODO à garder ?               api->setPluginState(yApi::historization::EPluginState::kStopped);
                return;
             }
          }
@@ -176,5 +176,6 @@ namespace interpreter_cpp_api
       {
       }
    }
-
 } // namespace interpreter_cpp_api
+
+

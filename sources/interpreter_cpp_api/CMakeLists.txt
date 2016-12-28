@@ -21,6 +21,10 @@ set(interpreter_cpp_api_SOURCES
    LoadScriptContentRequest.cpp
    SaveScriptContent.h
    SaveScriptContent.cpp
+   StartScriptRequest.h
+   StartScriptRequest.cpp
+   StopScriptRequest.h
+   StopScriptRequest.cpp
 
    InterpreterContext.h
    InterpreterContext.cpp
