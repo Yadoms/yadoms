@@ -5,6 +5,8 @@
 set(interpreter_IPC_SOURCES
    toYadoms.proto
    toInterpreter.proto
+
+   interpreterInit.proto
    
    interpreter_IPC/interpreter_IPC.h
 )
@@ -12,6 +14,8 @@ set(interpreter_IPC_SOURCES
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS toYadoms.proto)
 set(interpreter_IPC_SOURCES ${interpreter_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS toInterpreter.proto)
+set(interpreter_IPC_SOURCES ${interpreter_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
+protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS interpreterInit.proto)
 set(interpreter_IPC_SOURCES ${interpreter_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
 
 set(interpreter_IPC_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "Path to generated protobuf files.")

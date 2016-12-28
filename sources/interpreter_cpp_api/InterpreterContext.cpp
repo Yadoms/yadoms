@@ -6,7 +6,7 @@
 #include <Poco/Debugger.h>
 
 
-namespace yApi = shared::interpreter::yInterpreterApi;
+namespace yApi = shared::script::yInterpreterApi;
 
 namespace interpreter_cpp_api
 {
@@ -87,10 +87,10 @@ namespace interpreter_cpp_api
          const auto endTimePoint = shared::currentTime::Provider().now() + boost::posix_time::minutes(2);
          while (!Poco::Debugger::isAvailable() && shared::currentTime::Provider().now() < endTimePoint)
          {
-            if (api->getEventHandler().waitForEvents(boost::posix_time::millisec(300)) == yApi::IYPluginApi::kEventStopRequested)
+            if (api->getEventHandler().waitForEvents(boost::posix_time::millisec(300)) == yApi::IYInterpreterApi::kEventStopRequested)
             {
                std::cout << "Stop requested" << std::endl;
-               api->setPluginState(yApi::historization::EPluginState::kStopped);
+//TODO à garder ?               api->setPluginState(yApi::historization::EPluginState::kStopped);
                return;
             }
          }
@@ -115,10 +115,10 @@ namespace interpreter_cpp_api
 
       try
       {
-         const auto sendMessageQueueId(m_commandLine->yPluginApiAccessorId() + ".plugin_IPC.toYadoms");
-         const auto receiveMessageQueueId(m_commandLine->yPluginApiAccessorId() + ".plugin_IPC.toPlugin");
+         const auto sendMessageQueueId(m_commandLine->yInterpreterApiAccessorId() + ".plugin_IPC.toYadoms");
+         const auto receiveMessageQueueId(m_commandLine->yInterpreterApiAccessorId() + ".plugin_IPC.toPlugin");
 
-         std::cout << "Opening message queues id " << m_commandLine->yPluginApiAccessorId() << std::endl;
+         std::cout << "Opening message queues id " << m_commandLine->yInterpreterApiAccessorId() << std::endl;
 
          m_sendMessageQueue = boost::make_shared<boost::interprocess::message_queue>(boost::interprocess::open_only, sendMessageQueueId.c_str());
          m_receiveMessageQueue = boost::make_shared<boost::interprocess::message_queue>(boost::interprocess::open_only, receiveMessageQueueId.c_str());

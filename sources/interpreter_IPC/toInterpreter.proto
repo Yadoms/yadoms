@@ -1,6 +1,15 @@
 syntax = "proto3";
 package interpreter_IPC.toInterpreter;
 
+import "interpreterInit.proto";
+
+
+message System {
+	enum EventType {
+		kRequestStop = 0;
+	}
+	EventType type = 1;
+}
 
 message AvalaibleRequest {
 }
@@ -23,10 +32,12 @@ message StartScript {
 message msg {
 	oneof OneOf {
 		string error = 1;
-		AvalaibleRequest avalaibleRequest = 2;
-		LoadScriptContentRequest loadScriptContentRequest = 3;
-		SaveScriptContent saveScriptContent = 4;
-		StartScript startScript = 5;
+		Init init = 2;
+		System system = 3;
+		AvalaibleRequest avalaibleRequest = 4;
+		LoadScriptContentRequest loadScriptContentRequest = 5;
+		SaveScriptContent saveScriptContent = 6;
+		StartScript startScript = 7;
    }
 }
 

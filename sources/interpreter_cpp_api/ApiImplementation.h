@@ -1,6 +1,8 @@
 #pragma once
-//#include <shared/script/yInterpreterApi/IYInterpreterApi.h> //TODO utile ?
-#include <interpreter_IPC/interpreter_IPC.h>
+#include <shared/script/yInterpreterApi/IYInterpreterApi.h>
+#include <shared/script/yInterpreterApi/IInformation.h>
+#include <toInterpreter.pb.h>
+#include <toYadoms.pb.h>
 
 
 namespace interpreter_cpp_api
@@ -8,7 +10,7 @@ namespace interpreter_cpp_api
    //-----------------------------------------------------
    ///\brief The Yadoms plugin API implementation for the CPP plugin API
    //-----------------------------------------------------
-   class CApiImplementation /*: public shared::plugin::yInterpreterApi::IYInterpreterApi TODO utile ?*/
+   class CApiImplementation : public shared::script::yInterpreterApi::IYInterpreterApi
    {
    public:
       //-----------------------------------------------------
@@ -26,6 +28,9 @@ namespace interpreter_cpp_api
       bool stopRequested() const;
 
       // shared::plugin::yInterpreterApi::IYInterpreterApi implementation
+      boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> getInformation() const override;
+      shared::event::CEventHandler& getEventHandler() override;
+      const boost::filesystem::path& getDataPath() const override;
       // [END] shared::plugin::yInterpreterApi::IYInterpreterApi implementation
 
       void onReceive(boost::shared_ptr<const unsigned char[]> message, size_t messageSize);
@@ -42,23 +47,13 @@ namespace interpreter_cpp_api
                 boost::function1<bool, const interpreter_IPC::toInterpreter::msg&> checkExpectedMessageFunction,
                 boost::function1<void, const interpreter_IPC::toInterpreter::msg&> onReceiveFunction) const;
 
-      void processSystem(const interpreter_IPC::toInterpreter::System& msg);
       void processInit(const interpreter_IPC::toInterpreter::Init& msg);
-      void processUpdateConfiguration(const interpreter_IPC::toInterpreter::Configuration& msg);
-      void processBindingQuery(const interpreter_IPC::toInterpreter::BindingQuery& msg);
-      void processDeviceConfigurationSchemaRequest(const interpreter_IPC::toInterpreter::DeviceConfigurationSchemaRequest& msg);
-      void processSetDeviceConfiguration(const interpreter_IPC::toInterpreter::SetDeviceConfiguration& msg);
-      void processDeviceCommand(const interpreter_IPC::toInterpreter::DeviceCommand& msg);
-      void processExtraQuery(const interpreter_IPC::toInterpreter::ExtraQuery& msg);
-      void processManuallyDeviceCreation(const interpreter_IPC::toInterpreter::ManuallyDeviceCreation& msg);
-      void processDeviceRemoved(const interpreter_IPC::toInterpreter::DeviceRemoved& msg);
+      void processSystem(const interpreter_IPC::toInterpreter::System& msg);
+      void processAvalaibleRequest(const interpreter_IPC::toInterpreter::AvalaibleRequest& msg);
+      void processLoadScriptContentRequest(const interpreter_IPC::toInterpreter::LoadScriptContentRequest& msg);
+      void processSaveScriptContent(const interpreter_IPC::toInterpreter::SaveScriptContent& msg);
 
       void setInitialized();
-
-      static void fillHistorizable(boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> in,
-                                   interpreter_IPC::toYadoms::Historizable* out);
-      static void fillCapacity(const shared::plugin::yPluginApi::CStandardCapacity& in,
-                               interpreter_IPC::toYadoms::Capacity* out);
 
    private:
       mutable std::condition_variable m_initializationCondition;
@@ -80,6 +75,9 @@ namespace interpreter_cpp_api
 
       mutable boost::recursive_mutex m_onReceiveHookMutex;
       mutable boost::function1<bool, const interpreter_IPC::toInterpreter::msg&> m_onReceiveHook;
+
+      boost::shared_ptr<shared::script::yInterpreterApi::IInformation> m_pluginInformation;
+      boost::shared_ptr<const boost::filesystem::path> m_dataPath;
    };
 } // namespace interpreter_cpp_api	
 

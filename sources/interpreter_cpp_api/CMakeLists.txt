@@ -10,35 +10,17 @@ set(interpreter_cpp_api_SOURCES
 
    ApiImplementation.h
    ApiImplementation.cpp
-   # CommandLine.h
-   # CommandLine.cpp
+   CommandLine.h
+   CommandLine.cpp
 
-   # BindingQuery.h
-   # BindingQuery.cpp
-   # BindingQueryData.h
-   # BindingQueryData.cpp
-   # DeviceCommand.h
-   # DeviceCommand.cpp
-   # DeviceConfigurationSchemaRequest.h
-   # DeviceConfigurationSchemaRequest.cpp
-   # DeviceRemoved.h
-   # DeviceRemoved.cpp
-   # ExtraQuery.h
-   # ExtraQuery.cpp
-   # ExtraQueryData.h
-   # ExtraQueryData.cpp
-   # Location.h
-   # Location.cpp
-   # ManuallyDeviceCreation.h
-   # ManuallyDeviceCreation.cpp
-   # ManuallyDeviceCreationData.h
-   # ManuallyDeviceCreationData.cpp
-   # PluginInformation.h
-   # PluginInformation.cpp
-   # SetDeviceConfiguration.h
-   # SetDeviceConfiguration.cpp
-   # YadomsInformation.h
-   # YadomsInformation.cpp
+   AvalaibleRequest.h
+   AvalaibleRequest.cpp
+   Information.h
+   Information.cpp
+   LoadScriptContentRequest.h
+   LoadScriptContentRequest.cpp
+   SaveScriptContent.h
+   SaveScriptContent.cpp
 
    InterpreterContext.h
    InterpreterContext.cpp

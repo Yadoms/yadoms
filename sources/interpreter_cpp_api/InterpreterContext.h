@@ -19,8 +19,8 @@ namespace interpreter_cpp_api
       ///\param[in] interpreter    Main interpreter object
       //--------------------------------------------------------------
       CInterpreterContext(int argc,
-                     char** argv,
-                     boost::shared_ptr<IInterpreter> interpreter);
+                          char** argv,
+                          boost::shared_ptr<IInterpreter> interpreter);
 
       //--------------------------------------------------------------
       ///\brief               Destructor

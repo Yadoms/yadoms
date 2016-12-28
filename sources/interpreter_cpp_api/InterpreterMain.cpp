@@ -4,20 +4,25 @@
 #include <shared/process/ApplicationStopHandler.h>
 
 
-int doMain(int argc, char **argv, boost::shared_ptr<interpreter_cpp_api::IInterpreter> plugin)
+int doMain(int argc,
+           char** argv,
+           boost::shared_ptr<interpreter_cpp_api::IInterpreter> plugin)
 {
    try
    {
       shared::event::CEventHandler stopEvenHandler;
-      enum { kPluginStopped = shared::event::kUserFirstId };
+      enum
+         {
+            kPluginStopped = shared::event::kUserFirstId
+         };
       auto stopHandler = boost::make_shared<shared::process::CApplicationStopHandler>(false);
       stopHandler->setApplicationStopHandler([&]() -> bool
-      {
-         // Termination should be asked by Yadoms with IPC, so just wait for end
-         return stopEvenHandler.waitForEvents(boost::posix_time::seconds(30)) == kPluginStopped;
-      });
+         {
+            // Termination should be asked by Yadoms with IPC, so just wait for end
+            return stopEvenHandler.waitForEvents(boost::posix_time::seconds(30)) == kPluginStopped;
+         });
 
-      auto pluginContext = boost::make_shared<interpreter_cpp_api::CPluginContext>(argc, argv, plugin);
+      auto pluginContext = boost::make_shared<interpreter_cpp_api::CInterpreterContext>(argc, argv, plugin);
       pluginContext->run();
       stopEvenHandler.postEvent(kPluginStopped);
       return pluginContext->getReturnCode();
@@ -25,11 +30,12 @@ int doMain(int argc, char **argv, boost::shared_ptr<interpreter_cpp_api::IInterp
    catch (std::invalid_argument& e)
    {
       std::cerr << "Unable to start plugin : " << e.what() << std::endl;
-      return interpreter_cpp_api::IPluginContext::kStartError;
+      return interpreter_cpp_api::IInterpreterContext::kStartError;
    }
    catch (...)
    {
       std::cerr << "Plugin crashed" << std::endl;
-      return interpreter_cpp_api::IPluginContext::kRuntimeError;
+      return interpreter_cpp_api::IInterpreterContext::kRuntimeError;
    }
 }
+

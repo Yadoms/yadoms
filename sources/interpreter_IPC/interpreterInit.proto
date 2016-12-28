@@ -1,0 +1,27 @@
+syntax = "proto3";
+package interpreter_IPC.toInterpreter;
+
+message Information {
+	string type = 1;
+	string name = 2;
+	string description = 3;
+	string version = 4;
+
+	enum EReleaseType {
+		kStable = 0; kReleaseCandidate = 1; kBeta = 2;
+	}
+	EReleaseType releaseType = 5;
+
+	string author = 6;
+	string url = 7;
+	string credits = 8;
+	bool supportedOnThisPlatform = 9;
+	string packageFileContent = 10;
+	string path = 11;
+}
+
+message Init {
+	Information interpreterInformation = 1;
+	string dataPath = 2;
+}
+

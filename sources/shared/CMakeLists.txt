@@ -237,6 +237,12 @@ set(SHARED_LIB_SRC
    shared/script/ImplementationHelper.h
    shared/script/IInterpreter.h
 
+   shared/script/yInterpreterApi/IAvalaibleRequest.h
+   shared/script/yInterpreterApi/IInformation.h
+   shared/script/yInterpreterApi/ILoadScriptContentRequest.h
+   shared/script/yInterpreterApi/ISaveScriptContent.h
+   shared/script/yInterpreterApi/IYInterpreterApi.h
+
    shared/script/yScriptApi/commonIncludes.h
    shared/script/yScriptApi/IYScriptApi.h
    shared/script/yScriptApi/WaitForEventResult.h

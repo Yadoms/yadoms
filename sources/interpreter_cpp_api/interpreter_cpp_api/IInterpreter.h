@@ -1,7 +1,7 @@
 #pragma once
 
 // Include directly CPP yInterpreterApi interface
-#include <shared/script/yInterpreterApi/IInterpreterApi.h>
+#include <shared/script/yInterpreterApi/IYInterpreterApi.h>
 
 
 namespace interpreter_cpp_api
@@ -23,7 +23,7 @@ namespace interpreter_cpp_api
       //                      Be careful to put some sleeps to prevent using too much system resources.
       //                      Use boost::this_thread::sleep as a watch stop point (a point where thread is able to stop).
       //--------------------------------------------------------------
-      virtual void doWork(boost::shared_ptr<shared::script::yInterpreterApi::IInterpreterApi> api) = 0;
+      virtual void doWork(boost::shared_ptr<shared::script::yInterpreterApi::IYInterpreterApi> api) = 0;
    };
 
 } // namespace interpreter_cpp_api
