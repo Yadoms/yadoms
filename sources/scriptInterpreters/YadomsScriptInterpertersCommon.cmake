@@ -7,7 +7,14 @@ MACRO(SCRIPT_INTERPRETER_SOURCES _targetName)
        string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
        set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${YADOMS_OUTPUT_DIR}/${OUTPUTCONFIG}/scriptInterpreters/${_targetName} )
    endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
-	add_library(${_targetName} MODULE ${ARGN})
+
+   set(SCRIPT_INTERPRETER_SOURCE_FILES
+      ${ARGN}
+      package.json
+      )
+      
+   add_executable(${_targetName} ${SCRIPT_INTERPRETER_SOURCE_FILES})
+   project(${_targetName})
 	
 	IF(MSVC OR XCODE)
 		SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "scriptInterpreters/${_targetName}")
@@ -15,15 +22,37 @@ MACRO(SCRIPT_INTERPRETER_SOURCES _targetName)
 ENDMACRO()
 
 MACRO(SCRIPT_INTERPRETER_INCLDIR _targetName)
-	set_property( TARGET ${_targetName} PROPERTY INCLUDE_DIRECTORIES ${SHARED_INCL_DIR} ${BOOST_INCL_DIR} ${Poco_INCLUDE_DIRS} ${ARGN})
+
+   #define the list of all include dirs
+   set(SCRIPT_INTERPRETER_ALL_INCLUDE_DIRS
+      ${SHARED_INCL_DIR}
+      ${BOOST_INCL_DIR}
+      ${Poco_INCLUDE_DIRS}
+      ${interpreter_cpp_api_INCLUDE_DIR}
+      ${ARGN}
+      )
+
+
+	set_property( TARGET ${_targetName} PROPERTY INCLUDE_DIRECTORIES ${SCRIPT_INTERPRETER_ALL_INCLUDE_DIRS})
 ENDMACRO()
 
 MACRO(SCRIPT_INTERPRETER_LINK _targetName)
-	target_link_libraries(${_targetName} yadoms-shared ${LIBS} ${CMAKE_DL_LIBS} ${ARGN})
+	target_link_libraries(${_targetName}
+      yadoms-shared
+      interpreter_cpp_api
+      ${LIBS}
+      ${CMAKE_DL_LIBS}
+      ${PROTOBUF_LIBRARIES}
+      ${interpreter_IPC_LIBRARY}
+      ${ARGN}
+      )
 	
+
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
+   
+   #configure interpreter as installable component
 	install(TARGETS ${_targetName} 
-		LIBRARY DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${_targetName}
+		RUNTIME DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${_targetName}
 		COMPONENT  ${ComponentCompatibleName})
 		
    set(SCRIPTINTERPRETERSLIST
@@ -50,11 +79,15 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
 	
 ENDMACRO()
 
+# brief Copy a file to the target output dir
+# param [in] _targetName The current target (ie: interpreterName)
+# param [in] _resource The resource (absolute path) to copy to the target output dir
 MACRO(SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE _targetName _resource)
 
    get_filename_component(_resourcePath ${_resource}  DIRECTORY)
 
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
+
    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 
 			DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${_targetName}/${_resourcePath}
 			COMPONENT   ${ComponentCompatibleName})
@@ -69,6 +102,10 @@ MACRO(SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE _targetName _resource)
    endif()	
 ENDMACRO()
 
+
+# brief Copy a directory (and its content) to the target output dir
+# param [in] _targetName The current target (ie: pluginName)
+# param [in] _resource The resource folder (absolute path) to copy to the target output dir
 MACRO(SCRIPT_INTERPRETER_POST_BUILD_COPY_DIRECTORY _targetName _resource)
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 

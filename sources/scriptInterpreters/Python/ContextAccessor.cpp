@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ContextAccessor.h"
 #include <shared/communication/MessageQueueRemover.hpp>
-#include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
 
 const size_t CContextAccessor::m_maxMessages(100);
@@ -45,7 +44,7 @@ void CContextAccessor::doWork()
    const shared::communication::CMessageQueueRemover receiveMessageQueueRemover(receiveMessageQueueId);
    try
    {
-      YADOMS_LOG(debug) << "Open message queues for id " << m_id;
+      std::cout << "Open message queues for id " << m_id << std::endl;
       boost::interprocess::message_queue sendMessageQueue(boost::interprocess::create_only,
                                                           sendMessageQueueId.c_str(),
                                                           m_maxMessages,
@@ -81,7 +80,7 @@ void CContextAccessor::doWork()
          }
          catch (shared::exception::CInvalidParameter& ex)
          {
-            YADOMS_LOG(error) << "Error receiving/processing queue message, invalid parameter : " << ex.what();
+            std::cerr << "Error receiving/processing queue message, invalid parameter : " << ex.what() << std::endl;
          }
          catch (boost::thread_interrupted&)
          {
@@ -89,28 +88,28 @@ void CContextAccessor::doWork()
          }
          catch (std::exception& ex)
          {
-            YADOMS_LOG(error) << "Error receiving/processing queue message : " << ex.what();
+            std::cerr << "Error receiving/processing queue message : " << ex.what() << std::endl;
          }
          catch (...)
          {
-            YADOMS_LOG(error) << "Error receiving/processing queue message";
+            std::cerr << "Error receiving/processing queue message" << std::endl;
          }
       }
    }
    catch (boost::interprocess::interprocess_exception& ex)
    {
-      YADOMS_LOG(error) << "Error creating/using message queues (" << m_id << ") in context accessor : " << ex.what();
+      std::cerr << "Error creating/using message queues (" << m_id << ") in context accessor : " << ex.what() << std::endl;
    }
    catch (std::exception& ex)
    {
-      YADOMS_LOG(error) << ex.what();
+      std::cerr << ex.what() << std::endl;
    }
    catch (...)
    {
-      YADOMS_LOG(error) << "Unknown error";
+      std::cerr << "Unknown error" << std::endl;
    }
 
-   YADOMS_LOG(debug) << "Close message queues";
+   std::cout << "Close message queues" << std::endl;
 
    // Delete all global objects allocated by libprotobuf.
    google::protobuf::ShutdownProtobufLibrary();
@@ -205,7 +204,7 @@ void CContextAccessor::processGetKeywordId(const pbRequest::GetKeywordId& reques
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
-      YADOMS_LOG(warning) << "Error processing processGetKeywordId request : " << ex.what();
+      std::cout << "Error processing processGetKeywordId request : " << ex.what() << std::endl;
    }
 
    try
@@ -215,7 +214,7 @@ void CContextAccessor::processGetKeywordId(const pbRequest::GetKeywordId& reques
    }
    catch (std::exception& ex)
    {
-      YADOMS_LOG(error) << "Unable to answer to GetKeywordId request : " << ex.what();
+      std::cerr << "Unable to answer to GetKeywordId request : " << ex.what() << std::endl;
       throw;
    }
 }
@@ -233,7 +232,7 @@ void CContextAccessor::processGetRecipientId(const pbRequest::GetRecipientId& re
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
-      YADOMS_LOG(warning) << "Error processing processGetRecipientId request : " << ex.what();
+      std::cout << "Error processing processGetRecipientId request : " << ex.what() << std::endl;
    }
 
    try
@@ -243,7 +242,7 @@ void CContextAccessor::processGetRecipientId(const pbRequest::GetRecipientId& re
    }
    catch (std::exception& ex)
    {
-      YADOMS_LOG(error) << "Unable to answer to GetRecipientId request : " << ex.what();
+      std::cerr << "Unable to answer to GetRecipientId request : " << ex.what() << std::endl;
       throw;
    }
 }
@@ -260,7 +259,7 @@ void CContextAccessor::processReadKeyword(const pbRequest::ReadKeyword& request,
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
-      YADOMS_LOG(warning) << "Error processing processReadKeyword request : " << ex.what();
+      std::cout << "Error processing processReadKeyword request : " << ex.what() << std::endl;
    }
 
    try
@@ -270,7 +269,7 @@ void CContextAccessor::processReadKeyword(const pbRequest::ReadKeyword& request,
    }
    catch (std::exception& ex)
    {
-      YADOMS_LOG(error) << "Unable to answer to ReadKeyword request : " << ex.what();
+      std::cerr << "Unable to answer to ReadKeyword request : " << ex.what() << std::endl;
       throw;
    }
 }
@@ -288,7 +287,7 @@ void CContextAccessor::processWaitForNextAcquisition(const pbRequest::WaitForNex
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
-      YADOMS_LOG(warning) << "Error processing processWaitForNextAcquisition request : " << ex.what();
+      std::cout << "Error processing processWaitForNextAcquisition request : " << ex.what() << std::endl;
    }
 
    try
@@ -298,7 +297,7 @@ void CContextAccessor::processWaitForNextAcquisition(const pbRequest::WaitForNex
    }
    catch (std::exception& ex)
    {
-      YADOMS_LOG(error) << "Unable to answer to WaitForNextAcquisition request : " << ex.what();
+      std::cerr << "Unable to answer to WaitForNextAcquisition request : " << ex.what() << std::endl;
       throw;
    }
 }
@@ -322,7 +321,7 @@ void CContextAccessor::processWaitForNextAcquisitions(const pbRequest::WaitForNe
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
-      YADOMS_LOG(warning) << "Error processing processWaitForNextAcquisitions request : " << ex.what();
+      std::cout << "Error processing processWaitForNextAcquisitions request : " << ex.what() << std::endl;
    }
 
    try
@@ -332,7 +331,7 @@ void CContextAccessor::processWaitForNextAcquisitions(const pbRequest::WaitForNe
    }
    catch (std::exception& ex)
    {
-      YADOMS_LOG(error) << "Unable to answer to WaitForNextAcquisitions request : " << ex.what();
+      std::cerr << "Unable to answer to WaitForNextAcquisitions request : " << ex.what() << std::endl;
       throw;
    }
 }
@@ -370,7 +369,7 @@ void CContextAccessor::processWaitForEvent(const pbRequest::WaitForEvent& reques
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
-      YADOMS_LOG(warning) << "Error processing WaitForEvent request : " << ex.what();
+      std::cout << "Error processing WaitForEvent request : " << ex.what() << std::endl;
    }
 
    try
@@ -380,7 +379,7 @@ void CContextAccessor::processWaitForEvent(const pbRequest::WaitForEvent& reques
    }
    catch (std::exception& ex)
    {
-      YADOMS_LOG(error) << "Unable to answer to WaitForEvent request : " << ex.what() << ". Answer was " << ans.OneOf_case();
+      std::cerr << "Unable to answer to WaitForEvent request : " << ex.what() << ". Answer was " << ans.OneOf_case() << std::endl;
 
       std::stringstream requestDetails;
       requestDetails << "keywordId = { ";
@@ -391,7 +390,7 @@ void CContextAccessor::processWaitForEvent(const pbRequest::WaitForEvent& reques
       if (request.has_timeout())
          requestDetails << ", timeout = " << request.timeout();
 
-      YADOMS_LOG(error) << "Request was WaitForEvent(" << requestDetails.str() << ")";
+      std::cerr << "Request was WaitForEvent(" << requestDetails.str() << ")" << std::endl;
       throw;
    }
 }
@@ -410,7 +409,7 @@ void CContextAccessor::processGetKeywordsByCapacity(const pbRequest::GetKeywords
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
-      YADOMS_LOG(warning) << "Error processing processGetKeywordsByCapacity request : " << ex.what();
+      std::cout << "Error processing processGetKeywordsByCapacity request : " << ex.what() << std::endl;
    }
 
    try
@@ -420,7 +419,7 @@ void CContextAccessor::processGetKeywordsByCapacity(const pbRequest::GetKeywords
    }
    catch (std::exception& ex)
    {
-      YADOMS_LOG(error) << "Unable to answer to GetKeywordsByCapacity request : " << ex.what();
+      std::cerr << "Unable to answer to GetKeywordsByCapacity request : " << ex.what() << std::endl;
       throw;
    }
 }
@@ -438,7 +437,7 @@ void CContextAccessor::processWriteKeyword(const pbRequest::WriteKeyword& reques
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
-      YADOMS_LOG(warning) << "Error processing processWriteKeyword request : " << ex.what();
+      std::cout << "Error processing processWriteKeyword request : " << ex.what() << std::endl;
    }
 
    try
@@ -448,7 +447,7 @@ void CContextAccessor::processWriteKeyword(const pbRequest::WriteKeyword& reques
    }
    catch (std::exception& ex)
    {
-      YADOMS_LOG(error) << "Unable to answer to WriteKeyword request : " << ex.what();
+      std::cerr << "Unable to answer to WriteKeyword request : " << ex.what() << std::endl;
       throw;
    }
 }
@@ -467,7 +466,7 @@ void CContextAccessor::processSendNotification(const pbRequest::SendNotification
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
-      YADOMS_LOG(warning) << "Error processing processSendNotification request : " << ex.what();
+      std::cout << "Error processing processSendNotification request : " << ex.what() << std::endl;
    }
 
    try
@@ -477,7 +476,7 @@ void CContextAccessor::processSendNotification(const pbRequest::SendNotification
    }
    catch (std::exception& ex)
    {
-      YADOMS_LOG(error) << "Unable to answer to SendNotification request : " << ex.what();
+      std::cerr << "Unable to answer to SendNotification request : " << ex.what() << std::endl;
       throw;
    }
 }
@@ -515,7 +514,7 @@ void CContextAccessor::processGetInfo(const pbRequest::GetInfo& request,
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
-      YADOMS_LOG(warning) << "Error processing processGetInfo request : " << ex.what();
+      std::cout << "Error processing processGetInfo request : " << ex.what() << std::endl;
    }
 
    try
@@ -525,7 +524,7 @@ void CContextAccessor::processGetInfo(const pbRequest::GetInfo& request,
    }
    catch (std::exception& ex)
    {
-      YADOMS_LOG(error) << "Unable to answer to GetInfo request : " << ex.what();
+      std::cerr << "Unable to answer to GetInfo request : " << ex.what() << std::endl;
       throw;
    }
 }
@@ -545,7 +544,7 @@ void CContextAccessor::processGetKeywordName(const pbRequest::GetKeywordName& re
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
-      YADOMS_LOG(warning) << "Error processing processGetKeywordName request : " << ex.what();
+      std::cout << "Error processing processGetKeywordName request : " << ex.what() << std::endl;
    }
 
    try
@@ -555,7 +554,7 @@ void CContextAccessor::processGetKeywordName(const pbRequest::GetKeywordName& re
    }
    catch (std::exception& ex)
    {
-      YADOMS_LOG(error) << "Unable to answer to GetKeywordName request : " << ex.what();
+      std::cerr << "Unable to answer to GetKeywordName request : " << ex.what() << std::endl;
       throw;
    }
 }
@@ -575,7 +574,7 @@ void CContextAccessor::processGetKeywordDeviceName(const pbRequest::GetKeywordDe
    catch (std::exception& ex)
    {
       ans.set_error(ex.what());
-      YADOMS_LOG(warning) << "Error processing processGetKeywordDeviceName request : " << ex.what();
+      std::cout << "Error processing processGetKeywordDeviceName request : " << ex.what() << std::endl;
    }
 
    try
@@ -585,7 +584,7 @@ void CContextAccessor::processGetKeywordDeviceName(const pbRequest::GetKeywordDe
    }
    catch (std::exception& ex)
    {
-      YADOMS_LOG(error) << "Unable to answer to GetKeywordDeviceName request : " << ex.what();
+      std::cerr << "Unable to answer to GetKeywordDeviceName request : " << ex.what() << std::endl;
       throw;
    }
 }

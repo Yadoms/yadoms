@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "PythonExecutable.h"
-#include <shared/Log.h>
 #include "PythonExecutablePath.h"
 #include <shared/Executable.h>
 
@@ -57,7 +56,7 @@ bool CPythonExecutable::findPythonDirectory(boost::filesystem::path& pythonDirec
          return true;
    }
 
-   YADOMS_LOG(error) << "Python executable not found";
+   std::cerr << "Python executable not found" << std::endl;
    return false;
 }
 
@@ -67,12 +66,12 @@ bool CPythonExecutable::isPythonIn(const boost::filesystem::path& directory,
 {
    if (!readPythonVersion(directory).empty())
    {
-      YADOMS_LOG(debug) << "Python executable found in " << (directory.empty() ? "the system path" : directory.string());
+      std::cout << "Python executable found in " << (directory.empty() ? "the system path" : directory.string()) << std::endl;
       pythonDirectory = directory;
       inSystemPath = directory.empty();
       return true;
    }
-   YADOMS_LOG(debug) << "Python executable not found in " << (directory.empty() ? "the system path" : directory.string());
+   std::cout << "Python executable not found in " << (directory.empty() ? "the system path" : directory.string()) << std::endl;
    return false;
 }
 
@@ -96,7 +95,7 @@ std::string CPythonExecutable::readPythonVersion(const boost::filesystem::path& 
    }
    catch (Poco::Exception& ex)
    {
-      YADOMS_LOG(debug) << "Unable to read Python version, " << ex.what();
+      std::cout << "Unable to read Python version, " << ex.what() << std::endl;
       return std::string();
    }
 }

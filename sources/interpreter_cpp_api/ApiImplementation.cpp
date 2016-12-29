@@ -237,7 +237,19 @@ namespace interpreter_cpp_api
 
    void CApiImplementation::processSaveScriptContent(const interpreter_IPC::toInterpreter::SaveScriptContent& msg)
    {
-      boost::shared_ptr<const shared::script::yInterpreterApi::ISaveScriptContent> command = boost::make_shared<CSaveScriptContent>(msg);
+      boost::shared_ptr<const shared::script::yInterpreterApi::ISaveScriptContent> command = boost::make_shared<CSaveScriptContent>(msg,
+                                                                                                                                    [&]()
+                                                                                                                                    {
+                                                                                                                                       interpreter_IPC::toYadoms::msg ans;
+                                                                                                                                       ans.mutable_savescriptcontentanswer();
+                                                                                                                                       send(ans);
+                                                                                                                                    },
+                                                                                                                                    [&](const std::string& r)
+                                                                                                                                    {
+                                                                                                                                       interpreter_IPC::toYadoms::msg ans;
+                                                                                                                                       ans.set_error(r);
+                                                                                                                                       send(ans);
+                                                                                                                                    });
       m_pluginEventHandler.postEvent(kEventSaveScriptContent, command);
    }
 

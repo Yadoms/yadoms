@@ -1,19 +1,22 @@
 #include "stdafx.h"
 #include "Python.h"
-#include <shared/script/ImplementationHelper.h>
-#include <shared/Log.h>
+#include <interpreter_cpp_api/ImplementationHelper.h>
 #include "PythonExecutable.h"
 #include "ScriptFile.h"
 #include "ScriptProcess.h"
 #include <shared/process/ProcessException.hpp>
+#include <shared/script/yInterpreterApi/IAvalaibleRequest.h>
+#include <shared/script/yInterpreterApi/ILoadScriptContentRequest.h>
+#include <shared/script/yInterpreterApi/ISaveScriptContent.h>
+#include <shared/script/yInterpreterApi/IStartScriptRequest.h>
+#include <shared/script/yInterpreterApi/IStopScriptRequest.h>
 
 // Declare the script interpreter
-IMPLEMENT_SCRIPT_INTERPRETER(CPython)
+IMPLEMENT_INTERPRETER(CPython)
 
 
-CPython::CPython(const boost::filesystem::path& pythonInterpreterPath)
-   : m_pythonInterpreterPath(pythonInterpreterPath),
-     m_pythonExecutable(boost::make_shared<CPythonExecutable>())
+CPython::CPython()
+   : m_pythonExecutable(boost::make_shared<CPythonExecutable>())
 {
 }
 
@@ -21,16 +24,97 @@ CPython::~CPython()
 {
 }
 
-std::string CPython::type() const
+void CPython::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
 {
-   static const std::string interpreterType("python");
-   return interpreterType;
+   m_api = api;
+
+   std::cout << "Python interpreter is starting..." << std::endl;
+
+   while (true)
+   {
+      switch (api->getEventHandler().waitForEvents())
+      {
+      case yApi::IYInterpreterApi::kEventStopRequested:
+         {
+            // Yadoms request the interpreter to stop. Note that interpreter must be stop in 10 seconds max, otherwise it will be killed.
+            std::cout << "Stop requested" << std::endl;
+            //TODO
+            //TODO api->setPluginState(yApi::historization::EPluginState::kStopped);
+            return;
+         }
+
+      case yApi::IYInterpreterApi::kEventAvalaibleRequest:
+         {
+            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IAvalaibleRequest>>();
+            request->sendSuccess(isAvailable());
+            break;
+         }
+
+      case yApi::IYInterpreterApi::kEventLoadScriptContentRequest:
+         {
+            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::ILoadScriptContentRequest>>();
+            try
+            {
+               request->sendSuccess(loadScriptContent(request->getScriptPath()));
+            }
+            catch (std::exception& e)
+            {
+               request->sendError(std::string("Unable to load script content : ") + e.what());
+            }
+            break;
+         }
+
+      case yApi::IYInterpreterApi::kEventSaveScriptContent:
+         {
+            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::ISaveScriptContent>>();
+            try
+            {
+               saveScriptContent(request->getScriptPath(),
+                                 request->getScriptContent());
+               request->sendSuccess();
+            }
+            catch (std::exception& e)
+            {
+               request->sendError(std::string("Unable to save script content : ") + e.what());
+            }
+            break;
+         }
+
+      case yApi::IYInterpreterApi::kEventStartScript:
+      {
+         auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IStartScriptRequest>>();
+         try
+         {
+            //TODO
+            //const auto process = createProcess();
+            //request->sendSuccess(process->);
+         }
+         catch (std::exception& e)
+         {
+            request->sendError(std::string("Unable to start script : ") + e.what());
+         }
+         break;
+      }
+
+      default:
+         {
+            std::cerr << "Unknown or unsupported message id " << api->getEventHandler().getEventId() << std::endl;
+            break;
+         }
+      }
+   }
 }
 
-std::string CPython::name() const
+const boost::filesystem::path& CPython::getInterpreterPath() const
 {
-   static const std::string interpreterName("Python");
-   return interpreterName;
+   static const auto interpreterPath = m_api->getInformation()->getPath();
+   return interpreterPath;
+}
+
+const std::string& CPython::getScriptTemplate() const
+{
+   static const auto scriptTemplate = CScriptFile::PythonFileRead(boost::filesystem::path(getInterpreterPath().parent_path() / "template.py").string());
+   return scriptTemplate;
 }
 
 bool CPython::isAvailable() const
@@ -49,14 +133,14 @@ bool CPython::isAvailable() const
 std::string CPython::loadScriptContent(const std::string& scriptPath) const
 {
    if (scriptPath.empty())
-      return CScriptFile::PythonFileRead(boost::filesystem::path(m_pythonInterpreterPath.parent_path() / "template.py").string());
+      return getScriptTemplate();
 
    CScriptFile file(scriptPath);
    return file.read();
 }
 
 void CPython::saveScriptContent(const std::string& scriptPath,
-                                const std::string& content) const
+                                const std::string& content)
 {
    CScriptFile file(scriptPath);
    file.write(content);
@@ -70,7 +154,7 @@ boost::shared_ptr<shared::process::IProcess> CPython::createProcess(const std::s
    try
    {
       return boost::make_shared<CScriptProcess>(m_pythonExecutable,
-                                                m_pythonInterpreterPath,
+                                                getInterpreterPath(),
                                                 boost::make_shared<CScriptFile>(scriptPath),
                                                 yScriptApi,
                                                 scriptLogger,
@@ -78,7 +162,7 @@ boost::shared_ptr<shared::process::IProcess> CPython::createProcess(const std::s
    }
    catch (shared::process::CProcessException& ex)
    {
-      YADOMS_LOG(error) << "Unable to create the Python process, " << ex.what();
+      std::cerr << "Unable to create the Python process, " << ex.what() << std::endl;
       return boost::shared_ptr<shared::process::IProcess>();
    }
 }

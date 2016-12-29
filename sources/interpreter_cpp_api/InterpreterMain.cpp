@@ -6,7 +6,7 @@
 
 int doMain(int argc,
            char** argv,
-           boost::shared_ptr<interpreter_cpp_api::IInterpreter> plugin)
+           boost::shared_ptr<interpreter_cpp_api::IInterpreter> interpreter)
 {
    try
    {
@@ -22,19 +22,19 @@ int doMain(int argc,
             return stopEvenHandler.waitForEvents(boost::posix_time::seconds(30)) == kPluginStopped;
          });
 
-      auto pluginContext = boost::make_shared<interpreter_cpp_api::CInterpreterContext>(argc, argv, plugin);
+      auto pluginContext = boost::make_shared<interpreter_cpp_api::CInterpreterContext>(argc, argv, interpreter);
       pluginContext->run();
       stopEvenHandler.postEvent(kPluginStopped);
       return pluginContext->getReturnCode();
    }
    catch (std::invalid_argument& e)
    {
-      std::cerr << "Unable to start plugin : " << e.what() << std::endl;
+      std::cerr << "Unable to start interpreter : " << e.what() << std::endl;
       return interpreter_cpp_api::IInterpreterContext::kStartError;
    }
    catch (...)
    {
-      std::cerr << "Plugin crashed" << std::endl;
+      std::cerr << "Interpreter crashed" << std::endl;
       return interpreter_cpp_api::IInterpreterContext::kRuntimeError;
    }
 }

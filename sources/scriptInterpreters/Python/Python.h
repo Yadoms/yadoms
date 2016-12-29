@@ -1,47 +1,42 @@
 #pragma once
-#include <shared/script/IInterpreter.h>
 #include "IPythonExecutable.h"
+#include <interpreter_cpp_api/IInterpreter.h>
+#include <shared/process/ILogger.h>
+#include <shared/process/IProcess.h>
+#include <shared/process/IProcessObserver.h>
+#include <shared/script/yScriptApi/IYScriptApi.h>
+
+
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::script::yInterpreterApi;
 
 //--------------------------------------------------------------
 /// \brief	Python interpreter
 //--------------------------------------------------------------
-class CPython : public shared::script::IInterpreter
+class CPython : public interpreter_cpp_api::IInterpreter
 {
 public:
-   //--------------------------------------------------------------
-   /// \brief	Constructor
-   /// \param[in] pythonInterpreterPath The path containing the current interpreter
-   //--------------------------------------------------------------
-   explicit CPython(const boost::filesystem::path& pythonInterpreterPath);
-
-   //--------------------------------------------------------------
-   /// \brief	Destructor
-   //--------------------------------------------------------------
+   CPython();
    virtual ~CPython();
 
    // IInterpreter implementation
-   std::string name() const override;
-   std::string type() const override;
-   bool isAvailable() const override;
-   std::string loadScriptContent(const std::string& scriptPath) const override;
-   void saveScriptContent(const std::string& scriptPath,
-                          const std::string& content) const override;
+   void doWork(boost::shared_ptr<yApi::IYInterpreterApi> api) override;
+   // [END] IInterpreter implementation
+
+protected:
+   const boost::filesystem::path& getInterpreterPath() const;
+   const std::string& getScriptTemplate() const;
+   bool isAvailable() const;
+   std::string loadScriptContent(const std::string& scriptPath) const;
+   static void saveScriptContent(const std::string& scriptPath,
+                                 const std::string& content);
    boost::shared_ptr<shared::process::IProcess> createProcess(const std::string& scriptPath,
                                                               boost::shared_ptr<shared::process::ILogger> scriptLogger,
                                                               boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-                                                              boost::shared_ptr<shared::process::IProcessObserver> processObserver) const override;
-   // [END] IInterpreter implementation
+                                                              boost::shared_ptr<shared::process::IProcessObserver> processObserver) const;
 
 private:
-
-   //--------------------------------------------------------------
-   /// \brief	The path containing the current interpreter
-   //--------------------------------------------------------------
-   const boost::filesystem::path m_pythonInterpreterPath;
-
-   //--------------------------------------------------------------
-   /// \brief	The Python executable accessor
-   //--------------------------------------------------------------
+   boost::shared_ptr<yApi::IYInterpreterApi> m_api;
    boost::shared_ptr<IPythonExecutable> m_pythonExecutable;
 };
 

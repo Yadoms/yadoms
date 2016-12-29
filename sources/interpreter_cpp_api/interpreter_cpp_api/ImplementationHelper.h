@@ -1,7 +1,7 @@
 #pragma once
 #include "IInterpreter.h"
 
-extern int doMain(int argc, char **argv, boost::shared_ptr<interpreter_cpp_api::IPlugin> plugin);
+extern int doMain(int argc, char **argv, boost::shared_ptr<interpreter_cpp_api::IInterpreter> interpreter);
 
 //--------------------------------------------------------------
 /// \brief		                  Interpreter implementation helper

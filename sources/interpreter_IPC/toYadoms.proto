@@ -9,6 +9,9 @@ message LoadScriptContentAnswer {
 	string content = 1;
 }
 
+message SaveScriptContentAnswer {
+}
+
 message StartScriptAnswer {
 	string scriptId = 1;
 }
@@ -21,7 +24,8 @@ message msg {
 		string error = 1;
 		AvalaibleAnswer avalaibleAnswer = 2;
 		LoadScriptContentAnswer loadScriptContentAnswer = 3;
-		StartScriptAnswer startScriptAnswer = 4;
-		StopScriptAnswer stopScriptAnswer = 5;
+		SaveScriptContentAnswer saveScriptContentAnswer = 4;
+		StartScriptAnswer startScriptAnswer = 5;
+		StopScriptAnswer stopScriptAnswer = 6;
 	}
 }

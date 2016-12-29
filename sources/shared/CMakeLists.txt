@@ -234,9 +234,6 @@ set(SHARED_LIB_SRC
    shared/serialization/IDataSerializable.h
    shared/serialization/IDataFileSerializable.h
 
-   shared/script/ImplementationHelper.h
-   shared/script/IInterpreter.h
-
    shared/script/yInterpreterApi/IAvalaibleRequest.h
    shared/script/yInterpreterApi/IInformation.h
    shared/script/yInterpreterApi/ILoadScriptContentRequest.h
