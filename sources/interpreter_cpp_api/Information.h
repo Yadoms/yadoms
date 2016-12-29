@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/script/yInterpreterApi/IInformation.h>
-#include <interpreterInit.pb.h>
+#include <interpreter_IPC/interpreterInit.pb.h>
 
 namespace interpreter_cpp_api
 {

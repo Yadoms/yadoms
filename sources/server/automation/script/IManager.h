@@ -1,10 +1,8 @@
 #pragma once
 #include "IProperties.h"
-#include "../../database/common/requesters/Rule.h"
 #include <shared/process/ILogger.h>
 #include <shared/script/yScriptApi/IYScriptApi.h>
 #include <server/automation/IRuleStateHandler.h>
-#include <shared/process/IProcess.h>
 
 namespace automation
 {
@@ -35,7 +33,7 @@ namespace automation
          ///\return              The first interpreter found supporting this script
          ///\throw CScriptInterpreterNotFound No corresponding script interpreter was found
          //-----------------------------------------------------
-         virtual boost::shared_ptr<shared::script::IInterpreter> getAssociatedInterpreter(const std::string& interpreterName) = 0;
+         virtual boost::shared_ptr<IInterpreter> getAssociatedInterpreter(const std::string& interpreterName) = 0;
 
          //-----------------------------------------------------
          ///\brief               Unload an interpreter (do nothing if interpreter not loaded)

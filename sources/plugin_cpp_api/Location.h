@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/ILocation.h>
-#include <toPlugin.pb.h>
+#include <plugin_IPC/toPlugin.pb.h>
 
 namespace plugin_cpp_api
 {

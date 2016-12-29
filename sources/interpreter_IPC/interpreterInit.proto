@@ -22,6 +22,5 @@ message Information {
 
 message Init {
 	Information interpreterInformation = 1;
-	string dataPath = 2;
 }
 

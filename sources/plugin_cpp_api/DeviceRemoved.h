@@ -1,5 +1,5 @@
 #pragma once
-#include <toPlugin.pb.h>
+#include <plugin_IPC/toPlugin.pb.h>
 #include <shared/plugin/yPluginApi/IDeviceRemoved.h>
 
 

@@ -7,16 +7,16 @@ namespace shared
       namespace yInterpreterApi
       {
          //-----------------------------------------------------
-         ///\brief Interface for a save script content operation
+         ///\brief Interface for a save script content request
          //-----------------------------------------------------
-         class ISaveScriptContent
+         class ISaveScriptContentRequest
          {
          public:
 
             //-----------------------------------------------------
             ///\brief Destructor
             //-----------------------------------------------------
-            virtual ~ISaveScriptContent()
+            virtual ~ISaveScriptContentRequest()
             {
             }
 

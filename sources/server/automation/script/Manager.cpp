@@ -13,6 +13,7 @@
 #include "Properties.h"
 #include "tools/SupportedPlatformsChecker.h"
 #include <shared/process/Logger.h>
+#include <server/automation/Factory.h>
 
 namespace automation
 {
@@ -27,6 +28,7 @@ namespace automation
                          boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                          boost::shared_ptr<shared::ILocation> location)
          : m_pathProvider(pathProvider),
+           m_factory(boost::make_shared<automation::script::CFactory>(m_pathProvider)),
            m_pluginGateway(pluginGateway),
            m_configurationManager(configurationManager),
            m_dbAcquisitionRequester(dbAcquisitionRequester),
@@ -47,16 +49,16 @@ namespace automation
 
          for (const auto& interpreterDirectory : findInterpreterDirectories())
          {
-            auto interperterKeyName = interpreterDirectory.filename().string();
-            if (m_loadedInterpreters.find(interperterKeyName) == m_loadedInterpreters.end())
+            auto interpreterKeyName = interpreterDirectory.filename().string();
+            if (m_loadedInterpreters.find(interpreterKeyName) == m_loadedInterpreters.end())
             {
                // Not already loaded
 
                // Check if compatible with current platform
                try
                {
-                  if (isInterpreterCompatibleWithPlatform(interperterKeyName))
-                     m_loadedInterpreters[interperterKeyName] = boost::make_shared<CInterpreterLibrary>(toLibraryPath(interpreterDirectory.filename().string()));
+                  if (isInterpreterCompatibleWithPlatform(interpreterKeyName))
+                     m_loadedInterpreters[interpreterKeyName] = m_factory->createInstance(interpreterDirectory.filename());
                }
                catch (shared::exception::CInvalidParameter& e)
                {
@@ -81,14 +83,6 @@ namespace automation
          }
 
          return tools::CSupportedPlatformsChecker::isSupported(container.get<shared::CDataContainer>("supportedPlatforms"));
-      }
-
-      boost::filesystem::path CManager::toLibraryPath(const std::string& interpreterName) const
-      {
-         auto path(m_pathProvider.scriptInterpretersPath());
-         path /= interpreterName;
-         path /= shared::CDynamicLibrary::ToFileName(interpreterName);
-         return path;
       }
 
       std::vector<boost::filesystem::path> CManager::findInterpreterDirectories() const
@@ -144,12 +138,14 @@ namespace automation
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
 
-         std::map<std::string, boost::shared_ptr<IInterpreterLibrary>>::const_iterator interpreter = m_loadedInterpreters.find(interpreterName);
+         const auto interpreter = m_loadedInterpreters.find(interpreterName);
          if (interpreter != m_loadedInterpreters.end())
             m_loadedInterpreters.erase(interpreter);
+
+         //TODO attendre l'arrêt de l'interpréteur ?
       }
 
-      boost::shared_ptr<shared::script::IInterpreter> CManager::getAssociatedInterpreter(const std::string& interpreterName)
+      boost::shared_ptr<IInstance> CManager::getAssociatedInterpreter(const std::string& interpreterName)
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
 

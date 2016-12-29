@@ -248,6 +248,9 @@ set(YADOMS_SRC
 	server/dateTime/DateTimeNotifier.h
 	server/dateTime/DateTimeNotifier.cpp
    
+	server/automation/Factory.h
+	server/automation/Factory.cpp
+	server/automation/IFactory.h
 	server/automation/IRule.h
 	server/automation/IRuleManager.h
 	server/automation/IRuleStartErrorObserver.h
@@ -261,6 +264,17 @@ set(YADOMS_SRC
 	server/automation/RuleManager.h
 	server/automation/RuleManager.cpp
    
+	server/automation/interpreter/IInstance.h
+	server/automation/interpreter/Instance.h
+	server/automation/interpreter/Instance.cpp
+	server/automation/interpreter/IIpcAdapter.h
+	server/automation/interpreter/IpcAdapter.h
+	server/automation/interpreter/IpcAdapter.cpp
+
+	server/automation/interpreter/serializers/IInformation.h
+	server/automation/interpreter/serializers/Information.h
+	server/automation/interpreter/serializers/Information.cpp
+   
 	server/automation/script/DayLightProvider.h
 	server/automation/script/DayLightProvider.cpp
 	server/automation/script/GeneralInfo.h
@@ -268,10 +282,7 @@ set(YADOMS_SRC
 	server/automation/script/IDayLightProvider.h
 	server/automation/script/IManager.h
 	server/automation/script/IGeneralInfo.h
-	server/automation/script/IInterpreterLibrary.h
 	server/automation/script/InterpreterNotFound.hpp
-	server/automation/script/InterpreterLibrary.h
-	server/automation/script/InterpreterLibrary.cpp
 	server/automation/script/IProperties.h
 	server/automation/script/Manager.h
 	server/automation/script/Manager.cpp
@@ -562,6 +573,8 @@ set(YADOMS_SRC
 source_group(server server/*.*)
 source_group(server\\authentication  server/authentication/*.*)
 source_group(server\\automation  server/automation/*.*)
+source_group(server\\automation\\interpreter  server/automation/interpreter/*.*)
+source_group(server\\automation\\interpreter\\serializers server/automation/interpreter/serializers/*.* )
 source_group(server\\automation\\script  server/automation/script/*.*)
 source_group(server\\communication  server/communication/*.*)
 source_group(server\\communication\\callback  server/communication/callback/*.*)
@@ -905,6 +918,7 @@ set(YADOMS_INCL_DIR
 	${SHARED_INCL_DIR}
 	${PROTOBUF_INCLUDE_DIRS}
 	${plugin_IPC_INCLUDE_DIRS}
+	${interpreter_IPC_INCLUDE_DIRS}
 )
 
 set(YADOMS_ALL_INCL_DIR
@@ -914,12 +928,12 @@ set(YADOMS_ALL_INCL_DIR
 	${Poco_INCLUDE_DIRS}
 )
 
-set_property( TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
+set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 
 ##################################################################################################
 ## Link
 ##################################################################################################
-target_link_libraries(yadoms yadoms-shared plugin_IPC ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
+target_link_libraries(yadoms yadoms-shared plugin_IPC interpreter_IPC ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
 
 ##################################################################################################
 ## Manifest

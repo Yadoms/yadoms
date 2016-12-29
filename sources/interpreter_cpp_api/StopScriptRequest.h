@@ -1,5 +1,5 @@
 #pragma once
-#include <toInterpreter.pb.h>
+#include <interpreter_IPC/toInterpreter.pb.h>
 #include <shared/script/yInterpreterApi/IStopScriptRequest.h>
 
 namespace interpreter_cpp_api

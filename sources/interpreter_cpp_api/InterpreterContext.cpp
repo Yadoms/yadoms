@@ -115,8 +115,8 @@ namespace interpreter_cpp_api
 
       try
       {
-         const auto sendMessageQueueId(m_commandLine->yInterpreterApiAccessorId() + ".plugin_IPC.toYadoms");
-         const auto receiveMessageQueueId(m_commandLine->yInterpreterApiAccessorId() + ".plugin_IPC.toPlugin");
+         const auto sendMessageQueueId(m_commandLine->yInterpreterApiAccessorId() + ".interpreter_IPC.toYadoms");
+         const auto receiveMessageQueueId(m_commandLine->yInterpreterApiAccessorId() + ".interpreter_IPC.toInterpreter");
 
          std::cout << "Opening message queues id " << m_commandLine->yInterpreterApiAccessorId() << std::endl;
 

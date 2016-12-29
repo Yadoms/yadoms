@@ -74,7 +74,7 @@ namespace shared
                //-----------------------------------------------------
                ///\brief Yadoms requests to save the script content
                ///\usage Required
-               ///\note Data : a boost::shared_ptr<yApi::ISaveScriptContent> object containing the request
+               ///\note Data : a boost::shared_ptr<yApi::ISaveScriptContentRequest> object containing the request
                ///\note Interpreter must process the specified request
                //-----------------------------------------------------
                kEventSaveScriptContent,
@@ -82,7 +82,7 @@ namespace shared
                //-----------------------------------------------------
                ///\brief Yadoms requests to start a script
                ///\usage Required
-               ///\note Data : a boost::shared_ptr<yApi::ISaveScriptContent> object containing the request
+               ///\note Data : a boost::shared_ptr<yApi::IStartScriptRequest> object containing the request
                ///\note Interpreter must process the specified request
                //-----------------------------------------------------
                kEventStartScript,
@@ -90,7 +90,7 @@ namespace shared
                //-----------------------------------------------------
                ///\brief Yadoms requests to stop a script
                ///\usage Required
-               ///\note Data : a boost::shared_ptr<yApi::ISaveScriptContent> object containing the request
+               ///\note Data : a boost::shared_ptr<yApi::IStopScriptRequest> object containing the request
                ///\note Interpreter must process the specified request
                //-----------------------------------------------------
                kEventStopScript,
@@ -131,15 +131,6 @@ namespace shared
             ///\return The current plugin information
             //-----------------------------------------------------      
             virtual boost::shared_ptr<const IInformation> getInformation() const = 0;
-
-            //-----------------------------------------------------
-            /// \brief	    Get the interpreter instance data path
-            /// \return     The interpreter instance data path (folder)
-            /// \note       This folder can be used by interpreter to store any data it needs.
-            ///             This folder is unique per each interpreter instance.
-            ///             Note that this is folder is not backuped.
-            //-----------------------------------------------------      
-            virtual const boost::filesystem::path& getDataPath() const = 0;
 
             //-----------------------------------------------------
             ///\brief Get the event handler associated to the interpreter. The event handler is used

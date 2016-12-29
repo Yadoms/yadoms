@@ -237,7 +237,7 @@ set(SHARED_LIB_SRC
    shared/script/yInterpreterApi/IAvalaibleRequest.h
    shared/script/yInterpreterApi/IInformation.h
    shared/script/yInterpreterApi/ILoadScriptContentRequest.h
-   shared/script/yInterpreterApi/ISaveScriptContent.h
+   shared/script/yInterpreterApi/ISaveScriptContentRequest.h
    shared/script/yInterpreterApi/IStartScriptRequest.h
    shared/script/yInterpreterApi/IStopScriptRequest.h
    shared/script/yInterpreterApi/IYInterpreterApi.h

@@ -1,10 +1,10 @@
 #include "stdafx.h"
-#include "SaveScriptContent.h"
+#include "SaveScriptContentRequest.h"
 
 
 namespace interpreter_cpp_api
 {
-   CSaveScriptContent::CSaveScriptContent(const interpreter_IPC::toInterpreter::SaveScriptContent& msg,
+   CSaveScriptContentRequest::CSaveScriptContentRequest(const interpreter_IPC::toInterpreter::SaveScriptContent& msg,
                                           boost::function0<void> sucessCallback,
                                           boost::function1<void, const std::string&> errorCallback)
       : m_sucessCallback(sucessCallback),
@@ -14,26 +14,26 @@ namespace interpreter_cpp_api
    {
    }
 
-   CSaveScriptContent::~CSaveScriptContent()
+   CSaveScriptContentRequest::~CSaveScriptContentRequest()
    {
    }
 
-   void CSaveScriptContent::sendSuccess()
+   void CSaveScriptContentRequest::sendSuccess()
    {
       m_sucessCallback();
    }
 
-   void CSaveScriptContent::sendError(const std::string& errorMessage)
+   void CSaveScriptContentRequest::sendError(const std::string& errorMessage)
    {
       m_errorCallback(errorMessage);
    }
 
-   const std::string& CSaveScriptContent::getScriptPath()
+   const std::string& CSaveScriptContentRequest::getScriptPath()
    {
       return m_scriptPath;
    }
 
-   const std::string& CSaveScriptContent::getScriptContent()
+   const std::string& CSaveScriptContentRequest::getScriptContent()
    {
       return m_scriptContent;
    }

@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "ApiImplementation.h"
 #include <shared/DataContainer.h>
-#include <toInterpreter.pb.h>
-#include <toYadoms.pb.h>
+#include <interpreter_IPC/toInterpreter.pb.h>
+#include <interpreter_IPC/toYadoms.pb.h>
 #include "AvalaibleRequest.h"
 #include "LoadScriptContentRequest.h"
-#include "SaveScriptContent.h"
+#include "SaveScriptContentRequest.h"
 #include "Information.h"
 #include "StartScriptRequest.h"
 #include "StopScriptRequest.h"
@@ -178,7 +178,6 @@ namespace interpreter_cpp_api
    void CApiImplementation::processInit(const interpreter_IPC::toInterpreter::Init& msg)
    {
       m_pluginInformation = boost::make_shared<CInformation>(boost::make_shared<const interpreter_IPC::toInterpreter::Information>(msg.interpreterinformation()));
-      m_dataPath = boost::make_shared<const boost::filesystem::path>(msg.datapath());
       setInitialized();
    }
 
@@ -237,19 +236,19 @@ namespace interpreter_cpp_api
 
    void CApiImplementation::processSaveScriptContent(const interpreter_IPC::toInterpreter::SaveScriptContent& msg)
    {
-      boost::shared_ptr<const shared::script::yInterpreterApi::ISaveScriptContent> command = boost::make_shared<CSaveScriptContent>(msg,
-                                                                                                                                    [&]()
-                                                                                                                                    {
-                                                                                                                                       interpreter_IPC::toYadoms::msg ans;
-                                                                                                                                       ans.mutable_savescriptcontentanswer();
-                                                                                                                                       send(ans);
-                                                                                                                                    },
-                                                                                                                                    [&](const std::string& r)
-                                                                                                                                    {
-                                                                                                                                       interpreter_IPC::toYadoms::msg ans;
-                                                                                                                                       ans.set_error(r);
-                                                                                                                                       send(ans);
-                                                                                                                                    });
+      boost::shared_ptr<const shared::script::yInterpreterApi::ISaveScriptContentRequest> command = boost::make_shared<CSaveScriptContentRequest>(msg,
+                                                                                                                                                  [&]()
+                                                                                                                                                  {
+                                                                                                                                                     interpreter_IPC::toYadoms::msg ans;
+                                                                                                                                                     ans.mutable_savescriptcontentanswer();
+                                                                                                                                                     send(ans);
+                                                                                                                                                  },
+                                                                                                                                                  [&](const std::string& r)
+                                                                                                                                                  {
+                                                                                                                                                     interpreter_IPC::toYadoms::msg ans;
+                                                                                                                                                     ans.set_error(r);
+                                                                                                                                                     send(ans);
+                                                                                                                                                  });
       m_pluginEventHandler.postEvent(kEventSaveScriptContent, command);
    }
 
@@ -294,7 +293,7 @@ namespace interpreter_cpp_api
 
    void CApiImplementation::setInitialized()
    {
-      if (!!m_pluginInformation && !!m_dataPath)
+      if (!!m_pluginInformation)
       {
          std::unique_lock<std::mutex> lock(m_initializationConditionMutex);
          m_initialized = true;
@@ -313,14 +312,6 @@ namespace interpreter_cpp_api
    shared::event::CEventHandler& CApiImplementation::getEventHandler()
    {
       return m_pluginEventHandler;
-   }
-
-   const boost::filesystem::path& CApiImplementation::getDataPath() const
-   {
-      if (!m_dataPath)
-         throw std::runtime_error("Interpreter instance data path not available");
-
-      return *m_dataPath;
    }
 } // namespace interpreter_cpp_api	
 

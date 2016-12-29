@@ -1,16 +1,16 @@
 #pragma once
-#include <toInterpreter.pb.h>
-#include <shared/script/yInterpreterApi/ISaveScriptContent.h>
+#include <interpreter_IPC/toInterpreter.pb.h>
+#include <shared/script/yInterpreterApi/ISaveScriptContentRequest.h>
 
 namespace interpreter_cpp_api
 {
-   class CSaveScriptContent : public shared::script::yInterpreterApi::ISaveScriptContent
+   class CSaveScriptContentRequest : public shared::script::yInterpreterApi::ISaveScriptContentRequest
    {
    public:
-      CSaveScriptContent(const interpreter_IPC::toInterpreter::SaveScriptContent& msg,
-                         boost::function0<void> sucessCallback,
-                         boost::function1<void, const std::string&> errorCallback);
-      virtual ~CSaveScriptContent();
+      CSaveScriptContentRequest(const interpreter_IPC::toInterpreter::SaveScriptContent& msg,
+                                boost::function0<void> sucessCallback,
+                                boost::function1<void, const std::string&> errorCallback);
+      virtual ~CSaveScriptContentRequest();
 
       // ILoadScriptContentRequest Implementation
       void sendSuccess() override;

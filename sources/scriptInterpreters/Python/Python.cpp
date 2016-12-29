@@ -7,7 +7,7 @@
 #include <shared/process/ProcessException.hpp>
 #include <shared/script/yInterpreterApi/IAvalaibleRequest.h>
 #include <shared/script/yInterpreterApi/ILoadScriptContentRequest.h>
-#include <shared/script/yInterpreterApi/ISaveScriptContent.h>
+#include <shared/script/yInterpreterApi/ISaveScriptContentRequest.h>
 #include <shared/script/yInterpreterApi/IStartScriptRequest.h>
 #include <shared/script/yInterpreterApi/IStopScriptRequest.h>
 
@@ -66,7 +66,7 @@ void CPython::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
 
       case yApi::IYInterpreterApi::kEventSaveScriptContent:
          {
-            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::ISaveScriptContent>>();
+            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::ISaveScriptContentRequest>>();
             try
             {
                saveScriptContent(request->getScriptPath(),

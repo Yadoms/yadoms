@@ -1,7 +1,7 @@
 #pragma once
 
 #include <shared/plugin/information/IInformation.h>
-#include <pluginInit.pb.h>
+#include <plugin_IPC/pluginInit.pb.h>
 
 namespace plugin_cpp_api
 {

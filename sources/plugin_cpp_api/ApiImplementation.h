@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <plugin_IPC/plugin_IPC.h>
+#include <plugin_IPC/toYadoms.pb.h>
+#include <plugin_IPC/toPlugin.pb.h>
 
 
 namespace plugin_cpp_api

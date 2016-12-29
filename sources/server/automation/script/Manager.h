@@ -10,10 +10,11 @@
 #include "IGeneralInfo.h"
 #include <IPathProvider.h>
 #include <shared/ILocation.h>
+#include <server/automation/IFactory.h>
 
 namespace automation
 {
-   namespace script
+   namespace script //TODO redescendre le mangager d'un niveau ?
    {
       //-----------------------------------------------------
       ///\brief The script runner manager
@@ -77,13 +78,6 @@ namespace automation
          bool isInterpreterCompatibleWithPlatform(const std::string& interpreterName) const;
 
          //--------------------------------------------------------------
-         /// \brief        Return full path of interpreter library, from interpreter name
-         /// \param[in] interpreterName Interpreter name (ie "python")
-         /// \return       Interpreter library full path (ie "scriptInterperters/python/python.dll")
-         //--------------------------------------------------------------
-         boost::filesystem::path toLibraryPath(const std::string& interpreterName) const;
-
-         //--------------------------------------------------------------
          /// \brief        Returns all interpreter directories installed
          /// \return       a list of all found interpreter directories
          /// \note         This function just lists interpreter directory names.
@@ -103,6 +97,11 @@ namespace automation
          ///\brief               The Yadoms paths provider
          //-----------------------------------------------------
          const IPathProvider& m_pathProvider;
+
+         //-----------------------------------------------------
+         ///\brief               The Interpreters factory
+         //-----------------------------------------------------
+         boost::shared_ptr<IFactory> m_factory;
 
          //-----------------------------------------------------
          ///\brief               The plugin access (to send commands to plugins)
@@ -136,9 +135,9 @@ namespace automation
 
          //-----------------------------------------------------
          ///\brief               List of loaded interpreters
-         ///\details key is the library file name (without path and extension)
+         ///\details key is the interpreter file name (without path and extension)
          //-----------------------------------------------------
-         std::map<std::string, boost::shared_ptr<IInterpreterLibrary>> m_loadedInterpreters;
+         std::map<std::string, boost::shared_ptr<IInstance>> m_loadedInterpreters;
 
          //--------------------------------------------------------------
          /// \brief			      The interpreters map mutex

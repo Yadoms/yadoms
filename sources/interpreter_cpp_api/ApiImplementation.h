@@ -1,8 +1,8 @@
 #pragma once
 #include <shared/script/yInterpreterApi/IYInterpreterApi.h>
 #include <shared/script/yInterpreterApi/IInformation.h>
-#include <toInterpreter.pb.h>
-#include <toYadoms.pb.h>
+#include <interpreter_IPC/toInterpreter.pb.h>
+#include <interpreter_IPC/toYadoms.pb.h>
 
 
 namespace interpreter_cpp_api
@@ -30,7 +30,6 @@ namespace interpreter_cpp_api
       // shared::plugin::yInterpreterApi::IYInterpreterApi implementation
       boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> getInformation() const override;
       shared::event::CEventHandler& getEventHandler() override;
-      const boost::filesystem::path& getDataPath() const override;
       // [END] shared::plugin::yInterpreterApi::IYInterpreterApi implementation
 
       void onReceive(boost::shared_ptr<const unsigned char[]> message, size_t messageSize);
@@ -79,7 +78,6 @@ namespace interpreter_cpp_api
       mutable boost::function1<bool, const interpreter_IPC::toInterpreter::msg&> m_onReceiveHook;
 
       boost::shared_ptr<shared::script::yInterpreterApi::IInformation> m_pluginInformation;
-      boost::shared_ptr<const boost::filesystem::path> m_dataPath;
    };
 } // namespace interpreter_cpp_api	
 
