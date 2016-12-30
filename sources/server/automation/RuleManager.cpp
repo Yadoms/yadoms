@@ -2,35 +2,32 @@
 #include "RuleManager.h"
 #include "RuleStateHandler.h"
 #include "database/IRuleRequester.h"
+#include "interpreter/Manager.h"
 #include "Rule.h"
 #include <shared/exception/EmptyResult.hpp>
 #include <shared/Log.h>
 #include "RuleException.hpp"
-#include "Manager.h"
+#include "script/GeneralInfo.h"
+#include "script/Properties.h"
 
 namespace automation
 {
    CRuleManager::CRuleManager(const IPathProvider& pathProvider,
-                              boost::shared_ptr<database::IRuleRequester> dbRequester,
-                              boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-                              boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
-                              boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
-                              boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
-                              boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
-                              boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
-                              boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
-                              boost::shared_ptr<shared::ILocation> location)
-      : m_ruleRequester(dbRequester),
+      boost::shared_ptr<database::IDataProvider> dataProvider,
+      boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+      boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
+      boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
+      boost::shared_ptr<shared::ILocation> location)
+      : m_pluginGateway(pluginGateway),
+        m_dbAcquisitionRequester(dataProvider->getAcquisitionRequester()),
+        m_dbDeviceRequester(dataProvider->getDeviceRequester()),
+        m_keywordAccessLayer(keywordAccessLayer),
+        m_dbRecipientRequester(dataProvider->getRecipientRequester()),
+        m_generalInfo(boost::make_shared<script::CGeneralInfo>(location)),
+        m_ruleRequester(dataProvider->getRuleRequester()),
         m_ruleEventHandler(boost::make_shared<shared::event::CEventHandler>()),
-        m_scriptManager(boost::make_shared<CManager>(pathProvider,
-                                                     pluginGateway,
-                                                     configurationManager,
-                                                     dbAcquisitionRequester,
-                                                     dbDeviceRequester,
-                                                     keywordAccessLayer,
-                                                     dbRecipientRequester,
-                                                     location)),
-        m_ruleStateHandler(boost::make_shared<CRuleStateHandler>(dbRequester,
+        m_interpreterManager(boost::make_shared<interpreter::CManager>(pathProvider)),
+        m_ruleStateHandler(boost::make_shared<CRuleStateHandler>(m_ruleRequester,
                                                                  eventLogger,
                                                                  m_ruleEventHandler)),
         m_yadomsShutdown(false),
@@ -93,7 +90,7 @@ namespace automation
 
    std::vector<std::string> CRuleManager::getAvailableInterpreters()
    {
-      return m_scriptManager->getAvailableInterpreters();
+      return m_interpreterManager->getAvailableInterpreters();
    }
 
    void CRuleManager::startRule(int ruleId)
@@ -110,7 +107,15 @@ namespace automation
          YADOMS_LOG(information) << "Start rule #" << ruleId;
 
          boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
-         auto newRule(boost::make_shared<CRule>(ruleData, m_scriptManager, m_ruleStateHandler));
+         auto newRule(boost::make_shared<CRule>(ruleData,
+                                                m_interpreterManager,
+                                                m_ruleStateHandler,
+                                                m_pluginGateway,
+                                                m_dbAcquisitionRequester,
+                                                m_dbDeviceRequester,
+                                                m_keywordAccessLayer,
+                                                m_dbRecipientRequester,
+                                                m_generalInfo));
          m_startedRules[ruleId] = newRule;
       }
       catch (shared::exception::CEmptyResult& e)
@@ -229,11 +234,11 @@ namespace automation
       // Add rule in database
       auto ruleId = m_ruleRequester->addRule(ruleData);
 
-      // Get the created rule from the id
-      auto updatedRuleData = m_ruleRequester->getRule(ruleId);
-
       // Create script file
-      m_scriptManager->updateScriptFile(updatedRuleData, code);
+      auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(ruleId)));
+      m_interpreterManager->updateScriptFile(ruleProperties->interpreterName(),
+                                             ruleProperties->scriptPath(),
+                                             code);
 
       // Start the rule
       startRule(ruleId);
@@ -250,8 +255,9 @@ namespace automation
    {
       try
       {
-         auto ruleData(m_ruleRequester->getRule(id));
-         return m_scriptManager->getScriptFile(ruleData);
+         auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id)));
+         return m_interpreterManager->getScriptFile(ruleProperties->interpreterName(),
+                                                    ruleProperties->scriptPath());
       }
       catch (shared::exception::CEmptyResult& e)
       {
@@ -264,8 +270,7 @@ namespace automation
    {
       try
       {
-         auto ruleData(m_ruleRequester->getRule(id));
-         return m_scriptManager->getScriptLogFile(ruleData);
+         return m_interpreterManager->getScriptLogFile(id);
       }
       catch (shared::exception::CEmptyResult& e)
       {
@@ -283,7 +288,7 @@ namespace automation
    {
       try
       {
-         return m_scriptManager->getScriptTemplateFile(interpreterName);
+         return m_interpreterManager->getScriptTemplateFile(interpreterName);
       }
       catch (shared::exception::CEmptyResult& e)
       {
@@ -301,7 +306,8 @@ namespace automation
       m_ruleRequester->updateRule(ruleData);
    }
 
-   void CRuleManager::updateRuleCode(int id, const std::string& code)
+   void CRuleManager::updateRuleCode(int id,
+                                     const std::string& code)
    {
       // If rule was started, must be stopped to update its configuration
       auto ruleWasStarted = isRuleStarted(id);
@@ -309,8 +315,10 @@ namespace automation
          stopRuleAndWaitForStopped(id);
 
       // Update script file
-      auto ruleData(m_ruleRequester->getRule(id));
-      m_scriptManager->updateScriptFile(ruleData, code);
+      auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id)));
+      m_interpreterManager->updateScriptFile(ruleProperties->interpreterName(),
+                                             ruleProperties->scriptPath(),
+                                             code);
 
       // Restart rule
       if (ruleWasStarted)
@@ -330,7 +338,9 @@ namespace automation
          m_ruleRequester->deleteRule(id);
 
          // Remove script file
-         m_scriptManager->deleteScriptFile(ruleData);
+         auto ruleProperties(boost::make_shared<script::CProperties>(ruleData));
+         m_interpreterManager->deleteScriptFile(ruleProperties->interpreterName(),
+                                                ruleProperties->scriptPath());
       }
       catch (shared::exception::CException& e)
       {
@@ -394,7 +404,7 @@ namespace automation
       }
 
       // We can unload the interpreter as it is not used anymore (will be automaticaly re-loaded when needed by a rule)
-      m_scriptManager->unloadInterpreter(interpreterName);
+      m_interpreterManager->unloadInterpreter(interpreterName);
    }
 
    void CRuleManager::deleteAllRulesMatchingInterpreter(const std::string& interpreterName)
@@ -406,7 +416,7 @@ namespace automation
          deleteRule((*interpreterRule)->Id());
 
       // We can unload the interpreter as it is not used anymore (will be automaticaly re-loaded when needed by a rule)
-      m_scriptManager->unloadInterpreter(interpreterName);
+      m_interpreterManager->unloadInterpreter(interpreterName);
    }
 
    void CRuleManager::recordRuleStarted(int ruleId) const

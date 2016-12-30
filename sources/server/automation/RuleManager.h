@@ -6,14 +6,15 @@
 #include "database/IAcquisitionRequester.h"
 #include "database/IDeviceRequester.h"
 #include "database/IRecipientRequester.h"
-#include "../dataAccessLayer/IConfigurationManager.h"
-#include "../dataAccessLayer/IEventLogger.h"
 #include "../dataAccessLayer/IKeywordManager.h"
 #include <IPathProvider.h>
 #include <shared/event/EventHandler.hpp>
 #include <shared/ILocation.h>
-#include "IManager.h"
+#include "interpreter/IManager.h"
 #include <server/database/IRuleRequester.h>
+#include "script/IGeneralInfo.h"
+#include "database/IDataProvider.h"
+#include "dataAccessLayer/IEventLogger.h"
 
 namespace automation
 {
@@ -23,32 +24,12 @@ namespace automation
    class CRuleManager : public IRuleManager
    {
    public:
-      //-----------------------------------------------------
-      ///\brief               Constructor
-      ///\param[in] pathProvider  Yadoms paths provider
-      ///\param[in] dbRequester  Database requester
-      ///\param[in] pluginGateway Plugin access to do actions on plugins
-      ///\param[in] dbAcquisitionRequester  Database acquisition requester
-      ///\param[in] dbDeviceRequester  Database device requester
-      ///\param[in] keywordAccessLayer  Database keyword access layer
-      ///\param[in] dbRecipientRequester  Database recipient requester
-      ///\param[in] configurationManager  Configuration manager (to gain access to Yadoms configuration from rules scripts)
-      ///\param[in] eventLogger  Main event logger
-      ///\param[in] location  The location provider
-      //-----------------------------------------------------
       CRuleManager(const IPathProvider& pathProvider,
-                   boost::shared_ptr<database::IRuleRequester> dbRequester, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-                   boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
-                   boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
+                   boost::shared_ptr<database::IDataProvider> dataProvider,
+                   boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                    boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
-                   boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
-                   boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager,
                    boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
                    boost::shared_ptr<shared::ILocation> location);
-
-      //-----------------------------------------------------
-      ///\brief               Destructor
-      //-----------------------------------------------------
       virtual ~CRuleManager();
 
       // IRuleManager Implementation
@@ -125,45 +106,23 @@ namespace automation
       void ruleEventsThreadDoWork();
 
    private:
-      //-----------------------------------------------------
-      ///\brief               The rule data accessor
-      //-----------------------------------------------------
+      boost::shared_ptr<communication::ISendMessageAsync> m_pluginGateway;
+      boost::shared_ptr<database::IAcquisitionRequester> m_dbAcquisitionRequester;
+      boost::shared_ptr<database::IDeviceRequester> m_dbDeviceRequester;
+      boost::shared_ptr<dataAccessLayer::IKeywordManager> m_keywordAccessLayer;
+      boost::shared_ptr<database::IRecipientRequester> m_dbRecipientRequester;
+      boost::shared_ptr<script::IGeneralInfo> m_generalInfo;
+
       boost::shared_ptr<database::IRuleRequester> m_ruleRequester;
-
-      //-----------------------------------------------------
-      ///\brief               Event handler to manage events on all rules
-      //-----------------------------------------------------
       boost::shared_ptr<shared::event::CEventHandler> m_ruleEventHandler;
-
-      //-----------------------------------------------------
-      ///\brief               The script manager
-      //-----------------------------------------------------
-      boost::shared_ptr<automation::IManager> m_scriptManager;
-
-      //-----------------------------------------------------
-      ///\brief               The rule state handler
-      //-----------------------------------------------------
+      boost::shared_ptr<interpreter::IManager> m_interpreterManager;
       boost::shared_ptr<IRuleStateHandler> m_ruleStateHandler;
-
-      //-----------------------------------------------------
-      ///\brief               Flag indicating that Yadoms is being shutdown, so don't record rules stop in database
-      //-----------------------------------------------------
       bool m_yadomsShutdown;
-
-      //-----------------------------------------------------
-      ///\brief               Thread managing rule asynchronous events
-      //-----------------------------------------------------
       boost::shared_ptr<boost::thread> m_ruleEventsThread;
 
-      //-----------------------------------------------------
-      ///\brief               The started rules list (and its mutex)
-      //-----------------------------------------------------
       std::map<int, boost::shared_ptr<IRule>> m_startedRules;
       mutable boost::recursive_mutex m_startedRulesMutex;
 
-      //-----------------------------------------------------
-      ///\brief               The handlers to notify when a rule stop (potentially several handlers for one rule)
-      //-----------------------------------------------------
       mutable boost::recursive_mutex m_ruleStopNotifiersMutex;
       std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler>>> m_ruleStopNotifiers;
    };

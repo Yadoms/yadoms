@@ -248,17 +248,11 @@ set(YADOMS_SRC
 	server/dateTime/DateTimeNotifier.h
 	server/dateTime/DateTimeNotifier.cpp
    
-	server/automation/Factory.h
-	server/automation/Factory.cpp
-	server/automation/IFactory.h
-	server/automation/IManager.h
 	server/automation/IRule.h
 	server/automation/IRuleManager.h
 	server/automation/IRuleStartErrorObserver.h
 	server/automation/IRuleStateHandler.h
 	server/automation/IRuleThreadHandler.h
-	server/automation/Manager.h
-	server/automation/Manager.cpp
 	server/automation/Rule.h
 	server/automation/Rule.cpp
 	server/automation/RuleException.hpp
@@ -269,9 +263,13 @@ set(YADOMS_SRC
    
 	server/automation/interpreter/AvalaibleRequest.h
 	server/automation/interpreter/AvalaibleRequest.cpp
+	server/automation/interpreter/IFactory.h
+   server/automation/interpreter/Factory.h
+	server/automation/interpreter/Factory.cpp
 	server/automation/interpreter/Information.h
 	server/automation/interpreter/Information.cpp
 	server/automation/interpreter/IInstance.h
+	server/automation/interpreter/IManager.h
 	server/automation/interpreter/Instance.h
 	server/automation/interpreter/Instance.cpp
 	server/automation/interpreter/InstanceStateHandler.h
@@ -281,6 +279,8 @@ set(YADOMS_SRC
 	server/automation/interpreter/IpcAdapter.cpp
 	server/automation/interpreter/LoadScriptContentRequest.h
 	server/automation/interpreter/LoadScriptContentRequest.cpp
+	server/automation/interpreter/Manager.h
+	server/automation/interpreter/Manager.cpp
 	server/automation/interpreter/SaveScriptContentRequest.h
 	server/automation/interpreter/SaveScriptContentRequest.cpp
 	server/automation/interpreter/yInterpreterApiImplementation.h

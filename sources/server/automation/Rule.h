@@ -1,9 +1,17 @@
 #pragma once
 #include "IRule.h"
-#include "IManager.h"
-#include "server/database/entities/Entities.h"
+#include "database/entities/Entities.h"
 #include "IRuleStateHandler.h"
-#include <shared/shared/process/IProcess.h>
+#include <shared/process/IProcess.h>
+#include "interpreter/IManager.h"
+#include <shared/process/IProcessObserver.h>
+#include <shared/script/yScriptApi/IYScriptApi.h>
+#include "script/IGeneralInfo.h"
+#include "dataAccessLayer/IKeywordManager.h"
+#include "database/IRecipientRequester.h"
+#include "database/IAcquisitionRequester.h"
+#include "database/IDeviceRequester.h"
+#include "communication/ISendMessageAsync.h"
 
 namespace automation
 {
@@ -13,19 +21,15 @@ namespace automation
    class CRule : public IRule
    {
    public:
-      //-----------------------------------------------------
-      ///\brief               Constructor
-      ///\param[in] ruleData           Rule data (ID, name, conditions, actions...)
-      ///\param[in] scriptManager      The script manager
-      ///\param[in] ruleStateHandler   The rule state handler
-      //-----------------------------------------------------
       CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
-            boost::shared_ptr<IManager> scriptManager,
-            boost::shared_ptr<IRuleStateHandler> ruleStateHandler);
-
-      //-----------------------------------------------------
-      ///\brief               Destructor
-      //-----------------------------------------------------
+            boost::shared_ptr<interpreter::IManager> interpreterManager,
+            boost::shared_ptr<IRuleStateHandler> ruleStateHandler,
+            boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+            boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+            boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
+            boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
+            boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
+            boost::shared_ptr<script::IGeneralInfo> generalInfo);
       virtual ~CRule();
 
       // IRule Implementation
@@ -37,6 +41,22 @@ namespace automation
       ///\brief               Start the rule
       //-----------------------------------------------------
       void start();
+
+      //-----------------------------------------------------
+      ///\brief               Create the script context (IYScriptApi implementation)
+      ///\param[in] scriptLogger The logger used for rule
+      ///\return              A script context instance
+      //-----------------------------------------------------
+      boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger);
+
+      //-----------------------------------------------------
+      ///\brief               Create the stop notifier
+      ///\param[in] ruleStateHandler   The global state handler
+      ///\param[in] ruleId    The rule ID
+      ///\return              A stop notifier instance
+      //-----------------------------------------------------
+      boost::shared_ptr<shared::process::IProcessObserver> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler,
+                                                                              int ruleId) const;
 
    private:
       //-----------------------------------------------------
@@ -52,7 +72,7 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               The script manager
       //-----------------------------------------------------
-      boost::shared_ptr<IManager> m_scriptManager;
+      boost::shared_ptr<interpreter::IManager> m_interpreterManager;
 
       //-----------------------------------------------------
       ///\brief               The script process
@@ -63,6 +83,13 @@ namespace automation
       ///\brief               The rule state handler
       //-----------------------------------------------------
       boost::shared_ptr<IRuleStateHandler> m_ruleStateHandler;
+
+      boost::shared_ptr<communication::ISendMessageAsync> m_pluginGateway;
+      boost::shared_ptr<database::IAcquisitionRequester> m_dbAcquisitionRequester;
+      boost::shared_ptr<database::IDeviceRequester> m_dbDeviceRequester;
+      boost::shared_ptr<dataAccessLayer::IKeywordManager> m_keywordAccessLayer;
+      boost::shared_ptr<database::IRecipientRequester> m_dbRecipientRequester;
+      boost::shared_ptr<script::IGeneralInfo> m_generalInfo;
    };
 } // namespace automation	
 

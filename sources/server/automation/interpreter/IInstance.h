@@ -19,7 +19,9 @@ namespace automation
          //-----------------------------------------------------
          ///\brief               Destructor
          //-----------------------------------------------------
-         virtual ~IInstance() {}
+         virtual ~IInstance()
+         {
+         }
 
          //-----------------------------------------------------
          ///\brief               Get information about the interpreter associated with this instance
@@ -45,10 +47,10 @@ namespace automation
          ///\param[in] scriptPath      The script path where to save
          ///\param[in] scriptContent   The script content to save
          //-----------------------------------------------------    
-         virtual void saveScriptContent(std::string script_path,
-            const std::string scriptContent) = 0;
+         virtual void saveScriptContent(const std::string& scriptPath,
+                                        const std::string& scriptContent) const = 0;
       };
    }
 } // namespace automation::interpreter
-	
-	
+
+

@@ -14,6 +14,7 @@
 #include "internalPlugin/Instance.h"
 #include "internalPlugin/Information.h"
 #include <shared/process/NativeExecutableCommandLine.h>
+#include <shared/process/ProcessDeprecated.h>
 
 
 namespace pluginSystem
@@ -162,8 +163,8 @@ namespace pluginSystem
       try
       {
          return boost::make_shared<shared::process::CProcessDeprecated>(commandLine,
-                                                              instanceStateHandler,
-                                                              logger);
+                                                                        instanceStateHandler,
+                                                                        logger);
       }
       catch (shared::process::CProcessException& e)
       {

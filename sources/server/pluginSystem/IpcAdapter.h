@@ -1,7 +1,8 @@
 #pragma once
 #include "IIpcAdapter.h"
 #include <shared/communication/MessageQueueRemover.hpp>
-#include <plugin_IPC/plugin_IPC.h>
+#include <plugin_IPC/toYadoms.pb.h>
+#include <plugin_IPC/toPlugin.pb.h>
 #include "yPluginApiImplementation.h"
 
 namespace pluginSystem

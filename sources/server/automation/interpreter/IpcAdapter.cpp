@@ -182,13 +182,8 @@ namespace automation
             }
          }
 
-         // Process message
-         switch (toYadomsProtoBuffer.OneOf_case())
-         {
-            // No request from interpreter to Yadoms
-         default:
-            throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
-         }
+         // No request from interpreter to Yadoms, must never come here
+         throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
       }
 
       void CIpcAdapter::postStopRequest()
@@ -207,6 +202,59 @@ namespace automation
          serializers::CInformation(information).toPb(message->mutable_interpreterinformation());
 
          send(msg);
+      }
+
+      void CIpcAdapter::postAvalaibleRequest(boost::shared_ptr<shared::script::yInterpreterApi::IAvalaibleRequest> request)
+      {
+         interpreter_IPC::toInterpreter::msg req;
+         req.mutable_avalaiblerequest();
+         auto avalaible = false;
+
+         try
+         {
+            send(req,
+                 [&](const interpreter_IPC::toYadoms::msg& ans) -> bool
+                 {
+                    return ans.has_avalaibleanswer();
+                 },
+                 [&](const interpreter_IPC::toYadoms::msg& ans) -> void
+                 {
+                    avalaible = ans.avalaibleanswer().avalaible();
+                 });
+         }
+         catch (std::exception& e)
+         {
+            request->sendError((boost::format("Interpreter doesn't answer to avalaible request : %1%") % e.what()).str());
+         }
+
+         request->sendSuccess(avalaible);
+      }
+
+      void CIpcAdapter::postLoadScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ILoadScriptContentRequest> request)
+      {
+         interpreter_IPC::toInterpreter::msg req;
+         auto message = req.mutable_loadscriptcontentrequest();
+         message->set_scriptpath(request->getScriptPath());
+         std::string content;
+
+         try
+         {
+            send(req,
+                 [&](const interpreter_IPC::toYadoms::msg& ans) -> bool
+                 {
+                    return ans.has_loadscriptcontentanswer();
+                 },
+                 [&](const interpreter_IPC::toYadoms::msg& ans) -> void
+                 {
+                    content = ans.loadscriptcontentanswer().content();
+                 });
+         }
+         catch (std::exception& e)
+         {
+            request->sendError((boost::format("Interpreter doesn't answer to load script content request : %1%") % e.what()).str());
+         }
+
+         request->sendSuccess(content);
       }
    }
 } // namespace automation::interpreter

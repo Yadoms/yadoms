@@ -83,16 +83,11 @@ void CSupervisor::run()
       auto pluginGateway(boost::make_shared<communication::CPluginGateway>(pDataProvider, dal->getAcquisitionHistorizer(), pluginManager));
 
 
-
       // Start automation rules manager
       boost::shared_ptr<automation::IRuleManager> automationRulesManager(boost::make_shared<automation::CRuleManager>(m_pathProvider,
-                                                                                                                      pDataProvider->getRuleRequester(),
+                                                                                                                      pDataProvider,
                                                                                                                       pluginGateway,
-                                                                                                                      pDataProvider->getAcquisitionRequester(),
-                                                                                                                      pDataProvider->getDeviceRequester(),
                                                                                                                       dal->getKeywordManager(),
-                                                                                                                      pDataProvider->getRecipientRequester(),
-                                                                                                                      dal->getConfigurationManager(),
                                                                                                                       dal->getEventLogger(),
                                                                                                                       location));
       shared::CServiceLocator::instance().push<automation::IRuleManager>(automationRulesManager);
