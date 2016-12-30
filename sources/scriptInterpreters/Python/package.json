@@ -1,5 +1,4 @@
 {
-  "type": "python",
   "name": "Python",
   "description": "Python 2.7.x rules interpreter",
   "version": "0.1",

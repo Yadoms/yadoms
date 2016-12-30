@@ -1,8 +1,9 @@
 #pragma once
 #include "IRule.h"
-#include "script/IManager.h"
+#include "IManager.h"
 #include "server/database/entities/Entities.h"
 #include "IRuleStateHandler.h"
+#include <shared/shared/process/IProcess.h>
 
 namespace automation
 {
@@ -19,7 +20,7 @@ namespace automation
       ///\param[in] ruleStateHandler   The rule state handler
       //-----------------------------------------------------
       CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
-            boost::shared_ptr<script::IManager> scriptManager,
+            boost::shared_ptr<IManager> scriptManager,
             boost::shared_ptr<IRuleStateHandler> ruleStateHandler);
 
       //-----------------------------------------------------
@@ -51,7 +52,7 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               The script manager
       //-----------------------------------------------------
-      boost::shared_ptr<script::IManager> m_scriptManager;
+      boost::shared_ptr<IManager> m_scriptManager;
 
       //-----------------------------------------------------
       ///\brief               The script process

@@ -8,8 +8,8 @@
 #include "SQLiteResultHandler.h"
 #include "SQLiteTableCreationScriptProvider.h"
 #include "SQLiteQuery.h"
-#include <shared/shared/Log.h>
-#include <shared/shared/exception/NullReference.hpp>
+#include <shared/Log.h>
+#include <shared/exception/NullReference.hpp>
 #include "i18n/ClientStrings.h"
 
 namespace database

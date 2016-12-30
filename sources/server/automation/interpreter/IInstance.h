@@ -22,26 +22,31 @@ namespace automation
          virtual ~IInstance() {}
 
          //-----------------------------------------------------
-         ///\brief               Request to stop instance
-         //-----------------------------------------------------
-         virtual void requestStop() = 0;
-
-         //-----------------------------------------------------
-         ///\brief               Kill the instance
-         //-----------------------------------------------------
-         virtual void kill() = 0;
-
-         //-----------------------------------------------------
          ///\brief               Get information about the interpreter associated with this instance
          ///\return              Interpreter information
          //-----------------------------------------------------
          virtual boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> aboutInterpreter() const = 0;
 
-         virtual void postAvalaibleRequest(boost::shared_ptr<shared::script::yInterpreterApi::IAvalaibleRequest> request) = 0;
-         virtual void postLoadScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ILoadScriptContentRequest> request) = 0;
-         virtual void postSaveScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ISaveScriptContentRequest> request) = 0;
-         virtual void postStartScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStartScriptRequest> request) = 0;
-         virtual void postStopScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStopScriptRequest> request) = 0;
+         //-----------------------------------------------------
+         ///\brief               Check if interpreter is fully avalaible
+         ///\return              true if fully avalaible (all needed ressources are working)
+         //-----------------------------------------------------
+         virtual bool isAvalaible() = 0;
+
+         //-----------------------------------------------------
+         ///\brief               Load the script content
+         ///\param[in] scriptPath   The script path to load
+         ///\return              The script content
+         //-----------------------------------------------------         
+         virtual std::string loadScriptContent(const std::string& scriptPath) const = 0;
+
+         //-----------------------------------------------------
+         ///\brief               Save the script content
+         ///\param[in] scriptPath      The script path where to save
+         ///\param[in] scriptContent   The script content to save
+         //-----------------------------------------------------    
+         virtual void saveScriptContent(std::string script_path,
+            const std::string scriptContent) = 0;
       };
    }
 } // namespace automation::interpreter

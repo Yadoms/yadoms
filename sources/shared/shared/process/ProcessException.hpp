@@ -9,7 +9,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	Exception handling for process
       //--------------------------------------------------------------
-      class CProcessException : public shared::exception::CException
+      class [[deprecated("Use std::runtime_error instead")]] CProcessException : public shared::exception::CException
       {
       public:
          //--------------------------------------------------------------

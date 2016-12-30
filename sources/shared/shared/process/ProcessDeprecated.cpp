@@ -1,12 +1,13 @@
 #include "stdafx.h"
-#include "Process.h"
+#include "ProcessDeprecated.h"
+#include "ProcessException.hpp"
 #include <shared/Log.h>
 
 namespace shared
 {
    namespace process
    {
-      CProcess::CProcess(boost::shared_ptr<ICommandLine> commandLine,
+      CProcessDeprecated::CProcessDeprecated(boost::shared_ptr<ICommandLine> commandLine,
                          boost::shared_ptr<IProcessObserver> processObserver,
                          boost::shared_ptr<ILogger> logger)
          : m_commandLine(commandLine),
@@ -18,12 +19,12 @@ namespace shared
          start();
       }
 
-      CProcess::~CProcess()
+      CProcessDeprecated::~CProcessDeprecated()
       {
-         CProcess::kill();
+         CProcessDeprecated::kill();
       }
 
-      void CProcess::start()
+      void CProcessDeprecated::start()
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_processMutex);
 
@@ -54,10 +55,10 @@ namespace shared
 
                auto moduleStdOut = boost::make_shared<Poco::PipeInputStream>(outPipe);
                auto moduleStdErr = boost::make_shared<Poco::PipeInputStream>(errPipe);
-               m_StdOutRedirectingThread = boost::make_shared<boost::thread>(&CProcess::stdOutRedirectWorker,
+               m_StdOutRedirectingThread = boost::make_shared<boost::thread>(&CProcessDeprecated::stdOutRedirectWorker,
                                                                              moduleStdOut,
                                                                              m_logger);
-               m_StdErrRedirectingThread = boost::make_shared<boost::thread>(&CProcess::stdErrRedirectWorker,
+               m_StdErrRedirectingThread = boost::make_shared<boost::thread>(&CProcessDeprecated::stdErrRedirectWorker,
                                                                              moduleStdErr,
                                                                              m_logger,
                                                                              m_lastError);
@@ -68,19 +69,16 @@ namespace shared
          }
          catch (Poco::Exception& ex)
          {
-            auto error = std::string("Unable to start process, ") + ex.what();
-            YADOMS_LOG(error) << error;
-            m_processObserver->onFinish(ex.code(),
-                                        error);
+            throw CProcessException(std::string("Unable to start process, ") + ex.what());
          }
       }
 
-      void CProcess::createProcessObserver()
+      void CProcessDeprecated::createProcessObserver()
       {
-         m_processMonitorThread = boost::make_shared<boost::thread>(&CProcess::monitorThreaded, this);
+         m_processMonitorThread = boost::make_shared<boost::thread>(&CProcessDeprecated::monitorThreaded, this);
       }
 
-      void CProcess::monitorThreaded()
+      void CProcessDeprecated::monitorThreaded()
       {
          if (!!m_processObserver)
             m_processObserver->onStart();
@@ -109,7 +107,7 @@ namespace shared
             m_processObserver->onFinish(m_returnCode, getError());
       }
 
-      void CProcess::kill()
+      void CProcessDeprecated::kill()
       {
          try
          {
@@ -132,17 +130,17 @@ namespace shared
          }
       }
 
-      int CProcess::getReturnCode() const
+      int CProcessDeprecated::getReturnCode() const
       {
          return m_returnCode;
       }
 
-      std::string CProcess::getError() const
+      std::string CProcessDeprecated::getError() const
       {
          return *m_lastError;
       }
 
-      void CProcess::stdOutRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut,
+      void CProcessDeprecated::stdOutRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut,
                                           boost::shared_ptr<ILogger> scriptLogger)
       {
          scriptLogger->init();
@@ -155,7 +153,7 @@ namespace shared
          }
       }
 
-      void CProcess::stdErrRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdErr,
+      void CProcessDeprecated::stdErrRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdErr,
                                           boost::shared_ptr<ILogger> scriptLogger,
                                           boost::shared_ptr<std::string> lastError)
       {

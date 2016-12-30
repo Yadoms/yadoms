@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "KeywordManager.h"
-#include <shared/shared/exception/EmptyResult.hpp>
+#include <shared/exception/EmptyResult.hpp>
 #include <Poco/Exception.h>
 #include <Poco/URI.h>
 

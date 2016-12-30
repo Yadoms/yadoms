@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "ScriptProcess.h"
 #include "PythonCommandLine.h"
-#include <shared/process/Process.h>
-#include <shared/FileSystemExtension.h>
+#include <shared/process/ProcessDeprecated.h>
 
 
 CScriptProcess::CScriptProcess(boost::shared_ptr<IPythonExecutable> executable,
@@ -46,10 +45,9 @@ void CScriptProcess::start()
 
    auto commandLine = createCommandLine(m_contextAccessor->id());
 
-   m_process = boost::make_shared<shared::process::CProcess>(commandLine,
-                                                             shared::CFileSystemExtension::getModulePath().string(),
-                                                             m_stopNotifier,
-                                                             m_scriptLogger);
+   m_process = boost::make_shared<shared::process::CProcessDeprecated>(commandLine,
+                                                                       m_stopNotifier,
+                                                                       m_scriptLogger);
 }
 
 void CScriptProcess::kill()
@@ -66,3 +64,4 @@ std::string CScriptProcess::getError() const
 {
    return m_process->getError();
 }
+

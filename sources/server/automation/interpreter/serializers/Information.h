@@ -15,9 +15,9 @@ namespace automation
 
             virtual ~CInformation();
 
-            // IInformationSerializer implementation
+            // IInformation implementation
             void toPb(interpreter_IPC::toInterpreter::Information* pb) const override;
-            // [END] IInformationSerializer implementation
+            // [END] IInformation implementation
 
          private:
             boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> m_information;

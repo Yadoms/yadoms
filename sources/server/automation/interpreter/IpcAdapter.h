@@ -27,16 +27,16 @@ namespace automation
 
    protected:
       // IIpcAdapter Implementation
-      std::string id() const override = 0;
+      std::string id() const override;
 
-      void postStopRequest() override = 0;
-      void postInit(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> information) override = 0;
+      void postStopRequest() override;
+      void postInit(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> information) override;
 
-      void postAvalaibleRequest(boost::shared_ptr<shared::script::yInterpreterApi::IAvalaibleRequest> request) override = 0;
-      void postLoadScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ILoadScriptContentRequest> request) override = 0;
-      void postSaveScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ISaveScriptContentRequest> request) override = 0;
-      void postStartScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStartScriptRequest> request) override = 0;
-      void postStopScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStopScriptRequest> request) override = 0;
+      void postAvalaibleRequest(boost::shared_ptr<shared::script::yInterpreterApi::IAvalaibleRequest> request) override;
+      void postLoadScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ILoadScriptContentRequest> request) override;
+      void postSaveScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ISaveScriptContentRequest> request) override;
+      void postStartScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStartScriptRequest> request) override;
+      void postStopScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStopScriptRequest> request) override;
       // [END] IIpcAdapter Implementation
 
       //--------------------------------------------------------------

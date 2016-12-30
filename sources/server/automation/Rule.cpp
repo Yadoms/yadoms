@@ -6,7 +6,7 @@
 namespace automation
 {
    CRule::CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
-                boost::shared_ptr<script::IManager> scriptManager,
+                boost::shared_ptr<IManager> scriptManager,
                 boost::shared_ptr<IRuleStateHandler> ruleStateHandler)
       : m_ruleData(ruleData),
         m_scriptManager(scriptManager),
@@ -32,7 +32,7 @@ namespace automation
       auto yScriptApi = m_scriptManager->createScriptContext(scriptLogger);
       auto stopNotifier = m_scriptManager->createStopNotifier(m_ruleStateHandler, m_ruleData->Id());
 
-      auto scriptInterpreter = m_scriptManager->getAssociatedInterpreter(scriptProperties->interpreterName());
+      auto scriptInterpreter = m_scriptManager->getInterpreterInstance(scriptProperties->interpreterName());
 
       m_process = scriptInterpreter->createProcess(scriptProperties->scriptPath(),
                                                    scriptLogger,

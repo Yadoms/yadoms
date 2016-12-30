@@ -2,7 +2,6 @@
 #include "IRuleManager.h"
 #include "IRule.h"
 #include "IRuleStateHandler.h"
-#include "script/IManager.h"
 #include "../communication/ISendMessageAsync.h"
 #include "database/IAcquisitionRequester.h"
 #include "database/IDeviceRequester.h"
@@ -13,6 +12,8 @@
 #include <IPathProvider.h>
 #include <shared/event/EventHandler.hpp>
 #include <shared/ILocation.h>
+#include "IManager.h"
+#include <server/database/IRuleRequester.h>
 
 namespace automation
 {
@@ -137,7 +138,7 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               The script manager
       //-----------------------------------------------------
-      boost::shared_ptr<script::IManager> m_scriptManager;
+      boost::shared_ptr<automation::IManager> m_scriptManager;
 
       //-----------------------------------------------------
       ///\brief               The rule state handler

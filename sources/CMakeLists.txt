@@ -251,11 +251,14 @@ set(YADOMS_SRC
 	server/automation/Factory.h
 	server/automation/Factory.cpp
 	server/automation/IFactory.h
+	server/automation/IManager.h
 	server/automation/IRule.h
 	server/automation/IRuleManager.h
 	server/automation/IRuleStartErrorObserver.h
 	server/automation/IRuleStateHandler.h
 	server/automation/IRuleThreadHandler.h
+	server/automation/Manager.h
+	server/automation/Manager.cpp
 	server/automation/Rule.h
 	server/automation/Rule.cpp
 	server/automation/RuleException.hpp
@@ -264,12 +267,24 @@ set(YADOMS_SRC
 	server/automation/RuleManager.h
 	server/automation/RuleManager.cpp
    
+	server/automation/interpreter/AvalaibleRequest.h
+	server/automation/interpreter/AvalaibleRequest.cpp
+	server/automation/interpreter/Information.h
+	server/automation/interpreter/Information.cpp
 	server/automation/interpreter/IInstance.h
 	server/automation/interpreter/Instance.h
 	server/automation/interpreter/Instance.cpp
+	server/automation/interpreter/InstanceStateHandler.h
+	server/automation/interpreter/InstanceStateHandler.cpp
 	server/automation/interpreter/IIpcAdapter.h
 	server/automation/interpreter/IpcAdapter.h
 	server/automation/interpreter/IpcAdapter.cpp
+	server/automation/interpreter/LoadScriptContentRequest.h
+	server/automation/interpreter/LoadScriptContentRequest.cpp
+	server/automation/interpreter/SaveScriptContentRequest.h
+	server/automation/interpreter/SaveScriptContentRequest.cpp
+	server/automation/interpreter/yInterpreterApiImplementation.h
+	server/automation/interpreter/yInterpreterApiImplementation.cpp
 
 	server/automation/interpreter/serializers/IInformation.h
 	server/automation/interpreter/serializers/Information.h
@@ -280,12 +295,8 @@ set(YADOMS_SRC
 	server/automation/script/GeneralInfo.h
 	server/automation/script/GeneralInfo.cpp
 	server/automation/script/IDayLightProvider.h
-	server/automation/script/IManager.h
 	server/automation/script/IGeneralInfo.h
-	server/automation/script/InterpreterNotFound.hpp
 	server/automation/script/IProperties.h
-	server/automation/script/Manager.h
-	server/automation/script/Manager.cpp
 	server/automation/script/Properties.h
 	server/automation/script/Properties.cpp
 	server/automation/script/StopNotifier.h
@@ -297,6 +308,7 @@ set(YADOMS_SRC
 	server/communication/PluginGateway.h
 	server/communication/PluginGateway.cpp	
 	server/communication/callback/CallbackRequest.h
+	server/communication/callback/NoDataCallbackRequest.h
 	server/communication/callback/SynchronousCallback.h
 	server/communication/callback/CallbackException.hpp
 	server/communication/callback/ICallbackRequest.h
@@ -414,8 +426,6 @@ set(YADOMS_SRC
 	server/pluginSystem/ManuallyDeviceCreationData.h
 	server/pluginSystem/ManuallyDeviceCreationRequest.h
 	server/pluginSystem/ManuallyDeviceCreationRequest.cpp
-	server/pluginSystem/NativeExecutableCommandLine.cpp
-	server/pluginSystem/NativeExecutableCommandLine.h
 	server/pluginSystem/PluginException.hpp
 	server/pluginSystem/SetDeviceConfiguration.h
 	server/pluginSystem/SetDeviceConfiguration.cpp

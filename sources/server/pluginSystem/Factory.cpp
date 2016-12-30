@@ -7,15 +7,13 @@
 #include "InstanceStateHandler.h"
 #include "yPluginApiImplementation.h"
 #include "IQualifier.h"
-#include "NativeExecutableCommandLine.h"
 #include "InvalidPluginException.hpp"
 #include "IpcAdapter.h"
-#include <shared/process/Process.h>
 #include <shared/process/ProcessException.hpp>
-#include <shared/FileSystemExtension.h>
 #include <shared/process/Logger.h>
 #include "internalPlugin/Instance.h"
 #include "internalPlugin/Information.h"
+#include <shared/process/NativeExecutableCommandLine.h>
 
 
 namespace pluginSystem
@@ -152,9 +150,9 @@ namespace pluginSystem
       std::vector<std::string> args;
       args.push_back(messageQueueId);
 
-      return boost::make_shared<CNativeExecutableCommandLine>(pluginInformation->getPath() / shared::CExecutable::ToFileName(pluginInformation->getType()),
-                                                              ".",
-                                                              args);
+      return boost::make_shared<shared::process::CNativeExecutableCommandLine>(pluginInformation->getPath() / shared::CExecutable::ToFileName(pluginInformation->getType()),
+                                                                               ".",
+                                                                               args);
    }
 
    boost::shared_ptr<shared::process::IProcess> CFactory::createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
@@ -163,8 +161,7 @@ namespace pluginSystem
    {
       try
       {
-         return boost::make_shared<shared::process::CProcess>(commandLine,
-                                                              shared::CFileSystemExtension::getModulePath().string(),
+         return boost::make_shared<shared::process::CProcessDeprecated>(commandLine,
                                                               instanceStateHandler,
                                                               logger);
       }

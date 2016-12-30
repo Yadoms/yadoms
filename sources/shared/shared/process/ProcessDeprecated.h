@@ -12,9 +12,9 @@ namespace shared
    namespace process
    {
       //--------------------------------------------------------------
-      /// \brief	A process
+      /// \brief	Python executable
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT CProcess : public IProcess
+      class YADOMS_SHARED_EXPORT [[deprecated("Use CProcess instead")]] CProcessDeprecated : public IProcess
       {
       public:
          //--------------------------------------------------------------
@@ -24,14 +24,14 @@ namespace shared
          /// \param[in] logger                  Process out/err logger (can be NULL is no logger needed)
          /// \throw CProcessException if error
          //--------------------------------------------------------------
-         CProcess(boost::shared_ptr<ICommandLine> commandLine,
+         CProcessDeprecated(boost::shared_ptr<ICommandLine> commandLine,
                   boost::shared_ptr<IProcessObserver> processObserver,
                   boost::shared_ptr<ILogger> logger);
 
          //--------------------------------------------------------------
          /// \brief	Destructor
          //--------------------------------------------------------------
-         virtual ~CProcess();
+         virtual ~CProcessDeprecated();
 
          // shared::process::IProcess Implementation
          void kill() override;

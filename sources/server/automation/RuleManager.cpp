@@ -3,10 +3,10 @@
 #include "RuleStateHandler.h"
 #include "database/IRuleRequester.h"
 #include "Rule.h"
-#include "script/Manager.h"
 #include <shared/exception/EmptyResult.hpp>
 #include <shared/Log.h>
 #include "RuleException.hpp"
+#include "Manager.h"
 
 namespace automation
 {
@@ -22,12 +22,20 @@ namespace automation
                               boost::shared_ptr<shared::ILocation> location)
       : m_ruleRequester(dbRequester),
         m_ruleEventHandler(boost::make_shared<shared::event::CEventHandler>()),
-        m_scriptManager(boost::make_shared<script::CManager>(pathProvider, pluginGateway, configurationManager, dbAcquisitionRequester, dbDeviceRequester, keywordAccessLayer, dbRecipientRequester, location)),
-        m_ruleStateHandler(boost::make_shared<CRuleStateHandler>(dbRequester, eventLogger, m_ruleEventHandler)),
+        m_scriptManager(boost::make_shared<CManager>(pathProvider,
+                                                     pluginGateway,
+                                                     configurationManager,
+                                                     dbAcquisitionRequester,
+                                                     dbDeviceRequester,
+                                                     keywordAccessLayer,
+                                                     dbRecipientRequester,
+                                                     location)),
+        m_ruleStateHandler(boost::make_shared<CRuleStateHandler>(dbRequester,
+                                                                 eventLogger,
+                                                                 m_ruleEventHandler)),
         m_yadomsShutdown(false),
         m_ruleEventsThread(boost::make_shared<boost::thread>(boost::bind(&CRuleManager::ruleEventsThreadDoWork, this)))
    {
-      
    }
 
    CRuleManager::~CRuleManager()

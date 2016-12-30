@@ -23,32 +23,28 @@ namespace automation
          virtual ~CInstance();
 
          // IInstance Implementation
-         void requestStop() override;
-         void kill() override;
          boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> aboutInterpreter() const override;
-         void postAvalaibleRequest(boost::shared_ptr<shared::script::yInterpreterApi::IAvalaibleRequest> request) override;
-         void postLoadScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ILoadScriptContentRequest> request) override;
-         void postSaveScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ISaveScriptContentRequest> request) override;
-         void postStartScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStartScriptRequest> request) override;
-         void postStopScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStopScriptRequest> request) override;
+         bool isAvalaible() override;
+         std::string loadScriptContent(const std::string& scriptPath) const override;
+         void saveScriptContent(const std::string& scriptPath,
+                                const std::string& scriptContent) const override;
          // [END] IInstance Implementation
 
       protected:
-         void postInit(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> information) const;
-         void postStopRequest() const;
+         void postLoadScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ILoadScriptContentRequest> request) const;
+         void postSaveScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ISaveScriptContentRequest> request) const;
+         void postStartScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStartScriptRequest> request) const;
+         void postStopScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStopScriptRequest> request) const;
+
+         bool CInstance::getAvalaibility() const;
 
       private:
          const boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> m_interpreterInformation;
 
-         //-----------------------------------------------------
-         ///\brief               The interpreter process
-         //-----------------------------------------------------
          boost::shared_ptr<shared::process::IProcess> m_process;
-
-         //-----------------------------------------------------
-         ///\brief               The api context accessor
-         //-----------------------------------------------------
          boost::shared_ptr<IIpcAdapter> m_ipcAdapter;
+
+         bool m_avalaible;
       };
    }
 } // namespace automation::interpreter
