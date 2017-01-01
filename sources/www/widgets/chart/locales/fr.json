@@ -51,6 +51,10 @@
 						"name": "Couleur de la courbe",
 						"description": "Permet de changer la couleur de la courbe."
 					},
+			      "differentialDisplay": {
+		            "name": "Affichage différentiel",
+				      "description": "Ce graphique représente la différence de valeur entre chaque acquisition (Précipitations pluviométriques cumulatives, ...)."
+			      },               
 					"PlotType": {
 						"name": "Type de graphique",
 						"description": "Choisir le type de graphique",

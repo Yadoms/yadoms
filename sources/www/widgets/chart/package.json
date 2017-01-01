@@ -23,14 +23,6 @@
 	"configurationSchema": {
 		"interval": {
 			"type": "enum",
-			"values": {
-				"HOUR": "",
-				"DAY": "",
-				"WEEK": "",
-				"MONTH": "",
-				"HALF_YEAR": "",
-				"YEAR": ""
-			},
 			"defaultValue": "DAY"
 		},
 		"oneAxis": {
@@ -65,12 +57,8 @@
 			"allowDuplication": "true",
 			"item": {
 				"type": "section",
-				"name": "",
-				"description": "",				
 				"content": {
 					"source": {
-						"name": "",
-						"description": "",
 						"type": "keyword",
 						"expectedKeywordType": ["numeric", "bool"],
 						"expectedKeywordAccess": "get"
@@ -79,15 +67,14 @@
 						"type": "color",
 						"defaultValue": "#0000FF"
 					},
+					"differentialDisplay": {
+				      "type": "bool",
+				      "defaultValue": "false"
+					},
 					"PlotType": {
-            "type": "enum",
-            "sort": "true",
-						"values": {
-							"line": "",
-							"bar": "",
-							"arearange": ""
-						},
-						"defaultValue": "line"
+                  "type": "enum",
+                  "sort": "true",
+			         "defaultValue": "line"
 					}
 				}
 			}
