@@ -1,6 +1,6 @@
 {
 	"type": "chart",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"releaseType": "beta",
 	"author": "Jean-Michel BERHAULT, Nicolas HILAIRE",
 	"url": "https://github.com/Yadoms/yadoms/wiki/chart",
@@ -23,6 +23,14 @@
 	"configurationSchema": {
 		"interval": {
 			"type": "enum",
+			"values": {
+				"HOUR": "",
+				"DAY": "",
+				"WEEK": "",
+				"MONTH": "",
+				"HALF_YEAR": "",
+				"YEAR": ""
+			},         
 			"defaultValue": "DAY"
 		},
 		"oneAxis": {
@@ -73,6 +81,11 @@
 					},
 					"PlotType": {
                   "type": "enum",
+						"values": {
+							"line": "",
+							"bar": "",
+							"arearange": ""
+						},                  
                   "sort": "true",
 			         "defaultValue": "line"
 					}
