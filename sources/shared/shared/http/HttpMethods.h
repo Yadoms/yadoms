@@ -48,7 +48,7 @@ namespace shared
       //--------------------------------------------------------------
       static bool SendGetRequest(const std::string & url, 
                                  shared::CDataContainer& parameters,
-                                 boost::function<void (shared::CDataContainer& data)> onReceive,
+                                 boost::function1<void, shared::CDataContainer&> onReceive,
                                  const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
