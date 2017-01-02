@@ -81,20 +81,42 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
          }
 
       case yApi::IYInterpreterApi::kEventStartScript:
-      {
-         auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IStartScriptRequest>>();
-         try
          {
-            //TODO
-            //const auto process = createProcess();
-            //request->sendSuccess(process->);
+            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IStartScriptRequest>>();
+            try
+            {
+               m_process = createProcess(request->getScriptPath(),
+                                         scriptLogger,
+                                         yScriptApi,
+                                         stopNotifier);
+
+
+               //TODO
+               //const auto process = createProcess();
+               //request->sendSuccess(process->);
+            }
+            catch (std::exception& e)
+            {
+               request->sendError(std::string("Unable to start script : ") + e.what());
+            }
+            break;
          }
-         catch (std::exception& e)
+
+      case yApi::IYInterpreterApi::kEventStopScript:
          {
-            request->sendError(std::string("Unable to start script : ") + e.what());
+            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IStopScriptRequest>>();
+            try
+            {
+               //TODO
+               //const auto process = createProcess();
+               //request->sendSuccess(process->);
+            }
+            catch (std::exception& e)
+            {
+               request->sendError(std::string("Unable to start script : ") + e.what());
+            }
+            break;
          }
-         break;
-      }
 
       default:
          {
@@ -140,16 +162,16 @@ std::string CPython27::loadScriptContent(const std::string& scriptPath) const
 }
 
 void CPython27::saveScriptContent(const std::string& scriptPath,
-                                const std::string& content)
+                                  const std::string& content)
 {
    CScriptFile file(scriptPath);
    file.write(content);
 }
 
 boost::shared_ptr<shared::process::IProcess> CPython27::createProcess(const std::string& scriptPath,
-                                                                    boost::shared_ptr<shared::process::ILogger> scriptLogger,
-                                                                    boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-                                                                    boost::shared_ptr<shared::process::IProcessObserver> processObserver) const
+                                                                      boost::shared_ptr<shared::process::ILogger> scriptLogger,
+                                                                      boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
+                                                                      boost::shared_ptr<shared::process::IProcessObserver> processObserver) const
 {
    //TODO revoir (utile ?)
    //TODO certaines dépendances à virer ?
