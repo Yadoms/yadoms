@@ -30,7 +30,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    auto weatherConditionsSendingRetry = 0;
    auto astronomySendingRetry = 0;
-   auto forcast10daysSendingRetry = 0;
+   auto forecast10daysSendingRetry = 0;
 
    api->getEventHandler().createTimer(kEvtInitialization, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
 
@@ -204,19 +204,28 @@ shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yAp
 {
    try
    {
-      shared::CDataContainer data = shared::CHttpMethods::SendGetRequestJson(url);
+      shared::CDataContainer returnData;
+      shared::CDataContainer noParameters;
 
-      ErrorAnswerHandler Response(api, data);
+      shared::CHttpMethods::SendGetRequest(url,
+                                           noParameters,
+                                           [&](shared::CDataContainer& data)
+                                           {
+                                              ErrorAnswerHandler Response(api, data);
 
-      if (Response.ContainError())
-      {
-         api->setPluginState(yApi::historization::EPluginState::kCustom, Response.getError());
-         throw shared::exception::CException("Response contain error");
-      }
-      //All is ok we reinitialize the nbRetry
-      nbRetry = 0;
+                                              if (Response.ContainError())
+                                              {
+                                                 api->setPluginState(yApi::historization::EPluginState::kCustom, Response.getError());
+                                                 throw shared::exception::CException("Response contain error");
+                                              }
+                                              //All is ok we reinitialize the nbRetry
+                                              nbRetry = 0;
 
-      return data;
+                                              returnData = data;
+                                           },
+                                           httpRequestBindingTimeout);
+
+      return returnData;
    }
    catch (shared::exception::CException& e)
    {

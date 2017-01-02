@@ -20,12 +20,6 @@ CLiveStations::CLiveStations(boost::shared_ptr<const shared::ILocation> location
    m_location = location;
 }
 
-void CLiveStations::onReceived(shared::CDataContainer& data)
-{
-   m_response = data;
-   m_stations = m_response.get<std::vector<shared::CDataContainer>>("location.nearby_weather_stations.airport.station");
-}
-
 void CLiveStations::processLookUp(boost::shared_ptr<yApi::IYPluginApi> api,
                                   const std::string& apikey)
 {
@@ -37,7 +31,12 @@ void CLiveStations::processLookUp(boost::shared_ptr<yApi::IYPluginApi> api,
          shared::CDataContainer noParameters;
          shared::CHttpMethods::SendGetRequest("http://api.wunderground.com/api/" + apikey + "/geolookup/q/" + std::to_string(m_location->latitude()) + "," + std::to_string(m_location->longitude()) + ".json",
                                               noParameters,
-                                              &this->onReceived);
+                                              [&](shared::CDataContainer& data)
+                                              {
+                                                 m_response = data;
+                                                 m_stations = m_response.get<std::vector<shared::CDataContainer>>("location.nearby_weather_stations.airport.station");
+                                              },
+                                              httpRequestBindingTimeout);
       }
       m_lastSearchLocation = m_location;
    }

@@ -9,10 +9,10 @@
 
 namespace shared
 {
-   CDataContainer CHttpMethods::SendGetRequestJson(const std::string & url)
+   CDataContainer CHttpMethods::SendGetRequest(const std::string & url)
    {
       shared::CDataContainer parameters;
-      return SendGetRequestJson(url, parameters);
+      return SendGetRequest(url, parameters);
    }
 
    bool CHttpMethods::SendGetRequest(const std::string & url,
@@ -34,6 +34,7 @@ namespace shared
          Poco::Net::HTTPClientSession session(uri.getHost(), uri.getPort());
          Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET, uri.getPathAndQuery(), Poco::Net::HTTPMessage::HTTP_1_1);
 
+         session.setTimeout(Poco::Timespan(timeout.seconds(), 0));
          session.sendRequest(request);
 
          Poco::Net::HTTPResponse response;
@@ -68,46 +69,21 @@ namespace shared
       return false;
    }
 
-   CDataContainer CHttpMethods::SendGetRequestJson(const std::string & url, shared::CDataContainer & parameters)
+   CDataContainer CHttpMethods::SendGetRequest(const std::string & url, 
+                                              shared::CDataContainer & parameters,
+                                              const boost::posix_time::time_duration& timeout)
    {
-      try
-      {
-         std::map<std::string, std::string> mapParameters = parameters.getAsMap();
-         Poco::URI uri(url);
+      CDataContainer responseData;
 
-         if (!parameters.empty())
-         {
-            for (std::map<std::string, std::string>::iterator parametersIterator = mapParameters.begin(); parametersIterator != mapParameters.end(); ++parametersIterator)
-               uri.addQueryParameter(parametersIterator->first, parametersIterator->second);
-         }
+      SendGetRequest(url,
+                     parameters,
+                     [&](shared::CDataContainer& data)
+                     {
+                        responseData = data;
+                     },
+                     timeout);
 
-         Poco::Net::HTTPClientSession session(uri.getHost(), uri.getPort());
-         Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET, uri.getPathAndQuery(), Poco::Net::HTTPMessage::HTTP_1_1);
-
-         session.sendRequest(request);
-
-         Poco::Net::HTTPResponse response;
-
-         if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK)
-         {
-            CDataContainer data;
-            JsonResponseReader(session, response, data);
-            return data;
-         }
-         else
-         {
-            auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
-            YADOMS_LOG(error) << message;
-            throw exception::CException(message);
-         }
-      }
-      catch (Poco::Exception& e) 
-      {
-         auto message = (boost::format("Fail to send get http request \"%1%\" : %2%") % url % e.message()).str();
-         YADOMS_LOG(error) << message;
-         throw exception::CException(message);
-      }
-      return CDataContainer();
+      return responseData;
    }
 
    bool CHttpMethods::JsonResponseReader(Poco::Net::HTTPClientSession& session,

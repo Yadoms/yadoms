@@ -5,6 +5,11 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
+/// \brief	  maximum time out allowed by the binding
+//--------------------------------------------------------------
+static boost::posix_time::time_duration httpRequestBindingTimeout(boost::posix_time::time_duration(boost::posix_time::seconds(8)));
+
+//--------------------------------------------------------------
 /// \brief	Live Station return by WeatherUnderground
 /// \note   This class consist of the traitment of all stations returned by the WeatherUnderground website
 //--------------------------------------------------------------
@@ -63,12 +68,6 @@ public:
    virtual ~CLiveStations();
 
 private:
-   //--------------------------------------------------------------
-   /// \brief get All forecast stations around the location, get the city name
-   /// \param[in] api       data Received
-   /// \param[in] apikey    api key to weatherUnderground
-   //--------------------------------------------------------------
-   void onReceived(shared::CDataContainer& data);
 
    //--------------------------------------------------------------
    /// \brief	    GPS Location

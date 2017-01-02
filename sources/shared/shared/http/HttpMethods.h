@@ -25,15 +25,18 @@ namespace shared
       /// \param[in]  url                 the url to send the request
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      static CDataContainer SendGetRequestJson(const std::string & url);
+      static CDataContainer SendGetRequest(const std::string & url);
 
       //--------------------------------------------------------------
       /// \brief	    SendGetRequest
       /// \param[in]  url                 the url to send the request
       /// \param[in]  parameters          parameters at the end of the url
+      /// \param[in]  timeout             timeout for the request
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      static CDataContainer SendGetRequestJson(const std::string & url, shared::CDataContainer & parameters);
+      static CDataContainer SendGetRequest(const std::string & url, 
+                                          shared::CDataContainer & parameters,
+                                          const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
       /// \brief	    SendGetRequest
