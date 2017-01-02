@@ -3,15 +3,15 @@
 
 
 set(interpreter_IPC_SOURCES
-   toYadoms.proto
-   toInterpreter.proto
+   interpreterToYadoms.proto
+   yadomsToInterpreter.proto
 
    interpreterInit.proto
 )
 
-protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS toYadoms.proto)
+protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS interpreterToYadoms.proto)
 set(interpreter_IPC_SOURCES ${interpreter_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
-protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS toInterpreter.proto)
+protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS yadomsToInterpreter.proto)
 set(interpreter_IPC_SOURCES ${interpreter_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS interpreterInit.proto)
 set(interpreter_IPC_SOURCES ${interpreter_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})

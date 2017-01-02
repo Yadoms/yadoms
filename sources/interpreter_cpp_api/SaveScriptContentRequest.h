@@ -7,7 +7,7 @@ namespace interpreter_cpp_api
    class CSaveScriptContentRequest : public shared::script::yInterpreterApi::ISaveScriptContentRequest
    {
    public:
-      CSaveScriptContentRequest(const interpreter_IPC::toInterpreter::SaveScriptContent& msg,
+      CSaveScriptContentRequest(const interpreter_IPC::toInterpreter::SaveScriptContentRequest& msg,
                                 boost::function0<void> sucessCallback,
                                 boost::function1<void, const std::string&> errorCallback);
       virtual ~CSaveScriptContentRequest();

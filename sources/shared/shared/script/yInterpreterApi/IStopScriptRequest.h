@@ -25,7 +25,7 @@ namespace shared
             ///\return The script ID, passed by interpreter at script start
             /// (can be a process ID, or anything else identifying script instance)
             //-----------------------------------------------------
-            virtual std::string getScriptId() const = 0;
+            virtual std::string getScriptProcessId() const = 0;
 
             //-----------------------------------------------------
             ///\brief Call to say Yadoms that script is stopped

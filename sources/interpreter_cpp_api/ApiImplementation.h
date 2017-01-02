@@ -50,7 +50,7 @@ namespace interpreter_cpp_api
       void processSystem(const interpreter_IPC::toInterpreter::System& msg);
       void processAvalaibleRequest(const interpreter_IPC::toInterpreter::AvalaibleRequest& msg);
       void processLoadScriptContentRequest(const interpreter_IPC::toInterpreter::LoadScriptContentRequest& msg);
-      void processSaveScriptContent(const interpreter_IPC::toInterpreter::SaveScriptContent& msg);
+      void processSaveScriptContent(const interpreter_IPC::toInterpreter::SaveScriptContentRequest& msg);
       void processStartScriptRequest(const interpreter_IPC::toInterpreter::StartScriptRequest& msg);
       void processStopScriptRequest(const interpreter_IPC::toInterpreter::StopScriptRequest& msg);
 

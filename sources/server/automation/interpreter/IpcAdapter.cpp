@@ -256,6 +256,85 @@ namespace automation
 
          request->sendSuccess(content);
       }
+
+      void CIpcAdapter::postSaveScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ISaveScriptContentRequest> request)
+      {
+         interpreter_IPC::toInterpreter::msg req;
+         auto message = req.mutable_savescriptcontentrequest();
+         message->set_scriptpath(request->getScriptPath());
+         message->set_content(request->getScriptContent());
+
+         try
+         {
+            send(req,
+                 [&](const interpreter_IPC::toYadoms::msg& ans) -> bool
+                 {
+                    return ans.has_savescriptcontentanswer();
+                 },
+                 [&](const interpreter_IPC::toYadoms::msg& ans) -> void
+                 {
+                 });
+         }
+         catch (std::exception& e)
+         {
+            request->sendError((boost::format("Interpreter doesn't answer to save script content request : %1%") % e.what()).str());
+         }
+
+         request->sendSuccess();
+      }
+
+      void CIpcAdapter::postStartScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStartScriptRequest> request)
+      {
+         interpreter_IPC::toInterpreter::msg req;
+         auto message = req.mutable_startscriptrequest();
+         message->set_scriptpath(request->getScriptPath());
+         std::string scriptProcessId;
+
+         try
+         {
+            send(req,
+                 [&](const interpreter_IPC::toYadoms::msg& ans) -> bool
+                 {
+                    return ans.has_startscriptanswer();
+                 },
+                 [&](const interpreter_IPC::toYadoms::msg& ans) -> void
+                 {
+                    scriptProcessId = ans.startscriptanswer().scriptprocessid();
+                 });
+         }
+         catch (std::exception& e)
+         {
+            request->sendError((boost::format("Interpreter doesn't answer to start script request : %1%") % e.what()).str());
+         }
+
+         request->sendSuccess(scriptProcessId);
+      }
+
+      void CIpcAdapter::postStopScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStopScriptRequest> request)
+      {
+         interpreter_IPC::toInterpreter::msg req;
+         auto message = req.mutable_stopscriptrequest();
+         message->set_scriptprocessid(request->getScriptProcessId());
+         std::string content;
+
+         try
+         {
+            send(req,
+               [&](const interpreter_IPC::toYadoms::msg& ans) -> bool
+            {
+               return ans.has_stopscriptanswer();
+            },
+               [&](const interpreter_IPC::toYadoms::msg& ans) -> void
+            {
+            });
+         }
+         catch (std::exception& e)
+         {
+            request->sendError((boost::format("Interpreter doesn't answer to stop script request : %1%") % e.what()).str());
+         }
+
+         request->sendSuccess();
+      }
    }
 } // namespace automation::interpreter
 

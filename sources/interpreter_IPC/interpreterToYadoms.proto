@@ -13,7 +13,7 @@ message SaveScriptContentAnswer {
 }
 
 message StartScriptAnswer {
-	string scriptId = 1;
+	string scriptProcessId = 1;
 }
 
 message StopScriptAnswer {

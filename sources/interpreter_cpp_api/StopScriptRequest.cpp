@@ -7,19 +7,19 @@ namespace interpreter_cpp_api
    CStopScriptRequest::CStopScriptRequest(const interpreter_IPC::toInterpreter::StopScriptRequest& msg,
                                           boost::function0<void> sucessCallback,
                                           boost::function1<void, const std::string&> errorCallback)
-      : m_scriptId(msg.scriptid()),
+      : m_scriptProcessId(msg.scriptprocessid()),
         m_sucessCallback(sucessCallback),
         m_errorCallback(errorCallback)
    {
    }
-
+   
    CStopScriptRequest::~CStopScriptRequest()
    {
    }
 
-   std::string CStopScriptRequest::getScriptId() const
+   std::string CStopScriptRequest::getScriptProcessId() const
    {
-      return m_scriptId;
+      return m_scriptProcessId;
    }
 
    void CStopScriptRequest::sendSuccess()

@@ -18,7 +18,7 @@ message LoadScriptContentRequest {
 	string scriptPath = 1;
 }
 
-message SaveScriptContent {
+message SaveScriptContentRequest {
 	string scriptPath = 1;
 	string content = 2;
 }
@@ -28,7 +28,7 @@ message StartScriptRequest {
 }
 
 message StopScriptRequest {
-	string scriptId = 1;
+	string scriptProcessId = 1;
 }
 
 
@@ -39,7 +39,7 @@ message msg {
 		System system = 3;
 		AvalaibleRequest avalaibleRequest = 4;
 		LoadScriptContentRequest loadScriptContentRequest = 5;
-		SaveScriptContent saveScriptContent = 6;
+		SaveScriptContentRequest saveScriptContentRequest = 6;
 		StartScriptRequest startScriptRequest = 7;
 		StopScriptRequest stopScriptRequest = 8;
    }

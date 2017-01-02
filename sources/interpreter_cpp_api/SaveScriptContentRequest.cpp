@@ -4,7 +4,7 @@
 
 namespace interpreter_cpp_api
 {
-   CSaveScriptContentRequest::CSaveScriptContentRequest(const interpreter_IPC::toInterpreter::SaveScriptContent& msg,
+   CSaveScriptContentRequest::CSaveScriptContentRequest(const interpreter_IPC::toInterpreter::SaveScriptContentRequest& msg,
                                           boost::function0<void> sucessCallback,
                                           boost::function1<void, const std::string&> errorCallback)
       : m_sucessCallback(sucessCallback),

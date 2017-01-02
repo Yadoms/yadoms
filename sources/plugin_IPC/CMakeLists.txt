@@ -3,15 +3,15 @@
 
 
 set(plugin_IPC_SOURCES
-   toYadoms.proto
-   toPlugin.proto
+   pluginToYadoms.proto
+   yadomsToPlugin.proto
    
    pluginInit.proto
 )
 
-protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS toYadoms.proto)
+protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS pluginToYadoms.proto)
 set(plugin_IPC_SOURCES ${plugin_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
-protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS toPlugin.proto)
+protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS yadomsToPlugin.proto)
 set(plugin_IPC_SOURCES ${plugin_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS pluginInit.proto)
 set(plugin_IPC_SOURCES ${plugin_IPC_SOURCES} ${PROTO_SRCS} ${PROTO_HDRS})

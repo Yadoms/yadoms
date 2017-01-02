@@ -156,7 +156,7 @@ namespace interpreter_cpp_api
          break;
       case interpreter_IPC::toInterpreter::msg::kLoadScriptContentRequest: processLoadScriptContentRequest(toInterpreterProtoBuffer.loadscriptcontentrequest());
          break;
-      case interpreter_IPC::toInterpreter::msg::kSaveScriptContent: processSaveScriptContent(toInterpreterProtoBuffer.savescriptcontent());
+      case interpreter_IPC::toInterpreter::msg::kSaveScriptContentRequest: processSaveScriptContent(toInterpreterProtoBuffer.savescriptcontentrequest());
          break;
       case interpreter_IPC::toInterpreter::msg::kStartScriptRequest: processStartScriptRequest(toInterpreterProtoBuffer.startscriptrequest());
          break;
@@ -234,7 +234,7 @@ namespace interpreter_cpp_api
       m_pluginEventHandler.postEvent(kEventLoadScriptContentRequest, request);
    }
 
-   void CApiImplementation::processSaveScriptContent(const interpreter_IPC::toInterpreter::SaveScriptContent& msg)
+   void CApiImplementation::processSaveScriptContent(const interpreter_IPC::toInterpreter::SaveScriptContentRequest& msg)
    {
       boost::shared_ptr<const shared::script::yInterpreterApi::ISaveScriptContentRequest> command = boost::make_shared<CSaveScriptContentRequest>(msg,
                                                                                                                                                   [&]()
@@ -259,7 +259,7 @@ namespace interpreter_cpp_api
                                                                                                                                 {
                                                                                                                                    interpreter_IPC::toYadoms::msg ans;
                                                                                                                                    auto answer = ans.mutable_startscriptanswer();
-                                                                                                                                   answer->set_scriptid(scriptId);
+                                                                                                                                   answer->set_scriptprocessid(scriptId);
                                                                                                                                    send(ans);
                                                                                                                                 },
                                                                                                                                 [&](const std::string& r)

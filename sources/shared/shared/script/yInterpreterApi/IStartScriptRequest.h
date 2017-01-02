@@ -21,10 +21,15 @@ namespace shared
             }
 
             //-----------------------------------------------------
+            ///\brief Get the script path
+            //-----------------------------------------------------
+            virtual const std::string& getScriptPath() = 0;
+
+            //-----------------------------------------------------
             ///\brief Answer the request with success, providing the script ID
             ///\param [in] scriptId  Free string, will be passed by Yadoms to interpreter at stop request
             //-----------------------------------------------------
-            virtual void sendSuccess(const std::string& scriptId) = 0;
+            virtual void sendSuccess(const std::string& scriptProcessId) = 0;
 
             //-----------------------------------------------------
             ///\brief Answer the request with error
