@@ -24,7 +24,7 @@ namespace location
    {
       try
       {
-         auto ipApiResult(shared::CHttpMethods::SendGetRequest("http://ip-api.com/json/?fields=status,lat,lon"));
+         auto ipApiResult(shared::CHttpMethods::SendGetRequestJson("http://ip-api.com/json/?fields=status,lat,lon"));
 
          if (ipApiResult.get("status") == std::string("fail"))
             throw shared::exception::CException(ipApiResult.get("message"));

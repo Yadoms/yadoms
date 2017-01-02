@@ -63,6 +63,12 @@ public:
    virtual ~CLiveStations();
 
 private:
+   //--------------------------------------------------------------
+   /// \brief get All forecast stations around the location, get the city name
+   /// \param[in] api       data Received
+   /// \param[in] apikey    api key to weatherUnderground
+   //--------------------------------------------------------------
+   void onReceived(shared::CDataContainer& data);
 
    //--------------------------------------------------------------
    /// \brief	    GPS Location

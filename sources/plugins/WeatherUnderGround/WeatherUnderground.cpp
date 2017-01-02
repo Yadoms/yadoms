@@ -199,7 +199,7 @@ shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yAp
 {
    try
    {
-      shared::CDataContainer data = shared::CHttpMethods::SendGetRequest(url);
+      shared::CDataContainer data = shared::CHttpMethods::SendGetRequestJson(url);
 
       ErrorAnswerHandler Response(api, data);
 
