@@ -1,5 +1,4 @@
 #pragma once
-
 #include <shared/Export.h>
 #include <shared/DataContainer.h>
 #include <Poco/Net/HTTPSession.h>
@@ -8,7 +7,6 @@
 
 namespace shared
 {
-
    //--------------------------------------------------------------
    /// \brief	default value for HTTP Request default timeout
    //--------------------------------------------------------------
@@ -60,5 +58,4 @@ namespace shared
                                      Poco::Net::HTTPResponse& httpresponse,
                                      shared::CDataContainer& response);
    };
-
 } // namespace shared

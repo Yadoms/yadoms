@@ -19,7 +19,8 @@ namespace web
                           communication::ISendMessageAsync& messageSender)
             : m_dataProvider(dataProvider),
               m_pluginManager(pluginManager),
-              m_restKeyword("plugin"), m_messageSender(messageSender)
+              m_restKeyword("plugin"),
+              m_messageSender(messageSender)
          {
          }
 

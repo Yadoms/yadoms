@@ -3,32 +3,31 @@
 #include "../common/Query.h"
 
 
-namespace database { namespace sqlite { 
-
-
-   //
-   /// \brief  Class used to create queries
-   //
-   class CSQLiteQuery : public common::CQuery
+namespace database
+{
+   namespace sqlite
    {
-   public:
       //
-      /// \brief           Constructor
+      /// \brief  Class used to create queries
       //
-      CSQLiteQuery();
+      class CSQLiteQuery : public common::CQuery
+      {
+      public:
+         //
+         /// \brief           Constructor
+         //
+         CSQLiteQuery();
 
-      //
-      /// \brief           Destructor
-      //
-      virtual ~CSQLiteQuery();
+         //
+         /// \brief           Destructor
+         //
+         virtual ~CSQLiteQuery();
 
-      // Overriding common::CQuery
-      virtual const std::string functionDateToIsoString(const std::string &sqlPart);
-      // [END] - Overriding common::CQuery 
-
-   };
-
-
-} //namespace sqlite
+         // Overriding common::CQuery
+         std::string functionDateToIsoString(const std::string& sqlPart) override;
+         // [END] - Overriding common::CQuery 
+      };
+   } //namespace sqlite
 } //namespace database 
+
 

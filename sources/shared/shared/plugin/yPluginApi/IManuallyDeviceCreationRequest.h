@@ -25,7 +25,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Get the request data
             //-----------------------------------------------------
-            virtual const IManuallyDeviceCreationData& getData() = 0;
+            virtual const IManuallyDeviceCreationData& getData() const = 0;
 
             //-----------------------------------------------------
             ///\brief Answer the request with success, providing device name

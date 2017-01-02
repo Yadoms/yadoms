@@ -17,25 +17,27 @@ IMPLEMENT_PLUGIN(CWeatherUnderground)
 CWeatherUnderground::CWeatherUnderground()
    : m_deviceName("WeatherUnderground"),
      m_runningState(EWUPluginState::kUndefined)
-{}
+{
+}
 
 CWeatherUnderground::~CWeatherUnderground()
-{}
+{
+}
 
 void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    std::cout << "CWeatherUnderground is starting..." << std::endl;
 
-   int weatherConditionsSendingRetry = 0;
-   int astronomySendingRetry = 0;
-   int forecast10daysSendingRetry = 0;
+   auto weatherConditionsSendingRetry = 0;
+   auto astronomySendingRetry = 0;
+   auto forcast10daysSendingRetry = 0;
 
    api->getEventHandler().createTimer(kEvtInitialization, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
 
    std::cout << "CWeatherUnderground plugin is running..." << std::endl;
 
    // the main loop
-   while (1)
+   while (true)
    {
       // Wait for an event
       switch (api->getEventHandler().waitForEvents())
@@ -82,8 +84,9 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                shared::CDataContainer returnData = SendUrlRequest(api, weatherConditionsRequester->getUrl(), kEvtTimerRefreshWeatherConditions, weatherConditionsSendingRetry);
                weatherConditionsRequester->parse(api, returnData, m_configuration);
             }
-            catch(CRequestErrorException& )
-            {}
+            catch (CRequestErrorException&)
+            {
+            }
          }
          break;
       case kEvtTimerRefreshAstronomy:
@@ -94,7 +97,8 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                astronomyRequester->parse(api, returnData, m_configuration);
             }
             catch (CRequestErrorException&)
-            {}
+            {
+            }
          }
          break;
       case kEvtTimerRefreshForecast10Days:
@@ -105,7 +109,8 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                forecast10Days->parse(api, returnData, m_configuration);
             }
             catch (CRequestErrorException&)
-            {}
+            {
+            }
          }
          break;
       case yApi::IYPluginApi::kEventUpdateConfiguration:

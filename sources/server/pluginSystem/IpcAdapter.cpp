@@ -279,8 +279,15 @@ namespace pluginSystem
    void CIpcAdapter::processDeviceDetailsRequest(const toYadoms::DeviceDetailsRequest& msg)
    {
       toPlugin::msg ans;
-      auto answer = ans.mutable_devicedetails();
-      answer->set_details(m_pluginApi->getDeviceDetails(msg.device()).serialize());
+      try
+      {
+         auto answer = ans.mutable_devicedetails();
+         answer->set_details(m_pluginApi->getDeviceDetails(msg.device()).serialize());
+      }
+      catch(const std::exception& e)
+      {
+         ans.set_error("Fail to get device details : " + std::string(e.what()));
+      }
       send(ans);
    }
 
@@ -329,8 +336,15 @@ namespace pluginSystem
    void CIpcAdapter::processRecipientValueRequest(const toYadoms::RecipientValueRequest& msg)
    {
       toPlugin::msg ans;
-      auto answer = ans.mutable_recipientvalue();
-      answer->set_value(m_pluginApi->getRecipientValue(msg.recipientid(), msg.fieldname()));
+      try
+      {
+         auto answer = ans.mutable_recipientvalue();
+         answer->set_value(m_pluginApi->getRecipientValue(msg.recipientid(), msg.fieldname()));
+      }
+      catch (const std::exception& e)
+      {
+         ans.set_error("Fail to get recipient value : " + std::string(e.what()));
+      }
       send(ans);
    }
 
