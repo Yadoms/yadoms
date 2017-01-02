@@ -1,9 +1,4 @@
 #pragma once
-#include <shared/script/yInterpreterApi/IAvalaibleRequest.h>
-#include <shared/script/yInterpreterApi/ILoadScriptContentRequest.h>
-#include <shared/script/yInterpreterApi/ISaveScriptContentRequest.h>
-#include <shared/script/yInterpreterApi/IStartScriptRequest.h>
-#include <shared/script/yInterpreterApi/IStopScriptRequest.h>
 #include <shared/script/yInterpreterApi/IInformation.h>
 
 namespace automation
@@ -49,6 +44,18 @@ namespace automation
          //-----------------------------------------------------    
          virtual void saveScriptContent(const std::string& scriptPath,
                                         const std::string& scriptContent) const = 0;
+
+         //-----------------------------------------------------
+         ///\brief               Start the script
+         ///\param[in] scriptPath      The script path
+         //-----------------------------------------------------    
+         virtual std::string startScript(const std::string& scriptPath) const = 0;
+
+         //-----------------------------------------------------
+         ///\brief               Stop the script
+         ///\param[in] scriptProcessId  The script process ID to stop
+         //-----------------------------------------------------    
+         virtual void stopScript(const std::string& scriptProcessId) const = 0;
       };
    }
 } // namespace automation::interpreter

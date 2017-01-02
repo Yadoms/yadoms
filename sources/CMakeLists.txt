@@ -283,6 +283,10 @@ set(YADOMS_SRC
 	server/automation/interpreter/Manager.cpp
 	server/automation/interpreter/SaveScriptContentRequest.h
 	server/automation/interpreter/SaveScriptContentRequest.cpp
+	server/automation/interpreter/StartScriptRequest.h
+	server/automation/interpreter/StartScriptRequest.cpp
+	server/automation/interpreter/StopScriptRequest.h
+	server/automation/interpreter/StopScriptRequest.cpp
 	server/automation/interpreter/yInterpreterApiImplementation.h
 	server/automation/interpreter/yInterpreterApiImplementation.cpp
 

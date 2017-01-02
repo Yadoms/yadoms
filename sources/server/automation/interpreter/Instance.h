@@ -28,14 +28,11 @@ namespace automation
          std::string loadScriptContent(const std::string& scriptPath) const override;
          void saveScriptContent(const std::string& scriptPath,
                                 const std::string& scriptContent) const override;
+         std::string startScript(const std::string& scriptPath) const override;
+         void stopScript(const std::string& scriptProcessId) const override;
          // [END] IInstance Implementation
 
       protected:
-         void postLoadScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ILoadScriptContentRequest> request) const;
-         void postSaveScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ISaveScriptContentRequest> request) const;
-         void postStartScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStartScriptRequest> request) const;
-         void postStopScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStopScriptRequest> request) const;
-
          bool CInstance::getAvalaibility() const;
 
       private:

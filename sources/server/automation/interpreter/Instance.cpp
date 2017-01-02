@@ -5,6 +5,8 @@
 #include "AvalaibleRequest.h"
 #include "LoadScriptContentRequest.h"
 #include "SaveScriptContentRequest.h"
+#include "StartScriptRequest.h"
+#include "StopScriptRequest.h"
 
 namespace automation
 {
@@ -101,6 +103,68 @@ namespace automation
          }
       }
 
+      std::string CInstance::startScript(const std::string& scriptPath) const
+      {
+         communication::callback::CSynchronousCallback<std::string> callback;
+         auto request(boost::make_shared<CStartScriptRequest>(scriptPath,
+            callback));
+
+         try
+         {
+            m_ipcAdapter->postStartScriptRequest(request);
+            YADOMS_LOG(debug) << "Send startScriptRequest to interpreter " << m_interpreterInformation->getName();
+
+            switch (callback.waitForResult(boost::posix_time::seconds(30)))
+            {
+            case communication::callback::CSynchronousCallback<std::string>::kResult:
+            {
+               auto res = callback.getCallbackResult();
+               if (res.Success)
+                  return res.Result();
+               YADOMS_LOG(error) << "Unable to start script from interpreter " << m_interpreterInformation->getName() << " : " << res.ErrorMessage();
+            }
+            default:
+               YADOMS_LOG(error) << "Unable to start script from interpreter " << m_interpreterInformation->getName() << " : timeout";
+            }
+         }
+         catch (std::exception& e)
+         {
+            request->sendError((boost::format("Error when starting script from interpreter %1% : %2%") % m_interpreterInformation->getName() % e.what()).str());
+         }
+
+         return std::string();
+      }
+
+      void CInstance::stopScript(const std::string& scriptProcessId) const
+      {
+         communication::callback::CSynchronousCallback<bool> callback;
+         auto request(boost::make_shared<CStopScriptRequest>(scriptProcessId,
+            callback));
+
+         try
+         {
+            m_ipcAdapter->postStopScriptRequest(request);
+            YADOMS_LOG(debug) << "Send stopScriptRequest to interpreter " << m_interpreterInformation->getName();
+
+            switch (callback.waitForResult(boost::posix_time::seconds(30)))
+            {
+            case communication::callback::CSynchronousCallback<bool>::kResult:
+            {
+               auto res = callback.getCallbackResult();
+               if (res.Success)
+                  return;
+               YADOMS_LOG(error) << "Unable to stop script from interpreter " << m_interpreterInformation->getName() << " : " << res.ErrorMessage();
+            }
+            default:
+               YADOMS_LOG(error) << "Unable to stop script from interpreter " << m_interpreterInformation->getName() << " : timeout";
+            }
+         }
+         catch (std::exception& e)
+         {
+            request->sendError((boost::format("Error when stopping script from interpreter %1% : %2%") % m_interpreterInformation->getName() % e.what()).str());
+         }
+      }
+
       bool CInstance::getAvalaibility() const
       {
          communication::callback::CSynchronousCallback<bool> callback;
@@ -130,26 +194,6 @@ namespace automation
          }
 
          return false;
-      }
-
-      void CInstance::postLoadScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ILoadScriptContentRequest> request) const
-      {
-         m_ipcAdapter->postLoadScriptContentRequest(request);
-      }
-
-      void CInstance::postSaveScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ISaveScriptContentRequest> request) const
-      {
-         m_ipcAdapter->postSaveScriptContentRequest(request);
-      }
-
-      void CInstance::postStartScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStartScriptRequest> request) const
-      {
-         m_ipcAdapter->postStartScriptRequest(request);
-      }
-
-      void CInstance::postStopScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStopScriptRequest> request) const
-      {
-         m_ipcAdapter->postStopScriptRequest(request);
       }
    }
 } // namespace automation::interpreter

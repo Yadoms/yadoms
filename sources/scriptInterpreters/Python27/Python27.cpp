@@ -151,6 +151,8 @@ boost::shared_ptr<shared::process::IProcess> CPython27::createProcess(const std:
                                                                     boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
                                                                     boost::shared_ptr<shared::process::IProcessObserver> processObserver) const
 {
+   //TODO revoir (utile ?)
+   //TODO certaines dépendances à virer ?
    try
    {
       return boost::make_shared<CScriptProcess>(m_pythonExecutable,

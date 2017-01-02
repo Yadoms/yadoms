@@ -17,6 +17,7 @@ namespace automation
                 boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                 boost::shared_ptr<script::IGeneralInfo> generalInfo)
       : m_ruleData(ruleData),
+        m_ruleProperties(boost::make_shared<script::CProperties>(m_ruleData)),
         m_interpreterManager(interpreterManager),
         m_ruleStateHandler(ruleStateHandler),
         m_pluginGateway(pluginGateway),
@@ -35,32 +36,27 @@ namespace automation
 
    void CRule::start()
    {
-      if (!!m_process)
+      if (!m_scriptProcessId.empty())
       {
          YADOMS_LOG(warning) << "Can not start rule " << m_ruleData->Name() << " : already started";
          return;
       }
 
-      auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleData));
       auto scriptLogger = m_interpreterManager->createScriptLogger(m_ruleData->Name(),
                                                                    m_ruleData->Id());
       auto yScriptApi = createScriptContext(scriptLogger);
       auto stopNotifier = createStopNotifier(m_ruleStateHandler,
                                              m_ruleData->Id());
 
-      auto scriptInterpreter = m_interpreterManager->getInterpreterInstance(ruleProperties->interpreterName());
+      m_scriptInterpreter = m_interpreterManager->getInterpreterInstance(m_ruleProperties->interpreterName());
 
-      //TODO
-      //m_process = scriptInterpreter->createProcess(ruleProperties->scriptPath(),
-      //                                             scriptLogger,
-      //                                             yScriptApi,
-      //                                             stopNotifier);
+      m_scriptProcessId = m_scriptInterpreter->startScript(m_ruleProperties->scriptPath());
    }
 
    void CRule::requestStop()
    {
-      if (!!m_process)
-         m_process->kill();
+      m_scriptInterpreter->stopScript(m_scriptProcessId);
+      m_scriptProcessId.clear();
    }
 
    boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CRule::createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger)

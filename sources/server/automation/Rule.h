@@ -12,6 +12,7 @@
 #include "database/IAcquisitionRequester.h"
 #include "database/IDeviceRequester.h"
 #include "communication/ISendMessageAsync.h"
+#include "script/IProperties.h"
 
 namespace automation
 {
@@ -59,29 +60,10 @@ namespace automation
                                                                               int ruleId) const;
 
    private:
-      //-----------------------------------------------------
-      ///\brief               Minimum rule duration
-      //-----------------------------------------------------
-      static const boost::chrono::milliseconds m_MinRuleDuration;
-
-      //-----------------------------------------------------
-      ///\brief               Rule data
-      //-----------------------------------------------------
+      //TODO faire le ménage dans les données
       boost::shared_ptr<const database::entities::CRule> m_ruleData;
-
-      //-----------------------------------------------------
-      ///\brief               The script manager
-      //-----------------------------------------------------
+      boost::shared_ptr<const script::IProperties> m_ruleProperties;
       boost::shared_ptr<interpreter::IManager> m_interpreterManager;
-
-      //-----------------------------------------------------
-      ///\brief               The script process
-      //-----------------------------------------------------
-      boost::shared_ptr<shared::process::IProcess> m_process;
-
-      //-----------------------------------------------------
-      ///\brief               The rule state handler
-      //-----------------------------------------------------
       boost::shared_ptr<IRuleStateHandler> m_ruleStateHandler;
 
       boost::shared_ptr<communication::ISendMessageAsync> m_pluginGateway;
@@ -90,6 +72,9 @@ namespace automation
       boost::shared_ptr<dataAccessLayer::IKeywordManager> m_keywordAccessLayer;
       boost::shared_ptr<database::IRecipientRequester> m_dbRecipientRequester;
       boost::shared_ptr<script::IGeneralInfo> m_generalInfo;
+
+      boost::shared_ptr<interpreter::IInstance> m_scriptInterpreter;
+      std::string m_scriptProcessId;
    };
 } // namespace automation	
 
