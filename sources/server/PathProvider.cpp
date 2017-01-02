@@ -10,7 +10,8 @@ CPathProvider::CPathProvider(const boost::shared_ptr<startupOptions::IStartupOpt
      m_scriptsLogPath(m_logsPath / "scripts"),
      m_pluginsPath(startupOptions->getPluginsPath()),
      m_scriptsPath("scripts"),
-     m_scriptInterpreters(startupOptions->getScriptInterpretersPath()),
+     m_scriptInterpretersPath(startupOptions->getScriptInterpretersPath()),
+     m_scriptInterpretersLogPath(m_logsPath / "scriptInterpreters"),
      m_databaseSqliteFile(startupOptions->getDatabaseSqliteFile()),
      m_databaseSqliteBackupFile(startupOptions->getDatabaseSqliteBackupFile())
 {
@@ -28,8 +29,10 @@ CPathProvider::CPathProvider(const boost::shared_ptr<startupOptions::IStartupOpt
       boost::filesystem::create_directory(m_pluginsPath);
    if (!boost::filesystem::exists(m_scriptsPath))
       boost::filesystem::create_directory(m_scriptsPath);
-   if (!boost::filesystem::exists(m_scriptInterpreters))
-      boost::filesystem::create_directory(m_scriptInterpreters);
+   if (!boost::filesystem::exists(m_scriptInterpretersPath))
+      boost::filesystem::create_directory(m_scriptInterpretersPath);
+   if (!boost::filesystem::exists(m_scriptInterpretersLogPath))
+      boost::filesystem::create_directory(m_scriptInterpretersLogPath);
 }
 
 CPathProvider::~CPathProvider()
@@ -61,6 +64,7 @@ const boost::filesystem::path& CPathProvider::pluginsPath() const
 {
    return m_pluginsPath;
 }
+
 const boost::filesystem::path& CPathProvider::scriptsPath() const
 {
    return m_scriptsPath;
@@ -73,7 +77,12 @@ const boost::filesystem::path& CPathProvider::scriptsLogPath() const
 
 const boost::filesystem::path& CPathProvider::scriptInterpretersPath() const
 {
-   return m_scriptInterpreters;
+   return m_scriptInterpretersPath;
+}
+
+const boost::filesystem::path& CPathProvider::scriptInterpretersLogPath() const
+{
+   return m_scriptInterpretersLogPath;
 }
 
 const boost::filesystem::path& CPathProvider::databaseSqliteFile() const
@@ -85,3 +94,4 @@ const boost::filesystem::path& CPathProvider::databaseSqliteBackupFile() const
 {
    return m_databaseSqliteBackupFile;
 }
+

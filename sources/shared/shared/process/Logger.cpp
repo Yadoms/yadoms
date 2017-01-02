@@ -8,9 +8,9 @@ namespace shared
 {
    namespace process
    {
-      CLogger::CLogger(const std::string& name,
+      CLogger::CLogger(const std::string& loggerName,
                        const boost::filesystem::path& logFilePath)
-         : m_name(name)           
+         : m_loggerName(loggerName)
       {
          if (!boost::filesystem::exists(logFilePath.parent_path()))
             boost::filesystem::create_directories(logFilePath.parent_path());
@@ -23,7 +23,7 @@ namespace shared
 
       void CLogger::init()
       {
-         YADOMS_LOG_CONFIGURE(m_name);
+         YADOMS_LOG_CONFIGURE(m_loggerName);
       }
 
       void CLogger::information(const std::string& line)

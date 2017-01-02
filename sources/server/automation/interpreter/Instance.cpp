@@ -109,7 +109,7 @@ namespace automation
          try
          {
             m_ipcAdapter->postAvalaibleRequest(request);
-            YADOMS_LOG(debug) << "Send AvalaibleRequest to interpreter \"" << m_interpreterInformation->getName();
+            YADOMS_LOG(debug) << "Send AvalaibleRequest to interpreter " << m_interpreterInformation->getName();
 
             switch (callback.waitForResult(boost::posix_time::seconds(30)))
             {

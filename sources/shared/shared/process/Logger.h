@@ -15,10 +15,10 @@ namespace shared
       public:
          //-----------------------------------------------------
          ///\brief                  Constructor
-         ///\param[in] name            The Logger name
-         ///\param[in] logFilePath     Path to target log file
+         ///\param[in] loggerName   The Logger name
+         ///\param[in] logFilePath  Path to target log file
          //-----------------------------------------------------
-         CLogger(const std::string& name,
+         CLogger(const std::string& loggerName,
                  const boost::filesystem::path& logFilePath);
 
          //-----------------------------------------------------
@@ -36,7 +36,7 @@ namespace shared
          static std::string now();
          static std::string removeEol(const std::string& line);
 
-         const std::string m_name;
+         const std::string m_loggerName;
          std::ofstream m_logFile;
       };
    }

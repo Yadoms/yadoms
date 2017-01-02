@@ -50,7 +50,7 @@ namespace automation
 
       boost::filesystem::path CFactory::interpreterLogFile(const std::string& interpreterFileName) const
       {
-         return m_pathProvider.scriptInterpretersPath() / (interpreterFileName + ".log");
+         return m_pathProvider.scriptInterpretersLogPath() / interpreterFileName / "interpreter.log";
       }
 
       boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> CFactory::createInterpreterInformation(const std::string& interpreterFileName) const

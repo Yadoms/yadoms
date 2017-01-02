@@ -71,23 +71,26 @@ namespace automation
 
       std::vector<boost::filesystem::path> CManager::findInterpreterDirectories() const
       {
-         // Look for all subdirectories in m_interpretersPath directory, where it contains library with same name,
-         // for example a subdirectory "Python" containing a "Python.dll|so" file
+         // Look for all subdirectories in m_interpretersPath directory, where it contains interpreter executable file with same name,
+         // for example a subdirectory "Python" containing a "python.exe" file (Windows) / "python" (other platforms)
          std::vector<boost::filesystem::path> interpreters;
 
          if (boost::filesystem::exists(m_pathProvider.scriptInterpretersPath()) && boost::filesystem::is_directory(m_pathProvider.scriptInterpretersPath()))
          {
-            // Check all subdirectories in m_pluginPath
-            for (boost::filesystem::directory_iterator subDirIterator(m_pathProvider.scriptInterpretersPath()); subDirIterator != boost::filesystem::directory_iterator(); ++subDirIterator)
+            for (boost::filesystem::directory_iterator subDirIterator(m_pathProvider.scriptInterpretersPath());
+                 subDirIterator != boost::filesystem::directory_iterator();
+                 ++subDirIterator)
             {
                if (boost::filesystem::is_directory(subDirIterator->status()))
                {
-                  // Subdirectory, check if it is a interpreter (= contains a dynamic library with same name)
-                  const auto expectedLibName(shared::CExecutable::ToFileName(subDirIterator->path().filename().string()));
-                  for (boost::filesystem::directory_iterator fileIterator(subDirIterator->path()); fileIterator != boost::filesystem::directory_iterator(); ++fileIterator)
+                  // Subdirectory, check if it is a interpreter (= contains a executable file with same name)
+                  const auto expectedExecutableName(shared::CExecutable::ToFileName(subDirIterator->path().filename().string()));
+                  for (boost::filesystem::directory_iterator fileIterator(subDirIterator->path());
+                       fileIterator != boost::filesystem::directory_iterator();
+                       ++fileIterator)
                   {
                      if (boost::filesystem::is_regular_file(fileIterator->status()) && // It's a file...
-                        boost::iequals(fileIterator->path().filename().string(), expectedLibName)) // ...with the same name as sub-directory...
+                        boost::iequals(fileIterator->path().filename().string(), expectedExecutableName)) // ...with the same name as sub-directory...
                      {
                         interpreters.push_back(subDirIterator->path());
                      }

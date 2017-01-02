@@ -43,6 +43,7 @@ namespace automation
                                                                         int ruleId) override;
          // [END] IManager Implementation
 
+      protected:
          //-----------------------------------------------------
          ///\brief               Load the interpreters
          //-----------------------------------------------------
