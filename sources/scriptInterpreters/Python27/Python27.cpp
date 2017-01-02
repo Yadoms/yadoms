@@ -113,7 +113,7 @@ const boost::filesystem::path& CPython27::getInterpreterPath() const
 
 const std::string& CPython27::getScriptTemplate() const
 {
-   static const auto scriptTemplate = CScriptFile::PythonFileRead(boost::filesystem::path(getInterpreterPath().parent_path() / "template.py").string());
+   static const auto scriptTemplate = CScriptFile::PythonFileRead(boost::filesystem::path(getInterpreterPath() / "template.py").string());
    return scriptTemplate;
 }
 

@@ -5,13 +5,13 @@
 
 
 CScriptProcess::CScriptProcess(boost::shared_ptr<IPythonExecutable> executable,
-                               const boost::filesystem::path& pythonInterpreterPath,
+                               const boost::filesystem::path& interpreterPath,
                                boost::shared_ptr<const IScriptFile> scriptFile,
                                boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
                                boost::shared_ptr<shared::process::ILogger> scriptLogger,
                                boost::shared_ptr<shared::process::IProcessObserver> stopNotifier)
    : m_executable(executable),
-     m_pythonInterpreterPath(pythonInterpreterPath),
+     m_interpreterPath(interpreterPath),
      m_scriptFile(scriptFile),
      m_yScriptApi(yScriptApi),
      m_scriptLogger(scriptLogger),
@@ -35,7 +35,7 @@ boost::shared_ptr<shared::process::ICommandLine> CScriptProcess::createCommandLi
    args.push_back(apiIdentifier);
 
    return boost::make_shared<CPythonCommandLine>(m_executable->path(),
-                                                 m_pythonInterpreterPath.parent_path(),
+                                                 m_interpreterPath,
                                                  args);
 }
 

@@ -16,14 +16,14 @@ public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    /// \param[in] executable  Python executable to call to start script
-   /// \param[in] pythonInterpreterPath  The current library path
+   /// \param[in] interpreterPath  The current library path
    /// \param[in] scriptFile The script file to execute
    /// \param[in] yScriptApi The context, used by script to interact with Yadoms
    /// \param[in] scriptLogger The script logger
    /// \param[in] stopNotifier The stop notifier
    //--------------------------------------------------------------
    CScriptProcess(boost::shared_ptr<IPythonExecutable> executable,
-                  const boost::filesystem::path& pythonInterpreterPath,
+                  const boost::filesystem::path& interpreterPath,
                   boost::shared_ptr<const IScriptFile> scriptFile,
                   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
                   boost::shared_ptr<shared::process::ILogger> scriptLogger,
@@ -58,7 +58,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The current library path
    //--------------------------------------------------------------
-   const boost::filesystem::path& m_pythonInterpreterPath;
+   const boost::filesystem::path& m_interpreterPath;
 
    //--------------------------------------------------------------
    /// \brief	The script file to execute

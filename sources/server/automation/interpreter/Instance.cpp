@@ -46,7 +46,7 @@ namespace automation
          try
          {
             m_ipcAdapter->postLoadScriptContentRequest(request);
-            YADOMS_LOG(debug) << "Send loadScriptContentRequest to interpreter \"" << m_interpreterInformation->getName();
+            YADOMS_LOG(debug) << "Send loadScriptContentRequest to interpreter " << m_interpreterInformation->getName();
 
             switch (callback.waitForResult(boost::posix_time::seconds(30)))
             {
@@ -80,7 +80,7 @@ namespace automation
          try
          {
             m_ipcAdapter->postSaveScriptContentRequest(request);
-            YADOMS_LOG(debug) << "Send saveScriptContentRequest to interpreter \"" << m_interpreterInformation->getName();
+            YADOMS_LOG(debug) << "Send saveScriptContentRequest to interpreter " << m_interpreterInformation->getName();
 
             switch (callback.waitForResult(boost::posix_time::seconds(30)))
             {
