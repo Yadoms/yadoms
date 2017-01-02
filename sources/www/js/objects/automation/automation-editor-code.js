@@ -7,7 +7,7 @@ AutomationEditorCode.prototype = new IAutomationRuleEditor();
 AutomationEditorCode.prototype.constructor = AutomationEditorCode;
 
 AutomationEditorCode.getSupportedInterpreters = function() {
-   return ["python"];
+   return ["python27"];
 };
 
 /**

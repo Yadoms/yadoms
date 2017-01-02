@@ -225,6 +225,7 @@ namespace automation
          catch (std::exception& e)
          {
             request->sendError((boost::format("Interpreter doesn't answer to avalaible request : %1%") % e.what()).str());
+            return;
          }
 
          request->sendSuccess(avalaible);
@@ -252,6 +253,7 @@ namespace automation
          catch (std::exception& e)
          {
             request->sendError((boost::format("Interpreter doesn't answer to load script content request : %1%") % e.what()).str());
+            return;
          }
 
          request->sendSuccess(content);
@@ -278,6 +280,7 @@ namespace automation
          catch (std::exception& e)
          {
             request->sendError((boost::format("Interpreter doesn't answer to save script content request : %1%") % e.what()).str());
+            return;
          }
 
          request->sendSuccess();
@@ -305,6 +308,7 @@ namespace automation
          catch (std::exception& e)
          {
             request->sendError((boost::format("Interpreter doesn't answer to start script request : %1%") % e.what()).str());
+            return;
          }
 
          request->sendSuccess(scriptProcessId);
@@ -331,6 +335,7 @@ namespace automation
          catch (std::exception& e)
          {
             request->sendError((boost::format("Interpreter doesn't answer to stop script request : %1%") % e.what()).str());
+            return;
          }
 
          request->sendSuccess();

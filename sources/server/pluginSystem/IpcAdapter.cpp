@@ -513,6 +513,7 @@ namespace pluginSystem
       catch (std::exception& e)
       {
          request->sendError((boost::format("Plugin doesn't answer to binding query : %1%") % e.what()).str());
+         return;
       }
 
       if (success)
@@ -546,6 +547,7 @@ namespace pluginSystem
       catch (std::exception& e)
       {
          request->sendError((boost::format("Plugin doesn't answer to device configuration schema request : %1%") % e.what()).str());
+         return;
       }
 
       if (success)
@@ -635,6 +637,7 @@ namespace pluginSystem
       catch (std::exception& e)
       {
          request->sendError((boost::format("Plugin doesn't answer to binding query : %1%") % e.what()).str());
+         return;
       }
 
       if (success)
