@@ -61,6 +61,7 @@ target_link_libraries(interpreter_cpp_api
    yadoms-shared
    ${LIBS}
    ${CMAKE_DL_LIBS}
+   ${interpreter_IPC_LIBRARY}
    )
 
 

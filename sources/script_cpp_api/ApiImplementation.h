@@ -1,5 +1,7 @@
 #pragma once
 #include <shared/script/yScriptApi/IYScriptApi.h>
+#include "script_IPC/yadomsToScript.pb.h"
+#include "script_IPC/scriptToYadoms.pb.h"
 
 
 //-----------------------------------------------------
@@ -48,7 +50,7 @@ protected:
    /// \brief	Send a request
    /// \param[in] request Request to send
    //--------------------------------------------------------------
-   void sendRequest(const pbRequest::msg& request) const;
+   void sendRequest(const script_IPC::toYadoms::msg& request) const;
 
    //--------------------------------------------------------------
    /// \brief	Wait for an answer
@@ -56,7 +58,7 @@ protected:
    /// \throw std::runtime_error if message queue error
    /// \throw shared::exception::CInvalidParameter if error parsing message
    //--------------------------------------------------------------
-   void receiveAnswer(pbAnswer::msg& answer) const;
+   void receiveAnswer(script_IPC::toScript::msg& answer) const;
 
 private:
    //-----------------------------------------------------
@@ -74,6 +76,6 @@ private:
    //-----------------------------------------------------
    ///\brief               The message queue buffer, localy used but defined here to be allocated only once
    //-----------------------------------------------------
-   mutable unsigned char m_mqBuffer[m_messageQueueMessageSize];
+   boost::shared_ptr<unsigned char[]> m_mqBuffer;
 };
 

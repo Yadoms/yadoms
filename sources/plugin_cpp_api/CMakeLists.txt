@@ -74,6 +74,7 @@ target_link_libraries(plugin_cpp_api
    yadoms-shared
    ${LIBS}
    ${CMAKE_DL_LIBS}
+   ${plugin_IPC_LIBRARY}
    )
 
 

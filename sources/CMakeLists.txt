@@ -921,11 +921,14 @@ add_subdirectory(interpreter_IPC)
 # C++ API for interpreters
 add_subdirectory(interpreter_cpp_api)
 
-# Interpreters
-add_subdirectory(scriptInterpreters)
-
 # IPC messages static library for scripts
 add_subdirectory(script_IPC)
+
+# C++ API for script wrappers
+add_subdirectory(script_cpp_api)
+
+# Interpreters
+add_subdirectory(scriptInterpreters)
 
 
 
@@ -1074,7 +1077,7 @@ SET(CPACK_PACKAGE_CONTACT "Jean-Michel DECORET <decoretjm@gmail.com>")
 set(CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE 0)
 
    
-#configure the plugin to be grouped in plugins sub components
+#configure the plugin to be grouped in sub components
 FOREACH (PLUGIN ${PLUGINLIST})
    string(TOUPPER ${PLUGIN} _pluginNameUpperCase)
    string(REPLACE "-" "_" pluginCompatibleName ${_pluginNameUpperCase})
@@ -1083,7 +1086,7 @@ ENDFOREACH(PLUGIN)
 set(CPACK_COMPONENT_GROUP_PLUGINS_DISPLAY_NAME  "Plugins")
 set(CPACK_COMPONENT_GROUP_PLUGINS_DESCRIPTION  "All the plugins which control hardware components")
 
-#configure the plugin to be grouped in plugins sub components
+#configure the script interpreters to be grouped in sub components
 FOREACH (SCRIPTINTERPRETER ${SCRIPTINTERPRETERSLIST})
    string(TOUPPER ${SCRIPTINTERPRETER} _scriptInterpreterNameUpperCase)
    string(REPLACE "-" "_" scriptInterpreterCompatibleName ${_scriptInterpreterNameUpperCase})

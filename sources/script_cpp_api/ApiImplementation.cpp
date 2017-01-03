@@ -1,6 +1,16 @@
 #include "stdafx.h"
-#include "yScriptApiImplementation.h"
+#include "ApiImplementation.h"
 #include <shared/DataContainer.h>
+
+shared::script::yScriptApi::IYScriptApi* createScriptApiInstance(const std::string& yScriptApiAccessorId)
+{
+   return new CYScriptApiImplementation(yScriptApiAccessorId);
+}
+
+void deleteScriptApiInstance(shared::script::yScriptApi::IYScriptApi* yApi)
+{
+   delete yApi;
+}
 
 
 CYScriptApiImplementation::CYScriptApiImplementation(const std::string& yScriptApiAccessorId)
@@ -9,14 +19,13 @@ CYScriptApiImplementation::CYScriptApiImplementation(const std::string& yScriptA
    // compatible with the version of the headers we compiled against.
    GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-   memset(m_mqBuffer, 0, sizeof(m_mqBuffer));
-
    try
    {
       const auto sendMessageQueueId(yScriptApiAccessorId + ".toYadoms");
       const auto receiveMessageQueueId(yScriptApiAccessorId + ".toScript");
       m_sendMessageQueue = boost::make_shared<boost::interprocess::message_queue>(boost::interprocess::open_only, sendMessageQueueId.c_str());
       m_receiveMessageQueue = boost::make_shared<boost::interprocess::message_queue>(boost::interprocess::open_only, receiveMessageQueueId.c_str());
+      m_mqBuffer = boost::make_shared<unsigned char[]>(m_sendMessageQueue->get_max_msg_size());
    }
    catch (boost::interprocess::interprocess_exception& ex)
    {
@@ -34,21 +43,21 @@ CYScriptApiImplementation::~CYScriptApiImplementation()
    google::protobuf::ShutdownProtobufLibrary();
 }
 
-void CYScriptApiImplementation::sendRequest(const pbRequest::msg& request) const
+void CYScriptApiImplementation::sendRequest(const script_IPC::toYadoms::msg& request) const
 {
    try
    {
       if (!request.IsInitialized())
          throw std::overflow_error((boost::format("CYScriptApiImplementation::sendRequest \"%1%\" : request is not fully initialized") % request.descriptor()->full_name()).str());
 
-      if (request.ByteSize() > static_cast<int>(m_messageQueueMessageSize))
+      if (request.ByteSize() > static_cast<int>(m_sendMessageQueue->get_max_msg_size()))
          throw std::overflow_error((boost::format("CYScriptApiImplementation::sendRequest \"%1%\" : request is too big") % request.descriptor()->full_name()).str());
 
       boost::lock_guard<boost::recursive_mutex> lock(m_sendMutex);
-      if (!request.SerializeToArray(m_mqBuffer, request.GetCachedSize()))
+      if (!request.SerializeToArray(m_mqBuffer.get(), request.GetCachedSize()))
          throw std::overflow_error((boost::format("CYScriptApiImplementation::sendRequest \"%1%\" : fail to serialize request (too big ?)") % request.descriptor()->full_name()).str());
 
-      m_sendMessageQueue->send(m_mqBuffer,
+      m_sendMessageQueue->send(m_mqBuffer.get(),
                                request.GetCachedSize(),
                                0);
    }
@@ -58,38 +67,38 @@ void CYScriptApiImplementation::sendRequest(const pbRequest::msg& request) const
    }
 }
 
-void CYScriptApiImplementation::receiveAnswer(pbAnswer::msg& answer) const
+void CYScriptApiImplementation::receiveAnswer(script_IPC::toScript::msg& answer) const
 {
    // Wait answer
-   char message[m_messageQueueMessageSize];
+   auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue->get_max_msg_size()));
    size_t messageSize;
    unsigned int messagePriority;
 
-   m_receiveMessageQueue->receive(message,
-                                  m_messageQueueMessageSize,
+   m_receiveMessageQueue->receive(message.get(),
+                                  m_receiveMessageQueue->get_max_msg_size(),
                                   messageSize,
                                   messagePriority);
 
    if (messageSize < 1)
       throw std::runtime_error("yScriptApiWrapper::receiveAnswer : received Yadoms answer is zero length");
 
-   if (!answer.ParseFromArray(message, messageSize))
+   if (!answer.ParseFromArray(message.get(), messageSize))
       throw shared::exception::CInvalidParameter("message : fail to parse received answer data into protobuf format");
 }
 
 int CYScriptApiImplementation::getKeywordId(const std::string& deviceName,
                                             const std::string& keywordName) const
 {
-   pbRequest::msg req;
+   script_IPC::toYadoms::msg req;
    auto request = req.mutable_getkeywordid();
    request->set_devicename(deviceName);
    request->set_keywordname(keywordName);
    sendRequest(req);
 
-   pbAnswer::msg answer;
+   script_IPC::toScript::msg answer;
    receiveAnswer(answer);
 
-   if (answer.has_error())
+   if (!answer.error().empty())
       throw std::out_of_range(std::string("yScriptApiWrapper::getKeywordId returned error : ") + answer.error());
 
    if (!answer.has_getkeywordid())
@@ -101,16 +110,16 @@ int CYScriptApiImplementation::getKeywordId(const std::string& deviceName,
 int CYScriptApiImplementation::getRecipientId(const std::string& firstName,
                                               const std::string& lastName) const
 {
-   pbRequest::msg req;
+   script_IPC::toYadoms::msg req;
    auto request = req.mutable_getrecipientid();
    request->set_firstname(firstName);
    request->set_lastname(lastName);
    sendRequest(req);
 
-   pbAnswer::msg answer;
+   script_IPC::toScript::msg answer;
    receiveAnswer(answer);
 
-   if (answer.has_error())
+   if (!answer.error().empty())
       throw std::out_of_range(std::string("yScriptApiWrapper::getRecipientId returned error : ") + answer.error());
 
    if (!answer.has_getrecipientid())
@@ -121,15 +130,15 @@ int CYScriptApiImplementation::getRecipientId(const std::string& firstName,
 
 std::string CYScriptApiImplementation::readKeyword(int keywordId) const
 {
-   pbRequest::msg req;
+   script_IPC::toYadoms::msg req;
    auto request = req.mutable_readkeyword();
    request->set_keywordid(keywordId);
    sendRequest(req);
 
-   pbAnswer::msg answer;
+   script_IPC::toScript::msg answer;
    receiveAnswer(answer);
 
-   if (answer.has_error())
+   if (!answer.error().empty())
       throw std::out_of_range(std::string("yScriptApiWrapper::readKeyword returned error : ") + answer.error());
 
    if (!answer.has_readkeyword())
@@ -141,17 +150,17 @@ std::string CYScriptApiImplementation::readKeyword(int keywordId) const
 std::string CYScriptApiImplementation::waitForNextAcquisition(int keywordId,
                                                               const std::string& timeout) const
 {
-   pbRequest::msg req;
+   script_IPC::toYadoms::msg req;
    auto request = req.mutable_waitfornextacquisition();
    request->set_keywordid(keywordId);
    if (!timeout.empty())
       request->set_timeout(timeout);
    sendRequest(req);
 
-   pbAnswer::msg answer;
+   script_IPC::toScript::msg answer;
    receiveAnswer(answer);
 
-   if (answer.has_error())
+   if (!answer.error().empty())
       throw std::out_of_range(std::string("yScriptApiWrapper::waitForNextAcquisition returned error : ") + answer.error());
 
    if (!answer.has_waitfornextacquisition())
@@ -163,7 +172,7 @@ std::string CYScriptApiImplementation::waitForNextAcquisition(int keywordId,
 std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(const std::vector<int>& keywordIdList,
                                                                                const std::string& timeout) const
 {
-   pbRequest::msg req;
+   script_IPC::toYadoms::msg req;
    auto request = req.mutable_waitfornextacquisitions();
    for (const auto it : keywordIdList)
       request->add_keywordid(it);
@@ -171,23 +180,24 @@ std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(c
       request->set_timeout(timeout);
    sendRequest(req);
 
-   pbAnswer::msg answer;
+   script_IPC::toScript::msg answer;
    receiveAnswer(answer);
 
-   if (answer.has_error())
+   if (!answer.error().empty())
       throw std::out_of_range(std::string("yScriptApiWrapper::waitForNextAcquisitions returned error : ") + answer.error());
 
    if (!answer.has_waitfornextacquisitions())
       throw std::out_of_range("yScriptApiWrapper::waitForNextAcquisitions, wrong message received");
 
-   return std::pair<int, std::string>(answer.waitfornextacquisitions().keywordid(), answer.waitfornextacquisitions().has_acquisition() ? answer.waitfornextacquisitions().acquisition() : std::string());
+   return std::pair<int, std::string>(answer.waitfornextacquisitions().keywordid(),
+                                      answer.waitfornextacquisitions().acquisition());
 }
 
 shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int>& keywordIdList,
                                                                                         bool receiveDateTimeEvent,
                                                                                         const std::string& timeout) const
 {
-   pbRequest::msg req;
+   script_IPC::toYadoms::msg req;
    auto request = req.mutable_waitforevent();
    for (const auto it : keywordIdList)
       request->add_keywordid(it);
@@ -196,10 +206,10 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
       request->set_timeout(timeout);
    sendRequest(req);
 
-   pbAnswer::msg answer;
+   script_IPC::toScript::msg answer;
    receiveAnswer(answer);
 
-   if (answer.has_error())
+   if (!answer.error().empty())
       throw std::out_of_range(std::string("yScriptApiWrapper::waitForEvent returned error : ") + answer.error());
 
    if (!answer.has_waitforevent())
@@ -208,32 +218,32 @@ shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitF
    shared::script::yScriptApi::CWaitForEventResult result;
    switch (answer.waitforevent().type())
    {
-   case pbAnswer::WaitForEvent_EventType_kTimeout: result.setType(shared::script::yScriptApi::CWaitForEventResult::kTimeout);
+   case script_IPC::toScript::WaitForEvent_EventType_kTimeout: result.setType(shared::script::yScriptApi::CWaitForEventResult::kTimeout);
       break;
-   case pbAnswer::WaitForEvent_EventType_kKeyword: result.setType(shared::script::yScriptApi::CWaitForEventResult::kKeyword);
+   case script_IPC::toScript::WaitForEvent_EventType_kKeyword: result.setType(shared::script::yScriptApi::CWaitForEventResult::kKeyword);
       break;
-   case pbAnswer::WaitForEvent_EventType_kDateTime: result.setType(shared::script::yScriptApi::CWaitForEventResult::kDateTime);
+   case script_IPC::toScript::WaitForEvent_EventType_kDateTime: result.setType(shared::script::yScriptApi::CWaitForEventResult::kDateTime);
       break;
    default:
       throw shared::exception::CInvalidParameter("answer.waitforevent.type");
    }
 
    result.setKeywordId(answer.waitforevent().keywordid());
-   result.setValue(answer.waitforevent().has_acquisition() ? answer.waitforevent().acquisition() : std::string());
+   result.setValue(answer.waitforevent().acquisition());
    return result;
 }
 
 std::vector<int> CYScriptApiImplementation::getKeywordsByCapacity(const std::string& capacity) const
 {
-   pbRequest::msg req;
+   script_IPC::toYadoms::msg req;
    auto request = req.mutable_getkeywordsbycapacity();
    request->set_capacity(capacity);
    sendRequest(req);
 
-   pbAnswer::msg answer;
+   script_IPC::toScript::msg answer;
    receiveAnswer(answer);
 
-   if (answer.has_error())
+   if (!answer.error().empty())
       throw std::out_of_range(std::string("yScriptApiWrapper::getKeywordsByCapacity, error : ") + answer.error());
 
    if (!answer.has_getkeywordsbycapacity())
@@ -248,16 +258,16 @@ std::vector<int> CYScriptApiImplementation::getKeywordsByCapacity(const std::str
 void CYScriptApiImplementation::writeKeyword(int keywordId,
                                              const std::string& newState)
 {
-   pbRequest::msg req;
+   script_IPC::toYadoms::msg req;
    auto request = req.mutable_writekeyword();
    request->set_keywordid(keywordId);
    request->set_newstate(newState);
    sendRequest(req);
 
-   pbAnswer::msg answer;
+   script_IPC::toScript::msg answer;
    receiveAnswer(answer);
 
-   if (answer.has_error())
+   if (!answer.error().empty())
       throw std::out_of_range(std::string("yScriptApiWrapper::writeKeyword returned error : ") + answer.error());
 
    if (!answer.has_writekeyword())
@@ -268,17 +278,17 @@ void CYScriptApiImplementation::sendNotification(int keywordId,
                                                  int recipientId,
                                                  const std::string& message)
 {
-   pbRequest::msg req;
+   script_IPC::toYadoms::msg req;
    auto request = req.mutable_sendnotification();
    request->set_keywordid(keywordId);
    request->set_recipientid(recipientId);
    request->set_message(message);
    sendRequest(req);
 
-   pbAnswer::msg answer;
+   script_IPC::toScript::msg answer;
    receiveAnswer(answer);
 
-   if (answer.has_error())
+   if (!answer.error().empty())
       throw std::out_of_range(std::string("yScriptApiWrapper::sendNotification returned error : ") + answer.error());
 
    if (!answer.has_sendnotification())
@@ -287,33 +297,33 @@ void CYScriptApiImplementation::sendNotification(int keywordId,
 
 std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
 {
-   pbRequest::msg req;
+   script_IPC::toYadoms::msg req;
    auto request = req.mutable_getinfo();
    switch (key)
    {
-   case kSunrise: request->set_key(pbRequest::GetInfo_Key_kSunrise);
+   case kSunrise: request->set_key(script_IPC::toYadoms::GetInfo_Key_kSunrise);
       break;
-   case kSunset: request->set_key(pbRequest::GetInfo_Key_kSunset);
+   case kSunset: request->set_key(script_IPC::toYadoms::GetInfo_Key_kSunset);
       break;
-   case kLatitude: request->set_key(pbRequest::GetInfo_Key_kLatitude);
+   case kLatitude: request->set_key(script_IPC::toYadoms::GetInfo_Key_kLatitude);
       break;
-   case kLongitude: request->set_key(pbRequest::GetInfo_Key_kLongitude);
+   case kLongitude: request->set_key(script_IPC::toYadoms::GetInfo_Key_kLongitude);
       break;
-   case kAltitude: request->set_key(pbRequest::GetInfo_Key_kAltitude);
+   case kAltitude: request->set_key(script_IPC::toYadoms::GetInfo_Key_kAltitude);
       break;
-   case kYadomsServerOS: request->set_key(pbRequest::GetInfo_Key_kYadomsServerOS);
+   case kYadomsServerOS: request->set_key(script_IPC::toYadoms::GetInfo_Key_kYadomsServerOS);
       break;
-   case kYadomsServerVersion: request->set_key(pbRequest::GetInfo_Key_kYadomsServerVersion);
+   case kYadomsServerVersion: request->set_key(script_IPC::toYadoms::GetInfo_Key_kYadomsServerVersion);
       break;
    default:
       throw shared::exception::CInvalidParameter("answer.waitforevent.type");
    }
    sendRequest(req);
 
-   pbAnswer::msg answer;
+   script_IPC::toScript::msg answer;
    receiveAnswer(answer);
 
-   if (answer.has_error())
+   if (!answer.error().empty())
       throw std::out_of_range(std::string("yScriptApiWrapper::getInfo returned error : ") + answer.error());
 
    if (!answer.has_getinfo())
@@ -324,16 +334,16 @@ std::string CYScriptApiImplementation::getInfo(EInfoKeys key) const
 
 std::string CYScriptApiImplementation::getKeywordName(int keywordId) const
 {
-   pbRequest::msg req;
+   script_IPC::toYadoms::msg req;
    auto request = req.mutable_getkeywordname();
    request->set_keywordid(keywordId);
 
    sendRequest(req);
 
-   pbAnswer::msg answer;
+   script_IPC::toScript::msg answer;
    receiveAnswer(answer);
 
-   if (answer.has_error())
+   if (!answer.error().empty())
       throw std::out_of_range(std::string("yScriptApiWrapper::getKeywordName returned error : ") + answer.error());
 
    if (!answer.has_getkeywordname())
@@ -344,16 +354,16 @@ std::string CYScriptApiImplementation::getKeywordName(int keywordId) const
 
 std::string CYScriptApiImplementation::getKeywordDeviceName(int keywordId) const
 {
-   pbRequest::msg req;
+   script_IPC::toYadoms::msg req;
    auto request = req.mutable_getkeyworddevicename();
    request->set_keywordid(keywordId);
 
    sendRequest(req);
 
-   pbAnswer::msg answer;
+   script_IPC::toScript::msg answer;
    receiveAnswer(answer);
 
-   if (answer.has_error())
+   if (!answer.error().empty())
       throw std::out_of_range(std::string("yScriptApiWrapper::getKeywordDeviceName returned error : ") + answer.error());
 
    if (!answer.has_getkeyworddevicename())
@@ -361,4 +371,3 @@ std::string CYScriptApiImplementation::getKeywordDeviceName(int keywordId) const
 
    return answer.getkeyworddevicename().devicename();
 }
-
