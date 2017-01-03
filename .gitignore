@@ -20,3 +20,4 @@ sources/plugins/EnOcean/profiles/generated*.cpp
 sources/plugins/EnOcean/profiles/generated*.h
 sources/plugins/EnOcean/locales/*
 sources/plugins/EnOcean/package.json
+sources/scriptInterpreters/Python27/yScriptApiWrapper/swigpyrun.h

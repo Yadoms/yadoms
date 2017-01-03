@@ -39,7 +39,6 @@ namespace interpreter_cpp_api
    protected:
       //--------------------------------------------------------------
       /// \brief	Send a request
-      /// \param[in] request Request to send
       //--------------------------------------------------------------
       void send(const interpreter_IPC::toYadoms::msg& msg) const;
       void send(const interpreter_IPC::toYadoms::msg& msg,
