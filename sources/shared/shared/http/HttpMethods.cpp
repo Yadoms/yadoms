@@ -49,7 +49,6 @@ namespace shared
             }
             else
             {
-               //TODO : manage other content types like XML,....
                auto message = (boost::format("content not yet managed : %1%") % response.getContentType()).str();
                YADOMS_LOG(error) << message;
                throw exception::CException(message);

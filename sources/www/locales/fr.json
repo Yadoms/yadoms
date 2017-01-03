@@ -333,7 +333,7 @@
               "description": "Définissez ici votre fuseau horaire."
             },
             "basicAuthentication": {
-              "name": "Autentification",
+              "name": "Authentification",
               "description": "Méthode d'authentification pour accéder à Yadoms."
             },
             "basicAuthenticationUser": {
