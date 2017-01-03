@@ -40,16 +40,6 @@ void CAstronomy::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api, IW
       details.set("type", m_type);
       api->declareDevice(m_deviceName, m_type, m_keywords, details);
    }
-   else
-   {
-      try {
-         api->removeDevice(m_deviceName);
-      }
-      catch (std::exception& e)
-      {
-         std::cout << e.what() << std::endl;
-      }
-   }
 }
 
 void CAstronomy::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,

@@ -55,17 +55,20 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
       }
       else
       {
-         // reset all forecast rain keywords
-         for (auto counter = 0; counter < NB_INDIVIDUAL_FORECAST_KEYWORDS; ++counter)
+         if (api->deviceExists(m_deviceName))
          {
-            std::string TempString;
-            TempString = "Rain_Day_" + boost::lexical_cast<std::string>(counter);
-            if (m_forecastRain[counter])
+            // reset all forecast rain keywords
+            for (auto counter = 0; counter < NB_INDIVIDUAL_FORECAST_KEYWORDS; ++counter)
             {
-               if (api->keywordExists(m_deviceName, m_forecastRain[counter]))
+               std::string TempString;
+               TempString = "Rain_Day_" + boost::lexical_cast<std::string>(counter);
+               if (m_forecastRain[counter])
                {
-                  api->removeKeyword(m_deviceName, TempString);
-                  m_forecastRain[counter].reset();
+                  if (api->keywordExists(m_deviceName, m_forecastRain[counter]))
+                  {
+                     api->removeKeyword(m_deviceName, TempString);
+                     m_forecastRain[counter].reset();
+                  }
                }
             }
          }
@@ -86,26 +89,29 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
       }
       else
       {
-         // reset all temp keywords
-         for (auto counter = 0; counter < NB_INDIVIDUAL_FORECAST_KEYWORDS; ++counter)
+         if (api->deviceExists(m_deviceName))
          {
-            std::string TempString;
-            TempString = "lowtemp_Day_" + boost::lexical_cast<std::string>(counter);
-            if (m_lowtemp[counter])
+         // reset all temp keywords
+            for (auto counter = 0; counter < NB_INDIVIDUAL_FORECAST_KEYWORDS; ++counter)
             {
-               if (api->keywordExists(m_deviceName, m_lowtemp[counter]))
+               std::string TempString;
+               TempString = "lowtemp_Day_" + boost::lexical_cast<std::string>(counter);
+               if (m_lowtemp[counter])
                {
-                  api->removeKeyword(m_deviceName, TempString);
-                  m_lowtemp[counter].reset();
+                  if (api->keywordExists(m_deviceName, m_lowtemp[counter]))
+                  {
+                     api->removeKeyword(m_deviceName, TempString);
+                     m_lowtemp[counter].reset();
+                  }
                }
-            }
-            TempString = "hightemp_Day_" + boost::lexical_cast<std::string>(counter);
-            if (m_hightemp[counter])
-            {
-               if (api->keywordExists(m_deviceName, m_hightemp[counter]))
+               TempString = "hightemp_Day_" + boost::lexical_cast<std::string>(counter);
+               if (m_hightemp[counter])
                {
-                  api->removeKeyword(m_deviceName, TempString);
-                  m_hightemp[counter].reset();
+                  if (api->keywordExists(m_deviceName, m_hightemp[counter]))
+                  {
+                     api->removeKeyword(m_deviceName, TempString);
+                     m_hightemp[counter].reset();
+                  }
                }
             }
          }
