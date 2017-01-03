@@ -11,12 +11,11 @@ namespace shared
 {
    CDataContainer CHttpMethods::SendGetRequest(const std::string & url)
    {
-      shared::CDataContainer parameters;
-      return SendGetRequest(url, parameters);
+      return SendGetRequest(url, shared::CDataContainer());
    }
 
    bool CHttpMethods::SendGetRequest(const std::string & url,
-                                     shared::CDataContainer & parameters,
+                                     const shared::CDataContainer & parameters,
                                      boost::function1<void, shared::CDataContainer&> onReceive,
                                      const boost::posix_time::time_duration& timeout)
    {
@@ -51,6 +50,9 @@ namespace shared
             else
             {
                //TODO : manage other content types like XML,....
+               auto message = (boost::format("content not yet managed : %1%") % response.getContentType()).str();
+               YADOMS_LOG(error) << message;
+               throw exception::CException(message);
             }
          }
          else
@@ -70,8 +72,8 @@ namespace shared
    }
 
    CDataContainer CHttpMethods::SendGetRequest(const std::string & url, 
-                                              shared::CDataContainer & parameters,
-                                              const boost::posix_time::time_duration& timeout)
+                                               const shared::CDataContainer & parameters,
+                                               const boost::posix_time::time_duration& timeout)
    {
       CDataContainer responseData;
 

@@ -35,8 +35,8 @@ namespace shared
       /// \return     the answer of the request
       //--------------------------------------------------------------
       static CDataContainer SendGetRequest(const std::string & url, 
-                                          shared::CDataContainer & parameters,
-                                          const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
+                                           const shared::CDataContainer & parameters,
+                                           const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
       /// \brief	    SendGetRequest
@@ -47,7 +47,7 @@ namespace shared
       /// \return     false if the time has expired. In this case the onReceived is not executed
       //--------------------------------------------------------------
       static bool SendGetRequest(const std::string & url, 
-                                 shared::CDataContainer& parameters,
+                                 const shared::CDataContainer& parameters,
                                  boost::function1<void, shared::CDataContainer&> onReceive,
                                  const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
