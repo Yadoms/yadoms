@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/plugin/yPluginApi/historization/IHistorizable.h>
-#include <plugin_IPC/toYadoms.pb.h>
+#include <plugin_IPC/pluginToYadoms.pb.h>
 
 namespace pluginSystem
 {

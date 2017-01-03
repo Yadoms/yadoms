@@ -2,7 +2,6 @@
 #include "IRule.h"
 #include "database/entities/Entities.h"
 #include "IRuleStateHandler.h"
-#include <shared/process/IProcess.h>
 #include "interpreter/IManager.h"
 #include <shared/process/IProcessObserver.h>
 #include <shared/script/yScriptApi/IYScriptApi.h>
@@ -13,6 +12,7 @@
 #include "database/IDeviceRequester.h"
 #include "communication/ISendMessageAsync.h"
 #include "script/IProperties.h"
+#include "script/IIpcAdapter.h"
 
 namespace automation
 {
@@ -43,19 +43,9 @@ namespace automation
       //-----------------------------------------------------
       void start();
 
-      //-----------------------------------------------------
-      ///\brief               Create the script context (IYScriptApi implementation)
-      ///\param[in] scriptLogger The logger used for rule
-      ///\return              A script context instance
-      //-----------------------------------------------------
-      boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger);
-
-      //-----------------------------------------------------
-      ///\brief               Create the stop notifier
-      ///\param[in] ruleStateHandler   The global state handler
-      ///\param[in] ruleId    The rule ID
-      ///\return              A stop notifier instance
-      //-----------------------------------------------------
+      boost::shared_ptr<script::IIpcAdapter> createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger,
+                                                                 int ruleId) const;
+      boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptApiImplementation(boost::shared_ptr<shared::process::ILogger> scriptLogger) const;
       boost::shared_ptr<shared::process::IProcessObserver> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler,
                                                                               int ruleId) const;
 
@@ -75,6 +65,7 @@ namespace automation
 
       boost::shared_ptr<interpreter::IInstance> m_scriptInterpreter;
       std::string m_scriptProcessId;
+      boost::shared_ptr<script::IIpcAdapter> m_ipcAdapter;
    };
 } // namespace automation	
 

@@ -1,38 +1,38 @@
-syntax = "proto2";
-package pbAnswer;
+syntax = "proto3";
+package script_IPC.toScript;
 
 message GetKeywordId
 {
-   required int32 id = 1;
+   int32 id = 1;
 }
 
 message GetRecipientId
 {
-   required int32 id = 1;
+   int32 id = 1;
 }
 
 message ReadKeyword
 {
-   required string value = 1;
+   string value = 1;
 }
 
 message WaitForNextAcquisition
 {
-   required string acquisition = 1;
+   string acquisition = 1;
 }
 
 message WaitForNextAcquisitions
 {
-   required int32 keywordId = 1;
-   optional string acquisition = 2;
+   int32 keywordId = 1;
+   string acquisition = 2;
 }
 
 message WaitForEvent
 {
    enum EventType { kTimeout = 0; kKeyword = 1; kDateTime = 2; }
-   required EventType type = 1;
-   required int32 keywordId = 2;
-   optional string acquisition = 3;
+   EventType type = 1;
+   int32 keywordId = 2;
+   string acquisition = 3;
 }
 
 message GetKeywordsByCapacity
@@ -50,17 +50,17 @@ message SendNotification
 
 message GetInfo
 {
-   required string value = 1;
+   string value = 1;
 }
 
 message GetKeywordName
 {
-   required string keywordName = 1;
+   string keywordName = 1;
 }
 
 message GetKeywordDeviceName
 {
-   required string deviceName = 1;
+   string deviceName = 1;
 }
 
    
@@ -68,7 +68,7 @@ message msg
 {
    oneof OneOf
    {
-	  string error = 1;
+      string error = 1;
       GetKeywordId getKeywordId = 2;
       GetRecipientId getRecipientId = 3;
       ReadKeyword readKeyword = 4;
@@ -78,9 +78,9 @@ message msg
       WriteKeyword writeKeyword = 8;
       SendNotification sendNotification = 9;
       GetInfo getInfo = 10;
-	  GetKeywordsByCapacity getKeywordsByCapacity = 11;
-	  GetKeywordName getKeywordName = 12;
-	  GetKeywordDeviceName getKeywordDeviceName = 13;
+	   GetKeywordsByCapacity getKeywordsByCapacity = 11;
+	   GetKeywordName getKeywordName = 12;
+	   GetKeywordDeviceName getKeywordDeviceName = 13;
    }
 }
 

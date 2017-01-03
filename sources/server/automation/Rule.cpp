@@ -4,8 +4,9 @@
 #include "script/StopNotifier.h"
 #include "script/YScriptApiImplementation.h"
 #include "script/Properties.h"
+#include "script/IpcAdapter.h"
 
-namespace automation
+namespace automation //TODO faire une factory
 {
    CRule::CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
                 boost::shared_ptr<interpreter::IManager> interpreterManager,
@@ -44,13 +45,15 @@ namespace automation
 
       auto scriptLogger = m_interpreterManager->createScriptLogger(m_ruleData->Name(),
                                                                    m_ruleData->Id());
-      auto yScriptApi = createScriptContext(scriptLogger);
+      m_ipcAdapter = createScriptContext(scriptLogger,
+                                         m_ruleData->Id());
       auto stopNotifier = createStopNotifier(m_ruleStateHandler,
                                              m_ruleData->Id());
 
       m_scriptInterpreter = m_interpreterManager->getInterpreterInstance(m_ruleProperties->interpreterName());
 
-      m_scriptProcessId = m_scriptInterpreter->startScript(m_ruleProperties->scriptPath());
+      m_scriptProcessId = m_scriptInterpreter->startScript(m_ruleProperties->scriptPath(),
+                                                           m_ipcAdapter->id());
    }
 
    void CRule::requestStop()
@@ -59,16 +62,24 @@ namespace automation
       m_scriptProcessId.clear();
    }
 
-   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CRule::createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger)
+   boost::shared_ptr<script::IIpcAdapter> CRule::createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger,
+                                                                     int ruleId) const
    {
-      boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi(boost::make_shared<script::CYScriptApiImplementation>(scriptLogger,
-                                                                                                                                  m_pluginGateway,
-                                                                                                                                  m_dbAcquisitionRequester,
-                                                                                                                                  m_dbDeviceRequester,
-                                                                                                                                  m_keywordAccessLayer,
-                                                                                                                                  m_dbRecipientRequester,
-                                                                                                                                  m_generalInfo));
-      return yScriptApi;
+      auto apiImplementation = createScriptApiImplementation(scriptLogger);
+
+      return boost::make_shared<script::CIpcAdapter>(apiImplementation,
+                                                     ruleId);
+   }
+
+   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CRule::createScriptApiImplementation(boost::shared_ptr<shared::process::ILogger> scriptLogger) const
+   {
+      return boost::make_shared<script::CYScriptApiImplementation>(scriptLogger,
+                                                                   m_pluginGateway,
+                                                                   m_dbAcquisitionRequester,
+                                                                   m_dbDeviceRequester,
+                                                                   m_keywordAccessLayer,
+                                                                   m_dbRecipientRequester,
+                                                                   m_generalInfo);
    }
 
    boost::shared_ptr<shared::process::IProcessObserver> CRule::createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler,

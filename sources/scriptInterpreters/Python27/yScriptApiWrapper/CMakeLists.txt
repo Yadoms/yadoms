@@ -13,7 +13,6 @@ set(PYTHON_WRAPPER_SOURCES
    
 	swigpyrun.h
      
-   ../Messages.h
    PythonLibInclude.h
    yScriptApiInstance.h
    yScriptApiInstance.cpp

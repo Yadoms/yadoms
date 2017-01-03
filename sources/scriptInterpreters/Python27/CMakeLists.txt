@@ -9,22 +9,13 @@ if(PYTHONLIBS_FOUND)
    include("../YadomsScriptInterpertersCommon.cmake")   
 	  
    #########################################
-   ## Messages static library
-   #########################################
-   add_subdirectory(messages)
-
-   #########################################
    ## Place here all the source files
    #########################################
    set(PYTHON27_SOURCES
       stdafx.h
       stdafx.cpp
-      ContextAccessor.h
-      ContextAccessor.cpp
-      IContextAccessor.h
       IPythonExecutable.h
       IScriptFile.h
-      Messages.h
       Python27.h
       Python27.cpp
       PythonCommandLine.h
@@ -73,8 +64,8 @@ if(PYTHONLIBS_FOUND)
    ## even if PYTHON27_INCLDIR or PYTHON27_LINK are empty
    #########################################
    SCRIPT_INTERPRETER_SOURCES(python27 ${PYTHON27_SOURCES})
-   SCRIPT_INTERPRETER_INCLDIR(python27 ${PYTHON27_INCLDIR} ${PLATFORM_SPECIFIC_INCL_DIR} ${PROTOBUF_INCLUDE_DIRS} ${messages_GENERATED_DIR})
-   SCRIPT_INTERPRETER_LINK(python27 ${PYTHON27_LINK} messages)
+   SCRIPT_INTERPRETER_INCLDIR(python27 ${PYTHON27_INCLDIR} ${PLATFORM_SPECIFIC_INCL_DIR} ${PROTOBUF_INCLUDE_DIRS})
+   SCRIPT_INTERPRETER_LINK(python27 ${PYTHON27_LINK})
 
    #########################################
    ## Post-build commands

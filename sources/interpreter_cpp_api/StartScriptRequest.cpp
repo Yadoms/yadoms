@@ -7,7 +7,8 @@ namespace interpreter_cpp_api
    CStartScriptRequest::CStartScriptRequest(const interpreter_IPC::toInterpreter::StartScriptRequest& msg,
                                             boost::function1<void, const std::string&> sucessCallback,
                                             boost::function1<void, const std::string&> errorCallback)
-      : m_scriptpath(msg.scriptpath()),
+      : m_scriptPath(msg.scriptpath()),
+        m_scriptApiId(msg.scriptapiid()),
         m_sucessCallback(sucessCallback),
         m_errorCallback(errorCallback)
    {
@@ -19,7 +20,12 @@ namespace interpreter_cpp_api
 
    const std::string& CStartScriptRequest::getScriptPath()
    {
-      return m_scriptpath;
+      return m_scriptPath;
+   }
+
+   const std::string& CStartScriptRequest::getScriptApiId()
+   {
+      return m_scriptApiId;
    }
 
    void CStartScriptRequest::sendSuccess(const std::string& scriptProcessId)

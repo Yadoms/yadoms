@@ -24,8 +24,8 @@ namespace automation
       {
       }
 
-      boost::shared_ptr<interpreter::IInstance> CFactory::createInterpreterInstance(const std::string& interpreterFileName,
-                                                                                    boost::function2<void, bool, const std::string&> onInstanceStateChangedFct) const
+      boost::shared_ptr<IInstance> CFactory::createInterpreterInstance(const std::string& interpreterFileName,
+                                                                       boost::function2<void, bool, const std::string&> onInstanceStateChangedFct) const
       {
          auto interpreterInformation = createInterpreterInformation(interpreterFileName);
 
@@ -43,9 +43,9 @@ namespace automation
                                               logger,
                                               instanceStateHandler);
 
-         return boost::make_shared<interpreter::CInstance>(interpreterInformation,
-                                                           process,
-                                                           yInterpreterIpcAdapter);
+         return boost::make_shared<CInstance>(interpreterInformation,
+                                              process,
+                                              yInterpreterIpcAdapter);
       }
 
       boost::filesystem::path CFactory::interpreterLogFile(const std::string& interpreterFileName) const
@@ -55,7 +55,7 @@ namespace automation
 
       boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> CFactory::createInterpreterInformation(const std::string& interpreterFileName) const
       {
-         return boost::make_shared<interpreter::CInformation>(m_pathProvider.scriptInterpretersPath() / interpreterFileName);
+         return boost::make_shared<CInformation>(m_pathProvider.scriptInterpretersPath() / interpreterFileName);
       }
 
       boost::shared_ptr<shared::process::ILogger> CFactory::createProcessLogger(const std::string& interpreterFileName) const
@@ -64,16 +64,16 @@ namespace automation
                                                              interpreterLogFile(interpreterFileName));
       }
 
-      boost::shared_ptr<interpreter::IIpcAdapter> CFactory::createInterpreterRunningContext(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation) const
+      boost::shared_ptr<IIpcAdapter> CFactory::createInterpreterRunningContext(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation) const
       {
          auto apiImplementation = createInterpreterApiImplementation(interpreterInformation);
 
-         return boost::make_shared<interpreter::CIpcAdapter>(interpreterInformation->getName());
+         return boost::make_shared<CIpcAdapter>(interpreterInformation->getName());
       }
 
-      boost::shared_ptr<interpreter::CYInterpreterApiImplementation> CFactory::createInterpreterApiImplementation(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation) const
+      boost::shared_ptr<CYInterpreterApiImplementation> CFactory::createInterpreterApiImplementation(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation) const
       {
-         return boost::make_shared<interpreter::CYInterpreterApiImplementation>(interpreterInformation);
+         return boost::make_shared<CYInterpreterApiImplementation>(interpreterInformation);
       }
 
       boost::shared_ptr<shared::process::ICommandLine> CFactory::createCommandLine(const boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
@@ -87,16 +87,16 @@ namespace automation
                                                                                   args);
       }
 
-      boost::shared_ptr<interpreter::CInstanceStateHandler> CFactory::createInstanceStateHandler(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
-                                                                                                 boost::function2<void, bool, const std::string&> onInstanceStateChangedFct) const
+      boost::shared_ptr<CInstanceStateHandler> CFactory::createInstanceStateHandler(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
+                                                                                    boost::function2<void, bool, const std::string&> onInstanceStateChangedFct) const
       {
-         return boost::make_shared<interpreter::CInstanceStateHandler>(interpreterInformation,
-                                                                       onInstanceStateChangedFct);
+         return boost::make_shared<CInstanceStateHandler>(interpreterInformation,
+                                                          onInstanceStateChangedFct);
       }
 
       boost::shared_ptr<shared::process::IProcess> CFactory::createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
                                                                                    boost::shared_ptr<shared::process::ILogger> logger,
-                                                                                   boost::shared_ptr<interpreter::CInstanceStateHandler> instanceStateHandler) const
+                                                                                   boost::shared_ptr<CInstanceStateHandler> instanceStateHandler) const
       {
          return boost::make_shared<shared::process::CProcess>(commandLine,
                                                               instanceStateHandler,

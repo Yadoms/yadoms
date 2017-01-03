@@ -103,11 +103,13 @@ namespace automation
          }
       }
 
-      std::string CInstance::startScript(const std::string& scriptPath) const
+      std::string CInstance::startScript(const std::string& scriptPath,
+                                         const std::string& yScriptApiId) const
       {
          communication::callback::CSynchronousCallback<std::string> callback;
          auto request(boost::make_shared<CStartScriptRequest>(scriptPath,
-            callback));
+                                                              yScriptApiId,
+                                                              callback));
 
          try
          {
@@ -117,12 +119,12 @@ namespace automation
             switch (callback.waitForResult(boost::posix_time::seconds(30)))
             {
             case communication::callback::CSynchronousCallback<std::string>::kResult:
-            {
-               auto res = callback.getCallbackResult();
-               if (res.Success)
-                  return res.Result();
-               YADOMS_LOG(error) << "Unable to start script from interpreter " << m_interpreterInformation->getName() << " : " << res.ErrorMessage();
-            }
+               {
+                  auto res = callback.getCallbackResult();
+                  if (res.Success)
+                     return res.Result();
+                  YADOMS_LOG(error) << "Unable to start script from interpreter " << m_interpreterInformation->getName() << " : " << res.ErrorMessage();
+               }
             default:
                YADOMS_LOG(error) << "Unable to start script from interpreter " << m_interpreterInformation->getName() << " : timeout";
             }
@@ -139,7 +141,7 @@ namespace automation
       {
          communication::callback::CSynchronousCallback<bool> callback;
          auto request(boost::make_shared<CStopScriptRequest>(scriptProcessId,
-            callback));
+                                                             callback));
 
          try
          {
@@ -149,12 +151,12 @@ namespace automation
             switch (callback.waitForResult(boost::posix_time::seconds(30)))
             {
             case communication::callback::CSynchronousCallback<bool>::kResult:
-            {
-               auto res = callback.getCallbackResult();
-               if (res.Success)
-                  return;
-               YADOMS_LOG(error) << "Unable to stop script from interpreter " << m_interpreterInformation->getName() << " : " << res.ErrorMessage();
-            }
+               {
+                  auto res = callback.getCallbackResult();
+                  if (res.Success)
+                     return;
+                  YADOMS_LOG(error) << "Unable to stop script from interpreter " << m_interpreterInformation->getName() << " : " << res.ErrorMessage();
+               }
             default:
                YADOMS_LOG(error) << "Unable to stop script from interpreter " << m_interpreterInformation->getName() << " : timeout";
             }

@@ -300,6 +300,9 @@ set(YADOMS_SRC
 	server/automation/script/GeneralInfo.cpp
 	server/automation/script/IDayLightProvider.h
 	server/automation/script/IGeneralInfo.h
+	server/automation/script/IIpcAdapter.h
+   server/automation/script/IpcAdapter.h
+	server/automation/script/IpcAdapter.cpp
 	server/automation/script/IProperties.h
 	server/automation/script/Properties.h
 	server/automation/script/Properties.cpp
@@ -307,6 +310,7 @@ set(YADOMS_SRC
 	server/automation/script/StopNotifier.cpp
 	server/automation/script/YScriptApiImplementation.h
 	server/automation/script/YScriptApiImplementation.cpp
+
 
 	server/communication/ISendMessageAsync.h
 	server/communication/PluginGateway.h
@@ -920,6 +924,9 @@ add_subdirectory(interpreter_cpp_api)
 # Interpreters
 add_subdirectory(scriptInterpreters)
 
+# IPC messages static library for scripts
+add_subdirectory(script_IPC)
+
 
 
 ##################################################################################################
@@ -933,6 +940,7 @@ set(YADOMS_INCL_DIR
 	${PROTOBUF_INCLUDE_DIRS}
 	${plugin_IPC_INCLUDE_DIRS}
 	${interpreter_IPC_INCLUDE_DIRS}
+	${script_IPC_INCLUDE_DIRS}
 )
 
 set(YADOMS_ALL_INCL_DIR
@@ -947,7 +955,7 @@ set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 ##################################################################################################
 ## Link
 ##################################################################################################
-target_link_libraries(yadoms yadoms-shared plugin_IPC interpreter_IPC ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
+target_link_libraries(yadoms yadoms-shared plugin_IPC interpreter_IPC script_IPC ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
 
 ##################################################################################################
 ## Manifest

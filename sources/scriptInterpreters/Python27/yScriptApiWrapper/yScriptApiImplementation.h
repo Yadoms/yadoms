@@ -1,7 +1,5 @@
 #pragma once
-
 #include <shared/script/yScriptApi/IYScriptApi.h>
-#include "../Messages.h"
 
 
 //-----------------------------------------------------

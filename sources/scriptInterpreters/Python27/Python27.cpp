@@ -87,7 +87,7 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
             {
                m_process = createProcess(request->getScriptPath(),
                                          scriptLogger,
-                                         yScriptApi,
+                                         request->getScriptApiId(),
                                          stopNotifier);
 
 

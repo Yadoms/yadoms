@@ -26,6 +26,11 @@ namespace shared
             virtual const std::string& getScriptPath() = 0;
 
             //-----------------------------------------------------
+            ///\brief Get the script IP instance ID
+            //-----------------------------------------------------
+            virtual const std::string& getScriptApiId() = 0;
+
+            //-----------------------------------------------------
             ///\brief Answer the request with success, providing the script ID
             ///\param [in] scriptId  Free string, will be passed by Yadoms to interpreter at stop request
             //-----------------------------------------------------

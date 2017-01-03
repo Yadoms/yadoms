@@ -1,74 +1,74 @@
-syntax = "proto2";
-package pbRequest;
+syntax = "proto3";
+package script_IPC.toYadoms;
 
 message GetKeywordId
 {
-   required string deviceName = 1;
-   required string keywordName = 2;
+   string deviceName = 1;
+   string keywordName = 2;
 }
 
 message GetRecipientId
 {
-   required string firstName = 1;
-   required string lastName = 2;
+   string firstName = 1;
+   string lastName = 2;
 }
 
 message ReadKeyword
 {
-   required int32 keywordId = 1;
+   int32 keywordId = 1;
 }
 
 message WaitForNextAcquisition
 {
-   required int32 keywordId = 1;
-   optional string timeout = 2;
+   int32 keywordId = 1;
+   string timeout = 2;
 }
 
 message WaitForNextAcquisitions
 {
    repeated int32 keywordId = 1;
-   optional string timeout = 2;
+   string timeout = 2;
 }
 
 message WaitForEvent
 {
    repeated int32 keywordId = 1;
-   required bool receiveDateTimeEvent = 2;
-   optional string timeout = 4;
+   bool receiveDateTimeEvent = 2;
+   string timeout = 4;
 }
 
 message GetKeywordsByCapacity
 {
-   required string capacity = 1;
+   string capacity = 1;
 }
 
 message WriteKeyword
 {
-   required int32 keywordId = 1;
-   required string newState = 2;
+   int32 keywordId = 1;
+   string newState = 2;
 }
 
 message SendNotification
 {
-   required int32 keywordId = 1;
-   required int32 recipientId = 2;
-   required string message = 3;
+   int32 keywordId = 1;
+   int32 recipientId = 2;
+   string message = 3;
 }
 
 message GetInfo
 {
    enum Key { kSunrise = 0; kSunset = 1; kLatitude = 2; kLongitude = 3; kAltitude = 4; kYadomsServerOS = 5; kYadomsServerVersion = 6; }
-   required Key key = 1;
+   Key key = 1;
 }
    
 message GetKeywordName
 {
-   required int32 keywordId = 1;
+   int32 keywordId = 1;
 }
 
 message GetKeywordDeviceName
 {
-   required int32 keywordId = 1;
+   int32 keywordId = 1;
 }
 
 message msg
@@ -84,8 +84,8 @@ message msg
       WriteKeyword writeKeyword = 7;
       SendNotification sendNotification = 8;
       GetInfo getInfo = 9;
-	  GetKeywordsByCapacity getKeywordsByCapacity = 10;
-	  GetKeywordName getKeywordName = 11;
-	  GetKeywordDeviceName getKeywordDeviceName = 12;
+	   GetKeywordsByCapacity getKeywordsByCapacity = 10;
+	   GetKeywordName getKeywordName = 11;
+	   GetKeywordDeviceName getKeywordDeviceName = 12;
    }
 }
