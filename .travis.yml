@@ -70,7 +70,7 @@ before_install:
 - cd build
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/cmake ../cmake"; else cmake ../cmake > yadoms_protobuf.log; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/cmake --build ."; else cmake --build . > yadoms_protobuf.log; fi
-- sudo make install > yadoms_protobuf.log
+- sudo make install
 - sudo ldconfig
 - cd ..
 - cd ..
