@@ -51,17 +51,15 @@ namespace automation
          ///\param[in] scriptPath         The script path
          ///\param[in] yScriptApiId       The script API instance ID
          //-----------------------------------------------------    
-         virtual std::string startScript(int scriptInstanceId,
-                                         const std::string& scriptPath,
-                                         const std::string& yScriptApiId) const = 0;
+         virtual void startScript(int scriptInstanceId,
+                                  const std::string& scriptPath,
+                                  const std::string& yScriptApiId) const = 0;
 
          //-----------------------------------------------------
          ///\brief               Stop the script
-         ///\param[in] scriptProcessId  The script process ID to stop
+         ///\param[in] scriptInstanceId   The script instance ID to stop
          //-----------------------------------------------------    
-         virtual void stopScript(const std::string& scriptProcessId) const = 0;
+         virtual void stopScript(int scriptInstanceId) const = 0;
       };
    }
 } // namespace automation::interpreter
-
-

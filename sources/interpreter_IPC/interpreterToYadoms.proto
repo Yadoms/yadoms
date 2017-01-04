@@ -12,11 +12,9 @@ message LoadScriptContentAnswer {
 message SaveScriptContentAnswer {
 }
 
-message StartScriptAnswer {
-	string scriptProcessId = 1;
-}
-
-message StopScriptAnswer {
+message NotifiyScriptStopped {
+	int32 scriptInstanceId = 1;
+	string error = 2;
 }
 
 message msg {
@@ -25,7 +23,6 @@ message msg {
 		AvalaibleAnswer avalaibleAnswer = 2;
 		LoadScriptContentAnswer loadScriptContentAnswer = 3;
 		SaveScriptContentAnswer saveScriptContentAnswer = 4;
-		StartScriptAnswer startScriptAnswer = 5;
-		StopScriptAnswer stopScriptAnswer = 6;
+		NotifiyScriptStopped notifiyScriptStopped = 5;
 	}
 }

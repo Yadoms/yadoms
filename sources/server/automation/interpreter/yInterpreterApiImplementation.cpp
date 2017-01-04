@@ -1,17 +1,28 @@
 #include "stdafx.h"
 #include "yInterpreterApiImplementation.h"
+#include <shared/Log.h>
 
 namespace automation
 {
    namespace interpreter
    {
-      CYInterpreterApiImplementation::CYInterpreterApiImplementation(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformations)
-         : m_informations(interpreterInformations)
+      CYInterpreterApiImplementation::CYInterpreterApiImplementation(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformations,
+                                                                     boost::function2<void, int, const std::string&> onScriptStoppedFct)
+         : m_informations(interpreterInformations),
+           m_onScriptStoppedFct(onScriptStoppedFct)
       {
       }
 
       CYInterpreterApiImplementation::~CYInterpreterApiImplementation()
       {
+      }
+
+      void CYInterpreterApiImplementation::notifyScriptStopped(int scriptInstanceId,
+                                                               const std::string error)
+      {
+         YADOMS_LOG(information) << "Rule " << m_informations->getName() << " stopped";
+         m_onScriptStoppedFct(scriptInstanceId,
+                              error);
       }
 
       boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> CYInterpreterApiImplementation::getInformation() const
@@ -27,5 +38,3 @@ namespace automation
       }
    }
 } // namespace automation::interpreter
-
-

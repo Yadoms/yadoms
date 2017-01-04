@@ -33,9 +33,13 @@ protected:
                                                               boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger,
                                                               const std::string& scriptApiId,
                                                               boost::shared_ptr<shared::process::IProcessObserver> processObserver) const;
+   void unloadScript(int scriptInstanceId);
 
 private:
    boost::shared_ptr<yApi::IYInterpreterApi> m_api;
    boost::shared_ptr<IPythonExecutable> m_pythonExecutable;
+
+   mutable boost::recursive_mutex m_processesMutex;
+   std::map<int, boost::shared_ptr<shared::process::IProcess>> m_processes;
 };
 

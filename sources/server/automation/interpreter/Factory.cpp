@@ -25,13 +25,15 @@ namespace automation
       }
 
       boost::shared_ptr<IInstance> CFactory::createInterpreterInstance(const std::string& interpreterFileName,
-                                                                       boost::function2<void, bool, const std::string&> onInstanceStateChangedFct) const
+                                                                       boost::function2<void, bool, const std::string&> onInstanceStateChangedFct,
+                                                                       boost::function2<void, int, const std::string&> onScriptStoppedFct) const
       {
          auto interpreterInformation = createInterpreterInformation(interpreterFileName);
 
          auto logger = createProcessLogger(interpreterFileName);
 
-         auto yInterpreterIpcAdapter = createInterpreterRunningContext(interpreterInformation);
+         auto yInterpreterIpcAdapter = createInterpreterRunningContext(interpreterInformation,
+                                                                       onScriptStoppedFct);
 
          auto commandLine = createCommandLine(interpreterInformation,
                                               yInterpreterIpcAdapter->id());
@@ -64,16 +66,21 @@ namespace automation
                                                                     interpreterLogFile(interpreterFileName));
       }
 
-      boost::shared_ptr<IIpcAdapter> CFactory::createInterpreterRunningContext(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation) const
+      boost::shared_ptr<IIpcAdapter> CFactory::createInterpreterRunningContext(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
+                                                                               boost::function2<void, int, const std::string&> onScriptStoppedFct) const
       {
-         auto apiImplementation = createInterpreterApiImplementation(interpreterInformation);
+         auto apiImplementation = createInterpreterApiImplementation(interpreterInformation,
+                                                                     onScriptStoppedFct);
 
-         return boost::make_shared<CIpcAdapter>(interpreterInformation->getName());
+         return boost::make_shared<CIpcAdapter>(interpreterInformation->getName(),
+                                                apiImplementation);
       }
 
-      boost::shared_ptr<CYInterpreterApiImplementation> CFactory::createInterpreterApiImplementation(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation) const
+      boost::shared_ptr<CYInterpreterApiImplementation> CFactory::createInterpreterApiImplementation(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
+                                                                                                     boost::function2<void, int, const std::string&> onScriptStoppedFct) const
       {
-         return boost::make_shared<CYInterpreterApiImplementation>(interpreterInformation);
+         return boost::make_shared<CYInterpreterApiImplementation>(interpreterInformation,
+                                                                   onScriptStoppedFct);
       }
 
       boost::shared_ptr<shared::process::ICommandLine> CFactory::createCommandLine(const boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
@@ -104,5 +111,3 @@ namespace automation
       }
    }
 } // namespace automation::interpreter
-
-

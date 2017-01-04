@@ -28,6 +28,8 @@ namespace interpreter_cpp_api
       bool stopRequested() const;
 
       // shared::plugin::yInterpreterApi::IYInterpreterApi implementation
+      void notifyScriptStopped(int scriptInstanceId,
+                               const std::string error) override;
       boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> getInformation() const override;
       shared::event::CEventHandler& getEventHandler() override;
       // [END] shared::plugin::yInterpreterApi::IYInterpreterApi implementation
@@ -50,8 +52,8 @@ namespace interpreter_cpp_api
       void processAvalaibleRequest(const interpreter_IPC::toInterpreter::AvalaibleRequest& msg);
       void processLoadScriptContentRequest(const interpreter_IPC::toInterpreter::LoadScriptContentRequest& msg);
       void processSaveScriptContent(const interpreter_IPC::toInterpreter::SaveScriptContentRequest& msg);
-      void processStartScriptRequest(const interpreter_IPC::toInterpreter::StartScriptRequest& msg);
-      void processStopScriptRequest(const interpreter_IPC::toInterpreter::StopScriptRequest& msg);
+      void processStartScript(const interpreter_IPC::toInterpreter::StartScript& msg);
+      void processStopScript(const interpreter_IPC::toInterpreter::StopScript& msg);
 
       void setInitialized();
 
@@ -79,5 +81,3 @@ namespace interpreter_cpp_api
       boost::shared_ptr<shared::script::yInterpreterApi::IInformation> m_pluginInformation;
    };
 } // namespace interpreter_cpp_api	
-
-

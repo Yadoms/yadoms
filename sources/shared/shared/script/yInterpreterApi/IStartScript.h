@@ -7,36 +7,33 @@ namespace shared
       namespace yInterpreterApi
       {
          //-----------------------------------------------------
-         ///\brief Interface for interpreter to stop script
+         ///\brief Interface for interpreter to start script
          //-----------------------------------------------------
-         class IStopScriptRequest
+         class IStartScript
          {
          public:
 
             //-----------------------------------------------------
             ///\brief Destructor
             //-----------------------------------------------------
-            virtual ~IStopScriptRequest()
+            virtual ~IStartScript()
             {
             }
 
             //-----------------------------------------------------
-            ///\brief Call to say Yadoms that script is stopped
-            ///\return The script ID, passed by interpreter at script start
-            /// (can be a process ID, or anything else identifying script instance)
+            ///\brief Get the script instance ID
             //-----------------------------------------------------
-            virtual std::string getScriptProcessId() const = 0;
+            virtual int getScriptInstanceId() = 0;
 
             //-----------------------------------------------------
-            ///\brief Call to say Yadoms that script is stopped
+            ///\brief Get the script path
             //-----------------------------------------------------
-            virtual void sendSuccess() = 0;
+            virtual const std::string& getScriptPath() = 0;
 
             //-----------------------------------------------------
-            ///\brief Answer the request with error
-            ///\param [in] errorMessage  The error message
+            ///\brief Get the script API instance ID
             //-----------------------------------------------------
-            virtual void sendError(const std::string& errorMessage) = 0;
+            virtual const std::string& getScriptApiId() = 0;
          };
       }
    }

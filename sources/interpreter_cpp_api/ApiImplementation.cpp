@@ -5,8 +5,8 @@
 #include "LoadScriptContentRequest.h"
 #include "SaveScriptContentRequest.h"
 #include "Information.h"
-#include "StartScriptRequest.h"
-#include "StopScriptRequest.h"
+#include "StartScript.h"
+#include "StopScript.h"
 
 namespace interpreter_cpp_api
 {
@@ -29,6 +29,16 @@ namespace interpreter_cpp_api
    bool CApiImplementation::stopRequested() const
    {
       return m_stopRequested;
+   }
+
+   void CApiImplementation::notifyScriptStopped(int scriptInstanceId,
+                                                const std::string error)
+   {
+      interpreter_IPC::toYadoms::msg req;
+      auto request = req.mutable_notifiyscriptstopped();
+      request->set_scriptinstanceid(scriptInstanceId);
+      request->set_error(error);
+      send(req);
    }
 
    void CApiImplementation::send(const interpreter_IPC::toYadoms::msg& msg) const
@@ -156,9 +166,9 @@ namespace interpreter_cpp_api
          break;
       case interpreter_IPC::toInterpreter::msg::kSaveScriptContentRequest: processSaveScriptContent(toInterpreterProtoBuffer.savescriptcontentrequest());
          break;
-      case interpreter_IPC::toInterpreter::msg::kStartScriptRequest: processStartScriptRequest(toInterpreterProtoBuffer.startscriptrequest());
+      case interpreter_IPC::toInterpreter::msg::kStartScript: processStartScript(toInterpreterProtoBuffer.startscript());
          break;
-      case interpreter_IPC::toInterpreter::msg::kStopScriptRequest: processStopScriptRequest(toInterpreterProtoBuffer.stopscriptrequest());
+      case interpreter_IPC::toInterpreter::msg::kStopScript: processStopScript(toInterpreterProtoBuffer.stopscript());
          break;
       default:
          throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toInterpreterProtoBuffer.OneOf_case()).str());
@@ -250,43 +260,20 @@ namespace interpreter_cpp_api
       m_pluginEventHandler.postEvent(kEventSaveScriptContent, command);
    }
 
-   void CApiImplementation::processStartScriptRequest(const interpreter_IPC::toInterpreter::StartScriptRequest& msg)
+   void CApiImplementation::processStartScript(const interpreter_IPC::toInterpreter::StartScript& msg)
    {
-      boost::shared_ptr<shared::script::yInterpreterApi::IStartScriptRequest> request = boost::make_shared<CStartScriptRequest>(msg,
-                                                                                                                                [&](const std::string scriptId)
-                                                                                                                                {
-                                                                                                                                   interpreter_IPC::toYadoms::msg ans;
-                                                                                                                                   auto answer = ans.mutable_startscriptanswer();
-                                                                                                                                   answer->set_scriptprocessid(scriptId);
-                                                                                                                                   send(ans);
-                                                                                                                                },
-                                                                                                                                [&](const std::string& r)
-                                                                                                                                {
-                                                                                                                                   interpreter_IPC::toYadoms::msg ans;
-                                                                                                                                   ans.set_error(r);
-                                                                                                                                   send(ans);
-                                                                                                                                });
+      boost::shared_ptr<shared::script::yInterpreterApi::IStartScript> request = boost::make_shared<CStartScript>(msg);
 
-      m_pluginEventHandler.postEvent(kEventStartScript, request);
+      m_pluginEventHandler.postEvent(kEventStartScript,
+                                     request);
    }
 
-   void CApiImplementation::processStopScriptRequest(const interpreter_IPC::toInterpreter::StopScriptRequest& msg)
+   void CApiImplementation::processStopScript(const interpreter_IPC::toInterpreter::StopScript& msg)
    {
-      boost::shared_ptr<shared::script::yInterpreterApi::IStopScriptRequest> request = boost::make_shared<CStopScriptRequest>(msg,
-                                                                                                                              [&]()
-                                                                                                                              {
-                                                                                                                                 interpreter_IPC::toYadoms::msg ans;
-                                                                                                                                 ans.set_error(std::string());
-                                                                                                                                 send(ans);
-                                                                                                                              },
-                                                                                                                              [&](const std::string& r)
-                                                                                                                              {
-                                                                                                                                 interpreter_IPC::toYadoms::msg ans;
-                                                                                                                                 ans.set_error(r);
-                                                                                                                                 send(ans);
-                                                                                                                              });
+      boost::shared_ptr<shared::script::yInterpreterApi::IStopScript> request = boost::make_shared<CStopScript>(msg);
 
-      m_pluginEventHandler.postEvent(kEventStartScript, request);
+      m_pluginEventHandler.postEvent(kEventStartScript,
+                                     request);
    }
 
    void CApiImplementation::setInitialized()
@@ -312,5 +299,3 @@ namespace interpreter_cpp_api
       return m_pluginEventHandler;
    }
 } // namespace interpreter_cpp_api	
-
-

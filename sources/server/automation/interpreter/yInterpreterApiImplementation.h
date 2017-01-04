@@ -11,18 +11,20 @@ namespace automation
       class CYInterpreterApiImplementation : public shared::script::yInterpreterApi::IYInterpreterApi
       {
       public:
-         explicit CYInterpreterApiImplementation(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformations);
+         CYInterpreterApiImplementation(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformations,
+                                        boost::function2<void, int, const std::string&> onScriptStoppedFct);
          virtual ~CYInterpreterApiImplementation();
 
          // IYInterpreterApi implementation
+         void notifyScriptStopped(int scriptInstanceId,
+                                  const std::string error) override;
          boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> getInformation() const override;
          shared::event::CEventHandler& getEventHandler() override;
          // [END] IYInterpreterApi implementation
 
       private:
          boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> m_informations;
+         boost::function2<void, int, const std::string&> m_onScriptStoppedFct;
       };
    }
 } // namespace automation::interpreter	
-
-

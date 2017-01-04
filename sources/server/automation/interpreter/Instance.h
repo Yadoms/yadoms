@@ -28,10 +28,10 @@ namespace automation
          std::string loadScriptContent(const std::string& scriptPath) const override;
          void saveScriptContent(const std::string& scriptPath,
                                 const std::string& scriptContent) const override;
-         std::string startScript(int scriptInstanceId,
+         void startScript(int scriptInstanceId,
                                  const std::string& scriptPath,
                                  const std::string& yScriptApiId) const override;
-         void stopScript(const std::string& scriptProcessId) const override;
+         void stopScript(int scriptInstanceId) const override;
          // [END] IInstance Implementation
 
       protected:

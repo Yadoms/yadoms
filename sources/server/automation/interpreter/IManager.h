@@ -92,6 +92,12 @@ namespace automation
          //-----------------------------------------------------
          virtual boost::shared_ptr<shared::process::IExternalProcessLogger> createScriptLogger(const std::string& ruleName,
                                                                                                int ruleId) = 0;
+
+         //-----------------------------------------------------
+         ///\brief               Set the callback on rule stop notification
+         ///\param[in] onScriptStoppedFct    The function to call when rule is notified as stopped
+         //-----------------------------------------------------
+         virtual void setOnScriptStoppedFct(boost::function2<void, int, const std::string&> onScriptStoppedFct) = 0;
       };
    } // namespace automation::interpreter
 }

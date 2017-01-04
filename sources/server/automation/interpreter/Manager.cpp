@@ -34,21 +34,22 @@ namespace automation
                // Check if compatible with current platform
                if (isInterpreterCompatibleWithPlatform(interpreterKeyName))
                {
-                  auto successufullyStarted = false;
+                  auto successfullyStarted = false;
                   auto evtHandler = boost::make_shared<shared::event::CEventHandler>();
                   auto interpreterInstance = m_factory->createInterpreterInstance(interpreterKeyName,
-                                                                                  [this, evtHandler, &successufullyStarted](bool running, const std::string& interpreterType)
+                                                                                  [this, evtHandler, &successfullyStarted](bool running, const std::string& interpreterType)
                                                                                   {
                                                                                      if (running)
-                                                                                        successufullyStarted = true;
+                                                                                        successfullyStarted = true;
                                                                                      else
                                                                                         unloadInterpreter(interpreterType);
 
                                                                                      evtHandler->postEvent(shared::event::kUserFirstId);
-                                                                                  });
+                                                                                  },
+                                                                                  m_onScriptStoppedFct);
 
                   if (evtHandler->waitForEvents(boost::posix_time::seconds(20)) == shared::event::kUserFirstId
-                     && successufullyStarted)
+                     && successfullyStarted)
                      m_loadedInterpreters[interpreterKeyName] = interpreterInstance;
                }
             }
@@ -228,7 +229,10 @@ namespace automation
          return boost::make_shared<logging::CExternalProcessLogger>("script/" + ruleName + " #" + std::to_string(ruleId),
                                                                     scriptLogFile(ruleId));
       }
+
+      void CManager::setOnScriptStoppedFct(boost::function2<void, int, const std::string&> onScriptStoppedFct)
+      {
+         m_onScriptStoppedFct = onScriptStoppedFct;
+      }
    }
 } // namespace automation::interpreter
-
-

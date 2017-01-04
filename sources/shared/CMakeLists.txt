@@ -240,8 +240,8 @@ set(SHARED_LIB_SRC
    shared/script/yInterpreterApi/IInformation.h
    shared/script/yInterpreterApi/ILoadScriptContentRequest.h
    shared/script/yInterpreterApi/ISaveScriptContentRequest.h
-   shared/script/yInterpreterApi/IStartScriptRequest.h
-   shared/script/yInterpreterApi/IStopScriptRequest.h
+   shared/script/yInterpreterApi/IStartScript.h
+   shared/script/yInterpreterApi/IStopScript.h
    shared/script/yInterpreterApi/IYInterpreterApi.h
 
    shared/script/yScriptApi/commonIncludes.h

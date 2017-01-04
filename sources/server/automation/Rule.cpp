@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Rule.h"
-#include <shared/Log.h>
 #include "script/StopNotifier.h"
 #include "script/YScriptApiImplementation.h"
 #include "script/Properties.h"
@@ -37,12 +36,6 @@ namespace automation //TODO faire une factory
 
    void CRule::start()
    {
-      if (!m_scriptProcessId.empty())
-      {
-         YADOMS_LOG(warning) << "Can not start rule " << m_ruleData->Name() << " : already started";
-         return;
-      }
-
       auto scriptLogger = m_interpreterManager->createScriptLogger(m_ruleData->Name(),
                                                                    m_ruleData->Id());
       m_ipcAdapter = createScriptContext(scriptLogger,
@@ -52,15 +45,14 @@ namespace automation //TODO faire une factory
 
       m_scriptInterpreter = m_interpreterManager->getInterpreterInstance(m_ruleProperties->interpreterName());
 
-      m_scriptProcessId = m_scriptInterpreter->startScript(m_ruleData->Id(),
-                                                           m_ruleProperties->scriptPath(),
-                                                           m_ipcAdapter->id());
+      m_scriptInterpreter->startScript(m_ruleData->Id(),
+                                       m_ruleProperties->scriptPath(),
+                                       m_ipcAdapter->id());
    }
 
    void CRule::requestStop()
    {
-      m_scriptInterpreter->stopScript(m_scriptProcessId);
-      m_scriptProcessId.clear();
+      m_scriptInterpreter->stopScript(m_ruleData->Id());
    }
 
    boost::shared_ptr<script::IIpcAdapter> CRule::createScriptContext(boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger,
@@ -90,5 +82,3 @@ namespace automation //TODO faire une factory
                                                       ruleId);
    }
 } // namespace automation	
-
-

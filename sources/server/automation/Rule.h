@@ -64,7 +64,6 @@ namespace automation
       boost::shared_ptr<script::IGeneralInfo> m_generalInfo;
 
       boost::shared_ptr<interpreter::IInstance> m_scriptInterpreter;
-      std::string m_scriptProcessId;
       boost::shared_ptr<script::IIpcAdapter> m_ipcAdapter;
    };
 } // namespace automation	
