@@ -1,11 +1,9 @@
 #pragma once
-
 #include <shared/Export.h>
 #include <shared/DataContainer.h>
 
 namespace shared
 {
-
    //--------------------------------------------------------------
    /// \brief	Base class for threads
    //--------------------------------------------------------------
@@ -18,7 +16,7 @@ namespace shared
       /// \param[in]  url                 the url to send the request
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      static CDataContainer SendGetRequest(const std::string & url);
+      static CDataContainer SendGetRequest(const std::string& url);
 
       //--------------------------------------------------------------
       /// \brief	    SendGetRequest
@@ -28,5 +26,4 @@ namespace shared
       //--------------------------------------------------------------
       static CDataContainer SendGetRequest(const std::string & url, shared::CDataContainer & parameters);
    };
-
 } // namespace shared

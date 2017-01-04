@@ -13,3 +13,8 @@ tests/user/user.sln
 .DS_Store
 *.suo
 *.db
+sources/plugins/EnOcean/enOceanDescriptors/generated-*
+sources/plugins/EnOcean/package.json
+sources/plugins/EnOcean/locales
+sources/plugins/EnOcean/profiles/generated*.cpp
+sources/plugins/EnOcean/profiles/generated*.h

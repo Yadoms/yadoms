@@ -49,7 +49,8 @@ namespace automation
          ///\param[in] hours     Number of hours, as double
          ///\return local time composed by provided date and hour
          //-----------------------------------------------------
-         static boost::posix_time::ptime hoursToLocalTime(const boost::gregorian::date& date, double hours);
+         static boost::posix_time::ptime hoursToLocalTime(const boost::gregorian::date& date,
+                                                          double hours);
 
       private:
          //-----------------------------------------------------
@@ -69,5 +70,3 @@ namespace automation
       };
    }
 } // namespace automation::script
-
-
