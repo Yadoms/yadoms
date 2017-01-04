@@ -10,6 +10,8 @@
 #include <shared/script/yInterpreterApi/ISaveScriptContentRequest.h>
 #include <shared/script/yInterpreterApi/IStartScriptRequest.h>
 #include <shared/script/yInterpreterApi/IStopScriptRequest.h>
+#include "ScriptLogger.h"
+#include "ProcessObserver.h"
 
 // Declare the script interpreter
 IMPLEMENT_INTERPRETER(CPython27)
@@ -85,18 +87,37 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
             auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IStartScriptRequest>>();
             try
             {
-               m_process = createProcess(request->getScriptPath(),
-                                         scriptLogger,
-                                         request->getScriptApiId(),
-                                         stopNotifier);
+               //TODO réorganiser : soit tout créer ici, soit faire des fonctions, soit faire une factory
+               auto successufullyStarted = false;
+               auto evtHandler = boost::make_shared<shared::event::CEventHandler>();
+               auto processObserver = boost::make_shared<CProcessObserver>(request->getScriptInstanceId(),
+                                                                           [evtHandler, &successufullyStarted](bool running, int scriptInstanceId)
+                                                                           {
+                                                                              if (running)
+                                                                                 successufullyStarted = true;
+                                                                              else
+                                                                                 unloadScript(scriptInstanceId);
+
+                                                                              evtHandler->postEvent(shared::event::kUserFirstId);
+                                                                           });
 
 
-               //TODO
-               //const auto process = createProcess();
-               //request->sendSuccess(process->);
+               auto scriptLogger = boost::make_shared<CScriptLogger>(request->getScriptInstanceId());
+
+               auto process = createProcess(request->getScriptPath(),
+                                            scriptLogger,
+                                            request->getScriptApiId(),
+                                            processObserver);
+
+               if (evtHandler->waitForEvents(boost::posix_time::seconds(20)) == shared::event::kUserFirstId
+                  && successufullyStarted)
+                  m_processes[request->getScriptInstanceId()] = process;
+               else
+                  request->sendError("Unable to start script");
             }
             catch (std::exception& e)
             {
+               //TODO envoyer 
                request->sendError(std::string("Unable to start script : ") + e.what());
             }
             break;
@@ -173,8 +194,6 @@ boost::shared_ptr<shared::process::IProcess> CPython27::createProcess(const std:
                                                                       const std::string& scriptApiId,
                                                                       boost::shared_ptr<shared::process::IProcessObserver> processObserver) const
 {
-   //TODO revoir (utile ?)
-   //TODO certaines dépendances à virer ?
    try
    {
       return boost::make_shared<CScriptProcess>(m_pythonExecutable,

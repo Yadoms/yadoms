@@ -19,14 +19,14 @@ public:
    /// \param[in] scriptFile The script file to execute
    /// \param[in] scriptApiId The script Api ID, used to interact with Yadoms
    /// \param[in] scriptLogger The script logger
-   /// \param[in] stopNotifier The stop notifier
+   /// \param[in] processObserver The process observer
    //--------------------------------------------------------------
    CScriptProcess(boost::shared_ptr<IPythonExecutable> executable,
                   const boost::filesystem::path& interpreterPath,
                   boost::shared_ptr<const IScriptFile> scriptFile,
                   const std::string& scriptApiId,
                   boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger,
-                  boost::shared_ptr<shared::process::IProcessObserver> stopNotifier);
+                  boost::shared_ptr<shared::process::IProcessObserver> processObserver);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -44,7 +44,6 @@ protected:
    /// \brief	Start a module
    //--------------------------------------------------------------
    void start();
-
 
    boost::shared_ptr<shared::process::ICommandLine> createCommandLine(const std::string& apiIdentifier) const;
 
@@ -77,7 +76,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	Object to notify when process stops
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::process::IProcessObserver> m_stopNotifier;
+   boost::shared_ptr<shared::process::IProcessObserver> m_processObserver;
 
    //--------------------------------------------------------------
    /// \brief	The process

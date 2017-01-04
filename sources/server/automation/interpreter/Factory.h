@@ -1,7 +1,7 @@
 #pragma once
 #include "IFactory.h"
 #include <shared/process/IProcess.h>
-#include <shared/process/ILogger.h>
+#include <shared/process/IExternalProcessLogger.h>
 #include <shared/process/ICommandLine.h>
 #include <IPathProvider.h>
 #include "IIpcAdapter.h"
@@ -37,7 +37,7 @@ namespace automation
 
       protected:
          boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> createInterpreterInformation(const std::string& interpreterFileName) const;
-         boost::shared_ptr<shared::process::ILogger> createProcessLogger(const std::string& interpreterFileName) const;
+         boost::shared_ptr<shared::process::IExternalProcessLogger> createProcessLogger(const std::string& interpreterFileName) const;
          boost::shared_ptr<interpreter::IIpcAdapter> createInterpreterRunningContext(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation) const;
          boost::shared_ptr<interpreter::CYInterpreterApiImplementation> createInterpreterApiImplementation(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation) const;
          boost::shared_ptr<shared::process::ICommandLine> createCommandLine(const boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
@@ -45,7 +45,7 @@ namespace automation
          boost::shared_ptr<interpreter::CInstanceStateHandler> createInstanceStateHandler(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
                                                                                           boost::function2<void, bool, const std::string&> onInstanceStateChangedFct) const;
          boost::shared_ptr<shared::process::IProcess> createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
-                                                                            boost::shared_ptr<shared::process::ILogger> logger,
+                                                                            boost::shared_ptr<shared::process::IExternalProcessLogger> logger,
                                                                             boost::shared_ptr<interpreter::CInstanceStateHandler> instanceStateHandler) const;
       private:
          const IPathProvider& m_pathProvider;//TODO utile ?

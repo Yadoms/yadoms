@@ -2,13 +2,13 @@
 #include "Factory.h"
 #include "Instance.h"
 #include "Information.h"
-#include <shared/process/Logger.h>
 #include <shared/Executable.h>
 #include <shared/process/Process.h>
 #include "yInterpreterApiImplementation.h"
 #include "IpcAdapter.h"
 #include <shared/process/NativeExecutableCommandLine.h>
 #include "InstanceStateHandler.h"
+#include <server/logging/ExternalProcessLogger.h>
 
 
 namespace automation
@@ -58,10 +58,10 @@ namespace automation
          return boost::make_shared<CInformation>(m_pathProvider.scriptInterpretersPath() / interpreterFileName);
       }
 
-      boost::shared_ptr<shared::process::ILogger> CFactory::createProcessLogger(const std::string& interpreterFileName) const
+      boost::shared_ptr<shared::process::IExternalProcessLogger> CFactory::createProcessLogger(const std::string& interpreterFileName) const
       {
-         return boost::make_shared<shared::process::CLogger>("interpreter/" + interpreterFileName,
-                                                             interpreterLogFile(interpreterFileName));
+         return boost::make_shared<logging::CExternalProcessLogger>("interpreter/" + interpreterFileName,
+                                                                    interpreterLogFile(interpreterFileName));
       }
 
       boost::shared_ptr<IIpcAdapter> CFactory::createInterpreterRunningContext(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation) const
@@ -95,7 +95,7 @@ namespace automation
       }
 
       boost::shared_ptr<shared::process::IProcess> CFactory::createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
-                                                                                   boost::shared_ptr<shared::process::ILogger> logger,
+                                                                                   boost::shared_ptr<shared::process::IExternalProcessLogger> logger,
                                                                                    boost::shared_ptr<CInstanceStateHandler> instanceStateHandler) const
       {
          return boost::make_shared<shared::process::CProcess>(commandLine,

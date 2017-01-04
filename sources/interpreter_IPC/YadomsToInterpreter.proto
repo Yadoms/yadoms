@@ -24,8 +24,9 @@ message SaveScriptContentRequest {
 }
 
 message StartScriptRequest {
-	string scriptPath = 1;
-	string scriptApiId = 2;
+	int32 scriptInstanceId = 1;
+	string scriptPath = 2;
+	string scriptApiId = 3;
 }
 
 message StopScriptRequest {

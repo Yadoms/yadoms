@@ -103,11 +103,13 @@ namespace automation
          }
       }
 
-      std::string CInstance::startScript(const std::string& scriptPath,
+      std::string CInstance::startScript(int scriptInstanceId,
+                                         const std::string& scriptPath,
                                          const std::string& yScriptApiId) const
       {
          communication::callback::CSynchronousCallback<std::string> callback;
-         auto request(boost::make_shared<CStartScriptRequest>(scriptPath,
+         auto request(boost::make_shared<CStartScriptRequest>(scriptInstanceId,
+                                                              scriptPath,
                                                               yScriptApiId,
                                                               callback));
 

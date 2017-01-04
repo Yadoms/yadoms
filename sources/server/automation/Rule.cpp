@@ -52,7 +52,8 @@ namespace automation //TODO faire une factory
 
       m_scriptInterpreter = m_interpreterManager->getInterpreterInstance(m_ruleProperties->interpreterName());
 
-      m_scriptProcessId = m_scriptInterpreter->startScript(m_ruleProperties->scriptPath(),
+      m_scriptProcessId = m_scriptInterpreter->startScript(m_ruleData->Id(),
+                                                           m_ruleProperties->scriptPath(),
                                                            m_ipcAdapter->id());
    }
 

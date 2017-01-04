@@ -5,10 +5,12 @@ namespace automation
 {
    namespace interpreter
    {
-      CStartScriptRequest::CStartScriptRequest(const std::string& scriptPath,
+      CStartScriptRequest::CStartScriptRequest(const int scriptInstanceId,
+                                               const std::string& scriptPath,
                                                const std::string& yScriptApiId,
                                                communication::callback::ISynchronousCallback<std::string>& callback)
-         : m_scriptPath(scriptPath),
+         : m_scriptInstanceId(scriptInstanceId),
+           m_scriptPath(scriptPath),
            m_scriptApiId(yScriptApiId),
            m_requestPtr(boost::make_shared<communication::callback::CNoDataCallbackRequest<std::string>>(callback))
       {
@@ -16,6 +18,11 @@ namespace automation
 
       CStartScriptRequest::~CStartScriptRequest()
       {
+      }
+
+      int CStartScriptRequest::getScriptInstanceId()
+      {
+         return m_scriptInstanceId;
       }
 
       const std::string& CStartScriptRequest::getScriptPath()

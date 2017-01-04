@@ -21,12 +21,17 @@ namespace shared
             }
 
             //-----------------------------------------------------
+            ///\brief Get the script IP instance ID
+            //-----------------------------------------------------
+            virtual int getScriptInstanceId() = 0;
+
+            //-----------------------------------------------------
             ///\brief Get the script path
             //-----------------------------------------------------
             virtual const std::string& getScriptPath() = 0;
 
             //-----------------------------------------------------
-            ///\brief Get the script IP instance ID
+            ///\brief Get the script API instance ID
             //-----------------------------------------------------
             virtual const std::string& getScriptApiId() = 0;
 
@@ -34,7 +39,7 @@ namespace shared
             ///\brief Answer the request with success, providing the script ID
             ///\param [in] scriptId  Free string, will be passed by Yadoms to interpreter at stop request
             //-----------------------------------------------------
-            virtual void sendSuccess(const std::string& scriptProcessId) = 0;
+            virtual void sendSuccess(const std::string& scriptProcessId) = 0;//TODO virer les retours ? Ils peuvent être fait par notification de Yadoms par l'interpréteur
 
             //-----------------------------------------------------
             ///\brief Answer the request with error

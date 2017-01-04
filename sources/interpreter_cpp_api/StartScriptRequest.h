@@ -13,6 +13,7 @@ namespace interpreter_cpp_api
       virtual ~CStartScriptRequest();
 
       // IStartScriptRequest Implementation
+      int getScriptInstanceId() override;
       const std::string& getScriptPath() override;
       const std::string& getScriptApiId() override;
       void sendSuccess(const std::string& scriptProcessId) override;
@@ -20,6 +21,7 @@ namespace interpreter_cpp_api
       // [END] IStartScriptRequest Implementation
 
    private:
+      const int m_scriptInstanceId;
       const std::string m_scriptPath;
       const std::string m_scriptApiId;
       boost::function1<void, const std::string&> m_sucessCallback;

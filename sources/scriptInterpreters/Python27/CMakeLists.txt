@@ -16,6 +16,8 @@ if(PYTHONLIBS_FOUND)
       stdafx.cpp
       IPythonExecutable.h
       IScriptFile.h
+      ProcessObserver.h
+      ProcessObserver.cpp
       Python27.h
       Python27.cpp
       PythonCommandLine.h
@@ -26,6 +28,8 @@ if(PYTHONLIBS_FOUND)
       ScriptFile.cpp
       ScriptProcess.h
       ScriptProcess.cpp
+      ScriptLogger.h
+      ScriptLogger.cpp
       
       scriptCaller.py
       scriptUtilities.py

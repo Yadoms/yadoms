@@ -47,10 +47,12 @@ namespace automation
 
          //-----------------------------------------------------
          ///\brief               Start the script
-         ///\param[in] scriptPath      The script path
-         ///\param[in] yScriptApiId    The script API instance ID
+         ///\param[in] scriptInstanceId   The script instance ID
+         ///\param[in] scriptPath         The script path
+         ///\param[in] yScriptApiId       The script API instance ID
          //-----------------------------------------------------    
-         virtual std::string startScript(const std::string& scriptPath,
+         virtual std::string startScript(int scriptInstanceId,
+                                         const std::string& scriptPath,
                                          const std::string& yScriptApiId) const = 0;
 
          //-----------------------------------------------------

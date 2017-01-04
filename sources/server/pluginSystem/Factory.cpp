@@ -10,11 +10,11 @@
 #include "InvalidPluginException.hpp"
 #include "IpcAdapter.h"
 #include <shared/process/ProcessException.hpp>
-#include <shared/process/Logger.h>
 #include "internalPlugin/Instance.h"
 #include "internalPlugin/Information.h"
 #include <shared/process/NativeExecutableCommandLine.h>
 #include <shared/process/ProcessDeprecated.h>
+#include <server/logging/ExternalProcessLogger.h>
 
 
 namespace pluginSystem
@@ -121,10 +121,10 @@ namespace pluginSystem
       return pluginDataPath;
    }
 
-   boost::shared_ptr<shared::process::ILogger> CFactory::createProcessLogger(boost::shared_ptr<const database::entities::CPlugin> instanceData) const
+   boost::shared_ptr<shared::process::IExternalProcessLogger> CFactory::createProcessLogger(boost::shared_ptr<const database::entities::CPlugin> instanceData) const
    {
-      return boost::make_shared<shared::process::CLogger>("plugin/" + instanceData->Type() + " #" + std::to_string(instanceData->Id()),
-                                                          pluginLogFile(instanceData->Id()));
+      return boost::make_shared<logging::CExternalProcessLogger>("plugin/" + instanceData->Type() + " #" + std::to_string(instanceData->Id()),
+                                                                 pluginLogFile(instanceData->Id()));
    }
 
    boost::shared_ptr<CInstanceStateHandler> CFactory::createInstanceStateHandler(boost::shared_ptr<const database::entities::CPlugin> instanceData,
@@ -157,7 +157,7 @@ namespace pluginSystem
    }
 
    boost::shared_ptr<shared::process::IProcess> CFactory::createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
-                                                                                boost::shared_ptr<shared::process::ILogger> logger,
+                                                                                boost::shared_ptr<shared::process::IExternalProcessLogger> logger,
                                                                                 boost::shared_ptr<CInstanceStateHandler> instanceStateHandler) const
    {
       try

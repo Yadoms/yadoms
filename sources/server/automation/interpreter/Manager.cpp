@@ -36,16 +36,20 @@ namespace automation
                if (isInterpreterCompatibleWithPlatform(interpreterKeyName))
                {
                   auto successufullyStarted = false;
+                  auto evtHandler = boost::make_shared<shared::event::CEventHandler>();
                   auto interpreterInstance = m_factory->createInterpreterInstance(interpreterKeyName,
-                                                                                  [&](bool running, const std::string& interpreterType)
+                                                                                  [evtHandler, &successufullyStarted](bool running, const std::string& interpreterType)
                                                                                   {
                                                                                      if (running)
                                                                                         successufullyStarted = true;
                                                                                      else
                                                                                         unloadInterpreter(interpreterType);
+
+                                                                                     evtHandler->postEvent(shared::event::kUserFirstId);
                                                                                   });
 
-                  if (successufullyStarted)
+                  if (evtHandler->waitForEvents(boost::posix_time::seconds(20)) == shared::event::kUserFirstId
+                     && successufullyStarted)
                      m_loadedInterpreters[interpreterKeyName] = interpreterInstance;
                }
             }
