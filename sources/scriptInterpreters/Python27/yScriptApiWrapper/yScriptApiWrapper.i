@@ -11,7 +11,7 @@
 
 #include <iostream>
 
-#include "yScriptApiInstance.h"
+#include "script_cpp_api/ImplementationHelper.h"
 
 %}
 
