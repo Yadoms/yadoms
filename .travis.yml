@@ -66,13 +66,13 @@ before_install:
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/static/protobuf-3.1.0-build.tar.bz2; else wget https://github.com/google/protobuf/releases/download/v3.1.0/protobuf-cpp-3.1.0.tar.gz; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar xjf protobuf-3.1.0-build.tar.bz2; else tar xzf protobuf-cpp-3.1.0.tar.gz; fi
 - cd protobuf-3.1.0
-- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/cd protobuf-3.1.0"; else cd protobuf-3.1.0 > yadoms_protobuf.log; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/mkdir build"; else mkdir build > yadoms_protobuf.log; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/cd build"; else cd build > yadoms_protobuf.log; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/cmake ../cmake"; else cmake ../cmake > yadoms_protobuf.log; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/cmake --build ."; else cmake --build . > yadoms_protobuf.log; fi
 - sudo make install > yadoms_protobuf.log
 - sudo ldconfig
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/cd .."; else cd .. > yadoms_protobuf.log; fi
 - cd ..
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf protobuf-3.1.0-build.tar.bz2 protobuf-3.1.0; fi
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then curl --ftp-create-dirs -T protobuf-3.1.0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/static/; fi
