@@ -144,6 +144,7 @@ namespace dataAccessLayer
 
    void CKeywordManager::removeKeyword(int keywordId)
    {
+	  m_keywordRequester->removeKeyword(keywordId);
       m_dataProvider->getAcquisitionRequester()->removeKeywordData(keywordId);
    }
 

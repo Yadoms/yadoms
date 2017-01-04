@@ -34,7 +34,7 @@
 		     "enableWithCheckBoxDefaultValue": "false",           
            "content":
            {
-              "IndividualKeywords" :
+              "individualKeywords" :
               {				 
                  "type" : "bool",
                  "defaultValue" : "false"

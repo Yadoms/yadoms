@@ -355,7 +355,7 @@
             },
             "dateFormatString": {
               "name": "Format de la date",
-              "description": "Vous pouvez changer le format de la date en utilisant la syntaxe mount.js (ex \"LLL\" ou \"'MMMM Do YYYY, h:mm:ss a\")"
+              "description": "Vous pouvez changer le format de la date en utilisant la syntaxe moment.js (ex \"LLL\" ou \"'MMMM Do YYYY, h:mm:ss a\")"
             },
             "location": {
               "name": "Localisation",

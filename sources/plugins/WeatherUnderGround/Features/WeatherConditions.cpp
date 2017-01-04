@@ -24,7 +24,6 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
      m_windMaxSpeed(boost::make_shared<yApi::historization::CSpeed>("windMaxSpeed")),
      m_feelsLike(boost::make_shared<yApi::historization::CTemperature>("FeelsLike")),
      m_windchill(boost::make_shared<yApi::historization::CTemperature>("Windchill")),
-     m_liveConditions(boost::make_shared<CCondition>(m_deviceName, "LiveConditions")),
      m_url("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/conditions/q/" + boost::lexical_cast<std::string>(location->latitude()) + "," + boost::lexical_cast<std::string>(location->longitude()) + ".json"),
      m_location(location)
 {
@@ -43,6 +42,22 @@ void CWeatherConditions::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi>
 {
    // Clear the list
    m_keywords.clear();
+
+   if (!m_liveConditions)
+   {
+		m_liveConditions = boost::make_shared<CCondition>(m_deviceName, "LiveConditions");
+
+		m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
+							           shared::plugin::yPluginApi::CStandardCapacities::Temperature.getUnit());
+		m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Speed.getName(),
+								        shared::plugin::yPluginApi::CStandardCapacities::Speed.getUnit());
+		m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Humidity.getName(),
+								        shared::plugin::yPluginApi::CStandardCapacities::Humidity.getUnit());
+		m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
+								        shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit());
+   }
+
+   m_keywords.push_back(m_liveConditions->getHistorizable());
 
    if (wuConfiguration.isConditionsIndividualKeywordsEnabled())
    {
@@ -77,36 +92,19 @@ void CWeatherConditions::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi>
          if (api->keywordExists(m_deviceName, m_windMaxSpeed)) api->removeKeyword(m_deviceName, "windMaxSpeed");
          if (api->keywordExists(m_deviceName, m_feelsLike)) api->removeKeyword(m_deviceName, "FeelsLike");
          if (api->keywordExists(m_deviceName, m_windchill)) api->removeKeyword(m_deviceName, "Windchill");
+
+		 std::cout << "remove keywords" << std::endl;
       }
    }
 
-   if (wuConfiguration.isLiveConditionsEnabled())
-   {
-      m_keywords.push_back(m_liveConditions->getHistorizable());
+    // Declare keywords
+    std::string m_type = "weather";
+    shared::CDataContainer details;
+    details.set("type", m_type);
+    api->declareDevice(m_deviceName, m_type, m_keywords, details);
 
-      m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
-                               shared::plugin::yPluginApi::CStandardCapacities::Temperature.getUnit());
-      m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Speed.getName(),
-                               shared::plugin::yPluginApi::CStandardCapacities::Speed.getUnit());
-      m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Humidity.getName(),
-                               shared::plugin::yPluginApi::CStandardCapacities::Humidity.getUnit());
-      m_liveConditions->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
-                               shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit());
-   }
-
-   if (wuConfiguration.isConditionsIndividualKeywordsEnabled() || wuConfiguration.isLiveConditionsEnabled())
-   {
-      //TODO : Prévoir la création et la suppression des keywords en plus
-
-      // Declare keywords
-      std::string m_type = "weather";
-      shared::CDataContainer details;
-      details.set("type", m_type);
-      api->declareDevice(m_deviceName, m_type, m_keywords, details);
-
-      std::cout << "name :" << m_deviceName << std::endl;
-      std::cout << "type :" << m_type << std::endl;
-   }
+    std::cout << "name :" << m_deviceName << std::endl;
+    std::cout << "type :" << m_type << std::endl;
 }
 
 void CWeatherConditions::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api, 
@@ -116,6 +114,8 @@ void CWeatherConditions::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api
    {
       m_url.str("");
       m_url << "http://api.wunderground.com/api/" << wuConfiguration.getAPIKey() << "/conditions/q/" << boost::lexical_cast<std::string>(m_location->latitude()) << "," << boost::lexical_cast<std::string>(m_location->longitude()) << ".json";
+
+      initializeKeywords(api, wuConfiguration);
    }
    catch (shared::exception::CException& e)
    {

@@ -22,12 +22,12 @@
       },
       "LiveConditions" :
       {
-           "name": "Live conditions",
+           "name": "Conditions météorologiques",
            "content":
            {
-              "IndividualKeywords" :
+              "individualKeywords" :
               {				 
-                 "name": "Individual keywords",
+                 "name": "informations individuelles",
                  "description": ""
               }
            }

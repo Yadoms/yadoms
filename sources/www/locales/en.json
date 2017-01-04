@@ -355,7 +355,7 @@
             },
             "dateFormatString": {
               "name": "Date Format String",
-              "description": "You can change date format string using momnt.js syntax (ie \"LLL\" or \"'MMMM Do YYYY, h:mm:ss a\")"
+              "description": "You can change date format string using moment.js syntax (ie \"LLL\" or \"'MMMM Do YYYY, h:mm:ss a\")"
             },
             "location": {
               "name": "Location",

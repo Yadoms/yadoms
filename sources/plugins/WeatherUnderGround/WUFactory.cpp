@@ -106,6 +106,7 @@ boost::shared_ptr<features::IFeature> CWUFactory::createorUpdateWeatherDevice(bo
          std::cout << "remove weather device" << std::endl;
          api->removeDevice(m_weatherConditions->getName());
          m_weatherConditions.reset();
+         m_weatherTimer->stop();
          m_weatherTimer.reset();
       }
    }
@@ -139,6 +140,7 @@ boost::shared_ptr<features::IFeature> CWUFactory::createorUpdateAstronomyDevice(
          std::cout << "remove astronomy device" << std::endl;
          api->removeDevice(m_astronomy->getName());
          m_astronomy.reset();
+         m_astronomyTimer->stop();
          m_astronomyTimer.reset();
       }
    }
@@ -170,6 +172,7 @@ boost::shared_ptr<features::IFeature> CWUFactory::createorUpdateForecastDevice(b
       {
          std::cout << "remove forecast device" << std::endl;
          api->removeDevice(m_forecast->getName());
+		 m_forecastTimer->stop();
          m_forecastTimer.reset();
          m_forecast.reset();
       }

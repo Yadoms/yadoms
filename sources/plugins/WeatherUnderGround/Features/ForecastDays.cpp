@@ -21,7 +21,7 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (shared::exception::CException& e)
    {
-      std::cout << "Configuration or initialization error of Forecast module :" << e.what() << std::endl;
+      std::cout << "Configuration or initialization error of the forecast module :" << e.what() << std::endl;
       throw;
    }
 }
@@ -67,6 +67,7 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
                   if (api->keywordExists(m_deviceName, m_forecastRain[counter]))
                   {
                      api->removeKeyword(m_deviceName, TempString);
+					 std::cout << "remove " << TempString << std::endl;
                      m_forecastRain[counter].reset();
                   }
                }
@@ -110,6 +111,7 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
                   if (api->keywordExists(m_deviceName, m_hightemp[counter]))
                   {
                      api->removeKeyword(m_deviceName, TempString);
+					 std::cout << "remove " << TempString << std::endl;
                      m_hightemp[counter].reset();
                   }
                }
@@ -137,7 +139,7 @@ void CForecastDays::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (std::exception& e)
    {
-      std::cout << "Configuration or initialization error in forecast module :" << e.what() << std::endl;
+      std::cout << "Configuration or initialization error in the forecast module :" << e.what() << std::endl;
       throw;
    }
 }
@@ -201,7 +203,7 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
       }
       api->historizeData(m_deviceName, m_keywords);
 
-      std::cout << "Refresh Forecast Information" << std::endl;
+      std::cout << "Refresh forecast information" << std::endl;
    }
    catch (shared::exception::CException& e)
    {

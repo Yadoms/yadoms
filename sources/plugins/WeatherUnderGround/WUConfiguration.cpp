@@ -59,7 +59,7 @@ bool CWUConfiguration::isForecast10DaysEnabled() const
 
 bool CWUConfiguration::isConditionsIndividualKeywordsEnabled() const
 {
-   return m_data.get<bool>("LiveConditions.content.IndividualKeywords");
+   return m_data.get<bool>("LiveConditions.content.individualKeywords");
 }
 
 bool CWUConfiguration::isRainIndividualKeywordsEnabled() const

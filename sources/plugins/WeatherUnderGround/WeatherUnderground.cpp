@@ -85,8 +85,11 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                weatherConditionsRequester->parse(api, returnData, m_configuration);
             }
             catch (CRequestErrorException&)
-            {
-            }
+            {}
+			catch (std::exception& e)
+			{
+				std::cerr << "error during weather refresh :" << e.what() << std::endl;
+			}
          }
          break;
       case kEvtTimerRefreshAstronomy:
@@ -97,8 +100,11 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                astronomyRequester->parse(api, returnData, m_configuration);
             }
             catch (CRequestErrorException&)
-            {
-            }
+            {}
+			catch (std::exception& e)
+			{
+				std::cerr << "error during astronomy refresh :" << e.what() << std::endl;
+			}
          }
          break;
       case kEvtTimerRefreshForecast10Days:
@@ -109,8 +115,11 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                forecast10Days->parse(api, returnData, m_configuration);
             }
             catch (CRequestErrorException&)
-            {
-            }
+            {}
+			catch (std::exception& e)
+			{
+				std::cerr << "error during forecast refresh :" << e.what() << std::endl;
+			}
          }
          break;
       case yApi::IYPluginApi::kEventUpdateConfiguration:

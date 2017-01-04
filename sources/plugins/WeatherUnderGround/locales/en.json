@@ -25,9 +25,9 @@
            "name": "Live conditions",
            "content":
            {
-              "IndividualKeywords" :
+              "individualKeywords" :
               {				 
-                 "name": "Individual keywords",
+                 "name": "Individual information",
                  "description": ""
               }
            }
