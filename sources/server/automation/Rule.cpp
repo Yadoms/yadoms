@@ -62,7 +62,7 @@ namespace automation //TODO faire une factory
       m_scriptProcessId.clear();
    }
 
-   boost::shared_ptr<script::IIpcAdapter> CRule::createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger,
+   boost::shared_ptr<script::IIpcAdapter> CRule::createScriptContext(boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger,
                                                                      int ruleId) const
    {
       auto apiImplementation = createScriptApiImplementation(scriptLogger);
@@ -71,7 +71,7 @@ namespace automation //TODO faire une factory
                                                      ruleId);
    }
 
-   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CRule::createScriptApiImplementation(boost::shared_ptr<shared::process::ILogger> scriptLogger) const
+   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CRule::createScriptApiImplementation(boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger) const
    {
       return boost::make_shared<script::CYScriptApiImplementation>(scriptLogger,
                                                                    m_pluginGateway,

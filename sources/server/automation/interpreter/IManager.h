@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/process/ILogger.h>
+#include <shared/process/IExternalProcessLogger.h>
 #include "IInstance.h"
 
 namespace automation
@@ -90,8 +90,8 @@ namespace automation
          ///\param[in] ruleId    The rule ID
          ///\return              A script logger instance
          //-----------------------------------------------------
-         virtual boost::shared_ptr<shared::process::ILogger> createScriptLogger(const std::string& ruleName,
-                                                                                int ruleId) = 0;
+         virtual boost::shared_ptr<shared::process::IExternalProcessLogger> createScriptLogger(const std::string& ruleName,
+                                                                                               int ruleId) = 0;
       };
    } // namespace automation::interpreter
 }

@@ -8,7 +8,7 @@ namespace shared
    {
       CProcess::CProcess(boost::shared_ptr<ICommandLine> commandLine,
                          boost::shared_ptr<IProcessObserver> processObserver,
-                         boost::shared_ptr<ILogger> logger)
+                         boost::shared_ptr<IExternalProcessLogger> logger)
          : m_commandLine(commandLine),
            m_processObserver(processObserver),
            m_logger(logger),
@@ -143,7 +143,7 @@ namespace shared
       }
 
       void CProcess::stdOutRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut,
-                                          boost::shared_ptr<ILogger> scriptLogger)
+                                          boost::shared_ptr<IExternalProcessLogger> scriptLogger)
       {
          scriptLogger->init();
          scriptLogger->information("#### START ####");
@@ -156,7 +156,7 @@ namespace shared
       }
 
       void CProcess::stdErrRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdErr,
-                                          boost::shared_ptr<ILogger> scriptLogger,
+                                          boost::shared_ptr<IExternalProcessLogger> scriptLogger,
                                           boost::shared_ptr<std::string> lastError)
       {
          scriptLogger->init();

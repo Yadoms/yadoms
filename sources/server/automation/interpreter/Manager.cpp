@@ -4,8 +4,8 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/exception/OutOfRange.hpp>
 #include "tools/SupportedPlatformsChecker.h"
-#include <shared/process/Logger.h>
 #include <shared/Executable.h>
+#include <server/logging/ExternalProcessLogger.h>
 
 namespace automation
 {
@@ -219,11 +219,11 @@ namespace automation
          return m_pathProvider.scriptsLogPath() / std::to_string(ruleId) / "rule.log";
       }
 
-      boost::shared_ptr<shared::process::ILogger> CManager::createScriptLogger(const std::string& ruleName,
-                                                                               int ruleId)
+      boost::shared_ptr<shared::process::IExternalProcessLogger> CManager::createScriptLogger(const std::string& ruleName,
+                                                                                              int ruleId)
       {
-         return boost::make_shared<shared::process::CLogger>("script/" + ruleName + " #" + std::to_string(ruleId),
-                                                             scriptLogFile(ruleId));
+         return boost::make_shared<logging::CExternalProcessLogger>("script/" + ruleName + " #" + std::to_string(ruleId),
+                                                                    scriptLogFile(ruleId));
       }
    }
 } // namespace automation::interpreter

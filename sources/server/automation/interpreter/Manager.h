@@ -39,8 +39,8 @@ namespace automation
                                const std::string& scriptPath,
                                bool doBackup = true) override;
          std::string getScriptLogFile(int ruleId) override;
-         boost::shared_ptr<shared::process::ILogger> createScriptLogger(const std::string& ruleName,
-                                                                        int ruleId) override;
+         boost::shared_ptr<shared::process::IExternalProcessLogger> createScriptLogger(const std::string& ruleName,
+                                                                                       int ruleId) override;
          // [END] IManager Implementation
 
       protected:

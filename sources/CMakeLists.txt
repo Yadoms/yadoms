@@ -375,11 +375,13 @@ set(YADOMS_SRC
 	server/location/Location.h
 	server/location/Location.cpp
    
-	server/logConfiguration/LogConfiguration.h
-	server/logConfiguration/LogConfiguration.cpp   
-	server/logConfiguration/LogConfigurationImpl.h
-	server/logConfiguration/LogConfigurationImpl.cpp
-	server/logConfiguration/LogConfigurationException.h
+	server/logging/ExternalProcessLogger.h
+	server/logging/ExternalProcessLogger.cpp  
+	server/logging/LogConfiguration.h
+	server/logging/LogConfiguration.cpp   
+	server/logging/LogConfigurationImpl.h
+	server/logging/LogConfigurationImpl.cpp
+	server/logging/LogConfigurationException.h
    
 	server/pluginSystem/BasicQualifier.h
 	server/pluginSystem/BasicQualifier.cpp
@@ -602,7 +604,7 @@ source_group(server\\database\\entities  server/database/entities/*.*)
 source_group(server\\dateTime  server/dateTime/*.*)
 source_group(server\\i18n  server/i18n/*.*)
 source_group(server\\location  server/location/*.*)
-source_group(server\\logConfiguration  server/logConfiguration/*.*)
+source_group(server\\logging  server/logging/*.*)
 source_group(server\\notification  server/notification/*.*)
 source_group(server\\notification\\action  server/notification/action/*.*)
 source_group(server\\notification\\basic  server/notification/basic/*.*)

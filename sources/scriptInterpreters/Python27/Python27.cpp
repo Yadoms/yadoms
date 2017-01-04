@@ -169,7 +169,7 @@ void CPython27::saveScriptContent(const std::string& scriptPath,
 }
 
 boost::shared_ptr<shared::process::IProcess> CPython27::createProcess(const std::string& scriptPath,
-                                                                      boost::shared_ptr<shared::process::ILogger> scriptLogger,
+                                                                      boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger,
                                                                       const std::string& scriptApiId,
                                                                       boost::shared_ptr<shared::process::IProcessObserver> processObserver) const
 {

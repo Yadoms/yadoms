@@ -1,10 +1,9 @@
 #pragma once
 #include "IPythonExecutable.h"
 #include <interpreter_cpp_api/IInterpreter.h>
-#include <shared/process/ILogger.h>
+#include <shared/process/IExternalProcessLogger.h>
 #include <shared/process/IProcess.h>
 #include <shared/process/IProcessObserver.h>
-#include <shared/script/yScriptApi/IYScriptApi.h>
 
 
 // Shortcut to yPluginApi namespace
@@ -31,7 +30,7 @@ protected:
    static void saveScriptContent(const std::string& scriptPath,
                                  const std::string& content);
    boost::shared_ptr<shared::process::IProcess> createProcess(const std::string& scriptPath,
-                                                              boost::shared_ptr<shared::process::ILogger> scriptLogger,
+                                                              boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger,
                                                               const std::string& scriptApiId,
                                                               boost::shared_ptr<shared::process::IProcessObserver> processObserver) const;
 

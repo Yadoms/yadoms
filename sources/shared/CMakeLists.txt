@@ -222,9 +222,7 @@ set(SHARED_LIB_SRC
    shared/process/IProcessObserver.h
    shared/process/ICommandLine.h
    shared/process/IProcess.h
-   shared/process/ILogger.h
-   shared/process/Logger.h
-   shared/process/Logger.cpp
+   shared/process/IExternalProcessLogger.h
 	shared/process/NativeExecutableCommandLine.h
    shared/process/NativeExecutableCommandLine.cpp
    shared/process/Process.h

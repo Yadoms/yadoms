@@ -8,13 +8,13 @@ namespace shared
       //-----------------------------------------------------
       ///\brief The process logger interface
       //-----------------------------------------------------
-      class YADOMS_SHARED_EXPORT ILogger
+      class YADOMS_SHARED_EXPORT IExternalProcessLogger
       {
       public:
          //-----------------------------------------------------
          ///\brief               Destructor
          //-----------------------------------------------------
-         virtual ~ILogger()
+         virtual ~IExternalProcessLogger()
          {
          }
 

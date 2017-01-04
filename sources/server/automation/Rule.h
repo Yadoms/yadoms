@@ -43,9 +43,9 @@ namespace automation
       //-----------------------------------------------------
       void start();
 
-      boost::shared_ptr<script::IIpcAdapter> createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger,
+      boost::shared_ptr<script::IIpcAdapter> createScriptContext(boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger,
                                                                  int ruleId) const;
-      boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptApiImplementation(boost::shared_ptr<shared::process::ILogger> scriptLogger) const;
+      boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptApiImplementation(boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger) const;
       boost::shared_ptr<shared::process::IProcessObserver> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler,
                                                                               int ruleId) const;
 
