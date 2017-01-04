@@ -1,8 +1,8 @@
 #pragma once
 #include <shared/script/yInterpreterApi/IYInterpreterApi.h>
 #include <shared/script/yInterpreterApi/IInformation.h>
-#include <interpreter_IPC/toInterpreter.pb.h>
-#include <interpreter_IPC/toYadoms.pb.h>
+#include <interpreter_IPC/yadomsToInterpreter.pb.h>
+#include <interpreter_IPC/interpreterToYadoms.pb.h>
 
 
 namespace interpreter_cpp_api

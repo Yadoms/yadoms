@@ -25,8 +25,8 @@ namespace shared
          /// \throw CProcessException if error
          //--------------------------------------------------------------
          CProcessDeprecated(boost::shared_ptr<ICommandLine> commandLine,
-                  boost::shared_ptr<IProcessObserver> processObserver,
-                  boost::shared_ptr<ILogger> logger);
+                            boost::shared_ptr<IProcessObserver> processObserver,
+                            boost::shared_ptr<ILogger> logger);
 
          //--------------------------------------------------------------
          /// \brief	Destructor
@@ -108,4 +108,5 @@ namespace shared
       };
    }
 } // namespace shared::process
+
 

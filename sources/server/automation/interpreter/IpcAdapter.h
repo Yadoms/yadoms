@@ -1,8 +1,8 @@
 #pragma once
 #include "IIpcAdapter.h"
 #include <shared/communication/MessageQueueRemover.hpp>
-#include <interpreter_IPC/toInterpreter.pb.h>
-#include <interpreter_IPC/toYadoms.pb.h>
+#include <interpreter_IPC/yadomsToInterpreter.pb.h>
+#include <interpreter_IPC/interpreterToYadoms.pb.h>
 
 namespace automation
 {

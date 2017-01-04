@@ -7,13 +7,13 @@
 CScriptProcess::CScriptProcess(boost::shared_ptr<IPythonExecutable> executable,
                                const boost::filesystem::path& interpreterPath,
                                boost::shared_ptr<const IScriptFile> scriptFile,
-                               boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
+                               const std::string& scriptApiId,
                                boost::shared_ptr<shared::process::ILogger> scriptLogger,
                                boost::shared_ptr<shared::process::IProcessObserver> stopNotifier)
    : m_executable(executable),
      m_interpreterPath(interpreterPath),
      m_scriptFile(scriptFile),
-     m_yScriptApi(yScriptApi),
+     m_scriptApiId(scriptApiId),
      m_scriptLogger(scriptLogger),
      m_stopNotifier(stopNotifier)
 {
@@ -41,9 +41,7 @@ boost::shared_ptr<shared::process::ICommandLine> CScriptProcess::createCommandLi
 
 void CScriptProcess::start()
 {
-   m_contextAccessor = boost::make_shared<CContextAccessor>(m_yScriptApi);
-
-   auto commandLine = createCommandLine(m_contextAccessor->id());
+   auto commandLine = createCommandLine(m_scriptApiId);
 
    m_process = boost::make_shared<shared::process::CProcessDeprecated>(commandLine,
                                                                        m_stopNotifier,

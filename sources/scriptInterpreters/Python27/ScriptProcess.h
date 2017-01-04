@@ -18,14 +18,14 @@ public:
    /// \param[in] executable  Python executable to call to start script
    /// \param[in] interpreterPath  The current library path
    /// \param[in] scriptFile The script file to execute
-   /// \param[in] yScriptApi The context, used by script to interact with Yadoms
+   /// \param[in] scriptApiId The script Api ID, used to interact with Yadoms
    /// \param[in] scriptLogger The script logger
    /// \param[in] stopNotifier The stop notifier
    //--------------------------------------------------------------
    CScriptProcess(boost::shared_ptr<IPythonExecutable> executable,
                   const boost::filesystem::path& interpreterPath,
                   boost::shared_ptr<const IScriptFile> scriptFile,
-                  boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
+                  const std::string& scriptApiId,
                   boost::shared_ptr<shared::process::ILogger> scriptLogger,
                   boost::shared_ptr<shared::process::IProcessObserver> stopNotifier);
 
@@ -66,9 +66,9 @@ private:
    boost::shared_ptr<const IScriptFile> m_scriptFile;
 
    //--------------------------------------------------------------
-   /// \brief	The script api context
+   /// \brief	The script api ID
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> m_yScriptApi;
+   const std::string& m_scriptApiId;
 
    //--------------------------------------------------------------
    /// \brief	The script logger
@@ -90,6 +90,4 @@ private:
    //--------------------------------------------------------------
    boost::shared_ptr<IProcess> m_process;
 };
-
-
 
