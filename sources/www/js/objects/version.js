@@ -82,11 +82,19 @@ Version.prototype.buildMetadata = function() {
 /**
  * Compare the two UpdateInformationObjects. Return < 0 if item1 is lower, =0 if the same and >0 if item1 is higher
   */
-Version.compare = function(first, second) {
+Version.compare = function(A, B) {
   //Comparison (matching to SEMVER requirements)
   // compare major, minor and patch
   // if the same, the preRelease field (alphabetically ordered) make the precendence
-
+  var first = A;
+  if (typeof A === "string") {
+     first = new Version(A);
+  }
+  var second = B;
+  if (typeof B === "string") {
+     second = new Version(B);
+  }
+  
   if (first.major_ > second.major_)
       return 1;
   else if (first.major_ < second.major_)

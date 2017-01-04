@@ -240,6 +240,7 @@
 
                    YadomsInformationManager.getList()
                       .done(function (data) {
+
                           //we manage local version
                           var currentYadomsVersion = new Version(data.yadoms.version);
                           $line.find("em.local-version").text(currentYadomsVersion.toString());
@@ -273,7 +274,7 @@
 
                           //we order the list
                           serverVersions.sort(function (a, b) {
-                             return Version.compare(a.version, b.version);
+                             return Version.compare(b.version, a.version); //invert versions
                           });
                           var canChooseVersion = false;
                           var installUpdateAllowed = false;
@@ -533,33 +534,32 @@
         UpdateInformationManager.getList(objectType)
         .done(function (serverList) {
             //we get installed plugin List
-            var deferredArray = [];
             if (!isNullOrUndefined(serverList)) {
                 mergeLists(localList, serverList, function (mergedList) {
                     //we sort the list by name
                     mergedList.sort(function (item1, item2) {
                         return item2.type > item1.type;
                     });
-                    //we display the result
-                    Object.keys(mergedList).forEach(function (key) {
-                        var deferred = YadomsInformationManager.getList();
-                        deferredArray.push(deferred);
-                        deferred.done(function (data) {
-                            if ((!key.startsWith("system-")) && ((data.developperMode) || (!key.startsWith("dev-")))) {
+                    
+                    YadomsInformationManager.getList()
+                    .done(function (data) {
+                       //we display the result
+                       Object.keys(mergedList).forEach(function (key) {
+                            if (!key.startsWith("system-") && (data.developerMode || !key.startsWith("dev-"))) {
                                 //the actual item does nothing
                                 mergedList[key].processing = false;
                                 createInstallUpdateItemLine(objectType, mergedList[key]);
                                 //we set the visibility to the allowed buttons
                                 updateLine(objectType, mergedList[key]);
                             }
-                        });
-                    });
+                       });     
+                       d.resolve();
+                    })
+                    .fail(d.reject);
                 });
+            } else {
+               d.resolve();
             }
-            $.whenAll(deferredArray)
-                 .done(function () {
-                     d.resolve();
-                 });
         })
         .fail(function (error) {
             console.error("Unable to get versions for " + objectType + " : " + error);
@@ -602,11 +602,10 @@
                         $.each(serverValue,
                             function (versionIndex, versionValue) {
                                 //if this releasetype is wanted we add it to the arrays of version for this item
-                                if ($.inArray(versionValue.version, wantedVersion)) {
+                                if (isWanted(versionValue.version)) {
                                     var item = {};
                                     item.downloadUrl = versionValue.downloadUrl;
                                     item.version = versionValue.version;
-                                    item.releaseType = versionValue.releaseType;
                                     localList[typeName].serverVersions.push(item);
                                 }
                             });
@@ -616,8 +615,11 @@
                         //we add the new item available only on the server
                         var canAddOnThePage = false;
 
-                        serverValue.sort(UpdateInformationManager.compareVersion);
-
+                        //we order the list
+                        serverValue.sort(function (a, b) {
+                           return Version.compare(b.version, a.version); //invert versions
+                        });
+                        
                         var newItem = {};
 
                         //generic informations
@@ -639,10 +641,9 @@
                                 var item = {};
                                 item.downloadUrl = versionValue.downloadUrl;
                                 item.version = versionValue.version;
-                                item.releaseType = versionValue.releaseType;
                                 newItem.serverVersions.push(item);
                                 //we need only one release type available in tthe wanted array to can see the whole line
-                                if ($.inArray(item.releaseType, wantedVersion) > -1)
+                                if (isWanted(item.version))
                                     canAddOnThePage = true;
                             });
 
@@ -745,7 +746,7 @@
         //we manage general information
         if (!isNullOrUndefined(item.package.version)) {
             //we can display the local version
-            $line.find("em.local-version").text(versionToString(item.package));
+            $line.find("em.local-version").text(item.package.version.toString());
         }
         else {
             $line.find("em.local-version").text("");
@@ -763,35 +764,21 @@
             var canChooseVersion = false;
 
             var availableVersions = [];
-            var latestVersion = undefined;
 
             if (!isNullOrUndefined(item.serverVersions)) {
                 //we create a list of all version available to update based on the type of the version and the list of available version different from the local one
                 $.each(item.serverVersions, function (index, value) {
-                    if ($.inArray(value.releaseType, wantedVersion) > -1) {
-                        //we manage latest version
-                        if (isNullOrUndefined(latestVersion)) {
-                            //latestVersion hasn't defined for the moment we take the first one
-                            latestVersion = value;
-                        }
-                        else {
-                            //we compare the version with the cumulated to take the latest
-                            if (UpdateInformationManager.compareVersion(latestVersion, value) > 0) {
-                                latestVersion = value;
-                            }
-                        }
-
+                    if (isWanted(value.version)) {
                         //if this releasetype is wanted we add it to the arrays of version for this item
-                        if (!matchVersion(item.package, value)) {
+                        if (Version.compare(item.package.version, value.version) !== 0) {
                             availableVersions.push(value);
                         }
                     }
                 });
             }
 
-            //we can display the latest version
-            $line.find("em.latest-version").text(versionToString(latestVersion));
-
+  
+             
 
             if (!isNullOrUndefined(item.package.version)) {
                 //the plugin is already installed so the button is used to update
@@ -805,22 +792,33 @@
             }
 
             if (availableVersions.length > 0) {
+               //we order the list
+               availableVersions.sort(function (a, b) {
+                  return Version.compare(b.version, a.version); //invert versions
+               });                      
+               
+               //update the last available version
+               $line.find("em.latest-version").text(availableVersions[0].version.toString());
+               $line.find("ul.latest-installable-version").text(availableVersions[0].version.toString());
+   
                 if (availableVersions.length > 1) {
                     //there is different versions visible
                     canChooseVersion = true;
                 }
 
                 //the main install button is allowed only if latest version and current version are different
-                installUpdateAllowed = (UpdateInformationManager.compareVersion(item.package, latestVersion) !== 0);
+                installUpdateAllowed = (Version.compare(item.package.version, availableVersions[0].version) !== 0);
 
                 //we create a combo that have all available versions for install or update
                 var $cbVersion = $line.find("ul.versions");
                 $cbVersion.empty();
-                availableVersions.sort(UpdateInformationManager.compareVersion);
+
+
 
                 $.each(availableVersions, function (index, value) {
 
-                    $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl + "\"><a href=\"#\"><em>" + versionToString(value) + "</em></a></li>");
+                    $cbVersion.append("<li downloadUrl=\"" + value.downloadUrl + "\"><a href=\"#\"><em" + ((item.package.version && Version.compare(value.version, item.package.version) <0)?" class='text-muted small'":"") +">" + value.version.toString() + "</em></a></li>");
+                    
                     //we manage the click event on each version
                     if (!isNullOrUndefined(item.package.version)) {
                         //the item is already installed, we ask an update
@@ -837,7 +835,7 @@
                 $line.find("button.btn-expand").addClass("disabled");
             }
 
-            $line.find("ul.latest-installable-version").text(versionToString(latestVersion));
+              
 
             if (uninstallAllowed) {
                 $line.find("button.btn-uninstall").removeClass("disabled");
@@ -861,7 +859,7 @@
                 //we manage click events
                 if (!isNullOrUndefined(item.package.version)) {
                     //the item is already installed, we ask an update if there is some available
-                    if (canChooseVersion) {
+                    if (availableVersions.length > 0) {
                         $line.find("button.main-btn").unbind('click').bind('click', function () { askForUpdate(objectType, item, availableVersions[0]); });
                     }
                 }
@@ -902,7 +900,7 @@
                      $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstallTitle"),
                      $.t("modals.dashboard.sub-windows.install-update.generic.confirmInstall", {
                          objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }),
-                         version: versionToString(updateInformation)
+                         version: updateInformation.version.toString()
                      }),
                      function () {
                          //the user has confirmed the action
@@ -931,7 +929,7 @@
                   $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdateTitle"),
                   $.t("modals.dashboard.sub-windows.install-update.generic.confirmUpdate", {
                       objectName: $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }),
-                      version: versionToString(updateInformation)
+                      version: updateInformation.version.toString()
                   }),
                   function () {
                       //the user has confirmed the action
@@ -1014,20 +1012,6 @@
         updateLine(objectType, item);
     }
 
-    function matchVersion(version1, version2) {
-        return ((version1.version === version2.version) && (version1.releaseType === version2.releaseType));
-    }
-
-    /**
-     * Convert the version and the release type to a string
-     * @param version
-     * @returns {string}
-     */
-    function versionToString(version) {
-        if ((isNullOrUndefined(version)) || (isNullOrUndefined(version.version)) || (isNullOrUndefined(version.releaseType)))
-            return "";
-        return "v " + version.version +  ((version.releaseType.toLowerCase() == "stable")?"":("-" + version.releaseType));
-    }
 
     /**
      * Update button group color depending its checked state
