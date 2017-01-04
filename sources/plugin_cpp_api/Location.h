@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/ILocation.h>
-#include <plugin_IPC/toPlugin.pb.h>
+#include <plugin_IPC/yadomsToPlugin.pb.h>
 
 namespace plugin_cpp_api
 {

@@ -2,7 +2,6 @@
 #include "Manager.h"
 #include "Factory.h"
 #include <shared/exception/InvalidParameter.hpp>
-#include <shared/exception/OutOfRange.hpp>
 #include "tools/SupportedPlatformsChecker.h"
 #include <shared/Executable.h>
 #include <server/logging/ExternalProcessLogger.h>
@@ -38,7 +37,7 @@ namespace automation
                   auto successufullyStarted = false;
                   auto evtHandler = boost::make_shared<shared::event::CEventHandler>();
                   auto interpreterInstance = m_factory->createInterpreterInstance(interpreterKeyName,
-                                                                                  [evtHandler, &successufullyStarted](bool running, const std::string& interpreterType)
+                                                                                  [this, evtHandler, &successufullyStarted](bool running, const std::string& interpreterType)
                                                                                   {
                                                                                      if (running)
                                                                                         successufullyStarted = true;

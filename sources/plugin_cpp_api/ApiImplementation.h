@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <plugin_IPC/toYadoms.pb.h>
-#include <plugin_IPC/toPlugin.pb.h>
+#include <plugin_IPC/pluginToYadoms.pb.h>
+#include <plugin_IPC/yadomsToPlugin.pb.h>
 
 
 namespace plugin_cpp_api
@@ -83,10 +83,6 @@ namespace plugin_cpp_api
       void waitInitialized() const;
 
    protected:
-      //--------------------------------------------------------------
-      /// \brief	Send a request
-      /// \param[in] request Request to send
-      //--------------------------------------------------------------
       void send(const plugin_IPC::toYadoms::msg& msg) const;
       void send(const plugin_IPC::toYadoms::msg& msg,
                 boost::function1<bool, const plugin_IPC::toPlugin::msg&> checkExpectedMessageFunction,

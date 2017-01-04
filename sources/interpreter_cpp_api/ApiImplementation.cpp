@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "ApiImplementation.h"
 #include <shared/DataContainer.h>
-#include <interpreter_IPC/toInterpreter.pb.h>
-#include <interpreter_IPC/toYadoms.pb.h>
 #include "AvalaibleRequest.h"
 #include "LoadScriptContentRequest.h"
 #include "SaveScriptContentRequest.h"
