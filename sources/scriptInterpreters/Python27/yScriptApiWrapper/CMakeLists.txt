@@ -2,6 +2,9 @@
 # include common script interpreters definitions
 include("../../YadomsScriptWrappersCommon.cmake")
 
+SET_PARENT_INTERPRETER(python27)
+
+
 #########################################
 ## Place here all the source files
 #########################################
