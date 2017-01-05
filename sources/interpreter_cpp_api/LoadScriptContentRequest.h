@@ -1,5 +1,5 @@
 #pragma once
-#include <interpreter_IPC/YadomsToInterpreter.pb.h>
+#include <interpreter_IPC/yadomsToInterpreter.pb.h>
 #include <shared/script/yInterpreterApi/ILoadScriptContentRequest.h>
 
 namespace interpreter_cpp_api
