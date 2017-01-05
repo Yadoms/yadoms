@@ -100,13 +100,12 @@ if(POCO_VERSION_CHECKED_SUCCESS)
    endif()		
 
    FIND_LIBRARY(Poco_LIB_DIR NAMES ${POCO_FOUNDATION}  PATH_SUFFIXES ${SUFFIX_FOR_LIBRARY_PATH} PATHS
+	   # Look in other places.
+	   ${Poco_INCLUDE_DIR}
+	   ${POCO_DIR_SEARCH}
 
-    # Look in other places.
-    ${Poco_INCLUDE_DIR}
-    ${POCO_DIR_SEARCH}
-
-    # Help the user find it if we cannot.
-    DOC "The ${POCO_LIBRARY_PATH_DESCRIPTION}"
+	   # Help the user find it if we cannot.
+	   DOC "The ${POCO_LIBRARY_PATH_DESCRIPTION}"
    )
    GET_FILENAME_COMPONENT(Poco_LIB_DIR ${Poco_LIB_DIR} PATH)	
 
@@ -117,8 +116,8 @@ if(POCO_VERSION_CHECKED_SUCCESS)
 
    # Add in some path suffixes. These will have to be updated whenever a new Poco version comes out.
    SET(SUFFIX_FOR_LIBRARY_BIN_PATH
-    bin
-    bin/Linux/i686
+      bin
+      bin/Linux/i686
    )
    if(WIN32)
       SET(CMAKE_FIND_LIBRARY_PREFIXES "")
@@ -132,14 +131,13 @@ if(POCO_VERSION_CHECKED_SUCCESS)
    endif()
       
 
-   FIND_LIBRARY(Poco_BIN_DIR NAMES ${POCO_FOUNDATION}  PATH_SUFFIXES ${SUFFIX_FOR_LIBRARY_BIN_PATH} PATHS
+   FIND_LIBRARY(Poco_BIN_DIR NAMES ${POCO_FOUNDATION} PATH_SUFFIXES ${SUFFIX_FOR_LIBRARY_BIN_PATH} PATHS
+      # Look in other places.
+      ${Poco_INCLUDE_DIR}
+      ${POCO_DIR_SEARCH}
 
-    # Look in other places.
-    ${Poco_INCLUDE_DIR}
-    ${POCO_DIR_SEARCH}
-
-    # Help the user find it if we cannot.
-    DOC "The ${POCO_LIBRARY_PATH_DESCRIPTION}"
+      # Help the user find it if we cannot.
+      DOC "The ${POCO_LIBRARY_PATH_DESCRIPTION}"
    )
    GET_FILENAME_COMPONENT(Poco_BIN_DIR ${Poco_BIN_DIR} PATH)	
 
@@ -150,9 +148,9 @@ if(POCO_VERSION_CHECKED_SUCCESS)
    # Now try to get the include and library path.
    IF(Poco_INCLUDE_DIR)
 
-     #create the Poco_INCLUDE_DIRS which contains each library include directory
-     IF(EXISTS "${Poco_INCLUDE_DIR}")
-       FOREACH (POCOLIB ${POCO_LIBS})
+   #create the Poco_INCLUDE_DIRS which contains each library include directory
+   IF(EXISTS "${Poco_INCLUDE_DIR}")
+      FOREACH (POCOLIB ${POCO_LIBS})
 
          #make specific treatment with PocoNetSSL
          if(${POCOLIB} STREQUAL "PocoNetSSL")
@@ -169,9 +167,9 @@ if(POCO_VERSION_CHECKED_SUCCESS)
          
          
          IF(EXISTS "${CURRENTINCLUDE_LIB}")
-           SET(Poco_INCLUDE_DIRS ${Poco_INCLUDE_DIRS} ${CURRENTINCLUDE_LIB})
+            SET(Poco_INCLUDE_DIRS ${Poco_INCLUDE_DIRS} ${CURRENTINCLUDE_LIB})
          ELSE()
-           message(FATAL_ERROR "ERROR: cannot find ${POCOLIB} include dir. Should be : ${CURRENTINCLUDE_LIB}")
+            message(FATAL_ERROR "ERROR: cannot find ${POCOLIB} include dir. Should be : ${CURRENTINCLUDE_LIB}")
          ENDIF()
 
          #find the lib to link with
@@ -186,8 +184,13 @@ if(POCO_VERSION_CHECKED_SUCCESS)
             SET(CURRENT_DEBUG_LIB ${Poco_LIB_DIR}/lib${POCOLIB}d.dylib)
             SET(CURRENT_RELEASE_LIB ${Poco_LIB_DIR}/lib${POCOLIB}.dylib)
          else()
-            SET(CURRENT_DEBUG_LIB ${Poco_LIB_DIR}/lib${POCOLIB}d.so)
-            SET(CURRENT_RELEASE_LIB ${Poco_LIB_DIR}/lib${POCOLIB}.so)
+            if(POCO_USE_STATIC_LIBS)
+               SET(CURRENT_DEBUG_LIB ${Poco_LIB_DIR}/lib${POCOLIB}d.a)
+               SET(CURRENT_RELEASE_LIB ${Poco_LIB_DIR}/lib${POCOLIB}.a)
+            else()
+               SET(CURRENT_DEBUG_LIB ${Poco_LIB_DIR}/lib${POCOLIB}d.so)
+               SET(CURRENT_RELEASE_LIB ${Poco_LIB_DIR}/lib${POCOLIB}.so)
+            ENDIF()
          endif()
 
          IF(EXISTS "${CURRENT_DEBUG_LIB}")
@@ -209,25 +212,25 @@ if(POCO_VERSION_CHECKED_SUCCESS)
             if(WIN32)
                SET(CURRENT_DEBUG_BIN ${Poco_BIN_DIR}/${POCOLIB}d.dll)
                SET(CURRENT_RELEASE_BIN ${Poco_BIN_DIR}/${POCOLIB}.dll)
-	    elseif(APPLE)
+            elseif(APPLE)
                SET(CURRENT_DEBUG_BIN ${Poco_LIB_DIR}/lib${POCOLIB}d.dylib)
                SET(CURRENT_RELEASE_BIN ${Poco_LIB_DIR}/lib${POCOLIB}.dylib)
- 	    else()
+            else()
                SET(CURRENT_DEBUG_BIN ${Poco_LIB_DIR}/lib${POCOLIB}d.so)
                SET(CURRENT_RELEASE_BIN ${Poco_LIB_DIR}/lib${POCOLIB}.so)
-	    endif()    
+            endif()    
 
             IF(EXISTS "${CURRENT_DEBUG_BIN}")
-              SET(Poco_FOUND_BINS ${Poco_FOUND_BINS} "debug" ${CURRENT_DEBUG_BIN})
-              SET(Poco_FOUND_DEBUG_BINS ${Poco_FOUND_DEBUG_BINS} ${CURRENT_DEBUG_BIN})
+               SET(Poco_FOUND_BINS ${Poco_FOUND_BINS} "debug" ${CURRENT_DEBUG_BIN})
+               SET(Poco_FOUND_DEBUG_BINS ${Poco_FOUND_DEBUG_BINS} ${CURRENT_DEBUG_BIN})
             ELSE()
-              message(FATAL_ERROR "ERROR: cannot find ${CURRENT_DEBUG_BIN} binary file. Should be : ${CURRENT_DEBUG_BIN}")
+               message(FATAL_ERROR "ERROR: cannot find ${CURRENT_DEBUG_BIN} binary file. Should be : ${CURRENT_DEBUG_BIN}")
             ENDIF()
             IF(EXISTS "${CURRENT_RELEASE_BIN}")
-              SET(Poco_FOUND_BINS ${Poco_FOUND_BINS} "optimized" ${CURRENT_RELEASE_BIN})
-              SET(Poco_FOUND_RELEASE_BINS ${Poco_FOUND_RELEASE_BINS} ${CURRENT_RELEASE_BIN})
+               SET(Poco_FOUND_BINS ${Poco_FOUND_BINS} "optimized" ${CURRENT_RELEASE_BIN})
+               SET(Poco_FOUND_RELEASE_BINS ${Poco_FOUND_RELEASE_BINS} ${CURRENT_RELEASE_BIN})
             ELSE()
-              message(FATAL_ERROR "ERROR: cannot find ${CURRENT_RELEASE_BIN} binary file. Should be : ${CURRENT_RELEASE_BIN}")
+               message(FATAL_ERROR "ERROR: cannot find ${CURRENT_RELEASE_BIN} binary file. Should be : ${CURRENT_RELEASE_BIN}")
             ENDIF()
 	         
             
