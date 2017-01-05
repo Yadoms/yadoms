@@ -36,12 +36,10 @@ namespace automation //TODO faire une factory
 
    void CRule::start()
    {
-      auto scriptLogger = m_interpreterManager->createScriptLogger(m_ruleData->Name(),
+      m_scriptLogger = m_interpreterManager->createScriptLogger(m_ruleData->Name(),
                                                                    m_ruleData->Id());
-      m_ipcAdapter = createScriptContext(scriptLogger,
+      m_ipcAdapter = createScriptContext(m_scriptLogger,
                                          m_ruleData->Id());
-      auto stopNotifier = createStopNotifier(m_ruleStateHandler,
-                                             m_ruleData->Id());
 
       m_scriptInterpreter = m_interpreterManager->getInterpreterInstance(m_ruleProperties->interpreterName());
 
@@ -78,6 +76,7 @@ namespace automation //TODO faire une factory
    boost::shared_ptr<shared::process::IProcessObserver> CRule::createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler,
                                                                                   int ruleId) const
    {
+      //TODO cette fonction n'est normalement plus utile, la virer (ainsi que ces dépendances) après test
       return boost::make_shared<script::StopNotifier>(ruleStateHandler,
                                                       ruleId);
    }

@@ -4,7 +4,6 @@ set(interpreter_cpp_api_SOURCES
    stdafx.cpp
    stdafx.h
 
-   # TODO faire le ménage
    ICommandLine.h
    IInterpreterContext.h
 

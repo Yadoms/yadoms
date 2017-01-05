@@ -3,7 +3,6 @@
 #include <shared/process/IProcessObserver.h>
 #include <shared/process/IExternalProcessLogger.h>
 #include <shared/process/IProcess.h>
-#include <shared/process/ICommandLine.h>
 
 class IFactory
 {

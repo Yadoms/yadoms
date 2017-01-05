@@ -3,9 +3,6 @@
 #include <interpreter_cpp_api/IInterpreter.h>
 #include <shared/process/IProcess.h>
 #include "IFactory.h"
-#include <shared/script/yInterpreterApi/IStartScript.h>
-#include <boost/parameter/aux_/arg_list.hpp>
-#include <shared/script/yInterpreterApi/IStopScript.h>
 
 
 // Shortcut to yInterpreterApi namespace
@@ -31,8 +28,10 @@ protected:
    std::string loadScriptContent(const std::string& scriptPath) const;
    static void saveScriptContent(const std::string& scriptPath,
                                  const std::string& content);
-   void startScript(boost::shared_ptr<shared::script::yInterpreterApi::IStartScript> request);
-   void stopScript(boost::shared_ptr<shared::script::yInterpreterApi::IStopScript> request);
+   void startScript(int scriptInstanceId,
+                    const std::string& scriptPath,
+                    const std::string& scriptApiId);
+   void stopScript(int scriptInstanceId);
    void unloadScript(int scriptInstanceId);
 
 private:
@@ -43,4 +42,3 @@ private:
    mutable boost::recursive_mutex m_processesMutex;
    std::map<int, boost::shared_ptr<shared::process::IProcess>> m_processes;
 };
-

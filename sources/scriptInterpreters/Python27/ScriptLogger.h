@@ -13,8 +13,6 @@ public:
    void error(const std::string& line) override;
    // [END] IExternalProcessLogger Implementation
 
-protected:
-
 private:
    const std::string& m_logPrefix;
 };

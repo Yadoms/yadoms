@@ -64,6 +64,7 @@ namespace automation
       boost::shared_ptr<script::IGeneralInfo> m_generalInfo;
 
       boost::shared_ptr<interpreter::IInstance> m_scriptInterpreter;
+      boost::shared_ptr<shared::process::IExternalProcessLogger> m_scriptLogger;
       boost::shared_ptr<script::IIpcAdapter> m_ipcAdapter;
    };
 } // namespace automation	
