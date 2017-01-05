@@ -334,6 +334,10 @@ namespace database
                    Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
             if (m_databaseRequester->queryStatement(qDelete) <= 0)
                throw shared::exception::CEmptyResult("No lines affected");
+
+            qDelete.Clear().DeleteFrom(CKeywordTable::getTableName()).
+                   Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, deviceId);
+            m_databaseRequester->queryStatement(qDelete);
          }
 
          void CDevice::removeDevice(int pluginId, const std::string& deviceName)
