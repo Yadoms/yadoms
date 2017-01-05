@@ -26,12 +26,16 @@ namespace automation
 
       CInstance::~CInstance()
       {
-         m_ipcAdapter->postStopRequest();
       }
 
       boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> CInstance::aboutInterpreter() const
       {
          return m_interpreterInformation;
+      }
+
+      void CInstance::requestToStop()
+      {
+         m_ipcAdapter->postStopRequest();
       }
 
       bool CInstance::isAvalaible()

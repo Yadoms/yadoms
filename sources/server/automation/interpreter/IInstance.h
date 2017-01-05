@@ -25,6 +25,11 @@ namespace automation
          virtual boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> aboutInterpreter() const = 0;
 
          //-----------------------------------------------------
+         ///\brief               Ask Interpreter to stop
+         //-----------------------------------------------------
+         virtual void requestToStop() = 0;
+
+         //-----------------------------------------------------
          ///\brief               Check if interpreter is fully avalaible
          ///\return              true if fully avalaible (all needed ressources are working)
          //-----------------------------------------------------

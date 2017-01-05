@@ -29,6 +29,7 @@ namespace automation
          std::vector<std::string> getAvailableInterpreters() override;
          boost::shared_ptr<IInstance> getInterpreterInstance(const std::string& interpreterType) override;
          void unloadInterpreter(const std::string& interpreterName) override;
+         void onInterpreterUnloaded(const std::string& interpreterName);
          std::string getScriptFile(const std::string& interpreterName,
                                    const std::string& scriptPath) override;
          std::string getScriptTemplateFile(const std::string& interpreterName) override;

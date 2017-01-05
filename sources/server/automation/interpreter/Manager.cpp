@@ -42,7 +42,7 @@ namespace automation
                                                                                      if (running)
                                                                                         successfullyStarted = true;
                                                                                      else
-                                                                                        unloadInterpreter(interpreterType);
+                                                                                        onInterpreterUnloaded(interpreterType);
 
                                                                                      evtHandler->postEvent(shared::event::kUserFirstId);
                                                                                   },
@@ -123,6 +123,15 @@ namespace automation
       }
 
       void CManager::unloadInterpreter(const std::string& interpreterName)
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
+
+         const auto interpreter = m_loadedInterpreters.find(interpreterName);
+         if (interpreter != m_loadedInterpreters.end())
+            interpreter->second->requestToStop();
+      }
+
+      void CManager::onInterpreterUnloaded(const std::string& interpreterName)
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
 
