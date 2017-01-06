@@ -470,13 +470,14 @@ widgetViewModelCtor =
                                                  if (vMinLastValue!=null && vMaxLastValue!=null)
                                                     range.push([d, vMin-vMinLastValue, vMax-vMaxLastValue]);
 
-                                                 if (lastValue != null)
-                                                    plot.push([d, v-lastValue]);
-                                                 
-                                              lastValue = v;
-                                              vMinLastValue=vMin;
-                                              vMaxLastValue=vMax;
+                                                 vMinLastValue=vMin;
+                                                 vMaxLastValue=vMax;
                                               }
+                                              
+                                              if (lastValue != null)
+                                                 plot.push([d, v-lastValue]);
+                                                 
+                                              lastValue = v;                                              
                                            }
                                            else
                                            {
