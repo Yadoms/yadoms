@@ -12,7 +12,7 @@ namespace shared
    namespace process
    {
       //--------------------------------------------------------------
-      /// \brief	A process
+      /// \brief	Python executable
       //--------------------------------------------------------------
       class YADOMS_SHARED_EXPORT CProcess : public IProcess
       {
@@ -25,8 +25,8 @@ namespace shared
          /// \throw CProcessException if error
          //--------------------------------------------------------------
          CProcess(boost::shared_ptr<ICommandLine> commandLine,
-                  boost::shared_ptr<IProcessObserver> processObserver,
-                  boost::shared_ptr<IExternalProcessLogger> logger);
+                            boost::shared_ptr<IProcessObserver> processObserver,
+                            boost::shared_ptr<IExternalProcessLogger> logger);
 
          //--------------------------------------------------------------
          /// \brief	Destructor
@@ -108,4 +108,5 @@ namespace shared
       };
    }
 } // namespace shared::process
+
 

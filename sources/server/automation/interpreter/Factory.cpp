@@ -3,7 +3,7 @@
 #include "Instance.h"
 #include "Information.h"
 #include <shared/Executable.h>
-#include <shared/process/ProcessDeprecated.h>
+#include <shared/process/Process.h>
 #include "yInterpreterApiImplementation.h"
 #include "IpcAdapter.h"
 #include <shared/process/NativeExecutableCommandLine.h>
@@ -105,7 +105,7 @@ namespace automation
                                                                                    boost::shared_ptr<shared::process::IExternalProcessLogger> logger,
                                                                                    boost::shared_ptr<CInstanceStateHandler> instanceStateHandler) const
       {
-         return boost::make_shared<shared::process::CProcessDeprecated>(commandLine,
+         return boost::make_shared<shared::process::CProcess>(commandLine,
                                                                         instanceStateHandler,
                                                                         logger);
       }

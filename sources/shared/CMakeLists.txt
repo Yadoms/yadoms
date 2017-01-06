@@ -227,8 +227,6 @@ set(SHARED_LIB_SRC
    shared/process/NativeExecutableCommandLine.cpp
    shared/process/Process.h
    shared/process/Process.cpp
-   shared/process/ProcessDeprecated.h
-   shared/process/ProcessDeprecated.cpp
    shared/process/ProcessException.hpp
    shared/process/SoftwareStop.h
    shared/process/SoftwareStop.cpp
