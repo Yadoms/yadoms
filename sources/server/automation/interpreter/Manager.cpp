@@ -5,6 +5,7 @@
 #include "tools/SupportedPlatformsChecker.h"
 #include <shared/Executable.h>
 #include <server/logging/ExternalProcessLogger.h>
+#include <shared/Log.h>
 
 namespace automation
 {
@@ -34,23 +35,20 @@ namespace automation
                // Check if compatible with current platform
                if (isInterpreterCompatibleWithPlatform(interpreterKeyName))
                {
-                  auto successfullyStarted = false;
-                  auto evtHandler = boost::make_shared<shared::event::CEventHandler>();
-                  auto interpreterInstance = m_factory->createInterpreterInstance(interpreterKeyName,
-                                                                                  [this, evtHandler, &successfullyStarted](bool running, const std::string& interpreterType)
-                                                                                  {
-                                                                                     if (running)
-                                                                                        successfullyStarted = true;
-                                                                                     else
-                                                                                        onInterpreterUnloaded(interpreterType);
-
-                                                                                     evtHandler->postEvent(shared::event::kUserFirstId);
-                                                                                  },
-                                                                                  m_onScriptStoppedFct);
-
-                  if (evtHandler->waitForEvents(boost::posix_time::seconds(20)) == shared::event::kUserFirstId
-                     && successfullyStarted)
-                     m_loadedInterpreters[interpreterKeyName] = interpreterInstance;
+                  try
+                  {
+                     m_loadedInterpreters[interpreterKeyName] = m_factory->createInterpreterInstance(interpreterKeyName,
+                                                                                                     [this](bool running, const std::string& interpreterType)
+                                                                                                     {
+                                                                                                        if (!running)
+                                                                                                           onInterpreterUnloaded(interpreterType);
+                                                                                                     },
+                                                                                                     m_onScriptStoppedFct);
+                  }
+                  catch (std::exception& e)
+                  {
+                     YADOMS_LOG(error) << "Fail to start interpreter " << interpreterKeyName << " : " << e.what();
+                  }
                }
             }
          }
@@ -245,3 +243,5 @@ namespace automation
       }
    }
 } // namespace automation::interpreter
+
+

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ScriptProcess.h"
 #include "PythonCommandLine.h"
-#include <shared/process/Process.h>
+#include <shared/process/ProcessDeprecated.h>
 
 
 CScriptProcess::CScriptProcess(boost::shared_ptr<IPythonExecutable> executable,
@@ -43,9 +43,9 @@ void CScriptProcess::start()
 {
    auto commandLine = createCommandLine(m_scriptApiId);
 
-   m_process = boost::make_shared<shared::process::CProcess>(commandLine,
-                                                             m_processObserver,
-                                                             m_scriptLogger);
+   m_process = boost::make_shared<shared::process::CProcessDeprecated>(commandLine,
+                                                                       m_processObserver,
+                                                                       m_scriptLogger);
 }
 
 void CScriptProcess::kill()

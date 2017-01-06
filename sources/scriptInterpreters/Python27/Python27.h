@@ -32,7 +32,7 @@ protected:
                     const std::string& scriptPath,
                     const std::string& scriptApiId);
    void stopScript(int scriptInstanceId);
-   void unloadScript(int scriptInstanceId);
+   void onScriptStopped(int scriptInstanceId);
 
 private:
    boost::shared_ptr<IFactory> m_factory;

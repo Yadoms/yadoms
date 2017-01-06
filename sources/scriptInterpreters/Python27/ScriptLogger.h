@@ -14,6 +14,6 @@ public:
    // [END] IExternalProcessLogger Implementation
 
 private:
-   const std::string& m_logPrefix;
+   const std::string m_logPrefix;
 };
 
