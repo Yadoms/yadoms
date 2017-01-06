@@ -178,7 +178,13 @@ IF(WIN32)
    IF(EXISTS "${OPENSSL_ROOT}/bin/ssleay32.dll")
       SET(PocoNetSSLDepends ${PocoNetSSLDepends} "${OPENSSL_ROOT}/bin/ssleay32.dll")
    ENDIF()
-ENDIF(WIN32)
+ELSEIF(APPLE)
+ELSE()
+	set(Poco_DEPEDENCIES_LIBS
+      gnutls-openssl
+      opencv_gpu
+   )
+ENDIF()
 
 
 ###############################################
