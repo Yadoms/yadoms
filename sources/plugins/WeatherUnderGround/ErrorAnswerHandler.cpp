@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ErrorAnswerHandler.h"
+#include "webSiteErrorException.hpp"
 
 typedef std::list<std::string> EnumValuesTypes;
 

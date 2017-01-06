@@ -34,7 +34,7 @@
       },
       "Astronomy" :
       {
-           "name": "Astronomy"
+           "name": "Astronomie"
       },
       "Forecast10Days" :
       {
@@ -60,7 +60,8 @@
 			"querynotfound": "Localisation non trouvée",
 			"keynotfound": "Clé API incorrecte",
 			"NoConnection": "Pas de connexion Internet",
-			"desactivated": "Un ou plusieurs modules sont désactivés"
+			"desactivated": "Un ou plusieurs modules sont désactivés",
+         "noLocation": "Pas de localisation configurée"
 		}
 	}
 }

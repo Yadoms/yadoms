@@ -6,6 +6,8 @@
 #include <shared/exception/Exception.hpp>
 #include "ErrorAnswerHandler.h"
 #include "RequestErrorException.hpp"
+#include "noLocationException.hpp"
+#include "webSiteErrorException.hpp"
 #include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
@@ -68,6 +70,19 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             setPluginState(api, EWUPluginState::kNoConnection);
             api->getEventHandler().createTimer(kEvtInitialization, shared::event::CEventTimer::kOneShot, boost::posix_time::minutes(1));
+         }
+         catch (CNoLocationException&)
+         { 
+            std::cerr << "No location configured" << std::endl;
+            setPluginState(api, EWUPluginState::kNoLocation);
+         }
+         catch (CWebSiteErrorException& e)
+         {
+            std::cout << e.what() << std::endl;
+            std::cout << "result :" << strcmp(e.what(), "keynotfound") << std::endl;
+
+            if (boost::icontains(e.what(), "keynotfound"  )) setPluginState(api, EWUPluginState::kKeyNotFound);
+            if (boost::icontains(e.what(), "querynotfound")) setPluginState(api, EWUPluginState::kQueryNotFound);
          }
          catch (std::exception& e)
          {
@@ -171,6 +186,7 @@ void CWeatherUnderground::onUpdateConfiguration(boost::shared_ptr<yApi::IYPlugin
    else
    {
       std::cerr << "Factory not yet initialize, please check Ethernet connection" << std::endl;
+      api->getEventHandler().createTimer(kEvtInitialization, shared::event::CEventTimer::kOneShot, boost::posix_time::minutes(1));
    }
 }
 
@@ -195,6 +211,9 @@ void CWeatherUnderground::setPluginState(boost::shared_ptr<yApi::IYPluginApi> ap
       case EWUPluginState::kNoConnection:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "NoConnection");
          break;
+      case EWUPluginState::kNoLocation:
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "noLocation");
+         break;
       case EWUPluginState::kRunning:
          api->setPluginState(yApi::historization::EPluginState::kRunning);
          break;
@@ -202,6 +221,7 @@ void CWeatherUnderground::setPluginState(boost::shared_ptr<yApi::IYPluginApi> ap
          api->setPluginState(yApi::historization::EPluginState::kStopped);
          break;
       default:
+         std::cerr << "this plugin status does not exist : " << newState << std::endl;
          break;
       }
 
@@ -209,7 +229,7 @@ void CWeatherUnderground::setPluginState(boost::shared_ptr<yApi::IYPluginApi> ap
    }
 }
 
-shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api, std::string url, int event, int &nbRetry) const
+shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api, const std::string url, const int event, int &nbRetry)
 {
    try
    {
@@ -223,10 +243,8 @@ shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yAp
                                               ErrorAnswerHandler Response(api, data);
 
                                               if (Response.ContainError())
-                                              {
-                                                 api->setPluginState(yApi::historization::EPluginState::kCustom, Response.getError());
-                                                 throw shared::exception::CException("Response contain error");
-                                              }
+                                                 throw CWebSiteErrorException(Response.getError());
+
                                               //All is ok we reinitialize the nbRetry
                                               nbRetry = 0;
 
@@ -236,15 +254,22 @@ shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yAp
 
       return returnData;
    }
+   catch (CWebSiteErrorException& e)
+   {
+      if (boost::icontains(e.what(), "keynotfound")) setPluginState(api, EWUPluginState::kKeyNotFound);
+      if (boost::icontains(e.what(), "querynotfound")) setPluginState(api, EWUPluginState::kQueryNotFound);
+
+      throw CRequestErrorException();
+   }
    catch (shared::exception::CException& e)
    {
       std::cout << e.what() << ". Retry in 1 minute." << std::endl;
       api->getEventHandler().createTimer(event, shared::event::CEventTimer::kOneShot, boost::posix_time::minutes(1));
 
       if (nbRetry == 3)
-         ++nbRetry;
-      else
-         api->setPluginState(yApi::historization::EPluginState::kCustom, "NoConnection");
+         setPluginState(api, EWUPluginState::kNoConnection);
+
+      ++nbRetry;
 
       throw CRequestErrorException();
    }

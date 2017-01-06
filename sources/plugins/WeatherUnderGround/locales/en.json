@@ -61,7 +61,8 @@
 			"keynotfound": "This key does not exist",
 			"NoConnection": "No Internet connection...",
 			"desactivated": "One module or more are desactivated",
-         "updateconfiguration":"Update the configuration"
+         "updateconfiguration":"Update the configuration",
+         "noLocation": "No location configured"
 		}
 	}
 }

@@ -29,6 +29,7 @@ enum EWUPluginState
    kKeyNotFound,
    kupdateConfiguration,
    kNoConnection,
+   kNoLocation,
    kRunning
 };
 
@@ -70,7 +71,7 @@ private:
    /// \param[in] event    event to send for retry
    /// \return if the sending is working properly
    //--------------------------------------------------------------
-   shared::CDataContainer SendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api, std::string url, int event, int &nbRetry) const;
+   shared::CDataContainer SendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api, const std::string url, const int event, int &nbRetry);
 
    //--------------------------------------------------------------
    /// \brief Manage the state of the plugin

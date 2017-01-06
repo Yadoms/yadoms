@@ -6,7 +6,7 @@ namespace specificHistorizer
 {
    const yApi::CStandardCapacity& MoonCapacity = yApi::CStandardCapacity("Moon",
                                                                          yApi::CStandardUnits::NoUnits,
-                                                                         yApi::EKeywordDataType::kNoData);
+                                                                         yApi::EKeywordDataType::kJson);
 
 
    CMoonHistorizer::CMoonHistorizer(const std::string& keywordName,

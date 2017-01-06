@@ -5,42 +5,60 @@
 #include "Features/ForecastDays.h"
 #include "WeatherUnderground.h"
 #include "Features/Location.h"
+#include "RequestErrorException.hpp"
+#include "noLocationException.hpp"
 
 CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api, 
                        IWUConfiguration& wuConfiguration):
    m_developerMode(api->getYadomsInformation()->developperMode())
 {
-   initializeLiveStations(api, wuConfiguration);
-
    std::vector<std::string> devices = api->getAllDevices();
    std::vector<std::string>::iterator devicesIterator;
 
-   boost::shared_ptr<const shared::ILocation> location = m_lookupInformation->getCityLocation();
-
-   // Create all devices if present
-   for (devicesIterator = devices.begin(); devicesIterator != devices.end(); ++devicesIterator)
+   // First instantiation
+   if (devices.size() == 1)
    {
-      std::string type;
-      std::cout << "Name : " << (*devicesIterator) << std::endl;
-      try {
-         type = api->getDeviceDetails(*devicesIterator).get<std::string>("type");
-      }
-      catch(std::exception&)
-      {}
+      createDevice(api, wuConfiguration);
+   }
+   else
+   {
+      initializeLiveStations(api, wuConfiguration);
 
-      if (type == "weather")
+      // Create all devices if present
+      for (devicesIterator = devices.begin(); devicesIterator != devices.end(); ++devicesIterator)
       {
-         m_weatherConditions = createorUpdateWeatherDevice(api, wuConfiguration);
-      }
-      
-      if (type == "astronomy")
-      {
-         m_astronomy = createorUpdateAstronomyDevice(api, wuConfiguration);
-      }
+         std::string type;
+         std::cout << "Name : " << (*devicesIterator) << std::endl;
+         try {
+            type = api->getDeviceDetails(*devicesIterator).get<std::string>("type");
+         }
+         catch (std::exception&)
+         {
+         }
 
-      if (type == "forecast")
-      {
-         m_forecast = createorUpdateForecastDevice(api, wuConfiguration);
+         if (type == "weather")
+         {
+            if (!wuConfiguration.isLiveConditionsEnabled())
+               api->removeDevice((*devicesIterator));
+            else
+               m_weatherConditions = createorUpdateWeatherDevice(api, wuConfiguration);
+         }
+
+         if (type == "astronomy")
+         {
+            if (!wuConfiguration.isAstronomyEnabled())
+               api->removeDevice((*devicesIterator));
+            else
+            m_astronomy = createorUpdateAstronomyDevice(api, wuConfiguration);
+         }
+
+         if (type == "forecast")
+         {
+            if (!wuConfiguration.isForecast10DaysEnabled())
+               api->removeDevice((*devicesIterator));
+            else
+            m_forecast = createorUpdateForecastDevice(api, wuConfiguration);
+         }
       }
    }
 }
@@ -69,6 +87,10 @@ void CWUFactory::initializeLiveStations(boost::shared_ptr<yApi::IYPluginApi> api
       m_lookupInformation = boost::make_shared<CLiveStations>(wuConfiguration.getLocation());
    else
       m_lookupInformation = boost::make_shared<CLiveStations>(api);
+
+   // if no location configured (no Internet connexion, ...) -> send a exception, to retry one minute later
+   if (!m_lookupInformation->getCityLocation())
+      throw CNoLocationException();
 
    if (m_developerMode)
    {

@@ -4,21 +4,18 @@
 #include <shared/http/HttpMethods.h>
 #include "Location.h"
 #include "../RequestErrorException.hpp"
+#include "../webSiteErrorException.hpp"
+#include "../ErrorAnswerHandler.h"
 
 CLiveStations::CLiveStations(boost::shared_ptr<yApi::IYPluginApi> api):
+   m_location(api->getYadomsInformation()->location()),
    m_lastSearchLocation(boost::make_shared<location::CLocation>(0,0,0))
-{
-   //TODO : api->getYadomsInformation()->location() renvoi maintenant un pointeur nul si la location
-   // est inconnue. Attention, la location peut être nulle au début (le temps de l'init), puis être
-   // correcte un peu plus tard. Il convient donc d'appeler cette fonction à chaque fois que nécessaire,
-   // et une seule fois à l'init.
-   m_location = api->getYadomsInformation()->location();
-}
+{}
 
-CLiveStations::CLiveStations(boost::shared_ptr<const shared::ILocation> location)
-{
-   m_location = location;
-}
+CLiveStations::CLiveStations(boost::shared_ptr<const shared::ILocation> location):
+   m_location(location),
+   m_lastSearchLocation(boost::make_shared<location::CLocation>(0, 0, 0))
+{}
 
 void CLiveStations::processLookUp(boost::shared_ptr<yApi::IYPluginApi> api,
                                   const std::string& apikey)
@@ -34,11 +31,18 @@ void CLiveStations::processLookUp(boost::shared_ptr<yApi::IYPluginApi> api,
                                               [&](shared::CDataContainer& data)
                                               {
                                                  m_response = data;
-                                                 m_stations = m_response.get<std::vector<shared::CDataContainer>>("location.nearby_weather_stations.airport.station");
+                                                 ErrorAnswerHandler errorHandler(api, data);
+
+                                                 if (errorHandler.ContainError())
+                                                    throw CWebSiteErrorException(errorHandler.getError());
                                               },
                                               httpRequestBindingTimeout);
       }
       m_lastSearchLocation = m_location;
+   }
+   catch (CWebSiteErrorException& e)
+   {
+      throw CWebSiteErrorException(e.what());
    }
    catch (std::exception& e)
    {
@@ -53,6 +57,8 @@ boost::shared_ptr<const shared::ILocation> CLiveStations::getStationLocation(int
 {
    std::vector<shared::CDataContainer>::const_iterator iterStations;
    boost::shared_ptr<const shared::ILocation> location;
+
+   m_stations = m_response.get<std::vector<shared::CDataContainer>>("location.nearby_weather_stations.airport.station");
 
    for (iterStations = m_stations.begin(); iterStations != m_stations.end(); ++iterStations)
    {

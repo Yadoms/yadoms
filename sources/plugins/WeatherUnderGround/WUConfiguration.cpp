@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "WUConfiguration.h"
-#include"NoStateException.hpp"
+#include"noStateException.hpp"
 #include "Features/Location.h"
 
 CWUConfiguration::CWUConfiguration()

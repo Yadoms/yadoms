@@ -32,7 +32,6 @@
 
                //we update system configuration to be sure to modify the latest version of the configuration
                Yadoms.systemConfiguration = configuration;
-               console.log ( configuration );
             }
             
             promise.resolve();
@@ -70,14 +69,13 @@
                }
                catch(err)
                {
-                  location.latitude = "0.0";
-                  location.longitude = "0.0";
+               //Initial Configuration - Paris - Notre Dame
+                  location.latitude = "48.853";
+                  location.longitude = "2.35";
                   location.altitude = "0.0";
                   Yadoms.systemConfiguration.location = {};
                   Yadoms.systemConfiguration.location.value = location;
                }
-               
-               console.log ( Yadoms.systemConfiguration );
                
                var latitudeParameter = new StringParameterHandler(i18NContext,
                   ConfigurationManager.items.system.location.latitude,
@@ -370,7 +368,7 @@
                   arrayOfDeffered.push(d);
                
                   Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.latitude]  = latitudeParameter.getCurrentConfiguration();
-                  Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.longitude] = longitudeParameter.getCurrentConfiguration();                                                
+                  Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.longitude] = longitudeParameter.getCurrentConfiguration();
                
                   ConfigurationManager.createToServer("system", 
                                                       "location", 
@@ -400,7 +398,7 @@
 
                               //*************
                               //language
-                              Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value = systemConfiguration[ConfigurationManager.items.system.language].defaultValue;
+                              Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value = Yadoms.systemConfiguration[ConfigurationManager.items.system.language].defaultValue;
                               ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.language])
                                  .done(function() {
                                     //we change language of i18n
@@ -410,29 +408,25 @@
 
                                     //*************
                                     //basic authentication
-                                    Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value = systemConfiguration[ConfigurationManager.items.system.basicAuthentication].defaultValue;
+                                    Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].value = Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication].defaultValue;
                                     ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.basicAuthentication])
                                        .done(function() {
                                           //*************
                                           //advanced parameters
-                                          Yadoms.systemConfiguration[ConfigurationManager.items.system.advancedParameters].value = systemConfiguration[ConfigurationManager.items.system.advancedParameters].defaultValue;
+                                          Yadoms.systemConfiguration[ConfigurationManager.items.system.advancedParameters].value = Yadoms.systemConfiguration[ConfigurationManager.items.system.advancedParameters].defaultValue;
                                           ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.advancedParameters])
                                              .done(function() {
                                                 //*************
                                                 //dateFormatString
-                                                Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value = systemConfiguration[ConfigurationManager.items.system.dateFormatString].defaultValue;
+                                                Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value = Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].defaultValue;
                                                 ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString])
                                                    .done(function() {
-
-                                                      // TODO : Faire le reset propre
-                                                      //*************                                                   
-                                                      //city
-                                                      Yadoms.systemConfiguration[ConfigurationManager.items.system.city].value = ""; //Todo : faire ainsi : languageParameter.getCurrentConfiguration();
-
-                                                      console.log ( ConfigurationManager.items.system.city );
-                                                      console.log ( Yadoms.systemConfiguration );
                                                       
-                                                      ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.city])
+                                                      //Initial Configuration - Paris - Notre Dame
+                                                      Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.latitude]  = "48.853";
+                                                      Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.longitude] = "2.35";
+                                                      
+                                                      ConfigurationManager.updateToServer(Yadoms.systemConfiguration[ConfigurationManager.items.system.locationSection])
                                                          .done(function() {
                                                                window.location.reload();
                                                                d.resolve();

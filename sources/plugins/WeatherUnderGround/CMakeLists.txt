@@ -10,12 +10,14 @@ set(WUNDERGROUND_SOURCES
    ErrorAnswerHandler.cpp
    ErrorAnswerHandler.h
    IWUConfiguration.h
-   NoStateException.hpp
+   noLocationException.hpp
+   noStateException.hpp
    RequestErrorException.hpp
    stdafx.h
    stdafx.cpp
    WeatherUnderground.h
    WeatherUnderground.cpp
+   webSiteErrorException.hpp
    WUConfiguration.cpp
    WUConfiguration.h
    WUFactory.cpp

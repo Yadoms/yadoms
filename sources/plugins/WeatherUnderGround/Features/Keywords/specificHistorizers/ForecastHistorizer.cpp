@@ -6,7 +6,7 @@ namespace specificHistorizer
 {
    const yApi::CStandardCapacity& ForecastCapacity = yApi::CStandardCapacity("Forecast",
                                                                              yApi::CStandardUnits::NoUnits,
-                                                                             yApi::EKeywordDataType::kNoData);
+                                                                             yApi::EKeywordDataType::kJson);
 
    CForecastHistorizer::CForecastHistorizer(const std::string& keywordName,
                                             const yApi::EKeywordAccessMode& accessMode,
