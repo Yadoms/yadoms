@@ -11,8 +11,8 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
    : m_localisation(stationName),
      m_deviceName(deviceName),
      m_forecast(boost::make_shared<CForecast>(m_deviceName, "Forecast", weatherunderground::helper::EPeriod::kDay)),
-     m_isDeveloperMode(false),
      m_url ("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/forecast/q/" + boost::lexical_cast<std::string>(location->latitude()) + "," + boost::lexical_cast<std::string>(location->longitude()) + ".json"),
+     m_isDeveloperMode(false),
      m_location(location)
 {
    try

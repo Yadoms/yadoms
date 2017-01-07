@@ -11,6 +11,7 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
                                        const std::string& stationName)
    : m_localisation(stationName),
      m_deviceName(deviceName),
+     m_url("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/conditions/q/" + boost::lexical_cast<std::string>(location->latitude()) + "," + boost::lexical_cast<std::string>(location->longitude()) + ".json"),
      m_temp(boost::make_shared<yApi::historization::CTemperature>("temperature")),
      m_pressure(boost::make_shared<yApi::historization::CPressure>("pressure")),
      m_humidity(boost::make_shared<yApi::historization::CHumidity>("Humidity")),
@@ -24,7 +25,6 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
      m_windMaxSpeed(boost::make_shared<yApi::historization::CSpeed>("windMaxSpeed")),
      m_feelsLike(boost::make_shared<yApi::historization::CTemperature>("FeelsLike")),
      m_windchill(boost::make_shared<yApi::historization::CTemperature>("Windchill")),
-     m_url("http://api.wunderground.com/api/" + wuConfiguration.getAPIKey() + "/conditions/q/" + boost::lexical_cast<std::string>(location->latitude()) + "," + boost::lexical_cast<std::string>(location->longitude()) + ".json"),
      m_location(location)
 {
    try
