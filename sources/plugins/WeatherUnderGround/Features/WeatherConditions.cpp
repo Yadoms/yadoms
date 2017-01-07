@@ -92,8 +92,6 @@ void CWeatherConditions::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi>
          if (api->keywordExists(m_deviceName, m_windMaxSpeed)) api->removeKeyword(m_deviceName, "windMaxSpeed");
          if (api->keywordExists(m_deviceName, m_feelsLike)) api->removeKeyword(m_deviceName, "FeelsLike");
          if (api->keywordExists(m_deviceName, m_windchill)) api->removeKeyword(m_deviceName, "Windchill");
-
-		 std::cout << "remove keywords" << std::endl;
       }
    }
 
@@ -102,9 +100,6 @@ void CWeatherConditions::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi>
     shared::CDataContainer details;
     details.set("type", m_type);
     api->declareDevice(m_deviceName, m_type, m_keywords, details);
-
-    std::cout << "name :" << m_deviceName << std::endl;
-    std::cout << "type :" << m_type << std::endl;
 }
 
 void CWeatherConditions::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api, 

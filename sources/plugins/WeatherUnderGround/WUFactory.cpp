@@ -28,7 +28,6 @@ CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api,
       for (devicesIterator = devices.begin(); devicesIterator != devices.end(); ++devicesIterator)
       {
          std::string type;
-         std::cout << "Name : " << (*devicesIterator) << std::endl;
          try {
             type = api->getDeviceDetails(*devicesIterator).get<std::string>("type");
          }
@@ -69,13 +68,8 @@ void CWUFactory::createDevice(boost::shared_ptr<yApi::IYPluginApi> api,
    // get the location and name of the selected station
    initializeLiveStations(api, wuConfiguration);
 
-   // If astronomy is enabled
    m_astronomy = createorUpdateAstronomyDevice(api, wuConfiguration);
-
-   // if conditions are enabled
    m_weatherConditions = createorUpdateWeatherDevice(api, wuConfiguration);
-
-   // If forecast is enabled
    m_forecast = createorUpdateForecastDevice(api, wuConfiguration);
 }
 

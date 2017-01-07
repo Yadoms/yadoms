@@ -67,7 +67,6 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
                   if (api->keywordExists(m_deviceName, m_forecastRain[counter]))
                   {
                      api->removeKeyword(m_deviceName, TempString);
-					 std::cout << "remove " << TempString << std::endl;
                      m_forecastRain[counter].reset();
                   }
                }
@@ -111,7 +110,6 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
                   if (api->keywordExists(m_deviceName, m_hightemp[counter]))
                   {
                      api->removeKeyword(m_deviceName, TempString);
-					 std::cout << "remove " << TempString << std::endl;
                      m_hightemp[counter].reset();
                   }
                }

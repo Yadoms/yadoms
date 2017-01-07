@@ -98,6 +98,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                shared::CDataContainer returnData = SendUrlRequest(api, weatherConditionsRequester->getUrl(), kEvtTimerRefreshWeatherConditions, weatherConditionsSendingRetry);
                weatherConditionsRequester->parse(api, returnData, m_configuration);
+               setPluginState(api, EWUPluginState::kRunning);
             }
             catch (CRequestErrorException&)
             {}
@@ -113,6 +114,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                shared::CDataContainer returnData = SendUrlRequest(api, astronomyRequester->getUrl(), kEvtTimerRefreshAstronomy, astronomySendingRetry);
                astronomyRequester->parse(api, returnData, m_configuration);
+               setPluginState(api, EWUPluginState::kRunning);
             }
             catch (CRequestErrorException&)
             {}
@@ -128,6 +130,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                shared::CDataContainer returnData = SendUrlRequest(api, forecast10Days->getUrl(), kEvtTimerRefreshForecast10Days, forecast10daysSendingRetry);
                forecast10Days->parse(api, returnData, m_configuration);
+               setPluginState(api, EWUPluginState::kRunning);
             }
             catch (CRequestErrorException&)
             {}
