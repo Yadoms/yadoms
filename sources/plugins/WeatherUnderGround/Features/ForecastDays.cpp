@@ -155,6 +155,8 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
 
          m_forecast->clearAllPeriods();
 
+         setCityName(m_localisation);
+
          unsigned char counter = 0;
 
          for (i = result.begin(); i != result.end(); ++i)
