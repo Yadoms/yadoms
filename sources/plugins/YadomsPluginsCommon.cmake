@@ -51,7 +51,6 @@ MACRO(PLUGIN_LINK _targetName)
       ${LIBS}
       ${CMAKE_DL_LIBS}
       ${PROTOBUF_LIBRARIES}
-      ${plugin_IPC_LIBRARY}
       ${ARGN}
       )
 	

@@ -43,7 +43,6 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
       ${LIBS}
       ${CMAKE_DL_LIBS}
       ${PROTOBUF_LIBRARIES}
-      ${interpreter_IPC_LIBRARY}
       ${ARGN}
       )
 	
