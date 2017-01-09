@@ -272,7 +272,7 @@ namespace interpreter_cpp_api
    {
       boost::shared_ptr<shared::script::yInterpreterApi::IStopScript> request = boost::make_shared<CStopScript>(msg);
 
-      m_pluginEventHandler.postEvent(kEventStartScript,
+      m_pluginEventHandler.postEvent(kEventStopScript,
                                      request);
    }
 
