@@ -21,7 +21,7 @@ namespace automation
             pb->set_type(m_information->getType());
             pb->set_name(m_information->getName());
             pb->set_description(m_information->getDescription());
-            pb->set_version(m_information->getVersion());
+            pb->set_version(m_information->getVersion().toString());
             pb->set_author(m_information->getAuthor());
             pb->set_url(m_information->getUrl());
             pb->set_credits(m_information->getCredits());

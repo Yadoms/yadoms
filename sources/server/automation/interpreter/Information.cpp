@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Information.h"
-#include <boost/regex.hpp>
 #include "tools/SupportedPlatformsChecker.h"
 
 namespace automation
@@ -36,9 +35,7 @@ namespace automation
             if (m_package->containsValue("description"))
                m_description = m_package->get<std::string>("description");
 
-            m_version = m_package->get<std::string>("version");
-            if (m_version.empty() || !regex_match(m_version, boost::regex("\\d+.\\d+.\\d+")))
-               throw std::invalid_argument("Error reading package.json : interpreter version doesn't match expected format (x.x.x)");
+            m_version = shared::versioning::CVersion(m_package->get<std::string>("version"));
 
             m_author = m_package->get<std::string>("author");
             if (m_author.empty())
@@ -90,7 +87,7 @@ namespace automation
          return m_description;
       }
 
-      const std::string& CInformation::getVersion() const
+      const shared::versioning::CVersion& CInformation::getVersion() const
       {
          return m_version;
       }
