@@ -4,20 +4,14 @@
 
 namespace shared { namespace versioning {
 
-   CVersionInformation::CVersionInformation(const shared::versioning::CVersion & version, const shared::versioning::EReleaseType & releaseType)
+   CVersionInformation::CVersionInformation(const shared::versioning::CVersion & version)
    {
-      m_container.set("version", version.toString(3));
-      m_container.set("releaseType", releaseType);
+      m_container.set("version", version.toString());
    }
 
    const shared::versioning::CVersion CVersionInformation::getVersion() const
    {
       return shared::versioning::CVersion(m_container.get<std::string>("version"));
-   }
-
-   const shared::versioning::EReleaseType CVersionInformation::getReleaseType() const
-   {
-      return m_container.get<shared::versioning::EReleaseType>("releaseType");
    }
 
    const std::string CVersionInformation::serialize() const

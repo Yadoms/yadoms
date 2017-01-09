@@ -33,7 +33,7 @@ namespace web { namespace poco {
       Poco::Net::HTTPServerParams::Ptr serverParams(new Poco::Net::HTTPServerParams());
       serverParams->setServerName("Yadoms");
       boost::shared_ptr<IRunningInformation> runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>());
-      serverParams->setSoftwareVersion(runningInformation->getSoftwareVersion().getVersion().toString(4));
+      serverParams->setSoftwareVersion(runningInformation->getSoftwareVersion().getVersion().toString());
       serverParams->setKeepAlive(false); //this line fix global catch exception on multiple browser refresh
 
       //in case of "0.0.0.0" or empty , then do not use it, just use port, listen on all interfaces

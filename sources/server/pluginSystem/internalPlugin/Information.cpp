@@ -7,15 +7,13 @@ namespace pluginSystem
    {
       CInformation::CInformation()
          : m_type("system"),
-           m_version("1.0"),
-           m_releaseType(shared::versioning::EReleaseType::kStable),
+           m_version("1.0.0"),
            m_author("Yadoms team"),
            m_url("http://www.yadoms.com"),
            m_package(boost::make_shared<shared::CDataContainer>())
       {
          m_package->set("type", m_type);
-         m_package->set("version", m_version);
-         m_package->set("releaseType", m_releaseType);
+         m_package->set("version", m_version.toString());
          m_package->set("author", m_author);
          m_package->set("url", m_url);
       }
@@ -29,14 +27,9 @@ namespace pluginSystem
          return m_type;
       }
 
-      const std::string& CInformation::getVersion() const
+      const shared::versioning::CVersion& CInformation::getVersion() const
       {
          return m_version;
-      }
-
-      shared::versioning::EReleaseType CInformation::getReleaseType() const
-      {
-         return m_releaseType;
       }
 
       const std::string& CInformation::getAuthor() const
@@ -54,9 +47,7 @@ namespace pluginSystem
          std::ostringstream formatedInformations;
 
          formatedInformations << getType();
-         formatedInformations << " v" << getVersion();
-         formatedInformations << "[stable]";
-
+         formatedInformations << " v" << getVersion().toString();
          return formatedInformations.str();
       }
 

@@ -19,20 +19,9 @@ namespace plugin_cpp_api
       return m_buffer.developpermode();
    }
 
-   std::string CYadomsInformation::version() const
+   shared::versioning::CVersion CYadomsInformation::version() const
    {
-      return m_buffer.version();
-   }
-
-   shared::versioning::EReleaseType CYadomsInformation::releaseType() const
-   {
-      switch (m_buffer.releasetype())
-      {
-      case plugin_IPC::toPlugin::YadomsInformationAnswer_EReleaseType_Stable: return shared::versioning::EReleaseType::kStable;
-      case plugin_IPC::toPlugin::YadomsInformationAnswer_EReleaseType_ReleaseCandidate: return shared::versioning::EReleaseType::kReleaseCandidate;
-      case plugin_IPC::toPlugin::YadomsInformationAnswer_EReleaseType_Beta: return shared::versioning::EReleaseType::kBeta;
-      default: return shared::versioning::EReleaseType::kBeta;
-      }
+      return shared::versioning::CVersion(m_buffer.version());
    }
 
    boost::shared_ptr<const shared::ILocation> CYadomsInformation::location() const

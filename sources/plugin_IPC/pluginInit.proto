@@ -4,21 +4,15 @@ package plugin_IPC.toPlugin;
 message Information {
 	string type = 1;
 	string version = 2;
-
-	enum EReleaseType {
-		kStable = 0; kReleaseCandidate = 1; kBeta = 2;
-	}
-	EReleaseType releaseType = 3;
-
-	string author = 4;
-	string url = 5;
-	string identity = 6;
-	string toString = 7;
-	bool supportedOnThisPlatform = 8;
-	bool supportManuallyCreatedDevice = 9;
-	string packageFileContent = 10;
-	string path = 11;
-	bool supportDeviceRemovedNotification = 12;
+	string author = 3;
+	string url = 4;
+	string identity = 5;
+	string toString = 6;
+	bool supportedOnThisPlatform = 7;
+	bool supportManuallyCreatedDevice = 8;
+	string packageFileContent = 9;
+	string path = 10;
+	bool supportDeviceRemovedNotification = 11;
 }
 
 message Init {

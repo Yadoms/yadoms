@@ -1,7 +1,5 @@
 #pragma once
-
 #include <shared/DataContainer.h>
-#include <shared/versioning/ReleaseType.h>
 
 namespace shared
 {
@@ -47,12 +45,6 @@ namespace shared
             ///             to check the precedence of a version from a reference version.
             //--------------------------------------------------------------
             virtual const std::string& getVersion() const = 0;
-
-            //--------------------------------------------------------------
-            /// \brief	    get the interpreter release type
-            /// \return     the interpreter release type
-            //--------------------------------------------------------------
-            virtual versioning::EReleaseType getReleaseType() const = 0;
 
             //--------------------------------------------------------------
             /// \brief	    get the interpreter author

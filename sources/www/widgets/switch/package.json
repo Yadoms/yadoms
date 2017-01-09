@@ -1,7 +1,6 @@
 {
 	"type": "switch",
-	"version": "1.0.1",
-	"releaseType": "beta",
+	"version": "1.0.1-beta",
 	"author": "Jean-Michel BERHAULT, Nicolas HILAIRE",
 	"url": "https://github.com/Yadoms/yadoms/wiki/switch",
 	"credits": "",

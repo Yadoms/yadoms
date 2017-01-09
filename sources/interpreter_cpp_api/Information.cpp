@@ -34,16 +34,6 @@ namespace interpreter_cpp_api
       return m_buffer->version();
    }
 
-   shared::versioning::EReleaseType CInformation::getReleaseType() const
-   {
-      switch (m_buffer->releasetype())
-      {
-      case interpreter_IPC::toInterpreter::Information_EReleaseType_kStable: return shared::versioning::EReleaseType::kStable;
-      case interpreter_IPC::toInterpreter::Information_EReleaseType_kReleaseCandidate: return shared::versioning::EReleaseType::kReleaseCandidate;
-      default: return shared::versioning::EReleaseType::kBeta;
-      }
-   }
-
    const std::string& CInformation::getAuthor() const
    {
       return m_buffer->author();

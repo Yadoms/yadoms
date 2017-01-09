@@ -18,16 +18,7 @@ namespace pluginSystem
       void CInformation::toPb(plugin_IPC::toPlugin::Information* pb) const
       {
          pb->set_type(m_information->getType());
-         pb->set_version(m_information->getVersion());
-         switch (m_information->getReleaseType())
-         {
-         case shared::versioning::EReleaseType::kStableValue: pb->set_releasetype(plugin_IPC::toPlugin::Information_EReleaseType_kStable);
-            break;
-         case shared::versioning::EReleaseType::kReleaseCandidateValue: pb->set_releasetype(plugin_IPC::toPlugin::Information_EReleaseType_kReleaseCandidate);
-            break;
-         default: pb->set_releasetype(plugin_IPC::toPlugin::Information_EReleaseType_kBeta);
-            break;
-         }
+         pb->set_version(m_information->getVersion().toString());
          pb->set_author(m_information->getAuthor());
          pb->set_url(m_information->getUrl());
          pb->set_identity(m_information->getIdentity());

@@ -20,7 +20,6 @@ namespace automation
          const std::string& getName() const override;
          const std::string& getDescription() const override;
          const std::string& getVersion() const override;
-         shared::versioning::EReleaseType getReleaseType() const override;
          const std::string& getAuthor() const override;
          const std::string& getUrl() const override;
          const std::string& getCredits() const override;
@@ -34,7 +33,6 @@ namespace automation
          std::string m_name;
          std::string m_description;
          std::string m_version;
-         shared::versioning::EReleaseType m_releaseType;
          std::string m_author;
          std::string m_url;
          std::string m_credits;

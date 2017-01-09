@@ -1,7 +1,6 @@
 {
    "type": "smsDialer",
-   "version": "1.0.0",
-   "releaseType": "beta",
+   "version": "1.0.0-beta",
    "author": "Sébastien GALLOU",
    "url": "https://github.com/Yadoms/yadoms/wiki/SmsDialer",
    "credits": "[gammu](http://wammu.eu/gammu/)",

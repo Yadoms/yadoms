@@ -40,8 +40,6 @@ namespace automation
             if (m_version.empty() || !regex_match(m_version, boost::regex("\\d+.\\d+.\\d+")))
                throw std::invalid_argument("Error reading package.json : interpreter version doesn't match expected format (x.x.x)");
 
-            m_releaseType = m_package->get<shared::versioning::EReleaseType>("releaseType");
-
             m_author = m_package->get<std::string>("author");
             if (m_author.empty())
                throw std::invalid_argument("Error reading package.json : interpreter author can not be empty");
@@ -95,11 +93,6 @@ namespace automation
       const std::string& CInformation::getVersion() const
       {
          return m_version;
-      }
-
-      shared::versioning::EReleaseType CInformation::getReleaseType() const
-      {
-         return m_releaseType;
       }
 
       const std::string& CInformation::getAuthor() const

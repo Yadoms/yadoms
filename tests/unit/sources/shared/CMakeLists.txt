@@ -12,6 +12,16 @@ IF(NOT DISABLE_TEST_DATACONTAINER)
    
 ENDIF()
 
+#dd current directory tests
+IF(NOT DISABLE_TEST_VERSION)
+   ADD_YADOMS_SOURCES(
+      shared/shared/versioning/version.h
+      shared/shared/versioning/version.cpp
+   )
+   ADD_SOURCES(TestVersion.cpp)
+   
+ENDIF()
+
 # List subdirectories here
 add_subdirectory(communication)
 add_subdirectory(event)
