@@ -26,7 +26,9 @@ namespace plugin_cpp_api
 
    boost::shared_ptr<const shared::ILocation> CYadomsInformation::location() const
    {
-      return boost::make_shared<CLocation>(m_buffer.location());
+      if (m_buffer.has_location())
+         return boost::make_shared<CLocation>(m_buffer.location());
+      return boost::shared_ptr<const shared::ILocation>();
    }
 } // namespace plugin_cpp_api	
 

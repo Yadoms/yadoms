@@ -5,6 +5,7 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include "serializers/Information.h"
 #include "FromPluginHistorizer.h"
+#include "shared/exception/EmptyResult.hpp"
 
 namespace pluginSystem
 {
@@ -382,10 +383,23 @@ namespace pluginSystem
       answer->set_developpermode(yadomsInformation->developperMode());
       answer->set_version(yadomsInformation->version().toString());
 
-      auto location = answer->mutable_location();
-      location->set_longitude(yadomsInformation->location()->longitude());
-      location->set_latitude(yadomsInformation->location()->latitude());
-      location->set_altitude(yadomsInformation->location()->altitude());
+      try
+      {
+         auto longitude = yadomsInformation->location()->longitude();
+         auto latitude = yadomsInformation->location()->latitude();
+         auto altitude = yadomsInformation->location()->altitude();
+
+         auto location = answer->mutable_location();
+
+         location->set_longitude(longitude);
+         location->set_latitude(latitude);
+         location->set_altitude(altitude);
+      }
+      catch (shared::exception::CEmptyResult&)
+      {
+         // Location unknown
+      }
+
       send(ans);
    }
 

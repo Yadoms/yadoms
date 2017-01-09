@@ -7,56 +7,64 @@ include("../YadomsPluginsCommon.cmake")
 #########################################
 
 set(WUNDERGROUND_SOURCES
-   Astronomy.cpp
-   Astronomy.h
    ErrorAnswerHandler.cpp
    ErrorAnswerHandler.h
-   ForecastDays.cpp
-   ForecastDays.h
    IWUConfiguration.h
-   NoStateException.hpp
+   noLocationException.hpp
+   noStateException.hpp
    RequestErrorException.hpp
    stdafx.h
    stdafx.cpp
    WeatherUnderground.h
    WeatherUnderground.cpp
-   WeatherUndergroundHelpers.h
-   WeatherUndergroundHelpers.cpp
-   WeatherConditions.cpp
-   WeatherConditions.h
+   webSiteErrorException.hpp
    WUConfiguration.cpp
    WUConfiguration.h
-   Keywords/Condition.h
-   Keywords/Condition.cpp
-   Keywords/Forecast.h
-   Keywords/Forecast.cpp   
-   Keywords/IKeyword.h 
-   Keywords/KeywordException.hpp
-   Keywords/KeywordHelpers.cpp
-   Keywords/KeywordHelpers.h
-   Keywords/Moon.h
-   Keywords/Moon.cpp
-   Keywords/WeatherIcon.h
-   Keywords/WeatherIcon.cpp
-   specificHistorizers/ConditionHistorizer.h
-   specificHistorizers/ConditionHistorizer.cpp
-   specificHistorizers/ConditionFormatter.h
-   specificHistorizers/ConditionFormatter.cpp   
-   specificHistorizers/ForecastHelpers.h
-   specificHistorizers/ForecastHelpers.cpp
-   specificHistorizers/ForecastHistorizer.h
-   specificHistorizers/ForecastHistorizer.cpp
-   specificHistorizers/ForecastFormatter.h
-   specificHistorizers/ForecastFormatter.cpp
-   specificHistorizers/MoonFormatter.h
-   specificHistorizers/MoonFormatter.cpp
-   specificHistorizers/MoonHistorizer.h
-   specificHistorizers/MoonHistorizer.cpp
-   specificHistorizers/NoPeriodException.hpp
+   WUFactory.cpp
+   WUFactory.h
+   Features/Astronomy.cpp
+   Features/Astronomy.h
+   Features/ForecastDays.cpp
+   Features/ForecastDays.h   
+   Features/IFeature.h
+   Features/LiveStations.cpp
+   Features/LiveStations.h
+   Features/Location.cpp
+   Features/Location.h   
+   Features/WeatherConditions.cpp
+   Features/WeatherConditions.h
+   Features/Keywords/Condition.h
+   Features/Keywords/Condition.cpp
+   Features/Keywords/Forecast.h
+   Features/Keywords/Forecast.cpp   
+   Features/Keywords/IKeyword.h 
+   Features/Keywords/KeywordException.hpp
+   Features/Keywords/KeywordHelpers.cpp
+   Features/Keywords/KeywordHelpers.h
+   Features/Keywords/Moon.h
+   Features/Keywords/Moon.cpp
+   Features/Keywords/WeatherIcon.h
+   Features/Keywords/WeatherIcon.cpp
+   Features/Keywords/specificHistorizers/ConditionHistorizer.h
+   Features/Keywords/specificHistorizers/ConditionHistorizer.cpp
+   Features/Keywords/specificHistorizers/ConditionFormatter.h
+   Features/Keywords/specificHistorizers/ConditionFormatter.cpp   
+   Features/Keywords/specificHistorizers/ForecastHelpers.h
+   Features/Keywords/specificHistorizers/ForecastHelpers.cpp
+   Features/Keywords/specificHistorizers/ForecastHistorizer.h
+   Features/Keywords/specificHistorizers/ForecastHistorizer.cpp
+   Features/Keywords/specificHistorizers/ForecastFormatter.h
+   Features/Keywords/specificHistorizers/ForecastFormatter.cpp
+   Features/Keywords/specificHistorizers/MoonFormatter.h
+   Features/Keywords/specificHistorizers/MoonFormatter.cpp
+   Features/Keywords/specificHistorizers/MoonHistorizer.h
+   Features/Keywords/specificHistorizers/MoonHistorizer.cpp
+   Features/Keywords/specificHistorizers/NoPeriodException.hpp
 )
 
-source_group(Keywords Keywords/*.*)
-source_group(specificHistorizers specificHistorizers/*.*)
+source_group(Features Features/*.*)
+source_group(Features\\Keywords Features/Keywords/*.*)
+source_group(Features\\Keywords\\specificHistorizers Features/Keywords/specificHistorizers/*.*)
 
 #########################################
 ## Place here all additional include directories
