@@ -20,7 +20,7 @@ namespace automation
       void CYInterpreterApiImplementation::notifyScriptStopped(int scriptInstanceId,
                                                                const std::string error)
       {
-         YADOMS_LOG(information) << "Rule " << m_informations->getName() << " stopped";
+         YADOMS_LOG(information) << "Rule #" << scriptInstanceId << " (interpreter " << m_informations->getName() << ") stopped";
          m_onScriptStoppedFct(scriptInstanceId,
                               error);
       }

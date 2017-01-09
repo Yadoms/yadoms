@@ -21,8 +21,8 @@ CYScriptApiImplementation::CYScriptApiImplementation(const std::string& yScriptA
 
    try
    {
-      const auto sendMessageQueueId(yScriptApiAccessorId + ".toYadoms");
-      const auto receiveMessageQueueId(yScriptApiAccessorId + ".toScript");
+      const auto sendMessageQueueId(yScriptApiAccessorId + ".script_IPC.toYadoms");
+      const auto receiveMessageQueueId(yScriptApiAccessorId + ".script_IPC.toScript");
       m_sendMessageQueue = boost::make_shared<boost::interprocess::message_queue>(boost::interprocess::open_only, sendMessageQueueId.c_str());
       m_receiveMessageQueue = boost::make_shared<boost::interprocess::message_queue>(boost::interprocess::open_only, receiveMessageQueueId.c_str());
       m_mqBuffer = boost::make_shared<unsigned char[]>(m_sendMessageQueue->get_max_msg_size());
