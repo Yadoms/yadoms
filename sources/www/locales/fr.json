@@ -481,7 +481,7 @@
           "description": "Installation et mise à jour des composants de Yadoms",
           "includePreRelease": "Inclure les versions préliminaires",
           "yadoms": {
-            "title": "Mise à jour de Yadoms",
+            "title": "Yadoms",
             "currentVersion": "Version courante",
             "availableVersion": "Version disponible",
             "update": "Mise à jour de Yadoms",

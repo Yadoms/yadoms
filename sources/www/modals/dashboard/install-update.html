@@ -34,13 +34,13 @@
                         <tr class="yadoms-information">
                             <td>
                                 <span>Yadoms</span>
-                                <span class="update-available-label hidden label label-as-badge label-success">1</span>
+                                <span class="update-available-label hidden label label-as-badge label-success">!</span>
                             </td>
                             <td>
                                 <img src="/img/icon_256.png" class="img-thumbnail dashboard-table-icon">
                             </td>
                             <td>
-                                <em class="local-version">2.0.0-beta.42</em>
+                                <em class="local-version"></em>
                             </td>
                             <td>
                                 <em class="latest-version"></em>
@@ -127,7 +127,7 @@
             <div class="panel-heading collapsed" role="tab" id="install-update-scriptInterpreter-heading-panel" data-toggle="collapse" data-parent="#install-update-accordion" aria-expanded="true" aria-controls="install-update-scriptInterpreter-heading-panel" data-target="#install-update-scriptInterpreter-panel">
                 <h4 class="panel-title accordion-title">
                     <span data-i18n="modals.dashboard.sub-windows.install-update.scriptInterpreters.title"></span>
-                    <span class="update-available-label label label-as-badge label-success hidden">!</span>
+                    <span class="update-available-label label label-as-badge label-success hidden"></span>
                 </h4>
             </div>
             <div id="install-update-scriptInterpreter-panel" class="panel-collapse collapse" role="tabpanel" aria-labelledby="install-update-scriptInterpreter-heading-panel">
@@ -204,6 +204,9 @@
         $asyncActionIndicator.removeClass("hidden");
         updateReleaseType(e);
 
+        //we remove update available header
+        $(".panel-title span.update-available-label").addClass("hidden");
+
         var deferredArray = [];
         deferredArray.push(fillYadomsInformation());
         deferredArray.push(fillPluginList());
@@ -228,6 +231,8 @@
 
         //we launch requests
         var $line = $("table#yadoms-install-update-list tr.yadoms-information");
+
+        $line.addClass("hidden");
 
         $line.find("div.action-buttons").removeClass("hidden");
         $line.find("div.action-progression").addClass("hidden");
@@ -343,6 +348,9 @@
                           else {
                               $line.find("span.update-available-label").addClass("hidden");
                           }
+
+                          //we make the line visible
+                          $line.removeClass("hidden");
 
                           //we update the header update availble label
                           updateHeaderUpdateAvailableLabel("yadoms");
@@ -663,7 +671,7 @@
 
         var s = "<tr id=\"" + item.type + "\">" +
                     "<td><span>" + $.t(objectType + "s/" + item.type + ":name", { defaultValue: item.package.name }) + "</span>" +
-                    "<span class=\"update-available-label hidden label label-as-badge label-success\">1</span>" +
+                    "<span class=\"update-available-label hidden label label-as-badge label-success\">!</span>" +
                     "</td>";
 
         //depend on the objectType there is an icon

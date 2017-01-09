@@ -481,7 +481,7 @@
           "description": "This section allow you to install or update all parts of the software",
           "includePreRelease": "Include pre-release versions",
           "yadoms": {
-            "title": "Yadoms update",
+            "title": "Yadoms",
             "currentVersion": "Current version",
             "availableVersion": "Available version",
             "update": "Update Yadoms",
