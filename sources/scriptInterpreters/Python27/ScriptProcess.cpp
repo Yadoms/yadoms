@@ -44,8 +44,8 @@ void CScriptProcess::start()
    auto commandLine = createCommandLine(m_scriptApiId);
 
    m_process = boost::make_shared<shared::process::CProcess>(commandLine,
-                                                                       m_processObserver,
-                                                                       m_scriptLogger);
+                                                             m_processObserver,
+                                                             m_scriptLogger);
 }
 
 void CScriptProcess::kill()
