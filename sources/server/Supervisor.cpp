@@ -67,7 +67,8 @@ void CSupervisor::run()
       shared::CServiceLocator::instance().push<dataAccessLayer::IDataAccessLayer>(dal);
 
       // Create the location provider
-      auto location = boost::make_shared<location::CLocation>(dal->getConfigurationManager(), boost::make_shared<location::CIpApiAutoLocation>());
+      auto location = boost::make_shared<location::CLocation>(dal->getConfigurationManager(),
+                                                              boost::make_shared<location::CIpApiAutoLocation>());
 
       // Create the Plugin manager
       auto pluginManager(boost::make_shared<pluginSystem::CManager>(m_pathProvider, pDataProvider, dal, location));
@@ -209,4 +210,3 @@ void CSupervisor::requestToStop()
 {
    m_EventHandler.postEvent(kStopRequested);
 }
-

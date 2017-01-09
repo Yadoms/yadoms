@@ -20,9 +20,9 @@
 namespace pluginSystem
 {
    CFactory::CFactory(const IPathProvider& pathProvider,
-                      boost::shared_ptr<shared::ILocation> locationProvider)
+                      boost::shared_ptr<shared::ILocation> location)
       : m_pathProvider(pathProvider),
-        m_locationProvider(locationProvider)
+        m_location(location)
    {
    }
 
@@ -188,7 +188,7 @@ namespace pluginSystem
                                                            dataAccessLayer->getDeviceManager(),
                                                            dataAccessLayer->getKeywordManager(),
                                                            dataAccessLayer->getAcquisitionHistorizer(),
-                                                           m_locationProvider);
+                                                           m_location);
    }
 
    boost::shared_ptr<IIpcAdapter> CFactory::createInstanceRunningContext(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,

@@ -23,14 +23,14 @@ public:
    // IWUConfiguration implementation
    void initializeWith(const shared::CDataContainer& data) override;
    std::string getAPIKey() const override;
-   std::string getLocalisation() override;
-   std::string getCountryOrState() override;
-   std::string getState() const override;
-   bool IsConditionsIndividualKeywordsEnabled() const override;
-   bool IsLiveConditionsEnabled() const override;
-   bool IsRainIndividualKeywordsEnabled() const override;
-   bool IsAstronomyEnabled() const override;
-   bool IsForecast10DaysEnabled() const override;
+   boost::shared_ptr<const shared::ILocation> getLocation() const override;
+   bool pluginLocationEnabled() const override;
+   bool isConditionsIndividualKeywordsEnabled() const override;
+   bool isLiveConditionsEnabled() const override;
+   bool isRainIndividualKeywordsEnabled() const override;
+   bool isTempIndividualKeywordsEnabled() const override;
+   bool isAstronomyEnabled() const override;
+   bool isForecast10DaysEnabled() const override;
    // [END] IWUConfiguration implementation
 
 private:
@@ -38,15 +38,5 @@ private:
    /// \brief	    Configuration raw data
    //--------------------------------------------------------------
    shared::CDataContainer m_data;
-
-   //--------------------------------------------------------------
-   /// \brief	    The localisation entrered in the configuration of the module
-   //--------------------------------------------------------------
-   std::string m_localisation;
-
-   //--------------------------------------------------------------
-   /// \brief	    The country or the american state code
-   //--------------------------------------------------------------
-   std::string m_countryOrState;
 };
 

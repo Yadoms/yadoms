@@ -1,11 +1,13 @@
 #include "stdafx.h"
 #include "ErrorAnswerHandler.h"
+#include "webSiteErrorException.hpp"
 
 typedef std::list<std::string> EnumValuesTypes;
 
 ErrorAnswerHandler::ErrorAnswerHandler(boost::shared_ptr<yApi::IYPluginApi> api,
-                                       shared::CDataContainer response)
-   : m_errorState(false)
+                                       shared::CDataContainer response):
+   m_errorState(false),
+   m_errorStatePlugin("")
 {
    //list of errors created into language packages
 
@@ -24,10 +26,7 @@ ErrorAnswerHandler::ErrorAnswerHandler(boost::shared_ptr<yApi::IYPluginApi> api,
 
       auto it = find(EEnumValuesTypes.begin(), EEnumValuesTypes.end(), error);
       if (it != EEnumValuesTypes.end())
-      {
-         //We use the same tag name that must be defined into the language package
-         api->setPluginState(yApi::historization::EPluginState::kCustom, *it);
-      }
+         m_errorStatePlugin = *it;
       else
          std::cout << "This error tag is not handled yet by YADOMS" << error << std::endl;
    }
@@ -38,3 +37,7 @@ bool ErrorAnswerHandler::ContainError() const
    return m_errorState;
 }
 
+std::string ErrorAnswerHandler::getError() const
+{
+   return m_errorStatePlugin;
+}
