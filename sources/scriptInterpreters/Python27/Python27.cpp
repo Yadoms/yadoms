@@ -201,12 +201,13 @@ void CPython27::startScript(int scriptInstanceId,
 void CPython27::stopScript(int scriptInstanceId)
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_processesMutex);
-   if (m_processes.find(scriptInstanceId) == m_processes.end())
+   const auto script = m_processes.find(scriptInstanceId);
+   if (script == m_processes.end())
    {
       std::cerr << "Unable to stop script #" << scriptInstanceId << " : unknown script, maybe already stopped" << std::endl;
       return;
    }
-   m_processes.erase(scriptInstanceId);
+   script->second->kill();
 }
 
 void CPython27::onScriptStopped(int scriptInstanceId)
