@@ -106,8 +106,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          try {
             auto forceRefresh = false;
 
-            // Retrieve event information, if any !
-            try { forceRefresh = api->getEventHandler().getEventData<bool>(); }
+               try { forceRefresh = api->getEventHandler().getEventData<bool>(); }
             catch (shared::exception::CBadConversion&) { }
 
             m_ioManager->readAllIOFromDevice(api, forceRefresh);

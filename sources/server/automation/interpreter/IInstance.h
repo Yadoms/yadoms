@@ -25,6 +25,11 @@ namespace automation
          virtual boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> aboutInterpreter() const = 0;
 
          //-----------------------------------------------------
+         ///\brief               Ask Interpreter to stop
+         //-----------------------------------------------------
+         virtual void requestToStop() = 0;
+
+         //-----------------------------------------------------
          ///\brief               Check if interpreter is fully avalaible
          ///\return              true if fully avalaible (all needed ressources are working)
          //-----------------------------------------------------
@@ -47,19 +52,19 @@ namespace automation
 
          //-----------------------------------------------------
          ///\brief               Start the script
-         ///\param[in] scriptPath      The script path
-         ///\param[in] yScriptApiId    The script API instance ID
+         ///\param[in] scriptInstanceId   The script instance ID
+         ///\param[in] scriptPath         The script path
+         ///\param[in] yScriptApiId       The script API instance ID
          //-----------------------------------------------------    
-         virtual std::string startScript(const std::string& scriptPath,
-                                         const std::string& yScriptApiId) const = 0;
+         virtual void startScript(int scriptInstanceId,
+                                  const std::string& scriptPath,
+                                  const std::string& yScriptApiId) const = 0;
 
          //-----------------------------------------------------
          ///\brief               Stop the script
-         ///\param[in] scriptProcessId  The script process ID to stop
+         ///\param[in] scriptInstanceId   The script instance ID to stop
          //-----------------------------------------------------    
-         virtual void stopScript(const std::string& scriptProcessId) const = 0;
+         virtual void stopScript(int scriptInstanceId) const = 0;
       };
    }
 } // namespace automation::interpreter
-
-

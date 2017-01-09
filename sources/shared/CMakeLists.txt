@@ -222,15 +222,11 @@ set(SHARED_LIB_SRC
    shared/process/IProcessObserver.h
    shared/process/ICommandLine.h
    shared/process/IProcess.h
-   shared/process/ILogger.h
-   shared/process/Logger.h
-   shared/process/Logger.cpp
+   shared/process/IExternalProcessLogger.h
 	shared/process/NativeExecutableCommandLine.h
    shared/process/NativeExecutableCommandLine.cpp
    shared/process/Process.h
    shared/process/Process.cpp
-   shared/process/ProcessDeprecated.h
-   shared/process/ProcessDeprecated.cpp
    shared/process/ProcessException.hpp
    shared/process/SoftwareStop.h
    shared/process/SoftwareStop.cpp
@@ -242,8 +238,8 @@ set(SHARED_LIB_SRC
    shared/script/yInterpreterApi/IInformation.h
    shared/script/yInterpreterApi/ILoadScriptContentRequest.h
    shared/script/yInterpreterApi/ISaveScriptContentRequest.h
-   shared/script/yInterpreterApi/IStartScriptRequest.h
-   shared/script/yInterpreterApi/IStopScriptRequest.h
+   shared/script/yInterpreterApi/IStartScript.h
+   shared/script/yInterpreterApi/IStopScript.h
    shared/script/yInterpreterApi/IYInterpreterApi.h
 
    shared/script/yScriptApi/commonIncludes.h
@@ -253,8 +249,6 @@ set(SHARED_LIB_SRC
    shared/tools/Random.h
    shared/tools/Random.cpp
 
-   shared/versioning/ReleaseType.h
-   shared/versioning/ReleaseType.cpp
    shared/versioning/Version.h
    shared/versioning/Version.cpp
    shared/versioning/VersionInformation.h

@@ -13,8 +13,10 @@ namespace automation
       const size_t CIpcAdapter::m_maxMessages(100);
       const size_t CIpcAdapter::m_maxMessageSize(100000);
 
-      CIpcAdapter::CIpcAdapter(const std::string& interpreterName)
+      CIpcAdapter::CIpcAdapter(const std::string& interpreterName,
+                               boost::shared_ptr<shared::script::yInterpreterApi::IYInterpreterApi> apiImplementation)
          : m_interpreterName(interpreterName),
+           m_apiImplementation(apiImplementation),
            m_id(createId()),
            m_sendMessageQueueId(m_id + ".interpreter_IPC.toInterpreter"),
            m_receiveMessageQueueId(m_id + ".interpreter_IPC.toYadoms"),
@@ -182,8 +184,20 @@ namespace automation
             }
          }
 
-         // No request from interpreter to Yadoms, must never come here
-         throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
+         // Process message
+         switch (toYadomsProtoBuffer.OneOf_case())
+         {
+         case interpreter_IPC::toYadoms::msg::kNotifiyScriptStopped: processNotifiyScriptStopped(toYadomsProtoBuffer.notifiyscriptstopped());
+            break;
+         default:
+            throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
+         }
+      }
+
+      void CIpcAdapter::processNotifiyScriptStopped(const interpreter_IPC::toYadoms::NotifiyScriptStopped& notifiyScriptStopped) const
+      {
+         m_apiImplementation->notifyScriptStopped(notifiyScriptStopped.scriptinstanceid(),
+                                                  notifiyScriptStopped.error());
       }
 
       void CIpcAdapter::postStopRequest()
@@ -286,62 +300,26 @@ namespace automation
          request->sendSuccess();
       }
 
-      void CIpcAdapter::postStartScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStartScriptRequest> request)
+      void CIpcAdapter::postStartScript(boost::shared_ptr<shared::script::yInterpreterApi::IStartScript> request)
       {
          interpreter_IPC::toInterpreter::msg req;
-         auto message = req.mutable_startscriptrequest();
+         auto message = req.mutable_startscript();
+         message->set_scriptinstanceid(request->getScriptInstanceId());
          message->set_scriptpath(request->getScriptPath());
          message->set_scriptapiid(request->getScriptApiId());
          std::string scriptProcessId;
 
-         try
-         {
-            send(req,
-                 [&](const interpreter_IPC::toYadoms::msg& ans) -> bool
-                 {
-                    return ans.has_startscriptanswer();
-                 },
-                 [&](const interpreter_IPC::toYadoms::msg& ans) -> void
-                 {
-                    scriptProcessId = ans.startscriptanswer().scriptprocessid();
-                 });
-         }
-         catch (std::exception& e)
-         {
-            request->sendError((boost::format("Interpreter doesn't answer to start script request : %1%") % e.what()).str());
-            return;
-         }
-
-         request->sendSuccess(scriptProcessId);
+         send(req);
       }
 
-      void CIpcAdapter::postStopScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStopScriptRequest> request)
+      void CIpcAdapter::postStopScript(boost::shared_ptr<shared::script::yInterpreterApi::IStopScript> request)
       {
          interpreter_IPC::toInterpreter::msg req;
-         auto message = req.mutable_stopscriptrequest();
-         message->set_scriptprocessid(request->getScriptProcessId());
+         auto message = req.mutable_stopscript();
+         message->set_scriptinstanceid(request->getScriptInstanceId());
          std::string content;
 
-         try
-         {
-            send(req,
-               [&](const interpreter_IPC::toYadoms::msg& ans) -> bool
-            {
-               return ans.has_stopscriptanswer();
-            },
-               [&](const interpreter_IPC::toYadoms::msg& ans) -> void
-            {
-            });
-         }
-         catch (std::exception& e)
-         {
-            request->sendError((boost::format("Interpreter doesn't answer to stop script request : %1%") % e.what()).str());
-            return;
-         }
-
-         request->sendSuccess();
+         send(req);
       }
    }
 } // namespace automation::interpreter
-
-

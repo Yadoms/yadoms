@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Application.h"
-#include "logConfiguration/LogConfiguration.h"
+#include "logging/LogConfiguration.h"
 #include <shared/Log.h>
 
 #include <Poco/Util/Option.h>
@@ -40,7 +40,7 @@ void CYadomsServer::initialize(Application& self)
    boost::filesystem::path workingDir(config().getString("application.path"));
    boost::filesystem::current_path(workingDir.parent_path());
 
-   logConfiguration::CLogConfiguration::configure(m_startupOptions->getLogLevel());
+   logging::CLogConfiguration::configure(m_startupOptions->getLogLevel());
 }
 
 void CYadomsServer::uninitialize()

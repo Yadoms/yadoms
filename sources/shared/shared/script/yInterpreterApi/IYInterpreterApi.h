@@ -82,7 +82,7 @@ namespace shared
                //-----------------------------------------------------
                ///\brief Yadoms requests to start a script
                ///\usage Required
-               ///\note Data : a boost::shared_ptr<yApi::IStartScriptRequest> object containing the request
+               ///\note Data : a boost::shared_ptr<yApi::IStartScript> object containing the request
                ///\note Interpreter must process the specified request
                //-----------------------------------------------------
                kEventStartScript,
@@ -90,7 +90,7 @@ namespace shared
                //-----------------------------------------------------
                ///\brief Yadoms requests to stop a script
                ///\usage Required
-               ///\note Data : a boost::shared_ptr<yApi::IStopScriptRequest> object containing the request
+               ///\note Data : a boost::shared_ptr<yApi::IStopScript> object containing the request
                ///\note Interpreter must process the specified request
                //-----------------------------------------------------
                kEventStopScript,
@@ -127,20 +127,26 @@ namespace shared
             //----------------------------------------------------------------------------------------------------------------
 
             //-----------------------------------------------------
-            ///\brief Get the current plugin information (extracted from package.json file)
-            ///\return The current plugin information
+            ///\brief                           Notify Yadoms that a script stopped
+            ///\param[in] scriptInstanceId      Stopped script instance ID
+            ///\param[in] error                 Error string (empty if no error)
+            //-----------------------------------------------------   
+            virtual void notifyScriptStopped(int scriptInstanceId,
+                                             const std::string error = std::string()) = 0;
+
+            //-----------------------------------------------------
+            ///\brief                           Get the current plugin information (extracted from package.json file)
+            ///\return                          The current plugin information
             //-----------------------------------------------------      
             virtual boost::shared_ptr<const IInformation> getInformation() const = 0;
 
             //-----------------------------------------------------
-            ///\brief Get the event handler associated to the interpreter. The event handler is used
-            ///       to received, wait for, or post events from/to Yadoms
-            ///\return The interpreter event handler
+            ///\brief                           Get the event handler associated to the interpreter. The event handler is used
+            ///                                 to received, wait for, or post events from/to Yadoms
+            ///\return                          The interpreter event handler
             //-----------------------------------------------------   
             virtual event::CEventHandler& getEventHandler() = 0;
          };
       }
    }
 } // namespace shared::script::yInterpreterApi	
-
-

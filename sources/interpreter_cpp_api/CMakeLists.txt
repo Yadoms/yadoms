@@ -4,7 +4,6 @@ set(interpreter_cpp_api_SOURCES
    stdafx.cpp
    stdafx.h
 
-   # TODO faire le ménage
    ICommandLine.h
    IInterpreterContext.h
 
@@ -21,10 +20,10 @@ set(interpreter_cpp_api_SOURCES
    LoadScriptContentRequest.cpp
    SaveScriptContentRequest.h
    SaveScriptContentRequest.cpp
-   StartScriptRequest.h
-   StartScriptRequest.cpp
-   StopScriptRequest.h
-   StopScriptRequest.cpp
+   StartScript.h
+   StartScript.cpp
+   StopScript.h
+   StopScript.cpp
 
    InterpreterContext.h
    InterpreterContext.cpp
@@ -61,6 +60,7 @@ target_link_libraries(interpreter_cpp_api
    yadoms-shared
    ${LIBS}
    ${CMAKE_DL_LIBS}
+   ${interpreter_IPC_LIBRARY}
    )
 
 

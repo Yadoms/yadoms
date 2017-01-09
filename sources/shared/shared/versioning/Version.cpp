@@ -1,173 +1,166 @@
 #include "stdafx.h"
 #include "Version.h"
-#include <shared/Log.h>
+#include <shared/exception/Exception.hpp>
+#include <Poco/RegularExpression.h>
+#include <Poco/NumberParser.h>
+#include <regex>
 
-namespace shared { namespace versioning {
-
-   CVersion::CVersion()
+namespace shared
+{
+   namespace versioning
    {
-      setValues(0, 0, 0, 0);
-   }
-
-   CVersion::CVersion(const std::string & stringVersion)
-   {
-
-      std::vector<std::string> allDigits;
-      //split on slash or anti slash
-      boost::split(allDigits, stringVersion, boost::is_any_of(".,"), boost::algorithm::token_compress_on);
-
-      for (std::vector<std::string>::iterator i = allDigits.begin(); i != allDigits.end(); ++i)
+      CVersion::CVersion()
+         : m_major(0), m_minor(0), m_patch(0), m_prerelease(""), m_buildMetadata("")
       {
-         try
-         {
-            m_versionInfo.push_back(boost::lexical_cast<int>(*i));
-         }
-         catch (boost::bad_lexical_cast &)
-         {
-            // if it throws, it's not a number.
-            YADOMS_LOG(warning) << "Cannot parse version string : " << stringVersion;
-            m_versionInfo.push_back(0);
-         }
       }
 
-      //while(m_versionInfo.size() < 4)
-      //  m_versionInfo.push_back(0);
-   }
-
-   CVersion::CVersion(int major, int minor, int buildNumber /*= 0*/, int revision /*= 0*/)
-   {
-      setValues(major, minor, buildNumber, revision);
-   }
-
-   CVersion::CVersion(const CVersion & rhs)
-   {
-      //clear current version info
-      m_versionInfo.clear();
-      //copy parameter version to current
-      for (std::vector<int>::const_iterator i = rhs.m_versionInfo.begin(); i != rhs.m_versionInfo.end(); ++i)
-         m_versionInfo.push_back(*i);
-   }
-
-   CVersion::~CVersion()
-   {
-   }
-
-   bool CVersion::operator<(CVersion const& rhs) const
-   {
-      return (compare(rhs) < 0);
-   }
-
-   bool CVersion::operator<=(CVersion const& rhs) const
-   {
-      return (compare(rhs) <= 0);
-   }
-
-   bool CVersion::operator>=(CVersion const& rhs) const
-   {
-      return (compare(rhs) >= 0);
-   }
-
-   bool CVersion::operator>(CVersion const& rhs) const
-   {
-      return (compare(rhs) > 0);
-   }
-
-   bool CVersion::operator==(CVersion const& rhs) const
-   {
-      return (compare(rhs) == 0);
-   }
-
-
-   int CVersion::compare(CVersion const& rhs) const
-   {
-      int result = 0;
-      for (unsigned int i = 0; i < m_versionInfo.size() && i < rhs.m_versionInfo.size(); i++)
+      CVersion::CVersion(const std::string& stringVersion)
       {
-         if (m_versionInfo[i] == rhs.m_versionInfo[i])
-            result = 0;
-         else if (m_versionInfo[i] > rhs.m_versionInfo[i])
-         {
-            result = 1;
-            break;
-         }
-         else
-         {
-            result = -1;
-            break;
-         }
+         parse(stringVersion);
       }
 
-      //check if a version is more precise than another
-      if (m_versionInfo.size() != rhs.m_versionInfo.size() && result == 0)
+      CVersion::CVersion(int major, int minor, int patch)
+         : m_major(major), m_minor(minor), m_patch(patch), m_prerelease(""), m_buildMetadata("")
       {
-         if (m_versionInfo.size() > rhs.m_versionInfo.size())
+      }
+
+      CVersion::CVersion(int major, int minor, int patch, const std::string& prerelease)
+         : m_major(major), m_minor(minor), m_patch(patch), m_prerelease(prerelease), m_buildMetadata("")
+      {
+      }
+
+      CVersion::CVersion(int major, int minor, int patch, const std::string& prerelease, const std::string& buildMetadata)
+         : m_major(major), m_minor(minor), m_patch(patch), m_prerelease(prerelease), m_buildMetadata(buildMetadata)
+      {
+      }
+
+      CVersion::CVersion(const CVersion& rhs)
+         : m_major(rhs.m_major), m_minor(rhs.m_minor), m_patch(rhs.m_patch), m_prerelease(rhs.m_prerelease), m_buildMetadata(rhs.m_buildMetadata)
+      {
+      }
+
+      CVersion::~CVersion()
+      {
+      }
+
+      bool CVersion::operator<(CVersion const& rhs) const
+      {
+         return (compare(rhs) < 0);
+      }
+
+      bool CVersion::operator<=(CVersion const& rhs) const
+      {
+         return (compare(rhs) <= 0);
+      }
+
+      bool CVersion::operator>=(CVersion const& rhs) const
+      {
+         return (compare(rhs) >= 0);
+      }
+
+      bool CVersion::operator>(CVersion const& rhs) const
+      {
+         return (compare(rhs) > 0);
+      }
+
+      bool CVersion::operator==(CVersion const& rhs) const
+      {
+         return (compare(rhs) == 0);
+      }
+
+      int CVersion::major() const
+      {
+         return m_major;
+      }
+
+      int CVersion::minor() const
+      {
+         return m_minor;
+      }
+
+      int CVersion::patch() const
+      {
+         return m_patch;
+      }
+
+      const std::string& CVersion::prerelease() const
+      {
+         return m_prerelease;
+      }
+
+      const std::string& CVersion::buildMetadata() const
+      {
+         return m_buildMetadata;
+      }
+
+      int CVersion::compare(CVersion const& rhs) const
+      {
+         // 0 : equal
+         // 1 : this > rhs
+         //-1 : this < rhs
+
+         //Comparison (matching to SEMVER requirements)
+         // compare major, minor and patch
+         // if the same, the preRelease field (alphabetically ordered) make the precendence
+
+         if (m_major > rhs.m_major)
+            return 1;
+         if (m_major < rhs.m_major)
+            return -1;
+         if (m_minor > rhs.m_minor)
+            return 1;
+         if (m_minor < rhs.m_minor)
+            return -1;
+         if (m_patch > rhs.m_patch)
+            return 1;
+         if (m_patch < rhs.m_patch)
+            return -1;
+         if (m_prerelease.empty() && rhs.m_prerelease.empty())
+            return 0;
+         if (m_prerelease.empty() && !rhs.m_prerelease.empty())
+            return 1;
+         if (!m_prerelease.empty() && rhs.m_prerelease.empty())
+            return -1;
+         return m_prerelease.compare(rhs.m_prerelease);
+      }
+
+      std::string CVersion::toString() const
+      {
+         auto prerelease = m_prerelease.empty() ? "" : ("-" + m_prerelease);
+         auto buildMetadata = m_buildMetadata.empty() ? "" : ("+" + m_buildMetadata);
+         return (boost::format("%1%.%2%.%3%%4%%5%") % m_major % m_minor % m_patch % prerelease % buildMetadata).str();
+      }
+
+
+      void CVersion::parse(const std::string& version)
+      {
+         //Regex for SEMVER is taken from http://rgxdb.com/r/40OZ1HN5 (adjusted by removing leading and trailing "/" )
+         Poco::RegularExpression re("(?<=^[Vv]|^)(?:(?<major>(?:0|[1-9](?:(?:0|[1-9])+)*))[.](?<minor>(?:0|[1-9](?:(?:0|[1-9])+)*))[.](?<patch>(?:0|[1-9](?:(?:0|[1-9])+)*))(?:-(?<prerelease>(?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:0|[1-9](?:(?:0|[1-9])+)*))(?:[.](?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:0|[1-9](?:(?:0|[1-9])+)*)))*))?(?:[+](?<build>(?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:(?:0|[1-9])+))(?:[.](?:(?:(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?|(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)(?:[A-Za-z]|-)(?:(?:(?:0|[1-9])|(?:[A-Za-z]|-))+)?)|(?:(?:0|[1-9])+)))*))?)$");
+         std::vector<std::string> strings;
+         auto resultCount = re.split(version, strings);
+
+         if (resultCount > 3)
          {
-            //check if more precises values are only 0
-            //ex : check between 1.0 and 1.0.0.0 (versions are same)
-            for (unsigned int j = rhs.m_versionInfo.size(); j < m_versionInfo.size(); j++)
+            //std::string foundStr(ss.str().substr(match.offset, match.length));
+
+            m_major = Poco::NumberParser::parse(strings[1]);
+            m_minor = Poco::NumberParser::parse(strings[2]);
+            m_patch = Poco::NumberParser::parse(strings[3]);
+
+            if (resultCount > 4)
             {
-               if (m_versionInfo[j] == 0)
-                  result = 0;
-               else
+               m_prerelease = strings[4];
+
+               if (resultCount > 5)
                {
-                  result = 1;
-                  break;
+                  m_buildMetadata = strings[5];
                }
             }
          }
          else
          {
-            //check if more precises values are only 0
-            //ex : check between 1.0 and 1.0.0.0 (versions are same)
-            for (unsigned int j = m_versionInfo.size(); j < rhs.m_versionInfo.size(); j++)
-            {
-               if (rhs.m_versionInfo[j] == 0)
-                  result = 0;
-               else
-               {
-                  result = -1;
-                  break;
-               }
-            }
+            throw exception::CException("Fail to parse version from " + version);
          }
       }
-      return result;
    }
-
-   void CVersion::setValues(int major, int minor, int buildNumber, int revision)
-   {
-      m_versionInfo.clear();
-      m_versionInfo.push_back(major);
-      m_versionInfo.push_back(minor);
-      m_versionInfo.push_back(buildNumber);
-      m_versionInfo.push_back(revision);
-   }
-
-
-   const std::string CVersion::toString(const unsigned int level) const
-   {
-      std::string versionAsString;
-
-      int stepToRender = level;
-      if (stepToRender < 1)
-         stepToRender = 1;
-      if (stepToRender > 4)
-         stepToRender = 4;
-
-      int currentStep = 1;
-      for (std::vector<int>::const_iterator i = m_versionInfo.begin(); i != m_versionInfo.end(); ++i)
-      {
-         //insert a point if there is already a digit
-         if (!versionAsString.empty())
-            versionAsString += ".";
-         versionAsString += boost::lexical_cast<std::string>(*i);
-
-         currentStep++;
-         if (currentStep > stepToRender)
-            break;
-      }
-
-      return versionAsString;
-   }
-
-} } // namespace shared::versioning
+} // namespace shared::versioning

@@ -13,11 +13,11 @@
 namespace automation
 {
    CRuleManager::CRuleManager(const IPathProvider& pathProvider,
-      boost::shared_ptr<database::IDataProvider> dataProvider,
-      boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-      boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
-      boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
-      boost::shared_ptr<shared::ILocation> location)
+                              boost::shared_ptr<database::IDataProvider> dataProvider,
+                              boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+                              boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
+                              boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
+                              boost::shared_ptr<shared::ILocation> location)
       : m_pluginGateway(pluginGateway),
         m_dbAcquisitionRequester(dataProvider->getAcquisitionRequester()),
         m_dbDeviceRequester(dataProvider->getDeviceRequester()),
@@ -33,6 +33,12 @@ namespace automation
         m_yadomsShutdown(false),
         m_ruleEventsThread(boost::make_shared<boost::thread>(boost::bind(&CRuleManager::ruleEventsThreadDoWork, this)))
    {
+      m_interpreterManager->setOnScriptStoppedFct(
+         [&](int scriptInstanceId, const std::string& error)
+         {
+            onRuleStopped(scriptInstanceId,
+                          error);
+         });
    }
 
    CRuleManager::~CRuleManager()
@@ -439,5 +445,3 @@ namespace automation
       m_ruleRequester->updateRule(ruleData);
    }
 } // namespace automation	
-
-

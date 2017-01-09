@@ -1,9 +1,8 @@
 #pragma once
 #include "IPythonExecutable.h"
-#include <shared/process/ILogger.h>
+#include <shared/process/IExternalProcessLogger.h>
 #include <shared/process/IProcess.h>
 #include "IScriptFile.h"
-#include "ContextAccessor.h"
 #include <shared/process/ICommandLine.h>
 #include <shared/process/IProcessObserver.h>
 
@@ -18,16 +17,16 @@ public:
    /// \param[in] executable  Python executable to call to start script
    /// \param[in] interpreterPath  The current library path
    /// \param[in] scriptFile The script file to execute
-   /// \param[in] yScriptApi The context, used by script to interact with Yadoms
+   /// \param[in] scriptApiId The script Api ID, used to interact with Yadoms
    /// \param[in] scriptLogger The script logger
-   /// \param[in] stopNotifier The stop notifier
+   /// \param[in] processObserver The process observer
    //--------------------------------------------------------------
    CScriptProcess(boost::shared_ptr<IPythonExecutable> executable,
                   const boost::filesystem::path& interpreterPath,
                   boost::shared_ptr<const IScriptFile> scriptFile,
-                  boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-                  boost::shared_ptr<shared::process::ILogger> scriptLogger,
-                  boost::shared_ptr<shared::process::IProcessObserver> stopNotifier);
+                  const std::string& scriptApiId,
+                  boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger,
+                  boost::shared_ptr<shared::process::IProcessObserver> processObserver);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -45,7 +44,6 @@ protected:
    /// \brief	Start a module
    //--------------------------------------------------------------
    void start();
-
 
    boost::shared_ptr<shared::process::ICommandLine> createCommandLine(const std::string& apiIdentifier) const;
 
@@ -66,30 +64,23 @@ private:
    boost::shared_ptr<const IScriptFile> m_scriptFile;
 
    //--------------------------------------------------------------
-   /// \brief	The script api context
+   /// \brief	The script api ID
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> m_yScriptApi;
+   const std::string& m_scriptApiId;
 
    //--------------------------------------------------------------
    /// \brief	The script logger
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::process::ILogger> m_scriptLogger;
+   boost::shared_ptr<shared::process::IExternalProcessLogger> m_scriptLogger;
 
    //--------------------------------------------------------------
    /// \brief	Object to notify when process stops
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::process::IProcessObserver> m_stopNotifier;
-
-   //--------------------------------------------------------------
-   /// \brief	The context accessor
-   //--------------------------------------------------------------
-   boost::shared_ptr<CContextAccessor> m_contextAccessor;
+   boost::shared_ptr<shared::process::IProcessObserver> m_processObserver;
 
    //--------------------------------------------------------------
    /// \brief	The process
    //--------------------------------------------------------------
    boost::shared_ptr<IProcess> m_process;
 };
-
-
 

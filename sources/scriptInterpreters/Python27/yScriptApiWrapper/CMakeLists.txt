@@ -2,6 +2,9 @@
 # include common script interpreters definitions
 include("../../YadomsScriptWrappersCommon.cmake")
 
+SET_PARENT_INTERPRETER(python27)
+
+
 #########################################
 ## Place here all the source files
 #########################################
@@ -14,10 +17,6 @@ set(PYTHON_WRAPPER_SOURCES
 	swigpyrun.h
      
    PythonLibInclude.h
-   yScriptApiInstance.h
-   yScriptApiInstance.cpp
-   yScriptApiImplementation.h
-   yScriptApiImplementation.cpp
    
    yScriptApiDoc.md
 )
@@ -35,6 +34,7 @@ set_source_files_properties(yScriptApiWrapper.i PROPERTIES CPLUSPLUS ON)
 #########################################
 set(PYTHON_WRAPPER_INCLDIR
    ${PYTHON_INCLUDE_DIRS}
+   ${script_cpp_api_INCLUDE_DIR}
 )
 
 #########################################
@@ -43,6 +43,7 @@ set(PYTHON_WRAPPER_INCLDIR
 #########################################
 set(PYTHON_WRAPPER_LINK
    ${PYTHON_LIBRARIES}
+   script_cpp_api
 )
 
 #########################################
@@ -68,8 +69,8 @@ endif()
 ## even if some variables are empty
 #########################################
 SCRIPT_API_WRAPPER_SOURCES(python ${PYTHON_WRAPPER_SOURCES})
-SCRIPT_API_WRAPPER_INCLDIR(${PYTHON_WRAPPER_INCLDIR} ${PROTOBUF_INCLUDE_DIRS} ${messages_GENERATED_DIR})
-SCRIPT_API_WRAPPER_LINK(${PYTHON_WRAPPER_LINK} messages)
+SCRIPT_API_WRAPPER_INCLDIR(${PYTHON_WRAPPER_INCLDIR} ${PROTOBUF_INCLUDE_DIRS})
+SCRIPT_API_WRAPPER_LINK(${PYTHON_WRAPPER_LINK})
 
 #########################################
 ## Add pre-build step to generate swigpyrun.h file

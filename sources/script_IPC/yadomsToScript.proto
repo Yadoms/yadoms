@@ -78,9 +78,9 @@ message msg
       WriteKeyword writeKeyword = 8;
       SendNotification sendNotification = 9;
       GetInfo getInfo = 10;
-	   GetKeywordsByCapacity getKeywordsByCapacity = 11;
-	   GetKeywordName getKeywordName = 12;
-	   GetKeywordDeviceName getKeywordDeviceName = 13;
+      GetKeywordsByCapacity getKeywordsByCapacity = 11;
+      GetKeywordName getKeywordName = 12;
+      GetKeywordDeviceName getKeywordDeviceName = 13;
    }
 }
 

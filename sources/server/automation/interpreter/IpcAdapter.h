@@ -1,8 +1,9 @@
 #pragma once
 #include "IIpcAdapter.h"
 #include <shared/communication/MessageQueueRemover.hpp>
-#include <interpreter_IPC/toInterpreter.pb.h>
-#include <interpreter_IPC/toYadoms.pb.h>
+#include <interpreter_IPC/yadomsToInterpreter.pb.h>
+#include <interpreter_IPC/interpreterToYadoms.pb.h>
+#include <shared/script/yInterpreterApi/IYInterpreterApi.h>
 
 namespace automation
 {
@@ -18,7 +19,8 @@ namespace automation
          /// \brief	Constructor
          /// \param[in] interpreterName The interpreter name (for log)
          //--------------------------------------------------------------
-         explicit CIpcAdapter(const std::string& interpreterName);
+         CIpcAdapter(const std::string& interpreterName,
+            boost::shared_ptr<shared::script::yInterpreterApi::IYInterpreterApi> apiImplementation);
 
          //--------------------------------------------------------------
          /// \brief	Destructor
@@ -35,8 +37,8 @@ namespace automation
          void postAvalaibleRequest(boost::shared_ptr<shared::script::yInterpreterApi::IAvalaibleRequest> request) override;
          void postLoadScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ILoadScriptContentRequest> request) override;
          void postSaveScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ISaveScriptContentRequest> request) override;
-         void postStartScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStartScriptRequest> request) override;
-         void postStopScriptRequest(boost::shared_ptr<shared::script::yInterpreterApi::IStopScriptRequest> request) override;
+         void postStartScript(boost::shared_ptr<shared::script::yInterpreterApi::IStartScript> request) override;
+         void postStopScript(boost::shared_ptr<shared::script::yInterpreterApi::IStopScript> request) override;
          // [END] IIpcAdapter Implementation
 
          //--------------------------------------------------------------
@@ -73,6 +75,8 @@ namespace automation
          //--------------------------------------------------------------
          void processMessage(boost::shared_ptr<const unsigned char[]> message, size_t messageSize);
 
+         void processNotifiyScriptStopped(const interpreter_IPC::toYadoms::NotifiyScriptStopped& notifiyScriptStopped) const;
+
       private:
          //--------------------------------------------------------------
          /// \brief	Message queue max message size & number
@@ -84,6 +88,11 @@ namespace automation
          /// \brief	Interpreter name
          //--------------------------------------------------------------
          const std::string m_interpreterName;
+
+         //--------------------------------------------------------------
+         /// \brief	Api implementation
+         //--------------------------------------------------------------
+         boost::shared_ptr<shared::script::yInterpreterApi::IYInterpreterApi> m_apiImplementation;
 
          //--------------------------------------------------------------
          /// \brief	Context accessor ID (unique on full system)

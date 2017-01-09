@@ -13,14 +13,12 @@ UpdateInformationManager.factory = function(json) {
    assert(!isNullOrUndefined(json.name), "json.name must be defined");
    assert(!isNullOrUndefined(json.author), "json.author must be defined");
    assert(!isNullOrUndefined(json.description), "json.description must be defined");
-   assert(!isNullOrUndefined(json.releaseType), "json.releaseType must be defined");
    assert(!isNullOrUndefined(json.version), "json.version must be defined");
    assert(!isNullOrUndefined(json.downloadUrl), "json.downloadUrl must be defined");
 
    return new UpdateInformation(json.type, json.name,
                      json.author,
                      json.description,
-                     json.releaseType,
                      (!isNullOrUndefined(json.url)?json.url:""),
                      (!isNullOrUndefined(json.credits)?json.credits:""),
                      json.version,
@@ -56,7 +54,6 @@ UpdateInformationManager.getList = function(objectType) {
                       } catch (e) {
                           console.warn("Fail to parse " + objectType + " (" + index + ") package.");
                           console.warn("    name:" + versionValue.name);
-                          console.warn("    releaseType:" + versionValue.releaseType);
                           console.warn("    version:" + versionValue.version);
                           console.warn("    type:" + versionValue.type);
                           console.warn("    description:" + versionValue.description);
@@ -101,17 +98,6 @@ UpdateInformationManager.remove = function(objectType, type) {
    assert(!isNullOrUndefined(objectType), "objectType must be defined");
    assert(!isNullOrUndefined(type), "type must be defined");
    return RestEngine.postJson("rest/update/" + objectType + "/remove/" + type);
-};
-
-/**
- * Compare the two UpdateInformationObjects. Return > 0 if item1 is lower, =0 if the same and <0 if item1 is higher
-  */
-UpdateInformationManager.compareVersion = function(item1, item2) {
-    if (item1.version < item2.version)
-        return 1;
-    if (item1.version > item2.version)
-        return -1;
-    return 0;
 };
 
 /**

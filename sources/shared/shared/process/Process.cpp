@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Process.h"
+#include "ProcessException.hpp"
 #include <shared/Log.h>
 
 namespace shared
@@ -8,7 +9,7 @@ namespace shared
    {
       CProcess::CProcess(boost::shared_ptr<ICommandLine> commandLine,
                          boost::shared_ptr<IProcessObserver> processObserver,
-                         boost::shared_ptr<ILogger> logger)
+                         boost::shared_ptr<IExternalProcessLogger> logger)
          : m_commandLine(commandLine),
            m_processObserver(processObserver),
            m_logger(logger),
@@ -68,10 +69,7 @@ namespace shared
          }
          catch (Poco::Exception& ex)
          {
-            auto error = std::string("Unable to start process, ") + ex.what();
-            YADOMS_LOG(error) << error;
-            m_processObserver->onFinish(ex.code(),
-                                        error);
+            throw CProcessException(std::string("Unable to start process, ") + ex.what());
          }
       }
 
@@ -143,7 +141,7 @@ namespace shared
       }
 
       void CProcess::stdOutRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut,
-                                          boost::shared_ptr<ILogger> scriptLogger)
+                                          boost::shared_ptr<IExternalProcessLogger> scriptLogger)
       {
          scriptLogger->init();
          scriptLogger->information("#### START ####");
@@ -156,7 +154,7 @@ namespace shared
       }
 
       void CProcess::stdErrRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdErr,
-                                          boost::shared_ptr<ILogger> scriptLogger,
+                                          boost::shared_ptr<IExternalProcessLogger> scriptLogger,
                                           boost::shared_ptr<std::string> lastError)
       {
          scriptLogger->init();

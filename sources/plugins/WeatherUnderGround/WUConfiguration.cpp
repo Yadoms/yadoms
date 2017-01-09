@@ -1,11 +1,9 @@
 #include "stdafx.h"
 #include "WUConfiguration.h"
-#include "WeatherUndergroundHelpers.h"
-#include"NoStateException.hpp"
+#include"noStateException.hpp"
+#include "Features/Location.h"
 
 CWUConfiguration::CWUConfiguration()
-   : m_localisation(""),
-     m_countryOrState("")
 {
 }
 
@@ -30,68 +28,46 @@ std::string CWUConfiguration::getAPIKey() const
    return m_data.get<std::string>("APIKey");
 }
 
-std::string CWUConfiguration::getLocalisation()
+bool CWUConfiguration::pluginLocationEnabled() const
 {
-   try
-   {
-      m_localisation = m_data.get<std::string>("Localisation");
-   }
-   catch (shared::exception::CException& e)
-   {
-      std::cout << e.what() << std::endl;
-   }
-
-   //Delete space between sub-names
-   return trimAll(m_localisation);
+   return m_data.get<bool>("location.checkbox");
 }
 
-std::string CWUConfiguration::getCountryOrState()
+boost::shared_ptr<const shared::ILocation> CWUConfiguration::getLocation() const
 {
-   try
-   {
-      m_countryOrState = m_data.get<std::string>("Country");
+   boost::shared_ptr<const shared::ILocation> location;
 
-      if (m_countryOrState == "US")
-      {
-         m_countryOrState = getState();
-         if (m_countryOrState == "NA")
-            throw CNoStateException("No State configured for United States of America");
-      }
-   }
-   catch (shared::exception::CException& e)
-   {
-      std::cout << e.what() << std::endl;
-   }
-   return m_countryOrState;
+   return boost::make_shared<location::CLocation>(m_data.get<double>("location.content.longitude"),
+                                                  m_data.get<double>("location.content.latitude"),
+                                                  0);
 }
 
-std::string CWUConfiguration::getState() const
+bool CWUConfiguration::isLiveConditionsEnabled() const
 {
-   return m_data.get<std::string>("State");
+   return m_data.get<bool>("LiveConditions.checkbox");
 }
 
-bool CWUConfiguration::IsLiveConditionsEnabled() const
+bool CWUConfiguration::isAstronomyEnabled() const
 {
-   return m_data.get<bool>("LiveConditions");
+   return m_data.get<bool>("Astronomy.checkbox");
 }
 
-bool CWUConfiguration::IsAstronomyEnabled() const
+bool CWUConfiguration::isForecast10DaysEnabled() const
 {
-   return m_data.get<bool>("Astronomy");
+   return m_data.get<bool>("Forecast10Days.checkbox");
 }
 
-bool CWUConfiguration::IsForecast10DaysEnabled() const
+bool CWUConfiguration::isConditionsIndividualKeywordsEnabled() const
 {
-   return m_data.get<bool>("Forecast10Days");
+   return m_data.get<bool>("LiveConditions.content.individualKeywords");
 }
 
-bool CWUConfiguration::IsConditionsIndividualKeywordsEnabled() const
+bool CWUConfiguration::isRainIndividualKeywordsEnabled() const
 {
-   return m_data.get<bool>("IndividualKeywordsLiveConditions");
+   return m_data.get<bool>("Forecast10Days.content.individualRainForecast");
 }
 
-bool CWUConfiguration::IsRainIndividualKeywordsEnabled() const
+bool CWUConfiguration::isTempIndividualKeywordsEnabled() const
 {
-   return m_data.get<bool>("IndividualRainKeywordsForecast10days");
+   return m_data.get<bool>("Forecast10Days.content.individualTempForecast");
 }
-

@@ -5,8 +5,8 @@
 #include "AvalaibleRequest.h"
 #include "LoadScriptContentRequest.h"
 #include "SaveScriptContentRequest.h"
-#include "StartScriptRequest.h"
-#include "StopScriptRequest.h"
+#include "StartScript.h"
+#include "StopScript.h"
 
 namespace automation
 {
@@ -26,12 +26,16 @@ namespace automation
 
       CInstance::~CInstance()
       {
-         m_ipcAdapter->postStopRequest();
       }
 
       boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> CInstance::aboutInterpreter() const
       {
          return m_interpreterInformation;
+      }
+
+      void CInstance::requestToStop()
+      {
+         m_ipcAdapter->postStopRequest();
       }
 
       bool CInstance::isAvalaible()
@@ -103,67 +107,37 @@ namespace automation
          }
       }
 
-      std::string CInstance::startScript(const std::string& scriptPath,
+      void CInstance::startScript(int scriptInstanceId,
+                                         const std::string& scriptPath,
                                          const std::string& yScriptApiId) const
       {
-         communication::callback::CSynchronousCallback<std::string> callback;
-         auto request(boost::make_shared<CStartScriptRequest>(scriptPath,
-                                                              yScriptApiId,
-                                                              callback));
+         auto request = boost::make_shared<CStartScript>(scriptInstanceId,
+                                                       scriptPath,
+                                                       yScriptApiId);
 
          try
          {
-            m_ipcAdapter->postStartScriptRequest(request);
-            YADOMS_LOG(debug) << "Send startScriptRequest to interpreter " << m_interpreterInformation->getName();
-
-            switch (callback.waitForResult(boost::posix_time::seconds(30)))
-            {
-            case communication::callback::CSynchronousCallback<std::string>::kResult:
-               {
-                  auto res = callback.getCallbackResult();
-                  if (res.Success)
-                     return res.Result();
-                  YADOMS_LOG(error) << "Unable to start script from interpreter " << m_interpreterInformation->getName() << " : " << res.ErrorMessage();
-               }
-            default:
-               YADOMS_LOG(error) << "Unable to start script from interpreter " << m_interpreterInformation->getName() << " : timeout";
-            }
+            m_ipcAdapter->postStartScript(request);
+            YADOMS_LOG(debug) << "Send startScript to interpreter " << m_interpreterInformation->getName();
          }
          catch (std::exception& e)
          {
-            request->sendError((boost::format("Error when starting script from interpreter %1% : %2%") % m_interpreterInformation->getName() % e.what()).str());
+            YADOMS_LOG(error) << "Unable to start script from interpreter " << m_interpreterInformation->getName() << " : " << e.what();
          }
-
-         return std::string();
       }
 
-      void CInstance::stopScript(const std::string& scriptProcessId) const
+      void CInstance::stopScript(int scriptInstanceId) const
       {
-         communication::callback::CSynchronousCallback<bool> callback;
-         auto request(boost::make_shared<CStopScriptRequest>(scriptProcessId,
-                                                             callback));
+         auto request(boost::make_shared<CStopScript>(scriptInstanceId));
 
          try
          {
-            m_ipcAdapter->postStopScriptRequest(request);
-            YADOMS_LOG(debug) << "Send stopScriptRequest to interpreter " << m_interpreterInformation->getName();
-
-            switch (callback.waitForResult(boost::posix_time::seconds(30)))
-            {
-            case communication::callback::CSynchronousCallback<bool>::kResult:
-               {
-                  auto res = callback.getCallbackResult();
-                  if (res.Success)
-                     return;
-                  YADOMS_LOG(error) << "Unable to stop script from interpreter " << m_interpreterInformation->getName() << " : " << res.ErrorMessage();
-               }
-            default:
-               YADOMS_LOG(error) << "Unable to stop script from interpreter " << m_interpreterInformation->getName() << " : timeout";
-            }
+            m_ipcAdapter->postStopScript(request);
+            YADOMS_LOG(debug) << "Send stopScript to interpreter " << m_interpreterInformation->getName();
          }
          catch (std::exception& e)
          {
-            request->sendError((boost::format("Error when stopping script from interpreter %1% : %2%") % m_interpreterInformation->getName() % e.what()).str());
+            YADOMS_LOG(error) << "Error when stopping script from interpreter " << m_interpreterInformation->getName() << " : " << e.what();
          }
       }
 
@@ -199,5 +173,3 @@ namespace automation
       }
    }
 } // namespace automation::interpreter
-
-

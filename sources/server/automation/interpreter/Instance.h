@@ -24,17 +24,19 @@ namespace automation
 
          // IInstance Implementation
          boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> aboutInterpreter() const override;
+         void requestToStop() override;
          bool isAvalaible() override;
          std::string loadScriptContent(const std::string& scriptPath) const override;
          void saveScriptContent(const std::string& scriptPath,
                                 const std::string& scriptContent) const override;
-         std::string startScript(const std::string& scriptPath,
+         void startScript(int scriptInstanceId,
+                                 const std::string& scriptPath,
                                  const std::string& yScriptApiId) const override;
-         void stopScript(const std::string& scriptProcessId) const override;
+         void stopScript(int scriptInstanceId) const override;
          // [END] IInstance Implementation
 
       protected:
-         bool CInstance::getAvalaibility() const;
+         bool getAvalaibility() const;
 
       private:
          const boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> m_interpreterInformation;

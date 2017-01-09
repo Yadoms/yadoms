@@ -21,14 +21,9 @@ namespace pluginSystem
       return shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getDeveloperMode();
    }
 
-   std::string CYadomsInformation::version() const
+   shared::versioning::CVersion CYadomsInformation::version() const
    {
       return YadomsVersion;
-   }
-
-   shared::versioning::EReleaseType CYadomsInformation::releaseType() const
-   {
-      return YadomsReleaseType;
    }
 
    boost::shared_ptr<const shared::ILocation> CYadomsInformation::location() const

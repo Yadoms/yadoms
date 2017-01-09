@@ -1,22 +1,21 @@
 #include "stdafx.h"
 #include "Python27.h"
 #include <interpreter_cpp_api/ImplementationHelper.h>
-#include "PythonExecutable.h"
 #include "ScriptFile.h"
-#include "ScriptProcess.h"
-#include <shared/process/ProcessException.hpp>
 #include <shared/script/yInterpreterApi/IAvalaibleRequest.h>
 #include <shared/script/yInterpreterApi/ILoadScriptContentRequest.h>
 #include <shared/script/yInterpreterApi/ISaveScriptContentRequest.h>
-#include <shared/script/yInterpreterApi/IStartScriptRequest.h>
-#include <shared/script/yInterpreterApi/IStopScriptRequest.h>
+#include <shared/script/yInterpreterApi/IStartScript.h>
+#include <shared/script/yInterpreterApi/IStopScript.h>
+#include "Factory.h"
 
 // Declare the script interpreter
 IMPLEMENT_INTERPRETER(CPython27)
 
 
 CPython27::CPython27()
-   : m_pythonExecutable(boost::make_shared<CPythonExecutable>())
+   : m_factory(boost::make_shared<CFactory>()),
+     m_pythonExecutable(m_factory->createPythonExecutable())
 {
 }
 
@@ -38,8 +37,20 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
          {
             // Yadoms request the interpreter to stop. Note that interpreter must be stop in 10 seconds max, otherwise it will be killed.
             std::cout << "Stop requested" << std::endl;
-            //TODO
-            //TODO api->setPluginState(yApi::historization::EPluginState::kStopped);
+
+            int scriptInstanceIdToStop;
+            while (true)
+            {
+               {
+                  boost::lock_guard<boost::recursive_mutex> lock(m_processesMutex);
+                  if (m_processes.empty())
+                     break;
+                  scriptInstanceIdToStop = m_processes.begin()->first;
+               }
+               stopScript(scriptInstanceIdToStop);
+            }
+
+            std::cout << "Python interpreter is stopped" << std::endl;
             return;
          }
 
@@ -82,40 +93,17 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
 
       case yApi::IYInterpreterApi::kEventStartScript:
          {
-            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IStartScriptRequest>>();
-            try
-            {
-               m_process = createProcess(request->getScriptPath(),
-                                         scriptLogger,
-                                         request->getScriptApiId(),
-                                         stopNotifier);
-
-
-               //TODO
-               //const auto process = createProcess();
-               //request->sendSuccess(process->);
-            }
-            catch (std::exception& e)
-            {
-               request->sendError(std::string("Unable to start script : ") + e.what());
-            }
+            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IStartScript>>();
+            startScript(request->getScriptInstanceId(),
+                        request->getScriptPath(),
+                        request->getScriptApiId());
             break;
          }
 
       case yApi::IYInterpreterApi::kEventStopScript:
          {
-            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IStopScriptRequest>>();
-            try
-            {
-               //TODO
-               //const auto process = createProcess();
-               //request->sendSuccess(process->);
-            }
-            catch (std::exception& e)
-            {
-               request->sendError(std::string("Unable to start script : ") + e.what());
-            }
-            break;
+            auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IStopScript>>();
+            stopScript(request->getScriptInstanceId());
          }
 
       default:
@@ -168,26 +156,67 @@ void CPython27::saveScriptContent(const std::string& scriptPath,
    file.write(content);
 }
 
-boost::shared_ptr<shared::process::IProcess> CPython27::createProcess(const std::string& scriptPath,
-                                                                      boost::shared_ptr<shared::process::ILogger> scriptLogger,
-                                                                      boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-                                                                      boost::shared_ptr<shared::process::IProcessObserver> processObserver) const
+void CPython27::startScript(int scriptInstanceId,
+                            const std::string& scriptPath,
+                            const std::string& scriptApiId)
 {
-   //TODO revoir (utile ?)
-   //TODO certaines dépendances à virer ?
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_processesMutex);
+      if (m_processes.find(scriptInstanceId) != m_processes.end())
+      {
+         std::cerr << "Unable to start script #" << scriptInstanceId << " : script is already running" << std::endl;
+         return;
+      }
+   }
+
    try
    {
-      return boost::make_shared<CScriptProcess>(m_pythonExecutable,
-                                                getInterpreterPath(),
-                                                boost::make_shared<CScriptFile>(scriptPath),
-                                                yScriptApi,
-                                                scriptLogger,
-                                                processObserver);
+      try
+      {
+         m_processes[scriptInstanceId] = m_factory->createScriptProcess(scriptInstanceId,
+                                                                        scriptPath,
+                                                                        m_pythonExecutable,
+                                                                        getInterpreterPath(),
+                                                                        scriptApiId,
+                                                                        [this](bool running, int scriptId)
+                                                                        {
+                                                                           if (!running)
+                                                                              onScriptStopped(scriptId);
+                                                                        });
+      }
+      catch (std::exception& e)
+      {
+         std::cerr << "Fail to start script #" << scriptInstanceId << " : " << e.what() << std::endl;
+         m_api->notifyScriptStopped(scriptInstanceId,
+                                    "Fail to start script");
+      }
    }
-   catch (shared::process::CProcessException& ex)
+   catch (std::exception& e)
    {
-      std::cerr << "Unable to create the Python process, " << ex.what() << std::endl;
-      return boost::shared_ptr<shared::process::IProcess>();
+      m_api->notifyScriptStopped(scriptInstanceId,
+                                 std::string("Unable to start script : ") + e.what());
    }
+}
+
+void CPython27::stopScript(int scriptInstanceId)
+{
+   boost::lock_guard<boost::recursive_mutex> lock(m_processesMutex);
+   const auto script = m_processes.find(scriptInstanceId);
+   if (script == m_processes.end())
+   {
+      std::cerr << "Unable to stop script #" << scriptInstanceId << " : unknown script, maybe already stopped" << std::endl;
+      return;
+   }
+   script->second->kill();
+}
+
+void CPython27::onScriptStopped(int scriptInstanceId)
+{
+   m_api->notifyScriptStopped(scriptInstanceId);
+
+   boost::lock_guard<boost::recursive_mutex> lock(m_processesMutex);
+   const auto script = m_processes.find(scriptInstanceId);
+   if (script != m_processes.end())
+      m_processes.erase(script);
 }
 

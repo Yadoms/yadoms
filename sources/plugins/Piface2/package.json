@@ -1,7 +1,6 @@
 {
    "type": "Piface2",
-   "version": "1.0.0",
-   "releaseType": "beta",
+   "version": "1.0.0-beta",
    "author": "Jean-Michel BERHAULT",
    "url": "https://github.com/Yadoms/yadoms/wiki/Piface2",
    "credits": "[libmcp23s17](https://github.com/piface/libmcp23s17) [libpifacedigital](https://github.com/piface/libpifacedigital)",

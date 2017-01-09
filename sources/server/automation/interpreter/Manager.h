@@ -29,6 +29,7 @@ namespace automation
          std::vector<std::string> getAvailableInterpreters() override;
          boost::shared_ptr<IInstance> getInterpreterInstance(const std::string& interpreterType) override;
          void unloadInterpreter(const std::string& interpreterName) override;
+         void onInterpreterUnloaded(const std::string& interpreterName);
          std::string getScriptFile(const std::string& interpreterName,
                                    const std::string& scriptPath) override;
          std::string getScriptTemplateFile(const std::string& interpreterName) override;
@@ -39,8 +40,9 @@ namespace automation
                                const std::string& scriptPath,
                                bool doBackup = true) override;
          std::string getScriptLogFile(int ruleId) override;
-         boost::shared_ptr<shared::process::ILogger> createScriptLogger(const std::string& ruleName,
-                                                                        int ruleId) override;
+         boost::shared_ptr<shared::process::IExternalProcessLogger> createScriptLogger(const std::string& ruleName,
+                                                                                       int ruleId) override;
+         void setOnScriptStoppedFct(boost::function2<void, int, const std::string&> onScriptStoppedFct) override;
          // [END] IManager Implementation
 
       protected:
@@ -93,6 +95,11 @@ namespace automation
          /// \brief			      The interpreters map mutex
          //--------------------------------------------------------------
          mutable boost::recursive_mutex m_loadedInterpretersMutex;
+
+         //--------------------------------------------------------------
+         /// \brief			      Functor to call when rule is notified as stopped
+         //--------------------------------------------------------------
+         boost::function2<void, int, const std::string&> m_onScriptStoppedFct;
       };
    }
 } // namespace automation::interpreter

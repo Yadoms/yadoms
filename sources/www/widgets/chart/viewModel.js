@@ -393,6 +393,17 @@ widgetViewModelCtor =
 
                                    var lastDate;
                                    var d;
+                                   var lastValue=null;
+                                   
+                                   try{
+                                      var differentialDisplay = device.content.differentialDisplay;
+                                   }
+                                   catch(error)
+                                   {
+                                      differentialDisplay = false;
+                                      console.warn('Fail to retreive the variable device.content.differentialDisplay : ' + error);
+                                      console.log(' default value used : differentialDisplay=false ');
+                                   }
 
                                    if (!(deviceIsSummary[index])) {
                                        //data comes from acquisition table
@@ -410,16 +421,25 @@ widgetViewModelCtor =
                                            //we manage the missing data
                                            if ((lastDate != undefined) && (timeBetweenTwoConsecutiveValues != undefined) &&
                                            (lastDate + timeBetweenTwoConsecutiveValues < d)) {
-
                                                plot.push([lastDate + 1, null]);
                                            }
 
-                                           plot.push([d, v]);
+                                           if (differentialDisplay)
+                                           {
+                                              if (lastValue != null)
+                                                 plot.push([d, v-lastValue]);
+                                              
+                                              lastValue = v;
+                                           }
+                                           else // standard display
+                                              plot.push([d, v]);
                                        });
                                    } else {
                                        //it is summarized data so we can get min and max curve
                                        var vMin;
                                        var vMax;
+                                       var vMinLastValue=null;
+                                       var vMaxLastValue=null;
 
                                        $.each(data.data, function (index, value) {
                                            lastDate = d;
@@ -443,10 +463,29 @@ widgetViewModelCtor =
                                                plot.push([d, null]);
                                            }
 
-                                           if (device.content.PlotType === "arearange")
-                                               range.push([d, vMin, vMax]);
+                                           if (differentialDisplay)
+                                           {
+                                              if (device.content.PlotType === "arearange")
+                                              {
+                                                 if (vMinLastValue!=null && vMaxLastValue!=null)
+                                                    range.push([d, vMin-vMinLastValue, vMax-vMaxLastValue]);
 
-                                           plot.push([d, v]);
+                                                 vMinLastValue=vMin;
+                                                 vMaxLastValue=vMax;
+                                              }
+                                              
+                                              if (lastValue != null)
+                                                 plot.push([d, v-lastValue]);
+                                                 
+                                              lastValue = v;                                              
+                                           }
+                                           else
+                                           {
+                                              if (device.content.PlotType === "arearange")
+                                                  range.push([d, vMin, vMax]);
+
+                                              plot.push([d, v]);                                              
+                                           }
                                        });
                                    }
                                    var color = "#606060"; // default color

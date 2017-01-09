@@ -1,21 +1,21 @@
 #include "stdafx.h"
 #include "ScriptProcess.h"
 #include "PythonCommandLine.h"
-#include <shared/process/ProcessDeprecated.h>
+#include <shared/process/Process.h>
 
 
 CScriptProcess::CScriptProcess(boost::shared_ptr<IPythonExecutable> executable,
                                const boost::filesystem::path& interpreterPath,
                                boost::shared_ptr<const IScriptFile> scriptFile,
-                               boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> yScriptApi,
-                               boost::shared_ptr<shared::process::ILogger> scriptLogger,
-                               boost::shared_ptr<shared::process::IProcessObserver> stopNotifier)
+                               const std::string& scriptApiId,
+                               boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger,
+                               boost::shared_ptr<shared::process::IProcessObserver> processObserver)
    : m_executable(executable),
      m_interpreterPath(interpreterPath),
      m_scriptFile(scriptFile),
-     m_yScriptApi(yScriptApi),
+     m_scriptApiId(scriptApiId),
      m_scriptLogger(scriptLogger),
-     m_stopNotifier(stopNotifier)
+     m_processObserver(processObserver)
 {
    start();
 }
@@ -41,13 +41,11 @@ boost::shared_ptr<shared::process::ICommandLine> CScriptProcess::createCommandLi
 
 void CScriptProcess::start()
 {
-   m_contextAccessor = boost::make_shared<CContextAccessor>(m_yScriptApi);
+   auto commandLine = createCommandLine(m_scriptApiId);
 
-   auto commandLine = createCommandLine(m_contextAccessor->id());
-
-   m_process = boost::make_shared<shared::process::CProcessDeprecated>(commandLine,
-                                                                       m_stopNotifier,
-                                                                       m_scriptLogger);
+   m_process = boost::make_shared<shared::process::CProcess>(commandLine,
+                                                             m_processObserver,
+                                                             m_scriptLogger);
 }
 
 void CScriptProcess::kill()

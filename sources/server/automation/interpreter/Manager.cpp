@@ -2,10 +2,10 @@
 #include "Manager.h"
 #include "Factory.h"
 #include <shared/exception/InvalidParameter.hpp>
-#include <shared/exception/OutOfRange.hpp>
 #include "tools/SupportedPlatformsChecker.h"
-#include <shared/process/Logger.h>
 #include <shared/Executable.h>
+#include <server/logging/ExternalProcessLogger.h>
+#include <shared/Log.h>
 
 namespace automation
 {
@@ -35,18 +35,20 @@ namespace automation
                // Check if compatible with current platform
                if (isInterpreterCompatibleWithPlatform(interpreterKeyName))
                {
-                  auto successufullyStarted = false;
-                  auto interpreterInstance = m_factory->createInterpreterInstance(interpreterKeyName,
-                                                                                  [&](bool running, const std::string& interpreterType)
-                                                                                  {
-                                                                                     if (running)
-                                                                                        successufullyStarted = true;
-                                                                                     else
-                                                                                        unloadInterpreter(interpreterType);
-                                                                                  });
-
-                  if (successufullyStarted)
-                     m_loadedInterpreters[interpreterKeyName] = interpreterInstance;
+                  try
+                  {
+                     m_loadedInterpreters[interpreterKeyName] = m_factory->createInterpreterInstance(interpreterKeyName,
+                                                                                                     [this](bool running, const std::string& interpreterType)
+                                                                                                     {
+                                                                                                        if (!running)
+                                                                                                           onInterpreterUnloaded(interpreterType);
+                                                                                                     },
+                                                                                                     m_onScriptStoppedFct);
+                  }
+                  catch (std::exception& e)
+                  {
+                     YADOMS_LOG(error) << "Fail to start interpreter " << interpreterKeyName << " : " << e.what();
+                  }
                }
             }
          }
@@ -124,6 +126,15 @@ namespace automation
 
          const auto interpreter = m_loadedInterpreters.find(interpreterName);
          if (interpreter != m_loadedInterpreters.end())
+            interpreter->second->requestToStop();
+      }
+
+      void CManager::onInterpreterUnloaded(const std::string& interpreterName)
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
+
+         const auto interpreter = m_loadedInterpreters.find(interpreterName);
+         if (interpreter != m_loadedInterpreters.end())
             m_loadedInterpreters.erase(interpreter);
       }
 
@@ -139,7 +150,7 @@ namespace automation
          if (interpreter != m_loadedInterpreters.end() && interpreter->second->isAvalaible())
             return interpreter->second;
 
-         throw std::runtime_error("Interpreter " + interpreterType + "not found ");
+         throw std::runtime_error("Interpreter " + interpreterType +  "not found ");
       }
 
       std::string CManager::getScriptFile(const std::string& interpreterName,
@@ -219,11 +230,16 @@ namespace automation
          return m_pathProvider.scriptsLogPath() / std::to_string(ruleId) / "rule.log";
       }
 
-      boost::shared_ptr<shared::process::ILogger> CManager::createScriptLogger(const std::string& ruleName,
-                                                                               int ruleId)
+      boost::shared_ptr<shared::process::IExternalProcessLogger> CManager::createScriptLogger(const std::string& ruleName,
+                                                                                              int ruleId)
       {
-         return boost::make_shared<shared::process::CLogger>("script/" + ruleName + " #" + std::to_string(ruleId),
-                                                             scriptLogFile(ruleId));
+         return boost::make_shared<logging::CExternalProcessLogger>("script/" + ruleName + " #" + std::to_string(ruleId),
+                                                                    scriptLogFile(ruleId));
+      }
+
+      void CManager::setOnScriptStoppedFct(boost::function2<void, int, const std::string&> onScriptStoppedFct)
+      {
+         m_onScriptStoppedFct = onScriptStoppedFct;
       }
    }
 } // namespace automation::interpreter

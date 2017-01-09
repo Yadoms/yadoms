@@ -14,8 +14,13 @@ if(PYTHONLIBS_FOUND)
    set(PYTHON27_SOURCES
       stdafx.h
       stdafx.cpp
+      Factory.h
+      Factory.cpp
       IPythonExecutable.h
+      IFactory.h
       IScriptFile.h
+      ProcessObserver.h
+      ProcessObserver.cpp
       Python27.h
       Python27.cpp
       PythonCommandLine.h
@@ -26,6 +31,8 @@ if(PYTHONLIBS_FOUND)
       ScriptFile.cpp
       ScriptProcess.h
       ScriptProcess.cpp
+      ScriptLogger.h
+      ScriptLogger.cpp
       
       scriptCaller.py
       scriptUtilities.py

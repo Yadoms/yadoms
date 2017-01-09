@@ -27,19 +27,10 @@ namespace database
             virtual ~CPluginEventLogger();
 
             // IPluginEventLoggerRequester implementation
-            int addEvent(const std::string& pluginName,
-                         const std::string& pluginVersion,
-                         const shared::versioning::EReleaseType& pluginReleaseType,
-                         const entities::EEventType& eventType,
-                         const std::string& message = std::string()) override;
+            int addEvent(const std::string& pluginName, const std::string& pluginVersion, const entities::EEventType& eventType, const std::string& message = std::string()) override;
             int addEvent(const entities::CPluginEventLogger& pluginLogEntry) override;
-            std::vector<boost::shared_ptr<entities::CPluginEventLogger>> getPluginEvents(const std::string& pluginName,
-                                                                                         const std::string& pluginVersion,
-                                                                                         const shared::versioning::EReleaseType& pluginReleaseType) override;
-            std::vector<boost::shared_ptr<entities::CPluginEventLogger>> getPluginEvents(const std::string& pluginName,
-                                                                                         const std::string& pluginVersion,
-                                                                                         const shared::versioning::EReleaseType& pluginReleaseType,
-                                                                                         const boost::posix_time::ptime& fromDate) override;
+            std::vector<boost::shared_ptr<entities::CPluginEventLogger>> getPluginEvents(const std::string& pluginName, const std::string& pluginVersion) override;
+            std::vector<boost::shared_ptr<entities::CPluginEventLogger>> getPluginEvents(const std::string& pluginName, const std::string& pluginVersion, const boost::posix_time::ptime& fromDate) override;
             // [END] IPluginEventLoggerRequester implementation
 
          private:

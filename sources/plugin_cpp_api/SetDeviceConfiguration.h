@@ -1,5 +1,5 @@
 #pragma once
-#include <plugin_IPC/toPlugin.pb.h>
+#include <plugin_IPC/yadomsToPlugin.pb.h>
 #include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
 
 

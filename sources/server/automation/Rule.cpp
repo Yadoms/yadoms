@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Rule.h"
-#include <shared/Log.h>
 #include "script/StopNotifier.h"
 #include "script/YScriptApiImplementation.h"
 #include "script/Properties.h"
@@ -37,32 +36,24 @@ namespace automation //TODO faire une factory
 
    void CRule::start()
    {
-      if (!m_scriptProcessId.empty())
-      {
-         YADOMS_LOG(warning) << "Can not start rule " << m_ruleData->Name() << " : already started";
-         return;
-      }
-
-      auto scriptLogger = m_interpreterManager->createScriptLogger(m_ruleData->Name(),
+      m_scriptLogger = m_interpreterManager->createScriptLogger(m_ruleData->Name(),
                                                                    m_ruleData->Id());
-      m_ipcAdapter = createScriptContext(scriptLogger,
+      m_ipcAdapter = createScriptContext(m_scriptLogger,
                                          m_ruleData->Id());
-      auto stopNotifier = createStopNotifier(m_ruleStateHandler,
-                                             m_ruleData->Id());
 
       m_scriptInterpreter = m_interpreterManager->getInterpreterInstance(m_ruleProperties->interpreterName());
 
-      m_scriptProcessId = m_scriptInterpreter->startScript(m_ruleProperties->scriptPath(),
-                                                           m_ipcAdapter->id());
+      m_scriptInterpreter->startScript(m_ruleData->Id(),
+                                       m_ruleProperties->scriptPath(),
+                                       m_ipcAdapter->id());
    }
 
    void CRule::requestStop()
    {
-      m_scriptInterpreter->stopScript(m_scriptProcessId);
-      m_scriptProcessId.clear();
+      m_scriptInterpreter->stopScript(m_ruleData->Id());
    }
 
-   boost::shared_ptr<script::IIpcAdapter> CRule::createScriptContext(boost::shared_ptr<shared::process::ILogger> scriptLogger,
+   boost::shared_ptr<script::IIpcAdapter> CRule::createScriptContext(boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger,
                                                                      int ruleId) const
    {
       auto apiImplementation = createScriptApiImplementation(scriptLogger);
@@ -71,7 +62,7 @@ namespace automation //TODO faire une factory
                                                      ruleId);
    }
 
-   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CRule::createScriptApiImplementation(boost::shared_ptr<shared::process::ILogger> scriptLogger) const
+   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CRule::createScriptApiImplementation(boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger) const
    {
       return boost::make_shared<script::CYScriptApiImplementation>(scriptLogger,
                                                                    m_pluginGateway,
@@ -85,9 +76,8 @@ namespace automation //TODO faire une factory
    boost::shared_ptr<shared::process::IProcessObserver> CRule::createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler,
                                                                                   int ruleId) const
    {
+      //TODO cette fonction n'est normalement plus utile, la virer (ainsi que ces dépendances) après test
       return boost::make_shared<script::StopNotifier>(ruleStateHandler,
                                                       ruleId);
    }
 } // namespace automation	
-
-

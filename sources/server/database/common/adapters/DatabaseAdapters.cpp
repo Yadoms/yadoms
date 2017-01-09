@@ -53,7 +53,6 @@ namespace database
             ((EventDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now()))
             ((PluginName)(std::string)(""))
             ((PluginVersion)(std::string)(""))
-            ((PluginRelease)(shared::versioning::EReleaseType)(shared::versioning::EReleaseType::kStable)(int))
             ((EventType)(database::entities::EEventType)(database::entities::EEventType::kUnload)(std::string))
             ((Message)(std::string)(""))
          );
