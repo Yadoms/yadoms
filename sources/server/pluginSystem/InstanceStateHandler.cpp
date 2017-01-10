@@ -163,8 +163,7 @@ namespace pluginSystem
       }
 
       m_pluginEventLoggerRequester->addEvent(m_pluginInformation->getType(),
-                                             m_pluginInformation->getVersion(),
-                                             m_pluginInformation->getReleaseType(),
+                                             m_pluginInformation->getVersion().toString(),
                                              evenType,
                                              message);
    }

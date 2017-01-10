@@ -711,6 +711,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/versioning/Version_1_0_0.cpp
 	server/database/common/versioning/Version_2_0_0.h
 	server/database/common/versioning/Version_2_0_0.cpp
+	server/database/common/versioning/Version_3_0_0.h
+	server/database/common/versioning/Version_3_0_0.cpp
 	server/database/common/versioning/VersionUpgraderFactory.h
 	server/database/common/versioning/VersionUpgraderFactory.cpp
 	server/database/common/versioning/VersionException.h
@@ -843,9 +845,9 @@ if(WIN32)
    if(MSVC)
       #update the Windows specific 'yadoms.rc' file which add properties to executable (version, releaseType=
       #as pre build step (yadoms.rc is modified only if needed, to avoid unjustified build
-      add_custom_command(OUTPUT "${CMAKE_SOURCE_DIR}/resources/windows/yadoms-generated.rc"
+      add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/yadoms-generated.rc"
           PRE_BUILD
-          COMMAND ${CMAKE_SOURCE_DIR}/../ideTools/versionPreBuildTool/VersionPreBuildTool/VersionPreBuildTool/bin/Release/VersionPreBuildTool.exe "${CMAKE_SOURCE_DIR}/server/Version.h" "${CMAKE_SOURCE_DIR}/resources/windows/yadoms.rc" "${CMAKE_SOURCE_DIR}/resources/windows/yadoms-generated.rc"
+          COMMAND ${CMAKE_SOURCE_DIR}/../ideTools/versionPreBuildTool/VersionPreBuildTool/VersionPreBuildTool/bin/Release/VersionPreBuildTool.exe "${CMAKE_SOURCE_DIR}/server/Version.h" "${CMAKE_SOURCE_DIR}/resources/windows/yadoms.rc" "${CMAKE_BINARY_DIR}/yadoms-generated.rc"
           MAIN_DEPENDENCY "${CMAKE_SOURCE_DIR}/server/Version.h"
           DEPENDS "${CMAKE_SOURCE_DIR}/server/Version.h"
           COMMENT Generating yadoms-generated.rc
@@ -855,7 +857,7 @@ if(WIN32)
    # If we build for windows systems, we also include the resource file
    # containing the manifest, icon and other resources
    set(YADOMS_SRC ${YADOMS_SRC} 
-		resources/windows/yadoms-generated.rc
+		${CMAKE_BINARY_DIR}/yadoms-generated.rc
 		resources/windows/resource.h
    )
    source_group(resources resources/windows/*.*)

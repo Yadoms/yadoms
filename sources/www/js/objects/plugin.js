@@ -7,7 +7,6 @@
 function Plugin(json) {
    assert(!isNullOrUndefined(json), "json must be defined");
    assert(!isNullOrUndefined(json.type), "json.type must be defined");
-   assert(!isNullOrUndefined(json.releaseType), "json.releaseType of a pluginInstance must be defined");
    assert(!isNullOrUndefined(json.version), "json.version of a pluginInstance must be defined");
 
    this.package = json;

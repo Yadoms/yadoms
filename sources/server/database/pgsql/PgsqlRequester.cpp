@@ -169,7 +169,7 @@ namespace pgsql {
 
    void CPgsqlRequester::initialize()
    {
-      YADOMS_LOG(information) << "Connect to database";
+      YADOMS_LOG(information) << "Connect to PostgreSQL database";
       try
       {
          //connect to postgresql engine
@@ -184,18 +184,18 @@ namespace pgsql {
             //clear connection
             PQfinish(pConnection);
 
-            YADOMS_LOG(information) << "Fail to connect the database.";
+            YADOMS_LOG(information) << "Fail to connect the PostgreSQL database.";
 
             //ping the server (throws if ping failed)
             YADOMS_LOG(information) << "Check server availability";
             pingServer();
          
             //retry with "postgres" database to be able to list db
-            YADOMS_LOG(information) << "Server is available. Checking database existance";
+            YADOMS_LOG(information) << "PostgreSQL Server is available. Checking database existance";
             pConnection = PQconnectdb(createConnectionString(kMasterDb).c_str());
             if (PQstatus(pConnection) != CONNECTION_OK)
             {
-               throw CDatabaseException("Fail to connect database", getLastErrorMessage(pConnection));
+               throw CDatabaseException("Fail to connect PostgreSQL database", getLastErrorMessage(pConnection));
             }
             else
             {
@@ -208,12 +208,12 @@ namespace pgsql {
                int count = queryCount(dbList, pConnection);
                if (count == 0)
                {
-                  YADOMS_LOG(information) << "Database do not exists, try to create it";
+                  YADOMS_LOG(information) << "PostgreSQL Database do not exists, try to create it";
                   //create database
                   int result = queryStatement(CPgsqlQuery().CreateDatabase(startupOptions->getDatabasePostgresqlDbName()), true, pConnection);
                   if (result == 0)
                   {
-                     YADOMS_LOG(information) << "Database created";
+                     YADOMS_LOG(information) << "PostgreSQL Database created";
 
                      //terminate master connection
                      PQfinish(pConnection);
@@ -223,14 +223,14 @@ namespace pgsql {
 
                      //Check to see that the backend connection was successfully made 
                      if (PQstatus(pConnection) != CONNECTION_OK)
-                        throw CDatabaseException("Fail to connect the newly createed database.", getLastErrorMessage(pConnection));
+                        throw CDatabaseException("Fail to connect the newly created PostgreSQL database.", getLastErrorMessage(pConnection));
                      
                      //terminate master connection
                      PQfinish(pConnection);
                   }
                   else
                   {
-                     throw CDatabaseException("Fail to create database.", getLastErrorMessage(pConnection));
+                     throw CDatabaseException("Fail to create PostgreSQL database.", getLastErrorMessage(pConnection));
                   }
                }
                else

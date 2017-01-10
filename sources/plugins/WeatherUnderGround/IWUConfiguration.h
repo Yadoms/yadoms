@@ -1,5 +1,6 @@
 #pragma once
 #include <shared/DataContainer.h>
+#include <shared/ILocation.h>
 
 //--------------------------------------------------------------
 /// \brief	Interface of plugin configuration
@@ -11,8 +12,7 @@ public:
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~IWUConfiguration()
-   {
-   }
+   {}
 
    //--------------------------------------------------------------
    /// \brief		   Load configuration data
@@ -27,30 +27,24 @@ public:
    virtual std::string getAPIKey() const = 0;
 
    //--------------------------------------------------------------
-   /// \brief	    Get the Localisation from the configuration
-   /// \return     The Localisation String
+   /// \brief	    Return if the plugin Location is enabled
+   /// \return     true if the plugin Location is enabled
    //--------------------------------------------------------------
-   virtual std::string getLocalisation() = 0;
+   virtual bool pluginLocationEnabled() const = 0;
 
    //--------------------------------------------------------------
-   /// \brief	    Get the Country from the configuration
-   /// \return     The Country String
+   /// \brief	    Get the Location from the configuration
+   /// \return     The location entered in the plugin
    //--------------------------------------------------------------
-   virtual std::string getCountryOrState() = 0;
-
-   //--------------------------------------------------------------
-   /// \brief	    Get the State from the configuration
-   /// \return     The State String
-   //--------------------------------------------------------------
-   virtual std::string getState() const = 0;
+   virtual boost::shared_ptr<const shared::ILocation> getLocation() const = 0;
 
    //--------------------------------------------------------------
    /// \brief	    Get options enabled from the configuration
    //--------------------------------------------------------------
-   virtual bool IsLiveConditionsEnabled(void) const = 0;
-   virtual bool IsConditionsIndividualKeywordsEnabled(void) const = 0;
-   virtual bool IsRainIndividualKeywordsEnabled(void) const = 0;
-   virtual bool IsAstronomyEnabled(void) const = 0;
-   virtual bool IsForecast10DaysEnabled(void) const = 0;
+   virtual bool isLiveConditionsEnabled(void) const = 0;
+   virtual bool isConditionsIndividualKeywordsEnabled(void) const = 0;
+   virtual bool isRainIndividualKeywordsEnabled(void) const = 0;
+   virtual bool isTempIndividualKeywordsEnabled(void) const = 0;
+   virtual bool isAstronomyEnabled(void) const = 0;
+   virtual bool isForecast10DaysEnabled(void) const = 0;
 };
-

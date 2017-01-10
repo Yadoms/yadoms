@@ -1,7 +1,6 @@
 {
 	"type": "chart",
-	"version": "1.0.0",
-	"releaseType": "beta",
+	"version": "1.0.1-beta",
 	"author": "Jean-Michel BERHAULT, Nicolas HILAIRE",
 	"url": "https://github.com/Yadoms/yadoms/wiki/chart",
 	"credits": "[Highstocks](http://www.highcharts.com/)",
@@ -30,7 +29,7 @@
 				"MONTH": "",
 				"HALF_YEAR": "",
 				"YEAR": ""
-			},
+			},         
 			"defaultValue": "DAY"
 		},
 		"oneAxis": {
@@ -65,12 +64,8 @@
 			"allowDuplication": "true",
 			"item": {
 				"type": "section",
-				"name": "",
-				"description": "",				
 				"content": {
 					"source": {
-						"name": "",
-						"description": "",
 						"type": "keyword",
 						"expectedKeywordType": ["numeric", "bool"],
 						"expectedKeywordAccess": "get"
@@ -79,15 +74,19 @@
 						"type": "color",
 						"defaultValue": "#0000FF"
 					},
+					"differentialDisplay": {
+				      "type": "bool",
+				      "defaultValue": "false"
+					},
 					"PlotType": {
-            "type": "enum",
-            "sort": "true",
+                  "type": "enum",
 						"values": {
 							"line": "",
 							"bar": "",
 							"arearange": ""
-						},
-						"defaultValue": "line"
+						},                  
+                  "sort": "true",
+			         "defaultValue": "line"
 					}
 				}
 			}

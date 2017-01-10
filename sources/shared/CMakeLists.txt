@@ -245,8 +245,6 @@ set(SHARED_LIB_SRC
    shared/tools/Random.h
    shared/tools/Random.cpp
 
-   shared/versioning/ReleaseType.h
-   shared/versioning/ReleaseType.cpp
    shared/versioning/Version.h
    shared/versioning/Version.cpp
    shared/versioning/VersionInformation.h

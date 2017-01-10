@@ -97,7 +97,7 @@ namespace database
       virtual boost::shared_ptr<IPluginEventLoggerRequester> getPluginEventLoggerRequester() = 0;
 
       //--------------------------------------------------------------
-      /// \Brief		get the Acquisiton requester
+      /// \Brief		get the Acquisition requester
       /// \return 	the Acquisiton requester
       /// \throws 		
       //--------------------------------------------------------------  

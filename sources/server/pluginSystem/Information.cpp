@@ -30,11 +30,14 @@ namespace pluginSystem
          if (m_type.empty())
             throw shared::exception::CInvalidParameter("Error reading package.json : plugin type can not be empty");
 
-         m_version = m_package->get<std::string>("version");
-         if (m_version.empty() || !regex_match(m_version, boost::regex("\\d+.\\d+.\\d+")))
-            throw shared::exception::CInvalidParameter("Error reading package.json : plugin version doesn't match expected format (x.x.x)");
-
-         m_releaseType = m_package->get<shared::versioning::EReleaseType>("releaseType");
+         try
+         {
+            m_version = shared::versioning::CVersion(m_package->get<std::string>("version"));
+         }
+         catch (std::exception &ex)
+         {
+            throw shared::exception::CInvalidParameter("Error reading package.json : plugin version doesn't match expected SEMVER format (x.x.x)");
+         }
 
          m_author = m_package->get<std::string>("author");
          if (m_author.empty())
@@ -85,15 +88,11 @@ namespace pluginSystem
       return m_type;
    }
 
-   const std::string& CInformation::getVersion() const
+   const shared::versioning::CVersion& CInformation::getVersion() const
    {
       return m_version;
    }
 
-   shared::versioning::EReleaseType CInformation::getReleaseType() const
-   {
-      return m_releaseType;
-   }
 
    const std::string& CInformation::getAuthor() const
    {
@@ -109,8 +108,7 @@ namespace pluginSystem
    {
       std::ostringstream formatedInformations;
       formatedInformations << m_type;
-      formatedInformations << " v" << m_version;
-      formatedInformations << "[" << m_releaseType << "]";
+      formatedInformations << " v" << m_version.toString();
       return formatedInformations.str();
    }
 

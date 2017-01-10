@@ -18,3 +18,9 @@ sources/plugins/EnOcean/package.json
 sources/plugins/EnOcean/locales
 sources/plugins/EnOcean/profiles/generated*.cpp
 sources/plugins/EnOcean/profiles/generated*.h
+*.csproj.user
+ideTools/versionPreBuildTool/VersionPreBuildTool/VersionPreBuildTool/obj
+ideTools/versionPreBuildTool/VersionPreBuildTool/VersionPreBuildTool/bin/Debug
+*.vshost.exe
+*.vshost.exe.manifest
+*.pdb
