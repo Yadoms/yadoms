@@ -9,7 +9,6 @@
 #include "IQualifier.h"
 #include "InvalidPluginException.hpp"
 #include "IpcAdapter.h"
-#include <shared/process/ProcessException.hpp>
 #include "internalPlugin/Instance.h"
 #include "internalPlugin/Information.h"
 #include <shared/process/NativeExecutableCommandLine.h>

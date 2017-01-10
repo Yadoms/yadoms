@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Process.h"
-#include "ProcessException.hpp"
 #include <shared/Log.h>
 
 namespace shared
@@ -69,7 +68,7 @@ namespace shared
          }
          catch (Poco::Exception& ex)
          {
-            throw CProcessException(std::string("Unable to start process, ") + ex.what());
+            throw std::runtime_error(std::string("Unable to start process, ") + ex.what());
          }
       }
 
@@ -89,7 +88,13 @@ namespace shared
          {
             try
             {
-               m_returnCode = Poco::Process::wait(*m_process);
+               boost::shared_ptr<Poco::ProcessHandle> process;
+               {
+                  boost::lock_guard<boost::recursive_mutex> lock(m_processMutex);
+                  // Make full copy to release the mutex
+                  process = boost::make_shared<Poco::ProcessHandle>(*m_process);
+               }
+               m_returnCode = Poco::Process::wait(*process);
             }
             catch (Poco::SystemException&)
             {
@@ -112,7 +117,7 @@ namespace shared
          try
          {
             boost::lock_guard<boost::recursive_mutex> lock(m_processMutex);
-            if (!!m_process)
+            if (!!m_process && Poco::Process::isRunning(*m_process))
             {
                Poco::Process::kill(*m_process);
 
