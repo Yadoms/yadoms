@@ -1,6 +1,6 @@
 #pragma once
-#include <shared/versioning/ReleaseType.h>
 #include <shared//ILocation.h>
+#include <shared/versioning/Version.h>
 
 namespace shared
 {
@@ -33,13 +33,7 @@ namespace shared
             /// \note       Version : Note that this value is string-comparable
             ///             to check the precedence of a version from a reference version.
             //--------------------------------------------------------------
-            virtual std::string version() const = 0;
-
-            //--------------------------------------------------------------
-            /// \brief	    get the Yadoms release type
-            /// \return     the Yadoms release type
-            //--------------------------------------------------------------
-            virtual versioning::EReleaseType releaseType() const = 0;
+            virtual shared::versioning::CVersion version() const = 0;
 
             //--------------------------------------------------------------
             /// \brief	    get location

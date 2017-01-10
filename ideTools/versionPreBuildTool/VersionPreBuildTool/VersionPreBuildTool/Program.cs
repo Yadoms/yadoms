@@ -26,73 +26,63 @@ namespace VersionPreBuildTool
                             }
                             else
                             {
-                                Console.WriteLine("Specified file not found : " + args[2]);
+                                Console.WriteLine(@"Specified file not found : " + args[2]);
                             }
 
                         }
                         else
                         {
-                            Console.WriteLine("Specified file not found : " + args[1]);
+                            Console.WriteLine(@"Specified file not found : " + args[1]);
                         }
 
                     }
                     else
                     {
-                        Console.WriteLine("Specified file not found : " + args[0]);
+                        Console.WriteLine(@"Specified file not found : " + args[0]);
                     }
 
                 }
                 else
                 {
-                    Console.WriteLine("VersionPreBuildTool must be called with three parameters." + Environment.NewLine + "VersionPreBuildTool.exe {versionPath} {baseResPath} {generatedResPath}" + Environment.NewLine + "    versionPath : the path to the version.h file to read" + Environment.NewLine + "    baseResPath : the path to the base resource file" + Environment.NewLine + "    generatedResPath : the path to the resource file to generate");
+                    Console.WriteLine(@"VersionPreBuildTool must be called with three parameters." + Environment.NewLine + @"VersionPreBuildTool.exe {versionPath} {baseResPath} {generatedResPath}" + Environment.NewLine + @"    versionPath : the path to the version.h file to read" + Environment.NewLine + @"    baseResPath : the path to the base resource file" + Environment.NewLine + @"    generatedResPath : the path to the resource file to generate");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("VersionPreBuildTool failed : " + ex.Message);
+                Console.WriteLine(@"VersionPreBuildTool failed : " + ex.Message);
             }
         }
 
         static void ProcessVersion(string versionFile, string resFile, string generatedFile)
         {
-            Version version;
-            string releaseType;
+            Semver version;
 
-            ReadVersion(versionFile, out version, out releaseType);
-            WriteRes(resFile, version, releaseType, generatedFile);
+            ReadVersion(versionFile, out version);
+            WriteRes(resFile, version, generatedFile);
         }
 
-        static void ReadVersion(string versionFile, out Version version, out string releaseType)
+        static void ReadVersion(string versionFile, out Semver version)
         {
-            Console.WriteLine("Reading yadoms information from " + versionFile);
-            
-            version = new Version();
-            releaseType = "";
-            
+            Console.WriteLine(@"Reading yadoms information from " + versionFile);
+
+            version = null;
             string[] lines = File.ReadAllLines(versionFile);
-            Regex regexVersion = new Regex("const std::string YadomsVersion\\(\\\"(\\d\\.\\d\\.\\d\\.\\d)\\\"\\)");
-            Regex regexReleaseType = new Regex("const shared::versioning::EReleaseType YadomsReleaseType\\(shared::versioning::EReleaseType::k(.*)\\)");
+            Regex regexVersion = new Regex("const shared::versioning::CVersion YadomsVersion\\(\\\"(.*)\\\"\\)");
+
             foreach (string line in lines)
             {
                 Match matchVersion = regexVersion.Match(line);
                 if (matchVersion.Success)
                 {
-                    version = Version.Parse(matchVersion.Groups[1].Value);
-                }
-
-                Match matchReleaseType = regexReleaseType.Match(line);
-                if (matchReleaseType.Success)
-                {
-                    releaseType = matchReleaseType.Groups[1].Value;
+                    version = Semver.Parse(matchVersion.Groups[1].Value);
                 }
             }
 
-            Console.WriteLine("    Version : " + version);
-            Console.WriteLine("    ReleaseType : " + releaseType);
+            Console.WriteLine(@"    Version : " + version);
 
         }
 
-        static void WriteRes(string resFile, Version version, string releaseType, string generatedFile)
+        static void WriteRes(string resFile, Semver version, string generatedFile)
         {
             string[] lines = File.ReadAllLines(resFile);
             for (int i = 0; i < lines.Length; ++i)
@@ -100,25 +90,22 @@ namespace VersionPreBuildTool
                 if (lines[i].StartsWith(" FILEVERSION") || lines[i].StartsWith(" PRODUCTVERSION"))
                 {
                     string newLine = lines[i].Remove(lines[i].LastIndexOf(" ", StringComparison.Ordinal));
-                    newLine += " " + version.Major + "," + version.Minor + "," + version.Build + "," + version.Revision + "";
+                    newLine += " " + version.ToCustomizedString(",",false, "", false, "") + ""; //with ","
                     lines[i] = newLine;
                 } else if (lines[i].Contains("VALUE \"FileVersion\""))
                 {
                     string newLine = lines[i].Remove(lines[i].LastIndexOf("FileVersion", StringComparison.Ordinal));
-                    newLine += "FileVersion\", \"" + version.Major + "." + version.Minor + "." + version.Build + "." + version.Revision + "\"";
+                    newLine += "FileVersion\", \"" + version + "\"";
                     lines[i] = newLine;
                 } else if (lines[i].Contains("VALUE \"ProductVersion\""))
                 {
                     string newLine = lines[i].Remove(lines[i].LastIndexOf(",", StringComparison.Ordinal));
-                    newLine += ", \"" + version.Major + "." + version.Minor + "." + version.Build + "." + version.Revision;
-                    if (releaseType.ToLower() != "stable")
-                        newLine += " " + releaseType;
-                    newLine += "\"";
+                    newLine += ", \"" + version + "\"";
                     lines[i] = newLine;
                 }
             }
 
-            Console.WriteLine("Generating yadoms.rc file : " + generatedFile);
+            Console.WriteLine(@"Generating yadoms.rc file : " + generatedFile);
             File.WriteAllLines(generatedFile, lines);
         }
     }

@@ -17,8 +17,7 @@ namespace plugin_cpp_api
 
       // shared::plugin::information::IYadomsInformation implementation
       bool developperMode() const override;
-      std::string version() const override;
-      shared::versioning::EReleaseType releaseType() const override;
+      shared::versioning::CVersion version() const override;
       boost::shared_ptr<const shared::ILocation> location() const override;
       // [END] shared::plugin::information::IYadomsInformation implementation
 

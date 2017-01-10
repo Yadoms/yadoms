@@ -115,6 +115,7 @@ boost::shared_ptr<features::IFeature> CWUFactory::createorUpdateWeatherDevice(bo
       if (wuConfiguration.isLiveConditionsEnabled())
       {
          m_weatherConditions->onPluginUpdate(api, wuConfiguration);
+         m_weatherConditions->setCityName(m_lookupInformation->getCity());
          std::cout << "Update weather device" << std::endl;
       }
       else
@@ -182,6 +183,7 @@ boost::shared_ptr<features::IFeature> CWUFactory::createorUpdateForecastDevice(b
       if (wuConfiguration.isForecast10DaysEnabled())
       {
          m_forecast->onPluginUpdate(api, wuConfiguration);
+         m_forecast->setCityName(m_lookupInformation->getCity());
          std::cout << "Update forecast module" << std::endl;
       }
       else

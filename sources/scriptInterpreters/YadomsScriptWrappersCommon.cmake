@@ -27,5 +27,5 @@ MACRO(SCRIPT_API_WRAPPER_INCLDIR)
 ENDMACRO()
 
 MACRO(SCRIPT_API_WRAPPER_LINK)
-   SWIG_LINK_LIBRARIES(yScriptApiWrapper yadoms-shared ${interpreter_IPC_LIBRARY} ${ARGN})
+   SWIG_LINK_LIBRARIES(yScriptApiWrapper yadoms-shared ${ARGN})
 ENDMACRO()

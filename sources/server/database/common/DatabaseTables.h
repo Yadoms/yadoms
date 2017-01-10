@@ -52,7 +52,6 @@ namespace common {
       (EventDate)
       (PluginName)
       (PluginVersion)
-      (PluginRelease)
       (EventType)
       (Message)
    )

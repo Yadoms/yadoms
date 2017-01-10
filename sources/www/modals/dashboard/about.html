@@ -83,7 +83,7 @@
         return $("table#plugin-package-list").find("tr[plugin-id='" + pluginPackage + "']");
       }     
       
-       AddWidgetPackage = function( name, version, release, authors, credits, url ) {
+       AddWidgetPackage = function( name, version, authors, credits, url ) {
       
         //we add it to the DOM
         var $widgetPackageList = $("table#widget-package-list");
@@ -101,13 +101,13 @@
         
         //we fill the data
         $widgetPackageRow.find("td.widget-displayName").html( "<a href=\"" + url + "\" target=\"_blank\">" + name + "</a>" );
-		$widgetPackageRow.find("td.widget-version").html( version + " " + release );
+		$widgetPackageRow.find("td.widget-version").html( version );
         $widgetPackageRow.find("td.widget-authors").html( authors );
         $widgetPackageRow.find("td.widget-credits").html( credits );
       
       };
       
-       AddPluginPackage = function( type, name, version, release, authors, credits, url ) {
+       AddPluginPackage = function( type, name, version, authors, credits, url ) {
       
         //we add it to the DOM
         var $pluginPackageList = $("table#plugin-package-list");
@@ -125,7 +125,7 @@
         
         //we fill the data
         $pluginPackageRow.find("td.plugin-displayName").html( "<a href=\"" + url + "\" target=\"_blank\">" + name + "</a>" );
-		$pluginPackageRow.find("td.plugin-version").html( version + " " + release );
+		$pluginPackageRow.find("td.plugin-version").html( version );
         $pluginPackageRow.find("td.plugin-authors").html( authors );
         $pluginPackageRow.find("td.plugin-credits").html( credits );
       
@@ -243,7 +243,7 @@
                      if ( !isNullOrUndefined ( value.plugin.package.credits ))
                         result = md.renderInline( value.plugin.package.credits ); 
                      
-                     AddPluginPackage ( value.plugin.type, value.friendlyName, value.plugin.package.version, value.plugin.package.releaseType, value.plugin.package.author, result, value.plugin.package.url );
+                     AddPluginPackage ( value.plugin.type, value.friendlyName, value.plugin.package.version, value.plugin.package.author, result, value.plugin.package.url );
                    }); 
                })
                .fail(function (error) {
@@ -277,7 +277,7 @@
             if ( !isNullOrUndefined ( value.widget.credits ))
                result = md.renderInline( value.widget.credits ); 
             
-                AddWidgetPackage ( value.displayName, value.widget.version, value.widget.releaseType, value.widget.author, result, value.widget.url );
+                AddWidgetPackage ( value.displayName, value.widget.version, value.widget.author, result, value.widget.url );
          });
          
       d.resolve();

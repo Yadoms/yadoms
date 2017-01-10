@@ -98,7 +98,6 @@ namespace database { namespace entities {
       ((EventDate)(boost::posix_time::ptime)(shared::currentTime::Provider().now())("eventDate"))
       ((PluginName)(std::string)("")("pluginName"))
       ((PluginVersion)(std::string)("")("pluginVersion"))
-      ((PluginRelease)(shared::versioning::EReleaseType)(shared::versioning::EReleaseType::kStable)("pluginRelease"))
       ((EventType)(database::entities::EEventType)(database::entities::EEventType::kUnload)("eventType"))
       ((Message)(std::string)("")("message"))
       );

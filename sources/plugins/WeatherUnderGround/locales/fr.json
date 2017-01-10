@@ -4,7 +4,7 @@
 	"configurationSchema": {
 		"APIKey": {
 			"name": "API Key",
-			"description": "La clé API reçue par le site web pour la connection"
+			"description": "La clé API est obtenue à cette adresse: <a href=\https://www.wunderground.com/weather/api/\" target=\"_blank\">."
 		},
 		"location": {
 			"name": "Localisation",

@@ -37,7 +37,7 @@ namespace database
       // IDatabaseEngine implementation
       void CSQLiteRequester::initialize()
       {
-         YADOMS_LOG(information) << "Load database";
+         YADOMS_LOG(information) << "Initialize SQLite database";
          try
          {
             if (!boost::filesystem::exists(m_dbFile.c_str()))
@@ -58,14 +58,14 @@ namespace database
          }
          catch (std::exception& exc)
          {
-            YADOMS_LOG(error) << "Fail to load database : " << std::endl << exc.what();
+            YADOMS_LOG(error) << "Fail to load SQLite database : " << std::endl << exc.what();
             if (m_pDatabaseHandler != nullptr)
                sqlite3_close(m_pDatabaseHandler);
             throw;
          }
          catch (...)
          {
-            YADOMS_LOG(error) << "Unknown exception while loading database";
+            YADOMS_LOG(error) << "Unknown exception while loading SQLite database";
             if (m_pDatabaseHandler != nullptr)
                sqlite3_close(m_pDatabaseHandler);
             throw;

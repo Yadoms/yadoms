@@ -25,11 +25,7 @@ namespace database
 
          // IPluginEventLoggerRequester implementation
 
-         int CPluginEventLogger::addEvent(const std::string& pluginName,
-                                          const std::string& pluginVersion,
-                                          const shared::versioning::EReleaseType& pluginReleaseType,
-                                          const entities::EEventType& eventType,
-                                          const std::string& message)
+         int CPluginEventLogger::addEvent(const std::string& pluginName, const std::string& pluginVersion, const entities::EEventType& eventType, const std::string& message)
          {
             auto insertDate = shared::currentTime::Provider().now();
 
@@ -37,13 +33,11 @@ namespace database
             qInsert.InsertInto(CPluginEventLoggerTable::getTableName(),
                                CPluginEventLoggerTable::getPluginNameColumnName(),
                                CPluginEventLoggerTable::getPluginVersionColumnName(),
-                               CPluginEventLoggerTable::getPluginReleaseColumnName(),
                                CPluginEventLoggerTable::getEventTypeColumnName(),
                                CPluginEventLoggerTable::getMessageColumnName(),
                                CPluginEventLoggerTable::getEventDateColumnName()).
                    Values(pluginName,
                           pluginVersion,
-                          pluginReleaseType,
                           eventType,
                           message,
                           insertDate);
@@ -56,7 +50,6 @@ namespace database
                    From(CPluginEventLoggerTable::getTableName()).
                    Where(CPluginEventLoggerTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, pluginName).
                    And(CPluginEventLoggerTable::getPluginVersionColumnName(), CQUERY_OP_EQUAL, pluginVersion).
-                   And(CPluginEventLoggerTable::getPluginReleaseColumnName(), CQUERY_OP_EQUAL, pluginReleaseType).
                    And(CPluginEventLoggerTable::getEventTypeColumnName(), CQUERY_OP_EQUAL, eventType).
                    And(CPluginEventLoggerTable::getEventDateColumnName(), CQUERY_OP_EQUAL, insertDate).
                    OrderBy(CPluginEventLoggerTable::getIdColumnName(), CQuery::kDesc);
@@ -73,21 +66,17 @@ namespace database
          {
             return addEvent(pluginLogEntry.PluginName(),
                             pluginLogEntry.PluginVersion(),
-                            pluginLogEntry.PluginRelease(),
                             pluginLogEntry.EventType(),
                             pluginLogEntry.Message());
          }
 
-         std::vector<boost::shared_ptr<entities::CPluginEventLogger>> CPluginEventLogger::getPluginEvents(const std::string& pluginName,
-                                                                                                          const std::string& pluginVersion,
-                                                                                                          const shared::versioning::EReleaseType& pluginReleaseType)
+         std::vector<boost::shared_ptr<entities::CPluginEventLogger>> CPluginEventLogger::getPluginEvents(const std::string& pluginName, const std::string& pluginVersion)
          {
             auto qSelect = m_databaseRequester->newQuery();
             qSelect.Select().
                    From(CPluginEventLoggerTable::getTableName()).
                    Where(CPluginEventLoggerTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, pluginName).
                    And(CPluginEventLoggerTable::getPluginVersionColumnName(), CQUERY_OP_EQUAL, pluginVersion).
-                   And(CPluginEventLoggerTable::getPluginReleaseColumnName(), CQUERY_OP_EQUAL, pluginReleaseType).
                    OrderBy(CPluginEventLoggerTable::getEventDateColumnName(), CQuery::kDesc);
 
             adapters::CPluginEventLoggerAdapter adapter;
@@ -96,17 +85,13 @@ namespace database
          }
 
 
-         std::vector<boost::shared_ptr<entities::CPluginEventLogger>> CPluginEventLogger::getPluginEvents(const std::string& pluginName,
-                                                                                                          const std::string& pluginVersion,
-                                                                                                          const shared::versioning::EReleaseType& pluginReleaseType,
-                                                                                                          const boost::posix_time::ptime& fromDate)
+         std::vector<boost::shared_ptr<entities::CPluginEventLogger>> CPluginEventLogger::getPluginEvents(const std::string& pluginName, const std::string& pluginVersion, const boost::posix_time::ptime& fromDate)
          {
             auto qSelect = m_databaseRequester->newQuery();
             qSelect.Select().
                    From(CPluginEventLoggerTable::getTableName()).
                    Where(CPluginEventLoggerTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, pluginName).
                    And(CPluginEventLoggerTable::getPluginVersionColumnName(), CQUERY_OP_EQUAL, pluginVersion).
-                   And(CPluginEventLoggerTable::getPluginReleaseColumnName(), CQUERY_OP_EQUAL, pluginReleaseType).
                    And(CPluginEventLoggerTable::getEventDateColumnName(), CQUERY_OP_SUP, fromDate).
                    OrderBy(CPluginEventLoggerTable::getEventDateColumnName(), CQuery::kDesc);
 

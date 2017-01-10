@@ -87,7 +87,7 @@ namespace pluginSystem
       boost::posix_time::ptime lastLoadTime(boost::posix_time::not_a_date_time);
 
       auto fromDate = boost::gregorian::day_clock::universal_day() - boost::gregorian::days(90);
-      auto pluginEvents = m_pluginLogger->getPluginEvents(identity.getType(), identity.getVersion(), identity.getReleaseType(), boost::posix_time::ptime(fromDate));
+      auto pluginEvents = m_pluginLogger->getPluginEvents(identity.getType(), identity.getVersion().toString(), boost::posix_time::ptime(fromDate));
       for (auto it = pluginEvents.begin(); it != pluginEvents.end(); ++it)
       {
          switch ((*it)->EventType())

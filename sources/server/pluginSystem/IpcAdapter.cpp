@@ -381,20 +381,7 @@ namespace pluginSystem
       auto answer = ans.mutable_yadomsinformationanswer();
       auto yadomsInformation = m_pluginApi->getYadomsInformation();
       answer->set_developpermode(yadomsInformation->developperMode());
-      answer->set_version(yadomsInformation->version());
-
-      switch (yadomsInformation->releaseType())
-      {
-      case shared::versioning::EReleaseType::kStableValue: answer->set_releasetype(plugin_IPC::toPlugin::YadomsInformationAnswer_EReleaseType_Stable);
-         break;
-      case shared::versioning::EReleaseType::kReleaseCandidateValue: answer->set_releasetype(plugin_IPC::toPlugin::YadomsInformationAnswer_EReleaseType_ReleaseCandidate);
-         break;
-      case shared::versioning::EReleaseType::kBetaValue: answer->set_releasetype(plugin_IPC::toPlugin::YadomsInformationAnswer_EReleaseType_Beta);
-         break;
-      default:
-         answer->set_releasetype(plugin_IPC::toPlugin::YadomsInformationAnswer_EReleaseType_Beta);
-         break;
-      }
+      answer->set_version(yadomsInformation->version().toString());
 
       try
       {
