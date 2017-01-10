@@ -106,8 +106,8 @@ namespace automation
                                                                                    boost::shared_ptr<CInstanceStateHandler> instanceStateHandler) const
       {
          return boost::make_shared<shared::process::CProcess>(commandLine,
-                                                                        instanceStateHandler,
-                                                                        logger);
+                                                              instanceStateHandler,
+                                                              logger);
       }
    }
 } // namespace automation::interpreter

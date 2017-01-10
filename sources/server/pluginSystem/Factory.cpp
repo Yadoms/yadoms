@@ -163,10 +163,10 @@ namespace pluginSystem
       try
       {
          return boost::make_shared<shared::process::CProcess>(commandLine,
-                                                                        instanceStateHandler,
-                                                                        logger);
+                                                              instanceStateHandler,
+                                                              logger);
       }
-      catch (shared::process::CProcessException& e)
+      catch (std::runtime_error& e)
       {
          YADOMS_LOG(error) << "Error starting plugin " << commandLine->executable() << " : " << e.what();
          instanceStateHandler->signalStartError(e.what());

@@ -40,5 +40,5 @@ private:
    boost::shared_ptr<IPythonExecutable> m_pythonExecutable;
 
    mutable boost::recursive_mutex m_processesMutex;
-   std::map<int, boost::shared_ptr<shared::process::IProcess>> m_processes;
+   std::map<int, boost::shared_ptr<shared::process::IProcess>> m_scriptProcesses;
 };
