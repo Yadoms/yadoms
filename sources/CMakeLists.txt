@@ -419,7 +419,6 @@ set(YADOMS_SRC
 	server/pluginSystem/IInstance.h
 	server/pluginSystem/IInstanceStartErrorObserver.h
 	server/pluginSystem/IInstanceStateHandler.h
-	server/pluginSystem/IInstanceStoppedListener.h
 	server/pluginSystem/IIpcAdapter.h
 	server/pluginSystem/IndicatorQualifier.h
 	server/pluginSystem/IndicatorQualifier.cpp
@@ -427,9 +426,6 @@ set(YADOMS_SRC
 	server/pluginSystem/Information.cpp
 	server/pluginSystem/Instance.h
 	server/pluginSystem/Instance.cpp
-	server/pluginSystem/InstanceRemover.h
-	server/pluginSystem/InstanceRemover.cpp
-	server/pluginSystem/InstanceRemoverRaii.hpp
 	server/pluginSystem/InstanceStateHandler.h
 	server/pluginSystem/InstanceStateHandler.cpp
 	server/pluginSystem/InvalidPluginException.hpp
