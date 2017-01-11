@@ -19,6 +19,7 @@ namespace automation
 
       CManager::~CManager()
       {
+         unloadInterpreters();
       }
 
       void CManager::loadInterpreters()
@@ -52,6 +53,39 @@ namespace automation
                }
             }
          }
+      }
+
+      void CManager::unloadInterpreters()
+      {
+         YADOMS_LOG(information) << "Unload interpreters...";
+
+         {
+            boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
+            for (const auto& runningInterpreter : m_loadedInterpreters)
+               runningInterpreter.second->requestToStop();
+         }
+
+         auto timeout = shared::currentTime::Provider().now() + boost::posix_time::seconds(30);
+         do
+         {
+            {
+               boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
+               if (m_loadedInterpreters.empty())
+                  break;
+            }
+            boost::this_thread::yield();
+         } while (shared::currentTime::Provider().now() < timeout);
+
+         {
+            boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
+            if (!m_loadedInterpreters.empty())
+            {
+               YADOMS_LOG(information) << "Fail to stop all interpreters";
+               return;
+            }
+         }
+
+         YADOMS_LOG(information) << "All interpreters are stopped";
       }
 
       bool CManager::isInterpreterCompatibleWithPlatform(const std::string& interpreterName) const
@@ -131,11 +165,14 @@ namespace automation
 
       void CManager::onInterpreterUnloaded(const std::string& interpreterName)
       {
-         boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
+         boost::thread([this, interpreterName]()
+         {
+            boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
 
-         const auto interpreter = m_loadedInterpreters.find(interpreterName);
-         if (interpreter != m_loadedInterpreters.end())
-            m_loadedInterpreters.erase(interpreter);
+            const auto interpreter = m_loadedInterpreters.find(interpreterName);
+            if (interpreter != m_loadedInterpreters.end())
+               m_loadedInterpreters.erase(interpreter);
+         });
       }
 
       boost::shared_ptr<IInstance> CManager::getInterpreterInstance(const std::string& interpreterType)

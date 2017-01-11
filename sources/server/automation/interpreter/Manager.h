@@ -47,9 +47,10 @@ namespace automation
 
       protected:
          //-----------------------------------------------------
-         ///\brief               Load the interpreters
+         ///\brief               Load/Unload the interpreters
          //-----------------------------------------------------
          void loadInterpreters();
+         void unloadInterpreters();
 
          //-----------------------------------------------------
          /// \brief              Check platform compatibility for interpreter
