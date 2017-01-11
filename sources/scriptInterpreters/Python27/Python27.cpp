@@ -42,19 +42,7 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
          {
             // Yadoms request the interpreter to stop. Note that interpreter must be stop in 10 seconds max, otherwise it will be killed.
             std::cout << "Stop requested" << std::endl;
-
-            int scriptInstanceIdToStop;
-            while (true)
-            {
-               {
-                  boost::lock_guard<boost::recursive_mutex> lock(m_processesMutex);
-                  if (m_scriptProcesses.empty())
-                     break;
-                  scriptInstanceIdToStop = m_scriptProcesses.begin()->first;
-               }
-               stopScript(scriptInstanceIdToStop);
-            }
-
+            onStopRequested();
             std::cout << "Python interpreter is stopped" << std::endl;
             return;
          }
@@ -231,5 +219,30 @@ void CPython27::onScriptStopped(int scriptInstanceId)
    const auto script = m_scriptProcesses.find(scriptInstanceId);
    if (script != m_scriptProcesses.end())
       m_scriptProcesses.erase(script);
+}
+
+void CPython27::onStopRequested()
+{
+   // Ask all scripts to stop
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_processesMutex);
+      for (const auto& scriptToStop : m_scriptProcesses)
+         stopScript(scriptToStop.first);
+   }
+
+   // Wait scripts are stopped
+   while (!m_scriptProcesses.empty())
+   {
+      switch (m_api->getEventHandler().waitForEvents(boost::posix_time::seconds(10)))
+      {
+      case kEventScriptStopped:
+         {
+            onScriptStopped(m_api->getEventHandler().getEventData<int>());
+            break;
+         }
+      default:
+         break;
+      }
+   }
 }
 

@@ -76,7 +76,7 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	The process of the running script, and its mutex
          //--------------------------------------------------------------
-         boost::shared_ptr<Poco::ProcessHandle> m_process;
+         boost::shared_ptr<Poco::ProcessHandle> m_processHandle;
          mutable boost::recursive_mutex m_processMutex;
 
          //--------------------------------------------------------------
