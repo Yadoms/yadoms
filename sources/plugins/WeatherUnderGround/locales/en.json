@@ -4,7 +4,7 @@
 	"configurationSchema": {
 		"APIKey": {
 			"name": "API Key",
-			"description": "The API key is obtained at this address <a href=\https://www.wunderground.com/weather/api/\" target=\"_blank\">."
+			"description": "The API key is obtained at this address <a href=\"https://www.wunderground.com/weather/api/\" target=\"_blank\">."
 		},
 		"location": {
 			"name": "Location",

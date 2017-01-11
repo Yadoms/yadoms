@@ -57,7 +57,7 @@ public:
    /// \brief	            Get the device dynamic configuration schema
    /// \return             The device dynmaic configuration schema
    //--------------------------------------------------------------
-   shared::CDataContainer getDynamicConfiguration() const;
+   static shared::CDataContainer getDynamicConfiguration();
 
    //--------------------------------------------------------------
    /// \brief	    Change the device configuration
