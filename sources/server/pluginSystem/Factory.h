@@ -34,7 +34,7 @@ namespace pluginSystem
                                                   boost::shared_ptr<database::IDataProvider> dataProvider,
                                                   boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                   boost::shared_ptr<IQualifier> qualifier,
-                                                  boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const override;
+                                                  boost::function1<void, int> onPluginsStoppedFct) const override;
       boost::filesystem::path pluginLogFile(int instanceId) const override;
       boost::filesystem::path pluginDataPath(int instanceId) const override;
       // [END] IFactory Implementation
@@ -45,7 +45,7 @@ namespace pluginSystem
                                                                 boost::shared_ptr<database::IDataProvider> dataProvider,
                                                                 boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                                 boost::shared_ptr<IQualifier> qualifier,
-                                                                boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const;
+                                                                boost::function1<void, int> onPluginsStoppedFct) const;
 
       boost::shared_ptr<const shared::plugin::information::IInformation> createInformation(const std::string& pluginName) const;
 
@@ -60,7 +60,7 @@ namespace pluginSystem
                                                                           boost::shared_ptr<database::IDataProvider> dataProvider,
                                                                           boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                                           boost::shared_ptr<IQualifier> qualifier,
-                                                                          boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const;
+                                                                          boost::function1<void, int> onPluginsStoppedFct) const;
 
       boost::shared_ptr<shared::process::IProcess> createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
                                                                          boost::shared_ptr<shared::process::IExternalProcessLogger> logger,
@@ -86,5 +86,3 @@ namespace pluginSystem
       const boost::shared_ptr<const shared::ILocation> m_location;
    };
 } // namespace pluginSystem
-
-

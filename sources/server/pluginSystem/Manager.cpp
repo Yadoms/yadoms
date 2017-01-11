@@ -320,10 +320,10 @@ namespace pluginSystem
 
       // Find instances to stop
       std::vector<int> instancesToStop;
-      for (PluginInstanceMap::const_iterator instance = m_runningInstances.begin(); instance != m_runningInstances.end(); ++instance)
+      for (const auto& instance : m_runningInstances)
       {
-         if (instance->second && boost::iequals(instance->second->aboutPlugin()->getType(), pluginName))
-            instancesToStop.push_back(instance->first);
+         if (instance.second && boost::iequals(instance.second->aboutPlugin()->getType(), pluginName))
+            instancesToStop.push_back(instance.first);
       }
 
       // Stop all instances of this plugin
@@ -370,7 +370,10 @@ namespace pluginSystem
                                                                             m_dataProvider,
                                                                             m_dataAccessLayer,
                                                                             m_qualifier,
-                                                                            m_instanceRemover);
+                                                                            [this](int pluginInstanceId)
+                                                                            {
+                                                                               onPluginStopped(pluginInstanceId);
+                                                                            });
       }
       catch (shared::exception::CEmptyResult& e)
       {
@@ -470,6 +473,18 @@ namespace pluginSystem
       {
          YADOMS_LOG(error) << exception.what();
       }
+   }
+
+   void CManager::onPluginStopped(int pluginInstanceId)
+   {
+      boost::thread([this, pluginInstanceId]()
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+
+         const auto interpreter = m_runningInstances.find(pluginInstanceId);
+         if (interpreter != m_runningInstances.end())
+            m_runningInstances.erase(interpreter);
+      });
    }
 
    void CManager::startInternalPlugin()
@@ -694,5 +709,3 @@ namespace pluginSystem
       instance->postSetDeviceConfiguration(command);
    }
 } // namespace pluginSystem
-
-

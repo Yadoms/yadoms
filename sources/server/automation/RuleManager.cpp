@@ -198,7 +198,8 @@ namespace automation
       }
    }
 
-   void CRuleManager::onRuleStopped(int ruleId, const std::string& error)
+   void CRuleManager::onRuleStopped(int ruleId,
+                                    const std::string& error)
    {
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);

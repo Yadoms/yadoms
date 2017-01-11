@@ -1,7 +1,6 @@
 #pragma once
 #include "IInstanceStartErrorObserver.h"
 #include "IInstanceStateHandler.h"
-#include "IInstanceStoppedListener.h"
 #include <shared/plugin/yPluginApi/historization/PluginStateMessage.h>
 #include <server/database/IPluginRequester.h>
 #include <server/database/IPluginEventLoggerRequester.h>
@@ -27,7 +26,7 @@ namespace pluginSystem
       ///\param[in] qualifier                Event qualifier
       ///\param[in] pluginEventLoggerRequester Plugin event logger
       ///\param[in] acquisitionHistorizer    Acquisition recorder
-      ///\param[in] instanceStoppedListener  The listener to call when an instance is stopped
+      ///\param[in] onPluginsStoppedFct      The listener to call when an instance is stopped
       ///\param[in] deviceManager            Database device access layer
       ///\param[in] keywordManager           Database keyword access layer
       //-----------------------------------------------------
@@ -37,7 +36,7 @@ namespace pluginSystem
                             boost::shared_ptr<IQualifier> qualifier,
                             boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
                             boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
-                            boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener,
+                            boost::function1<void, int> onPluginsStoppedFct,
                             boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                             boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordManager);
 
@@ -56,7 +55,7 @@ namespace pluginSystem
       void onFinish(int returnCode, const std::string& error) override;
       // [END] process::IProcessObserver Implementation
 
-      
+
    protected:
 
       // IInstanceStateHandler Implementation
@@ -80,8 +79,13 @@ namespace pluginSystem
       ///\param    [in]    severity           The message severity
       ///\param    [in]    message            The message
       //-----------------------------------------------------      
-      enum PluginEventSeverity { kInfo, kError };
-      virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message);
+      enum PluginEventSeverity
+      {
+         kInfo,
+         kError
+      };
+
+      virtual void recordPluginEvent(PluginEventSeverity severity, const std::string& message);
 
    private:
       //-----------------------------------------------------
@@ -117,7 +121,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			The listener to call when an instance is stopped
       //--------------------------------------------------------------
-      boost::shared_ptr<IInstanceStoppedListener> m_instanceStoppedListener;
+      boost::function1<void, int> m_onPluginsStoppedFct;
 
       //--------------------------------------------------------------
       /// \brief			The device requester
@@ -138,7 +142,4 @@ namespace pluginSystem
       boost::shared_ptr<shared::plugin::yPluginApi::historization::CPluginStateMessage> m_pluginStateMessage;
       int m_pluginStateMessageIdKeywordId;
    };
-	
 } // namespace pluginSystem
-	
-	

@@ -8,7 +8,7 @@ namespace pluginSystem
    //--------------------------------------------------------------
    /// \brief	Instance remover when stopped
    //--------------------------------------------------------------
-   class CInstanceRemover : public IInstanceStoppedListener
+   class CInstanceRemover : public IInstanceStoppedListener //TODO virer
    {
    public:
       //--------------------------------------------------------------

@@ -273,6 +273,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       void stopInstanceAndWaitForStopped(int id);
       void stopInstanceAndWaitForStoppedThreaded(int id);
+      void onPluginStopped(int pluginInstanceId);
 
       void startInternalPlugin();
       void stopInternalPlugin();
@@ -322,8 +323,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			Map of all running instances, and its mutex (key are plugin instance id)
       //--------------------------------------------------------------
-      typedef std::map<int, boost::shared_ptr<IInstance>> PluginInstanceMap;
-      PluginInstanceMap m_runningInstances;
+      std::map<int, boost::shared_ptr<IInstance>> m_runningInstances;
       mutable boost::recursive_mutex m_runningInstancesMutex;
    };
 } // namespace pluginSystem

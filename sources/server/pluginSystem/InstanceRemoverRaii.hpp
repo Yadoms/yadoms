@@ -6,7 +6,7 @@ namespace pluginSystem
    //--------------------------------------------------------------
    /// \brief	Instance remover RAII helper
    //--------------------------------------------------------------
-   class CInstanceRemoverRaii
+   class CInstanceRemoverRaii//TODO virer
    {
    public:
       CInstanceRemoverRaii(boost::shared_ptr<CInstanceRemover> instanceRemover,
