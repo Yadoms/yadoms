@@ -209,18 +209,18 @@ namespace automation
             return;
 
          m_startedRules.erase(rule);
-
-         if (!m_yadomsShutdown)
-            recordRuleStopped(ruleId, error);
       }
+
+      if (!m_yadomsShutdown)
+         recordRuleStopped(ruleId, error);
 
       {
          // Notify all handlers for this rule
          boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotifiersMutex);
          auto itEventHandlerSetToNotify = m_ruleStopNotifiers.find(ruleId);
          if (itEventHandlerSetToNotify != m_ruleStopNotifiers.end())
-            for (auto itHandler = itEventHandlerSetToNotify->second.begin(); itHandler != itEventHandlerSetToNotify->second.end(); ++itHandler)
-               (*itHandler)->postEvent(shared::event::kUserFirstId);
+            for (const auto& itHandler : itEventHandlerSetToNotify->second)
+               itHandler->postEvent(shared::event::kUserFirstId);
       }
    }
 
@@ -436,7 +436,8 @@ namespace automation
       m_ruleRequester->updateRule(ruleData);
    }
 
-   void CRuleManager::recordRuleStopped(int ruleId, const std::string& error) const
+   void CRuleManager::recordRuleStopped(int ruleId,
+                                        const std::string& error) const
    {
       auto ruleData(boost::make_shared<database::entities::CRule>());
       ruleData->Id = ruleId;
