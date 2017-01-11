@@ -62,7 +62,7 @@ const std::string& CFakeConfigurableDevice::getModel()
    return model;
 }
 
-shared::CDataContainer CFakeConfigurableDevice::getDynamicConfiguration() const
+shared::CDataContainer CFakeConfigurableDevice::getDynamicConfiguration()
 {
    //this code must be runtime dynamic.
    //in case of static configration, define the configuration schema in package.json

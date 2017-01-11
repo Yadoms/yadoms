@@ -481,7 +481,7 @@ BOOST_AUTO_TEST_CASE(Path)
    BOOST_CHECK_THROW(dc.get<int>("secD.secE.valC"), std::exception);
    BOOST_CHECK_THROW(dc.get<shared::CDataContainer>("secD"), std::exception);
 
-   dc.printToLog();
+   dc.printToLog(std::cout);
 
 }
 

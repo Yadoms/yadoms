@@ -4,11 +4,6 @@
 #include "FakeSensor.h"
 #include "FakeCounter.h"
 #include "FakeSwitch.h"
-#include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
-#include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
-#include <shared/plugin/yPluginApi/IDeviceRemoved.h>
-#include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
-#include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
 #include <shared/tools/Random.h>
 #include "FakeController.h"
 #include "FakeConfigurableDevice.h"
@@ -198,7 +193,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             if (command->getKeyword().empty())
                YADOMS_LOG(information) << "Specific command for a device (can be used for any purpose, unless keyword driving, device configuration (see kGetDeviceConfigurationSchemaRequest and kSetDeviceConfiguration documentation) and deletion";
             else
-               YADOMS_LOG(information) << "Standard command to a keyword (used to drive a switch, a thermostat...";
+               YADOMS_LOG(information) << "Standard command to a keyword (used to drive a switch, a thermostat...)";
             break;
          }
 

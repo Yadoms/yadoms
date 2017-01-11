@@ -31,16 +31,12 @@ namespace web { namespace rest { namespace service {
    {
       std::string pluginName = "";
       std::string pluginVersion = "";
-      shared::versioning::EReleaseType rType = shared::versioning::EReleaseType::kStable;
-
       if(parameters.size()>1)
          pluginName = parameters[1];
       if(parameters.size()>2)
          pluginVersion = parameters[2];
-      if(parameters.size()>3)
-         rType.fromString(parameters[3]);
 
-      std::vector< boost::shared_ptr<database::entities::CPluginEventLogger> > dvList = m_dataProvider->getPluginEventLoggerRequester()->getPluginEvents(pluginName, pluginVersion, rType);
+      std::vector< boost::shared_ptr<database::entities::CPluginEventLogger> > dvList = m_dataProvider->getPluginEventLoggerRequester()->getPluginEvents(pluginName, pluginVersion);
       shared::CDataContainer collection;
       collection.set(getRestKeyword(), dvList);
       return CResult::GenerateSuccess(collection);
@@ -51,18 +47,15 @@ namespace web { namespace rest { namespace service {
       std::string pluginName = "";
       std::string pluginVersion = "";
       boost::posix_time::ptime fromDate;
-      shared::versioning::EReleaseType rType = shared::versioning::EReleaseType::kStable;
 
       if(parameters.size()>1)
          pluginName = parameters[1];
       if(parameters.size()>2)
          pluginVersion = parameters[2];
       if(parameters.size()>3)
-         rType.fromString(parameters[3]);
-      if(parameters.size()>4)
-         fromDate = boost::posix_time::from_iso_string(parameters[4]);
+         fromDate = boost::posix_time::from_iso_string(parameters[3]);
       
-      std::vector< boost::shared_ptr<database::entities::CPluginEventLogger> > dvList = m_dataProvider->getPluginEventLoggerRequester()->getPluginEvents(pluginName, pluginVersion, rType, fromDate);
+      std::vector< boost::shared_ptr<database::entities::CPluginEventLogger> > dvList = m_dataProvider->getPluginEventLoggerRequester()->getPluginEvents(pluginName, pluginVersion, fromDate);
       shared::CDataContainer collection;
       collection.set(getRestKeyword(), dvList);
       return CResult::GenerateSuccess(collection);

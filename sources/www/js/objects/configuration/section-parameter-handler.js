@@ -88,7 +88,26 @@ function SectionParameterHandler(i18nContext, paramName, content, currentValue, 
  * @returns {string}
  */
 SectionParameterHandler.prototype.getDOMObject = function () {
-	
+
+   var iterator = window.markdownitForInline;
+   
+   var md = window.markdownit({
+     html: true,
+     breaks:true,
+    highlight: function (str, lang) {
+      if (lang && hljs.getLanguage(lang)) {
+       try {
+         return hljs.highlight(lang, str).value;
+       } catch (__) {}
+      }
+
+      return ''; // use external default escaping
+    }
+   })
+   .use(iterator, 'url_new_win', 'link_open', function (tokens, idx) {
+     tokens[idx].attrPush([ 'target', '_blank' ]);
+   });   
+
    var input = "<div class=\"control-group configuration-section well\" id=\"" + this.uuid + "\">" +
                   "<div class=\"configuration-header\" >";
 
@@ -126,15 +145,23 @@ SectionParameterHandler.prototype.getDOMObject = function () {
    }
    
    if (!isNullOrUndefined(this.paramName)){
+      
+   // Convert markdown for the designation field.
+      var result = md.renderInline( $.t(this.i18nContext + this.paramName + ".description", {defaultValue: ""}) );
+      
 	   input +=       "</div>" +
-					  "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.paramName + ".description\" >" +
+					  //"<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.paramName + ".description\" >" +
+                 "<div class=\"configuration-description\" >" + result +
 						 this.description +
 					  "</div>" +
 					  "<div id=\"" + this.containerUuid + "\" ";
    }
    else{
+      var result = md.renderInline( $.t(this.i18nContext + "description", {defaultValue: ""}) );
+      
 	   input +=       "</div>" +
-					  "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + "description\" >" +
+					  //"<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + "description\" >" +
+                 "<div class=\"configuration-description\" >" + result +
 						 this.description +
 					  "</div>" +
 					  "<div id=\"" + this.containerUuid + "\" ";	   
@@ -166,7 +193,7 @@ SectionParameterHandler.prototype.getDOMObject = function () {
  */
 SectionParameterHandler.prototype.applyScript = function () {
    var self = this;
-   
+   //TODO : remove
    if (self.enableWithCheckBox) {
       $("#" + self.selectorUuid).change(function () {
          if ($("#" + self.selectorUuid).prop("checked")) {
@@ -176,36 +203,6 @@ SectionParameterHandler.prototype.applyScript = function () {
          else {
             $("div#" + self.containerUuid).addClass("hidden").removeClass("has-warning");
             $("div#" + self.containerUuid).find("input,select,textarea").removeClass("enable-validation");
-         }
-      });
-   }
-
-   if (self.parentRadioButtonSectionName) {
-      $("#" + self.selectorUuid).change(function () {
-         if ($("input#" + self.selectorUuid + ":checked").val() == "on") {
-            //we hide all sections-content in the radioSection\n" +
-		var $parentSection = $("div#" + self.parentRadioButtonSectionName);
-            var radioSections = $parentSection.find(" > div.toggle-btn-grp > div.configuration-section > div.section-content");
-            radioSections.addClass("hidden");
-            $parentSection.removeClass("has-warning has-error");
-            $parentSection.find("input,select,textarea").removeClass("enable-validation");
-		//Disable all existing sub-buttons
-		$parentSection.find("button").attr("disabled", true);
-
-            //We save all items that are "required" with a special class name : required-for-validation
-            var $requiredFields = radioSections.find("[required]");
-            //we remove attr required and save it using class "required-for-validation"
-            $requiredFields.addClass("required-for-validation");
-            $requiredFields.removeAttr("required");
-
-            //we show current
-            var $activeContainer = $("div#" + self.containerUuid);
-            $activeContainer.removeClass("hidden");
-            $activeContainer.find("input,select,textarea").addClass("enable-validation");
-            //Enable all existing sub-buttons
-		$activeContainer.find("button").removeAttr("disabled");
-            //we restore required items
-            $activeContainer.find(".required-for-validation").attr("required", "required");
          }
       });
    }
@@ -228,6 +225,34 @@ SectionParameterHandler.prototype.locateInDOM = function () {
 SectionParameterHandler.prototype.getParamName = function() {
   return this.paramName;
 };
+
+/**
+ * Enable / Disbale the content of the comnfiguration item
+ */
+SectionParameterHandler.prototype.setEnabled = function (enabled) {
+    var self = this;
+
+    //we disable / enable the control of the radio or the checkbox
+    if (enabled) {
+            //if there is a radio we must hide container, if not we must hide all 
+            if (self.parentRadioButtonSectionName)
+                  $("#" + self.containerUuid).addClass("enable-validation").removeClass("hidden");
+            else
+                  $("#" + self.uuid).addClass("enable-validation").removeClass("hidden");
+
+    } else {
+            //if there is a radio we must show container, if not we must show all 
+            if (self.parentRadioButtonSectionName)
+                  $("#" + self.containerUuid).removeClass("enable-validation").addClass("hidden");
+            else
+                  $("#" + self.uuid).removeClass("enable-validation").addClass("hidden");
+    }
+
+    $.each(self.configurationHandlers, function (key, value) {
+       if ($.isFunction(value.setEnabled))
+          value.setEnabled(enabled);
+    });
+}
 
 /**
  * Get the current configuration in the form

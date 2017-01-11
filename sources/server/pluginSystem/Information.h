@@ -22,8 +22,7 @@ namespace pluginSystem
 
       // shared::plugin::IInformation implementation
       const std::string& getType() const override;
-      const std::string& getVersion() const override;
-      shared::versioning::EReleaseType getReleaseType() const override;
+      const shared::versioning::CVersion& getVersion() const override;
       const std::string& getAuthor() const override;
       const std::string& getUrl() const override;
       std::string getIdentity() const override;
@@ -49,12 +48,7 @@ namespace pluginSystem
       ///             Mainly, don't change the version format in the plugin life.
       ///             Recommended format is "xx.yy"
       //--------------------------------------------------------------
-      std::string m_version;
-
-      //--------------------------------------------------------------
-      /// \brief      plugin state
-      //--------------------------------------------------------------
-      shared::versioning::EReleaseType m_releaseType;
+      shared::versioning::CVersion m_version;
 
       //--------------------------------------------------------------
       /// \brief      plugin author

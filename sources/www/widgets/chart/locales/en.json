@@ -51,13 +51,17 @@
             "name": "Color of the plot",
             "description": "Permit to change the color of the plot"
           },
+			 "differentialDisplay": {
+		       "name": "Differential display",
+				 "description": "The display show the difference between each points (useful for cumulative rain measurement, ...)."
+			 },
           "PlotType": {
             "name": "Plot Type",
             "description": "choose beetween following plot type",
             "values": {
               "line": "Line",
               "bar": "Bar",
-              "arearange": "Line & Range"
+              "arearange": "Line & range"
             }
           }
         }

@@ -34,5 +34,3 @@ namespace shared
       virtual double altitude() const = 0;
    };
 } // namespace shared
-
-

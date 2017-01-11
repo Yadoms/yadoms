@@ -5,6 +5,11 @@
 #include <shared/DataContainer.h>
 #include "IDeviceCommand.h"
 #include "IExtraQuery.h"
+#include "IBindingQueryRequest.h"
+#include "IDeviceConfigurationSchemaRequest.h"
+#include "IManuallyDeviceCreationRequest.h"
+#include "ISetDeviceConfiguration.h"
+#include "IDeviceRemoved.h"
 #include "historization/Historizers.h"
 
 namespace shared
@@ -197,7 +202,7 @@ namespace shared
             ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185")
             ///\param    [in]    keyword           Keyword to declare for this device
             ///\param    [in]    details           Device details
-            ///\note Don't change existing device or keyword
+            ///\note Do nothing if device already exist
             //-----------------------------------------------------
             virtual void declareDevice(const std::string& device,
                                        const std::string& model,
@@ -210,7 +215,7 @@ namespace shared
             ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185")
             ///\param    [in]    keywords          List of keywords to declare for this device
             ///\param    [in]    details           Device details
-            ///\note Don't change existing device or keywords
+            ///\note Do nothing if device already exist
             //-----------------------------------------------------
             virtual void declareDevice(const std::string& device,
                                        const std::string& model,
@@ -312,7 +317,7 @@ namespace shared
             ///\param    [in]    device             The device name owner of the keyword
             ///\param    [in]    keyword            The keyword
             ///\param    [in]    details            The keyword details (JSON string, optional. Can be used to declare specific properties like min/max values)
-            ///\note Don't change existing keyword
+            ///\note Do nothing if keyword already exist
             //-----------------------------------------------------   
             virtual void declareKeyword(const std::string& device,
                                         boost::shared_ptr<const historization::IHistorizable> keyword,
@@ -323,7 +328,7 @@ namespace shared
             ///\param    [in]    device             The device name owner of the keyword
             ///\param    [in]    keywords           The keywords list
             ///\note For performance issue use this function to declare multiple keywords instead of callin several declareKeyword
-            ///\note Don't change existing keywords
+            ///\note Do nothing if keyword already exist
             //-----------------------------------------------------   
             virtual void declareKeywords(const std::string& device,
                                          const std::vector<boost::shared_ptr<const historization::IHistorizable>>& keywords) = 0;
@@ -435,7 +440,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Historize a list of new data
             ///\param    [in]    device            The device name
-            ///\param    [in]    datalist          The list of historizable data
+            ///\param    [in]    dataVect          The list of historizable data
             //-----------------------------------------------------    
             virtual void historizeData(const std::string& device,
                                        const std::vector<boost::shared_ptr<const historization::IHistorizable>>& dataVect) = 0;

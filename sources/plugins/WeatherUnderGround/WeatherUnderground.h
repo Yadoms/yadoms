@@ -1,9 +1,37 @@
 #pragma once
 #include "WUConfiguration.h"
 #include <plugin_cpp_api/IPlugin.h>
+#include "WUFactory.h"
+#include "Features/IFeature.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
+
+// Event IDs
+enum
+{
+   kEvtTimerRefreshWeatherConditions = yApi::IYPluginApi::kPluginFirstEventId, // Always start from shared::event::CEventHandler::kUserFirstId
+   kEvtTimerRefreshAstronomy,
+   kEvtTimerRefreshForecast10Days,
+   kEvtInitialization
+};
+
+//-----------------------------------------------------
+///\brief The plugin state
+//-----------------------------------------------------
+
+enum EWUPluginState
+{
+   kUndefined = 0,
+   kStop,
+   kInitializationError,
+   kQueryNotFound,
+   kKeyNotFound,
+   kupdateConfiguration,
+   kNoConnection,
+   kNoLocation,
+   kRunning
+};
 
 //--------------------------------------------------------------
 /// \brief	This class is the Weather Underground plugin
@@ -43,7 +71,13 @@ private:
    /// \param[in] event    event to send for retry
    /// \return if the sending is working properly
    //--------------------------------------------------------------
-   shared::CDataContainer SendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api, std::string url, int event, int &nbRetry);
+   shared::CDataContainer SendUrlRequest(boost::shared_ptr<yApi::IYPluginApi> api, const std::string url, const int event, int &nbRetry);
+
+   //--------------------------------------------------------------
+   /// \brief Manage the state of the plugin
+   /// \param[in] newState  the new state
+   //--------------------------------------------------------------
+   void setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, EWUPluginState newState);
 
    //--------------------------------------------------------------
    /// \brief	The plugin Name
@@ -56,8 +90,19 @@ private:
    CWUConfiguration m_configuration;
 
    //--------------------------------------------------------------
+   /// \brief	The factory of the plugin
+   //--------------------------------------------------------------
+   boost::shared_ptr<CWUFactory> m_factory;
+
+   //--------------------------------------------------------------
    /// \brief	The plugin state
    //--------------------------------------------------------------
-   bool m_runningState;
-};
+   EWUPluginState m_runningState;
 
+   //--------------------------------------------------------------
+   /// \brief	The features
+   //--------------------------------------------------------------
+   boost::shared_ptr<features::IFeature> weatherConditionsRequester;
+   boost::shared_ptr<features::IFeature> astronomyRequester;
+   boost::shared_ptr<features::IFeature> forecast10Days;
+};

@@ -18,8 +18,7 @@ namespace plugin_cpp_api
 
       // shared::plugin::information::IInformation implementation
       const std::string& getType() const override;
-      const std::string& getVersion() const override;
-      shared::versioning::EReleaseType getReleaseType() const override;
+      const shared::versioning::CVersion& getVersion() const override;
       const std::string& getAuthor() const override;
       const std::string& getUrl() const override;
       std::string getIdentity() const override;
@@ -34,6 +33,7 @@ namespace plugin_cpp_api
    private:
       boost::shared_ptr<const toPlugin::Information> m_buffer;
       const boost::filesystem::path m_path;
+      shared::versioning::CVersion m_version;
    };
 } // namespace plugin_cpp_api	
 

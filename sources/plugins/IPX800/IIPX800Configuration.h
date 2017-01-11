@@ -28,7 +28,7 @@ public:
 
    //--------------------------------------------------------------
    /// \brief      return if the password is activated
-   /// \return     the password
+   /// \return     if the password is activated
    //--------------------------------------------------------------
    virtual bool isPasswordActivated() const = 0;
 

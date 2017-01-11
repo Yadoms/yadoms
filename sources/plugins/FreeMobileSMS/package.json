@@ -1,7 +1,6 @@
 {
   "type": "freeMobileSms",
-  "version": "1.0.0",
-  "releaseType": "beta",
+  "version": "1.0.0-beta",
   "author": "Jean-Michel DECORET",
   "url": "https://github.com/Yadoms/yadoms/wiki/FreeMobileSMS",
   "credits": "",

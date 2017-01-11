@@ -6,6 +6,7 @@
 #pragma once
 
 #include "IQualifier.h"
+#include <shared/versioning/Version.h>
 
 namespace pluginSystem
 {
@@ -24,7 +25,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief	Constructor
       //--------------------------------------------------------------
-      CIdentityForQualifier(const std::string& name, const std::string& version, shared::versioning::EReleaseType releaseType);
+      CIdentityForQualifier(const std::string& name, const shared::versioning::CVersion& version);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -41,18 +42,11 @@ namespace pluginSystem
       /// \brief	   Version getter
       /// \return    Plugin version
       //--------------------------------------------------------------
-      const std::string& getVersion() const;
-
-      //--------------------------------------------------------------
-      /// \brief	   Release type getter
-      /// \return    Plugin release type
-      //--------------------------------------------------------------
-      shared::versioning::EReleaseType getReleaseType() const;
+      const shared::versioning::CVersion& getVersion() const;
 
    private:
       const std::string m_type;
-      const std::string m_version;
-      const shared::versioning::EReleaseType m_releaseType;
+      const shared::versioning::CVersion m_version;
    };
 
    //--------------------------------------------------------------

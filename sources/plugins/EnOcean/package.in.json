@@ -1,0 +1,462 @@
+{
+  "type": "enOcean",
+  "version": "0.0.1",
+  "releaseType": "beta",
+  "author": "Sébastien Gallou",
+  "url": "https://github.com/Yadoms/yadoms/",
+  "credits": "",
+  "supportedPlatforms": "all",
+  "configurationSchema": {
+    "SerialPort": {
+      "type": "enum",
+      "values": {
+        "__Binding__": {
+          "type": "system",
+          "query": "serialPorts"
+        }
+      }
+    }
+  },
+  "supportDeviceRemovedNotification": "true",
+  "deviceConfiguration": {
+    "staticConfigurationSchema": [
+      {
+        "models": [ "*" ],
+        "schema": {
+          "manufacturer": {
+            "type": "string"
+          },
+          "profile": {
+            "type": "comboSection",
+            "content": ""
+          }
+        }
+      }
+    ]
+  },
+  "specificProfilesConfigurations": {
+    "D2-01-04": {
+      "type": "section",
+      "content": {
+        "localControl": {
+          "name": "Local control",
+          "type": "enum",
+          "values": {
+            "enable": "enable",
+            "disable": "disable"
+          },
+          "defaultValue": "enable"
+        },
+        "taughtIn": {
+          "name": "Taught In",
+          "type": "enum",
+          "values": {
+            "allDevices": "All devices",
+            "yadomsOnly": "Yadoms only"
+          },
+          "defaultValue": "allDevices"
+        },
+        "dimTimer1": {
+          "name": "Dim timer 1",
+          "type": "decimal",
+          "minimumValue": "0.0",
+          "maximumValue": "7.5",
+          "precision": "1",
+          "defaultValue": "1.5"
+        },
+        "dimTimer2": {
+          "name": "Dim timer 2",
+          "type": "decimal",
+          "minimumValue": "0.0",
+          "maximumValue": "7.5",
+          "precision": "1",
+          "defaultValue": "3"
+        },
+        "dimTimer3": {
+          "name": "Dim timer 3",
+          "type": "decimal",
+          "minimumValue": "0.0",
+          "maximumValue": "7.5",
+          "precision": "1",
+          "defaultValue": "6"
+        }
+      }
+    },
+    "D2-01-05": {
+      "type": "section",
+      "content": {
+        "localControl": {
+          "name": "Local control",
+          "type": "enum",
+          "values": {
+            "enable": "enable",
+            "disable": "disable"
+          },
+          "defaultValue": "enable"
+        },
+        "taughtIn": {
+          "name": "Taught In",
+          "type": "enum",
+          "values": {
+            "allDevices": "All devices",
+            "yadomsOnly": "Yadoms only"
+          },
+          "defaultValue": "allDevices"
+        },
+        "userInterfaceMode": {
+          "name": "User Interface Mode",
+          "type": "enum",
+          "values": {
+            "dayMode": "Day (led on)",
+            "nightMode": "Night (led off)"
+          },
+          "defaultValue": "dayMode"
+        },
+        "defaultState": {
+          "name": "Default state",
+          "type": "enum",
+          "values": {
+            "off": "Off",
+            "on": "On",
+            "previousState": "Previous state",
+            "notUsed": "Not Used"
+          },
+          "defaultValue": "off"
+        },
+        "dimTimer1": {
+          "name": "Dim timer 1",
+          "type": "decimal",
+          "minimumValue": "0.0",
+          "maximumValue": "7.5",
+          "precision": "1",
+          "defaultValue": "1.5"
+        },
+        "dimTimer2": {
+          "name": "Dim timer 2",
+          "type": "decimal",
+          "minimumValue": "0.0",
+          "maximumValue": "7.5",
+          "precision": "1",
+          "defaultValue": "3"
+        },
+        "dimTimer3": {
+          "name": "Dim timer 3",
+          "type": "decimal",
+          "minimumValue": "0.0",
+          "maximumValue": "7.5",
+          "precision": "1",
+          "defaultValue": "6"
+        }
+      }
+    },
+    "D2-01-08": {
+      "type": "section",
+      "content": {
+        "localControl": {
+          "name": "Local control",
+          "type": "enum",
+          "values": {
+            "enable": "enable",
+            "disable": "disable"
+          },
+          "defaultValue": "enable"
+        },
+        "taughtIn": {
+          "name": "Taught In",
+          "type": "enum",
+          "values": {
+            "allDevices": "All devices",
+            "yadomsOnly": "Yadoms only"
+          },
+          "defaultValue": "allDevices"
+        },
+        "userInterfaceMode": {
+          "name": "User Interface Mode",
+          "type": "enum",
+          "values": {
+            "dayMode": "Day (led on)",
+            "nightMode": "Night (led off)"
+          },
+          "defaultValue": "dayMode"
+        },
+        "defaultState": {
+          "name": "Default state",
+          "type": "enum",
+          "values": {
+            "off": "Off",
+            "on": "On",
+            "previousState": "Previous state",
+            "notUsed": "Not Used"
+          },
+          "defaultValue": "off"
+        },
+        "minEnergyMeasureRefreshTime": {
+          "name": "Minimum refresh time",
+          "type": "int",
+          "minimumValue": "0",
+          "maximumValue": "255",
+          "defaultValue": "30"
+        },
+        "maxEnergyMeasureRefreshTime": {
+          "name": "Maximum refresh time",
+          "type": "int",
+          "minimumValue": "10",
+          "maximumValue": "2550",
+          "defaultValue": "600"
+        }
+      }
+    },
+    "D2-01-09": {
+      "type": "section",
+      "content": {
+        "taughtIn": {
+          "name": "Taught In",
+          "type": "enum",
+          "values": {
+            "allDevices": "All devices",
+            "yadomsOnly": "Yadoms only"
+          },
+          "defaultValue": "allDevices"
+        },
+        "defaultState": {
+          "name": "Default state",
+          "type": "enum",
+          "values": {
+            "off": "Off",
+            "on": "On",
+            "previousState": "Previous state",
+            "notUsed": "Not Used"
+          },
+          "defaultValue": "off"
+        },
+        "dimTimer1": {
+          "name": "Dim timer 1",
+          "type": "decimal",
+          "minimumValue": "0.0",
+          "maximumValue": "7.5",
+          "precision": "1",
+          "defaultValue": "1.5"
+        },
+        "dimTimer2": {
+          "name": "Dim timer 2",
+          "type": "decimal",
+          "minimumValue": "0.0",
+          "maximumValue": "7.5",
+          "precision": "1",
+          "defaultValue": "3"
+        },
+        "dimTimer3": {
+          "name": "Dim timer 3",
+          "type": "decimal",
+          "minimumValue": "0.0",
+          "maximumValue": "7.5",
+          "precision": "1",
+          "defaultValue": "6"
+        },
+        "minEnergyMeasureRefreshTime": {
+          "name": "Minimum refresh time",
+          "type": "int",
+          "minimumValue": "0",
+          "maximumValue": "255",
+          "defaultValue": "30"
+        },
+        "maxEnergyMeasureRefreshTime": {
+          "name": "Maximum refresh time",
+          "type": "int",
+          "minimumValue": "10",
+          "maximumValue": "2550",
+          "defaultValue": "600"
+        }
+      }
+    },
+    "D2-01-0A": {
+      "sameAs": "D2-01-08"
+    },
+    "D2-01-0B": {
+      "sameAs": "D2-01-08"
+    },
+    "D2-01-0C": {
+      "sameAs": "D2-01-08"
+    },
+    "D2-01-0D": {
+      "type": "section",
+      "content": {
+        "localControl": {
+          "name": "Local control",
+          "type": "enum",
+          "values": {
+            "enable": "enable",
+            "disable": "disable"
+          },
+          "defaultValue": "enable"
+        },
+        "taughtIn": {
+          "name": "Taught In",
+          "type": "enum",
+          "values": {
+            "allDevices": "All devices",
+            "yadomsOnly": "Yadoms only"
+          },
+          "defaultValue": "allDevices"
+        },
+        "userInterfaceMode": {
+          "name": "User Interface Mode",
+          "type": "enum",
+          "values": {
+            "dayMode": "Day (led on)",
+            "nightMode": "Night (led off)"
+          },
+          "defaultValue": "dayMode"
+        },
+        "defaultState": {
+          "name": "Default state",
+          "type": "enum",
+          "values": {
+            "off": "Off",
+            "on": "On",
+            "previousState": "Previous state",
+            "notUsed": "Not Used"
+          },
+          "defaultValue": "off"
+        }
+      }
+    },
+    "D2-01-0E": {
+      "type": "section",
+      "content": {
+        "localControl": {
+          "name": "Local control",
+          "type": "enum",
+          "values": {
+            "enable": "enable",
+            "disable": "disable"
+          },
+          "defaultValue": "enable"
+        },
+        "taughtIn": {
+          "name": "Taught In",
+          "type": "enum",
+          "values": {
+            "allDevices": "All devices",
+            "yadomsOnly": "Yadoms only"
+          },
+          "defaultValue": "allDevices"
+        },
+        "userInterfaceMode": {
+          "name": "User Interface Mode",
+          "type": "enum",
+          "values": {
+            "dayMode": "Day (led on)",
+            "nightMode": "Night (led off)"
+          },
+          "defaultValue": "dayMode"
+        },
+        "defaultState": {
+          "name": "Default state",
+          "type": "enum",
+          "values": {
+            "off": "Off",
+            "on": "On",
+            "previousState": "Previous state",
+            "notUsed": "Not Used"
+          },
+          "defaultValue": "off"
+        },
+        "minEnergyMeasureRefreshTime": {
+          "name": "Minimum refresh time",
+          "type": "int",
+          "minimumValue": "0",
+          "maximumValue": "255",
+          "defaultValue": "30"
+        },
+        "maxEnergyMeasureRefreshTime": {
+          "name": "Maximum refresh time",
+          "type": "int",
+          "minimumValue": "10",
+          "maximumValue": "2550",
+          "defaultValue": "600"
+        }
+      }
+    },
+    "D2-01-0F": {
+      "sameAs": "D2-01-0D"
+    },
+    "D2-01-12": {
+      "type": "section",
+      "content": {
+        "localControl": {
+          "name": "Local control",
+          "type": "enum",
+          "values": {
+            "enable": "enable",
+            "disable": "disable"
+          },
+          "defaultValue": "enable"
+        },
+        "taughtIn": {
+          "name": "Taught In",
+          "type": "enum",
+          "values": {
+            "allDevices": "All devices",
+            "yadomsOnly": "Yadoms only"
+          },
+          "defaultValue": "allDevices"
+        },
+        "userInterfaceMode": {
+          "name": "User Interface Mode",
+          "type": "enum",
+          "values": {
+            "dayMode": "Day (led on)",
+            "nightMode": "Night (led off)"
+          },
+          "defaultValue": "dayMode"
+        },
+        "defaultState": {
+          "name": "Default state",
+          "type": "enum",
+          "values": {
+            "off": "Off",
+            "on": "On",
+            "previousState": "Previous state",
+            "notUsed": "Not Used"
+          },
+          "defaultValue": "off"
+        },
+        "connectedSwitchsType": {
+          "name": "Connected switchs type",
+          "type": "enum",
+          "values": {
+            "switch": "Switch",
+            "pushButton": "Push button",
+            "autodetection": "Autodetect"
+          },
+          "defaultValue": "autodetection"
+        },
+        "switchingState": {
+          "name": "Switching behaviour",
+          "type": "enum",
+          "values": {
+            "tooggle": "Each change on switch toogles output",
+            "specific": "Specific ON/OFF positions"
+          }
+        },
+        "autoOffTimer": {
+          "name": "Auto-off timer",
+          "type": "decimal",
+          "minimumValue": "0.0",
+          "maximumValue": "6553.4",
+          "precision": "1",
+          "defaultValue": "0.0"
+        },
+        "delayRadioOffTimer": {
+          "name": "Radio-off delay",
+          "type": "decimal",
+          "minimumValue": "0.0",
+          "maximumValue": "6553.4",
+          "precision": "1",
+          "defaultValue": "0.0"
+        }
+      }
+    }
+  }
+}

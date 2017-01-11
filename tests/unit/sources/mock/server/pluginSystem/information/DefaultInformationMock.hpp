@@ -60,11 +60,16 @@ public:
    bool getSupportManuallyCreatedDevice() const override
    {
       return false;
+   } 
+   
+   bool getSupportDeviceRemovedNotification() const override
+   {
+      return false;
    }
 
-   shared::CDataContainer getPackage() const override
+   boost::shared_ptr<const shared::CDataContainer> getPackage() const override
    {
-      return shared::CDataContainer();
+      return boost::shared_ptr<const shared::CDataContainer>();
    }
 
    const boost::filesystem::path& getPath() const override

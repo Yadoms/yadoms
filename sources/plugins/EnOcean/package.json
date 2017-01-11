@@ -1,0 +1,1326 @@
+{
+  "type": "enOcean", 
+  "version": "0.0.1", 
+  "releaseType": "beta", 
+  "author": "Sébastien Gallou", 
+  "url": "https://github.com/Yadoms/yadoms/", 
+  "credits": "", 
+  "supportedPlatforms": "all", 
+  "configurationSchema": {
+    "SerialPort": {
+      "type": "enum", 
+      "values": {
+        "__Binding__": {
+          "type": "system", 
+          "query": "serialPorts"
+        }
+      }
+    }
+  }, 
+  "supportDeviceRemovedNotification": "true", 
+  "deviceConfiguration": {
+    "staticConfigurationSchema": [
+      {
+        "models": [
+          "*"
+        ], 
+        "schema": {
+          "manufacturer": {
+            "type": "string"
+          }, 
+          "profile": {
+            "type": "comboSection", 
+            "content": {
+              "A5-02-01": {
+                "name": "A5-02-01", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-02": {
+                "name": "A5-02-02", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-03": {
+                "name": "A5-02-03", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-04": {
+                "name": "A5-02-04", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-05": {
+                "name": "A5-02-05", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-06": {
+                "name": "A5-02-06", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-07": {
+                "name": "A5-02-07", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-08": {
+                "name": "A5-02-08", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-09": {
+                "name": "A5-02-09", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-0A": {
+                "name": "A5-02-0A", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-0B": {
+                "name": "A5-02-0B", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-10": {
+                "name": "A5-02-10", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-11": {
+                "name": "A5-02-11", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-12": {
+                "name": "A5-02-12", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-13": {
+                "name": "A5-02-13", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-14": {
+                "name": "A5-02-14", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-15": {
+                "name": "A5-02-15", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-16": {
+                "name": "A5-02-16", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-17": {
+                "name": "A5-02-17", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-18": {
+                "name": "A5-02-18", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-19": {
+                "name": "A5-02-19", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-1A": {
+                "name": "A5-02-1A", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-1B": {
+                "name": "A5-02-1B", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-20": {
+                "name": "A5-02-20", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-02-30": {
+                "name": "A5-02-30", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-04-01": {
+                "name": "A5-04-01", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-04-02": {
+                "name": "A5-04-02", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-04-03": {
+                "name": "A5-04-03", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-05-01": {
+                "name": "A5-05-01", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-06-01": {
+                "name": "A5-06-01", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-06-02": {
+                "name": "A5-06-02", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-06-03": {
+                "name": "A5-06-03", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-06-04": {
+                "name": "A5-06-04", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-06-05": {
+                "name": "A5-06-05", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-07-01": {
+                "name": "A5-07-01", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-07-02": {
+                "name": "A5-07-02", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-07-03": {
+                "name": "A5-07-03", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-08-01": {
+                "name": "A5-08-01", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-08-02": {
+                "name": "A5-08-02", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-08-03": {
+                "name": "A5-08-03", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-09-02": {
+                "name": "A5-09-02", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-09-04": {
+                "name": "A5-09-04", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-09-05": {
+                "name": "A5-09-05", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-09-07": {
+                "name": "A5-09-07", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-09-09": {
+                "name": "A5-09-09", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-09-0A": {
+                "name": "A5-09-0A", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-09-0B": {
+                "name": "A5-09-0B", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-01": {
+                "name": "A5-10-01", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-02": {
+                "name": "A5-10-02", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-03": {
+                "name": "A5-10-03", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-04": {
+                "name": "A5-10-04", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-05": {
+                "name": "A5-10-05", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-06": {
+                "name": "A5-10-06", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-07": {
+                "name": "A5-10-07", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-08": {
+                "name": "A5-10-08", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-09": {
+                "name": "A5-10-09", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-0A": {
+                "name": "A5-10-0A", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-0B": {
+                "name": "A5-10-0B", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-0C": {
+                "name": "A5-10-0C", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-0D": {
+                "name": "A5-10-0D", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-10": {
+                "name": "A5-10-10", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-11": {
+                "name": "A5-10-11", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-12": {
+                "name": "A5-10-12", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-13": {
+                "name": "A5-10-13", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-14": {
+                "name": "A5-10-14", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-15": {
+                "name": "A5-10-15", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-16": {
+                "name": "A5-10-16", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-17": {
+                "name": "A5-10-17", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-18": {
+                "name": "A5-10-18", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-19": {
+                "name": "A5-10-19", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-1A": {
+                "name": "A5-10-1A", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-1B": {
+                "name": "A5-10-1B", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-1C": {
+                "name": "A5-10-1C", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-1D": {
+                "name": "A5-10-1D", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-1F": {
+                "name": "A5-10-1F", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-20": {
+                "name": "A5-10-20", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-21": {
+                "name": "A5-10-21", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-22": {
+                "name": "A5-10-22", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-10-23": {
+                "name": "A5-10-23", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-11-01": {
+                "name": "A5-11-01", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-11-02": {
+                "name": "A5-11-02", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-11-03": {
+                "name": "A5-11-03", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-11-04": {
+                "name": "A5-11-04", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-12-00": {
+                "name": "A5-12-00", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-12-01": {
+                "name": "A5-12-01", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-12-02": {
+                "name": "A5-12-02", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-12-03": {
+                "name": "A5-12-03", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-12-04": {
+                "name": "A5-12-04", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-12-05": {
+                "name": "A5-12-05", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-12-10": {
+                "name": "A5-12-10", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-13-01": {
+                "name": "A5-13-01", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-13-02": {
+                "name": "A5-13-02", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-13-03": {
+                "name": "A5-13-03", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-13-04": {
+                "name": "A5-13-04", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-13-07": {
+                "name": "A5-13-07", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-13-08": {
+                "name": "A5-13-08", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-13-10": {
+                "name": "A5-13-10", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-14-01": {
+                "name": "A5-14-01", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-14-02": {
+                "name": "A5-14-02", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-14-03": {
+                "name": "A5-14-03", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-14-04": {
+                "name": "A5-14-04", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-14-05": {
+                "name": "A5-14-05", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-14-06": {
+                "name": "A5-14-06", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-20-12": {
+                "name": "A5-20-12", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-30-02": {
+                "name": "A5-30-02", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-30-03": {
+                "name": "A5-30-03", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-30-04": {
+                "name": "A5-30-04", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-30-05": {
+                "name": "A5-30-05", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-37-01": {
+                "name": "A5-37-01", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "A5-38-09": {
+                "name": "A5-38-09", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "D2-01-00": {
+                "name": "D2-01-00", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "D2-01-01": {
+                "name": "D2-01-01", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "D2-01-02": {
+                "name": "D2-01-02", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "D2-01-03": {
+                "name": "D2-01-03", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "D2-01-04": {
+                "name": "D2-01-04", 
+                "type": "section", 
+                "content": {
+                  "localControl": {
+                    "name": "Local control", 
+                    "type": "enum", 
+                    "values": {
+                      "enable": "enable", 
+                      "disable": "disable"
+                    }, 
+                    "defaultValue": "enable"
+                  }, 
+                  "taughtIn": {
+                    "name": "Taught In", 
+                    "type": "enum", 
+                    "values": {
+                      "allDevices": "All devices", 
+                      "yadomsOnly": "Yadoms only"
+                    }, 
+                    "defaultValue": "allDevices"
+                  }, 
+                  "dimTimer1": {
+                    "name": "Dim timer 1", 
+                    "type": "decimal", 
+                    "minimumValue": "0.0", 
+                    "maximumValue": "7.5", 
+                    "precision": "1", 
+                    "defaultValue": "1.5"
+                  }, 
+                  "dimTimer2": {
+                    "name": "Dim timer 2", 
+                    "type": "decimal", 
+                    "minimumValue": "0.0", 
+                    "maximumValue": "7.5", 
+                    "precision": "1", 
+                    "defaultValue": "3"
+                  }, 
+                  "dimTimer3": {
+                    "name": "Dim timer 3", 
+                    "type": "decimal", 
+                    "minimumValue": "0.0", 
+                    "maximumValue": "7.5", 
+                    "precision": "1", 
+                    "defaultValue": "6"
+                  }
+                }
+              }, 
+              "D2-01-05": {
+                "name": "D2-01-05", 
+                "type": "section", 
+                "content": {
+                  "localControl": {
+                    "name": "Local control", 
+                    "type": "enum", 
+                    "values": {
+                      "enable": "enable", 
+                      "disable": "disable"
+                    }, 
+                    "defaultValue": "enable"
+                  }, 
+                  "taughtIn": {
+                    "name": "Taught In", 
+                    "type": "enum", 
+                    "values": {
+                      "allDevices": "All devices", 
+                      "yadomsOnly": "Yadoms only"
+                    }, 
+                    "defaultValue": "allDevices"
+                  }, 
+                  "userInterfaceMode": {
+                    "name": "User Interface Mode", 
+                    "type": "enum", 
+                    "values": {
+                      "dayMode": "Day (led on)", 
+                      "nightMode": "Night (led off)"
+                    }, 
+                    "defaultValue": "dayMode"
+                  }, 
+                  "defaultState": {
+                    "name": "Default state", 
+                    "type": "enum", 
+                    "values": {
+                      "off": "Off", 
+                      "on": "On", 
+                      "previousState": "Previous state", 
+                      "notUsed": "Not Used"
+                    }, 
+                    "defaultValue": "off"
+                  }, 
+                  "dimTimer1": {
+                    "name": "Dim timer 1", 
+                    "type": "decimal", 
+                    "minimumValue": "0.0", 
+                    "maximumValue": "7.5", 
+                    "precision": "1", 
+                    "defaultValue": "1.5"
+                  }, 
+                  "dimTimer2": {
+                    "name": "Dim timer 2", 
+                    "type": "decimal", 
+                    "minimumValue": "0.0", 
+                    "maximumValue": "7.5", 
+                    "precision": "1", 
+                    "defaultValue": "3"
+                  }, 
+                  "dimTimer3": {
+                    "name": "Dim timer 3", 
+                    "type": "decimal", 
+                    "minimumValue": "0.0", 
+                    "maximumValue": "7.5", 
+                    "precision": "1", 
+                    "defaultValue": "6"
+                  }
+                }
+              }, 
+              "D2-01-06": {
+                "name": "D2-01-06", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "D2-01-07": {
+                "name": "D2-01-07", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "D2-01-08": {
+                "name": "D2-01-08", 
+                "type": "section", 
+                "content": {
+                  "localControl": {
+                    "name": "Local control", 
+                    "type": "enum", 
+                    "values": {
+                      "enable": "enable", 
+                      "disable": "disable"
+                    }, 
+                    "defaultValue": "enable"
+                  }, 
+                  "taughtIn": {
+                    "name": "Taught In", 
+                    "type": "enum", 
+                    "values": {
+                      "allDevices": "All devices", 
+                      "yadomsOnly": "Yadoms only"
+                    }, 
+                    "defaultValue": "allDevices"
+                  }, 
+                  "userInterfaceMode": {
+                    "name": "User Interface Mode", 
+                    "type": "enum", 
+                    "values": {
+                      "dayMode": "Day (led on)", 
+                      "nightMode": "Night (led off)"
+                    }, 
+                    "defaultValue": "dayMode"
+                  }, 
+                  "defaultState": {
+                    "name": "Default state", 
+                    "type": "enum", 
+                    "values": {
+                      "off": "Off", 
+                      "on": "On", 
+                      "previousState": "Previous state", 
+                      "notUsed": "Not Used"
+                    }, 
+                    "defaultValue": "off"
+                  }, 
+                  "minEnergyMeasureRefreshTime": {
+                    "name": "Minimum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "0", 
+                    "maximumValue": "255", 
+                    "defaultValue": "30"
+                  }, 
+                  "maxEnergyMeasureRefreshTime": {
+                    "name": "Maximum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "10", 
+                    "maximumValue": "2550", 
+                    "defaultValue": "600"
+                  }
+                }
+              }, 
+              "D2-01-09": {
+                "name": "D2-01-09", 
+                "type": "section", 
+                "content": {
+                  "taughtIn": {
+                    "name": "Taught In", 
+                    "type": "enum", 
+                    "values": {
+                      "allDevices": "All devices", 
+                      "yadomsOnly": "Yadoms only"
+                    }, 
+                    "defaultValue": "allDevices"
+                  }, 
+                  "defaultState": {
+                    "name": "Default state", 
+                    "type": "enum", 
+                    "values": {
+                      "off": "Off", 
+                      "on": "On", 
+                      "previousState": "Previous state", 
+                      "notUsed": "Not Used"
+                    }, 
+                    "defaultValue": "off"
+                  }, 
+                  "dimTimer1": {
+                    "name": "Dim timer 1", 
+                    "type": "decimal", 
+                    "minimumValue": "0.0", 
+                    "maximumValue": "7.5", 
+                    "precision": "1", 
+                    "defaultValue": "1.5"
+                  }, 
+                  "dimTimer2": {
+                    "name": "Dim timer 2", 
+                    "type": "decimal", 
+                    "minimumValue": "0.0", 
+                    "maximumValue": "7.5", 
+                    "precision": "1", 
+                    "defaultValue": "3"
+                  }, 
+                  "dimTimer3": {
+                    "name": "Dim timer 3", 
+                    "type": "decimal", 
+                    "minimumValue": "0.0", 
+                    "maximumValue": "7.5", 
+                    "precision": "1", 
+                    "defaultValue": "6"
+                  }, 
+                  "minEnergyMeasureRefreshTime": {
+                    "name": "Minimum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "0", 
+                    "maximumValue": "255", 
+                    "defaultValue": "30"
+                  }, 
+                  "maxEnergyMeasureRefreshTime": {
+                    "name": "Maximum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "10", 
+                    "maximumValue": "2550", 
+                    "defaultValue": "600"
+                  }
+                }
+              }, 
+              "D2-01-0A": {
+                "name": "D2-01-0A", 
+                "type": "section", 
+                "content": {
+                  "localControl": {
+                    "name": "Local control", 
+                    "type": "enum", 
+                    "values": {
+                      "enable": "enable", 
+                      "disable": "disable"
+                    }, 
+                    "defaultValue": "enable"
+                  }, 
+                  "taughtIn": {
+                    "name": "Taught In", 
+                    "type": "enum", 
+                    "values": {
+                      "allDevices": "All devices", 
+                      "yadomsOnly": "Yadoms only"
+                    }, 
+                    "defaultValue": "allDevices"
+                  }, 
+                  "userInterfaceMode": {
+                    "name": "User Interface Mode", 
+                    "type": "enum", 
+                    "values": {
+                      "dayMode": "Day (led on)", 
+                      "nightMode": "Night (led off)"
+                    }, 
+                    "defaultValue": "dayMode"
+                  }, 
+                  "defaultState": {
+                    "name": "Default state", 
+                    "type": "enum", 
+                    "values": {
+                      "off": "Off", 
+                      "on": "On", 
+                      "previousState": "Previous state", 
+                      "notUsed": "Not Used"
+                    }, 
+                    "defaultValue": "off"
+                  }, 
+                  "minEnergyMeasureRefreshTime": {
+                    "name": "Minimum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "0", 
+                    "maximumValue": "255", 
+                    "defaultValue": "30"
+                  }, 
+                  "maxEnergyMeasureRefreshTime": {
+                    "name": "Maximum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "10", 
+                    "maximumValue": "2550", 
+                    "defaultValue": "600"
+                  }
+                }
+              }, 
+              "D2-01-0B": {
+                "name": "D2-01-0B", 
+                "type": "section", 
+                "content": {
+                  "localControl": {
+                    "name": "Local control", 
+                    "type": "enum", 
+                    "values": {
+                      "enable": "enable", 
+                      "disable": "disable"
+                    }, 
+                    "defaultValue": "enable"
+                  }, 
+                  "taughtIn": {
+                    "name": "Taught In", 
+                    "type": "enum", 
+                    "values": {
+                      "allDevices": "All devices", 
+                      "yadomsOnly": "Yadoms only"
+                    }, 
+                    "defaultValue": "allDevices"
+                  }, 
+                  "userInterfaceMode": {
+                    "name": "User Interface Mode", 
+                    "type": "enum", 
+                    "values": {
+                      "dayMode": "Day (led on)", 
+                      "nightMode": "Night (led off)"
+                    }, 
+                    "defaultValue": "dayMode"
+                  }, 
+                  "defaultState": {
+                    "name": "Default state", 
+                    "type": "enum", 
+                    "values": {
+                      "off": "Off", 
+                      "on": "On", 
+                      "previousState": "Previous state", 
+                      "notUsed": "Not Used"
+                    }, 
+                    "defaultValue": "off"
+                  }, 
+                  "minEnergyMeasureRefreshTime": {
+                    "name": "Minimum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "0", 
+                    "maximumValue": "255", 
+                    "defaultValue": "30"
+                  }, 
+                  "maxEnergyMeasureRefreshTime": {
+                    "name": "Maximum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "10", 
+                    "maximumValue": "2550", 
+                    "defaultValue": "600"
+                  }
+                }
+              }, 
+              "D2-01-0C": {
+                "name": "D2-01-0C", 
+                "type": "section", 
+                "content": {
+                  "localControl": {
+                    "name": "Local control", 
+                    "type": "enum", 
+                    "values": {
+                      "enable": "enable", 
+                      "disable": "disable"
+                    }, 
+                    "defaultValue": "enable"
+                  }, 
+                  "taughtIn": {
+                    "name": "Taught In", 
+                    "type": "enum", 
+                    "values": {
+                      "allDevices": "All devices", 
+                      "yadomsOnly": "Yadoms only"
+                    }, 
+                    "defaultValue": "allDevices"
+                  }, 
+                  "userInterfaceMode": {
+                    "name": "User Interface Mode", 
+                    "type": "enum", 
+                    "values": {
+                      "dayMode": "Day (led on)", 
+                      "nightMode": "Night (led off)"
+                    }, 
+                    "defaultValue": "dayMode"
+                  }, 
+                  "defaultState": {
+                    "name": "Default state", 
+                    "type": "enum", 
+                    "values": {
+                      "off": "Off", 
+                      "on": "On", 
+                      "previousState": "Previous state", 
+                      "notUsed": "Not Used"
+                    }, 
+                    "defaultValue": "off"
+                  }, 
+                  "minEnergyMeasureRefreshTime": {
+                    "name": "Minimum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "0", 
+                    "maximumValue": "255", 
+                    "defaultValue": "30"
+                  }, 
+                  "maxEnergyMeasureRefreshTime": {
+                    "name": "Maximum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "10", 
+                    "maximumValue": "2550", 
+                    "defaultValue": "600"
+                  }
+                }
+              }, 
+              "D2-01-0D": {
+                "name": "D2-01-0D", 
+                "type": "section", 
+                "content": {
+                  "localControl": {
+                    "name": "Local control", 
+                    "type": "enum", 
+                    "values": {
+                      "enable": "enable", 
+                      "disable": "disable"
+                    }, 
+                    "defaultValue": "enable"
+                  }, 
+                  "taughtIn": {
+                    "name": "Taught In", 
+                    "type": "enum", 
+                    "values": {
+                      "allDevices": "All devices", 
+                      "yadomsOnly": "Yadoms only"
+                    }, 
+                    "defaultValue": "allDevices"
+                  }, 
+                  "userInterfaceMode": {
+                    "name": "User Interface Mode", 
+                    "type": "enum", 
+                    "values": {
+                      "dayMode": "Day (led on)", 
+                      "nightMode": "Night (led off)"
+                    }, 
+                    "defaultValue": "dayMode"
+                  }, 
+                  "defaultState": {
+                    "name": "Default state", 
+                    "type": "enum", 
+                    "values": {
+                      "off": "Off", 
+                      "on": "On", 
+                      "previousState": "Previous state", 
+                      "notUsed": "Not Used"
+                    }, 
+                    "defaultValue": "off"
+                  }
+                }
+              }, 
+              "D2-01-0E": {
+                "name": "D2-01-0E", 
+                "type": "section", 
+                "content": {
+                  "localControl": {
+                    "name": "Local control", 
+                    "type": "enum", 
+                    "values": {
+                      "enable": "enable", 
+                      "disable": "disable"
+                    }, 
+                    "defaultValue": "enable"
+                  }, 
+                  "taughtIn": {
+                    "name": "Taught In", 
+                    "type": "enum", 
+                    "values": {
+                      "allDevices": "All devices", 
+                      "yadomsOnly": "Yadoms only"
+                    }, 
+                    "defaultValue": "allDevices"
+                  }, 
+                  "userInterfaceMode": {
+                    "name": "User Interface Mode", 
+                    "type": "enum", 
+                    "values": {
+                      "dayMode": "Day (led on)", 
+                      "nightMode": "Night (led off)"
+                    }, 
+                    "defaultValue": "dayMode"
+                  }, 
+                  "defaultState": {
+                    "name": "Default state", 
+                    "type": "enum", 
+                    "values": {
+                      "off": "Off", 
+                      "on": "On", 
+                      "previousState": "Previous state", 
+                      "notUsed": "Not Used"
+                    }, 
+                    "defaultValue": "off"
+                  }, 
+                  "minEnergyMeasureRefreshTime": {
+                    "name": "Minimum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "0", 
+                    "maximumValue": "255", 
+                    "defaultValue": "30"
+                  }, 
+                  "maxEnergyMeasureRefreshTime": {
+                    "name": "Maximum refresh time", 
+                    "type": "int", 
+                    "minimumValue": "10", 
+                    "maximumValue": "2550", 
+                    "defaultValue": "600"
+                  }
+                }
+              }, 
+              "D2-01-0F": {
+                "name": "D2-01-0F", 
+                "type": "section", 
+                "content": {
+                  "localControl": {
+                    "name": "Local control", 
+                    "type": "enum", 
+                    "values": {
+                      "enable": "enable", 
+                      "disable": "disable"
+                    }, 
+                    "defaultValue": "enable"
+                  }, 
+                  "taughtIn": {
+                    "name": "Taught In", 
+                    "type": "enum", 
+                    "values": {
+                      "allDevices": "All devices", 
+                      "yadomsOnly": "Yadoms only"
+                    }, 
+                    "defaultValue": "allDevices"
+                  }, 
+                  "userInterfaceMode": {
+                    "name": "User Interface Mode", 
+                    "type": "enum", 
+                    "values": {
+                      "dayMode": "Day (led on)", 
+                      "nightMode": "Night (led off)"
+                    }, 
+                    "defaultValue": "dayMode"
+                  }, 
+                  "defaultState": {
+                    "name": "Default state", 
+                    "type": "enum", 
+                    "values": {
+                      "off": "Off", 
+                      "on": "On", 
+                      "previousState": "Previous state", 
+                      "notUsed": "Not Used"
+                    }, 
+                    "defaultValue": "off"
+                  }
+                }
+              }, 
+              "D2-01-10": {
+                "name": "D2-01-10", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "D2-01-11": {
+                "name": "D2-01-11", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "D2-01-12": {
+                "name": "D2-01-12", 
+                "type": "section", 
+                "content": {
+                  "localControl": {
+                    "name": "Local control", 
+                    "type": "enum", 
+                    "values": {
+                      "enable": "enable", 
+                      "disable": "disable"
+                    }, 
+                    "defaultValue": "enable"
+                  }, 
+                  "taughtIn": {
+                    "name": "Taught In", 
+                    "type": "enum", 
+                    "values": {
+                      "allDevices": "All devices", 
+                      "yadomsOnly": "Yadoms only"
+                    }, 
+                    "defaultValue": "allDevices"
+                  }, 
+                  "userInterfaceMode": {
+                    "name": "User Interface Mode", 
+                    "type": "enum", 
+                    "values": {
+                      "dayMode": "Day (led on)", 
+                      "nightMode": "Night (led off)"
+                    }, 
+                    "defaultValue": "dayMode"
+                  }, 
+                  "defaultState": {
+                    "name": "Default state", 
+                    "type": "enum", 
+                    "values": {
+                      "off": "Off", 
+                      "on": "On", 
+                      "previousState": "Previous state", 
+                      "notUsed": "Not Used"
+                    }, 
+                    "defaultValue": "off"
+                  }, 
+                  "connectedSwitchsType": {
+                    "name": "Connected switchs type", 
+                    "type": "enum", 
+                    "values": {
+                      "switch": "Switch", 
+                      "pushButton": "Push button", 
+                      "autodetection": "Autodetect"
+                    }, 
+                    "defaultValue": "autodetection"
+                  }, 
+                  "switchingState": {
+                    "name": "Switching behaviour", 
+                    "type": "enum", 
+                    "values": {
+                      "tooggle": "Each change on switch toogles output", 
+                      "specific": "Specific ON/OFF positions"
+                    }
+                  }, 
+                  "autoOffTimer": {
+                    "name": "Auto-off timer", 
+                    "type": "decimal", 
+                    "minimumValue": "0.0", 
+                    "maximumValue": "6553.4", 
+                    "precision": "1", 
+                    "defaultValue": "0.0"
+                  }, 
+                  "delayRadioOffTimer": {
+                    "name": "Radio-off delay", 
+                    "type": "decimal", 
+                    "minimumValue": "0.0", 
+                    "maximumValue": "6553.4", 
+                    "precision": "1", 
+                    "defaultValue": "0.0"
+                  }
+                }
+              }, 
+              "D2-03-20": {
+                "name": "D2-03-20", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "D2-04-00": {
+                "name": "D2-04-00", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "D2-32-00": {
+                "name": "D2-32-00", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "D2-32-01": {
+                "name": "D2-32-01", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "D2-32-02": {
+                "name": "D2-32-02", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "D2-40-00": {
+                "name": "D2-40-00", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "D2-40-01": {
+                "name": "D2-40-01", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "D5-00-01": {
+                "name": "D5-00-01", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "F6-02-01": {
+                "name": "F6-02-01", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "F6-02-02": {
+                "name": "F6-02-02", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "F6-02-04": {
+                "name": "F6-02-04", 
+                "type": "section", 
+                "content": ""
+              }, 
+              "F6-04-02": {
+                "name": "F6-04-02", 
+                "type": "section", 
+                "content": ""
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

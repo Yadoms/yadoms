@@ -261,6 +261,15 @@ namespace shared
 
 
       //--------------------------------------------------------------
+      /// \brief	    Get current parameter key name
+      /// \return     The parameter key name
+      /// \throw      shared::exception::COutOfRange if parameter can not be converted
+      /// \throw      shared::exception::CInvalidParameter if parameter is not found
+      //--------------------------------------------------------------
+      std::string getKey() const;
+
+
+      //--------------------------------------------------------------
       //
       //
       //
@@ -311,6 +320,27 @@ namespace shared
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       std::map<std::string, std::string> getAsMap(const std::string& parameterName = std::string(), const char pathChar = '.') const;
+
+
+      //--------------------------------------------------------------
+      /// \brief	    Get parameter sub-keys as vector<string>
+      /// \param [in] parameterName    Name of the parameter
+      /// \return     The parameter value
+      /// \throw      shared::exception::COutOfRange if parameter can not be converted
+      /// \throw      shared::exception::CInvalidParameter if parameter is not found
+      //--------------------------------------------------------------
+      std::vector<std::string> getKeys(const std::string& parameterName = std::string(), const char pathChar = '.') const;
+
+
+      //--------------------------------------------------------------
+      /// \brief	    Find a sub-parameter with criteria
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] whereFct         Criteria : lambda must returns true if item is found
+      /// \return     The found parameter
+      /// \throw      shared::exception::CEmptyResutl if no parameter matching criteria was found
+      /// \throw      shared::exception::CInvalidParameter if parameter is not found
+      //--------------------------------------------------------------
+      CDataContainer find(const std::string& parameterName, boost::function<bool(const CDataContainer&)> whereFct, const char pathChar = '.') const;
 
       //--------------------------------------------------------------
       //

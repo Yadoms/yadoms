@@ -179,6 +179,8 @@ set(SPECIFIC_HISTORIZERS_SOURCES
    rfxcomMessages/specificHistorizers/RemoteMedionHistorizer.cpp
    rfxcomMessages/specificHistorizers/RemotePCHistorizer.h
    rfxcomMessages/specificHistorizers/RemotePCHistorizer.cpp
+   rfxcomMessages/specificHistorizers/TeleInfoStatus.h
+   rfxcomMessages/specificHistorizers/TeleInfoStatus.cpp   
 )
 
 set(RFXCOM_SOURCES

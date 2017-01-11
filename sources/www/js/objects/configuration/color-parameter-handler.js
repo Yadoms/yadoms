@@ -73,6 +73,20 @@ ColorParameterHandler.prototype.getParamName = function() {
 };
 
 /**
+ * Enable / Disbale the content of the configuration item
+ */
+ColorParameterHandler.prototype.setEnabled = function (enabled) {
+    var self = this;
+    if (enabled) {
+            $("#" + self.uuid + " > input").addClass("enable-validation");
+            $("div#" + this.uuid).colorpicker('enable');
+    } else {
+            $("#" + self.uuid + " > input").removeClass("enable-validation");
+            $("div#" + this.uuid).colorpicker('disable');
+    }
+}
+
+/**
  * Get the current configuration in the form
  * @returns {string}
  */

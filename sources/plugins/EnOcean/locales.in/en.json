@@ -1,0 +1,314 @@
+{
+  "name": "EnOcean",
+  "description": "EnOcean devices support",
+  "configurationSchema": {
+    "SerialPort": {
+      "name": "Serial port",
+      "description": "The (virtual) serial port connected to the EnOcean USB stick"
+    }
+  },
+  "deviceConfiguration": {
+    "manufacturer": {
+      "name": "Manufacturer",
+      "description": "Enter here the manufacturer of your device"
+    },
+    "model": {
+      "name": "Model",
+      "description": "Enter here the model of your device"
+    },
+    "profile": {
+      "name": "Profile",
+      "description": "Select the device profile, normaly provided on the device label or manual"
+    }
+  },
+  "customLabels": {
+    "pluginState": {
+      "connecting": "Connecting...",
+      "connectionFailed": "Connection failed, will retry in a while...",
+      "updateConfiguration": "Configuration updating..."
+    }
+  },
+  "specificProfilesConfigurations": {
+    "D2-01-04": {
+      "content": {
+        "localControl": {
+          "name": "Local control",
+          "values": {
+            "enable": "enable",
+            "disable": "disable"
+          }
+        },
+        "taughtIn": {
+          "name": "Taught In",
+          "values": {
+            "allDevices": "All devices",
+            "yadomsOnly": "Yadoms only"
+          }
+        },
+        "dimTimer1": {
+          "name": "Dim timer 1 (seconds), by step of 0.5s (0.5 to 7.5s). 0 to disable."
+        },
+        "dimTimer2": {
+          "name": "Dim timer 2 (seconds), by step of 0.5s (0.5 to 7.5s). 0 to disable."
+        },
+        "dimTimer3": {
+          "name": "Dim timer 3 (seconds), by step of 0.5s (0.5 to 7.5s). 0 to disable."
+        }
+      }
+    },
+    "D2-01-05": {
+      "content": {
+        "localControl": {
+          "name": "Local control",
+          "values": {
+            "enable": "enable",
+            "disable": "disable"
+          }
+        },
+        "taughtIn": {
+          "name": "Taught In",
+          "values": {
+            "allDevices": "All devices",
+            "yadomsOnly": "Yadoms only"
+          }
+        },
+        "userInterfaceMode": {
+          "name": "User Interface Mode",
+          "values": {
+            "dayMode": "Day (led on)",
+            "nightMode": "Night (led off)"
+          }
+        },
+        "defaultState": {
+          "name": "Default state",
+          "values": {
+            "off": "Off",
+            "on": "On",
+            "previousState": "Previous state",
+            "notUsed": "Not Used"
+          }
+        },
+        "dimTimer1": {
+          "name": "Dim timer 1 (seconds), by step of 0.5s (0.5 to 7.5s). 0 to disable."
+        },
+        "dimTimer2": {
+          "name": "Dim timer 2 (seconds), by step of 0.5s (0.5 to 7.5s). 0 to disable."
+        },
+        "dimTimer3": {
+          "name": "Dim timer 3 (seconds), by step of 0.5s (0.5 to 7.5s). 0 to disable."
+        }
+      }
+    },
+    "D2-01-08": {
+      "content": {
+        "localControl": {
+          "name": "Local control",
+          "values": {
+            "enable": "enable",
+            "disable": "disable"
+          }
+        },
+        "taughtIn": {
+          "name": "Taught In",
+          "values": {
+            "allDevices": "All devices",
+            "yadomsOnly": "Yadoms only"
+          }
+        },
+        "userInterfaceMode": {
+          "name": "User Interface Mode",
+          "values": {
+            "dayMode": "Day (led on)",
+            "nightMode": "Night (led off)"
+          }
+        },
+        "defaultState": {
+          "name": "Default state",
+          "values": {
+            "off": "Off",
+            "on": "On",
+            "previousState": "Previous state",
+            "notUsed": "Not Used"
+          }
+        },
+        "minEnergyMeasureRefreshTime": {
+          "name": "Energy measure minimum refresh time (seconds), must be under maximum refresh time"
+        },
+        "maxEnergyMeasureRefreshTime": {
+          "name": "Energy measure maximum refresh time (seconds), must be over minimum refresh time"
+        }
+      }
+    },
+    "D2-01-09": {
+      "content": {
+        "taughtIn": {
+          "name": "Taught In",
+          "values": {
+            "allDevices": "All devices",
+            "yadomsOnly": "Yadoms only"
+          }
+        },
+        "defaultState": {
+          "name": "Default state",
+          "values": {
+            "off": "Off",
+            "on": "On",
+            "previousState": "Previous state",
+            "notUsed": "Not Used"
+          }
+        },
+        "dimTimer1": {
+          "name": "Dim timer 1 (seconds), by step of 0.5s (0.5 to 7.5s). 0 to disable."
+        },
+        "dimTimer2": {
+          "name": "Dim timer 2 (seconds), by step of 0.5s (0.5 to 7.5s). 0 to disable."
+        },
+        "dimTimer3": {
+          "name": "Dim timer 3 (seconds), by step of 0.5s (0.5 to 7.5s). 0 to disable."
+        }
+      }
+    },
+    "D2-01-0A": {
+      "sameAs": "D2-01-08"
+    },
+    "D2-01-0B": {
+      "sameAs": "D2-01-08"
+    },
+    "D2-01-0C": {
+      "sameAs": "D2-01-08"
+    },
+    "D2-01-0D": {
+      "content": {
+        "localControl": {
+          "name": "Local control",
+          "values": {
+            "enable": "enable",
+            "disable": "disable"
+          }
+        },
+        "taughtIn": {
+          "name": "Taught In",
+          "values": {
+            "allDevices": "All devices",
+            "yadomsOnly": "Yadoms only"
+          }
+        },
+        "userInterfaceMode": {
+          "name": "User Interface Mode",
+          "values": {
+            "dayMode": "Day (led on)",
+            "nightMode": "Night (led off)"
+          }
+        },
+        "defaultState": {
+          "name": "Default state",
+          "values": {
+            "off": "Off",
+            "on": "On",
+            "previousState": "Previous state",
+            "notUsed": "Not Used"
+          }
+        }
+      }
+    },
+    "D2-01-0E": {
+      "content": {
+        "localControl": {
+          "name": "Local control",
+          "values": {
+            "enable": "enable",
+            "disable": "disable"
+          }
+        },
+        "taughtIn": {
+          "name": "Taught In",
+          "values": {
+            "allDevices": "All devices",
+            "yadomsOnly": "Yadoms only"
+          }
+        },
+        "userInterfaceMode": {
+          "name": "User Interface Mode",
+          "values": {
+            "dayMode": "Day (led on)",
+            "nightMode": "Night (led off)"
+          }
+        },
+        "defaultState": {
+          "name": "Default state",
+          "values": {
+            "off": "Off",
+            "on": "On",
+            "previousState": "Previous state",
+            "notUsed": "Not Used"
+          }
+        },
+        "minEnergyMeasureRefreshTime": {
+          "name": "Energy measure minimum refresh time (seconds), must be under maximum refresh time"
+        },
+        "maxEnergyMeasureRefreshTime": {
+          "name": "Energy measure maximum refresh time (seconds), must be over minimum refresh time"
+        }
+      }
+    },
+    "D2-01-0F": {
+      "sameAs": "D2-01-0D"
+    },
+    "D2-01-12": {
+      "content": {
+        "localControl": {
+          "name": "Local control",
+          "values": {
+            "enable": "enable",
+            "disable": "disable"
+          }
+        },
+        "taughtIn": {
+          "name": "Taught In",
+          "values": {
+            "allDevices": "All devices",
+            "yadomsOnly": "Yadoms only"
+          }
+        },
+        "userInterfaceMode": {
+          "name": "User Interface Mode",
+          "values": {
+            "dayMode": "Day (led on)",
+            "nightMode": "Night (led off)"
+          }
+        },
+        "defaultState": {
+          "name": "Default state",
+          "values": {
+            "off": "Off",
+            "on": "On",
+            "previousState": "Previous state",
+            "notUsed": "Not Used"
+          }
+        },
+        "connectedSwitchsType": {
+          "name": "Connected switchs type",
+          "values": {
+            "switch": "Switch",
+            "pushButton": "Push button",
+            "autodetection": "Autodetect"
+          }
+        },
+        "switchingState": {
+          "name": "Switching behaviour",
+          "type": "enum",
+          "values": {
+            "tooggle": "Each change on switch toogles output",
+            "specific": "Specific ON/OFF positions (ON when contacts closed)"
+          }
+        },
+        "autoOffTimer": {
+          "name": "Auto-off timer (seconds), 0 to disable timer"
+        },
+        "delayRadioOffTimer": {
+          "name": "Radio-off delay (seconds), 0 to disable timer"
+        }
+      }
+    }
+  }
+}

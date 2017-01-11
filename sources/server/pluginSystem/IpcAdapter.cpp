@@ -5,6 +5,7 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include "serializers/Information.h"
 #include "FromPluginHistorizer.h"
+#include "shared/exception/EmptyResult.hpp"
 
 namespace pluginSystem
 {
@@ -277,8 +278,15 @@ namespace pluginSystem
    void CIpcAdapter::processDeviceDetailsRequest(const toYadoms::DeviceDetailsRequest& msg)
    {
       toPlugin::msg ans;
-      auto answer = ans.mutable_devicedetails();
-      answer->set_details(m_pluginApi->getDeviceDetails(msg.device()).serialize());
+      try
+      {
+         auto answer = ans.mutable_devicedetails();
+         answer->set_details(m_pluginApi->getDeviceDetails(msg.device()).serialize());
+      }
+      catch(const std::exception& e)
+      {
+         ans.set_error("Fail to get device details : " + std::string(e.what()));
+      }
       send(ans);
    }
 
@@ -327,8 +335,15 @@ namespace pluginSystem
    void CIpcAdapter::processRecipientValueRequest(const toYadoms::RecipientValueRequest& msg)
    {
       toPlugin::msg ans;
-      auto answer = ans.mutable_recipientvalue();
-      answer->set_value(m_pluginApi->getRecipientValue(msg.recipientid(), msg.fieldname()));
+      try
+      {
+         auto answer = ans.mutable_recipientvalue();
+         answer->set_value(m_pluginApi->getRecipientValue(msg.recipientid(), msg.fieldname()));
+      }
+      catch (const std::exception& e)
+      {
+         ans.set_error("Fail to get recipient value : " + std::string(e.what()));
+      }
       send(ans);
    }
 
@@ -365,25 +380,25 @@ namespace pluginSystem
       auto answer = ans.mutable_yadomsinformationanswer();
       auto yadomsInformation = m_pluginApi->getYadomsInformation();
       answer->set_developpermode(yadomsInformation->developperMode());
-      answer->set_version(yadomsInformation->version());
+      answer->set_version(yadomsInformation->version().toString());
 
-      switch (yadomsInformation->releaseType())
+      try
       {
-      case shared::versioning::EReleaseType::kStableValue: answer->set_releasetype(toPlugin::YadomsInformationAnswer_EReleaseType_Stable);
-         break;
-      case shared::versioning::EReleaseType::kReleaseCandidateValue: answer->set_releasetype(toPlugin::YadomsInformationAnswer_EReleaseType_ReleaseCandidate);
-         break;
-      case shared::versioning::EReleaseType::kBetaValue: answer->set_releasetype(toPlugin::YadomsInformationAnswer_EReleaseType_Beta);
-         break;
-      default:
-         answer->set_releasetype(toPlugin::YadomsInformationAnswer_EReleaseType_Beta);
-         break;
+         auto longitude = yadomsInformation->location()->longitude();
+         auto latitude = yadomsInformation->location()->latitude();
+         auto altitude = yadomsInformation->location()->altitude();
+
+         auto location = answer->mutable_location();
+
+         location->set_longitude(longitude);
+         location->set_latitude(latitude);
+         location->set_altitude(altitude);
+      }
+      catch (shared::exception::CEmptyResult&)
+      {
+         // Location unknown
       }
 
-      auto location = answer->mutable_location();
-      location->set_longitude(yadomsInformation->location()->longitude());
-      location->set_latitude(yadomsInformation->location()->latitude());
-      location->set_altitude(yadomsInformation->location()->altitude());
       send(ans);
    }
 

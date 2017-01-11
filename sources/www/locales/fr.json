@@ -333,7 +333,7 @@
               "description": "Définissez ici votre fuseau horaire."
             },
             "basicAuthentication": {
-              "name": "Autentification",
+              "name": "Authentification",
               "description": "Méthode d'authentification pour accéder à Yadoms."
             },
             "basicAuthenticationUser": {
@@ -355,8 +355,20 @@
             },
             "dateFormatString": {
               "name": "Format de la date",
-              "description": "Vous pouvez changer le format de la date en utilisant la syntaxe mount.js (ex \"LLL\" ou \"'MMMM Do YYYY, h:mm:ss a\")"
-            }
+              "description": "Vous pouvez changer le format de la date en utilisant la syntaxe moment.js (ex \"LLL\" ou \"'MMMM Do YYYY, h:mm:ss a\")"
+            },
+            "location": {
+              "name": "Localisation",
+              "description": "Entrer ci-dessous les coordonnées de votre ville(<a href=\"http://www.latlong.net/\" target=\"_blank\">site web latlong</a>)"           
+            },
+            "latitude": {
+               "name": "Latitude",
+               "description": ""
+            },
+            "longitude": {
+               "name": "Longitude",
+               "description": ""
+            }               
           },
           "confirmResetToDefault": "Cette opération va restaurer la configuration par défaut. Continuer ?",
           "configurationSaved": "Configuration système sauvegardée",
@@ -479,15 +491,9 @@
         "install-update": {
           "title": "Installation & Mise à jour",
           "description": "Installation et mise à jour des composants de Yadoms",
-          "releaseTypeChoice": "Choisir le type de version à modifier",
-          "releaseType": {
-            "beta": "Beta - pour développeur",
-            "testing": "Test - version en cours de test, utiliser à vos propres risques",
-            "releaseCandidate": "Release Candidate - version préliminaire, utilisez à vos risques et périls",
-            "stable": "Stable - Recommandée"
-          },
+          "includePreRelease": "Inclure les versions préliminaires",
           "yadoms": {
-            "title": "Mise à jour de Yadoms",
+            "title": "Yadoms",
             "currentVersion": "Version courante",
             "availableVersion": "Version disponible",
             "update": "Mise à jour de Yadoms",

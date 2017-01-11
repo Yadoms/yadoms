@@ -177,8 +177,9 @@ add_subdirectory(shared)
 add_subdirectory(server)
 
 source_group(plugins plugins/*.*)
-source_group(plugins\\FakePlugin plugins/FakePlugin/*.*)
+source_group(plugins\\FakePlugin plugins/dev-FakePlugin/*.*)
 source_group(plugins\\Rfxcom plugins/Rfxcom/*.*)
+source_group(plugins\\EnOcean plugins/dev-EnOcean/*.*)
 source_group(plugins\\TeleInfo plugins/TeleInfo/*.*)
 
 source_group(server server/*.*)

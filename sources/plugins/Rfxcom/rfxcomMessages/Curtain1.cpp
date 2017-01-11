@@ -50,7 +50,7 @@ namespace rfxcomMessages
       m_state(boost::make_shared<yApi::historization::CCurtain>("state"))
    {
       // Should not be called (transmitter-only device)
-      BOOST_ASSERT_MSG(false, "Constructing Curtain1 object from received buffer is not possible, Curtain1 is transmitter-only device");
+      throw std::logic_error("Constructing Curtain1 object from received buffer is not possible, Curtain1 is transmitter-only device");
    }
 
    CCurtain1::~CCurtain1()
