@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Process.h"
-#include "ProcessException.hpp"
 #include <shared/Log.h>
 
 namespace shared
@@ -37,22 +36,16 @@ namespace shared
 
             YADOMS_LOG(debug) << "Start process " << m_commandLine->executable() << " from " << m_commandLine->workingDirectory();
 
-            if (!m_logger)
-            {
-               m_process = boost::make_shared<Poco::ProcessHandle>(Poco::Process::launch(m_commandLine->executable().string(),
-                                                                                         args,
-                                                                                         m_commandLine->workingDirectory().string()));
-            }
-            else
-            {
-               Poco::Pipe outPipe, errPipe;
-               m_process = boost::make_shared<Poco::ProcessHandle>(Poco::Process::launch(m_commandLine->executable().string(),
-                                                                                         args,
-                                                                                         m_commandLine->workingDirectory().string(),
-                                                                                         nullptr,
-                                                                                         &outPipe,
-                                                                                         &errPipe));
+            Poco::Pipe outPipe, errPipe;
+            m_processHandle = boost::make_shared<Poco::ProcessHandle>(Poco::Process::launch(m_commandLine->executable().string(),
+                                                                                            args,
+                                                                                            m_commandLine->workingDirectory().string(),
+                                                                                            nullptr,
+                                                                                            m_logger ? &outPipe : nullptr,
+                                                                                            m_logger ? &errPipe : nullptr));
 
+            if (m_logger)
+            {
                auto moduleStdOut = boost::make_shared<Poco::PipeInputStream>(outPipe);
                auto moduleStdErr = boost::make_shared<Poco::PipeInputStream>(errPipe);
                m_StdOutRedirectingThread = boost::make_shared<boost::thread>(&CProcess::stdOutRedirectWorker,
@@ -69,27 +62,33 @@ namespace shared
          }
          catch (Poco::Exception& ex)
          {
-            throw CProcessException(std::string("Unable to start process, ") + ex.what());
+            throw std::runtime_error(std::string("Unable to start process, ") + ex.what());
          }
       }
 
       void CProcess::createProcessObserver()
       {
-         m_processMonitorThread = boost::make_shared<boost::thread>(&CProcess::monitorThreaded, this);
+         m_processMonitorThread = boost::make_shared<boost::thread>(&CProcess::monitorThreaded,
+                                                                    this);
       }
 
       void CProcess::monitorThreaded()
       {
+         // Work on local copy of the process handle to avoid to lock mutex while wait for process end
+         m_processMutex.lock();
+         auto processHandle = *m_processHandle;
+         m_processMutex.unlock();
+
          if (!!m_processObserver)
             m_processObserver->onStart();
 
-         if (!m_process)
+         if (!Poco::Process::isRunning(processHandle))
             m_returnCode = 0;
          else
          {
             try
             {
-               m_returnCode = Poco::Process::wait(*m_process);
+               m_returnCode = Poco::Process::wait(processHandle);
             }
             catch (Poco::SystemException&)
             {
@@ -112,12 +111,12 @@ namespace shared
          try
          {
             boost::lock_guard<boost::recursive_mutex> lock(m_processMutex);
-            if (!!m_process)
+            if (Poco::Process::isRunning(*m_processHandle))
             {
-               Poco::Process::kill(*m_process);
+               Poco::Process::kill(*m_processHandle);
 
-               if (Poco::Process::isRunning(*m_process))
-                  m_process->wait();
+               if (Poco::Process::isRunning(*m_processHandle))
+                  m_processHandle->wait();
             }
          }
          catch (Poco::NotFoundException&)
@@ -128,6 +127,9 @@ namespace shared
          {
             // Nothing to do. This exception can occur when process is already stopped
          }
+
+         if (m_processMonitorThread)
+            m_processMonitorThread->join();
       }
 
       int CProcess::getReturnCode() const

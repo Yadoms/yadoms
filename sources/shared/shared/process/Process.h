@@ -25,8 +25,8 @@ namespace shared
          /// \throw CProcessException if error
          //--------------------------------------------------------------
          CProcess(boost::shared_ptr<ICommandLine> commandLine,
-                            boost::shared_ptr<IProcessObserver> processObserver,
-                            boost::shared_ptr<IExternalProcessLogger> logger);
+                  boost::shared_ptr<IProcessObserver> processObserver,
+                  boost::shared_ptr<IExternalProcessLogger> logger);
 
          //--------------------------------------------------------------
          /// \brief	Destructor
@@ -76,7 +76,7 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	The process of the running script, and its mutex
          //--------------------------------------------------------------
-         boost::shared_ptr<Poco::ProcessHandle> m_process;
+         boost::shared_ptr<Poco::ProcessHandle> m_processHandle;
          mutable boost::recursive_mutex m_processMutex;
 
          //--------------------------------------------------------------

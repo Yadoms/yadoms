@@ -33,6 +33,7 @@ protected:
                     const std::string& scriptApiId);
    void stopScript(int scriptInstanceId);
    void onScriptStopped(int scriptInstanceId);
+   void onStopRequested();
 
 private:
    boost::shared_ptr<IFactory> m_factory;
@@ -40,5 +41,5 @@ private:
    boost::shared_ptr<IPythonExecutable> m_pythonExecutable;
 
    mutable boost::recursive_mutex m_processesMutex;
-   std::map<int, boost::shared_ptr<shared::process::IProcess>> m_processes;
+   std::map<int, boost::shared_ptr<shared::process::IProcess>> m_scriptProcesses;
 };

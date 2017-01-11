@@ -12,6 +12,11 @@
 // Declare the script interpreter
 IMPLEMENT_INTERPRETER(CPython27)
 
+enum
+{
+   kEventScriptStopped = yApi::IYInterpreterApi::kPluginFirstEventId
+};
+
 
 CPython27::CPython27()
    : m_factory(boost::make_shared<CFactory>()),
@@ -37,19 +42,7 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
          {
             // Yadoms request the interpreter to stop. Note that interpreter must be stop in 10 seconds max, otherwise it will be killed.
             std::cout << "Stop requested" << std::endl;
-
-            int scriptInstanceIdToStop;
-            while (true)
-            {
-               {
-                  boost::lock_guard<boost::recursive_mutex> lock(m_processesMutex);
-                  if (m_processes.empty())
-                     break;
-                  scriptInstanceIdToStop = m_processes.begin()->first;
-               }
-               stopScript(scriptInstanceIdToStop);
-            }
-
+            onStopRequested();
             std::cout << "Python interpreter is stopped" << std::endl;
             return;
          }
@@ -104,6 +97,13 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
          {
             auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IStopScript>>();
             stopScript(request->getScriptInstanceId());
+            break;
+         }
+
+      case kEventScriptStopped:
+         {
+            onScriptStopped(api->getEventHandler().getEventData<int>());
+            break;
          }
 
       default:
@@ -162,7 +162,7 @@ void CPython27::startScript(int scriptInstanceId,
 {
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_processesMutex);
-      if (m_processes.find(scriptInstanceId) != m_processes.end())
+      if (m_scriptProcesses.find(scriptInstanceId) != m_scriptProcesses.end())
       {
          std::cerr << "Unable to start script #" << scriptInstanceId << " : script is already running" << std::endl;
          return;
@@ -173,16 +173,17 @@ void CPython27::startScript(int scriptInstanceId,
    {
       try
       {
-         m_processes[scriptInstanceId] = m_factory->createScriptProcess(scriptInstanceId,
-                                                                        scriptPath,
-                                                                        m_pythonExecutable,
-                                                                        getInterpreterPath(),
-                                                                        scriptApiId,
-                                                                        [this](bool running, int scriptId)
-                                                                        {
-                                                                           if (!running)
-                                                                              onScriptStopped(scriptId);
-                                                                        });
+         m_scriptProcesses[scriptInstanceId] = m_factory->createScriptProcess(scriptInstanceId,
+                                                                              scriptPath,
+                                                                              m_pythonExecutable,
+                                                                              getInterpreterPath(),
+                                                                              scriptApiId,
+                                                                              [this](bool running, int scriptId)
+                                                                              {
+                                                                                 if (!running)
+                                                                                    m_api->getEventHandler().postEvent(kEventScriptStopped,
+                                                                                                                       scriptId);
+                                                                              });
       }
       catch (std::exception& e)
       {
@@ -201,8 +202,8 @@ void CPython27::startScript(int scriptInstanceId,
 void CPython27::stopScript(int scriptInstanceId)
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_processesMutex);
-   const auto script = m_processes.find(scriptInstanceId);
-   if (script == m_processes.end())
+   const auto script = m_scriptProcesses.find(scriptInstanceId);
+   if (script == m_scriptProcesses.end())
    {
       std::cerr << "Unable to stop script #" << scriptInstanceId << " : unknown script, maybe already stopped" << std::endl;
       return;
@@ -215,8 +216,33 @@ void CPython27::onScriptStopped(int scriptInstanceId)
    m_api->notifyScriptStopped(scriptInstanceId);
 
    boost::lock_guard<boost::recursive_mutex> lock(m_processesMutex);
-   const auto script = m_processes.find(scriptInstanceId);
-   if (script != m_processes.end())
-      m_processes.erase(script);
+   const auto script = m_scriptProcesses.find(scriptInstanceId);
+   if (script != m_scriptProcesses.end())
+      m_scriptProcesses.erase(script);
+}
+
+void CPython27::onStopRequested()
+{
+   // Ask all scripts to stop
+   {
+      boost::lock_guard<boost::recursive_mutex> lock(m_processesMutex);
+      for (const auto& scriptToStop : m_scriptProcesses)
+         stopScript(scriptToStop.first);
+   }
+
+   // Wait scripts are stopped
+   while (!m_scriptProcesses.empty())
+   {
+      switch (m_api->getEventHandler().waitForEvents(boost::posix_time::seconds(10)))
+      {
+      case kEventScriptStopped:
+         {
+            onScriptStopped(m_api->getEventHandler().getEventData<int>());
+            break;
+         }
+      default:
+         break;
+      }
+   }
 }
 
