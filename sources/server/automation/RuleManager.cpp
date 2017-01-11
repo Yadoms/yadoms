@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "RuleManager.h"
-#include "RuleStateHandler.h"
 #include "database/IRuleRequester.h"
 #include "interpreter/Manager.h"
 #include "Rule.h"
@@ -23,15 +22,12 @@ namespace automation
         m_dbDeviceRequester(dataProvider->getDeviceRequester()),
         m_keywordAccessLayer(keywordAccessLayer),
         m_dbRecipientRequester(dataProvider->getRecipientRequester()),
+        m_eventLogger(eventLogger),
         m_generalInfo(boost::make_shared<script::CGeneralInfo>(location)),
         m_ruleRequester(dataProvider->getRuleRequester()),
         m_ruleEventHandler(boost::make_shared<shared::event::CEventHandler>()),
         m_interpreterManager(boost::make_shared<interpreter::CManager>(pathProvider)),
-        m_ruleStateHandler(boost::make_shared<CRuleStateHandler>(m_ruleRequester,
-                                                                 eventLogger,
-                                                                 m_ruleEventHandler)),
-        m_yadomsShutdown(false),
-        m_ruleEventsThread(boost::make_shared<boost::thread>(boost::bind(&CRuleManager::ruleEventsThreadDoWork, this)))
+        m_yadomsShutdown(false)
    {
       m_interpreterManager->setOnScriptStoppedFct(
          [&](int scriptInstanceId, const std::string& error)
@@ -56,9 +52,6 @@ namespace automation
    {
       m_yadomsShutdown = true;
       stopRules();
-
-      m_ruleEventsThread->interrupt();
-      m_ruleEventsThread->join();
    }
 
    void CRuleManager::startAllRules()
@@ -115,7 +108,6 @@ namespace automation
          boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
          auto newRule(boost::make_shared<CRule>(ruleData,
                                                 m_interpreterManager,
-                                                m_ruleStateHandler,
                                                 m_pluginGateway,
                                                 m_dbAcquisitionRequester,
                                                 m_dbDeviceRequester,
@@ -127,19 +119,19 @@ namespace automation
       catch (shared::exception::CEmptyResult& e)
       {
          const auto& error((boost::format("Invalid rule %1%, element not found in database : %2%") % ruleId % e.what()).str());
-         m_ruleStateHandler->signalRuleError(ruleId, error);
+         recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }
       catch (shared::exception::CInvalidParameter& e)
       {
          const auto& error((boost::format("Invalid rule %1% configuration, invalid parameter : %2%") % ruleId % e.what()).str());
-         m_ruleStateHandler->signalRuleError(ruleId, error);
+         recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }
       catch (shared::exception::COutOfRange& e)
       {
          const auto& error((boost::format("Invalid rule %1% configuration, out of range : %2%") % ruleId % e.what()).str());
-         m_ruleStateHandler->signalRuleError(ruleId, error);
+         recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }
    }
@@ -356,41 +348,6 @@ namespace automation
       }
    }
 
-   void CRuleManager::ruleEventsThreadDoWork()
-   {
-      try
-      {
-         while (true)
-         {
-            switch (m_ruleEventHandler->waitForEvents())
-            {
-            case CRuleStateHandler::kRuleAbnormalStopped:
-               {
-                  // The rule has stopped in a non-conventional way (probably crashed)
-                  auto data = m_ruleEventHandler->getEventData<std::pair<int, std::string>>();
-                  onRuleStopped(data.first, data.second);
-                  break;
-               }
-            case CRuleStateHandler::kRuleStopped:
-               {
-                  onRuleStopped(m_ruleEventHandler->getEventData<int>());
-                  break;
-               }
-
-            default:
-               {
-                  YADOMS_LOG(error) << "Unknown message id";
-                  BOOST_ASSERT(false);
-                  break;
-               }
-            }
-         }
-      }
-      catch (boost::thread_interrupted&)
-      {
-      }
-   }
-
    void CRuleManager::startAllRulesMatchingInterpreter(const std::string& interpreterName)
    {
       // Start all rules associated with this interpreter (and start-able)
@@ -439,11 +396,18 @@ namespace automation
    void CRuleManager::recordRuleStopped(int ruleId,
                                         const std::string& error) const
    {
+      if (!error.empty())
+         YADOMS_LOG(error) << error;
+
       auto ruleData(boost::make_shared<database::entities::CRule>());
       ruleData->Id = ruleId;
       ruleData->State = error.empty() ? database::entities::ERuleState::kStopped : database::entities::ERuleState::kError;
       ruleData->StopDate = shared::currentTime::Provider().now();
       ruleData->ErrorMessage = error;
       m_ruleRequester->updateRule(ruleData);
+
+      // Signal error
+      m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailed,
+                              m_ruleRequester->getRule(ruleId)->Name(), error);
    }
 } // namespace automation	

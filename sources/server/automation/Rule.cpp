@@ -1,15 +1,13 @@
 #include "stdafx.h"
 #include "Rule.h"
-#include "script/StopNotifier.h"
 #include "script/YScriptApiImplementation.h"
 #include "script/Properties.h"
 #include "script/IpcAdapter.h"
 
-namespace automation //TODO faire une factory
+namespace automation
 {
    CRule::CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
                 boost::shared_ptr<interpreter::IManager> interpreterManager,
-                boost::shared_ptr<IRuleStateHandler> ruleStateHandler,
                 boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                 boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
                 boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
@@ -19,7 +17,6 @@ namespace automation //TODO faire une factory
       : m_ruleData(ruleData),
         m_ruleProperties(boost::make_shared<script::CProperties>(m_ruleData)),
         m_interpreterManager(interpreterManager),
-        m_ruleStateHandler(ruleStateHandler),
         m_pluginGateway(pluginGateway),
         m_dbAcquisitionRequester(dbAcquisitionRequester),
         m_dbDeviceRequester(dbDeviceRequester),
@@ -37,7 +34,7 @@ namespace automation //TODO faire une factory
    void CRule::start()
    {
       m_scriptLogger = m_interpreterManager->createScriptLogger(m_ruleData->Name(),
-                                                                   m_ruleData->Id());
+                                                                m_ruleData->Id());
       m_ipcAdapter = createScriptContext(m_scriptLogger,
                                          m_ruleData->Id());
 
@@ -71,13 +68,5 @@ namespace automation //TODO faire une factory
                                                                    m_keywordAccessLayer,
                                                                    m_dbRecipientRequester,
                                                                    m_generalInfo);
-   }
-
-   boost::shared_ptr<shared::process::IProcessObserver> CRule::createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler,
-                                                                                  int ruleId) const
-   {
-      //TODO cette fonction n'est normalement plus utile, la virer (ainsi que ces dépendances) après test
-      return boost::make_shared<script::StopNotifier>(ruleStateHandler,
-                                                      ruleId);
    }
 } // namespace automation	

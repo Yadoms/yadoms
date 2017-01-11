@@ -90,7 +90,6 @@ namespace interpreter_cpp_api
             if (api->getEventHandler().waitForEvents(boost::posix_time::millisec(300)) == yApi::IYInterpreterApi::kEventStopRequested)
             {
                std::cout << "Stop requested" << std::endl;
-               //TODO à garder ?               api->setPluginState(yApi::historization::EPluginState::kStopped);
                return;
             }
          }

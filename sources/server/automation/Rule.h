@@ -1,9 +1,7 @@
 #pragma once
 #include "IRule.h"
 #include "database/entities/Entities.h"
-#include "IRuleStateHandler.h"
 #include "interpreter/IManager.h"
-#include <shared/process/IProcessObserver.h>
 #include <shared/script/yScriptApi/IYScriptApi.h>
 #include "script/IGeneralInfo.h"
 #include "dataAccessLayer/IKeywordManager.h"
@@ -24,7 +22,6 @@ namespace automation
    public:
       CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
             boost::shared_ptr<interpreter::IManager> interpreterManager,
-            boost::shared_ptr<IRuleStateHandler> ruleStateHandler,
             boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
             boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
             boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
@@ -46,15 +43,12 @@ namespace automation
       boost::shared_ptr<script::IIpcAdapter> createScriptContext(boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger,
                                                                  int ruleId) const;
       boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptApiImplementation(boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger) const;
-      boost::shared_ptr<shared::process::IProcessObserver> createStopNotifier(boost::shared_ptr<IRuleStateHandler> ruleStateHandler,
-                                                                              int ruleId) const;
 
    private:
       //TODO faire le ménage dans les données
       boost::shared_ptr<const database::entities::CRule> m_ruleData;
       boost::shared_ptr<const script::IProperties> m_ruleProperties;
       boost::shared_ptr<interpreter::IManager> m_interpreterManager;
-      boost::shared_ptr<IRuleStateHandler> m_ruleStateHandler;
 
       boost::shared_ptr<communication::ISendMessageAsync> m_pluginGateway;
       boost::shared_ptr<database::IAcquisitionRequester> m_dbAcquisitionRequester;

@@ -6,7 +6,7 @@
 //--------------------------------------------------------------
 /// \brief	Exception handling for automation rule
 //--------------------------------------------------------------
-class CRuleException : public shared::exception::CException
+class CRuleException : public shared::exception::CException//TODO virer ?
 {
 public:
    //--------------------------------------------------------------

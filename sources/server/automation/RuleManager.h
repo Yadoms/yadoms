@@ -1,7 +1,6 @@
 #pragma once
 #include "IRuleManager.h"
 #include "IRule.h"
-#include "IRuleStateHandler.h"
 #include "../communication/ISendMessageAsync.h"
 #include "database/IAcquisitionRequester.h"
 #include "database/IDeviceRequester.h"
@@ -100,25 +99,19 @@ namespace automation
       //-----------------------------------------------------
       void recordRuleStopped(int ruleId, const std::string& error = std::string()) const;
 
-      //-----------------------------------------------------
-      ///\brief               Method of the thread managing rule asynchronous events
-      //-----------------------------------------------------
-      void ruleEventsThreadDoWork();
-
    private:
       boost::shared_ptr<communication::ISendMessageAsync> m_pluginGateway;
       boost::shared_ptr<database::IAcquisitionRequester> m_dbAcquisitionRequester;
       boost::shared_ptr<database::IDeviceRequester> m_dbDeviceRequester;
       boost::shared_ptr<dataAccessLayer::IKeywordManager> m_keywordAccessLayer;
       boost::shared_ptr<database::IRecipientRequester> m_dbRecipientRequester;
+      boost::shared_ptr<dataAccessLayer::IEventLogger> m_eventLogger;
       boost::shared_ptr<script::IGeneralInfo> m_generalInfo;
 
       boost::shared_ptr<database::IRuleRequester> m_ruleRequester;
       boost::shared_ptr<shared::event::CEventHandler> m_ruleEventHandler;
       boost::shared_ptr<interpreter::IManager> m_interpreterManager;
-      boost::shared_ptr<IRuleStateHandler> m_ruleStateHandler;
       bool m_yadomsShutdown;
-      boost::shared_ptr<boost::thread> m_ruleEventsThread;
 
       std::map<int, boost::shared_ptr<IRule>> m_startedRules;
       mutable boost::recursive_mutex m_startedRulesMutex;
