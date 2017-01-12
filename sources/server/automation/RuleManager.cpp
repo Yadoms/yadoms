@@ -406,8 +406,10 @@ namespace automation
       ruleData->ErrorMessage = error;
       m_ruleRequester->updateRule(ruleData);
 
-      // Signal error
-      m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailed,
-                              m_ruleRequester->getRule(ruleId)->Name(), error);
+      if (!error.empty())
+         m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailed,
+                                 m_ruleRequester->getRule(ruleId)->Name(), error);
    }
 } // namespace automation	
+
+

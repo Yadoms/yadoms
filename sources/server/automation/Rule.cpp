@@ -14,34 +14,49 @@ namespace automation
                 boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                 boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                 boost::shared_ptr<script::IGeneralInfo> generalInfo)
-      : m_ruleData(ruleData),
-        m_ruleProperties(boost::make_shared<script::CProperties>(m_ruleData)),
-        m_interpreterManager(interpreterManager),
-        m_pluginGateway(pluginGateway),
-        m_dbAcquisitionRequester(dbAcquisitionRequester),
-        m_dbDeviceRequester(dbDeviceRequester),
-        m_keywordAccessLayer(keywordAccessLayer),
-        m_dbRecipientRequester(dbRecipientRequester),
-        m_generalInfo(generalInfo)
+      : m_ruleData(ruleData)
    {
-      start();
+      start(interpreterManager,
+            pluginGateway,
+            dbAcquisitionRequester,
+            dbDeviceRequester,
+            keywordAccessLayer,
+            dbRecipientRequester,
+            generalInfo);
    }
 
    CRule::~CRule()
    {
    }
 
-   void CRule::start()
+   void CRule::start(boost::shared_ptr<interpreter::IManager> interpreterManager,
+                     boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+                     boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+                     boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
+                     boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
+                     boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
+                     boost::shared_ptr<script::IGeneralInfo> generalInfo)
    {
-      m_scriptLogger = m_interpreterManager->createScriptLogger(m_ruleData->Name(),
-                                                                m_ruleData->Id());
-      m_ipcAdapter = createScriptContext(m_scriptLogger,
-                                         m_ruleData->Id());
+      m_scriptLogger = interpreterManager->createScriptLogger(m_ruleData->Name(),
+                                                              m_ruleData->Id());
 
-      m_scriptInterpreter = m_interpreterManager->getInterpreterInstance(m_ruleProperties->interpreterName());
+      auto apiImplementation = createScriptApiImplementation(pluginGateway,
+                                                             dbAcquisitionRequester,
+                                                             dbDeviceRequester,
+                                                             keywordAccessLayer,
+                                                             dbRecipientRequester,
+                                                             generalInfo,
+                                                             m_scriptLogger);
+
+      m_ipcAdapter = createScriptIpcAdapter(m_ruleData->Id(),
+                                            apiImplementation);
+
+      script::CProperties ruleProperties(m_ruleData);
+
+      m_scriptInterpreter = interpreterManager->getInterpreterInstance(ruleProperties.interpreterName());
 
       m_scriptInterpreter->startScript(m_ruleData->Id(),
-                                       m_ruleProperties->scriptPath(),
+                                       ruleProperties.scriptPath(),
                                        m_ipcAdapter->id());
    }
 
@@ -50,23 +65,29 @@ namespace automation
       m_scriptInterpreter->stopScript(m_ruleData->Id());
    }
 
-   boost::shared_ptr<script::IIpcAdapter> CRule::createScriptContext(boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger,
-                                                                     int ruleId) const
+   boost::shared_ptr<script::IIpcAdapter> CRule::createScriptIpcAdapter(int ruleId,
+                                                                        boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> apiImplementation) const
    {
-      auto apiImplementation = createScriptApiImplementation(scriptLogger);
-
       return boost::make_shared<script::CIpcAdapter>(apiImplementation,
                                                      ruleId);
    }
 
-   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CRule::createScriptApiImplementation(boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger) const
+   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CRule::createScriptApiImplementation(boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+                                                                                                   boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+                                                                                                   boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
+                                                                                                   boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
+                                                                                                   boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
+                                                                                                   boost::shared_ptr<script::IGeneralInfo> generalInfo,
+                                                                                                   boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger) const
    {
       return boost::make_shared<script::CYScriptApiImplementation>(scriptLogger,
-                                                                   m_pluginGateway,
-                                                                   m_dbAcquisitionRequester,
-                                                                   m_dbDeviceRequester,
-                                                                   m_keywordAccessLayer,
-                                                                   m_dbRecipientRequester,
-                                                                   m_generalInfo);
+                                                                   pluginGateway,
+                                                                   dbAcquisitionRequester,
+                                                                   dbDeviceRequester,
+                                                                   keywordAccessLayer,
+                                                                   dbRecipientRequester,
+                                                                   generalInfo);
    }
 } // namespace automation	
+
+
