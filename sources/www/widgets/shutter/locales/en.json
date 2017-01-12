@@ -6,7 +6,7 @@
 	"configurationSchema": {
 		"device": {
 			"name": "Devices",
-			"description": " Select below the shutter to drive",
+			"description": "Select below the shutter to drive",
 			"item": {
 				"name": "",
 				"description": "",
@@ -18,21 +18,23 @@
 				}
             }				
 		},
+		"invert": {
+			"name": "Invert",
+			"description": "Invert state"
+		},
 		"kind": {
-			"name": "Kind of switch",
-			"description": "Select the kind of switch to be used. Permit to change interactions in function of the kind of switch.",
+			"name": "Style",
+			"description": "Select the switch style to use. Switch behaviour can be different depending on selected style.",
 			"content": {
 				"window": {
-					"name": "Blind window push button",
-					"description": "A simple push button that represents a roller shutter for window"
+					"name": "Window"
 				},
 				"door": {
-					"name": "Blind door push button",
-					"description": "A simple push button that represents a roller shutter for door"
+					"name": "Door"
 				},				
 				"verticalInverter": {
 					"name": "Vertical inverter",
-					"description": "A vertical dual-buttons shutter switch"
+					"description": "A vertical dual-buttons switch"
 				}
 			}
 		}
