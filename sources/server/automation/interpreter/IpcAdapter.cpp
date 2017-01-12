@@ -189,6 +189,8 @@ namespace automation
          {
          case interpreter_IPC::toYadoms::msg::kNotifiyScriptStopped: processNotifiyScriptStopped(toYadomsProtoBuffer.notifiyscriptstopped());
             break;
+         case interpreter_IPC::toYadoms::msg::kScriptLog: processScriptLog(toYadomsProtoBuffer.scriptlog());
+            break;
          default:
             throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
          }
@@ -198,6 +200,13 @@ namespace automation
       {
          m_apiImplementation->notifyScriptStopped(notifiyScriptStopped.scriptinstanceid(),
                                                   notifiyScriptStopped.error());
+      }
+
+      void CIpcAdapter::processScriptLog(const interpreter_IPC::toYadoms::ScriptLog& scriptlog) const
+      {
+         m_apiImplementation->onScriptLog(scriptlog.scriptinstanceid(),
+                                          scriptlog.error(),
+                                          scriptlog.logline());
       }
 
       void CIpcAdapter::postStopRequest()

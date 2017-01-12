@@ -255,7 +255,7 @@ namespace automation
       try
       {
          auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id)));
-         return m_interpreterManager->getScriptFile(ruleProperties->interpreterName(),
+         return m_interpreterManager->getScriptContent(ruleProperties->interpreterName(),
                                                     ruleProperties->scriptPath());
       }
       catch (shared::exception::CEmptyResult& e)
@@ -269,7 +269,7 @@ namespace automation
    {
       try
       {
-         return m_interpreterManager->getScriptLogFile(id);
+         return m_interpreterManager->getScriptLogContent(id);
       }
       catch (shared::exception::CEmptyResult& e)
       {
@@ -287,7 +287,7 @@ namespace automation
    {
       try
       {
-         return m_interpreterManager->getScriptTemplateFile(interpreterName);
+         return m_interpreterManager->getScriptTemplateContent(interpreterName);
       }
       catch (shared::exception::CEmptyResult& e)
       {

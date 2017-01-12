@@ -89,13 +89,13 @@ namespace automation
          YADOMS_LOG(information) << "All interpreters are stopped";
       }
 
-      bool CManager::isInterpreterCompatibleWithPlatform(const std::string& interpreterName) const
+      bool CManager::isInterpreterCompatibleWithPlatform(const std::string& interpreterType) const
       {
          shared::CDataContainer container;
          try
          {
             boost::filesystem::path packageFile;
-            packageFile = m_pathProvider.scriptInterpretersPath() / interpreterName / "package.json";
+            packageFile = m_pathProvider.scriptInterpretersPath() / interpreterType / "package.json";
             container.deserializeFromFile(packageFile.string());
          }
          catch (shared::exception::CException& e)
@@ -155,22 +155,22 @@ namespace automation
          return interpreters;
       }
 
-      void CManager::unloadInterpreter(const std::string& interpreterName)
+      void CManager::unloadInterpreter(const std::string& interpreterType)
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
 
-         const auto interpreter = m_loadedInterpreters.find(interpreterName);
+         const auto interpreter = m_loadedInterpreters.find(interpreterType);
          if (interpreter != m_loadedInterpreters.end())
             interpreter->second->requestToStop();
       }
 
-      void CManager::onInterpreterUnloaded(const std::string& interpreterName)
+      void CManager::onInterpreterUnloaded(const std::string& interpreterType)
       {
-         boost::thread([this, interpreterName]()
+         boost::thread([this, interpreterType]()
             {
                boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
 
-               const auto interpreter = m_loadedInterpreters.find(interpreterName);
+               const auto interpreter = m_loadedInterpreters.find(interpreterType);
                if (interpreter != m_loadedInterpreters.end())
                   m_loadedInterpreters.erase(interpreter);
             });
@@ -191,27 +191,27 @@ namespace automation
          throw std::runtime_error("Interpreter " + interpreterType + "not found ");
       }
 
-      boost::shared_ptr<IRuleLogDispatcher> CManager::getRuleLogDispatcher()
+      boost::shared_ptr<IRuleLogDispatcher> CManager::getRuleLogDispatcher(const std::string& interpreterType)
       {
-         return 
+         return getInterpreterInstance(interpreterType)->getRuleLogDispatcher();
       }
 
-      std::string CManager::getScriptFile(const std::string& interpreterName,
-                                          const std::string& scriptPath)
+      std::string CManager::getScriptContent(const std::string& interpreterType,
+                                             const std::string& scriptPath)
       {
          // Load the file content (delegated to the interpreter)
-         auto scriptInterpreter = getInterpreterInstance(interpreterName);
+         auto scriptInterpreter = getInterpreterInstance(interpreterType);
          return scriptInterpreter->loadScriptContent(scriptPath);
       }
 
-      std::string CManager::getScriptTemplateFile(const std::string& interpreterName)
+      std::string CManager::getScriptTemplateContent(const std::string& interpreterType)
       {
          // Load the template file content (delegated to the interpreter)
-         auto scriptInterpreter = getInterpreterInstance(interpreterName);
+         auto scriptInterpreter = getInterpreterInstance(interpreterType);
          return scriptInterpreter->loadScriptContent(std::string());
       }
 
-      void CManager::updateScriptFile(const std::string& interpreterName,
+      void CManager::updateScriptFile(const std::string& interpreterType,
                                       const std::string& scriptPath,
                                       const std::string& code)
       {
@@ -232,12 +232,12 @@ namespace automation
          while (ec != boost::system::errc::success);
 
          // Create the file and put the code in (delegated to the interpreter)
-         auto scriptInterpreter = getInterpreterInstance(interpreterName);
+         auto scriptInterpreter = getInterpreterInstance(interpreterType);
          scriptInterpreter->saveScriptContent(scriptPath,
                                               code);
       }
 
-      void CManager::deleteScriptFile(const std::string& interpreterName,
+      void CManager::deleteScriptFile(const std::string& interpreterType,
                                       const std::string& scriptPath,
                                       bool doBackup)
       {
@@ -253,9 +253,9 @@ namespace automation
          }
       }
 
-      std::string CManager::getScriptLogFile(int ruleId)
+      std::string CManager::getScriptLogContent(int ruleId)
       {
-         const auto logFile(scriptLogFile(ruleId));
+         const auto logFile(getScriptLogFilename(ruleId));
 
          if (!boost::filesystem::exists(logFile))
             throw shared::exception::CInvalidParameter(logFile.string());
@@ -268,7 +268,7 @@ namespace automation
          return std::string(std::istreambuf_iterator<char>(file), eos);
       }
 
-      boost::filesystem::path CManager::scriptLogFile(int ruleId) const
+      boost::filesystem::path CManager::getScriptLogFilename(int ruleId) const
       {
          return m_pathProvider.scriptsLogPath() / std::to_string(ruleId) / "rule.log";
       }
@@ -279,5 +279,3 @@ namespace automation
       }
    }
 } // namespace automation::interpreter
-
-

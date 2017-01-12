@@ -14,10 +14,12 @@ namespace automation
    {
       CInstance::CInstance(const boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
                            boost::shared_ptr<shared::process::IProcess> process,
-                           boost::shared_ptr<IIpcAdapter> ipcAdapter)
+                           boost::shared_ptr<IIpcAdapter> ipcAdapter,
+                           boost::shared_ptr<IRuleLogDispatcher> ruleLogDispatcher)
          : m_interpreterInformation(interpreterInformation),
            m_process(process),
            m_ipcAdapter(ipcAdapter),
+           m_ruleLogDispatcher(ruleLogDispatcher),
            m_avalaible(false)
       {
          m_ipcAdapter->postInit(m_interpreterInformation);
@@ -141,6 +143,11 @@ namespace automation
          }
       }
 
+      boost::shared_ptr<IRuleLogDispatcher> CInstance::getRuleLogDispatcher() const
+      {
+         return m_ruleLogDispatcher;
+      }
+
       bool CInstance::getAvalaibility() const
       {
          communication::callback::CSynchronousCallback<bool> callback;
@@ -173,5 +180,3 @@ namespace automation
       }
    }
 } // namespace automation::interpreter
-
-

@@ -11,9 +11,11 @@ namespace automation
    public:
       //-----------------------------------------------------
       ///\brief                  Constructor
-      ///\param[in] logFilePath     Path to target log file
+      ///\param[in] scriptInstanceId     Script instance ID, used to rpefix logs
+      ///\param[in] logFilePath           Path to target log file
       //-----------------------------------------------------
-      explicit CRuleLogger(const boost::filesystem::path& logFilePath);
+      CRuleLogger(int scriptInstanceId,
+                  const boost::filesystem::path& logFilePath);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -28,8 +30,7 @@ namespace automation
    private:
       static std::string now();
 
+      const std::string m_prefix;
       std::ofstream m_logFile;
    };
 } // namespace automation
-
-

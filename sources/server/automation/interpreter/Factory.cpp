@@ -51,7 +51,8 @@ namespace automation
 
          return boost::make_shared<CInstance>(interpreterInformation,
                                               process,
-                                              yInterpreterIpcAdapter);
+                                              yInterpreterIpcAdapter,
+                                              scriptLogDispatcher);
       }
 
       boost::filesystem::path CFactory::interpreterLogFile(const std::string& interpreterFileName) const
@@ -124,5 +125,3 @@ namespace automation
       }
    }
 } // namespace automation::interpreter
-
-

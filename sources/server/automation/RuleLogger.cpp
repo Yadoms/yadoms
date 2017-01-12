@@ -7,7 +7,9 @@
 
 namespace automation
 {
-   CRuleLogger::CRuleLogger(const boost::filesystem::path& logFilePath)
+   CRuleLogger::CRuleLogger(int scriptInstanceId,
+                            const boost::filesystem::path& logFilePath)
+      : m_prefix("rule #" + std::to_string(scriptInstanceId) + " ")
    {
       if (!boost::filesystem::exists(logFilePath.parent_path()))
          boost::filesystem::create_directories(logFilePath.parent_path());
@@ -26,7 +28,7 @@ namespace automation
       m_logFile << now() << " : [INFORMATION] " << toPrint << std::endl;
 
       // Log normally
-      YADOMS_LOG(information) << toPrint;
+      YADOMS_LOG(information) << m_prefix << toPrint;
    }
 
    void CRuleLogger::error(const std::string& line)
@@ -37,7 +39,7 @@ namespace automation
       m_logFile << now() << " : [ERROR] " << toPrint << std::endl;
 
       // Log normally
-      YADOMS_LOG(error) << toPrint;
+      YADOMS_LOG(error) << m_prefix << toPrint;
    }
 
    std::string CRuleLogger::now()
@@ -50,5 +52,3 @@ namespace automation
       return dateStream.str();
    }
 } // namespace automation
-
-

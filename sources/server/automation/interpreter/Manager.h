@@ -28,19 +28,20 @@ namespace automation
          // IManager Implementation
          std::vector<std::string> getAvailableInterpreters() override;
          boost::shared_ptr<IInstance> getInterpreterInstance(const std::string& interpreterType) override;
-         boost::shared_ptr<IRuleLogDispatcher> getRuleLogDispatcher() override;
-         void unloadInterpreter(const std::string& interpreterName) override;
-         void onInterpreterUnloaded(const std::string& interpreterName);
-         std::string getScriptFile(const std::string& interpreterName,
-                                   const std::string& scriptPath) override;
-         std::string getScriptTemplateFile(const std::string& interpreterName) override;
-         void updateScriptFile(const std::string& interpreterName,
+         boost::shared_ptr<IRuleLogDispatcher> getRuleLogDispatcher(const std::string& interpreterType) override;
+         void unloadInterpreter(const std::string& interpreterType) override;
+         void onInterpreterUnloaded(const std::string& interpreterType);
+         std::string getScriptContent(const std::string& interpreterType,
+                                      const std::string& scriptPath) override;
+         std::string getScriptTemplateContent(const std::string& interpreterType) override;
+         boost::filesystem::path getScriptLogFilename(int ruleId) const override;
+         void updateScriptFile(const std::string& interpreterType,
                                const std::string& scriptPath,
                                const std::string& code) override;
-         void deleteScriptFile(const std::string& interpreterName,
+         void deleteScriptFile(const std::string& interpreterType,
                                const std::string& scriptPath,
                                bool doBackup = true) override;
-         std::string getScriptLogFile(int ruleId) override;
+         std::string getScriptLogContent(int ruleId) override;
          void setOnScriptStoppedFct(boost::function2<void, int, const std::string&> onScriptStoppedFct) override;
          // [END] IManager Implementation
 
@@ -66,13 +67,6 @@ namespace automation
          ///               It doesn't check if interpreter is valid (export expected functions)
          //--------------------------------------------------------------
          std::vector<boost::filesystem::path> findInterpreterDirectories() const;
-
-         //-----------------------------------------------------
-         ///\brief               Get the full path of the script log file 
-         /// \param[in] ruleId   Rule id
-         ///\return              Full path of the script log file
-         //-----------------------------------------------------
-         boost::filesystem::path scriptLogFile(int ruleId) const;
 
       private:
          //-----------------------------------------------------
@@ -103,5 +97,3 @@ namespace automation
       };
    }
 } // namespace automation::interpreter
-
-

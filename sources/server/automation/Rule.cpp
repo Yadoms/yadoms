@@ -28,7 +28,7 @@ namespace automation
 
    CRule::~CRule()
    {
-      m_interpreterManager->getRuleLogDispatcher()->remove(m_scriptLogger);
+      m_interpreterManager->getRuleLogDispatcher(m_ruleData->Interpreter())->removeLogger(m_ruleData->Id());
    }
 
    void CRule::start(boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
@@ -38,8 +38,10 @@ namespace automation
                      boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                      boost::shared_ptr<script::IGeneralInfo> generalInfo)
    {
-      m_scriptLogger = createScriptLogger(m_interpreterManager->getScriptLogFile(m_ruleData->Id()));
-      m_interpreterManager->getRuleLogDispatcher()->add(m_scriptLogger);
+      m_scriptLogger = createScriptLogger(m_interpreterManager->getScriptLogFilename(m_ruleData->Id()));
+
+      m_interpreterManager->getRuleLogDispatcher(m_ruleData->Interpreter())->addLogger(m_ruleData->Id(),
+                                                                                       m_scriptLogger);
 
       auto apiImplementation = createScriptApiImplementation(pluginGateway,
                                                              dbAcquisitionRequester,
@@ -54,16 +56,17 @@ namespace automation
 
       script::CProperties ruleProperties(m_ruleData);
 
-      m_scriptInterpreter = m_interpreterManager->getInterpreterInstance(ruleProperties.interpreterName());
+      m_scriptInterpreter = m_interpreterManager->getInterpreterInstance(m_ruleData->Interpreter());
 
       m_scriptInterpreter->startScript(m_ruleData->Id(),
                                        ruleProperties.scriptPath(),
                                        m_ipcAdapter->id());
    }
 
-   boost::shared_ptr<IRuleLogger> CRule::createScriptLogger(const std::string& scriptLogFile) const
+   boost::shared_ptr<IRuleLogger> CRule::createScriptLogger(const boost::filesystem::path& logFilePath) const
    {
-      return boost::make_shared<CRuleLogger>(scriptLogFile);
+      return boost::make_shared<CRuleLogger>(m_ruleData->Id(),
+         logFilePath);
    }
 
    void CRule::requestStop()
@@ -95,5 +98,3 @@ namespace automation
                                                                    generalInfo);
    }
 } // namespace automation	
-
-

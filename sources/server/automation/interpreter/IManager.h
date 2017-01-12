@@ -35,9 +35,10 @@ namespace automation
 
          //-----------------------------------------------------
          ///\brief               Get the rule log dispatcher
+         ///\param[in] interpreterType The interpreter type
          ///\return              The rule log dispatcher
          //-----------------------------------------------------
-         virtual boost::shared_ptr<IRuleLogDispatcher> getRuleLogDispatcher() = 0;
+         virtual boost::shared_ptr<IRuleLogDispatcher> getRuleLogDispatcher(const std::string& interpreterType) = 0;
 
          //-----------------------------------------------------
          ///\brief               Unload an interpreter (do nothing if interpreter not loaded)
@@ -52,15 +53,22 @@ namespace automation
          ///\return              The script code
          ///\throw CInvalidParameter if rule ID or file not found
          //-----------------------------------------------------
-         virtual std::string getScriptFile(const std::string& interpreterName,
-                                           const std::string& scriptPath) = 0;
+         virtual std::string getScriptContent(const std::string& interpreterName,
+                                              const std::string& scriptPath) = 0;
 
          //-----------------------------------------------------
          ///\brief               Get the script template file
          ///\param[in] interpreterName Interpreter to unload
          ///\return              The template code
          //-----------------------------------------------------
-         virtual std::string getScriptTemplateFile(const std::string& interpreterName) = 0;
+         virtual std::string getScriptTemplateContent(const std::string& interpreterName) = 0;
+
+         //-----------------------------------------------------
+         ///\brief               Get the full path of the script log file 
+         /// \param[in] ruleId   Rule id
+         ///\return              Full path of the script log file
+         //-----------------------------------------------------
+         virtual boost::filesystem::path getScriptLogFilename(int ruleId) const = 0;
 
          //-----------------------------------------------------
          ///\brief               Update the script file (create if necessary)
@@ -88,7 +96,7 @@ namespace automation
          ///\return              The rule log file, empty if not available
          ///\throw CInvalidParameter if rule ID not found
          //-----------------------------------------------------
-         virtual std::string getScriptLogFile(int ruleId) = 0;
+         virtual std::string getScriptLogContent(int ruleId) = 0;
 
          //-----------------------------------------------------
          ///\brief               Set the callback on rule stop notification
@@ -98,4 +106,3 @@ namespace automation
       };
    } // namespace automation::interpreter
 }
-
