@@ -188,16 +188,8 @@ class AceCodeEditor:
    
       # Need a workaround for Selenium bug #1723 (Left parenthesis don't work, see https://code.google.com/p/selenium/issues/detail?id=1723)
       for codeLine in code:
-         if ('(' in codeLine):
-            subStrings = codeLine.split("(")
-            for subString in subStrings[:-1]:
-               self.__codeEditorWebElement.send_keys(subString)
-               self.__codeEditorWebElement.send_keys(Keys.SHIFT + "9")
-            self.__codeEditorWebElement.send_keys(subStrings[-1])
-            self.__writeCR(codeLine)
-         else:
-            self.__codeEditorWebElement.send_keys(codeLine)
-            self.__writeCR(codeLine)
+         self.__codeEditorWebElement.send_keys(codeLine)
+         self.__writeCR(codeLine)
       
       
    def __writeCR(self, codeLine):
