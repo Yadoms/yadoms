@@ -1,8 +1,8 @@
 #include "stdafx.h"
+#include <shared/Log.h>
 #include "GammuPhone.h"
 #include "PhoneException.hpp"
 #include "Sms.h"
-
 
 CGammuPhone::CGammuPhone(const ISmsDialerConfiguration& configuration)
    : m_configuration(configuration),
@@ -48,7 +48,7 @@ bool CGammuPhone::connect()
    m_phoneId.append(" (").append(readValue).append(") ");
    m_phoneId.append(model->number);
 
-   std::cout << "Phone found : " << m_phoneId << std::endl;
+   YADOMS_LOG(information) << "Phone found : " << m_phoneId ;
 
    return true;
 }
@@ -104,7 +104,7 @@ void CGammuPhone::send(boost::shared_ptr<ISms> sms)
    if (!isConnected())
       throw CPhoneException("Phone must be connected to send SMS");
 
-   std::cout << "Send SMS to number " << sms->getNumber() << " \"" << sms->getContent() << "\"" << std::endl;
+   YADOMS_LOG(information) << "Send SMS to number " << sms->getNumber() << " \"" << sms->getContent() << "\"" ;
 
    // Fill in SMS info structure which will be used to generate messages.
    GSM_MultiPartSMSInfo SMSInfo;
@@ -169,7 +169,7 @@ void CGammuPhone::send(boost::shared_ptr<ISms> sms)
    }
 
    // Message sent OK
-   std::cout << "SMS sent successfully" << std::endl;
+   YADOMS_LOG(information) << "SMS sent successfully" ;
 }
 
 void CGammuPhone::sendSmsCallback(GSM_StateMachine* sm, int status, int MessageReference, void* user_data)
@@ -178,7 +178,7 @@ void CGammuPhone::sendSmsCallback(GSM_StateMachine* sm, int status, int MessageR
 
    if (status != 0)
    {
-      std::cerr << "SMS send report : error " << boost::lexical_cast<int>(status) << std::endl;
+      YADOMS_LOG(error) << "SMS send report : error " << boost::lexical_cast<int>(status) ;
       instance->m_smsSendStatus = ERR_UNKNOWN;
    }
    else
@@ -218,7 +218,7 @@ boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::getIncomi
    default:
    {
       // Error
-      std::cerr << "Error getting SMS status : " << GSM_ErrorString(gammuError) << std::endl;
+      YADOMS_LOG(error) << "Error getting SMS status : " << GSM_ErrorString(gammuError) ;
       return noSms;
    }
    }
@@ -260,7 +260,7 @@ boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::readSms(b
       }
       default:
       {
-         std::cerr << "Error getting SMS : " << gammuError << std::endl;
+         YADOMS_LOG(error) << "Error getting SMS : " << gammuError ;
          return noSms;
       }
       }
@@ -281,7 +281,7 @@ boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::readSms(b
    boost::shared_ptr<GSM_MultiSMSMessage*> gammuSortedSmsPtrArray(new GSM_MultiSMSMessage*[gammuSmsVector.size() + 1]);
    if (GSM_LinkSMS(nullptr, gammuSmsPtrArray.get(), gammuSortedSmsPtrArray.get(), TRUE) != ERR_NONE)
    {
-      std::cerr << "Error getting SMS : " << gammuError << std::endl;
+      YADOMS_LOG(error) << "Error getting SMS : " << gammuError ;
       return noSms;
    }
 
@@ -320,7 +320,7 @@ void CGammuPhone::deleteSmsFromPhone(boost::shared_ptr<GSM_MultiSMSMessage*> gam
          case ERR_EMPTY:
             break;
          default:
-            std::cerr << "Error deleting SMS : " << gammuError << std::endl;
+            YADOMS_LOG(error) << "Error deleting SMS : " << gammuError ;
          }
       }
    }
@@ -333,7 +333,7 @@ bool CGammuPhone::isValidMessage(GSM_MultiSMSMessage* gammuSms)
       return false;
 
    // Message is OK
-   std::cout << "Received message" << std::endl;
+   YADOMS_LOG(information) << "Received message" ;
    return true;
 }
 

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "EnumTypeInfo.h"
 #include "../OpenZWaveHelpers.h"
+#include <shared/Log.h>
 
 CEnumTypeInfo::CEnumTypeInfo(OpenZWave::ValueID& vID)
 {
@@ -32,7 +33,7 @@ void CEnumTypeInfo::initialize(OpenZWave::ValueID& vID)
 
    m_data.set("values", resultValues);
 
-   std::cout << m_data.serialize() << std::endl;
+   YADOMS_LOG(information) << m_data.serialize() ;
 }
 
 

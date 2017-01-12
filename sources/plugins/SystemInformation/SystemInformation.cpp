@@ -3,6 +3,7 @@
 #include <SystemFactory.h>
 #include <shared/event/EventTimer.h>
 #include <plugin_cpp_api/ImplementationHelper.h>
+#include <shared/Log.h>
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -29,7 +30,7 @@ enum
 
 void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   std::cout << "SystemInformation is starting..." << std::endl;
+   YADOMS_LOG(information) << "SystemInformation is starting..." ;
       
    m_configuration.initializeWith(api->getConfiguration());
 
@@ -50,7 +51,7 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    api->getEventHandler().createTimer(kEvtTimerRefreshDiskAndMemory, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(300));
 
    // the main loop
-   std::cout << "SystemInformation plugin is running..." << std::endl;
+   YADOMS_LOG(information) << "SystemInformation plugin is running..." ;
 
    while (true)
    {
@@ -59,7 +60,7 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
       case yApi::IYPluginApi::kEventStopRequested:
          {
-            std::cout << "Stop requested" << std::endl;
+            YADOMS_LOG(information) << "Stop requested" ;
             api->setPluginState(yApi::historization::EPluginState::kStopped);
             return;
          }
@@ -83,7 +84,7 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       default:
          {
-            std::cerr << "Unknown message id" << std::endl;
+            YADOMS_LOG(error) << "Unknown message id" ;
             break;
          }
       }
@@ -93,7 +94,7 @@ void CSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 void CSystemInformation::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData)
 {
    // Configuration was updated
-   std::cout << "Update configuration..." << std::endl;
+   YADOMS_LOG(information) << "Update configuration..." ;
    BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Update configuration

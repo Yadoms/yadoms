@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Thermostat4.h"
+#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -32,7 +33,7 @@ namespace rfxcomMessages
       }
       else
       {
-         std::cerr << "Unsupported keyword \"" << keyword << "\" for CThermostat4 device " << std::endl;
+         YADOMS_LOG(error) << "Unsupported keyword \"" << keyword << "\" for CThermostat4 device " ;
          return;
       }
 

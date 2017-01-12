@@ -2,6 +2,7 @@
 #include "IPX800Equipment.h"
 #include <shared/DataContainer.h>
 #include "noInformationException.hpp"
+#include <shared/Log.h>
 
 namespace equipments
 {
@@ -122,7 +123,7 @@ namespace equipments
             //historize only for new value
             if ((*diIterator)->get() != newValue || forceHistorization)
             {
-               std::cout << "read IO : " << (*diIterator)->getHardwareName() << " : " << boost::lexical_cast<std::string>(newValue) << std::endl;
+               YADOMS_LOG(information) << "read IO : " << (*diIterator)->getHardwareName() << " : " << boost::lexical_cast<std::string>(newValue) ;
                (*diIterator)->set(newValue);
                ToHistorize.push_back((*diIterator));
             }
@@ -255,7 +256,7 @@ namespace equipments
                m_pendingCounterHistorizer = (*diIterator);
             }
             else
-               std::cerr << (*diIterator)->getKeyword() << " could not be set to a value. Only reset is possible." << std::endl;
+               YADOMS_LOG(error) << (*diIterator)->getKeyword() << " could not be set to a value. Only reset is possible." ;
          }
          //0   : counter is cleared -> Only this one is implemented
          //!=0 : the value is added or sub from the counter

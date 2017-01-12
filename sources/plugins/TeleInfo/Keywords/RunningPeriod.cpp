@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "RunningPeriod.h"
 #include "KeywordException.hpp"
+#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -33,14 +34,14 @@ void CRunningPeriod::set(const std::string& value) const
       {
          m_runningPeriod->set(static_cast<teleInfo::specificHistorizers::EPeriod>(it->second));
 
-         if (m_isDeveloperMode) std::cout << m_runningPeriod->getKeyword() << "=" << m_runningPeriod->get() << std::endl;
+         if (m_isDeveloperMode) YADOMS_LOG(information) << m_runningPeriod->getKeyword() << "=" << m_runningPeriod->get() ;
       }
       else
          throw CKeywordException("Keyword " + m_runningPeriod->getKeyword() + " could not be set");
    }
    catch (shared::exception::CException& e)
    {
-      std::cout << e.what() << std::endl << std::endl;
+      YADOMS_LOG(information) << e.what();
    }
 }
 

@@ -2,7 +2,7 @@
 #include "ReceiveBufferHandler.h"
 #include "message/Crc8.h"
 #include <shared/currentTime/Provider.h>
-
+#include <shared/Log.h>
 
 CReceiveBufferHandler::CReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler)
    : m_lastReceivedTime(shared::currentTime::Provider().now()),
@@ -61,7 +61,7 @@ boost::shared_ptr<const message::CEsp3ReceivedPacket> CReceiveBufferHandler::get
    {
       if (m_content[message::kOffsetSyncByte] != message::SYNC_BYTE_VALUE)
       {
-         std::cerr << "Data received from EnOcean adapter : Message does not start with sync byte (0x55), wait for next sync byte" << std::endl;
+         YADOMS_LOG(error) << "Data received from EnOcean adapter : Message does not start with sync byte (0x55), wait for next sync byte" ;
          m_content.clear();
       }
       return uncompleteMessage;
@@ -80,7 +80,7 @@ boost::shared_ptr<const message::CEsp3ReceivedPacket> CReceiveBufferHandler::get
    if (message::computeCrc8(m_content.begin() + message::kOffsetDataLength,
                             m_content.begin() + message::kOffsetCrc8Header) != m_content[message::kOffsetCrc8Header])
    {
-      std::cerr << "Data received from EnOcean adapter : Header CRC is invalid, look for another sync byte already in buffer" << std::endl;
+      YADOMS_LOG(error) << "Data received from EnOcean adapter : Header CRC is invalid, look for another sync byte already in buffer" ;
 
       for (auto byte = m_content.begin() + 1; byte != m_content.end(); ++byte)
       {
@@ -99,7 +99,7 @@ boost::shared_ptr<const message::CEsp3ReceivedPacket> CReceiveBufferHandler::get
    if (message::computeCrc8(m_content.begin() + message::kOffsetData,
                             m_content.begin() + offsetCrc8Data) != m_content[offsetCrc8Data])
    {
-      std::cerr << "Data received from EnOcean adapter : Data CRC is invalid, look for another sync byte already in buffer" << std::endl;
+      YADOMS_LOG(error) << "Data received from EnOcean adapter : Data CRC is invalid, look for another sync byte already in buffer" ;
 
       for (auto byte = m_content.begin() + 1; byte != m_content.end(); ++byte)
       {

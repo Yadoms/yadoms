@@ -4,6 +4,7 @@
 #include "MegatecUpsFactory.h"
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
+#include <shared/Log.h>
 
 IMPLEMENT_PLUGIN(CMegatecUps)
 
@@ -37,7 +38,7 @@ static const std::locale ProtocolFloatFormatingLocale(std::locale(),
 
 
 CMegatecUps::CMegatecUps()
-   : m_logger(std::cout),
+   : m_logger(YADOMS_LOG(information)),
      m_protocolErrorCounter(0),
      m_lastSentBuffer(1),
      m_answerIsRequired(true),
@@ -74,7 +75,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-   std::cout << "CMegatecUps is starting..." << std::endl;
+   YADOMS_LOG(information) << "CMegatecUps is starting..." ;
 
    // Load configuration values (provided by database)
    m_configuration.initializeWith(api->getConfiguration());
@@ -99,7 +100,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
       case yApi::IYPluginApi::kEventStopRequested:
          {
-            std::cout << "Stop requested" << std::endl;
+            YADOMS_LOG(information) << "Stop requested" ;
             api->setPluginState(yApi::historization::EPluginState::kStopped);
             return;
          }
@@ -107,12 +108,12 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             // Command received from Yadoms
             auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
-            std::cout << "Command received : " << yApi::IDeviceCommand::toString(command) << std::endl;
+            YADOMS_LOG(information) << "Command received : " << yApi::IDeviceCommand::toString(command) ;
 
             if (boost::iequals(command->getKeyword(), m_upsShutdown->getKeyword()))
                onCommandShutdown(api, command->getBody());
             else
-               std::cout << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
+               YADOMS_LOG(information) << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command) ;
 
             break;
          }
@@ -121,7 +122,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             // Configuration was updated
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
             auto newConfigurationData = api->getEventHandler().getEventData<shared::CDataContainer>();
-            std::cout << "Update configuration..." << std::endl;
+            YADOMS_LOG(information) << "Update configuration..." ;
             BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
             // Close connection
@@ -165,7 +166,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       case kAnswerTimeout:
          {
-            std::cout << "No answer received from UPS (timeout)" << std::endl;
+            YADOMS_LOG(information) << "No answer received from UPS (timeout)" ;
             protocolErrorProcess(api);
             break;
          }
@@ -182,7 +183,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       default:
          {
-            std::cerr << "Unknown message id" << std::endl;
+            YADOMS_LOG(error) << "Unknown message id" ;
             break;
          }
       }
@@ -244,14 +245,14 @@ void CMegatecUps::onCommandShutdown(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const std::string& command)
 {
    if (!m_port)
-      std::cout << "Command not send (UPS is not ready) : " << command << std::endl;
+      YADOMS_LOG(information) << "Command not send (UPS is not ready) : " << command ;
 
    sendShtudownCmd();
 }
 
 void CMegatecUps::processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   std::cout << "UPS port opened" << std::endl;
+   YADOMS_LOG(information) << "UPS port opened" ;
 
 
    try
@@ -261,12 +262,12 @@ void CMegatecUps::processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> ap
    }
    catch (CProtocolException& e)
    {
-      std::cerr << "Protocol error : " << e.what();
+      YADOMS_LOG(error) << "Protocol error : " << e.what();
       protocolErrorProcess(api);
    }
    catch (shared::communication::CPortException& e)
    {
-      std::cerr << "Error connecting to UPS : " << e.what();
+      YADOMS_LOG(error) << "Error connecting to UPS : " << e.what();
       // Disconnection will be notified, we just have to wait...
    }
 }
@@ -304,7 +305,7 @@ void CMegatecUps::protocolErrorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
 
 void CMegatecUps::processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   std::cout << "UPS connection was lost" << std::endl;
+   YADOMS_LOG(information) << "UPS connection was lost" ;
    api->setPluginState(yApi::historization::EPluginState::kError, "connectionFailed");
 
    destroyConnection();
@@ -389,7 +390,7 @@ void CMegatecUps::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (CProtocolException& e)
    {
-      std::cout << "Unable to decode received message : " << e.what() << std::endl;
+      YADOMS_LOG(information) << "Unable to decode received message : " << e.what() ;
       protocolErrorProcess(api);
    }
 }
@@ -489,21 +490,21 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> api
 
    api->historizeData(DeviceName, m_keywords);
 
-   std::cout << "UPS current informations : inputVoltage=" << m_inputVoltage->get() <<
+   YADOMS_LOG(information) << "UPS current informations : inputVoltage=" << m_inputVoltage->get() <<
       ", inputfaultVoltage=" << m_inputfaultVoltage->get() <<
       ", outputVoltage=" << m_outputVoltage->get() <<
       ", m_outputLoad=" << m_outputLoad->get() <<
       ", inputFrequency=" << m_inputFrequency->get() <<
       ", batteryVoltage=" << m_batteryVoltage->get() <<
-      ", temperature=" << m_temperature->get() << std::endl;
-   std::cout << "UPS status : utilityFail=" << (utilityFail ? "YES" : "NO") <<
+      ", temperature=" << m_temperature->get() ;
+   YADOMS_LOG(information) << "UPS status : utilityFail=" << (utilityFail ? "YES" : "NO") <<
       ", batteryLow=" << (batteryLow ? "YES" : "NO") <<
       ", bypassActive=" << (bypassActive ? "YES" : "NO") <<
       ", upsFailed=" << (upsFailed ? "YES" : "NO") <<
       ", upsIsStandby=" << (upsIsStandby ? "YES" : "NO") <<
       ", testInProgress=" << (testInProgress ? "YES" : "NO") <<
       ", shutdownActive=" << (shutdownActive ? "YES" : "NO") <<
-      ", beeperOn=" << (beeperOn ? "YES" : "NO") << std::endl;
+      ", beeperOn=" << (beeperOn ? "YES" : "NO") ;
 
    // Toggle beep if not in expected state
    if (beeperOn != m_configuration.upsBeepEnable())
@@ -523,10 +524,10 @@ void CMegatecUps::processReceivedInformation(boost::shared_ptr<yApi::IYPluginApi
    ++itToken;
    std::string version(*itToken);
 
-   std::cout << "UPS Informations :" << std::endl;
-   std::cout << "   - company : " << company << std::endl;
-   std::cout << "   - model   : " << model << std::endl;
-   std::cout << "   - version : " << version << std::endl;
+   YADOMS_LOG(information) << "UPS Informations :" ;
+   YADOMS_LOG(information) << "   - company : " << company ;
+   YADOMS_LOG(information) << "   - model   : " << model ;
+   YADOMS_LOG(information) << "   - version : " << version ;
 
    // Declare device/keywords if necessary
    declareDevice(api, company + std::string(" ") + model + std::string(" ") + version);
@@ -543,7 +544,7 @@ void CMegatecUps::processReceivedRatingInformation(const boost::tokenizer<boost:
    ++itToken;
    auto frequency = upsStr2Double(*itToken);
 
-   std::cout << "UPS rating informations : voltage=" << ratingVoltage << ", current=" << ratingCurrent << ", batteryVoltage=" << m_batteryNominalVoltage << ", frequency=" << frequency << std::endl;
+   YADOMS_LOG(information) << "UPS rating informations : voltage=" << ratingVoltage << ", current=" << ratingCurrent << ", batteryVoltage=" << m_batteryNominalVoltage << ", frequency=" << frequency ;
 }
 
 double CMegatecUps::upsStr2Double(const std::string& str)
@@ -553,7 +554,7 @@ double CMegatecUps::upsStr2Double(const std::string& str)
    convert.imbue(ProtocolFloatFormatingLocale);
    if (!(convert >> number))
    {
-      std::cout << "Unable to decode number \"" << str << "\"" << std::endl;
+      YADOMS_LOG(information) << "Unable to decode number \"" << str << "\"" ;
       number = 0.0;
    }
    return number;

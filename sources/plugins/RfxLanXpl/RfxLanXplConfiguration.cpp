@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "RfxLanXplConfiguration.h"
-
+#include <shared/Log.h>
 
 CRfxLanXplConfiguration::~CRfxLanXplConfiguration()
 {
@@ -22,7 +22,7 @@ Poco::Net::NetworkInterface CRfxLanXplConfiguration::getXplNetworkInterface() co
    }
    catch (std::exception & ex)
    {
-      std::cerr << "Fail to get hub local ip " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "Fail to get hub local ip " << ex.what() ;
    }
 
    //in case of exception, or bad network interface

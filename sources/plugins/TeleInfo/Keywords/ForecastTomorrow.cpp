@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ForecastTomorrow.h"
 #include "KeywordException.hpp"
+#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -26,14 +27,14 @@ void CForecastTomorrow::set(const std::string& Value) const
       {
          m_forecastPeriod->set(static_cast<teleInfo::specificHistorizers::EColor>(it->second));
 
-         if (m_isDeveloperMode) std::cout << m_forecastPeriod->getKeyword() << "=" << m_forecastPeriod->get() << std::endl;
+         if (m_isDeveloperMode) YADOMS_LOG(information) << m_forecastPeriod->getKeyword() << "=" << m_forecastPeriod->get() ;
       }
       else
          throw CKeywordException("Keyword " + m_forecastPeriod->getKeyword() + " could not be set");
    }
    catch (shared::exception::CException& e)
    {
-      std::cout << e.what() << std::endl << std::endl;
+      YADOMS_LOG(information) << e.what();
    }
 }
 

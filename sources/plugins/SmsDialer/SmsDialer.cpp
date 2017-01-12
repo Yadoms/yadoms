@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <shared/Log.h>
 #include "SmsDialer.h"
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/exception/EmptyResult.hpp>
@@ -40,7 +41,7 @@ void CSmsDialer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    m_configuration.initializeWith(api->getConfiguration());
 
    // the main loop
-   std::cout << "CSmsDialer is running..." << std::endl;
+   YADOMS_LOG(information) << "CSmsDialer is running..." ;
 
    // Create the phone instance
    m_phone = CSmsDialerFactory::constructPhone(m_configuration);
@@ -72,13 +73,13 @@ void CSmsDialer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       }
    }
 
-   std::cout << "Stop requested" << std::endl;
+   YADOMS_LOG(information) << "Stop requested" ;
    api->setPluginState(yApi::historization::EPluginState::kStopped);
 }
 
 bool CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   std::cout << "Phone is not connected" << std::endl << std::endl;
+   YADOMS_LOG(information) << "Phone is not connected";
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionFailed");
 
    m_incommingSmsPollTimer->stop();
@@ -98,7 +99,7 @@ bool CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> a
          case yApi::IYPluginApi::kEventDeviceCommand:
          {
             // Ignore all commands
-            std::cout << "Not able to process received the command (phone not connected)" << std::endl;
+            YADOMS_LOG(information) << "Not able to process received the command (phone not connected)" ;
             break;
          }
          case yApi::IYPluginApi::kEventUpdateConfiguration:
@@ -106,7 +107,7 @@ bool CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> a
             // Configuration was updated
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
             std::string newConfiguration = api->getEventHandler().getEventData<std::string>();
-            std::cout << "configuration was updated..." << std::endl;
+            YADOMS_LOG(information) << "configuration was updated..." ;
             BOOST_ASSERT(!newConfiguration.empty()); // newConfigurationValues shouldn't be empty, or kEvtUpdateConfiguration shouldn't be generated
 
             // Destroy current phone instance to update configuration
@@ -138,14 +139,14 @@ bool CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> a
          }
          default:
          {
-            std::cerr << "Unknown message id" << std::endl;
+            YADOMS_LOG(error) << "Unknown message id" ;
             break;
          }
          }
       }
       catch (CPhoneException& e)
       {
-         std::cerr << "Phone critical error : " << e.what() << std::endl;
+         YADOMS_LOG(error) << "Phone critical error : " << e.what() ;
       }
    }
 
@@ -154,7 +155,7 @@ bool CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> a
 
 bool CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   std::cout << "Phone is connected" << std::endl;
+   YADOMS_LOG(information) << "Phone is connected" ;
    api->setPluginState(yApi::historization::EPluginState::kCustom, "phoneConnected");
 
    m_connectionTimer->stop();
@@ -174,7 +175,7 @@ bool CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> api)
    }
    catch (CPhoneException& e)
    {
-      std::cerr << "Phone critical error : " << e.what() << std::endl;
+      YADOMS_LOG(error) << "Phone critical error : " << e.what() ;
    }
 
    // And start timer for next incoming SMS check
@@ -197,14 +198,14 @@ bool CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             // Command received
             boost::shared_ptr<const yApi::IDeviceCommand> command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
-            std::cout << "Command received :" << yApi::IDeviceCommand::toString(command);
+            YADOMS_LOG(information) << "Command received :" << yApi::IDeviceCommand::toString(command);
 
             if (boost::iequals(command->getKeyword(), m_powerKeyword->getKeyword()))
                onPowerPhoneRequest(api, command->getBody());
             else if (boost::iequals(command->getKeyword(), m_messageKeyword->getKeyword()))
                onSendSmsRequest(api, command->getBody());
             else
-               std::cout << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
+               YADOMS_LOG(information) << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command) ;
 
             break;
          }
@@ -213,7 +214,7 @@ bool CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> api)
             // Configuration was updated
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
             std::string newConfiguration = api->getEventHandler().getEventData<std::string>();
-            std::cout << "Update configuration..." << std::endl;
+            YADOMS_LOG(information) << "Update configuration..." ;
             BOOST_ASSERT(!newConfiguration.empty()); // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
             // Close connection with current phone
@@ -239,14 +240,14 @@ bool CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> api)
          }
          default:
          {
-            std::cerr << "Unknown message id" << std::endl;
+            YADOMS_LOG(error) << "Unknown message id" ;
             break;
          }
          }
       }
       catch (CPhoneException& e)
       {
-         std::cerr << "Phone critical error : " << e.what() << std::endl;
+         YADOMS_LOG(error) << "Phone critical error : " << e.what() ;
       }
    }
 
@@ -275,7 +276,7 @@ void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (CPhoneException& e)
    {
-      std::cerr << "Fail to power ON/OFF the phone : " << e.what() << std::endl;
+      YADOMS_LOG(error) << "Fail to power ON/OFF the phone : " << e.what() ;
    }
 }
 
@@ -291,13 +292,13 @@ void CSmsDialer::onSendSmsRequest(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (shared::exception::CInvalidParameter& e)
    {
-      std::cerr << "Invalid SMS sending request \"" << sendSmsRequest << "\" : " << e.what() << std::endl;
+      YADOMS_LOG(error) << "Invalid SMS sending request \"" << sendSmsRequest << "\" : " << e.what() ;
       notifyAck(false);
       return;
    }
    catch (CPhoneException& e)
    {
-      std::cerr << "Error sending SMS : " << e.what() << std::endl;
+      YADOMS_LOG(error) << "Error sending SMS : " << e.what() ;
       notifyAck(false);
    }
 }
@@ -310,8 +311,8 @@ void CSmsDialer::processIncommingSMS(boost::shared_ptr<yApi::IYPluginApi> api) c
    {
       for (auto it = incommingSms->begin(); it != incommingSms->end(); ++it)
       {
-         std::cout << "SMS received" << std::endl;
-         std::cout << "SMS received from " << (*it)->getNumber() << " : " << (*it)->getContent() << std::endl;
+         YADOMS_LOG(information) << "SMS received" ;
+         YADOMS_LOG(information) << "SMS received from " << (*it)->getNumber() << " : " << (*it)->getContent() ;
 
          // Send SMS to Yadoms
          try
@@ -321,7 +322,7 @@ void CSmsDialer::processIncommingSMS(boost::shared_ptr<yApi::IYPluginApi> api) c
          }
          catch (shared::exception::CInvalidParameter& e)
          {
-            std::cerr << "Phone number is unknown " << e.what() << std::endl;
+            YADOMS_LOG(error) << "Phone number is unknown " << e.what() ;
          }
       }
    }
@@ -331,9 +332,9 @@ void CSmsDialer::notifyAck(bool ok)
 {
    // Command acknowledges are not actually supported (see https://trello.com/c/Yd8N8v3J), just log
    if (ok)
-      std::cout << "SMS successfully sent" << std::endl;
+      YADOMS_LOG(information) << "SMS successfully sent" ;
    else
-      std::cout << "Error sending SMS" << std::endl;
+      YADOMS_LOG(information) << "Error sending SMS" ;
 }
 
 std::string CSmsDialer::getRecipientPhone(boost::shared_ptr<yApi::IYPluginApi> api, int recipientId)
@@ -356,7 +357,7 @@ int CSmsDialer::findRecipientByPhone(boost::shared_ptr<yApi::IYPluginApi> api, c
       throw shared::exception::CInvalidParameter((boost::format("Recipient with phone number %1% not found in database") % phoneNumber).str());
 
    if (recipients.size() > 1)
-      std::cout << "Several recipients with phone number " << phoneNumber << " were found in database, select the first one, Id=" << recipients[0] << std::endl;
+      YADOMS_LOG(information) << "Several recipients with phone number " << phoneNumber << " were found in database, select the first one, Id=" << recipients[0] ;
 
    return recipients[0];
 }

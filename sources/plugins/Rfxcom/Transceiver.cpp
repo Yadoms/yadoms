@@ -47,6 +47,7 @@
 #include "rfxcomMessages/Wind.h"
 #include "IncrementSequenceNumber.h"
 #include "ManuallyDeviceCreationException.hpp"
+#include <shared/Log.h>
 
 //
 // =======================================================================
@@ -231,7 +232,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CTransceiver::
       case pTypeFS20:
          return rfxcomMessages::CFS20(api, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
       default:
-         std::cerr << "Invalid command \"" << command->getBody() << "\" : " << " unknown type " << deviceType << std::endl;
+         YADOMS_LOG(error) << "Invalid command \"" << command->getBody() << "\" : " << " unknown type " << deviceType ;
          throw shared::exception::CInvalidParameter(command->getBody());
       }
    }
@@ -339,9 +340,9 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
          break;
       default:
          {
-            std::cerr << "Invalid RfxCom message received, unknown packet type " << std::setfill('0')
+            YADOMS_LOG(error) << "Invalid RfxCom message received, unknown packet type " << std::setfill('0')
                << std::setw(sizeof(unsigned char) * 2) << std::hex << static_cast<int>(buf->RXRESPONSE.packettype)
-               << std::endl;
+               ;
             break;
          }
       }
@@ -349,7 +350,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
    }
    catch (std::exception& exception)
    {
-      std::cerr << "Invalid RfxCom message received : " << exception.what() << std::endl;
+      YADOMS_LOG(error) << "Invalid RfxCom message received : " << exception.what() ;
       return boost::shared_ptr<rfxcomMessages::IRfxcomMessage>();
    }
 }
@@ -556,14 +557,14 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
    }
    catch (shared::exception::CInvalidParameter& e)
    {
-      std::cerr << "Fail to create device manually, invalid parameter : " << e.what() << std::endl;
-      std::cerr << "data : " << data.getConfiguration().get<shared::CDataContainer>("type.content").serialize() << std::endl;
+      YADOMS_LOG(error) << "Fail to create device manually, invalid parameter : " << e.what() ;
+      YADOMS_LOG(error) << "data : " << data.getConfiguration().get<shared::CDataContainer>("type.content").serialize() ;
       throw CManuallyDeviceCreationException("invalid parameter");
    }
    catch (shared::exception::COutOfRange& e)
    {
-      std::cerr << "Fail to create device manually, out of range : " << e.what() << std::endl;
-      std::cerr << "data : " << data.getConfiguration().get<shared::CDataContainer>("type.content").serialize() << std::endl;
+      YADOMS_LOG(error) << "Fail to create device manually, out of range : " << e.what() ;
+      YADOMS_LOG(error) << "data : " << data.getConfiguration().get<shared::CDataContainer>("type.content").serialize() ;
       throw CManuallyDeviceCreationException("out of range");
    }
 

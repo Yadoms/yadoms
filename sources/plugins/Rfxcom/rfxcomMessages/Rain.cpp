@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Rain.h"
 #include <shared/exception/InvalidParameter.hpp>
+#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -42,7 +43,7 @@ namespace rfxcomMessages
          m_rain->set(rbuf.RAIN.raintotal3 * 0.266);
          break;
       default:
-         std::cout << "Rain subtype is not supported : " << m_subType << std::endl;
+         YADOMS_LOG(information) << "Rain subtype is not supported : " << m_subType ;
          break;
       }
 

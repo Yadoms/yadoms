@@ -6,6 +6,7 @@
 #include "../RequestErrorException.hpp"
 #include "../webSiteErrorException.hpp"
 #include "../ErrorAnswerHandler.h"
+#include <shared/Log.h>
 
 CLiveStations::CLiveStations(boost::shared_ptr<yApi::IYPluginApi> api):
    m_location(api->getYadomsInformation()->location()),
@@ -46,8 +47,8 @@ void CLiveStations::processLookUp(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (std::exception& e)
    {
-      std::cerr << "exception " << e.what() << std::endl;
-      std::cout << "No Stations return by the website" << std::endl;
+      YADOMS_LOG(error) << "exception " << e.what() ;
+      YADOMS_LOG(information) << "No Stations return by the website" ;
       
       throw CRequestErrorException();
    }
@@ -107,5 +108,5 @@ std::string CLiveStations::getCity()
 
 CLiveStations::~CLiveStations()
 {
-   std::cout << "destruction CLiveStation" << std::endl;
+   YADOMS_LOG(information) << "destruction CLiveStation" ;
 }

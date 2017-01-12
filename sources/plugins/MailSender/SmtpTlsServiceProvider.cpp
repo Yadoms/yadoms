@@ -6,6 +6,7 @@
 #include <Poco/Net/SSLManager.h>
 #include <Poco/Net/AcceptCertificateHandler.h>
 #include <Poco/AutoPtr.h>
+#include <shared/Log.h>
 
 CSmtpTlsServiceProvider::CSmtpTlsServiceProvider(boost::shared_ptr<IMSConfiguration>& smtpConfiguration)
    : m_smtpConfiguration(smtpConfiguration)
@@ -57,30 +58,30 @@ bool CSmtpTlsServiceProvider::sendMail(const Poco::Net::MailMessage& message) co
       }
       catch (Poco::Net::SMTPException& e)
       {
-         std::cerr << "Fail to send email with TLS : SMTPException :" << std::endl;
-         std::cerr << e.displayText() << std::endl;
+         YADOMS_LOG(error) << "Fail to send email with TLS : SMTPException :" ;
+         YADOMS_LOG(error) << e.displayText() ;
          session.close();
          Poco::Net::uninitializeSSL();
       }
    }
    catch (Poco::Net::NetException& e)
    {
-      std::cerr << "Fail to send email with TLS : NetException :" << std::endl;
-      std::cerr << e.displayText() << std::endl;
+      YADOMS_LOG(error) << "Fail to send email with TLS : NetException :" ;
+      YADOMS_LOG(error) << e.displayText() ;
    }
    catch (Poco::Exception& e)
    {
-      std::cerr << "Fail to send email with TLS : Exception" << std::endl;
-      std::cerr << e.displayText() << std::endl;
+      YADOMS_LOG(error) << "Fail to send email with TLS : Exception" ;
+      YADOMS_LOG(error) << e.displayText() ;
    }
    catch (std::exception& e)
    {
-      std::cerr << "Fail to send email with TLS : std::exception" << std::endl;
-      std::cerr << e.what() << std::endl;
+      YADOMS_LOG(error) << "Fail to send email with TLS : std::exception" ;
+      YADOMS_LOG(error) << e.what() ;
    }
    catch (...)
    {
-      std::cerr << "Fail to send email with TLS : unknown error" << std::endl;
+      YADOMS_LOG(error) << "Fail to send email with TLS : unknown error" ;
    }
    return false;
 }

@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "XplService.h"
-
 #include "XplMessage.h"
 #include "XplActor.h"
 #include "XplConstants.h"
 #include "XplServiceTask.h"
+#include <shared/Log.h>
 
 
 // A client send its data as broadcast on the XPL port,
@@ -46,7 +46,7 @@ namespace xplcore
 
    void CXplService::stop()
    {
-      std::cout << "Ask for serviceTask to end." << std::endl;
+      YADOMS_LOG(information) << "Ask for serviceTask to end." ;
       //cancel xpl task
       if (m_xplTask)
          m_xplTask->cancel();
@@ -54,9 +54,9 @@ namespace xplcore
       //cancel all other ones
       m_taskManager.cancelAll();
 
-      std::cout << "Wait for all tasks to end." << std::endl;
+      YADOMS_LOG(information) << "Wait for all tasks to end." ;
       m_taskManager.joinAll();
-      std::cout << "CXplService stopped." << std::endl;
+      YADOMS_LOG(information) << "CXplService stopped." ;
       //do not delete m_xplTasks, before taskmanager has already done it
    }
 

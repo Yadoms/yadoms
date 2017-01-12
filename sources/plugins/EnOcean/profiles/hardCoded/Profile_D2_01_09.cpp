@@ -4,7 +4,7 @@
 #include "../../message/RadioErp1SendMessage.h"
 #include "../../message/ResponseReceivedMessage.h"
 #include "Profile_D2_01_Common.h"
-
+#include <shared/Log.h>
 
 CProfile_D2_01_09::CProfile_D2_01_09(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
@@ -70,7 +70,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
             historizers.push_back(m_dimAtSpeed3);
             break;
          default:
-            std::cout << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel << std::endl;
+            YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel ;
             break;
          }
          return historizers;
@@ -104,7 +104,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
             powerValueW = static_cast<double>(rawValue) * 1000;
             break;
          default:
-            std::cout << "Profile " << profile() << " : received unsupported unit value" << unit << std::endl;
+            YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported unit value" << unit ;
             break;
          }
 
@@ -126,7 +126,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                   historizers.push_back(m_loadPower);
                   break;
                default:
-                  std::cout << "Profile " << profile() << " : received unsupported unit value for output channel" << unit << std::endl;
+                  YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported unit value for output channel" << unit ;
                   break;
                }
                break;
@@ -146,12 +146,12 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
                historizers.push_back(m_inputPower);
                break;
             default:
-               std::cout << "Profile " << profile() << " : received unsupported unit value for input channel" << unit << std::endl;
+               YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported unit value for input channel" << unit ;
                break;
             }
             break;
          default:
-            std::cout << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel << std::endl;
+            YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel ;
             break;
          }
          return historizers;
@@ -189,7 +189,7 @@ void CProfile_D2_01_09::sendCommand(const std::string& keyword,
    {
       std::ostringstream oss;
       oss << "Device " << m_deviceId << " (" << profile() << ") : send command on unsupported keyword " << keyword;
-      std::cout << oss.str() << std::endl;
+      YADOMS_LOG(information) << oss.str() ;
       throw std::logic_error(oss.str());
    }
 
@@ -216,12 +216,12 @@ void CProfile_D2_01_09::sendCommand(const std::string& keyword,
                              {
                                 answer = esp3Packet;
                              }))
-      std::cerr << "Fail to send state to " << m_deviceId << " : no answer to Actuator Set Output command" << std::endl;
+      YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : no answer to Actuator Set Output command" ;
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
 
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-      std::cerr << "Fail to send state to " << m_deviceId << " : Actuator Set Output command returns " << response->returnCode() << std::endl;
+      YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : Actuator Set Output command returns " << response->returnCode() ;
 }
 
 void CProfile_D2_01_09::sendConfiguration(const shared::CDataContainer& deviceConfiguration,
@@ -254,7 +254,7 @@ void CProfile_D2_01_09::sendConfiguration(const shared::CDataContainer& deviceCo
    {
       std::ostringstream oss;
       oss << "Min refresh time (" << minEnergyMeasureRefreshTime << ") is over max refresh time (" << maxEnergyMeasureRefreshTime << ") for device " << m_deviceId << " (" << profile() << ")";
-      std::cerr << oss.str() << std::endl;
+      YADOMS_LOG(error) << oss.str() ;
       throw std::logic_error(oss.str());
    }
 

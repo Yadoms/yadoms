@@ -3,6 +3,7 @@
 #include <shared/exception/Exception.hpp>
 #include "Keywords/KeywordException.hpp"
 #include "Keywords/KeywordHelpers.h"
+#include <shared/Log.h>
 
 CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
                                        IWUConfiguration& wuConfiguration,
@@ -33,7 +34,7 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (shared::exception::CException& e)
    {
-      std::cout << "Configuration or initialization error of weather module :" << e.what() << std::endl;
+      YADOMS_LOG(information) << "Configuration or initialization error of weather module :" << e.what() ;
       throw;
    }
 }
@@ -114,7 +115,7 @@ void CWeatherConditions::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api
    }
    catch (shared::exception::CException& e)
    {
-      std::cout << e.what() << std::endl;
+      YADOMS_LOG(information) << e.what() ;
       throw;
    }
 }
@@ -136,8 +137,8 @@ void CWeatherConditions::parse(boost::shared_ptr<yApi::IYPluginApi> api,
    try
    {
       m_liveConditions->setCityName(m_localisation);
-      std::cout << "City :" << m_localisation << std::endl;
-      std::cout << "Observation location :" << dataToParse.get<std::string>("current_observation.observation_location.full") << std::endl;
+      YADOMS_LOG(information) << "City :" << m_localisation ;
+      YADOMS_LOG(information) << "Observation location :" << dataToParse.get<std::string>("current_observation.observation_location.full") ;
 
       if (wuConfiguration.isConditionsIndividualKeywordsEnabled())
       {
@@ -177,7 +178,7 @@ void CWeatherConditions::parse(boost::shared_ptr<yApi::IYPluginApi> api,
          //UV
          //
          m_uv->set(static_cast<int>(dataToParse.get<double>("current_observation.UV")));
-         std::cout << m_uv->getKeyword() << "=" << m_uv->get() << std::endl;
+         YADOMS_LOG(information) << m_uv->getKeyword() << "=" << m_uv->get() ;
 
          //
          //DewPoint
@@ -256,13 +257,13 @@ void CWeatherConditions::parse(boost::shared_ptr<yApi::IYPluginApi> api,
       }
       api->historizeData(m_deviceName, m_keywords);
 
-      std::cout << "Refresh Weather Conditions" << std::endl;
+      YADOMS_LOG(information) << "Refresh Weather Conditions" ;
    }
    catch (CKeywordException&)
    {}
    catch (shared::exception::CException& e)
    {
-      std::cout << e.what() << std::endl;
+      YADOMS_LOG(information) << e.what() ;
    }
 }
 

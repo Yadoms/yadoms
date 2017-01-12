@@ -2,6 +2,7 @@
 #include "WUConfiguration.h"
 #include"noStateException.hpp"
 #include "Features/Location.h"
+#include <shared/Log.h>
 
 CWUConfiguration::CWUConfiguration()
 {
@@ -19,7 +20,7 @@ void CWUConfiguration::initializeWith(const shared::CDataContainer& data)
    }
    catch (boost::thread_interrupted&)
    {
-      std::cerr << "ERROR : Plugin Configuration could not be loaded" << std::endl;
+      YADOMS_LOG(error) << "ERROR : Plugin Configuration could not be loaded" ;
    }
 }
 

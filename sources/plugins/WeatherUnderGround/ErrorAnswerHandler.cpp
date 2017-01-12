@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ErrorAnswerHandler.h"
 #include "webSiteErrorException.hpp"
+#include <shared/Log.h>
 
 typedef std::list<std::string> EnumValuesTypes;
 
@@ -22,13 +23,13 @@ ErrorAnswerHandler::ErrorAnswerHandler(boost::shared_ptr<yApi::IYPluginApi> api,
       m_errorState = true;
 
       auto DescriptionError = response.getWithDefault<std::string>("response.error.description", "");
-      std::cerr << "ERROR : " << DescriptionError << std::endl;
+      YADOMS_LOG(error) << "ERROR : " << DescriptionError ;
 
       auto it = find(EEnumValuesTypes.begin(), EEnumValuesTypes.end(), error);
       if (it != EEnumValuesTypes.end())
          m_errorStatePlugin = *it;
       else
-         std::cout << "This error tag is not handled yet by YADOMS" << error << std::endl;
+         YADOMS_LOG(information) << "This error tag is not handled yet by YADOMS" << error ;
    }
 }
 

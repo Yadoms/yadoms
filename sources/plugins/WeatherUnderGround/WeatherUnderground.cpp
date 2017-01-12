@@ -9,6 +9,7 @@
 #include "noLocationException.hpp"
 #include "webSiteErrorException.hpp"
 #include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
+#include <shared/Log.h>
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -28,7 +29,7 @@ CWeatherUnderground::~CWeatherUnderground()
 
 void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   std::cout << "CWeatherUnderground is starting..." << std::endl;
+   YADOMS_LOG(information) << "CWeatherUnderground is starting..." ;
 
    auto weatherConditionsSendingRetry = 0;
    auto astronomySendingRetry = 0;
@@ -36,7 +37,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    api->getEventHandler().createTimer(kEvtInitialization, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
 
-   std::cout << "CWeatherUnderground plugin is running..." << std::endl;
+   YADOMS_LOG(information) << "CWeatherUnderground plugin is running..." ;
 
    // the main loop
    while (true)
@@ -46,7 +47,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
       case yApi::IYPluginApi::kEventStopRequested:
          {
-            std::cout << "Stop requested" << std::endl;
+            YADOMS_LOG(information) << "Stop requested" ;
             setPluginState(api, EWUPluginState::kStop);
             return;
          }
@@ -73,20 +74,20 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
          catch (CNoLocationException&)
          { 
-            std::cerr << "No location configured" << std::endl;
+            YADOMS_LOG(error) << "No location configured" ;
             setPluginState(api, EWUPluginState::kNoLocation);
          }
          catch (CWebSiteErrorException& e)
          {
-            std::cout << e.what() << std::endl;
-            std::cout << "result :" << strcmp(e.what(), "keynotfound") << std::endl;
+            YADOMS_LOG(information) << e.what() ;
+            YADOMS_LOG(information) << "result :" << strcmp(e.what(), "keynotfound") ;
 
             if (boost::icontains(e.what(), "keynotfound"  )) setPluginState(api, EWUPluginState::kKeyNotFound);
             if (boost::icontains(e.what(), "querynotfound")) setPluginState(api, EWUPluginState::kQueryNotFound);
          }
          catch (std::exception& e)
          {
-            std::cout << "exception : " << e.what() << std::endl;
+            YADOMS_LOG(information) << "exception : " << e.what() ;
             // Informs Yadoms about the plugin actual state
             setPluginState(api, EWUPluginState::kInitializationError);
          }
@@ -104,7 +105,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {}
 			catch (std::exception& e)
 			{
-				std::cerr << "error during weather refresh :" << e.what() << std::endl;
+				YADOMS_LOG(error) << "error during weather refresh :" << e.what() ;
 			}
          }
          break;
@@ -120,7 +121,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {}
 			catch (std::exception& e)
 			{
-				std::cerr << "error during astronomy refresh :" << e.what() << std::endl;
+				YADOMS_LOG(error) << "error during astronomy refresh :" << e.what() ;
 			}
          }
          break;
@@ -136,7 +137,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {}
 			catch (std::exception& e)
 			{
-				std::cerr << "error during forecast refresh :" << e.what() << std::endl;
+				YADOMS_LOG(error) << "error during forecast refresh :" << e.what() ;
 			}
          }
          break;
@@ -157,11 +158,11 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
          auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
-         std::cout << "Set device configuration received, but not used" << std::endl;
+         YADOMS_LOG(information) << "Set device configuration received, but not used" ;
          break;
       }
       default:
-         std::cerr << "Unknown message id" << std::endl;
+         YADOMS_LOG(error) << "Unknown message id" ;
          break;
       }
    }
@@ -171,7 +172,7 @@ void CWeatherUnderground::onUpdateConfiguration(boost::shared_ptr<yApi::IYPlugin
                                                 const shared::CDataContainer& newConfigurationData)
 {
    // Configuration was updated
-   std::cout << "Update configuration..." << std::endl;
+   YADOMS_LOG(information) << "Update configuration..." ;
    BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Update configuration
@@ -188,7 +189,7 @@ void CWeatherUnderground::onUpdateConfiguration(boost::shared_ptr<yApi::IYPlugin
    }
    else
    {
-      std::cerr << "Factory not yet initialize, please check Ethernet connection" << std::endl;
+      YADOMS_LOG(error) << "Factory not yet initialize, please check Ethernet connection" ;
       api->getEventHandler().createTimer(kEvtInitialization, shared::event::CEventTimer::kOneShot, boost::posix_time::minutes(1));
    }
 }
@@ -224,7 +225,7 @@ void CWeatherUnderground::setPluginState(boost::shared_ptr<yApi::IYPluginApi> ap
          api->setPluginState(yApi::historization::EPluginState::kStopped);
          break;
       default:
-         std::cerr << "this plugin status does not exist : " << newState << std::endl;
+         YADOMS_LOG(error) << "this plugin status does not exist : " << newState ;
          break;
       }
 
@@ -266,7 +267,7 @@ shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yAp
    }
    catch (shared::exception::CException& e)
    {
-      std::cout << e.what() << ". Retry in 1 minute." << std::endl;
+      YADOMS_LOG(information) << e.what() << ". Retry in 1 minute." ;
       api->getEventHandler().createTimer(event, shared::event::CEventTimer::kOneShot, boost::posix_time::minutes(1));
 
       if (nbRetry == 3)

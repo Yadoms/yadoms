@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "RFXtrxHelpers.h"
 #include <shared/exception/Exception.hpp>
+#include <shared/Log.h>
 
 //--------------------------------------------------------------
 /// \brief	The code of RFXtrx.h helpers
@@ -48,7 +49,7 @@ void CheckReceivedMessage(const RBUF& rbuf,
       throw shared::exception::CException((boost::format("Wrong message length, received : %1%, expected : %2% (total_message_size - 1)") % static_cast<unsigned int>(rbuf.RXRESPONSE.packetlength) % (expectedSize - 1)).str());
 
    if (expectedSeqNumber != DONT_CHECK_SEQUENCE_NUMBER && rbuf.RXRESPONSE.seqnbr != expectedSeqNumber)
-      std::cout << "Wrong message sequence number, received : " << static_cast<unsigned int>(rbuf.RXRESPONSE.seqnbr) << ", expected : " << expectedSeqNumber << std::endl;
+      YADOMS_LOG(information) << "Wrong message sequence number, received : " << static_cast<unsigned int>(rbuf.RXRESPONSE.seqnbr) << ", expected : " << expectedSeqNumber ;
 
 }
 

@@ -5,6 +5,7 @@
 #include "ProtocolException.hpp"
 #include <shared/communication/PortException.hpp>
 #include "ManuallyDeviceCreationException.hpp"
+#include <shared/Log.h>
 
 IMPLEMENT_PLUGIN(CRfxcom)
 
@@ -20,7 +21,7 @@ enum
 
 
 CRfxcom::CRfxcom()
-   : m_logger(std::cout),
+   : m_logger(YADOMS_LOG(information)),
      m_configurationUpdated(false),
      m_lastRequest(sizeof(RBUF)),
      m_isDeveloperMode(false)
@@ -35,7 +36,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-   std::cout << "CRfxcom is starting..." << std::endl;
+   YADOMS_LOG(information) << "CRfxcom is starting..." ;
 
    m_configurationUpdated = false;
 
@@ -65,7 +66,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
          case yApi::IYPluginApi::kEventStopRequested:
             {
-               std::cout << "Stop requested" << std::endl;
+               YADOMS_LOG(information) << "Stop requested" ;
                api->setPluginState(yApi::historization::EPluginState::kStopped);
                return;
             }
@@ -81,7 +82,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                // Yadoms asks for device creation
                auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
-               std::cout << "Manually device creation request received for device :" << request->getData().getDeviceName() << std::endl;
+               YADOMS_LOG(information) << "Manually device creation request received for device :" << request->getData().getDeviceName() ;
                try
                {
                   request->sendSuccess(m_transceiver->createDeviceManually(api, request->getData()));
@@ -116,7 +117,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
          case kAnswerTimeout:
             {
-               std::cerr << "No answer received, try to reconnect in a while..." << std::endl;
+               YADOMS_LOG(error) << "No answer received, try to reconnect in a while..." ;
                errorProcess(api);
                break;
             }
@@ -127,14 +128,14 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
          default:
             {
-               std::cerr << "Unknown message id" << std::endl;
+               YADOMS_LOG(error) << "Unknown message id" ;
                break;
             }
          }
       }
       catch (shared::communication::CPortException&)
       {
-         std::cerr << "The message is not sent and will be discarded" << std::endl;
+         YADOMS_LOG(error) << "The message is not sent and will be discarded" ;
          errorProcess(api);
       }
    }
@@ -198,11 +199,11 @@ void CRfxcom::send(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<s
 void CRfxcom::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                         boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
-   std::cout << "Command received :" << yApi::IDeviceCommand::toString(command) << std::endl;
+   YADOMS_LOG(information) << "Command received :" << yApi::IDeviceCommand::toString(command) ;
 
    if (!m_port)
    {
-      std::cout << "Command not sent (RFXCom is not ready) : " << yApi::IDeviceCommand::toString(command) << std::endl;
+      YADOMS_LOG(information) << "Command not sent (RFXCom is not ready) : " << yApi::IDeviceCommand::toString(command) ;
       return;
    }
 
@@ -214,7 +215,7 @@ void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const shared::CDataContainer& newConfigurationData)
 {
    // Configuration was updated
-   std::cout << "Update configuration..." << std::endl;
+   YADOMS_LOG(information) << "Update configuration..." ;
    BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // If plugin instance is not running, just update configuration
@@ -237,7 +238,7 @@ void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
       m_configurationUpdated = false;
 
       // Ask status, to compare with new configuration
-      std::cout << "Ask the RFXCom status..." << std::endl;
+      YADOMS_LOG(information) << "Ask the RFXCom status..." ;
       send(api, m_transceiver->buildGetStatusCmd(), true);
       return;
    }
@@ -254,7 +255,7 @@ void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 
 void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   std::cout << "RFXCom port opened" << std::endl;
+   YADOMS_LOG(information) << "RFXCom port opened" ;
    api->setPluginState(yApi::historization::EPluginState::kCustom, "initializing");
 
    try
@@ -264,7 +265,7 @@ void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> 
    }
    catch (CProtocolException& e)
    {
-      std::cerr << "Error resetting RFXCom transceiver : " << e.what() << std::endl;
+      YADOMS_LOG(error) << "Error resetting RFXCom transceiver : " << e.what() ;
 
       // Stop the communication, and try later
       errorProcess(api);
@@ -279,7 +280,7 @@ void CRfxcom::errorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
 
 void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   std::cout << "RFXCom connection was lost" << std::endl;
+   YADOMS_LOG(information) << "RFXCom connection was lost" ;
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionLost");
 
    errorProcess(api);
@@ -295,7 +296,7 @@ void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> api
 
    if (!message)
    {
-      std::cout << "Unable to decode received message" << std::endl;
+      YADOMS_LOG(information) << "Unable to decode received message" ;
       return;
    }
 
@@ -328,7 +329,7 @@ void CRfxcom::initRfxcom(boost::shared_ptr<yApi::IYPluginApi> api)
    // since the official sequence seems to not work all times.
 
    // Send reset command to the RfxCom
-   std::cout << "Reset the RFXCom..." << std::endl;
+   YADOMS_LOG(information) << "Reset the RFXCom..." ;
    send(api, m_transceiver->buildResetCmd(), false);
 
    m_configurationUpdated = false;
@@ -336,7 +337,7 @@ void CRfxcom::initRfxcom(boost::shared_ptr<yApi::IYPluginApi> api)
    // RFXCom needs some time to recover after reset (see specifications)
    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
 
-   std::cout << "Start the RFXtrx receiver..." << std::endl;
+   YADOMS_LOG(information) << "Start the RFXtrx receiver..." ;
    send(api, m_transceiver->buildStartReceiverCmd(), true);
 }
 
@@ -353,7 +354,7 @@ void CRfxcom::processRfxcomCommandResponseMessage(boost::shared_ptr<yApi::IYPlug
    case rfxcomMessages::CTransceiverStatus::kReceiverStarted: processRfxcomReceiverStartedMessage(api, status);
       break;
    default:
-      std::cout << "Status message (" << status.getStatusType() << ") not yet supported" << std::endl;
+      YADOMS_LOG(information) << "Status message (" << status.getStatusType() << ") not yet supported" ;
       break;
    }
 }
@@ -361,30 +362,30 @@ void CRfxcom::processRfxcomCommandResponseMessage(boost::shared_ptr<yApi::IYPlug
 void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                                          const rfxcomMessages::CTransceiverStatus& status)
 {
-   std::cout << "RFXCom status, type (" << status.rfxcomTypeToString() << "), firmware type (" << status.getFirmwareType() << "), firmware version (" << status.getFirmwareVersion() << ")" << std::endl;
+   YADOMS_LOG(information) << "RFXCom status, type (" << status.rfxcomTypeToString() << "), firmware type (" << status.getFirmwareType() << "), firmware version (" << status.getFirmwareVersion() << ")" ;
    status.traceEnabledProtocols();
 
    if (m_configurationUpdated)
    {
       if (status.needConfigurationUpdate(m_configuration))
       {
-         std::cout << "Unable to set configuration as expected, maybe incompatible protocols were selected" << std::endl;
+         YADOMS_LOG(information) << "Unable to set configuration as expected, maybe incompatible protocols were selected" ;
          api->setPluginState(yApi::historization::EPluginState::kError, "failToConfigure");
          throw boost::thread_interrupted();
       }
 
-      std::cout << "RFXCom is running" << std::endl;
+      YADOMS_LOG(information) << "RFXCom is running" ;
       api->setPluginState(yApi::historization::EPluginState::kRunning);
    }
    else
    {
       if (status.needConfigurationUpdate(m_configuration))
       {
-         std::cout << "Incorrect RFXCom configuration. Updating configuration..." << std::endl;
+         YADOMS_LOG(information) << "Incorrect RFXCom configuration. Updating configuration..." ;
          send(api, m_transceiver->buildSetModeCmd(status.getRfxcomType(), m_configuration), true);// Don't change the RFXCom frequency
       }
       m_configurationUpdated = true;
-      std::cout << "RFXCom is running" << std::endl;
+      YADOMS_LOG(information) << "RFXCom is running" ;
       api->setPluginState(yApi::historization::EPluginState::kRunning);
    }
 }
@@ -392,9 +393,9 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> ap
 void CRfxcom::processRfxcomReceiverStartedMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                                                   const rfxcomMessages::CTransceiverStatus& status)
 {
-   std::cout << "RFXCom started message, device \"" << status.getValidMessage() << "\" detected" << std::endl;
+   YADOMS_LOG(information) << "RFXCom started message, device \"" << status.getValidMessage() << "\" detected" ;
 
-   std::cout << "Ask the RFXCom status..." << std::endl;
+   YADOMS_LOG(information) << "Ask the RFXCom status..." ;
    send(api, m_transceiver->buildGetStatusCmd(), true);
 }
 
@@ -408,20 +409,20 @@ void CRfxcom::processRfxcomWrongCommandMessage(boost::shared_ptr<yApi::IYPluginA
       lastRequest->ICMND.cmnd == cmdStartRec)
    {
       // Message "start receiver" is not supported by old firmwares, so ignore wrong answer
-      std::cout << "Ask the RFXCom status..." << std::endl;
+      YADOMS_LOG(information) << "Ask the RFXCom status..." ;
       send(api, m_transceiver->buildGetStatusCmd(), true);
    }
    else
    {
-      std::cout << "RFXCom wrong command response (is your firmware up-to-date ?)" << std::endl;
+      YADOMS_LOG(information) << "RFXCom wrong command response (is your firmware up-to-date ?)" ;
    }
 }
 
 void CRfxcom::processRfxcomAckMessage(const rfxcomMessages::CAck& ack)
 {
    if (ack.isOk())
-      std::cout << "RFXCom acknowledge" << std::endl;
+      YADOMS_LOG(information) << "RFXCom acknowledge" ;
    else
-      std::cout << "RFXCom Received acknowledge is KO" << std::endl;
+      YADOMS_LOG(information) << "RFXCom Received acknowledge is KO" ;
 }
 

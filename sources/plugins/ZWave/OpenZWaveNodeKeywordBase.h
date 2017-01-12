@@ -2,7 +2,7 @@
 #include "IOpenZWaveNodeKeyword.h"
 #include <Manager.h>
 #include "OpenZWaveEnumHandler.h"
-
+#include <shared/Log.h>
 //--------------------------------------------------------------
 /// \brief	    Base class for keywords
 //--------------------------------------------------------------
@@ -75,15 +75,15 @@ inline bool COpenZWaveNodeKeywordBase::realSendCommand(const T& data)
    }
    catch (OpenZWave::OZWException& ex)
    {
-      std::cerr << "Fail to send command : OpenZWave exception : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "Fail to send command : OpenZWave exception : " << ex.what() ;
    }
    catch (std::exception& ex)
    {
-      std::cerr << "Fail to send command : std::exception : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "Fail to send command : std::exception : " << ex.what() ;
    }
    catch (...)
    {
-      std::cerr << "Fail to send command : unknown exception" << std::endl;
+      YADOMS_LOG(error) << "Fail to send command : unknown exception" ;
    }
    return false;
 }
@@ -105,15 +105,15 @@ inline bool COpenZWaveNodeKeywordBase::realSendCommand(const COpenZWaveEnumHandl
    }
    catch (OpenZWave::OZWException& ex)
    {
-      std::cerr << "Fail to send command : OpenZWave exception : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "Fail to send command : OpenZWave exception : " << ex.what() ;
    }
    catch (std::exception& ex)
    {
-      std::cerr << "Fail to send command : std::exception : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "Fail to send command : std::exception : " << ex.what() ;
    }
    catch (...)
    {
-      std::cerr << "Fail to send command : unknown exception" << std::endl;
+      YADOMS_LOG(error) << "Fail to send command : unknown exception" ;
    }
    return false;
 }
@@ -127,15 +127,15 @@ inline bool COpenZWaveNodeKeywordBase::realSendCommand(const Poco::UInt64& data)
    }
    catch (OpenZWave::OZWException& ex)
    {
-      std::cerr << "Fail to send command : OpenZWave exception : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "Fail to send command : OpenZWave exception : " << ex.what() ;
    }
    catch (std::exception& ex)
    {
-      std::cerr << "Fail to send command : std::exception : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "Fail to send command : std::exception : " << ex.what() ;
    }
    catch (...)
    {
-      std::cerr << "Fail to send command : unknown exception" << std::endl;
+      YADOMS_LOG(error) << "Fail to send command : unknown exception" ;
    }
    return false;
 }
@@ -149,15 +149,15 @@ inline bool COpenZWaveNodeKeywordBase::realSendCommand(const Poco::Int64& data)
    }
    catch (OpenZWave::OZWException& ex)
    {
-      std::cerr << "Fail to send command : OpenZWave exception : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "Fail to send command : OpenZWave exception : " << ex.what() ;
    }
    catch (std::exception& ex)
    {
-      std::cerr << "Fail to send command : std::exception : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "Fail to send command : std::exception : " << ex.what() ;
    }
    catch (...)
    {
-      std::cerr << "Fail to send command : unknown exception" << std::endl;
+      YADOMS_LOG(error) << "Fail to send command : unknown exception" ;
    }
    return false;
 }
@@ -171,15 +171,15 @@ inline bool COpenZWaveNodeKeywordBase::realSendCommand(const double& data)
    }
    catch (OpenZWave::OZWException& ex)
    {
-      std::cerr << "Fail to send command : OpenZWave exception : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "Fail to send command : OpenZWave exception : " << ex.what() ;
    }
    catch (std::exception& ex)
    {
-      std::cerr << "Fail to send command : std::exception : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "Fail to send command : std::exception : " << ex.what() ;
    }
    catch (...)
    {
-      std::cerr << "Fail to send command : unknown exception" << std::endl;
+      YADOMS_LOG(error) << "Fail to send command : unknown exception" ;
    }
    return false;
 }
@@ -188,7 +188,7 @@ inline bool COpenZWaveNodeKeywordBase::realSendCommand(const double& data)
 template <class T>
 inline T COpenZWaveNodeKeywordBase::extractLastValue()
 {
-   std::cout << "COpenZWaveNodeKeywordBase::extractLastValue : generic type is not supported. Only overriden types are allowed" << std::endl;
+   YADOMS_LOG(information) << "COpenZWaveNodeKeywordBase::extractLastValue : generic type is not supported. Only overriden types are allowed" ;
    std::string value;
    OpenZWave::Manager::Get()->GetValueAsString(m_valueId, &value);
    return boost::lexical_cast<T>(value);

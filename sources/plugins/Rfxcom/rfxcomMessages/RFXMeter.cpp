@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "RFXMeter.h"
 #include <shared/exception/InvalidParameter.hpp>
+#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -62,7 +63,7 @@ namespace rfxcomMessages
    {
       if (m_subType != sTypeRFXMeterCount)
       {
-         std::cout << "RFXMeter subtype " << m_subType << " actually not supported. Please report to Yadoms development team if needed" << std::endl;
+         YADOMS_LOG(information) << "RFXMeter subtype " << m_subType << " actually not supported. Please report to Yadoms development team if needed" ;
          return;
       }
       api->historizeData(m_deviceName, m_keywords);

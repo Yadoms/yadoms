@@ -8,7 +8,6 @@
 #include "FakeController.h"
 #include "FakeConfigurableDevice.h"
 #include <Poco/Net/NetworkInterface.h>
-
 #include <shared/Log.h>
 
 // Use this macro to define all necessary to make your plugin a Yadoms valid plugin.

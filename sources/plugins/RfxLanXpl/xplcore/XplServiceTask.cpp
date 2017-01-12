@@ -1,20 +1,16 @@
 #include "stdafx.h"
 #include "XplServiceTask.h"
-
 #include "XplMessage.h"
 #include "XplMessageFactory.h"
 #include "XplActor.h"
 #include "XplHelper.h"
 #include <shared/StringExtension.h>
-
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
-
-
 #include <Poco/Net/SocketAddress.h>
-
 #include <Poco/Net/NetworkInterface.h>
 #include <Poco/Net/NetException.h>
+#include <shared/Log.h>
 
 
 // A client send its data as broadcast on the XPL port,
@@ -53,7 +49,7 @@ namespace xplcore
    {
       try
       {
-         std::cout << "XplServiceTask : run" << std::endl;
+         YADOMS_LOG(information) << "XplServiceTask : run" ;
 
          runHeartbeatSequenceIn(HeartbeatFrequencyDuringInitialDiscoveryPhase);
 
@@ -94,10 +90,10 @@ namespace xplcore
       }
       catch (shared::exception::CException& ex)
       {
-         std::cerr << "The XplServiceTask fails. Unknown expcetion : " << ex.what();
+         YADOMS_LOG(error) << "The XplServiceTask fails. Unknown expcetion : " << ex.what();
       }
 
-      std::cout << "XplServiceTask : stopped" << std::endl;
+      YADOMS_LOG(information) << "XplServiceTask : stopped" ;
    }
 
    void CXplServiceTask::initializeConnector(Poco::Net::NetworkInterface& networkInterface)
@@ -119,8 +115,8 @@ namespace xplcore
                                                   CXplHelper::XplProtocolPort);
 
       //we configure the socket
-      std::cout << "CXplService : Remote EndPoint: " << m_remoteEndPoint.toString() << " on port : " << m_remoteEndPoint.port() << std::endl;
-      std::cout << "CXplService : Try to bind local endPoint: " << m_localEndPoint.toString() << " on port : " << m_localEndPoint.port() << std::endl;
+      YADOMS_LOG(information) << "CXplService : Remote EndPoint: " << m_remoteEndPoint.toString() << " on port : " << m_remoteEndPoint.port() ;
+      YADOMS_LOG(information) << "CXplService : Try to bind local endPoint: " << m_localEndPoint.toString() << " on port : " << m_localEndPoint.port() ;
       m_socket.setReuseAddress(true);
       m_socket.setBroadcast(true);
       m_socket.bind(m_localEndPoint, true);
@@ -136,7 +132,7 @@ namespace xplcore
    {
       try
       {
-         std::cout << "Send heartbeat" << std::endl;
+         YADOMS_LOG(information) << "Send heartbeat" ;
 
          int heartbeatInterval;
          //depending on the mode we currently are we select the time to send another hbeat
@@ -175,18 +171,18 @@ namespace xplcore
       }
       catch (Poco::Net::NetException& netex)
       {
-         std::cerr << "Sending Message fail. Net Exception : " << netex.what()
+         YADOMS_LOG(error) << "Sending Message fail. Net Exception : " << netex.what()
             << std::endl << netex.displayText()
             << std::endl << netex.message()
-            << std::endl;
+            ;
       }
       catch (std::exception& ex)
       {
-         std::cerr << "Send heartbeat fail. Exception : " << ex.what() << std::endl;
+         YADOMS_LOG(error) << "Send heartbeat fail. Exception : " << ex.what() ;
       }
       catch (...)
       {
-         std::cerr << "Send heartbeat failed, unkonown exception" << std::endl;
+         YADOMS_LOG(error) << "Send heartbeat failed, unkonown exception" ;
       }
    }
 
@@ -195,7 +191,7 @@ namespace xplcore
                                               Poco::Net::SocketAddress& sender)
    {
       //the message is successfully parsed
-      std::cout << "Message received : " << msg.toString() << std::endl;
+      YADOMS_LOG(information) << "Message received : " << msg.toString() ;
 
       //When the hub receives a hbeat.app or config.app message, the hub should extract the "remote-ip" value 
       //from the message body and compare the IP address with the list of addresses the hub is currently bound 
@@ -226,7 +222,7 @@ namespace xplcore
          {
             if ((!m_hubHasBeenFound) && (m_localEndPoint.host().toString() == hbeatMessage.getBodyValue("remote-ip")) && (sender.port() == port))
             {
-               std::cout << "Hub found on network : " << m_localEndPoint.host().toString() << std::endl;
+               YADOMS_LOG(information) << "Hub found on network : " << m_localEndPoint.host().toString() ;
                m_hubHasBeenFound = true;
 
                if (m_pHubFoundEventHandler != nullptr)
@@ -358,7 +354,7 @@ namespace xplcore
 
       if (!atLeastOneNotificationSend)
       {
-         std::cout << "Message filtered" << std::endl;
+         YADOMS_LOG(information) << "Message filtered" ;
       }
    }
 
@@ -378,20 +374,20 @@ namespace xplcore
       }
       catch (Poco::Net::NetException& netex)
       {
-         std::cerr << "Sending Message fail. Net Exception : " << netex.what()
+         YADOMS_LOG(error) << "Sending Message fail. Net Exception : " << netex.what()
             << std::endl << netex.displayText()
             << std::endl << netex.message()
-            << std::endl;
+            ;
 
-         std::cerr << "Remote endpoint : " << m_remoteEndPoint.toString() << std::endl;
+         YADOMS_LOG(error) << "Remote endpoint : " << m_remoteEndPoint.toString() ;
       }
       catch (std::exception& ex)
       {
-         std::cerr << "Sending Message fail. Exception : " << ex.what() << std::endl;
+         YADOMS_LOG(error) << "Sending Message fail. Exception : " << ex.what() ;
       }
       catch (...)
       {
-         std::cerr << "Sending Message fail. Unknown exception" << std::endl;
+         YADOMS_LOG(error) << "Sending Message fail. Unknown exception" ;
       }
    }
 } // namespace xplcore
