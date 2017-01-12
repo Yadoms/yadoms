@@ -1,43 +1,47 @@
 {
-	"type": "shutter",
-	"version": "1.0.1-beta",
-	"author": "Jean-Michel BERHAULT",
-	"url": "https://github.com/Yadoms/yadoms/wiki/shutter",
-	"credits": "",
-	"dimensions": {
-		"min": {
-			"x": 1,
-			"y": 1
-		},
-		"max": {
-			"x": 2,
-			"y": 2
-		},
-		"default": {
-			"x": 1,
-			"y": 1
-		}
-	},
-	"hasTitle" :  true,
-	"configurationSchema": {
-		"device": {
-			"type": "keyword",
-			"expectedCapacity": "switch",
-			"expectedKeywordAccess": "get"
-		},
-		"kind": {
-			"type": "radioSection",
-			"content": {
-				"window": {
-					"type": "section"
-				},
-				"door": {
-					"type": "section"
-				},				
-				"verticalInverter": {
-					"type": "section"
-				}
-			}
-		}
-	}
+  "type": "shutter",
+  "version": "1.0.1-beta",
+  "author": "Jean-Michel BERHAULT",
+  "url": "https://github.com/Yadoms/yadoms/wiki/shutter",
+  "credits": "",
+  "dimensions": {
+    "min": {
+      "x": 1,
+      "y": 1
+    },
+    "max": {
+      "x": 2,
+      "y": 2
+    },
+    "default": {
+      "x": 1,
+      "y": 1
+    }
+  },
+  "hasTitle": true,
+  "configurationSchema": {
+    "device": {
+      "type": "keyword",
+      "expectedCapacity": "switch",
+      "expectedKeywordAccess": "get"
+    },
+    "invert": {
+      "type": "bool",
+      "defaultValue": "false"
+    },
+    "kind": {
+      "type": "radioSection",
+      "content": {
+        "window": {
+          "type": "section"
+        },
+        "door": {
+          "type": "section"
+        },
+        "verticalInverter": {
+          "type": "section"
+        }
+      }
+    }
+  }
 }
