@@ -2,8 +2,8 @@
 #include <boost/test/unit_test.hpp>
 
 // Includes needed to compile tested classes
-#include "../../../../sources/plugins/dev-EnOcean/ReceiveBufferHandler.h"
-#include "../../../../sources/plugins/dev-EnOcean/profiles/generated-eep.h"
+#include "../../../../sources/plugins/EnOcean/ReceiveBufferHandler.h"
+#include "../../../../sources/plugins/EnOcean/profiles/generated-eep.h"
 #include <../../../../sources/shared/shared/communication/Buffer.hpp>
 
 #include "../../mock/shared/currentTime/DefaultCurrentTimeMock.h"

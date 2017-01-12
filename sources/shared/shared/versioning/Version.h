@@ -96,6 +96,13 @@ namespace shared
          bool operator==(CVersion const& rhs) const;
 
          //---------------------------------------------
+         ///\brief Operator to print out version to a stream
+         ///\param [in] oss the target stream
+         ///\return  the target stream
+         //---------------------------------------------
+         friend std::ostream& operator<<(std::ostream& oss, const CVersion& rhs);
+
+         //---------------------------------------------
          ///\brief Get the version as a string
          ///\return  the version as a string
          //---------------------------------------------

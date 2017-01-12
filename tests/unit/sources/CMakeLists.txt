@@ -12,7 +12,7 @@
 project (YadomsTests)
 
 # Check the minimum CMake version
-cmake_minimum_required (VERSION 2.8.9)
+cmake_minimum_required (VERSION 3.2.0)
 
 # The main Yadoms path
 set(YADOMS_PATH ../../../sources)
@@ -25,11 +25,11 @@ set(YADOMS_PATH ../../../sources)
 # First checks (compilers versions...)
 include(${YADOMS_PATH}/cmake/preChecks.cmake)
 
-# Precompiled headers
-include(${YADOMS_PATH}/cmake/PrecompiledHeader.cmake)
-
 # User specific configuration
 include("CMakeListsUserConfig.txt" OPTIONAL)
+
+# Precompiled headers
+include(${YADOMS_PATH}/cmake/PrecompiledHeader.cmake)
 
 # Windows specific macro
 if(WIN32)
@@ -178,7 +178,7 @@ add_subdirectory(server)
 source_group(plugins plugins/*.*)
 source_group(plugins\\FakePlugin plugins/dev-FakePlugin/*.*)
 source_group(plugins\\Rfxcom plugins/Rfxcom/*.*)
-source_group(plugins\\EnOcean plugins/dev-EnOcean/*.*)
+source_group(plugins\\EnOcean plugins/EnOcean/*.*)
 source_group(plugins\\TeleInfo plugins/TeleInfo/*.*)
 
 source_group(server server/*.*)

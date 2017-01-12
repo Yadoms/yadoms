@@ -3,7 +3,6 @@
 #include <shared/exception/Exception.hpp>
 #include <Poco/RegularExpression.h>
 #include <Poco/NumberParser.h>
-#include <regex>
 
 namespace shared
 {
@@ -161,6 +160,12 @@ namespace shared
          {
             throw exception::CException("Fail to parse version from " + version);
          }
+      }
+
+      std::ostream& operator<<(std::ostream& oss, const CVersion& rhs)
+      {
+         oss << rhs.toString();
+         return oss;
       }
    }
 } // namespace shared::versioning

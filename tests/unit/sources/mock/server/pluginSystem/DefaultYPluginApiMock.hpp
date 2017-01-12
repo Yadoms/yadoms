@@ -1,4 +1,5 @@
 // Includes needed to compile tested classes
+#pragma once
 #include "../../../../../../sources/shared/shared/plugin/yPluginApi/IYPluginApi.h"
 #include "information/DefaultInformationMock.hpp"
 
@@ -79,7 +80,7 @@ public:
    std::vector<std::string> getAllDevices() const override
    {
       std::vector<std::string> devices;
-      for (auto device : m_devices)
+      for (const auto& device : m_devices)
          devices.push_back(device.first);
       return devices;
    }
@@ -112,7 +113,7 @@ public:
 
    std::string getDeviceModel(const std::string& device) const override
    {
-      return std::string();
+      return "device model";
    }
 
    void updateDeviceModel(const std::string& device,
@@ -140,7 +141,7 @@ public:
    std::vector<std::string> getAllKeywords(const std::string& device) const override
    {
       std::vector<std::string> keywords;
-      for (auto keyword:m_keywords)
+      for (const auto& keyword : m_keywords)
          keywords.push_back(keyword.first);
       return keywords;
    }
@@ -162,8 +163,9 @@ public:
    void declareKeywords(const std::string& device,
                         const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords) override
    {
-      for (auto keyword:keywords)
-         declareKeyword(device, keyword);
+      for (const auto& keyword : keywords)
+         declareKeyword(device,
+                        keyword);
    }
 
    std::string getRecipientValue(int recipientId,
@@ -240,64 +242,6 @@ public:
       return m_data;
    }
 
-   std::vector<std::string> getAllDevices() const override
-   {
-      std::vector<std::string> devices;
-      for (const auto& device : m_devices)
-         devices.push_back(device.first);
-      return devices;
-   }
-
-   shared::CDataContainer getDeviceConfiguration(const std::string& device) const override
-   {
-      return shared::CDataContainer();
-   }
-
-   void updateDeviceConfiguration(const std::string& device,
-                                  const shared::CDataContainer& configuration) const override
-   {
-   }
-
-   void updateDeviceDetails(const std::string& device, const shared::CDataContainer& details) const override
-   {
-   }
-
-   std::string getDeviceModel(const std::string& device) const override
-   {
-      return "device model";
-   }
-
-   void updateDeviceModel(const std::string& device, const std::string& model) const override
-   {
-   }
-
-   void removeDevice(const std::string& device) override
-   {
-      m_devices.erase(device);
-   }
-
-   void declareKeywords(const std::string& device,
-                        const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords) override
-   {
-      for (const auto& keyword : keywords)
-         declareKeyword(device,
-                        keyword);
-   }
-
-   std::vector<std::string> getAllKeywords(const std::string& device) const override
-   {
-      std::vector<std::string> keywords;
-      for (const auto& keyword : m_keywords)
-         keywords.push_back(keyword.first);
-      return keywords;
-   }
-
-   void removeKeyword(const std::string& device,
-      const std::string& keyword) override
-   {
-      m_keywords.erase(keyword);
-   }
-
 protected:
    shared::event::CEventHandler m_defaultEventHandler;
    boost::shared_ptr<const shared::plugin::information::IInformation> m_defaultInformation;
@@ -307,4 +251,3 @@ protected:
    std::vector<Data> m_data;
    std::vector<int> m_recipients;
 };
-

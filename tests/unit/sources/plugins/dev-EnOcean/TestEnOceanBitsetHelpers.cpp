@@ -2,7 +2,7 @@
 #include <boost/test/unit_test.hpp>
 
 // Includes needed to compile tested classes
-#include "../../../../sources/plugins/dev-EnOcean/profiles/bitsetHelpers.hpp"
+#include "../../../../sources/plugins/EnOcean/profiles/bitsetHelpers.hpp"
 
 // Includes needed to compile the test
 #include "../../testCommon/fileSystem.h"
