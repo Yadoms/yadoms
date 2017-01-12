@@ -255,10 +255,13 @@ set(YADOMS_SRC
    server/dateTime/DateTimeNotifier.cpp
    
    server/automation/IRule.h
+	server/automation/IRuleLogger.h
    server/automation/IRuleManager.h
    server/automation/IRuleThreadHandler.h
    server/automation/Rule.h
    server/automation/Rule.cpp
+	server/automation/RuleLogger.h
+	server/automation/RuleLogger.cpp
    server/automation/RuleException.hpp
    server/automation/RuleManager.h
    server/automation/RuleManager.cpp
@@ -279,10 +282,13 @@ set(YADOMS_SRC
    server/automation/interpreter/IIpcAdapter.h
    server/automation/interpreter/IpcAdapter.h
    server/automation/interpreter/IpcAdapter.cpp
+   server/automation/interpreter/IRuleLogDispatcher.h
    server/automation/interpreter/LoadScriptContentRequest.h
    server/automation/interpreter/LoadScriptContentRequest.cpp
    server/automation/interpreter/Manager.h
    server/automation/interpreter/Manager.cpp
+   server/automation/interpreter/RuleLogDispatcher.h
+   server/automation/interpreter/RuleLogDispatcher.cpp
    server/automation/interpreter/SaveScriptContentRequest.h
    server/automation/interpreter/SaveScriptContentRequest.cpp
    server/automation/interpreter/StartScript.h

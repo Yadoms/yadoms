@@ -15,7 +15,8 @@ public:
 
    // IFactory implementation
    boost::shared_ptr<IPythonExecutable> createPythonExecutable() const override;
-   boost::shared_ptr<shared::process::IProcess> createScriptProcess(int scriptInstanceId,
+   boost::shared_ptr<shared::process::IProcess> createScriptProcess(boost::shared_ptr<yApi::IYInterpreterApi> api,
+                                                                    int scriptInstanceId,
                                                                     const std::string& scriptPath,
                                                                     boost::shared_ptr<IPythonExecutable> pythonExecutable,
                                                                     const boost::filesystem::path& interpreterPath,
@@ -27,6 +28,7 @@ protected:
    boost::shared_ptr<IScriptFile> createScriptFile(const std::string& scriptPath) const;
    boost::shared_ptr<shared::process::IProcessObserver> createScriptProcessObserver(int scriptInstanceId,
                                                                                     boost::function2<void, bool, int> onInstanceStateChangedFct) const;
-   boost::shared_ptr<shared::process::IExternalProcessLogger> createScriptLogger(int scriptInstanceId) const;
+   boost::shared_ptr<shared::process::IExternalProcessLogger> createScriptLogger(boost::shared_ptr<yApi::IYInterpreterApi> api,
+                                                                                 int scriptInstanceId) const;
 };
 

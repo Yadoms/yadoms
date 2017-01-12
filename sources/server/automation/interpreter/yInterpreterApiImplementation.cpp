@@ -6,9 +6,11 @@ namespace automation
 {
    namespace interpreter
    {
-      CYInterpreterApiImplementation::CYInterpreterApiImplementation(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformations,
+      CYInterpreterApiImplementation::CYInterpreterApiImplementation(boost::shared_ptr<IRuleLogDispatcher> ruleLogDispatcher,
+                                                                     boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformations,
                                                                      boost::function2<void, int, const std::string&> onScriptStoppedFct)
-         : m_informations(interpreterInformations),
+         : m_ruleLogDispatcher(ruleLogDispatcher),
+           m_informations(interpreterInformations),
            m_onScriptStoppedFct(onScriptStoppedFct)
       {
       }
@@ -25,6 +27,15 @@ namespace automation
                               error);
       }
 
+      void CYInterpreterApiImplementation::onScriptLog(int scriptInstanceId,
+                                                       bool error,
+                                                       const std::string& logLine)
+      {
+         m_ruleLogDispatcher->log(scriptInstanceId,
+                                  error,
+                                  logLine);
+      }
+
       boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> CYInterpreterApiImplementation::getInformation() const
       {
          return m_informations;
@@ -38,3 +49,5 @@ namespace automation
       }
    }
 } // namespace automation::interpreter
+
+

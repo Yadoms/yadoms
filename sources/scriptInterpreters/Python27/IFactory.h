@@ -1,6 +1,11 @@
 #pragma once
 #include "IPythonExecutable.h"
 #include <shared/process/IProcess.h>
+#include <shared/script/yInterpreterApi/IYInterpreterApi.h>
+
+
+// Shortcut to yInterpreterApi namespace
+namespace yApi = shared::script::yInterpreterApi;
 
 class IFactory
 {
@@ -10,7 +15,8 @@ public:
    }
 
    virtual boost::shared_ptr<IPythonExecutable> createPythonExecutable() const = 0;
-   virtual boost::shared_ptr<shared::process::IProcess> createScriptProcess(int scriptInstanceId,
+   virtual boost::shared_ptr<shared::process::IProcess> createScriptProcess(boost::shared_ptr<yApi::IYInterpreterApi> api,
+                                                                            int scriptInstanceId,
                                                                             const std::string& scriptPath,
                                                                             boost::shared_ptr<IPythonExecutable> pythonExecutable,
                                                                             const boost::filesystem::path& interpreterPath,

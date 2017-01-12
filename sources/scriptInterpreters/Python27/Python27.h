@@ -4,10 +4,6 @@
 #include <shared/process/IProcess.h>
 #include "IFactory.h"
 
-
-// Shortcut to yInterpreterApi namespace
-namespace yApi = shared::script::yInterpreterApi;
-
 //--------------------------------------------------------------
 /// \brief	Python interpreter
 //--------------------------------------------------------------

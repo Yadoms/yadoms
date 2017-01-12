@@ -41,6 +41,18 @@ namespace interpreter_cpp_api
       send(req);
    }
 
+   void CApiImplementation::onScriptLog(int scriptInstanceId,
+                                        bool error,
+                                        const std::string& logLine)
+   {
+      interpreter_IPC::toYadoms::msg req;
+      auto request = req.mutable_scriptlog();
+      request->set_scriptinstanceid(scriptInstanceId);
+      request->set_error(error);
+      request->set_logline(logLine);
+      send(req);
+   }
+
    void CApiImplementation::send(const interpreter_IPC::toYadoms::msg& msg) const
    {
       try
@@ -219,7 +231,7 @@ namespace interpreter_cpp_api
                                                                                                                                send(ans);
                                                                                                                             });
 
-      m_pluginEventHandler.postEvent(kEventAvalaibleRequest, request);
+      m_interpreterEventHandler.postEvent(kEventAvalaibleRequest, request);
    }
 
    void CApiImplementation::processLoadScriptContentRequest(const interpreter_IPC::toInterpreter::LoadScriptContentRequest& msg)
@@ -239,7 +251,7 @@ namespace interpreter_cpp_api
                                                                                                                                                send(ans);
                                                                                                                                             });
 
-      m_pluginEventHandler.postEvent(kEventLoadScriptContentRequest, request);
+      m_interpreterEventHandler.postEvent(kEventLoadScriptContentRequest, request);
    }
 
    void CApiImplementation::processSaveScriptContent(const interpreter_IPC::toInterpreter::SaveScriptContentRequest& msg)
@@ -257,23 +269,23 @@ namespace interpreter_cpp_api
                                                                                                                                                ans.set_error(r);
                                                                                                                                                send(ans);
                                                                                                                                             });
-      m_pluginEventHandler.postEvent(kEventSaveScriptContent, command);
+      m_interpreterEventHandler.postEvent(kEventSaveScriptContent, command);
    }
 
    void CApiImplementation::processStartScript(const interpreter_IPC::toInterpreter::StartScript& msg)
    {
       boost::shared_ptr<shared::script::yInterpreterApi::IStartScript> request = boost::make_shared<CStartScript>(msg);
 
-      m_pluginEventHandler.postEvent(kEventStartScript,
-                                     request);
+      m_interpreterEventHandler.postEvent(kEventStartScript,
+                                          request);
    }
 
    void CApiImplementation::processStopScript(const interpreter_IPC::toInterpreter::StopScript& msg)
    {
       boost::shared_ptr<shared::script::yInterpreterApi::IStopScript> request = boost::make_shared<CStopScript>(msg);
 
-      m_pluginEventHandler.postEvent(kEventStopScript,
-                                     request);
+      m_interpreterEventHandler.postEvent(kEventStopScript,
+                                          request);
    }
 
    void CApiImplementation::setInitialized()
@@ -296,6 +308,8 @@ namespace interpreter_cpp_api
 
    shared::event::CEventHandler& CApiImplementation::getEventHandler()
    {
-      return m_pluginEventHandler;
+      return m_interpreterEventHandler;
    }
 } // namespace interpreter_cpp_api	
+
+

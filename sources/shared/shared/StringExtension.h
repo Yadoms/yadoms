@@ -6,7 +6,6 @@
 
 namespace shared
 {
-
    //
    /// \brief Static class that provide converters from const char * to data type 
    //
@@ -42,6 +41,18 @@ namespace shared
 
 		   return stringResult;
 	   }
+
+      static std::string removeEol(const std::string& line)
+      {
+         auto len = line.size();
+
+         if (len > 1 && line[len - 2] == '\r' && line[len - 1] == '\n')
+            return line.substr(0, len - 2);
+         if (len > 0 && (line[len - 1] == '\r' || line[len - 1] == '\n'))
+            return line.substr(0, len - 1);
+
+         return line;
+      }
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////
       /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -126,66 +137,36 @@ namespace shared
       return boost::lexical_cast<T>(value);
    }
 
-   //
-   /// \brief        parse a string into double (template specialisation)
-   /// \param [in]   value : the string to parse
-   /// \return       the string parsed into double
-   //   
    template<>
    inline double CStringExtension::parse(const char * value)
    {
       return atof(value);
    }
 
-   //
-   /// \brief        parse a string into float (template specialisation)
-   /// \param [in]   value : the string to parse
-   /// \return       the string parsed into float
-   //   
    template<>
    inline float CStringExtension::parse(const char * value)
    {
       return static_cast<float>(atof(value));
    }
 
-   //
-   /// \brief        parse a string into integer (template specialisation)
-   /// \param [in]   value : the string to parse
-   /// \return       the string parsed into integer
-   //   
    template<>
    inline int CStringExtension::parse(const char * value)
    {
       return atoi(value);
    }
 
-   //
-   /// \brief        parse a string into long (template specialisation)
-   /// \param [in]   value : the string to parse
-   /// \return       the string parsed into long
-   //   
    template<>
    inline long CStringExtension::parse(const char * value)
    {
       return atol(value);
    }
 
-   //
-   /// \brief        parse a string into string (template specialisation)
-   /// \param [in]   value : the string to parse
-   /// \return       the string
-   //   
    template<>
    inline std::string CStringExtension::parse(const char * value)
    {
       return value;
    }
 
-   //
-   /// \brief        parse a string into bool (template specialisation)
-   /// \param [in]   value : the string to parse
-   /// \return       the string parsed into bool
-   //   
    template<>
    inline bool CStringExtension::parse(const char * value)
    {
@@ -195,11 +176,6 @@ namespace shared
       return result;
    }
 
-   //
-   /// \brief               To string converter : used to convert data to string, locale-independently
-   /// \param[in] value     Value to convert
-   /// \return              Converted value, using the C locale
-   //
    template<typename T>
    std::string CStringExtension::cultureInvariantToString(const T& value)
    {
@@ -209,11 +185,6 @@ namespace shared
       return ss.str();
    }
 
-   //
-   /// \brief               To string converter : used to convert data to string, locale-independently. For unsigned char, it force a cast to int to avoid implicit convertion to char
-   /// \param[in] value     Value to convert
-   /// \return              Converted value, using the C locale
-   //
    template<>
    inline std::string CStringExtension::cultureInvariantToString(const Poco::UInt8& value)
    {
@@ -222,5 +193,4 @@ namespace shared
       ss << static_cast<int>(value);
       return ss.str();
    }
-
 } // namespace shared

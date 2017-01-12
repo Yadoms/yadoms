@@ -2,8 +2,10 @@
 #include "ScriptLogger.h"
 
 
-CScriptLogger::CScriptLogger(int scriptInstanceId)
-   :m_logPrefix("(" + std::to_string(scriptInstanceId) + ") ")
+CScriptLogger::CScriptLogger(boost::shared_ptr<yApi::IYInterpreterApi> api,
+                             int scriptInstanceId)
+   : m_api(api),
+     m_scriptInstanceId(scriptInstanceId)
 {
 }
 
@@ -17,10 +19,15 @@ void CScriptLogger::init()
 
 void CScriptLogger::information(const std::string& line)
 {
-   std::cout << m_logPrefix + line;
+   m_api->onScriptLog(m_scriptInstanceId,
+                      false,
+                      line);
 }
 
 void CScriptLogger::error(const std::string& line)
 {
-   std::cerr << m_logPrefix + line;
+   m_api->onScriptLog(m_scriptInstanceId,
+                      true,
+                      line);
 }
+

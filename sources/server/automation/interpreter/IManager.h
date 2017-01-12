@@ -1,6 +1,6 @@
 #pragma once
-#include <shared/process/IExternalProcessLogger.h>
 #include "IInstance.h"
+#include "IRuleLogDispatcher.h"
 
 namespace automation
 {
@@ -32,6 +32,12 @@ namespace automation
          ///\throw std::runtime_error No corresponding script interpreter was found
          //-----------------------------------------------------
          virtual boost::shared_ptr<IInstance> getInterpreterInstance(const std::string& interpreterType) = 0;
+
+         //-----------------------------------------------------
+         ///\brief               Get the rule log dispatcher
+         ///\return              The rule log dispatcher
+         //-----------------------------------------------------
+         virtual boost::shared_ptr<IRuleLogDispatcher> getRuleLogDispatcher() = 0;
 
          //-----------------------------------------------------
          ///\brief               Unload an interpreter (do nothing if interpreter not loaded)
@@ -83,15 +89,6 @@ namespace automation
          ///\throw CInvalidParameter if rule ID not found
          //-----------------------------------------------------
          virtual std::string getScriptLogFile(int ruleId) = 0;
-
-         //-----------------------------------------------------
-         ///\brief               Create the script logger
-         ///\param[in] ruleName  The rule name
-         ///\param[in] ruleId    The rule ID
-         ///\return              A script logger instance
-         //-----------------------------------------------------
-         virtual boost::shared_ptr<shared::process::IExternalProcessLogger> createScriptLogger(const std::string& ruleName,
-                                                                                               int ruleId) = 0;
 
          //-----------------------------------------------------
          ///\brief               Set the callback on rule stop notification

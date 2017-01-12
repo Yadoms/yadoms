@@ -4,8 +4,8 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include "tools/SupportedPlatformsChecker.h"
 #include <shared/Executable.h>
-#include <server/logging/ExternalProcessLogger.h>
 #include <shared/Log.h>
+#include <server/automation/RuleLogger.h>
 
 namespace automation
 {
@@ -74,7 +74,8 @@ namespace automation
                   break;
             }
             boost::this_thread::yield();
-         } while (shared::currentTime::Provider().now() < timeout);
+         }
+         while (shared::currentTime::Provider().now() < timeout);
 
          {
             boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
@@ -166,13 +167,13 @@ namespace automation
       void CManager::onInterpreterUnloaded(const std::string& interpreterName)
       {
          boost::thread([this, interpreterName]()
-         {
-            boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
+            {
+               boost::lock_guard<boost::recursive_mutex> lock(m_loadedInterpretersMutex);
 
-            const auto interpreter = m_loadedInterpreters.find(interpreterName);
-            if (interpreter != m_loadedInterpreters.end())
-               m_loadedInterpreters.erase(interpreter);
-         });
+               const auto interpreter = m_loadedInterpreters.find(interpreterName);
+               if (interpreter != m_loadedInterpreters.end())
+                  m_loadedInterpreters.erase(interpreter);
+            });
       }
 
       boost::shared_ptr<IInstance> CManager::getInterpreterInstance(const std::string& interpreterType)
@@ -187,7 +188,12 @@ namespace automation
          if (interpreter != m_loadedInterpreters.end() && interpreter->second->isAvalaible())
             return interpreter->second;
 
-         throw std::runtime_error("Interpreter " + interpreterType +  "not found ");
+         throw std::runtime_error("Interpreter " + interpreterType + "not found ");
+      }
+
+      boost::shared_ptr<IRuleLogDispatcher> CManager::getRuleLogDispatcher()
+      {
+         return 
       }
 
       std::string CManager::getScriptFile(const std::string& interpreterName,
@@ -265,13 +271,6 @@ namespace automation
       boost::filesystem::path CManager::scriptLogFile(int ruleId) const
       {
          return m_pathProvider.scriptsLogPath() / std::to_string(ruleId) / "rule.log";
-      }
-
-      boost::shared_ptr<shared::process::IExternalProcessLogger> CManager::createScriptLogger(const std::string& ruleName,
-                                                                                              int ruleId)
-      {
-         return boost::make_shared<logging::CExternalProcessLogger>("script/" + ruleName + " #" + std::to_string(ruleId),
-                                                                    scriptLogFile(ruleId));
       }
 
       void CManager::setOnScriptStoppedFct(boost::function2<void, int, const std::string&> onScriptStoppedFct)

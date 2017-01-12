@@ -3,6 +3,7 @@
 #include "script/YScriptApiImplementation.h"
 #include "script/Properties.h"
 #include "script/IpcAdapter.h"
+#include "RuleLogger.h"
 
 namespace automation
 {
@@ -14,10 +15,10 @@ namespace automation
                 boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                 boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                 boost::shared_ptr<script::IGeneralInfo> generalInfo)
-      : m_ruleData(ruleData)
+      : m_ruleData(ruleData),
+        m_interpreterManager(interpreterManager)
    {
-      start(interpreterManager,
-            pluginGateway,
+      start(pluginGateway,
             dbAcquisitionRequester,
             dbDeviceRequester,
             keywordAccessLayer,
@@ -27,18 +28,18 @@ namespace automation
 
    CRule::~CRule()
    {
+      m_interpreterManager->getRuleLogDispatcher()->remove(m_scriptLogger);
    }
 
-   void CRule::start(boost::shared_ptr<interpreter::IManager> interpreterManager,
-                     boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+   void CRule::start(boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                      boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
                      boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
                      boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                      boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                      boost::shared_ptr<script::IGeneralInfo> generalInfo)
    {
-      m_scriptLogger = interpreterManager->createScriptLogger(m_ruleData->Name(),
-                                                              m_ruleData->Id());
+      m_scriptLogger = createScriptLogger(m_interpreterManager->getScriptLogFile(m_ruleData->Id()));
+      m_interpreterManager->getRuleLogDispatcher()->add(m_scriptLogger);
 
       auto apiImplementation = createScriptApiImplementation(pluginGateway,
                                                              dbAcquisitionRequester,
@@ -53,11 +54,16 @@ namespace automation
 
       script::CProperties ruleProperties(m_ruleData);
 
-      m_scriptInterpreter = interpreterManager->getInterpreterInstance(ruleProperties.interpreterName());
+      m_scriptInterpreter = m_interpreterManager->getInterpreterInstance(ruleProperties.interpreterName());
 
       m_scriptInterpreter->startScript(m_ruleData->Id(),
                                        ruleProperties.scriptPath(),
                                        m_ipcAdapter->id());
+   }
+
+   boost::shared_ptr<IRuleLogger> CRule::createScriptLogger(const std::string& scriptLogFile) const
+   {
+      return boost::make_shared<CRuleLogger>(scriptLogFile);
    }
 
    void CRule::requestStop()
@@ -78,7 +84,7 @@ namespace automation
                                                                                                    boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                                                                                                    boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                                                                                                    boost::shared_ptr<script::IGeneralInfo> generalInfo,
-                                                                                                   boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger) const
+                                                                                                   boost::shared_ptr<IRuleLogger> scriptLogger) const
    {
       return boost::make_shared<script::CYScriptApiImplementation>(scriptLogger,
                                                                    pluginGateway,

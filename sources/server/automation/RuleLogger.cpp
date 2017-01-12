@@ -1,31 +1,24 @@
 #include "stdafx.h"
-#include "ExternalProcessLogger.h"
+#include "RuleLogger.h"
 #include <shared/Log.h>
 #include <shared/currentTime/Provider.h>
-#include <shared/StringExtension.h>
+#include <shared/shared/StringExtension.h>
 
 
-namespace logging
+namespace automation
 {
-   CExternalProcessLogger::CExternalProcessLogger(const std::string& loggerName,
-                                                  const boost::filesystem::path& logFilePath)
-      : m_loggerName(loggerName)
+   CRuleLogger::CRuleLogger(const boost::filesystem::path& logFilePath)
    {
       if (!boost::filesystem::exists(logFilePath.parent_path()))
          boost::filesystem::create_directories(logFilePath.parent_path());
       m_logFile.open(logFilePath.string(), std::ofstream::out | std::ofstream::app);
    }
 
-   CExternalProcessLogger::~CExternalProcessLogger()
+   CRuleLogger::~CRuleLogger()
    {
    }
 
-   void CExternalProcessLogger::init()
-   {
-      YADOMS_LOG_CONFIGURE(m_loggerName);
-   }
-
-   void CExternalProcessLogger::information(const std::string& line)
+   void CRuleLogger::information(const std::string& line)
    {
       auto toPrint = shared::CStringExtension::removeEol(line);
 
@@ -36,7 +29,7 @@ namespace logging
       YADOMS_LOG(information) << toPrint;
    }
 
-   void CExternalProcessLogger::error(const std::string& line)
+   void CRuleLogger::error(const std::string& line)
    {
       auto toPrint = shared::CStringExtension::removeEol(line);
 
@@ -47,7 +40,7 @@ namespace logging
       YADOMS_LOG(error) << toPrint;
    }
 
-   std::string CExternalProcessLogger::now()
+   std::string CRuleLogger::now()
    {
       std::stringstream dateStream;
       auto facet(new boost::posix_time::time_facet());
@@ -56,6 +49,6 @@ namespace logging
       dateStream << shared::currentTime::Provider().now();
       return dateStream.str();
    }
-} // namespace logging
+} // namespace automation
 
 

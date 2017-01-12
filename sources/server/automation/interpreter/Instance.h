@@ -30,8 +30,8 @@ namespace automation
          void saveScriptContent(const std::string& scriptPath,
                                 const std::string& scriptContent) const override;
          void startScript(int scriptInstanceId,
-                                 const std::string& scriptPath,
-                                 const std::string& yScriptApiId) const override;
+                          const std::string& scriptPath,
+                          const std::string& yScriptApiId) const override;
          void stopScript(int scriptInstanceId) const override;
          // [END] IInstance Implementation
 

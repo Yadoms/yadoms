@@ -30,6 +30,9 @@ namespace interpreter_cpp_api
       // shared::plugin::yInterpreterApi::IYInterpreterApi implementation
       void notifyScriptStopped(int scriptInstanceId,
                                const std::string error) override;
+      void onScriptLog(int scriptInstanceId,
+                       bool error,
+                       const std::string& logLine) override;
       boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> getInformation() const override;
       shared::event::CEventHandler& getEventHandler() override;
       // [END] shared::plugin::yInterpreterApi::IYInterpreterApi implementation
@@ -64,7 +67,7 @@ namespace interpreter_cpp_api
 
       bool m_stopRequested;
 
-      shared::event::CEventHandler m_pluginEventHandler;
+      shared::event::CEventHandler m_interpreterEventHandler;
 
 
       // The message queue buffer, localy used but defined here to be allocated only once
@@ -81,3 +84,5 @@ namespace interpreter_cpp_api
       boost::shared_ptr<shared::script::yInterpreterApi::IInformation> m_pluginInformation;
    };
 } // namespace interpreter_cpp_api	
+
+

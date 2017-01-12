@@ -32,7 +32,6 @@ namespace logging
 
    private:
       static std::string now();
-      static std::string removeEol(const std::string& line);
 
       const std::string m_loggerName;
       std::ofstream m_logFile;

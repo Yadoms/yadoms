@@ -17,6 +17,12 @@ message NotifiyScriptStopped {
 	string error = 2;
 }
 
+message ScriptLog {
+	bool error = 1;
+	int32 scriptInstanceId = 2;
+	string logLine = 3;
+}
+
 message msg {
 	oneof OneOf {
 		string error = 1;
@@ -24,5 +30,6 @@ message msg {
 		LoadScriptContentAnswer loadScriptContentAnswer = 3;
 		SaveScriptContentAnswer saveScriptContentAnswer = 4;
 		NotifiyScriptStopped notifiyScriptStopped = 5;
+		ScriptLog scriptLog = 6;
 	}
 }

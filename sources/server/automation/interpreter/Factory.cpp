@@ -9,6 +9,7 @@
 #include <shared/process/NativeExecutableCommandLine.h>
 #include "InstanceStateHandler.h"
 #include <server/logging/ExternalProcessLogger.h>
+#include "RuleLogDispatcher.h"
 
 
 namespace automation
@@ -30,9 +31,12 @@ namespace automation
       {
          auto interpreterInformation = createInterpreterInformation(interpreterFileName);
 
-         auto logger = createProcessLogger(interpreterFileName);
+         auto logger = createInterpreterLogger(interpreterFileName);
 
-         auto yInterpreterIpcAdapter = createInterpreterRunningContext(interpreterInformation,
+         auto scriptLogDispatcher = createScriptLogDispatcher();
+
+         auto yInterpreterIpcAdapter = createInterpreterRunningContext(scriptLogDispatcher,
+                                                                       interpreterInformation,
                                                                        onScriptStoppedFct);
 
          auto commandLine = createCommandLine(interpreterInformation,
@@ -60,26 +64,35 @@ namespace automation
          return boost::make_shared<CInformation>(m_pathProvider.scriptInterpretersPath() / interpreterFileName);
       }
 
-      boost::shared_ptr<shared::process::IExternalProcessLogger> CFactory::createProcessLogger(const std::string& interpreterFileName) const
+      boost::shared_ptr<shared::process::IExternalProcessLogger> CFactory::createInterpreterLogger(const std::string& interpreterFileName) const
       {
          return boost::make_shared<logging::CExternalProcessLogger>("interpreter/" + interpreterFileName,
                                                                     interpreterLogFile(interpreterFileName));
       }
 
-      boost::shared_ptr<IIpcAdapter> CFactory::createInterpreterRunningContext(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
+      boost::shared_ptr<IRuleLogDispatcher> CFactory::createScriptLogDispatcher() const
+      {
+         return boost::make_shared<CRuleLogDispatcher>();
+      }
+
+      boost::shared_ptr<IIpcAdapter> CFactory::createInterpreterRunningContext(boost::shared_ptr<IRuleLogDispatcher> ruleLogDispatcher,
+                                                                               boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
                                                                                boost::function2<void, int, const std::string&> onScriptStoppedFct) const
       {
-         auto apiImplementation = createInterpreterApiImplementation(interpreterInformation,
+         auto apiImplementation = createInterpreterApiImplementation(ruleLogDispatcher,
+                                                                     interpreterInformation,
                                                                      onScriptStoppedFct);
 
          return boost::make_shared<CIpcAdapter>(interpreterInformation->getName(),
                                                 apiImplementation);
       }
 
-      boost::shared_ptr<CYInterpreterApiImplementation> CFactory::createInterpreterApiImplementation(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
+      boost::shared_ptr<CYInterpreterApiImplementation> CFactory::createInterpreterApiImplementation(boost::shared_ptr<IRuleLogDispatcher> ruleLogDispatcher,
+                                                                                                     boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
                                                                                                      boost::function2<void, int, const std::string&> onScriptStoppedFct) const
       {
-         return boost::make_shared<CYInterpreterApiImplementation>(interpreterInformation,
+         return boost::make_shared<CYInterpreterApiImplementation>(ruleLogDispatcher,
+                                                                   interpreterInformation,
                                                                    onScriptStoppedFct);
       }
 

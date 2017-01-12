@@ -108,12 +108,12 @@ namespace automation
       }
 
       void CInstance::startScript(int scriptInstanceId,
-                                         const std::string& scriptPath,
-                                         const std::string& yScriptApiId) const
+                                  const std::string& scriptPath,
+                                  const std::string& yScriptApiId) const
       {
          auto request = boost::make_shared<CStartScript>(scriptInstanceId,
-                                                       scriptPath,
-                                                       yScriptApiId);
+                                                         scriptPath,
+                                                         yScriptApiId);
 
          try
          {
@@ -173,3 +173,5 @@ namespace automation
       }
    }
 } // namespace automation::interpreter
+
+

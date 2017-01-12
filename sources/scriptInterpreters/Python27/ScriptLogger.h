@@ -1,10 +1,16 @@
 #pragma once
 #include <shared/process/IExternalProcessLogger.h>
+#include <shared/script/yInterpreterApi/IYInterpreterApi.h>
+
+
+// Shortcut to yInterpreterApi namespace
+namespace yApi = shared::script::yInterpreterApi;
 
 class CScriptLogger : public shared::process::IExternalProcessLogger
 {
 public:
-   explicit CScriptLogger(int scriptInstanceId);
+   CScriptLogger(boost::shared_ptr<yApi::IYInterpreterApi> api,
+                 int scriptInstanceId);
    virtual ~CScriptLogger();
 
    // IExternalProcessLogger Implementation
@@ -14,6 +20,7 @@ public:
    // [END] IExternalProcessLogger Implementation
 
 private:
-   const std::string m_logPrefix;
+   boost::shared_ptr<yApi::IYInterpreterApi> m_api;
+   const int m_scriptInstanceId;
 };
 
