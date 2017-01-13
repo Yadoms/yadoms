@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SIConfiguration.h"
+#include <shared/Log.h>
 
 CSIConfiguration::CSIConfiguration()
 {

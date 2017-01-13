@@ -30,7 +30,8 @@ void onGlobalNotification(OpenZWave::Notification const* _notification, void* _c
 {
    try
    {
-      std::cout << "OpenZWave notification : " << _notification->GetAsString() << std::endl;
+      YADOMS_LOG_CONFIGURE("ZWave");
+      YADOMS_LOG(information) << "OpenZWave notification : " << _notification->GetAsString() ;
 
       auto pPlugin = static_cast<COpenZWaveController *>(_context);
       if (pPlugin != nullptr)
@@ -38,15 +39,15 @@ void onGlobalNotification(OpenZWave::Notification const* _notification, void* _c
    }
    catch (OpenZWave::OZWException& ex)
    {
-      std::cerr << "OpenZWave exception (OnGlobalNotification) : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "OpenZWave exception (OnGlobalNotification) : " << ex.what() ;
    }
    catch (std::exception& ex)
    {
-      std::cerr << "OpenZWave std::exception (OnGlobalNotification) : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "OpenZWave std::exception (OnGlobalNotification) : " << ex.what() ;
    }
    catch (...)
    {
-      std::cerr << "OpenZWave unknown exception (OnGlobalNotification)" << std::endl;
+      YADOMS_LOG(error) << "OpenZWave unknown exception (OnGlobalNotification)" ;
    }
 }
 
@@ -82,7 +83,7 @@ IZWaveController::E_StartResult COpenZWaveController::start()
          if (returnedError)
          {
             //did not successfully create directories
-            std::cerr << "Fali to create folder : " << dataFolder.string() << std::endl;
+            YADOMS_LOG(error) << "Fali to create folder : " << dataFolder.string() ;
          }
       }
 
@@ -127,11 +128,11 @@ IZWaveController::E_StartResult COpenZWaveController::start()
             remainingTries--;
             if (remainingTries <= 0)
             {
-               std::cerr << "Fail to open serial port : " << m_configuration->getSerialPort() << std::endl;
+               YADOMS_LOG(error) << "Fail to open serial port : " << m_configuration->getSerialPort() ;
                return kSerialPortError;
             }
 
-            std::cout << "Fail to open serial port : " << m_configuration->getSerialPort() << ". Attemps remaining : " << remainingTries << std::endl;
+            YADOMS_LOG(information) << "Fail to open serial port : " << m_configuration->getSerialPort() << ". Attemps remaining : " << remainingTries ;
             boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
          }
       }
@@ -164,15 +165,15 @@ IZWaveController::E_StartResult COpenZWaveController::start()
    }
    catch (OpenZWave::OZWException& ex)
    {
-      std::cerr << "Fail to start OpenZWave controller : OpenZWave exception : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "Fail to start OpenZWave controller : OpenZWave exception : " << ex.what() ;
    }
    catch (std::exception& ex)
    {
-      std::cerr << "Fail to start OpenZWave controller : std::exception : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "Fail to start OpenZWave controller : std::exception : " << ex.what() ;
    }
    catch (...)
    {
-      std::cerr << "Fail to start OpenZWave controller unknown exception" << std::endl;
+      YADOMS_LOG(error) << "Fail to start OpenZWave controller unknown exception" ;
    }
 
    return kUnknownError;
@@ -186,15 +187,15 @@ void COpenZWaveController::stop()
    }
    catch (OpenZWave::OZWException& ex)
    {
-      std::cerr << "Fail to stop OpenZWave controller : OpenZWave exception : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "Fail to stop OpenZWave controller : OpenZWave exception : " << ex.what() ;
    }
    catch (std::exception& ex)
    {
-      std::cerr << "Fail to stop OpenZWave controller : std::exception : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "Fail to stop OpenZWave controller : std::exception : " << ex.what() ;
    }
    catch (...)
    {
-      std::cerr << "Fail to stop OpenZWave controller unknown exception" << std::endl;
+      YADOMS_LOG(error) << "Fail to stop OpenZWave controller unknown exception" ;
    }
 }
 
@@ -333,7 +334,7 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          {
             //OpenZWave::Manager::Get()->GetControllerInterfaceType()
             auto sNodeType = OpenZWave::Manager::Get()->GetNodeType(node->getHomeId(), node->getNodeId());
-            std::cout << "ZWave : NodeProtocolInfo : " << sNodeType << std::endl;
+            YADOMS_LOG(information) << "ZWave : NodeProtocolInfo : " << sNodeType ;
          }
          break;
       }
@@ -352,12 +353,12 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
             auto sNodeType = OpenZWave::Manager::Get()->GetNodeType(nodeInfo->getHomeId(), nodeInfo->getNodeId());
             auto id = COpenZWaveHelpers::GenerateDeviceName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
 
-            std::cout << "ZWave : NodeNaming : id = " << id << std::endl;
-            std::cout << "ZWave : NodeNaming : name = " << sNodeName << std::endl;
-            std::cout << "ZWave : NodeNaming : manufacturer = " << sNodeManufacturer << std::endl;
-            std::cout << "ZWave : NodeNaming : productName = " << sNodeProductName << std::endl;
-            std::cout << "ZWave : NodeNaming : productType = " << sNodeProductType << std::endl;
-            std::cout << "ZWave : NodeNaming : productId = " << sNodeProductId << std::endl;
+            YADOMS_LOG(information) << "ZWave : NodeNaming : id = " << id ;
+            YADOMS_LOG(information) << "ZWave : NodeNaming : name = " << sNodeName ;
+            YADOMS_LOG(information) << "ZWave : NodeNaming : manufacturer = " << sNodeManufacturer ;
+            YADOMS_LOG(information) << "ZWave : NodeNaming : productName = " << sNodeProductName ;
+            YADOMS_LOG(information) << "ZWave : NodeNaming : productType = " << sNodeProductType ;
+            YADOMS_LOG(information) << "ZWave : NodeNaming : productId = " << sNodeProductId ;
 
             shared::CDataContainer d;
             d.set("name", id);

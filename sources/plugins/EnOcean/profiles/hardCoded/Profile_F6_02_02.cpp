@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Profile_F6_02_02.h"
 #include "../bitsetHelpers.hpp"
-
+#include <shared/Log.h>
 
 CProfile_F6_02_02::CProfile_F6_02_02(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
@@ -49,13 +49,13 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
 
    if (!T21)
    {
-      std::cerr << "Unsupported message received for profile " << profile() <<
-         " : T21=" << (T21 ? "1" : "0") << std::endl;
+      YADOMS_LOG(error) << "Unsupported message received for profile " << profile() <<
+         " : T21=" << (T21 ? "1" : "0") ;
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
    if (!NU)
    {
-      std::cout << "Message received for profile " << profile() << " with NU=0 : this message contains nothing useful, will be ignored" << std::endl;
+      YADOMS_LOG(information) << "Message received for profile " << profile() << " with NU=0 : this message contains nothing useful, will be ignored" ;
       return std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>();
    }
 
@@ -83,7 +83,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       historizers.push_back(m_buttonB);
       break;
    default:
-      std::cerr << "Profile F6_02_02 : receive unsupported rocker first action value " << rocker1stAction << std::endl;
+      YADOMS_LOG(error) << "Profile F6_02_02 : receive unsupported rocker first action value " << rocker1stAction ;
       break;
    }
 
@@ -114,7 +114,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
          historizers.push_back(m_buttonB2ndAction);
          break;
       default:
-         std::cerr << "Profile F6_02_02 : receive unsupported rocker second action value " << rocker2ndAction << std::endl;
+         YADOMS_LOG(error) << "Profile F6_02_02 : receive unsupported rocker second action value " << rocker2ndAction ;
          break;
       }
    }

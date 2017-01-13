@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "KeywordHelpers.h"
 #include <boost/lexical_cast.hpp>
+#include <shared/Log.h>
 
 bool convertDouble(double& value, const shared::CDataContainer& valueContainer, const std::string& label)
 {
@@ -11,7 +12,7 @@ bool convertDouble(double& value, const shared::CDataContainer& valueContainer, 
    }
    catch (shared::exception::CException&)
    {
-      std::cout << "Value [" + label + "] could not be set" << std::endl;
+      YADOMS_LOG(information) << "Value [" + label + "] could not be set" ;
       return false;
    }
 }
@@ -25,7 +26,7 @@ bool convertInt(int& value, const shared::CDataContainer& valueContainer, const 
    }
    catch (shared::exception::CException&)
    {
-      std::cout << "Value [" + label + "] could not be set" << std::endl;
+      YADOMS_LOG(information) << "Value [" + label + "] could not be set" ;
       return false;
    }
 }

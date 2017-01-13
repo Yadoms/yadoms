@@ -4,6 +4,7 @@
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/communication/PortException.hpp>
 #include "TeleInfoFactory.h"
+#include <shared/Log.h>
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -35,7 +36,7 @@ enum
 
 void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   std::cout << "Teleinfo is starting..." << std::endl;
+   YADOMS_LOG(information) << "Teleinfo is starting..." ;
 
    m_isDeveloperMode = api->getYadomsInformation()->developperMode();
 
@@ -58,7 +59,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    createConnection(api);
 
    // the main loop
-   std::cout << "Teleinfo plugin is running..." << std::endl;
+   YADOMS_LOG(information) << "Teleinfo plugin is running..." ;
 
    while (true)
    {
@@ -67,14 +68,14 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
       case yApi::IYPluginApi::kEventStopRequested:
          {
-            std::cout << "Stop requested" << std::endl;
+            YADOMS_LOG(information) << "Stop requested" ;
             api->setPluginState(yApi::historization::EPluginState::kStopped);
             m_runningState = kStop;
             return;
          }
       case kEvtPortConnection:
          {
-            std::cout << "Teleinfo plugin :  Port Connection" << std::endl;
+            YADOMS_LOG(information) << "Teleinfo plugin :  Port Connection" ;
             api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
             m_runningState = kConnecting;
 
@@ -93,7 +94,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
 			 m_waitForAnswerTimer->stop();
 
-            if (m_isDeveloperMode) std::cout << "TeleInfo plugin :  DataReceived" << std::endl;
+            if (m_isDeveloperMode) YADOMS_LOG(information) << "TeleInfo plugin :  DataReceived" ;
 
             processDataReceived(api,
                                 api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::string>>>());
@@ -129,13 +130,13 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kAnswerTimeout:
          {
             m_waitForAnswerTimer->stop();
-            std::cerr << "No answer received, try to reconnect in a while..." << std::endl;
+            YADOMS_LOG(error) << "No answer received, try to reconnect in a while..." ;
             errorProcess(api);
             break;
          }
       default:
          {
-            std::cerr << "Unknown message id" << std::endl;
+            YADOMS_LOG(error) << "Unknown message id" ;
             break;
          }
       }
@@ -168,7 +169,7 @@ void CTeleInfo::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
    m_waitForAnswerTimer->stop();
 
    // Configuration was updated
-   std::cout << "Update configuration..." << std::endl;
+   YADOMS_LOG(information) << "Update configuration..." ;
    BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // If plugin instance is not running, just update configuration
@@ -203,7 +204,7 @@ void CTeleInfo::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> api,
 
 void CTeleInfo::processTeleInfoConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
-   std::cout << "TeleInfo port opened" << std::endl;
+   YADOMS_LOG(information) << "TeleInfo port opened" ;
 
    try
    {
@@ -212,14 +213,14 @@ void CTeleInfo::processTeleInfoConnectionEvent(boost::shared_ptr<yApi::IYPluginA
    }
    catch (shared::communication::CPortException& e)
    {
-      std::cerr << "Error connecting to TeleInfo transceiver : " << e.what() << std::endl;
+      YADOMS_LOG(error) << "Error connecting to TeleInfo transceiver : " << e.what() ;
       // Disconnection will be notified, we just have to wait...
    }
 }
 
 void CTeleInfo::processTeleInfoUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   std::cout << "TeleInfo connection was lost" << std::endl;
+   YADOMS_LOG(information) << "TeleInfo connection was lost" ;
    api->setPluginState(yApi::historization::EPluginState::kError, "connectionLost");
    m_runningState = kConnectionLost;
 
@@ -236,7 +237,7 @@ void CTeleInfo::errorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
 
 void CTeleInfo::initTeleInfoReceiver() const
 {
-   std::cout << "Reset the TeleInfo..." << std::endl;
+   YADOMS_LOG(information) << "Reset the TeleInfo..." ;
 
    // Flush receive buffer
    m_port->flush();

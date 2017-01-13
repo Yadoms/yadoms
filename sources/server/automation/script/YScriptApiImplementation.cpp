@@ -11,7 +11,7 @@ namespace automation
 {
    namespace script
    {
-      CYScriptApiImplementation::CYScriptApiImplementation(boost::shared_ptr<IRuleLogger> ruleLogger,
+      CYScriptApiImplementation::CYScriptApiImplementation(Poco::Logger& ruleLogger,
                                                            boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                                                            boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
                                                            boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
@@ -142,7 +142,7 @@ namespace automation
          }
          catch (std::exception& exception)
          {
-            m_ruleLogger->error(std::string("waitForNextAcquisition : ") + exception.what());
+            m_ruleLogger.error(std::string("waitForNextAcquisition : ") + exception.what());
             throw;
          }
       }
@@ -174,7 +174,7 @@ namespace automation
          }
          catch (std::exception& exception)
          {
-            m_ruleLogger->error(std::string("waitForNextAcquisitions : ") + exception.what());
+            m_ruleLogger.error(std::string("waitForNextAcquisitions : ") + exception.what());
             throw;
          }
       }
@@ -264,7 +264,7 @@ namespace automation
          }
          catch (std::exception& exception)
          {
-            m_ruleLogger->error(std::string("waitForEvent : ") + exception.what());
+            m_ruleLogger.error(std::string("waitForEvent : ") + exception.what());
 
             if (dateTimeObserver)
                notification::CHelpers::unsubscribeObserver(dateTimeObserver);

@@ -66,14 +66,14 @@ namespace http
          else
          {
             auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
-            std::cerr << message << std::endl;
+            YADOMS_LOG(error) << message ;
             throw CInvalidHTTPResultException(message);
          }
       }
       catch (Poco::Exception& e) 
       {
          auto message = (boost::format("Fail to send get http request \"%1%\" : %2%") % url % e.message()).str();
-         std::cerr << message << std::endl;
+         YADOMS_LOG(error) << message ;
          throw CFailedSendingException(message);
       }
    }

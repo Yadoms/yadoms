@@ -10,6 +10,7 @@
 #include "xplrules/rfxLanXpl/DeviceManager.h"
 #include "xplrules/ISupportManuallyDeviceCreationRule.h"
 #include "xplrules/DeviceContainer.h"
+#include <shared/Log.h>
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -36,28 +37,28 @@ enum
 
 void print(shared::CDataContainer const& pt)
 {
-   std::cout << pt.serialize() << std::endl;
+   YADOMS_LOG(information) << pt.serialize() ;
 }
 
 void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    try
    {
-      std::cout << "################ RfxLanXpl : PRINT CONFIG" << std::endl;
+      YADOMS_LOG(information) << "################ RfxLanXpl : PRINT CONFIG" ;
 
       print(api->getConfiguration());
 
       // Load configuration values (provided by database)
-      std::cout << "################ RfxLanXpl : SET CONFIG" << std::endl;
+      YADOMS_LOG(information) << "################ RfxLanXpl : SET CONFIG" ;
       m_configuration.initializeWith(api->getConfiguration());
 
       //start ioservice
-      std::cout << "################ RfxLanXpl : NETWORK IFACE" << std::endl;
+      YADOMS_LOG(information) << "################ RfxLanXpl : NETWORK IFACE" ;
       auto interface = m_configuration.getXplNetworkInterface();
 
-      std::cout << "RfxLanXpl : create xpl service" << std::endl;
+      YADOMS_LOG(information) << "RfxLanXpl : create xpl service" ;
       xplcore::CXplService xplService(interface, m_xpl_gateway_id, "1", &api->getEventHandler(), kXplHubFound);
-      std::cout << "RfxLanXpl : subscribe for xpl messages" << std::endl;
+      YADOMS_LOG(information) << "RfxLanXpl : subscribe for xpl messages" ;
       xplService.subscribeForAllMessages(&api->getEventHandler(), kXplMessageReceived);
 
       //manage xpl hub
@@ -68,7 +69,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       }
 
       // the main loop
-      std::cout << "RfxLanXpl plugin is running..." << std::endl;
+      YADOMS_LOG(information) << "RfxLanXpl plugin is running..." ;
       while (1)
       {
          // Wait for an event
@@ -76,7 +77,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
          case yApi::IYPluginApi::kEventStopRequested:
             {
-               std::cout << "Stop requested" << std::endl;
+               YADOMS_LOG(information) << "Stop requested" ;
                api->setPluginState(yApi::historization::EPluginState::kStopped);
                return;
             }
@@ -92,7 +93,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                // Configuration was updated
                api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
                auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
-               std::cout << "Update configuration..." << std::endl;
+               YADOMS_LOG(information) << "Update configuration..." ;
 
                //read new conf and
                CRfxLanXplConfiguration newConf;
@@ -155,7 +156,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
          default:
             {
-               std::cerr << "Unknown message id" << std::endl;
+               YADOMS_LOG(error) << "Unknown message id" ;
                break;
             }
          }
@@ -163,11 +164,11 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
    catch (shared::exception::CException& ex)
    {
-      std::cerr << "The XPL plugin fails. Unknown exception : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "The XPL plugin fails. Unknown exception : " << ex.what() ;
       api->setPluginState(yApi::historization::EPluginState::kError, (boost::format("Unknown exception : %1%") % ex.what()).str());
    }
 
-   std::cout << "XPL plugin is now stopping" << std::endl;
+   YADOMS_LOG(information) << "XPL plugin is now stopping" ;
    //ensure hub is stopped
    //   stopHub(hub);
 }
@@ -200,7 +201,7 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage& xplMessage,
 {
    try
    {
-      std::cout << "Xpl Message received : " << xplMessage.toString() << std::endl;
+      YADOMS_LOG(information) << "Xpl Message received : " << xplMessage.toString() ;
 
       auto realSource = xplMessage.getSource().toString();
       //if incomming message has been sent from me, use target has real source
@@ -258,18 +259,18 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage& xplMessage,
          else
          {
             auto errorMessage = (boost::format("Unsupported protocol = %1%") % xplMessage.getMessageSchemaIdentifier().toString()).str();
-            std::cerr << errorMessage << std::endl;
+            YADOMS_LOG(error) << errorMessage ;
          }
       }
       else
       {
          auto errorMessage = (boost::format("Unknown xpl source = %1%") % realSource).str();
-         std::cerr << errorMessage << std::endl;
+         YADOMS_LOG(error) << errorMessage ;
       }
    }
    catch (std::exception& ex)
    {
-      std::cerr << "xpl plugin fail to treat message : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "xpl plugin fail to treat message : " << ex.what() ;
    }
 }
 
@@ -284,7 +285,7 @@ void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceComman
 {
    try
    {
-      std::cout << "Sending message : " << yApi::IDeviceCommand::toString(command) << std::endl;
+      YADOMS_LOG(information) << "Sending message : " << yApi::IDeviceCommand::toString(command) ;
       if (api->deviceExists(command->getDevice()))
       {
          //get device details
@@ -316,32 +317,32 @@ void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceComman
                   else
                   {
                      //send result
-                     std::cerr << "Fail to create the Xpl message to send to the device" << std::endl;
+                     YADOMS_LOG(error) << "Fail to create the Xpl message to send to the device" ;
                   }
                }
                else
                {
                   auto errorMessage = (boost::format("The protocol %1% do not support commands") % protocol).str();
-                  std::cerr << errorMessage << std::endl;
+                  YADOMS_LOG(error) << errorMessage ;
                }
             }
             else
             {
                auto errorMessage = (boost::format("Unsupported protocol = %1%") % protocol).str();
-               std::cerr << errorMessage << std::endl;
+               YADOMS_LOG(error) << errorMessage ;
             }
          }
          else
          {
             auto errorMessage = (boost::format("Unknown xpl source = %1%") % source).str();
-            std::cerr << errorMessage << std::endl;
+            YADOMS_LOG(error) << errorMessage ;
          }
       }
    }
    catch (std::exception& ex)
    {
       auto errorMessage = (boost::format("xpl plugin fail to send message : %1%") % ex.what()).str();
-      std::cerr << errorMessage << std::endl;
+      YADOMS_LOG(error) << errorMessage ;
    }
 }
 
@@ -351,11 +352,11 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
 {
    try
    {
-      std::cout << "Create device request" << std::endl;
+      YADOMS_LOG(information) << "Create device request" ;
 
       const auto& deviceCfg = data->getData().getConfiguration();
 
-      std::cout << deviceCfg.serialize() << std::endl;
+      YADOMS_LOG(information) << deviceCfg.serialize() ;
 
       auto chosenDeviceType = data->getData().getConfiguration().get<std::string>("type.activeSection");
       std::string internalProtocol;
@@ -404,21 +405,21 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
          {
             auto errorMessage = (boost::format("The protocol %1% do not support device creation") % internalProtocol).str();
             data->sendError(errorMessage);
-            std::cerr << errorMessage << std::endl;
+            YADOMS_LOG(error) << errorMessage ;
          }
       }
       else
       {
          auto errorMessage = (boost::format("Unsupported protocol = %1%") % chosenDeviceType).str();
          data->sendError(errorMessage);
-         std::cerr << errorMessage << std::endl;
+         YADOMS_LOG(error) << errorMessage ;
       }
    }
    catch (std::exception& ex)
    {
       auto errorMessage = (boost::format("xpl plugin fail to create device : %1%") % ex.what()).str();
       data->sendError(errorMessage);
-      std::cerr << errorMessage << std::endl;
+      YADOMS_LOG(error) << errorMessage ;
    }
 }
 
@@ -428,7 +429,7 @@ void CRfxLanXpl::OnBindingQueryRequest(boost::shared_ptr<yApi::IBindingQueryRequ
 {
    try
    {
-      std::cout << "Custom query request" << std::endl;
+      YADOMS_LOG(information) << "Custom query request" ;
 
 
       if (data->getData().getQuery() == "RfxLanList")
@@ -444,14 +445,14 @@ void CRfxLanXpl::OnBindingQueryRequest(boost::shared_ptr<yApi::IBindingQueryRequ
       {
          auto errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
          data->sendError(errorMessage);
-         std::cerr << errorMessage << std::endl;
+         YADOMS_LOG(error) << errorMessage ;
       }
    }
    catch (std::exception& ex)
    {
       auto errorMessage = (boost::format("xpl plugin fail to create device : %1%") % ex.what()).str();
       data->sendError(errorMessage);
-      std::cerr << errorMessage << std::endl;
+      YADOMS_LOG(error) << errorMessage ;
    }
 }
 

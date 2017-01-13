@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <shared/Log.h>
 #include "PhoneException.hpp"
 #include "GammuPhoneConnection.h"
 
@@ -62,7 +63,7 @@ bool CGammuPhoneConnection::connect() const
    }
    catch (CPhoneException& e)
    {
-      std::cerr << e.what() << std::endl;
+      YADOMS_LOG(error) << e.what() ;
       disconnect();
       return false;
    }
@@ -78,7 +79,7 @@ void CGammuPhoneConnection::disconnect() const
    }
    catch (CPhoneException& e)
    {
-      std::cerr << e.what() << std::endl;
+      YADOMS_LOG(error) << e.what() ;
    }
 }
 

@@ -5,6 +5,7 @@
 #include "equipments/X8DExtension.h"
 #include "equipments/X24DExtension.h"
 #include "equipments/manuallyDeviceCreationException.hpp"
+#include <shared/Log.h>
 
 CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
                                const std::string& device,
@@ -41,8 +42,8 @@ CIPX800Factory::CIPX800Factory(boost::shared_ptr<yApi::IYPluginApi> api,
 	   catch (...)
 	   {}
 
-      std::cout << "Name : " << (*devicesIterator) << std::endl;
-      std::cout << "Model : " << type << std::endl;
+      YADOMS_LOG(information) << "Name : " << (*devicesIterator) ;
+      YADOMS_LOG(information) << "Model : " << type ;
 
       if (type == "X-8R")
       {
@@ -187,8 +188,8 @@ void CIPX800Factory::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std:
 {
    for (unsigned char counter = 0; counter < m_devicesList.size(); ++counter)
    {
-      std::cout << "device Name : " << m_devicesList[counter]->getDeviceName() << std::endl;
-      std::cout << "deviceRemoved : " << deviceRemoved << std::endl;
+      YADOMS_LOG(information) << "device Name : " << m_devicesList[counter]->getDeviceName() ;
+      YADOMS_LOG(information) << "deviceRemoved : " << deviceRemoved ;
 
       // Deletion from the list of the device
       if (m_devicesList[counter]->getDeviceName() == deviceRemoved)

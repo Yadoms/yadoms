@@ -16,6 +16,7 @@
 #include <server/logging/ExternalProcessLogger.h>
 
 
+
 namespace pluginSystem
 {
    CFactory::CFactory(const IPathProvider& pathProvider,
@@ -56,8 +57,6 @@ namespace pluginSystem
                                                              qualifier,
                                                              onPluginsStoppedFct);
 
-      auto logger = createProcessLogger(instanceData);
-
       auto yPluginApi = createInstanceRunningContext(pluginInformation,
                                                      instanceData,
                                                      instanceStateHandler,
@@ -68,12 +67,12 @@ namespace pluginSystem
                                            yPluginApi->id());
 
       auto process = createInstanceProcess(commandLine,
-                                           logger,
                                            instanceStateHandler);
 
       return boost::make_shared<CInstance>(instanceData,
                                            pluginInformation,
                                            pluginDataPath(instanceData->Id()),
+                                           pluginLogFile(instanceData->Id()),
                                            process,
                                            yPluginApi);
    }
@@ -120,11 +119,6 @@ namespace pluginSystem
       return pluginDataPath;
    }
 
-   boost::shared_ptr<shared::process::IExternalProcessLogger> CFactory::createProcessLogger(boost::shared_ptr<const database::entities::CPlugin> instanceData) const
-   {
-      return boost::make_shared<logging::CExternalProcessLogger>("plugin/" + instanceData->Type() + " #" + std::to_string(instanceData->Id()),
-                                                                 pluginLogFile(instanceData->Id()));
-   }
 
    boost::shared_ptr<CInstanceStateHandler> CFactory::createInstanceStateHandler(boost::shared_ptr<const database::entities::CPlugin> instanceData,
                                                                                  boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
@@ -156,14 +150,14 @@ namespace pluginSystem
    }
 
    boost::shared_ptr<shared::process::IProcess> CFactory::createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
-                                                                                boost::shared_ptr<shared::process::IExternalProcessLogger> logger,
                                                                                 boost::shared_ptr<CInstanceStateHandler> instanceStateHandler) const
    {
       try
       {
+         std::string loggerName = "plugin";
          return boost::make_shared<shared::process::CProcess>(commandLine,
                                                               instanceStateHandler,
-                                                              logger);
+                                                              loggerName);
       }
       catch (std::runtime_error& e)
       {

@@ -2,6 +2,7 @@
 #include "WeatherIcon.h"
 #include "specificHistorizers/ForecastHelpers.h"
 #include "KeywordException.hpp"
+#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -27,14 +28,14 @@ void CWeatherIcon::setValue(const shared::CDataContainer& valueContainer,
       {
          m_weathercondition->set(static_cast<yApi::historization::EWeatherCondition>(it->second));
 
-         std::cout << m_weathercondition->getKeyword() << "=" << m_weathercondition->get() << std::endl;
+         YADOMS_LOG(information) << m_weathercondition->getKeyword() << "=" << m_weathercondition->get() ;
       }
       else
          throw CKeywordException("Keyword WeatherIcon could not be set");
    }
    catch (shared::exception::CException& e)
    {
-      std::cout << e.what() << std::endl << std::endl;
+      YADOMS_LOG(information) << e.what() ;
    }
 }
 

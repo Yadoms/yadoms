@@ -5,7 +5,7 @@ namespace automation
    //-----------------------------------------------------
    ///\brief The rule logger interface
    //-----------------------------------------------------
-   class IRuleLogger
+   class IRuleLogger//TODO virer ?
    {
    public:
       //-----------------------------------------------------

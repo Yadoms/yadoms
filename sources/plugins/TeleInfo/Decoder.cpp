@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Decoder.h"
 #include "TeleInfotrxHelpers.h"
+#include <shared/Log.h>
 
 CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    : m_baseCounter(boost::make_shared<yApi::historization::CEnergy>("BaseCounter")),
@@ -54,7 +55,7 @@ void CDecoder::createDeviceAndKeywords(bool apparentPowerPresent)
    if (apparentPowerPresent)
       m_keywords.push_back(m_apparentPower);
 
-   if (m_isdeveloperMode) std::cout << "Nb keywords : " << "=" << m_keywords.size() << std::endl;
+   if (m_isdeveloperMode) YADOMS_LOG(information) << "Nb keywords : " << "=" << m_keywords.size() ;
 
    if (!isERDFCounterDesactivated())
    {
@@ -137,7 +138,7 @@ void CDecoder::processMessage(const std::string& key,
 	{
 		if (key == TE_ADCO)
 		{
-			if (m_isdeveloperMode) std::cout << "ADCO" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "ADCO" << "=" << value ;
 
 			static bool ADCOalreadyReceived = false;
 
@@ -149,115 +150,115 @@ void CDecoder::processMessage(const std::string& key,
 		}
 		else if (key == TE_OPTARIF)
 		{
-			if (m_isdeveloperMode) std::cout << "OPTARIF" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "OPTARIF" << "=" << value ;
 			if (m_keywords.empty())
 				createKeywordList(value);
 		}
 		else if (key == TE_ISOUSC)
 		{
-			if (m_isdeveloperMode) std::cout << "ISOUSC" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "ISOUSC" << "=" << value ;
 		}
 		else if (key == TE_BASE)
 		{
-			if (m_isdeveloperMode) std::cout << "BASE" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "BASE" << "=" << value ;
 			m_baseCounter->set(std::stoll(value));
 		}
 		else if (key == TE_HCHC)
 		{
-			if (m_isdeveloperMode) std::cout << "HCHC" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "HCHC" << "=" << value ;
 			m_lowCostCounter->set(std::stoll(value));
 		}
 		else if (key == TE_HCHP)
 		{
-			if (m_isdeveloperMode) std::cout << "HCHP" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "HCHP" << "=" << value ;
 			m_normalCostCounter->set(std::stoll(value));
 		}
 		else if (key == TE_EJPHPM)
 		{
-			if (m_isdeveloperMode) std::cout << "EJPHPM" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "EJPHPM" << "=" << value ;
 			m_EJPPeakPeriod->set(std::stoll(value));
 		}
 		else if (key == TE_EJPHN)
 		{
-			if (m_isdeveloperMode) std::cout << "EJPHN" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "EJPHN" << "=" << value ;
 			m_EJPNormalPeriod->set(std::stoll(value));
 		}
 		else if (key == TE_BBRHCJB)
 		{
-			if (m_isdeveloperMode) std::cout << "BBRHCJB" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "BBRHCJB" << "=" << value ;
 			m_tempoBlueDaysLowCostPeriod->set(std::stoll(value));
 		}
 		else if (key == TE_BBRHPJB)
 		{
-			if (m_isdeveloperMode) std::cout << "BBRHPJB" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "BBRHPJB" << "=" << value ;
 			m_tempoBlueDaysNormalCostPeriod->set(std::stoll(value));
 		}
 		else if (key == TE_BBRHCJW)
 		{
-			if (m_isdeveloperMode) std::cout << "BBRHCJW" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "BBRHCJW" << "=" << value ;
 			m_tempoWhiteDaysLowCostPeriod->set(std::stoll(value));
 		}
 		else if (key == TE_BBRHPJW)
 		{
-			if (m_isdeveloperMode) std::cout << "BBRHPJW" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "BBRHPJW" << "=" << value ;
 			m_tempoWhiteDaysNormalCostPeriod->set(std::stoll(value));
 		}
 		else if (key == TE_BBRHCJR)
 		{
-			if (m_isdeveloperMode) std::cout << "BBRHCJR" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "BBRHCJR" << "=" << value ;
 			m_tempoRedDaysLowCostPeriod->set(std::stoll(value));
 		}
 		else if (key == TE_BBRHPJR)
 		{
-			if (m_isdeveloperMode) std::cout << "BBRHPJR" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "BBRHPJR" << "=" << value ;
 			m_tempoRedDaysNormalCostPeriod->set(std::stoll(value));
 		}
 		else if (key == TE_PTEC)
 		{
-			if (m_isdeveloperMode) std::cout << "PTEC" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "PTEC" << "=" << value ;
 			m_TimePeriod->set(value);
 		}
 		else if (key == TE_IINST)
 		{
-			if (m_isdeveloperMode) std::cout << "IINST" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "IINST" << "=" << value ;
 			m_instantCurrent->set(std::stod(value));
 		}
 		else if (key == TE_IMAX)
 		{
-			if (m_isdeveloperMode) std::cout << "IMAX" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "IMAX" << "=" << value ;
 		}
 		else if (key == TE_PAPP)
 		{
-			if (m_isdeveloperMode) std::cout << "PAPP" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "PAPP" << "=" << value ;
 			m_apparentPower->set(std::stol(value));
 		}
 		else if (key == TE_HHPHC)
 		{
 			//No interest ! Used by the distributor.
-			if (m_isdeveloperMode) std::cout << "HHPHC" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "HHPHC" << "=" << value ;
 		}
 		else if (key == TE_DEMAIN)
 		{
-			if (m_isdeveloperMode) std::cout << "DEMAIN" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "DEMAIN" << "=" << value ;
 			m_ForecastPeriod->set(value);
 		}
 		else if (key == TE_ADPS)
 		{
 			// Threshold warning ! If IINST > ISOUSC
-			if (m_isdeveloperMode) std::cout << "ADPS" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "ADPS" << "=" << value ;
 		}
 		else if (key == TE_MOTDETAT)
 		{
 			// This value is for the distributor. It's nevers used
-			if (m_isdeveloperMode) std::cout << "MOTDETAT" << "=" << value << std::endl;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "MOTDETAT" << "=" << value ;
 		}
 		else
 		{
-			std::cerr << "label " << key << " not processed" << std::endl;
+			YADOMS_LOG(error) << "label " << key << " not processed" ;
 		}
 	}
 	catch (std::exception& e )
 	{
-		std::cerr << "Exception received !" << e.what() << std::endl;
+		YADOMS_LOG(error) << "Exception received !" << e.what() ;
 	}
 }

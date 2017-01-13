@@ -36,6 +36,7 @@
 #include <shared/plugin/yPluginApi/KeywordAccessMode.h>
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 #include "OpenZWaveHelpers.h"
+#include <shared/Log.h>
 
 std::vector<boost::shared_ptr<shared::plugin::yPluginApi::CStandardCapacity> > COpenZWaveNodeKeywordFactory::m_declaredCapacities;
 
@@ -89,7 +90,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
             break;
          }
 
-         std::cout << "[" << homeId << "." << nodeId << "] " << vLabel << ":" << commandClass.toString()
+         YADOMS_LOG(information) << "[" << homeId << "." << nodeId << "] " << vLabel << ":" << commandClass.toString()
             << " [Genre=" << genre << "]"
             << " [CommandClass=" << static_cast<int>(commandClassInt) << "]"
             << " [Instance=" << static_cast<int>(instance) << "]"
@@ -100,7 +101,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
             << " [Units= " << units << "]"
             << " [Awake= " << awake << "]"
             << " [Failed= " << failed << "]"
-            << " [ZWave+= " << zwavePlus << "]" << std::endl;
+            << " [ZWave+= " << zwavePlus << "]" ;
 
          shared::plugin::yPluginApi::EKeywordAccessMode accessMode = shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet;
          if (readOnly)
@@ -114,11 +115,11 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
    }
    catch (OpenZWave::OZWException& ex)
    {
-      std::cerr << "OpenZWave::OZWException : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "OpenZWave::OZWException : " << ex.what() ;
    }
    catch (...)
    {
-      std::cerr << "Unknown exception" << std::endl;
+      YADOMS_LOG(error) << "Unknown exception" ;
    }
 
    return boost::shared_ptr<IOpenZWaveNodeKeyword>();
@@ -374,7 +375,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateS
 
    case OpenZWave::ValueID::ValueType_Schedule: // Complex type used with the Climate Control Schedule command class
       {
-         std::cout << "Value Schedule : " << std::endl;
+         YADOMS_LOG(information) << "Value Schedule : " ;
          break;
       }
 

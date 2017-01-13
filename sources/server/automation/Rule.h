@@ -10,7 +10,7 @@
 #include "database/IDeviceRequester.h"
 #include "communication/ISendMessageAsync.h"
 #include "script/IIpcAdapter.h"
-#include "IRuleLogger.h"
+#include <shared/Log.h>
 
 namespace automation
 {
@@ -45,7 +45,7 @@ namespace automation
                  boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                  boost::shared_ptr<script::IGeneralInfo> generalInfo);
 
-      boost::shared_ptr<IRuleLogger> createScriptLogger(const boost::filesystem::path& logFilePath) const;
+      Poco::Logger& createScriptLogger(const boost::filesystem::path& logFilePath) const;
 
       boost::shared_ptr<script::IIpcAdapter> createScriptIpcAdapter(int ruleId,
                                                                     boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> apiImplementation) const;
@@ -56,14 +56,14 @@ namespace automation
                                                                                                boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                                                                                                boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                                                                                                boost::shared_ptr<script::IGeneralInfo> generalInfo,
-                                                                                               boost::shared_ptr<IRuleLogger> scriptLogger) const;
+                                                                                               Poco::Logger& scriptLogger) const;
 
    private:
       boost::shared_ptr<const database::entities::CRule> m_ruleData;
       boost::shared_ptr<interpreter::IManager> m_interpreterManager;
 
       boost::shared_ptr<interpreter::IInstance> m_scriptInterpreter;
-      boost::shared_ptr<IRuleLogger> m_scriptLogger;
+      Poco::Logger& m_scriptLogger;
       boost::shared_ptr<script::IIpcAdapter> m_ipcAdapter;
    };
 } // namespace automation	

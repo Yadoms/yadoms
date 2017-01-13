@@ -1,7 +1,6 @@
 #pragma once
 #include <shared/script/yInterpreterApi/IInformation.h>
 #include "IRuleLogDispatcher.h"
-#include <boost/array.hpp>
 
 namespace automation
 {

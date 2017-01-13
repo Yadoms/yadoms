@@ -4,7 +4,7 @@
 #include "../../message/RadioErp1SendMessage.h"
 #include "../../message/ResponseReceivedMessage.h"
 #include "Profile_D2_01_Common.h"
-
+#include <shared/Log.h>
 
 CProfile_D2_01_0A::CProfile_D2_01_0A(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
@@ -59,7 +59,7 @@ std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> CProfil
       historizers.push_back(m_channel);
       break;
    default:
-      std::cout << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel << std::endl;
+      YADOMS_LOG(information) << "Profile " << profile() << " : received unsupported ioChannel value " << ioChannel ;
       break;
    }
    return historizers;
@@ -92,12 +92,12 @@ void CProfile_D2_01_0A::sendCommand(const std::string& keyword,
                              {
                                 answer = esp3Packet;
                              }))
-      std::cerr << "Fail to send state to " << m_deviceId << " : no answer to Actuator Set Output command" << std::endl;
+      YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : no answer to Actuator Set Output command" ;
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
 
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-      std::cerr << "Fail to send state to " << m_deviceId << " : Actuator Set Output command returns " << response->returnCode() << std::endl;
+      YADOMS_LOG(error) << "Fail to send state to " << m_deviceId << " : Actuator Set Output command returns " << response->returnCode() ;
 
    return;
 }

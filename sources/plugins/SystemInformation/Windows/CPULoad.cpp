@@ -2,6 +2,7 @@
 #include "CPULoad.h"
 #include <shared/exception/Exception.hpp>
 #include <stdio.h>
+#include <shared/Log.h>
 
 CCPULoad::CCPULoad(const std::string& keywordName)
    : m_keyword(boost::make_shared<yApi::historization::CLoad>(keywordName))
@@ -62,10 +63,10 @@ void CCPULoad::read()
    try
    {
       m_keyword->set(getCpuUsage());
-      std::cout << "CPU Load : " << m_keyword->get() << std::endl;
+      YADOMS_LOG(information) << "CPU Load : " << m_keyword->get() ;
    }
    catch (shared::exception::CException& exception)
    {
-      std::cout << "CPU Load reading failed:" << exception.what() << std::endl;
+      YADOMS_LOG(information) << "CPU Load reading failed:" << exception.what() ;
    }
 }

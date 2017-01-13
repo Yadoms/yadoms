@@ -8,6 +8,7 @@
 #include "FakeController.h"
 #include "FakeConfigurableDevice.h"
 #include <Poco/Net/NetworkInterface.h>
+#include <shared/Log.h>
 
 // Use this macro to define all necessary to make your plugin a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -33,9 +34,9 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    // Informs Yadoms about the plugin actual state
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-   std::cout << "CFakePlugin is starting..." << std::endl;
+   YADOMS_LOG(information) << "CFakePlugin is starting...";
 
-   std::cout << "The instance data path : " << api->getDataPath().string() << std::endl;
+   YADOMS_LOG(information) << "The instance data path : " << api->getDataPath().string();
 
    // Load configuration values (provided by database)
    m_configuration.initializeWith(api->getConfiguration());
@@ -81,7 +82,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventStopRequested:
          {
             // Yadoms request the plugin to stop. Note that plugin must be stop in 10 seconds max, otherwise it will be killed.
-            std::cout << "Stop requested" << std::endl;
+            YADOMS_LOG(information) << "Stop requested";
             api->setPluginState(yApi::historization::EPluginState::kStopped);
             return;
          }
@@ -91,7 +92,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             // Configuration was updated
             api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
             auto newConfiguration = api->getEventHandler().getEventData<shared::CDataContainer>();
-            std::cout << "Update configuration..." << std::endl;
+            YADOMS_LOG(information) << "Update configuration...";
 
             // Take into account the new configuration
             // - Restart the plugin if necessary,
@@ -114,26 +115,26 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             if (extraQuery)
             {
-               std::cout << "Extra command received : " << extraQuery->getData().query() << std::endl;
+               YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData().query();
 
                if (extraQuery->getData().query() == "simpleCommand")
                {
-                  std::cout << "Simple command received" << std::endl;
+                  YADOMS_LOG(information) << "Simple command received";
                }
                else if (extraQuery->getData().query() == "dataCommand")
                {
                   auto s = extraQuery->getData().data().get<std::string>("testValue");
-                  std::cout << "Command with data received : data=" << s << std::endl;
+                  YADOMS_LOG(information) << "Command with data received : data=" << s;
                }
                else if (extraQuery->getData().query() == "dataBindingCommand")
                {
                   auto value = extraQuery->getData().data().get<std::string>("networkInterface");
-                  std::cout << "Command with binded data received : value=" << value << " text=" << Poco::Net::NetworkInterface::forName(value).displayName() << std::endl;
+                  YADOMS_LOG(information) << "Command with binded data received : value=" << value << " text=" << Poco::Net::NetworkInterface::forName(value).displayName();
                }
                else if (extraQuery->getData().query() == "dataBindingPluginCommand")
                {
                   auto interval = extraQuery->getData().data().get<std::string>("dynamicSection.content.interval");
-                  std::cout << "Command with plugin binded data received : value=" << interval << std::endl;
+                  YADOMS_LOG(information) << "Command with plugin binded data received : value=" << interval;
                }
                else if (extraQuery->getData().query() == "changePluginStateMessage")
                {
@@ -178,7 +179,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                auto errorMessage = (boost::format("unknown query : %1%") % request->getData().getQuery()).str();
                request->sendError(errorMessage);
-               std::cerr << errorMessage << std::endl;
+               YADOMS_LOG(error) << errorMessage;
             }
             break;
          }
@@ -187,11 +188,11 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             // A command was received from Yadoms
             auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
-            std::cout << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command) << std::endl;
+            YADOMS_LOG(information) << "Command received from Yadoms : " << yApi::IDeviceCommand::toString(command);
             if (command->getKeyword().empty())
-               std::cout << "Specific command for a device (can be used for any purpose, unless keyword driving, device configuration (see kGetDeviceConfigurationSchemaRequest and kSetDeviceConfiguration documentation) and deletion" << std::endl;
+               YADOMS_LOG(information) << "Specific command for a device (can be used for any purpose, unless keyword driving, device configuration (see kGetDeviceConfigurationSchemaRequest and kSetDeviceConfiguration documentation) and deletion";
             else
-               std::cout << "Standard command to a keyword (used to drive a switch, a thermostat...)" << std::endl;
+               YADOMS_LOG(information) << "Standard command to a keyword (used to drive a switch, a thermostat...)";
             break;
          }
 
@@ -224,7 +225,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventDeviceRemoved:
          {
             auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved>>();
-            std::cout << device->device() << " was removed" << std::endl;
+            YADOMS_LOG(information) << device->device() << " was removed";
             break;
          }
 
@@ -237,12 +238,12 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             if (deviceConfigurationSchemaRequest->device() == configurableDevice.getDeviceName())
             {
-               std::cout << "This device is configurable, return its configuration schema to device configuration schema request" << std::endl;
+               YADOMS_LOG(information) << "This device is configurable, return its configuration schema to device configuration schema request";
                deviceConfigurationSchemaRequest->sendSuccess(configurableDevice.getDynamicConfiguration());
             }
             else
             {
-               std::cout << "This device is not configurable, return an empty schema to device configuration schema request" << std::endl;
+               YADOMS_LOG(information) << "This device is not configurable, return an empty schema to device configuration schema request";
                deviceConfigurationSchemaRequest->sendSuccess(shared::CDataContainer());
             }
 
@@ -261,7 +262,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             else
             {
                auto errorMessage = "Try to apply a device configuration to an unconfigurable device";
-               std::cerr << errorMessage << std::endl;
+               YADOMS_LOG(error) << errorMessage;
             }
 
             break;
@@ -280,7 +281,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             fakeController.read();
             configurableDevice.read();
 
-            std::cout << "Send the periodically sensors state..." << std::endl;
+            YADOMS_LOG(information) << "Send the periodically sensors state...";
             fakeSensor1.historizeData(api);
             fakeSensor2.historizeData(api);
             fakeCounter.historizeData(api);
@@ -294,7 +295,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       default:
          {
-            std::cerr << "Unknown or unsupported message id " << api->getEventHandler().getEventId() << std::endl;
+            YADOMS_LOG(error) << "Unknown or unsupported message id " << api->getEventHandler().getEventId();
             break;
          }
       }

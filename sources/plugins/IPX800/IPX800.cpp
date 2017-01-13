@@ -10,6 +10,7 @@
 #include "equipments/noInformationException.hpp"
 #include "http/failedSendingException.hpp"
 #include "http/invalidHTTPResultException.hpp"
+#include <shared/Log.h>
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -36,7 +37,7 @@ enum
 
 void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   std::cout << "IPX800 is starting..." << std::endl;
+   YADOMS_LOG(information) << "IPX800 is starting..." ;
       
    try {
       m_configuration.initializeWith(api->getConfiguration());
@@ -54,12 +55,12 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 	  m_refreshTimer->stop();
 
       api->setPluginState(yApi::historization::EPluginState::kRunning);
-      std::cout << "IPX800 plugin is running..." << std::endl;
+      YADOMS_LOG(information) << "IPX800 plugin is running..." ;
    }
    catch (...)
    {
       api->setPluginState(yApi::historization::EPluginState::kCustom, "initializationError");
-      std::cerr << "IPX800 plugin initialization error..." << std::endl;
+      YADOMS_LOG(error) << "IPX800 plugin initialization error..." ;
    }
 
    while (true)
@@ -69,7 +70,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
       case yApi::IYPluginApi::kEventStopRequested:
          {
-            std::cout << "Stop requested" << std::endl;
+            YADOMS_LOG(information) << "Stop requested" ;
             api->setPluginState(yApi::historization::EPluginState::kStopped);
             return;
          }
@@ -82,7 +83,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 	     {
 		    api->setPluginState(yApi::historization::EPluginState::kCustom, "noConnection");
 		    m_refreshTimer->stop();
-		    std::cerr << "No answer received, try to reconnect in a while..." << std::endl;
+		    YADOMS_LOG(error) << "No answer received, try to reconnect in a while..." ;
 		    api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
 		    break;
 	     }
@@ -95,13 +96,13 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
             catch (...)
             {
-               std::cout << "Wrong configuration update" << std::endl;
+               YADOMS_LOG(information) << "Wrong configuration update" ;
             }
             break;
          }
       case kRefreshStatesReceived:
       {
-         std::cout << "Timer received" << std::endl;
+         YADOMS_LOG(information) << "Timer received" ;
 
          try {
             auto forceRefresh = false;
@@ -121,7 +122,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
          catch (std::exception &e) // final catch for other reason
          {
-            std::cout << "Unknow error : " << e.what() << std::endl;
+            YADOMS_LOG(information) << "Unknow error : " << e.what() ;
          }
          break;
       }
@@ -129,7 +130,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          // Yadoms asks for device creation
          auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
-         std::cout << "Manually device creation request received for device :" << request->getData().getDeviceName() << std::endl;
+         YADOMS_LOG(information) << "Manually device creation request received for device :" << request->getData().getDeviceName() ;
          try
          {
             // Creation of the device
@@ -144,7 +145,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
          catch (std::exception &e)
          {
-            std::cout << "Unknow error : " << e.what() << std::endl;
+            YADOMS_LOG(information) << "Unknow error : " << e.what() ;
          }
          break;
       }
@@ -154,11 +155,11 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
             m_factory->removeDevice(api, device->device());
             m_ioManager->removeDevice(api, device->device());
-            std::cout << device->device() << " was removed" << std::endl;
+            YADOMS_LOG(information) << device->device() << " was removed" ;
          }
          catch (std::exception &e)
          {
-            std::cout << "Unknow error : " << e.what() << std::endl;
+            YADOMS_LOG(information) << "Unknow error : " << e.what() ;
          }
          break;
       }
@@ -178,12 +179,12 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                 std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
                 data->sendError(errorMessage);
-                std::cerr << errorMessage << std::endl;
+                YADOMS_LOG(error) << errorMessage ;
             }
         }
         catch (std::exception &e)
         {
-            std::cout << "Unknow error : " << e.what() << std::endl;
+            YADOMS_LOG(information) << "Unknow error : " << e.what() ;
         }
         break;
       }
@@ -197,13 +198,13 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
          catch (std::exception &e)
          {
-            std::cout << "Exception : " << e.what() << std::endl;
+            YADOMS_LOG(information) << "Exception : " << e.what() ;
          }
          break;
       }
       default:
          {
-            std::cerr << "Unknown message id" << std::endl;
+            YADOMS_LOG(error) << "Unknown message id" ;
             break;
          }
       }
@@ -213,7 +214,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 void CIPX800::initIPX800(boost::shared_ptr<yApi::IYPluginApi> api)
 {
 	// Send reset command to the RfxCom
-	std::cout << "Init the connexion ..." << std::endl;
+	YADOMS_LOG(information) << "Init the connexion ..." ;
 
 	try
 	{
@@ -232,14 +233,14 @@ void CIPX800::initIPX800(boost::shared_ptr<yApi::IYPluginApi> api)
 	}
 	catch (std::exception &e) // final catch for other reason
 	{
-		std::cout << "Unknow error : " << e.what() << std::endl;
+		YADOMS_LOG(information) << "Unknow error : " << e.what() ;
 	}
 }
 
 void CIPX800::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData)
 {
    // Configuration was updated
-   std::cout << "Update configuration..." << std::endl;
+   YADOMS_LOG(information) << "Update configuration..." ;
    BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Update configuration

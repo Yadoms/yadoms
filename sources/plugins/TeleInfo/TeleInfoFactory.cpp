@@ -5,6 +5,7 @@
 #include <shared/communication/NoBufferLogger.h>
 #include "TeleInfoReceiveBufferHandler.h"
 #include "Decoder.h"
+#include <shared/Log.h>
 
 CTeleInfoFactory::~CTeleInfoFactory()
 {
@@ -15,7 +16,7 @@ boost::shared_ptr<shared::communication::IAsyncPort> CTeleInfoFactory::construct
                                                                                      boost::shared_ptr<shared::communication::IReceiveBufferHandler> receiveBufferHandler,
                                                                                      int evtPortConnectionId)
 {
-   std::cout << "Connecting TeleInfo on serial port " << configuration.getSerialPort() << "..." << std::endl;
+   YADOMS_LOG(information) << "Connecting TeleInfo on serial port " << configuration.getSerialPort() << "..." ;
 
    auto port = boost::make_shared<shared::communication::CAsyncSerialPort>(configuration.getSerialPort(),
                                                                            boost::asio::serial_port_base::baud_rate(1200),
@@ -39,7 +40,7 @@ boost::shared_ptr<shared::communication::IReceiveBufferHandler> CTeleInfoFactory
 	boost::shared_ptr<shared::communication::IBufferLogger> logger;
 
 	if (developerMode)
-		logger = boost::make_shared<shared::communication::CAsciiBufferLogger>(std::cout);
+		logger = boost::make_shared<shared::communication::CAsciiBufferLogger>(YADOMS_LOG(information));
 	else
       logger = boost::make_shared<shared::communication::CNoBufferLogger>();
 

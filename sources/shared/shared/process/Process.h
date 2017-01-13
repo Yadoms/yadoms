@@ -1,11 +1,11 @@
 #pragma once
 #include <shared/Export.h>
-#include "IExternalProcessLogger.h"
 #include "IProcess.h"
 #include "ICommandLine.h"
 #include "IProcessObserver.h"
 #include <Poco/Process.h>
 #include <Poco/PipeStream.h>
+#include <Poco/Logger.h>
 
 namespace shared
 {
@@ -21,12 +21,13 @@ namespace shared
          /// \brief	Constructor
          /// \param[in] commandLine             Process command line
          /// \param[in] processObserver         The process life observer (can be NULL is no observer needed)
-         /// \param[in] logger                  Process out/err logger (can be NULL is no logger needed)
+         /// \param[in] logger                  The logger name
          /// \throw CProcessException if error
          //--------------------------------------------------------------
          CProcess(boost::shared_ptr<ICommandLine> commandLine,
                   boost::shared_ptr<IProcessObserver> processObserver,
-                  boost::shared_ptr<IExternalProcessLogger> logger);
+                  const std::string & loggerName);
+
 
          //--------------------------------------------------------------
          /// \brief	Destructor
@@ -62,9 +63,9 @@ namespace shared
          /// \param[inout] lastError      Last error string
          //--------------------------------------------------------------
          static void stdOutRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut,
-                                          boost::shared_ptr<IExternalProcessLogger> scriptLogger);
+                                          const std::string & loggerName);
          static void stdErrRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdErr,
-                                          boost::shared_ptr<IExternalProcessLogger> scriptLogger,
+                                          const std::string & loggerName,
                                           boost::shared_ptr<std::string> lastError);
 
       private:
@@ -88,7 +89,7 @@ namespace shared
          //--------------------------------------------------------------
          ///\brief   The logger
          //--------------------------------------------------------------
-         boost::shared_ptr<IExternalProcessLogger> m_logger;
+         const std::string m_logger;
 
          //--------------------------------------------------------------
          /// \brief	Thread redirecting standard outputs

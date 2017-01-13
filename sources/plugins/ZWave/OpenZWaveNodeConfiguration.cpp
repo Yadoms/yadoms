@@ -4,6 +4,7 @@
 #include "OpenZWaveHelpers.h"
 #include "ConfigurationSchemaFactory.h"
 #include <shared/exception/NotSupported.hpp>
+#include <shared/Log.h>
 
 COpenZWaveNodeConfiguration::COpenZWaveNodeConfiguration(const uint32 homeId, const uint8 nodeId)
    : m_homeId(homeId), m_nodeId(nodeId)
@@ -61,11 +62,11 @@ shared::CDataContainer COpenZWaveNodeConfiguration::generateConfigurationSchema(
          }
          catch (shared::exception::CNotSupported &)
          {
-            std::cout << "Fail to generate configuration schema for : " << i->first << " : historizer not supported" << std::endl;
+            YADOMS_LOG(information) << "Fail to generate configuration schema for : " << i->first << " : historizer not supported" ;
          }
          catch (std::exception & ex)
          {
-            std::cout << "Exception in generating configuration schema for : " << i->first << " : " << ex.what() << std::endl;
+            YADOMS_LOG(information) << "Exception in generating configuration schema for : " << i->first << " : " << ex.what() ;
          }
          
       }
@@ -88,11 +89,11 @@ shared::CDataContainer COpenZWaveNodeConfiguration::saveValuesToDatabase()
          }
          catch (shared::exception::CNotSupported &)
          {
-            std::cout << "Fail to getting last value for : " << i->first << " : historizer not supported" << std::endl;
+            YADOMS_LOG(information) << "Fail to getting last value for : " << i->first << " : historizer not supported" ;
          }
          catch (std::exception & ex)
          {
-            std::cout << "Exception in getting last value for : " << i->first << " : " << ex.what() << std::endl;
+            YADOMS_LOG(information) << "Exception in getting last value for : " << i->first << " : " << ex.what() ;
          }
 
       }
@@ -118,11 +119,11 @@ void COpenZWaveNodeConfiguration::setConfigurationValues(const shared::CDataCont
          }
          catch (shared::exception::CNotSupported &)
          {
-            std::cout << "Fail to set configuration value for : " << i->first << " : historizer not supported" << std::endl;
+            YADOMS_LOG(information) << "Fail to set configuration value for : " << i->first << " : historizer not supported" ;
          }
          catch (std::exception & ex)
          {
-            std::cout << "Exception in setting configuration value for : " << i->first << " : " << ex.what() << std::endl;
+            YADOMS_LOG(information) << "Exception in setting configuration value for : " << i->first << " : " << ex.what() ;
          }
 
       }

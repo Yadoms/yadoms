@@ -5,7 +5,6 @@
 #include "tools/SupportedPlatformsChecker.h"
 #include <shared/Executable.h>
 #include <shared/Log.h>
-#include <server/automation/RuleLogger.h>
 
 namespace automation
 {

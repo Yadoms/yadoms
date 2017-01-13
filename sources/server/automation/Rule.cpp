@@ -3,7 +3,8 @@
 #include "script/YScriptApiImplementation.h"
 #include "script/Properties.h"
 #include "script/IpcAdapter.h"
-#include "RuleLogger.h"
+#include <shared/Log.h>
+#include "script/ScriptLogConfiguration.h"
 
 namespace automation
 {
@@ -63,10 +64,14 @@ namespace automation
                                        m_ipcAdapter->id());
    }
 
-   boost::shared_ptr<IRuleLogger> CRule::createScriptLogger(const boost::filesystem::path& logFilePath) const
+   Poco::Logger& CRule::createScriptLogger(const boost::filesystem::path& logFilePath) const
    {
-      return boost::make_shared<CRuleLogger>(m_ruleData->Id(),
-         logFilePath);
+      script::CScriptLogConfiguration config;
+      auto& scriptLogger = Poco::Logger::get("script/" + m_ruleData->Name() + " #" + std::to_string(m_ruleData->Id()));
+      config.configure(scriptLogger,
+                       "debug",
+                       logFilePath);
+      return scriptLogger;
    }
 
    void CRule::requestStop()
@@ -87,7 +92,7 @@ namespace automation
                                                                                                    boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                                                                                                    boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                                                                                                    boost::shared_ptr<script::IGeneralInfo> generalInfo,
-                                                                                                   boost::shared_ptr<IRuleLogger> scriptLogger) const
+                                                                                                   Poco::Logger& scriptLogger) const
    {
       return boost::make_shared<script::CYScriptApiImplementation>(scriptLogger,
                                                                    pluginGateway,
@@ -98,3 +103,5 @@ namespace automation
                                                                    generalInfo);
    }
 } // namespace automation	
+
+

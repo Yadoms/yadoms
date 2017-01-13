@@ -28,8 +28,7 @@ namespace pluginSystem
       // IIpcAdapter Implementation
       std::string id() const override;
       void postStopRequest() override;
-      void postInit(boost::shared_ptr<const shared::plugin::information::IInformation> information,
-                    const boost::filesystem::path& dataPath) override;
+      void postInit(boost::shared_ptr<const shared::plugin::information::IInformation> information, const boost::filesystem::path& dataPath, const boost::filesystem::path& logFile) override;
       void postUpdateConfiguration(const shared::CDataContainer& newConfiguration) override;
       void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request) override;
       void postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request) override;

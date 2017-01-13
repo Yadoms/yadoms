@@ -199,6 +199,7 @@ namespace plugin_cpp_api
    {
       m_pluginInformation = boost::make_shared<CPluginInformation>(boost::make_shared<const plugin_IPC::toPlugin::Information>(msg.plugininformation()));
       m_dataPath = boost::make_shared<const boost::filesystem::path>(msg.datapath());
+      m_logFile = boost::make_shared<const boost::filesystem::path>(msg.logfile());
       setInitialized();
    }
 
@@ -209,7 +210,7 @@ namespace plugin_cpp_api
 
    void CApiImplementation::setInitialized()
    {
-      if (!!m_pluginInformation && !!m_dataPath)
+      if (!!m_pluginInformation && !!m_dataPath && !!m_logFile)
       {
          std::unique_lock<std::mutex> lock(m_initializationConditionMutex);
          m_initialized = true;
@@ -961,6 +962,14 @@ namespace plugin_cpp_api
          throw std::runtime_error("Plugin instance data path not available");
 
       return *m_dataPath;
+   }
+
+   const boost::filesystem::path& CApiImplementation::getLogFile() const
+   {
+      if (!m_logFile)
+         throw std::runtime_error("Plugin instance log file path not available");
+
+      return *m_logFile;
    }
 
    shared::event::CEventHandler& CApiImplementation::getEventHandler()

@@ -2,6 +2,7 @@
 #include "Astronomy.h"
 #include <shared/exception/Exception.hpp>
 #include <shared/exception/EmptyResult.hpp>
+#include <shared/Log.h>
 
 CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
                        IWUConfiguration& wuConfiguration,
@@ -18,7 +19,7 @@ CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (shared::exception::CException& e)
    {
-      std::cout << "Configuration or initialization error of Astronomy module :" << e.what() << std::endl;
+      YADOMS_LOG(information) << "Configuration or initialization error of Astronomy module :" << e.what() ;
       throw;
    }
 }
@@ -52,7 +53,7 @@ void CAstronomy::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (shared::exception::CException& e)
    {
-      std::cout << "Configuration or initialization error in Astronomy module :" << e.what() << std::endl;
+      YADOMS_LOG(information) << "Configuration or initialization error in Astronomy module :" << e.what() ;
       throw;
    }
 }
@@ -71,11 +72,11 @@ void CAstronomy::parse(boost::shared_ptr<yApi::IYPluginApi> api,
       }
 
       api->historizeData(m_deviceName, m_keywords);
-      std::cout << "Refresh Astronomy Information" << std::endl;
+      YADOMS_LOG(information) << "Refresh Astronomy Information" ;
    }
    catch (shared::exception::CException& e)
    {
-      std::cout << e.what() << std::endl;
+      YADOMS_LOG(information) << e.what() ;
       throw;
    }
 }

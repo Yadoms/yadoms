@@ -2,6 +2,7 @@
 #include "XplHubConnectedPeripheral.h"
 #include "XplMessage.h"
 #include <shared/currentTime/Provider.h>
+#include <shared/Log.h>
 
 namespace xplcore
 {
@@ -17,7 +18,7 @@ namespace xplcore
       m_socket.setBroadcast(true);
       //m_socket.bind(Poco::Net::SocketAddress(sender.host(), portNumber));
       m_socket.connect(Poco::Net::SocketAddress(sender.host(), portNumber));
-      std::cout << "Peripheral " << debugName << " found @" << sender.host().toString() << std::endl;
+      YADOMS_LOG(information) << "Peripheral " << debugName << " found @" << sender.host().toString() ;
    }
 
    CXplHubConnectedPeripheral::~CXplHubConnectedPeripheral()

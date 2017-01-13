@@ -24,7 +24,6 @@ namespace pluginSystem
         m_sendBuffer(boost::make_shared<unsigned char[]>(m_sendMessageQueue.get_max_msg_size())),
         m_messageQueueReceiveThread(boost::thread(&CIpcAdapter::messageQueueReceiveThreaded, this))
    {
-      YADOMS_LOG_CONFIGURE("pluginSystem.IpcAdapter");
    }
 
    CIpcAdapter::~CIpcAdapter()
@@ -470,13 +469,13 @@ namespace pluginSystem
       send(msg);
    }
 
-   void CIpcAdapter::postInit(boost::shared_ptr<const shared::plugin::information::IInformation> information,
-                              const boost::filesystem::path& dataPath)
+   void CIpcAdapter::postInit(boost::shared_ptr<const shared::plugin::information::IInformation> information, const boost::filesystem::path& dataPath, const boost::filesystem::path& logFile)
    {
       plugin_IPC::toPlugin::msg msg;
       auto message = msg.mutable_init();
       serializers::CInformation(information).toPb(message->mutable_plugininformation());
       message->set_datapath(dataPath.string());
+      message->set_logfile(logFile.string());
 
       send(msg);
    }

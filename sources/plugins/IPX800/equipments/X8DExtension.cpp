@@ -3,6 +3,7 @@
 #include <shared/DataContainer.h>
 #include "../specificHistorizers/inputOutput.h"
 #include "noInformationException.hpp"
+#include <shared/Log.h>
 
 namespace equipments
 {
@@ -73,7 +74,7 @@ namespace equipments
                //historize only for new value
                if ((*diIterator)->get() != newValue || forceHistorization)
                {
-				  std::cout << "read IO : " << (*diIterator)->getHardwareName() << " : " << boost::lexical_cast<std::string>(newValue) << std::endl;
+				  YADOMS_LOG(information) << "read IO : " << (*diIterator)->getHardwareName() << " : " << boost::lexical_cast<std::string>(newValue) ;
                   (*diIterator)->set(newValue);
                   keywordsToHistorize.push_back((*diIterator));
                }

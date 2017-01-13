@@ -16,7 +16,7 @@ namespace automation
 
          // IRuleLogDispatcher Implementation
          void addLogger(int scriptInstanceId,
-            boost::shared_ptr<IRuleLogger> ruleLogger) override;
+                        boost::shared_ptr<IRuleLogger> ruleLogger) override;
          void removeLogger(int scriptInstanceId) override;
          void log(int scriptInstanceId,
                   bool error,

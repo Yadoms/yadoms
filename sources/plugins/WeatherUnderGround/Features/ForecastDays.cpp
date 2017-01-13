@@ -2,6 +2,7 @@
 #include "ForecastDays.h"
 #include <shared/exception/Exception.hpp>
 #include "Keywords/KeywordHelpers.h"
+#include <shared/Log.h>
 
 CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
                              IWUConfiguration& wuConfiguration,
@@ -21,7 +22,7 @@ CForecastDays::CForecastDays(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (shared::exception::CException& e)
    {
-      std::cout << "Configuration or initialization error of the forecast module :" << e.what() << std::endl;
+      YADOMS_LOG(information) << "Configuration or initialization error of the forecast module :" << e.what() ;
       throw;
    }
 }
@@ -137,7 +138,7 @@ void CForecastDays::onPluginUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
    }
    catch (std::exception& e)
    {
-      std::cout << "Configuration or initialization error in the forecast module :" << e.what() << std::endl;
+      YADOMS_LOG(information) << "Configuration or initialization error in the forecast module :" << e.what() ;
       throw;
    }
 }
@@ -203,11 +204,11 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
       }
       api->historizeData(m_deviceName, m_keywords);
 
-      std::cout << "Refresh forecast information" << std::endl;
+      YADOMS_LOG(information) << "Refresh forecast information" ;
    }
    catch (shared::exception::CException& e)
    {
-      std::cout << "Error during parsing the element ! : " << e.what() << std::endl;
+      YADOMS_LOG(information) << "Error during parsing the element ! : " << e.what() ;
    }
 }
 

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "FS20.h"
 #include <shared/exception/InvalidParameter.hpp>
-
+#include <shared/Log.h>
 #include <boost/regex.hpp>
 
 // Shortcut to yPluginApi namespace
@@ -117,7 +117,7 @@ namespace rfxcomMessages
          const unsigned int dimIndex = rbuf.FS20.cmd1 & 0x1F;
          if (dimIndex > dimMaxIndex)
          {
-            std::cout << "FS20 unsupported command received (" << dimIndex << ")" << std::endl;
+            YADOMS_LOG(information) << "FS20 unsupported command received (" << dimIndex << ")" ;
             return;
          }
          m_state->set(dimValues[dimIndex]);
@@ -141,7 +141,7 @@ namespace rfxcomMessages
             m_state->set(false);
             break;
          default:
-            std::cout << "FS20/FHT8V unsupported command received (" << cmd << ")" << std::endl;
+            YADOMS_LOG(information) << "FS20/FHT8V unsupported command received (" << cmd << ")" ;
             return;
          }
          break;
@@ -158,14 +158,14 @@ namespace rfxcomMessages
             m_state->set(false);
             break;
          default:
-            std::cout << "FS20/FHT8V unsupported command received (" << cmd << ")" << std::endl;
+            YADOMS_LOG(information) << "FS20/FHT8V unsupported command received (" << cmd << ")" ;
             return;
          }
          break;
       }
       default:
       {
-         std::cout << "FS20 invalid received message (unknown subType " << m_subType << ")" << std::endl;
+         YADOMS_LOG(information) << "FS20 invalid received message (unknown subType " << m_subType << ")" ;
          return;
       }
       }
@@ -214,7 +214,7 @@ namespace rfxcomMessages
           !regex_match(m_groupAddress, boost::regex("[1-4]{2}")) ||
           !regex_match(m_subAddress, boost::regex("[1-4]{2}")))
       {
-         std::cout << "FS20 encoding : invalid house code(" << m_houseCode << "), group adress(" << m_groupAddress << ") or sub-address (" << m_subAddress << ")" << std::endl;
+         YADOMS_LOG(information) << "FS20 encoding : invalid house code(" << m_houseCode << "), group adress(" << m_groupAddress << ") or sub-address (" << m_subAddress << ")" ;
          throw shared::exception::CInvalidParameter("FS20 houseCode");
       }
       rbuf.FS20.hc1 =
@@ -335,7 +335,7 @@ namespace rfxcomMessages
       default:
       {
          // Note sTypeFHT80 is read-only
-         std::cout << "FS20 invalid received message (unknown subType " << m_subType << ")" << std::endl;
+         YADOMS_LOG(information) << "FS20 invalid received message (unknown subType " << m_subType << ")" ;
          throw shared::exception::CInvalidParameter("FS20 subType");
       }
       }

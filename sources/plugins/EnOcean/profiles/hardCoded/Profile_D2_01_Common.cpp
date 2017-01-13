@@ -3,6 +3,7 @@
 #include "../../message/ResponseReceivedMessage.h"
 #include "../bitsetHelpers.hpp"
 #include "../../message/RadioErp1SendMessage.h"
+#include <shared/Log.h>
 
 DECLARE_ENUM_IMPLEMENTATION_NESTED(CProfile_D2_01_Common::EDefaultState, EDefaultState,
    ((off))
@@ -57,12 +58,12 @@ void CProfile_D2_01_Common::sendActuatorSetLocalCommand(boost::shared_ptr<IMessa
                              {
                                 answer = esp3Packet;
                              }))
-      std::cerr << "Fail to send configuration to " << targetId << " : no answer to Actuator Set Local command" << std::endl;
+      YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set Local command" ;
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
 
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-      std::cerr << "Fail to send configuration to " << targetId << " : Actuator Set Local command returns " << response->returnCode() << std::endl;
+      YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : Actuator Set Local command returns " << response->returnCode() ;
 }
 
 void CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(boost::shared_ptr<IMessageHandler> messageHandler,
@@ -98,12 +99,12 @@ void CProfile_D2_01_Common::sendActuatorSetExternalInterfaceSettingsCommand(boos
                              {
                                 answer = esp3Packet;
                              }))
-      std::cerr << "Fail to send configuration to " << targetId << " : no answer to Actuator Set External Interface Settings command" << std::endl;
+      YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set External Interface Settings command" ;
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
 
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-      std::cerr << "Fail to send configuration to " << targetId << " : Actuator Set External Interface Settings command returns " << response->returnCode() << std::endl;
+      YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : Actuator Set External Interface Settings command returns " << response->returnCode() ;
 }
 
 void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<IMessageHandler> messageHandler,
@@ -143,10 +144,10 @@ void CProfile_D2_01_Common::sendActuatorSetMeasurementCommand(boost::shared_ptr<
                              {
                                 answer = esp3Packet;
                              }))
-      std::cerr << "Fail to send configuration to " << targetId << " : no answer to Actuator Set Measurement command" << std::endl;
+      YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : no answer to Actuator Set Measurement command" ;
 
    auto response = boost::make_shared<message::CResponseReceivedMessage>(answer);
 
    if (response->returnCode() != message::CResponseReceivedMessage::RET_OK)
-      std::cerr << "Fail to send configuration to " << targetId << " : Actuator Set Measurement command returns " << response->returnCode() << std::endl;
+      YADOMS_LOG(error) << "Fail to send configuration to " << targetId << " : Actuator Set Measurement command returns " << response->returnCode() ;
 }

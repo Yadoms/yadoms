@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "IntegerTypeInfo.h"
 #include "../OpenZWaveHelpers.h"
+#include <shared/Log.h>
 
 CIntegerTypeInfo::CIntegerTypeInfo(OpenZWave::ValueID& vID)
 {
@@ -32,6 +33,6 @@ void CIntegerTypeInfo::initialize(OpenZWave::ValueID& vID)
    m_data.set("max", max);
    m_data.set("step", 1);
 
-   std::cout << m_data.serialize() << std::endl;
+   YADOMS_LOG(information) << m_data.serialize() ;
 }
 

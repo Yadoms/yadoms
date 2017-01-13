@@ -2,6 +2,7 @@
 #include "IOManager.h"
 #include "urlManager.h"
 #include <boost/regex.hpp> 
+#include <shared/Log.h>
 
 CIOManager::CIOManager(const std::string& device, Poco::Net::SocketAddress socket, bool passwordActivated, std::string password):
      m_deviceName (device),
@@ -54,7 +55,7 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
    std::string keywordName = command->getKeyword();
    std::string commandSelected;
 
-   std::cout << "Command received :" << yApi::IDeviceCommand::toString(command) << std::endl;
+   YADOMS_LOG(information) << "Command received :" << yApi::IDeviceCommand::toString(command) ;
 
    const auto& deviceDetails = api->getDeviceDetails(command->getDevice());
    auto deviceType = deviceDetails.get<std::string>("type");
@@ -75,7 +76,7 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
             (*iteratorExtension)->historizePendingCommand(api, command);
          else
          {
-            std::cerr << "Command is not executed by the IPX800" << std::endl;
+            YADOMS_LOG(error) << "Command is not executed by the IPX800" ;
             
             // if an error is return, we reset the pending operation
             (*iteratorExtension)->resetPendingCommand();

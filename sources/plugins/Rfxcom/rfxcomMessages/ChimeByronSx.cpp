@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ChimeByronSx.h"
 #include "RFXtrxHelpers.h"
+#include <shared/Log.h>
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -32,7 +33,7 @@ namespace rfxcomMessages
       else if (sound == "Solo") m_sound = kSolo;
       else
       {
-         std::cout << "Chime, unsupported sound \"" << sound << "\", use default" << std::endl;
+         YADOMS_LOG(information) << "Chime, unsupported sound \"" << sound << "\", use default" ;
          m_sound = kDefaultSound;
       }
    }
@@ -79,7 +80,7 @@ namespace rfxcomMessages
          m_sound = kSolo;
          break;
       default:
-         std::cout << "Chime, unsupported received sound \"" << cmd << "\", use default" << std::endl;
+         YADOMS_LOG(information) << "Chime, unsupported received sound \"" << cmd << "\", use default" ;
          m_sound = kDefaultSound;
          break;
       }
@@ -98,7 +99,7 @@ namespace rfxcomMessages
       case kSolo: sound = chime_sound3;
          break;
       default:
-         std::cout << "CChimeByronSx::toProtocolState : Unsupported sound value : " << m_sound << std::endl;
+         YADOMS_LOG(information) << "CChimeByronSx::toProtocolState : Unsupported sound value : " << m_sound ;
          sound = chime_sound0;
          break;
       }

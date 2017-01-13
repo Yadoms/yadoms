@@ -1,6 +1,5 @@
 #pragma once
 #include "IPythonExecutable.h"
-#include <shared/process/IExternalProcessLogger.h>
 #include <shared/process/IProcess.h>
 #include "IScriptFile.h"
 #include <shared/process/ICommandLine.h>
@@ -25,7 +24,7 @@ public:
                   const boost::filesystem::path& interpreterPath,
                   boost::shared_ptr<const IScriptFile> scriptFile,
                   const std::string& scriptApiId,
-                  boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger,
+                  const std::string& scriptLogger,
                   boost::shared_ptr<shared::process::IProcessObserver> processObserver);
 
    //--------------------------------------------------------------
@@ -71,7 +70,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The script logger
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::process::IExternalProcessLogger> m_scriptLogger;
+   const std::string m_scriptLogger;
 
    //--------------------------------------------------------------
    /// \brief	Object to notify when process stops

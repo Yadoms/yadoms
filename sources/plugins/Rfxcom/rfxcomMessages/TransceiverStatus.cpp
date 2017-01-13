@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "TransceiverStatus.h"
+#include <shared/Log.h>
 
 
 namespace rfxcomMessages
@@ -61,7 +62,7 @@ namespace rfxcomMessages
       case sTypeInterfaceWrongCommand: m_statusType = kWrongCommand;
          break;
       default:
-         std::cerr << "Unknown status subtype value : " << rbuf.IRESPONSE.subtype << std::endl;
+         YADOMS_LOG(error) << "Unknown status subtype value : " << rbuf.IRESPONSE.subtype ;
          break;
       }
 
@@ -146,37 +147,37 @@ namespace rfxcomMessages
 
    void CTransceiverStatus::traceEnabledProtocols() const
    {
-      std::cout << "RFXCom configured protocols :" << std::endl;
+      YADOMS_LOG(information) << "RFXCom configured protocols :" ;
 
-      if (m_AEenabled) std::cout << "   - AE Blyss" << std::endl;
-      if (m_RUBICSONenabled) std::cout << "   - Rubicson" << std::endl;
-      if (m_FINEOFFSETenabled) std::cout << "   - FineOffset/Viking" << std::endl;
-      if (m_LIGHTING4enabled) std::cout << "   - Lighting4" << std::endl;
-      if (m_RSLenabled) std::cout << "   - RSL" << std::endl;
-      if (m_SXenabled) std::cout << "   - Byron SX" << std::endl;
-      if (m_IMAGINTRONIXenabled) std::cout << "   - Imagintronix/Opus" << std::endl;
-      if (m_UNDECODEDenabled) std::cout << "   - undecoded messages" << std::endl;
+      if (m_AEenabled) YADOMS_LOG(information) << "   - AE Blyss" ;
+      if (m_RUBICSONenabled) YADOMS_LOG(information) << "   - Rubicson" ;
+      if (m_FINEOFFSETenabled) YADOMS_LOG(information) << "   - FineOffset/Viking" ;
+      if (m_LIGHTING4enabled) YADOMS_LOG(information) << "   - Lighting4" ;
+      if (m_RSLenabled) YADOMS_LOG(information) << "   - RSL" ;
+      if (m_SXenabled) YADOMS_LOG(information) << "   - Byron SX" ;
+      if (m_IMAGINTRONIXenabled) YADOMS_LOG(information) << "   - Imagintronix/Opus" ;
+      if (m_UNDECODEDenabled) YADOMS_LOG(information) << "   - undecoded messages" ;
 
-      if (m_MERTIKenabled) std::cout << "   - Mertik" << std::endl;
-      if (m_LWRFenabled) std::cout << "   - AD LightwaveRF" << std::endl;
-      if (m_HIDEKIenabled) std::cout << "   - Hideki/UPM" << std::endl;
-      if (m_LACROSSEenabled) std::cout << "   - La Crosse" << std::endl;
-      if (m_FS20enabled) std::cout << "   - FS20" << std::endl;
-      if (m_PROGUARDenabled) std::cout << "   - ProGuard" << std::endl;
-      if (m_BLINDST0enabled) std::cout << "   - BlindsT0" << std::endl;
-      if (m_BLINDST1enabled) std::cout << "   - BlindsT1" << std::endl;
+      if (m_MERTIKenabled) YADOMS_LOG(information) << "   - Mertik" ;
+      if (m_LWRFenabled) YADOMS_LOG(information) << "   - AD LightwaveRF" ;
+      if (m_HIDEKIenabled) YADOMS_LOG(information) << "   - Hideki/UPM" ;
+      if (m_LACROSSEenabled) YADOMS_LOG(information) << "   - La Crosse" ;
+      if (m_FS20enabled) YADOMS_LOG(information) << "   - FS20" ;
+      if (m_PROGUARDenabled) YADOMS_LOG(information) << "   - ProGuard" ;
+      if (m_BLINDST0enabled) YADOMS_LOG(information) << "   - BlindsT0" ;
+      if (m_BLINDST1enabled) YADOMS_LOG(information) << "   - BlindsT1" ;
 
-      if (m_X10enabled) std::cout << "   - X10" << std::endl;
-      if (m_ARCenabled) std::cout << "   - ARC" << std::endl;
-      if (m_ACenabled) std::cout << "   - AC" << std::endl;
-      if (m_HEEUenabled) std::cout << "   - HomeEasy EU" << std::endl;
-      if (m_MEIANTECHenabled) std::cout << "   - Meiantech" << std::endl;
-      if (m_OREGONenabled) std::cout << "   - Oregon Scientific" << std::endl;
-      if (m_ATIenabled) std::cout << "   - ATI" << std::endl;
-      if (m_VISONICenabled) std::cout << "   - Visonic" << std::endl;
+      if (m_X10enabled) YADOMS_LOG(information) << "   - X10" ;
+      if (m_ARCenabled) YADOMS_LOG(information) << "   - ARC" ;
+      if (m_ACenabled) YADOMS_LOG(information) << "   - AC" ;
+      if (m_HEEUenabled) YADOMS_LOG(information) << "   - HomeEasy EU" ;
+      if (m_MEIANTECHenabled) YADOMS_LOG(information) << "   - Meiantech" ;
+      if (m_OREGONenabled) YADOMS_LOG(information) << "   - Oregon Scientific" ;
+      if (m_ATIenabled) YADOMS_LOG(information) << "   - ATI" ;
+      if (m_VISONICenabled) YADOMS_LOG(information) << "   - Visonic" ;
 
-      if (m_KeeLoqenabled) std::cout << "   - KeeLoq" << std::endl;
-      if (m_HomeConfortenabled) std::cout << "   - HomeConfort" << std::endl;
+      if (m_KeeLoqenabled) YADOMS_LOG(information) << "   - KeeLoq" ;
+      if (m_HomeConfortenabled) YADOMS_LOG(information) << "   - HomeConfort" ;
    }
 
    CTransceiverStatus::EStatusType CTransceiverStatus::getStatusType() const

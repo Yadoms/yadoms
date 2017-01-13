@@ -6,7 +6,7 @@ namespace automation
    //-----------------------------------------------------
    ///\brief The rule logger
    //-----------------------------------------------------
-   class CRuleLogger : public IRuleLogger
+   class CRuleLogger : public IRuleLogger //TODO utile ?
    {
    public:
       //-----------------------------------------------------

@@ -13,10 +13,12 @@ message Information {
 	string packageFileContent = 9;
 	string path = 10;
 	bool supportDeviceRemovedNotification = 11;
+	string logLevel = 12;
 }
 
 message Init {
 	Information pluginInformation = 1;
 	string dataPath = 2;
+	string logFile = 3;
 }
 

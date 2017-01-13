@@ -7,6 +7,7 @@
 #include "Features/Location.h"
 #include "RequestErrorException.hpp"
 #include "noLocationException.hpp"
+#include <shared/Log.h>
 
 CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api,
                        IWUConfiguration& wuConfiguration):
@@ -89,8 +90,8 @@ void CWUFactory::initializeLiveStations(boost::shared_ptr<yApi::IYPluginApi> api
 
    if (m_developerMode)
    {
-      std::cout << "longitude :" << m_lookupInformation->getCityLocation()->longitude() << std::endl;
-      std::cout << "latitude :" << m_lookupInformation->getCityLocation()->latitude() << std::endl;
+      YADOMS_LOG(information) << "longitude :" << m_lookupInformation->getCityLocation()->longitude() ;
+      YADOMS_LOG(information) << "latitude :" << m_lookupInformation->getCityLocation()->latitude() ;
    }
 
    //Get location information
@@ -125,11 +126,11 @@ boost::shared_ptr<features::IFeature> CWUFactory::createorUpdateWeatherDevice(bo
       {
          m_weatherConditions->onPluginUpdate(api, wuConfiguration);
          m_weatherConditions->setCityName(m_lookupInformation->getCity());
-         std::cout << "Update weather device" << std::endl;
+         YADOMS_LOG(information) << "Update weather device" ;
       }
       else
       {
-         std::cout << "remove weather device" << std::endl;
+         YADOMS_LOG(information) << "remove weather device" ;
          api->removeDevice(m_weatherConditions->getName());
          m_weatherConditions.reset();
          m_weatherTimer->stop();
@@ -166,11 +167,11 @@ boost::shared_ptr<features::IFeature> CWUFactory::createorUpdateAstronomyDevice(
       if (wuConfiguration.isAstronomyEnabled())
       {
          m_astronomy->onPluginUpdate(api, wuConfiguration);
-         std::cout << "Update astronomy module" << std::endl;
+         YADOMS_LOG(information) << "Update astronomy module" ;
       }
       else
       {
-         std::cout << "remove astronomy device" << std::endl;
+         YADOMS_LOG(information) << "remove astronomy device" ;
          api->removeDevice(m_astronomy->getName());
          m_astronomy.reset();
          m_astronomyTimer->stop();
@@ -208,11 +209,11 @@ boost::shared_ptr<features::IFeature> CWUFactory::createorUpdateForecastDevice(b
       {
          m_forecast->onPluginUpdate(api, wuConfiguration);
          m_forecast->setCityName(m_lookupInformation->getCity());
-         std::cout << "Update forecast module" << std::endl;
+         YADOMS_LOG(information) << "Update forecast module" ;
       }
       else
       {
-         std::cout << "remove forecast device" << std::endl;
+         YADOMS_LOG(information) << "remove forecast device" ;
          api->removeDevice(m_forecast->getName());
          m_forecastTimer->stop();
          m_forecastTimer.reset();
@@ -240,5 +241,5 @@ boost::shared_ptr<features::IFeature> CWUFactory::getForecastDevice()
 
 CWUFactory::~CWUFactory()
 {
-   std::cout << "Destruction Factory" << std::endl;
+   YADOMS_LOG(information) << "Destruction Factory" ;
 }
