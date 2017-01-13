@@ -29,7 +29,8 @@ namespace automation
 
    CRule::~CRule()
    {
-      m_interpreterManager->getRuleLogDispatcher(m_ruleData->Interpreter())->removeLogger(m_ruleData->Id());
+      //TODO encore utile ?
+      //m_interpreterManager->getRuleLogDispatcher(m_ruleData->Interpreter())->removeLogger(m_ruleData->Id());
    }
 
    void CRule::start(boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
@@ -41,8 +42,9 @@ namespace automation
    {
       m_scriptLogger = createScriptLogger(m_interpreterManager->getScriptLogFilename(m_ruleData->Id()));
 
-      m_interpreterManager->getRuleLogDispatcher(m_ruleData->Interpreter())->addLogger(m_ruleData->Id(),
-                                                                                       m_scriptLogger);
+      //TODO encore utile ?
+      //m_interpreterManager->getRuleLogDispatcher(m_ruleData->Interpreter())->addLogger(m_ruleData->Id(),
+      //                                                                                 m_scriptLogger);
 
       auto apiImplementation = createScriptApiImplementation(pluginGateway,
                                                              dbAcquisitionRequester,

@@ -14,7 +14,7 @@ namespace logging
       /// \brief	                  configure the logger with one file per thread without rolling on size
       /// \param[in]  logLevel      The log level
       //--------------------------------------------------------------
-      static void configure(const  std::string & logLevel);
+      static void configure(const std::string & logLevel);
 
    private:
       //--------------------------------------------------------------

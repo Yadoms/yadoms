@@ -8,7 +8,7 @@ namespace automation
       //-----------------------------------------------------
       ///\brief The rule log dispatcher
       //-----------------------------------------------------
-      class IRuleLogDispatcher
+      class IRuleLogDispatcher//TODO encore utile ?
       {
       public:
          virtual ~IRuleLogDispatcher()

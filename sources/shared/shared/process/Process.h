@@ -63,9 +63,9 @@ namespace shared
          /// \param[inout] lastError      Last error string
          //--------------------------------------------------------------
          static void stdOutRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut,
-                                          const std::string & loggerName);
+                                          const std::string& loggerName);
          static void stdErrRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdErr,
-                                          const std::string & loggerName,
+                                          const std::string& loggerName,
                                           boost::shared_ptr<std::string> lastError);
 
       private:
