@@ -51,7 +51,7 @@ before_install:
 - echo 'Building Poco 1.7.7-all'
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/static/poco-1.7.7-all-build.tar.bz2; else wget http://pocoproject.org/releases/poco-1.7.7/poco-1.7.7-all.tar.gz; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar xjf poco-1.7.7-all-build.tar.bz2; else tar xzf poco-1.7.7-all.tar.gz; fi
-- sudo apt-get install libssl-dev gnutls-dev libopencv-gpu-dev
+- sudo apt-get install libssl-dev libgnutls-dev libopencv-gpu-dev
 - cd poco-1.7.7-all/
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass poco/configure"; else ./configure --static --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page --no-samples --no-tests > yadoms_poco.log; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass poco/make"; else make > yadoms_poco.log; fi
