@@ -9,7 +9,7 @@
 #include "noLocationException.hpp"
 #include <shared/Log.h>
 
-CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api, 
+CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api,
                        IWUConfiguration& wuConfiguration):
    m_developerMode(api->getYadomsInformation()->developperMode())
 {
@@ -29,7 +29,8 @@ CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api,
       for (devicesIterator = devices.begin(); devicesIterator != devices.end(); ++devicesIterator)
       {
          std::string type;
-         try {
+         try
+         {
             type = api->getDeviceDetails(*devicesIterator).get<std::string>("type");
          }
          catch (std::exception&)
@@ -49,7 +50,7 @@ CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api,
             if (!wuConfiguration.isAstronomyEnabled())
                api->removeDevice((*devicesIterator));
             else
-            m_astronomy = createorUpdateAstronomyDevice(api, wuConfiguration);
+               m_astronomy = createorUpdateAstronomyDevice(api, wuConfiguration);
          }
 
          if (type == "forecast")
@@ -57,7 +58,7 @@ CWUFactory::CWUFactory(boost::shared_ptr<yApi::IYPluginApi> api,
             if (!wuConfiguration.isForecast10DaysEnabled())
                api->removeDevice((*devicesIterator));
             else
-            m_forecast = createorUpdateForecastDevice(api, wuConfiguration);
+               m_forecast = createorUpdateForecastDevice(api, wuConfiguration);
          }
       }
    }
@@ -104,10 +105,18 @@ boost::shared_ptr<features::IFeature> CWUFactory::createorUpdateWeatherDevice(bo
    {
       if (wuConfiguration.isLiveConditionsEnabled())
       {
-         m_weatherConditions = boost::make_shared<CWeatherConditions>(api, wuConfiguration, m_lookupInformation->getCityLocation(), "Weather", m_lookupInformation->getCity());
+         m_weatherConditions = boost::make_shared<CWeatherConditions>(api,
+                                                                      wuConfiguration,
+                                                                      m_lookupInformation->getCityLocation(),
+                                                                      "Weather",
+                                                                      m_lookupInformation->getCity());
 
-         api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-         m_weatherTimer = api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions, shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
+         api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions,
+                                            shared::event::CEventTimer::kOneShot,
+                                            boost::posix_time::seconds(0));
+         m_weatherTimer = api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions,
+                                                             shared::event::CEventTimer::kPeriodic,
+                                                             boost::posix_time::minutes(15));
          m_weatherTimer->start();
       }
    }
@@ -139,10 +148,17 @@ boost::shared_ptr<features::IFeature> CWUFactory::createorUpdateAstronomyDevice(
    {
       if (wuConfiguration.isAstronomyEnabled())
       {
-         m_astronomy = boost::make_shared<CAstronomy>(api, wuConfiguration, m_lookupInformation->getCityLocation(), "Astronomy");
+         m_astronomy = boost::make_shared<CAstronomy>(api,
+                                                      wuConfiguration,
+                                                      m_lookupInformation->getCityLocation(),
+                                                      "Astronomy");
 
-         api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-         m_astronomyTimer = api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(9));
+         api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy,
+                                            shared::event::CEventTimer::kOneShot,
+                                            boost::posix_time::seconds(0));
+         m_astronomyTimer = api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy,
+                                                               shared::event::CEventTimer::kPeriodic,
+                                                               boost::posix_time::hours(9));
          m_astronomyTimer->start();
       }
    }
@@ -173,9 +189,17 @@ boost::shared_ptr<features::IFeature> CWUFactory::createorUpdateForecastDevice(b
    {
       if (wuConfiguration.isForecast10DaysEnabled())
       {
-         m_forecast = boost::make_shared<CForecastDays>(api, wuConfiguration, m_lookupInformation->getCityLocation(), "Forecast", m_lookupInformation->getCity());
-         api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
-         m_forecastTimer = api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days, shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(3));
+         m_forecast = boost::make_shared<CForecastDays>(api,
+                                                        wuConfiguration,
+                                                        m_lookupInformation->getCityLocation(),
+                                                        "Forecast",
+                                                        m_lookupInformation->getCity());
+         api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days,
+                                            shared::event::CEventTimer::kOneShot,
+                                            boost::posix_time::seconds(0));
+         m_forecastTimer = api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days,
+                                                              shared::event::CEventTimer::kPeriodic,
+                                                              boost::posix_time::hours(3));
          m_forecastTimer->start();
       }
    }
@@ -191,7 +215,7 @@ boost::shared_ptr<features::IFeature> CWUFactory::createorUpdateForecastDevice(b
       {
          YADOMS_LOG(information) << "remove forecast device" ;
          api->removeDevice(m_forecast->getName());
-		 m_forecastTimer->stop();
+         m_forecastTimer->stop();
          m_forecastTimer.reset();
          m_forecast.reset();
       }

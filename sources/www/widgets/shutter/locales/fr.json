@@ -18,17 +18,19 @@
 				}
             }			
 		},
+		"invert": {
+			"name": "Inversion",
+			"description": "Inverse l'état"
+		},
 		"kind": {
-			"name": "Type d'interrupteur",
+			"name": "Style",
 			"description": "Sélection du type d'interrupteur. Le type d'interrupteur influe sur le mode de fonctionnement du périphérique piloté.",
 			"content": {
 				"window": {
-					"name": "Bouton poussoir fenêtre",
-					"description": "Un bouton poussoir représentant un volet électrique pour une fenêtre"
+					"name": "Fenêtre"
 				},
 				"door": {
-					"name": "Bouton poussoir porte",
-					"description": "Un bouton poussoir représentant un volet électrique pour une porte"
+					"name": "Door"
 				},
 				"verticalInverter": {
 					"name": "Inverseur vertical",
