@@ -148,11 +148,11 @@ SET (POCO_LIBS
 	PocoFoundation
    PocoJSON
 	PocoNet
-	PocoUtil
    PocoXML
    PocoZip
    PocoCrypto
    PocoNetSSL
+	PocoUtil
 )
 
 set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
