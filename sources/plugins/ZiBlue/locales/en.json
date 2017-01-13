@@ -1,0 +1,10 @@
+{
+	"name": "ZiBlue",
+	"description": "Plugin which handle ZiBlue device.",
+	"configurationSchema": {
+		"Serial Port": {
+			"name": "Serial port",
+			"description": "The serial port connected to the ZiBlue device"
+		}		
+	}
+}

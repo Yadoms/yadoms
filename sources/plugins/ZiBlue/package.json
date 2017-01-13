@@ -1,0 +1,19 @@
+{
+	"type": "ZiBlue",
+	"version": "1.0.0-beta.1",
+	"author": "Jean-Michel DECORET",
+   "url": "https://github.com/Yadoms/yadoms/wiki/ZiBlue",
+	"credits": "[ZiBlue](https://ziblue.com/)",
+	"supportedPlatforms": "all",
+	"configurationSchema": {
+		"Serial Port": {
+			"type": "enum",
+			"values": {
+				"__Binding__": {
+					"type": "system",
+					"query": "serialPorts"
+				}
+			}
+		}
+	}
+}

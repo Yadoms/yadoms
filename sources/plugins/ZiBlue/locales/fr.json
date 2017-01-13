@@ -1,0 +1,10 @@
+﻿{
+	"name": "ZiBlue",
+	"description": "Plugin qui supporte le dongle ZiBlue",
+	"configurationSchema": {
+		"Serial Port": {
+			"name": "Port série",
+			"description": "Le port série connecté au ZiBlue."
+		}
+	}
+}
