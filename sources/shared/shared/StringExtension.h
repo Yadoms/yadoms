@@ -44,10 +44,12 @@ namespace shared
 
       static std::string removeEol(const std::string& line)
       {
-         auto l(line);
-         while (boost::ends_with(l, "\n") || boost::ends_with(l, "\r"))
-            l.erase(l.size() - 1, 1);
-         return l;
+         auto len = line.size();
+         if (len > 1 && line[len - 2] == '\r' && line[len - 1] == '\n')
+            return line.substr(0, len - 2);
+         if (len > 0 && (line[len - 1] == '\r' || line[len - 1] == '\n'))
+            return line.substr(0, len - 1);
+         return line;
       }
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -49,6 +49,11 @@ namespace plugin_cpp_api
       //--------------------------------------------------------------
       void waitDebugger(boost::shared_ptr<CApiImplementation> api) const;
 
+      //--------------------------------------------------------------
+      ///\brief               Configure the logger
+      //--------------------------------------------------------------
+      static void configureLogger(boost::shared_ptr<CApiImplementation> api);
+
    private:
       //--------------------------------------------------------------
       ///\brief               The command line used to start the plugin

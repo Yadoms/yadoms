@@ -42,22 +42,8 @@ namespace plugin_cpp_api
          std::cout << api->getInformation()->getType() << " starting" << std::endl;
          waitDebugger(api);
 
-         try
-         {
-            auto path = api->getLogFile();
-            std::cout << api->getInformation()->getType() << " configure logger : " << path.string() << std::endl;
-            CPluginLogConfiguration logconfig;
-            logconfig.configure("debug", path);
-         }
-         catch (std::exception& e)
-         {
-            std::cerr << api->getInformation()->getType() << " fail to confiugure log system : " << e.what() << std::endl;
-         }
-         catch (...)
-         {
-            std::cerr << api->getInformation()->getType() << " fail to confiugure log system with unknown exception" << std::endl;
-         }
-         YADOMS_LOG_CONFIGURE(api->getInformation()->getType());
+         configureLogger(api);
+
          YADOMS_LOG(information) << api->getInformation()->getType() << " started";
 
          if (!api->stopRequested())
@@ -118,6 +104,27 @@ namespace plugin_cpp_api
          else
             std::cerr << api->getInformation()->getType() << " failed to attach debugger after timeout" << std::endl;
       }
+   }
+
+   void CPluginContext::configureLogger(boost::shared_ptr<CApiImplementation> api)
+   {
+      try
+      {
+         auto path = api->getLogFile();
+         std::cout << api->getInformation()->getType() << " configure logger : " << path.string() << std::endl;
+         CPluginLogConfiguration logconfig;
+         logconfig.configure("debug", path);
+      }
+      catch (std::exception& e)
+      {
+         std::cerr << api->getInformation()->getType() << " fail to confiugure log system : " << e.what() << std::endl;
+      }
+      catch (...)
+      {
+         std::cerr << api->getInformation()->getType() << " fail to confiugure log system with unknown exception" << std::endl;
+      }
+
+      YADOMS_LOG_CONFIGURE(api->getInformation()->getType());
    }
 
    IPluginContext::EProcessReturnCode CPluginContext::getReturnCode() const
