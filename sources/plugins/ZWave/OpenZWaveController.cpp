@@ -30,6 +30,7 @@ void onGlobalNotification(OpenZWave::Notification const* _notification, void* _c
 {
    try
    {
+      YADOMS_LOG_CONFIGURE("ZWave");
       YADOMS_LOG(information) << "OpenZWave notification : " << _notification->GetAsString() ;
 
       auto pPlugin = static_cast<COpenZWaveController *>(_context);
