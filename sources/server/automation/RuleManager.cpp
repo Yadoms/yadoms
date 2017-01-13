@@ -118,19 +118,19 @@ namespace automation
       }
       catch (shared::exception::CEmptyResult& e)
       {
-         const auto& error((boost::format("Invalid rule %1%, element not found in database : %2%") % ruleId % e.what()).str());
+         const auto error((boost::format("Invalid rule %1%, element not found in database : %2%") % ruleId % e.what()).str());
          recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }
       catch (shared::exception::CInvalidParameter& e)
       {
-         const auto& error((boost::format("Invalid rule %1% configuration, invalid parameter : %2%") % ruleId % e.what()).str());
+         const auto error((boost::format("Invalid rule %1% configuration, invalid parameter : %2%") % ruleId % e.what()).str());
          recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }
       catch (shared::exception::COutOfRange& e)
       {
-         const auto& error((boost::format("Invalid rule %1% configuration, out of range : %2%") % ruleId % e.what()).str());
+         const auto error((boost::format("Invalid rule %1% configuration, out of range : %2%") % ruleId % e.what()).str());
          recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }
@@ -204,16 +204,15 @@ namespace automation
       }
 
       if (!m_yadomsShutdown)
-         recordRuleStopped(ruleId, error);
+         recordRuleStopped(ruleId,
+                           error);
 
-      {
-         // Notify all handlers for this rule
-         boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotifiersMutex);
-         auto itEventHandlerSetToNotify = m_ruleStopNotifiers.find(ruleId);
-         if (itEventHandlerSetToNotify != m_ruleStopNotifiers.end())
-            for (const auto& itHandler : itEventHandlerSetToNotify->second)
-               itHandler->postEvent(shared::event::kUserFirstId);
-      }
+      // Notify all handlers for this rule
+      boost::lock_guard<boost::recursive_mutex> lock(m_ruleStopNotifiersMutex);
+      auto itEventHandlerSetToNotify = m_ruleStopNotifiers.find(ruleId);
+      if (itEventHandlerSetToNotify != m_ruleStopNotifiers.end())
+         for (const auto& itHandler : itEventHandlerSetToNotify->second)
+            itHandler->postEvent(shared::event::kUserFirstId);
    }
 
    bool CRuleManager::isRuleStarted(int ruleId) const
@@ -256,7 +255,7 @@ namespace automation
       {
          auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id)));
          return m_interpreterManager->getScriptContent(ruleProperties->interpreterName(),
-                                                    ruleProperties->scriptPath());
+                                                       ruleProperties->scriptPath());
       }
       catch (shared::exception::CEmptyResult& e)
       {
@@ -397,18 +396,20 @@ namespace automation
                                         const std::string& error) const
    {
       if (!error.empty())
-         YADOMS_LOG(error) << error;
+      YADOMS_LOG(error) << error;
 
       auto ruleData(boost::make_shared<database::entities::CRule>());
       ruleData->Id = ruleId;
       ruleData->State = error.empty() ? database::entities::ERuleState::kStopped : database::entities::ERuleState::kError;
       ruleData->StopDate = shared::currentTime::Provider().now();
-      ruleData->ErrorMessage = error;
+      if (!error.empty())
+         ruleData->ErrorMessage = error;
       m_ruleRequester->updateRule(ruleData);
 
       if (!error.empty())
          m_eventLogger->addEvent(database::entities::ESystemEventCode::kRuleFailed,
-                                 m_ruleRequester->getRule(ruleId)->Name(), error);
+                                 m_ruleRequester->getRule(ruleId)->Name(),
+                                 error);
    }
 } // namespace automation	
 

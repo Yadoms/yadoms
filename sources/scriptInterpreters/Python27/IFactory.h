@@ -21,6 +21,6 @@ public:
                                                                             boost::shared_ptr<IPythonExecutable> pythonExecutable,
                                                                             const boost::filesystem::path& interpreterPath,
                                                                             const std::string& scriptApiId,
-                                                                            boost::function2<void, bool, int> onInstanceStateChangedFct) const = 0;
+                                                                            boost::function3<void, bool, int, const std::string&> onInstanceStateChangedFct) const = 0;
 };
 

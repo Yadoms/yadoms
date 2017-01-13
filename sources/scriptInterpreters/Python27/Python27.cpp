@@ -8,6 +8,7 @@
 #include <shared/script/yInterpreterApi/IStartScript.h>
 #include <shared/script/yInterpreterApi/IStopScript.h>
 #include "Factory.h"
+#include "EventScriptStopped.h"
 
 // Declare the script interpreter
 IMPLEMENT_INTERPRETER(CPython27)
@@ -102,7 +103,7 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
 
       case kEventScriptStopped:
          {
-            onScriptStopped(api->getEventHandler().getEventData<int>());
+            onScriptStopped(api->getEventHandler().getEventData<boost::shared_ptr<const IEventScriptStopped>>());
             break;
          }
 
@@ -179,11 +180,11 @@ void CPython27::startScript(int scriptInstanceId,
                                                                               m_pythonExecutable,
                                                                               getInterpreterPath(),
                                                                               scriptApiId,
-                                                                              [this](bool running, int scriptId)
+                                                                              [this](bool running, int scriptId, const std::string& error)
                                                                               {
                                                                                  if (!running)
                                                                                     m_api->getEventHandler().postEvent(kEventScriptStopped,
-                                                                                                                       scriptId);
+                                                                                                                       static_cast<boost::shared_ptr<const IEventScriptStopped>>(boost::make_shared<const CEventScriptStopped>(scriptId, error)));
                                                                               });
       }
       catch (std::exception& e)
@@ -212,12 +213,13 @@ void CPython27::stopScript(int scriptInstanceId)
    script->second->kill();
 }
 
-void CPython27::onScriptStopped(int scriptInstanceId)
+void CPython27::onScriptStopped(boost::shared_ptr<const IEventScriptStopped> eventStopped)
 {
-   m_api->notifyScriptStopped(scriptInstanceId);
+   m_api->notifyScriptStopped(eventStopped->scriptId(),
+                              eventStopped->error());
 
    boost::lock_guard<boost::recursive_mutex> lock(m_processesMutex);
-   const auto script = m_scriptProcesses.find(scriptInstanceId);
+   const auto script = m_scriptProcesses.find(eventStopped->scriptId());
    if (script != m_scriptProcesses.end())
       m_scriptProcesses.erase(script);
 }
@@ -238,7 +240,7 @@ void CPython27::onStopRequested()
       {
       case kEventScriptStopped:
          {
-            onScriptStopped(m_api->getEventHandler().getEventData<int>());
+            onScriptStopped(m_api->getEventHandler().getEventData<boost::shared_ptr<const IEventScriptStopped>>());
             break;
          }
       default:

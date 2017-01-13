@@ -84,7 +84,8 @@ namespace automation
       ///\param[in] ruleId    The rule ID
       ///\param[in] error     Error associated to event (empty if not error)
       //-----------------------------------------------------
-      void onRuleStopped(int ruleId, const std::string& error = std::string());
+      void onRuleStopped(int ruleId,
+                         const std::string& error = std::string());
 
       //-----------------------------------------------------
       ///\brief               Record rule started in base
@@ -97,7 +98,8 @@ namespace automation
       ///\param[in] ruleId    The rule ID
       ///\param[in] error     Error associated to event (empty if not error)
       //-----------------------------------------------------
-      void recordRuleStopped(int ruleId, const std::string& error = std::string()) const;
+      void recordRuleStopped(int ruleId,
+                             const std::string& error = std::string()) const;
 
    private:
       boost::shared_ptr<communication::ISendMessageAsync> m_pluginGateway;

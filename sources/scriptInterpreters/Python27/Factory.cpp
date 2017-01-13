@@ -21,7 +21,7 @@ boost::shared_ptr<IPythonExecutable> CFactory::createPythonExecutable() const
 }
 
 boost::shared_ptr<shared::process::IProcessObserver> CFactory::createScriptProcessObserver(int scriptInstanceId,
-                                                                                           boost::function2<void, bool, int> onInstanceStateChangedFct) const
+                                                                                           boost::function3<void, bool, int, const std::string&> onInstanceStateChangedFct) const
 {
    return boost::make_shared<CProcessObserver>(scriptInstanceId,
                                                onInstanceStateChangedFct);
@@ -40,7 +40,7 @@ boost::shared_ptr<shared::process::IProcess> CFactory::createScriptProcess(boost
                                                                            boost::shared_ptr<IPythonExecutable> pythonExecutable,
                                                                            const boost::filesystem::path& interpreterPath,
                                                                            const std::string& scriptApiId,
-                                                                           boost::function2<void, bool, int> onInstanceStateChangedFct) const
+                                                                           boost::function3<void, bool, int, const std::string&> onInstanceStateChangedFct) const
 {
    auto scriptLogger = createScriptLogger(api,
                                           scriptInstanceId);

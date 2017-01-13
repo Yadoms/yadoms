@@ -21,13 +21,13 @@ public:
                                                                     boost::shared_ptr<IPythonExecutable> pythonExecutable,
                                                                     const boost::filesystem::path& interpreterPath,
                                                                     const std::string& scriptApiId,
-                                                                    boost::function2<void, bool, int> onInstanceStateChangedFct) const override;
+                                                                    boost::function3<void, bool, int, const std::string&> onInstanceStateChangedFct) const override;
    // [END] IFactory implementation
 
 protected:
    boost::shared_ptr<IScriptFile> createScriptFile(const std::string& scriptPath) const;
    boost::shared_ptr<shared::process::IProcessObserver> createScriptProcessObserver(int scriptInstanceId,
-                                                                                    boost::function2<void, bool, int> onInstanceStateChangedFct) const;
+                                                                                    boost::function3<void, bool, int, const std::string&> onInstanceStateChangedFct) const;
    boost::shared_ptr<shared::process::IExternalProcessLogger> createScriptLogger(boost::shared_ptr<yApi::IYInterpreterApi> api,
                                                                                  int scriptInstanceId) const;
 };

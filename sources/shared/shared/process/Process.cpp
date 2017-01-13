@@ -103,7 +103,8 @@ namespace shared
             m_StdErrRedirectingThread->join();
 
          if (!!m_processObserver)
-            m_processObserver->onFinish(m_returnCode, getError());
+            m_processObserver->onFinish(m_returnCode,
+                                        getError());
       }
 
       void CProcess::kill()

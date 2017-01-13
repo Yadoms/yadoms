@@ -14,8 +14,11 @@ if(PYTHONLIBS_FOUND)
    set(PYTHON27_SOURCES
       stdafx.h
       stdafx.cpp
+      EventScriptStopped.h
+      EventScriptStopped.cpp
       Factory.h
       Factory.cpp
+      IEventScriptStopped.h
       IPythonExecutable.h
       IFactory.h
       IScriptFile.h

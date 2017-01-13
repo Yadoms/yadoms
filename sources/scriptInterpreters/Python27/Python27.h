@@ -3,6 +3,7 @@
 #include <interpreter_cpp_api/IInterpreter.h>
 #include <shared/process/IProcess.h>
 #include "IFactory.h"
+#include "IEventScriptStopped.h"
 
 //--------------------------------------------------------------
 /// \brief	Python interpreter
@@ -28,7 +29,7 @@ protected:
                     const std::string& scriptPath,
                     const std::string& scriptApiId);
    void stopScript(int scriptInstanceId);
-   void onScriptStopped(int scriptInstanceId);
+   void onScriptStopped(boost::shared_ptr<const IEventScriptStopped> eventStopped);
    void onStopRequested();
 
 private:

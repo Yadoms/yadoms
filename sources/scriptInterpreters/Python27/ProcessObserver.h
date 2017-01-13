@@ -9,7 +9,7 @@ class CProcessObserver : public shared::process::IProcessObserver
 {
 public:
    CProcessObserver(int scriptInstanceId,
-                    boost::function2<void, bool, int> onInstanceStateChangedFct);
+                    boost::function3<void, bool, int, const std::string&> onInstanceStateChangedFct);
 
    //-----------------------------------------------------
    ///\brief               Destructor
@@ -25,6 +25,6 @@ protected:
 
 private:
    int m_scriptInstanceId;
-   boost::function2<void, bool, int> m_onInstanceStateChangedFct;
+   boost::function3<void, bool, int, const std::string&> m_onInstanceStateChangedFct;
 };
 
