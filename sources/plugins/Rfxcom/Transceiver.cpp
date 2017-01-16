@@ -54,8 +54,8 @@
 // RFXCOM implementation
 // =======================================================================
 // This RFXCom support was developped for :
-// - Sepcifications "RFXtrx SDK.pdf" : Version 9.12 Dec 2, 2016
-// - RFXtrx.h : version 9.12
+// - Sepcifications "RFXtrx SDK.pdf" : Version 9.14 Jan 12, 2017
+// - RFXtrx.h : version 9.13
 // =======================================================================
 //
 
@@ -433,6 +433,8 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
          msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeLegrandCAD, data.getConfiguration().get<shared::CDataContainer>("type.content.legrandCad.content"));
       else if (data.getConfiguration().get<bool>("type.content.mdRemote108.radio"))
          msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeMDREMOTE108, data.getConfiguration().get<shared::CDataContainer>("type.content.mdRemote108.content"));
+      else if (data.getConfiguration().get<bool>("type.content.kangtai.radio"))
+         msg = boost::make_shared<rfxcomMessages::CLighting5>(api, sTypeKangtai, data.getConfiguration().get<shared::CDataContainer>("type.content.kangtai.content"));
 
       // Lighting6
       else if (data.getConfiguration().get<bool>("type.content.blyss.radio"))
@@ -485,6 +487,12 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
          msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT9, data.getConfiguration().get<shared::CDataContainer>("type.content.sunperyBtx.content"));
       else if (data.getConfiguration().get<bool>("type.content.dolatDlm1.radio"))
          msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT10, data.getConfiguration().get<shared::CDataContainer>("type.content.dolatDlm1.content"));
+      else if (data.getConfiguration().get<bool>("type.content.asp.radio"))
+         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT11, data.getConfiguration().get<shared::CDataContainer>("type.content.asp.content"));
+      else if (data.getConfiguration().get<bool>("type.content.confexx.radio"))
+         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT12, data.getConfiguration().get<shared::CDataContainer>("type.content.confexx.content"));
+      else if (data.getConfiguration().get<bool>("type.content.screenline.radio"))
+         msg = boost::make_shared<rfxcomMessages::CBlinds1>(api, sTypeBlindsT13, data.getConfiguration().get<shared::CDataContainer>("type.content.screenline.content"));
 
       // Rfy
       else if (data.getConfiguration().get<bool>("type.content.rfy.radio"))
