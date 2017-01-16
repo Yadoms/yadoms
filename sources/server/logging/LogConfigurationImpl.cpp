@@ -60,7 +60,6 @@ namespace logging
       m_formattingConsoleChannelPlugin.assign(new Poco::FormattingChannel(m_patternFormatterPlugin, m_consoleChannel));
       m_splitterChannelPlugin->addChannel(m_formattingConsoleChannelPlugin);
       m_splitterChannelPlugin->addChannel(m_formattingFileChannelPlugin);
-      Poco::Logger::create("plugin", m_splitterChannelPlugin); // TODO pourquoi "plugin" dans cet objet commun ?
 
       //configure root logger
       Poco::Logger::root().setChannel(m_splitterChannel);

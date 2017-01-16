@@ -3,7 +3,7 @@
 #include "Poco/Mutex.h"
 
 //--------------------------------------------------------------
-/// \class A standard console log channel, to output to std::cout and std::cerr
+///\brief A standard console log channel, to output to std::cout and std::cerr
 //--------------------------------------------------------------
 class StandardConsoleChannel: public Poco::Channel//TODO mettre dans shared
 {

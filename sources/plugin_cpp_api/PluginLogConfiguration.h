@@ -32,25 +32,14 @@ namespace plugin_cpp_api
       void configure(const std::string& logLevel,
                      boost::filesystem::path& logfilepath);
    private:
-      //--------------------------------------------------------------
-      /// \brief The console channel
-      //--------------------------------------------------------------
+      Poco::AutoPtr<Poco::PatternFormatter> m_consolePatternFormatter;
+      Poco::AutoPtr<Poco::FormattingChannel> m_formattingConsoleChannel;
       Poco::AutoPtr<StandardConsoleChannel> m_consoleChannel;
-      //--------------------------------------------------------------
-      /// \brief The file channel (configured with logfilepath parameter of configure method)
-      //--------------------------------------------------------------
-      Poco::AutoPtr<Poco::FileChannel> m_fileChannel;
-      //--------------------------------------------------------------
-      /// \brief The output pattern formatter
-      //--------------------------------------------------------------
+
       Poco::AutoPtr<Poco::PatternFormatter> m_patternFormatter;
-      //--------------------------------------------------------------
-      /// \brief The output pattern formatter for file
-      //--------------------------------------------------------------
       Poco::AutoPtr<Poco::FormattingChannel> m_formattingFileChannel;
-      //--------------------------------------------------------------
-      /// \brief The splitter channel which allow to use more than one single channel
-      //--------------------------------------------------------------
+      Poco::AutoPtr<Poco::FileChannel> m_fileChannel;
+
       Poco::AutoPtr<Poco::SplitterChannel> m_splitterChannel;
    };
 } // namespace plugin_cpp_api

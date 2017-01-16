@@ -6,9 +6,10 @@
 namespace plugin_cpp_api
 {
    CPluginLogConfiguration::CPluginLogConfiguration()
-      : m_consoleChannel(new StandardConsoleChannel),
-        m_fileChannel(new Poco::FileChannel()),
+      : m_consolePatternFormatter(new Poco::PatternFormatter),
+        m_consoleChannel(new StandardConsoleChannel),
         m_patternFormatter(new Poco::PatternFormatter),
+        m_fileChannel(new Poco::FileChannel()),
         m_splitterChannel(new Poco::SplitterChannel)
    {
    }
@@ -20,7 +21,10 @@ namespace plugin_cpp_api
    void CPluginLogConfiguration::configure(const std::string& logLevel,
                                            boost::filesystem::path& logfilepath)
    {
-      //make pattern
+      m_consolePatternFormatter->setProperty("pattern", "[%p]%t");
+      m_formattingConsoleChannel.assign(new Poco::FormattingChannel(m_consolePatternFormatter,
+                                                                    m_consoleChannel));
+
       m_patternFormatter->setProperty("pattern", "%H:%M:%S : %T : [%p] : %t");
       m_patternFormatter->setProperty("times", "local"); //use local datetime
 
@@ -33,9 +37,10 @@ namespace plugin_cpp_api
       m_fileChannel->setProperty("archive", "timestamp");
       m_fileChannel->setProperty("compress", "true");
       m_fileChannel->setProperty("purgeCount", "7");
-      m_formattingFileChannel.assign(new Poco::FormattingChannel(m_patternFormatter, m_fileChannel));
+      m_formattingFileChannel.assign(new Poco::FormattingChannel(m_patternFormatter,
+                                                                 m_fileChannel));
 
-      m_splitterChannel->addChannel(m_consoleChannel);
+      m_splitterChannel->addChannel(m_formattingConsoleChannel);
       m_splitterChannel->addChannel(m_formattingFileChannel);
 
       //configre any already created loggers
@@ -53,5 +58,3 @@ namespace plugin_cpp_api
       Poco::Logger::root().setLevel(logLevel);
    }
 } // namespace plugin_cpp_api
-
-

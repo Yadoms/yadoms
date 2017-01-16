@@ -4,7 +4,7 @@
 namespace plugin_cpp_api
 {
 	//--------------------------------------------------------------
-	/// \class The command line parameter extraction
+	///\brief The command line parameter extraction
 	//--------------------------------------------------------------
 	class CCommandLine : public ICommandLine
 	{
