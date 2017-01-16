@@ -50,6 +50,8 @@ set(SHARED_LIB_SRC
    shared/communication/MessageQueueRemover.hpp
    shared/communication/NoBufferLogger.h
    shared/communication/NoBufferLogger.cpp
+   shared/communication/StringBuffer.h
+   shared/communication/StringBuffer.cpp
    shared/communication/PortException.hpp
 	
    shared/compression/Extract.h

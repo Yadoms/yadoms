@@ -59,10 +59,10 @@ private:
    void processZiBlueConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
    void errorProcess(boost::shared_ptr<yApi::IYPluginApi> api);
    void processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
-   void processZiBlueDataReceived(boost::shared_ptr<yApi::IYPluginApi> api, const shared::communication::CByteBuffer& data);
+   void processZiBlueDataReceived(boost::shared_ptr<yApi::IYPluginApi> api, const shared::communication::CStringBuffer& data);
    void initZiBlue(boost::shared_ptr<yApi::IYPluginApi> api);
-   void send(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> buffers);
-   void send(boost::shared_ptr<yApi::IYPluginApi> api, const shared::communication::CByteBuffer& buffer, bool needAnswer);
+   void send(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<std::queue<shared::communication::CStringBuffer>> buffers);
+   void send(boost::shared_ptr<yApi::IYPluginApi> api, const shared::communication::CStringBuffer& buffer, bool needAnswer);
 };
 
 

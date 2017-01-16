@@ -120,7 +120,7 @@ void CZiBlue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
          case kEvtPortDataReceived:
          {
-            processZiBlueDataReceived(api, api->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
+            processZiBlueDataReceived(api, api->getEventHandler().getEventData<const shared::communication::CStringBuffer>());
             break;
          }
          case kAnswerTimeout:
@@ -175,7 +175,7 @@ void CZiBlue::destroyConnection()
 }
 
 
-void CZiBlue::send(boost::shared_ptr<yApi::IYPluginApi> api, const shared::communication::CByteBuffer& buffer, bool needAnswer)
+void CZiBlue::send(boost::shared_ptr<yApi::IYPluginApi> api, const shared::communication::CStringBuffer& buffer, bool needAnswer)
 {
    if (!m_port)
       return;
@@ -184,13 +184,13 @@ void CZiBlue::send(boost::shared_ptr<yApi::IYPluginApi> api, const shared::commu
    //if (m_isDeveloperMode)
    //   m_logger.logSent(buffer);
 
-   m_port->send(buffer);
+   m_port->send((unsigned char*)buffer.begin(), buffer.size());
 
    if (needAnswer)
       m_waitForAnswerTimer->start();
 }
 
-void CZiBlue::send(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<std::queue<shared::communication::CByteBuffer > > buffers)
+void CZiBlue::send(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<std::queue<shared::communication::CStringBuffer > > buffers)
 {
    if (!m_port)
       return;
@@ -236,7 +236,7 @@ void CZiBlue::processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi
    errorProcess(api);
 }
 
-void CZiBlue::processZiBlueDataReceived(boost::shared_ptr<yApi::IYPluginApi> api, const shared::communication::CByteBuffer& data)
+void CZiBlue::processZiBlueDataReceived(boost::shared_ptr<yApi::IYPluginApi> api, const shared::communication::CStringBuffer& data)
 {
 //   if (m_isDeveloperMode)
 //      m_logger.logReceived(data);

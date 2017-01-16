@@ -82,6 +82,14 @@ namespace shared
          virtual void send(const CByteBuffer& buffer) = 0;
 
          //--------------------------------------------------------------
+         /// \brief	                     Send a buffer on the port (synchronously)
+         /// \param [in] begin            The start of buffer to send
+         /// \param [in] count            The number of bytes to send
+         /// \throw                       CPortException if error
+         //--------------------------------------------------------------
+         virtual void send(const unsigned char * begin, const std::size_t count) = 0;
+
+         //--------------------------------------------------------------
          /// \brief	                     Flush the receive buffer
          //--------------------------------------------------------------
          virtual void flush() = 0;

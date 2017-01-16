@@ -46,6 +46,7 @@ namespace shared
          void subscribeForConnectionEvents(event::CEventHandler& forEventHandler, int forId) override;
          void setReceiveBufferHandler(boost::shared_ptr<IReceiveBufferHandler> handler) override;
          void send(const CByteBuffer& buffer) override;
+         void send(const unsigned char * begin, const std::size_t count) override;
          void flush() override;
          // [END] IAsyncPort Implementation
 

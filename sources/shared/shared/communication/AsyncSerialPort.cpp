@@ -204,9 +204,14 @@ namespace shared
 
       void CAsyncSerialPort::send(const CByteBuffer& buffer)
       {
+         send(buffer.begin(), buffer.size());
+      }
+
+      void CAsyncSerialPort::send(const unsigned char * begin, const std::size_t count)
+      {
          try
          {
-            m_boostSerialPort.write_some(boost::asio::const_buffers_1(buffer.begin(), buffer.size()));
+            m_boostSerialPort.write_some(boost::asio::const_buffers_1(begin, count));
          }
          catch (boost::system::system_error& e)
          {
@@ -224,6 +229,7 @@ namespace shared
                e.what());
          }
       }
+
 
       void CAsyncSerialPort::notifyEventHandler(bool isConnected) const
       {

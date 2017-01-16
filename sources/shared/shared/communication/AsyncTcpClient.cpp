@@ -177,9 +177,14 @@ void CAsyncTcpClient::readCompleted(const boost::system::error_code& error, std:
 
 void CAsyncTcpClient::send(const CByteBuffer& buffer)
 {
+   send(buffer.begin(), buffer.size());
+}
+
+void CAsyncTcpClient::send(const unsigned char * begin, const std::size_t count)
+{
    try
    {
-      m_boostSocket.write_some(boost::asio::const_buffers_1(buffer.begin(), buffer.size()));
+      m_boostSocket.write_some(boost::asio::const_buffers_1(begin, count));
    }
    catch (boost::system::system_error& e)
    {

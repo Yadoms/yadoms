@@ -1,6 +1,6 @@
 #pragma once
 
-#include <shared/communication/Buffer.hpp>
+#include <shared/communication/StringBuffer.h>
 
 class CZiBlueTransceiver 
 {
@@ -15,6 +15,6 @@ public:
    //--------------------------------------------------------------
    virtual ~CZiBlueTransceiver();
 
-   shared::communication::CByteBuffer buildHelloCmd() const;
+   shared::communication::CStringBuffer buildHelloCmd() const;
 };
 

@@ -11,10 +11,9 @@ CZiBlueTransceiver::~CZiBlueTransceiver()
 }
 
 
-shared::communication::CByteBuffer CZiBlueTransceiver::buildHelloCmd() const
+shared::communication::CStringBuffer CZiBlueTransceiver::buildHelloCmd() const
 {
-   shared::communication::CByteBuffer buffer(50);
-//   memcpy(buffer.begin(), &rbuf, subStructureSize);
+   shared::communication::CStringBuffer buffer("ZIA++HELLO");
    return buffer;
 }
 
