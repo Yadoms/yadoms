@@ -11,6 +11,8 @@ set(ZIBLUE_PLUGIN_SOURCES
 	ZiBlueConfiguration.cpp 	
 	ZiBlueFactory.h
 	ZiBlueFactory.cpp 	
+	ZiBlueReceiveBufferHandler.h
+	ZiBlueReceiveBufferHandler.cpp 	
 	ZiBlueTransceiver.h
 	ZiBlueTransceiver.cpp 	
 )

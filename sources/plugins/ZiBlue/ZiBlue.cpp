@@ -2,6 +2,7 @@
 #include "ZiBlue.h"
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/Log.h>
+#include <shared/communication/BufferLogger.h>
 #include "ZiBlueFactory.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
@@ -22,7 +23,8 @@ CZiBlue::~CZiBlue()
 enum
 {
    kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId, // Always start from yApi::IYPluginApi::kPluginFirstEventId
-   kEvtPortDataReceived,
+   kEvtPortBinaryDataReceived,
+   kEvtPortCommandAnswerReceived,
    kProtocolErrorRetryTimer,
    kAnswerTimeout,
 };
@@ -118,11 +120,20 @@ void CZiBlue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             break;
          }
-         case kEvtPortDataReceived:
+         case kEvtPortBinaryDataReceived:
          {
-            processZiBlueDataReceived(api, api->getEventHandler().getEventData<const shared::communication::CStringBuffer>());
+            const shared::communication::CByteBuffer data = api->getEventHandler().getEventData<const shared::communication::CByteBuffer>();
+            processZiBlueBinaryDataReceived(api, data);
             break;
          }
+
+         case kEvtPortCommandAnswerReceived:
+         {
+            const shared::communication::CStringBuffer data = api->getEventHandler().getEventData<const shared::communication::CStringBuffer>();
+            processZiBlueCommandAnswerReceived(api, data);
+            break;
+         }
+
          case kAnswerTimeout:
          {
             YADOMS_LOG(error) << "No answer received, try to reconnect in a while...";
@@ -163,7 +174,7 @@ void CZiBlue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 void CZiBlue::createConnection(shared::event::CEventHandler& eventHandler)
 {
    // Create the port instance
-   m_port = CZiBlueFactory::constructPort(m_configuration, eventHandler, kEvtPortConnection, kEvtPortDataReceived);
+   m_port = CZiBlueFactory::constructPort(m_configuration, eventHandler, kEvtPortConnection, kEvtPortBinaryDataReceived, kEvtPortCommandAnswerReceived);
    m_port->start();
 }
 
@@ -182,9 +193,9 @@ void CZiBlue::send(boost::shared_ptr<yApi::IYPluginApi> api, const shared::commu
 
    
    if (m_isDeveloperMode)
-      YADOMS_LOG(debug) << "Yadoms >>> " << buffer.toString();
+      YADOMS_LOG(debug) << "ZiBlue >>> " << buffer.toString();
 
-   m_port->send((unsigned char*)buffer.begin(), buffer.size());
+   m_port->sendText(buffer.toString());
 
    if (needAnswer)
       m_waitForAnswerTimer->start();
@@ -236,15 +247,25 @@ void CZiBlue::processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi
    errorProcess(api);
 }
 
-void CZiBlue::processZiBlueDataReceived(boost::shared_ptr<yApi::IYPluginApi> api, const shared::communication::CStringBuffer& data)
+void CZiBlue::processZiBlueBinaryDataReceived(boost::shared_ptr<yApi::IYPluginApi> api, const shared::communication::CByteBuffer& data)
 {
    if (m_isDeveloperMode)
-      YADOMS_LOG(debug) << "Yadoms <<< " << data.toString();
+      YADOMS_LOG(debug) << "ZiBlue Binary <<< " << shared::communication::CBufferLogger::byteBufferToHexString(data);
 
    // Message was recognized, stop timeout
    m_waitForAnswerTimer->stop();
-
 }
+
+void CZiBlue::processZiBlueCommandAnswerReceived(boost::shared_ptr<yApi::IYPluginApi> api, const shared::communication::CStringBuffer& data)
+{
+   if (m_isDeveloperMode)
+      YADOMS_LOG(debug) << "ZiBlue Answer <<< " << data.toString();
+
+   // Message was recognized, stop timeout
+   m_waitForAnswerTimer->stop();
+}
+
+
 
 void CZiBlue::initZiBlue(boost::shared_ptr<yApi::IYPluginApi> api)
 {

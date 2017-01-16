@@ -40,6 +40,12 @@ namespace shared
          explicit CStringBuffer(const std::vector<char>& src);
 
          //--------------------------------------------------------------
+         /// \brief	                     Constructor from CByteBuffer
+         /// \param[in] src               Source byte buffer
+         //--------------------------------------------------------------
+         explicit CStringBuffer(const CByteBuffer& src);
+
+         //--------------------------------------------------------------
          /// \brief	                     Copy constructor (copy all the buffer, with its content)
          /// \param[in] src               Source buffer
          //--------------------------------------------------------------

@@ -16,15 +16,15 @@ namespace shared
 
       void CBufferLogger::logReceived(const CByteBuffer& data)
       {
-         m_os << "Yadoms <<< " << msgToString(data) << std::endl;
+         m_os << "Yadoms <<< " << byteBufferToHexString(data) << std::endl;
       }
 
       void CBufferLogger::logSent(const CByteBuffer& data)
       {
-         m_os << "Yadoms >>> " << msgToString(data) << std::endl;
+         m_os << "Yadoms >>> " << byteBufferToHexString(data) << std::endl;
       }
 
-      std::string CBufferLogger::msgToString(const CByteBuffer& data) const
+      std::string CBufferLogger::byteBufferToHexString(const CByteBuffer& data)
       {
          if (data.size() == 0)
             return std::string();

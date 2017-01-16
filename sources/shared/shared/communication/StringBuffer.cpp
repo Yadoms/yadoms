@@ -31,6 +31,11 @@ namespace shared
       {
       }
 
+      CStringBuffer::CStringBuffer(const CByteBuffer& src)
+         : CBuffer<char>((const char*)src.begin(), src.size())
+      {
+      }
+
       CStringBuffer& CStringBuffer::operator =(const CStringBuffer& src)
       {
          CBuffer<char>::operator=( (CBuffer<char>)(src) );

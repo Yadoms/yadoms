@@ -46,7 +46,7 @@ namespace shared
          void subscribeForConnectionEvents(event::CEventHandler& forEventHandler, int forId) override;
          void setReceiveBufferHandler(boost::shared_ptr<IReceiveBufferHandler> handler) override;
          void send(const CByteBuffer& buffer) override;
-         void send(const unsigned char * begin, const std::size_t count) override;
+         void sendText(const std::string & content) override;
          void flush() override;
          // [END] IAsyncPort Implementation
 
@@ -92,6 +92,11 @@ namespace shared
          //--------------------------------------------------------------
          void notifyEventHandler(bool isConnected) const;
 
+         //--------------------------------------------------------------
+         /// \brief	                     Send buffer content
+         /// \param[in] buffer            The buffer to send
+         //--------------------------------------------------------------
+         void sendBuffer(boost::asio::const_buffers_1 & buffer);
       private:
          //--------------------------------------------------------------
          /// \brief	boost:asio service

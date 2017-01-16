@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ZiBlueFactory.h"
+#include "ZiBlueReceiveBufferHandler.h"
 #include <shared/communication/AsyncSerialPort.h>
-#include <shared/communication/EOFReceiveBufferHandler.h>
 #include <shared/Log.h>
 
 CZiBlueFactory::~CZiBlueFactory()
@@ -9,7 +9,7 @@ CZiBlueFactory::~CZiBlueFactory()
 
 }
 
-boost::shared_ptr<shared::communication::IAsyncPort> CZiBlueFactory::constructPort(const CZiBlueConfiguration& configuration, shared::event::CEventHandler& eventHandler, int evtPortConnectionId, int evtPortDataReceived)
+boost::shared_ptr<shared::communication::IAsyncPort> CZiBlueFactory::constructPort(const CZiBlueConfiguration& configuration, shared::event::CEventHandler& eventHandler, int evtPortConnectionId, int evtPortBinaryDataReceived, int evtPortCommandAnswerReceived)
 {
    boost::shared_ptr<shared::communication::IAsyncPort> port;
    YADOMS_LOG(information) << "Connecting ZiBlue on serial port " << configuration.getSerialPort() << "...";
@@ -25,7 +25,7 @@ boost::shared_ptr<shared::communication::IAsyncPort> CZiBlueFactory::constructPo
 
    port->subscribeForConnectionEvents(eventHandler, evtPortConnectionId);
 
-   boost::shared_ptr<shared::communication::IReceiveBufferHandler> receiveBufferHandler(new shared::communication::CEOFReceiveBufferHandler(eventHandler, evtPortDataReceived, '\n'));
+   boost::shared_ptr<shared::communication::IReceiveBufferHandler> receiveBufferHandler(new CZiBlueReceiveBufferHandler(eventHandler, evtPortBinaryDataReceived, evtPortCommandAnswerReceived));
    port->setReceiveBufferHandler(receiveBufferHandler);
 
    return port;
