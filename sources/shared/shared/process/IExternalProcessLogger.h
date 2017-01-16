@@ -8,7 +8,7 @@ namespace shared
       //-----------------------------------------------------
       ///\brief The process logger interface
       //-----------------------------------------------------
-      class YADOMS_SHARED_EXPORT IExternalProcessLogger
+      class YADOMS_SHARED_EXPORT IExternalProcessLogger //TODO utile ?
       {
       public:
          //-----------------------------------------------------

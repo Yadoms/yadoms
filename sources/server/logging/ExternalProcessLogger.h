@@ -8,7 +8,7 @@ namespace logging
    ///\details This logger logs normally (using current Yadoms log system)
    /// and into a separated file (append mode), dedicated to the process
    //-----------------------------------------------------
-   class CExternalProcessLogger : public shared::process::IExternalProcessLogger
+   class CExternalProcessLogger : public shared::process::IExternalProcessLogger //TODO virer ?
    {
    public:
       //-----------------------------------------------------

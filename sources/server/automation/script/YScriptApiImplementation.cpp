@@ -52,7 +52,7 @@ namespace automation
 
       int CYScriptApiImplementation::getKeywordId(const std::string& deviceName, const std::string& keywordName) const
       {
-         std::vector<boost::shared_ptr<database::entities::CKeyword> > keywords;
+         std::vector<boost::shared_ptr<database::entities::CKeyword>> keywords;
          try
          {
             auto devices = m_dbDeviceRequester->getDevicesIdFromFriendlyName(deviceName);
@@ -104,7 +104,7 @@ namespace automation
          return m_dbAcquisitionRequester->getKeywordLastData(keywordId)->Value;
       }
 
-      boost::shared_ptr<notification::acquisition::CNotification> CYScriptApiImplementation::waitForAction(boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification> > action,
+      boost::shared_ptr<notification::acquisition::CNotification> CYScriptApiImplementation::waitForAction(boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification>> action,
                                                                                                            const std::string& timeout)
       {
          boost::shared_ptr<notification::acquisition::CNotification> newAcquisition;
@@ -121,7 +121,7 @@ namespace automation
          assertExistingKeyword(keywordId);
 
          //create the action (= what to do when notification is observed)
-         auto waitAction(boost::make_shared<notification::action::CWaitAction<notification::acquisition::CNotification> >());
+         auto waitAction(boost::make_shared<notification::action::CWaitAction<notification::acquisition::CNotification>>());
 
          //create the acquisition observer
          auto observer(boost::make_shared<notification::acquisition::CObserver>(waitAction));
@@ -147,16 +147,17 @@ namespace automation
          }
       }
 
-      std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(const std::vector<int>& keywordIdList, const std::string& timeout) const
+      std::pair<int, std::string> CYScriptApiImplementation::waitForNextAcquisitions(const std::vector<int>& keywordIdList,
+                                                                                     const std::string& timeout) const
       {
-         for (auto kwId = keywordIdList.begin(); kwId != keywordIdList.end(); ++ kwId)
-            assertExistingKeyword(*kwId);
+         for (const auto& kwId : keywordIdList)
+            assertExistingKeyword(kwId);
 
          //create the action (= what to do when notification is observed)
-         auto waitAction(boost::make_shared<notification::action::CWaitAction<notification::acquisition::CNotification> >());
+         auto waitAction(boost::make_shared<notification::action::CWaitAction<notification::acquisition::CNotification>>());
 
          //create the acquisition observer
-         boost::shared_ptr<notification::acquisition::CObserver> observer(boost::make_shared<notification::acquisition::CObserver>(waitAction));
+         auto observer(boost::make_shared<notification::acquisition::CObserver>(waitAction));
          observer->resetKeywordIdFilter(keywordIdList);
 
          //register the observer
@@ -181,8 +182,8 @@ namespace automation
 
       shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int>& keywordIdList, bool receiveDateTimeEvent, const std::string& timeout) const
       {
-         for (auto kwId = keywordIdList.begin(); kwId != keywordIdList.end(); ++kwId)
-            assertExistingKeyword(*kwId);
+         for (const auto& kwId : keywordIdList)
+            assertExistingKeyword(kwId);
 
          auto eventHandler(boost::make_shared<shared::event::CEventHandler>());
 
@@ -194,7 +195,7 @@ namespace automation
 
 
          //create the action (= what to do when notification is observed)
-         auto keywordEventAction(boost::make_shared<notification::action::CEventPtrAction<notification::acquisition::CNotification> >(eventHandler, kKeyword));
+         auto keywordEventAction(boost::make_shared<notification::action::CEventPtrAction<notification::acquisition::CNotification>>(eventHandler, kKeyword));
 
          //create the acquisition observer
          auto observer(boost::make_shared<notification::acquisition::CObserver>(keywordEventAction));
@@ -226,7 +227,7 @@ namespace automation
             case kKeyword:
                {
                   YADOMS_LOG(debug) << "CYScriptApiImplementation : kKeyword";
-                  auto newAcquisition = eventHandler->getEventData<boost::shared_ptr<notification::acquisition::CNotification> >();
+                  auto newAcquisition = eventHandler->getEventData<boost::shared_ptr<notification::acquisition::CNotification>>();
                   result.setType(shared::script::yScriptApi::CWaitForEventResult::kKeyword);
                   if (newAcquisition)
                   {
@@ -240,7 +241,7 @@ namespace automation
             case kTime:
                {
                   YADOMS_LOG(debug) << "CYScriptApiImplementation : kTime";
-                  auto timeNotif = eventHandler->getEventData<boost::shared_ptr<shared::dateTime::CDateTimeContainer> >();
+                  auto timeNotif = eventHandler->getEventData<boost::shared_ptr<shared::dateTime::CDateTimeContainer>>();
 
                   result.setType(shared::script::yScriptApi::CWaitForEventResult::kDateTime);
                   if (timeNotif)

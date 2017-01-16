@@ -1,7 +1,6 @@
 #pragma once
 #include "IFactory.h"
 #include <shared/process/IProcess.h>
-#include <shared/process/IExternalProcessLogger.h>
 #include <shared/process/ICommandLine.h>
 #include <IPathProvider.h>
 #include "IIpcAdapter.h"
@@ -38,7 +37,7 @@ namespace automation
 
       protected:
          boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> createInterpreterInformation(const std::string& interpreterFileName) const;
-         boost::shared_ptr<shared::process::IExternalProcessLogger> createInterpreterLogger(const std::string& interpreterFileName) const;
+         static std::string createInterpreterLogger(const std::string& interpreterFileName);
          boost::shared_ptr<IRuleLogDispatcher> createScriptLogDispatcher() const;
          boost::shared_ptr<IIpcAdapter> createInterpreterRunningContext(boost::shared_ptr<IRuleLogDispatcher> ruleLogDispatcher,
                                                                         boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
@@ -51,7 +50,7 @@ namespace automation
          boost::shared_ptr<CInstanceStateHandler> createInstanceStateHandler(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
                                                                              boost::function2<void, bool, const std::string&> onInstanceStateChangedFct) const;
          boost::shared_ptr<shared::process::IProcess> createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
-                                                                            boost::shared_ptr<shared::process::IExternalProcessLogger> logger,
+                                                                            const std::string& loggerName,
                                                                             boost::shared_ptr<interpreter::CInstanceStateHandler> instanceStateHandler) const;
       private:
          const IPathProvider& m_pathProvider;

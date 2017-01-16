@@ -8,7 +8,6 @@
 #include "IpcAdapter.h"
 #include <shared/process/NativeExecutableCommandLine.h>
 #include "InstanceStateHandler.h"
-#include <server/logging/ExternalProcessLogger.h>
 #include "RuleLogDispatcher.h"
 
 
@@ -31,7 +30,7 @@ namespace automation
       {
          auto interpreterInformation = createInterpreterInformation(interpreterFileName);
 
-         auto logger = createInterpreterLogger(interpreterFileName);
+         auto loggerName = createInterpreterLogger(interpreterFileName);
 
          auto scriptLogDispatcher = createScriptLogDispatcher();
 
@@ -46,7 +45,7 @@ namespace automation
                                                                 onInstanceStateChangedFct);
 
          auto process = createInstanceProcess(commandLine,
-                                              logger,
+                                              loggerName,
                                               instanceStateHandler);
 
          return boost::make_shared<CInstance>(interpreterInformation,
@@ -66,10 +65,9 @@ namespace automation
          return boost::make_shared<CInformation>(m_pathProvider.scriptInterpretersPath() / interpreterFileName);
       }
 
-      boost::shared_ptr<shared::process::IExternalProcessLogger> CFactory::createInterpreterLogger(const std::string& interpreterFileName) const
+      std::string CFactory::createInterpreterLogger(const std::string& interpreterFileName)
       {
-         return boost::make_shared<logging::CExternalProcessLogger>("interpreter/" + interpreterFileName,
-                                                                    interpreterLogFile(interpreterFileName));
+         return ("interpreter/" + interpreterFileName);
       }
 
       boost::shared_ptr<IRuleLogDispatcher> CFactory::createScriptLogDispatcher() const
@@ -117,12 +115,12 @@ namespace automation
       }
 
       boost::shared_ptr<shared::process::IProcess> CFactory::createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
-                                                                                   boost::shared_ptr<shared::process::IExternalProcessLogger> logger,
+                                                                                   const std::string& loggerName,
                                                                                    boost::shared_ptr<CInstanceStateHandler> instanceStateHandler) const
       {
          return boost::make_shared<shared::process::CProcess>(commandLine,
                                                               instanceStateHandler,
-                                                              logger);
+                                                              loggerName);
       }
    }
 } // namespace automation::interpreter

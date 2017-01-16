@@ -40,7 +40,7 @@ namespace automation
                      boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                      boost::shared_ptr<script::IGeneralInfo> generalInfo)
    {
-      m_scriptLogger = createScriptLogger(m_interpreterManager->getScriptLogFilename(m_ruleData->Id()));
+      auto& scriptLogger = createScriptLogger(m_interpreterManager->getScriptLogFilename(m_ruleData->Id()));
 
       //TODO encore utile ?
       //m_interpreterManager->getRuleLogDispatcher(m_ruleData->Interpreter())->addLogger(m_ruleData->Id(),
@@ -52,7 +52,7 @@ namespace automation
                                                              keywordAccessLayer,
                                                              dbRecipientRequester,
                                                              generalInfo,
-                                                             m_scriptLogger);
+                                                             scriptLogger);
 
       m_ipcAdapter = createScriptIpcAdapter(m_ruleData->Id(),
                                             apiImplementation);
@@ -69,7 +69,7 @@ namespace automation
    Poco::Logger& CRule::createScriptLogger(const boost::filesystem::path& logFilePath) const
    {
       script::CScriptLogConfiguration config;
-      auto& scriptLogger = Poco::Logger::get("script/" + m_ruleData->Name() + " #" + std::to_string(m_ruleData->Id()));
+      auto& scriptLogger = Poco::Logger::get("script/" + std::to_string(m_ruleData->Id()));
       config.configure(scriptLogger,
                        "debug",
                        logFilePath);

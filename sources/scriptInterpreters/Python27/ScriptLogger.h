@@ -6,7 +6,7 @@
 // Shortcut to yInterpreterApi namespace
 namespace yApi = shared::script::yInterpreterApi;
 
-class CScriptLogger : public shared::process::IExternalProcessLogger
+class CScriptLogger : public shared::process::IExternalProcessLogger//TODO utile ?
 {
 public:
    CScriptLogger(boost::shared_ptr<yApi::IYInterpreterApi> api,

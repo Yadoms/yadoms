@@ -63,7 +63,6 @@ namespace automation
       boost::shared_ptr<interpreter::IManager> m_interpreterManager;
 
       boost::shared_ptr<interpreter::IInstance> m_scriptInterpreter;
-      Poco::Logger& m_scriptLogger;
       boost::shared_ptr<script::IIpcAdapter> m_ipcAdapter;
    };
 } // namespace automation	

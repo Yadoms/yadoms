@@ -5,7 +5,6 @@
 #include "IProcessObserver.h"
 #include <Poco/Process.h>
 #include <Poco/PipeStream.h>
-#include <Poco/Logger.h>
 
 namespace shared
 {
@@ -26,7 +25,7 @@ namespace shared
          //--------------------------------------------------------------
          CProcess(boost::shared_ptr<ICommandLine> commandLine,
                   boost::shared_ptr<IProcessObserver> processObserver,
-                  const std::string & loggerName);
+                  const std::string& loggerName);
 
 
          //--------------------------------------------------------------
