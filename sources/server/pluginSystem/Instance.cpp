@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Instance.h"
+#include "startupOptions/IStartupOptions.h"
+#include "shared/ServiceLocator.h"
 
 namespace pluginSystem
 {
@@ -42,7 +44,8 @@ namespace pluginSystem
    {
       m_ipcAdapter->postInit(information,
                              dataPath,
-                             logPath);
+                             logPath,
+                             shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getLogLevel());
    }
 
    void CInstance::postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand)
@@ -95,5 +98,3 @@ namespace pluginSystem
       return m_pluginInformation;
    }
 } // namespace pluginSystem
-
-

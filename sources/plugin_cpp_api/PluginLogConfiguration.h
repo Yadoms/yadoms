@@ -1,6 +1,5 @@
 #pragma once
-
-#include <Poco/ConsoleChannel.h>
+#include "StandardConsoleChannel.h"
 #include <Poco/SplitterChannel.h>
 #include <Poco/FileChannel.h>
 #include <Poco/AutoPtr.h>
@@ -36,7 +35,7 @@ namespace plugin_cpp_api
       //--------------------------------------------------------------
       /// \brief The console channel
       //--------------------------------------------------------------
-      Poco::AutoPtr<Poco::ConsoleChannel> m_consoleChannel;
+      Poco::AutoPtr<StandardConsoleChannel> m_consoleChannel;
       //--------------------------------------------------------------
       /// \brief The file channel (configured with logfilepath parameter of configure method)
       //--------------------------------------------------------------
@@ -45,10 +44,6 @@ namespace plugin_cpp_api
       /// \brief The output pattern formatter
       //--------------------------------------------------------------
       Poco::AutoPtr<Poco::PatternFormatter> m_patternFormatter;
-      //--------------------------------------------------------------
-      /// \brief The output pattern formatter for console
-      //--------------------------------------------------------------
-      Poco::AutoPtr<Poco::FormattingChannel> m_formattingConsoleChannel;
       //--------------------------------------------------------------
       /// \brief The output pattern formatter for file
       //--------------------------------------------------------------

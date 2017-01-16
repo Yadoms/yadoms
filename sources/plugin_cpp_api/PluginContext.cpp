@@ -113,7 +113,7 @@ namespace plugin_cpp_api
          auto path = api->getLogFile();
          std::cout << api->getInformation()->getType() << " configure logger : " << path.string() << std::endl;
          CPluginLogConfiguration logconfig;
-         logconfig.configure("debug", path);
+         logconfig.configure(api->getLogLevel(), path);
       }
       catch (std::exception& e)
       {
@@ -124,7 +124,7 @@ namespace plugin_cpp_api
          std::cerr << api->getInformation()->getType() << " fail to confiugure log system with unknown exception" << std::endl;
       }
 
-      YADOMS_LOG_CONFIGURE(api->getInformation()->getType());
+      YADOMS_LOG_CONFIGURE("mainThread");
    }
 
    IPluginContext::EProcessReturnCode CPluginContext::getReturnCode() const

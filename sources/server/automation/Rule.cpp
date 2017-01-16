@@ -3,7 +3,6 @@
 #include "script/YScriptApiImplementation.h"
 #include "script/Properties.h"
 #include "script/IpcAdapter.h"
-#include <shared/Log.h>
 #include "script/ScriptLogConfiguration.h"
 
 namespace automation

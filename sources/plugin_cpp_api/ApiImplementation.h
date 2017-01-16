@@ -83,6 +83,7 @@ namespace plugin_cpp_api
       void waitInitialized() const;
 
       const boost::filesystem::path& getLogFile() const;
+      const std::string& getLogLevel() const;
 
    protected:
       void send(const plugin_IPC::toYadoms::msg& msg) const;
@@ -132,6 +133,7 @@ namespace plugin_cpp_api
       boost::shared_ptr<shared::plugin::information::IInformation> m_pluginInformation;
       boost::shared_ptr<const boost::filesystem::path> m_dataPath;
       boost::shared_ptr<const boost::filesystem::path> m_logFile;
+      boost::shared_ptr<const std::string> m_logLevel;
    };
 } // namespace plugin_cpp_api	
 

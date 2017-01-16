@@ -471,13 +471,15 @@ namespace pluginSystem
 
    void CIpcAdapter::postInit(boost::shared_ptr<const shared::plugin::information::IInformation> information,
                               const boost::filesystem::path& dataPath,
-                              const boost::filesystem::path& logFile)
+                              const boost::filesystem::path& logFile,
+                              const std::string& logLevel)
    {
       plugin_IPC::toPlugin::msg msg;
       auto message = msg.mutable_init();
       serializers::CInformation(information).toPb(message->mutable_plugininformation());
       message->set_datapath(dataPath.string());
       message->set_logfile(logFile.string());
+      message->set_loglevel(logLevel);
 
       send(msg);
    }

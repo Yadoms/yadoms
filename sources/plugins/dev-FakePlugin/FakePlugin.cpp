@@ -73,8 +73,13 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    api->setPluginState(yApi::historization::EPluginState::kRunning);
 
+   YADOMS_LOG(information) << "YADOMS_LOG(information)";//TODO virer
+   std::cout << "std::cout" << std::endl;//TODO virer
+   YADOMS_LOG(error) << "YADOMS_LOG(error)";//TODO virer
+   std::cerr << "std::cerr" << std::endl;//TODO virer
+
    // the main loop
-   while (1)
+   while (true)
    {
       // Wait for an event
       switch (api->getEventHandler().waitForEvents())

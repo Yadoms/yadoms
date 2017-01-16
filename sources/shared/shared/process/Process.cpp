@@ -40,8 +40,8 @@ namespace shared
                                                                                             args,
                                                                                             m_commandLine->workingDirectory().string(),
                                                                                             nullptr,
-                                                                                            scriptLogger ? nullptr : &outPipe,
-                                                                                            scriptLogger ? nullptr : &errPipe));
+                                                                                            scriptLogger ? &outPipe : nullptr,
+                                                                                            scriptLogger ? &errPipe : nullptr));
 
             if (scriptLogger)
             {
@@ -172,5 +172,3 @@ namespace shared
       }
    }
 } // namespace shared::process
-
-

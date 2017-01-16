@@ -6,7 +6,7 @@
 namespace plugin_cpp_api
 {
    CPluginLogConfiguration::CPluginLogConfiguration()
-      : m_consoleChannel(new Poco::ConsoleChannel),
+      : m_consoleChannel(new StandardConsoleChannel),
         m_fileChannel(new Poco::FileChannel()),
         m_patternFormatter(new Poco::PatternFormatter),
         m_splitterChannel(new Poco::SplitterChannel)
@@ -24,8 +24,6 @@ namespace plugin_cpp_api
       m_patternFormatter->setProperty("pattern", "%H:%M:%S : %T : [%p] : %t");
       m_patternFormatter->setProperty("times", "local"); //use local datetime
 
-      m_formattingConsoleChannel.assign(new Poco::FormattingChannel(m_patternFormatter, m_consoleChannel));
-
       if (!boost::filesystem::exists(logfilepath.string()))
          if (!boost::filesystem::create_directories(logfilepath.parent_path().string()))
             throw shared::exception::CException("Cannot create directory " + logfilepath.parent_path().string());
@@ -37,7 +35,7 @@ namespace plugin_cpp_api
       m_fileChannel->setProperty("purgeCount", "7");
       m_formattingFileChannel.assign(new Poco::FormattingChannel(m_patternFormatter, m_fileChannel));
 
-      m_splitterChannel->addChannel(m_formattingConsoleChannel);
+      m_splitterChannel->addChannel(m_consoleChannel);
       m_splitterChannel->addChannel(m_formattingFileChannel);
 
       //configre any already created loggers

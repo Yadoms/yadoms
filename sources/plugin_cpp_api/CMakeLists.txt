@@ -36,6 +36,8 @@ set(plugin_cpp_api_SOURCES
    PluginInformation.cpp
    SetDeviceConfiguration.h
    SetDeviceConfiguration.cpp
+   StandardConsoleChannel.h
+   StandardConsoleChannel.cpp
    YadomsInformation.h
    YadomsInformation.cpp
 

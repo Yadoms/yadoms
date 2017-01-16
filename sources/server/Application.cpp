@@ -20,7 +20,7 @@ POCO_SERVER_MAIN(CYadomsServer)
 
 CYadomsServer::CYadomsServer()
    : m_helpRequested(false),
-     m_startupOptions(new startupOptions::CStartupOptions(config()))
+     m_startupOptions(boost::make_shared<startupOptions::CStartupOptions>(config()))
 {
    //define unixstyle for command line parsing
    //so in Windows platform we use --option and -o for options (instead of /option)
@@ -125,6 +125,9 @@ int CYadomsServer::main(const ArgVec& /*args*/)
          YADOMS_LOG(information) << "\t\tPostgresql host = " << m_startupOptions->getDatabasePostgresqlHost() << ":" << m_startupOptions->getDatabasePostgresqlPort();
          YADOMS_LOG(information) << "\t\tPostgresql database = " << m_startupOptions->getDatabasePostgresqlDbName();
          YADOMS_LOG(information) << "\t\tPostgresql login = " << m_startupOptions->getDatabasePostgresqlLogin();
+         break;
+      default:
+         YADOMS_LOG(error) << "\t\tUnsupported database engine" << m_startupOptions->getDatabaseEngine();
          break;
       }
 

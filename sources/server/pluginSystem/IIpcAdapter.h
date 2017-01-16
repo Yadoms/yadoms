@@ -39,9 +39,13 @@ namespace pluginSystem
       /// \brief	Post the plugin information
       /// \param[in] information The plugin information
       /// \param[in] dataPath    The plugin instance data path
-      /// \param[in] logPath     The plugin instance log file path
+      /// \param[in] logFile     The plugin instance log file path
+      /// \param[in] logLevel    The log level to use
       //--------------------------------------------------------------
-      virtual void postInit(boost::shared_ptr<const shared::plugin::information::IInformation> information, const boost::filesystem::path& dataPath, const boost::filesystem::path& logFile) = 0;
+      virtual void postInit(boost::shared_ptr<const shared::plugin::information::IInformation> information,
+                            const boost::filesystem::path& dataPath,
+                            const boost::filesystem::path& logFile,
+                            const std::string& logLevel) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Post a configuration update to plugin instance
@@ -66,7 +70,7 @@ namespace pluginSystem
       /// \param [in] command    Set device configuration command
       //--------------------------------------------------------------
       virtual void postSetDeviceConfiguration(boost::shared_ptr<const shared::plugin::yPluginApi::ISetDeviceConfiguration>& command) = 0;
-      
+
       //--------------------------------------------------------------
       /// \brief                 Post a device command to a plugin
       /// \param [in] deviceCommand The command
@@ -92,4 +96,3 @@ namespace pluginSystem
       virtual void postDeviceRemoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event) = 0;
    };
 } // namespace pluginSystem
-
