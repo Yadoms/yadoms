@@ -469,7 +469,9 @@ namespace pluginSystem
       send(msg);
    }
 
-   void CIpcAdapter::postInit(boost::shared_ptr<const shared::plugin::information::IInformation> information, const boost::filesystem::path& dataPath, const boost::filesystem::path& logFile)
+   void CIpcAdapter::postInit(boost::shared_ptr<const shared::plugin::information::IInformation> information,
+                              const boost::filesystem::path& dataPath,
+                              const boost::filesystem::path& logFile)
    {
       plugin_IPC::toPlugin::msg msg;
       auto message = msg.mutable_init();

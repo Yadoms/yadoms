@@ -15,6 +15,7 @@ namespace automation
       {
       public:
          CInstance(const boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
+                   const boost::filesystem::path& logPath,
                    boost::shared_ptr<shared::process::IProcess> process,
                    boost::shared_ptr<IIpcAdapter> ipcAdapter,
                    boost::shared_ptr<IRuleLogDispatcher> ruleLogDispatcher);
@@ -52,3 +53,5 @@ namespace automation
       };
    }
 } // namespace automation::interpreter
+
+

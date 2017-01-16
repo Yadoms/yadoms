@@ -16,5 +16,6 @@ message Information {
 
 message Init {
 	Information interpreterInformation = 1;
+	string logFile = 2;
 }
 

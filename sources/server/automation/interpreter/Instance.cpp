@@ -13,6 +13,7 @@ namespace automation
    namespace interpreter
    {
       CInstance::CInstance(const boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
+                           const boost::filesystem::path& logPath,
                            boost::shared_ptr<shared::process::IProcess> process,
                            boost::shared_ptr<IIpcAdapter> ipcAdapter,
                            boost::shared_ptr<IRuleLogDispatcher> ruleLogDispatcher)
@@ -22,7 +23,8 @@ namespace automation
            m_ruleLogDispatcher(ruleLogDispatcher),
            m_avalaible(false)
       {
-         m_ipcAdapter->postInit(m_interpreterInformation);
+         m_ipcAdapter->postInit(m_interpreterInformation,
+                                logPath);
          m_avalaible = getAvalaibility();
       }
 
@@ -180,3 +182,5 @@ namespace automation
       }
    }
 } // namespace automation::interpreter
+
+

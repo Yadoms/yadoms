@@ -37,6 +37,8 @@ namespace interpreter_cpp_api
       shared::event::CEventHandler& getEventHandler() override;
       // [END] shared::plugin::yInterpreterApi::IYInterpreterApi implementation
 
+      const boost::filesystem::path& getLogFile() const;
+
       void onReceive(boost::shared_ptr<const unsigned char[]> message, size_t messageSize);
 
       void waitInitialized() const;
@@ -82,6 +84,7 @@ namespace interpreter_cpp_api
       mutable boost::function1<bool, const interpreter_IPC::toInterpreter::msg&> m_onReceiveHook;
 
       boost::shared_ptr<shared::script::yInterpreterApi::IInformation> m_pluginInformation;
+      boost::shared_ptr<const boost::filesystem::path> m_logFile;
    };
 } // namespace interpreter_cpp_api	
 

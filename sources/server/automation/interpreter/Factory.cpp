@@ -50,6 +50,7 @@ namespace automation
                                               instanceStateHandler);
 
          return boost::make_shared<CInstance>(interpreterInformation,
+                                              interpreterLogFile(interpreterFileName),
                                               process,
                                               yInterpreterIpcAdapter,
                                               scriptLogDispatcher);
@@ -125,3 +126,5 @@ namespace automation
       }
    }
 } // namespace automation::interpreter
+
+

@@ -20,7 +20,7 @@ namespace automation
          /// \param[in] interpreterName The interpreter name (for log)
          //--------------------------------------------------------------
          CIpcAdapter(const std::string& interpreterName,
-            boost::shared_ptr<shared::script::yInterpreterApi::IYInterpreterApi> apiImplementation);
+                     boost::shared_ptr<shared::script::yInterpreterApi::IYInterpreterApi> apiImplementation);
 
          //--------------------------------------------------------------
          /// \brief	Destructor
@@ -32,7 +32,8 @@ namespace automation
          std::string id() const override;
 
          void postStopRequest() override;
-         void postInit(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> information) override;
+         void postInit(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> information,
+                       const boost::filesystem::path& logFile) override;
 
          void postAvalaibleRequest(boost::shared_ptr<shared::script::yInterpreterApi::IAvalaibleRequest> request) override;
          void postLoadScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ILoadScriptContentRequest> request) override;

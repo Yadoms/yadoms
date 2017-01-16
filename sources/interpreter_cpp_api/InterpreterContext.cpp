@@ -4,6 +4,8 @@
 #include "CommandLine.h"
 #include <shared/currentTime/Local.h>
 #include <Poco/Debugger.h>
+#include <shared/Log.h>
+#include "InterpreterLogConfiguration.h"
 
 
 namespace yApi = shared::script::yInterpreterApi;
@@ -41,6 +43,10 @@ namespace interpreter_cpp_api
          std::cout << api->getInformation()->getType() << " started" << std::endl;
 
          waitDebugger(api);
+
+         configureLogger(api);
+
+         YADOMS_LOG(information) << api->getInformation()->getType() << " started";
 
          if (!api->stopRequested())
          {
@@ -99,6 +105,27 @@ namespace interpreter_cpp_api
          else
             std::cout << api->getInformation()->getType() << " failed to attach debugger after timeout" << std::endl;
       }
+   }
+
+   void CInterpreterContext::configureLogger(boost::shared_ptr<CApiImplementation> api)
+   {
+      try
+      {
+         auto path = api->getLogFile();
+         std::cout << api->getInformation()->getType() << " configure logger : " << path.string() << std::endl;
+         CInterpreterLogConfiguration logconfig;
+         logconfig.configure("debug", path);
+      }
+      catch (std::exception& e)
+      {
+         std::cerr << api->getInformation()->getType() << " fail to confiugure log system : " << e.what() << std::endl;
+      }
+      catch (...)
+      {
+         std::cerr << api->getInformation()->getType() << " fail to confiugure log system with unknown exception" << std::endl;
+      }
+
+      YADOMS_LOG_CONFIGURE(api->getInformation()->getType());
    }
 
    IInterpreterContext::EProcessReturnCode CInterpreterContext::getReturnCode() const

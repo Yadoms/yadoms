@@ -9,6 +9,7 @@
 #include <shared/script/yInterpreterApi/IStopScript.h>
 #include "Factory.h"
 #include "EventScriptStopped.h"
+#include <shared/Log.h>
 
 // Declare the script interpreter
 IMPLEMENT_INTERPRETER(CPython27)
@@ -33,7 +34,7 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
 {
    m_api = api;
 
-   std::cout << "Python interpreter is starting..." << std::endl;
+   YADOMS_LOG(information) << "Python interpreter is starting...";
 
    while (true)
    {
@@ -42,9 +43,9 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
       case yApi::IYInterpreterApi::kEventStopRequested:
          {
             // Yadoms request the interpreter to stop. Note that interpreter must be stop in 10 seconds max, otherwise it will be killed.
-            std::cout << "Stop requested" << std::endl;
+            YADOMS_LOG(information) << "Stop requested";
             onStopRequested();
-            std::cout << "Python interpreter is stopped" << std::endl;
+            YADOMS_LOG(information) << "Python interpreter is stopped";
             return;
          }
 
@@ -109,7 +110,7 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
 
       default:
          {
-            std::cerr << "Unknown or unsupported message id " << api->getEventHandler().getEventId() << std::endl;
+            YADOMS_LOG(error) << "Unknown or unsupported message id " << api->getEventHandler().getEventId();
             break;
          }
       }
@@ -165,7 +166,7 @@ void CPython27::startScript(int scriptInstanceId,
       boost::lock_guard<boost::recursive_mutex> lock(m_processesMutex);
       if (m_scriptProcesses.find(scriptInstanceId) != m_scriptProcesses.end())
       {
-         std::cerr << "Unable to start script #" << scriptInstanceId << " : script is already running" << std::endl;
+         YADOMS_LOG(error) << "Unable to start script #" << scriptInstanceId << " : script is already running";
          return;
       }
    }
@@ -189,7 +190,7 @@ void CPython27::startScript(int scriptInstanceId,
       }
       catch (std::exception& e)
       {
-         std::cerr << "Fail to start script #" << scriptInstanceId << " : " << e.what() << std::endl;
+         YADOMS_LOG(error) << "Fail to start script #" << scriptInstanceId << " : " << e.what();
          m_api->notifyScriptStopped(scriptInstanceId,
                                     "Fail to start script");
       }
@@ -207,7 +208,7 @@ void CPython27::stopScript(int scriptInstanceId)
    const auto script = m_scriptProcesses.find(scriptInstanceId);
    if (script == m_scriptProcesses.end())
    {
-      std::cerr << "Unable to stop script #" << scriptInstanceId << " : unknown script, maybe already stopped" << std::endl;
+      YADOMS_LOG(error) << "Unable to stop script #" << scriptInstanceId << " : unknown script, maybe already stopped";
       return;
    }
    script->second->kill();

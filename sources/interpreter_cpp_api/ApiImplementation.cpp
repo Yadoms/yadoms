@@ -198,6 +198,7 @@ namespace interpreter_cpp_api
    void CApiImplementation::processInit(const interpreter_IPC::toInterpreter::Init& msg)
    {
       m_pluginInformation = boost::make_shared<CInformation>(boost::make_shared<const interpreter_IPC::toInterpreter::Information>(msg.interpreterinformation()));
+      m_logFile = boost::make_shared<const boost::filesystem::path>(msg.logfile());
       setInitialized();
    }
 
@@ -304,6 +305,14 @@ namespace interpreter_cpp_api
          throw std::runtime_error("Interpreter information not available");
 
       return m_pluginInformation;
+   }
+
+   const boost::filesystem::path& CApiImplementation::getLogFile() const
+   {
+      if (!m_logFile)
+         throw std::runtime_error("Interpreter instance log file path not available");
+
+      return *m_logFile;
    }
 
    shared::event::CEventHandler& CApiImplementation::getEventHandler()

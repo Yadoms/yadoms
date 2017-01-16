@@ -2,6 +2,7 @@
 #include "PythonExecutable.h"
 #include "PythonExecutablePath.h"
 #include <shared/Executable.h>
+#include <shared/Log.h>
 
 CPythonExecutable::CPythonExecutable()
    : m_inSystemPath(false),
@@ -56,7 +57,7 @@ bool CPythonExecutable::findPythonDirectory(boost::filesystem::path& pythonDirec
          return true;
    }
 
-   std::cerr << "Python executable not found" << std::endl;
+   YADOMS_LOG(error) << "Python executable not found";
    return false;
 }
 
@@ -66,12 +67,12 @@ bool CPythonExecutable::isPythonIn(const boost::filesystem::path& directory,
 {
    if (!readPythonVersion(directory).empty())
    {
-      std::cout << "Python executable found in " << (directory.empty() ? "the system path" : directory.string()) << std::endl;
+      YADOMS_LOG(information) << "Python executable found in " << (directory.empty() ? "the system path" : directory.string());
       pythonDirectory = directory;
       inSystemPath = directory.empty();
       return true;
    }
-   std::cout << "Python executable not found in " << (directory.empty() ? "the system path" : directory.string()) << std::endl;
+   YADOMS_LOG(information) << "Python executable not found in " << (directory.empty() ? "the system path" : directory.string());
    return false;
 }
 
@@ -79,13 +80,13 @@ std::string CPythonExecutable::readPythonVersion(const boost::filesystem::path& 
 {
    try
    {
-      const boost::filesystem::path& command = initialDirectory / "python";
+      const auto& command = initialDirectory / "python";
 
       Poco::Process::Args args;
       args.push_back("--version");
 
       Poco::Pipe outPipe;
-      Poco::ProcessHandle processHandle = Poco::Process::launch(command.string(), args, nullptr, &outPipe, &outPipe);
+      auto processHandle = Poco::Process::launch(command.string(), args, nullptr, &outPipe, &outPipe);
       processHandle.wait();
 
       Poco::PipeInputStream iStr(outPipe);
@@ -95,7 +96,7 @@ std::string CPythonExecutable::readPythonVersion(const boost::filesystem::path& 
    }
    catch (Poco::Exception& ex)
    {
-      std::cout << "Unable to read Python version, " << ex.what() << std::endl;
+      YADOMS_LOG(information) << "Unable to read Python version, " << ex.what();
       return std::string();
    }
 }

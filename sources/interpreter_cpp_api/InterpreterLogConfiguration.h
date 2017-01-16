@@ -7,26 +7,26 @@
 #include <Poco/FormattingChannel.h>
 #include <Poco/PatternFormatter.h>
 
-namespace plugin_cpp_api
+namespace interpreter_cpp_api
 {
    //--------------------------------------------------------------
-   /// \class The plugin log configuration
+   /// \class The interpreter log configuration
    //--------------------------------------------------------------
-   class CPluginLogConfiguration
+   class CInterpreterLogConfiguration
    {
    public:
       //--------------------------------------------------------------
       /// \brief Constructor
       //--------------------------------------------------------------
-      CPluginLogConfiguration();
+      CInterpreterLogConfiguration();
 
       //--------------------------------------------------------------
       /// \brief Destructor
       //--------------------------------------------------------------
-      virtual ~CPluginLogConfiguration();
+      virtual ~CInterpreterLogConfiguration();
 
       //--------------------------------------------------------------
-      /// \brief Configure the plugin logger, with a log level and a file path
+      /// \brief Configure the interpreter logger, with a log level and a file path
       /// \param [in] logLevel      The requested log level
       /// \param [in] logfilepath   The log file path. (the file will be managed by the Poco::Logger using file rotation per day)
       //--------------------------------------------------------------
@@ -58,6 +58,6 @@ namespace plugin_cpp_api
       //--------------------------------------------------------------
       Poco::AutoPtr<Poco::SplitterChannel> m_splitterChannel;
    };
-} // namespace plugin_cpp_api
+} // namespace interpreter_cpp_api
 
 

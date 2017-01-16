@@ -36,9 +36,13 @@ namespace pluginSystem
       m_ipcAdapter->postStopRequest();
    }
 
-   void CInstance::postInit(boost::shared_ptr<const shared::plugin::information::IInformation> information, const boost::filesystem::path& dataPath, const boost::filesystem::path& logPath) const
+   void CInstance::postInit(boost::shared_ptr<const shared::plugin::information::IInformation> information,
+                            const boost::filesystem::path& dataPath,
+                            const boost::filesystem::path& logPath) const
    {
-      m_ipcAdapter->postInit(information, dataPath, logPath);
+      m_ipcAdapter->postInit(information,
+                             dataPath,
+                             logPath);
    }
 
    void CInstance::postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand)
@@ -91,3 +95,5 @@ namespace pluginSystem
       return m_pluginInformation;
    }
 } // namespace pluginSystem
+
+

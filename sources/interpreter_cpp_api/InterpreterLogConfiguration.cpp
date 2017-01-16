@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "PluginLogConfiguration.h"
+#include "InterpreterLogConfiguration.h"
 #include <Poco/Logger.h>
 #include <shared/exception/Exception.hpp>
 
-namespace plugin_cpp_api
+namespace interpreter_cpp_api
 {
-   CPluginLogConfiguration::CPluginLogConfiguration()
+   CInterpreterLogConfiguration::CInterpreterLogConfiguration()
       : m_consoleChannel(new Poco::ConsoleChannel),
         m_fileChannel(new Poco::FileChannel()),
         m_patternFormatter(new Poco::PatternFormatter),
@@ -13,12 +13,12 @@ namespace plugin_cpp_api
    {
    }
 
-   CPluginLogConfiguration::~CPluginLogConfiguration()
+   CInterpreterLogConfiguration::~CInterpreterLogConfiguration()
    {
    }
 
-   void CPluginLogConfiguration::configure(const std::string& logLevel,
-                                           boost::filesystem::path& logfilepath)
+   void CInterpreterLogConfiguration::configure(const std::string& logLevel,
+                                                boost::filesystem::path& logfilepath)
    {
       //make pattern
       m_patternFormatter->setProperty("pattern", "%H:%M:%S : %T : [%p] : %t");
@@ -54,6 +54,6 @@ namespace plugin_cpp_api
       Poco::Logger::root().setChannel(m_splitterChannel);
       Poco::Logger::root().setLevel(logLevel);
    }
-} // namespace plugin_cpp_api
+} // namespace interpreter_cpp_api
 
 

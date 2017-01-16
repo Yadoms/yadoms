@@ -218,11 +218,13 @@ namespace automation
          send(msg);
       }
 
-      void CIpcAdapter::postInit(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> information)
+      void CIpcAdapter::postInit(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> information,
+                                 const boost::filesystem::path& logFile)
       {
          interpreter_IPC::toInterpreter::msg msg;
          auto message = msg.mutable_init();
          serializers::CInformation(information).toPb(message->mutable_interpreterinformation());
+         message->set_logfile(logFile.string());
 
          send(msg);
       }
@@ -332,3 +334,5 @@ namespace automation
       }
    }
 } // namespace automation::interpreter
+
+
