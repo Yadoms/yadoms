@@ -181,8 +181,8 @@ void CZiBlue::send(boost::shared_ptr<yApi::IYPluginApi> api, const shared::commu
       return;
 
    
-   //if (m_isDeveloperMode)
-   //   m_logger.logSent(buffer);
+   if (m_isDeveloperMode)
+      YADOMS_LOG(debug) << "Yadoms >>> " << buffer.toString();
 
    m_port->send((unsigned char*)buffer.begin(), buffer.size());
 
@@ -238,8 +238,8 @@ void CZiBlue::processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi
 
 void CZiBlue::processZiBlueDataReceived(boost::shared_ptr<yApi::IYPluginApi> api, const shared::communication::CStringBuffer& data)
 {
-//   if (m_isDeveloperMode)
-//      m_logger.logReceived(data);
+   if (m_isDeveloperMode)
+      YADOMS_LOG(debug) << "Yadoms <<< " << data.toString();
 
    // Message was recognized, stop timeout
    m_waitForAnswerTimer->stop();
