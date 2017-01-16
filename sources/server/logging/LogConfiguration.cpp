@@ -5,7 +5,7 @@
 namespace logging
 {
    //declare static PImpl configurator
-   boost::shared_ptr<CLogConfigurationImpl> CLogConfiguration::m_configurator(new CLogConfigurationImpl());
+   boost::shared_ptr<CLogConfigurationImpl> CLogConfiguration::m_configurator(boost::make_shared<CLogConfigurationImpl>());
    
    void CLogConfiguration::configure(const std::string & logLevel)
    {

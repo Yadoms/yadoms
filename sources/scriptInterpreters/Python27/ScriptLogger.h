@@ -10,7 +10,8 @@ class CScriptLogger : public shared::process::IExternalProcessLogger//TODO utile
 {
 public:
    CScriptLogger(boost::shared_ptr<yApi::IYInterpreterApi> api,
-                 int scriptInstanceId);
+                 int scriptInstanceId,
+                 const std::string& loggerName);
    virtual ~CScriptLogger();
 
    // IExternalProcessLogger Implementation
@@ -21,6 +22,7 @@ public:
 
 private:
    boost::shared_ptr<yApi::IYInterpreterApi> m_api;
-   const int m_scriptInstanceId;
+   const int m_scriptInstanceId;//TODO utile ?
+   const std::string m_loggerName;
 };
 

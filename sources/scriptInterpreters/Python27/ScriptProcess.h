@@ -4,6 +4,7 @@
 #include "IScriptFile.h"
 #include <shared/process/ICommandLine.h>
 #include <shared/process/IProcessObserver.h>
+#include <shared/process/IExternalProcessLogger.h>
 
 //--------------------------------------------------------------
 /// \brief	Python process
@@ -24,7 +25,7 @@ public:
                   const boost::filesystem::path& interpreterPath,
                   boost::shared_ptr<const IScriptFile> scriptFile,
                   const std::string& scriptApiId,
-                  const std::string& scriptLogger,
+                  boost::shared_ptr<shared::process::IExternalProcessLogger> scriptLogger,
                   boost::shared_ptr<shared::process::IProcessObserver> processObserver);
 
    //--------------------------------------------------------------
@@ -39,9 +40,6 @@ public:
    // [END] shared::process::IProcess Implementation
 
 protected:
-   //--------------------------------------------------------------
-   /// \brief	Start a module
-   //--------------------------------------------------------------
    void start();
 
    boost::shared_ptr<shared::process::ICommandLine> createCommandLine(const std::string& apiIdentifier) const;
@@ -70,7 +68,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The script logger
    //--------------------------------------------------------------
-   const std::string m_scriptLogger;
+   const boost::shared_ptr<shared::process::IExternalProcessLogger> m_scriptLogger;
 
    //--------------------------------------------------------------
    /// \brief	Object to notify when process stops

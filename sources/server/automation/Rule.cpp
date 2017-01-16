@@ -44,7 +44,7 @@ namespace automation
 
       //TODO encore utile ?
       //m_interpreterManager->getRuleLogDispatcher(m_ruleData->Interpreter())->addLogger(m_ruleData->Id(),
-      //                                                                                 m_scriptLogger);
+      //                                                                                 m_scriptLoggerName);
 
       auto apiImplementation = createScriptApiImplementation(pluginGateway,
                                                              dbAcquisitionRequester,

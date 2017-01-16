@@ -1,5 +1,6 @@
 #pragma once
 #include <shared/process/IExternalProcessLogger.h>
+#include <Poco/Logger.h>
 
 namespace logging
 {
@@ -8,16 +9,14 @@ namespace logging
    ///\details This logger logs normally (using current Yadoms log system)
    /// and into a separated file (append mode), dedicated to the process
    //-----------------------------------------------------
-   class CExternalProcessLogger : public shared::process::IExternalProcessLogger //TODO virer ?
+   class CExternalProcessLogger : public shared::process::IExternalProcessLogger
    {
    public:
       //-----------------------------------------------------
       ///\brief                  Constructor
       ///\param[in] loggerName   The Logger name
-      ///\param[in] logFilePath  Path to target log file
       //-----------------------------------------------------
-      CExternalProcessLogger(const std::string& loggerName,
-                             const boost::filesystem::path& logFilePath);
+      explicit CExternalProcessLogger(const std::string& loggerName);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -31,10 +30,8 @@ namespace logging
       // [END] ILogger Implementation
 
    private:
-      static std::string now();
-
       const std::string m_loggerName;
-      std::ofstream m_logFile;
+      Poco::Logger& m_logger;
    };
 } // namespace logging
 

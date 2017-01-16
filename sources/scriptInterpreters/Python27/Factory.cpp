@@ -27,9 +27,12 @@ boost::shared_ptr<shared::process::IProcessObserver> CFactory::createScriptProce
                                                onInstanceStateChangedFct);
 }
 
-std::string CFactory::createScriptLogger(int scriptInstanceId) const
+boost::shared_ptr<shared::process::IExternalProcessLogger> CFactory::createScriptLogger(boost::shared_ptr<yApi::IYInterpreterApi> api,
+                                                                                        int scriptInstanceId) const
 {
-   return "script/" + std::to_string(scriptInstanceId);
+   return boost::make_shared<CScriptLogger>(api,
+                                            scriptInstanceId,
+                                            std::to_string(scriptInstanceId));
 }
 
 boost::shared_ptr<shared::process::IProcess> CFactory::createScriptProcess(boost::shared_ptr<yApi::IYInterpreterApi> api,
@@ -40,7 +43,8 @@ boost::shared_ptr<shared::process::IProcess> CFactory::createScriptProcess(boost
                                                                            const std::string& scriptApiId,
                                                                            boost::function3<void, bool, int, const std::string&> onInstanceStateChangedFct) const
 {
-   auto scriptLogger = createScriptLogger(scriptInstanceId);
+   auto scriptLogger = createScriptLogger(api,
+                                          scriptInstanceId);
 
    auto processObserver = createScriptProcessObserver(scriptInstanceId,
                                                       onInstanceStateChangedFct);

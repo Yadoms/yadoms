@@ -16,7 +16,6 @@
 #include <server/logging/ExternalProcessLogger.h>
 
 
-
 namespace pluginSystem
 {
    CFactory::CFactory(const IPathProvider& pathProvider,
@@ -66,8 +65,11 @@ namespace pluginSystem
       auto commandLine = createCommandLine(pluginInformation,
                                            yPluginApi->id());
 
+      auto logger = createLogger("Plugin/" + std::to_string(instanceData->Id()));
+
       auto process = createInstanceProcess(commandLine,
-                                           instanceStateHandler);
+                                           instanceStateHandler,
+                                           logger);
 
       return boost::make_shared<CInstance>(instanceData,
                                            pluginInformation,
@@ -149,15 +151,21 @@ namespace pluginSystem
                                                                                args);
    }
 
+   boost::shared_ptr<shared::process::IExternalProcessLogger> CFactory::createLogger(const std::string& loggerName) const
+   {
+      return boost::make_shared<logging::CExternalProcessLogger>(loggerName);
+   }
+
    boost::shared_ptr<shared::process::IProcess> CFactory::createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
-                                                                                boost::shared_ptr<CInstanceStateHandler> instanceStateHandler) const
+                                                                                boost::shared_ptr<CInstanceStateHandler> instanceStateHandler,
+                                                                                boost::shared_ptr<shared::process::IExternalProcessLogger> logger) const
    {
       try
       {
          std::string loggerName = "plugin";
          return boost::make_shared<shared::process::CProcess>(commandLine,
                                                               instanceStateHandler,
-                                                              loggerName);
+                                                              logger);
       }
       catch (std::runtime_error& e)
       {
@@ -280,3 +288,5 @@ namespace pluginSystem
       return availablePlugins;
    }
 } // namespace pluginSystem
+
+

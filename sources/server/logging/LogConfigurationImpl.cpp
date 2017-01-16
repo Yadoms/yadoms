@@ -9,8 +9,8 @@ namespace logging
    :  m_consoleChannel(new Poco::ConsoleChannel),
       m_fileChannel(new Poco::FileChannel()),
       m_patternFormatter(new Poco::PatternFormatter),
-      m_patternFormatterPlugin(new Poco::PatternFormatter),
       m_splitterChannel(new Poco::SplitterChannel),
+      m_patternFormatterPlugin(new Poco::PatternFormatter),
       m_splitterChannelPlugin(new Poco::SplitterChannel)
    {
 
@@ -48,10 +48,10 @@ namespace logging
       //configre any already created loggers
       std::vector<std::string> loggerNames;
       Poco::Logger::names(loggerNames);
-      for (std::vector<std::string>::iterator i = loggerNames.begin(); i != loggerNames.end(); ++i)
+      for (const auto& loggerName : loggerNames)
       {
-         Poco::Logger::get(*i).setChannel(m_splitterChannel);
-         Poco::Logger::get(*i).setLevel(logLevel);
+         Poco::Logger::get(loggerName).setChannel(m_splitterChannel);
+         Poco::Logger::get(loggerName).setLevel(logLevel);
       }
       loggerNames.clear();
 
@@ -60,7 +60,7 @@ namespace logging
       m_formattingConsoleChannelPlugin.assign(new Poco::FormattingChannel(m_patternFormatterPlugin, m_consoleChannel));
       m_splitterChannelPlugin->addChannel(m_formattingConsoleChannelPlugin);
       m_splitterChannelPlugin->addChannel(m_formattingFileChannelPlugin);
-      Poco::Logger::create("plugin", m_splitterChannelPlugin);
+      Poco::Logger::create("plugin", m_splitterChannelPlugin); // TODO pourquoi "plugin" dans cet objet commun ?
 
       //configure root logger
       Poco::Logger::root().setChannel(m_splitterChannel);

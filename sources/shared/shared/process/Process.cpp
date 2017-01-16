@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Process.h"
 #include <shared/Log.h>
-#include <shared/StringExtension.h>
 
 namespace shared
 {
@@ -9,14 +8,13 @@ namespace shared
    {
       CProcess::CProcess(boost::shared_ptr<ICommandLine> commandLine,
                          boost::shared_ptr<IProcessObserver> processObserver,
-                         const std::string& logger)
+                         boost::shared_ptr<IExternalProcessLogger> scriptLogger)
          : m_commandLine(commandLine),
            m_processObserver(processObserver),
-           m_logger(logger),
            m_returnCode(0),
            m_lastError(boost::make_shared<std::string>())
       {
-         start();
+         start(scriptLogger);
       }
 
       CProcess::~CProcess()
@@ -24,7 +22,7 @@ namespace shared
          CProcess::kill();
       }
 
-      void CProcess::start()
+      void CProcess::start(boost::shared_ptr<IExternalProcessLogger> scriptLogger)
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_processMutex);
 
@@ -42,19 +40,19 @@ namespace shared
                                                                                             args,
                                                                                             m_commandLine->workingDirectory().string(),
                                                                                             nullptr,
-                                                                                            m_logger.empty() ? nullptr : &outPipe,
-                                                                                            m_logger.empty() ? nullptr : &errPipe));
+                                                                                            scriptLogger ? nullptr : &outPipe,
+                                                                                            scriptLogger ? nullptr : &errPipe));
 
-            if (!m_logger.empty())
+            if (scriptLogger)
             {
                auto moduleStdOut = boost::make_shared<Poco::PipeInputStream>(outPipe);
                auto moduleStdErr = boost::make_shared<Poco::PipeInputStream>(errPipe);
                m_StdOutRedirectingThread = boost::make_shared<boost::thread>(&CProcess::stdOutRedirectWorker,
                                                                              moduleStdOut,
-                                                                             m_logger);
+                                                                             scriptLogger);
                m_StdErrRedirectingThread = boost::make_shared<boost::thread>(&CProcess::stdErrRedirectWorker,
                                                                              moduleStdErr,
-                                                                             m_logger,
+                                                                             scriptLogger,
                                                                              m_lastError);
             }
 
@@ -145,33 +143,23 @@ namespace shared
       }
 
       void CProcess::stdOutRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut,
-                                          const std::string& scriptLogger)
+                                          boost::shared_ptr<IExternalProcessLogger> scriptLogger)
       {
-         auto& logger = Poco::Logger::get(scriptLogger);
-         YADOMS_LOG_CONFIGURE(scriptLogger);
-         logger.information("#### START ####");
+         scriptLogger->init();
+         scriptLogger->information("#### START ####");
 
          char line[1024];
          while (moduleStdOut->getline(line, sizeof(line)))
          {
-            const auto l(CStringExtension::removeEol(line));
-            if (!l.empty())
-            {
-               logger.information(l);
-
-               //TODO : que vient faire ce cas particulier sur les plugins dans la classe commune CProcess ?
-               if (scriptLogger != "plugin") //if script logger, log it in yadoms logger
-                  YADOMS_LOG(information) << l;
-            }
+            scriptLogger->information(line);
          }
       }
 
       void CProcess::stdErrRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdErr,
-                                          const std::string& scriptLogger,
+                                          boost::shared_ptr<IExternalProcessLogger> scriptLogger,
                                           boost::shared_ptr<std::string> lastError)
       {
-         auto& logger = Poco::Logger::get(scriptLogger);
-         YADOMS_LOG_CONFIGURE(scriptLogger);
+         scriptLogger->init();
 
          char line[1024];
          while (moduleStdErr->getline(line, sizeof(line)))
@@ -179,15 +167,7 @@ namespace shared
             if (!!lastError)
                *lastError += line;
 
-            const auto l(CStringExtension::removeEol(line));
-            if (!l.empty())
-            {
-               logger.error(l);
-
-               //TODO : que vient faire ce cas particulier sur les plugins dans la classe commune CProcess ?
-               if (scriptLogger != "plugin")
-                  YADOMS_LOG(error) << l;
-            }
+            scriptLogger->error(line);
          }
       }
    }

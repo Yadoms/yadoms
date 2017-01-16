@@ -1,19 +1,15 @@
 #include "stdafx.h"
 #include "ExternalProcessLogger.h"
 #include <shared/Log.h>
-#include <shared/currentTime/Provider.h>
 #include <shared/StringExtension.h>
 
 
 namespace logging
 {
-   CExternalProcessLogger::CExternalProcessLogger(const std::string& loggerName,
-                                                  const boost::filesystem::path& logFilePath)
-      : m_loggerName(loggerName)
+   CExternalProcessLogger::CExternalProcessLogger(const std::string& loggerName)
+      : m_loggerName(loggerName),
+        m_logger(Poco::Logger::get(m_loggerName))
    {
-      if (!boost::filesystem::exists(logFilePath.parent_path()))
-         boost::filesystem::create_directories(logFilePath.parent_path());
-      m_logFile.open(logFilePath.string(), std::ofstream::out | std::ofstream::app);
    }
 
    CExternalProcessLogger::~CExternalProcessLogger()
@@ -27,34 +23,12 @@ namespace logging
 
    void CExternalProcessLogger::information(const std::string& line)
    {
-      auto toPrint = shared::CStringExtension::removeEol(line);
-
-      // Write into file
-      m_logFile << now() << " : [INFORMATION] " << toPrint << std::endl;
-
-      // Log normally
-      YADOMS_LOG(information) << toPrint;
+      m_logger.information(shared::CStringExtension::removeEol(line));
    }
 
    void CExternalProcessLogger::error(const std::string& line)
    {
-      auto toPrint = shared::CStringExtension::removeEol(line);
-
-      // Write into file
-      m_logFile << now() << " : [ERROR] " << toPrint << std::endl;
-
-      // Log normally
-      YADOMS_LOG(error) << toPrint;
-   }
-
-   std::string CExternalProcessLogger::now()
-   {
-      std::stringstream dateStream;
-      auto facet(new boost::posix_time::time_facet());
-      facet->format("%Y/%m/%d %H:%M:%S");
-      dateStream.imbue(std::locale(std::locale::classic(), facet));
-      dateStream << shared::currentTime::Provider().now();
-      return dateStream.str();
+      m_logger.error(shared::CStringExtension::removeEol(line));
    }
 } // namespace logging
 

@@ -3,6 +3,7 @@
 #include "InstanceStateHandler.h"
 #include <shared/process/IProcess.h>
 #include <shared/process/ICommandLine.h>
+#include <shared/process/IExternalProcessLogger.h>
 #include "IIpcAdapter.h"
 #include <IPathProvider.h>
 #include "yPluginApiImplementation.h"
@@ -52,6 +53,8 @@ namespace pluginSystem
       boost::shared_ptr<shared::process::ICommandLine> createCommandLine(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                                                                          const std::string& messageQueueId) const;
 
+      boost::shared_ptr<shared::process::IExternalProcessLogger> createLogger(const std::string& loggerName) const;
+
       boost::shared_ptr<CInstanceStateHandler> createInstanceStateHandler(boost::shared_ptr<const database::entities::CPlugin> instanceData,
                                                                           boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                                                                           boost::shared_ptr<database::IDataProvider> dataProvider,
@@ -60,7 +63,8 @@ namespace pluginSystem
                                                                           boost::function1<void, int> onPluginsStoppedFct) const;
 
       boost::shared_ptr<shared::process::IProcess> createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
-                                                                         boost::shared_ptr<CInstanceStateHandler> instanceStatteHandler) const;
+                                                                         boost::shared_ptr<CInstanceStateHandler> instanceStatteHandler,
+                                                                         boost::shared_ptr<shared::process::IExternalProcessLogger> logger) const;
 
       boost::shared_ptr<CYPluginApiImplementation> createApiPluginImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                                                                                  boost::shared_ptr<const database::entities::CPlugin> instanceData,
@@ -82,3 +86,5 @@ namespace pluginSystem
       const boost::shared_ptr<const shared::ILocation> m_location;
    };
 } // namespace pluginSystem
+
+

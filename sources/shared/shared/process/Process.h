@@ -5,6 +5,7 @@
 #include "IProcessObserver.h"
 #include <Poco/Process.h>
 #include <Poco/PipeStream.h>
+#include "IExternalProcessLogger.h"
 
 namespace shared
 {
@@ -20,12 +21,12 @@ namespace shared
          /// \brief	Constructor
          /// \param[in] commandLine             Process command line
          /// \param[in] processObserver         The process life observer (can be NULL is no observer needed)
-         /// \param[in] logger                  The logger name
+         /// \param[in] scriptLogger            The logger to use for standard outputs
          /// \throw CProcessException if error
          //--------------------------------------------------------------
          CProcess(boost::shared_ptr<ICommandLine> commandLine,
                   boost::shared_ptr<IProcessObserver> processObserver,
-                  const std::string& loggerName);
+                  boost::shared_ptr<IExternalProcessLogger> scriptLogger);
 
 
          //--------------------------------------------------------------
@@ -42,8 +43,9 @@ namespace shared
       protected:
          //--------------------------------------------------------------
          /// \brief	Start a module (in separated process)
+         /// \param[in] scriptLogger            The logger to use for standard outputs
          //--------------------------------------------------------------
-         void start();
+         void start(boost::shared_ptr<IExternalProcessLogger> scriptLogger);
 
          //-----------------------------------------------------
          ///\brief               Create the process observer 
@@ -62,9 +64,9 @@ namespace shared
          /// \param[inout] lastError      Last error string
          //--------------------------------------------------------------
          static void stdOutRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut,
-                                          const std::string& loggerName);
+                                          boost::shared_ptr<IExternalProcessLogger> scriptLogger);
          static void stdErrRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdErr,
-                                          const std::string& loggerName,
+                                          boost::shared_ptr<IExternalProcessLogger> scriptLogger,
                                           boost::shared_ptr<std::string> lastError);
 
       private:
@@ -84,11 +86,6 @@ namespace shared
          //--------------------------------------------------------------
          boost::shared_ptr<IProcessObserver> m_processObserver;
          boost::shared_ptr<boost::thread> m_processMonitorThread;
-
-         //--------------------------------------------------------------
-         ///\brief   The logger
-         //--------------------------------------------------------------
-         const std::string m_logger;
 
          //--------------------------------------------------------------
          /// \brief	Thread redirecting standard outputs

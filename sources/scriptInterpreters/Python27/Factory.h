@@ -2,6 +2,7 @@
 #include "IFactory.h"
 #include "IScriptFile.h"
 #include <shared/process/IProcessObserver.h>
+#include <shared/process/IExternalProcessLogger.h>
 
 //--------------------------------------------------------------
 /// \brief	Python interpreter
@@ -27,6 +28,7 @@ protected:
    boost::shared_ptr<IScriptFile> createScriptFile(const std::string& scriptPath) const;
    boost::shared_ptr<shared::process::IProcessObserver> createScriptProcessObserver(int scriptInstanceId,
                                                                                     boost::function3<void, bool, int, const std::string&> onInstanceStateChangedFct) const;
-   std::string createScriptLogger(int scriptInstanceId) const;
+   boost::shared_ptr<shared::process::IExternalProcessLogger> createScriptLogger(boost::shared_ptr<yApi::IYInterpreterApi> api,
+                                                                                 int scriptInstanceId) const;
 };
 
