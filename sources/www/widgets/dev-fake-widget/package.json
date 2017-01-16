@@ -1,0 +1,292 @@
+{
+    "type": "dev-fake-widget",
+    "version": "1.0.0-beta",
+    "author": "Nicolas HILAIRE",
+    "url": "https://github.com/Yadoms/yadoms/wiki/dev-fake-widget",
+    "credits": "",
+    "dimensions": {
+        "min": {
+            "x": 1,
+            "y": 1
+        },
+        "default": {
+            "x": 1,
+            "y": 1
+        }
+    },
+    "configurationSchema": {
+        "parameterList": {
+            "type": "combosection",
+            "name": "Parameters",
+            "description": "List of available parameters items",
+            "content": {
+                "basicsSection": {
+                    "type": "section",
+                    "name": "Base types",
+                    "description": "Here is all base types items",
+                    "content": {
+                        "int" : {
+                            "type" : "int",
+                            "name" : "Integer parameter",
+                            "description" : "type as int",
+                            "defaultValue" : "0",
+                            "maximumValue" : "23",
+                            "minimumValue" : "0"
+                            },
+                        "decimal" : {
+                            "type" : "decimal",
+                            "name" : "Decimal parameter",
+                            "description" : "type as decimal",
+                            "defaultValue" : "0.0",
+                            "maximumValue" : "1.0",
+                            "minimumValue" : "-1.0",
+                            "precision" : "2"
+                        },
+                        "string" : {
+                            "type" : "string",
+                            "name" : "String parameter",
+                            "description" : "type as string"
+                        },
+                        "enum" : {
+                            "type" : "enum",
+                            "name" : "Enumeration parameter",
+                            "description" : "type as enum",
+                            "values" : {
+                                "12H" : "12 hours",
+                                "24H" : "24 hours"
+                            },
+                            "defaultValue" : "12H"
+                        },
+                        "bool" : {
+                            "type" : "bool",
+                            "name" : "Boolean parameter",
+                            "description" : "type as bool",
+                            "defaultValue" : "true"
+                        }
+                    }
+                },
+                "advancedSection": {
+                    "type": "section",
+                    "name": "Advanced types",
+                    "description": "Here is all other types items",
+                    "content": {
+                        "color" : {
+                            "type" : "color",
+                            "name" : "Color parameter",
+                            "description" : "type as color",
+                            "defaultValue" : "#0000FF"
+                        },
+                        "icon" : {
+                            "type" : "icon",
+                            "name" : "Icon parameter",
+                            "description" : "type as icon"
+                        },
+                        "keyword" : {
+                            "type" : "keyword",
+                            "name" : "Keyword parameter",
+                            "description" : "type as keyword",
+                            "expectedKeywordType" : "numeric",
+                            "expectedKeywordAccess" : "get"
+                        }
+                    }
+                },
+                "listSection": {
+                    "type": "section",
+                    "name": "List of items",
+                    "description": "Here is an example of list items",
+                    "content": {
+                        "listItems": {
+                            "type": "list",
+                            "name": "List parameter",
+                            "description": "type as list",
+                            "nbItemsMin": "1",
+                            "nbItemsMax": "5",
+                            "allowDuplication": "true",
+                            "item": {
+                                "type": "section",
+                                "name": "New Item",
+                                "description": "An Item",				
+                                "content": {
+                                    "string" : {
+                                        "type" : "string",
+                                        "name" : "String parameter",
+                                        "description" : "type as string"
+                                    },
+                                    "color": {
+                                        "type": "color",
+                                        "name" : "Color parameter",
+                                        "description" : "type as color",
+                                        "defaultValue": "#00FF00"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "containerSection": {
+                    "type": "section",
+                    "name": "Containers",
+                    "description": "Here is all container you can use to classify your configuration",
+                    "content": {
+                        "sectionContainer" : {
+                            "type" : "section",
+                            "name" : "Section container",
+                            "description" : "type as \"section\"",
+                            "content" : {
+                                "bool" : {
+                                    "type" : "bool",
+                                    "name" : "Boolean parameter",
+                                    "description" : "type as \"bool\"",
+                                    "defaultValue" : "true"
+                                }
+                            }
+                        },
+                        "radioSectionContainer" : {
+                            "type" : "radioSection",
+                            "name" : "radioSection container",
+                            "description" : "type as \"radioSection\"",
+                            "content" : {
+                                "firstSection" : {
+                                    "type" : "section",
+                                    "name" : "First",
+                                    "description" : "First section of the radio",
+                                    "content" : {
+                                        "bool" : {
+                                            "type" : "bool",
+                                            "name" : "Boolean parameter",
+                                            "description" : "type as \"bool\"",
+                                            "defaultValue" : "true"
+                                        }
+                                    }
+                                },
+                                "secondSection" : {
+                                    "type" : "section",
+                                    "name" : "Second",
+                                    "description" : "Second section of the radio",
+                                    "content" : {
+                                        "enum" : {
+                                            "type" : "enum",
+                                            "name" : "Enumeration parameter",
+                                            "description" : "type as \"enum\"",
+                                            "values" : {
+                                                "12H" : "12 hours",
+                                                "24H" : "24 hours"
+                                            },
+                                            "defaultValue" : "12H"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "comboSectionContainer" : {
+                            "type" : "comboSection",
+                            "name" : "comboSection container",
+                            "description" : "type as \"comboSection\"",
+                            "content" : {
+                                "firstSection" : {
+                                    "type" : "section",
+                                    "name" : "First",
+                                    "description" : "First section of the combo",
+                                    "content" : {
+                                        "bool" : {
+                                            "type" : "bool",
+                                            "name" : "Boolean parameter",
+                                            "description" : "type as \"bool\"",
+                                            "defaultValue" : "true"
+                                        }
+                                    }
+                                },
+                                "secondSection" : {
+                                    "type" : "section",
+                                    "name" : "Second",
+                                    "description" : "Second section of the combo",
+                                    "content" : {
+                                        "enum" : {
+                                            "type" : "enum",
+                                            "name" : "Enumeration parameter",
+                                            "description" : "type as \"enum\"",
+                                            "values" : {
+                                                "12H" : "12 hours",
+                                                "24H" : "24 hours"
+                                            },
+                                            "defaultValue" : "12H"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "advanced" : {
+            "type" : "combosection",
+            "name" : "Advanced examples",
+            "description": "See examples of advanced configuration",
+            "content": {
+                "sectionWithCheckbox": {
+                    "type": "section",
+                    "name": "Section with a checkbox",
+                    "description": "Here is an example that shows a checkbox that can enable / disable the section under",
+                    "content": {
+                        "exampleSection": {
+                            "type": "section",
+                            "name": "Example section",
+                            "description": "This section can be activated / deactivated",
+                            "enableWithCheckBox" : "true",
+                            "enableWithCheckBoxDefaultValue" : "false",
+                            "content": {
+                                "enum" : {
+                                    "type" : "enum",
+                                    "name" : "Enumeration parameter",
+                                    "description" : "type as enum",
+                                    "values" : {
+                                        "12H" : "12 hours",
+                                        "24H" : "24 hours"
+                                    },
+                                    "defaultValue" : "12H"
+                                }
+                            }
+                        }
+                    }
+                },
+                "sectionWithBinding": {
+                    "type": "section",
+                    "name": "Section using binding",
+                    "description": "Here is an example that shows binding",
+                    "content": {
+                        "SerialPort" :
+                        {
+                            "type" : "enum",
+                            "name" : "Serial port",
+                            "description" : "The (virtual) serial port of the computer",
+                            "values" : {"__Binding__" : {"type" : "system", "query" : "serialPorts"}}
+                        },
+                        "NetworkInterfaces" :
+                        {
+                            "type" : "enum",
+                            "name" : "Network interfaces",
+                            "description" : "The network interfaces availables",
+                            "values" : {"__Binding__" : {"type" : "system", "query" : "networkInterfaces"}}
+                        }
+                    }
+                },
+                "sectionWithRegex": {
+                    "type": "section",
+                    "name": "Section with Regex into  string parameter",
+                    "description": "Here is an example that shows use of Regex in String parameter",
+                    "content": {
+                        "ipAddress" : {
+                            "type" : "string",
+                            "name" : "IP Address",
+                            "description" : "Set the IP Address of the peripheral",
+                            "regex" : "([0-9]{1,3}\\.){3}[0-9]{1,3}",
+                            "regexErrorMessage" : "Must be an ipv4 adress like 192.168.0.12",
+                            "required" : "true"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
