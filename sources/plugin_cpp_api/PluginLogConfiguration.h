@@ -1,10 +1,10 @@
 #pragma once
-#include "StandardConsoleChannel.h"
 #include <Poco/SplitterChannel.h>
 #include <Poco/FileChannel.h>
 #include <Poco/AutoPtr.h>
 #include <Poco/FormattingChannel.h>
 #include <Poco/PatternFormatter.h>
+#include <shared/process/CoutCerrConsoleChannel.h>
 
 namespace plugin_cpp_api
 {
@@ -34,7 +34,7 @@ namespace plugin_cpp_api
    private:
       Poco::AutoPtr<Poco::PatternFormatter> m_consolePatternFormatter;
       Poco::AutoPtr<Poco::FormattingChannel> m_formattingConsoleChannel;
-      Poco::AutoPtr<StandardConsoleChannel> m_consoleChannel;
+      Poco::AutoPtr<shared::process::CoutCerrConsoleChannel> m_consoleChannel;
 
       Poco::AutoPtr<Poco::PatternFormatter> m_patternFormatter;
       Poco::AutoPtr<Poco::FormattingChannel> m_formattingFileChannel;

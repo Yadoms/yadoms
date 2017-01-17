@@ -7,7 +7,7 @@ namespace plugin_cpp_api
 {
    CPluginLogConfiguration::CPluginLogConfiguration()
       : m_consolePatternFormatter(new Poco::PatternFormatter),
-        m_consoleChannel(new StandardConsoleChannel),
+        m_consoleChannel(new shared::process::CoutCerrConsoleChannel),
         m_patternFormatter(new Poco::PatternFormatter),
         m_fileChannel(new Poco::FileChannel()),
         m_splitterChannel(new Poco::SplitterChannel)
