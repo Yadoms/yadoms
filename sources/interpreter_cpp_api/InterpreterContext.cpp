@@ -5,7 +5,7 @@
 #include <shared/currentTime/Local.h>
 #include <Poco/Debugger.h>
 #include <shared/Log.h>
-#include "InterpreterLogConfiguration.h"
+#include <shared/process/YadomsSubModuleLogConfiguration.h>
 
 
 namespace yApi = shared::script::yInterpreterApi;
@@ -113,7 +113,7 @@ namespace interpreter_cpp_api
       {
          auto path = api->getLogFile();
          std::cout << api->getInformation()->getType() << " configure logger : " << path.string() << std::endl;
-         CInterpreterLogConfiguration logconfig;
+         shared::process::CYadomsSubModuleLogConfiguration logconfig;
          logconfig.configure(api->getLogLevel(), path);
       }
       catch (std::exception& e)

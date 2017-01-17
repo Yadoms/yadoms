@@ -5,7 +5,7 @@
 #include <shared/currentTime/Local.h>
 #include <Poco/Debugger.h>
 #include <shared/Log.h>
-#include "PluginLogConfiguration.h"
+#include <shared/process/YadomsSubModuleLogConfiguration.h>
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -112,7 +112,7 @@ namespace plugin_cpp_api
       {
          auto path = api->getLogFile();
          std::cout << api->getInformation()->getType() << " configure logger : " << path.string() << std::endl;
-         CPluginLogConfiguration logconfig;
+         shared::process::CYadomsSubModuleLogConfiguration logconfig;
          logconfig.configure(api->getLogLevel(), path);
       }
       catch (std::exception& e)

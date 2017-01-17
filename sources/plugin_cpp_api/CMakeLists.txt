@@ -42,9 +42,6 @@ set(plugin_cpp_api_SOURCES
    PluginContext.h
    PluginContext.cpp
 
-   PluginLogConfiguration.h
-   PluginLogConfiguration.cpp
-
    PluginMain.cpp
 
    plugin_cpp_api/ImplementationHelper.h

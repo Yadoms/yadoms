@@ -217,8 +217,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.cpp
    shared/plugin/yPluginApi/historization/typeInfo/EnumTypeInfo.hpp
 
-   shared/process/CoutCerrConsoleChannel.h
-   shared/process/CoutCerrConsoleChannel.cpp
+   shared/process/CoutCerrConsoleLogChannel.h
+   shared/process/CoutCerrConsoleLogChannel.cpp
    shared/process/IApplication.h
    shared/process/IApplicationStopHandler.h
    shared/process/IProcessObserver.h
@@ -231,6 +231,8 @@ set(SHARED_LIB_SRC
    shared/process/Process.cpp
    shared/process/SoftwareStop.h
    shared/process/SoftwareStop.cpp
+   shared/process/YadomsSubModuleLogConfiguration.h
+   shared/process/YadomsSubModuleLogConfiguration.cpp
 
    shared/serialization/IDataSerializable.h
    shared/serialization/IDataFileSerializable.h

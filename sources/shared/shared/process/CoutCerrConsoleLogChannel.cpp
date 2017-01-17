@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CoutCerrConsoleChannel.h"
+#include "CoutCerrConsoleLogChannel.h"
 #include "Poco/Message.h"
 
 
@@ -7,20 +7,20 @@ namespace shared
 {
    namespace process
    {
-      Poco::FastMutex CoutCerrConsoleChannel::_mutex;
+      Poco::FastMutex CCoutCerrConsoleLogChannel::_mutex;
 
 
-      CoutCerrConsoleChannel::CoutCerrConsoleChannel()
+      CCoutCerrConsoleLogChannel::CCoutCerrConsoleLogChannel()
       {
       }
 
 
-      CoutCerrConsoleChannel::~CoutCerrConsoleChannel()
+      CCoutCerrConsoleLogChannel::~CCoutCerrConsoleLogChannel()
       {
       }
 
 
-      void CoutCerrConsoleChannel::log(const Poco::Message& msg)
+      void CCoutCerrConsoleLogChannel::log(const Poco::Message& msg)
       {
          Poco::FastMutex::ScopedLock lock(_mutex);
 
