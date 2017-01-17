@@ -1,12 +1,13 @@
 #pragma once
 #include <shared/process/IExternalProcessLogger.h>
 #include <shared/script/yInterpreterApi/IYInterpreterApi.h>
+#include <Poco/Logger.h>
 
 
 // Shortcut to yInterpreterApi namespace
 namespace yApi = shared::script::yInterpreterApi;
 
-class CScriptLogger : public shared::process::IExternalProcessLogger//TODO utile ?
+class CScriptLogger : public shared::process::IExternalProcessLogger
 {
 public:
    CScriptLogger(boost::shared_ptr<yApi::IYInterpreterApi> api,
@@ -24,5 +25,6 @@ private:
    boost::shared_ptr<yApi::IYInterpreterApi> m_api;
    const int m_scriptInstanceId;//TODO utile ?
    const std::string m_loggerName;
+   Poco::Logger& m_logger;
 };
 

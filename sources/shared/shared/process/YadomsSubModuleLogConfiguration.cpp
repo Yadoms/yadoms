@@ -30,7 +30,7 @@ namespace shared
          m_patternFormatter->setProperty("pattern", "%H:%M:%S : %T : [%p] : %t");
          m_patternFormatter->setProperty("times", "local"); //use local datetime
 
-         if (!boost::filesystem::exists(logfilepath.string()))
+         if (!boost::filesystem::exists(logfilepath.parent_path().string()))
             if (!boost::filesystem::create_directories(logfilepath.parent_path().string()))
                throw exception::CException("Cannot create directory " + logfilepath.parent_path().string());
 

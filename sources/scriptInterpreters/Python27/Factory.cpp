@@ -32,7 +32,7 @@ boost::shared_ptr<shared::process::IExternalProcessLogger> CFactory::createScrip
 {
    return boost::make_shared<CScriptLogger>(api,
                                             scriptInstanceId,
-                                            std::to_string(scriptInstanceId));
+                                            api->getInformation()->getType() + ".Rule." + std::to_string(scriptInstanceId));
 }
 
 boost::shared_ptr<shared::process::IProcess> CFactory::createScriptProcess(boost::shared_ptr<yApi::IYInterpreterApi> api,

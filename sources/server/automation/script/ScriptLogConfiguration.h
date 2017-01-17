@@ -15,7 +15,7 @@ namespace automation
       //--------------------------------------------------------------
       /// \class The script log configuration
       //--------------------------------------------------------------
-      class CScriptLogConfiguration
+      class CScriptLogConfiguration//TODO utile ?
       {
       public:
          //--------------------------------------------------------------
