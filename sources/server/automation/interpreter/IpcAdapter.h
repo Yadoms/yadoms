@@ -33,7 +33,8 @@ namespace automation
 
          void postStopRequest() override;
          void postInit(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> information,
-                       const boost::filesystem::path& logFile) override;
+                       const boost::filesystem::path& logFile,
+                       const std::string& logLevel) override;
 
          void postAvalaibleRequest(boost::shared_ptr<shared::script::yInterpreterApi::IAvalaibleRequest> request) override;
          void postLoadScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ILoadScriptContentRequest> request) override;

@@ -68,7 +68,7 @@ namespace automation
 
       boost::shared_ptr<shared::process::IExternalProcessLogger> CFactory::createInterpreterLogger(const std::string& interpreterFileName)
       {
-         return boost::make_shared<logging::CYadomsSubModuleProcessLogger>("interpreter/" + interpreterFileName);
+         return boost::make_shared<logging::CYadomsSubModuleProcessLogger>("interpreter." + interpreterFileName);
       }
 
       boost::shared_ptr<IRuleLogDispatcher> CFactory::createScriptLogDispatcher() const

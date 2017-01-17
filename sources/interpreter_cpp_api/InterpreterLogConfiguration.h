@@ -1,18 +1,17 @@
 #pragma once
-
-#include <Poco/ConsoleChannel.h>
 #include <Poco/SplitterChannel.h>
 #include <Poco/FileChannel.h>
 #include <Poco/AutoPtr.h>
 #include <Poco/FormattingChannel.h>
 #include <Poco/PatternFormatter.h>
+#include <shared/process/CoutCerrConsoleChannel.h>
 
 namespace interpreter_cpp_api
 {
    //--------------------------------------------------------------
    /// \class The interpreter log configuration
    //--------------------------------------------------------------
-   class CInterpreterLogConfiguration
+   class CInterpreterLogConfiguration //TODO transformer en CYadomsSubModuleLogConfiguration dans shared ?
    {
    public:
       //--------------------------------------------------------------
@@ -33,29 +32,14 @@ namespace interpreter_cpp_api
       void configure(const std::string& logLevel,
                      boost::filesystem::path& logfilepath);
    private:
-      //--------------------------------------------------------------
-      /// \brief The console channel
-      //--------------------------------------------------------------
-      Poco::AutoPtr<Poco::ConsoleChannel> m_consoleChannel;
-      //--------------------------------------------------------------
-      /// \brief The file channel (configured with logfilepath parameter of configure method)
-      //--------------------------------------------------------------
-      Poco::AutoPtr<Poco::FileChannel> m_fileChannel;
-      //--------------------------------------------------------------
-      /// \brief The output pattern formatter
-      //--------------------------------------------------------------
-      Poco::AutoPtr<Poco::PatternFormatter> m_patternFormatter;
-      //--------------------------------------------------------------
-      /// \brief The output pattern formatter for console
-      //--------------------------------------------------------------
+      Poco::AutoPtr<Poco::PatternFormatter> m_consolePatternFormatter;
       Poco::AutoPtr<Poco::FormattingChannel> m_formattingConsoleChannel;
-      //--------------------------------------------------------------
-      /// \brief The output pattern formatter for file
-      //--------------------------------------------------------------
+      Poco::AutoPtr<shared::process::CoutCerrConsoleChannel> m_consoleChannel;
+
+      Poco::AutoPtr<Poco::PatternFormatter> m_patternFormatter;
       Poco::AutoPtr<Poco::FormattingChannel> m_formattingFileChannel;
-      //--------------------------------------------------------------
-      /// \brief The splitter channel which allow to use more than one single channel
-      //--------------------------------------------------------------
+      Poco::AutoPtr<Poco::FileChannel> m_fileChannel;
+
       Poco::AutoPtr<Poco::SplitterChannel> m_splitterChannel;
    };
 } // namespace interpreter_cpp_api

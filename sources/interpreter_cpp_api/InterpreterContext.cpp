@@ -114,7 +114,7 @@ namespace interpreter_cpp_api
          auto path = api->getLogFile();
          std::cout << api->getInformation()->getType() << " configure logger : " << path.string() << std::endl;
          CInterpreterLogConfiguration logconfig;
-         logconfig.configure("debug", path);//TODO faire comme plugin
+         logconfig.configure(api->getLogLevel(), path);
       }
       catch (std::exception& e)
       {

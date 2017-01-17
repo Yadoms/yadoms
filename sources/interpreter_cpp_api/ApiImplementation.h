@@ -38,6 +38,7 @@ namespace interpreter_cpp_api
       // [END] shared::plugin::yInterpreterApi::IYInterpreterApi implementation
 
       const boost::filesystem::path& getLogFile() const;
+      const std::string& getLogLevel() const;
 
       void onReceive(boost::shared_ptr<const unsigned char[]> message, size_t messageSize);
 
@@ -85,6 +86,7 @@ namespace interpreter_cpp_api
 
       boost::shared_ptr<shared::script::yInterpreterApi::IInformation> m_pluginInformation;
       boost::shared_ptr<const boost::filesystem::path> m_logFile;
+      boost::shared_ptr<const std::string> m_logLevel;
    };
 } // namespace interpreter_cpp_api	
 

@@ -25,7 +25,8 @@ namespace automation
 
          virtual void postStopRequest() = 0;
          virtual void postInit(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> information,
-                               const boost::filesystem::path& logFile) = 0;
+                               const boost::filesystem::path& logFile,
+                               const std::string& logLevel) = 0;
 
          virtual void postAvalaibleRequest(boost::shared_ptr<shared::script::yInterpreterApi::IAvalaibleRequest> request) = 0;
          virtual void postLoadScriptContentRequest(boost::shared_ptr<shared::script::yInterpreterApi::ILoadScriptContentRequest> request) = 0;

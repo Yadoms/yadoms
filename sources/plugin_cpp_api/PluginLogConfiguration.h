@@ -11,7 +11,7 @@ namespace plugin_cpp_api
    //--------------------------------------------------------------
    /// \class The plugin log configuration
    //--------------------------------------------------------------
-   class CPluginLogConfiguration
+   class CPluginLogConfiguration //TODO transformer en CYadomsSubModuleLogConfiguration dans shared ?
    {
    public:
       //--------------------------------------------------------------

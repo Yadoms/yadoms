@@ -219,12 +219,14 @@ namespace automation
       }
 
       void CIpcAdapter::postInit(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> information,
-                                 const boost::filesystem::path& logFile)
+                                 const boost::filesystem::path& logFile,
+                                 const std::string& logLevel)
       {
          interpreter_IPC::toInterpreter::msg msg;
          auto message = msg.mutable_init();
          serializers::CInformation(information).toPb(message->mutable_interpreterinformation());
          message->set_logfile(logFile.string());
+         message->set_loglevel(logLevel);
 
          send(msg);
       }

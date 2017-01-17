@@ -7,6 +7,8 @@
 #include "SaveScriptContentRequest.h"
 #include "StartScript.h"
 #include "StopScript.h"
+#include <shared/ServiceLocator.h>
+#include <server/startupOptions/IStartupOptions.h>
 
 namespace automation
 {
@@ -24,7 +26,8 @@ namespace automation
            m_avalaible(false)
       {
          m_ipcAdapter->postInit(m_interpreterInformation,
-                                logPath);
+                                logPath,
+                                shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getLogLevel());
          m_avalaible = getAvalaibility();
       }
 

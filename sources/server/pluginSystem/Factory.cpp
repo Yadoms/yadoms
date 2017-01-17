@@ -65,7 +65,7 @@ namespace pluginSystem
       auto commandLine = createCommandLine(pluginInformation,
                                            yPluginApi->id());
 
-      auto logger = createLogger("Plugin/" + std::to_string(instanceData->Id()));
+      auto logger = createLogger("Plugin." + std::to_string(instanceData->Id()));
 
       auto process = createInstanceProcess(commandLine,
                                            instanceStateHandler,

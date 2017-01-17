@@ -199,6 +199,7 @@ namespace interpreter_cpp_api
    {
       m_pluginInformation = boost::make_shared<CInformation>(boost::make_shared<const interpreter_IPC::toInterpreter::Information>(msg.interpreterinformation()));
       m_logFile = boost::make_shared<const boost::filesystem::path>(msg.logfile());
+      m_logLevel = boost::make_shared<const std::string>(msg.loglevel());
       setInitialized();
    }
 
@@ -291,7 +292,7 @@ namespace interpreter_cpp_api
 
    void CApiImplementation::setInitialized()
    {
-      if (!!m_pluginInformation)
+      if (!!m_pluginInformation && !!m_logFile && !!m_logLevel)
       {
          std::unique_lock<std::mutex> lock(m_initializationConditionMutex);
          m_initialized = true;
@@ -313,6 +314,14 @@ namespace interpreter_cpp_api
          throw std::runtime_error("Interpreter instance log file path not available");
 
       return *m_logFile;
+   }
+
+   const std::string& CApiImplementation::getLogLevel() const
+   {
+      if (!m_logLevel)
+         throw std::runtime_error("Plugin instance log level not available");
+
+      return *m_logLevel;
    }
 
    shared::event::CEventHandler& CApiImplementation::getEventHandler()
