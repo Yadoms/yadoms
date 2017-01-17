@@ -2,8 +2,8 @@
 #include "ZiBlueReceiveBufferHandler.h"
 #include <shared/communication/StringBuffer.h>
 
-CZiBlueReceiveBufferHandler::CZiBlueReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler, int receiveBinaryDataEventId, int receiveCommandAnswerEventId)
-   : m_receiveDataEventHandler(receiveDataEventHandler), m_receiveBinaryDataEventId(receiveBinaryDataEventId), m_receiveCommandAnswerEventId(receiveCommandAnswerEventId)
+CZiBlueReceiveBufferHandler::CZiBlueReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler, int receiveBinaryFrameEventId, int receiveAsciiFrameEventId)
+   : m_receiveDataEventHandler(receiveDataEventHandler), m_receiveBinaryFrameEventId(receiveBinaryFrameEventId), m_receiveAsciiFrameEventId(receiveAsciiFrameEventId)
 {
 }
 
@@ -17,7 +17,11 @@ void CZiBlueReceiveBufferHandler::push(const shared::communication::CByteBuffer&
       m_content.push_back(buffer[idx]);
 
    if (isComplete())
-      notifyEventHandler(popNextMessage());
+   {
+      CZiBlueReceiveBufferHandler::BufferContainer bufferMessage = popNextMessage();
+      notifyEventHandler(bufferMessage);
+   }
+      
 }
 
 void CZiBlueReceiveBufferHandler::flush()
@@ -25,20 +29,67 @@ void CZiBlueReceiveBufferHandler::flush()
    m_content.clear();
 }
 
-bool CZiBlueReceiveBufferHandler::isComplete() const
+bool CZiBlueReceiveBufferHandler::syncToStartOfFrame()
 {
-   if (m_content.empty())
+   // The header is 5 bytes minimum
+   if (m_content.size() < 5)
       return false;
 
-   // The message size is provided in the first byte of the message
-   // (see RFXCom specifications). This value counts all bytes except itself.
-   // So a message is considered complete if its size is at least the value indicated
-   // in the first byte + 1.
-   if (m_content.size() < (static_cast<size_t>(m_content[0]) + 1))
-      return false;
+   for (int i = 0; i < m_content.size()-1; ++i)
+   {
+      if (m_content[i] == 0x5A && m_content[i + 1] == 0x49) //Z and I
+      {
+         //ZI found,
+         //if the buffer contains any data before ZI, remove it
+         if (i != 0)
+         {
+            m_content.erase(m_content.begin(), m_content.begin() + i);
+         }
+         return true;
+      }
+   }
+   return false;
+}
 
-   // A message is complete
-   return true;
+frames::EFrameType CZiBlueReceiveBufferHandler::identifyFrameType()
+{
+   if (m_content.size() >= 2)
+   {
+      unsigned char frameType = m_content[2] & 0x70;
+      if (frameType == 0x40)
+         return frames::kAsciiFrame;
+      if (frameType == 0x00)
+         return frames::kBinaryFrame;
+   }
+   return frames::kUnknown;
+}
+
+
+bool CZiBlueReceiveBufferHandler::isComplete()
+{
+   if (syncToStartOfFrame())
+   {
+      switch (identifyFrameType())
+      {
+         case frames::kAsciiFrame:
+         {
+            //search for terminator \0 or \r
+            for (int i = 5; i < m_content.size(); ++i)
+            {
+               if (m_content[i] == 0x00 || m_content[i] == 0x0D)
+                  return true;
+            }
+            break;
+         }
+         case frames::kBinaryFrame:
+         {
+            //size is given in bytes 4 and 5
+            int len = (m_content[3] << 8) + m_content[4];
+            return m_content.size() >= (5 + len);
+         }
+      }
+   }
+   return false;
 }
 
 CZiBlueReceiveBufferHandler::BufferContainer CZiBlueReceiveBufferHandler::popNextMessage()
@@ -46,35 +97,58 @@ CZiBlueReceiveBufferHandler::BufferContainer CZiBlueReceiveBufferHandler::popNex
    if (!isComplete())
       throw shared::exception::CException("CZiBlueReceiveBufferHandler : Can not pop not completed message. Call isComplete to check if a message is available");
 
-   // The message size is provided in the first byte of the message
-   // (see RFXCom specifications). This value counts all bytes except itself.
-   // So the message size is this value + 1.
-   const size_t extractedMessageSize = m_content[0] + 1;
-
    BufferContainer container;
-   container.bufferType = kBinaryData;
-   
-   boost::shared_ptr<shared::communication::CByteBuffer> extractedMessage(new shared::communication::CByteBuffer(extractedMessageSize));
-   for (size_t idx = 0; idx < extractedMessageSize; ++idx)
-      (*extractedMessage)[idx] = m_content[idx];
 
-   container.buffer = extractedMessage;
+   if (syncToStartOfFrame())
+   {
+      container.frameType = identifyFrameType();
+      switch (container.frameType)
+      {
+      case frames::kAsciiFrame:
+         {
+            //search for terminator \0 or \r
+            for (int i = frames::CAsciiFrame::HeaderSize; i < m_content.size(); ++i)
+            {
+               if (m_content[i] == 0x00 || m_content[i] == 0x0D)
+               {
+                  int extractedMessageSize = i - frames::CAsciiFrame::HeaderSize;
+                  std::string content;
+                  for (size_t idx = frames::CAsciiFrame::HeaderSize; idx < i; ++idx)
+                     content += m_content[idx];
 
-   // Delete extracted data
-   m_content.erase(m_content.begin(), m_content.begin() + extractedMessageSize);
-
+                  container.asciiBuffer = boost::make_shared<frames::CAsciiFrame>(m_content[2], m_content[3], m_content[4], content);
+                  // Delete extracted data
+                  m_content.erase(m_content.begin(), m_content.begin() + extractedMessageSize + frames::CAsciiFrame::HeaderSize);
+               }
+            }
+            break;
+         }
+      case frames::kBinaryFrame:
+         {
+            //size is given in bytes 4 and 5
+            int len = (m_content[3] << 8) + m_content[4];
+            boost::shared_ptr<shared::communication::CByteBuffer> extractedMessage(new shared::communication::CByteBuffer(len));
+            for (size_t idx = frames::CBinaryFrame::HeaderSize; idx < len; ++idx)
+               (*extractedMessage)[idx] = m_content[idx];
+            container.binaryBuffer = boost::make_shared<frames::CBinaryFrame>();
+            container.binaryBuffer->m_content = extractedMessage;
+            // Delete extracted data
+            m_content.erase(m_content.begin(), m_content.begin() + len + frames::CBinaryFrame::HeaderSize);
+         }
+      }
+   }
    return container;
 }
 
 void CZiBlueReceiveBufferHandler::notifyEventHandler(BufferContainer & bufferContainer) const
 {
-   switch (bufferContainer.bufferType)
+   switch (bufferContainer.frameType)
    {
-   case kBinaryData:
-      m_receiveDataEventHandler.postEvent<shared::communication::CByteBuffer>(m_receiveBinaryDataEventId, *bufferContainer.buffer);
+   case frames::kBinaryFrame:
+      m_receiveDataEventHandler.postEvent< boost::shared_ptr<frames::CBinaryFrame> >(m_receiveBinaryFrameEventId, bufferContainer.binaryBuffer);
       break;
-   case kCommandAnswer:
-      m_receiveDataEventHandler.postEvent<shared::communication::CStringBuffer>(m_receiveCommandAnswerEventId, shared::communication::CStringBuffer(*bufferContainer.buffer));
+   case frames::kAsciiFrame:
+      m_receiveDataEventHandler.postEvent< boost::shared_ptr<frames::CAsciiFrame> >(m_receiveAsciiFrameEventId, bufferContainer.asciiBuffer);
       break;
    }
    

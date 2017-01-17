@@ -15,9 +15,14 @@ set(ZIBLUE_PLUGIN_SOURCES
 	ZiBlueReceiveBufferHandler.cpp 	
 	ZiBlueTransceiver.h
 	ZiBlueTransceiver.cpp 	
+   
+   frames/AsciiFrame.h
+   frames/BinaryFrame.h
+   frames/FrameType.h
 )
 
 source_group(sources ./*.*)
+source_group(sources\\frames ./frames/*.*)
 
 #########################################
 ## Place here all additional include directories

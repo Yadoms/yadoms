@@ -11,9 +11,8 @@ CZiBlueTransceiver::~CZiBlueTransceiver()
 }
 
 
-shared::communication::CStringBuffer CZiBlueTransceiver::buildHelloCmd() const
+std::string CZiBlueTransceiver::buildHelloCmd() const
 {
-   shared::communication::CStringBuffer buffer("ZIA++HELLO\r\n\0");
-   return buffer;
+   return "ZIA++HELLO\r\n";
 }
 

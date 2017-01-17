@@ -3,6 +3,8 @@
 #include "ZiBlueConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
 #include "ZiBlueTransceiver.h"
+#include "frames/AsciiFrame.h"
+#include "frames/BinaryFrame.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -59,11 +61,11 @@ private:
    void processZiBlueConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
    void errorProcess(boost::shared_ptr<yApi::IYPluginApi> api);
    void processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
-   void processZiBlueBinaryDataReceived(boost::shared_ptr<yApi::IYPluginApi> api, const shared::communication::CByteBuffer& data);
-   void processZiBlueCommandAnswerReceived(boost::shared_ptr<yApi::IYPluginApi> api, const shared::communication::CStringBuffer& data);
+   void processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::CBinaryFrame> data);
+   void processZiBlueAsciiFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::CAsciiFrame> data);
    void initZiBlue(boost::shared_ptr<yApi::IYPluginApi> api);
-   void send(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<std::queue<shared::communication::CStringBuffer>> buffers);
-   void send(boost::shared_ptr<yApi::IYPluginApi> api, const shared::communication::CStringBuffer& buffer, bool needAnswer);
+   void send(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<std::queue<std::string>> buffers);
+   void send(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& buffer, bool needAnswer);
 };
 
 

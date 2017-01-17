@@ -2,6 +2,11 @@
 #include <shared/event/EventHandler.hpp>
 #include <shared/communication/IReceiveBufferHandler.h>
 #include <shared/communication/Buffer.hpp>
+#include <shared/communication/StringBuffer.h>
+
+#include "frames/FrameType.h"
+#include "frames/AsciiFrame.h"
+#include "frames/BinaryFrame.h"
 
 //--------------------------------------------------------------
 /// \brief	Receive buffer handler for ZiBlue
@@ -15,10 +20,10 @@ public:
    //--------------------------------------------------------------
    /// \brief	                              Constructor
    /// \param[in] receiveDataEventHandler    The event handler to notify for received data event
-   /// \param[in] receiveBinaryDataEventId   The event id to notify for received data event (binary format)
-   /// \param[in] receiveDataEventId         The event id to notify for received command answer event
+   /// \param[in] receiveBinaryFrameEventId  The event id to notify for received data event (binary format)
+   /// \param[in] receiveAsciiFrameEventId   The event id to notify for received command answer event
    //--------------------------------------------------------------
-   CZiBlueReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler, int receiveBinaryDataEventId, int receiveCommandAnswerEventId);
+   CZiBlueReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler, int receiveBinaryFrameEventId, int receiveAsciiFrameEventId);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
@@ -32,21 +37,16 @@ public:
 
 protected:
    //--------------------------------------------------------------
-   /// \brief	                     Check if we got a complete message
-   /// \return                      true if a message is complete
+   /// \brief	   Check if we got a complete message
+   /// \return    true if a message is complete
    //--------------------------------------------------------------
-   bool isComplete() const;
-
-   typedef enum EMessageType
-   {
-      kBinaryData,
-      kCommandAnswer
-   }EMessageType;
+   bool isComplete();
 
    typedef struct BufferContainer
    {
-      EMessageType bufferType;
-      boost::shared_ptr<const shared::communication::CByteBuffer> buffer;
+      frames::EFrameType frameType;
+      boost::shared_ptr<frames::CBinaryFrame> binaryBuffer;
+      boost::shared_ptr<frames::CAsciiFrame> asciiBuffer;
    }BufferContainer;
 
    //--------------------------------------------------------------
@@ -61,6 +61,17 @@ protected:
    //--------------------------------------------------------------
    void notifyEventHandler(BufferContainer & buffer) const;
 
+   //--------------------------------------------------------------
+   /// \brief	         Identifies the first frame in buffer
+   /// \return          The frame type
+   //--------------------------------------------------------------
+   frames::EFrameType identifyFrameType();
+
+   //--------------------------------------------------------------
+   /// \brief	         Sync buffer to start of frame
+   /// \return          true if SYNC pattern has been found, false in other cases
+   //--------------------------------------------------------------
+   bool syncToStartOfFrame();
 private:
    //--------------------------------------------------------------
    /// \brief	Buffer content
@@ -75,11 +86,11 @@ private:
    //--------------------------------------------------------------
    /// \brief	The event id to notify for received binary data event  
    //--------------------------------------------------------------
-   int m_receiveBinaryDataEventId;  
+   int m_receiveBinaryFrameEventId;  
 
    //--------------------------------------------------------------
    /// \brief	The event id to notify for received command answer event  
    //--------------------------------------------------------------
-   int m_receiveCommandAnswerEventId;
+   int m_receiveAsciiFrameEventId;
 };
 

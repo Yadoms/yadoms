@@ -15,6 +15,6 @@ public:
    //--------------------------------------------------------------
    virtual ~CZiBlueTransceiver();
 
-   shared::communication::CStringBuffer buildHelloCmd() const;
+   std::string buildHelloCmd() const;
 };
 
