@@ -5,23 +5,23 @@
 namespace logging
 {
    //-----------------------------------------------------
-   ///\brief A process logger
-   ///\details This logger logs normally (using current Yadoms log system)
-   /// and into a separated file (append mode), dedicated to the process
+   ///\brief A Yadoms sub-module process logger
+   ///\details This logger is used to log process output, when this process
+   /// use YADOMS_LOG functionnalities
    //-----------------------------------------------------
-   class CExternalProcessLogger : public shared::process::IExternalProcessLogger //TODO en faire une autre classe (celle-ci est spécifique à un module générant du YADOMS_LOG)
+   class CYadomsSubModuleProcessLogger : public shared::process::IExternalProcessLogger
    {
    public:
       //-----------------------------------------------------
       ///\brief                  Constructor
       ///\param[in] loggerName   The Logger name
       //-----------------------------------------------------
-      explicit CExternalProcessLogger(const std::string& loggerName);
+      explicit CYadomsSubModuleProcessLogger(const std::string& loggerName);
 
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~CExternalProcessLogger();
+      virtual ~CYadomsSubModuleProcessLogger();
 
       // ILogger Implementation
       void init() override;
@@ -33,10 +33,12 @@ namespace logging
       std::string extractMessage(const std::string& line,
                                  std::string& outMessage) const;
       static void doLog(const std::string& logLevel,
-                 const std::string& message);
+                        const std::string& message);
 
    private:
       const std::string m_loggerName;
       Poco::Logger& m_logger;
    };
 } // namespace logging
+
+

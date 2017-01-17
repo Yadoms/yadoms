@@ -13,7 +13,7 @@
 #include "internalPlugin/Information.h"
 #include <shared/process/NativeExecutableCommandLine.h>
 #include <shared/process/Process.h>
-#include <server/logging/ExternalProcessLogger.h>
+#include <server/logging/YadomsSubModuleProcessLogger.h>
 
 
 namespace pluginSystem
@@ -153,7 +153,7 @@ namespace pluginSystem
 
    boost::shared_ptr<shared::process::IExternalProcessLogger> CFactory::createLogger(const std::string& loggerName) const
    {
-      return boost::make_shared<logging::CExternalProcessLogger>(loggerName);
+      return boost::make_shared<logging::CYadomsSubModuleProcessLogger>(loggerName);
    }
 
    boost::shared_ptr<shared::process::IProcess> CFactory::createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,

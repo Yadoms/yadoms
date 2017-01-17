@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "StandardConsoleChannel.h"
 #include "Poco/Message.h"
 

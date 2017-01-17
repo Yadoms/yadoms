@@ -9,7 +9,7 @@
 #include <shared/process/NativeExecutableCommandLine.h>
 #include "InstanceStateHandler.h"
 #include "RuleLogDispatcher.h"
-#include <server/logging/ExternalProcessLogger.h>
+#include <server/logging/YadomsSubModuleProcessLogger.h>
 
 
 namespace automation
@@ -68,7 +68,7 @@ namespace automation
 
       boost::shared_ptr<shared::process::IExternalProcessLogger> CFactory::createInterpreterLogger(const std::string& interpreterFileName)
       {
-         return boost::make_shared<logging::CExternalProcessLogger>("interpreter/" + interpreterFileName);
+         return boost::make_shared<logging::CYadomsSubModuleProcessLogger>("interpreter/" + interpreterFileName);
       }
 
       boost::shared_ptr<IRuleLogDispatcher> CFactory::createScriptLogDispatcher() const

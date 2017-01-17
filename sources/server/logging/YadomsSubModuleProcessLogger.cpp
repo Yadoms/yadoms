@@ -1,43 +1,44 @@
 #include "stdafx.h"
-#include "ExternalProcessLogger.h"
+#include "YadomsSubModuleProcessLogger.h"
 #include <shared/Log.h>
 #include <shared/StringExtension.h>
 
 
 namespace logging
 {
-   CExternalProcessLogger::CExternalProcessLogger(const std::string& loggerName)
+   CYadomsSubModuleProcessLogger::CYadomsSubModuleProcessLogger(const std::string& loggerName)
       : m_loggerName(loggerName),
         m_logger(Poco::Logger::get(m_loggerName))
    {
    }
 
-   CExternalProcessLogger::~CExternalProcessLogger()
+   CYadomsSubModuleProcessLogger::~CYadomsSubModuleProcessLogger()
    {
    }
 
-   void CExternalProcessLogger::init()
+   void CYadomsSubModuleProcessLogger::init()
    {
       YADOMS_LOG_CONFIGURE(m_loggerName);
    }
 
-   void CExternalProcessLogger::information(const std::string& line)
+   void CYadomsSubModuleProcessLogger::information(const std::string& line)
    {
       auto message = line;
       auto logLevel = extractMessage(shared::CStringExtension::removeEol(line),
-                                     message);
+                                       message);
       doLog(logLevel.empty() ? "Information" : logLevel,
             message);
    }
 
-   void CExternalProcessLogger::error(const std::string& line)
+   void CYadomsSubModuleProcessLogger::error(const std::string& line)
    {
       YADOMS_LOG(error) << shared::CStringExtension::removeEol(line);
    }
 
-   std::string CExternalProcessLogger::extractMessage(const std::string& line,
-                                                      std::string& outMessage) const
+   std::string CYadomsSubModuleProcessLogger::extractMessage(const std::string& line,
+                                                             std::string& outMessage) const
    {
+      // Line is formatted like : "[LogLevel]Message"
       boost::regex pattern("\\[(.*)\\](.*)");
       boost::smatch result;
       if (!boost::regex_search(line, result, pattern))
@@ -47,8 +48,8 @@ namespace logging
       return std::string(result[1].first, result[1].second);
    }
 
-   void CExternalProcessLogger::doLog(const std::string& logLevel,
-                                      const std::string& message)
+   void CYadomsSubModuleProcessLogger::doLog(const std::string& logLevel,
+                                             const std::string& message)
    {
       if (logLevel == "Fatal")
          YADOMS_LOG(fatal) << message;
@@ -70,3 +71,5 @@ namespace logging
          YADOMS_LOG(error) << message;
    }
 } // namespace logging
+
+

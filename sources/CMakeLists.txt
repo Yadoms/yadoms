@@ -383,8 +383,8 @@ set(YADOMS_SRC
    server/location/Location.h
    server/location/Location.cpp
    
-   server/logging/ExternalProcessLogger.h
-   server/logging/ExternalProcessLogger.cpp  
+   server/logging/YadomsSubModuleProcessLogger.h
+   server/logging/YadomsSubModuleProcessLogger.cpp  
    server/logging/LogConfiguration.h
    server/logging/LogConfiguration.cpp   
    server/logging/LogConfigurationImpl.h
