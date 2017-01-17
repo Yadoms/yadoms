@@ -31,9 +31,17 @@ namespace automation
                                                        bool error,
                                                        const std::string& logLine)
       {
-         m_ruleLogDispatcher->log(scriptInstanceId,
-                                  error,
-                                  logLine);
+         const auto& loggerName = shared::CLog::getCurrentThreadName() + ".Rule." + std::to_string(scriptInstanceId);
+         auto& logger = Poco::Logger::get(loggerName);
+         if (error)
+            logger.error(logLine);
+         else
+            logger.information(logLine);
+
+            //TODO virer avec dépendances
+         //m_ruleLogDispatcher->log(scriptInstanceId,
+         //                         error,
+         //                         logLine);
       }
 
       boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> CYInterpreterApiImplementation::getInformation() const

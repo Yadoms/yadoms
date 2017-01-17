@@ -25,21 +25,21 @@ void CScriptLogger::init()
 
 void CScriptLogger::information(const std::string& line)
 {
-   YADOMS_LOG(information) << shared::CStringExtension::removeEol(line);
-
    //TODO virer + dépendances
-   //m_api->onScriptLog(m_scriptInstanceId,
-   //                   false,
-   //                   line);
+   //YADOMS_LOG(information) << shared::CStringExtension::removeEol(line);
+
+   m_api->onScriptLog(m_scriptInstanceId,
+                      false,
+                      line);
 }
 
 void CScriptLogger::error(const std::string& line)
 {
-   YADOMS_LOG(error) << shared::CStringExtension::removeEol(line);
-
    //TODO virer + dépendances
-   //m_api->onScriptLog(m_scriptInstanceId,
-   //                   true,
-   //                   line);
+   //YADOMS_LOG(error) << shared::CStringExtension::removeEol(line);
+
+   m_api->onScriptLog(m_scriptInstanceId,
+                      true,
+                      line);
 }
 

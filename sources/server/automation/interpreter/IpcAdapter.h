@@ -51,7 +51,7 @@ namespace automation
          //--------------------------------------------------------------
          /// \brief	Message queue receive thread
          //--------------------------------------------------------------
-         void messageQueueReceiveThreaded();
+         void messageQueueReceiveThreaded(const std::string& logName);
 
          //--------------------------------------------------------------
          /// \brief	Send a message to interpreter
