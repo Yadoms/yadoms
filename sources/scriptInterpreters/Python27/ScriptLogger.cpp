@@ -17,7 +17,7 @@ CScriptLogger::CScriptLogger(boost::shared_ptr<yApi::IYInterpreterApi> api,
      m_loggerName(loggerName),
      m_logger(Poco::Logger::get(m_loggerName))
 {
-   const boost::filesystem::path ruleLogfilepath("logs\\scripts\\6");//TODO ne pas laisser en dur
+   const boost::filesystem::path ruleLogfilepath("logs\\scripts\\" + std::to_string(scriptInstanceId) + "\\script.log");//TODO ne pas laisser en dur
    const std::string interpreterLoggerName("python27");//TODO ne pas laisser en dur
    const std::string logLevel("debug");//TODO ne pas laisser en dur
 
@@ -29,7 +29,7 @@ CScriptLogger::CScriptLogger(boost::shared_ptr<yApi::IYInterpreterApi> api,
 
    Poco::AutoPtr<Poco::SplitterChannel> splitterChannel(new Poco::SplitterChannel);
 
-   patternFormatter->setProperty("pattern", "%H:%M:%S : %T : [%p] : %t");
+   patternFormatter->setProperty("pattern", "%H:%M:%S : %T : %t");
    patternFormatter->setProperty("times", "local"); //use local datetime
 
    if (!boost::filesystem::exists(ruleLogfilepath.parent_path().string()))
@@ -47,8 +47,8 @@ CScriptLogger::CScriptLogger(boost::shared_ptr<yApi::IYInterpreterApi> api,
    splitterChannel->addChannel(formattingFileChannel);
    splitterChannel->addChannel(Poco::Logger::get(interpreterLoggerName).getChannel());
 
-   Poco::Logger::get(loggerName).setChannel(splitterChannel);
-   Poco::Logger::get(loggerName).setLevel(logLevel);
+   m_logger.setChannel(splitterChannel);
+   m_logger.setLevel(logLevel);
 }
 
 CScriptLogger::~CScriptLogger()
@@ -74,6 +74,7 @@ void CScriptLogger::information(const std::string& line)
 void CScriptLogger::error(const std::string& line)
 {
    YADOMS_LOG(error) << shared::CStringExtension::removeEol(line);
+   m_logger.error(shared::CStringExtension::removeEol(line));//TODO optimiser + nettoyer
 
    //TODO virer + dépendances
    //m_api->onScriptLog(m_scriptInstanceId,
