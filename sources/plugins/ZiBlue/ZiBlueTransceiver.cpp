@@ -16,3 +16,9 @@ std::string CZiBlueTransceiver::buildHelloCmd() const
    return "ZIA++HELLO\r\n";
 }
 
+
+std::string CZiBlueTransceiver::buildStartListeningData() const
+{
+   return "ZIA++FORMAT JSON\r\n";
+}
+

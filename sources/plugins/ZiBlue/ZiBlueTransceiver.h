@@ -16,5 +16,8 @@ public:
    virtual ~CZiBlueTransceiver();
 
    std::string buildHelloCmd() const;
+   std::string buildStartListeningData() const;
+
+   
 };
 

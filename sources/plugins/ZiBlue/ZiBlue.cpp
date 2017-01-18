@@ -275,4 +275,6 @@ void CZiBlue::initZiBlue(boost::shared_ptr<yApi::IYPluginApi> api)
 
    // ZiBlue needs some time to recover after reset (see specifications)
    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+
+   send(api, m_transceiver->buildStartListeningData(), true);
 }
