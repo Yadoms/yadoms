@@ -130,6 +130,8 @@ endif()
 # OpenSSL
 #
 ###############################################
+SET(OPENSSL_USE_STATIC_LIBS TRUE)
+SET(OPENSSL_ROOT_DIR ${OPENSSL_ROOT})
 FIND_PACKAGE(OpenSSL)
 
 if(NOT ${OPENSSL_FOUND})
@@ -145,19 +147,20 @@ endif()
 ###############################################
 
 SET (POCO_LIBS
-	PocoFoundation
-   PocoJSON
-	PocoNet
-   PocoXML
-   PocoZip
-   PocoCrypto
-   PocoNetSSL
 	PocoUtil
+   PocoNetSSL
+   PocoCrypto
+   PocoZip
+   PocoXML
+	PocoNet
+   PocoJSON
+	PocoFoundation
 )
 
 set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
 set(POCO_USE_STATIC_LIBS 1)
 set(POCO_USE_STATIC_RUNTIME 1)
+add_definitions(-DPOCO_STATIC) 
 include(cmake/FindPoco.cmake)
 
 IF(NOT ${Poco_FOUND})
@@ -180,10 +183,6 @@ IF(WIN32)
    ENDIF()
 ELSEIF(APPLE)
 ELSE()
-	set(Poco_DEPEDENCIES_LIBS
-      gnutls-openssl
-      opencv_gpu
-   )
 ENDIF()
 
 
@@ -204,9 +203,7 @@ endif()
 # define libraries to link with
 #
 ###############################################
-set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Poco_FOUND_LIBS} ${Poco_DEPEDENCIES_LIBS})
-
-
+set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Poco_FOUND_LIBS} ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} ${Protobuf_LIBRARIES})
 
 ##################################################################################################
 ## Internal libraries (SQlite, Webem) completely build from sources
