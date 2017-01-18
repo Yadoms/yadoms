@@ -31,12 +31,13 @@ namespace automation
                                                        bool error,
                                                        const std::string& logLine)
       {
-         const auto& loggerName = shared::CLog::getCurrentThreadName() + ".Rule." + std::to_string(scriptInstanceId);
-         auto& logger = Poco::Logger::get(loggerName);
+         const auto& ruleName = "Rule." + std::to_string(scriptInstanceId);
+         //YADOMS_LOG_CONFIGURE(loggerName);
+         //auto& logger = Poco::Logger::get(loggerName);
          if (error)
-            logger.error(logLine);
+            YADOMS_LOG(error) << ruleName << " : " << logLine;
          else
-            logger.information(logLine);
+            YADOMS_LOG(information) << ruleName << " : " << logLine;
 
             //TODO virer avec dépendances
          //m_ruleLogDispatcher->log(scriptInstanceId,

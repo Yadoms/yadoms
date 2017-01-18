@@ -50,6 +50,7 @@ namespace automation
 
          //--------------------------------------------------------------
          /// \brief	Message queue receive thread
+         /// \param[in] logName The log name
          //--------------------------------------------------------------
          void messageQueueReceiveThreaded(const std::string& logName);
 

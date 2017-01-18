@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ScriptLogConfiguration.h"
 
-#include <shared/Log.h>
 #include <Poco/Logger.h>
 #include <shared/exception/Exception.hpp>
 

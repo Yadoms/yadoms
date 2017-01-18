@@ -22,7 +22,7 @@ namespace pluginSystem
         m_sendMessageQueue(boost::interprocess::create_only, m_sendMessageQueueId.c_str(), m_maxMessages, m_maxMessageSize),
         m_receiveMessageQueue(boost::interprocess::create_only, m_receiveMessageQueueId.c_str(), m_maxMessages, m_maxMessageSize),
         m_sendBuffer(boost::make_shared<unsigned char[]>(m_sendMessageQueue.get_max_msg_size())),
-        m_messageQueueReceiveThread(boost::thread(&CIpcAdapter::messageQueueReceiveThreaded, this))
+        m_messageQueueReceiveThread(boost::thread(&CIpcAdapter::messageQueueReceiveThreaded, this, yPluginApi->getPluginId()))
    {
    }
 
@@ -44,12 +44,13 @@ namespace pluginSystem
       return ss.str();
    }
 
-   void CIpcAdapter::messageQueueReceiveThreaded()
+   void CIpcAdapter::messageQueueReceiveThreaded(int pluginId)
    {
       // Verify that the version of the library that we linked against is
       // compatible with the version of the headers we compiled against.
       GOOGLE_PROTOBUF_VERIFY_VERSION;
 
+      YADOMS_LOG_CONFIGURE("plugin.IpcAdapter#" + std::to_string(pluginId));
       YADOMS_LOG(information) << "Message queue ID : " << m_id;
 
       try

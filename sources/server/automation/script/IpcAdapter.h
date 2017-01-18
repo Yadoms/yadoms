@@ -31,8 +31,9 @@ namespace automation
 
          //--------------------------------------------------------------
          /// \brief	Message queue receive thread
+         /// \param[in] ruleId The rule ID
          //--------------------------------------------------------------
-         void messageQueueReceiveThreaded();
+         void messageQueueReceiveThreaded(int ruleId);
 
          //--------------------------------------------------------------
          /// \brief	Send a message to script

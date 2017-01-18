@@ -27,7 +27,6 @@ namespace automation
            m_sendBuffer(boost::make_shared<unsigned char[]>(m_sendMessageQueue.get_max_msg_size())),
            m_messageQueueReceiveThread(boost::thread(&CIpcAdapter::messageQueueReceiveThreaded, this, shared::CLog::getCurrentThreadName()))
       {
-         YADOMS_LOG_CONFIGURE("automation.interpreter.IpcAdapter");
       }
 
       CIpcAdapter::~CIpcAdapter()
