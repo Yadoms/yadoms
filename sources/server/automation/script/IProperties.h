@@ -34,13 +34,13 @@ namespace automation
          ///\brief               Get the root script path
          ///\return              The root script path
          //-----------------------------------------------------
-         virtual std::string scriptPath() const = 0;
+         virtual boost::filesystem::path scriptPath() const = 0;
 
          //-----------------------------------------------------
          ///\brief               Get the path of the log file associated with this script
          ///\return              The log file path
          //-----------------------------------------------------
-         virtual std::string logPath() const = 0;
+         virtual boost::filesystem::path logPath() const = 0;
 
          //-----------------------------------------------------
          ///\brief               Get the rule configuration, if any (only able for model-based rules

@@ -32,7 +32,7 @@ namespace shared
 
          if (!boost::filesystem::exists(logfilepath.parent_path().string()))
             if (!boost::filesystem::create_directories(logfilepath.parent_path().string()))
-               throw exception::CException("Cannot create directory " + logfilepath.parent_path().string());
+               throw std::exception((boost::format("Cannot create directory %1%") % logfilepath.parent_path()).str().c_str());
 
          m_fileChannel->setProperty("path", logfilepath.string());
          m_fileChannel->setProperty("rotation", "daily");

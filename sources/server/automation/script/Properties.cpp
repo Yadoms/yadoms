@@ -5,11 +5,13 @@ namespace automation
 {
    namespace script
    {
-      CProperties::CProperties(boost::shared_ptr<const database::entities::CRule> ruleData)
+      CProperties::CProperties(boost::shared_ptr<const database::entities::CRule> ruleData,
+                               const IPathProvider& pathProvider)
          : m_interpreterName(ruleData->Interpreter()),
            m_modelBased(!ruleData->Model().empty()),
            m_scriptPath(buildScriptPath(ruleData)),
-           m_logPath(buildLogPath()),
+           m_logPath(buildLogPath(pathProvider,
+                                  ruleData->Id())),
            m_configuration(ruleData->Configuration())
       {
       }
@@ -18,7 +20,7 @@ namespace automation
       {
       }
 
-      std::string CProperties::buildScriptPath(boost::shared_ptr<const database::entities::CRule> ruleData) const
+      boost::filesystem::path CProperties::buildScriptPath(boost::shared_ptr<const database::entities::CRule> ruleData) const
       {
          boost::filesystem::path scriptPath("scripts");
 
@@ -33,13 +35,13 @@ namespace automation
             scriptPath /= std::string("rule_") + boost::lexical_cast<std::string>(ruleData->Id());
          }
 
-         return scriptPath.string();
+         return scriptPath;
       }
 
-      std::string CProperties::buildLogPath() const
+      boost::filesystem::path CProperties::buildLogPath(const IPathProvider& pathProvider,
+                                                        int instanceId) const
       {
-         auto logPath = m_scriptPath / boost::filesystem::path("log.txt");
-         return logPath.string();
+         return pathProvider.scriptsLogPath() / std::to_string(instanceId) / "script.log";
       }
 
       bool CProperties::isModelBased() const
@@ -52,12 +54,12 @@ namespace automation
          return m_interpreterName;
       }
 
-      std::string CProperties::scriptPath() const
+      boost::filesystem::path CProperties::scriptPath() const
       {
          return m_scriptPath;
       }
 
-      std::string CProperties::logPath() const
+      boost::filesystem::path CProperties::logPath() const
       {
          return m_logPath;
       }
@@ -68,5 +70,3 @@ namespace automation
       }
    }
 } // namespace automation::script
-
-

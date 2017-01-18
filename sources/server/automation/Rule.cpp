@@ -8,6 +8,7 @@
 namespace automation
 {
    CRule::CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
+                const IPathProvider& pathProvider,
                 boost::shared_ptr<interpreter::IManager> interpreterManager,
                 boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                 boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
@@ -15,7 +16,8 @@ namespace automation
                 boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                 boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                 boost::shared_ptr<script::IGeneralInfo> generalInfo)
-      : m_ruleData(ruleData),
+      : m_pathProvider(pathProvider),
+        m_ruleData(ruleData),
         m_interpreterManager(interpreterManager)
    {
       start(pluginGateway,
@@ -56,13 +58,15 @@ namespace automation
       m_ipcAdapter = createScriptIpcAdapter(m_ruleData->Id(),
                                             apiImplementation);
 
-      script::CProperties ruleProperties(m_ruleData);
+      script::CProperties ruleProperties(m_ruleData,
+                                         m_pathProvider);
 
       m_scriptInterpreter = m_interpreterManager->getInterpreterInstance(m_ruleData->Interpreter());
 
       m_scriptInterpreter->startScript(m_ruleData->Id(),
                                        ruleProperties.scriptPath(),
-                                       m_ipcAdapter->id());
+                                       m_ipcAdapter->id(),
+                                       ruleProperties.logPath());
    }
 
    Poco::Logger& CRule::createScriptLogger(const boost::filesystem::path& logFilePath) const
@@ -104,5 +108,3 @@ namespace automation
                                                                    generalInfo);
    }
 } // namespace automation	
-
-

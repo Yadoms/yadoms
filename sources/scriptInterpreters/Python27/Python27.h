@@ -26,8 +26,9 @@ protected:
    static void saveScriptContent(const std::string& scriptPath,
                                  const std::string& content);
    void startScript(int scriptInstanceId,
-                    const std::string& scriptPath,
-                    const std::string& scriptApiId);
+                    const boost::filesystem::path& scriptPath,
+                    const std::string& scriptApiId,
+                    const boost::filesystem::path& scriptLogPath);
    void stopScript(int scriptInstanceId);
    void onScriptStopped(boost::shared_ptr<const IEventScriptStopped> eventStopped);
    void onStopRequested();

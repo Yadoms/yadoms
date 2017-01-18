@@ -18,6 +18,9 @@ set(interpreter_cpp_api_SOURCES
    Information.cpp
    LoadScriptContentRequest.h
    LoadScriptContentRequest.cpp
+   AvalaibleRequest.cpp
+   LogConfiguration.h
+   LogConfiguration.cpp
    SaveScriptContentRequest.h
    SaveScriptContentRequest.cpp
    StartScript.h

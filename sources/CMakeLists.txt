@@ -276,6 +276,8 @@ set(YADOMS_SRC
    server/automation/interpreter/Instance.cpp
    server/automation/interpreter/InstanceStateHandler.h
    server/automation/interpreter/InstanceStateHandler.cpp
+   server/automation/interpreter/InterpreterLogger.h
+   server/automation/interpreter/InterpreterLogger.cpp
    server/automation/interpreter/IIpcAdapter.h
    server/automation/interpreter/IpcAdapter.h
    server/automation/interpreter/IpcAdapter.cpp

@@ -1,18 +1,20 @@
 #pragma once
 #include <shared/process/IExternalProcessLogger.h>
 #include <shared/script/yInterpreterApi/IYInterpreterApi.h>
+#include <shared/logInternal/LogStreamEnhanced.h>
 #include <Poco/Logger.h>
 
 
 // Shortcut to yInterpreterApi namespace
 namespace yApi = shared::script::yInterpreterApi;
 
-class CScriptLogger : public shared::process::IExternalProcessLogger
+class CScriptLogger : public shared::process::IExternalProcessLogger //TODO déplacer dans l'aPI ?
 {
 public:
    CScriptLogger(boost::shared_ptr<yApi::IYInterpreterApi> api,
                  int scriptInstanceId,
-                 const std::string& loggerName);
+                 const std::string& interpreterLoggerName,
+                 const boost::filesystem::path& scriptLogPath);
    virtual ~CScriptLogger();
 
    // IExternalProcessLogger Implementation
@@ -24,7 +26,7 @@ public:
 private:
    boost::shared_ptr<yApi::IYInterpreterApi> m_api;
    const int m_scriptInstanceId;//TODO utile ?
-   const std::string m_loggerName;
-   Poco::Logger& m_logger;
+   Poco::Logger& m_logger; //TODO réduire la portée ?
+   Poco::Message m_msgInformation;
+   Poco::Message m_msgError;
 };
-

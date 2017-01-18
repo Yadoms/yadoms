@@ -7,7 +7,8 @@ namespace interpreter_cpp_api
    CStartScript::CStartScript(const interpreter_IPC::toInterpreter::StartScript& msg)
       : m_scriptInstanceId(msg.scriptinstanceid()),
         m_scriptPath(msg.scriptpath()),
-        m_scriptApiId(msg.scriptapiid())
+        m_scriptApiId(msg.scriptapiid()),
+        m_scriptLogPath(msg.scriptlogpath())
    {
    }
 
@@ -20,7 +21,7 @@ namespace interpreter_cpp_api
       return m_scriptInstanceId;
    }
 
-   const std::string& CStartScript::getScriptPath()
+   const boost::filesystem::path& CStartScript::getScriptPath()
    {
       return m_scriptPath;
    }
@@ -29,6 +30,9 @@ namespace interpreter_cpp_api
    {
       return m_scriptApiId;
    }
+
+   const boost::filesystem::path& CStartScript::getScriptLogPath()
+   {
+      return m_scriptLogPath;
+   }
 } // namespace interpreter_cpp_api	
-
-

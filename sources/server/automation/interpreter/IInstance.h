@@ -56,10 +56,12 @@ namespace automation
          ///\param[in] scriptInstanceId   The script instance ID
          ///\param[in] scriptPath         The script path
          ///\param[in] yScriptApiId       The script API instance ID
+         ///\param[in] scriptPath         The script log path
          //-----------------------------------------------------    
          virtual void startScript(int scriptInstanceId,
-                                  const std::string& scriptPath,
-                                  const std::string& yScriptApiId) const = 0;
+                                  const boost::filesystem::path& scriptPath,
+                                  const std::string& yScriptApiId,
+                                  const boost::filesystem::path& scriptLogPath) const = 0;
 
          //-----------------------------------------------------
          ///\brief               Stop the script

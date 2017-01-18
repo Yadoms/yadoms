@@ -318,8 +318,9 @@ namespace automation
          interpreter_IPC::toInterpreter::msg req;
          auto message = req.mutable_startscript();
          message->set_scriptinstanceid(request->getScriptInstanceId());
-         message->set_scriptpath(request->getScriptPath());
+         message->set_scriptpath(request->getScriptPath().string());
          message->set_scriptapiid(request->getScriptApiId());
+         message->set_scriptlogpath(request->getScriptLogPath().string());
          std::string scriptProcessId;
 
          send(req);

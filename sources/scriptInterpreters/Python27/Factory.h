@@ -17,18 +17,19 @@ public:
    boost::shared_ptr<IPythonExecutable> createPythonExecutable() const override;
    boost::shared_ptr<shared::process::IProcess> createScriptProcess(boost::shared_ptr<yApi::IYInterpreterApi> api,
                                                                     int scriptInstanceId,
-                                                                    const std::string& scriptPath,
+                                                                    const boost::filesystem::path& scriptPath,
                                                                     boost::shared_ptr<IPythonExecutable> pythonExecutable,
                                                                     const boost::filesystem::path& interpreterPath,
                                                                     const std::string& scriptApiId,
+                                                                    const boost::filesystem::path& scriptLogPath,
                                                                     boost::function3<void, bool, int, const std::string&> onInstanceStateChangedFct) const override;
    // [END] IFactory implementation
 
 protected:
-   boost::shared_ptr<IScriptFile> createScriptFile(const std::string& scriptPath) const;
+   boost::shared_ptr<IScriptFile> createScriptFile(const boost::filesystem::path& scriptPath) const;
    boost::shared_ptr<shared::process::IProcessObserver> createScriptProcessObserver(int scriptInstanceId,
                                                                                     boost::function3<void, bool, int, const std::string&> onInstanceStateChangedFct) const;
    boost::shared_ptr<shared::process::IExternalProcessLogger> createScriptLogger(boost::shared_ptr<yApi::IYInterpreterApi> api,
-                                                                                 int scriptInstanceId) const;
+                                                                                 int scriptInstanceId,
+                                                                                 const boost::filesystem::path& scriptLogPath) const;
 };
-

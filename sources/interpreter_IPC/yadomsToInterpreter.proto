@@ -27,6 +27,7 @@ message StartScript {
 	int32 scriptInstanceId = 1;
 	string scriptPath = 2;
 	string scriptApiId = 3;
+	string scriptLogPath = 4;
 }
 
 message StopScript {

@@ -11,6 +11,7 @@
 #include "communication/ISendMessageAsync.h"
 #include "script/IIpcAdapter.h"
 #include <shared/Log.h>
+#include "IPathProvider.h"
 
 namespace automation
 {
@@ -21,6 +22,7 @@ namespace automation
    {
    public:
       CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
+            const IPathProvider& pathProvider,
             boost::shared_ptr<interpreter::IManager> interpreterManager,
             boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
             boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
@@ -59,6 +61,7 @@ namespace automation
                                                                                                Poco::Logger& scriptLogger) const;
 
    private:
+      const IPathProvider& m_pathProvider;
       boost::shared_ptr<const database::entities::CRule> m_ruleData;
       boost::shared_ptr<interpreter::IManager> m_interpreterManager;
 
@@ -66,5 +69,3 @@ namespace automation
       boost::shared_ptr<script::IIpcAdapter> m_ipcAdapter;
    };
 } // namespace automation	
-
-

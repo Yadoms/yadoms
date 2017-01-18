@@ -1,7 +1,7 @@
 #pragma once
 
 //-----------------------------------------------------------------------------
-/// \class   Interface on Yadoms paths provider
+/// \biref   Interface on Yadoms paths provider
 //-----------------------------------------------------------------------------
 class IPathProvider
 {

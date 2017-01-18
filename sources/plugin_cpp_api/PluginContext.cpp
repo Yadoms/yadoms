@@ -117,11 +117,11 @@ namespace plugin_cpp_api
       }
       catch (std::exception& e)
       {
-         std::cerr << api->getInformation()->getType() << " fail to confiugure log system : " << e.what() << std::endl;
+         std::cerr << api->getInformation()->getType() << " fail to configure log system : " << e.what() << std::endl;
       }
       catch (...)
       {
-         std::cerr << api->getInformation()->getType() << " fail to confiugure log system with unknown exception" << std::endl;
+         std::cerr << api->getInformation()->getType() << " fail to configure log system with unknown exception" << std::endl;
       }
 
       YADOMS_LOG_CONFIGURE("mainThread");

@@ -11,7 +11,7 @@ namespace shared
    namespace process
    {
       //--------------------------------------------------------------
-      /// \class The interpreter log configuration
+      /// \brief The interpreter log configuration
       //--------------------------------------------------------------
       class CYadomsSubModuleLogConfiguration
       {

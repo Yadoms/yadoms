@@ -1,6 +1,7 @@
 #pragma once
 #include "IProperties.h"
 #include <database/entities/Entities.h>
+#include "IPathProvider.h"
 
 namespace automation
 {
@@ -13,10 +14,12 @@ namespace automation
       {
       public:
          //-----------------------------------------------------
-         ///\brief               Constructor
-         ///\param[in] ruleData Rule data
+         ///\brief                  Constructor
+         ///\param[in] ruleData     Rule data
+         ///\param[in] pathProvider The path provider
          //-----------------------------------------------------
-         explicit CProperties(boost::shared_ptr<const database::entities::CRule> ruleData);
+         explicit CProperties(boost::shared_ptr<const database::entities::CRule> ruleData,
+                              const IPathProvider& pathProvider);
 
          //-----------------------------------------------------
          ///\brief               Destructor
@@ -26,8 +29,8 @@ namespace automation
          // IProperties Implementation
          std::string interpreterName() const override;
          bool isModelBased() const override;
-         std::string scriptPath() const override;
-         std::string logPath() const override;
+         boost::filesystem::path scriptPath() const override;
+         boost::filesystem::path logPath() const override;
          const shared::CDataContainer& configuration() const override;
          // [END] IProperties Implementation
 
@@ -37,14 +40,16 @@ namespace automation
          ///\param[in] ruleData Rule data
          ///\return              The script path
          //-----------------------------------------------------
-         std::string buildScriptPath(boost::shared_ptr<const database::entities::CRule> ruleData) const;
+         boost::filesystem::path buildScriptPath(boost::shared_ptr<const database::entities::CRule> ruleData) const;
 
          //-----------------------------------------------------
-         ///\brief               Build the log Path from the rule data
-         ///\return              The script path
-         ///\note Script path must be build before to call this method
+         ///\brief                  Build the log Path from the rule data
+         ///\param[in] pathProvider The path provider
+         ///\param[in] instanceId   The instance ID
+         ///\return                 The script path
          //-----------------------------------------------------
-         std::string buildLogPath() const;
+         boost::filesystem::path buildLogPath(const IPathProvider& pathProvider,
+                                              int instanceId) const;
 
       private:
          //-----------------------------------------------------
@@ -60,12 +65,12 @@ namespace automation
          //-----------------------------------------------------
          ///\brief               The script path
          //-----------------------------------------------------
-         const std::string m_scriptPath;
+         const boost::filesystem::path m_scriptPath;
 
          //-----------------------------------------------------
          ///\brief               The log file path
          //-----------------------------------------------------
-         const std::string m_logPath;
+         const boost::filesystem::path m_logPath;
 
          //-----------------------------------------------------
          ///\brief               The configuration
@@ -74,5 +79,3 @@ namespace automation
       };
    }
 } // namespace automation::script
-
-

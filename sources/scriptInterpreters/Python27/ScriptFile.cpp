@@ -8,8 +8,8 @@ const std::string CScriptFile::Module(ScriptName);
 const std::string CScriptFile::PythonExtension("py");
 const std::string CScriptFile::ScriptEntryPoint("yMain");
 
-CScriptFile::CScriptFile(const std::string& scriptPath)
-   :m_scriptFile(boost::filesystem::path(scriptPath) / boost::filesystem::path(ScriptName).replace_extension(PythonExtension))
+CScriptFile::CScriptFile(const boost::filesystem::path& scriptPath)
+   :m_scriptFile(scriptPath / boost::filesystem::path(ScriptName).replace_extension(PythonExtension))
 {
 }
 
