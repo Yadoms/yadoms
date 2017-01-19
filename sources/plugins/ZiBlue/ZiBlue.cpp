@@ -46,7 +46,6 @@ void CZiBlue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       m_transceiver = boost::make_shared<CTransceiver>();
 
       YADOMS_LOG(information) << "CZiBlue is running" ;
-      api->setPluginState(yApi::historization::EPluginState::kRunning);
       while (1)
       {
          // Wait for an event
@@ -129,6 +128,10 @@ void CZiBlue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                createConnection(api->getEventHandler());
             else
                api->setPluginState(yApi::historization::EPluginState::kRunning);
+
+
+            if(!needToReconnect) //if reconnect needed, configuration is applyed after dogle detection
+               updateDongleConfiguration(api);
 
             break;
          }
@@ -272,14 +275,38 @@ void CZiBlue::initZiBlue(boost::shared_ptr<yApi::IYPluginApi> api)
       },
       [&](boost::shared_ptr<const frames::CFrame> frame)
       {
-         //manage HELLO answer
-         YADOMS_LOG(information) << "Dongle info  :" << frame->getAscii()->getContent();
-
          m_dongle = CDongle::create(frame->getAscii()->getContent());
 
+         if (m_dongle)
+         {
+            YADOMS_LOG(information) << "Dongle :" << m_dongle->getType() << " " << m_dongle->getModel() << " v" << m_dongle->getFirmwareVersion();
+         }
+         else
+         {
+            YADOMS_LOG(information) << "Unknown dongle, or not fully supported firmware";
+         }
+         api->setPluginState(yApi::historization::EPluginState::kRunning);
+         updateDongleConfiguration(api);
          m_messageHandler->send(m_transceiver->buildStartListeningData());
       }))
       throw shared::exception::CException("Unable to send HELLO request, timeout waiting acknowledge");
 }
 
+void CZiBlue::updateDongleConfiguration(boost::shared_ptr<yApi::IYPluginApi> api)
+{
+   try
+   {
+      m_messageHandler->send(m_transceiver->buildReceiverConfigurationCommand(m_configuration.getReceiverActiveProtocols()));
+      m_messageHandler->send(m_transceiver->buildRepeaterActivationCommand(m_configuration.isRepeaterActive()));
+      if (m_configuration.isRepeaterActive())
+         m_messageHandler->send(m_transceiver->buildRepeaterConfigurationCommand(m_configuration.getRepeaterActiveProtocols()));
+      m_messageHandler->send(m_transceiver->buildLedActivityCommand(m_configuration.getLedActivity()));
+   }
+   catch (std::exception& e)
+   {
+      YADOMS_LOG(error) << "Error configuring ZiBlue transceiver : " << e.what();
 
+      // Stop the communication, and try later
+      errorProcess(api);
+   }
+}

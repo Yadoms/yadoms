@@ -38,8 +38,7 @@
             "OREGONV3/OWL" : {  "name" : "OREGONV3/OWL", "description" : "Repeat OREGONV3/OWL protocol"},
             "DOMIA" : {  "name" : "DOMIA", "description" : "Repeat DOMIA protocol"},
             "X2D" : {  "name" : "X2D", "description" : "Repeat X2D protocol"},
-            "KD101" : {  "name" : "KD101", "description" : "Repeat KD101 protocol"},
-            "PARROT" : {  "name" : "PARROT", "description" : "Repeat PARROT protocol"}
+            "KD101" : {  "name" : "KD101", "description" : "Repeat KD101 protocol"}
          }
       },
       "ledactiviy" : {  "name" : "leds", "description" : "Enable ou disable LED activity related to RF flow."}      

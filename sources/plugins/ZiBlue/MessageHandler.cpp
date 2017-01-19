@@ -17,6 +17,7 @@ void CMessageHandler::send(const std::string & sendMessage)
    if (!m_port)
       throw shared::exception::CException("Send message failed : dongle is not ready");
 
+   YADOMS_LOG(information) << " ZiBlue Command >>> " << sendMessage;
    m_port->sendText(sendMessage);
 }
 

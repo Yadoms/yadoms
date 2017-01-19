@@ -47,8 +47,7 @@
             "OREGONV3/OWL" : {  "type" : "bool", "defaultValue" : "true" },
             "DOMIA" : {  "type" : "bool", "defaultValue" : "true" },
             "X2D" : {  "type" : "bool", "defaultValue" : "true" },
-            "KD101" : {  "type" : "bool", "defaultValue" : "true" },
-            "PARROT" : {  "type" : "bool", "defaultValue" : "true" }
+            "KD101" : {  "type" : "bool", "defaultValue" : "true" }
          }
       },
       "ledactiviy" : {  "type" : "bool", "defaultValue" : "true" }      

@@ -85,6 +85,7 @@ private:
    void processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::CBinaryFrame> data);
    void processZiBlueAsciiFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::CAsciiFrame> data);
    void initZiBlue(boost::shared_ptr<yApi::IYPluginApi> api);
+   void updateDongleConfiguration(boost::shared_ptr<yApi::IYPluginApi> api);
 };
 
 
