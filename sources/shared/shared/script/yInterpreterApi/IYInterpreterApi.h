@@ -135,16 +135,6 @@ namespace shared
                                              const std::string error = std::string()) = 0;
 
             //-----------------------------------------------------
-            ///\brief                           Send a script log line to Yadoms
-            ///\param[in] scriptInstanceId      Stopped script instance ID
-            ///\param[in] error                 True for an error log, false for information
-            ///\param[in] logLine               Line to log
-            //-----------------------------------------------------   
-            virtual void onScriptLog(int scriptInstanceId,
-                                     bool error,
-                                     const std::string& logLine) = 0;
-
-            //-----------------------------------------------------
             ///\brief                           Get the current plugin information (extracted from package.json file)
             ///\return                          The current plugin information
             //-----------------------------------------------------      

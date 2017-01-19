@@ -79,7 +79,6 @@ namespace automation
          void processMessage(boost::shared_ptr<const unsigned char[]> message, size_t messageSize);
 
          void processNotifiyScriptStopped(const interpreter_IPC::toYadoms::NotifiyScriptStopped& notifiyScriptStopped) const;
-         void processScriptLog(const interpreter_IPC::toYadoms::ScriptLog& scriptlog) const;
 
       private:
          //--------------------------------------------------------------

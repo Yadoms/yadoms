@@ -41,18 +41,6 @@ namespace interpreter_cpp_api
       send(req);
    }
 
-   void CApiImplementation::onScriptLog(int scriptInstanceId,
-                                        bool error,
-                                        const std::string& logLine)
-   {
-      interpreter_IPC::toYadoms::msg req;
-      auto request = req.mutable_scriptlog();
-      request->set_scriptinstanceid(scriptInstanceId);
-      request->set_error(error);
-      request->set_logline(logLine);
-      send(req);
-   }
-
    void CApiImplementation::send(const interpreter_IPC::toYadoms::msg& msg) const
    {
       try

@@ -27,24 +27,6 @@ namespace automation
                               error);
       }
 
-      void CYInterpreterApiImplementation::onScriptLog(int scriptInstanceId,
-                                                       bool error,
-                                                       const std::string& logLine)
-      {
-         const auto& ruleName = "Rule." + std::to_string(scriptInstanceId);
-         //YADOMS_LOG_CONFIGURE(loggerName);
-         //auto& logger = Poco::Logger::get(loggerName);
-         if (error)
-            YADOMS_LOG(error) << ruleName << " : " << logLine;
-         else
-            YADOMS_LOG(information) << ruleName << " : " << logLine;
-
-            //TODO virer avec dépendances
-         //m_ruleLogDispatcher->log(scriptInstanceId,
-         //                         error,
-         //                         logLine);
-      }
-
       boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> CYInterpreterApiImplementation::getInformation() const
       {
          return m_informations;

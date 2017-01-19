@@ -8,13 +8,10 @@
 #include <shared/Log.h>
 
 
-CScriptLogger::CScriptLogger(boost::shared_ptr<yApi::IYInterpreterApi> api,
+CScriptLogger::CScriptLogger(const std::string& interpreterLoggerName,
                              int scriptInstanceId,
-                             const std::string& interpreterLoggerName,
                              const boost::filesystem::path& scriptLogPath)
-   : m_api(api),
-     m_scriptInstanceId(scriptInstanceId),
-     m_logger(Poco::Logger::get("Rule." + std::to_string(scriptInstanceId)))
+   : m_logger(Poco::Logger::get("Rule." + std::to_string(scriptInstanceId)))
 {
    Poco::AutoPtr<Poco::PatternFormatter> patternFormatter(new Poco::PatternFormatter);
    Poco::AutoPtr<Poco::FormattingChannel> formattingFileChannel;
@@ -61,20 +58,10 @@ void CScriptLogger::information(const std::string& line)
 {
    m_msgInformation.setText(line);
    m_logger.log(m_msgInformation);
-
-   //TODO virer + dépendances
-   //m_api->onScriptLog(m_scriptInstanceId,
-   //                   false,
-   //                   line);
 }
 
 void CScriptLogger::error(const std::string& line)
 {
    m_msgError.setText(line);
    m_logger.log(m_msgError);
-
-   //TODO virer + dépendances
-   //m_api->onScriptLog(m_scriptInstanceId,
-   //                   true,
-   //                   line);
 }
