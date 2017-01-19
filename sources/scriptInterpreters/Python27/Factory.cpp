@@ -31,9 +31,9 @@ boost::shared_ptr<shared::process::IExternalProcessLogger> CFactory::createScrip
                                                                                         int scriptInstanceId,
                                                                                         const boost::filesystem::path& scriptLogPath) const
 {
-   return boost::make_shared<CScriptLogger>(interpreterLoggerName,
-                                            scriptInstanceId,
-                                            scriptLogPath);
+   return boost::make_shared<interpreter_cpp_api::CScriptLogger>(interpreterLoggerName,
+                                                                 scriptInstanceId,
+                                                                 scriptLogPath);
 }
 
 boost::shared_ptr<shared::process::IProcess> CFactory::createScriptProcess(boost::shared_ptr<yApi::IYInterpreterApi> api,
@@ -64,4 +64,3 @@ boost::shared_ptr<IScriptFile> CFactory::createScriptFile(const boost::filesyste
 {
    return boost::make_shared<CScriptFile>(scriptPath);
 }
-

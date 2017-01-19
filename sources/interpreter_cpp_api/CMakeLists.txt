@@ -23,6 +23,8 @@ set(interpreter_cpp_api_SOURCES
    LogConfiguration.cpp
    SaveScriptContentRequest.h
    SaveScriptContentRequest.cpp
+   ScriptLogger.h
+   ScriptLogger.cpp
    StartScript.h
    StartScript.cpp
    StopScript.h
