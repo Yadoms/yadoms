@@ -14,6 +14,43 @@
 					"query": "serialPorts"
 				}
 			}
-		}
+		},
+      "receiver" : {
+         "type" : "section",
+         "content" : {
+            "X10" : {  "type" : "bool", "defaultValue" : "true" },
+            "RTS" : {  "type" : "bool", "defaultValue" : "true" },
+            "VISONIC" : {  "type" : "bool", "defaultValue" : "true" },
+            "BLYSS" : {  "type" : "bool", "defaultValue" : "true" },
+            "CHACON" : {  "type" : "bool", "defaultValue" : "true" },
+            "OREGONV1" : {  "type" : "bool", "defaultValue" : "true" },
+            "OREGONV2" : {  "type" : "bool", "defaultValue" : "true" },
+            "OREGONV3/OWL" : {  "type" : "bool", "defaultValue" : "true" },
+            "DOMIA" : {  "type" : "bool", "defaultValue" : "true" },
+            "X2D" : {  "type" : "bool", "defaultValue" : "true" },
+            "KD101" : {  "type" : "bool", "defaultValue" : "true" },
+            "PARROT" : {  "type" : "bool", "defaultValue" : "true" }
+         }
+      },
+      "repeater" : {
+         "type" : "section",
+         "enableWithCheckBox" : "true",
+         "enableWithCheckBoxDefaultValue" : "false",
+         "content" : {
+            "X10" : {  "type" : "bool", "defaultValue" : "true" },
+            "RTS" : {  "type" : "bool", "defaultValue" : "true" },
+            "VISONIC" : {  "type" : "bool", "defaultValue" : "true" },
+            "BLYSS" : {  "type" : "bool", "defaultValue" : "true" },
+            "CHACON" : {  "type" : "bool", "defaultValue" : "true" },
+            "OREGONV1" : {  "type" : "bool", "defaultValue" : "true" },
+            "OREGONV2" : {  "type" : "bool", "defaultValue" : "true" },
+            "OREGONV3/OWL" : {  "type" : "bool", "defaultValue" : "true" },
+            "DOMIA" : {  "type" : "bool", "defaultValue" : "true" },
+            "X2D" : {  "type" : "bool", "defaultValue" : "true" },
+            "KD101" : {  "type" : "bool", "defaultValue" : "true" },
+            "PARROT" : {  "type" : "bool", "defaultValue" : "true" }
+         }
+      },
+      "ledactiviy" : {  "type" : "bool", "defaultValue" : "true" }      
 	}
 }

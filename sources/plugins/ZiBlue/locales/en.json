@@ -5,6 +5,44 @@
 		"Serial Port": {
 			"name": "Serial port",
 			"description": "The serial port connected to the ZiBlue device"
-		}		
+		},
+      "receiver" : {
+         "name" : "Received protocols",
+         "description" : "Specify the list of enabled received protocols",
+         "content" : {
+            "X10" : {  "name" : "X10", "description" : "Active X10 protocol"},
+            "RTS" : {  "name" : "RTS", "description" : "Active RTS protocol"},
+            "VISONIC" : {  "name" : "VISONIC", "description" : "Active VISONIC protocol"},
+            "BLYSS" : {  "name" : "BLYSS", "description" : "Active BLYSS protocol"},
+            "CHACON" : {  "name" : "CHACON", "description" : "Active CHACON protocol"},
+            "OREGONV1" : {  "name" : "OREGONV1", "description" : "Active OREGONV1 protocol"},
+            "OREGONV2" : {  "name" : "OREGONV2", "description" : "Active OREGONV2 protocol"},
+            "OREGONV3/OWL" : {  "name" : "OREGONV3/OWL", "description" : "Active OREGONV3/OWL protocol"},
+            "DOMIA" : {  "name" : "DOMIA", "description" : "Active DOMIA protocol"},
+            "X2D" : {  "name" : "X2D", "description" : "Active X2D protocol"},
+            "KD101" : {  "name" : "KD101", "description" : "Active KD101 protocol"},
+            "PARROT" : {  "name" : "PARROT", "description" : "Active PARROT protocol"}
+         }
+      },
+      "repeater" : {
+         "name" : "Repeated protocols",
+         "description" : "Specify the list of enabled repeated protocols",
+         "content" : {
+            "X10" : {  "name" : "X10", "description" : "Repeat X10 protocol"},
+            "RTS" : {  "name" : "RTS", "description" : "Repeat RTS protocol"},
+            "VISONIC" : {  "name" : "VISONIC", "description" : "Repeat VISONIC protocol"},
+            "BLYSS" : {  "name" : "BLYSS", "description" : "Repeat BLYSS protocol"},
+            "CHACON" : {  "name" : "CHACON", "description" : "Repeat CHACON protocol"},
+            "OREGONV1" : {  "name" : "OREGONV1", "description" : "Repeat OREGONV1 protocol"},
+            "OREGONV2" : {  "name" : "OREGONV2", "description" : "Repeat OREGONV2 protocol"},
+            "OREGONV3/OWL" : {  "name" : "OREGONV3/OWL", "description" : "Repeat OREGONV3/OWL protocol"},
+            "DOMIA" : {  "name" : "DOMIA", "description" : "Repeat DOMIA protocol"},
+            "X2D" : {  "name" : "X2D", "description" : "Repeat X2D protocol"},
+            "KD101" : {  "name" : "KD101", "description" : "Repeat KD101 protocol"},
+            "PARROT" : {  "name" : "PARROT", "description" : "Repeat PARROT protocol"}
+         }
+      },
+      "ledactiviy" : {  "name" : "leds", "description" : "Enable ou disable LED activity related to RF flow."}      
+      
 	}
 }
