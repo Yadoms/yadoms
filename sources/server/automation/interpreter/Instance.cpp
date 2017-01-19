@@ -17,12 +17,10 @@ namespace automation
       CInstance::CInstance(const boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
                            const boost::filesystem::path& logPath,
                            boost::shared_ptr<shared::process::IProcess> process,
-                           boost::shared_ptr<IIpcAdapter> ipcAdapter,
-                           boost::shared_ptr<IRuleLogDispatcher> ruleLogDispatcher)
+                           boost::shared_ptr<IIpcAdapter> ipcAdapter)
          : m_interpreterInformation(interpreterInformation),
            m_process(process),
            m_ipcAdapter(ipcAdapter),
-           m_ruleLogDispatcher(ruleLogDispatcher),
            m_avalaible(false)
       {
          m_ipcAdapter->postInit(m_interpreterInformation,
@@ -148,11 +146,6 @@ namespace automation
          {
             YADOMS_LOG(error) << "Error when stopping script from interpreter " << m_interpreterInformation->getName() << " : " << e.what();
          }
-      }
-
-      boost::shared_ptr<IRuleLogDispatcher> CInstance::getRuleLogDispatcher() const
-      {
-         return m_ruleLogDispatcher;
       }
 
       bool CInstance::getAvalaibility() const

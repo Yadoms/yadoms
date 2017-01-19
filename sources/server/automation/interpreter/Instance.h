@@ -2,7 +2,6 @@
 #include <shared/process/IProcess.h>
 #include "IInstance.h"
 #include "IIpcAdapter.h"
-#include "IRuleLogDispatcher.h"
 
 namespace automation
 {
@@ -17,8 +16,7 @@ namespace automation
          CInstance(const boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
                    const boost::filesystem::path& logPath,
                    boost::shared_ptr<shared::process::IProcess> process,
-                   boost::shared_ptr<IIpcAdapter> ipcAdapter,
-                   boost::shared_ptr<IRuleLogDispatcher> ruleLogDispatcher);
+                   boost::shared_ptr<IIpcAdapter> ipcAdapter);
 
          //--------------------------------------------------------------
          /// \brief	Destructor
@@ -37,7 +35,6 @@ namespace automation
                           const std::string& yScriptApiId,
                           const boost::filesystem::path& scriptLogPath) const override;
          void stopScript(int scriptInstanceId) const override;
-         boost::shared_ptr<IRuleLogDispatcher> getRuleLogDispatcher() const override;
          // [END] IInstance Implementation
 
       protected:
@@ -48,7 +45,6 @@ namespace automation
 
          boost::shared_ptr<shared::process::IProcess> m_process;
          boost::shared_ptr<IIpcAdapter> m_ipcAdapter;
-         boost::shared_ptr<IRuleLogDispatcher> m_ruleLogDispatcher;
 
          bool m_avalaible;
       };

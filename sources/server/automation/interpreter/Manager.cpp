@@ -190,11 +190,6 @@ namespace automation
          throw std::runtime_error("Interpreter " + interpreterType + "not found ");
       }
 
-      boost::shared_ptr<IRuleLogDispatcher> CManager::getRuleLogDispatcher(const std::string& interpreterType)
-      {
-         return getInterpreterInstance(interpreterType)->getRuleLogDispatcher();
-      }
-
       std::string CManager::getScriptContent(const std::string& interpreterType,
                                              const std::string& scriptPath)
       {

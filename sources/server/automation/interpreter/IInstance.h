@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/script/yInterpreterApi/IInformation.h>
-#include "IRuleLogDispatcher.h"
 
 namespace automation
 {
@@ -68,12 +67,6 @@ namespace automation
          ///\param[in] scriptInstanceId   The script instance ID to stop
          //-----------------------------------------------------    
          virtual void stopScript(int scriptInstanceId) const = 0;
-
-         //-----------------------------------------------------
-         ///\brief               Get the rule log dispatcher
-         ///\return              The rule log dispatcher
-         //-----------------------------------------------------    
-         virtual boost::shared_ptr<IRuleLogDispatcher> getRuleLogDispatcher() const = 0;
       };
    }
 } // namespace automation::interpreter
