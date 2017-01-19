@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "InterpreterLogger.h"
-#include <shared/Log.h>
 
 
 namespace logging
@@ -18,7 +17,7 @@ namespace logging
                                                   std::string& outMessage) const
    {
       // Line is formatted like : "[LogLevel][Script]Message"
-      boost::regex pattern("\\[(.*)\\]\\[(.*)\\](.*)");
+      boost::regex pattern("\\[([^\\]]*)\\](.*)");//TODO même pattern que CYadomsSubModuleProcessLogger, cette classe devient donc inutile
       boost::smatch result;
       if (!boost::regex_search(line, result, pattern))
          return std::string();

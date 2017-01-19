@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ScriptLogger.h"
-#include <shared/StringExtension.h>
 #include <Poco/FormattingChannel.h>
 #include <Poco/PatternFormatter.h>
 #include <Poco/FileChannel.h>
@@ -15,7 +14,7 @@ CScriptLogger::CScriptLogger(boost::shared_ptr<yApi::IYInterpreterApi> api,
                              const boost::filesystem::path& scriptLogPath)
    : m_api(api),
      m_scriptInstanceId(scriptInstanceId),
-     m_logger(Poco::Logger::get(interpreterLoggerName + ".Rule." + std::to_string(scriptInstanceId)))
+     m_logger(Poco::Logger::get("Rule." + std::to_string(scriptInstanceId)))
 {
    Poco::AutoPtr<Poco::PatternFormatter> patternFormatter(new Poco::PatternFormatter);
    Poco::AutoPtr<Poco::FormattingChannel> formattingFileChannel;
@@ -28,7 +27,7 @@ CScriptLogger::CScriptLogger(boost::shared_ptr<yApi::IYInterpreterApi> api,
 
    if (!boost::filesystem::exists(scriptLogPath.parent_path().string()))
       if (!boost::filesystem::create_directories(scriptLogPath.parent_path().string()))
-         throw std::exception((boost::format("Cannot create directory %1%") % scriptLogPath.parent_path()).str().c_str());
+         throw std::runtime_error((boost::format("Cannot create directory %1%") % scriptLogPath.parent_path()).str());
 
    fileChannel->setProperty("path", scriptLogPath.string());
    fileChannel->setProperty("rotation", "daily");

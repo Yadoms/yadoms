@@ -21,7 +21,7 @@ namespace interpreter_cpp_api
    void CLogConfiguration::configure(const std::string& logLevel,
                                      boost::filesystem::path& logfilepath)
    {
-      m_consolePatternFormatter->setProperty("pattern", "[%p][%T]%t");
+      m_consolePatternFormatter->setProperty("pattern", "[%p]%T : %t");
       m_formattingConsoleChannel.assign(new Poco::FormattingChannel(m_consolePatternFormatter,
                                                                     m_consoleChannel));
 

@@ -39,7 +39,7 @@ namespace logging
                                                              std::string& outMessage) const
    {
       // Line is formatted like : "[LogLevel]Message"
-      boost::regex pattern("\\[(.*)\\](.*)");//TODO marche pas si chaine d'entrée = "[Information][SomeText]blabla"
+      boost::regex pattern("\\[([^\\]]*)\\](.*)");
       boost::smatch result;
       if (!boost::regex_search(line, result, pattern))
          return std::string();
