@@ -4,6 +4,7 @@
 #include <shared/communication/IAsyncPort.h>
 #include "Transceiver.h"
 #include "IMessageHandler.h"
+#include "Dongle.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -50,6 +51,11 @@ private:
    boost::shared_ptr<IMessageHandler> m_messageHandler;
 
    //--------------------------------------------------------------
+   /// \brief  The Ziblue dongle
+   //--------------------------------------------------------------
+   boost::shared_ptr<CDongle> m_dongle;
+
+   //--------------------------------------------------------------
    /// \brief  Developer mode
    //--------------------------------------------------------------
    bool m_isDeveloperMode;
@@ -59,7 +65,20 @@ private:
    /// \param [in] eventHandler     Event handler to be notified on events on the connection
    //--------------------------------------------------------------
    void createConnection(shared::event::CEventHandler& eventHandler);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Destroy connection
+   //--------------------------------------------------------------
    void destroyConnection();
+
+   //--------------------------------------------------------------
+   /// \brief	                     Check if connections are the same between the 2 configurations
+   /// \param [in] conf1            First configuration to compare
+   /// \param [in] conf2            Second configuration to compare
+   /// \return                      true is connection data are all the same in the both configurations
+   //--------------------------------------------------------------
+   bool connectionsAreEqual(const CConfiguration& conf1, const CConfiguration& conf2);
+
    void processZiBlueConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
    void errorProcess(boost::shared_ptr<yApi::IYPluginApi> api);
    void processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);

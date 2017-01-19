@@ -105,7 +105,33 @@ void CZiBlue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
 
          case yApi::IYPluginApi::kEventUpdateConfiguration:
+         {
+            // Configuration was updated
+            api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+            auto newConfigurationData = api->getEventHandler().getEventData<shared::CDataContainer>();
+            YADOMS_LOG(information) << "Update configuration...";
+            BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+
+                                                         // Close connection
+            CConfiguration newConfiguration;
+            newConfiguration.initializeWith(newConfigurationData);
+
+            // If port has changed, destroy and recreate connection (if any)
+            bool needToReconnect = !connectionsAreEqual(m_configuration, newConfiguration) && !!m_port;
+
+            if (needToReconnect)
+               destroyConnection();
+
+            // Update configuration
+            m_configuration.initializeWith(newConfigurationData);
+
+            if (needToReconnect)
+               createConnection(api->getEventHandler());
+            else
+               api->setPluginState(yApi::historization::EPluginState::kRunning);
+
             break;
+         }
 
          case kEvtPortConnection:
          {
@@ -177,10 +203,17 @@ void CZiBlue::createConnection(shared::event::CEventHandler& eventHandler)
    m_port->start();
 }
 
+
 void CZiBlue::destroyConnection()
 {
    m_port.reset();
 }
+
+bool CZiBlue::connectionsAreEqual(const CConfiguration& conf1, const CConfiguration& conf2)
+{
+   return (conf1.getSerialPort() == conf2.getSerialPort());
+}
+
 
 
 void CZiBlue::processZiBlueConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -241,6 +274,8 @@ void CZiBlue::initZiBlue(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          //manage HELLO answer
          YADOMS_LOG(information) << "Dongle info  :" << frame->getAscii()->getContent();
+
+         m_dongle = CDongle::create(frame->getAscii()->getContent());
 
          m_messageHandler->send(m_transceiver->buildStartListeningData());
       }))

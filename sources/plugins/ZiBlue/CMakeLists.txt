@@ -9,6 +9,8 @@ set(ZIBLUE_PLUGIN_SOURCES
 	ZiBlue.cpp 
 	Configuration.h
 	Configuration.cpp 	
+   Dongle.h
+   Dongle.cpp
 	Factory.h
 	Factory.cpp
    IMessageHandler.h
