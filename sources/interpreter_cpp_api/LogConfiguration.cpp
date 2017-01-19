@@ -30,7 +30,7 @@ namespace interpreter_cpp_api
 
       if (!boost::filesystem::exists(logfilepath.parent_path().string()))
          if (!boost::filesystem::create_directories(logfilepath.parent_path().string()))
-            throw std::exception((boost::format("Cannot create directory %1%") % logfilepath.parent_path()).str().c_str());
+            throw std::runtime_error((boost::format("Cannot create directory %1%") % logfilepath.parent_path()).str());
 
       m_fileChannel->setProperty("path", logfilepath.string());
       m_fileChannel->setProperty("rotation", "daily");
