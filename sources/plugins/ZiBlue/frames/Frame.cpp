@@ -47,7 +47,7 @@ namespace frames {
          return m_asciiBuffer->getContent();
 
       case kBinaryFrame:
-         return shared::communication::CBufferLogger::byteBufferToHexString(*m_binaryBuffer->m_content);
+         return shared::communication::CBufferLogger::byteBufferToHexString(*m_binaryBuffer->getContent());
       }
       return "";
    }

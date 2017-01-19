@@ -6,13 +6,13 @@
 /// \brief	Configuration of the xpl plugin
 /// \note   To implement configuration, we have to derive from shared::plugin::configuration::CConfiguration
 //--------------------------------------------------------------
-class CZiBlueConfiguration
+class CConfiguration
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CZiBlueConfiguration();
+   virtual ~CConfiguration();
 
    //--------------------------------------------------------------
    /// \brief	    The serial port

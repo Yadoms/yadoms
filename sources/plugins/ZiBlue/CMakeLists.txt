@@ -7,23 +7,24 @@ set(ZIBLUE_PLUGIN_SOURCES
 	stdafx.cpp
 	ZiBlue.h
 	ZiBlue.cpp 
-	ZiBlueConfiguration.h
-	ZiBlueConfiguration.cpp 	
-	ZiBlueFactory.h
-	ZiBlueFactory.cpp
-   IZiBlueMessageHandler.h
-	ZiBlueMessageHandler.h
-	ZiBlueMessageHandler.cpp 	
-	ZiBlueReceiveBufferHandler.h
-	ZiBlueReceiveBufferHandler.cpp 	
-	ZiBlueTransceiver.h
-	ZiBlueTransceiver.cpp 	
+	Configuration.h
+	Configuration.cpp 	
+	Factory.h
+	Factory.cpp
+   IMessageHandler.h
+	MessageHandler.h
+	MessageHandler.cpp 	
+	ReceiveBufferHandler.h
+	ReceiveBufferHandler.cpp 	
+	Transceiver.h
+	Transceiver.cpp 	
    
    frames/Frame.h
    frames/Frame.cpp
    frames/AsciiFrame.h
    frames/AsciiFrame.cpp
    frames/BinaryFrame.h
+   frames/BinaryFrame.cpp
    frames/FrameType.h
 )
 

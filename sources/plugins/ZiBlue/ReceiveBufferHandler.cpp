@@ -1,17 +1,17 @@
 #include "stdafx.h"
-#include "ZiBlueReceiveBufferHandler.h"
+#include "ReceiveBufferHandler.h"
 #include <shared/communication/StringBuffer.h>
 
-CZiBlueReceiveBufferHandler::CZiBlueReceiveBufferHandler(boost::shared_ptr<IZiBlueMessageHandler> messageHandler)
+CReceiveBufferHandler::CReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler)
    : m_messageHandler(messageHandler)
 {
 }
 
-CZiBlueReceiveBufferHandler::~CZiBlueReceiveBufferHandler()
+CReceiveBufferHandler::~CReceiveBufferHandler()
 {
 }
 
-void CZiBlueReceiveBufferHandler::push(const shared::communication::CByteBuffer& buffer)
+void CReceiveBufferHandler::push(const shared::communication::CByteBuffer& buffer)
 {
    for (auto idx = 0; idx < buffer.size(); ++idx)
       m_content.push_back(buffer[idx]);
@@ -27,12 +27,12 @@ void CZiBlueReceiveBufferHandler::push(const shared::communication::CByteBuffer&
       
 }
 
-void CZiBlueReceiveBufferHandler::flush()
+void CReceiveBufferHandler::flush()
 {
    m_content.clear();
 }
 
-bool CZiBlueReceiveBufferHandler::syncToStartOfFrame()
+bool CReceiveBufferHandler::syncToStartOfFrame()
 {
    // The header is 5 bytes minimum
    if (m_content.size() < 5)
@@ -54,7 +54,7 @@ bool CZiBlueReceiveBufferHandler::syncToStartOfFrame()
    return false;
 }
 
-frames::EFrameType CZiBlueReceiveBufferHandler::identifyFrameType()
+frames::EFrameType CReceiveBufferHandler::identifyFrameType()
 {
    if (m_content.size() >= 2)
    {
@@ -68,7 +68,7 @@ frames::EFrameType CZiBlueReceiveBufferHandler::identifyFrameType()
 }
 
 
-bool CZiBlueReceiveBufferHandler::isComplete()
+bool CReceiveBufferHandler::isComplete()
 {
    if (syncToStartOfFrame())
    {
@@ -95,10 +95,10 @@ bool CZiBlueReceiveBufferHandler::isComplete()
    return false;
 }
 
-boost::shared_ptr<frames::CFrame> CZiBlueReceiveBufferHandler::popNextMessage()
+boost::shared_ptr<frames::CFrame> CReceiveBufferHandler::popNextMessage()
 {
    if (!isComplete())
-      throw shared::exception::CException("CZiBlueReceiveBufferHandler : Can not pop not completed message. Call isComplete to check if a message is available");
+      throw shared::exception::CException("CReceiveBufferHandler : Can not pop not completed message. Call isComplete to check if a message is available");
 
    boost::shared_ptr<frames::CFrame> result;
 
@@ -133,7 +133,7 @@ boost::shared_ptr<frames::CFrame> CZiBlueReceiveBufferHandler::popNextMessage()
             for (size_t idx = frames::CBinaryFrame::HeaderSize; idx < len; ++idx)
                (*extractedMessage)[idx] = m_content[idx];
 
-            result = boost::make_shared<frames::CFrame>(boost::make_shared<frames::CBinaryFrame>(extractedMessage));
+            result = boost::make_shared<frames::CFrame>(boost::make_shared<frames::CBinaryFrame>(m_content[2], extractedMessage));
 
             // Delete extracted data
             m_content.erase(m_content.begin(), m_content.begin() + len + frames::CBinaryFrame::HeaderSize);

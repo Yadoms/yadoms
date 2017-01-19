@@ -1,34 +1,34 @@
 #pragma once
 
 #include <shared/communication/IAsyncPort.h>
-#include "ZiBlueConfiguration.h"
-#include "IZiBlueMessageHandler.h"
+#include "Configuration.h"
+#include "IMessageHandler.h"
 
 //--------------------------------------------------------------
 /// \brief	Configuration of the xpl plugin
 /// \note   To implement configuration, we have to derive from shared::plugin::configuration::CConfiguration
 //--------------------------------------------------------------
-class CZiBlueFactory
+class CFactory
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CZiBlueFactory();
+   virtual ~CFactory();
 
    //--------------------------------------------------------------
    /// \brief	                           Create a port instance and connect to the dongle
    /// \param[in] configuration           Plugin instance configuration (contains the serial port)
    /// \return                            The created port
    //--------------------------------------------------------------
-   static boost::shared_ptr<shared::communication::IAsyncPort> constructPort(const CZiBlueConfiguration& configuration);
+   static boost::shared_ptr<shared::communication::IAsyncPort> constructPort(const CConfiguration& configuration);
 
    //--------------------------------------------------------------
    /// \brief	                           Create the receive buffer handler
    /// \param[in] messageHandler          The message handler to redirect a received message
    /// \return                            The receive buffer handler
    //--------------------------------------------------------------
-   static boost::shared_ptr<shared::communication::IReceiveBufferHandler> constructReceiveBufferHandler(boost::shared_ptr<IZiBlueMessageHandler> messageHandler);
+   static boost::shared_ptr<shared::communication::IReceiveBufferHandler> constructReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler);
 
    //--------------------------------------------------------------
    /// \brief	                           Create the message handler
@@ -38,7 +38,7 @@ public:
    /// \param[in] bufferLogger            The buffer loger
    /// \return                            The message handler
    //--------------------------------------------------------------
-   static boost::shared_ptr<IZiBlueMessageHandler> constructMessageHandler(boost::shared_ptr<shared::communication::IAsyncPort> port, shared::event::CEventHandler& eventHandler, int evtPortDataReceived);
+   static boost::shared_ptr<IMessageHandler> constructMessageHandler(boost::shared_ptr<shared::communication::IAsyncPort> port, shared::event::CEventHandler& eventHandler, int evtPortDataReceived);
 
 
 };

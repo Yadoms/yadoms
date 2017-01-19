@@ -3,8 +3,8 @@
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/Log.h>
 #include <shared/communication/BufferLogger.h>
-#include "ZiBlueFactory.h"
-#include "ZiBlueMessageHandler.h"
+#include "Factory.h"
+#include "MessageHandler.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -43,7 +43,7 @@ void CZiBlue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       //create connection
       createConnection(api->getEventHandler());
 
-      m_transceiver = boost::make_shared<CZiBlueTransceiver>();
+      m_transceiver = boost::make_shared<CTransceiver>();
 
       YADOMS_LOG(information) << "CZiBlue is running" ;
       api->setPluginState(yApi::historization::EPluginState::kRunning);
@@ -166,13 +166,13 @@ void CZiBlue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 void CZiBlue::createConnection(shared::event::CEventHandler& eventHandler)
 {
    // Create the port instance
-   m_port = CZiBlueFactory::constructPort(m_configuration);
+   m_port = CFactory::constructPort(m_configuration);
 
-   m_messageHandler = CZiBlueFactory::constructMessageHandler(m_port, eventHandler, kEvtPortFrameReceived);
+   m_messageHandler = CFactory::constructMessageHandler(m_port, eventHandler, kEvtPortFrameReceived);
 
    m_port->subscribeForConnectionEvents(eventHandler, kEvtPortConnection);
 
-   m_port->setReceiveBufferHandler(CZiBlueFactory::constructReceiveBufferHandler(m_messageHandler));
+   m_port->setReceiveBufferHandler(CFactory::constructReceiveBufferHandler(m_messageHandler));
 
    m_port->start();
 }
@@ -219,7 +219,7 @@ void CZiBlue::processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi
 void CZiBlue::processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::CBinaryFrame> data)
 {
    if (m_isDeveloperMode)
-      YADOMS_LOG(debug) << "ZiBlue Binary <<< " << shared::communication::CBufferLogger::byteBufferToHexString(*data->m_content);
+      YADOMS_LOG(debug) << "ZiBlue Binary <<< " << shared::communication::CBufferLogger::byteBufferToHexString(*data->getContent());
 }
 
 void CZiBlue::processZiBlueAsciiFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::CAsciiFrame> data)

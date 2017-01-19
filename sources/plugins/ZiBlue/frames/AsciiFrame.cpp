@@ -15,6 +15,18 @@ namespace frames {
 
    }
 
+   const char CAsciiFrame::getSourceDest() const
+   {
+      return m_sourceDest;
+   }
+
+   const char CAsciiFrame::getQualifier(const int index) const
+   {
+      if (index == 1)
+         return m_qualifiers[1];
+      return m_qualifiers[0];
+   }
+
    const std::string & CAsciiFrame::getContent() const
    {
       return m_content;

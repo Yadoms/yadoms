@@ -1,11 +1,9 @@
 #pragma once
 #include <plugin_cpp_api/IPlugin.h>
-#include "ZiBlueConfiguration.h"
+#include "Configuration.h"
 #include <shared/communication/IAsyncPort.h>
-#include "ZiBlueTransceiver.h"
-#include "frames/AsciiFrame.h"
-#include "frames/BinaryFrame.h"
-#include "IZiBlueMessageHandler.h"
+#include "Transceiver.h"
+#include "IMessageHandler.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -34,7 +32,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
-   CZiBlueConfiguration m_configuration;
+   CConfiguration m_configuration;
 
    //--------------------------------------------------------------
    /// \brief  The communication port
@@ -44,12 +42,12 @@ private:
    //--------------------------------------------------------------
    /// \brief  The ziblue transceiver
    //--------------------------------------------------------------
-   boost::shared_ptr<CZiBlueTransceiver> m_transceiver;
+   boost::shared_ptr<CTransceiver> m_transceiver;
 
    //--------------------------------------------------------------
    /// \brief  The message handler
    //--------------------------------------------------------------
-   boost::shared_ptr<IZiBlueMessageHandler> m_messageHandler;
+   boost::shared_ptr<IMessageHandler> m_messageHandler;
 
    //--------------------------------------------------------------
    /// \brief  Developer mode

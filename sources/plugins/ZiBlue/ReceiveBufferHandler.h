@@ -4,7 +4,7 @@
 #include <shared/communication/Buffer.hpp>
 
 #include "frames/Frame.h"
-#include "IZiBlueMessageHandler.h"
+#include "IMessageHandler.h"
 
 //--------------------------------------------------------------
 /// \brief	Receive buffer handler for ZiBlue
@@ -12,19 +12,19 @@
 /// This class manages the ZiBlue receive buffer.
 /// A message is considered complete from its content (see protocol specification, either ASCII or binary format)
 //--------------------------------------------------------------
-class CZiBlueReceiveBufferHandler : public shared::communication::IReceiveBufferHandler
+class CReceiveBufferHandler : public shared::communication::IReceiveBufferHandler
 {
 public:
    //--------------------------------------------------------------
    /// \brief	                  Constructor
    /// \param[in] messageHandler The called message handler when a message is received
    //--------------------------------------------------------------
-   CZiBlueReceiveBufferHandler(boost::shared_ptr<IZiBlueMessageHandler> messageHandler);
+   CReceiveBufferHandler(boost::shared_ptr<IMessageHandler> messageHandler);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
    //--------------------------------------------------------------
-   virtual ~CZiBlueReceiveBufferHandler();
+   virtual ~CReceiveBufferHandler();
 
    // IReceiveBufferHandler implementation
    void push(const shared::communication::CByteBuffer& buffer) override;
@@ -64,6 +64,6 @@ private:
    //--------------------------------------------------------------
    /// \brief	The message handler
    //--------------------------------------------------------------
-   boost::shared_ptr<IZiBlueMessageHandler> m_messageHandler;
+   boost::shared_ptr<IMessageHandler> m_messageHandler;
 };
 
