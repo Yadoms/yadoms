@@ -252,13 +252,10 @@ set(YADOMS_SRC
    server/dateTime/DateTimeNotifier.cpp
    
    server/automation/IRule.h
-	server/automation/IRuleLogger.h
    server/automation/IRuleManager.h
    server/automation/IRuleThreadHandler.h
    server/automation/Rule.h
    server/automation/Rule.cpp
-	server/automation/RuleLogger.h
-	server/automation/RuleLogger.cpp
    server/automation/RuleException.hpp
    server/automation/RuleManager.h
    server/automation/RuleManager.cpp
