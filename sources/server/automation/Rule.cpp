@@ -66,7 +66,7 @@ namespace automation
       m_scriptInterpreter->startScript(m_ruleData->Id(),
                                        ruleProperties.scriptPath(),
                                        m_ipcAdapter->id(),
-                                       ruleProperties.logPath());
+                                       m_interpreterManager->getScriptLogFilename(m_ruleData->Id()));
    }
 
    Poco::Logger& CRule::createScriptLogger(const boost::filesystem::path& logFilePath) const

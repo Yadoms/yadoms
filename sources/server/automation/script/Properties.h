@@ -30,7 +30,6 @@ namespace automation
          std::string interpreterName() const override;
          bool isModelBased() const override;
          boost::filesystem::path scriptPath() const override;
-         boost::filesystem::path logPath() const override;
          const shared::CDataContainer& configuration() const override;
          // [END] IProperties Implementation
 
@@ -41,15 +40,6 @@ namespace automation
          ///\return              The script path
          //-----------------------------------------------------
          boost::filesystem::path buildScriptPath(boost::shared_ptr<const database::entities::CRule> ruleData) const;
-
-         //-----------------------------------------------------
-         ///\brief                  Build the log Path from the rule data
-         ///\param[in] pathProvider The path provider
-         ///\param[in] instanceId   The instance ID
-         ///\return                 The script path
-         //-----------------------------------------------------
-         boost::filesystem::path buildLogPath(const IPathProvider& pathProvider,
-                                              int instanceId) const;
 
       private:
          //-----------------------------------------------------
@@ -66,11 +56,6 @@ namespace automation
          ///\brief               The script path
          //-----------------------------------------------------
          const boost::filesystem::path m_scriptPath;
-
-         //-----------------------------------------------------
-         ///\brief               The log file path
-         //-----------------------------------------------------
-         const boost::filesystem::path m_logPath;
 
          //-----------------------------------------------------
          ///\brief               The configuration

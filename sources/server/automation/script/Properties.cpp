@@ -10,8 +10,6 @@ namespace automation
          : m_interpreterName(ruleData->Interpreter()),
            m_modelBased(!ruleData->Model().empty()),
            m_scriptPath(buildScriptPath(ruleData)),
-           m_logPath(buildLogPath(pathProvider,
-                                  ruleData->Id())),
            m_configuration(ruleData->Configuration())
       {
       }
@@ -38,12 +36,6 @@ namespace automation
          return scriptPath;
       }
 
-      boost::filesystem::path CProperties::buildLogPath(const IPathProvider& pathProvider,
-                                                        int instanceId) const
-      {
-         return pathProvider.scriptsLogPath() / std::to_string(instanceId) / "script.log";
-      }
-
       bool CProperties::isModelBased() const
       {
          return m_modelBased;
@@ -57,11 +49,6 @@ namespace automation
       boost::filesystem::path CProperties::scriptPath() const
       {
          return m_scriptPath;
-      }
-
-      boost::filesystem::path CProperties::logPath() const
-      {
-         return m_logPath;
       }
 
       const shared::CDataContainer& CProperties::configuration() const

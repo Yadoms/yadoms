@@ -37,12 +37,6 @@ namespace automation
          virtual boost::filesystem::path scriptPath() const = 0;
 
          //-----------------------------------------------------
-         ///\brief               Get the path of the log file associated with this script
-         ///\return              The log file path
-         //-----------------------------------------------------
-         virtual boost::filesystem::path logPath() const = 0;
-
-         //-----------------------------------------------------
          ///\brief               Get the rule configuration, if any (only able for model-based rules
          ///\return              The configuration (can be empty)
          //-----------------------------------------------------
