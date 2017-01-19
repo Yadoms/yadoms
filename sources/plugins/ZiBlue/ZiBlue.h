@@ -5,6 +5,7 @@
 #include "ZiBlueTransceiver.h"
 #include "frames/AsciiFrame.h"
 #include "frames/BinaryFrame.h"
+#include "IZiBlueMessageHandler.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -46,10 +47,13 @@ private:
    boost::shared_ptr<CZiBlueTransceiver> m_transceiver;
 
    //--------------------------------------------------------------
-   /// \brief	Wait for answer timer
+   /// \brief  The message handler
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::event::CEventTimer> m_waitForAnswerTimer;
+   boost::shared_ptr<IZiBlueMessageHandler> m_messageHandler;
 
+   //--------------------------------------------------------------
+   /// \brief  Developer mode
+   //--------------------------------------------------------------
    bool m_isDeveloperMode;
 
    //--------------------------------------------------------------
@@ -64,8 +68,6 @@ private:
    void processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::CBinaryFrame> data);
    void processZiBlueAsciiFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::CAsciiFrame> data);
    void initZiBlue(boost::shared_ptr<yApi::IYPluginApi> api);
-   void send(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<std::queue<std::string>> buffers);
-   void send(boost::shared_ptr<yApi::IYPluginApi> api, const std::string& buffer, bool needAnswer);
 };
 
 

@@ -2,11 +2,9 @@
 #include <shared/event/EventHandler.hpp>
 #include <shared/communication/IReceiveBufferHandler.h>
 #include <shared/communication/Buffer.hpp>
-#include <shared/communication/StringBuffer.h>
 
-#include "frames/FrameType.h"
-#include "frames/AsciiFrame.h"
-#include "frames/BinaryFrame.h"
+#include "frames/Frame.h"
+#include "IZiBlueMessageHandler.h"
 
 //--------------------------------------------------------------
 /// \brief	Receive buffer handler for ZiBlue
@@ -18,12 +16,10 @@ class CZiBlueReceiveBufferHandler : public shared::communication::IReceiveBuffer
 {
 public:
    //--------------------------------------------------------------
-   /// \brief	                              Constructor
-   /// \param[in] receiveDataEventHandler    The event handler to notify for received data event
-   /// \param[in] receiveBinaryFrameEventId  The event id to notify for received data event (binary format)
-   /// \param[in] receiveAsciiFrameEventId   The event id to notify for received command answer event
+   /// \brief	                  Constructor
+   /// \param[in] messageHandler The called message handler when a message is received
    //--------------------------------------------------------------
-   CZiBlueReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler, int receiveBinaryFrameEventId, int receiveAsciiFrameEventId);
+   CZiBlueReceiveBufferHandler(boost::shared_ptr<IZiBlueMessageHandler> messageHandler);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
@@ -42,24 +38,11 @@ protected:
    //--------------------------------------------------------------
    bool isComplete();
 
-   typedef struct BufferContainer
-   {
-      frames::EFrameType frameType;
-      boost::shared_ptr<frames::CBinaryFrame> binaryBuffer;
-      boost::shared_ptr<frames::CAsciiFrame> asciiBuffer;
-   }BufferContainer;
-
    //--------------------------------------------------------------
    /// \brief	                     Pop the next message from the receive buffer
    /// \return                      The next complete message
    //--------------------------------------------------------------
-   BufferContainer popNextMessage();
-
-   //--------------------------------------------------------------
-   /// \brief	                     Send a message to the target event handler
-   /// \param[in] buffer            Buffer to send
-   //--------------------------------------------------------------
-   void notifyEventHandler(BufferContainer & buffer) const;
+   boost::shared_ptr<frames::CFrame> popNextMessage();
 
    //--------------------------------------------------------------
    /// \brief	         Identifies the first frame in buffer
@@ -79,18 +62,8 @@ private:
    std::vector<unsigned char> m_content;
 
    //--------------------------------------------------------------
-   /// \brief	The event handler to notify for received data event   
+   /// \brief	The message handler
    //--------------------------------------------------------------
-   shared::event::CEventHandler& m_receiveDataEventHandler;
-
-   //--------------------------------------------------------------
-   /// \brief	The event id to notify for received binary data event  
-   //--------------------------------------------------------------
-   int m_receiveBinaryFrameEventId;  
-
-   //--------------------------------------------------------------
-   /// \brief	The event id to notify for received command answer event  
-   //--------------------------------------------------------------
-   int m_receiveAsciiFrameEventId;
+   boost::shared_ptr<IZiBlueMessageHandler> m_messageHandler;
 };
 

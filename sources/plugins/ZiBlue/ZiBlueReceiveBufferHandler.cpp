@@ -2,8 +2,8 @@
 #include "ZiBlueReceiveBufferHandler.h"
 #include <shared/communication/StringBuffer.h>
 
-CZiBlueReceiveBufferHandler::CZiBlueReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler, int receiveBinaryFrameEventId, int receiveAsciiFrameEventId)
-   : m_receiveDataEventHandler(receiveDataEventHandler), m_receiveBinaryFrameEventId(receiveBinaryFrameEventId), m_receiveAsciiFrameEventId(receiveAsciiFrameEventId)
+CZiBlueReceiveBufferHandler::CZiBlueReceiveBufferHandler(boost::shared_ptr<IZiBlueMessageHandler> messageHandler)
+   : m_messageHandler(messageHandler)
 {
 }
 
@@ -18,8 +18,11 @@ void CZiBlueReceiveBufferHandler::push(const shared::communication::CByteBuffer&
 
    if (isComplete())
    {
-      CZiBlueReceiveBufferHandler::BufferContainer bufferMessage = popNextMessage();
-      notifyEventHandler(bufferMessage);
+      boost::shared_ptr<frames::CFrame> bufferMessage = popNextMessage();
+      if (bufferMessage)
+      {
+         m_messageHandler->onReceived(bufferMessage);
+      }
    }
       
 }
@@ -92,17 +95,16 @@ bool CZiBlueReceiveBufferHandler::isComplete()
    return false;
 }
 
-CZiBlueReceiveBufferHandler::BufferContainer CZiBlueReceiveBufferHandler::popNextMessage()
+boost::shared_ptr<frames::CFrame> CZiBlueReceiveBufferHandler::popNextMessage()
 {
    if (!isComplete())
       throw shared::exception::CException("CZiBlueReceiveBufferHandler : Can not pop not completed message. Call isComplete to check if a message is available");
 
-   BufferContainer container;
+   boost::shared_ptr<frames::CFrame> result;
 
    if (syncToStartOfFrame())
    {
-      container.frameType = identifyFrameType();
-      switch (container.frameType)
+      switch (identifyFrameType())
       {
       case frames::kAsciiFrame:
          {
@@ -116,7 +118,7 @@ CZiBlueReceiveBufferHandler::BufferContainer CZiBlueReceiveBufferHandler::popNex
                   for (size_t idx = frames::CAsciiFrame::HeaderSize; idx < i; ++idx)
                      content += m_content[idx];
 
-                  container.asciiBuffer = boost::make_shared<frames::CAsciiFrame>(m_content[2], m_content[3], m_content[4], content);
+                  result = boost::make_shared<frames::CFrame>(boost::make_shared<frames::CAsciiFrame>(m_content[2], m_content[3], m_content[4], content));
                   // Delete extracted data
                   m_content.erase(m_content.begin(), m_content.begin() + extractedMessageSize + frames::CAsciiFrame::HeaderSize);
                }
@@ -130,28 +132,14 @@ CZiBlueReceiveBufferHandler::BufferContainer CZiBlueReceiveBufferHandler::popNex
             boost::shared_ptr<shared::communication::CByteBuffer> extractedMessage(new shared::communication::CByteBuffer(len));
             for (size_t idx = frames::CBinaryFrame::HeaderSize; idx < len; ++idx)
                (*extractedMessage)[idx] = m_content[idx];
-            container.binaryBuffer = boost::make_shared<frames::CBinaryFrame>();
-            container.binaryBuffer->m_content = extractedMessage;
+
+            result = boost::make_shared<frames::CFrame>(boost::make_shared<frames::CBinaryFrame>(extractedMessage));
+
             // Delete extracted data
             m_content.erase(m_content.begin(), m_content.begin() + len + frames::CBinaryFrame::HeaderSize);
          }
       }
    }
-   return container;
-}
-
-void CZiBlueReceiveBufferHandler::notifyEventHandler(BufferContainer & bufferContainer) const
-{
-   switch (bufferContainer.frameType)
-   {
-   case frames::kBinaryFrame:
-      m_receiveDataEventHandler.postEvent< boost::shared_ptr<frames::CBinaryFrame> >(m_receiveBinaryFrameEventId, bufferContainer.binaryBuffer);
-      break;
-   case frames::kAsciiFrame:
-      m_receiveDataEventHandler.postEvent< boost::shared_ptr<frames::CAsciiFrame> >(m_receiveAsciiFrameEventId, bufferContainer.asciiBuffer);
-      break;
-   }
-   
-      
+   return result;
 }
 

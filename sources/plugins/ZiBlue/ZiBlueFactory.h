@@ -2,6 +2,7 @@
 
 #include <shared/communication/IAsyncPort.h>
 #include "ZiBlueConfiguration.h"
+#include "IZiBlueMessageHandler.h"
 
 //--------------------------------------------------------------
 /// \brief	Configuration of the xpl plugin
@@ -16,15 +17,28 @@ public:
    virtual ~CZiBlueFactory();
 
    //--------------------------------------------------------------
-   /// \brief	                                 Create a port instance and connect to the rfxcom
-   /// \param[in] configuration                 Plugin instance configuration (contains the serial port)
-   /// \param[in] eventHandler                  The event handler to receive notifications from port
-   /// \param[in] evtPortConnectionId           The event id raised on connection events
-   /// \param[in] evtPortBinaryDataReceived     The event id raised on binary data receive events
-   /// \param[in] evtPortCommandAnswerReceived  The event id raised on command answer receive events
-   /// \return                                  The created port
+   /// \brief	                           Create a port instance and connect to the dongle
+   /// \param[in] configuration           Plugin instance configuration (contains the serial port)
+   /// \return                            The created port
    //--------------------------------------------------------------
-   static boost::shared_ptr<shared::communication::IAsyncPort> constructPort(const CZiBlueConfiguration& configuration, shared::event::CEventHandler& eventHandler, int evtPortConnectionId, int evtPortBinaryDataReceived, int evtPortCommandAnswerReceived);
+   static boost::shared_ptr<shared::communication::IAsyncPort> constructPort(const CZiBlueConfiguration& configuration);
+
+   //--------------------------------------------------------------
+   /// \brief	                           Create the receive buffer handler
+   /// \param[in] messageHandler          The message handler to redirect a received message
+   /// \return                            The receive buffer handler
+   //--------------------------------------------------------------
+   static boost::shared_ptr<shared::communication::IReceiveBufferHandler> constructReceiveBufferHandler(boost::shared_ptr<IZiBlueMessageHandler> messageHandler);
+
+   //--------------------------------------------------------------
+   /// \brief	                           Create the message handler
+   /// \param[in] port                    Serial port used to send/receive to dongle
+   /// \param[in] eventHandler            The event handler to receive notifications from port
+   /// \param[in] evtPortDataReceived     The event id raised on data receive events
+   /// \param[in] bufferLogger            The buffer loger
+   /// \return                            The message handler
+   //--------------------------------------------------------------
+   static boost::shared_ptr<IZiBlueMessageHandler> constructMessageHandler(boost::shared_ptr<shared::communication::IAsyncPort> port, shared::event::CEventHandler& eventHandler, int evtPortDataReceived);
 
 
 };

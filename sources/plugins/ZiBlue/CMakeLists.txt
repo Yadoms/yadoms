@@ -10,13 +10,19 @@ set(ZIBLUE_PLUGIN_SOURCES
 	ZiBlueConfiguration.h
 	ZiBlueConfiguration.cpp 	
 	ZiBlueFactory.h
-	ZiBlueFactory.cpp 	
+	ZiBlueFactory.cpp
+   IZiBlueMessageHandler.h
+	ZiBlueMessageHandler.h
+	ZiBlueMessageHandler.cpp 	
 	ZiBlueReceiveBufferHandler.h
 	ZiBlueReceiveBufferHandler.cpp 	
 	ZiBlueTransceiver.h
 	ZiBlueTransceiver.cpp 	
    
+   frames/Frame.h
+   frames/Frame.cpp
    frames/AsciiFrame.h
+   frames/AsciiFrame.cpp
    frames/BinaryFrame.h
    frames/FrameType.h
 )

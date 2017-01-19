@@ -4,7 +4,7 @@
 #include <shared/Log.h>
 #include <shared/communication/BufferLogger.h>
 #include "ZiBlueFactory.h"
-
+#include "ZiBlueMessageHandler.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -24,8 +24,7 @@ CZiBlue::~CZiBlue()
 enum
 {
    kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId, // Always start from yApi::IYPluginApi::kPluginFirstEventId
-   kEvtPortBinaryFrameReceived,
-   kEvtPortAsciiFrameReceived,
+   kEvtPortFrameReceived,
    kProtocolErrorRetryTimer,
    kAnswerTimeout,
 };
@@ -46,10 +45,6 @@ void CZiBlue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       m_transceiver = boost::make_shared<CZiBlueTransceiver>();
 
-      m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(5));
-      m_waitForAnswerTimer->stop();
-
-      
       YADOMS_LOG(information) << "CZiBlue is running" ;
       api->setPluginState(yApi::historization::EPluginState::kRunning);
       while (1)
@@ -121,17 +116,13 @@ void CZiBlue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             break;
          }
-         case kEvtPortBinaryFrameReceived:
+         case kEvtPortFrameReceived:
          {
-            boost::shared_ptr<frames::CBinaryFrame> data = api->getEventHandler().getEventData< boost::shared_ptr<frames::CBinaryFrame> >();
-            processZiBlueBinaryFrameReceived(api, data);
-            break;
-         }
-
-         case kEvtPortAsciiFrameReceived:
-         {
-            boost::shared_ptr<frames::CAsciiFrame> data = api->getEventHandler().getEventData< boost::shared_ptr<frames::CAsciiFrame> >();
-            processZiBlueAsciiFrameReceived(api, data);
+            boost::shared_ptr<const frames::CFrame> frame = api->getEventHandler().getEventData< boost::shared_ptr<const frames::CFrame> >();
+            if(frame->isAscii())
+               processZiBlueAsciiFrameReceived(api, frame->getAscii());
+            else
+               processZiBlueBinaryFrameReceived(api, frame->getBinary());
             break;
          }
 
@@ -175,45 +166,22 @@ void CZiBlue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 void CZiBlue::createConnection(shared::event::CEventHandler& eventHandler)
 {
    // Create the port instance
-   m_port = CZiBlueFactory::constructPort(m_configuration, eventHandler, kEvtPortConnection, kEvtPortBinaryFrameReceived, kEvtPortAsciiFrameReceived);
+   m_port = CZiBlueFactory::constructPort(m_configuration);
+
+   m_messageHandler = CZiBlueFactory::constructMessageHandler(m_port, eventHandler, kEvtPortFrameReceived);
+
+   m_port->subscribeForConnectionEvents(eventHandler, kEvtPortConnection);
+
+   m_port->setReceiveBufferHandler(CZiBlueFactory::constructReceiveBufferHandler(m_messageHandler));
+
    m_port->start();
 }
 
 void CZiBlue::destroyConnection()
 {
    m_port.reset();
-
-   m_waitForAnswerTimer->stop();
 }
 
-
-void CZiBlue::send(boost::shared_ptr<yApi::IYPluginApi> api, const std::string & buffer, bool needAnswer)
-{
-   if (!m_port)
-      return;
-
-   
-   if (m_isDeveloperMode)
-      YADOMS_LOG(debug) << "ZiBlue >>> " << buffer;
-
-   m_port->sendText(buffer);
-
-   if (needAnswer)
-      m_waitForAnswerTimer->start();
-}
-
-void CZiBlue::send(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<std::queue<std::string > > buffers)
-{
-   if (!m_port)
-      return;
-
-   // Send all messages
-   while (!buffers->empty())
-   {
-      send(api, buffers->front(), false);
-      buffers->pop();
-   }
-}
 
 void CZiBlue::processZiBlueConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
 {
@@ -252,29 +220,31 @@ void CZiBlue::processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPluginA
 {
    if (m_isDeveloperMode)
       YADOMS_LOG(debug) << "ZiBlue Binary <<< " << shared::communication::CBufferLogger::byteBufferToHexString(*data->m_content);
-
-   // Message was recognized, stop timeout
-   m_waitForAnswerTimer->stop();
 }
 
 void CZiBlue::processZiBlueAsciiFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::CAsciiFrame> data)
 {
    if (m_isDeveloperMode)
-      YADOMS_LOG(debug) << "ZiBlue Answer <<< " << data->getContent();
-
-   // Message was recognized, stop timeout
-   m_waitForAnswerTimer->stop();
+      YADOMS_LOG(debug) << "ZiBlue Ascii <<< " << data->getContent();
 }
 
 
 
 void CZiBlue::initZiBlue(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   // Send hello command to the ZiBlue
-   send(api, m_transceiver->buildHelloCmd(), true);
+   if (!m_messageHandler->send(m_transceiver->buildHelloCmd(),
+      [](boost::shared_ptr<const frames::CFrame> frame)
+      {
+         return frame->isAscii() && boost::icontains(frame->getAscii()->getContent(), "Ziblue Dongle");
+      },
+      [&](boost::shared_ptr<const frames::CFrame> frame)
+      {
+         //manage HELLO answer
+         YADOMS_LOG(information) << "Dongle info  :" << frame->getAscii()->getContent();
 
-   // ZiBlue needs some time to recover after reset (see specifications)
-   boost::this_thread::sleep(boost::posix_time::milliseconds(500));
-
-   send(api, m_transceiver->buildStartListeningData(), true);
+         m_messageHandler->send(m_transceiver->buildStartListeningData());
+      }))
+      throw shared::exception::CException("Unable to send HELLO request, timeout waiting acknowledge");
 }
+
+
