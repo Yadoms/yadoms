@@ -3,7 +3,6 @@
 #include "script/YScriptApiImplementation.h"
 #include "script/Properties.h"
 #include "script/IpcAdapter.h"
-#include "script/ScriptLogConfiguration.h"
 
 namespace automation
 {
@@ -39,15 +38,12 @@ namespace automation
                      boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                      boost::shared_ptr<script::IGeneralInfo> generalInfo)
    {
-      auto& scriptLogger = createScriptLogger(m_interpreterManager->getScriptLogFilename(m_ruleData->Id()));
-
       auto apiImplementation = createScriptApiImplementation(pluginGateway,
                                                              dbAcquisitionRequester,
                                                              dbDeviceRequester,
                                                              keywordAccessLayer,
                                                              dbRecipientRequester,
-                                                             generalInfo,
-                                                             scriptLogger);
+                                                             generalInfo);
 
       m_ipcAdapter = createScriptIpcAdapter(m_ruleData->Id(),
                                             apiImplementation);
@@ -61,16 +57,6 @@ namespace automation
                                        ruleProperties.scriptPath(),
                                        m_ipcAdapter->id(),
                                        m_interpreterManager->getScriptLogFilename(m_ruleData->Id()));
-   }
-
-   Poco::Logger& CRule::createScriptLogger(const boost::filesystem::path& logFilePath) const
-   {
-      script::CScriptLogConfiguration config;
-      auto& scriptLogger = Poco::Logger::get("script/" + std::to_string(m_ruleData->Id()));
-      config.configure(scriptLogger,
-                       "debug",
-                       logFilePath);
-      return scriptLogger;
    }
 
    void CRule::requestStop()
@@ -90,11 +76,9 @@ namespace automation
                                                                                                    boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
                                                                                                    boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                                                                                                    boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
-                                                                                                   boost::shared_ptr<script::IGeneralInfo> generalInfo,
-                                                                                                   Poco::Logger& scriptLogger) const
+                                                                                                   boost::shared_ptr<script::IGeneralInfo> generalInfo) const
    {
-      return boost::make_shared<script::CYScriptApiImplementation>(scriptLogger,
-                                                                   pluginGateway,
+      return boost::make_shared<script::CYScriptApiImplementation>(pluginGateway,
                                                                    dbAcquisitionRequester,
                                                                    dbDeviceRequester,
                                                                    keywordAccessLayer,

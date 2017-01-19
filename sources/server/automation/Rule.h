@@ -47,8 +47,6 @@ namespace automation
                  boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                  boost::shared_ptr<script::IGeneralInfo> generalInfo);
 
-      Poco::Logger& createScriptLogger(const boost::filesystem::path& logFilePath) const;
-
       boost::shared_ptr<script::IIpcAdapter> createScriptIpcAdapter(int ruleId,
                                                                     boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> apiImplementation) const;
 
@@ -57,8 +55,7 @@ namespace automation
                                                                                                boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
                                                                                                boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                                                                                                boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
-                                                                                               boost::shared_ptr<script::IGeneralInfo> generalInfo,
-                                                                                               Poco::Logger& scriptLogger) const;
+                                                                                               boost::shared_ptr<script::IGeneralInfo> generalInfo) const;
 
    private:
       const IPathProvider& m_pathProvider;

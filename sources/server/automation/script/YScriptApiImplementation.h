@@ -22,7 +22,6 @@ namespace automation
       public:
          //-----------------------------------------------------
          ///\brief               Constructor
-         ///\param[in] ruleLogger Logger to use for script logging
          ///\param[in] pluginGateway Plugin access to do actions on plugins
          ///\param[in] dbAcquisitionRequester  Database acquisition requester
          ///\param[in] dbDeviceRequester  Database device requester
@@ -30,8 +29,7 @@ namespace automation
          ///\param[in] dbRecipientRequester  Database recipient requester
          ///\param[in] generalInfo  Database acquisition requester
          //-----------------------------------------------------
-         CYScriptApiImplementation(Poco::Logger& ruleLogger,
-                                   boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+         CYScriptApiImplementation(boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                                    boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
                                    boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
                                    boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
@@ -100,11 +98,6 @@ namespace automation
                                                                                           const std::string& timeout);
 
       private:
-         //-----------------------------------------------------
-         ///\brief               The rule logger
-         //-----------------------------------------------------
-         Poco::Logger& m_ruleLogger;
-
          //-----------------------------------------------------
          ///\brief               The plugin access (to send commands to plugins)
          //-----------------------------------------------------

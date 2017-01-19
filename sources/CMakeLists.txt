@@ -305,8 +305,6 @@ set(YADOMS_SRC
    server/automation/script/IProperties.h
    server/automation/script/Properties.h
    server/automation/script/Properties.cpp
-	server/automation/script/ScriptLogConfiguration.h
-	server/automation/script/ScriptLogConfiguration.cpp
    server/automation/script/YScriptApiImplementation.h
    server/automation/script/YScriptApiImplementation.cpp
 
