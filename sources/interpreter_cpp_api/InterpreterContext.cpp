@@ -40,7 +40,7 @@ namespace interpreter_cpp_api
 
          api->waitInitialized();
 
-         std::cout << api->getInformation()->getType() << " started" << std::endl;
+         std::cout << api->getInformation()->getType() << " starting" << std::endl;
 
          waitDebugger(api);
 

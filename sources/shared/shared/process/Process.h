@@ -21,12 +21,12 @@ namespace shared
          /// \brief	Constructor
          /// \param[in] commandLine             Process command line
          /// \param[in] processObserver         The process life observer (can be NULL is no observer needed)
-         /// \param[in] scriptLogger            The logger to use for standard outputs
+         /// \param[in] logger                  The logger to use for standard outputs
          /// \throw CProcessException if error
          //--------------------------------------------------------------
          CProcess(boost::shared_ptr<ICommandLine> commandLine,
                   boost::shared_ptr<IProcessObserver> processObserver,
-                  boost::shared_ptr<IExternalProcessLogger> scriptLogger);
+                  boost::shared_ptr<IExternalProcessLogger> logger);
 
 
          //--------------------------------------------------------------
@@ -43,9 +43,9 @@ namespace shared
       protected:
          //--------------------------------------------------------------
          /// \brief	Start a module (in separated process)
-         /// \param[in] scriptLogger            The logger to use for standard outputs
+         /// \param[in] logger            The logger to use for standard outputs
          //--------------------------------------------------------------
-         void start(boost::shared_ptr<IExternalProcessLogger> scriptLogger);
+         void start(boost::shared_ptr<IExternalProcessLogger> logger);
 
          //-----------------------------------------------------
          ///\brief               Create the process observer 
@@ -60,13 +60,13 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	Thread redirecting standard outputs
          /// \param[in] moduleStdOut      StdOut to redirect
-         /// \param[in] targetStream      Target stream
+         /// \param[in] logger            The logger to use for standard outputs
          /// \param[inout] lastError      Last error string
          //--------------------------------------------------------------
          static void stdOutRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut,
-                                          boost::shared_ptr<IExternalProcessLogger> scriptLogger);
+                                          boost::shared_ptr<IExternalProcessLogger> logger);
          static void stdErrRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdErr,
-                                          boost::shared_ptr<IExternalProcessLogger> scriptLogger,
+                                          boost::shared_ptr<IExternalProcessLogger> logger,
                                           boost::shared_ptr<std::string> lastError);
 
       private:

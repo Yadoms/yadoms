@@ -8,13 +8,13 @@ namespace shared
    {
       CProcess::CProcess(boost::shared_ptr<ICommandLine> commandLine,
                          boost::shared_ptr<IProcessObserver> processObserver,
-                         boost::shared_ptr<IExternalProcessLogger> scriptLogger)
+                         boost::shared_ptr<IExternalProcessLogger> logger)
          : m_commandLine(commandLine),
            m_processObserver(processObserver),
            m_returnCode(0),
            m_lastError(boost::make_shared<std::string>())
       {
-         start(scriptLogger);
+         start(logger);
       }
 
       CProcess::~CProcess()
@@ -22,7 +22,7 @@ namespace shared
          CProcess::kill();
       }
 
-      void CProcess::start(boost::shared_ptr<IExternalProcessLogger> scriptLogger)
+      void CProcess::start(boost::shared_ptr<IExternalProcessLogger> logger)
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_processMutex);
 
@@ -40,19 +40,19 @@ namespace shared
                                                                                             args,
                                                                                             m_commandLine->workingDirectory().string(),
                                                                                             nullptr,
-                                                                                            scriptLogger ? &outPipe : nullptr,
-                                                                                            scriptLogger ? &errPipe : nullptr));
+                                                                                            logger ? &outPipe : nullptr,
+                                                                                            logger ? &errPipe : nullptr));
 
-            if (scriptLogger)
+            if (logger)
             {
                auto moduleStdOut = boost::make_shared<Poco::PipeInputStream>(outPipe);
                auto moduleStdErr = boost::make_shared<Poco::PipeInputStream>(errPipe);
                m_StdOutRedirectingThread = boost::make_shared<boost::thread>(&CProcess::stdOutRedirectWorker,
                                                                              moduleStdOut,
-                                                                             scriptLogger);
+                                                                             logger);
                m_StdErrRedirectingThread = boost::make_shared<boost::thread>(&CProcess::stdErrRedirectWorker,
                                                                              moduleStdErr,
-                                                                             scriptLogger,
+                                                                             logger,
                                                                              m_lastError);
             }
 
@@ -143,23 +143,23 @@ namespace shared
       }
 
       void CProcess::stdOutRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut,
-                                          boost::shared_ptr<IExternalProcessLogger> scriptLogger)
+                                          boost::shared_ptr<IExternalProcessLogger> logger)
       {
-         scriptLogger->init();
-         scriptLogger->information("#### START ####");
+         logger->init();
+         logger->information("#### START ####");
 
          char line[1024];
          while (moduleStdOut->getline(line, sizeof(line)))
          {
-            scriptLogger->information(line);
+            logger->information(line);
          }
       }
 
       void CProcess::stdErrRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdErr,
-                                          boost::shared_ptr<IExternalProcessLogger> scriptLogger,
+                                          boost::shared_ptr<IExternalProcessLogger> logger,
                                           boost::shared_ptr<std::string> lastError)
       {
-         scriptLogger->init();
+         logger->init();
 
          char line[1024];
          while (moduleStdErr->getline(line, sizeof(line)))
@@ -167,7 +167,7 @@ namespace shared
             if (!!lastError)
                *lastError += line;
 
-            scriptLogger->error(line);
+            logger->error(line);
          }
       }
    }

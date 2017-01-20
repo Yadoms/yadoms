@@ -40,6 +40,7 @@ namespace plugin_cpp_api
          api->waitInitialized();
 
          std::cout << api->getInformation()->getType() << " starting" << std::endl;
+
          waitDebugger(api);
 
          configureLogger(api);
