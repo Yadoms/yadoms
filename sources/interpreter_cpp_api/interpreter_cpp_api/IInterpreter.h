@@ -7,7 +7,7 @@
 namespace interpreter_cpp_api
 {
    //--------------------------------------------------------------
-   /// \class General interpreter interface
+   /// \blief General interpreter interface
    //--------------------------------------------------------------
    class IInterpreter
    {

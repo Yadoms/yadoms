@@ -30,9 +30,6 @@ namespace interpreter_cpp_api
       // shared::plugin::yInterpreterApi::IYInterpreterApi implementation
       void notifyScriptStopped(int scriptInstanceId,
                                const std::string error) override;
-      void onScriptLog(int scriptInstanceId,
-                       bool error,
-                       const std::string& logLine) override;
       boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> getInformation() const override;
       shared::event::CEventHandler& getEventHandler() override;
       // [END] shared::plugin::yInterpreterApi::IYInterpreterApi implementation

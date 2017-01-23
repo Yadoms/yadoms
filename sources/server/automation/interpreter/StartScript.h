@@ -10,22 +10,23 @@ namespace automation
       {
       public:
          CStartScript(const int scriptInstanceId,
-                             const std::string& scriptPath,
-                             const std::string& yScriptApiId);
+                      const boost::filesystem::path& scriptPath,
+                      const std::string& yScriptApiId,
+                      const boost::filesystem::path& scriptLogPath);
          virtual ~CStartScript();
 
          // IStartScript implementation
          int getScriptInstanceId() override;
-         const std::string& getScriptPath() override;
+         const boost::filesystem::path& getScriptPath() override;
          const std::string& getScriptApiId() override;
+         const boost::filesystem::path& getScriptLogPath() override;
          // [END] - IStartScript implementation
 
       private:
          const int m_scriptInstanceId;
-         const std::string m_scriptPath;
+         const boost::filesystem::path m_scriptPath;
          const std::string m_scriptApiId;
+         const boost::filesystem::path m_scriptLogPath;
       };
    }
 } // namespace automation::interpreter
-
-

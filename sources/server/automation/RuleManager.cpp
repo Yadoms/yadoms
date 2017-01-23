@@ -17,7 +17,8 @@ namespace automation
                               boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                               boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
                               boost::shared_ptr<shared::ILocation> location)
-      : m_pluginGateway(pluginGateway),
+      : m_pathProvider(pathProvider),
+        m_pluginGateway(pluginGateway),
         m_dbAcquisitionRequester(dataProvider->getAcquisitionRequester()),
         m_dbDeviceRequester(dataProvider->getDeviceRequester()),
         m_keywordAccessLayer(keywordAccessLayer),
@@ -26,7 +27,7 @@ namespace automation
         m_generalInfo(boost::make_shared<script::CGeneralInfo>(location)),
         m_ruleRequester(dataProvider->getRuleRequester()),
         m_ruleEventHandler(boost::make_shared<shared::event::CEventHandler>()),
-        m_interpreterManager(boost::make_shared<interpreter::CManager>(pathProvider)),
+        m_interpreterManager(boost::make_shared<interpreter::CManager>(m_pathProvider)),
         m_yadomsShutdown(false)
    {
       m_interpreterManager->setOnScriptStoppedFct(
@@ -107,6 +108,7 @@ namespace automation
 
          boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
          auto newRule(boost::make_shared<CRule>(ruleData,
+                                                m_pathProvider,
                                                 m_interpreterManager,
                                                 m_pluginGateway,
                                                 m_dbAcquisitionRequester,
@@ -233,9 +235,10 @@ namespace automation
       auto ruleId = m_ruleRequester->addRule(ruleData);
 
       // Create script file
-      auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(ruleId)));
+      auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(ruleId),
+                                                                  m_pathProvider));
       m_interpreterManager->updateScriptFile(ruleProperties->interpreterName(),
-                                             ruleProperties->scriptPath(),
+                                             ruleProperties->scriptPath().string(),
                                              code);
 
       // Start the rule
@@ -253,9 +256,10 @@ namespace automation
    {
       try
       {
-         auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id)));
+         auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id),
+                                                                     m_pathProvider));
          return m_interpreterManager->getScriptContent(ruleProperties->interpreterName(),
-                                                       ruleProperties->scriptPath());
+                                                       ruleProperties->scriptPath().string());
       }
       catch (shared::exception::CEmptyResult& e)
       {
@@ -313,9 +317,10 @@ namespace automation
          stopRuleAndWaitForStopped(id);
 
       // Update script file
-      auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id)));
+      auto ruleProperties(boost::make_shared<script::CProperties>(m_ruleRequester->getRule(id),
+                                                                  m_pathProvider));
       m_interpreterManager->updateScriptFile(ruleProperties->interpreterName(),
-                                             ruleProperties->scriptPath(),
+                                             ruleProperties->scriptPath().string(),
                                              code);
 
       // Restart rule
@@ -336,9 +341,10 @@ namespace automation
          m_ruleRequester->deleteRule(id);
 
          // Remove script file
-         auto ruleProperties(boost::make_shared<script::CProperties>(ruleData));
+         auto ruleProperties(boost::make_shared<script::CProperties>(ruleData,
+                                                                     m_pathProvider));
          m_interpreterManager->deleteScriptFile(ruleProperties->interpreterName(),
-                                                ruleProperties->scriptPath());
+                                                ruleProperties->scriptPath().string());
       }
       catch (shared::exception::CException& e)
       {
@@ -412,5 +418,3 @@ namespace automation
                                  error);
    }
 } // namespace automation	
-
-

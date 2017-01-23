@@ -6,11 +6,13 @@ namespace automation
    namespace interpreter
    {
       CStartScript::CStartScript(const int scriptInstanceId,
-                                               const std::string& scriptPath,
-                                               const std::string& yScriptApiId)
+                                 const boost::filesystem::path& scriptPath,
+                                 const std::string& yScriptApiId,
+                                 const boost::filesystem::path& scriptLogPath)
          : m_scriptInstanceId(scriptInstanceId),
            m_scriptPath(scriptPath),
-           m_scriptApiId(yScriptApiId)
+           m_scriptApiId(yScriptApiId),
+           m_scriptLogPath(scriptLogPath)
       {
       }
 
@@ -23,7 +25,7 @@ namespace automation
          return m_scriptInstanceId;
       }
 
-      const std::string& CStartScript::getScriptPath()
+      const boost::filesystem::path& CStartScript::getScriptPath()
       {
          return m_scriptPath;
       }
@@ -32,7 +34,10 @@ namespace automation
       {
          return m_scriptApiId;
       }
+
+      const boost::filesystem::path& CStartScript::getScriptLogPath()
+      {
+         return m_scriptLogPath;
+      }
    }
 } // namespace automation::interpreter
-
-

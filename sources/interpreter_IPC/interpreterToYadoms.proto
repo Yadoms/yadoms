@@ -30,6 +30,5 @@ message msg {
 		LoadScriptContentAnswer loadScriptContentAnswer = 3;
 		SaveScriptContentAnswer saveScriptContentAnswer = 4;
 		NotifiyScriptStopped notifiyScriptStopped = 5;
-		ScriptLog scriptLog = 6;
 	}
 }

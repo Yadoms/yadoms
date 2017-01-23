@@ -1,6 +1,5 @@
 #pragma once
 #include "IInstance.h"
-#include "IRuleLogDispatcher.h"
 
 namespace automation
 {
@@ -32,13 +31,6 @@ namespace automation
          ///\throw std::runtime_error No corresponding script interpreter was found
          //-----------------------------------------------------
          virtual boost::shared_ptr<IInstance> getInterpreterInstance(const std::string& interpreterType) = 0;
-
-         //-----------------------------------------------------
-         ///\brief               Get the rule log dispatcher
-         ///\param[in] interpreterType The interpreter type
-         ///\return              The rule log dispatcher
-         //-----------------------------------------------------
-         virtual boost::shared_ptr<IRuleLogDispatcher> getRuleLogDispatcher(const std::string& interpreterType) = 0;
 
          //-----------------------------------------------------
          ///\brief               Unload an interpreter (do nothing if interpreter not loaded)

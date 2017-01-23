@@ -34,8 +34,6 @@ if(PYTHONLIBS_FOUND)
       ScriptFile.cpp
       ScriptProcess.h
       ScriptProcess.cpp
-      ScriptLogger.h
-      ScriptLogger.cpp
       
       scriptCaller.py
       scriptUtilities.py

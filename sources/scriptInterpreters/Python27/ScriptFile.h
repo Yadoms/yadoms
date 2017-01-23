@@ -11,7 +11,7 @@ public:
    /// \brief	Constructor
    /// \param[in] scriptPath   Script path (without name)
    //--------------------------------------------------------------
-   explicit CScriptFile(const std::string& scriptPath);
+   explicit CScriptFile(const boost::filesystem::path& scriptPath);
 
    //--------------------------------------------------------------
    /// \brief	Destructor

@@ -50,7 +50,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief	Message queue receive thread
       //--------------------------------------------------------------
-      void messageQueueReceiveThreaded();
+      void messageQueueReceiveThreaded(int pluginId);
 
       //--------------------------------------------------------------
       /// \brief	Send a message to plugin

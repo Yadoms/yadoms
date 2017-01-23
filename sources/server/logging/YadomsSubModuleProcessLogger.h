@@ -30,8 +30,8 @@ namespace logging
       // [END] ILogger Implementation
 
    protected:
-      std::string extractMessage(const std::string& line,
-                                 std::string& outMessage) const;
+      virtual std::string extractMessage(const std::string& line,
+                                         std::string& outMessage) const;
       static void doLog(const std::string& logLevel,
                         const std::string& message);
 

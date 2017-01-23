@@ -11,8 +11,8 @@ import dashboard
 import dashboard.plugins
 import tools
 
-class ConfigurePlugin(unittest.TestCase):
-   """Configure plugin test"""
+class AutostartCheckboxPlugin(unittest.TestCase):
+   """Plugin autostart checkbox test"""
    
    def setUp(self):
       database.deploy('OneFakePlugin')
@@ -27,26 +27,31 @@ class ConfigurePlugin(unittest.TestCase):
       dashboard.openPlugin(self.browser)
       
 
-   def test_configurePlugin(self):
-      print '=== Configure plugin test ==='
+   def test_autostartCheckbox(self):
+      print '=== Autostart Checkbox test ==='
+      print 'ref Issues : #182'
       pluginNumber = 0
      
-      print '  Configure the first plugin'
+      print '  Verify initial state'
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
-      tools.waitUntil(lambda: dashboard.plugins.getPluginConfigureButton(pluginsTable, pluginNumber).is_enabled())
-      dashboard.plugins.getPluginConfigureButton(pluginsTable, pluginNumber).click()
+      self.assertTrue(dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber))
       
-      print '  Modify plugin name'
-      pluginNewName = "This is the new plugin name"
-      configurePluginModal = dashboard.plugins.waitConfigurePluginModal(self.browser)
-      configurePluginModal.setPluginName(pluginNewName)
-      configurePluginModal.ok()
-      
-      print '  Check modified plugin'
+      print '  Uncheck the box'
+      dashboard.plugins.getPluginAutoStart(pluginsTable, pluginNumber).click()
+      self.assertFalse(dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber))
+
+      print '  Reload page and check box state'
+      dashboard.openSummary(self.browser)
+      dashboard.openPlugin(self.browser)
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
-      pluginDatas = dashboard.plugins.getPluginDatas(pluginsTable, pluginNumber)
-      self.assertTrue(tools.waitUntil(lambda: dashboard.plugins.getPluginName(pluginsTable, pluginNumber) == pluginNewName))
-      self.assertEqual(dashboard.plugins.getPluginState(pluginsTable, pluginNumber), dashboard.plugins.PluginState.Running)
+      self.assertFalse(dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber))
+      
+      print '  Check the box'
+      dashboard.plugins.getPluginAutoStart(pluginsTable, pluginNumber).click()
+      self.assertTrue(dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber))
+
+      print '  Reload page and check box state'
+      dashboard.openPlugin(self.browser)
       self.assertTrue(dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber))
       
       

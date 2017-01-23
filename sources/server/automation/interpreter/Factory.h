@@ -39,12 +39,9 @@ namespace automation
       protected:
          boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> createInterpreterInformation(const std::string& interpreterFileName) const;
          static boost::shared_ptr<shared::process::IExternalProcessLogger> createInterpreterLogger(const std::string& interpreterFileName);
-         boost::shared_ptr<IRuleLogDispatcher> createScriptLogDispatcher() const;
-         boost::shared_ptr<IIpcAdapter> createInterpreterRunningContext(boost::shared_ptr<IRuleLogDispatcher> ruleLogDispatcher,
-                                                                        boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
+         boost::shared_ptr<IIpcAdapter> createInterpreterRunningContext(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
                                                                         boost::function2<void, int, const std::string&> onScriptStoppedFct) const;
-         boost::shared_ptr<CYInterpreterApiImplementation> createInterpreterApiImplementation(boost::shared_ptr<IRuleLogDispatcher> ruleLogDispatcher,
-                                                                                              boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
+         boost::shared_ptr<CYInterpreterApiImplementation> createInterpreterApiImplementation(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
                                                                                               boost::function2<void, int, const std::string&> onScriptStoppedFct) const;
          boost::shared_ptr<shared::process::ICommandLine> createCommandLine(const boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
                                                                             const std::string& messageQueueId) const;

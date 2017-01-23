@@ -27,7 +27,6 @@ namespace automation
            m_sendBuffer(boost::make_shared<unsigned char[]>(m_sendMessageQueue.get_max_msg_size())),
            m_messageQueueReceiveThread(boost::thread(&CIpcAdapter::messageQueueReceiveThreaded, this, shared::CLog::getCurrentThreadName()))
       {
-         YADOMS_LOG_CONFIGURE("automation.interpreter.IpcAdapter");
       }
 
       CIpcAdapter::~CIpcAdapter()
@@ -190,8 +189,6 @@ namespace automation
          {
          case interpreter_IPC::toYadoms::msg::kNotifiyScriptStopped: processNotifiyScriptStopped(toYadomsProtoBuffer.notifiyscriptstopped());
             break;
-         case interpreter_IPC::toYadoms::msg::kScriptLog: processScriptLog(toYadomsProtoBuffer.scriptlog());
-            break;
          default:
             throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
          }
@@ -201,13 +198,6 @@ namespace automation
       {
          m_apiImplementation->notifyScriptStopped(notifiyScriptStopped.scriptinstanceid(),
                                                   notifiyScriptStopped.error());
-      }
-
-      void CIpcAdapter::processScriptLog(const interpreter_IPC::toYadoms::ScriptLog& scriptlog) const
-      {
-         m_apiImplementation->onScriptLog(scriptlog.scriptinstanceid(),
-                                          scriptlog.error(),
-                                          scriptlog.logline());
       }
 
       void CIpcAdapter::postStopRequest()
@@ -319,8 +309,9 @@ namespace automation
          interpreter_IPC::toInterpreter::msg req;
          auto message = req.mutable_startscript();
          message->set_scriptinstanceid(request->getScriptInstanceId());
-         message->set_scriptpath(request->getScriptPath());
+         message->set_scriptpath(request->getScriptPath().string());
          message->set_scriptapiid(request->getScriptApiId());
+         message->set_scriptlogpath(request->getScriptLogPath().string());
          std::string scriptProcessId;
 
          send(req);

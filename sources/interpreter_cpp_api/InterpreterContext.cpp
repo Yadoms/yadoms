@@ -2,10 +2,10 @@
 #include "InterpreterContext.h"
 #include "ApiImplementation.h"
 #include "CommandLine.h"
+#include "LogConfiguration.h"
 #include <shared/currentTime/Local.h>
 #include <Poco/Debugger.h>
 #include <shared/Log.h>
-#include <shared/process/YadomsSubModuleLogConfiguration.h>
 
 
 namespace yApi = shared::script::yInterpreterApi;
@@ -40,7 +40,7 @@ namespace interpreter_cpp_api
 
          api->waitInitialized();
 
-         std::cout << api->getInformation()->getType() << " started" << std::endl;
+         std::cout << api->getInformation()->getType() << " starting" << std::endl;
 
          waitDebugger(api);
 
@@ -76,7 +76,7 @@ namespace interpreter_cpp_api
       }
 
       m_msgReceiverThread.interrupt();
-      m_msgReceiverThread.timed_join(boost::posix_time::seconds(20));
+      m_msgReceiverThread.timed_join(boost::posix_time::seconds(30));
 
       closeMessageQueues();
    }
@@ -113,16 +113,16 @@ namespace interpreter_cpp_api
       {
          auto path = api->getLogFile();
          std::cout << api->getInformation()->getType() << " configure logger : " << path.string() << std::endl;
-         shared::process::CYadomsSubModuleLogConfiguration logconfig;
+         CLogConfiguration logconfig;
          logconfig.configure(api->getLogLevel(), path);
       }
       catch (std::exception& e)
       {
-         std::cerr << api->getInformation()->getType() << " fail to confiugure log system : " << e.what() << std::endl;
+         std::cerr << api->getInformation()->getType() << " fail to configure log system : " << e.what() << std::endl;
       }
       catch (...)
       {
-         std::cerr << api->getInformation()->getType() << " fail to confiugure log system with unknown exception" << std::endl;
+         std::cerr << api->getInformation()->getType() << " fail to configure log system with unknown exception" << std::endl;
       }
 
       YADOMS_LOG_CONFIGURE(api->getInformation()->getType());

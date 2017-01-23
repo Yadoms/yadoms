@@ -91,7 +91,8 @@ void CPython27::doWork(boost::shared_ptr<yApi::IYInterpreterApi> api)
             auto request = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IStartScript>>();
             startScript(request->getScriptInstanceId(),
                         request->getScriptPath(),
-                        request->getScriptApiId());
+                        request->getScriptApiId(),
+                        request->getScriptLogPath());
             break;
          }
 
@@ -159,8 +160,9 @@ void CPython27::saveScriptContent(const std::string& scriptPath,
 }
 
 void CPython27::startScript(int scriptInstanceId,
-                            const std::string& scriptPath,
-                            const std::string& scriptApiId)
+                            const boost::filesystem::path& scriptPath,
+                            const std::string& scriptApiId,
+                            const boost::filesystem::path& scriptLogPath)
 {
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_processesMutex);
@@ -181,6 +183,7 @@ void CPython27::startScript(int scriptInstanceId,
                                                                               m_pythonExecutable,
                                                                               getInterpreterPath(),
                                                                               scriptApiId,
+                                                                              scriptLogPath,
                                                                               [this](bool running, int scriptId, const std::string& error)
                                                                               {
                                                                                  if (!running)
@@ -249,4 +252,3 @@ void CPython27::onStopRequested()
       }
    }
 }
-

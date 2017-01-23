@@ -11,15 +11,13 @@ namespace automation
 {
    namespace script
    {
-      CYScriptApiImplementation::CYScriptApiImplementation(Poco::Logger& ruleLogger,
-                                                           boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+      CYScriptApiImplementation::CYScriptApiImplementation(boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                                                            boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
                                                            boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
                                                            boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                                                            boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
                                                            boost::shared_ptr<IGeneralInfo> generalInfo)
-         : m_ruleLogger(ruleLogger),
-           m_pluginGateway(pluginGateway),
+         : m_pluginGateway(pluginGateway),
            m_dbAcquisitionRequester(dbAcquisitionRequester),
            m_dbDeviceRequester(dbDeviceRequester),
            m_keywordAccessLayer(keywordAccessLayer),
@@ -142,7 +140,7 @@ namespace automation
          }
          catch (std::exception& exception)
          {
-            m_ruleLogger.error(std::string("waitForNextAcquisition : ") + exception.what());
+            YADOMS_LOG(error) << "waitForNextAcquisition : " << exception.what();
             throw;
          }
       }
@@ -175,7 +173,7 @@ namespace automation
          }
          catch (std::exception& exception)
          {
-            m_ruleLogger.error(std::string("waitForNextAcquisitions : ") + exception.what());
+            YADOMS_LOG(error) << "waitForNextAcquisitions : " << exception.what();
             throw;
          }
       }
@@ -265,7 +263,7 @@ namespace automation
          }
          catch (std::exception& exception)
          {
-            m_ruleLogger.error(std::string("waitForEvent : ") + exception.what());
+            YADOMS_LOG(error) << "waitForEvent : " << exception.what();
 
             if (dateTimeObserver)
                notification::CHelpers::unsubscribeObserver(dateTimeObserver);

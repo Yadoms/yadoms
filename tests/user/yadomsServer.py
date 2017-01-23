@@ -58,13 +58,21 @@ def wwwLocalesPath():
    return os.path.join(binaryPath(), "www", "locales")
    
    
-def start():
+def start(startupArgs=[]):
    """Start the Yadoms server"""
    
+   # Set logLevel to none if not provided
+   if not startupArgs or all("logLevel=" not in arg for arg in startupArgs):
+      startupArgs.append("logLevel=none")
+
+   argsLine = ""
+   for arg in startupArgs:
+      argsLine += " --" + arg
+
    if (platform.system() == "Windows"):
-      return subprocess.Popen(os.path.join(binaryPath(), "yadoms.exe --logLevel=none"))
+      return subprocess.Popen(os.path.join(binaryPath(), "yadoms.exe" + argsLine))
    else:
-      return subprocess.Popen(os.path.join(binaryPath(), "yadoms"))
+      return subprocess.Popen(os.path.join(binaryPath(), "yadoms" + argsLine))
    
    
 def isProcessRunning(pid):  

@@ -187,12 +187,7 @@ namespace automation
          if (interpreter != m_loadedInterpreters.end() && interpreter->second->isAvalaible())
             return interpreter->second;
 
-         throw std::runtime_error("Interpreter " + interpreterType + "not found ");
-      }
-
-      boost::shared_ptr<IRuleLogDispatcher> CManager::getRuleLogDispatcher(const std::string& interpreterType)
-      {
-         return getInterpreterInstance(interpreterType)->getRuleLogDispatcher();
+         throw std::runtime_error("Interpreter " + interpreterType + " not found ");
       }
 
       std::string CManager::getScriptContent(const std::string& interpreterType,

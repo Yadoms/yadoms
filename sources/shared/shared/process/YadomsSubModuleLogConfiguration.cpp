@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "YadomsSubModuleLogConfiguration.h"
 #include <Poco/Logger.h>
-#include <shared/exception/Exception.hpp>
 
 namespace shared
 {
@@ -32,7 +31,7 @@ namespace shared
 
          if (!boost::filesystem::exists(logfilepath.parent_path().string()))
             if (!boost::filesystem::create_directories(logfilepath.parent_path().string()))
-               throw exception::CException("Cannot create directory " + logfilepath.parent_path().string());
+               throw std::runtime_error((boost::format("Cannot create directory %1%") % logfilepath.parent_path()).str());
 
          m_fileChannel->setProperty("path", logfilepath.string());
          m_fileChannel->setProperty("rotation", "daily");

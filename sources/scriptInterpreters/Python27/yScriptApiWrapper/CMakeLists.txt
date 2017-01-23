@@ -2,13 +2,16 @@
 # include common script interpreters definitions
 include("../../YadomsScriptWrappersCommon.cmake")
 
-SET_PARENT_INTERPRETER(python27)
+set(PYTHON27_PARENT_INTERPRETER python27)
+set(PYTHON27_TARGET_LANGUAGE python)
 
+
+SCRIPT_API_WRAPPER_SET_PARENT_INTERPRETER(${PYTHON27_PARENT_INTERPRETER})
 
 #########################################
 ## Place here all the source files
 #########################################
-set(PYTHON_WRAPPER_SOURCES
+set(PYTHON27_WRAPPER_SOURCES
    yScriptApiWrapper.i
 
    stdafx.h
@@ -32,7 +35,7 @@ set_source_files_properties(yScriptApiWrapper.i PROPERTIES CPLUSPLUS ON)
 ## Place here all additional include directories
 ## (by default yadoms-shared, boost and poco are included)
 #########################################
-set(PYTHON_WRAPPER_INCLDIR
+set(PYTHON27_WRAPPER_INCLDIR
    ${PYTHON_INCLUDE_DIRS}
    ${script_cpp_api_INCLUDE_DIR}
 )
@@ -41,7 +44,7 @@ set(PYTHON_WRAPPER_INCLDIR
 ## Place here all additional libraries to link with
 ## (by default yadoms-shared, boost and poco are included)
 #########################################
-set(PYTHON_WRAPPER_LINK
+set(PYTHON27_WRAPPER_LINK
    ${PYTHON_LIBRARIES}
    script_cpp_api
 )
@@ -68,9 +71,10 @@ endif()
 ## Always leave these lines to configure script wrapper correctly
 ## even if some variables are empty
 #########################################
-SCRIPT_API_WRAPPER_SOURCES(python ${PYTHON_WRAPPER_SOURCES})
-SCRIPT_API_WRAPPER_INCLDIR(${PYTHON_WRAPPER_INCLDIR} ${PROTOBUF_INCLUDE_DIRS})
-SCRIPT_API_WRAPPER_LINK(${PYTHON_WRAPPER_LINK})
+SCRIPT_API_WRAPPER_SOURCES(${PYTHON27_TARGET_LANGUAGE} ${PYTHON27_WRAPPER_SOURCES})
+SCRIPT_API_WRAPPER_INCLDIR(${PYTHON27_WRAPPER_INCLDIR} ${PROTOBUF_INCLUDE_DIRS})
+SCRIPT_API_WRAPPER_LINK(${PYTHON27_WRAPPER_LINK})
+SCRIPT_API_SOURCE_GROUP(${PYTHON27_PARENT_INTERPRETER})
 
 #########################################
 ## Add pre-build step to generate swigpyrun.h file
@@ -80,7 +84,7 @@ SCRIPT_API_WRAPPER_LINK(${PYTHON_WRAPPER_LINK})
 ## the output filename into the target sources to make it generated at build time
 #########################################
 add_custom_command(OUTPUT swigpyrun.h 
-  COMMAND ${SWIG_EXECUTABLE} -python -external-runtime ${CMAKE_CURRENT_SOURCE_DIR}/swigpyrun.h)
+  COMMAND ${SWIG_EXECUTABLE} -${PYTHON27_TARGET_LANGUAGE} -external-runtime ${CMAKE_CURRENT_SOURCE_DIR}/swigpyrun.h)
   
 
 #########################################

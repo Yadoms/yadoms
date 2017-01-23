@@ -28,12 +28,17 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Get the script path
             //-----------------------------------------------------
-            virtual const std::string& getScriptPath() = 0;
+            virtual const boost::filesystem::path& getScriptPath() = 0;
 
             //-----------------------------------------------------
             ///\brief Get the script API instance ID
             //-----------------------------------------------------
             virtual const std::string& getScriptApiId() = 0;
+
+            //-----------------------------------------------------
+            ///\brief Get the script log path
+            //-----------------------------------------------------
+            virtual const boost::filesystem::path& getScriptLogPath() = 0;
          };
       }
    }

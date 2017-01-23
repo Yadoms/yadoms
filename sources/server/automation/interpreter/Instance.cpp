@@ -17,12 +17,10 @@ namespace automation
       CInstance::CInstance(const boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
                            const boost::filesystem::path& logPath,
                            boost::shared_ptr<shared::process::IProcess> process,
-                           boost::shared_ptr<IIpcAdapter> ipcAdapter,
-                           boost::shared_ptr<IRuleLogDispatcher> ruleLogDispatcher)
+                           boost::shared_ptr<IIpcAdapter> ipcAdapter)
          : m_interpreterInformation(interpreterInformation),
            m_process(process),
            m_ipcAdapter(ipcAdapter),
-           m_ruleLogDispatcher(ruleLogDispatcher),
            m_avalaible(false)
       {
          m_ipcAdapter->postInit(m_interpreterInformation,
@@ -115,12 +113,14 @@ namespace automation
       }
 
       void CInstance::startScript(int scriptInstanceId,
-                                  const std::string& scriptPath,
-                                  const std::string& yScriptApiId) const
+                                  const boost::filesystem::path& scriptPath,
+                                  const std::string& yScriptApiId,
+                                  const boost::filesystem::path& scriptLogPath) const
       {
          auto request = boost::make_shared<CStartScript>(scriptInstanceId,
                                                          scriptPath,
-                                                         yScriptApiId);
+                                                         yScriptApiId,
+                                                         scriptLogPath);
 
          try
          {
@@ -146,11 +146,6 @@ namespace automation
          {
             YADOMS_LOG(error) << "Error when stopping script from interpreter " << m_interpreterInformation->getName() << " : " << e.what();
          }
-      }
-
-      boost::shared_ptr<IRuleLogDispatcher> CInstance::getRuleLogDispatcher() const
-      {
-         return m_ruleLogDispatcher;
       }
 
       bool CInstance::getAvalaibility() const
@@ -185,5 +180,3 @@ namespace automation
       }
    }
 } // namespace automation::interpreter
-
-

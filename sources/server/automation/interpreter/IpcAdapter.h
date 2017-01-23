@@ -50,6 +50,7 @@ namespace automation
 
          //--------------------------------------------------------------
          /// \brief	Message queue receive thread
+         /// \param[in] logName The log name
          //--------------------------------------------------------------
          void messageQueueReceiveThreaded(const std::string& logName);
 
@@ -68,7 +69,7 @@ namespace automation
          void send(const interpreter_IPC::toInterpreter::msg& pbMsg,
                    boost::function1<bool, const interpreter_IPC::toYadoms::msg&> checkExpectedMessageFunction,
                    boost::function1<void, const interpreter_IPC::toYadoms::msg&> onReceiveFunction,
-                   const boost::posix_time::time_duration& timeout = boost::posix_time::seconds(10));
+                   const boost::posix_time::time_duration& timeout = boost::posix_time::seconds(30));
 
          //--------------------------------------------------------------
          /// \brief	Process a received message
@@ -78,7 +79,6 @@ namespace automation
          void processMessage(boost::shared_ptr<const unsigned char[]> message, size_t messageSize);
 
          void processNotifiyScriptStopped(const interpreter_IPC::toYadoms::NotifiyScriptStopped& notifiyScriptStopped) const;
-         void processScriptLog(const interpreter_IPC::toYadoms::ScriptLog& scriptlog) const;
 
       private:
          //--------------------------------------------------------------

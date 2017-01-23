@@ -8,7 +8,6 @@
 #include "IpcAdapter.h"
 #include <shared/process/NativeExecutableCommandLine.h>
 #include "InstanceStateHandler.h"
-#include "RuleLogDispatcher.h"
 #include <server/logging/YadomsSubModuleProcessLogger.h>
 
 
@@ -33,10 +32,7 @@ namespace automation
 
          auto logger = createInterpreterLogger(interpreterFileName);
 
-         auto scriptLogDispatcher = createScriptLogDispatcher();
-
-         auto yInterpreterIpcAdapter = createInterpreterRunningContext(scriptLogDispatcher,
-                                                                       interpreterInformation,
+         auto yInterpreterIpcAdapter = createInterpreterRunningContext(interpreterInformation,
                                                                        onScriptStoppedFct);
 
          auto commandLine = createCommandLine(interpreterInformation,
@@ -52,8 +48,7 @@ namespace automation
          return boost::make_shared<CInstance>(interpreterInformation,
                                               interpreterLogFile(interpreterFileName),
                                               process,
-                                              yInterpreterIpcAdapter,
-                                              scriptLogDispatcher);
+                                              yInterpreterIpcAdapter);
       }
 
       boost::filesystem::path CFactory::interpreterLogFile(const std::string& interpreterFileName) const
@@ -71,29 +66,20 @@ namespace automation
          return boost::make_shared<logging::CYadomsSubModuleProcessLogger>("interpreter." + interpreterFileName);
       }
 
-      boost::shared_ptr<IRuleLogDispatcher> CFactory::createScriptLogDispatcher() const
-      {
-         return boost::make_shared<CRuleLogDispatcher>();
-      }
-
-      boost::shared_ptr<IIpcAdapter> CFactory::createInterpreterRunningContext(boost::shared_ptr<IRuleLogDispatcher> ruleLogDispatcher,
-                                                                               boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
+      boost::shared_ptr<IIpcAdapter> CFactory::createInterpreterRunningContext(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
                                                                                boost::function2<void, int, const std::string&> onScriptStoppedFct) const
       {
-         auto apiImplementation = createInterpreterApiImplementation(ruleLogDispatcher,
-                                                                     interpreterInformation,
+         auto apiImplementation = createInterpreterApiImplementation(interpreterInformation,
                                                                      onScriptStoppedFct);
 
          return boost::make_shared<CIpcAdapter>(interpreterInformation->getName(),
                                                 apiImplementation);
       }
 
-      boost::shared_ptr<CYInterpreterApiImplementation> CFactory::createInterpreterApiImplementation(boost::shared_ptr<IRuleLogDispatcher> ruleLogDispatcher,
-                                                                                                     boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
+      boost::shared_ptr<CYInterpreterApiImplementation> CFactory::createInterpreterApiImplementation(boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> interpreterInformation,
                                                                                                      boost::function2<void, int, const std::string&> onScriptStoppedFct) const
       {
-         return boost::make_shared<CYInterpreterApiImplementation>(ruleLogDispatcher,
-                                                                   interpreterInformation,
+         return boost::make_shared<CYInterpreterApiImplementation>(interpreterInformation,
                                                                    onScriptStoppedFct);
       }
 
