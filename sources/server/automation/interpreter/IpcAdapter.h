@@ -69,7 +69,7 @@ namespace automation
          void send(const interpreter_IPC::toInterpreter::msg& pbMsg,
                    boost::function1<bool, const interpreter_IPC::toYadoms::msg&> checkExpectedMessageFunction,
                    boost::function1<void, const interpreter_IPC::toYadoms::msg&> onReceiveFunction,
-                   const boost::posix_time::time_duration& timeout = boost::posix_time::seconds(10));
+                   const boost::posix_time::time_duration& timeout = boost::posix_time::seconds(30));
 
          //--------------------------------------------------------------
          /// \brief	Process a received message

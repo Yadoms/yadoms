@@ -23,7 +23,7 @@ class ShowKeywords(unittest.TestCase):
       database.deploy('OneFakePlugin')
       config.deploy("withDeveloperMode")
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Firefox()
+      self.browser = webdriver.Chrome()
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       

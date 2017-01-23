@@ -21,7 +21,7 @@ class CreateRule(unittest.TestCase):
       database.new()
       config.deploy("nominal")
       scripts.deleteAll()
-      self.serverProcess = yadomsServer.start()
+      self.serverProcess = yadomsServer.start(["logLevel=trace"])
       self.browser = webdriver.Chrome()
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
@@ -66,10 +66,11 @@ class CreateRule(unittest.TestCase):
           "def yMain(yApi):",
           "   while(True):",
           "      print 'Some log entry...'",
-          "      time.sleep(100)"],
+          "      while(True):",
+          "         time.sleep(100)"],
          lambda ruleName, ruleDescription, ruleCode: self.checkCreateOkRule(ruleName, ruleDescription, ruleCode,
-            ['[INFORMATION] #### START ####\n',
-             '[INFORMATION] Some log entry...\n']))
+            ['[Information] : #### START ####\n',
+             '[Information] : Some log entry...\n']))
             
             
 
@@ -113,16 +114,17 @@ class CreateRule(unittest.TestCase):
           "def yMain(yApi):",
           "   while(True)",
           "      print 'Some log entry...'",
-          "      time.sleep(100)"],
+          "      while(True):",
+          "         time.sleep(100)"],
          lambda ruleName, ruleDescription, ruleCode: self.checkCreateErroneousRule(ruleName, ruleDescription, ruleCode,
-            ['[INFORMATION] #### START ####\n',
-             '[ERROR] Traceback (most recent call last):\n',
-             '[ERROR]   File "scriptCaller.py", line 36, in <module>\n',
-             '[ERROR]     script = __import__(scriptModule)\n',
-             '[ERROR]   File "' + os.path.abspath(scripts.ruleFullPath(1)) + '", line 4\n',
-             '[ERROR]     while(True)\n',
-             '[ERROR]               ^\n',
-             '[ERROR] SyntaxError: invalid syntax\n']))
+            ['[Information] : #### START ####\n',
+             '[Error] : Traceback (most recent call last):\n',
+             '[Error] :   File "scriptCaller.py", line 36, in <module>\n',
+             '[Error] :     script = __import__(scriptModule)\n',
+             '[Error] :   File "' + os.path.abspath(scripts.ruleFullPath(1)) + '", line 4\n',
+             '[Error] :     while(True)\n',
+             '[Error] :               ^\n',
+             '[Error] : SyntaxError: invalid syntax\n']))
 
          
       

@@ -76,7 +76,7 @@ namespace interpreter_cpp_api
       }
 
       m_msgReceiverThread.interrupt();
-      m_msgReceiverThread.timed_join(boost::posix_time::seconds(20));
+      m_msgReceiverThread.timed_join(boost::posix_time::seconds(30));
 
       closeMessageQueues();
    }

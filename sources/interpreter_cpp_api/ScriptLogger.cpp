@@ -6,6 +6,7 @@
 #include <Poco/SplitterChannel.h>
 #include <Poco/AutoPtr.h>
 #include <shared/Log.h>
+#include <shared/StringExtension.h>
 
 
 namespace interpreter_cpp_api
@@ -58,13 +59,13 @@ namespace interpreter_cpp_api
 
    void CScriptLogger::information(const std::string& line)
    {
-      m_msgInformation.setText(line);
+      m_msgInformation.setText(shared::CStringExtension::removeEol(line));
       m_logger.log(m_msgInformation);
    }
 
    void CScriptLogger::error(const std::string& line)
    {
-      m_msgError.setText(line);
+      m_msgError.setText(shared::CStringExtension::removeEol(line));
       m_logger.log(m_msgError);
    }
 } // namespace interpreter_cpp_api	
