@@ -245,7 +245,6 @@ set(SHARED_LIB_SRC
    shared/script/yInterpreterApi/IStopScript.h
    shared/script/yInterpreterApi/IYInterpreterApi.h
 
-   shared/script/yScriptApi/commonIncludes.h
    shared/script/yScriptApi/IYScriptApi.h
    shared/script/yScriptApi/WaitForEventResult.h
 

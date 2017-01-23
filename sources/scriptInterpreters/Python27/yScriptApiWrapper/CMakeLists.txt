@@ -13,9 +13,6 @@ SCRIPT_API_WRAPPER_SET_PARENT_INTERPRETER(${PYTHON27_PARENT_INTERPRETER})
 #########################################
 set(PYTHON27_WRAPPER_SOURCES
    yScriptApiWrapper.i
-
-   stdafx.h
-   stdafx.cpp
    
 	swigpyrun.h
      

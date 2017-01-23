@@ -1,17 +1,18 @@
 #pragma once
 
-// Common includes (STL, Boost...) required by yScriptApi
-#include <shared/script/yScriptApi/commonIncludes.h>
+// STL
+#include <queue>
 
-#include <boost/interprocess/ipc/message_queue.hpp>
-#include <boost/thread/barrier.hpp>
+// Boost
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/function.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/thread/thread.hpp>
+#include <boost/thread/recursive_mutex.hpp>
 
-#include <boost/uuid/uuid.hpp>            // uuid class
-#include <boost/uuid/uuid_generators.hpp> // generators
-#include <boost/uuid/uuid_io.hpp>         // streaming operators etc.
-
-#include <Poco/Environment.h>
+// Poco
 #include <Poco/PipeStream.h>
 #include <Poco/Process.h>
 #include <Poco/StreamCopier.h>
-#include <fstream>

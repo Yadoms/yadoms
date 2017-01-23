@@ -6,13 +6,9 @@
 #include <vector>
 #include <string>
 #include <utility>
-#include <shared/script/yScriptApi/IYScriptApi.h>
-#include <shared/script/yScriptApi/WaitForEventResult.h>
-
 #include <iostream>
 
 #include "script_cpp_api/ImplementationHelper.h"
-
 %}
 
 
