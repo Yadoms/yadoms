@@ -43,7 +43,7 @@ if (PYTHON_ROOT)
       
    else()
 
-      find_library(PYTHON_LIBRARIES NAMES libpython${PYTHON_REQUIRED_VERSION}.so PATHS ${PYTHON_ROOT}/libs)
+      find_library(PYTHON_LIBRARIES NAMES libpython${PYTHON_REQUIRED_VERSION}.a PATHS ${PYTHON_ROOT}/libs)
    
    endif()
 
