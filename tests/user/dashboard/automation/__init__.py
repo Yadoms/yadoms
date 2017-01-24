@@ -36,9 +36,12 @@ def getRuleName(rulesTable, ruleNumber):
 
 def getRuleDescription(rulesTable, ruleNumber):
    return getRuleDatas(rulesTable, ruleNumber)[1].text
-
+   
 def getRuleAutoStart(rulesTable, ruleNumber):
-   return getRuleDatas(rulesTable, ruleNumber)[2].find_element_by_tag_name("input").is_selected()
+   return getRuleDatas(rulesTable, ruleNumber)[2].find_element_by_tag_name("input")
+   
+def getRuleAutoStartState(rulesTable, ruleNumber):
+   return getRuleAutoStart(rulesTable, ruleNumber).is_selected()
    
 def getRuleButtons(rulesTable, ruleNumber):
    rulesDataButtonsCell = getRuleDatas(rulesTable, ruleNumber)[3]

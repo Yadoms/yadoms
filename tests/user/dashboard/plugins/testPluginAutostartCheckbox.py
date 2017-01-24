@@ -16,7 +16,7 @@ class AutostartCheckboxPlugin(unittest.TestCase):
    
    def setUp(self):
       database.deploy('OneFakePlugin')
-      config.deploy("withDeveloperMode")
+      config.deploy("nominal")
       self.serverProcess = yadomsServer.start()
       self.browser = webdriver.Chrome()
       self.browser.implicitly_wait(10)
