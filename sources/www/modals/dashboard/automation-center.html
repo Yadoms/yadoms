@@ -117,7 +117,10 @@
       $ruleRow.find("td.automation-rule-description").text(rule.description);
 
       //autoStart property
-      $ruleRow.find("input.cb-autoStart").prop("checked", rule.autoStart);
+      if (rule.autoStart)
+         $ruleRow.find("input.cb-autoStart").prop("checked", true);
+      else
+         $ruleRow.find("input.cb-autoStart").removeProp("checked");
 
       //we manage the state
       switch (rule.state) {

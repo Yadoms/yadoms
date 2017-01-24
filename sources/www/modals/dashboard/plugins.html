@@ -131,7 +131,10 @@
       $pluginInstanceRow.find("td.plugin-status").html(statusField);
 
       //we set autostart value
-      $pluginInstanceRow.find("input.cb-autoStart").prop("checked", pi.autoStart);
+      if (pi.autoStart === "true")
+         $pluginInstanceRow.find("input.cb-autoStart").prop("checked", true);
+      else
+         $pluginInstanceRow.find("input.cb-autoStart").removeProp("checked");
 
 	  //translation of the line
 	  $pluginInstanceRow.i18n();
