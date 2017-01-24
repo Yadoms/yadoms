@@ -21,6 +21,7 @@ class CreateRule(unittest.TestCase):
       database.new()
       config.deploy("nominal")
       scripts.deleteAll()
+      # We have to activate log to be able to check rules logs
       self.serverProcess = yadomsServer.start(["logLevel=trace"])
       self.browser = webdriver.Chrome()
       self.browser.implicitly_wait(10)
