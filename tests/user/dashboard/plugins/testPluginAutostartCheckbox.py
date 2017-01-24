@@ -38,21 +38,21 @@ class AutostartCheckboxPlugin(unittest.TestCase):
       
       print '  Uncheck the box'
       dashboard.plugins.getPluginAutoStart(pluginsTable, pluginNumber).click()
-      self.assertFalse(dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber))
+      tools.waitUntil(lambda: dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber) is False)
 
       print '  Reload page and check box state'
       dashboard.openSummary(self.browser)
       dashboard.openPlugin(self.browser)
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
-      self.assertFalse(dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber))
+      tools.waitUntil(lambda: dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber) is False)
       
       print '  Check the box'
       dashboard.plugins.getPluginAutoStart(pluginsTable, pluginNumber).click()
-      self.assertTrue(dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber))
+      tools.waitUntil(lambda: dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber) is True)
 
       print '  Reload page and check box state'
       dashboard.openPlugin(self.browser)
-      self.assertTrue(dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber))
+      tools.waitUntil(lambda: dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber) is True)
       
       
    def tearDown(self):
