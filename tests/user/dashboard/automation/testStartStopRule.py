@@ -42,7 +42,7 @@ class StartStopRule(unittest.TestCase):
       
       self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Stopped)
       
-      self.assertFalse(dashboard.automation.getRuleAutoStart(rulesTable, ruleNumber))
+      self.assertFalse(dashboard.automation.getRuleAutoStartState(rulesTable, ruleNumber))
       
       print '  Start rule'
       self.assertTrue(tools.waitUntil(lambda: startStopButton.is_enabled()))

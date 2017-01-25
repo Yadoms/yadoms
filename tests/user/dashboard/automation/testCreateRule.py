@@ -41,7 +41,7 @@ class CreateRule(unittest.TestCase):
       self.assertEqual(len(dashboard.automation.getRuleDatas(rulesTable, ruleNumber)), 5)
       self.assertEqual(dashboard.automation.getRuleName(rulesTable, ruleNumber), ruleName)
       self.assertEqual(dashboard.automation.getRuleDescription(rulesTable, ruleNumber), ruleDescription)
-      self.assertTrue(dashboard.automation.getRuleAutoStart(rulesTable, ruleNumber))
+      self.assertTrue(dashboard.automation.getRuleAutoStartState(rulesTable, ruleNumber))
 
       buttons = dashboard.automation.getRuleButtons(rulesTable, ruleNumber)
       self.assertEqual(len(buttons), 4)
@@ -90,7 +90,7 @@ class CreateRule(unittest.TestCase):
       self.assertEqual(len(dashboard.automation.getRuleDatas(rulesTable, ruleNumber)), 5)
       self.assertEqual(dashboard.automation.getRuleName(rulesTable, ruleNumber), ruleName)
       self.assertEqual(dashboard.automation.getRuleDescription(rulesTable, ruleNumber), ruleDescription)
-      self.assertTrue(dashboard.automation.getRuleAutoStart(rulesTable, ruleNumber))
+      self.assertTrue(dashboard.automation.getRuleAutoStartState(rulesTable, ruleNumber))
 
       buttons = dashboard.automation.getRuleButtons(rulesTable, ruleNumber)
       self.assertEqual(len(buttons), 4)

@@ -58,7 +58,7 @@ class EditRule(unittest.TestCase):
       tools.waitUntil(lambda: len(ruleDatas[1].text) > 0)
       self.assertEqual(ruleDatas[1].text, ruleNewDescription)
       self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Stopped)
-      self.assertFalse(dashboard.automation.getRuleAutoStart(rulesTable, ruleNumber))
+      self.assertFalse(dashboard.automation.getRuleAutoStartState(rulesTable, ruleNumber))
          
       
    def test_editRunningRule(self):
@@ -91,7 +91,7 @@ class EditRule(unittest.TestCase):
       tools.waitUntil(lambda: len(ruleDatas[1].text) > 0)
       self.assertEqual(ruleDatas[1].text, ruleNewDescription)
       self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Running)
-      self.assertFalse(dashboard.automation.getRuleAutoStart(rulesTable, ruleNumber))
+      self.assertFalse(dashboard.automation.getRuleAutoStartState(rulesTable, ruleNumber))
       
       
       
