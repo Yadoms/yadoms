@@ -53,7 +53,7 @@
           },
 			 "differentialDisplay": {
 		       "name": "Differential display",
-				 "description": "The display show the difference between each points (useful for cumulative rain measurement, ...)."
+				 "description": "The display show the difference between each points (useful for cumulative rain measurement, ...). This option is ignore for boolean and enum values."
 			 },
           "PlotType": {
             "name": "Plot Type",
