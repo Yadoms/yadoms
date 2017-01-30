@@ -6,7 +6,7 @@
  * This associative array based on plugin Type contains all plugin type information with their package
  * @type {Array}
  */
-PluginInstanceManager.packageList = [];
+PluginManager.packageList = [];
 
 /**
  * Factory which create objects from json data

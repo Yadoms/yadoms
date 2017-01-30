@@ -26,19 +26,25 @@
       $("#btn-add-new-recipient").unbind("click").bind("click", function() { addNewRecipient(); });
 
       //get all recipients from server and add them to dom
-      RecipientManager.getAll()
-         .done(function(recipientList) {
-            //foreach result we append a <tr>
-            $.each(recipientList, function(index, value) {
-               addRecipientToDom(value);
+     PluginManager.getAll()
+     .done(function(packagelist) {
+         RecipientManager.getAll()
+            .done(function(recipientList) {
+               //foreach result we append a <tr>
+               $.each(recipientList, function(index, value) {
+                  addRecipientToDom(value);
+               });
+               d.resolve();
+            })
+            .fail(function(error) {
+               notifyError($.t("modals.recipient.errorGettingList"), error);
+               d.reject();
             });
-            d.resolve();
          })
-         .fail(function(error) {
-            notifyError($.t("modals.recipient.errorGettingList"), error);
-            d.reject();
-         });
-
+      .fail(function (error) {
+         d.reject();
+      });        
+         
       return d.promise();
    };
 

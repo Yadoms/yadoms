@@ -265,6 +265,16 @@ widgetViewModelCtor =
                return false;
            }
        }
+       
+       this.isEnumVariable = function (index) {
+           var self = this;
+           if ((self.keywordInfo[index]) && (self.keywordInfo[index].type === "enum")) {
+               return true;
+           }
+           else {
+               return false;
+           }
+       }       
 
        this.refreshData = function (interval) {
            var self = this;
@@ -394,9 +404,10 @@ widgetViewModelCtor =
                                    var lastDate;
                                    var d;
                                    var lastValue=null;
+                                   var differentialDisplay = false;
                                    
                                    try{
-                                      var differentialDisplay = device.content.differentialDisplay;
+                                      differentialDisplay = parseBool(device.content.differentialDisplay);
                                    }
                                    catch(error)
                                    {
@@ -424,7 +435,12 @@ widgetViewModelCtor =
                                                plot.push([lastDate + 1, null]);
                                            }
 
-                                           if (differentialDisplay)
+                                           console.log ("differentialDisplay:", differentialDisplay);
+                                           console.log ("self.isBoolVariable(index):", self.isBoolVariable(index));
+                                           console.log ("self.isEnumVariable(index):", self.isEnumVariable(index));
+                                           
+                                           // The differential display is disabled if the type of the data is enum or boolean
+                                           if (differentialDisplay && !self.isBoolVariable(index) && !self.isEnumVariable(index))
                                            {
                                               if (lastValue != null)
                                                  plot.push([d, v-lastValue]);
@@ -463,7 +479,8 @@ widgetViewModelCtor =
                                                plot.push([d, null]);
                                            }
 
-                                           if (differentialDisplay)
+                                           // The differential display is disabled if the type of the data is enum or boolean
+                                           if (differentialDisplay && !self.isBoolVariable(index) && !self.isEnumVariable(index))
                                            {
                                               if (device.content.PlotType === "arearange")
                                               {
@@ -578,7 +595,7 @@ widgetViewModelCtor =
                                            //Add Line
                                            self.chart.addSeries({
                                                id: self.seriesUuid[index],
-											   index: ChartIndex,
+                                               index: ChartIndex,
                                                data: plot,
                                                dataGrouping: {
                                                    enabled: false
@@ -596,13 +613,13 @@ widgetViewModelCtor =
                                                type: 'line'
                                            }, false, false); // Do not redraw immediately
 										   
-										   ChartIndex = ChartIndex + 1;
+										             ChartIndex = ChartIndex + 1;
 
                                            //Add Ranges
                                            if (deviceIsSummary[index]) {
                                                self.chart.addSeries({
                                                    id: 'range_' + self.seriesUuid[index],
-												   index: ChartIndex,
+                                                   index: ChartIndex,
                                                    data: range,
                                                    dataGrouping: {
                                                        enabled: false
@@ -650,7 +667,7 @@ widgetViewModelCtor =
                                                animation: false
                                            }, false, false); // Do not redraw immediately
 										   
-										   ChartIndex = ChartIndex + 1;
+										             ChartIndex = ChartIndex + 1;
                                        }
                                    } catch (err2) {
                                        console.log('Fail to create serie : ' + err2);

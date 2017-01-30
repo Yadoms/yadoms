@@ -266,16 +266,13 @@
                                 //we check for page. If there is no page, we create a new one automatically
                                 PageManager.getAll()
                                 .done(function () {
-								   //PluginManager.getAll()
-								   //.done(function() {
-									   if (PageManager.pages.length === 0) {
-										  console.info("Creating a default page");
-										  PageManager.createPage($.t("initialization.homePage"), 0)
-										  .done(function () {
-											 PageManager.ensureOnePageIsSelected();
-										  });
-									  }
-                                   //});
+                                   if (PageManager.pages.length === 0) {
+                                      console.info("Creating a default page");
+                                      PageManager.createPage($.t("initialization.homePage"), 0)
+                                      .done(function () {
+                                         PageManager.ensureOnePageIsSelected();
+                                      });
+                                    }
                                    //we can start app
                                    main();
                                 })
@@ -497,15 +494,15 @@
             //we get configuration
            ConfigurationManager.getSection(ConfigurationManager.items.systemSection)
               .done(function (result) {
-                    if (!isNullOrUndefined(result)) {
-                        Yadoms.systemConfiguration = result;
-                        //we set the right language
-                        i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function () {
-                           $("html").i18n();
-                            moment.lang(window.navigator.userLanguage || window.navigator.language);
-                            waitForServerReady();
-                        });
-                    }
+                 if (!isNullOrUndefined(result)) {
+                     Yadoms.systemConfiguration = result;
+                     //we set the right language
+                     i18n.setLng(Yadoms.systemConfiguration[ConfigurationManager.items.system.language].value, function () {
+                        $("html").i18n();
+                         moment.lang(window.navigator.userLanguage || window.navigator.language);
+                         waitForServerReady();
+                     });
+                 }
               })
            .fail(function(error) {
               notifyError($.t("objects.ConfigurationManager.errorDuringGettingSystemConfiguration"), error);

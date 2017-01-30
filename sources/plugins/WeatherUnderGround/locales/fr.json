@@ -27,8 +27,8 @@
            {
               "individualKeywords" :
               {				 
-                 "name": "informations individuelles",
-                 "description": ""
+                 "name": "données météos individuelles",
+                 "description": "Les données météos seront enregistrées séparément (temps, température, pluie, etc...) pour pouvoir être utilisées par les règles d'automatisation."
               }
            }
       },
@@ -43,13 +43,13 @@
            {
               "individualRainForecast" :
               {				 
-                 "name": "Prévisions de précipitations individuelles",
-                 "description": ""
+                 "name": "Prévisions pluviométriques",
+                 "description": "Les données de prévision pluviomériques sont enregistrées séparément pour pouvoir être utilisées par les règles d'automatisation."
               },
               "individualTempForecast" :
               {				 
-                 "name": "Prévision de température individuelle",
-                 "description": ""
+                 "name": "Prévisions de température",
+                 "description": "Les données de prévision de températures sont enregistrées séparément pour pouvoir être utilisées par les règles d'automatisation."
               }
            }
       }      

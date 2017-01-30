@@ -1,6 +1,6 @@
 ﻿{
     "core": {
-        "event": "evennement",
+        "event": "evènement",
         "plugin": {
             "name": "plugin",
             "install": "Installation du plugin ...",
@@ -29,14 +29,14 @@
         },
         "scriptInterpreter": {
             "name": "script interpreter",
-            "install": "Installation de l'interpreteur de scripts ...",
-            "update": "Mise à jour de l'interpreteur de scripts ...",
-            "remove": "Suppression de l'interpreteur de scripts ...",
-            "removeFailed": "La suppression de l'interpreteur de scripts a echoué",
-            "download": "Téléchargement de l'interpreteur de scripts ...",
-            "downloadFailed": "Le téléchargement de l'interpreteur de scripts a echoué",
-            "deploy": "Déploiement de l'interpreteur de scripts ...",
-            "deployFailed": "Le déploiement de l'interpreteur de scripts a echoué",
+            "install": "Installation de l'interpréteur de scripts ...",
+            "update": "Mise à jour de l'interpréteur de scripts ...",
+            "remove": "Suppression de l'interpréteur de scripts ...",
+            "removeFailed": "La suppression de l'interpréteur de scripts a echoué",
+            "download": "Téléchargement de l'interpréteur de scripts ...",
+            "downloadFailed": "Le téléchargement de l'interpréteur de scripts a echoué",
+            "deploy": "Déploiement de l'interpréteur de scripts ...",
+            "deployFailed": "Le déploiement de l'interpréteur de scripts a echoué",
             "finalize": "Finalisation ...",
             "success": "Succès"
         },
@@ -874,7 +874,7 @@
             "errorDuringGettingPages": "Erreur lors de la récupération des pages"
         },
         "ConfigurationManager": {
-            "errorDuringGettingSystemConfiguration": "Errrur lors de la récupération de la configuration",
+            "errorDuringGettingSystemConfiguration": "Erreur lors de la récupération de la configuration",
             "errorDuringGettingConfiguration": "Erreur lors de la récupération de la configuration __section__.__key__",
             "errorDuringCreatingConfiguration": "Erreur lors de la création de la configuration __section__.__key__",
             "errorDuringUpdatingConfiguration": "Erreur lors de la mise à jour de la configuration __section__.__key__"
