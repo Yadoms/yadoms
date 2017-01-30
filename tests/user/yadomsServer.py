@@ -69,10 +69,9 @@ def start(startupArgs=[]):
    for arg in startupArgs:
       argsLine += " --" + arg
 
-   if (platform.system() == "Windows"):
-      return subprocess.Popen(os.path.join(binaryPath(), "yadoms.exe" + argsLine))
-   else:
-      return subprocess.Popen(os.path.join(binaryPath(), "yadoms" + argsLine))
+   print 'Start server...'
+   executableName = "yadoms.exe" if platform.system() == "Windows" else "yadoms"
+   return subprocess.Popen("python yadomsServerWrapper.py " + os.path.join(binaryPath(), executableName + " " + argsLine), stdin=subprocess.PIPE)
    
    
 def isProcessRunning(pid):  
@@ -106,13 +105,22 @@ def killProcTree(pid, including_parent=True):
          print 'Process killed'
       except:
          print 'Error : process still alive'
-         raise
+         assert False
       
   
 def stop(yadomsProcess):
-   """Kill Yadoms server with its sup-processes"""
+   """Kill Yadoms server with its sub-processes"""
 
-   print 'Kill Yadoms...'
+   print 'Stop Yadoms...'
+   try:
+      yadomsProcess.communicate(input=' ')  
+   except KeyboardInterrupt:
+      print 'Stopped'
+      return
+   except Exception, e:
+      print 'Error stopping Yadoms', str(e)
+
+   print 'Yadoms was not gracefully stopped, try to kill...'
    killProcTree(yadomsProcess.pid)
 
            
@@ -120,6 +128,7 @@ def restart():
    """Restart the Yadoms server"""
    stop()
    start()
+
 
 def waitServerStarted():
    import datetime
@@ -129,17 +138,24 @@ def waitServerStarted():
       try:
          response = requests.post('http://127.0.0.1:8080/rest/general/system', timeout=1)
          if response.status_code == requests.codes.ok:
+            print 'Server started'
             return
       except:
-         pass
+        pass
+
    print 'Server not responding'
-   raise
+   assert False
+
 
 def openClient(browser):
    """Open a client on local server and wait for full loading"""
    waitServerStarted()
-   browser.get("http://127.0.0.1:8080")
-   if WebDriverWait(browser, 10).until(lambda driver: driver.execute_script("return document.readyState") == u"complete" and driver.execute_script("return jQuery.active") == 0):
-      return
+   try:
+      browser.get("http://127.0.0.1:8080")
+      if WebDriverWait(browser, 20).until(lambda driver: driver.execute_script("return document.readyState") == u"complete" and driver.execute_script("return jQuery.active") == 0):
+         return
+   except:
+      print 'Exception waiting page loding'
+
    print 'Unable to load client'
-   
+   assert False
