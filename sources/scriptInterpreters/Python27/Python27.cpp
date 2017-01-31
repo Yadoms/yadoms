@@ -175,33 +175,25 @@ void CPython27::startScript(int scriptInstanceId,
 
    try
    {
-      try
-      {
-         m_scriptProcesses[scriptInstanceId] = m_factory->createScriptProcess(m_api,
-                                                                              scriptInstanceId,
-                                                                              scriptPath,
-                                                                              m_pythonExecutable,
-                                                                              getInterpreterPath(),
-                                                                              scriptApiId,
-                                                                              scriptLogPath,
-                                                                              [this](bool running, int scriptId, const std::string& error)
-                                                                              {
-                                                                                 if (!running)
-                                                                                    m_api->getEventHandler().postEvent(kEventScriptStopped,
-                                                                                                                       static_cast<boost::shared_ptr<const IEventScriptStopped>>(boost::make_shared<const CEventScriptStopped>(scriptId, error)));
-                                                                              });
-      }
-      catch (std::exception& e)
-      {
-         YADOMS_LOG(error) << "Fail to start script #" << scriptInstanceId << " : " << e.what();
-         m_api->notifyScriptStopped(scriptInstanceId,
-                                    "Fail to start script");
-      }
+      m_scriptProcesses[scriptInstanceId] = m_factory->createScriptProcess(m_api,
+                                                                           scriptInstanceId,
+                                                                           scriptPath,
+                                                                           m_pythonExecutable,
+                                                                           getInterpreterPath(),
+                                                                           scriptApiId,
+                                                                           scriptLogPath,
+                                                                           [this](bool running, int scriptId, const std::string& error)
+                                                                           {
+                                                                              if (!running)
+                                                                                 m_api->getEventHandler().postEvent(kEventScriptStopped,
+                                                                                                                    static_cast<boost::shared_ptr<const IEventScriptStopped>>(boost::make_shared<const CEventScriptStopped>(scriptId, error)));
+                                                                           });
    }
    catch (std::exception& e)
    {
+      YADOMS_LOG(error) << "Fail to start script #" << scriptInstanceId << " : " << e.what();
       m_api->notifyScriptStopped(scriptInstanceId,
-                                 std::string("Unable to start script : ") + e.what());
+                                 "Fail to start script");
    }
 }
 
@@ -252,3 +244,4 @@ void CPython27::onStopRequested()
       }
    }
 }
+
