@@ -21,6 +21,7 @@ class RemoveRule(unittest.TestCase):
    """Remove rule test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.deploy('OneStoppedRule')
       config.deploy("nominal")
       scripts.deploy(["DisplayServerVersion"])

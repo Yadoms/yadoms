@@ -15,6 +15,7 @@ class AutostartCheckboxRule(unittest.TestCase):
    """Rule autostart checkbox test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.deploy('OneStoppedRule')
       config.deploy("nominal")
       self.serverProcess = yadomsServer.start()

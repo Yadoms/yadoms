@@ -20,6 +20,7 @@ class StartStopPlugin(unittest.TestCase):
    """Start/Stop plugin test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.deploy('OneFakePlugin')
       config.deploy("withDeveloperMode")
       self.serverProcess = yadomsServer.start()

@@ -13,6 +13,7 @@ class NavigationAccrossPages(unittest.TestCase):
    """Test navigation accros dashboard pages"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.new()
       config.deploy("nominal")
       scripts.deleteAll()

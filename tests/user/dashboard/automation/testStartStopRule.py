@@ -19,6 +19,7 @@ class StartStopRule(unittest.TestCase):
    """Start/Stop rule test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.deploy('OneStoppedRule')
       config.deploy("nominal")
       scripts.deploy(["DisplayServerVersion"])

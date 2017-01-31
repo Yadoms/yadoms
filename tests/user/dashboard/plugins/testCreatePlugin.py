@@ -14,6 +14,7 @@ class CreatePlugin(unittest.TestCase):
    """Create plugin test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.new()
       config.deploy("withDeveloperMode")
       scripts.deleteAll()

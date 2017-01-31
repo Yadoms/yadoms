@@ -17,6 +17,7 @@ class RemoveDevice(unittest.TestCase):
    """Remove device test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.deploy('OneFakePlugin')
       config.deploy("withDeveloperMode")
       self.serverProcess = yadomsServer.start()

@@ -18,6 +18,7 @@ class CreateRule(unittest.TestCase):
    """Create rule test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.new()
       config.deploy("nominal")
       scripts.deleteAll()

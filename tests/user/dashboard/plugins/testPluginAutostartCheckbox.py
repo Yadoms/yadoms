@@ -15,6 +15,7 @@ class AutostartCheckboxPlugin(unittest.TestCase):
    """Plugin autostart checkbox test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.deploy('OneFakePlugin')
       config.deploy("nominal")
       self.serverProcess = yadomsServer.start()

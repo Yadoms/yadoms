@@ -17,6 +17,7 @@ class CreateWidget(unittest.TestCase):
    """Create widget test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.deploy('OneFakePlugin')
       config.deploy("withDeveloperMode")
       scripts.deleteAll()

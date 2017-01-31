@@ -12,6 +12,7 @@ class MenuEntries(unittest.TestCase):
    """Check entries of the dashboard main menu"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.new()
       config.deploy("nominal")
       scripts.deleteAll()

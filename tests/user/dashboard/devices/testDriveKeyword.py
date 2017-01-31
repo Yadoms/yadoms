@@ -17,6 +17,7 @@ class DriveKeyword(unittest.TestCase):
    """Drive keyword test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.deploy('OneFakePlugin')
       config.deploy("withDeveloperMode")
       self.serverProcess = yadomsServer.start()

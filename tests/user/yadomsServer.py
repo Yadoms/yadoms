@@ -133,7 +133,10 @@ def ensureStopped():
    """Ensure that Yadoms server is stopped"""
    for process in process_iter():
       if process.name() == executableName():
-         killProcTree(process.ppid())
+         try:
+            killProcTree(process.ppid())
+         except:
+            pass
 
            
 def restart():

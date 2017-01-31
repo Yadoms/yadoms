@@ -12,6 +12,7 @@ class CreatePlugin(unittest.TestCase):
    """Create systemInformation plugin test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.new()
       config.deploy("nominal")
       scripts.deleteAll()

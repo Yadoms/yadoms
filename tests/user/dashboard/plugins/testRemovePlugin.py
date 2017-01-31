@@ -15,6 +15,7 @@ class RemovePlugin(unittest.TestCase):
    """Remove plugin test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.deploy('OneFakePlugin')
       config.deploy("withDeveloperMode")
       self.serverProcess = yadomsServer.start()

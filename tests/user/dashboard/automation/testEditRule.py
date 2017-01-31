@@ -21,7 +21,7 @@ class EditRule(unittest.TestCase):
    """Edit rule test"""
    
    def setUp(self):
-      yadomsServer.ensureStopped() #TODO mettre dans tous les tests
+      yadomsServer.ensureStopped()
       database.deploy('OneStoppedRule')
       config.deploy("nominal")
       scripts.deploy(["DisplayServerVersion"])
