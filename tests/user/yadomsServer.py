@@ -6,6 +6,7 @@ import os.path
 import psutil
 import platform
 from selenium.webdriver.support.ui import WebDriverWait
+from psutil import process_iter
 
 def binaryPath():
    """return the server binary path"""
@@ -14,7 +15,12 @@ def binaryPath():
       return os.path.join("..", "..", "builds", "DEBUG")
    else:
       return os.path.join("..", "..", "builds")
-   
+
+
+def executableName():
+   """Return the executable name"""
+   return "yadoms.exe" if platform.system() == "Windows" else "yadoms"
+
    
 def databasePath():
    """return the server database path"""
@@ -70,8 +76,7 @@ def start(startupArgs=[]):
       argsLine += " --" + arg
 
    print 'Start server...'
-   executableName = "yadoms.exe" if platform.system() == "Windows" else "yadoms"
-   return subprocess.Popen("python yadomsServerWrapper.py " + os.path.join(binaryPath(), executableName + " " + argsLine), stdin=subprocess.PIPE)
+   return subprocess.Popen("python yadomsServerWrapper.py " + os.path.join(binaryPath(), executableName() + " " + argsLine), stdin=subprocess.PIPE)
    
    
 def isProcessRunning(pid):  
@@ -122,6 +127,13 @@ def stop(yadomsProcess):
 
    print 'Yadoms was not gracefully stopped, try to kill...'
    killProcTree(yadomsProcess.pid)
+      
+  
+def ensureStopped():
+   """Ensure that Yadoms server is stopped"""
+   for process in process_iter():
+      if process.name() == executableName():
+         killProcTree(process.ppid())
 
            
 def restart():
@@ -147,13 +159,16 @@ def waitServerStarted():
    assert False
 
 
-def openClient(browser):
+def openClient(browser, waitForReadyForNormalOperation = True):
    """Open a client on local server and wait for full loading"""
    waitServerStarted()
    try:
       browser.get("http://127.0.0.1:8080")
-      if WebDriverWait(browser, 20).until(lambda driver: driver.execute_script("return document.readyState") == u"complete" and driver.execute_script("return jQuery.active") == 0):
-         return
+      if WebDriverWait(browser, 60).until(lambda browser: browser.execute_script("return document.readyState") == u"complete" and browser.execute_script("return jQuery.active") == 0):
+         if not waitForReadyForNormalOperation:
+            return
+         if WebDriverWait(browser, 60).until(lambda browser: len(browser.find_elements_by_class_name("tabPagePills")) > 0):
+            return
    except:
       print 'Exception waiting page loding'
 

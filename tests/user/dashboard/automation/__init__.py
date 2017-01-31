@@ -17,11 +17,11 @@ def waitNewRuleModal(browser):
    
       
 def waitRulesTable(browser):
-   return browser.find_element_by_id("automation-rule-list")
+   return WebDriverWait(browser, 10).until(Condition.presence_of_element_located((By.ID, "automation-rule-list")))
 
 def waitRulesTableHasNRules(browser, rulesNumberExpected):
    rulesTable = waitRulesTable(browser)
-   WebDriverWait(browser, 10).until(lambda driver: getRuleNumberInTable(browser, rulesTable) == rulesNumberExpected)
+   tools.waitUntil(lambda: getRuleNumberInTable(browser, rulesTable) == rulesNumberExpected)
    return rulesTable
 
 def getRuleNumberInTable(browser, rulesTable):

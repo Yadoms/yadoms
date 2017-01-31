@@ -259,5 +259,5 @@ def checkCreatedPluginSequence(test, pluginInstanceName, pluginType, hasExtraCom
    test.assertIn("btn-danger", removeButton.get_attribute("class"))
    buttonIndex +=1;
 
-   WebDriverWait(test.browser, 20).until(lambda driver: getPluginState(pluginsTable, pluginNumber) == PluginState.Running)
+   WebDriverWait(test.browser, 20).until(lambda browser: getPluginState(pluginsTable, pluginNumber) == PluginState.Running)
 

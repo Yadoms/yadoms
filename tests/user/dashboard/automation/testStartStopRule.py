@@ -47,12 +47,12 @@ class StartStopRule(unittest.TestCase):
       print '  Start rule'
       self.assertTrue(tools.waitUntil(lambda: startStopButton.is_enabled()))
       startStopButton.click()
-      WebDriverWait(self.browser, 10).until(lambda driver: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running and startStopButton.is_enabled())
+      WebDriverWait(self.browser, 10).until(lambda browser: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running and startStopButton.is_enabled())
 
       print '  Stop rule'
       self.assertTrue(tools.waitUntil(lambda: startStopButton.is_enabled()))
       startStopButton.click()
-      WebDriverWait(self.browser, 10).until(lambda driver: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Stopped and startStopButton.is_enabled())
+      WebDriverWait(self.browser, 10).until(lambda browser: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Stopped and startStopButton.is_enabled())
             
       
    def tearDown(self):

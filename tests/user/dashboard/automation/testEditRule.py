@@ -21,6 +21,7 @@ class EditRule(unittest.TestCase):
    """Edit rule test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped() #TODO mettre dans tous les tests
       database.deploy('OneStoppedRule')
       config.deploy("nominal")
       scripts.deploy(["DisplayServerVersion"])
@@ -69,7 +70,7 @@ class EditRule(unittest.TestCase):
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       tools.waitUntil(lambda: dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).is_enabled())
       dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).click()
-      WebDriverWait(self.browser, 10).until(lambda driver: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running)
+      WebDriverWait(self.browser, 10).until(lambda browser: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running)
       
       # Edit the first rule
       print 'Open the rule edit modal'
