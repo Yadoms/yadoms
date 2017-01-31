@@ -35,7 +35,7 @@ CYadomsServer::~CYadomsServer()
 void CYadomsServer::initialize(Application& self)
 {
    loadConfiguration(); // load default configuration files, if present
-   Poco::Util::ServerApplication::initialize(self);
+   ServerApplication::initialize(self);
 
    boost::filesystem::path workingDir(config().getString("application.path"));
    boost::filesystem::current_path(workingDir.parent_path());
@@ -151,7 +151,10 @@ int CYadomsServer::main(const ArgVec& /*args*/)
          {
             // Ask for application stop and wait for application full stop
             m_stopRequestEventHandler.postEvent(kTerminationRequested);
-            return m_stoppedEventHandler.waitForEvents(boost::posix_time::seconds(30)) == kApplicationFullyStopped;
+            const auto stopSuccess = m_stoppedEventHandler.waitForEvents(boost::posix_time::seconds(30)) == kApplicationFullyStopped;
+            if (!stopSuccess)
+               YADOMS_LOG(error) << "CConsoleControlHandler : Fail to wait the app end event";
+            return stopSuccess;
          });
 
       //create supervisor

@@ -59,7 +59,7 @@ namespace pluginSystem
    void CInstanceStateHandler::signalError(int returnCode,
                                            const std::string& error)
    {
-      YADOMS_LOG(error) << "Stop plugin instance #" << m_instanceData->Id() << " because of error : " << error << ", return code = " << returnCode;
+      YADOMS_LOG(error) << "Stop plugin instance #" << m_instanceData->Id() << " because of error : " << error << ", return code = " << std::hex << returnCode;
 
       setState(shared::plugin::yPluginApi::historization::EPluginState::kError, error);
 

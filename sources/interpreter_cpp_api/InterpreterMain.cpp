@@ -10,22 +10,16 @@ int doMain(int argc,
 {
    try
    {
-      shared::event::CEventHandler stopEvenHandler;
-      enum
-         {
-            kPluginStopped = shared::event::kUserFirstId
-         };
       auto stopHandler = boost::make_shared<shared::process::CApplicationStopHandler>(false);
       stopHandler->setApplicationStopHandler([&]() -> bool
          {
-            // Termination should be asked by Yadoms with IPC, so just wait for end
-            return stopEvenHandler.waitForEvents(boost::posix_time::seconds(30)) == kPluginStopped;
+            // Termination should be asked by Yadoms with IPC
+            return true;
          });
 
-      auto pluginContext = boost::make_shared<interpreter_cpp_api::CInterpreterContext>(argc, argv, interpreter);
-      pluginContext->run();
-      stopEvenHandler.postEvent(kPluginStopped);
-      return pluginContext->getReturnCode();
+      auto interpreterContext = boost::make_shared<interpreter_cpp_api::CInterpreterContext>(argc, argv, interpreter);
+      interpreterContext->run();
+      return interpreterContext->getReturnCode();
    }
    catch (std::invalid_argument& e)
    {
