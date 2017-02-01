@@ -204,8 +204,6 @@ void CEnOcean::loadAllDevices()
 
 void CEnOcean::createConnection()
 {
-   m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
-
    // Create the port instance
    m_port = CFactory::constructPort(m_configuration);
 
