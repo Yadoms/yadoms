@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ZiBlue.h"
+#include "RfPlayer.h"
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include <shared/Log.h>
 #include <shared/communication/BufferLogger.h>
@@ -9,14 +9,14 @@
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
 // This macro also defines the static PluginInformations value that can be used by plugin to get information values
-IMPLEMENT_PLUGIN(CZiBlue)
+IMPLEMENT_PLUGIN(CRfPlayer)
 
 
-CZiBlue::CZiBlue()
+CRfPlayer::CRfPlayer()
 {
 }
 
-CZiBlue::~CZiBlue()
+CRfPlayer::~CRfPlayer()
 {
 }
 
@@ -30,11 +30,11 @@ enum
 };
 
 
-void CZiBlue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
+void CRfPlayer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    try
    {
-      YADOMS_LOG(information) << "CZiBlue is initializing" ;
+      YADOMS_LOG(information) << "CRfPlayer is initializing" ;
       api->setPluginState(yApi::historization::EPluginState::kCustom, "Initialization");
 
       // Load configuration values (provided by database)
@@ -45,7 +45,7 @@ void CZiBlue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
       m_transceiver = boost::make_shared<CTransceiver>();
 
-      YADOMS_LOG(information) << "CZiBlue is running" ;
+      YADOMS_LOG(information) << "CRfPlayer is running" ;
       while (1)
       {
          // Wait for an event
@@ -175,24 +175,24 @@ void CZiBlue::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
    catch (shared::exception::CException& ex)
    {
-      YADOMS_LOG(error) << "The ZiBlue plugin fails. shared exception : " << ex.what() ;
+      YADOMS_LOG(error) << "The RfPlayer plugin fails. shared exception : " << ex.what() ;
       api->setPluginState(yApi::historization::EPluginState::kError, (boost::format("Shared exception : %1%") % ex.what()).str());
    }
    catch (std::exception& ex)
    {
-      YADOMS_LOG(error) << "The ZiBlue plugin fails. exception : " << ex.what() ;
+      YADOMS_LOG(error) << "The RfPlayer plugin fails. exception : " << ex.what() ;
       api->setPluginState(yApi::historization::EPluginState::kError, (boost::format("Exception : %1%") % ex.what()).str());
    }
    catch (...)
    {
-      YADOMS_LOG(error) << "The ZiBlue plugin fails. unknown exception" ;
+      YADOMS_LOG(error) << "The RfPlayer plugin fails. unknown exception" ;
       api->setPluginState(yApi::historization::EPluginState::kError, "Unknown exception");
    }
 
 }
 
 
-void CZiBlue::createConnection(shared::event::CEventHandler& eventHandler)
+void CRfPlayer::createConnection(shared::event::CEventHandler& eventHandler)
 {
    // Create the port instance
    m_port = CFactory::constructPort(m_configuration);
@@ -207,66 +207,66 @@ void CZiBlue::createConnection(shared::event::CEventHandler& eventHandler)
 }
 
 
-void CZiBlue::destroyConnection()
+void CRfPlayer::destroyConnection()
 {
    m_port.reset();
 }
 
-bool CZiBlue::connectionsAreEqual(const CConfiguration& conf1, const CConfiguration& conf2)
+bool CRfPlayer::connectionsAreEqual(const CConfiguration& conf1, const CConfiguration& conf2)
 {
    return (conf1.getSerialPort() == conf2.getSerialPort());
 }
 
 
 
-void CZiBlue::processZiBlueConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
+void CRfPlayer::processZiBlueConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   YADOMS_LOG(information) << "ZiBlue port opened";
+   YADOMS_LOG(information) << "RfPlayer port opened";
    api->setPluginState(yApi::historization::EPluginState::kCustom, "initializing");
 
    try
    {
-      // Reset the ZiBlue
+      // Reset the RfPlayer
       initZiBlue(api);
    }
    catch (std::exception& e)
    {
-      YADOMS_LOG(error) << "Error resetting ZiBlue transceiver : " << e.what();
+      YADOMS_LOG(error) << "Error resetting RfPlayer transceiver : " << e.what();
 
       // Stop the communication, and try later
       errorProcess(api);
    }
 }
 
-void CZiBlue::errorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
+void CRfPlayer::errorProcess(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    m_port.reset();
    api->getEventHandler().createTimer(kProtocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
 }
 
-void CZiBlue::processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
+void CRfPlayer::processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   YADOMS_LOG(information) << "ZiBlue connection was lost";
+   YADOMS_LOG(information) << "RfPlayer connection was lost";
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionLost");
 
    errorProcess(api);
 }
 
-void CZiBlue::processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::CBinaryFrame> data)
+void CRfPlayer::processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::CBinaryFrame> data)
 {
    if (m_isDeveloperMode)
-      YADOMS_LOG(debug) << "ZiBlue Binary <<< " << shared::communication::CBufferLogger::byteBufferToHexString(*data->getContent());
+      YADOMS_LOG(debug) << "RfPlayer Binary <<< " << shared::communication::CBufferLogger::byteBufferToHexString(*data->getContent());
 }
 
-void CZiBlue::processZiBlueAsciiFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::CAsciiFrame> data)
+void CRfPlayer::processZiBlueAsciiFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::CAsciiFrame> data)
 {
    if (m_isDeveloperMode)
-      YADOMS_LOG(debug) << "ZiBlue Ascii <<< " << data->getContent();
+      YADOMS_LOG(debug) << "RfPlayer Ascii <<< " << data->getContent();
 }
 
 
 
-void CZiBlue::initZiBlue(boost::shared_ptr<yApi::IYPluginApi> api)
+void CRfPlayer::initZiBlue(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    if (!m_messageHandler->send(m_transceiver->buildHelloCmd(),
       [](boost::shared_ptr<const frames::CFrame> frame)
@@ -292,7 +292,7 @@ void CZiBlue::initZiBlue(boost::shared_ptr<yApi::IYPluginApi> api)
       throw shared::exception::CException("Unable to send HELLO request, timeout waiting acknowledge");
 }
 
-void CZiBlue::updateDongleConfiguration(boost::shared_ptr<yApi::IYPluginApi> api)
+void CRfPlayer::updateDongleConfiguration(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    try
    {
@@ -304,7 +304,7 @@ void CZiBlue::updateDongleConfiguration(boost::shared_ptr<yApi::IYPluginApi> api
    }
    catch (std::exception& e)
    {
-      YADOMS_LOG(error) << "Error configuring ZiBlue transceiver : " << e.what();
+      YADOMS_LOG(error) << "Error configuring RfPlayer transceiver : " << e.what();
 
       // Stop the communication, and try later
       errorProcess(api);

@@ -12,18 +12,18 @@ namespace yApi = shared::plugin::yPluginApi;
 //--------------------------------------------------------------
 /// \brief	This class is the ZWave plugin entry point
 //--------------------------------------------------------------
-class CZiBlue : public plugin_cpp_api::IPlugin
+class CRfPlayer : public plugin_cpp_api::IPlugin
 {
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    //--------------------------------------------------------------
-   CZiBlue();
+   CRfPlayer();
 
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~CZiBlue();
+   virtual ~CRfPlayer();
 
    // IPlugin implementation
    void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
@@ -61,7 +61,7 @@ private:
    bool m_isDeveloperMode;
 
    //--------------------------------------------------------------
-   /// \brief	                     Create the connection to the ZiBlue RFP1000
+   /// \brief	                     Create the connection to the RfPlayer RFP1000
    /// \param [in] eventHandler     Event handler to be notified on events on the connection
    //--------------------------------------------------------------
    void createConnection(shared::event::CEventHandler& eventHandler);

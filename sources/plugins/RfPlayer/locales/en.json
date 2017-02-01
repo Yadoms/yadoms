@@ -1,10 +1,10 @@
-﻿{
-	"name": "ZiBlue",
-	"description": "Plugin qui supporte le dongle ZiBlue",
+{
+	"name": "RfPlayer",
+	"description": "Plugin which handle RfPlayer device. (RFP1000)",
 	"configurationSchema": {
 		"Serial Port": {
-			"name": "Port série",
-			"description": "Le port série connecté au ZiBlue."
+			"name": "Serial port",
+			"description": "The serial port connected to the RfPlayer device (RFP1000)"
 		},
       "receiver" : {
          "name" : "Received protocols",
@@ -42,5 +42,6 @@
          }
       },
       "ledactiviy" : {  "name" : "leds", "description" : "Enable ou disable LED activity related to RF flow."}      
+      
 	}
 }

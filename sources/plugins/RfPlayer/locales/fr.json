@@ -1,0 +1,46 @@
+﻿{
+	"name": "RfPlayer",
+	"description": "Plugin qui supporte le dongle RfPlayer (RFP1000)",
+	"configurationSchema": {
+		"Serial Port": {
+			"name": "Port série",
+			"description": "Le port série connecté au RfPlayer (RFP1000)."
+		},
+      "receiver" : {
+         "name" : "Protocoles écoutés",
+         "description" : "Specifie la liste des protocole activés",
+         "content" : {
+            "X10" : {  "name" : "X10", "description" : "Active le protocole X10"},
+            "RTS" : {  "name" : "RTS", "description" : "Active le protocole RTS"},
+            "VISONIC" : {  "name" : "VISONIC", "description" : "Active le protocole VISONIC"},
+            "BLYSS" : {  "name" : "BLYSS", "description" : "Active le protocole BLYSS"},
+            "CHACON" : {  "name" : "CHACON", "description" : "Active le protocole CHACON"},
+            "OREGONV1" : {  "name" : "OREGONV1", "description" : "Active le protocole OREGONV1"},
+            "OREGONV2" : {  "name" : "OREGONV2", "description" : "Active le protocole OREGONV2"},
+            "OREGONV3/OWL" : {  "name" : "OREGONV3/OWL", "description" : "Active le protocole OREGONV3/OWL"},
+            "DOMIA" : {  "name" : "DOMIA", "description" : "Active le protocole DOMIA"},
+            "X2D" : {  "name" : "X2D", "description" : "Active le protocole X2D"},
+            "KD101" : {  "name" : "KD101", "description" : "Active le protocole KD101"},
+            "PARROT" : {  "name" : "PARROT", "description" : "Active le protocole PARROT"}
+         }
+      },
+      "repeater" : {
+         "name" : "Protocoles répétés",
+         "description" : "Specifie la liste des protocole répétés par le dongle RfPlayer",
+         "content" : {
+            "X10" : {  "name" : "X10", "description" : "Répète le protocole X10"},
+            "RTS" : {  "name" : "RTS", "description" : "Répète le protocole RTS"},
+            "VISONIC" : {  "name" : "VISONIC", "description" : "Répète le protocole VISONIC"},
+            "BLYSS" : {  "name" : "BLYSS", "description" : "Répète le protocole BLYSS"},
+            "CHACON" : {  "name" : "CHACON", "description" : "Répète le protocole CHACON"},
+            "OREGONV1" : {  "name" : "OREGONV1", "description" : "Répète le protocole OREGONV1"},
+            "OREGONV2" : {  "name" : "OREGONV2", "description" : "Répète le protocole OREGONV2"},
+            "OREGONV3/OWL" : {  "name" : "OREGONV3/OWL", "description" : "Répète le protocole OREGONV3/OWL"},
+            "DOMIA" : {  "name" : "DOMIA", "description" : "Répète le protocole DOMIA"},
+            "X2D" : {  "name" : "X2D", "description" : "Répète le protocole X2D"},
+            "KD101" : {  "name" : "KD101", "description" : "Répète le protocole KD101"}
+         }
+      },
+      "ledactiviy" : {  "name" : "LED", "description" : "Active ou désactive la LED selon l'activité RF 433/868."}      
+	}
+}

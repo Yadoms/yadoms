@@ -19,7 +19,7 @@ public:
    virtual void onReceived(boost::shared_ptr<const frames::CFrame> receivedMessage) = 0;
 
    //--------------------------------------------------------------
-   /// \brief	                           Send a message to ZiBlue dongle and wait answer
+   /// \brief	                           Send a message to RfPlayer dongle and wait answer
    /// \param [in] sendMessage            message to send
    /// \param [in] isExpectedMessageFct   Lambda to identify the expected message. Must return true if received message is the expected one. (called by different thread).
    /// \param [in] onReceiveFct           Lambda to process received message. (called by different thread).
@@ -28,7 +28,7 @@ public:
    virtual bool send(const std::string & sendMessage, boost::function<bool(boost::shared_ptr<const frames::CFrame>)> isExpectedMessageFct, boost::function<void(boost::shared_ptr<const frames::CFrame>)> onReceiveFct) = 0;
 
    //--------------------------------------------------------------
-   /// \brief	                     Send a message to ZiBlue dongle
+   /// \brief	                     Send a message to RfPlayer dongle
    /// \param [in] sendMessage      message to send
    //--------------------------------------------------------------
    virtual void send(const std::string& sendMessage) = 0;

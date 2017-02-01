@@ -7,9 +7,9 @@
 #include "IMessageHandler.h"
 
 //--------------------------------------------------------------
-/// \brief	Receive buffer handler for ZiBlue
+/// \brief	Receive buffer handler for RfPlayer
 ///
-/// This class manages the ZiBlue receive buffer.
+/// This class manages the RfPlayer receive buffer.
 /// A message is considered complete from its content (see protocol specification, either ASCII or binary format)
 //--------------------------------------------------------------
 class CReceiveBufferHandler : public shared::communication::IReceiveBufferHandler

@@ -12,7 +12,7 @@ CFactory::~CFactory()
 
 boost::shared_ptr<shared::communication::IAsyncPort> CFactory::constructPort(const CConfiguration& configuration)
 {
-   YADOMS_LOG(information) << "Connecting ZiBlue on serial port " << configuration.getSerialPort() << "...";
+   YADOMS_LOG(information) << "Connecting RfPlayer on serial port " << configuration.getSerialPort() << "...";
    return boost::make_shared<shared::communication::CAsyncSerialPort>(configuration.getSerialPort(),
       boost::asio::serial_port_base::baud_rate(115200),
       boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::none),
