@@ -1,0 +1,213 @@
+{
+   "name": "Faux Widget",
+   "description": "Un faux widget pour démonstration (pour développeurs uniquement)",
+   "configurationSchema": {
+        "parameterList": {
+            "name": "Parameters FR",
+            "description": "List of available parameters items FR",
+            "content": {
+                "basicsSection": {
+                    "name": "Base types FR",
+                    "description": "Here is all base types items FR",
+                    "content": {
+                        "int" : {
+                            "name" : "Integer parameter FR",
+                            "description" : "type as int FR"
+                            },
+                        "decimal" : {
+                            "name" : "Decimal parameter FR",
+                            "description" : "type as decimal FR"
+                        },
+                        "string" : {
+                            "name" : "String parameter FR",
+                            "description" : "type as string FR"
+                        },
+                        "enum" : {
+                            "name" : "Enumeration parameter FR",
+                            "description" : "type as enum FR",
+                            "values" : {
+                                "12H" : "12 hours FR",
+                                "24H" : "24 hours FR"
+                            }
+                        },
+                        "bool" : {
+                            "name" : "Boolean parameter FR",
+                            "description" : "type as bool FR"
+                        }
+                    }
+                },
+                "advancedSection": {
+                    "name": "Advanced types FR",
+                    "description": "Here is all other types items FR",
+                    "content": {
+                        "color" : {
+                            "name" : "Color parameter FR",
+                            "description" : "type as color FR"
+                        },
+                        "icon" : {
+                            "name" : "Icon parameter FR",
+                            "description" : "type as icon FR"
+                        },
+                        "keyword" : {
+                            "name" : "Keyword parameter FR",
+                            "description" : "type as keyword FR"
+                        }
+                    }
+                },
+                "listSection": {
+                    "name": "List of items FR",
+                    "description": "Here is an example of list items FR",
+                    "content": {
+                        "listItems": {
+                            "name": "List parameter FR",
+                            "description": "type as list FR",
+                            "item": {
+                                "name": "New Item FR",
+                                "description": "An Item FR",				
+                                "content": {
+                                    "string" : {
+                                        "name" : "String parameter FR",
+                                        "description" : "type as string FR"
+                                    },
+                                    "color": {
+                                        "name" : "Color parameter FR",
+                                        "description" : "type as color FR"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "containerSection": {
+                    "name": "Containers FR",
+                    "description": "Here is all container you can use to classify your configuration FR",
+                    "content": {
+                        "sectionContainer" : {
+                            "name" : "Section container FR",
+                            "description" : "type as \"section\" FR",
+                            "content" : {
+                                "bool" : {
+                                    "name" : "Boolean parameter FR",
+                                    "description" : "type as \"bool\" FR"
+                                }
+                            }
+                        },
+                        "radioSectionContainer" : {
+                            "name" : "radioSection container FR",
+                            "description" : "type as \"radioSection\" FR",
+                            "content" : {
+                                "firstSection" : {
+                                    "name" : "First",
+                                    "description" : "First section of the radio FR",
+                                    "content" : {
+                                        "bool" : {
+                                            "name" : "Boolean parameter FR",
+                                            "description" : "type as \"bool\" FR"
+                                        }
+                                    }
+                                },
+                                "secondSection" : {
+                                    "name" : "Second",
+                                    "description" : "Second section of the radio FR",
+                                    "content" : {
+                                        "enum" : {
+                                            "name" : "Enumeration parameter FR",
+                                            "description" : "type as \"enum\" FR",
+                                            "values" : {
+                                                "12H" : "12 hours FR",
+                                                "24H" : "24 hours FR"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "comboSectionContainer" : {
+                            "name" : "comboSection container FR",
+                            "description" : "type as \"comboSection\" FR",
+                            "content" : {
+                                "firstSection" : {
+                                    "name" : "First",
+                                    "description" : "First section of the combo FR",
+                                    "content" : {
+                                        "bool" : {
+                                            "name" : "Boolean parameter FR",
+                                            "description" : "type as \"bool\" FR"
+                                        }
+                                    }
+                                },
+                                "secondSection" : {
+                                    "name" : "Second FR",
+                                    "description" : "Second section of the combo FR",
+                                    "content" : {
+                                        "enum" : {
+                                            "name" : "Enumeration parameter FR",
+                                            "description" : "type as \"enum\" FR",
+                                            "values" : {
+                                                "12H" : "12 hours FR",
+                                                "24H" : "24 hours FR"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "advanced" : {
+            "name" : "Advanced examples FR",
+            "description": "See examples of advanced configuration FR",
+            "content": {
+                "sectionWithCheckbox": {
+                    "name": "Section with a checkbox FR",
+                    "description": "Here is an example that shows a checkbox that can enable / disable the section under FR",
+                    "content": {
+                        "exampleSection": {
+                            "name": "Example section FR",
+                            "description": "This section can be activated / deactivated FR",
+                            "content": {
+                                "enum" : {
+                                    "name" : "Enumeration parameter FR",
+                                    "description" : "type as enum FR",
+                                    "values" : {
+                                        "12H" : "12 hours FR",
+                                        "24H" : "24 hours FR"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "sectionWithBinding": {
+                    "name": "Section using binding FR",
+                    "description": "Here is an example that shows binding FR",
+                    "content": {
+                        "SerialPort" :
+                        {
+                            "name" : "Serial port FR",
+                            "description" : "The (virtual) serial port of the computer FR"
+                        },
+                        "NetworkInterfaces" :
+                        {
+                            "name" : "Network interfaces FR",
+                            "description" : "The network interfaces availables FR"
+                        }
+                    }
+                },
+                "sectionWithRegex": {
+                    "name": "Section with Regex into  string parameter FR",
+                    "description": "Here is an example that shows use of Regex in String parameter FR",
+                    "content": {
+                        "ipAddress" : {
+                            "name" : "IP Address FR",
+                            "description" : "Set the IP Address of the peripheral FR",
+                            "regexErrorMessage" : "Must be an ipv4 adress like 192.168.0.12 FR"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

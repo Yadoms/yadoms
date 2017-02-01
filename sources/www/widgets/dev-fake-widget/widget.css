@@ -1,0 +1,8 @@
+.widget-dev-fake-widget .main {
+    height: 100%;
+}
+.widget-dev-fake-widget .smiley {
+	margin: auto;
+    width: 100%;
+    text-align: center;
+}

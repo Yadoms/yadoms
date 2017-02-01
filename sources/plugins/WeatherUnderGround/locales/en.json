@@ -27,8 +27,8 @@
            {
               "individualKeywords" :
               {				 
-                 "name": "Individual information",
-                 "description": ""
+                 "name": "Weather data",
+                 "description": "weather data are stored separately (weather, temperature, rain, ...) to be used by rules."
               }
            }
       },
@@ -43,13 +43,13 @@
            {
               "individualRainForecast" :
               {				 
-                 "name": "Individual rain information",
-                 "description": ""
+                 "name": "Rain data",
+                 "description": "rain data are stored individually to be used by rules."
               },
               "individualTempForecast" :
               {				 
-                 "name": "Individual temperature information",
-                 "description": ""
+                 "name": "Temperature data",
+                 "description": "temperature data are stored individually to be used by rules."
               }
            }
       }      

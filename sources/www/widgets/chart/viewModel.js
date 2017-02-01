@@ -15,6 +15,8 @@ widgetViewModelCtor =
        this.deviceInfo = [];
        this.keywordInfo = [];
        this.ChartPromise = null;
+       
+       this.cleaningTask = null;
 
        /**
         * Initialization method
@@ -238,6 +240,9 @@ widgetViewModelCtor =
            });
 
            $.whenAll(arrayOfDeffered).done(function () {
+               //we use the periodic task of cleaning
+               clearInterval(self.cleaningTask);
+               self.cleaningTask = setInterval(self.periodicCleaningTask.bind(self), 60000); // Cleaning every minute
                self.refreshData(self.widget.configuration.interval);
            });
        };
@@ -265,6 +270,16 @@ widgetViewModelCtor =
                return false;
            }
        }
+       
+       this.isEnumVariable = function (index) {
+           var self = this;
+           if ((self.keywordInfo[index]) && (self.keywordInfo[index].type === "enum")) {
+               return true;
+           }
+           else {
+               return false;
+           }
+       }       
 
        this.refreshData = function (interval) {
            var self = this;
@@ -394,9 +409,10 @@ widgetViewModelCtor =
                                    var lastDate;
                                    var d;
                                    var lastValue=null;
+                                   var differentialDisplay = false;
                                    
                                    try{
-                                      var differentialDisplay = device.content.differentialDisplay;
+                                      differentialDisplay = parseBool(device.content.differentialDisplay);
                                    }
                                    catch(error)
                                    {
@@ -423,8 +439,9 @@ widgetViewModelCtor =
                                            (lastDate + timeBetweenTwoConsecutiveValues < d)) {
                                                plot.push([lastDate + 1, null]);
                                            }
-
-                                           if (differentialDisplay)
+                                           
+                                           // The differential display is disabled if the type of the data is enum or boolean
+                                           if (differentialDisplay && !self.isBoolVariable(index) && !self.isEnumVariable(index))
                                            {
                                               if (lastValue != null)
                                                  plot.push([d, v-lastValue]);
@@ -463,7 +480,8 @@ widgetViewModelCtor =
                                                plot.push([d, null]);
                                            }
 
-                                           if (differentialDisplay)
+                                           // The differential display is disabled if the type of the data is enum or boolean
+                                           if (differentialDisplay && !self.isBoolVariable(index) && !self.isEnumVariable(index))
                                            {
                                               if (device.content.PlotType === "arearange")
                                               {
@@ -578,7 +596,7 @@ widgetViewModelCtor =
                                            //Add Line
                                            self.chart.addSeries({
                                                id: self.seriesUuid[index],
-											   index: ChartIndex,
+                                               index: ChartIndex,
                                                data: plot,
                                                dataGrouping: {
                                                    enabled: false
@@ -596,13 +614,13 @@ widgetViewModelCtor =
                                                type: 'line'
                                            }, false, false); // Do not redraw immediately
 										   
-										   ChartIndex = ChartIndex + 1;
+										             ChartIndex = ChartIndex + 1;
 
                                            //Add Ranges
                                            if (deviceIsSummary[index]) {
                                                self.chart.addSeries({
                                                    id: 'range_' + self.seriesUuid[index],
-												   index: ChartIndex,
+                                                   index: ChartIndex,
                                                    data: range,
                                                    dataGrouping: {
                                                        enabled: false
@@ -650,7 +668,7 @@ widgetViewModelCtor =
                                                animation: false
                                            }, false, false); // Do not redraw immediately
 										   
-										   ChartIndex = ChartIndex + 1;
+										             ChartIndex = ChartIndex + 1;
                                        }
                                    } catch (err2) {
                                        console.log('Fail to create serie : ' + err2);
@@ -735,7 +753,65 @@ widgetViewModelCtor =
            }
        };      
       
-       this.DisplaySummary = function (index, nb, device, range, prefix, cleanValue) {
+       this.periodicCleaningTask = function()
+       {
+         var self = this;
+         
+         console.log ("cleaning chart");
+         
+         var cleanValue;
+         var prefix;
+         
+         // Cleaning ranges switch
+         switch (self.interval) {
+             case "HOUR":
+                 cleanValue = 3600000;
+                 prefix = "minute";
+                 break;
+             case "DAY":
+                 cleanValue = 3600000 * 24;
+                 prefix = "hour";
+                 break;
+             case "WEEK":
+                 cleanValue = 3600000 * 24 * 7;
+                 prefix = "hour";
+                 break;
+             case "MONTH":
+                 cleanValue = 3600000 * 24 * 30;
+                 prefix = "day";
+                 break;
+             case "HALF_YEAR":
+                 cleanValue = 3600000 * 24 * 182;
+                 prefix = "day";
+                 break;
+             case "YEAR":
+                 cleanValue = 3600000 * 24 * 365;
+                 prefix = "day";
+                 break;
+             default:
+                 cleanValue = 3600000;
+                 prefix = "hour";
+                 break;
+         }
+         
+         var dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf(prefix).subtract(1, 'seconds'));
+         
+         $.each(self.seriesUuid, function (index, value) {
+         
+            var serie = self.chart.get(value);
+            var serieRange = self.chart.get('range_' + value);
+             
+            // If a serie is available  // Clean points > cleanValue for serie
+            if (!isNullOrUndefined(serie))
+               self.cleanUpChart(serie, dateTo, cleanValue);
+
+             // Clean points > cleanValue for ranges, if any
+            if (!isNullOrUndefined(serieRange))
+               self.cleanUpChart(serieRange, dateTo, cleanValue);
+         });
+       };
+      
+       this.DisplaySummary = function (index, nb, device, range, prefix) {
            var self = this;
 
            try {
@@ -754,15 +830,7 @@ widgetViewModelCtor =
                               var serie = self.chart.get(self.seriesUuid[index]);
                               var serieRange = self.chart.get('range_' + self.seriesUuid[index]);							  
 							  
-                              serie.addPoint([DateTimeFormatter.isoDateToDate(data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data[0].avg)], true, false, true);
-
-                              // If a serie is available  // Clean points > cleanValue for serie
-                              if (!isNullOrUndefined(serie))
-                                 self.cleanUpChart(serie, dateTo, cleanValue);
-
-                               // Clean points > cleanValue for ranges, if any
-                              if (!isNullOrUndefined(serieRange))
-                                 self.cleanUpChart(serieRange, dateTo, cleanValue);							  
+                              serie.addPoint([DateTimeFormatter.isoDateToDate(data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data[0].avg)], true, false, true);					  
 						      
                               //Add also for ranges if any
                               if (serieRange)
@@ -794,31 +862,6 @@ widgetViewModelCtor =
                    $.each(self.widget.configuration.devices, function (index, device) {
                        if (keywordId === device.content.source.keywordId) {
                            //we've found the device
-                           var cleanValue;
-                           // Cleaning ranges switch
-                           switch (self.interval) {
-                               case "HOUR":
-                                   cleanValue = 3600000;
-                                   break;
-                               case "DAY":
-                                   cleanValue = 3600000 * 24;
-                                   break;
-                               case "WEEK":
-                                   cleanValue = 3600000 * 24 * 7;
-                                   break;
-                               case "MONTH":
-                                   cleanValue = 3600000 * 24 * 30;
-                                   break;
-                               case "HALF_YEAR":
-                                   cleanValue = 3600000 * 24 * 182;
-                                   break;
-                               case "YEAR":
-                                   cleanValue = 3600000 * 24 * 365;
-                                   break;
-                               default:
-                                   cleanValue = 3600000;
-                                   break;
-                           }
 
                            var serie = self.chart.get(self.seriesUuid[index]);
 
@@ -834,35 +877,33 @@ widgetViewModelCtor =
                                        if (!isNullOrUndefined(serie)) {
                                            self.chart.hideLoading(); // If a text was displayed before
                                            serie.addPoint([data.date.valueOf(), parseFloat(data.value)], true, false, true);
-                                           
-                                           self.cleanUpChart(serie, moment().startOf("minute"), cleanValue);
                                        }
                                        break;
                                    case "DAY":
                                        if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 2))
-                                           self.DisplaySummary(index, 1, device, "hours", "hour", cleanValue);
+                                           self.DisplaySummary(index, 1, device, "hours", "hour");
                                        break;
 
                                    case "WEEK":
                                        if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 2))
-                                           self.DisplaySummary(index, 1, device, "weeks", "hour", cleanValue);
+                                           self.DisplaySummary(index, 1, device, "weeks", "hour");
 
                                        break;
                                    case "MONTH":
                                        if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
-                                           self.DisplaySummary(index, 1, device, "months", "day", cleanValue);
+                                           self.DisplaySummary(index, 1, device, "months", "day");
 
                                        break;
                                    case "HALF_YEAR":
 
                                        if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
-                                           self.DisplaySummary(index, 6, device, "months", "day", cleanValue);
+                                           self.DisplaySummary(index, 6, device, "months", "day");
 
                                        break;
                                    case "YEAR":
 
                                        if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
-                                           self.DisplaySummary(index, 1, device, "years", "day", cleanValue);
+                                           self.DisplaySummary(index, 1, device, "years", "day");
 
                                        break;
                                    default:
