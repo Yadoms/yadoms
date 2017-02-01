@@ -15,7 +15,7 @@ CProcessObserver::~CProcessObserver()
 
 void CProcessObserver::onStart()
 {
-   std::cout << "Interpreter " << m_scriptInstanceId << " is running" << std::endl;
+   std::cout << "Script " << m_scriptInstanceId << " is running" << std::endl;
    m_onInstanceStateChangedFct(true,
                                m_scriptInstanceId,
                                std::string());
@@ -25,9 +25,9 @@ void CProcessObserver::onFinish(int returnCode,
                                 const std::string& error)
 {
    if (error.empty())
-      std::cout << "Interpreter " << m_scriptInstanceId << " is stopped" << std::endl;
+      std::cout << "Script " << m_scriptInstanceId << " is stopped" << std::endl;
    else
-      std::cout << "Interpreter " << m_scriptInstanceId << " is stopped with error (" << returnCode << ") : " << error << std::endl;
+      std::cout << "Script " << m_scriptInstanceId << " is stopped with error (" << returnCode << ") : " << error << std::endl;
 
    m_onInstanceStateChangedFct(false,
                                m_scriptInstanceId,
