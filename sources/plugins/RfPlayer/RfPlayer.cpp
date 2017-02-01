@@ -64,6 +64,7 @@ void CRfPlayer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             YADOMS_LOG(information) << "Command received from Yadoms :" << yApi::IDeviceCommand::toString(command) ;
             try
             {
+               //TODO : send command to device
             }
             catch (shared::exception::CException& ex)
             {
