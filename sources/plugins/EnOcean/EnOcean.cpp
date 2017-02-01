@@ -305,8 +305,8 @@ void CEnOcean::protocolErrorProcess()
    // Retry full connection
    processUnConnectionEvent();
    m_api->getEventHandler().createTimer(kProtocolErrorRetryTimer,
-                                        shared::event::CEventTimer::kOneShot
-                                        , boost::posix_time::seconds(30));
+                                        shared::event::CEventTimer::kOneShot,
+                                        boost::posix_time::seconds(30));
 }
 
 void CEnOcean::processUnConnectionEvent()
