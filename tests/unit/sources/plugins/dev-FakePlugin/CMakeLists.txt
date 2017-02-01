@@ -1,5 +1,5 @@
 
-IF(NOT DISABLE_TEST_FAKEPLUGIN)
+IF(NOT DISABLE_TEST_PLUGIN_FAKEPLUGIN)
    ADD_YADOMS_SOURCES(
       shared/shared/plugin/yPluginApi/IYPluginApi.h
       shared/shared/plugin/yPluginApi/historization/BatteryLevel.cpp
