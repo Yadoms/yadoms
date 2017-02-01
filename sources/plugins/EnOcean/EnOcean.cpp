@@ -506,7 +506,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
 
       YADOMS_LOG(information) << "Received message for id#" << deviceId << " : " ;
       for (const auto& kw: keywordsToHistorize)
-         YADOMS_LOG(information) << "  - " << kw->getKeyword() << " = " << kw->formatValue() ;;
+      YADOMS_LOG(information) << "  - " << kw->getKeyword() << " = " << kw->formatValue() ;;
 
       m_api->historizeData(deviceId, keywordsToHistorize);
    }
@@ -651,7 +651,7 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
          throw CProtocolException("Unable to send UTE response, timeout waiting acknowledge");
 
       if (returnCode != message::CResponseReceivedMessage::RET_OK)
-         YADOMS_LOG(error) << "TeachIn response not successfully acknowledged : " << returnCode ;
+      YADOMS_LOG(error) << "TeachIn response not successfully acknowledged : " << returnCode ;
    }
 }
 
@@ -720,3 +720,4 @@ void CEnOcean::requestDongleVersion()
    processDongleVersionResponse(response->returnCode(),
                                 message::CDongleVersionResponseReceivedMessage(response));
 }
+
