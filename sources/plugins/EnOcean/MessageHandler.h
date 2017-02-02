@@ -9,6 +9,7 @@
 class CMessageHandler : public IMessageHandler
 {
 public:
+   //TOFIX référence circulaire : CMessageHandler référence CAsyncSerialPort, qui référence CReceiveBufferHandler, qui référence CMessageHandler (voir ce qui a été fait dans les tests U pour corriger)
    CMessageHandler(boost::shared_ptr<shared::communication::IAsyncPort> port,
                    shared::event::CEventHandler& mainEventHandler,
                    int mainEvtPortDataReceived,
@@ -21,12 +22,12 @@ public:
              boost::function<bool(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> isExpectedMessageFct,
              boost::function<void(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> onReceiveFct) override;
    void send(message::CEsp3SendPacket& sendMessage) override;
-
    // [END] IMessageHandler implementation
 
 protected:
    void setHook(boost::function<bool(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> isExpectedMessageFct,
                 boost::function<void(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> onReceiveFct);
+   void clearHook();
 
    bool waitAnswer(const boost::posix_time::time_duration& enOceanAnswerTimeout);
 
