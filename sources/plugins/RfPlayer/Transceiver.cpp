@@ -52,7 +52,7 @@ std::string CTransceiver::buildReceiverConfigurationCommand(const CConfiguration
       disabledProtocols += " PARROT";
 
    std::string command = "REPEATER + *";  //all protocols
-   if (disabledProtocols.empty())
+   if (!disabledProtocols.empty())
       command += " -" + disabledProtocols;
    command += "\r\n";
    return command;
@@ -95,7 +95,7 @@ std::string CTransceiver::buildRepeaterConfigurationCommand(const CConfiguration
    //parrot not supported by repeater
 
    std::string command = "REPEATER + *";  //all protocols
-   if (disabledProtocols.empty())
+   if (!disabledProtocols.empty())
       command += " -" + disabledProtocols;
    command += "\r\n";
    return command;
