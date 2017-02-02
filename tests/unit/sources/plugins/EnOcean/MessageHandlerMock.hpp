@@ -14,7 +14,12 @@ class CMessageHandlerMock : public IMessageHandler
 {
 public:
    explicit CMessageHandlerMock(shared::event::CEventHandler& evtHandler, int evtId)
-      : m_evtHandler(evtHandler), m_evtId(evtId)
+      : m_evtHandler(evtHandler),
+        m_evtId(evtId)
+   {
+   }
+
+   virtual ~CMessageHandlerMock()
    {
    }
 
