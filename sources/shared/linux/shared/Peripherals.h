@@ -29,7 +29,7 @@ namespace shared
       /// \return       The serial ports names (keys are real name, values are common name or comment ("used by..."))
       //--------------------------------------------------------------
       typedef std::map<std::string, std::string> SerialPortsMap;
-      static const boost::shared_ptr<SerialPortsMap> getSerialPorts();
+      static boost::shared_ptr<SerialPortsMap> getSerialPorts();
 
       //--------------------------------------------------------------
       /// \brief			Flush serial port buffers (input & output)
