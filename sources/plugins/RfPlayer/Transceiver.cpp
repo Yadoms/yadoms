@@ -19,7 +19,7 @@ std::string CTransceiver::buildHelloCmd() const
 
 std::string CTransceiver::buildStartListeningData() const
 {
-   return "ZIA++FORMAT JSON\r\n";
+   return "ZIA++FORMAT BINARY\r\n";
 }
 
 std::string CTransceiver::buildReceiverConfigurationCommand(const CConfiguration::CProtocols & protocols) const

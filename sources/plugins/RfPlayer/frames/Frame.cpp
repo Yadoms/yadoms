@@ -51,6 +51,32 @@ namespace frames {
       }
       return "";
    }
+
+   void CFrame::printToLog(std::ostream & out) const
+   {
+      switch (m_frameType)
+      {
+      case kAsciiFrame:
+         return m_asciiBuffer->printToLog(out);
+
+      case kBinaryFrame:
+         return m_binaryBuffer->printToLog(out);
+      }
+   }
+
+   void CFrame::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+      switch (m_frameType)
+      {
+      case kAsciiFrame:
+         return m_asciiBuffer->historizeData(api);
+
+      case kBinaryFrame:
+         return m_binaryBuffer->historizeData(api);
+      }
+   }
+
+
 } //namespace frames
 
 

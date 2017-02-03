@@ -1,4 +1,6 @@
 #pragma once
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace frames {
 
@@ -43,6 +45,8 @@ namespace frames {
       //--------------------------------------------------------------
       const std::string & getContent() const;
 
+      void printToLog(std::ostream & out) const;
+      void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const;
    private:
       //--------------------------------------------------------------
       /// \brief	               The sourceDest of frame

@@ -33,6 +33,16 @@ namespace frames {
    }
 
 
+   void CAsciiFrame::printToLog(std::ostream & out) const
+   {
+
+   }
+
+   void CAsciiFrame::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
+   {
+
+   }
+
 } //namespace frames
 
 

@@ -46,8 +46,6 @@ bool CMessageHandler::waitAnswer(const boost::posix_time::time_duration& answerT
 
 void CMessageHandler::onReceived(boost::shared_ptr<const frames::CFrame> receivedMessage)
 {
-   YADOMS_LOG(information) << receivedMessage->toString();
-
    boost::lock_guard<boost::recursive_mutex> lock(m_hookMutex);
    if (m_isExpectedMessageHookFct.empty() || !m_isExpectedMessageHookFct(receivedMessage))
    {

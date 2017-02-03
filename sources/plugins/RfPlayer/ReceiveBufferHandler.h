@@ -39,20 +39,26 @@ protected:
    bool isComplete();
 
    //--------------------------------------------------------------
-   /// \brief	                     Pop the next message from the receive buffer
-   /// \return                      The next complete message
+   /// \brief	   Get the binary frame size (only if current frame is synchronized and binary)
+   /// \return    The binary frame size
+   //--------------------------------------------------------------
+   const int getCurrentBinaryFrameSize();
+
+   //--------------------------------------------------------------
+   /// \brief	   Pop the next message from the receive buffer
+   /// \return    The next complete message
    //--------------------------------------------------------------
    boost::shared_ptr<frames::CFrame> popNextMessage();
 
    //--------------------------------------------------------------
-   /// \brief	         Identifies the first frame in buffer
-   /// \return          The frame type
+   /// \brief	   Identifies the first frame in buffer
+   /// \return    The frame type
    //--------------------------------------------------------------
    frames::EFrameType identifyFrameType();
 
    //--------------------------------------------------------------
-   /// \brief	         Sync buffer to start of frame
-   /// \return          true if SYNC pattern has been found, false in other cases
+   /// \brief	   Sync buffer to start of frame
+   /// \return    true if SYNC pattern has been found, false in other cases
    //--------------------------------------------------------------
    bool syncToStartOfFrame();
 private:

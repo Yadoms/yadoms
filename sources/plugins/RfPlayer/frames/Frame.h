@@ -2,6 +2,8 @@
 #include "AsciiFrame.h"
 #include "BinaryFrame.h"
 #include "FrameType.h"
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace frames {
 
@@ -57,6 +59,10 @@ namespace frames {
       /// \return                The frame as string
       //--------------------------------------------------------------
       const std::string toString() const;
+
+
+      void printToLog(std::ostream & out) const;
+      void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
    private:
       //--------------------------------------------------------------

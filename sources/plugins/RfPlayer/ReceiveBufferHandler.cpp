@@ -86,13 +86,18 @@ bool CReceiveBufferHandler::isComplete()
          }
          case frames::kBinaryFrame:
          {
-            //size is given in bytes 4 and 5
-            int len = (m_content[3] << 8) + m_content[4];
+            int len = getCurrentBinaryFrameSize();
             return m_content.size() >= (5 + len);
          }
       }
    }
    return false;
+}
+
+const int CReceiveBufferHandler::getCurrentBinaryFrameSize()
+{
+   //size is given in bytes 4 and 5
+   return (m_content[4] << 8) + m_content[3];
 }
 
 boost::shared_ptr<frames::CFrame> CReceiveBufferHandler::popNextMessage()
@@ -128,10 +133,10 @@ boost::shared_ptr<frames::CFrame> CReceiveBufferHandler::popNextMessage()
       case frames::kBinaryFrame:
          {
             //size is given in bytes 4 and 5
-            int len = (m_content[3] << 8) + m_content[4];
+            int len = getCurrentBinaryFrameSize();
             boost::shared_ptr<shared::communication::CByteBuffer> extractedMessage(new shared::communication::CByteBuffer(len));
-            for (size_t idx = frames::CBinaryFrame::HeaderSize; idx < len; ++idx)
-               (*extractedMessage)[idx] = m_content[idx];
+            for (size_t idx = frames::CBinaryFrame::HeaderSize; idx < len+ frames::CBinaryFrame::HeaderSize; ++idx)
+               (*extractedMessage)[idx- frames::CBinaryFrame::HeaderSize] = m_content[idx];
 
             result = boost::make_shared<frames::CFrame>(boost::make_shared<frames::CBinaryFrame>(m_content[2], extractedMessage));
 
