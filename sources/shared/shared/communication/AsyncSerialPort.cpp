@@ -74,7 +74,7 @@ namespace shared
          }
          catch (boost::system::system_error& e)
          {
-            YADOMS_LOG(error) << "Failed to open serial port " << e.what();
+            YADOMS_LOG(error) << "Failed to open serial port : " << e.what();
             return false;
          }
 

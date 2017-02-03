@@ -310,7 +310,7 @@ void CEnOcean::protocolErrorProcess()
 void CEnOcean::processUnConnectionEvent()
 {
    YADOMS_LOG(information) << "EnOcean connection was lost" ;
-   m_api->setPluginState(yApi::historization::EPluginState::kError, "connectionFailed");
+   m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionFailed");
 
    destroyConnection();
 }
