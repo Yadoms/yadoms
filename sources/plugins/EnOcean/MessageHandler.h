@@ -9,7 +9,6 @@
 class CMessageHandler : public IMessageHandler
 {
 public:
-   //TOFIX référence circulaire : CMessageHandler référence CAsyncSerialPort, qui référence CReceiveBufferHandler, qui référence CMessageHandler (voir ce qui a été fait dans les tests U pour corriger)
    CMessageHandler(boost::shared_ptr<shared::communication::IAsyncPort> port,
                    shared::event::CEventHandler& mainEventHandler,
                    int mainEvtPortDataReceived,

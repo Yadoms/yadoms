@@ -44,8 +44,8 @@ bool CMessageHandler::send(message::CEsp3SendPacket& sendMessage,
 
    auto timeout = waitAnswer(message::EnOceanAnswerTimeout);
 
-   //TODO remettre clearHook();
-   //TODO ajouter clearHook
+   clearHook();
+
    return timeout;
 }
 
