@@ -13,6 +13,9 @@
 #include <shared/plugin/yPluginApi/historization/BatteryLevel.h>
 #include <shared/plugin/yPluginApi/historization/SignalPower.h>
 
+#include "../specificHistorizers/Type0State.h"
+#include "../specificHistorizers/Type1State.h"
+
 namespace frames {
 
 
@@ -218,9 +221,37 @@ namespace frames {
          switch (pFrame->header.infoType)
          {
          case INFOS_TYPE0:
+         {
+            char houseCode = (char)((pFrame->infos.type0.id & 0x00F0) >> 4) + 0x30;
+            unsigned char device = (unsigned char)(pFrame->infos.type0.id & 0x000F);
+            m_deviceName = (boost::format("%1%%2%") % houseCode % device).str();
+            m_deviceModel = "X10 / DomiaLight";
+            m_deviceDetails.set("id", pFrame->infos.type0.id);
+
+            auto stateKeyword = boost::make_shared<specificHistorizers::CType0State>("state");
+            specificHistorizers::EType0StateValues state((int)pFrame->infos.type0.subtype);
+            stateKeyword->set(state);
+            m_keywords.push_back(stateKeyword);
+
             break;
+         }
+
+            
          case INFOS_TYPE1:
+         {
+            unsigned int device = (pFrame->infos.type1.idMsb << 16) + pFrame->infos.type1.idLsb;
+            m_deviceName = (boost::format("%1%") % device).str();
+            m_deviceModel = "X10 / CHACON / KD101 / BLYSS";
+            m_deviceDetails.set("id", device);
+
+            auto stateKeyword = boost::make_shared<specificHistorizers::CType1State>("state");
+            specificHistorizers::EType1StateValues state((int)pFrame->infos.type1.subtype);
+            stateKeyword->set(state);
+            m_keywords.push_back(stateKeyword);
+
             break;
+         }
+
          case INFOS_TYPE2:
             break;
          case INFOS_TYPE3:

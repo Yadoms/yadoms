@@ -28,10 +28,16 @@ set(RFPLAYER_PLUGIN_SOURCES
    frames/BinaryFrame.h
    frames/BinaryFrame.cpp
    frames/FrameType.h
+
+   specificHistorizers/Type0State.h
+   specificHistorizers/Type0State.cpp
+   specificHistorizers/Type1State.h
+   specificHistorizers/Type1State.cpp
 )
 
 source_group(sources ./*.*)
 source_group(sources\\frames ./frames/*.*)
+source_group(sources\\specificHistorizers ./specificHistorizers/*.*)
 
 #########################################
 ## Place here all additional include directories
