@@ -30,7 +30,7 @@ namespace message
       /// \brief	                           Constructor
       /// \param[in] esp3Packet              The esp3 message
       //--------------------------------------------------------------
-      explicit CResponseReceivedMessage(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet);
+      explicit CResponseReceivedMessage(boost::shared_ptr<const CEsp3ReceivedPacket> esp3Packet);
 
       //--------------------------------------------------------------
       /// \brief	                           Destructor

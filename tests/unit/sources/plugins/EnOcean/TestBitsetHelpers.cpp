@@ -20,7 +20,7 @@ boost::dynamic_bitset<> initBitSet(const bool bitArray[],
 #define _initBitSet(bitArray) initBitSet(bitArray,sizeof(bitArray)/sizeof(bitArray[0]))
 
 
-BOOST_AUTO_TEST_SUITE(TestEnOceanBitsetHelpers)
+BOOST_AUTO_TEST_SUITE(TestBitsetHelpers)
 
 BOOST_AUTO_TEST_CASE(NominalConversion)
 {

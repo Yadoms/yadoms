@@ -8,43 +8,13 @@
 
 #include "../../mock/shared/currentTime/DefaultCurrentTimeMock.h"
 
+#include "MessageHandlerMock.hpp"
+
 // Includes needed to compile the test
 #include "../../testCommon/fileSystem.h"
 
 
-// Mock
-CRorgs::ERorgIds CRorgs::toRorgId(unsigned int id)
-{
-   return k4BS_Telegram;
-}
-
-class CMessageHandlerMock : public IMessageHandler
-{
-public:
-   explicit CMessageHandlerMock(shared::event::CEventHandler& evtHandler, int evtId)
-      :m_evtHandler(evtHandler), m_evtId(evtId)
-   {
-   }
-   void send(message::CEsp3SendPacket& sendMessage) override
-   {
-   }
-   bool send(message::CEsp3SendPacket& sendMessage,
-                     boost::function<bool(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> isExpectedMessageFct,
-                     boost::function<void(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> onReceiveFct) override
-   {
-      return false;
-   }
-   void onReceived(boost::shared_ptr<const message::CEsp3ReceivedPacket> receivedMessage) override
-   {
-      m_evtHandler.postEvent(m_evtId, receivedMessage);
-   }
-private:
-   shared::event::CEventHandler& m_evtHandler;
-   int m_evtId;
-};
-
-
-BOOST_AUTO_TEST_SUITE(TestEnOceanReceiveBufferHandler)
+BOOST_AUTO_TEST_SUITE(TestReceiveBufferHandler)
 
    BOOST_AUTO_TEST_CASE(SmallestMessage)
    {
@@ -384,5 +354,5 @@ BOOST_AUTO_TEST_SUITE(TestEnOceanReceiveBufferHandler)
          expectedOptional.begin(), expectedOptional.end()) ;
    }
 
-   BOOST_AUTO_TEST_SUITE_END()
+BOOST_AUTO_TEST_SUITE_END()
 

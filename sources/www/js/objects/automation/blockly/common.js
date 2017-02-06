@@ -127,7 +127,7 @@ Blockly.Yadoms.Initialize = function ($domTarget, initialContent, maxTopBlocks) 
    Blockly.Yadoms.LoadDataForBlocklyCustomBlocks_()
    .done(function (data) {
       Blockly.Yadoms.data = data;
-      Blockly.Python.INDENT = "\t";
+      Blockly.Python.INDENT = "   ";
 
 	  
       Blockly.Yadoms.EnumerationsHelper.initialize();

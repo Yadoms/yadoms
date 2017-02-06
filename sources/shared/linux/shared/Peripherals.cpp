@@ -17,7 +17,7 @@ CPeripherals::~CPeripherals()
 {
 }
 
-const boost::shared_ptr<CPeripherals::SerialPortsMap> CPeripherals::getSerialPorts()
+boost::shared_ptr<CPeripherals::SerialPortsMap> CPeripherals::getSerialPorts()
 {
    boost::filesystem::path ttyDir("/sys/class/tty");
 

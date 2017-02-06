@@ -57,16 +57,6 @@ boost::shared_ptr<const message::CEsp3ReceivedPacket> CReceiveBufferHandler::get
    while (!m_content.empty() && m_content[message::kOffsetSyncByte] != message::SYNC_BYTE_VALUE)
       m_content.erase(m_content.begin());
 
-   if (m_content.size() == 1) //TODO Est-ce utile ? Voir Teleinfo
-   {
-      if (m_content[message::kOffsetSyncByte] != message::SYNC_BYTE_VALUE)
-      {
-         YADOMS_LOG(error) << "Data received from EnOcean adapter : Message does not start with sync byte (0x55), wait for next sync byte" ;
-         m_content.clear();
-      }
-      return uncompleteMessage;
-   }
-
    if (m_content.size() < 6)
       return uncompleteMessage; // Message too small
 
