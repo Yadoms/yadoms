@@ -3,10 +3,7 @@
 #include <shared/DataContainer.h>
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <shared/plugin/yPluginApi/historization/Rssi.h>
-#include <shared/plugin/yPluginApi/historization/Power.h>
-#include <shared/plugin/yPluginApi/historization/Energy.h>
-#include <shared/plugin/yPluginApi/historization/BatteryLevel.h>
+
 
 namespace yApi = shared::plugin::yPluginApi;
 namespace frames {
@@ -43,14 +40,24 @@ namespace frames {
       //--------------------------------------------------------------
       boost::shared_ptr< shared::communication::CByteBuffer > getContent() const;
 
+      //--------------------------------------------------------------
+      /// \brief	               Print the binary frame to log
+      /// \param [in] out        The log stream to write
+      //--------------------------------------------------------------
       void printToLog(std::ostream & out) const;
-      void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const;
-      void init(boost::shared_ptr<yApi::IYPluginApi> api);
 
-      void buildDeviceInfo();
-      void buildKeywords();
+      //--------------------------------------------------------------
+      /// \brief	               Historize data to pluginAPI
+      /// \param [in] api        The pluginAPI
+      //--------------------------------------------------------------
+      void historizeData(boost::shared_ptr<yApi::IYPluginApi> api);
 
    private:
+      //--------------------------------------------------------------
+      /// \brief	               Find and identify device and keywords contained in frame
+      //--------------------------------------------------------------
+      void buildDeviceInfo();
+
       //--------------------------------------------------------------
       /// \brief	               The sourceDest of frame
       //--------------------------------------------------------------
@@ -60,36 +67,20 @@ namespace frames {
       //--------------------------------------------------------------
       boost::shared_ptr< shared::communication::CByteBuffer > m_content;
 
+      //--------------------------------------------------------------
+      /// \brief	               The device name
+      //--------------------------------------------------------------
       std::string m_deviceName;
+
+      //--------------------------------------------------------------
+      /// \brief	               The device model
+      //--------------------------------------------------------------
       std::string m_deviceModel;
+
+      //--------------------------------------------------------------
+      /// \brief	               The device details
+      //--------------------------------------------------------------
       shared::CDataContainer m_deviceDetails;
-
-      //--------------------------------------------------------------
-      /// \brief	The current (A), for the 3 channels
-      //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CPower> m_power1;
-      boost::shared_ptr<yApi::historization::CPower> m_power2;
-      boost::shared_ptr<yApi::historization::CPower> m_power3;
-
-      //--------------------------------------------------------------
-      /// \brief	The instant power (W)
-      //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CPower> m_totalPower;
-
-      //--------------------------------------------------------------
-      /// \brief	The total power (Wh)
-      //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CEnergy> m_energy;
-
-      //--------------------------------------------------------------
-      /// \brief	The battery level (percent)
-      //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CBatteryLevel> m_batteryLevel;
-
-      //--------------------------------------------------------------
-      /// \brief	The RSSI (percent)
-      //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CRssi> m_rssi;
 
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances

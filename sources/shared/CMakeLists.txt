@@ -190,6 +190,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Rssi.h
    shared/plugin/yPluginApi/historization/Speed.cpp
    shared/plugin/yPluginApi/historization/Speed.h
+   shared/plugin/yPluginApi/historization/SignalPower.cpp
+   shared/plugin/yPluginApi/historization/SignalPower.h
    shared/plugin/yPluginApi/historization/Switch.cpp
    shared/plugin/yPluginApi/historization/Switch.h
    shared/plugin/yPluginApi/historization/Temperature.cpp

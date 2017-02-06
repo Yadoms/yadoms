@@ -12,6 +12,8 @@ namespace shared { namespace plugin { namespace yPluginApi {
 
    const std::string& CStandardUnits::NoUnits("data.units.noUnit");
    const std::string& CStandardUnits::Ampere("data.units.ampere");
+   const std::string& CStandardUnits::Decibel("data.units.db");
+   const std::string& CStandardUnits::DecibelPower("data.units.dbm");
    const std::string& CStandardUnits::Degrees("data.units.degrees");
    const std::string& CStandardUnits::DegreesCelcius("data.units.degreesCelcius");
    const std::string& CStandardUnits::DegreesFarenheit("data.units.degreesFarenheit");
@@ -65,6 +67,8 @@ namespace shared { namespace plugin { namespace yPluginApi {
    const CStandardCapacity& CStandardCapacities::RainRate = CStandardCapacity("rainrate", CStandardUnits::MillimeterPerSecond, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Rssi = CStandardCapacity("rssi", CStandardUnits::Percent, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Speed = CStandardCapacity("speed", CStandardUnits::MetersPerSecond, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::SignalLevel = CStandardCapacity("signalLevel", CStandardUnits::Decibel, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::SignalPower = CStandardCapacity("signalPower", CStandardUnits::DecibelPower, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Switch = CStandardCapacity("switch", CStandardUnits::NoUnits, EKeywordDataType::kBool);
    const CStandardCapacity& CStandardCapacities::Temperature = CStandardCapacity("temperature", CStandardUnits::DegreesCelcius, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Text = CStandardCapacity("text", CStandardUnits::NoUnits, EKeywordDataType::kString);

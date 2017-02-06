@@ -255,8 +255,22 @@ void CRfPlayer::processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginA
 
 void CRfPlayer::processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::CBinaryFrame> data)
 {
-   if (m_isDeveloperMode)
-      YADOMS_LOG(debug) << "RfPlayer Binary <<< " << shared::communication::CBufferLogger::byteBufferToHexString(*data->getContent());
+   try
+   {
+      if (data)
+      {
+         if (m_isDeveloperMode)
+         {
+            data->printToLog(YADOMS_LOG(debug));
+         }
+
+         data->historizeData(api);
+      }
+   }
+   catch (std::exception& e)
+   {
+      YADOMS_LOG(error) << "Error processing binary frame : " << e.what();
+   }
 }
 
 void CRfPlayer::processZiBlueAsciiFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::CAsciiFrame> data)

@@ -15,6 +15,8 @@ namespace shared { namespace plugin { namespace yPluginApi
       //--------------------------------------------------------------
       static const std::string& NoUnits;
       static const std::string& Ampere;               // A
+      static const std::string& Decibel;              // dB
+      static const std::string& DecibelPower;         // dBm
       static const std::string& Degrees;              // °
       static const std::string& DegreesCelcius;       // °C
       static const std::string& DegreesFarenheit;     // °F

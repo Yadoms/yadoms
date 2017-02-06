@@ -5,6 +5,13 @@
 #include "../rfplayerApi/usb_frame_api.h"
 
 #include <shared/Log.h>
+#include <shared/exception/NotSupported.hpp>
+
+#include <shared/plugin/yPluginApi/historization/Rssi.h>
+#include <shared/plugin/yPluginApi/historization/Power.h>
+#include <shared/plugin/yPluginApi/historization/Energy.h>
+#include <shared/plugin/yPluginApi/historization/BatteryLevel.h>
+#include <shared/plugin/yPluginApi/historization/SignalPower.h>
 
 namespace frames {
 
@@ -27,118 +34,118 @@ namespace frames {
       switch (pFrame->header.frameType)
       {
       case REGULAR_INCOMING_BINARY_USB_FRAME_TYPE:
-         out << "Binary : REGULAR ";
+         out << "Binary : REGULAR " << std::endl;
 
          if (pFrame->header.dataFlag == 0)
-            out << "    " << "433 MHz";
+            out << "    " << "433 MHz" << std::endl;
          if (pFrame->header.dataFlag == 1)
-            out << "    " << "866 MHz";
+            out << "    " << "866 MHz" << std::endl;
 
-         out << "    " << "RfLevel : " << (int)pFrame->header.rfLevel << " dBm";
-         out << "    " << "FloorNoise : " << (int)pFrame->header.floorNoise << " dBm";
-         out << "    " << "RfQuality : " << (int)pFrame->header.rfQuality << "/10";
+         out << "    " << "RfLevel : " << (int)pFrame->header.rfLevel << " dBm" << std::endl;
+         out << "    " << "FloorNoise : " << (int)pFrame->header.floorNoise << " dBm" << std::endl;
+         out << "    " << "RfQuality : " << (int)pFrame->header.rfQuality << "/10" << std::endl;
 
          switch (pFrame->header.protocol)
          {
-         case RECEIVED_PROTOCOL_UNDEFINED: out << "    " << "protocol : RECEIVED_PROTOCOL_UNDEFINED    ";  break;
-         case RECEIVED_PROTOCOL_X10: out << "    " << "protocol : X10    ";  break;
-         case RECEIVED_PROTOCOL_VISONIC: out << "    " << "protocol : VISONIC";  break;
-         case RECEIVED_PROTOCOL_BLYSS: out << "    " << "protocol : BLYSS  ";  break;
-         case RECEIVED_PROTOCOL_CHACON: out << "    " << "protocol : CHACON ";  break;
-         case RECEIVED_PROTOCOL_OREGON: out << "    " << "protocol : OREGON ";  break;
-         case RECEIVED_PROTOCOL_DOMIA: out << "    " << "protocol : DOMIA  ";  break;
-         case RECEIVED_PROTOCOL_OWL: out << "    " << "protocol : OWL    ";  break;
-         case RECEIVED_PROTOCOL_X2D: out << "    " << "protocol : X2D    ";  break;
-         case RECEIVED_PROTOCOL_RFY: out << "    " << "protocol : RFY    ";  break;
-         case RECEIVED_PROTOCOL_KD101: out << "    " << "protocol : KD101  ";  break;
-         case RECEIVED_PROTOCOL_PARROT: out << "    " << "protocol : PARROT ";  break;
-         case RECEIVED_PROTOCOL_DIGIMAX: out << "    " << "protocol : DIGIMAX";  break;
+         case RECEIVED_PROTOCOL_UNDEFINED: out << "    " << "protocol : RECEIVED_PROTOCOL_UNDEFINED    " << std::endl;  break;
+         case RECEIVED_PROTOCOL_X10: out << "    " << "protocol : X10    " << std::endl;  break;
+         case RECEIVED_PROTOCOL_VISONIC: out << "    " << "protocol : VISONIC" << std::endl;  break;
+         case RECEIVED_PROTOCOL_BLYSS: out << "    " << "protocol : BLYSS  " << std::endl;  break;
+         case RECEIVED_PROTOCOL_CHACON: out << "    " << "protocol : CHACON " << std::endl;  break;
+         case RECEIVED_PROTOCOL_OREGON: out << "    " << "protocol : OREGON " << std::endl;  break;
+         case RECEIVED_PROTOCOL_DOMIA: out << "    " << "protocol : DOMIA  " << std::endl;  break;
+         case RECEIVED_PROTOCOL_OWL: out << "    " << "protocol : OWL    " << std::endl;  break;
+         case RECEIVED_PROTOCOL_X2D: out << "    " << "protocol : X2D    " << std::endl;  break;
+         case RECEIVED_PROTOCOL_RFY: out << "    " << "protocol : RFY    " << std::endl;  break;
+         case RECEIVED_PROTOCOL_KD101: out << "    " << "protocol : KD101  " << std::endl;  break;
+         case RECEIVED_PROTOCOL_PARROT: out << "    " << "protocol : PARROT " << std::endl;  break;
+         case RECEIVED_PROTOCOL_DIGIMAX: out << "    " << "protocol : DIGIMAX" << std::endl;  break;
          }
 
          switch (pFrame->header.infoType)
          {
          case INFOS_TYPE0:
-            out << "    " << " InfoType : INFOS_TYPE0";
+            out << "    " << " InfoType : INFOS_TYPE0" << std::endl;
 
-            out << "    " << " Used by X10 / DOMIA LITE protocol / PARROT";
-            out << "    " << " ID=" << (boost::format("0x%0X") % pFrame->infos.type0.id).str();
-            out << "    " << " ID HOME=" << (char)(0x30 + ((pFrame->infos.type0.id & 0x00F0) >> 4));
-            out << "    " << " ID DEVICE=" << (pFrame->infos.type0.id & 0x000F);
+            out << "    " << " Used by X10 / DOMIA LITE protocol / PARROT" << std::endl;
+            out << "    " << " ID=" << (boost::format("0x%0X%") % pFrame->infos.type0.id).str() << std::endl;
+            out << "    " << " ID HOME=" << (char)(0x30 + ((pFrame->infos.type0.id & 0x00F0) >> 4)) << std::endl;
+            out << "    " << " ID DEVICE=" << (pFrame->infos.type0.id & 0x000F) << std::endl;
 
             switch (pFrame->infos.type0.subtype)
             {
-            case 0: out << "    " << " STATE= OFF"; break;
-            case 1: out << "    " << " STATE= ON"; break;
-            case 2: out << "    " << " STATE= BRIGHT"; break;
-            case 3: out << "    " << " STATE= DIM"; break;
-            case 4: out << "    " << " STATE= All_OFF"; break;
-            case 5: out << "    " << " STATE= ALL_ON"; break;
+            case 0: out << "    " << " STATE= OFF" << std::endl; break;
+            case 1: out << "    " << " STATE= ON" << std::endl; break;
+            case 2: out << "    " << " STATE= BRIGHT" << std::endl; break;
+            case 3: out << "    " << " STATE= DIM" << std::endl; break;
+            case 4: out << "    " << " STATE= All_OFF" << std::endl; break;
+            case 5: out << "    " << " STATE= ALL_ON" << std::endl; break;
             }
 
             break;
          case INFOS_TYPE1:
-            out << "    " << " InfoType : INFOS_TYPE1";
+            out << "    " << " InfoType : INFOS_TYPE1" << std::endl;
             break;
          case INFOS_TYPE2:
-            out << "    " << " InfoType : INFOS_TYPE2";
+            out << "    " << " InfoType : INFOS_TYPE2" << std::endl;
             break;
          case INFOS_TYPE3:
-            out << "    " << " InfoType : INFOS_TYPE3";
+            out << "    " << " InfoType : INFOS_TYPE3" << std::endl;
             break;
          case INFOS_TYPE4:
-            out << "    " << " InfoType : INFOS_TYPE4";
+            out << "    " << " InfoType : INFOS_TYPE4" << std::endl;
             break;
          case INFOS_TYPE5:
-            out << "    " << " InfoType : INFOS_TYPE5";
+            out << "    " << " InfoType : INFOS_TYPE5" << std::endl;
             break;
          case INFOS_TYPE6:
-            out << "    " << " InfoType : INFOS_TYPE6";
+            out << "    " << " InfoType : INFOS_TYPE6" << std::endl;
             break;
          case INFOS_TYPE7:
-            out << "    " << " InfoType : INFOS_TYPE7";
+            out << "    " << " InfoType : INFOS_TYPE7" << std::endl;
             break;
          case INFOS_TYPE8:
-            out << "    " << " InfoType : INFOS_TYPE8";
+            out << "    " << " InfoType : INFOS_TYPE8" << std::endl;
 
 
-            out << "    " << " Used by OWL ( Energy/power sensors)";
+            out << "    " << " Used by OWL ( Energy/power sensors)" << std::endl;
             if (pFrame->infos.type8.subtype == 0)
             {
-               out << "    " << " REGULAR frame";
+               out << "    " << " REGULAR frame" << std::endl;
                switch (pFrame->infos.type8.idPHY)
                {
-               case 0: out << "    " << " CM119/CM160"; break;
-               case 1: out << "    " << " CM130"; break;
-               case 2: out << "    " << " CM180"; break;
-               case 3: out << "    " << " CM180i"; break;
+               case 0: out << "    " << " CM119/CM160" << std::endl; break;
+               case 1: out << "    " << " CM130" << std::endl; break;
+               case 2: out << "    " << " CM180" << std::endl; break;
+               case 3: out << "    " << " CM180i" << std::endl; break;
                }
-               out << "    " << " Adr_Channel=" << pFrame->infos.type8.idChannel;
-               out << "    " << " Channel=" << (pFrame->infos.type8.idChannel >> 4);
+               out << "    " << " Adr_Channel=" << pFrame->infos.type8.idChannel << std::endl;
+               out << "    " << " Channel=" << (pFrame->infos.type8.idChannel >> 4) << std::endl;
 
-               out << "    " << " Battery=" << ((pFrame->infos.type8.qualifier & 0x0001) == 0 ? "OK" : "Low");
-               out << "    " << ((pFrame->infos.type8.qualifier & 0x0002) == 0 ? " Only the total instantaneous Power is given" : " Power on each input 1, 2, 3 are added (CM180i only).");
+               out << "    " << " Battery=" << ((pFrame->infos.type8.qualifier & 0x0001) == 0 ? "OK" : "Low") << std::endl;
+               out << "    " << ((pFrame->infos.type8.qualifier & 0x0002) == 0 ? " Only the total instantaneous Power is given" : " Power on each input 1, 2, 3 are added (CM180i only).") << std::endl;
 
-               out << "    " << " Energy=" << (pFrame->infos.type8.energyLsb + (pFrame->infos.type8.energyMsb << 8)) << " Wh";
-               out << "    " << " Power=" << pFrame->infos.type8.power << " W";
-               out << "    " << " P1=" << pFrame->infos.type8.powerI1 << " W";
-               out << "    " << " P2=" << pFrame->infos.type8.powerI2 << " W";
-               out << "    " << " P3=" << pFrame->infos.type8.powerI3 << " W";
+               out << "    " << " Energy=" << (pFrame->infos.type8.energyLsb + (pFrame->infos.type8.energyMsb << 8)) << " Wh" << std::endl;
+               out << "    " << " Power=" << pFrame->infos.type8.power << " W" << std::endl;
+               out << "    " << " P1=" << pFrame->infos.type8.powerI1 << " W" << std::endl;
+               out << "    " << " P2=" << pFrame->infos.type8.powerI2 << " W" << std::endl;
+               out << "    " << " P3=" << pFrame->infos.type8.powerI3 << " W" << std::endl;
             }
             else
-               out << "    " << " NOT REGULAR frame";
+               out << "    " << " NOT REGULAR frame" << std::endl;
 
             break;
          case INFOS_TYPE9:
-            out << "    " << " InfoType : INFOS_TYPE9";
+            out << "    " << " InfoType : INFOS_TYPE9" << std::endl;
             break;
          case INFOS_TYPE10:
-            out << "    " << " InfoType : INFOS_TYPE10";
+            out << "    " << " InfoType : INFOS_TYPE10" << std::endl;
             break;
          case INFOS_TYPE11:
-            out << " InfoType : INFOS_TYPE11";
+            out << " InfoType : INFOS_TYPE11" << std::endl;
             break;
          case INFOS_TYPE12:
-            out << " InfoType : INFOS_TYPE12";
+            out << " InfoType : INFOS_TYPE12" << std::endl;
             break;
 
          }
@@ -146,24 +153,26 @@ namespace frames {
          break;
 
       case RFLINK_INCOMING_BINARY_USB_FRAME_TYPE:
-         out << "Binary : RFLINK . Not decoded";
+         out << "Binary : RFLINK . Not decoded" << std::endl;
          break;
       }
    }
 
-   void CBinaryFrame::init(boost::shared_ptr<yApi::IYPluginApi> api)
+  
+   void CBinaryFrame::historizeData(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       buildDeviceInfo();
 
+      if (m_deviceName.empty())
+         throw new shared::exception::CNotSupported("The binary frame content is not supported or dont contains reference to any device identifier");
+
       // Create device and keywords if needed
-      if (!api->deviceExists(m_deviceName))
-      {
-         api->declareDevice(m_deviceName, m_deviceModel, m_keywords, m_deviceDetails);
-      }
-   }   
-   
-   void CBinaryFrame::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
-   {
+      api->deviceExists(m_deviceName);
+
+      //ensure keywords are created (in case of multiple frames giving different keywords)
+      api->declareDevice(m_deviceName, m_deviceModel, m_keywords, m_deviceDetails);
+
+      //historize data
       api->historizeData(m_deviceName, m_keywords);
    }
 
@@ -184,18 +193,24 @@ namespace frames {
       switch (pFrame->header.frameType)
       {
       case REGULAR_INCOMING_BINARY_USB_FRAME_TYPE:
+      {
          if (pFrame->header.dataFlag == 0)
             m_deviceDetails.set("frequency", 433);
          if (pFrame->header.dataFlag == 1)
             m_deviceDetails.set("frequency", 866);
 
 
-         m_rssi = boost::make_shared<yApi::historization::CRssi>("rfQuality");
-         m_rssi->set( ((int)pFrame->header.rfQuality-1) * 10); //rfQuality is [1;10], RSSI [0;99]
-         m_keywords.push_back(m_rssi);
-         //out << "    " << "RfLevel : " << (int)pFrame->header.rfLevel << " dBm";
-         //out << "    " << "FloorNoise : " << (int)pFrame->header.floorNoise << " dBm";
-         //out << "    " << "RfQuality : " << (int)pFrame->header.rfQuality << "/10";
+         auto rssiKeyword = boost::make_shared<yApi::historization::CRssi>("rfQuality");
+         rssiKeyword->set((int)pFrame->header.rfQuality* 10); //rfQuality is [1;10], RSSI [10;100]
+         m_keywords.push_back(rssiKeyword);
+
+         auto rfLevelKeyword = boost::make_shared<yApi::historization::CSignalPower>("rfLevel");
+         rfLevelKeyword->set((int)pFrame->header.rfLevel);
+         m_keywords.push_back(rfLevelKeyword);
+
+         auto floorNoiseKeyword = boost::make_shared<yApi::historization::CSignalPower>("floorNoise");
+         floorNoiseKeyword->set((int)pFrame->header.floorNoise);
+         m_keywords.push_back(floorNoiseKeyword);
 
          m_deviceDetails.set("protocol", pFrame->header.protocol);
 
@@ -219,12 +234,13 @@ namespace frames {
          case INFOS_TYPE7:
             break;
          case INFOS_TYPE8:
+         {
             if (pFrame->infos.type8.subtype == 0)
             {
                switch (pFrame->infos.type8.idPHY)
                {
-               case 0: 
-                  m_deviceModel = "OWL CM119/CM160"; 
+               case 0:
+                  m_deviceModel = "OWL CM119/CM160";
                   break;
                case 1:
                   m_deviceModel = "OWL CM130";
@@ -236,40 +252,41 @@ namespace frames {
                   m_deviceModel = "OWL CM180i";
                   break;
                }
-               m_deviceName = (boost::format("%1") % (pFrame->infos.type8.idChannel >> 4)).str();
+               m_deviceName = (boost::format("%1%") % (pFrame->infos.type8.idChannel >> 4)).str();
                m_deviceDetails.set("adr_channel", pFrame->infos.type8.idChannel);
 
-               m_batteryLevel = boost::make_shared<yApi::historization::CBatteryLevel>("battery");
-               m_batteryLevel->set((pFrame->infos.type8.qualifier & 0x0001) == 0 ? 100 : 0);
-               m_keywords.push_back(m_batteryLevel);
+               auto batteryLevelKeyword = boost::make_shared<yApi::historization::CBatteryLevel>("battery");
+               batteryLevelKeyword->set((pFrame->infos.type8.qualifier & 0x0001) == 0 ? 100 : 0);
+               m_keywords.push_back(batteryLevelKeyword);
 
 
                //out << "    " << ((pFrame->infos.type8.qualifier & 0x0002) == 0 ? " Only the total instantaneous Power is given" : " Power on each input 1, 2, 3 are added (CM180i only).");
 
-               m_energy = boost::make_shared<yApi::historization::CEnergy>("energy");
-               m_energy->set((pFrame->infos.type8.energyLsb + (pFrame->infos.type8.energyMsb << 8)));
-               m_keywords.push_back(m_energy);
+               auto energyKeyword = boost::make_shared<yApi::historization::CEnergy>("energy");
+               energyKeyword->set((pFrame->infos.type8.energyLsb + (pFrame->infos.type8.energyMsb << 8)));
+               m_keywords.push_back(energyKeyword);
 
-               m_totalPower = boost::make_shared<yApi::historization::CPower>("power");
-               m_totalPower->set(pFrame->infos.type8.power);
-               m_keywords.push_back(m_totalPower);
+               auto totalPowerKeyword = boost::make_shared<yApi::historization::CPower>("power");
+               totalPowerKeyword->set(pFrame->infos.type8.power);
+               m_keywords.push_back(totalPowerKeyword);
 
                if ((pFrame->infos.type8.qualifier & 0x0002) != 0)
                {
-                  m_power1 = boost::make_shared<yApi::historization::CPower>("line1");
-                  m_power2 = boost::make_shared<yApi::historization::CPower>("line2");
-                  m_power3 = boost::make_shared<yApi::historization::CPower>("line3");
+                  auto power1Keyword = boost::make_shared<yApi::historization::CPower>("line1");
+                  auto power2Keyword = boost::make_shared<yApi::historization::CPower>("line2");
+                  auto power3Keyword = boost::make_shared<yApi::historization::CPower>("line3");
 
-                  m_power1->set(pFrame->infos.type8.powerI1);
-                  m_power2->set(pFrame->infos.type8.powerI2);
-                  m_power3->set(pFrame->infos.type8.powerI3);
-                  m_keywords.push_back(m_power1);
-                  m_keywords.push_back(m_power2);
-                  m_keywords.push_back(m_power3);
+                  power1Keyword->set(pFrame->infos.type8.powerI1);
+                  power2Keyword->set(pFrame->infos.type8.powerI2);
+                  power3Keyword->set(pFrame->infos.type8.powerI3);
+                  m_keywords.push_back(power1Keyword);
+                  m_keywords.push_back(power2Keyword);
+                  m_keywords.push_back(power3Keyword);
 
                }
             }
             break;
+         }
          case INFOS_TYPE9:
             break;
          case INFOS_TYPE10:
@@ -282,19 +299,11 @@ namespace frames {
          }
 
          break;
-
+      }
       case RFLINK_INCOMING_BINARY_USB_FRAME_TYPE:
          break;
       }
    }
-
-   void CBinaryFrame::buildKeywords()
-   {
-
-   }
-
-
-
 
 } //namespace frames
 

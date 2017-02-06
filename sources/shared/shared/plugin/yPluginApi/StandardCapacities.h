@@ -42,6 +42,8 @@ namespace shared { namespace plugin { namespace yPluginApi {
       static const CStandardCapacity & RainRate;          // rain rate         | mm/s                  | Rain rate
       static const CStandardCapacity & Rssi;              // rssi              | percent               | Rssi measure capacity
       static const CStandardCapacity & Speed;             // speed             | m/s                   | A speed value, in m/s
+      static const CStandardCapacity & SignalLevel;       // signal level      | dB                    | An signal level in decibels
+      static const CStandardCapacity & SignalPower;       // signal power      | dBm                   | An signal power in dBm
       static const CStandardCapacity & Switch;            // switch            | -                     | A on/off value
       static const CStandardCapacity & Temperature;       // temperature       | degrees Celcius       | Temperature
       static const CStandardCapacity & Text;              // text              | -                     | A text
