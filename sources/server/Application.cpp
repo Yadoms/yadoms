@@ -153,7 +153,7 @@ int CYadomsServer::main(const ArgVec& /*args*/)
             m_stopRequestEventHandler.postEvent(kTerminationRequested);
             const auto stopSuccess = m_stoppedEventHandler.waitForEvents(boost::posix_time::seconds(30)) == kApplicationFullyStopped;
             if (!stopSuccess)
-               YADOMS_LOG(error) << "CConsoleControlHandler : Fail to wait the app end event";
+               YADOMS_LOG(error) << "Fail to wait the app end event";
             return stopSuccess;
          });
 

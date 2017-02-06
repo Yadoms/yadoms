@@ -32,7 +32,7 @@ namespace shared
          case  SIGTERM :
             // Signal stop request and wait for application fully stops
             if (!CApplicationStopHandler::m_onStopRequestedFct())
-               YADOMS_LOG(error) << "Fail to wait the app end event";
+               YADOMS_LOG(error) << "CApplicationStopHandler : Fail to wait the app end event";
             break;
          default:
             YADOMS_LOG(warning) << "CApplicationStopHandler::handleInternal - no handler for #%d signal " << signal;
