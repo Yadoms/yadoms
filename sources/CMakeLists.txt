@@ -191,12 +191,13 @@ ENDIF()
 #
 ###############################################
 set (PROTOBUF_SRC_ROOT_FOLDER ${PROTOBUF_ROOT})
+set (Protobuf_USE_STATIC_LIBS ON)
+set (Protobuf_DEBUG ON)
 find_package(Protobuf 3.0.0 REQUIRED)
 
 if(NOT ${PROTOBUF_FOUND})
 	message(FATAL_ERROR "Unable to find the required Protobuf tool")
 endif()
-
 
 
 ###############################################
