@@ -54,6 +54,19 @@ namespace frames {
 
    private:
       //--------------------------------------------------------------
+      /// \brief	               Identify oregon device from its idPhy and channel
+      /// \param [in] idPhy      The id from frame
+      /// \param [in] channel    The channel
+      //--------------------------------------------------------------
+      void identifyOregonDeviceFromIdPhy(unsigned short idPhy, unsigned short channel);
+
+      //--------------------------------------------------------------
+      /// \brief	               Manage the battery level 
+      /// \param [in] qualifier  The qualifier from frame
+      //--------------------------------------------------------------
+      void manageOregonBatteryFromQualifier(unsigned short qualifier);
+
+      //--------------------------------------------------------------
       /// \brief	               Find and identify device and keywords contained in frame
       //--------------------------------------------------------------
       void buildDeviceInfo();

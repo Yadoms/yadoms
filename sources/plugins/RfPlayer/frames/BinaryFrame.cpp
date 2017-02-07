@@ -14,6 +14,14 @@
 #include <shared/plugin/yPluginApi/historization/SignalPower.h>
 #include <shared/plugin/yPluginApi/historization/Alarm.h>
 #include <shared/plugin/yPluginApi/historization/Tamper.h>
+#include <shared/plugin/yPluginApi/historization/Temperature.h>
+#include <shared/plugin/yPluginApi/historization/Humidity.h>
+#include <shared/plugin/yPluginApi/historization/Pressure.h>
+#include <shared/plugin/yPluginApi/historization/Speed.h>
+#include <shared/plugin/yPluginApi/historization/Direction.h>
+#include <shared/plugin/yPluginApi/historization/Uv.h>
+#include <shared/plugin/yPluginApi/historization/Rain.h>
+#include <shared/plugin/yPluginApi/historization/RainRate.h>
 
 #include "../specificHistorizers/Type0State.h"
 #include "../specificHistorizers/Type1State.h"
@@ -194,6 +202,61 @@ namespace frames {
       return m_content;
    }
 
+   void CBinaryFrame::identifyOregonDeviceFromIdPhy(unsigned short idPhy, unsigned short channel)
+   {
+      switch (idPhy)
+      {
+      case 0:
+         m_deviceModel = "Oregon thermometer probe";
+         break;
+      case 0x1A2D:
+         m_deviceModel = "Oregon THGR122/228/238/268, THGN122/123/132";
+         break;
+      case 0xCA2C:
+         m_deviceModel = "Oregon THGR328";
+         break;
+      case 0x0ACC:
+         m_deviceModel = "Oregon RTGR328";
+         break;
+      case 0xEA4C:
+         m_deviceModel = "Oregon THC238/268, THWR288,THRN122,THN122/132,AW129/131";
+         break;
+      case 0x1A3D:
+         m_deviceModel = "Oregon THGR918/928, THGRN228, THGN50";
+         break;
+      case 0x5A6D:
+         m_deviceModel = "Oregon THGR918N";
+         break;
+      case 0x1A89:
+         m_deviceModel = "Oregon WGR800";
+         break;
+      case 0xCA48:
+         m_deviceModel = "Oregon THWR800";
+         break;
+      case 0xFA28:
+         m_deviceModel = "Oregon THGR810, THGN800";
+         break;
+      case 0x2A19:
+         m_deviceModel = "Oregon PCR800";
+         break;
+      case 0xDA78:
+         m_deviceModel = "Oregon UVN800";
+         break;
+
+      }
+
+      m_deviceName = (boost::format("%1%") % (channel >> 8)).str();
+      m_deviceDetails.set("adr_channel", channel);
+      m_deviceDetails.set("idPhy", idPhy);
+   }
+
+   void CBinaryFrame::manageOregonBatteryFromQualifier(unsigned short qualifier)
+   {
+      auto batteryLevelKeyword = boost::make_shared<yApi::historization::CBatteryLevel>("battery");
+      batteryLevelKeyword->set((qualifier & 0x0001) == 0 ? 100 : 0);
+      m_keywords.push_back(batteryLevelKeyword);
+   }
+
    void CBinaryFrame::buildDeviceInfo()
    {
       REGULAR_INCOMING_RF_TO_BINARY_USB_FRAME * pFrame = (REGULAR_INCOMING_RF_TO_BINARY_USB_FRAME*)m_content->begin();
@@ -329,13 +392,68 @@ namespace frames {
             break;
          }
          case INFOS_TYPE4:
+         {
+            //Used by Scientific Oregon protocol(thermo / hygro sensors)
+            identifyOregonDeviceFromIdPhy(pFrame->infos.type4.idPHY, pFrame->infos.type4.idChannel);
+            manageOregonBatteryFromQualifier(pFrame->infos.type4.qualifier);
+
+            auto tempKeyword = boost::make_shared<yApi::historization::CTemperature>("temperature");
+            tempKeyword->set(pFrame->infos.type4.temp / 10.0);
+            m_keywords.push_back(tempKeyword);
+
+            auto hygroKeyword = boost::make_shared<yApi::historization::CHumidity>("hygrometry");
+            hygroKeyword->set(pFrame->infos.type4.hygro);
+            m_keywords.push_back(hygroKeyword);
+
             break;
+         }
          case INFOS_TYPE5:
+         {
+            //Used by Scientific Oregon protocol ( Atmospheric pressure sensors)
+            identifyOregonDeviceFromIdPhy(pFrame->infos.type5.idPHY, pFrame->infos.type5.idChannel);
+            manageOregonBatteryFromQualifier(pFrame->infos.type5.qualifier);
+
+            auto tempKeyword = boost::make_shared<yApi::historization::CTemperature>("temperature");
+            tempKeyword->set(pFrame->infos.type5.temp / 10.0);
+            m_keywords.push_back(tempKeyword);
+
+            auto hygroKeyword = boost::make_shared<yApi::historization::CHumidity>("hygrometry");
+            hygroKeyword->set(pFrame->infos.type5.hygro);
+            m_keywords.push_back(hygroKeyword);
+
+            auto pressureKeyword = boost::make_shared<yApi::historization::CPressure>("pressure");
+            pressureKeyword->set(pFrame->infos.type5.pressure);
+            m_keywords.push_back(pressureKeyword);
+
             break;
+         }
          case INFOS_TYPE6:
+         {
+            //Used by Scientific Oregon protocol ( Wind sensors)
+            identifyOregonDeviceFromIdPhy(pFrame->infos.type6.idPHY, pFrame->infos.type6.idChannel);
+            manageOregonBatteryFromQualifier(pFrame->infos.type6.qualifier);
+
+            auto speedKeyword = boost::make_shared<yApi::historization::CSpeed>("wind_speed");
+            speedKeyword->set(pFrame->infos.type6.speed / 10.0);
+            m_keywords.push_back(speedKeyword);
+
+            auto directionKeyword = boost::make_shared<yApi::historization::CDirection>("wind_direction");
+            directionKeyword->set(pFrame->infos.type6.direction);
+            m_keywords.push_back(directionKeyword);
+
             break;
+         }
          case INFOS_TYPE7:
+         {
+            //Used by Scientific Oregon protocol ( UV sensors)
+            identifyOregonDeviceFromIdPhy(pFrame->infos.type7.idPHY, pFrame->infos.type7.idChannel);
+            manageOregonBatteryFromQualifier(pFrame->infos.type7.qualifier);
+
+            auto uvKeyword = boost::make_shared<yApi::historization::CUv>("uv");
+            uvKeyword->set(pFrame->infos.type7.light);
+            m_keywords.push_back(uvKeyword);
             break;
+         }
          case INFOS_TYPE8:
          {
             if (pFrame->infos.type8.subtype == 0)
@@ -358,9 +476,7 @@ namespace frames {
                m_deviceName = (boost::format("%1%") % (pFrame->infos.type8.idChannel >> 4)).str();
                m_deviceDetails.set("adr_channel", pFrame->infos.type8.idChannel);
 
-               auto batteryLevelKeyword = boost::make_shared<yApi::historization::CBatteryLevel>("battery");
-               batteryLevelKeyword->set((pFrame->infos.type8.qualifier & 0x0001) == 0 ? 100 : 0);
-               m_keywords.push_back(batteryLevelKeyword);
+               manageOregonBatteryFromQualifier(pFrame->infos.type8.qualifier);
 
 
                //out << "    " << ((pFrame->infos.type8.qualifier & 0x0002) == 0 ? " Only the total instantaneous Power is given" : " Power on each input 1, 2, 3 are added (CM180i only).");
@@ -391,7 +507,22 @@ namespace frames {
             break;
          }
          case INFOS_TYPE9:
+         {
+            //Used by Scientific Oregon protocol ( Rain sensors)
+            identifyOregonDeviceFromIdPhy(pFrame->infos.type9.idPHY, pFrame->infos.type9.idChannel);
+            manageOregonBatteryFromQualifier(pFrame->infos.type9.qualifier);
+
+
+            auto totalRainKeyword = boost::make_shared<yApi::historization::CRain>("rain");
+            totalRainKeyword->set((pFrame->infos.type9.totalRainLsb + (pFrame->infos.type9.totalRainMsb << 8)));
+            m_keywords.push_back(totalRainKeyword);
+
+            auto rainRateKeyword = boost::make_shared<yApi::historization::CRainRate>("rain_rate");
+            rainRateKeyword->set(pFrame->infos.type9.rain);
+            m_keywords.push_back(rainRateKeyword);
+
             break;
+         }
          case INFOS_TYPE10:
             break;
          case INFOS_TYPE11:
