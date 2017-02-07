@@ -35,6 +35,10 @@ set(RFPLAYER_PLUGIN_SOURCES
    specificHistorizers/Type1State.cpp
    specificHistorizers/Type2KeyCode.h
    specificHistorizers/Type2KeyCode.cpp
+   specificHistorizers/Type3ShutterCode.h
+   specificHistorizers/Type3ShutterCode.cpp
+   specificHistorizers/Type3RemoteCode.h
+   specificHistorizers/Type3RemoteCode.cpp
 )
 
 source_group(sources ./*.*)

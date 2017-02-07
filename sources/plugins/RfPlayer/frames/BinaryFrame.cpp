@@ -18,6 +18,8 @@
 #include "../specificHistorizers/Type0State.h"
 #include "../specificHistorizers/Type1State.h"
 #include "../specificHistorizers/Type2KeyCode.h"
+#include "../specificHistorizers/Type3RemoteCode.h"
+#include "../specificHistorizers/Type3ShutterCode.h"
 
 namespace frames {
 
@@ -257,15 +259,16 @@ namespace frames {
 
          case INFOS_TYPE2:
          {
+            //VISONIC alarm systems
             unsigned int device = (pFrame->infos.type2.idMsb << 16) + pFrame->infos.type2.idLsb;
             m_deviceName = (boost::format("%1%") % (device)).str();
 
             if (pFrame->infos.type2.subtype == 0)
             {
                //detector/sensor( PowerCode device)
-               m_deviceModel = "Detector/sendsor";
+               m_deviceModel = "Visonic Detector/sendsor";
 
-               if (pFrame->infos.type2.qualifier & 0x0008 != 0)
+               if ( (pFrame->infos.type2.qualifier & 0x0008) != 0)
                {
                   //this is a supervision frame (understood as ping frame with visonic central)
                }
@@ -287,17 +290,44 @@ namespace frames {
             else
             {
                //remote control(CodeSecure device)
-               m_deviceModel = "Remote Control";
+               m_deviceModel = "Visonic Remote Control";
 
                auto keyCodeKeyword = boost::make_shared<specificHistorizers::CType2KeyCode>("keyCode");
-               keyCodeKeyword->set(specificHistorizers::EType2KeyCodeValues((int)pFrame->infos.type2.subtype));
+               keyCodeKeyword->set(specificHistorizers::EType2KeyCodeValues((int)pFrame->infos.type2.qualifier));
                m_keywords.push_back(keyCodeKeyword);
 
             }
             break;
          }
          case INFOS_TYPE3:
+         {
+            //Somfy RTS protocol
+            unsigned int device = (pFrame->infos.type3.idMsb << 16) + pFrame->infos.type3.idLsb;
+            m_deviceName = (boost::format("%1%") % (device)).str();
+
+
+            if (pFrame->infos.type3.subtype == 0)
+            {
+               //shutter device
+               m_deviceModel = "Somfy Shutter";
+
+               auto codeKeyword = boost::make_shared<specificHistorizers::CType3ShutterCode>("shutter");
+               codeKeyword->set(specificHistorizers::EType3ShutterCodeValues((int)pFrame->infos.type3.qualifier & 0x000F));
+               m_keywords.push_back(codeKeyword);
+
+            }
+            else
+            {
+               //shutter device
+               m_deviceModel = "Somfy portal reomte control";
+
+               auto codeKeyword = boost::make_shared<specificHistorizers::CType3RemoteCode>("shutter");
+               codeKeyword->set(specificHistorizers::EType3RemoteCodeValues((int)pFrame->infos.type3.qualifier & 0x000F));
+               m_keywords.push_back(codeKeyword);
+            }
+
             break;
+         }
          case INFOS_TYPE4:
             break;
          case INFOS_TYPE5:
