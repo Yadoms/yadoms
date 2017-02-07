@@ -6,7 +6,7 @@
       <tr>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.displayName"></td>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.type"></td>
-         <td data-i18n="modals.dashboard.sub-windows.plugins.table.launchAtStartup"></td>
+         <td data-i18n="modals.dashboard.sub-windows.plugins.table.autoStart"></td>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.actions"></td>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.status"></td>
       </tr>
@@ -131,7 +131,7 @@
       $pluginInstanceRow.find("td.plugin-status").html(statusField);
 
       //we set autostart value
-      if (pi.autoStart === "true")
+      if (pi.autoStart)
          $pluginInstanceRow.find("input.cb-autoStart").prop("checked", true);
       else
          $pluginInstanceRow.find("input.cb-autoStart").removeProp("checked");
