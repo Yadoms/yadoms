@@ -131,6 +131,7 @@ endif()
 #
 ###############################################
 SET(OPENSSL_USE_STATIC_LIBS TRUE)
+SET(OPENSSL_MSVC_STATIC_RT TRUE)
 SET(OPENSSL_ROOT_DIR ${OPENSSL_ROOT})
 FIND_PACKAGE(OpenSSL)
 
@@ -192,7 +193,6 @@ ENDIF()
 ###############################################
 set (PROTOBUF_SRC_ROOT_FOLDER ${PROTOBUF_ROOT})
 set (Protobuf_USE_STATIC_LIBS ON)
-set (Protobuf_DEBUG ON)
 find_package(Protobuf 3.0.0 REQUIRED)
 
 if(NOT ${PROTOBUF_FOUND})
