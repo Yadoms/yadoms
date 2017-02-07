@@ -237,6 +237,8 @@ namespace automation
       {
          if (doBackup)
          {
+            if (!boost::filesystem::exists(scriptPath))
+               return; // To remove reference to unexisting scripts (in case of database import, without associated scripts)
             const auto backupPath(scriptPath + ".bak");
             boost::filesystem::remove_all(backupPath);
             boost::filesystem::rename(scriptPath, backupPath);
