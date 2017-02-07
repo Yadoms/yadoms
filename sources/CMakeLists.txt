@@ -107,9 +107,18 @@ FIND_PACKAGE(Threads)
 
 ## RT Library
 if(UNIX AND NOT APPLE)
-    set(RT_LIBRARY rt)
+   set(LIBS ${LIBS} rt)
 endif()
 
+## Poco dependencies
+if(WIN32)
+   set(LIBS ${LIBS} Iphlpapi.lib)
+endif()
+
+## OpenSSL dependencies
+if(WIN32)
+   set(LIBS ${LIBS} legacy_stdio_definitions.lib Crypt32.lib)
+endif()
 
 ## IOKIT (needed for Mac)
 if(APPLE)
@@ -159,31 +168,12 @@ SET (POCO_LIBS
 )
 
 set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
-set(POCO_USE_STATIC_LIBS 1)
 set(POCO_USE_STATIC_RUNTIME 1)
 add_definitions(-DPOCO_STATIC) 
 include(cmake/FindPoco.cmake)
 
 IF(NOT ${Poco_FOUND})
 	message(FATAL_ERROR "Unable to find the required POCO libraries")
-ENDIF()
-
-IF(WIN32)
-   SET(Poco_DEPEDENCIES_LIBS 
-      ${OPENSSL_ROOT}/lib/VC/libeay32MT.lib
-      ${OPENSSL_ROOT}/lib/VC/ssleay32MT.lib
-   )
-
-   #add libeay32.dll and ssleay32.dll as dependencies
-   IF(EXISTS "${OPENSSL_ROOT}/bin/libeay32.dll")
-      SET(PocoNetSSLDepends "${OPENSSL_ROOT}/bin/libeay32.dll")
-   ENDIF()
-    
-   IF(EXISTS "${OPENSSL_ROOT}/bin/ssleay32.dll")
-      SET(PocoNetSSLDepends ${PocoNetSSLDepends} "${OPENSSL_ROOT}/bin/ssleay32.dll")
-   ENDIF()
-ELSEIF(APPLE)
-ELSE()
 ENDIF()
 
 
@@ -204,7 +194,7 @@ endif()
 # define libraries to link with
 #
 ###############################################
-set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Poco_FOUND_LIBS} ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} ${Protobuf_LIBRARIES})
+set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Poco_FOUND_LIBS} ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} ${Protobuf_LIBRARIES})
 
 ##################################################################################################
 ## Internal libraries (SQlite, Webem) completely build from sources
@@ -789,7 +779,15 @@ IF(USE_PGSQL_DATABASE)
          #add PostgreSQL as dependencies
          IF(EXISTS "${PostgreSQL_ROOT}/bin/libpq.dll")
             SET(PostgreSqlDepends "${PostgreSQL_ROOT}/bin/libpq.dll")
-         ENDIF()        
+         ENDIF()
+         
+         IF(EXISTS "${PostgreSQL_ROOT}/bin/ssleay32.dll")
+            SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/ssleay32.dll")
+         ENDIF()
+         
+         IF(EXISTS "${PostgreSQL_ROOT}/bin/libeay32.dll")
+            SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/libeay32.dll")
+         ENDIF()
 
          IF(EXISTS "${PostgreSQL_ROOT}/bin/intl.dll")
             SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/intl.dll")

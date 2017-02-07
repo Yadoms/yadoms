@@ -276,6 +276,7 @@ set(SHARED_LIB_SRC
    windows/shared/Export.h
    windows/shared/FileSystemExtension.h
    windows/shared/FileSystemExtension.cpp
+   windows/shared/iobFuncLegacyAdapter.cpp
    windows/shared/NetworkHelper.h
    windows/shared/NetworkHelper.cpp
    windows/shared/Peripherals.h
