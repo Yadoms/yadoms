@@ -40,6 +40,7 @@ namespace shared { namespace plugin { namespace yPluginApi {
    const std::string& CStandardValues::Close("close");
    const std::string& CStandardValues::Stop("stop");
  
+   const CStandardCapacity& CStandardCapacities::Alarm = CStandardCapacity("alarm", CStandardUnits::NoUnits, EKeywordDataType::kBool);
    const CStandardCapacity& CStandardCapacities::ApparentPower = CStandardCapacity("apparentpower", CStandardUnits::VoltAmpere, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::ArmingAlarm = CStandardCapacity("armingAlarm", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
    const CStandardCapacity& CStandardCapacities::BatteryLevel = CStandardCapacity("batteryLevel", CStandardUnits::Percent, EKeywordDataType::kNumeric);
@@ -70,6 +71,7 @@ namespace shared { namespace plugin { namespace yPluginApi {
    const CStandardCapacity& CStandardCapacities::SignalLevel = CStandardCapacity("signalLevel", CStandardUnits::Decibel, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::SignalPower = CStandardCapacity("signalPower", CStandardUnits::DecibelPower, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Switch = CStandardCapacity("switch", CStandardUnits::NoUnits, EKeywordDataType::kBool);
+   const CStandardCapacity& CStandardCapacities::Tamper = CStandardCapacity("tamper", CStandardUnits::NoUnits, EKeywordDataType::kBool);
    const CStandardCapacity& CStandardCapacities::Temperature = CStandardCapacity("temperature", CStandardUnits::DegreesCelcius, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Text = CStandardCapacity("text", CStandardUnits::NoUnits, EKeywordDataType::kString);
    const CStandardCapacity& CStandardCapacities::UpDownStop = CStandardCapacity("upDownStop", CStandardUnits::NoUnits, EKeywordDataType::kNoData);

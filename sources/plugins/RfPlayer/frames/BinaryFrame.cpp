@@ -12,9 +12,12 @@
 #include <shared/plugin/yPluginApi/historization/Energy.h>
 #include <shared/plugin/yPluginApi/historization/BatteryLevel.h>
 #include <shared/plugin/yPluginApi/historization/SignalPower.h>
+#include <shared/plugin/yPluginApi/historization/Alarm.h>
+#include <shared/plugin/yPluginApi/historization/Tamper.h>
 
 #include "../specificHistorizers/Type0State.h"
 #include "../specificHistorizers/Type1State.h"
+#include "../specificHistorizers/Type2KeyCode.h"
 
 namespace frames {
 
@@ -253,7 +256,46 @@ namespace frames {
          }
 
          case INFOS_TYPE2:
+         {
+            unsigned int device = (pFrame->infos.type2.idMsb << 16) + pFrame->infos.type2.idLsb;
+            m_deviceName = (boost::format("%1%") % (device)).str();
+
+            if (pFrame->infos.type2.subtype == 0)
+            {
+               //detector/sensor( PowerCode device)
+               m_deviceModel = "Detector/sendsor";
+
+               if (pFrame->infos.type2.qualifier & 0x0008 != 0)
+               {
+                  //this is a supervision frame (understood as ping frame with visonic central)
+               }
+               else
+               {
+                  auto batteryLevelKeyword = boost::make_shared<yApi::historization::CBatteryLevel>("battery");
+                  batteryLevelKeyword->set((pFrame->infos.type2.qualifier & 0x0004) == 0 ? 100 : 0);
+                  m_keywords.push_back(batteryLevelKeyword);
+
+                  auto tamperKeyword = boost::make_shared<yApi::historization::CTamper>("tamper");
+                  tamperKeyword->set((pFrame->infos.type2.qualifier & 0x0001) != 0);
+                  m_keywords.push_back(tamperKeyword);
+
+                  auto alarmKeyword = boost::make_shared<yApi::historization::CAlarm>("alarm");
+                  alarmKeyword->set((pFrame->infos.type2.qualifier & 0x0002) != 0);
+                  m_keywords.push_back(alarmKeyword);
+               }
+            }
+            else
+            {
+               //remote control(CodeSecure device)
+               m_deviceModel = "Remote Control";
+
+               auto keyCodeKeyword = boost::make_shared<specificHistorizers::CType2KeyCode>("keyCode");
+               keyCodeKeyword->set(specificHistorizers::EType2KeyCodeValues((int)pFrame->infos.type2.subtype));
+               m_keywords.push_back(keyCodeKeyword);
+
+            }
             break;
+         }
          case INFOS_TYPE3:
             break;
          case INFOS_TYPE4:
