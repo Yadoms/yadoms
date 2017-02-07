@@ -22,12 +22,14 @@
 #include <shared/plugin/yPluginApi/historization/Uv.h>
 #include <shared/plugin/yPluginApi/historization/Rain.h>
 #include <shared/plugin/yPluginApi/historization/RainRate.h>
+#include <shared/plugin/yPluginApi/historization/Switch.h>
 
 #include "../specificHistorizers/Type0State.h"
 #include "../specificHistorizers/Type1State.h"
 #include "../specificHistorizers/Type2KeyCode.h"
 #include "../specificHistorizers/Type3RemoteCode.h"
 #include "../specificHistorizers/Type3ShutterCode.h"
+#include "../specificHistorizers/Type10OperatingMode.h"
 
 namespace frames {
 
@@ -384,7 +386,7 @@ namespace frames {
                //shutter device
                m_deviceModel = "Somfy portal reomte control";
 
-               auto codeKeyword = boost::make_shared<specificHistorizers::CType3RemoteCode>("shutter");
+               auto codeKeyword = boost::make_shared<specificHistorizers::CType3RemoteCode>("remote");
                codeKeyword->set(specificHistorizers::EType3RemoteCodeValues((int)pFrame->infos.type3.qualifier & 0x000F));
                m_keywords.push_back(codeKeyword);
             }
@@ -524,7 +526,70 @@ namespace frames {
             break;
          }
          case INFOS_TYPE10:
+         {
+            //Used by Thermostats X2D protocol
+            switch (pFrame->infos.type10.subtype)
+            {
+            case 0: m_deviceModel = "GENERIC"; break;
+            case 1: m_deviceModel = "RADIO TYBOX"; break;
+            case 2: m_deviceModel = "TYBOX BUS"; break;
+            case 3: m_deviceModel = "PACK LABEL"; break;
+            case 4: m_deviceModel = "DELTA 200"; break;
+            case 5: m_deviceModel = "DRIVER RF"; break;
+            case 6: m_deviceModel = "STARBOX F03"; break;
+            case 7: m_deviceModel = "OTHER"; break;
+            case 8: m_deviceModel = "REC BIDIR"; break;
+            }
+
+            unsigned char area = pFrame->infos.type10.idLsb & 0x000F;
+            unsigned int device = (pFrame->infos.type10.idMsb << 16) + pFrame->infos.type10.idLsb;
+            m_deviceDetails.set("id", device);
+            m_deviceDetails.set("area", (int)area);
+            m_deviceName = (boost::format("%1%") % device).str();
+
+            auto batteryLevelKeyword = boost::make_shared<yApi::historization::CBatteryLevel>("battery");
+            batteryLevelKeyword->set((pFrame->infos.type10.qualifier & 0x0004) == 0 ? 100 : 0);
+            m_keywords.push_back(batteryLevelKeyword);
+
+            auto tamperKeyword = boost::make_shared<yApi::historization::CTamper>("tamper");
+            tamperKeyword->set((pFrame->infos.type10.qualifier & 0x0001) != 0);
+            m_keywords.push_back(tamperKeyword);
+
+            switch (pFrame->infos.type10.function)
+            {
+               case 1: //heating speed
+               {
+                  auto heatingSpeedKeyword = boost::make_shared<yApi::historization::CSwitch>("heating_speed");
+                  heatingSpeedKeyword->set( (pFrame->infos.type10.mode & 0x00FF) != 0);
+                  m_keywords.push_back(heatingSpeedKeyword);
+                  break;
+               }
+               case 12: //regulation
+               {
+                  auto regulationKeyword = boost::make_shared<yApi::historization::CSwitch>("regulation");
+                  regulationKeyword->set((pFrame->infos.type10.mode & 0x00FF) != 0);
+                  m_keywords.push_back(regulationKeyword);
+                  break;
+               }
+               case 26: //thermic area state
+               {
+                  auto thermicAreaStateKeyword = boost::make_shared<yApi::historization::CSwitch>("thermic_area_state");
+                  thermicAreaStateKeyword->set((pFrame->infos.type10.mode & 0x00FF) != 0);
+                  m_keywords.push_back(thermicAreaStateKeyword);
+                  break;
+               }
+               case 2: //operating  mode
+               {
+                  auto operatingModeKeyword = boost::make_shared<specificHistorizers::CType10OperatingMode>("keyCode");
+                  operatingModeKeyword->set(specificHistorizers::EType10OperatingModeValues((int)(pFrame->infos.type10.mode & 0x00FF)));
+                  m_keywords.push_back(operatingModeKeyword);
+
+                  break;
+               }
+            }
+
             break;
+         }
          case INFOS_TYPE11:
             break;
          case INFOS_TYPE12:
