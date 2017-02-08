@@ -30,6 +30,7 @@
 #include "../specificHistorizers/Type3RemoteCode.h"
 #include "../specificHistorizers/Type3ShutterCode.h"
 #include "../specificHistorizers/Type10OperatingMode.h"
+#include "../specificHistorizers/Type11State.h"
 
 namespace frames {
 
@@ -37,7 +38,7 @@ namespace frames {
    CBinaryFrame::CBinaryFrame(char sourceDest, boost::shared_ptr<shared::communication::CByteBuffer> content)
       :m_sourceDest(sourceDest), m_content(content)
    {
-      
+
    }
 
    CBinaryFrame::~CBinaryFrame()
@@ -176,7 +177,7 @@ namespace frames {
       }
    }
 
-  
+
    void CBinaryFrame::historizeData(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       buildDeviceInfo();
@@ -184,14 +185,15 @@ namespace frames {
       if (m_deviceName.empty())
          throw new shared::exception::CNotSupported("The binary frame content is not supported or dont contains reference to any device identifier");
 
-      // Create device and keywords if needed
-      api->deviceExists(m_deviceName);
-
       //ensure keywords are created (in case of multiple frames giving different keywords)
       api->declareDevice(m_deviceName, m_deviceModel, m_keywords, m_deviceDetails);
 
-      //historize data
-      api->historizeData(m_deviceName, m_keywords);
+      //historize only if keywords exists
+      if (!m_keywords.empty())
+      {
+         //historize data
+         api->historizeData(m_deviceName, m_keywords);
+      }
    }
 
    const char CBinaryFrame::getSourceDest() const
@@ -274,7 +276,7 @@ namespace frames {
 
 
          auto rssiKeyword = boost::make_shared<yApi::historization::CRssi>("rfQuality");
-         rssiKeyword->set((int)pFrame->header.rfQuality* 10); //rfQuality is [1;10], RSSI [10;100]
+         rssiKeyword->set((int)pFrame->header.rfQuality * 10); //rfQuality is [1;10], RSSI [10;100]
          m_keywords.push_back(rssiKeyword);
 
          auto rfLevelKeyword = boost::make_shared<yApi::historization::CSignalPower>("rfLevel");
@@ -306,7 +308,7 @@ namespace frames {
             break;
          }
 
-            
+
          case INFOS_TYPE1:
          {
             unsigned int device = (pFrame->infos.type1.idMsb << 16) + pFrame->infos.type1.idLsb;
@@ -333,7 +335,7 @@ namespace frames {
                //detector/sensor( PowerCode device)
                m_deviceModel = "Visonic Detector/sendsor";
 
-               if ( (pFrame->infos.type2.qualifier & 0x0008) != 0)
+               if ((pFrame->infos.type2.qualifier & 0x0008) != 0)
                {
                   //this is a supervision frame (understood as ping frame with visonic central)
                }
@@ -557,42 +559,71 @@ namespace frames {
 
             switch (pFrame->infos.type10.function)
             {
-               case 1: //heating speed
-               {
-                  auto heatingSpeedKeyword = boost::make_shared<yApi::historization::CSwitch>("heating_speed");
-                  heatingSpeedKeyword->set( (pFrame->infos.type10.mode & 0x00FF) != 0);
-                  m_keywords.push_back(heatingSpeedKeyword);
-                  break;
-               }
-               case 12: //regulation
-               {
-                  auto regulationKeyword = boost::make_shared<yApi::historization::CSwitch>("regulation");
-                  regulationKeyword->set((pFrame->infos.type10.mode & 0x00FF) != 0);
-                  m_keywords.push_back(regulationKeyword);
-                  break;
-               }
-               case 26: //thermic area state
-               {
-                  auto thermicAreaStateKeyword = boost::make_shared<yApi::historization::CSwitch>("thermic_area_state");
-                  thermicAreaStateKeyword->set((pFrame->infos.type10.mode & 0x00FF) != 0);
-                  m_keywords.push_back(thermicAreaStateKeyword);
-                  break;
-               }
-               case 2: //operating  mode
-               {
-                  auto operatingModeKeyword = boost::make_shared<specificHistorizers::CType10OperatingMode>("keyCode");
-                  operatingModeKeyword->set(specificHistorizers::EType10OperatingModeValues((int)(pFrame->infos.type10.mode & 0x00FF)));
-                  m_keywords.push_back(operatingModeKeyword);
+            case 1: //heating speed
+            {
+               auto heatingSpeedKeyword = boost::make_shared<yApi::historization::CSwitch>("heating_speed");
+               heatingSpeedKeyword->set((pFrame->infos.type10.mode & 0x00FF) != 0);
+               m_keywords.push_back(heatingSpeedKeyword);
+               break;
+            }
+            case 12: //regulation
+            {
+               auto regulationKeyword = boost::make_shared<yApi::historization::CSwitch>("regulation");
+               regulationKeyword->set((pFrame->infos.type10.mode & 0x00FF) != 0);
+               m_keywords.push_back(regulationKeyword);
+               break;
+            }
+            case 26: //thermic area state
+            {
+               auto thermicAreaStateKeyword = boost::make_shared<yApi::historization::CSwitch>("thermic_area_state");
+               thermicAreaStateKeyword->set((pFrame->infos.type10.mode & 0x00FF) != 0);
+               m_keywords.push_back(thermicAreaStateKeyword);
+               break;
+            }
+            case 2: //operating  mode
+            {
+               auto operatingModeKeyword = boost::make_shared<specificHistorizers::CType10OperatingMode>("keyCode");
+               operatingModeKeyword->set(specificHistorizers::EType10OperatingModeValues((int)(pFrame->infos.type10.mode & 0x00FF)));
+               m_keywords.push_back(operatingModeKeyword);
 
-                  break;
-               }
+               break;
+            }
             }
 
             break;
          }
          case INFOS_TYPE11:
+         {
+            unsigned int device = (pFrame->infos.type11.idMsb << 16) + pFrame->infos.type11.idLsb;
+            m_deviceName = (boost::format("%1%") % device).str();
+            if (pFrame->infos.type11.subtype == 0)
+            {
+               m_deviceModel = "Alarm detector/sensor";
+
+               auto batteryLevelKeyword = boost::make_shared<yApi::historization::CBatteryLevel>("battery");
+               batteryLevelKeyword->set((pFrame->infos.type11.qualifier & 0x0004) == 0 ? 100 : 0);
+               m_keywords.push_back(batteryLevelKeyword);
+
+               auto alarmKeyword = boost::make_shared<yApi::historization::CAlarm>("alarm");
+               alarmKeyword->set((pFrame->infos.type11.qualifier & 0x0002) != 0);
+               m_keywords.push_back(alarmKeyword);
+
+               auto tamperKeyword = boost::make_shared<yApi::historization::CTamper>("tamper");
+               tamperKeyword->set((pFrame->infos.type11.qualifier & 0x0001) != 0);
+               m_keywords.push_back(tamperKeyword);
+            }
+            else
+            {
+               m_deviceModel = "Alarm remote control";
+
+               auto remoteControlKeyword = boost::make_shared<specificHistorizers::CType11State>("remoteControl");
+               remoteControlKeyword->set(specificHistorizers::EType11StateValues((int)pFrame->infos.type11.qualifier));
+               m_keywords.push_back(remoteControlKeyword);
+            }
             break;
+         }
          case INFOS_TYPE12:
+            //deprecated
             break;
 
          }
