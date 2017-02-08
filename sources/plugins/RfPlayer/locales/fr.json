@@ -42,5 +42,16 @@
          }
       },
       "ledactiviy" : {  "name" : "LED", "description" : "Active ou désactive la LED selon l'activité RF 433/868."}      
-	}
+	},
+   "extraQueries": {
+    "firmwareUpdate": {
+      "name": "Mise à jour firmware",
+      "commandData": {
+        "fileContent": {
+          "name": "Fichier",
+          "description": "Le nouveau firmware à utiliser"
+        }
+      }
+    }
+  }    
 }

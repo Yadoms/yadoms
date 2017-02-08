@@ -53,9 +53,12 @@
              },
              submitSuccess: function($form, event) {
                event.preventDefault();
-               var value = configObject.getCurrentConfiguration();
-               $("div#set-value-keyword-modal").modal("hide");
-               d.resolve(keyword, value);
+               configObject.getCurrentConfiguration()
+               .done(function(value) {
+                  $("div#set-value-keyword-modal").modal("hide");
+                  d.resolve(keyword, value);
+               })
+               .fail(d.reject);
              },
              filter: function() {
                //we check only control that have class enable-validation and are visible

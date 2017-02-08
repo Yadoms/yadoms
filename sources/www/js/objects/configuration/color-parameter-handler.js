@@ -91,6 +91,9 @@ ColorParameterHandler.prototype.setEnabled = function (enabled) {
  * @returns {string}
  */
 ColorParameterHandler.prototype.getCurrentConfiguration = function () {
+   var d = new $.Deferred();
+   
    this.value = $("div#" + this.uuid + " > input").val();
-   return this.value;
+   d.resolve(this.value);
+   return d.promise();
 };

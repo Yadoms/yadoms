@@ -55,7 +55,9 @@
              event.preventDefault();
              success = true;
              $("div#plugin-extra-queries-configure-modal").modal("hide");
-             d.resolve(configMgr.getCurrentConfiguration());
+             configMgr.getCurrentConfiguration()
+             .done(d.resolve)
+             .fail(d.reject);
            },
            filter: function() {
              //we check only control that have class enable-validation and are visible
