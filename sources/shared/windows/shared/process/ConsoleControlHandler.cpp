@@ -11,7 +11,7 @@ namespace shared
       void CConsoleControlHandler::setOnStopRequestedHandler(boost::function<bool()> onStopRequestedFct)
       {
          m_onStopRequestedFct = onStopRequestedFct;
-         SetConsoleCtrlHandler(reinterpret_cast<PHANDLER_ROUTINE>(ctrlHandler), TRUE);
+         SetConsoleCtrlHandler(m_onStopRequestedFct.empty() ? NULL : reinterpret_cast<PHANDLER_ROUTINE>(ctrlHandler), TRUE);
       }
 
       BOOL CConsoleControlHandler::ctrlHandler(DWORD fdwCtrlType)

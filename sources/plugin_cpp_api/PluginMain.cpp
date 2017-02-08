@@ -11,11 +11,8 @@ int doMain(int argc,
    try
    {
       auto stopHandler = boost::make_shared<shared::process::CApplicationStopHandler>(false);
-      stopHandler->setApplicationStopHandler([&]() -> bool
-         {
-            // Termination should be asked by Yadoms with IPC
-            return true;
-         });
+      // Termination should be asked by Yadoms with IPC
+      stopHandler->setApplicationStopHandler(boost::function<bool()>());
 
       auto pluginContext = boost::make_shared<plugin_cpp_api::CPluginContext>(argc, argv, plugin);
       pluginContext->run();

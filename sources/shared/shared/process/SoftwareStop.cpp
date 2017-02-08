@@ -15,6 +15,9 @@ namespace shared
 
       void CSoftwareStop::stop()
       {
+         if (m_onStopRequestedFct.empty())
+            return;
+
          // Signal stop request and wait for application fully stops
          if (!m_onStopRequestedFct())
             YADOMS_LOG(error) << "CSoftwareStop : Fail to wait the app end event";
