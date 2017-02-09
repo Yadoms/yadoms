@@ -348,8 +348,9 @@
 
             PluginInstanceManager.getState(pluginInstance)
             .done(function (status) {
+               var $row = getPluginDomRow(pluginInstance);
+               
                if (status) {
-                  var $row = getPluginDomRow(pluginInstance);
                   if (status.state !== pluginInstance.lastState || 
 				      status.messageId !== pluginInstance.lastMessageId ||
                   status.messageData !== pluginInstance.lastMessageData) {
@@ -399,6 +400,9 @@
                   pluginInstance.lastMessageId = status.messageId;
                   pluginInstance.lastMessageData = status.messageData;
                }
+                                 
+               //autoStart property
+               $row.find("input.cb-autoStart").prop("checked", parseBool(pluginInstance.autoStart));
             });
          });
       }
