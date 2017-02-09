@@ -29,6 +29,7 @@ CYadomsServer::CYadomsServer()
 
 CYadomsServer::~CYadomsServer()
 {
+	std::cout << "TODO virer CYadomsServer destroyed" << std::endl;
 }
 
 
@@ -45,8 +46,8 @@ void CYadomsServer::initialize(Application& self)
 
 void CYadomsServer::uninitialize()
 {
-   YADOMS_LOG(information) << "Yadoms is shutting down";
    ServerApplication::uninitialize();
+   std::cout << "Yadoms is shutted down" << std::endl;
 }
 
 void CYadomsServer::defineOptions(Poco::Util::OptionSet& options)
@@ -88,6 +89,7 @@ int CYadomsServer::main(const ArgVec& /*args*/)
       {
          kApplicationFullyStopped = shared::event::kUserFirstId
       };
+   auto stoppedEventHandler = boost::make_shared<shared::event::CEventHandler>();
 
    if (!m_helpRequested)
    {
@@ -146,12 +148,14 @@ int CYadomsServer::main(const ArgVec& /*args*/)
 
       //configure stop handler
       enum { kTerminationRequested = shared::event::kUserFirstId };
+      auto stopRequestEventHandler = boost::make_shared<shared::event::CEventHandler>();
       auto stopHandler = boost::make_shared<shared::process::CApplicationStopHandler>(m_startupOptions->getIsRunningAsService());
-      stopHandler->setApplicationStopHandler([&]() -> bool
+      stopHandler->setApplicationStopHandler([stopRequestEventHandler, stoppedEventHandler]() -> bool
          {
             // Ask for application stop and wait for application full stop
-            m_stopRequestEventHandler.postEvent(kTerminationRequested);
-            const auto stopSuccess = m_stoppedEventHandler.waitForEvents(boost::posix_time::seconds(30)) == kApplicationFullyStopped;
+            YADOMS_LOG(debug) << "Receive termination request";
+            stopRequestEventHandler->postEvent(kTerminationRequested);
+            const auto stopSuccess = stoppedEventHandler->waitForEvents(boost::posix_time::seconds(30)) == kApplicationFullyStopped;
             if (!stopSuccess)
                YADOMS_LOG(error) << "Fail to wait the app end event";
             return stopSuccess;
@@ -168,12 +172,12 @@ int CYadomsServer::main(const ArgVec& /*args*/)
 
       // Wait for stop
       YADOMS_LOG(debug) << "Yadoms is running...";
-      while (m_stopRequestEventHandler.waitForEvents() != kTerminationRequested)
+      while (stopRequestEventHandler->waitForEvents() != kTerminationRequested)
       {
-         YADOMS_LOG(warning) << "Wrong application stop event received : " << m_stopRequestEventHandler.getEventId();
+         YADOMS_LOG(warning) << "Wrong application stop event received : " << stopRequestEventHandler->getEventId();
       }
 
-      YADOMS_LOG(debug) << "Receive termination request : ask supervisor to stop...";
+      YADOMS_LOG(information) << "Receive termination request : ask supervisor to stop...";
       supervisor.requestToStop();
       supervisorThread.join();
       YADOMS_LOG(debug) << "Supervisor stopped";
@@ -182,8 +186,8 @@ int CYadomsServer::main(const ArgVec& /*args*/)
       Poco::ErrorHandler::set(pOldEH);
    }
 
-   YADOMS_LOG(debug) << "Yadoms is stopped";
-   m_stoppedEventHandler.postEvent(kApplicationFullyStopped);
+   YADOMS_LOG(information) << "Yadoms is stopped";
+   stoppedEventHandler->postEvent(kApplicationFullyStopped);
    return EXIT_OK;
 }
 

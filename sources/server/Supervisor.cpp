@@ -45,7 +45,7 @@ CSupervisor::~CSupervisor()
 void CSupervisor::run()
 {
    YADOMS_LOG_CONFIGURE("Supervisor");
-   YADOMS_LOG(information) << "Supervisor is starting";
+   YADOMS_LOG(debug) << "Supervisor is starting";
 
    boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal;
    try
@@ -148,12 +148,12 @@ void CSupervisor::run()
       shared::CServiceLocator::instance().get<IRunningInformation>()->setServerFullyLoaded();
 
       // Main loop
-      YADOMS_LOG(information) << "Supervisor is running...";
+      YADOMS_LOG(debug) << "Supervisor is running...";
       while (m_EventHandler.waitForEvents() != kStopRequested)
       {
       }
 
-      YADOMS_LOG(information) << "Supervisor is stopping...";
+      YADOMS_LOG(debug) << "Supervisor is stopping...";
 
       //stop datetime notification service
       dateTimeNotificationService.stop();
@@ -179,7 +179,7 @@ void CSupervisor::run()
       //stop database tasks
       pDataProvider->stopMaintenanceTasks();
 
-      YADOMS_LOG(information) << "Supervisor is stopped";
+      YADOMS_LOG(debug) << "Supervisor is stopped";
 
       dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStopped, "yadoms", std::string());
    }
