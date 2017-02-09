@@ -49,7 +49,7 @@ class ShowKeywords(unittest.TestCase):
       keywords = dashboard.devices.getKeywords(devicesTable)
 
       print '  Wait for first acquisition'
-      assert dashboard.devices.getKeywordTextValue(keywords[0]) is not None
+      tools.waitUntil(lambda: dashboard.devices.getKeywordTextValue(keywords[0]))
 
       print '    Check Battery data'
       item = keywords[0]
