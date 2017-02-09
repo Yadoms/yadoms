@@ -148,7 +148,7 @@ void CSupervisor::run()
       shared::CServiceLocator::instance().get<IRunningInformation>()->setServerFullyLoaded();
 
       // Main loop
-      YADOMS_LOG(debug) << "Supervisor is running...";
+      YADOMS_LOG(information) << "Supervisor is running...";
       while (m_EventHandler.waitForEvents() != kStopRequested)
       {
       }
@@ -179,8 +179,6 @@ void CSupervisor::run()
       //stop database tasks
       pDataProvider->stopMaintenanceTasks();
 
-      YADOMS_LOG(debug) << "Supervisor is stopped";
-
       dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStopped, "yadoms", std::string());
    }
    catch (Poco::Net::NetException& pe)
@@ -203,7 +201,7 @@ void CSupervisor::run()
    }
 
    //notify application that supervisor ends
-   YADOMS_LOG(debug) << "Supervisor stopped";
+   YADOMS_LOG(information) << "Supervisor is stopped";
 }
 
 void CSupervisor::requestToStop()
