@@ -51,7 +51,7 @@ namespace dateTime {
       //--------------------------------------------------------------
       /// \Brief		The datetime timer
       //--------------------------------------------------------------
-      Poco::Util::Timer m_dateTimeTimer;
+      boost::shared_ptr<Poco::Util::Timer> m_dateTimeTimer;
 
       //--------------------------------------------------------------
       /// \Brief		The next minute to wait

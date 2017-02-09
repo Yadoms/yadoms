@@ -29,7 +29,6 @@ CYadomsServer::CYadomsServer()
 
 CYadomsServer::~CYadomsServer()
 {
-	std::cout << "TODO virer CYadomsServer destroyed" << std::endl;
 }
 
 

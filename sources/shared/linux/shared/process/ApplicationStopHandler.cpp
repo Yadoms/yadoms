@@ -32,7 +32,6 @@ namespace shared
          case SIGTERM :
 	         {
 		         // Linux stop handler must not block, so execute handler in separate thread
-		         std::cout << "SIGTERM" << std::endl; //TODO virer
 		         boost::thread asyncHandlerThread([]()
 				      {
 							// Signal stop request and wait for application fully stops
