@@ -1,4 +1,4 @@
-﻿from selenium.common.exceptions import NoSuchElementException
+﻿from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 import tools
 import time
 
@@ -27,7 +27,7 @@ class Notification:
       return self.type == other.type and other.text in self.text
       
       
-def readType(notificationElement):
+def __readType(notificationElement):
    notificationElementClasses = notificationElement.find_element_by_tag_name("div").get_attribute("class")
    if "noty_type_success" in notificationElementClasses:
       return Type.Success
@@ -41,7 +41,7 @@ def readType(notificationElement):
       assert False
       
       
-def readText(notificationElement):
+def __readText(notificationElement):
    textContainerElement = notificationElement.find_element_by_tag_name("div").find_element_by_tag_name("div").find_element_by_tag_name("span")
    return textContainerElement.text
       
@@ -59,28 +59,44 @@ def getCurrentNotifications(browser):
       
    notifications = []
    for notificationElement in notificationContainer.find_elements_by_tag_name("li"):
-      notifications.append(Notification(readType(notificationElement), readText(notificationElement)))
+      try:
+         notifications.append(Notification(__readType(notificationElement), __readText(notificationElement)))
+      except StaleElementReferenceException:
+         # Ignore gone notifications
+         pass
    return notifications
    
    
 def isNotification(browser, expectedType):
    for notification in getCurrentNotifications(browser):
-      if expectedType == notification.getType():
-         return True
+      try:
+         if expectedType == notification.getType():
+            return True
+      except StaleElementReferenceException:
+         # Ignore gone notifications
+         pass
    return False
    
    
 def isNotificationWithText(browser, expectedType, expectedText):
    for notification in getCurrentNotifications(browser):
-      if Notification(expectedType, expectedText) == notification:
-         return True
+      try:
+         if Notification(expectedType, expectedText) == notification:
+            return True
+      except StaleElementReferenceException:
+         # Ignore gone notifications
+         pass
    return False
 
    
 def isNotificationContainingText(browser, expectedType, expectedSubText):
    for notification in getCurrentNotifications(browser):
-      if notification.Contains(Notification(expectedType, expectedSubText)):
-         return True
+      try:
+         if notification.Contains(Notification(expectedType, expectedSubText)):
+            return True
+      except StaleElementReferenceException:
+         # Ignore gone notifications
+         pass
    return False
 
 
