@@ -320,7 +320,8 @@
 
       PluginInstanceManager.updateToServer(pi)
       .done(function () {
-         getPluginDomRow(pi).find("input.cb-autoStart").prop("disabled", false).prop("checked", pi.autoStart);
+         getPluginDomRow(pi).find("input.cb-autoStart").prop("disabled", false);
+         getPluginDomRow(pi).find("input.cb-autoStart").prop("checked", pi.autoStart);
       })
       .fail(function (error) {
          notifyError($.t("modals.configure-plugin.pluginFailToConfigure", { pluginName: pi.displayName }), error);
@@ -348,8 +349,9 @@
 
             PluginInstanceManager.getState(pluginInstance)
             .done(function (status) {
+               var $row = getPluginDomRow(pluginInstance);
+               
                if (status) {
-                  var $row = getPluginDomRow(pluginInstance);
                   if (status.state !== pluginInstance.lastState || 
 				      status.messageId !== pluginInstance.lastMessageId ||
                   status.messageData !== pluginInstance.lastMessageData) {
@@ -399,6 +401,9 @@
                   pluginInstance.lastMessageId = status.messageId;
                   pluginInstance.lastMessageData = status.messageData;
                }
+                                 
+               //autoStart property
+               $row.find("input.cb-autoStart").prop("checked", parseBool(pluginInstance.autoStart));
             });
          });
       }
