@@ -343,12 +343,6 @@
                   //we fill the data
                   var fn = keyword.friendlyName;
                   
-                  if(keyword.type.toLowerCase() ==="enum" && keyword.friendlyName === keyword.name) {
-                     //try translate
-                     fn = $.t("plugins/" + device.attachedPlugin.type + ":enumerations." + keyword.typeInfo.name + ".name");
-                     
-                  }
-                  
                   if(parseBool(keyword.blacklist)===true)
                      fn = "<del>"+keyword.friendlyName+"</del>";
                   var friendlyName = "<span>" + fn + "</span>";

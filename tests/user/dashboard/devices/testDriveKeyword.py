@@ -34,7 +34,6 @@ class DriveKeyword(unittest.TestCase):
       print '=== Check that a not drivable keyword doesnt have the drive button ==='
       deviceName = u'fakeOnOffReadOnlySwitch'
       keywordName = u'Switch'
-      attachedPluginInstance = u'My fakePlugin instance'
      
       print '  Deploy device keywords'
       devicesTable = dashboard.devices.waitDevicesTable(self.browser)
@@ -58,7 +57,6 @@ class DriveKeyword(unittest.TestCase):
 
       deviceName = u'fakeOnOffReadWriteSwitch'
       keywordName = u'Switch'
-      attachedPluginInstance = u'My fakePlugin instance'
      
       print '  Deploy device keywords'
       devicesTable = dashboard.devices.waitDevicesTable(self.browser)
@@ -98,7 +96,7 @@ class DriveKeyword(unittest.TestCase):
 
       deviceName = u'fakeController1'
       keywordName = u'controllerValue'
-      attachedPluginInstance = u'My fakePlugin instance'
+      attachedPluginType = u'dev-FakePlugin'
      
       print '  Deploy device keywords'
       devicesTable = dashboard.devices.waitDevicesTable(self.browser)
@@ -118,16 +116,18 @@ class DriveKeyword(unittest.TestCase):
       print '  Set value to Run'
       button.click()
       setKeywordValueModal = dashboard.devices.waitSetValueKeywordModal(self.browser)
-      setKeywordValueModal.setEnumValue('Run')
+      translatedValue = i18n.getPlugin(attachedPluginType)['enumerations']['EFakeControllerValues']['values']['Run']
+      setKeywordValueModal.setEnumValue(translatedValue)
       setKeywordValueModal.ok()
-      assert tools.waitUntil(lambda: dashboard.devices.getKeywordTextValue(keyword) == 'Run')
+      assert tools.waitUntil(lambda: dashboard.devices.getKeywordTextValue(keyword) == translatedValue)
 
       print '  Set value to Left'
       button.click()
       setKeywordValueModal = dashboard.devices.waitSetValueKeywordModal(self.browser)
-      setKeywordValueModal.setEnumValue('Left')
+      translatedValue = i18n.getPlugin(attachedPluginType)['enumerations']['EFakeControllerValues']['values']['Left']
+      setKeywordValueModal.setEnumValue(translatedValue)
       setKeywordValueModal.ok()
-      assert tools.waitUntil(lambda: dashboard.devices.getKeywordTextValue(keyword) == 'Left')
+      assert tools.waitUntil(lambda: dashboard.devices.getKeywordTextValue(keyword) == translatedValue)
 
       
    def tearDown(self):
