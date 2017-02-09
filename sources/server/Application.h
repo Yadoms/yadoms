@@ -44,11 +44,4 @@ private:
    ///\brief Running information
    //-----------------------------
    boost::shared_ptr<IRunningInformation> m_runningInformation;
-
-
-   //-----------------------------
-   ///\brief Event handlers used to manage application stop
-   //-----------------------------
-   shared::event::CEventHandler m_stopRequestEventHandler;
-   shared::event::CEventHandler m_stoppedEventHandler;
 };
