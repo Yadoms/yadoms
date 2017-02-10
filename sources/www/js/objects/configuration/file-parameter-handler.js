@@ -46,7 +46,11 @@ FileParameterHandler.prototype.getDOMObject = function () {
    var dataI18n = "data-i18n=\"";
    dataI18n += "[data-content]" + this.i18nContext + this.paramName + ".description";
    dataI18n += "\"";
-
+   
+   if(this.content.filter) {
+      dataI18n += 'accept="' + this.content.filter + '"';   
+   }
+   
    input += dataI18n + " >";
 
    var self = this;
@@ -103,14 +107,16 @@ FileParameterHandler.prototype.getCurrentConfiguration = function () {
       d.reject("Please select a file before clicking 'Load'");
     }
     else {
-      file = input.files[0];
+      file = myFile[0];
       var ready = false;
       var result = null;
       
       var fr = new FileReader();
       fr.onload = function(evt) {
           // file is loaded
-          d.resolve(evt.target.result);
+          var base64identifier = 'base64,';
+          var contentBase64 = evt.target.result.substring(evt.target.result.indexOf(base64identifier) + base64identifier.length);
+          d.resolve(contentBase64);
       };
       
       fr.onabort = function(evt) { d.reject(evt); }

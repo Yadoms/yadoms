@@ -5,6 +5,7 @@
 #include <shared/communication/BufferLogger.h>
 #include "Factory.h"
 #include "MessageHandler.h"
+#include <shared/encryption/Base64.h>
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -100,6 +101,19 @@ void CRfPlayer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             // Command was received from Yadoms
             auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery> >();
+            if (extraQuery)
+            {
+               if (extraQuery->getData().query() == "firmwareUpdate")
+               {
+                  std::string base64firmware = extraQuery->getData().data().get<std::string>("fileContent");
+
+                  std::string firmwareContent = shared::encryption::CBase64::decode(base64firmware);
+
+                  YADOMS_LOG(information) << "FirmwareUpdate: content =" << firmwareContent;
+
+                  //m_messageHandler->send(firmwareContent);
+               }
+            }
             extraQuery->sendSuccess(shared::CDataContainer());
             break;
          }

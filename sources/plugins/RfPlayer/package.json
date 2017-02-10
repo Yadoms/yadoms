@@ -57,7 +57,8 @@
       "iconClass": "fa  fa-upload",
       "commandData": {
         "fileContent": {
-          "type": "file"
+          "type": "file",
+          "filter": ".txt"
         }
       }
     }  
