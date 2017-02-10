@@ -6,11 +6,12 @@
 #include "serializers/Information.h"
 #include "FromPluginHistorizer.h"
 #include "shared/exception/EmptyResult.hpp"
+#include <plugin_IPC/yadomsToPlugin.pb.h>
 
 namespace pluginSystem
 {
    const size_t CIpcAdapter::m_maxMessages(100);
-   const size_t CIpcAdapter::m_maxMessageSize(100000);
+   const size_t CIpcAdapter::m_maxMessageSize(1000);//TODO initialement c'était 100000
 
    CIpcAdapter::CIpcAdapter(boost::shared_ptr<CYPluginApiImplementation> yPluginApi)
       : m_pluginApi(yPluginApi),
@@ -103,30 +104,153 @@ namespace pluginSystem
       google::protobuf::ShutdownProtobufLibrary();
    }
 
+   class IpcMessagePart //TODO déplacer
+   {
+      struct Header
+      {
+         explicit Header(unsigned char partNumber, unsigned char partCount)
+            : m_partNumber(partNumber),
+              m_partCount(partCount)
+         {
+         }
+
+         unsigned char m_partNumber;
+         unsigned char m_partCount;
+      };
+
+   public:
+      explicit IpcMessagePart(unsigned char partNumber,
+         unsigned char partCount,
+                              const unsigned char* usefulData,
+                              size_t usefulSize)
+         : m_header(partNumber,
+                    partCount),
+           m_usefulData(usefulData),
+           m_usefulSize(usefulSize)
+      {
+         formatMessage();
+      }
+
+      virtual ~IpcMessagePart()
+      {
+      }
+
+      static size_t headerSize()
+      {
+         return sizeof(Header);
+      }
+
+      const unsigned char* formattedMessage() const
+      {
+         return m_formattedMessage.get();
+      }
+
+      size_t formattedSize() const
+      {
+         return m_formattedSize;
+      }
+
+   private:
+      void formatMessage()
+      {
+         m_formattedSize = sizeof(Header) + m_usefulSize;
+         m_formattedMessage = boost::make_shared<unsigned char[]>(m_formattedSize);
+
+         auto index = 0;
+         m_formattedMessage[index] = m_header.m_partNumber;
+         index += sizeof(m_header.m_partNumber);
+         m_formattedMessage[index] = m_header.m_partCount;
+         index += sizeof(m_header.m_partCount);
+         memcpy(&m_formattedMessage[index], m_usefulData, m_usefulSize);
+      }
+
+      const Header m_header;
+      const unsigned char* m_usefulData;
+      const size_t m_usefulSize;
+      boost::shared_ptr<unsigned char[]> m_formattedMessage;
+      size_t m_formattedSize;
+   };
+
+   class IpcMessageCutter //TODO déplacer
+   {
+   public:
+      explicit IpcMessageCutter(const plugin_IPC::toPlugin::msg& pbMsg,
+                                const size_t maxSizePerMessage,
+                                const size_t maxMessage)
+      {
+         if (!pbMsg.IsInitialized())
+         {
+            YADOMS_LOG(error) << "CIpcAdapter::send : message is not fully initialized ==> ignored";
+            return;
+         }
+
+         const auto pbMessageSize = pbMsg.ByteSize();
+         const auto maxUsefulPartSize = maxSizePerMessage - IpcMessagePart::headerSize();
+         const auto maxUsefulSize = maxUsefulPartSize * maxMessage; // TODO pourrait être mis en static dans la classe pour ne pas avoir à le recalculer
+
+         if (pbMessageSize > maxUsefulSize)
+         {
+            YADOMS_LOG(error) << "CIpcAdapter::send : message is too big (" << pbMsg.ByteSize() << " bytes) ==> ignored";
+            return;
+         }
+
+         const auto serializedMessage = boost::make_shared<unsigned char[]>(pbMessageSize);
+         if (!pbMsg.SerializeToArray(serializedMessage.get(), pbMessageSize))
+         {
+            YADOMS_LOG(error) << "CIpcAdapter::send : fail to serialize message ==> ignored";
+            return;
+         }
+
+         const auto nbParts = pbMessageSize / maxUsefulPartSize + (pbMessageSize % maxUsefulPartSize ? 1 : 0);
+         for (auto idxPart = 0; idxPart < nbParts; ++idxPart)
+         {
+            const auto serializedPartOffset = idxPart * maxUsefulPartSize;
+            m_parts.push_back(IpcMessagePart(idxPart,
+                                             nbParts,
+                                             &serializedMessage.get()[serializedPartOffset],
+                                             (pbMessageSize - serializedPartOffset) > maxUsefulPartSize ? maxUsefulPartSize : (pbMessageSize - serializedPartOffset)));
+         }
+      }
+
+      virtual ~IpcMessageCutter()
+      {
+      }
+
+      bool valid() const
+      {
+         return !m_parts.empty();
+      }
+
+      const std::vector<IpcMessagePart>& parts() const
+      {
+         return m_parts;
+      }
+
+   private:
+      std::vector<IpcMessagePart> m_parts;
+   };
+
    void CIpcAdapter::send(const plugin_IPC::toPlugin::msg& pbMsg)
    {
-      if (!pbMsg.IsInitialized())
-      {
-         YADOMS_LOG(error) << "CIpcAdapter::send : message is not fully initialized ==> ignored)";
-         return;
-      }
-
-      if (pbMsg.ByteSize() > static_cast<int>(m_sendMessageQueue.get_max_msg_size()))
-      {
-         YADOMS_LOG(error) << "CIpcAdapter::send : message is too big (" << pbMsg.ByteSize() << " bytes) ==> ignored)";
-         return;
-      }
-
       boost::lock_guard<boost::recursive_mutex> lock(m_sendMutex);
-      if (!pbMsg.SerializeToArray(m_sendBuffer.get(), pbMsg.GetCachedSize()))
+
+      IpcMessageCutter messageCutter(pbMsg,
+                                     m_sendMessageQueue.get_max_msg_size(),
+                                     m_maxMessages);
+
+      if (!messageCutter.valid())
       {
-         YADOMS_LOG(error) << "CIpcAdapter::send : fail to serialize message (too big ?) ==> ignored)";
+         YADOMS_LOG(error) << "CIpcAdapter::send : message is not valid ==> ignored)";
          return;
       }
 
       YADOMS_LOG(trace) << "[SEND] message " << pbMsg.OneOf_case() << " to plugin instance #" << m_pluginApi->getPluginId();
-
-      m_sendMessageQueue.send(m_sendBuffer.get(), pbMsg.GetCachedSize(), 0);
+      for (const auto& part:messageCutter.parts())
+      {
+         m_sendMessageQueue.send(part.formattedMessage(),
+                                 part.formattedSize(),
+                                 0);
+      }
    }
 
    void CIpcAdapter::send(const plugin_IPC::toPlugin::msg& pbMsg,

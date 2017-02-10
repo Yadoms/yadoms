@@ -136,7 +136,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief               The message queue buffer for sending, localy used but defined here to be allocated only once
       //-----------------------------------------------------
-      boost::shared_ptr<unsigned char[]> m_sendBuffer;
+      boost::shared_ptr<unsigned char[]> m_sendBuffer;//TODO virer ?
 
       boost::thread m_messageQueueReceiveThread;
 
