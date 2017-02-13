@@ -11,7 +11,7 @@ then
 	echo "Which choice would you like?"
 	echo " -> Generate a linux makefile to run on RaspberryPI (p)"
 	echo " -> Generate a linux makefile for Cross Compilation (c)"
-	echo " -> Generate Eclpise CDT4 project files for CrossCompilation (e)"
+	echo " -> Generate Eclipse CDT4 project files for CrossCompilation (e)"
 	read choice
 else
 	choice=$1

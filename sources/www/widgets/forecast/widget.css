@@ -1,15 +1,38 @@
-.centerimage {
+.widget-forecast .centerimage {
+   display: flex;
    margin:0 auto;
-   display: table;
+   justify-content: center;
 }
 
-.centerimageCity {
+.widget-forecast .centerimageCity { 
    margin:0 auto;
    display: table;
    font-weight: bold;
 }
 
-.cases {
+.widget-forecast .cases {
+   display: flex;
    font-family: "Georgia";
    font-size: "14px";
+   justify-content: center;
+}
+
+.widget-forecast .forecastlayout {
+   flex-grow: 1;
+   display: flex;
+   flex-direction: row;
+}
+
+.widget-forecast .daylayout {
+   margin: auto;
+}
+
+.widget-forecast .layout {
+   height:auto;
+   flex-grow:1;
+   flex-wrap: no-wrap;
+   display: -webkit-flex;
+   display: flex;
+   -webkit-flex-direction: row;
+   flex-direction: row;   
 }

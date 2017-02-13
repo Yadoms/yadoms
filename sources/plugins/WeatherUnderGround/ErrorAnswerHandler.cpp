@@ -29,7 +29,7 @@ ErrorAnswerHandler::ErrorAnswerHandler(boost::shared_ptr<yApi::IYPluginApi> api,
       if (it != EEnumValuesTypes.end())
          m_errorStatePlugin = *it;
       else
-         YADOMS_LOG(information) << "This error tag is not handled yet by YADOMS" << error ;
+         YADOMS_LOG(information) << "This error tag is not handled yet by YADOMS : " << error ;
    }
 }
 
