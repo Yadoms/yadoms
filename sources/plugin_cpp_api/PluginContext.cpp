@@ -16,7 +16,8 @@ namespace plugin_cpp_api
                                   boost::shared_ptr<IPlugin> plugin)
       : m_commandLine(boost::make_shared<CCommandLine>(argc, argv)),
         m_plugin(plugin),
-        m_returnCode(kOk)
+        m_returnCode(kOk),
+        m_fullMessageIndex(0)
    {
       shared::currentTime::Provider().setProvider(boost::make_shared<shared::currentTime::Local>());
    }
@@ -167,7 +168,50 @@ namespace plugin_cpp_api
       google::protobuf::ShutdownProtobufLibrary();
    }
 
-   void CPluginContext::msgReceiverThreaded(boost::shared_ptr<CApiImplementation> api) const
+   void CPluginContext::onReceive(boost::shared_ptr<CApiImplementation> api,
+                                  boost::shared_ptr<const unsigned char[]> message,
+                                  size_t messageSize)
+   {
+      struct Header //TODO mettre en commun avec IpcAdapter ?
+      {
+         unsigned char m_partNumber;
+         unsigned char m_partCount;
+      };
+
+      const auto usefulSize = messageSize - sizeof(Header);
+
+      if (usefulSize <= 0)
+      {
+         YADOMS_LOG(error) << "Receive empty or bad formatted message ==> ignored";
+         return;
+      }
+
+      // Parse message (TODO faire fonction)
+      Header header;
+      auto index = 0;
+      header.m_partNumber = message[index];
+      index += sizeof(header.m_partNumber);
+      header.m_partCount = message[index];
+      index += sizeof(header.m_partCount);
+
+      if (header.m_partNumber == 0)
+      {
+         m_fullMessage = boost::make_shared<unsigned char[]>(header.m_partCount * m_receiveMessageQueue->get_max_msg_size());
+         m_fullMessageIndex = 0;
+      }
+
+      memcpy(&m_fullMessage[m_fullMessageIndex], &message[index], usefulSize);
+      m_fullMessageIndex += usefulSize;
+
+      if (header.m_partNumber == header.m_partCount - 1)
+      {
+         api->onReceive(m_fullMessage, m_fullMessageIndex);
+         m_fullMessage.reset();
+         m_fullMessageIndex = 0;
+      }
+   }
+
+   void CPluginContext::msgReceiverThreaded(boost::shared_ptr<CApiImplementation> api)
    {
       auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue->get_max_msg_size()));
       size_t messageSize;
@@ -190,7 +234,9 @@ namespace plugin_cpp_api
                boost::this_thread::interruption_point();
 
                if (messageWasReceived)
-                  api->onReceive(message, messageSize);
+                  onReceive(api,
+                            message,
+                            messageSize);
             }
             catch (shared::exception::CInvalidParameter& ex)
             {
@@ -202,5 +248,6 @@ namespace plugin_cpp_api
       {
       }
    }
-
 } // namespace plugin_cpp_api
+
+
