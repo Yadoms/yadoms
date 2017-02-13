@@ -1,5 +1,5 @@
 #pragma once
-#include <toPlugin.pb.h>
+#include <plugin_IPC/yadomsToPlugin.pb.h>
 #include <shared/plugin/yPluginApi/IDeviceRemoved.h>
 
 
@@ -8,7 +8,7 @@ namespace plugin_cpp_api
    class CDeviceRemoved : public shared::plugin::yPluginApi::IDeviceRemoved
    {
    public:
-      explicit CDeviceRemoved(const toPlugin::DeviceRemoved& msg);
+      explicit CDeviceRemoved(const plugin_IPC::toPlugin::DeviceRemoved& msg);
       virtual ~CDeviceRemoved();
 
       // IDeviceRemoved Implementation

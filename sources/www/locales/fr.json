@@ -385,7 +385,7 @@
           "table": {
             "displayName": "Nom",
             "status": "Etat",
-            "launchAtStartup": "Démarrer automatiquement",
+            "autoStart": "Démarrer automatiquement",
             "type": "Type de plugin",
             "actions": "Actions"
           },

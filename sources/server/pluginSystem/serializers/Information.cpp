@@ -15,7 +15,7 @@ namespace pluginSystem
       {
       }
 
-      void CInformation::toPb(toPlugin::Information* pb) const
+      void CInformation::toPb(plugin_IPC::toPlugin::Information* pb) const
       {
          pb->set_type(m_information->getType());
          pb->set_version(m_information->getVersion().toString());

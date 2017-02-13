@@ -74,7 +74,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    api->setPluginState(yApi::historization::EPluginState::kRunning);
 
    // the main loop
-   while (1)
+   while (true)
    {
       // Wait for an event
       switch (api->getEventHandler().waitForEvents())

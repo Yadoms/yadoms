@@ -1,7 +1,6 @@
 {
   "type": "enOcean",
-  "version": "0.0.1",
-  "releaseType": "beta",
+  "version": "1.0.1-beta",
   "author": "Sébastien Gallou",
   "url": "https://github.com/Yadoms/yadoms/",
   "credits": "",

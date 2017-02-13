@@ -36,12 +36,12 @@ BOOST_AUTO_TEST_CASE(DeviceDeclaration)
 
    // Check keywords declaration
    BOOST_CHECK_EQUAL(api->getKeywords().size(), static_cast<unsigned int>(6));
-   ckeckKeyword(api, "temp1", sensorId, yApi::CStandardCapacities::Temperature);
-   ckeckKeyword(api, "temp2", sensorId, yApi::CStandardCapacities::Temperature);
-   ckeckKeyword(api, "Battery", sensorId, yApi::CStandardCapacities::BatteryLevel);
-   ckeckKeyword(api, "rssi", sensorId, yApi::CStandardCapacities::Rssi);
-   ckeckKeyword(api, "dateTime", sensorId, yApi::CStandardCapacities::DateTime);
-   ckeckKeyword(api, "current", sensorId, yApi::CStandardCapacities::Current);
+   ckeckKeyword(api, "temp1", sensorId, yApi::CStandardCapacities::Temperature());
+   ckeckKeyword(api, "temp2", sensorId, yApi::CStandardCapacities::Temperature());
+   ckeckKeyword(api, "Battery", sensorId, yApi::CStandardCapacities::BatteryLevel());
+   ckeckKeyword(api, "rssi", sensorId, yApi::CStandardCapacities::Rssi());
+   ckeckKeyword(api, "dateTime", sensorId, yApi::CStandardCapacities::DateTime());
+   ckeckKeyword(api, "current", sensorId, yApi::CStandardCapacities::Current());
 }
 
 const CDefaultYPluginApiMock::Data& readLastData(boost::shared_ptr<CDefaultYPluginApiMock> api, const std::string& keyword)

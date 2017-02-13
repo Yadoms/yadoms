@@ -15,14 +15,36 @@ public:
       : m_testDirectory(testDirectory)
    {
       // Ensure TestDirectory is empty
-      testCommon::filesystem::RemoveDirectory(m_testDirectory);
+      try
+      {
+         testCommon::filesystem::RemoveDirectory(m_testDirectory);
+      }
+      catch (boost::filesystem::filesystem_error&)
+      {
+         // Under Windows, directory can be locked for a little duration after directory creation
+         // So wait a bit and re-try
+         boost::this_thread::sleep(boost::posix_time::millisec(500));
+         testCommon::filesystem::RemoveDirectory(m_testDirectory);
+      }
+
+      // Create directory
       testCommon::filesystem::CreateDirectory(m_testDirectory);
    }
 
    virtual ~CTestPath()
    {
       // Clean-up TestDirectory
-      testCommon::filesystem::RemoveDirectory(m_testDirectory);
+      try
+      {
+         testCommon::filesystem::RemoveDirectory(m_testDirectory);
+      }
+      catch(boost::filesystem::filesystem_error&)
+      {
+         // Under Windows, directory can be locked for a little duration after directory creation
+         // So wait a bit and re-try
+         boost::this_thread::sleep(boost::posix_time::millisec(500));
+         testCommon::filesystem::RemoveDirectory(m_testDirectory);
+      }
    }
 
 private:
@@ -56,8 +78,8 @@ private:
    const std::string m_configFile;
 };
 
-static const std::string testNewWebServerPath = "newNewWebServerPath";
-static const std::string testFalsePath = "FalsePath";
+static const std::string testNewWebServerPath("newNewWebServerPath");
+static const std::string testFalsePath("FalsePath");
 
 
 // Includes needed to compile tested classes

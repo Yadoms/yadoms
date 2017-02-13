@@ -12,14 +12,13 @@ namespace shared
       {
          namespace historization
          {
-            const CStandardCapacity& PluginStateMessageCapacity = CStandardCapacity("pluginStateMessage_capacity",
-                                                                                    CStandardUnits::NoUnits,
-                                                                                    EKeywordDataType::kJson);
+            DECLARE_CAPACITY(PluginStateMessageCapacity, "pluginStateMessage_capacity", CStandardUnits::NoUnits, EKeywordDataType::kJson);
 
             CPluginStateMessage::CPluginStateMessage(const std::string& keywordName,
                                                      const EKeywordAccessMode& accessMode)
                : CSingleHistorizableData<CDataContainer>(keywordName,
-                                                         PluginStateMessageCapacity, accessMode)
+                                                         PluginStateMessageCapacity(),
+                                                         accessMode)
             {
             }
 

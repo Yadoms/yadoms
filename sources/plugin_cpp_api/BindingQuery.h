@@ -1,5 +1,5 @@
 #pragma once
-#include <toPlugin.pb.h>
+#include <plugin_IPC/yadomsToPlugin.pb.h>
 #include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include "BindingQueryData.h"
 
@@ -8,7 +8,7 @@ namespace plugin_cpp_api
    class CBindingQuery : public shared::plugin::yPluginApi::IBindingQueryRequest
    {
    public:
-      CBindingQuery(const toPlugin::BindingQuery& msg,
+      CBindingQuery(const plugin_IPC::toPlugin::BindingQuery& msg,
                     boost::function1<void, const shared::CDataContainer&> sucessCallback,
                     boost::function1<void, const std::string&> errorCallback);
       virtual ~CBindingQuery();

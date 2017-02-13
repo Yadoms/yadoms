@@ -385,7 +385,7 @@
           "table": {
             "displayName": "Name",
             "status": "Status",
-            "launchAtStartup": "Launch at startup",
+            "autoStart": "Launch at startup",
             "type": "Plugin type",
             "actions": "Actions"
           },

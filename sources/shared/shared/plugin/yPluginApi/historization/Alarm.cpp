@@ -11,7 +11,7 @@ namespace shared
          namespace historization
          {
             CAlarm::CAlarm(const std::string& keywordName, const EKeywordAccessMode& accessMode, typeInfo::CBoolTypeInfo &ti)
-               : CSingleHistorizableData<bool>(keywordName, CStandardCapacities::Alarm, accessMode, false, EMeasureType::kAbsolute, ti)
+               : CSingleHistorizableData<bool>(keywordName, CStandardCapacities::Alarm(), accessMode, false, EMeasureType::kAbsolute, ti)
             {
             }
 

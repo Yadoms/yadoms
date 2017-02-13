@@ -2,9 +2,10 @@
 #include "RemoteAtiWonderPlusHistorizer.h"
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 
-namespace rfxcomMessages {
-   namespace specificHistorizers {
-
+namespace rfxcomMessages
+{
+   namespace specificHistorizers
+   {
       DECLARE_ENUM_IMPLEMENTATION(ERemoteAtiWonderPlusCodes,
          ((A))
          ((B))
@@ -77,20 +78,22 @@ namespace rfxcomMessages {
          ((VEnd))
          ((RightMouseButton))
          ((XEnd))
-      );
+      )
 
-      const shared::plugin::yPluginApi::CStandardCapacity& RemoteAtiWonderPlusCapacity = shared::plugin::yPluginApi::CStandardCapacity("RemoteAtiWonderPlus", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+      DECLARE_CAPACITY(RemoteAtiWonderPlusCapacity, "RemoteAtiWonderPlus", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
       CRemoteAtiWonderPlusHistorizer::CRemoteAtiWonderPlusHistorizer(const std::string& keywordName)
-         :CSingleHistorizableData<ERemoteAtiWonderPlusCodes>(keywordName, RemoteAtiWonderPlusCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
+         : CSingleHistorizableData<ERemoteAtiWonderPlusCodes>(keywordName,
+                                                              RemoteAtiWonderPlusCapacity(),
+                                                              shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
       {
       }
 
       CRemoteAtiWonderPlusHistorizer::~CRemoteAtiWonderPlusHistorizer()
       {
       }
-
    }
 } // namespace rfxcomMessages::specificHistorizers
+
 

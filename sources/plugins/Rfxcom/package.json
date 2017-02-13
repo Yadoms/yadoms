@@ -653,6 +653,19 @@
                   }              
                }
             }, 
+            "kangtai":
+            {
+               "type": "section",
+               "content":
+               {
+                  "id":
+                  {
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "65535"
+                  }              
+               }
+            }, 
             
             "blyss":
             {
@@ -1022,6 +1035,25 @@
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "15"
+                  }               
+               }
+            },
+            "screenline":
+            {
+               "type": "section",
+               "content":
+               {
+                  "id":
+                  {
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "65535"
+                  },
+                  "unitCode":
+                  {
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "99"
                   }               
                }
             },

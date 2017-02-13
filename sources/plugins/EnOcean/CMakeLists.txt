@@ -3,6 +3,13 @@
 include("../YadomsPluginsCommon.cmake")
 
 #########################################
+## Plugin needs Python to generate code
+#########################################
+set (PYTHON_REQUIRED_VERSION 2.7)
+find_package(PythonInterp ${PYTHON_REQUIRED_VERSION} REQUIRED)
+
+
+#########################################
 ## Place here all the plugin source files
 #########################################
 set(ENOCEAN_SOURCES
@@ -147,7 +154,7 @@ source_group(profiles\\hardCoded profiles/hardCoded/*.*)
 
 add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-manufacturers.h
                           ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-manufacturers.cpp
-                   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateManufacturers.py ${CMAKE_CURRENT_SOURCE_DIR}/profiles/manufacturers.xml ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-manufacturers.h ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-manufacturers.cpp
+                   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateManufacturers.py ${CMAKE_CURRENT_SOURCE_DIR}/profiles/manufacturers.xml ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-manufacturers.h ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-manufacturers.cpp
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/profiles/manufacturers.xml
                            ${PYTHON_GENERATOR_FILES} 
                    COMMENT "Generating Manufacturers source code...")
@@ -155,7 +162,7 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-manufac
 add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-eep.h
                           ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-eep.cpp
                           ${CMAKE_CURRENT_SOURCE_DIR}/package.json
-                   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateEep.py ${CMAKE_CURRENT_SOURCE_DIR}/profiles/eep${EEP_VERSION}.xml ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-eep.h ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-eep.cpp ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json ${CMAKE_CURRENT_SOURCE_DIR}/package.json  ${CMAKE_CURRENT_SOURCE_DIR}/locales
+                   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateEep.py ${CMAKE_CURRENT_SOURCE_DIR}/profiles/eep${EEP_VERSION}.xml ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-eep.h ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-eep.cpp ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json ${CMAKE_CURRENT_SOURCE_DIR}/package.json  ${CMAKE_CURRENT_SOURCE_DIR}/locales
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/profiles/eep${EEP_VERSION}.xml
                            ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json
                            ${PYTHON_GENERATOR_FILES}

@@ -1,0 +1,34 @@
+syntax = "proto3";
+package interpreter_IPC.toYadoms;
+
+message AvalaibleAnswer {
+	bool avalaible = 1;
+}
+
+message LoadScriptContentAnswer {
+	string content = 1;
+}
+
+message SaveScriptContentAnswer {
+}
+
+message NotifiyScriptStopped {
+	int32 scriptInstanceId = 1;
+	string error = 2;
+}
+
+message ScriptLog {
+	bool error = 1;
+	int32 scriptInstanceId = 2;
+	string logLine = 3;
+}
+
+message msg {
+	oneof OneOf {
+		string error = 1;
+		AvalaibleAnswer avalaibleAnswer = 2;
+		LoadScriptContentAnswer loadScriptContentAnswer = 3;
+		SaveScriptContentAnswer saveScriptContentAnswer = 4;
+		NotifiyScriptStopped notifiyScriptStopped = 5;
+	}
+}

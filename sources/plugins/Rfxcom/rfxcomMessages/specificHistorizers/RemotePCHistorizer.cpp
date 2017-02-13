@@ -2,9 +2,10 @@
 #include "RemotePCHistorizer.h"
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 
-namespace rfxcomMessages {
-   namespace specificHistorizers {
-
+namespace rfxcomMessages
+{
+   namespace specificHistorizers
+   {
       DECLARE_ENUM_IMPLEMENTATION(ERemotePCCodes,
          ((Key0))
          ((Key8))
@@ -55,14 +56,15 @@ namespace rfxcomMessages {
          ((Key7))
          ((Teletext))
          ((Record))
-
       );
 
-      const shared::plugin::yPluginApi::CStandardCapacity& RemotePCCapacity = shared::plugin::yPluginApi::CStandardCapacity("RemotePC", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+      DECLARE_CAPACITY(RemotePCCapacity, "RemotePC", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
       CRemotePCHistorizer::CRemotePCHistorizer(const std::string& keywordName)
-         :CSingleHistorizableData<ERemotePCCodes>(keywordName, RemotePCCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
+         : CSingleHistorizableData<ERemotePCCodes>(keywordName,
+                                                   RemotePCCapacity(),
+                                                   shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
       {
       }
 
@@ -71,4 +73,5 @@ namespace rfxcomMessages {
       }
    }
 } // namespace rfxcomMessages::specificHistorizers
+
 

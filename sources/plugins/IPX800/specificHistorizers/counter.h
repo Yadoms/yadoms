@@ -32,7 +32,7 @@ namespace specificHistorizers
       ///\brief                     get the hardware name
       ///\return return the name used by the IPX800 to address this information.
       //-----------------------------------------------------
-      std::string getHardwareName();
+      std::string getHardwareName() const;
 
       //-----------------------------------------------------
       ///\brief                     Destructor

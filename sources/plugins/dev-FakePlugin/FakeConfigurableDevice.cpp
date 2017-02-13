@@ -28,7 +28,7 @@ void CFakeConfigurableDevice::declareDevice(boost::shared_ptr<yApi::IYPluginApi>
       YADOMS_LOG(information) << "Configuration = " << api->getDeviceConfiguration(m_deviceName).serialize();
       m_divider = api->getDeviceConfiguration(m_deviceName).get<int>("CounterDivider2");
    }
-   catch(std::exception&)
+   catch (std::exception&)
    {
       // Configuration may not actually exist, set the default value to divider
       m_divider = 1;
@@ -85,3 +85,4 @@ void CFakeConfigurableDevice::setConfiguration(const shared::CDataContainer& new
    YADOMS_LOG(information) << "Configuration = " << newConfiguration.serialize();
    m_divider = newConfiguration.get<int>("CounterDivider2");
 }
+

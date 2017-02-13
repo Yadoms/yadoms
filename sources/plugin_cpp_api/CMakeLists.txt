@@ -42,9 +42,6 @@ set(plugin_cpp_api_SOURCES
    PluginContext.h
    PluginContext.cpp
 
-   PluginLogConfiguration.h
-   PluginLogConfiguration.cpp
-
    PluginMain.cpp
 
    plugin_cpp_api/ImplementationHelper.h
@@ -77,6 +74,7 @@ target_link_libraries(plugin_cpp_api
    yadoms-shared
    ${LIBS}
    ${CMAKE_DL_LIBS}
+   ${plugin_IPC_LIBRARY}
    )
 
 

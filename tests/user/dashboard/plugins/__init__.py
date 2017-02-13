@@ -46,7 +46,10 @@ def getPluginType(pluginsTable, pluginNumber):
    return getPluginDatas(pluginsTable, pluginNumber)[1].text
    
 def getPluginAutoStart(pluginsTable, pluginNumber):
-   return getPluginDatas(pluginsTable, pluginNumber)[2].find_element_by_tag_name("input").is_selected()
+   return getPluginDatas(pluginsTable, pluginNumber)[2].find_element_by_tag_name("input")
+   
+def getPluginAutoStartState(pluginsTable, pluginNumber):
+   return getPluginAutoStart(pluginsTable, pluginNumber).is_selected()
    
 def getPluginButtons(pluginsTable, pluginNumber):
    pluginsActionsButtonsCell = getPluginDatas(pluginsTable, pluginNumber)[3]
@@ -222,7 +225,7 @@ def checkCreatedPluginSequence(test, pluginInstanceName, pluginType, hasExtraCom
    test.assertEqual(len(getPluginDatas(pluginsTable, pluginNumber)), 5)
    test.assertEqual(getPluginName(pluginsTable, pluginNumber), pluginInstanceName)
    test.assertEqual(getPluginType(pluginsTable, pluginNumber).lstrip(), i18n.getPlugin(pluginType)["name"])
-   test.assertTrue(getPluginAutoStart(pluginsTable, pluginNumber))
+   test.assertTrue(getPluginAutoStartState(pluginsTable, pluginNumber))
 
    buttons = getPluginButtons(pluginsTable, pluginNumber)
    expectedButtonCount = 3 + (1 if hasExtraCommand else 0) + (1 if hasLog else 0)
@@ -256,5 +259,5 @@ def checkCreatedPluginSequence(test, pluginInstanceName, pluginType, hasExtraCom
    test.assertIn("btn-danger", removeButton.get_attribute("class"))
    buttonIndex +=1;
 
-   WebDriverWait(test.browser, 20).until(lambda driver: getPluginState(pluginsTable, pluginNumber) == PluginState.Running)
+   WebDriverWait(test.browser, 20).until(lambda browser: getPluginState(pluginsTable, pluginNumber) == PluginState.Running)
 

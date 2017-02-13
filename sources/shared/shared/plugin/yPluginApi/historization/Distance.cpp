@@ -14,7 +14,7 @@ namespace shared
                                  const EKeywordAccessMode& accessMode,
                                  typeInfo::CDoubleTypeInfo& additionalInfo)
                : CSingleHistorizableData<double>(keywordName,
-                                                 CStandardCapacities::Distance,
+                                                 CStandardCapacities::Distance(),
                                                  accessMode,
                                                  0.0,
                                                  EMeasureType::kAbsolute,

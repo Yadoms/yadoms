@@ -15,7 +15,8 @@ namespace database
    namespace common
    {
       CDataProvider::CDataProvider(boost::shared_ptr<IDatabaseRequester> databaseRequester)
-         : m_databaseRequester(databaseRequester)
+         : m_databaseRequester(databaseRequester),
+           m_maintenanceTimer(boost::make_shared<Poco::Util::Timer>())
       {
       }
 
@@ -120,7 +121,7 @@ namespace database
          m_maintenanceSummaryComputingTask = Poco::Util::TimerTask::Ptr(new CSummaryDataTask(getAcquisitionRequester(), getKeywordRequester()));
 
          //schedule task now (at app start)
-         m_maintenanceTimer.schedule(m_maintenanceSummaryComputingTask, Poco::Timestamp());
+         m_maintenanceTimer->schedule(m_maintenanceSummaryComputingTask, Poco::Timestamp());
 
          //then schedule it to be run each hour (+1 minute in order to give a small latency for plugins): 00h01, 01h01, 02h01, 03h01, 04h01....
          //working with Poco::DateTime because using Poco::Util::Timer class
@@ -138,7 +139,7 @@ namespace database
          auto msWait = static_cast<long>(timeToWaitBeforeFirstOccurrence.totalMilliseconds()); //force cast because value is maximum 1hour = 1000*3600 which is less than "long" maximum value
          auto msWaitPeriod = static_cast<long>(oneHourOffset.totalMilliseconds());//force cast because value is 1 hour = 1000*3600 which is less than "long" maximum value
 
-         m_maintenanceTimer.scheduleAtFixedRate(m_maintenanceSummaryComputingTask, msWait, msWaitPeriod);
+         m_maintenanceTimer->scheduleAtFixedRate(m_maintenanceSummaryComputingTask, msWait, msWaitPeriod);
       }
 
       void CDataProvider::initializePurgeTask()
@@ -147,7 +148,7 @@ namespace database
          m_maintenancePurgeTask = Poco::Util::TimerTask::Ptr(new CPurgeTask(getAcquisitionRequester(), m_databaseRequester));
 
          //schedule task now (at app start)
-         m_maintenanceTimer.schedule(m_maintenancePurgeTask, Poco::Timestamp());
+         m_maintenanceTimer->schedule(m_maintenancePurgeTask, Poco::Timestamp());
 
          //schedule task now (at app start)
          //working with Poco::DateTime because using Poco::Util::Timer class
@@ -160,7 +161,7 @@ namespace database
          auto msWait = static_cast<long>(timeToWaitBeforeFirstPurgeOccurrence.totalMilliseconds()); //force cast because value is maximum 1hour = 1000*3600 which is less than "long" maximum value
          auto msWaitPeriod = static_cast<long>(oneDayOffset.totalMilliseconds());//force cast because value is 1 hour = 1000*3600 which is less than "long" maximum value
 
-         m_maintenanceTimer.scheduleAtFixedRate(m_maintenancePurgeTask, msWait, msWaitPeriod);
+         m_maintenanceTimer->scheduleAtFixedRate(m_maintenancePurgeTask, msWait, msWaitPeriod);
       }
 
 
@@ -178,7 +179,7 @@ namespace database
             m_maintenanceSummaryComputingTask->cancel();
          if (m_maintenancePurgeTask)
             m_maintenancePurgeTask->cancel();
-         m_maintenanceTimer.cancel();
+         m_maintenanceTimer.reset();
 
          m_maintenancePurgeTask.assign(nullptr);
          m_maintenanceSummaryComputingTask.assign(nullptr);
@@ -207,6 +208,6 @@ namespace database
          return boost::shared_ptr<ITransactionalProvider>();
       }
    } //namespace common
-} //namespace database 
+} //namespace database
 
 

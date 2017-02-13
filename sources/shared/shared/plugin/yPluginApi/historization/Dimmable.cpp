@@ -30,7 +30,7 @@ namespace shared
 
             const CStandardCapacity& CDimmable::getCapacity() const
             {
-               return CStandardCapacities::Dimmable;
+               return CStandardCapacities::Dimmable();
             }
 
             const EKeywordAccessMode& CDimmable::getAccessMode() const

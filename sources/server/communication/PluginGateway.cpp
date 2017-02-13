@@ -70,7 +70,8 @@ namespace communication
                                                           callback::ISynchronousCallback<std::string>& callback)
    {
       // Create the request
-      boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request(boost::make_shared<pluginSystem::CManuallyDeviceCreationRequest>(data, callback));
+      boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request(boost::make_shared<pluginSystem::CManuallyDeviceCreationRequest>(data,
+                                                                                                                                                             callback));
 
       // Dispatch command to the right plugin
       m_pluginManager->postManuallyDeviceCreationRequest(pluginId, request);
@@ -81,16 +82,18 @@ namespace communication
                                                 callback::ISynchronousCallback<shared::CDataContainer>& callback)
    {
       // Create the request
-      boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request(boost::make_shared<pluginSystem::CBindingQueryRequest>(data, callback));
+      boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request(boost::make_shared<pluginSystem::CBindingQueryRequest>(data,
+                                                                                                                                         callback));
 
       // Dispatch command to the right plugin
       m_pluginManager->postBindingQueryRequest(pluginId, request);
    }
 
    void CPluginGateway::sendDeviceConfigurationSchemaRequest(int deviceId,
-                                                             communication::callback::ISynchronousCallback<shared::CDataContainer>& callback)
+                                                             callback::ISynchronousCallback<shared::CDataContainer>& callback)
    {
-      m_pluginManager->postDeviceConfigurationSchemaRequest(deviceId, callback);
+      m_pluginManager->postDeviceConfigurationSchemaRequest(deviceId,
+                                                            callback);
    }
 
    void CPluginGateway::sendSetDeviceConfiguration(int deviceId,

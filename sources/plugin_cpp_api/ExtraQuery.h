@@ -1,5 +1,5 @@
 #pragma once
-#include <toPlugin.pb.h>
+#include <plugin_IPC/yadomsToPlugin.pb.h>
 #include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include "ExtraQueryData.h"
 
@@ -12,7 +12,7 @@ namespace plugin_cpp_api
    class CExtraQuery : public shared::plugin::yPluginApi::IExtraQuery
    {
    public:
-      explicit CExtraQuery(const toPlugin::ExtraQuery& msg,
+      explicit CExtraQuery(const plugin_IPC::toPlugin::ExtraQuery& msg,
                            boost::function1<void, const shared::CDataContainer&> sucessCallback,
                            boost::function1<void, const std::string&> errorCallback);
       virtual ~CExtraQuery();

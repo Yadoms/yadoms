@@ -131,7 +131,7 @@ namespace update {
          try
          {
             /////////////////////////////////////////////
-            //1. remove plugin folder
+            //1. remove widget folder
             /////////////////////////////////////////////
             Poco::Path widgetPath(CWorkerTools::getWidgetBasePath());
             widgetPath.append(widgetName);

@@ -1,7 +1,7 @@
 #pragma once
-
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include <plugin_IPC/plugin_IPC.h>
+#include <plugin_IPC/pluginToYadoms.pb.h>
+#include <plugin_IPC/yadomsToPlugin.pb.h>
 
 
 namespace plugin_cpp_api
@@ -83,34 +83,31 @@ namespace plugin_cpp_api
       void waitInitialized() const;
 
       const boost::filesystem::path& getLogFile() const;
+      const std::string& getLogLevel() const;
 
    protected:
-      //--------------------------------------------------------------
-      /// \brief	Send a request
-      /// \param[in] request Request to send
-      //--------------------------------------------------------------
-      void send(const toYadoms::msg& msg) const;
-      void send(const toYadoms::msg& msg,
-                boost::function1<bool, const toPlugin::msg&> checkExpectedMessageFunction,
-                boost::function1<void, const toPlugin::msg&> onReceiveFunction) const;
+      void send(const plugin_IPC::toYadoms::msg& msg) const;
+      void send(const plugin_IPC::toYadoms::msg& msg,
+                boost::function1<bool, const plugin_IPC::toPlugin::msg&> checkExpectedMessageFunction,
+                boost::function1<void, const plugin_IPC::toPlugin::msg&> onReceiveFunction) const;
 
-      void processSystem(const toPlugin::System& msg);
-      void processInit(const toPlugin::Init& msg);
-      void processUpdateConfiguration(const toPlugin::Configuration& msg);
-      void processBindingQuery(const toPlugin::BindingQuery& msg);
-      void processDeviceConfigurationSchemaRequest(const toPlugin::DeviceConfigurationSchemaRequest& msg);
-      void processSetDeviceConfiguration(const toPlugin::SetDeviceConfiguration& msg);
-      void processDeviceCommand(const toPlugin::DeviceCommand& msg);
-      void processExtraQuery(const toPlugin::ExtraQuery& msg);
-      void processManuallyDeviceCreation(const toPlugin::ManuallyDeviceCreation& msg);
-      void processDeviceRemoved(const toPlugin::DeviceRemoved& msg);
+      void processSystem(const plugin_IPC::toPlugin::System& msg);
+      void processInit(const plugin_IPC::toPlugin::Init& msg);
+      void processUpdateConfiguration(const plugin_IPC::toPlugin::Configuration& msg);
+      void processBindingQuery(const plugin_IPC::toPlugin::BindingQuery& msg);
+      void processDeviceConfigurationSchemaRequest(const plugin_IPC::toPlugin::DeviceConfigurationSchemaRequest& msg);
+      void processSetDeviceConfiguration(const plugin_IPC::toPlugin::SetDeviceConfiguration& msg);
+      void processDeviceCommand(const plugin_IPC::toPlugin::DeviceCommand& msg);
+      void processExtraQuery(const plugin_IPC::toPlugin::ExtraQuery& msg);
+      void processManuallyDeviceCreation(const plugin_IPC::toPlugin::ManuallyDeviceCreation& msg);
+      void processDeviceRemoved(const plugin_IPC::toPlugin::DeviceRemoved& msg);
 
       void setInitialized();
 
       static void fillHistorizable(boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> in,
-                                   toYadoms::Historizable* out);
+                                   plugin_IPC::toYadoms::Historizable* out);
       static void fillCapacity(const shared::plugin::yPluginApi::CStandardCapacity& in,
-                               toYadoms::Capacity* out);
+                               plugin_IPC::toYadoms::Capacity* out);
 
    private:
       mutable std::condition_variable m_initializationCondition;
@@ -131,11 +128,12 @@ namespace plugin_cpp_api
       boost::shared_ptr<boost::interprocess::message_queue> m_sendMessageQueue;
 
       mutable boost::recursive_mutex m_onReceiveHookMutex;
-      mutable boost::function1<bool, const toPlugin::msg&> m_onReceiveHook;
+      mutable boost::function1<bool, const plugin_IPC::toPlugin::msg&> m_onReceiveHook;
 
       boost::shared_ptr<shared::plugin::information::IInformation> m_pluginInformation;
       boost::shared_ptr<const boost::filesystem::path> m_dataPath;
       boost::shared_ptr<const boost::filesystem::path> m_logFile;
+      boost::shared_ptr<const std::string> m_logLevel;
    };
 } // namespace plugin_cpp_api	
 

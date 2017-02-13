@@ -1,6 +1,5 @@
 #pragma once
-
-#include <pluginInit.pb.h>
+#include <plugin_IPC/pluginInit.pb.h>
 
 
 namespace pluginSystem
@@ -17,7 +16,7 @@ namespace pluginSystem
          {
          }
 
-         virtual void toPb(toPlugin::Information* pb) const = 0;
+         virtual void toPb(plugin_IPC::toPlugin::Information* pb) const = 0;
       };
    }
 } // namespace pluginSystem::serializers

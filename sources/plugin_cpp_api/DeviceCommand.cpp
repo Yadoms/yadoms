@@ -4,7 +4,7 @@
 
 namespace plugin_cpp_api
 {
-   CDeviceCommand::CDeviceCommand(const toPlugin::DeviceCommand& msg)
+   CDeviceCommand::CDeviceCommand(const plugin_IPC::toPlugin::DeviceCommand& msg)
       : m_device(msg.device()),
         m_keyword(msg.keyword()),
         m_body(msg.body())

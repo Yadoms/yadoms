@@ -20,7 +20,6 @@ set(SHARED_LIB_SRC
    shared/ThreadBase.h
 
    shared/StringExtension.h
-   shared/StringExtension.cpp	
 	
    shared/Field.hpp
 
@@ -226,24 +225,34 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.cpp
    shared/plugin/yPluginApi/historization/typeInfo/EnumTypeInfo.hpp
 
+   shared/process/CoutCerrConsoleLogChannel.h
+   shared/process/CoutCerrConsoleLogChannel.cpp
    shared/process/IApplication.h
    shared/process/IApplicationStopHandler.h
    shared/process/IProcessObserver.h
    shared/process/ICommandLine.h
    shared/process/IProcess.h
+   shared/process/IExternalProcessLogger.h
+   shared/process/NativeExecutableCommandLine.h
+   shared/process/NativeExecutableCommandLine.cpp
    shared/process/Process.h
    shared/process/Process.cpp
-   shared/process/ProcessException.hpp
    shared/process/SoftwareStop.h
    shared/process/SoftwareStop.cpp
+   shared/process/YadomsSubModuleLogConfiguration.h
+   shared/process/YadomsSubModuleLogConfiguration.cpp
 
    shared/serialization/IDataSerializable.h
    shared/serialization/IDataFileSerializable.h
 
-   shared/script/ImplementationHelper.h
-   shared/script/IInterpreter.h
+   shared/script/yInterpreterApi/IAvalaibleRequest.h
+   shared/script/yInterpreterApi/IInformation.h
+   shared/script/yInterpreterApi/ILoadScriptContentRequest.h
+   shared/script/yInterpreterApi/ISaveScriptContentRequest.h
+   shared/script/yInterpreterApi/IStartScript.h
+   shared/script/yInterpreterApi/IStopScript.h
+   shared/script/yInterpreterApi/IYInterpreterApi.h
 
-   shared/script/yScriptApi/commonIncludes.h
    shared/script/yScriptApi/IYScriptApi.h
    shared/script/yScriptApi/WaitForEventResult.h
 
@@ -269,11 +278,13 @@ set(SHARED_LIB_SRC
 	${SHARED_LIB_SRC}
    windows/shared/DynamicLibrary.h
    windows/shared/DynamicLibrary.cpp
+   windows/shared/DynamicLibraryExport.h
    windows/shared/Executable.h
    windows/shared/Executable.cpp
    windows/shared/Export.h
    windows/shared/FileSystemExtension.h
    windows/shared/FileSystemExtension.cpp
+   windows/shared/iobFuncLegacyAdapter.cpp
    windows/shared/NetworkHelper.h
    windows/shared/NetworkHelper.cpp
    windows/shared/Peripherals.h
@@ -295,6 +306,7 @@ set(SHARED_LIB_SRC
    ${SHARED_LIB_SRC}
    mac/shared/DynamicLibrary.h
    mac/shared/DynamicLibrary.cpp
+   mac/shared/DynamicLibraryExport.h
    mac/shared/Executable.h
    mac/shared/Executable.cpp
    mac/shared/Export.h
@@ -317,6 +329,7 @@ set(SHARED_LIB_SRC
    ${SHARED_LIB_SRC}
    linux/shared/DynamicLibrary.h
    linux/shared/DynamicLibrary.cpp
+   linux/shared/DynamicLibraryExport.h
    linux/shared/Executable.h
    linux/shared/Executable.cpp
    linux/shared/Export.h
@@ -376,7 +389,7 @@ source_group(platformSpecific\\mac\\process shared/mac/shared/process/*.*)
 ########################
 ## Output
 ########################
-add_library(yadoms-shared SHARED  ${SHARED_LIB_SRC})
+add_library(yadoms-shared STATIC ${SHARED_LIB_SRC})
 
 target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 set_property( TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}  ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS})

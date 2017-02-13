@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "AsyncSerialPort.h"
 #include <shared/Log.h>
-#include <shared/exception/InvalidParameter.hpp>
 #include <shared/Peripherals.h>
 #include "PortException.hpp"
 #include "Buffer.hpp"
@@ -75,7 +74,7 @@ namespace shared
          }
          catch (boost::system::system_error& e)
          {
-            YADOMS_LOG(error) << "Failed to open serial port " << e.what();
+            YADOMS_LOG(error) << "Failed to open serial port : " << e.what();
             return false;
          }
 
@@ -91,7 +90,7 @@ namespace shared
 
       void CAsyncSerialPort::disconnect()
       {
-         if (!m_boostSerialPort.is_open())
+         if (!isConnected())
             return;
 
          // Close the port
@@ -238,7 +237,10 @@ namespace shared
       void CAsyncSerialPort::notifyEventHandler(bool isConnected) const
       {
          if (m_connectStateEventHandler)
-            m_connectStateEventHandler->postEvent<bool>(m_connectStateEventId, isConnected);
+            m_connectStateEventHandler->postEvent(m_connectStateEventId,
+                                                  isConnected);
       }
    }
 } // namespace shared::communication
+
+

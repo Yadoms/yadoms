@@ -6,7 +6,7 @@ namespace shared { namespace exception
 {
 
    //--------------------------------------------------------------
-   /// \class Exception for value out of range
+   /// \brief Exception for value out of range
    //--------------------------------------------------------------
    class COutOfRange : public CException
    {

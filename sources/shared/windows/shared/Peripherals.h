@@ -9,7 +9,6 @@
 
 namespace shared
 {
-
    //--------------------------------------------------------------
    /// \brief	this class is used to manage platforms peripherals
    //--------------------------------------------------------------
@@ -31,7 +30,7 @@ namespace shared
       /// \return       The serial ports names (keys are real name, values are common name)
       //--------------------------------------------------------------
       typedef std::map<std::string, std::string> SerialPortsMap;
-      static const boost::shared_ptr<const SerialPortsMap> getSerialPorts();
+      static boost::shared_ptr<const SerialPortsMap> getSerialPorts();
 
       //--------------------------------------------------------------
       /// \brief			Flush serial port buffers (input & output)
@@ -40,5 +39,6 @@ namespace shared
       //--------------------------------------------------------------
       static boost::system::error_code flushSerialPort(boost::asio::serial_port& port);
    };
-
 } // namespace shared
+
+

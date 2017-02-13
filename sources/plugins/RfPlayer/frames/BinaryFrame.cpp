@@ -211,40 +211,40 @@ namespace frames {
       switch (idPhy)
       {
       case 0:
-         m_deviceModel = "Oregon thermometer probe";
+         m_deviceModel += " thermometer probe";
          break;
       case 0x1A2D:
-         m_deviceModel = "Oregon THGR122/228/238/268, THGN122/123/132";
+         m_deviceModel += " THGR122/228/238/268, THGN122/123/132";
          break;
       case 0xCA2C:
-         m_deviceModel = "Oregon THGR328";
+         m_deviceModel += " THGR328";
          break;
       case 0x0ACC:
-         m_deviceModel = "Oregon RTGR328";
+         m_deviceModel += " RTGR328";
          break;
       case 0xEA4C:
-         m_deviceModel = "Oregon THC238/268, THWR288,THRN122,THN122/132,AW129/131";
+         m_deviceModel += " THC238/268, THWR288,THRN122,THN122/132,AW129/131";
          break;
       case 0x1A3D:
-         m_deviceModel = "Oregon THGR918/928, THGRN228, THGN50";
+         m_deviceModel += " THGR918/928, THGRN228, THGN50";
          break;
       case 0x5A6D:
-         m_deviceModel = "Oregon THGR918N";
+         m_deviceModel += " THGR918N";
          break;
       case 0x1A89:
-         m_deviceModel = "Oregon WGR800";
+         m_deviceModel += " WGR800";
          break;
       case 0xCA48:
-         m_deviceModel = "Oregon THWR800";
+         m_deviceModel += " THWR800";
          break;
       case 0xFA28:
-         m_deviceModel = "Oregon THGR810, THGN800";
+         m_deviceModel += " THGR810, THGN800";
          break;
       case 0x2A19:
-         m_deviceModel = "Oregon PCR800";
+         m_deviceModel += " PCR800";
          break;
       case 0xDA78:
-         m_deviceModel = "Oregon UVN800";
+         m_deviceModel += " UVN800";
          break;
 
       }
@@ -289,15 +289,32 @@ namespace frames {
 
          m_deviceDetails.set("protocol", pFrame->header.protocol);
 
+         switch (pFrame->header.protocol)
+         {
+         default:
+         case RECEIVED_PROTOCOL_UNDEFINED: m_deviceModel = "";  break;
+         case RECEIVED_PROTOCOL_X10: m_deviceModel = "X10";  break;
+         case RECEIVED_PROTOCOL_VISONIC: m_deviceModel = "VISONIC";  break;
+         case RECEIVED_PROTOCOL_BLYSS:m_deviceModel = "BLYSS";  break;
+         case RECEIVED_PROTOCOL_CHACON: m_deviceModel = "CHACON";  break;
+         case RECEIVED_PROTOCOL_OREGON: m_deviceModel = "OREGON";  break;
+         case RECEIVED_PROTOCOL_DOMIA:  m_deviceModel = "DOMIA";  break;
+         case RECEIVED_PROTOCOL_OWL:    m_deviceModel = "OWL";  break;
+         case RECEIVED_PROTOCOL_X2D:    m_deviceModel = "X2D";  break;
+         case RECEIVED_PROTOCOL_RFY:    m_deviceModel = "RFY";  break;
+         case RECEIVED_PROTOCOL_KD101:  m_deviceModel = "KD101";  break;
+         case RECEIVED_PROTOCOL_PARROT: m_deviceModel = "PARROT";  break;
+         case RECEIVED_PROTOCOL_DIGIMAX:m_deviceModel = "DIGIMAX";  break;
+         }
 
          switch (pFrame->header.infoType)
          {
          case INFOS_TYPE0:
          {
+            //Used for X10 / DomiaLight
             char houseCode = (char)((pFrame->infos.type0.id & 0x00F0) >> 4) + 0x30;
             unsigned char device = (unsigned char)(pFrame->infos.type0.id & 0x000F);
             m_deviceName = (boost::format("%1%%2%") % houseCode % device).str();
-            m_deviceModel = "X10 / DomiaLight";
             m_deviceDetails.set("id", pFrame->infos.type0.id);
 
             auto stateKeyword = boost::make_shared<specificHistorizers::CType0State>("state");
@@ -313,7 +330,6 @@ namespace frames {
          {
             unsigned int device = (pFrame->infos.type1.idMsb << 16) + pFrame->infos.type1.idLsb;
             m_deviceName = (boost::format("%1%") % device).str();
-            m_deviceModel = "X10 / CHACON / KD101 / BLYSS";
             m_deviceDetails.set("id", device);
 
             auto stateKeyword = boost::make_shared<specificHistorizers::CType1State>("state");
@@ -333,7 +349,7 @@ namespace frames {
             if (pFrame->infos.type2.subtype == 0)
             {
                //detector/sensor( PowerCode device)
-               m_deviceModel = "Visonic Detector/sendsor";
+               m_deviceModel += " Detector/sendsor";
 
                if ((pFrame->infos.type2.qualifier & 0x0008) != 0)
                {
@@ -357,7 +373,7 @@ namespace frames {
             else
             {
                //remote control(CodeSecure device)
-               m_deviceModel = "Visonic Remote Control";
+               m_deviceModel += " Remote Control";
 
                auto keyCodeKeyword = boost::make_shared<specificHistorizers::CType2KeyCode>("keyCode");
                keyCodeKeyword->set(specificHistorizers::EType2KeyCodeValues((int)pFrame->infos.type2.qualifier));
@@ -376,7 +392,7 @@ namespace frames {
             if (pFrame->infos.type3.subtype == 0)
             {
                //shutter device
-               m_deviceModel = "Somfy Shutter";
+               m_deviceModel += " Somfy Shutter";
 
                auto codeKeyword = boost::make_shared<specificHistorizers::CType3ShutterCode>("shutter");
                codeKeyword->set(specificHistorizers::EType3ShutterCodeValues((int)pFrame->infos.type3.qualifier & 0x000F));
@@ -386,7 +402,7 @@ namespace frames {
             else
             {
                //shutter device
-               m_deviceModel = "Somfy portal reomte control";
+               m_deviceModel += " Somfy portal reomte control";
 
                auto codeKeyword = boost::make_shared<specificHistorizers::CType3RemoteCode>("remote");
                codeKeyword->set(specificHistorizers::EType3RemoteCodeValues((int)pFrame->infos.type3.qualifier & 0x000F));
@@ -465,16 +481,16 @@ namespace frames {
                switch (pFrame->infos.type8.idPHY)
                {
                case 0:
-                  m_deviceModel = "OWL CM119/CM160";
+                  m_deviceModel += " CM119/CM160";
                   break;
                case 1:
-                  m_deviceModel = "OWL CM130";
+                  m_deviceModel += " CM130";
                   break;
                case 2:
-                  m_deviceModel = "OWL CM180";
+                  m_deviceModel += " CM180";
                   break;
                case 3:
-                  m_deviceModel = "OWL CM180i";
+                  m_deviceModel += " CM180i";
                   break;
                }
                m_deviceName = (boost::format("%1%") % (pFrame->infos.type8.idChannel >> 4)).str();
@@ -532,15 +548,15 @@ namespace frames {
             //Used by Thermostats X2D protocol
             switch (pFrame->infos.type10.subtype)
             {
-            case 0: m_deviceModel = "GENERIC"; break;
-            case 1: m_deviceModel = "RADIO TYBOX"; break;
-            case 2: m_deviceModel = "TYBOX BUS"; break;
-            case 3: m_deviceModel = "PACK LABEL"; break;
-            case 4: m_deviceModel = "DELTA 200"; break;
-            case 5: m_deviceModel = "DRIVER RF"; break;
-            case 6: m_deviceModel = "STARBOX F03"; break;
-            case 7: m_deviceModel = "OTHER"; break;
-            case 8: m_deviceModel = "REC BIDIR"; break;
+            case 0: m_deviceModel += " GENERIC"; break;
+            case 1: m_deviceModel += " RADIO TYBOX"; break;
+            case 2: m_deviceModel += " TYBOX BUS"; break;
+            case 3: m_deviceModel += " PACK LABEL"; break;
+            case 4: m_deviceModel += " DELTA 200"; break;
+            case 5: m_deviceModel += " DRIVER RF"; break;
+            case 6: m_deviceModel += " STARBOX F03"; break;
+            case 7: m_deviceModel += " OTHER"; break;
+            case 8: m_deviceModel += " REC BIDIR"; break;
             }
 
             unsigned char area = pFrame->infos.type10.idLsb & 0x000F;
@@ -598,7 +614,7 @@ namespace frames {
             m_deviceName = (boost::format("%1%") % device).str();
             if (pFrame->infos.type11.subtype == 0)
             {
-               m_deviceModel = "Alarm detector/sensor";
+               m_deviceModel +=  "Alarm detector/sensor";
 
                auto batteryLevelKeyword = boost::make_shared<yApi::historization::CBatteryLevel>("battery");
                batteryLevelKeyword->set((pFrame->infos.type11.qualifier & 0x0004) == 0 ? 100 : 0);
@@ -614,7 +630,7 @@ namespace frames {
             }
             else
             {
-               m_deviceModel = "Alarm remote control";
+               m_deviceModel += " Alarm remote control";
 
                auto remoteControlKeyword = boost::make_shared<specificHistorizers::CType11State>("remoteControl");
                remoteControlKeyword->set(specificHistorizers::EType11StateValues((int)pFrame->infos.type11.qualifier));

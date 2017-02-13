@@ -14,9 +14,8 @@ namespace shared
       public:
          //--------------------------------------------------------------
          /// \brief	            Constructor
-         /// \param[in] os       Log target
          //--------------------------------------------------------------
-         explicit CBufferLogger(std::ostream& os);
+         explicit CBufferLogger();
 
          //--------------------------------------------------------------
          /// \brief	            Destructor
@@ -28,10 +27,7 @@ namespace shared
          void logSent(const CByteBuffer& data) override;
          // [END] IBufferLogger implementation
 
-         static std::string byteBufferToHexString(const CByteBuffer& data);
-
-      private:
-         std::ostream& m_os;
+         static std::string msgToString(const CByteBuffer& data);
       };
    }
 } // namespace shared::communication

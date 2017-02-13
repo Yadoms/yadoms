@@ -1,23 +1,24 @@
-package toPlugin;
+syntax = "proto3";
+package plugin_IPC.toPlugin;
 
 message Information {
-	required string type = 1;
-	required string version = 2;
-	required string author = 3;
-	required string url = 4;
-	required string identity = 5;
-	required string toString = 6;
-	required bool supportedOnThisPlatform = 7;
-	required bool supportManuallyCreatedDevice = 8;
-	required string packageFileContent = 9;
-	required string path = 10;
-	required bool supportDeviceRemovedNotification = 11;
-	optional string logLevel = 12;
+	string type = 1;
+	string version = 2;
+	string author = 3;
+	string url = 4;
+	string identity = 5;
+	string toString = 6;
+	bool supportedOnThisPlatform = 7;
+	bool supportManuallyCreatedDevice = 8;
+	string packageFileContent = 9;
+	string path = 10;
+	bool supportDeviceRemovedNotification = 11;
 }
 
 message Init {
-	required Information pluginInformation = 1;
-	required string dataPath = 2;
-	required string logFile = 3;
+	Information pluginInformation = 1;
+	string dataPath = 2;
+	string logFile = 3;
+	string logLevel = 4;
 }
 

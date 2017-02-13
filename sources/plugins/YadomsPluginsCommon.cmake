@@ -2,10 +2,10 @@
 #
 
 MACRO(PLUGIN_SOURCES _targetName)
-   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${youroutputdirectory}/plugins/${_targetName} )
+   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${YADOMS_OUTPUT_DIR}/plugins/${_targetName} )
    foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
        string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
-       set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG}/plugins/${_targetName} )
+       set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${YADOMS_OUTPUT_DIR}/${OUTPUTCONFIG}/plugins/${_targetName} )
    endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
    
    FILE(GLOB TRANSLATION_FILES locales/*)
@@ -51,7 +51,6 @@ MACRO(PLUGIN_LINK _targetName)
       ${LIBS}
       ${CMAKE_DL_LIBS}
       ${PROTOBUF_LIBRARIES}
-      ${plugin_IPC_LIBRARY}
       ${ARGN}
       )
 	

@@ -12,7 +12,7 @@ namespace shared
          {
             
             CSignalPower::CSignalPower(const std::string& keywordName, const EMeasureType& measureType, typeInfo::CIntTypeInfo& additionalInfo)
-               : CSingleHistorizableData<int>(  keywordName, CStandardCapacities::SignalPower, EKeywordAccessMode::kGet, 0, measureType, additionalInfo)
+               : CSingleHistorizableData<int>(  keywordName, CStandardCapacities::SignalPower(), EKeywordAccessMode::kGet, 0, measureType, additionalInfo)
             {
             }
 

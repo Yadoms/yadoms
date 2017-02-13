@@ -11,7 +11,7 @@ namespace shared
          namespace historization
          {
             CTamper::CTamper(const std::string& keywordName, const EKeywordAccessMode& accessMode, typeInfo::CBoolTypeInfo &ti)
-               : CSingleHistorizableData<bool>(keywordName, CStandardCapacities::Tamper, accessMode, false, EMeasureType::kAbsolute, ti)
+               : CSingleHistorizableData<bool>(keywordName, CStandardCapacities::Tamper(), accessMode, false, EMeasureType::kAbsolute, ti)
             {
             }
 

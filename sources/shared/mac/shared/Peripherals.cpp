@@ -35,7 +35,7 @@ CPeripherals::~CPeripherals()
 {
 }
 
-const boost::shared_ptr<CPeripherals::SerialPortsMap> CPeripherals::getSerialPorts()
+boost::shared_ptr<CPeripherals::SerialPortsMap> CPeripherals::getSerialPorts()
 {
    boost::shared_ptr<CPeripherals::SerialPortsMap> serialPorts(new CPeripherals::SerialPortsMap);
    

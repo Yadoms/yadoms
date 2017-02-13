@@ -2,7 +2,6 @@
 #include <shared/event/EventHandler.hpp>
 #include <shared/Export.h>
 #include "IReceiveBufferHandler.h"
-#include "IBufferLogger.h"
 #include "Buffer.hpp"
 
 namespace shared

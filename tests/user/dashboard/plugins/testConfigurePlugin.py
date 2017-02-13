@@ -15,10 +15,11 @@ class ConfigurePlugin(unittest.TestCase):
    """Configure plugin test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.deploy('OneFakePlugin')
       config.deploy("withDeveloperMode")
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Firefox()
+      self.browser = webdriver.Chrome()
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       
@@ -47,7 +48,7 @@ class ConfigurePlugin(unittest.TestCase):
       pluginDatas = dashboard.plugins.getPluginDatas(pluginsTable, pluginNumber)
       self.assertTrue(tools.waitUntil(lambda: dashboard.plugins.getPluginName(pluginsTable, pluginNumber) == pluginNewName))
       self.assertEqual(dashboard.plugins.getPluginState(pluginsTable, pluginNumber), dashboard.plugins.PluginState.Running)
-      self.assertTrue(dashboard.plugins.getPluginAutoStart(pluginsTable, pluginNumber))
+      self.assertTrue(dashboard.plugins.getPluginAutoStartState(pluginsTable, pluginNumber))
       
       
    def tearDown(self):

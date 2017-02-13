@@ -20,10 +20,11 @@ class ShowKeywords(unittest.TestCase):
    """Show keywords device test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.deploy('OneFakePlugin')
       config.deploy("withDeveloperMode")
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Firefox()
+      self.browser = webdriver.Chrome()
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       
@@ -48,7 +49,7 @@ class ShowKeywords(unittest.TestCase):
       keywords = dashboard.devices.getKeywords(devicesTable)
 
       print '  Wait for first acquisition'
-      assert dashboard.devices.getKeywordTextValue(keywords[0]) is not None
+      tools.waitUntil(lambda: dashboard.devices.getKeywordTextValue(keywords[0]))
 
       print '    Check Battery data'
       item = keywords[0]

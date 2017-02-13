@@ -15,7 +15,6 @@
 #include <shared/plugin/yPluginApi/IDeviceCommand.h>
 #include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include <shared/plugin/yPluginApi/historization/PluginState.h>
-#include "InstanceRemover.h"
 #include <IPathProvider.h>
 #include <server/communication/callback/ISynchronousCallback.h>
 #include <shared/ILocation.h>
@@ -119,11 +118,8 @@ namespace pluginSystem
       boost::shared_ptr<IInstance> getRunningInstance(int id) const;
 
       //--------------------------------------------------------------
-      /// \brief           Get the instance configuration
-      /// \param [in] id   Instance Id
-      /// \param [in] newConfiguration   The instance new configuration
-      /// \throw           CNotSupported if request to apply unsupported modifications
-      /// \throw           CException if fails
+      /// \brief           Update instance data
+      /// \param [in] newData   The new data
       //--------------------------------------------------------------
       void updateInstance(const database::entities::CPlugin& newData);
 
@@ -190,7 +186,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief                 Post an extra command to a device on a specific plugin
       /// \param [in] id         Plugin instance Id
-      /// \param [in] command    The command to post
+      /// \param [in] query      The query to post
       //--------------------------------------------------------------
       void postExtraQuery(int id,
                           boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query) const;
@@ -272,7 +268,7 @@ namespace pluginSystem
       ///\throw               CPluginException if timeout
       //-----------------------------------------------------
       void stopInstanceAndWaitForStopped(int id);
-      void stopInstanceAndWaitForStoppedThreaded(int id);
+      void onPluginStopped(int pluginInstanceId);
 
       void startInternalPlugin();
       void stopInternalPlugin();
@@ -314,16 +310,10 @@ namespace pluginSystem
       //--------------------------------------------------------------
       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> m_dataAccessLayer;
 
-      //-----------------------------------------------------
-      ///\brief         Instance remover when instance is stopped
-      //-----------------------------------------------------
-      boost::shared_ptr<CInstanceRemover> m_instanceRemover;
-
       //--------------------------------------------------------------
       /// \brief			Map of all running instances, and its mutex (key are plugin instance id)
       //--------------------------------------------------------------
-      typedef std::map<int, boost::shared_ptr<IInstance>> PluginInstanceMap;
-      PluginInstanceMap m_runningInstances;
+      std::map<int, boost::shared_ptr<IInstance>> m_runningInstances;
       mutable boost::recursive_mutex m_runningInstancesMutex;
    };
 } // namespace pluginSystem

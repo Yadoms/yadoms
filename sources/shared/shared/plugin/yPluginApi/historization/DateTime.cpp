@@ -15,7 +15,7 @@ namespace shared
                                  const EKeywordAccessMode& accessMode,
                                  const EMeasureType& measureType)
                : CSingleHistorizableData<boost::posix_time::ptime>(keywordName,
-                                                                   CStandardCapacities::DateTime,
+                                                                   CStandardCapacities::DateTime(),
                                                                    accessMode,
                                                                    currentTime::Provider().now(),
                                                                    measureType)

@@ -20,10 +20,10 @@ public:
    /// \param[in] suspendDelay            Mute delay, used to filter messages
    /// \param[in] logger                  logger in developer mode
    //--------------------------------------------------------------
-	CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
-								  int receiveDataEventId,
-								  const boost::posix_time::time_duration suspendDelay,
-								  boost::shared_ptr<shared::communication::IBufferLogger> logger);
+   CTeleInfoReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
+                                 int receiveDataEventId,
+                                 const boost::posix_time::time_duration suspendDelay,
+                                 boost::shared_ptr<shared::communication::IBufferLogger> logger);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
@@ -47,7 +47,7 @@ protected:
    /// \param[in] frame             the frame to decode
    /// \return                      A map containing labels/values
    //--------------------------------------------------------------
-   static  boost::shared_ptr<std::map<std::string, std::string>> getMessages(boost::shared_ptr<const std::vector<unsigned char>> frame);
+   static boost::shared_ptr<std::map<std::string, std::string>> getMessages(boost::shared_ptr<const std::vector<unsigned char>> frame);
 
    //--------------------------------------------------------------
    /// \brief	                     Check if the CRC is ok
@@ -89,3 +89,4 @@ private:
    boost::posix_time::ptime m_nextSendMessageDate;
    const boost::posix_time::time_duration m_suspendDelay;
 };
+

@@ -34,6 +34,5 @@ namespace shared
          //--------------------------------------------------------------
          virtual const std::vector<std::string>& args() const = 0;
       };
-
    }
 } // namespace shared::process

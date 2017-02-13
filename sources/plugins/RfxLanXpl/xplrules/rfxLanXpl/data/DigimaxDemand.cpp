@@ -16,14 +16,12 @@ namespace xplrules
          );
 
 
-         const shared::plugin::yPluginApi::CStandardCapacity& DigimaxDemandCapacity = shared::plugin::yPluginApi::CStandardCapacity("digimax_demand",
-                                                                                                                                    shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                                                                    shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(DigimaxDemandCapacity, "digimax_demand", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CDigimaxDemand::CDigimaxDemand(const std::string& keywordName)
             : CSingleHistorizableData<EDigimaxDemand>(keywordName,
-                                                      DigimaxDemandCapacity,
+                                                      DigimaxDemandCapacity(),
                                                       shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
          {
          }

@@ -13,7 +13,7 @@
 
 
 namespace dateTime {
-   
+
    Poco::Timespan CDateTimeNotifier::m_oneMinuteOffset(0, 0, 1, 0, 0);
 
    CDateTimeNotifier::CDateTimeNotifier()
@@ -24,15 +24,16 @@ namespace dateTime {
 
    CDateTimeNotifier::~CDateTimeNotifier()
    {
-      //stop();
+      stop();
    }
-   
+
    void CDateTimeNotifier::start()
    {
       //iniitalize the current minute (with second=0 and millisecond=0)
       Poco::DateTime now;
       m_nextMinute = Poco::DateTime(now.year(), now.month(), now.day(), now.hour(), now.minute());
       //schedule next minute
+      m_dateTimeTimer = boost::make_shared<Poco::Util::Timer>();
       scheduleOnNextMinute();
    }
 
@@ -47,7 +48,7 @@ namespace dateTime {
       m_nextMinute += m_oneMinuteOffset;//+1minute
 
       YADOMS_LOG(information) << "DateTimeNotifier : schedule the task @" << Poco::DateTimeFormatter::format(Poco::LocalDateTime(m_nextMinute), "%H:%M:%S.%i");
-      m_dateTimeTimer.schedule(m_dateTimeTask, m_nextMinute.timestamp());
+      m_dateTimeTimer->schedule(m_dateTimeTask, m_nextMinute.timestamp());
    }
 
 
@@ -76,7 +77,7 @@ namespace dateTime {
 
    void CDateTimeNotifier::stop()
    {
-      m_dateTimeTimer.cancel(true);
+      m_dateTimeTimer.reset();
       if(m_dateTimeTask)
          m_dateTimeTask->cancel();
    }

@@ -27,6 +27,9 @@ portions of this file.
 */
 
 /*
+SDK version 9.13
+	BlindsT13 - Screenline added
+
 SDK version 9.12
 	Thermostat4 updated
 
@@ -507,6 +510,7 @@ SDK version 4.9
 #define sTypeAvantek 0x0E
 #define sTypeIT 0x0F
 #define sTypeMDREMOTE108 0x10
+#define sTypeKangtai 0x11
 
 #define light5_sOff 0x0
 #define light5_sOn 0x1
@@ -647,6 +651,7 @@ SDK version 4.9
 #define sTypeBlindsT10 0xA	//Dolat DLM-1
 #define sTypeBlindsT11 0xB	//ASP
 #define sTypeBlindsT12 0xC	//Confexx
+#define sTypeBlindsT13 0xD	//Screenline
 
 #define blinds_sOpen 0x0
 #define blinds_sClose 0x1
@@ -811,8 +816,8 @@ SDK version 4.9
 #define thermostat3_sStop 0x6
 
 #define pTypeThermostat4 0x43
-#define sTypeMCZ1 0x0      //MCZ 1 fan model
-#define sTypeMCZ2 0x1      //MCZ 2 fan model
+#define sTypeMCZ1 0x0	//MCZ 1 fan model
+#define sTypeMCZ2 0x1	//MCZ 2 fan model
 #define sTypeMCZ3 0x2	//MCZ 3 fan model
 #define thermostat4_sOff 0x0
 #define thermostat4_sManual 0x1
@@ -1078,15 +1083,15 @@ typedef union tRBUF {
 		BYTE	ATIenabled : 1;
 		BYTE	VISONICenabled : 1;
 
-      //BYTE	msg6;
-      BYTE    KEELOQenabled : 1;
-      BYTE    HCEnabled : 1;
-      BYTE    MSG6Reserved2 : 1;
-      BYTE    MSG6Reserved3 : 1;
-      BYTE    MSG6Reserved4 : 1;
-      BYTE    MSG6Reserved5 : 1;
-      BYTE    MSG6Reserved6 : 1;
-      BYTE    MSG6Reserved7 : 1;
+        //BYTE	msg6;
+        BYTE    KEELOQenabled : 1;
+		BYTE    HCEnabled : 1;
+        BYTE    MSG6Reserved2 : 1;
+        BYTE    MSG6Reserved3 : 1;
+        BYTE    MSG6Reserved4 : 1;
+        BYTE    MSG6Reserved5 : 1;
+        BYTE    MSG6Reserved6 : 1;
+        BYTE    MSG6Reserved7 : 1;
 #endif
 
 		BYTE	msg7;

@@ -204,8 +204,6 @@ void CEnOcean::loadAllDevices()
 
 void CEnOcean::createConnection()
 {
-   m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
-
    // Create the port instance
    m_port = CFactory::constructPort(m_configuration);
 
@@ -226,6 +224,7 @@ void CEnOcean::createConnection()
 
 void CEnOcean::destroyConnection()
 {
+   m_port->setReceiveBufferHandler(boost::shared_ptr<shared::communication::IReceiveBufferHandler>());
    m_port.reset();
 }
 
@@ -305,14 +304,14 @@ void CEnOcean::protocolErrorProcess()
    // Retry full connection
    processUnConnectionEvent();
    m_api->getEventHandler().createTimer(kProtocolErrorRetryTimer,
-                                        shared::event::CEventTimer::kOneShot
-                                        , boost::posix_time::seconds(30));
+                                        shared::event::CEventTimer::kOneShot,
+                                        boost::posix_time::seconds(30));
 }
 
 void CEnOcean::processUnConnectionEvent()
 {
    YADOMS_LOG(information) << "EnOcean connection was lost" ;
-   m_api->setPluginState(yApi::historization::EPluginState::kError, "connectionFailed");
+   m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionFailed");
 
    destroyConnection();
 }
@@ -506,7 +505,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
 
       YADOMS_LOG(information) << "Received message for id#" << deviceId << " : " ;
       for (const auto& kw: keywordsToHistorize)
-         YADOMS_LOG(information) << "  - " << kw->getKeyword() << " = " << kw->formatValue() ;;
+      YADOMS_LOG(information) << "  - " << kw->getKeyword() << " = " << kw->formatValue() ;;
 
       m_api->historizeData(deviceId, keywordsToHistorize);
    }
@@ -651,7 +650,7 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
          throw CProtocolException("Unable to send UTE response, timeout waiting acknowledge");
 
       if (returnCode != message::CResponseReceivedMessage::RET_OK)
-         YADOMS_LOG(error) << "TeachIn response not successfully acknowledged : " << returnCode ;
+      YADOMS_LOG(error) << "TeachIn response not successfully acknowledged : " << returnCode ;
    }
 }
 
@@ -720,3 +719,4 @@ void CEnOcean::requestDongleVersion()
    processDongleVersionResponse(response->returnCode(),
                                 message::CDongleVersionResponseReceivedMessage(response));
 }
+

@@ -35,14 +35,14 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
 
       m_keywords.push_back(m_forecast->getHistorizable());
 
-      m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Temperature.getName(),
-                          shared::plugin::yPluginApi::CStandardCapacities::Temperature.getUnit());
-      m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Speed.getName(),
-                          shared::plugin::yPluginApi::CStandardCapacities::Speed.getUnit());
-      m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Humidity.getName(),
-                          shared::plugin::yPluginApi::CStandardCapacities::Humidity.getUnit());
-      m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Rain.getName(),
-                          shared::plugin::yPluginApi::CStandardCapacities::Rain.getUnit());
+      m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Temperature().getName(),
+                          shared::plugin::yPluginApi::CStandardCapacities::Temperature().getUnit());
+      m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Speed().getName(),
+                          shared::plugin::yPluginApi::CStandardCapacities::Speed().getUnit());
+      m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Humidity().getName(),
+                          shared::plugin::yPluginApi::CStandardCapacities::Humidity().getUnit());
+      m_forecast->addUnit(shared::plugin::yPluginApi::CStandardCapacities::Rain().getName(),
+                          shared::plugin::yPluginApi::CStandardCapacities::Rain().getUnit());
 
       if (wuConfiguration.isRainIndividualKeywordsEnabled())
       {

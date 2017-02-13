@@ -4,7 +4,7 @@
 
 namespace plugin_cpp_api
 {
-   CLocation::CLocation(const toPlugin::Location& buffer)
+   CLocation::CLocation(const plugin_IPC::toPlugin::Location& buffer)
       : m_buffer(buffer)
    {
    }

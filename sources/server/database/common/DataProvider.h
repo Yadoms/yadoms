@@ -191,7 +191,7 @@ namespace database
          //--------------------------------------------------------------
          /// \Brief		The maintenance timer
          //--------------------------------------------------------------
-         Poco::Util::Timer m_maintenanceTimer;
+         boost::shared_ptr<Poco::Util::Timer> m_maintenanceTimer;
 
          //--------------------------------------------------------------
          /// \Brief		The maintenance summary computing task
@@ -203,7 +203,7 @@ namespace database
          //--------------------------------------------------------------
          Poco::Util::TimerTask::Ptr m_maintenancePurgeTask;
       };
-   } //namespace common 
-} //namespace database 
+   } //namespace common
+} //namespace database
 
 

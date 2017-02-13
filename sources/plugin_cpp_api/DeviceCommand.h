@@ -1,5 +1,5 @@
 #pragma once
-#include <toPlugin.pb.h>
+#include <plugin_IPC/yadomsToPlugin.pb.h>
 #include <shared/plugin/yPluginApi/IDeviceCommand.h>
 
 
@@ -8,7 +8,7 @@ namespace plugin_cpp_api
    class CDeviceCommand : public shared::plugin::yPluginApi::IDeviceCommand
    {
    public:
-      explicit CDeviceCommand(const toPlugin::DeviceCommand& msg);
+      explicit CDeviceCommand(const plugin_IPC::toPlugin::DeviceCommand& msg);
       virtual ~CDeviceCommand();
 
       // IDeviceCommand Implementation

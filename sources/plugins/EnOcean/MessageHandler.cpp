@@ -42,7 +42,11 @@ bool CMessageHandler::send(message::CEsp3SendPacket& sendMessage,
 
    send(sendMessage);
 
-   return waitAnswer(message::EnOceanAnswerTimeout);
+   auto timeout = waitAnswer(message::EnOceanAnswerTimeout);
+
+   clearHook();
+
+   return timeout;
 }
 
 void CMessageHandler::setHook(boost::function<bool(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> isExpectedMessageFct,
@@ -51,6 +55,14 @@ void CMessageHandler::setHook(boost::function<bool(boost::shared_ptr<const messa
    boost::lock_guard<boost::recursive_mutex> lock(m_hookMutex);
    m_isExpectedMessageHookFct = isExpectedMessageFct;
    m_onReceiveHookFct = onReceiveFct;
+   m_waitAnswerEventHandler.clear();
+}
+
+void CMessageHandler::clearHook()
+{
+   boost::lock_guard<boost::recursive_mutex> lock(m_hookMutex);
+   m_isExpectedMessageHookFct.clear();
+   m_onReceiveHookFct.clear();
    m_waitAnswerEventHandler.clear();
 }
 

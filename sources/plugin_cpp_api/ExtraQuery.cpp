@@ -3,7 +3,7 @@
 
 namespace plugin_cpp_api
 {
-   CExtraQuery::CExtraQuery(const toPlugin::ExtraQuery& msg,
+   CExtraQuery::CExtraQuery(const plugin_IPC::toPlugin::ExtraQuery& msg,
                             boost::function1<void, const shared::CDataContainer&> sucessCallback,
                             boost::function1<void, const std::string&> errorCallback)
       : m_data(msg.query(), shared::CDataContainer(msg.data())),

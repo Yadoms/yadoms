@@ -4,7 +4,7 @@
 
 namespace plugin_cpp_api
 {
-   CBindingQuery::CBindingQuery(const toPlugin::BindingQuery& msg,
+   CBindingQuery::CBindingQuery(const plugin_IPC::toPlugin::BindingQuery& msg,
                                 boost::function1<void, const shared::CDataContainer&> sucessCallback,
                                 boost::function1<void, const std::string&> errorCallback)
       : m_query(msg.query()),
