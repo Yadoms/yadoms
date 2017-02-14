@@ -6,8 +6,9 @@ namespace message
    static const auto EnOceanInterByteTimeout = boost::posix_time::milliseconds(100);
 
    // Timeout when expecting a answer from dongle
-   static const auto EnOceanAnswerTimeout(boost::posix_time::milliseconds(500));
+   static const auto EnOceanAnswerTimeout = boost::posix_time::milliseconds(500);
 
+   // EnOcean Synchronisation byte value
    static const auto SYNC_BYTE_VALUE = 0x55;
 
    enum
@@ -43,11 +44,6 @@ namespace message
 
 
 
-   static std::string deviceIdToString(unsigned int deviceId)
-   {
-      std::stringstream ss;
-      ss << std::setfill('0') << std::setw(8) << std::uppercase << std::hex << deviceId;
-      return ss.str();
-   }
+   std::string deviceIdToString(unsigned int deviceId);
 
 } // namespace message
