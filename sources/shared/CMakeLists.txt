@@ -45,11 +45,17 @@ set(SHARED_LIB_SRC
    shared/communication/FixedSizeReceiveBufferHandler.cpp
    shared/communication/IAsyncPort.h
    shared/communication/IBufferLogger.h
+   shared/communication/IMessageCutter.h
+   shared/communication/IMessagePart.h
    shared/communication/IReceiveBufferHandler.h
    shared/communication/MessageQueueRemover.hpp
    shared/communication/NoBufferLogger.h
    shared/communication/NoBufferLogger.cpp
    shared/communication/PortException.hpp
+   shared/communication/SmallHeaderMessageCutter.h
+   shared/communication/SmallHeaderMessageCutter.cpp
+   shared/communication/SmallHeaderMessagePart.h
+   shared/communication/SmallHeaderMessagePart.cpp
 	
    shared/compression/Extract.h
    shared/compression/Extract.cpp

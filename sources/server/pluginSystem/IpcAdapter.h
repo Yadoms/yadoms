@@ -4,6 +4,7 @@
 #include <plugin_IPC/pluginToYadoms.pb.h>
 #include <plugin_IPC/yadomsToPlugin.pb.h>
 #include "yPluginApiImplementation.h"
+#include <shared/shared/communication/IMessageCutter.h>
 
 namespace pluginSystem
 {
@@ -134,9 +135,9 @@ namespace pluginSystem
       mutable boost::recursive_mutex m_sendMutex;
 
       //-----------------------------------------------------
-      ///\brief               The message queue buffer for sending, localy used but defined here to be allocated only once
+      ///\brief               The message cutter, to manage oversized messages
       //-----------------------------------------------------
-      boost::shared_ptr<unsigned char[]> m_sendBuffer;//TODO virer ?
+      boost::shared_ptr<shared::communication::IMessageCutter> m_messageCutter;
 
       boost::thread m_messageQueueReceiveThread;
 
