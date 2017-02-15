@@ -1,10 +1,8 @@
 #pragma once
-
 #include "IPluginContext.h"
 #include "plugin_cpp_api/IPlugin.h"
 #include "ICommandLine.h"
 #include "ApiImplementation.h"
-#include <shared/communication/IMessageAssembler.h>
 
 namespace plugin_cpp_api
 {

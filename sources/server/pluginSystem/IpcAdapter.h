@@ -4,7 +4,7 @@
 #include <plugin_IPC/pluginToYadoms.pb.h>
 #include <plugin_IPC/yadomsToPlugin.pb.h>
 #include "yPluginApiImplementation.h"
-#include <shared/shared/communication/IMessageCutter.h>
+#include <shared/communication/IMessageCutter.h>
 
 namespace pluginSystem
 {

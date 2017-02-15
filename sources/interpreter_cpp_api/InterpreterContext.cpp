@@ -6,6 +6,7 @@
 #include <shared/currentTime/Local.h>
 #include <Poco/Debugger.h>
 #include <shared/Log.h>
+#include <shared/communication/SmallHeaderMessageAssembler.h>
 
 
 namespace yApi = shared::script::yInterpreterApi;
@@ -172,6 +173,7 @@ namespace interpreter_cpp_api
       auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue->get_max_msg_size()));
       size_t messageSize;
       unsigned int messagePriority;
+      const auto messageAssembler = boost::make_shared<shared::communication::SmallHeaderMessageAssembler>(m_receiveMessageQueue->get_max_msg_size());
 
       try
       {
@@ -190,7 +192,16 @@ namespace interpreter_cpp_api
                boost::this_thread::interruption_point();
 
                if (messageWasReceived)
-                  api->onReceive(message, messageSize);
+               {
+                  messageAssembler->appendPart(message,
+                                               messageSize);
+
+                  if (messageAssembler->isCompleted())
+                  {
+                     api->onReceive(messageAssembler->message(),
+                                    messageAssembler->messageSize());
+                  }
+               }
             }
             catch (shared::exception::CInvalidParameter& ex)
             {

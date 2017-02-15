@@ -8,7 +8,7 @@
 #include "shared/exception/EmptyResult.hpp"
 #include <plugin_IPC/yadomsToPlugin.pb.h>
 #include <shared/communication/SmallHeaderMessageCutter.h>
-#include <shared/shared/communication/SmallHeaderMessageAssembler.h>
+#include <shared/communication/SmallHeaderMessageAssembler.h>
 
 namespace pluginSystem
 {
