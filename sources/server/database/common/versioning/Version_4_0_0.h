@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IVersionUpgrade.h"
+#include "Version_3_0_0.h"
 #include "database/IDatabaseRequester.h"
 
 
@@ -11,33 +11,29 @@ namespace database
       namespace versioning
       {
          //
-         /// \brief Database version 1.0 update manager
+         /// \brief Database version 4.0 update manager
          //
-         class CVersion_1_0_0 : public IVersionUpgrade
+         class CVersion_4_0_0 : public CVersion_3_0_0
          {
          public:
             //
             /// \brief Constructor
             //
-            CVersion_1_0_0();
+            CVersion_4_0_0();
 
             //
             /// \brief Destructor
             //
-            virtual ~CVersion_1_0_0();
+            virtual ~CVersion_4_0_0();
 
             // ISQLiteVersionUpgrade implementation
             void checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& pRequester,
                                  const shared::versioning::CVersion& currentVersion) override;
             // [END] ISQLiteVersionUpgrade implementation
 
-         protected:
-            static void updateDatabaseVersion(const boost::shared_ptr<IDatabaseRequester> pRequester,
-                                              const shared::versioning::CVersion& newVersion);
-
          private:
             //-----------------------------------
-            /// \brief     The version (1.0.0.0)
+            /// \brief     The version (4.0.0)
             //-----------------------------------
             static const shared::versioning::CVersion Version;
 
@@ -45,7 +41,7 @@ namespace database
             /// \brief     Create the database (when tables are not found)
             ///\param [in] pRequester : database requester object
             //-----------------------------------
-            static void CreateDatabase(const boost::shared_ptr<IDatabaseRequester>& pRequester);
+            static void UpdateFrom3_0_0(const boost::shared_ptr<IDatabaseRequester>& pRequester);
          };
       } //namespace versioning
    } //namespace common
