@@ -19,8 +19,8 @@ namespace shared
          virtual ~SmallHeaderMessageCutter();
 
          // IMessageCutter Implementation
-         boost::shared_ptr<std::vector<boost::shared_ptr<IMessagePart>>> cut(boost::shared_ptr<unsigned char[]> message,
-                                                                             size_t messageSize) const override;
+         boost::shared_ptr<std::vector<boost::shared_ptr<IMessageCutterPart>>> cut(boost::shared_ptr<unsigned char[]> message,
+                                                                                   size_t messageSize) const override;
          // [END] IMessageCutter Implementation
 
       private:

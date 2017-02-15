@@ -1,14 +1,14 @@
 #include "stdafx.h"
-#include "SmallHeaderMessagePart.h"
+#include "SmallHeaderMessageCutterPart.h"
 
 namespace shared
 {
    namespace communication
    {
-      SmallHeaderMessagePart::SmallHeaderMessagePart(unsigned char partNumber,
-                                                     unsigned char partCount,
-                                                     const unsigned char* usefulData,
-                                                     size_t usefulSize)
+      SmallHeaderMessageCutterPart::SmallHeaderMessageCutterPart(unsigned char partNumber,
+                                                                 unsigned char partCount,
+                                                                 const unsigned char* usefulData,
+                                                                 size_t usefulSize)
          : m_header(partNumber,
                     partCount),
            m_usefulData(usefulData),
@@ -17,28 +17,28 @@ namespace shared
          formatMessage();
       }
 
-      SmallHeaderMessagePart::~SmallHeaderMessagePart()
+      SmallHeaderMessageCutterPart::~SmallHeaderMessageCutterPart()
       {
       }
 
-      size_t SmallHeaderMessagePart::headerSize()
+      size_t SmallHeaderMessageCutterPart::headerSize()
       {
-         return Header::size();
+         return SmallHeader::size();
       }
 
-      const unsigned char* SmallHeaderMessagePart::formattedMessage() const
+      const unsigned char* SmallHeaderMessageCutterPart::formattedMessage() const
       {
          return m_formattedMessage.get();
       }
 
-      size_t SmallHeaderMessagePart::formattedSize() const
+      size_t SmallHeaderMessageCutterPart::formattedSize() const
       {
          return m_formattedSize;
       }
 
-      void SmallHeaderMessagePart::formatMessage()
+      void SmallHeaderMessageCutterPart::formatMessage()
       {
-         m_formattedSize = sizeof(Header) + m_usefulSize;
+         m_formattedSize = headerSize() + m_usefulSize;
          m_formattedMessage = boost::make_shared<unsigned char[]>(m_formattedSize);
 
          auto index = 0;

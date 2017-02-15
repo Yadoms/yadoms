@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/Export.h>
-#include "IMessagePart.h"
+#include "IMessageCutterPart.h"
 
 namespace shared
 {
@@ -16,8 +16,8 @@ namespace shared
          {
          }
 
-         virtual boost::shared_ptr<std::vector<boost::shared_ptr<IMessagePart>>> cut(boost::shared_ptr<unsigned char[]> message,
-                                                                                     size_t messageSize) const = 0;
+         virtual boost::shared_ptr<std::vector<boost::shared_ptr<IMessageCutterPart>>> cut(boost::shared_ptr<unsigned char[]> message,
+                                                                                           size_t messageSize) const = 0;
       };
    }
 } // namespace shared::communication

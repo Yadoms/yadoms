@@ -8,10 +8,10 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	Part of a SmallHeaderMessageCutter message
       //--------------------------------------------------------------
-      class YADOMS_SHARED_EXPORT IMessagePart
+      class YADOMS_SHARED_EXPORT IMessageCutterPart
       {
       public:
-         virtual ~IMessagePart()
+         virtual ~IMessageCutterPart()
          {
          }
 
