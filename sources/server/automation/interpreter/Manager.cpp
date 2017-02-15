@@ -187,7 +187,7 @@ namespace automation
          if (interpreter != m_loadedInterpreters.end() && interpreter->second->isAvalaible())
             return interpreter->second;
 
-         throw std::runtime_error("Interpreter " + interpreterType + " not found ");
+         throw std::runtime_error("Interpreter " + interpreterType + " not found");
       }
 
       std::string CManager::getScriptContent(const std::string& interpreterType,

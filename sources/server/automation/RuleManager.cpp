@@ -136,6 +136,18 @@ namespace automation
          recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }
+      catch (std::exception& e)
+      {
+         const auto error((boost::format("Failed to start rule %1% : %2%") % ruleId % e.what()).str());
+         recordRuleStopped(ruleId, error);
+         throw CRuleException(error);
+      }
+      catch (...)
+      {
+         const auto error((boost::format("Failed to start rule %1% : unknown error") % ruleId).str());
+         recordRuleStopped(ruleId, error);
+         throw CRuleException(error);
+      }
    }
 
    void CRuleManager::stopRules()
