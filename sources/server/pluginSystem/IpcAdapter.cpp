@@ -8,11 +8,12 @@
 #include "shared/exception/EmptyResult.hpp"
 #include <plugin_IPC/yadomsToPlugin.pb.h>
 #include <shared/communication/SmallHeaderMessageCutter.h>
+#include <shared/shared/communication/SmallHeaderMessageAssembler.h>
 
 namespace pluginSystem
 {
    const size_t CIpcAdapter::m_maxMessages(100);
-   const size_t CIpcAdapter::m_maxMessageSize(1000);
+   const size_t CIpcAdapter::m_maxMessageSize(100000);
 
    CIpcAdapter::CIpcAdapter(boost::shared_ptr<CYPluginApiImplementation> yPluginApi)
       : m_pluginApi(yPluginApi),
@@ -60,6 +61,8 @@ namespace pluginSystem
          auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue.get_max_msg_size()));
          size_t messageSize;
          unsigned int messagePriority;
+         const auto messageAssembler = boost::make_shared<shared::communication::SmallHeaderMessageAssembler>(m_receiveMessageQueue.get_max_msg_size());
+
          while (true)
          {
             try
@@ -75,7 +78,16 @@ namespace pluginSystem
                boost::this_thread::interruption_point();
 
                if (messageWasReceived)
-                  processMessage(message, messageSize);
+               {
+                  messageAssembler->appendPart(message,
+                                               messageSize);
+
+                  if (messageAssembler->isCompleted())
+                  {
+                     processMessage(messageAssembler->message(),
+                                    messageAssembler->messageSize());
+                  }
+               }
             }
             catch (std::exception& ex)
             {
