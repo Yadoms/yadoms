@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ApiImplementation.h"
 #include <shared/DataContainer.h>
+#include <shared/communication/SmallHeaderMessageCutter.h>
+#include <shared/communication/SmallHeaderMessageAssembler.h>
 
 shared::script::yScriptApi::IYScriptApi* createScriptApiInstance(const std::string& yScriptApiAccessorId)
 {
@@ -25,7 +27,8 @@ CYScriptApiImplementation::CYScriptApiImplementation(const std::string& yScriptA
       const auto receiveMessageQueueId(yScriptApiAccessorId + ".script_IPC.toScript");
       m_sendMessageQueue = boost::make_shared<boost::interprocess::message_queue>(boost::interprocess::open_only, sendMessageQueueId.c_str());
       m_receiveMessageQueue = boost::make_shared<boost::interprocess::message_queue>(boost::interprocess::open_only, receiveMessageQueueId.c_str());
-      m_mqBuffer = boost::make_shared<unsigned char[]>(m_sendMessageQueue->get_max_msg_size());
+      m_messageCutter = boost::make_shared<shared::communication::SmallHeaderMessageCutter>(m_sendMessageQueue->get_max_msg_size(),
+                                                                                            m_sendMessageQueue->get_max_msg());
    }
    catch (boost::interprocess::interprocess_exception& ex)
    {
@@ -47,19 +50,31 @@ void CYScriptApiImplementation::sendRequest(const script_IPC::toYadoms::msg& req
 {
    try
    {
-      if (!request.IsInitialized())
-         throw std::overflow_error((boost::format("CYScriptApiImplementation::sendRequest \"%1%\" : request is not fully initialized") % request.descriptor()->full_name()).str());
-
-      if (request.ByteSize() > static_cast<int>(m_sendMessageQueue->get_max_msg_size()))
-         throw std::overflow_error((boost::format("CYScriptApiImplementation::sendRequest \"%1%\" : request is too big") % request.descriptor()->full_name()).str());
-
       boost::lock_guard<boost::recursive_mutex> lock(m_sendMutex);
-      if (!request.SerializeToArray(m_mqBuffer.get(), request.GetCachedSize()))
-         throw std::overflow_error((boost::format("CYScriptApiImplementation::sendRequest \"%1%\" : fail to serialize request (too big ?)") % request.descriptor()->full_name()).str());
 
-      m_sendMessageQueue->send(m_mqBuffer.get(),
-                               request.GetCachedSize(),
-                               0);
+      if (!m_sendMessageQueue || !m_messageCutter)
+         throw std::runtime_error((boost::format("CYScriptApiImplementation::send \"%1%\", script API not ready to send message") % request.descriptor()->full_name()).str());
+
+      if (!request.IsInitialized())
+         throw std::runtime_error((boost::format("CYScriptApiImplementation::send \"%1%\", request is not fully initialized") % request.descriptor()->full_name()).str());
+
+      const auto pbMessageSize = request.ByteSize();
+      const auto serializedMessage = boost::make_shared<unsigned char[]>(pbMessageSize);
+      if (!request.SerializeWithCachedSizesToArray(serializedMessage.get()))
+         throw std::runtime_error((boost::format("CYScriptApiImplementation::send \"%1%\", fail to serialize request (too big ?)") % request.descriptor()->full_name()).str());
+
+      const auto cuttedMessage = m_messageCutter->cut(serializedMessage,
+                                                      pbMessageSize);
+
+      if (!cuttedMessage->empty())
+      {
+         for (const auto& part : *cuttedMessage)
+         {
+            m_sendMessageQueue->send(part->formattedMessage(),
+                                     part->formattedSize(),
+                                     0);
+         }
+      }
    }
    catch (boost::interprocess::interprocess_exception& ex)
    {
@@ -73,16 +88,24 @@ void CYScriptApiImplementation::receiveAnswer(script_IPC::toScript::msg& answer)
    auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue->get_max_msg_size()));
    size_t messageSize;
    unsigned int messagePriority;
+   const auto messageAssembler = boost::make_shared<shared::communication::SmallHeaderMessageAssembler>(m_receiveMessageQueue->get_max_msg_size());
 
-   m_receiveMessageQueue->receive(message.get(),
-                                  m_receiveMessageQueue->get_max_msg_size(),
-                                  messageSize,
-                                  messagePriority);
+   while (!messageAssembler->isCompleted())
+   {
+      m_receiveMessageQueue->receive(message.get(),
+                                     m_receiveMessageQueue->get_max_msg_size(),
+                                     messageSize,
+                                     messagePriority);
 
-   if (messageSize < 1)
-      throw std::runtime_error("yScriptApiWrapper::receiveAnswer : received Yadoms answer is zero length");
+      messageAssembler->appendPart(message,
+                                   messageSize);
+   }
 
-   if (!answer.ParseFromArray(message.get(), messageSize))
+   if (messageAssembler->messageSize() < 1)
+      throw std::runtime_error("CYScriptApiImplementation::receiveAnswer : received Yadoms answer is zero length");
+
+   if (!answer.ParseFromArray(messageAssembler->message().get(),
+                              messageAssembler->messageSize()))
       throw shared::exception::CInvalidParameter("message : fail to parse received answer data into protobuf format");
 }
 
@@ -371,3 +394,4 @@ std::string CYScriptApiImplementation::getKeywordDeviceName(int keywordId) const
 
    return answer.getkeyworddevicename().devicename();
 }
+
