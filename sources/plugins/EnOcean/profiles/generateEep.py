@@ -421,7 +421,7 @@ with codecs.open(headerPath, 'w', 'utf_8') as cppHeaderFile:
    cppHeaderFile.write('#pragma once\n')
    cppHeaderFile.write('#include <boost/dynamic_bitset.hpp>\n')
    cppHeaderFile.write('#include <shared/plugin/yPluginApi/IYPluginApi.h>\n')
-   cppHeaderFile.write('#include "IRorg.h"\n')
+   cppHeaderFile.write('#include "../IRorg.h"\n')
    cppHeaderFile.write('\n')
    cppHeaderFile.write('namespace yApi = shared::plugin::yPluginApi;\n')
    cppHeaderFile.write('\n')
@@ -438,11 +438,11 @@ with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
    cppSourceFile.write('#include "' + os.path.basename(headerPath) + '"\n')
    cppSourceFile.write('#include <shared/plugin/yPluginApi/StandardUnits.h>\n')
    cppSourceFile.write('\n')
-   cppSourceFile.write('#include "bitsetHelpers.hpp"\n')
-   cppSourceFile.write('#include "../ProfileHelper.h"\n')
+   cppSourceFile.write('#include "../bitsetHelpers.hpp"\n')
+   cppSourceFile.write('#include "../../ProfileHelper.h"\n')
    cppSourceFile.write('\n')
    for hardCodedFile in hardCodedProfiles.getProfileHardCodedFiles():
-      cppSourceFile.write('#include "' + os.path.join('hardCoded', hardCodedFile) + '"\n')
+      cppSourceFile.write('#include "../' + os.path.join('hardCoded', hardCodedFile) + '"\n')
    cppSourceFile.write('\n')
 
    for oneType in cppTypes:

@@ -92,8 +92,8 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
 
    profiles/generated-manufacturers.cpp
    profiles/generated-manufacturers.h
-   profiles/generated-eep.cpp
-   profiles/generated-eep.h
+   profiles/generated/eep.cpp
+   profiles/generated/eep.h
    
    profiles/IRorg.h
    profiles/IFunc.h
@@ -152,6 +152,7 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    )
 source_group(profiles profiles/*.*)
 source_group(profiles\\hardCoded profiles/hardCoded/*.*)
+source_group(profiles\\generated profiles/generated/*.*)
 
 add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-manufacturers.h
                           ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-manufacturers.cpp
@@ -160,10 +161,10 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-manufac
                            ${PYTHON_GENERATOR_FILES} 
                    COMMENT "Generating Manufacturers source code...")
 
-add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-eep.h
-                          ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-eep.cpp
+add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated/eep.h
+                          ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated/eep.cpp
                           ${CMAKE_CURRENT_SOURCE_DIR}/package.json
-                   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateEep.py ${CMAKE_CURRENT_SOURCE_DIR}/profiles/eep${EEP_VERSION}.xml ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-eep.h ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-eep.cpp ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json ${CMAKE_CURRENT_SOURCE_DIR}/package.json  ${CMAKE_CURRENT_SOURCE_DIR}/locales
+                   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateEep.py ${CMAKE_CURRENT_SOURCE_DIR}/profiles/eep${EEP_VERSION}.xml ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated/eep.h ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated/eep.cpp ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json ${CMAKE_CURRENT_SOURCE_DIR}/package.json  ${CMAKE_CURRENT_SOURCE_DIR}/locales
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/profiles/eep${EEP_VERSION}.xml
                            ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json
                            ${PYTHON_GENERATOR_FILES}
