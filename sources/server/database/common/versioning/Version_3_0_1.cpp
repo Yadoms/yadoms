@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Version_4_0_0.h"
+#include "Version_3_0_1.h"
 #include "database/common/Query.h"
 #include "database/common/DatabaseTables.h"
 #include <shared/versioning/Version.h>
@@ -13,18 +13,18 @@ namespace database
       namespace versioning
       {
          // Modify this version to a greater value, to force update of current version
-         const shared::versioning::CVersion CVersion_4_0_0::Version(4, 0, 0);
+         const shared::versioning::CVersion CVersion_3_0_1::Version(3, 0, 1);
 
-         CVersion_4_0_0::CVersion_4_0_0()
+         CVersion_3_0_1::CVersion_3_0_1()
          {
          }
 
-         CVersion_4_0_0::~CVersion_4_0_0()
+         CVersion_3_0_1::~CVersion_3_0_1()
          {
          }
 
          // ISQLiteVersionUpgrade implementation
-         void CVersion_4_0_0::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& pRequester,
+         void CVersion_3_0_1::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& pRequester,
                                               const shared::versioning::CVersion& currentVersion)
          {
             if (currentVersion < Version)
@@ -49,11 +49,11 @@ namespace database
          ///\param [in] pRequester : database requester object
          ///\throw      CVersionException if create database failed
          //-----------------------------------
-         void CVersion_4_0_0::UpdateFrom3_0_0(const boost::shared_ptr<IDatabaseRequester>& pRequester)
+         void CVersion_3_0_1::UpdateFrom3_0_0(const boost::shared_ptr<IDatabaseRequester>& pRequester)
          {
             try
             {
-               YADOMS_LOG(information) << "Upgrading database (3.0.0 -> 4.0.0)";
+               YADOMS_LOG(information) << "Upgrading database (3.0.0 -> 3.0.1)";
 
                //create transaction if supported
                if (pRequester->transactionSupport())
@@ -79,7 +79,7 @@ namespace database
             }
             catch (CVersionException& ex)
             {
-               YADOMS_LOG(fatal) << "Failed to upgrade database (3.0.0 -> 4.0.0) : " << ex.what();
+               YADOMS_LOG(fatal) << "Failed to upgrade database (3.0.0 -> 3.0.1) : " << ex.what();
                YADOMS_LOG(fatal) << "Rollback transaction";
                if (pRequester->transactionSupport())
                   pRequester->transactionRollback();

@@ -11,20 +11,20 @@ namespace database
       namespace versioning
       {
          //
-         /// \brief Database version 4.0 update manager
+         /// \brief Database version 3.0.1 update manager
          //
-         class CVersion_4_0_0 : public CVersion_3_0_0
+         class CVersion_3_0_1 : public CVersion_3_0_0
          {
          public:
             //
             /// \brief Constructor
             //
-            CVersion_4_0_0();
+            CVersion_3_0_1();
 
             //
             /// \brief Destructor
             //
-            virtual ~CVersion_4_0_0();
+            virtual ~CVersion_3_0_1();
 
             // ISQLiteVersionUpgrade implementation
             void checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& pRequester,
@@ -33,7 +33,7 @@ namespace database
 
          private:
             //-----------------------------------
-            /// \brief     The version (4.0.0)
+            /// \brief     The version
             //-----------------------------------
             static const shared::versioning::CVersion Version;
 
