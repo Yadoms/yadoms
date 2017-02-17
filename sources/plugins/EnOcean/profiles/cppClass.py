@@ -138,12 +138,19 @@ class CppType(object):
 
    def __init__(self, cppTypeName):
       self._cppTypeName = cppTypeName
+      self.__dependencies = []
 
    def generateHeader(self, f):
       raise NotImplementedError()
 
    def generateSource(self, f):
       raise NotImplementedError()
+
+   def addDependency(self, dependency):
+      self.__dependencies.append(dependency)
+
+   def dependencies(self):
+      return self.__dependencies
 
 
 
@@ -305,6 +312,10 @@ class CppClass(CppType):
 
    def addComment(self, comment):
       self.__comments.append(comment)
+
+
+   def cppClassName(self):
+      return self.__cppClassName
 
 
    def __generateHeaderVisibilityBlock(self, cppHeaderFile, visibility):
