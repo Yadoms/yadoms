@@ -14,7 +14,7 @@
 #include "message/UTE_GigaConceptReversedReceivedMessage.h"
 #include "message/ResponseReceivedMessage.h"
 #include "DeviceConfigurationHelper.h"
-#include "profiles/generated-eep.h"
+#include "profiles/generated/eep.h"
 #include "message/UTE_GigaConceptReversedAnswerSendMessage.h"
 #include <shared/Log.h>
 

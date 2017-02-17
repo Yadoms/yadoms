@@ -164,7 +164,7 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-manufac
 add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated/eep.h
                           ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated/eep.cpp
                           ${CMAKE_CURRENT_SOURCE_DIR}/package.json
-                   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateEep.py ${CMAKE_CURRENT_SOURCE_DIR}/profiles/eep${EEP_VERSION}.xml ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated/eep.h ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated/eep.cpp ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json ${CMAKE_CURRENT_SOURCE_DIR}/package.json  ${CMAKE_CURRENT_SOURCE_DIR}/locales
+                   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateEep.py ${CMAKE_CURRENT_SOURCE_DIR}/profiles/eep${EEP_VERSION}.xml ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json ${CMAKE_CURRENT_SOURCE_DIR}/package.json  ${CMAKE_CURRENT_SOURCE_DIR}/locales
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/profiles/eep${EEP_VERSION}.xml
                            ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json
                            ${PYTHON_GENERATOR_FILES}

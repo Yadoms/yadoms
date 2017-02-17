@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/enumeration/EnumHelpers.hpp>
 #include "../../IMessageHandler.h"
-#include "../generated-eep.h"
+#include "../generated/eep.h"
 
 
 class CProfile_D2_01_Common

@@ -23,11 +23,10 @@ import util
 #-------------------------------------------------------------------------------
 # Input parameters
 xmlInputFilePath = sys.argv[1]
-headerPath = sys.argv[2]
-sourcePath = sys.argv[3]
-packageJsonInPath = sys.argv[4]
-packageJsonPath = sys.argv[5]
-localesPath = sys.argv[6]
+outputPath = sys.argv[2]
+packageJsonInPath = sys.argv[3]
+packageJsonPath = sys.argv[4]
+localesPath = sys.argv[5]
 
 profilePath = os.path.dirname(xmlInputFilePath)
 
@@ -413,9 +412,12 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
 
 
+# Start
+if not outputPath:
+   os.mkdir(outputPath)
+
 # Generate Header
-util.createParentDir(headerPath)
-with codecs.open(headerPath, 'w', 'utf_8') as cppHeaderFile:
+with codecs.open(os.path.join(outputPath, 'eep.h'), 'w', 'utf_8') as cppHeaderFile:
 
    cppHeaderFile.write('// Generated file, don\'t modify\n')
    cppHeaderFile.write('#pragma once\n')
@@ -430,12 +432,11 @@ with codecs.open(headerPath, 'w', 'utf_8') as cppHeaderFile:
       oneType.generateHeader(cppHeaderFile)
 
 # Generate Source
-util.createParentDir(sourcePath)
-with codecs.open(sourcePath, 'w', 'utf_8') as cppSourceFile:
+with codecs.open(os.path.join(outputPath, 'eep.cpp'), 'w', 'utf_8') as cppSourceFile:
 
    cppSourceFile.write('// Generated file, don\'t modify\n')
    cppSourceFile.write('#include "stdafx.h"\n')
-   cppSourceFile.write('#include "' + os.path.basename(headerPath) + '"\n')
+   cppSourceFile.write('#include "' + os.path.basename(os.path.join(outputPath, 'eep.h')) + '"\n')
    cppSourceFile.write('#include <shared/plugin/yPluginApi/StandardUnits.h>\n')
    cppSourceFile.write('\n')
    cppSourceFile.write('#include "../bitsetHelpers.hpp"\n')

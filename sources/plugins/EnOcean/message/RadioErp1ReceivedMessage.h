@@ -1,5 +1,5 @@
 #pragma once
-#include "../profiles/generated-eep.h"
+#include "../profiles/generated/eep.h"
 
 
 namespace message
