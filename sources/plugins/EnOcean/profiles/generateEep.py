@@ -416,19 +416,34 @@ with codecs.open(os.path.join(outputPath, 'eep.h'), 'w', 'utf_8') as cppHeaderFi
 
    cppHeaderFile.write('// Generated file, don\'t modify\n')
    cppHeaderFile.write('#pragma once\n')
-   cppHeaderFile.write('#include <boost/dynamic_bitset.hpp>\n')
    cppHeaderFile.write('#include <shared/plugin/yPluginApi/IYPluginApi.h>\n')
    cppHeaderFile.write('#include "../IRorg.h"\n')
+   for dependency in rorgsClass.dependencies():
+      cppHeaderFile.write('#include "' + dependency.name() + '.h"\n')
    cppHeaderFile.write('\n')
    cppHeaderFile.write('namespace yApi = shared::plugin::yPluginApi;\n')
    cppHeaderFile.write('\n')
 
-   def generateDependancies(cppType):
+   def generateDependenciesInSameFile(cppType, cppHeaderFile):
       for dependency in cppType.dependencies():
-         generateDependancies(dependency)
+         generateDependenciesInSameFile(dependency, cppHeaderFile)
          dependency.generateHeader(cppHeaderFile)
 
-   generateDependancies(rorgsClass)
+   def generateRorgDependency(dependency, outputPath):
+      with codecs.open(os.path.join(outputPath, dependency.name() + '.h'), 'w', 'utf_8') as cppHeaderSubFile:
+         cppHeaderSubFile.write('// Generated file, don\'t modify\n')
+         cppHeaderSubFile.write('#pragma once\n')
+         cppHeaderSubFile.write('#include <boost/dynamic_bitset.hpp>\n')
+         cppHeaderSubFile.write('#include <shared/plugin/yPluginApi/IYPluginApi.h>\n')
+         cppHeaderSubFile.write('#include "../IRorg.h"\n')
+         cppHeaderSubFile.write('\n')
+         cppHeaderSubFile.write('namespace yApi = shared::plugin::yPluginApi;\n')
+         cppHeaderSubFile.write('\n')
+         generateDependenciesInSameFile(dependency, cppHeaderSubFile)
+         dependency.generateHeader(cppHeaderSubFile)
+
+   for dependency in rorgsClass.dependencies():
+      generateRorgDependency(dependency, outputPath)
    rorgsClass.generateHeader(cppHeaderFile)
 
 # Generate Source
@@ -439,19 +454,32 @@ with codecs.open(os.path.join(outputPath, 'eep.cpp'), 'w', 'utf_8') as cppSource
    cppSourceFile.write('#include "' + os.path.basename(os.path.join(outputPath, 'eep.h')) + '"\n')
    cppSourceFile.write('#include <shared/plugin/yPluginApi/StandardUnits.h>\n')
    cppSourceFile.write('\n')
-   cppSourceFile.write('#include "../bitsetHelpers.hpp"\n')
    cppSourceFile.write('#include "../../ProfileHelper.h"\n')
    cppSourceFile.write('\n')
-   for hardCodedFile in hardCodedProfiles.getProfileHardCodedFiles():
-      cppSourceFile.write('#include "../' + os.path.join('hardCoded', hardCodedFile) + '"\n')
-   cppSourceFile.write('\n')
 
-   def generateDependancies(cppType):
+   def generateDependenciesInSameFile(cppType, cppSourceFile):
       for dependency in cppType.dependencies():
-         generateDependancies(dependency)
+         generateDependenciesInSameFile(dependency, cppSourceFile)
          dependency.generateSource(cppSourceFile)
 
-   generateDependancies(rorgsClass)
+   def generateRorgDependency(dependency, outputPath):
+      with codecs.open(os.path.join(outputPath, dependency.name() + '.cpp'), 'w', 'utf_8') as cppSourceSubFile:
+         cppSourceSubFile.write('// Generated file, don\'t modify\n')
+         cppSourceSubFile.write('#include "stdafx.h"\n')
+         cppSourceSubFile.write('#include "' + os.path.basename(os.path.join(outputPath, dependency.name() + '.h')) + '"\n')
+         cppSourceSubFile.write('#include <shared/plugin/yPluginApi/StandardUnits.h>\n')
+         cppSourceSubFile.write('\n')
+         cppSourceSubFile.write('#include "../bitsetHelpers.hpp"\n')
+         cppSourceSubFile.write('#include "../../ProfileHelper.h"\n')
+         cppSourceSubFile.write('\n')
+         for hardCodedFile in hardCodedProfiles.getProfileHardCodedFiles():
+            cppSourceSubFile.write('#include "../' + os.path.join('hardCoded', hardCodedFile) + '"\n')
+         cppSourceSubFile.write('\n')
+         generateDependenciesInSameFile(dependency, cppSourceSubFile)
+         dependency.generateSource(cppSourceSubFile)
+
+   for dependency in rorgsClass.dependencies():
+      generateRorgDependency(dependency, outputPath)
    rorgsClass.generateSource(cppSourceFile)
 
 # Generate package.json

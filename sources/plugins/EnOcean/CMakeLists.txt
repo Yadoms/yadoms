@@ -94,6 +94,14 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/generated-manufacturers.h
    profiles/generated/eep.cpp
    profiles/generated/eep.h
+   profiles/generated/C1BSTelegram.cpp
+   profiles/generated/C1BSTelegram.h
+   profiles/generated/C4BSTelegram.cpp
+   profiles/generated/C4BSTelegram.h
+   profiles/generated/CRPSTelegram.cpp
+   profiles/generated/CRPSTelegram.h
+   profiles/generated/CVLDTelegram.cpp
+   profiles/generated/CVLDTelegram.h
    
    profiles/IRorg.h
    profiles/IFunc.h

@@ -314,6 +314,9 @@ class CppClass(CppType):
       self.__comments.append(comment)
 
 
+   def name(self):
+      return self.__cppClassName # TODO revoir
+
    def cppClassName(self):
       return self.__cppClassName
 
