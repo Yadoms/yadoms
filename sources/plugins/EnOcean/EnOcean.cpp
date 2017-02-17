@@ -4,7 +4,7 @@
 #include "Factory.h"
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
-#include "profiles/generated-manufacturers.h"
+#include "profiles/manufacturers.h"
 #include "4BSTeachinVariant2.h"
 #include "profiles/bitsetHelpers.hpp"
 #include <shared/exception/EmptyResult.hpp>
@@ -14,7 +14,7 @@
 #include "message/UTE_GigaConceptReversedReceivedMessage.h"
 #include "message/ResponseReceivedMessage.h"
 #include "DeviceConfigurationHelper.h"
-#include "generated/profiles/eep.h"
+#include "profiles/eep.h"
 #include "message/UTE_GigaConceptReversedAnswerSendMessage.h"
 #include <shared/Log.h>
 
