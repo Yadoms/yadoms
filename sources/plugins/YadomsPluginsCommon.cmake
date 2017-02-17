@@ -92,19 +92,23 @@ ENDMACRO()
 MACRO(PLUGIN_POST_BUILD_COPY_FILE _targetName _resource)
 
    get_filename_component(_resourcePath ${_resource}  DIRECTORY)
+   get_filename_component(_resourceFile ${_resource}  NAME)
+   if (_resourcePath STREQUAL "")
+      set(_resourcePath ${CMAKE_CURRENT_SOURCE_DIR})
+   endif()
 
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
    
-   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 
+   install(FILES ${_resourcePath}/${_resourceFile} 
 			DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}/${_resourcePath}
 			COMPONENT  ${ComponentCompatibleName})
 			
    add_custom_command(TARGET ${_targetName} POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} $<TARGET_FILE_DIR:${_targetName}>/${_resource})
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${_resourcePath}/${_resourceFile} $<TARGET_FILE_DIR:${_targetName}>/${_resourceFile})
    if(COTIRE_USE)
       if(COTIRE_USE_UNITY)
          add_custom_command(TARGET ${_targetName}_unity POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} $<TARGET_FILE_DIR:${_targetName}_unity>/${_resource})
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${_resourcePath}/${_resourceFile} $<TARGET_FILE_DIR:${_targetName}_unity>/${_resourceFile})
 	  endif()	
    endif()	
 ENDMACRO()

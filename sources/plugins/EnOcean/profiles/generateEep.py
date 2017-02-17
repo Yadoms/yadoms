@@ -27,6 +27,7 @@ outputPath = sys.argv[2]
 packageJsonInPath = sys.argv[3]
 packageJsonPath = sys.argv[4]
 localesPath = sys.argv[5]
+localesInPath = sys.argv[6]
 
 profilePath = os.path.dirname(xmlInputFilePath)
 
@@ -408,8 +409,10 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
 
 # Start
-if not outputPath:
-   os.mkdir(outputPath)
+try:
+   os.makedirs(outputPath)
+except OSError:
+   pass
 
 # Generate Header
 with codecs.open(os.path.join(outputPath, 'eep.h'), 'w', 'utf_8') as cppHeaderFile:
@@ -417,7 +420,7 @@ with codecs.open(os.path.join(outputPath, 'eep.h'), 'w', 'utf_8') as cppHeaderFi
    cppHeaderFile.write('// Generated file, don\'t modify\n')
    cppHeaderFile.write('#pragma once\n')
    cppHeaderFile.write('#include <shared/plugin/yPluginApi/IYPluginApi.h>\n')
-   cppHeaderFile.write('#include "../IRorg.h"\n')
+   cppHeaderFile.write('#include "profiles/IRorg.h"\n')
    for dependency in rorgsClass.dependencies():
       cppHeaderFile.write('#include "' + dependency.name() + '.h"\n')
    cppHeaderFile.write('\n')
@@ -435,7 +438,7 @@ with codecs.open(os.path.join(outputPath, 'eep.h'), 'w', 'utf_8') as cppHeaderFi
          cppHeaderSubFile.write('#pragma once\n')
          cppHeaderSubFile.write('#include <boost/dynamic_bitset.hpp>\n')
          cppHeaderSubFile.write('#include <shared/plugin/yPluginApi/IYPluginApi.h>\n')
-         cppHeaderSubFile.write('#include "../IRorg.h"\n')
+         cppHeaderSubFile.write('#include "profiles/IRorg.h"\n')
          cppHeaderSubFile.write('\n')
          cppHeaderSubFile.write('namespace yApi = shared::plugin::yPluginApi;\n')
          cppHeaderSubFile.write('\n')
@@ -454,7 +457,7 @@ with codecs.open(os.path.join(outputPath, 'eep.cpp'), 'w', 'utf_8') as cppSource
    cppSourceFile.write('#include "' + os.path.basename(os.path.join(outputPath, 'eep.h')) + '"\n')
    cppSourceFile.write('#include <shared/plugin/yPluginApi/StandardUnits.h>\n')
    cppSourceFile.write('\n')
-   cppSourceFile.write('#include "../../ProfileHelper.h"\n')
+   cppSourceFile.write('#include "ProfileHelper.h"\n')
    cppSourceFile.write('\n')
 
    def generateDependenciesInSameFile(cppType, cppSourceFile):
@@ -469,11 +472,11 @@ with codecs.open(os.path.join(outputPath, 'eep.cpp'), 'w', 'utf_8') as cppSource
          cppSourceSubFile.write('#include "' + os.path.basename(os.path.join(outputPath, dependency.name() + '.h')) + '"\n')
          cppSourceSubFile.write('#include <shared/plugin/yPluginApi/StandardUnits.h>\n')
          cppSourceSubFile.write('\n')
-         cppSourceSubFile.write('#include "../bitsetHelpers.hpp"\n')
-         cppSourceSubFile.write('#include "../../ProfileHelper.h"\n')
+         cppSourceSubFile.write('#include "profiles/bitsetHelpers.hpp"\n')
+         cppSourceSubFile.write('#include "ProfileHelper.h"\n')
          cppSourceSubFile.write('\n')
          for hardCodedFile in hardCodedProfiles.getProfileHardCodedFiles():
-            cppSourceSubFile.write('#include "../' + os.path.join('hardCoded', hardCodedFile) + '"\n')
+            cppSourceSubFile.write('#include "' + os.path.join('profiles', 'hardCoded', hardCodedFile) + '"\n')
          cppSourceSubFile.write('\n')
          generateDependenciesInSameFile(dependency, cppSourceSubFile)
          dependency.generateSource(cppSourceSubFile)
@@ -484,6 +487,6 @@ with codecs.open(os.path.join(outputPath, 'eep.cpp'), 'w', 'utf_8') as cppSource
 
 # Generate package.json
 import generatePackage
-generatePackage.generate(packageJsonInPath, packageJsonPath, localesPath, supportedProfiles)
+generatePackage.generate(packageJsonInPath, packageJsonPath, localesPath, localesInPath, supportedProfiles)
 
 util.finish()

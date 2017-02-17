@@ -89,19 +89,6 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
 
    profiles/bitsetHelpers.hpp
    profiles/commonHelpers.hpp
-
-   profiles/generated-manufacturers.cpp
-   profiles/generated-manufacturers.h
-   profiles/generated/eep.cpp
-   profiles/generated/eep.h
-   profiles/generated/C1BSTelegram.cpp
-   profiles/generated/C1BSTelegram.h
-   profiles/generated/C4BSTelegram.cpp
-   profiles/generated/C4BSTelegram.h
-   profiles/generated/CRPSTelegram.cpp
-   profiles/generated/CRPSTelegram.h
-   profiles/generated/CVLDTelegram.cpp
-   profiles/generated/CVLDTelegram.h
    
    profiles/IRorg.h
    profiles/IFunc.h
@@ -154,37 +141,76 @@ set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES}
    profiles/hardCoded/Profile_F6_02_02.h
    
    package.in.json
-   package.json
 
    ${IN_TRANSLATION_FILES}
    )
-source_group(profiles profiles/*.*)
-source_group(profiles\\hardCoded profiles/hardCoded/*.*)
-source_group(profiles\\generated profiles/generated/*.*)
 
-add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-manufacturers.h
-                          ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-manufacturers.cpp
-                   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateManufacturers.py ${CMAKE_CURRENT_SOURCE_DIR}/profiles/manufacturers.xml ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-manufacturers.h ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated-manufacturers.cpp
+add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/generated/manufacturers.h
+                          ${CMAKE_CURRENT_BINARY_DIR}/generated/manufacturers.cpp
+                   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateManufacturers.py 
+                           ${CMAKE_CURRENT_SOURCE_DIR}/profiles/manufacturers.xml
+                           ${CMAKE_CURRENT_BINARY_DIR}/generated
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/profiles/manufacturers.xml
                            ${PYTHON_GENERATOR_FILES} 
                    COMMENT "Generating Manufacturers source code...")
 
-add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated/eep.h
-                          ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated/eep.cpp
-                          ${CMAKE_CURRENT_SOURCE_DIR}/package.json
-                   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateEep.py ${CMAKE_CURRENT_SOURCE_DIR}/profiles/eep${EEP_VERSION}.xml ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generated ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json ${CMAKE_CURRENT_SOURCE_DIR}/package.json  ${CMAKE_CURRENT_SOURCE_DIR}/locales
+add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/generated/package.json
+                          ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/eep.cpp
+                          ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/eep.h
+                          ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/C1BSTelegram.cpp
+                          ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/C1BSTelegram.h
+                          ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/C4BSTelegram.cpp
+                          ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/C4BSTelegram.h
+                          ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/CRPSTelegram.cpp
+                          ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/CRPSTelegram.h
+                          ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/CVLDTelegram.cpp
+                          ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/CVLDTelegram.h
+                   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/profiles/generateEep.py
+                          ${CMAKE_CURRENT_SOURCE_DIR}/profiles/eep${EEP_VERSION}.xml
+                          ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles
+                          ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json
+                          ${CMAKE_CURRENT_BINARY_DIR}/generated/package.json
+                          ${CMAKE_CURRENT_SOURCE_DIR}/locales.in
+                          ${CMAKE_CURRENT_BINARY_DIR}/generated/locales
                    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/profiles/eep${EEP_VERSION}.xml
                            ${CMAKE_CURRENT_SOURCE_DIR}/package.in.json
                            ${PYTHON_GENERATOR_FILES}
-						   ${IN_TRANSLATION_FILES}
+                           ${IN_TRANSLATION_FILES}
                    COMMENT "Generating EEP profiles source code...")
+                   
+                   
+set(ENOCEAN_GENERATED_SOURCES
+   ${CMAKE_CURRENT_BINARY_DIR}/generated/package.json
+   ${CMAKE_CURRENT_BINARY_DIR}/generated/manufacturers.cpp
+   ${CMAKE_CURRENT_BINARY_DIR}/generated/manufacturers.h
+   ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/eep.cpp
+   ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/eep.h
+   ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/C1BSTelegram.cpp
+   ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/C1BSTelegram.h
+   ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/C4BSTelegram.cpp
+   ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/C4BSTelegram.h
+   ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/CRPSTelegram.cpp
+   ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/CRPSTelegram.h
+   ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/CVLDTelegram.cpp
+   ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/CVLDTelegram.h
+   )
+set_source_files_properties(${ENOCEAN_GENERATED_SOURCES} PROPERTIES GENERATED TRUE)
 
+set(ENOCEAN_SOURCES ${ENOCEAN_SOURCES} ${ENOCEAN_GENERATED_SOURCES})
+
+
+source_group(profiles profiles/*.*)
+source_group(profiles\\hardCoded profiles/hardCoded/*.*)
+source_group(generated ${CMAKE_CURRENT_BINARY_DIR}/generated/*.*)
+source_group(generated\\profiles ${CMAKE_CURRENT_BINARY_DIR}/generated/profiles/*.*)
 
 #########################################
 ## Place here all additional include directories
 ## (by default yadoms-shared and boost are included)
 #########################################
 set(ENOCEAN_ADDITIONAL_INC_DIR
+   ${CMAKE_CURRENT_BINARY_DIR}/generated
+   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 #########################################
@@ -198,6 +224,8 @@ set(ENOCEAN_ADDITIONAL_LIB
 ## Always leave this three lines to configure plugin correctly
 ## even if ENOCEAN_ADDITIONAL_INC_DIR or ENOCEAN_ADDITIONAL_LIB are empty
 #########################################
+# Workaround to tell CMake to not looking for package.json as it will be generated later
+set_source_files_properties(package.json PROPERTIES GENERATED TRUE)
 PLUGIN_SOURCES(enOcean ${ENOCEAN_SOURCES})
 PLUGIN_INCLDIR(enOcean ${ENOCEAN_ADDITIONAL_INC_DIR})
 PLUGIN_LINK(enOcean ${ENOCEAN_ADDITIONAL_LIB})
@@ -207,6 +235,6 @@ PLUGIN_LINK(enOcean ${ENOCEAN_ADDITIONAL_LIB})
 ## Copy files to build directory
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
-PLUGIN_POST_BUILD_COPY_FILE(enOcean package.json)
+PLUGIN_POST_BUILD_COPY_FILE(enOcean ${CMAKE_CURRENT_BINARY_DIR}/generated/package.json)
 PLUGIN_POST_BUILD_COPY_FILE(enOcean icon.png)
-PLUGIN_POST_BUILD_COPY_DIRECTORY(enOcean locales)
+PLUGIN_POST_BUILD_COPY_DIRECTORY(enOcean ${CMAKE_CURRENT_BINARY_DIR}/generated/locales)
