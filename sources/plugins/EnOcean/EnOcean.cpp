@@ -4,7 +4,7 @@
 #include "Factory.h"
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
-#include "profiles/manufacturers.h"
+#include "manufacturers.h"
 #include "4BSTeachinVariant2.h"
 #include "profiles/bitsetHelpers.hpp"
 #include <shared/exception/EmptyResult.hpp>
