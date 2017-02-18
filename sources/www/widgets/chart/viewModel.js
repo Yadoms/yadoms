@@ -181,6 +181,10 @@ widgetViewModelCtor =
                    });
                });
                d.resolve();
+           })
+           .fail(function (error) {
+               notifyError($.t("widgets/chart:errorInitialization"), error);
+               throw;
            });
            return d.promise();
        };
