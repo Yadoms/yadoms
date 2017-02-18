@@ -39,6 +39,10 @@
 							"description": "Choisissez un icône à afficher dans le bouton"
 						}
 					}
+				},
+				"toggle": {
+					"name": "Inverseur horizontal à basculement",
+					"description": "un bouton à basculement horizontal"
 				}
 			}
 		}

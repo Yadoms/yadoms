@@ -39,6 +39,10 @@
 							"description": "Choose the icon to display in the button"
 						}
 					}
+				},
+				"toggle": {
+					"name": "Toggle button",
+					"description": "A horizontal toogle switch"
 				}
 			}
 		}

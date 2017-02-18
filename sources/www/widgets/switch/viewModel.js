@@ -6,17 +6,16 @@ widgetViewModelCtor =
     */
       function switchViewModel() {
 		  
-		  var self = this;
-		  
           //observable data
           this.state = [];
           this.command = ko.observable(1);
           this.kind = ko.observable("simple");
           this.icon = ko.observable("");
           this.capacity = [];
-		  this.accessMode = [];
+          this.accessMode = [];
           this.showDeviceName = ko.observable(true);
           this.readonly = ko.observable(true);
+          this.update = ko.observable(false);
 		  
           this.commandClick = function (newState) {
 
@@ -47,12 +46,17 @@ widgetViewModelCtor =
            * @param widget widget class object
            */
           this.initialize = function () {
-              //we configure the toolbar
-              this.widgetApi.toolbar({
-                  activated: true,
-                  displayTitle: true,
-                  batteryItem: false
-              });
+             self = this;
+             
+             //we configure the toolbar
+             self.widgetApi.toolbar({
+                 activated: true,
+                 displayTitle: true,
+                 batteryItem: false
+             });
+           
+             // Initialization of the toogle button if exist
+             this.widget.$content.find("input[type=checkbox]").bootstrapToggle();
           };
 
           this.configurationChanged = function () {
@@ -102,11 +106,11 @@ widgetViewModelCtor =
 						   
                          });
 						 
-						 arrayOfDeffered.push(deffered);
+						     arrayOfDeffered.push(deffered);
 
-                         //Initialization
-                         if (isNullOrUndefined(self.state[index]))
-                              self.state[index] = 0;
+                       //Initialization
+                       if (isNullOrUndefined(self.state[index]))
+                            self.state[index] = 0;
                       }
                   });
 				  
@@ -124,7 +128,7 @@ widgetViewModelCtor =
           */
           this.onNewAcquisition = function (keywordId, data) {
               var self = this;
-
+              
               if ((this.widget.configuration != undefined) && (this.widget.configuration.devices != undefined)) {
 
                   $.each(this.widget.configuration.devices, function (index, device) {
@@ -143,6 +147,22 @@ widgetViewModelCtor =
                   });
 
                   self.evaluateCommand();
+                  
+                  //knockout doesn't work witj bootstrap. So change values have to be done manually
+                  if (self.kind() === 'toggle')
+                  {
+                    self.update(true);
+                    if (self.readonly())
+                       this.widget.$content.find("input[type=checkbox]").prop('disabled', false);
+                    
+                    if (self.command()==1)
+                       this.widget.$content.find("input[type=checkbox]").prop('checked', true).change();
+                    else
+                        this.widget.$content.find("input[type=checkbox]").prop('checked', false).change();
+                     
+                    self.update(false);
+                    this.widget.$content.find("input[type=checkbox]").prop('disabled', self.readonly());
+                  }
               }
           };
 
@@ -158,4 +178,16 @@ widgetViewModelCtor =
 
               self.command(average);
           }
+          
+          this.toggleCommand = function () {
+              self = this;
+
+              if (this.command() === 0)
+                  self.command(1);
+              else
+                  self.command(0);
+
+              //Send the command
+              self.commandClick(self.command());
+          }          
       };

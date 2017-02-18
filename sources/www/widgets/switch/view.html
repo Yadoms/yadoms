@@ -13,5 +13,8 @@
                 <span class="" data-bind="attr: {class: icon()}"></span>
             </button>
         </div>
+        <div class="toggle-action checkbox hidden" data-bind="disable: readonly, css: { hidden: kind() != 'toggle'}">
+           <input type="checkbox" data-toggle="toggle" data-bind="disable: readonly, checked: command()==1, event: {change: function() {if (!update() && kind() == 'toggle') toggleCommand()}}" data-width="75" data-height="50">
+        </div>        
     </div>
 </script>
