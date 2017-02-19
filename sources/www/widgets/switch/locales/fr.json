@@ -4,19 +4,29 @@
 	"errorDuringGettingDeviceInformation": "Erreur lors de la récupération des informations de l'équipement",
 	"errorDuringSendingCommand": "Erreur lors de l'envoi de la commande",
 	"configurationSchema": {
-		"devices": {
-			"name": "Equipements",
-			"description": "Le widget interrupteur peut piloter simultanément plusieurs équipements. Sélectionner ici la liste des équipements à piloter",
-			"item": {
-				"name": "",
-				"description": "",
-				"content": {
-					"source": {
-						"name": "Equipement",
-						"description": "Equipement à piloter"
-					}
-				}
-            }			
+		"device": {
+			"name": "Equipement",
+         "description": "Sélectionner ci-dessous l'équipement à piloter"
+		},
+		"additionalDevices": {
+         "name": "Equipements complémentaires",
+         "description": "Le widget interrupteur peut piloter simultanément plusieurs équipements. Sélectionner ici la liste des équipements complémentaires à piloter",      
+         "content": {
+            "devices": {
+               "name": "Equipements",
+               "description": "Si un équipement est en lecture seule, le bouton ne pourra pas être utilisé",
+               "item": {
+                  "name": "",
+                  "description": "",
+                  "content": {
+                     "source": {
+                        "name": "Equipement",
+                        "description": "Equipement à piloter"
+                     }
+                  }
+               }
+            }
+         }
 		},
 		"kind": {
 			"name": "Type d'interrupteur",

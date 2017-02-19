@@ -4,20 +4,30 @@
 	"errorDuringGettingDeviceInformation": "Error during getting device information",
 	"errorDuringSendingCommand": "Error sending command",
 	"configurationSchema": {
-		"devices": {
-			"name": "Devices",
-			"description": "Switch widget is able to drive several devices simultaneously. Select below the devices list to drive",
-			"item": {
-				"name": "",
-				"description": "",
-				"content": {
-					"source": {
-						"name": "Switch device",
-						"description": "device to drive"
-					}
-				}
-            }				
+		"device": {
+			"name": "Device",
+         "description": "Select below the device to drive"
 		},
+		"additionalDevices": {
+			"name": "additional devices",
+			"description": "Switch widget is able to drive several devices simultaneously. Select below the devices list to drive",      
+         "content": {
+            "devices": {
+               "name": "Devices",
+               "description": "if a device is read-only, the button will not be clickable",
+               "item": {
+                  "name": "",
+                  "description": "",
+                  "content": {
+                     "source": {
+                        "name": "Switch device",
+                        "description": "device to drive"
+                     }
+                  }
+               }				
+            }
+         }
+      },
 		"kind": {
 			"name": "Kind of switch",
 			"description": "Select the kind of switch to be used. Permit to change interactions in function of the kind of switch.",
