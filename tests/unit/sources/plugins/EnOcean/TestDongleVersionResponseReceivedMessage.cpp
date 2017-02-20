@@ -4,7 +4,6 @@
 // Includes needed to compile tested classes
 #include "../../../../sources/plugins/EnOcean/ReceiveBufferHandler.h"
 #include "../../../../sources/plugins/EnOcean/message/DongleVersionResponseReceivedMessage.h"
-#include "../../../../sources/plugins/EnOcean/profiles/generated-eep.h"
 #include <../../../../sources/shared/shared/communication/Buffer.hpp>
 
 #include "MessageHandlerMock.hpp"
