@@ -43,14 +43,14 @@ namespace specificHistorizer
       ///\param[in] unitValue        The Unit Value
       //-----------------------------------------------------
       void addUnit(const std::string& unitName,
-                     const std::string& unitValue);
+                     const std::string& unitValue) const;
 
       //-----------------------------------------------------
       ///\brief                      Add a new period with all integrated parameter
       ///\param[in] Year             The Year of the period
       //-----------------------------------------------------
       void setParameters(const std::string& illuminatedMoon,
-                           const std::string& dayofMoon);
+                           const std::string& dayofMoon) const;
 
    private:
       //-----------------------------------------------------

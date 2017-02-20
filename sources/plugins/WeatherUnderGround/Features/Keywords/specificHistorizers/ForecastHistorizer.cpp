@@ -4,9 +4,7 @@
 
 namespace specificHistorizer
 {
-   const yApi::CStandardCapacity& ForecastCapacity = yApi::CStandardCapacity("Forecast",
-                                                                             yApi::CStandardUnits::NoUnits,
-                                                                             yApi::EKeywordDataType::kJson);
+   DECLARE_CAPACITY(ForecastCapacity, "Forecast", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kJson);
 
    CForecastHistorizer::CForecastHistorizer(const std::string& keywordName,
                                             const yApi::EKeywordAccessMode& accessMode,
@@ -28,7 +26,7 @@ namespace specificHistorizer
 
    const yApi::CStandardCapacity& CForecastHistorizer::getCapacity() const
    {
-      return ForecastCapacity;
+      return ForecastCapacity();
    }
 
    const yApi::EKeywordAccessMode& CForecastHistorizer::getAccessMode() const
@@ -37,7 +35,7 @@ namespace specificHistorizer
    }
 
    void CForecastHistorizer::addUnit(const std::string& unitName,
-                                     const std::string& unitValue)
+                                     const std::string& unitValue) const
    {
       m_content->addUnit(unitName,
                          unitValue);
@@ -54,7 +52,7 @@ namespace specificHistorizer
                                        const std::string& aveWindDegrees,
                                        const std::string& aveHumidity,
                                        const std::string& rainDay,
-                                       const std::string& snowDay)
+                                       const std::string& snowDay) const
    {
       m_content->addPeriod(year,
                            month,
@@ -70,7 +68,7 @@ namespace specificHistorizer
                            snowDay);
    }
 
-   void CForecastHistorizer::clearAllPeriods()
+   void CForecastHistorizer::clearAllPeriods() const
    {
       m_content->clearAllPeriods();
    }
@@ -94,7 +92,7 @@ namespace specificHistorizer
       return shared::CDataContainer();
    }
 
-   void CForecastHistorizer::setCityName(const std::string& cityName)
+   void CForecastHistorizer::setCityName(const std::string& cityName) const
    {
       m_content->setCityName(cityName);
    }
