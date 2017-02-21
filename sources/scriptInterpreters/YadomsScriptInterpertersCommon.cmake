@@ -16,7 +16,7 @@ MACRO(SCRIPT_INTERPRETER_SOURCES _targetName)
    project(${_targetName})
 	
 	IF(MSVC OR XCODE)
-		SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "scriptInterpreters/${_targetName}")
+		SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "scriptInterpreters")
 	ENDIF()
 ENDMACRO()
 

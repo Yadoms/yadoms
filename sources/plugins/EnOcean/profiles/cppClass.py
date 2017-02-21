@@ -315,7 +315,7 @@ class CppClass(CppType):
 
 
    def name(self):
-      return self.__cppClassName # TODO revoir
+      return self.__cppClassName
 
    def cppClassName(self):
       return self.__cppClassName
