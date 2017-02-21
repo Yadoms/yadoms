@@ -92,5 +92,5 @@ if(PYTHONLIBS_FOUND)
    add_subdirectory(yScriptApiWrapper)
    
 else()
-   message(WARNING "Python27 interpreter is not available. Python library is Mssing")
+   message(WARNING "python27 interpreter is not available. Python library is Mssing")
 endif()
