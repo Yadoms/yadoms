@@ -51,6 +51,11 @@ protected:
 
 private:
    //--------------------------------------------------------------
+   /// \brief	Last received time for timout computation
+   //--------------------------------------------------------------
+   boost::posix_time::ptime m_lastReceivedTime;
+
+   //--------------------------------------------------------------
    /// \brief	Buffer content
    //--------------------------------------------------------------
    std::vector<unsigned char> m_content;

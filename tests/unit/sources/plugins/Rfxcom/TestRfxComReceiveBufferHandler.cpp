@@ -15,10 +15,11 @@ BOOST_AUTO_TEST_SUITE(TestRfxComReceiveBufferHandler)
 
    BOOST_AUTO_TEST_CASE(NominalMessage)
    {
-      std::vector<unsigned char> txMessage {
-         0x14, 0x00, 0x00, 0x00, 0x00,                      // packetlength, packettype, subtype, seqnbr, cmnd
-         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,    // msg[1-8]
-         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };  // msg[9-16]
+      std::vector<unsigned char> txMessage{
+         0x14, 0x00, 0x00, 0x00, 0x00, // packetlength, packettype, subtype, seqnbr, cmnd
+         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // msg[1-8]
+         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 // msg[9-16]
+      };
 
       shared::event::CEventHandler evtHandler;
       CRfxcomReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId);
@@ -32,9 +33,51 @@ BOOST_AUTO_TEST_SUITE(TestRfxComReceiveBufferHandler)
       std::vector<unsigned char> expectedData{};
       BOOST_CHECK_EQUAL_COLLECTIONS(rxMessage.begin(), rxMessage.end(),
          txMessage.begin(), txMessage.end()) ;
+
+      BOOST_CHECK_EQUAL(rxMessage[0], rxMessage.size()-1) ;
    }
 
-//TODO
+   BOOST_AUTO_TEST_CASE(UncompletedMessage)
+   {
+      std::vector<unsigned char> txMessage1{
+         0x14, 0x00, 0x00, 0x00, 0x00, // packetlength, packettype, subtype, seqnbr, cmnd
+         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // msg[1-8]
+         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 // msg[9-16] ==> 1 byte missing
+      };
+
+      std::vector<unsigned char> txMessage2{
+         0x14, 0x00, 0x00, 0x00, 0x00, // packetlength, packettype, subtype, seqnbr, cmnd
+         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // msg[1-8]
+         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00  // msg[9-16] ==> 1 byte missing
+      };
+
+      auto timeProviderMock = boost::make_shared<CDefaultCurrentTimeMock>();
+      shared::currentTime::Provider().setProvider(timeProviderMock);
+
+      shared::event::CEventHandler evtHandler;
+      CRfxcomReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId);
+      bufferHandler.push(shared::communication::CByteBuffer(txMessage1));
+
+      BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent) ;
+
+      timeProviderMock->sleep(boost::posix_time::seconds(1));
+
+      BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent) ;
+
+      bufferHandler.push(shared::communication::CByteBuffer(txMessage2));
+
+      BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId) ;
+
+      auto rxMessage = evtHandler.getEventData<const shared::communication::CByteBuffer>();
+      BOOST_CHECK_EQUAL(rxMessage.size(), txMessage2.size()) ;
+      BOOST_CHECK_EQUAL(rxMessage[0], rxMessage.size() - 1);
+
+      std::vector<unsigned char> expectedData{};
+      BOOST_CHECK_EQUAL_COLLECTIONS(rxMessage.begin(), rxMessage.end(),
+         txMessage2.begin(), txMessage2.end()) ;
+   }
+
+   //TODO
    //BOOST_AUTO_TEST_CASE(MessageWithData)
    //{
    //   std::vector<unsigned char> message{
@@ -344,5 +387,5 @@ BOOST_AUTO_TEST_SUITE(TestRfxComReceiveBufferHandler)
    //      expectedOptional.begin(), expectedOptional.end()) ;
    //}
 
-BOOST_AUTO_TEST_SUITE_END()
+   BOOST_AUTO_TEST_SUITE_END()
 

@@ -4,7 +4,8 @@
 
 CRfxcomReceiveBufferHandler::CRfxcomReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler,
                                                          int receiveDataEventId)
-   : m_receiveDataEventHandler(receiveDataEventHandler),
+   : m_lastReceivedTime(shared::currentTime::Provider().now()),
+   m_receiveDataEventHandler(receiveDataEventHandler),
    m_receiveDataEventId(receiveDataEventId)
 {
 }
@@ -15,6 +16,18 @@ CRfxcomReceiveBufferHandler::~CRfxcomReceiveBufferHandler()
 
 void CRfxcomReceiveBufferHandler::push(const shared::communication::CByteBuffer& buffer)
 {
+   static const auto InterByteTimeout = boost::posix_time::milliseconds(100);
+
+   // Manage timeout
+   const auto now = shared::currentTime::Provider().now();
+   if (m_content.size() != 0)
+   {
+      // Reset data if too old
+      if (now - m_lastReceivedTime > InterByteTimeout)
+         m_content.clear();
+   }
+   m_lastReceivedTime = now;
+
    for (auto idx = 0; idx < buffer.size(); ++idx)
       m_content.push_back(buffer[idx]);
 
