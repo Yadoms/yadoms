@@ -2,6 +2,7 @@
 	"name": "Graphique",
 	"description": "Un widget qui permet d'afficher un graphe d'historisation de données",
 	"errorDuringGettingDeviceData": "Erreur lors de la récupération des données",
+   "errorInitialization" : "Erreur lors de l'initialisation du widget chart",
 	"loadingData": "Chargement des données",
 	"RangeTooBroad" : "Echelle trop large",
   "noAvailableData": "Données indisponibles",

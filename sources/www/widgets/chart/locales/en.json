@@ -2,6 +2,7 @@
   "name": "Chart",
   "description": "A widget that provide a chart to display historized data",
   "errorDuringGettingDeviceData": "Error during getting device data",
+  "errorInitialization" : "Error During widget chart initialization",
   "loadingData": "Loading data",
   "RangeTooBroad": "Range is too broad",
   "noAvailableData": "No available data",

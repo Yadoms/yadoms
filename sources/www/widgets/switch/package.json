@@ -1,9 +1,9 @@
 {
 	"type": "switch",
-	"version": "1.0.1-beta",
+	"version": "1.0.2-beta",
 	"author": "Jean-Michel BERHAULT, Nicolas HILAIRE",
 	"url": "https://github.com/Yadoms/yadoms/wiki/switch",
-	"credits": "",
+	"credits": "[bootstrap toogle](http://www.bootstraptoggle.com/)",
   "dimensions": {
     "min": {
       "x": 1,
@@ -20,26 +20,39 @@
   },
   "hasTitle" :  true,
 	"configurationSchema": {
-		"devices": {
-			"type": "list",
-			"nbItemsMin": "1",
-			"nbItemsMax": "10",
-			"allowDuplication": "true",
-			"item": {
-				"type": "section",
-				"name": "",
-				"description": "",				
-				"content": {
-					"source": {
-						"name": "",
-						"description": "",					
-						"type": "keyword",
-						"expectedCapacity": ["switch", "dimmable", "event"],
-						"expectedKeywordAccess": "get"
-					}
-				}
-			}
+		"device": {
+			"type": "keyword",
+         "expectedCapacity": ["switch", "dimmable", "event"],
+			"expectedKeywordAccess": "get"
 		},
+		"additionalDevices": {
+			"type": "section",
+			"defaultValue": "false",
+			"enableWithCheckBox": "true",
+			"enableWithCheckBoxDefaultValue": "false",			
+			"content": {      
+            "devices": {
+               "type": "list",
+               "nbItemsMin": "1",
+               "nbItemsMax": "10",
+               "allowDuplication": "true",
+               "item": {
+                  "type": "section",
+                  "name": "",
+                  "description": "",				
+                  "content": {
+                     "source": {
+                        "name": "",
+                        "description": "",					
+                        "type": "keyword",
+                        "expectedCapacity": ["switch", "dimmable", "event"],
+                        "expectedKeywordAccess": "get"
+                     }
+                  }
+               }
+            }
+         }
+      },
 		"kind": {
 			"type": "radioSection",
 			"content": {
@@ -56,6 +69,9 @@
 							"type": "icon"
 						}
 					}
+				},
+				"toggle": {
+					"type": "section"
 				}
 			}
 		}
