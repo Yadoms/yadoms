@@ -29,10 +29,11 @@ AutomationInterpreterManager.getAll = function () {
    RestEngine.getJson("rest/automation/interpreter")
    .done(function(data) {
       var interpreters = [];
-      data.interpreters.forEach(function(value) {
-         var interpreter = AutomationInterpreterManager.factory(value);
-         interpreters[interpreter.type] = interpreter;
-      });
+      
+      for (var position = 0, len = data.interpreters.length; position < len; position++) {
+         var interpreter = AutomationInterpreterManager.factory(data.interpreters[position]);
+         interpreters[interpreter.type] = interpreter;         
+      }
       d.resolve(interpreters);
    })
    .fail(d.reject);
