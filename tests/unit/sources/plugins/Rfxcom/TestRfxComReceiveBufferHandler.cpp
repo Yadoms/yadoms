@@ -30,7 +30,6 @@ BOOST_AUTO_TEST_SUITE(TestRfxComReceiveBufferHandler)
       auto rxMessage = evtHandler.getEventData<const shared::communication::CByteBuffer>();
       BOOST_CHECK_EQUAL(rxMessage.size(), txMessage.size()) ;
 
-      std::vector<unsigned char> expectedData{};
       BOOST_CHECK_EQUAL_COLLECTIONS(rxMessage.begin(), rxMessage.end(),
          txMessage.begin(), txMessage.end()) ;
 
@@ -48,7 +47,7 @@ BOOST_AUTO_TEST_SUITE(TestRfxComReceiveBufferHandler)
       std::vector<unsigned char> txMessage2{
          0x14, 0x00, 0x00, 0x00, 0x00, // packetlength, packettype, subtype, seqnbr, cmnd
          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // msg[1-8]
-         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00  // msg[9-16] ==> 1 byte missing
+         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00  // msg[9-16]
       };
 
       auto timeProviderMock = boost::make_shared<CDefaultCurrentTimeMock>();
@@ -72,320 +71,52 @@ BOOST_AUTO_TEST_SUITE(TestRfxComReceiveBufferHandler)
       BOOST_CHECK_EQUAL(rxMessage.size(), txMessage2.size()) ;
       BOOST_CHECK_EQUAL(rxMessage[0], rxMessage.size() - 1);
 
-      std::vector<unsigned char> expectedData{};
       BOOST_CHECK_EQUAL_COLLECTIONS(rxMessage.begin(), rxMessage.end(),
          txMessage2.begin(), txMessage2.end()) ;
    }
 
-   //TODO
-   //BOOST_AUTO_TEST_CASE(MessageWithData)
-   //{
-   //   std::vector<unsigned char> message{
-   //      0x55, 0x00, 0x08, 0x00, message::RADIO_ERP1, // Header
-   //      0x56, // CRC8H
-   //      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, // Data
-   //      0x3E // CRC8D
-   //   };
+   BOOST_AUTO_TEST_CASE(AggregatedMessages)
+   {
+      std::vector<unsigned char> txMessage1{
+         0x14, 0x00, 0x00, 0x00, 0x00,
+         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+      };
+      std::vector<unsigned char> txMessage2{
+         0x0B, 0x15, 0x00, 0x0E, 0x01, 0x0B,
+         0x15, 0x00, 0x01, 0x0B, 0x15, 0x0B
+      };
+      std::vector<unsigned char> txMessage3{
+         0x05, 0x00, 0x00, 0x00, 0x00, 0x00
+      };
+      std::vector<unsigned char> txMessage;
+      txMessage.insert(txMessage.end(), txMessage1.begin(), txMessage1.end());
+      txMessage.insert(txMessage.end(), txMessage2.begin(), txMessage2.end());
+      txMessage.insert(txMessage.end(), txMessage3.begin(), txMessage3.end());
 
-   //   shared::event::CEventHandler evtHandler;
-   //   auto msgHandler = boost::make_shared<CMessageHandlerMock>(evtHandler, shared::event::kUserFirstId);
-   //   CRfxcomReceiveBufferHandler bufferHandler(msgHandler);
-   //   bufferHandler.push(shared::communication::CByteBuffer(&message[0], message.size()));
+      shared::event::CEventHandler evtHandler;
+      CRfxcomReceiveBufferHandler bufferHandler(evtHandler, shared::event::kUserFirstId);
+      bufferHandler.push(shared::communication::CByteBuffer(txMessage));
 
-   //   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId) ;
+      BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
+      auto rxMessage1 = evtHandler.getEventData<const shared::communication::CByteBuffer>();
+      BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
+      auto rxMessage2 = evtHandler.getEventData<const shared::communication::CByteBuffer>();
+      BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId);
+      auto rxMessage3 = evtHandler.getEventData<const shared::communication::CByteBuffer>();
 
-   //   auto data = evtHandler.getEventData<boost::shared_ptr<const message::CEsp3ReceivedPacket>>();
-   //   BOOST_CHECK_EQUAL(data->header().dataLength(), 8) ;
-   //   BOOST_CHECK_EQUAL(data->header().optionalLength(), 0) ;
-   //   BOOST_CHECK_EQUAL(data->header().packetType(), message::RADIO_ERP1) ;
-   //   BOOST_CHECK_EQUAL(data->header().offsetData(), 6) ;
-   //   BOOST_CHECK_EQUAL(data->header().offsetOptional(), 6 + 8) ;
+      BOOST_CHECK_EQUAL(rxMessage1[0], rxMessage1.size() - 1);
+      BOOST_CHECK_EQUAL_COLLECTIONS(rxMessage1.begin(), rxMessage1.end(),
+         txMessage1.begin(), txMessage1.end());
 
-   //   std::vector<unsigned char> expectedData{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
-   //   BOOST_CHECK_EQUAL_COLLECTIONS(data->data().begin(), data->data().end(),
-   //      expectedData.begin(), expectedData.end()) ;
+      BOOST_CHECK_EQUAL(rxMessage2[0], rxMessage2.size() - 1);
+      BOOST_CHECK_EQUAL_COLLECTIONS(rxMessage2.begin(), rxMessage2.end(),
+         txMessage2.begin(), txMessage2.end());
 
-   //   BOOST_CHECK_EQUAL(data->optional().size(), static_cast<size_t>(0)) ;
-   //}
-
-   //BOOST_AUTO_TEST_CASE(MessageWithDataAndOptional)
-   //{
-   //   std::vector<unsigned char> message{
-   //      0x55, 0x00, 0x08, 0x07, message::RADIO_ERP1, // Header
-   //      0x3D, // CRC8H
-   //      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, // Data
-   //      0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, // Optional
-   //      0x41 // CRC8D
-   //   };
-
-   //   shared::event::CEventHandler evtHandler;
-   //   auto msgHandler = boost::make_shared<CMessageHandlerMock>(evtHandler, shared::event::kUserFirstId);
-   //   CRfxcomReceiveBufferHandler bufferHandler(msgHandler);
-   //   bufferHandler.push(shared::communication::CByteBuffer(&message[0], message.size()));
-
-   //   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId) ;
-
-   //   auto data = evtHandler.getEventData<boost::shared_ptr<const message::CEsp3ReceivedPacket>>();
-   //   BOOST_CHECK_EQUAL(data->header().dataLength(), 8) ;
-   //   BOOST_CHECK_EQUAL(data->header().optionalLength(), 7) ;
-   //   BOOST_CHECK_EQUAL(data->header().packetType(), message::RADIO_ERP1) ;
-   //   BOOST_CHECK_EQUAL(data->header().offsetData(), 6) ;
-   //   BOOST_CHECK_EQUAL(data->header().offsetOptional(), 6 + 8) ;
-
-   //   std::vector<unsigned char> expectedData{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
-   //   BOOST_CHECK_EQUAL_COLLECTIONS(data->data().begin(), data->data().end(),
-   //      expectedData.begin(), expectedData.end()) ;
-
-   //   std::vector<unsigned char> expectedOptional{0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F};
-   //   BOOST_CHECK_EQUAL_COLLECTIONS(data->optional().begin(), data->optional().end(),
-   //      expectedOptional.begin(), expectedOptional.end()) ;
-   //}
-
-   //BOOST_AUTO_TEST_CASE(MessageWrongCrc8h)
-   //{
-   //   std::vector<unsigned char> message{
-   //      0x55, 0x00, 0x08, 0x07, message::RADIO_ERP1, // Header
-   //      0x3E, // CRC8H (wrong. Correct value is 0x3D)
-   //      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, // Data
-   //      0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, // Optional
-   //      0x41 // CRC8D
-   //   };
-
-   //   shared::event::CEventHandler evtHandler;
-   //   auto msgHandler = boost::make_shared<CMessageHandlerMock>(evtHandler, shared::event::kUserFirstId);
-   //   CRfxcomReceiveBufferHandler bufferHandler(msgHandler);
-   //   bufferHandler.push(shared::communication::CByteBuffer(&message[0], message.size()));
-
-   //   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent) ;
-   //}
-
-   //BOOST_AUTO_TEST_CASE(MessageWrongCrc8d)
-   //{
-   //   std::vector<unsigned char> message{
-   //      0x55, 0x00, 0x08, 0x07, message::RADIO_ERP1, // Header
-   //      0x3D, // CRC8H
-   //      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, // Data
-   //      0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, // Optional
-   //      0x42 // CRC8D (wrong. Correct value is 0x41)
-   //   };
-
-   //   shared::event::CEventHandler evtHandler;
-   //   auto msgHandler = boost::make_shared<CMessageHandlerMock>(evtHandler, shared::event::kUserFirstId);
-   //   CRfxcomReceiveBufferHandler bufferHandler(msgHandler);
-   //   bufferHandler.push(shared::communication::CByteBuffer(&message[0], message.size()));
-
-   //   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent) ;
-   //}
-
-   //BOOST_AUTO_TEST_CASE(MessageWithParasiticPrefix)
-   //{
-   //   std::vector<unsigned char> message{
-   //      0x12, 0x23, // Parasitic prefix, should be filtered
-   //      0x55, 0x00, 0x08, 0x07, message::RADIO_ERP1, // Header
-   //      0x3D, // CRC8H
-   //      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, // Data
-   //      0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, // Optional
-   //      0x41 // CRC8D
-   //   };
-
-   //   shared::event::CEventHandler evtHandler;
-   //   auto msgHandler = boost::make_shared<CMessageHandlerMock>(evtHandler, shared::event::kUserFirstId);
-   //   CRfxcomReceiveBufferHandler bufferHandler(msgHandler);
-   //   bufferHandler.push(shared::communication::CByteBuffer(&message[0], message.size()));
-
-   //   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId) ;
-
-   //   auto data = evtHandler.getEventData<boost::shared_ptr<const message::CEsp3ReceivedPacket>>();
-   //   BOOST_CHECK_EQUAL(data->header().dataLength(), 8) ;
-   //   BOOST_CHECK_EQUAL(data->header().optionalLength(), 7) ;
-   //   BOOST_CHECK_EQUAL(data->header().packetType(), message::RADIO_ERP1) ;
-   //   BOOST_CHECK_EQUAL(data->header().offsetData(), 6) ;
-   //   BOOST_CHECK_EQUAL(data->header().offsetOptional(), 6 + 8) ;
-
-   //   std::vector<unsigned char> expectedData{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
-   //   BOOST_CHECK_EQUAL_COLLECTIONS(data->data().begin(), data->data().end(),
-   //      expectedData.begin(), expectedData.end()) ;
-
-   //   std::vector<unsigned char> expectedOptional{0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F};
-   //   BOOST_CHECK_EQUAL_COLLECTIONS(data->optional().begin(), data->optional().end(),
-   //      expectedOptional.begin(), expectedOptional.end()) ;
-   //}
-
-   //BOOST_AUTO_TEST_CASE(MessageWithoutSync)
-   //{
-   //   std::vector<unsigned char> message{
-   //      0x50, 0x00, 0x08, 0x07, message::RADIO_ERP1, // Header (no sync byte)
-   //      0x3D, // CRC8H
-   //      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, // Data
-   //      0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, // Optional
-   //      0x41 // CRC8D
-   //   };
-
-   //   shared::event::CEventHandler evtHandler;
-   //   auto msgHandler = boost::make_shared<CMessageHandlerMock>(evtHandler, shared::event::kUserFirstId);
-   //   CRfxcomReceiveBufferHandler bufferHandler(msgHandler);
-   //   bufferHandler.push(shared::communication::CByteBuffer(&message[0], message.size()));
-
-   //   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent) ;
-   //}
-
-   //BOOST_AUTO_TEST_CASE(MessageWithParasiticPrefixContainingSync)
-   //{
-   //   std::vector<unsigned char> message{
-   //      // Wrong data (invalid message : CRC8H KO), should be filtered
-   //      0x55, 0x00, 0x08, 0x07, message::RADIO_ERP1, // Header (no sync byte)
-   //      0x3E, // CRC8H (should be 0x3D)
-   //      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, // Data
-   //      0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, // Optional
-   //      0x41, // CRC8D
-
-   //      // Correct message
-   //      0x55, 0x00, 0x08, 0x07, message::RADIO_ERP1, // Header
-   //      0x3D, // CRC8H
-   //      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, // Data
-   //      0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, // Optional
-   //      0x41 // CRC8D
-   //   };
-
-   //   shared::event::CEventHandler evtHandler;
-   //   auto msgHandler = boost::make_shared<CMessageHandlerMock>(evtHandler, shared::event::kUserFirstId);
-   //   CRfxcomReceiveBufferHandler bufferHandler(msgHandler);
-   //   bufferHandler.push(shared::communication::CByteBuffer(&message[0], message.size()));
-
-   //   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId) ;
-
-   //   auto data = evtHandler.getEventData<boost::shared_ptr<const message::CEsp3ReceivedPacket>>();
-   //   BOOST_CHECK_EQUAL(data->header().dataLength(), 8) ;
-   //   BOOST_CHECK_EQUAL(data->header().optionalLength(), 7) ;
-   //   BOOST_CHECK_EQUAL(data->header().packetType(), message::RADIO_ERP1) ;
-   //   BOOST_CHECK_EQUAL(data->header().offsetData(), 6) ;
-   //   BOOST_CHECK_EQUAL(data->header().offsetOptional(), 6 + 8) ;
-
-   //   std::vector<unsigned char> expectedData{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
-   //   BOOST_CHECK_EQUAL_COLLECTIONS(data->data().begin(), data->data().end(),
-   //      expectedData.begin(), expectedData.end()) ;
-
-   //   std::vector<unsigned char> expectedOptional{0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F};
-   //   BOOST_CHECK_EQUAL_COLLECTIONS(data->optional().begin(), data->optional().end(),
-   //      expectedOptional.begin(), expectedOptional.end()) ;
-   //}
-
-   //BOOST_AUTO_TEST_CASE(MessageSendInSeveralParts)
-   //{
-   //   std::vector<unsigned char> message1{
-   //      0x55, 0x00, 0x08, 0x07, message::RADIO_ERP1, // Header
-   //   };
-
-   //   std::vector<unsigned char> message2{
-   //      0x3D, // CRC8H
-   //      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, // Data
-   //      0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, // Optional
-   //      0x41 // CRC8D
-   //   };
-
-   //   shared::event::CEventHandler evtHandler;
-   //   auto msgHandler = boost::make_shared<CMessageHandlerMock>(evtHandler, shared::event::kUserFirstId);
-   //   CRfxcomReceiveBufferHandler bufferHandler(msgHandler);
-   //   bufferHandler.push(shared::communication::CByteBuffer(&message1[0], message1.size()));
-
-   //   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent) ;
-
-   //   bufferHandler.push(shared::communication::CByteBuffer(&message2[0], message2.size()));
-
-   //   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId) ;
-
-   //   auto data = evtHandler.getEventData<boost::shared_ptr<const message::CEsp3ReceivedPacket>>();
-   //   BOOST_CHECK_EQUAL(data->header().dataLength(), 8) ;
-   //   BOOST_CHECK_EQUAL(data->header().optionalLength(), 7) ;
-   //   BOOST_CHECK_EQUAL(data->header().packetType(), message::RADIO_ERP1) ;
-   //   BOOST_CHECK_EQUAL(data->header().offsetData(), 6) ;
-   //   BOOST_CHECK_EQUAL(data->header().offsetOptional(), 6 + 8) ;
-
-   //   std::vector<unsigned char> expectedData{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
-   //   BOOST_CHECK_EQUAL_COLLECTIONS(data->data().begin(), data->data().end(),
-   //      expectedData.begin(), expectedData.end()) ;
-
-   //   std::vector<unsigned char> expectedOptional{0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F};
-   //   BOOST_CHECK_EQUAL_COLLECTIONS(data->optional().begin(), data->optional().end(),
-   //      expectedOptional.begin(), expectedOptional.end()) ;
-   //}
-
-   //BOOST_AUTO_TEST_CASE(Timeout)
-   //{
-   //   std::vector<unsigned char> message1{
-   //      0x55, 0x00, 0x08, 0x07, message::RADIO_ERP1, // Header
-   //      0x3D, // CRC8H
-   //      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, // Data
-   //      0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, // Optional
-   //      // No CRC8D (missing byte)
-   //   };
-
-   //   std::vector<unsigned char> message2{
-   //      0x41 // CRC8D
-   //   };
-
-   //   auto timeProviderMock = boost::make_shared<CDefaultCurrentTimeMock>();
-   //   shared::currentTime::Provider().setProvider(timeProviderMock);
-
-   //   shared::event::CEventHandler evtHandler;
-   //   auto msgHandler = boost::make_shared<CMessageHandlerMock>(evtHandler, shared::event::kUserFirstId);
-   //   CRfxcomReceiveBufferHandler bufferHandler(msgHandler);
-   //   bufferHandler.push(shared::communication::CByteBuffer(&message1[0], message1.size()));
-
-   //   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent) ;
-
-   //   timeProviderMock->sleep(boost::posix_time::milliseconds(101)); // Timeout should be 100ms
-
-   //   bufferHandler.push(shared::communication::CByteBuffer(&message2[0], message2.size()));
-
-   //   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent) ;
-   //}
-
-   //BOOST_AUTO_TEST_CASE(JustBeforeTimeout)
-   //{
-   //   std::vector<unsigned char> message1{
-   //      0x55, 0x00, 0x08, 0x07, message::RADIO_ERP1, // Header
-   //      0x3D, // CRC8H
-   //      0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, // Data
-   //      0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, // Optional
-   //      // No CRC8D (missing byte)
-   //   };
-
-   //   std::vector<unsigned char> message2{
-   //      0x41 // CRC8D
-   //   };
-
-   //   auto timeProviderMock = boost::make_shared<CDefaultCurrentTimeMock>();
-   //   shared::currentTime::Provider().setProvider(timeProviderMock);
-
-   //   shared::event::CEventHandler evtHandler;
-   //   auto msgHandler = boost::make_shared<CMessageHandlerMock>(evtHandler, shared::event::kUserFirstId);
-   //   CRfxcomReceiveBufferHandler bufferHandler(msgHandler);
-   //   bufferHandler.push(shared::communication::CByteBuffer(&message1[0], message1.size()));
-
-   //   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kNoEvent) ;
-
-   //   timeProviderMock->sleep(boost::posix_time::milliseconds(99)); // Timeout should be 100ms
-
-   //   bufferHandler.push(shared::communication::CByteBuffer(&message2[0], message2.size()));
-
-   //   BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), shared::event::kUserFirstId) ;
-
-   //   auto data = evtHandler.getEventData<boost::shared_ptr<const message::CEsp3ReceivedPacket>>();
-   //   BOOST_CHECK_EQUAL(data->header().dataLength(), 8) ;
-   //   BOOST_CHECK_EQUAL(data->header().optionalLength(), 7) ;
-   //   BOOST_CHECK_EQUAL(data->header().packetType(), message::RADIO_ERP1) ;
-   //   BOOST_CHECK_EQUAL(data->header().offsetData(), 6) ;
-   //   BOOST_CHECK_EQUAL(data->header().offsetOptional(), 6 + 8) ;
-
-   //   std::vector<unsigned char> expectedData{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
-   //   BOOST_CHECK_EQUAL_COLLECTIONS(data->data().begin(), data->data().end(),
-   //      expectedData.begin(), expectedData.end()) ;
-
-   //   std::vector<unsigned char> expectedOptional{0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F};
-   //   BOOST_CHECK_EQUAL_COLLECTIONS(data->optional().begin(), data->optional().end(),
-   //      expectedOptional.begin(), expectedOptional.end()) ;
-   //}
+      BOOST_CHECK_EQUAL(rxMessage3[0], rxMessage3.size() - 1);
+      BOOST_CHECK_EQUAL_COLLECTIONS(rxMessage3.begin(), rxMessage3.end(),
+         txMessage3.begin(), txMessage3.end());
+   }
 
    BOOST_AUTO_TEST_SUITE_END()
 
