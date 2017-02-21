@@ -15,7 +15,6 @@ before_install:
 - export PATH=$PATH:$PWD/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin
 
 # deps
-- echo 'Installing some dependencies'
 
 #CMake
 - echo 'Installing CMake 3.7.1'
