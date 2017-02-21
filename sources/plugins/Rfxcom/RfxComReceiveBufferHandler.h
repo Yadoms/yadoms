@@ -32,16 +32,10 @@ public:
 
 protected:
    //--------------------------------------------------------------
-   /// \brief	                     Check if we got a complete message
-   /// \return                      true if a message is complete
+   /// \brief	                     Returns the message if complete
+   /// \return                      The complete message, or null
    //--------------------------------------------------------------
-   bool isComplete() const;
-
-   //--------------------------------------------------------------
-   /// \brief	                     Pop the next message from the receive buffer
-   /// \return                      The next complete message
-   //--------------------------------------------------------------
-   boost::shared_ptr<const shared::communication::CByteBuffer> popNextMessage();
+   boost::shared_ptr<const shared::communication::CByteBuffer> getCompleteMessage();
 
    //--------------------------------------------------------------
    /// \brief	                     Send a message to the target event handler
