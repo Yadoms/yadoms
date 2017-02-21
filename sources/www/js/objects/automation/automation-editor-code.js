@@ -7,7 +7,7 @@ AutomationEditorCode.prototype = new IAutomationRuleEditor();
 AutomationEditorCode.prototype.constructor = AutomationEditorCode;
 
 AutomationEditorCode.getSupportedInterpreters = function() {
-   return ["python27"];
+   return ["ypython27"];
 };
 
 /**
@@ -17,7 +17,7 @@ AutomationEditorCode.getSupportedInterpreters = function() {
  */
 AutomationEditorCode.getAceLanguageFromInterpreterName = function(interpreterName) {
    switch(interpreterName) {
-      case "python27": return "python";
+      case "ypython27": return "python";
    }
 };
 
