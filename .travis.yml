@@ -9,6 +9,9 @@ before_install:
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "using uploaded components"; else echo "using official components and build them"; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Upload build components"; else echo "Do not upload built components"; fi
 
+
+- echo 'User=$FTP_USER   Password=$FTP_PASSWORD'
+
 #g++ arm-linux-gnueabihf 
 - echo 'Installing arm-linux-gnueabihf cross toolchain'
 - git clone --depth=1 git://github.com/raspberrypi/tools.git
@@ -19,7 +22,7 @@ before_install:
 #CMake
 - echo 'Installing CMake 3.7.1'
 - sudo apt-get remove cmake
-- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget  -U 'Mozilla/5.0' http://yadoms.com/travis_build/static/cmake-3.7.1-build.tar.bz2; else wget --no-check-certificate https://cmake.org/files/v3.7/cmake-3.7.1.tar.gz; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget  -U 'Mozilla/5.0' http://yadoms.com/travis_build/raspberry_pi/cmake-3.7.1-build.tar.bz2; else wget --no-check-certificate https://cmake.org/files/v3.7/cmake-3.7.1.tar.gz; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar jxf cmake-3.7.1-build.tar.bz2; else tar zxf cmake-3.7.1.tar.gz; fi
 - cd cmake-3.7.1 
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass bootstrap" ; else ./bootstrap  > yadoms_cmake.log; fi
@@ -27,7 +30,7 @@ before_install:
 - sudo make install  > yadoms_cmake.log
 - cd ..
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf cmake-3.7.1-build.tar.bz2 cmake-3.7.1; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then curl --ftp-create-dirs -T cmake-3.7.1-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/static/; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then curl --ftp-create-dirs -T cmake-3.7.1-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/raspberry_pi/; fi
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then rm -f cmake-3.7.1-build.tar.bz2; fi
 
 # boost
