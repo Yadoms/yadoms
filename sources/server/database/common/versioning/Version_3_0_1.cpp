@@ -61,7 +61,7 @@ namespace database
 
                auto qUpdate = pRequester->newQuery();
                qUpdate.Update(CRuleTable::getTableName()).
-                      Set(CRuleTable::getInterpreterColumnName(), "python27").
+                      Set(CRuleTable::getInterpreterColumnName(), "yPython27").
                       Where(CRuleTable::getInterpreterColumnName(), CQUERY_OP_EQUAL, "python");
 
                pRequester->queryStatement(qUpdate);
