@@ -10,8 +10,8 @@ before_install:
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Upload build components"; else echo "Do not upload built components"; fi
 
 
-- echo $FTP_USER
-- echo $FTP_PASSWORD
+- echo ${FTP_USER}
+- echo ${FTP_PASSWORD}
 
 #g++ arm-linux-gnueabihf 
 - echo 'Installing arm-linux-gnueabihf cross toolchain'
