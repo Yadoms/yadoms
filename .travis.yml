@@ -9,11 +9,6 @@ before_install:
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "using uploaded components"; else echo "using official components and build them"; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Upload build components"; else echo "Do not upload built components"; fi
 
-
-- echo ${FTP_USER}
-- echo ${FTP_PASSWORD}
-- curl --ftp-create-dirs -T sources/CMakeListsUserConfig.sample.txt -u ${FTP_USER}:${FTP_PASSWORD} ftp://ftp.jano42.fr/travis_build/raspberry_pi/
-
 #g++ arm-linux-gnueabihf 
 - echo 'Installing arm-linux-gnueabihf cross toolchain'
 - git clone --depth=1 git://github.com/raspberrypi/tools.git
@@ -41,7 +36,7 @@ before_install:
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar xjf boost_1_63_0-build.tar.bz2; else tar xjf boost_1_63_0.tar.bz2; fi
 - cd boost_1_63_0
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass boost/bootstrap"; else ./bootstrap.sh > yadoms_boost.log; fi
-- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass boost/config"; else echo 'using gcc:arm:arm-linux-gnueabihf-g++ ;' > $HOME/user-config.jam; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass boost/config"; else wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/raspberry_pi/user-config.txt -O $HOME/user-config.jam; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass boost/b2"; else ./b2 --with-atomic --with-chrono --with-date_time --with-filesystem --with-regex --with-serialization --with-thread --with-system --no-samples --no-tests toolset=gcc-arm link=static > yadoms_boost.log; fi
 - cd ..
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf boost_1_63_0-build.tar.bz2 boost_1_63_0; fi
