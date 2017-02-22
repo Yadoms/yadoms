@@ -49,7 +49,7 @@ before_install:
   
  # openssl
 - echo 'Building OpenSSL'
-- if [ ${GENERATE_OPENSSL} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/openssl-1.0.2k-build.tar.bz2 else wget https://www.openssl.org/source/openssl-1.0.2k.tar.gz; fi
+- if [ ${GENERATE_OPENSSL} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/openssl-1.0.2k-build.tar.bz2; else wget https://www.openssl.org/source/openssl-1.0.2k.tar.gz; fi
 - if [ ${GENERATE_OPENSSL} != true ]; then tar xjf openssl-1.0.2k-build.tar.bz2; else tar xzf openssl-1.0.2k.tar.gz; fi
 - cd openssl-1.0.2k
 - if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/configure"; else ./Configure --prefix=$PWD/../build/openssl os/compiler:arm-linux-gnueabihf; fi
@@ -111,7 +111,7 @@ before_install:
 
  # pcre
 - echo 'Building PCRE'
-- if [ ${GENERATE_PCRE} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/pcre-8.40-build.tar.bz2 else wget https://ftp.pcre.org/pub/pcre/pcre-8.40.tar.gz; fi
+- if [ ${GENERATE_PCRE} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/pcre-8.40-build.tar.bz2; else wget https://ftp.pcre.org/pub/pcre/pcre-8.40.tar.gz; fi
 - if [ ${GENERATE_PCRE} != true ]; then tar xjf pcre-8.40-build.tar.bz2; else tar xzf pcre-8.40.tar.gz; fi
 - cd pcre-8.40
 - if [ ${GENERATE_PCRE} != true ]; then echo "Bypass PCRE/configure"; else ./configure --host=arm-linux-gnueabihf CC=arm-linux-gnueabihf-gcc AR=arm-linux-gnueabihf-ar STRIP=arm-linux-gnueabihf-strip RANLIB=arm-linux-gnueabihf-ranlib --prefix=$PWD/../build/pcre; fi
