@@ -58,8 +58,8 @@ before_install:
 - if [ ${GENERATE_POCO} != true ]; then tar xjf poco-1.7.7-all-build.tar.bz2; else tar xzf poco-1.7.7-all.tar.gz; fi
 - sudo apt-get install libssl-dev libgnutls-dev libopencv-gpu-dev
 - cd poco-1.7.7-all/
-- if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/copy_config_file"; else cp build/config/ARM-Linux build/config/RaspberryPI; fi
 - if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/configure_config_file"; else echo 'TOOL               = arm-linux-gnueabihf' > build/config/RaspberryPI; fi
+- if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/copy_config_file"; else cat build/config/ARM-Linux >> build/config/RaspberryPI; fi
 - if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/configure"; else ./configure --static --config=RaspberryPI --no-samples --no-tests --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page --include-path=$PWD/../build/openssl/include --library-path=$PWD/../build/openssl/lib> yadoms_poco.log; fi
 - if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/make"; else make > yadoms_poco.log; fi
 - cd ..
