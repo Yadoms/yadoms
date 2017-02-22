@@ -71,27 +71,27 @@ before_install:
 # protobuf (host)
 - echo 'Building Protobuf 3.2.0 HOST '
 - sudo apt-get install autoconf libtool
-- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/protobuf-3.2.0-build.tar.bz2; else wget https://github.com/google/protobuf/releases/download/v3.2.0/protobuf-cpp-3.2.0.tar.gz; fi
-- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then tar xjf protobuf-3.2.0-build.tar.bz2; else tar xzf protobuf-cpp-3.2.0.tar.gz; fi
+- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/protobuf-3.2.0-host-build.tar.bz2; else wget https://github.com/google/protobuf/releases/download/v3.2.0/protobuf-cpp-3.2.0.tar.gz; fi
+- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then tar xjf protobuf-3.2.0-host-build.tar.bz2; else tar xzf protobuf-cpp-3.2.0.tar.gz; fi
 - cd protobuf-3.2.0
-- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then echo "Bypass protobuf/mkdir build"; else mkdir build > yadoms_protobuf.log; fi
+- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then echo "Bypass protobuf/mkdir build"; else mkdir build > yadoms_protobuf_host.log; fi
 - cd build
-- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then echo "Bypass protobuf/cmake ../cmake"; else cmake ../cmake > yadoms_protobuf.log; fi
-- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then echo "Bypass protobuf/cmake --build ."; else cmake --build . > yadoms_protobuf.log; fi
+- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then echo "Bypass protobuf/cmake ../cmake"; else cmake ../cmake > yadoms_protobuf_host.log; fi
+- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then echo "Bypass protobuf/cmake --build ."; else cmake --build . > yadoms_protobuf_host.log; fi
 - sudo make install
 - sudo ldconfig
 - cd ..
 - cd ..
-- if [ ${GENERATE_PROTOBUF_HOST} = true ]; then tar cjf protobuf-3.2.0-build.tar.bz2 protobuf-3.2.0; fi
-- if [ ${GENERATE_PROTOBUF_HOST} = true ]; then curl --ftp-create-dirs -T protobuf-3.2.0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${GENERATE_PROTOBUF_HOST} = true ]; then rm -f protobuf-3.2.0-build.tar.bz2; fi
+- if [ ${GENERATE_PROTOBUF_HOST} = true ]; then tar cjf protobuf-3.2.0-host-build.tar.bz2 protobuf-3.2.0; fi
+- if [ ${GENERATE_PROTOBUF_HOST} = true ]; then curl --ftp-create-dirs -T protobuf-3.2.0-host-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
+- if [ ${GENERATE_PROTOBUF_HOST} = true ]; then rm -f protobuf-3.2.0-host-build.tar.bz2; fi
+- rm -Rf protobuf-3.2.0
 
 # protobuf (pi)
 - echo 'Building Protobuf 3.2.0 PI'
-- if [ ${GENERATE_PROTOBUF} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/protobuf-3.2.0-build-pi.tar.bz2; fi
-- if [ ${GENERATE_PROTOBUF} != true ]; then tar xjf protobuf-3.2.0-build-pi.tar.bz2; fi
+- if [ ${GENERATE_PROTOBUF} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/protobuf-3.2.0-build-pi.tar.bz2; else wget https://github.com/google/protobuf/releases/download/v3.2.0/protobuf-cpp-3.2.0.tar.gz; fi
+- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then tar xjf protobuf-3.2.0-host-build.tar.bz2; else tar xzf protobuf-cpp-3.2.0.tar.gz; fi
 - cd protobuf-3.2.0
-- if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/clean"; else make distclean > yadoms_protobuf_pi.log; fi
 - if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/configure"; else ./configure --enable-shared=no --host=arm-linux-gnueabihf --prefix=$PWD/../build/protobuf --with-protoc=protoc > yadoms_protobuf_pi.log; fi
 - if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/make"; else make > yadoms_protobuf_pi.log; fi
 - make install > yadoms_protobuf_pi.log
