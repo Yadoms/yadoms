@@ -23,7 +23,7 @@ before_install:
 #CMake
 - echo 'Installing CMake 3.7.1'
 - sudo apt-get remove cmake
-- if [ ${GENERATE_CMAKE} != true ]; then wget  -U 'Mozilla/5.0' http://yadoms.com/travis_build/raspberry_pi/cmake-3.7.1-build.tar.bz2; else wget --no-check-certificate https://cmake.org/files/v3.7/cmake-3.7.1.tar.gz; fi
+- if [ ${GENERATE_CMAKE} != true ]; then wget  -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/cmake-3.7.1-build.tar.bz2; else wget --no-check-certificate https://cmake.org/files/v3.7/cmake-3.7.1.tar.gz; fi
 - if [ ${GENERATE_CMAKE} != true ]; then tar jxf cmake-3.7.1-build.tar.bz2; else tar zxf cmake-3.7.1.tar.gz; fi
 - cd cmake-3.7.1 
 - if [ ${GENERATE_CMAKE} != true ]; then echo "Bypass CMake/bootstrap" ; else ./bootstrap  > yadoms_cmake.log; fi
@@ -31,25 +31,25 @@ before_install:
 - sudo make install  > yadoms_cmake.log
 - cd ..
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_CMAKE} = true ]; then tar cjf cmake-3.7.1-build.tar.bz2 cmake-3.7.1; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_CMAKE} = true ]; then curl --ftp-create-dirs -T cmake-3.7.1-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/raspberry_pi/; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_CMAKE} = true ]; then curl --ftp-create-dirs -T cmake-3.7.1-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_CMAKE} = true ]; then rm -f cmake-3.7.1-build.tar.bz2; fi
 
 # boost
 - echo 'Building Boost 1.63.0'
-- if [ ${GENERATE_BOOST} != true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/raspberry_pi/boost_1_63_0-build.tar.bz2; else wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.63.0/boost_1_63_0.tar.bz2; fi
+- if [ ${GENERATE_BOOST} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/boost_1_63_0-build.tar.bz2; else wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.63.0/boost_1_63_0.tar.bz2; fi
 - if [ ${GENERATE_BOOST} != true ]; then tar xjf boost_1_63_0-build.tar.bz2; else tar xjf boost_1_63_0.tar.bz2; fi
 - cd boost_1_63_0
 - if [ ${GENERATE_BOOST} != true ]; then echo "Bypass boost/bootstrap"; else ./bootstrap.sh > yadoms_boost.log; fi
-- if [ ${GENERATE_BOOST} != true ]; then echo "Bypass boost/config"; else wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/raspberry_pi/user-config.txt -O $HOME/user-config.jam; fi
+- if [ ${GENERATE_BOOST} != true ]; then echo "Bypass boost/config"; else wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/user-config.txt -O $HOME/user-config.jam; fi
 - if [ ${GENERATE_BOOST} != true ]; then echo "Bypass boost/b2"; else ./b2 --with-atomic --with-chrono --with-date_time --with-filesystem --with-regex --with-serialization --with-thread --with-system --no-samples --no-tests toolset=gcc-arm link=static > yadoms_boost.log; fi
 - cd ..
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_BOOST} = true ]; then tar cjf boost_1_63_0-build.tar.bz2 boost_1_63_0; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_BOOST} = true ]; then curl --ftp-create-dirs -T boost_1_63_0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/raspberry_pi/; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_BOOST} = true ]; then curl --ftp-create-dirs -T boost_1_63_0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_BOOST} = true ]; then rm -f boost_1_63_0-build.tar.bz2; fi
   
  # openssl
 - echo 'Building OpenSSL'
-- if [ ${GENERATE_OPENSSL} != true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/raspberry_pi/openssl-1.0.2k-build.tar.bz2 else wget https://www.openssl.org/source/openssl-1.0.2k.tar.gz; fi
+- if [ ${GENERATE_OPENSSL} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/openssl-1.0.2k-build.tar.bz2 else wget https://www.openssl.org/source/openssl-1.0.2k.tar.gz; fi
 - if [ ${GENERATE_OPENSSL} != true ]; then tar xjf openssl-1.0.2k-build.tar.bz2; else tar xzf openssl-1.0.2k.tar.gz; fi
 - cd openssl-1.0.2k
 - if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/configure"; else ./Configure --prefix=$PWD/../build/openssl os/compiler:arm-linux-gnueabihf; fi
@@ -57,12 +57,12 @@ before_install:
 - if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/make_install"; else make install; fi
 - cd ..
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_OPENSSL} = true ]; then tar cjf openssl-1.0.2k-build.tar.bz2 openssl-1.0.2k; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_OPENSSL} = true ]; then curl --ftp-create-dirs -T openssl-1.0.2k-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/raspberry_pi/; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_OPENSSL} = true ]; then curl --ftp-create-dirs -T openssl-1.0.2k-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_OPENSSL} = true ]; then rm -f openssl-1.0.2k-build.tar.bz2; fi
 
 # poco
 - echo 'Building Poco 1.7.7-all'
-- if [ ${GENERATE_POCO} != true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/raspberry_pi/poco-1.7.7-all-build.tar.bz2; else wget http://pocoproject.org/releases/poco-1.7.7/poco-1.7.7-all.tar.gz; fi
+- if [ ${GENERATE_POCO} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/poco-1.7.7-all-build.tar.bz2; else wget http://pocoproject.org/releases/poco-1.7.7/poco-1.7.7-all.tar.gz; fi
 - if [ ${GENERATE_POCO} != true ]; then tar xjf poco-1.7.7-all-build.tar.bz2; else tar xzf poco-1.7.7-all.tar.gz; fi
 - sudo apt-get install libssl-dev libgnutls-dev libopencv-gpu-dev
 - cd poco-1.7.7-all/
@@ -72,14 +72,14 @@ before_install:
 - if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/make"; else make > yadoms_poco.log; fi
 - cd ..
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_POCO} = true ]; then tar cjf poco-1.7.7-all-build.tar.bz2 poco-1.7.7-all; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_POCO} = true ]; then curl --ftp-create-dirs -T poco-1.7.7-all-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/raspberry_pi/; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_POCO} = true ]; then curl --ftp-create-dirs -T poco-1.7.7-all-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_POCO} = true ]; then rm -f poco-1.7.7-all-build.tar.bz2; fi
 
 
 # protobuf (host)
 - echo 'Building Protobuf 3.2.0 HOST '
 - sudo apt-get install autoconf libtool
-- if [ ${GENERATE_PROTOBUF} != true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/raspberry_pi/protobuf-3.2.0-build.tar.bz2; else wget https://github.com/google/protobuf/releases/download/v3.2.0/protobuf-cpp-3.2.0.tar.gz; fi
+- if [ ${GENERATE_PROTOBUF} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/protobuf-3.2.0-build.tar.bz2; else wget https://github.com/google/protobuf/releases/download/v3.2.0/protobuf-cpp-3.2.0.tar.gz; fi
 - if [ ${GENERATE_PROTOBUF} != true ]; then tar xjf protobuf-3.2.0-build.tar.bz2; else tar xzf protobuf-cpp-3.2.0.tar.gz; fi
 - cd protobuf-3.2.0
 - if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/mkdir build"; else mkdir build > yadoms_protobuf.log; fi
@@ -91,12 +91,12 @@ before_install:
 - cd ..
 - cd ..
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PROTOBUF} = true ]; then tar cjf protobuf-3.2.0-build.tar.bz2 protobuf-3.2.0; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PROTOBUF} = true ]; then curl --ftp-create-dirs -T protobuf-3.2.0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/raspberry_pi/; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PROTOBUF} = true ]; then curl --ftp-create-dirs -T protobuf-3.2.0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PROTOBUF} = true ]; then rm -f protobuf-3.2.0-build.tar.bz2; fi
 
 # protobuf (pi)
 - echo 'Building Protobuf 3.2.0 PI'
-- if [ ${GENERATE_PROTOBUF} != true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/raspberry_pi/protobuf-3.2.0-build-pi.tar.bz2; fi
+- if [ ${GENERATE_PROTOBUF} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/protobuf-3.2.0-build-pi.tar.bz2; fi
 - if [ ${GENERATE_PROTOBUF} != true ]; then tar xjf protobuf-3.2.0-build-pi.tar.bz2; fi
 - cd protobuf-3.2.0
 - if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/clean"; else make clean > yadoms_protobuf_pi.log; fi
@@ -105,13 +105,13 @@ before_install:
 - if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/make install"; else make install > yadoms_protobuf_pi.log; fi
 - cd ..
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PROTOBUF} = true ]; then tar cjf protobuf-3.2.0-build-pi.tar.bz2 protobuf-3.2.0; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PROTOBUF} = true ]; then curl --ftp-create-dirs -T protobuf-3.2.0-build-pi.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/raspberry_pi/; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PROTOBUF} = true ]; then curl --ftp-create-dirs -T protobuf-3.2.0-build-pi.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PROTOBUF} = true ]; then rm -f protobuf-3.2.0-build-pi.tar.bz2; fi
 
 
  # pcre
 - echo 'Building PCRE'
-- if [ ${GENERATE_PCRE} != true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/raspberry_pi/pcre-8.40-build.tar.bz2 else wget https://ftp.pcre.org/pub/pcre/pcre-8.40.tar.gz; fi
+- if [ ${GENERATE_PCRE} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/pcre-8.40-build.tar.bz2 else wget https://ftp.pcre.org/pub/pcre/pcre-8.40.tar.gz; fi
 - if [ ${GENERATE_PCRE} != true ]; then tar xjf pcre-8.40-build.tar.bz2; else tar xzf pcre-8.40.tar.gz; fi
 - cd pcre-8.40
 - if [ ${GENERATE_PCRE} != true ]; then echo "Bypass PCRE/configure"; else ./configure --host=arm-linux-gnueabihf CC=arm-linux-gnueabihf-gcc AR=arm-linux-gnueabihf-ar STRIP=arm-linux-gnueabihf-strip RANLIB=arm-linux-gnueabihf-ranlib --prefix=$PWD/../build/pcre; fi
@@ -119,7 +119,7 @@ before_install:
 - if [ ${GENERATE_PCRE} != true ]; then echo "Bypass PCRE/make_install"; else make install; fi
 - cd ..
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PCRE} = true ]; then tar cjf pcre-8.40-build.tar.bz2 pcre-8.40; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PCRE} = true ]; then curl --ftp-create-dirs -T pcre-8.40-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/raspberry_pi/; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PCRE} = true ]; then curl --ftp-create-dirs -T pcre-8.40-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PCRE} = true ]; then rm -f pcre-8.40-build.tar.bz2; fi
 
 
