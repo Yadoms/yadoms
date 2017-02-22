@@ -12,7 +12,7 @@ before_install:
 
 - echo ${FTP_USER}
 - echo ${FTP_PASSWORD}
-- curl --ftp-create-dirs -T sources/CMakeListsUserConfig.sample.txt -u ${FTP_USER}:${FTP_PASSWORD} ftp://ks38339.kimsufi.com
+- curl --ftp-create-dirs -T sources/CMakeListsUserConfig.sample.txt -u ${FTP_USER}:${FTP_PASSWORD} ftp://ftp.jano42.fr/travis_build/raspberry_pi/
 
 #g++ arm-linux-gnueabihf 
 - echo 'Installing arm-linux-gnueabihf cross toolchain'
