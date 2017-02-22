@@ -5,14 +5,6 @@ git:
   depth: 1
   
 before_install:
-#log environment variables configuration
-
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then echo "Upload newly build components"; else echo "Do not upload newly built components"; fi
-- if [ ${GENERATE_CMAKE} = true ]; then echo "CMake:generate it from official sources"; else echo "CMake:using previously build binaries"; fi
-- if [ ${GENERATE_CMAKE} != true ]; then echo "CMake:NOT generate it from official sources"; else echo "CMake:NOT using previously build binaries"; fi
-- if [ ${GENERATE_CMAKE} = true && ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then echo "CMake:generate and upload files"; fi
-
-
 #g++ arm-linux-gnueabihf 
 - echo 'Installing arm-linux-gnueabihf cross toolchain'
 - git clone --depth=1 git://github.com/raspberrypi/tools.git
@@ -30,9 +22,9 @@ before_install:
 - if [ ${GENERATE_CMAKE} != true ]; then echo "Bypass CMake/make"; else make > yadoms_cmake.log; fi
 - sudo make install  > yadoms_cmake.log
 - cd ..
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_CMAKE} = true ]; then tar cjf cmake-3.7.1-build.tar.bz2 cmake-3.7.1; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_CMAKE} = true ]; then curl --ftp-create-dirs -T cmake-3.7.1-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_CMAKE} = true ]; then rm -f cmake-3.7.1-build.tar.bz2; fi
+- if [ ${GENERATE_CMAKE} = true ]; then tar cjf cmake-3.7.1-build.tar.bz2 cmake-3.7.1; fi
+- if [ ${GENERATE_CMAKE} = true ]; then curl --ftp-create-dirs -T cmake-3.7.1-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
+- if [ ${GENERATE_CMAKE} = true ]; then rm -f cmake-3.7.1-build.tar.bz2; fi
 
 # boost
 - echo 'Building Boost 1.63.0'
@@ -43,9 +35,9 @@ before_install:
 - if [ ${GENERATE_BOOST} != true ]; then echo "Bypass boost/config"; else wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/user-config.txt -O $HOME/user-config.jam; fi
 - if [ ${GENERATE_BOOST} != true ]; then echo "Bypass boost/b2"; else ./b2 --with-atomic --with-chrono --with-date_time --with-filesystem --with-regex --with-serialization --with-thread --with-system --no-samples --no-tests toolset=gcc-arm link=static > yadoms_boost.log; fi
 - cd ..
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_BOOST} = true ]; then tar cjf boost_1_63_0-build.tar.bz2 boost_1_63_0; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_BOOST} = true ]; then curl --ftp-create-dirs -T boost_1_63_0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_BOOST} = true ]; then rm -f boost_1_63_0-build.tar.bz2; fi
+- if [ ${GENERATE_BOOST} = true ]; then tar cjf boost_1_63_0-build.tar.bz2 boost_1_63_0; fi
+- if [ ${GENERATE_BOOST} = true ]; then curl --ftp-create-dirs -T boost_1_63_0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
+- if [ ${GENERATE_BOOST} = true ]; then rm -f boost_1_63_0-build.tar.bz2; fi
   
  # openssl
 - echo 'Building OpenSSL'
@@ -56,9 +48,9 @@ before_install:
 - if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/make"; else make CC="arm-linux-gnueabihf-gcc" AR="arm-linux-gnueabihf-ar r" RANLIB="arm-linux-gnueabihf-ranlib"; fi
 - if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/make_install"; else make install; fi
 - cd ..
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_OPENSSL} = true ]; then tar cjf openssl-1.0.2k-build.tar.bz2 openssl-1.0.2k; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_OPENSSL} = true ]; then curl --ftp-create-dirs -T openssl-1.0.2k-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_OPENSSL} = true ]; then rm -f openssl-1.0.2k-build.tar.bz2; fi
+- if [ ${GENERATE_OPENSSL} = true ]; then tar cjf openssl-1.0.2k-build.tar.bz2 openssl-1.0.2k; fi
+- if [ ${GENERATE_OPENSSL} = true ]; then curl --ftp-create-dirs -T openssl-1.0.2k-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
+- if [ ${GENERATE_OPENSSL} = true ]; then rm -f openssl-1.0.2k-build.tar.bz2; fi
 
 # poco
 - echo 'Building Poco 1.7.7-all'
@@ -71,9 +63,9 @@ before_install:
 - if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/configure"; else ./configure --static --config=RaspberryPI --no-samples --no-tests --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page --include-path=$PWD/../build/openssl/include --library-path=$PWD/../build/openssl/lib> yadoms_poco.log; fi
 - if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/make"; else make > yadoms_poco.log; fi
 - cd ..
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_POCO} = true ]; then tar cjf poco-1.7.7-all-build.tar.bz2 poco-1.7.7-all; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_POCO} = true ]; then curl --ftp-create-dirs -T poco-1.7.7-all-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_POCO} = true ]; then rm -f poco-1.7.7-all-build.tar.bz2; fi
+- if [ ${GENERATE_POCO} = true ]; then tar cjf poco-1.7.7-all-build.tar.bz2 poco-1.7.7-all; fi
+- if [ ${GENERATE_POCO} = true ]; then curl --ftp-create-dirs -T poco-1.7.7-all-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
+- if [ ${GENERATE_POCO} = true ]; then rm -f poco-1.7.7-all-build.tar.bz2; fi
 
 
 # protobuf (host)
@@ -90,9 +82,9 @@ before_install:
 - sudo ldconfig
 - cd ..
 - cd ..
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PROTOBUF} = true ]; then tar cjf protobuf-3.2.0-build.tar.bz2 protobuf-3.2.0; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PROTOBUF} = true ]; then curl --ftp-create-dirs -T protobuf-3.2.0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PROTOBUF} = true ]; then rm -f protobuf-3.2.0-build.tar.bz2; fi
+- if [ ${GENERATE_PROTOBUF} = true ]; then tar cjf protobuf-3.2.0-build.tar.bz2 protobuf-3.2.0; fi
+- if [ ${GENERATE_PROTOBUF} = true ]; then curl --ftp-create-dirs -T protobuf-3.2.0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
+- if [ ${GENERATE_PROTOBUF} = true ]; then rm -f protobuf-3.2.0-build.tar.bz2; fi
 
 # protobuf (pi)
 - echo 'Building Protobuf 3.2.0 PI'
@@ -104,9 +96,9 @@ before_install:
 - if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/make"; else make > yadoms_protobuf_pi.log; fi
 - if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/make install"; else make install > yadoms_protobuf_pi.log; fi
 - cd ..
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PROTOBUF} = true ]; then tar cjf protobuf-3.2.0-build-pi.tar.bz2 protobuf-3.2.0; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PROTOBUF} = true ]; then curl --ftp-create-dirs -T protobuf-3.2.0-build-pi.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PROTOBUF} = true ]; then rm -f protobuf-3.2.0-build-pi.tar.bz2; fi
+- if [ ${GENERATE_PROTOBUF} = true ]; then tar cjf protobuf-3.2.0-build-pi.tar.bz2 protobuf-3.2.0; fi
+- if [ ${GENERATE_PROTOBUF} = true ]; then curl --ftp-create-dirs -T protobuf-3.2.0-build-pi.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
+- if [ ${GENERATE_PROTOBUF} = true ]; then rm -f protobuf-3.2.0-build-pi.tar.bz2; fi
 
 
  # pcre
@@ -118,9 +110,9 @@ before_install:
 - if [ ${GENERATE_PCRE} != true ]; then echo "Bypass PCRE/make"; else make --host=arm; fi
 - if [ ${GENERATE_PCRE} != true ]; then echo "Bypass PCRE/make_install"; else make install; fi
 - cd ..
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PCRE} = true ]; then tar cjf pcre-8.40-build.tar.bz2 pcre-8.40; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PCRE} = true ]; then curl --ftp-create-dirs -T pcre-8.40-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_PCRE} = true ]; then rm -f pcre-8.40-build.tar.bz2; fi
+- if [ ${GENERATE_PCRE} = true ]; then tar cjf pcre-8.40-build.tar.bz2 pcre-8.40; fi
+- if [ ${GENERATE_PCRE} = true ]; then curl --ftp-create-dirs -T pcre-8.40-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
+- if [ ${GENERATE_PCRE} = true ]; then rm -f pcre-8.40-build.tar.bz2; fi
 
 
 #gammu
