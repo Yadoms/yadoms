@@ -8,9 +8,9 @@ before_install:
 #log environment variables configuration
 
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Upload newly build components"; else echo "Do not upload newly built components"; fi
-- if [ ${GENERATE_CMAKE} = true ]; then echo "CMake : generate it from official sources"; else echo "CMake : using previously build binaries"; fi
-- if [ ${GENERATE_CMAKE} != true ]; then echo "CMake : NOT generate it from official sources"; else echo "CMake : NOT using previously build binaries"; fi
-- if [ ${GENERATE_CMAKE} = true && ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "CMake : generate and upload files"; fi
+- if [ ${GENERATE_CMAKE} = true ]; then echo "CMake:generate it from official sources"; else echo "CMake:using previously build binaries"; fi
+- if [ ${GENERATE_CMAKE} != true ]; then echo "CMake:NOT generate it from official sources"; else echo "CMake:NOT using previously build binaries"; fi
+- if [ ${GENERATE_CMAKE} = true && ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "CMake:generate and upload files"; fi
 
 
 #g++ arm-linux-gnueabihf 
