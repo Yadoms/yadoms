@@ -53,7 +53,7 @@ before_install:
 - if [ ${GENERATE_OPENSSL} != true ]; then tar xjf openssl-1.0.2k-build.tar.bz2; else tar xzf openssl-1.0.2k.tar.gz; fi
 - cd openssl-1.0.2k
 - if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/configure"; else ./Configure --prefix=$PWD/../build/openssl os/compiler:arm-linux-gnueabihf; fi
-- if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/make"; else make CC="arm-linux-gnueabihf-gcc" AR="arm-linux-gnueabihf-ar" RANLIB="arm-linux-gnueabihf-ranlib"; fi
+- if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/make"; else make CC="arm-linux-gnueabihf-gcc" AR="arm-linux-gnueabihf-ar r" RANLIB="arm-linux-gnueabihf-ranlib"; fi
 - if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/make_install"; else make install; fi
 - cd ..
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true && ${GENERATE_OPENSSL} = true ]; then tar cjf openssl-1.0.2k-build.tar.bz2 openssl-1.0.2k; fi
