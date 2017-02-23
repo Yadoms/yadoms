@@ -90,7 +90,7 @@ before_install:
 # protobuf (pi)
 - echo 'Building Protobuf 3.2.0 PI'
 - if [ ${GENERATE_PROTOBUF} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/protobuf-3.2.0-build-pi.tar.bz2; else wget https://github.com/google/protobuf/releases/download/v3.2.0/protobuf-cpp-3.2.0.tar.gz; fi
-- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then tar xjf protobuf-3.2.0-host-build.tar.bz2; else tar xzf protobuf-cpp-3.2.0.tar.gz; fi
+- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then tar xjf protobuf-3.2.0-build-pi.tar.bz2; else tar xzf protobuf-cpp-3.2.0.tar.gz; fi
 - cd protobuf-3.2.0
 - if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/autogen"; else ./autogen.sh; fi
 - if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/configure"; else ./configure --enable-shared=no --host=arm-linux CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar STRIP=arm-linux-gnueabihf-strip RANLIB=arm-linux-gnueabihf-ranlib --prefix=$PWD/../build/protobuf --with-protoc=protoc > yadoms_protobuf_pi.log; fi
