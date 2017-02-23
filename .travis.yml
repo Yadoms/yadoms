@@ -141,8 +141,6 @@ before_install:
 - if [ ${GENERATE_SWIG} = true ]; then curl --ftp-create-dirs -T swig-3.0.12-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
 - if [ ${GENERATE_SWIG} = true ]; then rm -f swig-3.0.12-build.tar.bz2; fi
 
-
-
 #
 ## PostgreSQL
 #- sudo apt-get install libpq-dev postgresql-server-dev-9.3
