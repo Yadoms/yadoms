@@ -44,7 +44,7 @@ before_install:
 - if [ ${GENERATE_OPENSSL} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/openssl-1.0.2k-build.tar.bz2; else wget https://www.openssl.org/source/openssl-1.0.2k.tar.gz; fi
 - if [ ${GENERATE_OPENSSL} != true ]; then tar xjf openssl-1.0.2k-build.tar.bz2; else tar xzf openssl-1.0.2k.tar.gz; fi
 - cd openssl-1.0.2k
-- if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/configure"; else ./Configure --prefix=$PWD/../build/openssl os/compiler:arm-linux-gnueabihf; fi
+- if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/configure"; else ./Configure --prefix=$PWD/depsBuild/openssl os/compiler:arm-linux-gnueabihf; fi
 - if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/make"; else make CC="arm-linux-gnueabihf-gcc" AR="arm-linux-gnueabihf-ar r" RANLIB="arm-linux-gnueabihf-ranlib"; fi
 - make install
 - cd ..
@@ -60,7 +60,7 @@ before_install:
 - cd poco-1.7.7-all/
 - if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/configure_config_file"; else echo 'TOOL               = arm-linux-gnueabihf' > build/config/RaspberryPI; fi
 - if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/copy_config_file"; else cat build/config/ARM-Linux >> build/config/RaspberryPI; fi
-- if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/configure"; else ./configure --static --config=RaspberryPI --no-samples --no-tests --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page --include-path=$PWD/../build/openssl/include --library-path=$PWD/../build/openssl/lib> yadoms_poco.log; fi
+- if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/configure"; else ./configure --static --config=RaspberryPI --no-samples --no-tests --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page --include-path=$PWD/depsBuild/openssl/include --library-path=$PWD/depsBuild/openssl/lib> yadoms_poco.log; fi
 - if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/make"; else make > yadoms_poco.log; fi
 - cd ..
 - if [ ${GENERATE_POCO} = true ]; then tar cjf poco-1.7.7-all-build.tar.bz2 poco-1.7.7-all; fi
@@ -93,7 +93,7 @@ before_install:
 - if [ ${GENERATE_PROTOBUF_HOST} != true ]; then tar xjf protobuf-3.2.0-build-pi.tar.bz2; else tar xzf protobuf-cpp-3.2.0.tar.gz; fi
 - cd protobuf-3.2.0
 - if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/autogen"; else ./autogen.sh; fi
-- if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/configure"; else ./configure --enable-shared=no --host=arm-linux CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar STRIP=arm-linux-gnueabihf-strip RANLIB=arm-linux-gnueabihf-ranlib --prefix=$PWD/../build/protobuf --with-protoc=protoc > yadoms_protobuf_pi.log; fi
+- if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/configure"; else ./configure --enable-shared=no --host=arm-linux CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar STRIP=arm-linux-gnueabihf-strip RANLIB=arm-linux-gnueabihf-ranlib --prefix=$PWD/depsBuild/protobuf --with-protoc=protoc > yadoms_protobuf_pi.log; fi
 - if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/make"; else make > yadoms_protobuf_pi.log; fi
 - make install > yadoms_protobuf_pi.log
 - cd ..
@@ -107,7 +107,7 @@ before_install:
 - if [ ${GENERATE_PCRE} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/pcre-8.40-build.tar.bz2; else wget https://ftp.pcre.org/pub/pcre/pcre-8.40.tar.gz; fi
 - if [ ${GENERATE_PCRE} != true ]; then tar xjf pcre-8.40-build.tar.bz2; else tar xzf pcre-8.40.tar.gz; fi
 - cd pcre-8.40
-- if [ ${GENERATE_PCRE} != true ]; then echo "Bypass PCRE/configure"; else ./configure --host=arm-linux-gnueabihf CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar STRIP=arm-linux-gnueabihf-strip RANLIB=arm-linux-gnueabihf-ranlib --prefix=$PWD/../build/pcre; fi
+- if [ ${GENERATE_PCRE} != true ]; then echo "Bypass PCRE/configure"; else ./configure --host=arm-linux-gnueabihf CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar STRIP=arm-linux-gnueabihf-strip RANLIB=arm-linux-gnueabihf-ranlib --prefix=$PWD/depsBuild/pcre; fi
 - if [ ${GENERATE_PCRE} != true ]; then echo "Bypass PCRE/make"; else make; fi
 - make install
 - cd ..
@@ -153,13 +153,13 @@ script:
 - echo 'set(POCO_ROOT "'$PWD'/poco-1.7.7-all")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
 - echo 'set(COTIRE_USE_UNITY ON)' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_ROOT "'$PWD'/../build/protobuf")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_INCLUDE_DIR "'$PWD'/../build/protobuf/include")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_LIBRARY "'$PWD'/../build/protobuf/lib/libprotobuf.a")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_LIBRARY_DEBUG "'$PWD'/../build/protobuf/lib/libprotobuf.a")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_LITE_LIBRARY "'$PWD'/../build/protobuf/lib/libprotobuf-lite.a")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_LITE_LIBRARY_DEBUG "'$PWD'/../build/protobuf/lib/libprotobuf-lite.a")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(OPENSSL_ROOT_DIR "'$PWD'/../build/openssl")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_ROOT "'$PWD'/depsBuild/protobuf")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_INCLUDE_DIR "'$PWD'/depsBuild/protobuf/include")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_LIBRARY "'$PWD'/depsBuild/protobuf/lib/libprotobuf.a")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_LIBRARY_DEBUG "'$PWD'/depsBuild/protobuf/lib/libprotobuf.a")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_LITE_LIBRARY "'$PWD'/depsBuild/protobuf/lib/libprotobuf-lite.a")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_LITE_LIBRARY_DEBUG "'$PWD'/depsBuild/protobuf/lib/libprotobuf-lite.a")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(OPENSSL_ROOT "'$PWD'/depsBuild/openssl")' >> sources/CMakeListsUserConfig.txt
 
 #- echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.36.8")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.12")' >> sources/CMakeListsUserConfig.txt
