@@ -107,8 +107,8 @@ before_install:
 - if [ ${GENERATE_PCRE} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/pcre-8.40-build.tar.bz2; else wget https://ftp.pcre.org/pub/pcre/pcre-8.40.tar.gz; fi
 - if [ ${GENERATE_PCRE} != true ]; then tar xjf pcre-8.40-build.tar.bz2; else tar xzf pcre-8.40.tar.gz; fi
 - cd pcre-8.40
-- if [ ${GENERATE_PCRE} != true ]; then echo "Bypass PCRE/configure"; else ./configure --host=arm-linux-gnueabihf CC=arm-linux-gnueabihf-gcc AR=arm-linux-gnueabihf-ar STRIP=arm-linux-gnueabihf-strip RANLIB=arm-linux-gnueabihf-ranlib --prefix=$PWD/../build/pcre; fi
-- if [ ${GENERATE_PCRE} != true ]; then echo "Bypass PCRE/make"; else make --host=arm; fi
+- if [ ${GENERATE_PCRE} != true ]; then echo "Bypass PCRE/configure"; else ./configure --host=arm-linux-gnueabihf CC=arm-linux-gnueabihf-gcc AR=arm-linux-gnueabihf-ar STRIP=arm-linux-gnueabihf-strip RANLIB=arm-linux-gnueabihf-ranlib --prefix=$PWD/../build/pcre > yadoms_pcre.log; fi
+- if [ ${GENERATE_PCRE} != true ]; then echo "Bypass PCRE/make"; else make > yadoms_pcre.log; fi
 - make install
 - cd ..
 - if [ ${GENERATE_PCRE} = true ]; then tar cjf pcre-8.40-build.tar.bz2 pcre-8.40; fi
