@@ -81,14 +81,14 @@ before_install:
 #gammu
 - echo 'Building Gammu 1.38.1'
 - sudo apt-get install cmake python-dev pkg-config libmysqlclient-dev libpq-dev libcurl4-gnutls-dev libusb-1.0-0-dev libdbi0-dev libbluetooth-dev libgudev-1.0-dev libglib2.0-dev unixodbc-dev
-- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/static/gammu-1.38.1-build.tar.bz2; else wget http://dl.cihar.com/gammu/releases/gammu-1.38.1.tar.gz
-- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar xjf gammu-1.38.1-build.tar.bz2; else tar zxf gammu-1.38.1.tar.gz
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/static/gammu-1.38.1-build.tar.bz2; else wget http://dl.cihar.com/gammu/releases/gammu-1.38.1.tar.gz; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar xjf gammu-1.38.1-build.tar.bz2; else tar zxf gammu-1.38.1.tar.gz; fi
 - cd gammu-1.38.1
-- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass mkdir build"; else mkdir build
-- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass cd build"; else cd build
-- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass cmake -DBUILD_SHARED_LIBS=OFF .."; else cmake -DBUILD_SHARED_LIBS=OFF ..
-- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass make"; else make
-- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass cd .."; else cd ..
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass mkdir build"; else mkdir build; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass cd build"; else cd build; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass cmake -DBUILD_SHARED_LIBS=OFF .."; else cmake -DBUILD_SHARED_LIBS=OFF .. > yadoms_gammu.log; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass make"; else make > yadoms_gammu.log; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass cd .."; else cd ..; fi
 - then cd ..
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf gammu-1.38.1-build.tar.bz2 gammu-1.38.1; fi
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then curl --ftp-create-dirs -T gammu-1.38.1-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/static/; fi
