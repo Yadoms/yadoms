@@ -158,6 +158,7 @@ script:
 
 #- echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.36.8")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.12")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(CC_RPI_ROOT "'$PWD'/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf")' >> sources/CMakeListsUserConfig.txt
 - echo 'Result:'
 - cat sources/CMakeListsUserConfig.txt
 
