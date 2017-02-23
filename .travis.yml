@@ -89,7 +89,7 @@ before_install:
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass cmake -DBUILD_SHARED_LIBS=OFF .."; else cmake -DBUILD_SHARED_LIBS=OFF .. > yadoms_gammu.log; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass make"; else make > yadoms_gammu.log; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass cd .."; else cd ..; fi
-- then cd ..
+- cd ..
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf gammu-1.38.1-build.tar.bz2 gammu-1.38.1; fi
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then curl --ftp-create-dirs -T gammu-1.38.1-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/static/; fi
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then rm -f gammu-1.38.1-build.tar.bz2; fi
