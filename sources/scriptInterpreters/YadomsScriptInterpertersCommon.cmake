@@ -2,14 +2,19 @@
 #
 
 MACRO(SCRIPT_INTERPRETER_SOURCES _targetName)
+   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${YADOMS_OUTPUT_DIR}/scriptInterpreters/${_targetName} )
    foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
        string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${YADOMS_OUTPUT_DIR}/${OUTPUTCONFIG}/scriptInterpreters/${_targetName})
    endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)
+   
+   FILE(GLOB TRANSLATION_FILES locales/*)
+   source_group(locales locales/*)
 
    set(SCRIPT_INTERPRETER_SOURCE_FILES
       ${ARGN}
       package.json
+      ${TRANSLATION_FILES}
       )
       
    add_executable(${_targetName} ${SCRIPT_INTERPRETER_SOURCE_FILES})
@@ -82,41 +87,70 @@ ENDMACRO()
 # param [in] _resource The resource (absolute path) to copy to the target output dir
 MACRO(SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE _targetName _resource)
 
-   get_filename_component(_resourcePath ${_resource}  DIRECTORY)
+   if (IS_ABSOLUTE ${_resource})
+      set(resource ${_resource})
+   else()
+      set(resource "${CMAKE_CURRENT_SOURCE_DIR}/${_resource}")
+   endif()
+
+   get_filename_component(_resourcePath ${resource}  DIRECTORY)
+   get_filename_component(_resourceFile ${resource}  NAME)
 
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
-
-   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 
+   
+   install(FILES ${resource} 
 			DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${_targetName}/${_resourcePath}
-			COMPONENT   ${ComponentCompatibleName})
-
+			COMPONENT  ${ComponentCompatibleName})
+			
    add_custom_command(TARGET ${_targetName} POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} $<TARGET_FILE_DIR:${_targetName}>/${_resource})
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${resource} $<TARGET_FILE_DIR:${_targetName}>/${_resourceFile})
    if(COTIRE_USE)
       if(COTIRE_USE_UNITY)
          add_custom_command(TARGET ${_targetName}_unity POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} $<TARGET_FILE_DIR:${_targetName}_unity>/${_resource})
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${resource} $<TARGET_FILE_DIR:${_targetName}_unity>/${_resourceFile})
 	  endif()	
    endif()	
 ENDMACRO()
 
-
 # brief Copy a directory (and its content) to the target output dir
 # param [in] _targetName The current target (ie: pluginName)
 # param [in] _resource The resource folder (absolute path) to copy to the target output dir
+# param [in/optional] To specify the target destination (if omit, destination will be the last part of _resource tree)
 MACRO(SCRIPT_INTERPRETER_POST_BUILD_COPY_DIRECTORY _targetName _resource)
+
+   set (extra_args ${ARGN})
+   list(LENGTH extra_args num_extra_args)
+   if (${num_extra_args} GREATER 0)
+      # A target folder is given
+      list(GET extra_args 0 where)
+   else()
+      # No target folder
+      if (IS_ABSOLUTE ${_resource})
+         get_filename_component(where "${_resource}" NAME)
+      else()
+         set(where ${_resource})
+      endif()
+   endif()
+   
+   if (IS_ABSOLUTE ${_resource})
+      set(resource ${_resource})
+   else()
+      set(resource "${CMAKE_CURRENT_SOURCE_DIR}/${_resource}")
+   endif()
+
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
-   install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 
-			DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${_targetName}
-			COMPONENT   ${ComponentCompatibleName})
+
+   install(DIRECTORY ${resource} 
+			DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${where}
+			COMPONENT  ${ComponentCompatibleName})
 
    add_custom_command(TARGET ${_targetName} POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} $<TARGET_FILE_DIR:${_targetName}>/${_resource})
+      COMMAND ${CMAKE_COMMAND} -E copy_directory ${resource} $<TARGET_FILE_DIR:${_targetName}>/${where})
 	  
    if(COTIRE_USE)
       if(COTIRE_USE_UNITY)
          add_custom_command(TARGET ${_targetName}_unity POST_BUILD
-           COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} $<TARGET_FILE_DIR:${_targetName}_unity>/${_resource})
+           COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/${resource} $<TARGET_FILE_DIR:${_targetName}_unity>/${where})
 	  endif()	
    endif()		  
 ENDMACRO()

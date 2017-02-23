@@ -11,7 +11,7 @@ if(PYTHONLIBS_FOUND)
    #########################################
    ## Place here all the source files
    #########################################
-   set(PYTHON27_SOURCES
+   set(YPYTHON27_SOURCES
       stdafx.h
       stdafx.cpp
       EventScriptStopped.h
@@ -41,24 +41,24 @@ if(PYTHONLIBS_FOUND)
    
    #Append platform specific files
    IF(WIN32)
-      set(PYTHON27_SOURCES	
-         ${PYTHON27_SOURCES}
+      set(YPYTHON27_SOURCES	
+         ${YPYTHON27_SOURCES}
          platformSpecific/windows/PythonExecutablePath.h
          platformSpecific/windows/PythonExecutablePath.cpp
       )	
       set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/platformSpecific/windows)
 
    ELSEIF(APPLE)
-      set(PYTHON27_SOURCES	
-         ${PYTHON27_SOURCES}
+      set(YPYTHON27_SOURCES	
+         ${YPYTHON27_SOURCES}
          platformSpecific/mac/PythonExecutablePath.h
          platformSpecific/mac/PythonExecutablePath.cpp
       )	
       set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/platformSpecific/mac)
 
    ELSE()
-      set(PYTHON27_SOURCES	
-         ${PYTHON27_SOURCES}
+      set(YPYTHON27_SOURCES	
+         ${YPYTHON27_SOURCES}
          platformSpecific/linux/PythonExecutablePath.h
          platformSpecific/linux/PythonExecutablePath.cpp
       )	
@@ -69,22 +69,22 @@ if(PYTHONLIBS_FOUND)
    
    #########################################
    ## Always leave these lines to configure script interpreter correctly
-   ## even if PYTHON27_INCLDIR or PYTHON27_LINK are empty
+   ## even if YPYTHON27_INCLDIR or YPYTHON27_LINK are empty
    #########################################
-   SCRIPT_INTERPRETER_SOURCES(python27 ${PYTHON27_SOURCES})
-   SCRIPT_INTERPRETER_INCLDIR(python27 ${PYTHON27_INCLDIR} ${PLATFORM_SPECIFIC_INCL_DIR} ${PROTOBUF_INCLUDE_DIRS})
-   SCRIPT_INTERPRETER_LINK(python27 ${PYTHON27_LINK})
+   SCRIPT_INTERPRETER_SOURCES(yPython27 ${YPYTHON27_SOURCES})
+   SCRIPT_INTERPRETER_INCLDIR(yPython27 ${YPYTHON27_INCLDIR} ${PLATFORM_SPECIFIC_INCL_DIR} ${PROTOBUF_INCLUDE_DIRS})
+   SCRIPT_INTERPRETER_LINK(yPython27 ${YPYTHON27_LINK})
 
    #########################################
    ## Post-build commands
    ## Copy files to build directory
    #########################################
-   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(python27 package.json)
-   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(python27 icon.png)
-   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(python27 scriptCaller.py)
-   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(python27 scriptUtilities.py)
-   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(python27 template.py)
-   SCRIPT_INTERPRETER_POST_BUILD_COPY_DIRECTORY(python27 locales)
+   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(yPython27 package.json)
+   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(yPython27 icon.png)
+   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(yPython27 scriptCaller.py)
+   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(yPython27 scriptUtilities.py)
+   SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(yPython27 template.py)
+   SCRIPT_INTERPRETER_POST_BUILD_COPY_DIRECTORY(yPython27 locales)
 	  
    #########################################
    ## Generate the associated yScriptApiwrapper
@@ -92,5 +92,5 @@ if(PYTHONLIBS_FOUND)
    add_subdirectory(yScriptApiWrapper)
    
 else()
-   message(WARNING "Python27 interpreter is not available. Python library is Mssing")
+   message(WARNING "yPython27 interpreter is not available. Python library is Mssing")
 endif()

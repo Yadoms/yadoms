@@ -6,16 +6,18 @@
 INCLUDE(${SWIG_USE_FILE})
 
 MACRO(SCRIPT_API_WRAPPER_SET_PARENT_INTERPRETER parentInterpreter)
+   set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${YADOMS_OUTPUT_DIR}/scriptInterpreters/${parentInterpreter})
    foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
        string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${YADOMS_OUTPUT_DIR}/${OUTPUTCONFIG}/scriptInterpreters/${parentInterpreter})
-   endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)
+   endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)   
 ENDMACRO()
    
 MACRO(SCRIPT_API_WRAPPER_SOURCES targetLanguage)
    include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${SHARED_INCL_DIR})
    SET(SWIG_MODULE_yScriptApiWrapper_EXTRA_DEPS ${SHARED_COMMON_INCL_DIR}/shared/script/yScriptApi/IYScriptApi.h)
    SWIG_ADD_MODULE(yScriptApiWrapper ${targetLanguage} ${ARGN})
+   project(yScriptApiWrapper)   
 ENDMACRO()
 
 MACRO(SCRIPT_API_WRAPPER_INCLDIR)
@@ -28,6 +30,6 @@ ENDMACRO()
 
 MACRO(SCRIPT_API_SOURCE_GROUP parentInterpreter)
    IF(MSVC OR XCODE)
-      SET_PROPERTY(TARGET ${SWIG_MODULE_yScriptApiWrapper_REAL_NAME} PROPERTY FOLDER "scriptInterpreters/${parentInterpreter}/yScriptApiWrapper")
+      SET_PROPERTY(TARGET ${SWIG_MODULE_yScriptApiWrapper_REAL_NAME} PROPERTY FOLDER "scriptInterpreters/${parentInterpreter}")
    ENDIF()
 ENDMACRO()
