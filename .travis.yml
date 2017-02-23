@@ -154,6 +154,11 @@ script:
 - echo 'set(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
 - echo 'set(COTIRE_USE_UNITY ON)' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PROTOBUF_ROOT "'$PWD'/../build/protobuf")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_INCLUDE_DIR "'$PWD'/../build/protobuf/include")
+- echo 'set(PROTOBUF_LIBRARY "'$PWD'/../build/protobuf/lib/libprotobuf.a")
+- echo 'set(PROTOBUF_LIBRARY_DEBUG "'$PWD'/../build/protobuf/lib/libprotobuf.a")
+- echo 'set(PROTOBUF_LITE_LIBRARY "'$PWD'/../build/protobuf/lib/libprotobuf-lite.a")
+- echo 'set(PROTOBUF_LITE_LIBRARY_DEBUG "'$PWD'/../build/protobuf/lib/libprotobuf-lite.a")
 - echo 'set(OPENSSL_ROOT_DIR "'$PWD'/../build/openssl")' >> sources/CMakeListsUserConfig.txt
 
 #- echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.36.8")' >> sources/CMakeListsUserConfig.txt
