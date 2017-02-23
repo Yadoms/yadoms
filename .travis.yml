@@ -24,7 +24,7 @@ before_install:
 #CMake
 - echo 'Installing CMake 3.7.1'
 - sudo apt-get remove cmake
-- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget  -U 'Mozilla/5.0' http://yadoms.com/travis_build/static/cmake-3.7.1-build.tar.bz2; else wget --no-check-certificate https://cmake.org/files/v3.7/cmake-3.7.1.tar.gz; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget http://yadoms.com/travis_build/static/cmake-3.7.1-build.tar.bz2; else wget --no-check-certificate https://cmake.org/files/v3.7/cmake-3.7.1.tar.gz; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar jxf cmake-3.7.1-build.tar.bz2; else tar zxf cmake-3.7.1.tar.gz; fi
 - cd cmake-3.7.1 
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass bootstrap" ; else ./bootstrap  > yadoms_cmake.log; fi
@@ -37,7 +37,7 @@ before_install:
 
 # boost
 - echo 'Building Boost 1.63.0'
-- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/static/boost_1_63_0-build.tar.bz2; else wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.63.0/boost_1_63_0.tar.bz2; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget http://yadoms.com/travis_build/static/boost_1_63_0-build.tar.bz2; else wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.63.0/boost_1_63_0.tar.bz2; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar xjf boost_1_63_0-build.tar.bz2; else tar xjf boost_1_63_0.tar.bz2; fi
 - cd boost_1_63_0
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass boost/bootstrap"; else ./bootstrap.sh > yadoms_boost.log; fi
