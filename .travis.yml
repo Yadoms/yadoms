@@ -156,7 +156,7 @@ before_install:
 - if [ ${GENERATE_SWIG} = true ]; then rm -f swig-3.0.12-build.tar.bz2; fi
 
 # Python HOST
-- sudo apt-get install install python-dev
+- sudo apt-get install python-dev
 - echo 'Building Python HOST'
 - if [ ${GENERATE_PYTHON_HOST} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/Python-2.7.13-host-build.tar.bz2; else wget https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz; fi
 - if [ ${GENERATE_PYTHON_HOST} != true ]; then tar xjf Python-2.7.13-host-build.tar.bz2; else tar xzf Python-2.7.13.tgz; fi
