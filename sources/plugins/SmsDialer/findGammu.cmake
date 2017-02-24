@@ -51,7 +51,7 @@ if(NOT APPLE)
    endif()
 
    
-   if(DEFINED GAMMU_LIBRARIES)
+   if(GAMMU_LIBRARIES)
 
       set(GAMMU_INCLUDE_DIRS ${GAMMU_PKG_INCLUDE_DIRS})
 
