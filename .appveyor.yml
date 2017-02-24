@@ -23,7 +23,7 @@ configuration: Release
 # scripts that run after cloning repository
 install:
   - cmake --version
-  - wget -U 'Mozilla/5.0' http://yadoms.com/appveyor_build/boost_1_61_0-build.7z
+  - appveyor DownloadFile -U 'Mozilla/5.0' http://yadoms.com/appveyor_build/boost_1_61_0-build.7z
   - 7z x boost_1_61_0-build.7z
 
 # scripts to run before build
@@ -37,7 +37,7 @@ before_build:
   - echo set(BOOST_ROOT "%cd_for_cmake%/../boost_1_63_0") > sources/CMakeListsUserConfig.txt
   - echo set(POCO_ROOT "%cd_for_cmake%/../poco-1.7.7-all") >> sources/CMakeListsUserConfig.txt
   - echo set(PROTOBUF_ROOT "%cd_for_cmake%/../protobuf-3.1.0") >> sources/CMakeListsUserConfig.txt
-  - echo set(GAMMU_ROOT "%cd_for_cmake%/../gammu-1.38.1") >> sources/CMakeListsUserConfig.txt
+  # TODO - echo set(GAMMU_ROOT "%cd_for_cmake%/../gammu-1.38.1") >> sources/CMakeListsUserConfig.txt
   - echo set(SWIG_ROOT "%cd_for_cmake%/../swig-3.0.8") >> sources/CMakeListsUserConfig.txt
   - echo set(COTIRE_USE ON) >> sources/CMakeListsUserConfig.txt
   - echo set(COTIRE_USE_UNITY ON) >> sources/CMakeListsUserConfig.txt
