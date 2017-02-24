@@ -23,6 +23,8 @@ configuration: Release
 # scripts that run after cloning repository
 install:
   - cmake --version
+  - wget -U 'Mozilla/5.0' http://yadoms.com/appveyor_build/boost_1_61_0-build.7z
+  - 7z x boost_1_61_0-build.7z
 
 # scripts to run before build
 before_build:
