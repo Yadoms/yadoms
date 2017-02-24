@@ -218,6 +218,8 @@ script:
 - echo 'SET(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
 - echo 'SET(COTIRE_USE_UNITY ON)' >> sources/CMakeListsUserConfig.txt
 - echo 'set(LIBUDEV_ROOT "'$PWD'/libudev")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(UDEV_PATH "'$PWD'/libudev")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(UDEV_LIBRARIES "'$PWD'/libudev")' >> sources/CMakeListsUserConfig.txt
 
 #- echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.36.8")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.12")' >> sources/CMakeListsUserConfig.txt
