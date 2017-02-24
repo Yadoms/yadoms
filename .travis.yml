@@ -160,29 +160,31 @@ before_install:
 - echo 'Building Python HOST'
 - if [ ${GENERATE_PYTHON_HOST} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/Python-2.7.13-host-build.tar.bz2; else wget https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz; fi
 - if [ ${GENERATE_PYTHON_HOST} != true ]; then tar xjf Python-2.7.13-host-build.tar.bz2; else tar xzf Python-2.7.13.tgz; fi
-- cd python-2.7.13
+- cd Python-2.7.13
 - if [ ${GENERATE_PYTHON_HOST} != true ]; then echo "Bypass PYTHON HOST/configure"; else ./configure; fi
-- if [ ${GENERATE_PYTHON_HOST} != true ]; then echo "Bypass PYTHON HOST/make"; else make python; fi
+- if [ ${GENERATE_PYTHON_HOST} != true ]; then echo "Bypass PYTHON HOST/make"; else make python Parser/pgen; fi
 - sudo make install
+- mkdir ../pythonhost
+- cp python ../pythonhost/
+- cp Parser/pgen ../pythonhost/
 - cd ..
-- if [ ${GENERATE_PYTHON_HOST} = true ]; then tar cjf Python-2.7.13-host-build.tar.bz2 python-2.7.13; fi
+- if [ ${GENERATE_PYTHON_HOST} = true ]; then tar cjf Python-2.7.13-host-build.tar.bz2 Python-2.7.13; fi
 - if [ ${GENERATE_PYTHON_HOST} = true ]; then curl --ftp-create-dirs -T Python-2.7.13-host-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
 - if [ ${GENERATE_PYTHON_HOST} = true ]; then rm -f Python-2.7.13-host-build.tar.bz2; fi
-- rm -Rf python-2.7.13
+- rm -Rf Python-2.7.13
 
 # Python PI
 - echo 'Building Python PI'
 - if [ ${GENERATE_PYTHON} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/Python-2.7.13-pi-build.tar.bz2; else wget https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz; fi
 - if [ ${GENERATE_PYTHON} != true ]; then tar xjf Python-2.7.13-pi-build.tar.bz2; else tar xzf Python-2.7.13.tgz; fi
-- cd python-2.7.13
-- if [ ${GENERATE_PYTHON} != true ]; then echo "Bypass PYTHON PI/configure"; else CC="arm-linux-gnueabihf-gcc" CXX="arm-linux-gnueabihf-g++" AR="arm-linux-gnueabihf-ar" RANLIB="arm-linux-gnueabihf-ranlib" ./configure --host=arm-linux --build=arm-linux-gnueabihf --prefix=$PWD/depsBuild/python --disable-ipv6 ac_cv_file__dev_ptmx=no ac_cv_file__dev_ptc=no ac_cv_have_long_long_format=yes --enable-shared; fi
-- if [ ${GENERATE_PYTHON} != true ]; then echo "Bypass PYTHON PI/make"; else make; fi
-- make install
+- cd Python-2.7.13
+- if [ ${GENERATE_PYTHON} != true ]; then echo "Bypass PYTHON PI/configure"; else CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar RANLIB=arm-linux-gnueabihf-ranlib ./configure --host=arm-linux-gnueabihf --target=arm-linux-gnueabihf --build=x86_64-linux-gnu --prefix=$PWD/depsBuild/python --disable-ipv6 ac_cv_file__dev_ptmx=no ac_cv_file__dev_ptc=no ac_cv_have_long_long_format=yes --enable-shared; fi
+- if [ ${GENERATE_PYTHON} != true ]; then echo "Bypass PYTHON PI/make"; else make HOSTPYTHON="../pythonhost/python HOSTPGEN=../pythonhost/pgen BLDSHARED="arm-linux-gnueabihf-cc -shared" CROSS-COMPILE=arm-linux-gnueabihf- CROSS_COMPILE_TARGET=yes HOSTARCH=arm-linux BUILDARCH=arm-linux-gnueabihf; fi
 - cd ..
-- if [ ${GENERATE_PYTHON} = true ]; then tar cjf Python-2.7.13-pi-build.tar.bz2 python-2.7.13; fi
+- if [ ${GENERATE_PYTHON} = true ]; then tar cjf Python-2.7.13-pi-build.tar.bz2 Python-2.7.13; fi
 - if [ ${GENERATE_PYTHON} = true ]; then curl --ftp-create-dirs -T Python-2.7.13-pi-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
 - if [ ${GENERATE_PYTHON} = true ]; then rm -f Python-2.7.13-pi-build.tar.bz2; fi
-- rm -Rf python-2.7.13
+
 
 #
 ## PostgreSQL
@@ -206,9 +208,9 @@ script:
 - echo 'set(DEBUG_WITH_GCC OFF)' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PYTHON_USE_PKGCONFIG OFF)' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PYTHON_USE_SOURCES ON)' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PYTHON_ROOT "'$PWD'/depsBuild/python")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PYTHON_INCLUDE_DIRS "'$PWD'/depsBuild/python/include/python27")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PYTHON_LIBRARIES "'$PWD'/depsBuild/python/lib/libpython2.7.so")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PYTHON_ROOT "'$PWD'/Python-2.7.13")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PYTHON_INCLUDE_DIRS "'$PWD'/Python-2.7.13/include")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PYTHON_LIBRARIES "'$PWD'/Python-2.7.13/libpython2.7.so")' >> sources/CMakeListsUserConfig.txt
 - echo 'SET(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
 - echo 'SET(COTIRE_USE_UNITY ON)' >> sources/CMakeListsUserConfig.txt
 #- echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.36.8")' >> sources/CMakeListsUserConfig.txt
