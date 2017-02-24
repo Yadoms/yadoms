@@ -57,18 +57,22 @@ if(NOT APPLE)
    endif()
 
    
-   set(GAMMU_INCLUDE_DIRS ${GAMMU_PKG_INCLUDE_DIRS})
+   if(DEFINED GAMMU_LIBRARIES)
 
-   # Add additional libraries
-   set(GAMMU_LIBRARIES ${GAMMU_LIBRARIES} ${GAMMU_ADDITIONAL_LIBRARIES})
+      set(GAMMU_INCLUDE_DIRS ${GAMMU_PKG_INCLUDE_DIRS})
 
-   # handle the QUIETLY and REQUIRED arguments and set GAMMU_FOUND to TRUE if 
-   # all listed variables are TRUE
-   include(FindPackageHandleStandardArgs)
-   message ("GAMMU_INCLUDE_DIRS=${GAMMU_INCLUDE_DIRS}")
-   message ("GAMMU_LIBRARIES=${GAMMU_LIBRARIES}")
-   find_package_handle_standard_args(Gammu DEFAULT_MSG GAMMU_INCLUDE_DIRS GAMMU_LIBRARIES)
-   message ("GAMMU_FOUND=${GAMMU_FOUND}")
+      # Add additional libraries
+      set(GAMMU_LIBRARIES ${GAMMU_LIBRARIES} ${GAMMU_ADDITIONAL_LIBRARIES})
+
+      # handle the QUIETLY and REQUIRED arguments and set GAMMU_FOUND to TRUE if 
+      # all listed variables are TRUE
+      include(FindPackageHandleStandardArgs)
+      message ("GAMMU_INCLUDE_DIRS=${GAMMU_INCLUDE_DIRS}")
+      message ("GAMMU_LIBRARIES=${GAMMU_LIBRARIES}")
+      find_package_handle_standard_args(Gammu DEFAULT_MSG GAMMU_INCLUDE_DIRS GAMMU_LIBRARIES)
+      message ("GAMMU_FOUND=${GAMMU_FOUND}")
+      
+   endif()
 
 endif()
 
