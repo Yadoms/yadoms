@@ -171,7 +171,7 @@ before_install:
 - if [ ${GENERATE_PYTHON_HOST} = true ]; then tar cjf Python-2.7.13-host-build.tar.bz2 Python-2.7.13; fi
 - if [ ${GENERATE_PYTHON_HOST} = true ]; then curl --ftp-create-dirs -T Python-2.7.13-host-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
 - if [ ${GENERATE_PYTHON_HOST} = true ]; then rm -f Python-2.7.13-host-build.tar.bz2; fi
-- rm -Rf Python-2.7.13
+- sudo rm -Rf Python-2.7.13
 
 # Python PI
 - echo 'Building Python PI'
