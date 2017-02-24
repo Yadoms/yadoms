@@ -31,11 +31,12 @@ before_build:
   
   # Yadoms configuration file
   - echo Configuring Yadoms CMakeListsUserConfig.txt"
-  - echo set(BOOST_ROOT "%cd%/boost_1_63_0") > sources/CMakeListsUserConfig.txt
-  - echo set(POCO_ROOT "%cd%/poco-1.7.7-all") >> sources/CMakeListsUserConfig.txt
-  - echo set(PROTOBUF_ROOT "%cd%/protobuf-3.1.0") >> sources/CMakeListsUserConfig.txt
-  - echo set(GAMMU_ROOT "%cd%/gammu-1.38.1") >> sources/CMakeListsUserConfig.txt
-  - echo set(SWIG_ROOT "%cd%/swig-3.0.8") >> sources/CMakeListsUserConfig.txt
+  - set "cd_for_cmake=%cd:\=/%"
+  - echo set(BOOST_ROOT "%cd_for_cmake%/../boost_1_63_0") > sources/CMakeListsUserConfig.txt
+  - echo set(POCO_ROOT "%cd_for_cmake%/../poco-1.7.7-all") >> sources/CMakeListsUserConfig.txt
+  - echo set(PROTOBUF_ROOT "%cd_for_cmake%/../protobuf-3.1.0") >> sources/CMakeListsUserConfig.txt
+  - echo set(GAMMU_ROOT "%cd_for_cmake%/../gammu-1.38.1") >> sources/CMakeListsUserConfig.txt
+  - echo set(SWIG_ROOT "%cd_for_cmake%/../swig-3.0.8") >> sources/CMakeListsUserConfig.txt
   - echo set(COTIRE_USE ON) >> sources/CMakeListsUserConfig.txt
   - echo set(COTIRE_USE_UNITY ON) >> sources/CMakeListsUserConfig.txt
   - echo Result:
