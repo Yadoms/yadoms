@@ -73,7 +73,8 @@ before_install:
 - sudo apt-get install autoconf libtool
 - if [ ${GENERATE_PROTOBUF_HOST} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/protobuf-3.2.0-host-build.tar.bz2; else wget https://github.com/google/protobuf/releases/download/v3.2.0/protobuf-cpp-3.2.0.tar.gz; fi
 - if [ ${GENERATE_PROTOBUF_HOST} != true ]; then tar xjf protobuf-3.2.0-host-build.tar.bz2; else tar xzf protobuf-cpp-3.2.0.tar.gz; fi
-- cd protobuf-3.2.0
+- mv protobuf-3.2.0 protobuf-3.2.0-host
+- cd protobuf-3.2.0-host
 - if [ ${GENERATE_PROTOBUF_HOST} != true ]; then echo "Bypass protobuf/mkdir build"; else mkdir build > yadoms_protobuf_host.log; fi
 - cd build
 - if [ ${GENERATE_PROTOBUF_HOST} != true ]; then echo "Bypass protobuf/cmake ../cmake"; else cmake ../cmake > yadoms_protobuf_host.log; fi
@@ -82,10 +83,9 @@ before_install:
 - sudo ldconfig
 - cd ..
 - cd ..
-- if [ ${GENERATE_PROTOBUF_HOST} = true ]; then tar cjf protobuf-3.2.0-host-build.tar.bz2 protobuf-3.2.0; fi
+- if [ ${GENERATE_PROTOBUF_HOST} = true ]; then tar cjf protobuf-3.2.0-host-build.tar.bz2 protobuf-3.2.0-host; fi
 - if [ ${GENERATE_PROTOBUF_HOST} = true ]; then curl --ftp-create-dirs -T protobuf-3.2.0-host-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
 - if [ ${GENERATE_PROTOBUF_HOST} = true ]; then rm -f protobuf-3.2.0-host-build.tar.bz2; fi
-- rm -Rf protobuf-3.2.0
 
 # protobuf (pi)
 - echo 'Building Protobuf 3.2.0 PI'
@@ -115,6 +115,10 @@ before_install:
 - if [ ${GENERATE_PCRE} = true ]; then curl --ftp-create-dirs -T pcre-8.40-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
 - if [ ${GENERATE_PCRE} = true ]; then rm -f pcre-8.40-build.tar.bz2; fi
 
+#libudev
+- echo 'Get libudev from yadoms.com'
+- wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/libudev.tar.gz
+- tar xzf libudev.tar.gz
 
 #gammu
 # - echo 'Building Gammu 1.36.8'
@@ -213,6 +217,8 @@ script:
 - echo 'set(PYTHON_LIBRARIES "'$PWD'/Python-2.7.13/libpython2.7.so")' >> sources/CMakeListsUserConfig.txt
 - echo 'SET(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
 - echo 'SET(COTIRE_USE_UNITY ON)' >> sources/CMakeListsUserConfig.txt
+- echo 'set(LIBUDEV_ROOT "'$PWD'/libudev")' >> sources/CMakeListsUserConfig.txt
+
 #- echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.36.8")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.12")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(CC_RPI_ROOT "'$PWD'/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf")' >> sources/CMakeListsUserConfig.txt
