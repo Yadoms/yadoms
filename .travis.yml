@@ -90,7 +90,7 @@ before_install:
 # protobuf (pi)
 - echo 'Building Protobuf 3.2.0 PI'
 - if [ ${GENERATE_PROTOBUF} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/protobuf-3.2.0-build-pi.tar.bz2; else wget https://github.com/google/protobuf/releases/download/v3.2.0/protobuf-cpp-3.2.0.tar.gz; fi
-- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then tar xjf protobuf-3.2.0-build-pi.tar.bz2; else tar xzf protobuf-cpp-3.2.0.tar.gz; fi
+- if [ ${GENERATE_PROTOBUF} != true ]; then tar xjf protobuf-3.2.0-build-pi.tar.bz2; else tar xzf protobuf-cpp-3.2.0.tar.gz; fi
 - cd protobuf-3.2.0
 - if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/autogen"; else ./autogen.sh; fi
 - if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/configure"; else ./configure --enable-shared=no --host=arm-linux CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar STRIP=arm-linux-gnueabihf-strip RANLIB=arm-linux-gnueabihf-ranlib --prefix=$PWD/depsBuild/protobuf --with-protoc=protoc > yadoms_protobuf_pi.log; fi
@@ -128,6 +128,20 @@ before_install:
 # - cd ..
 # - cd ..
 
+# GAMMU
+# - echo 'Building GAMMU'
+# - if [ ${GENERATE_GAMMU} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/gammu-1.38.1-build.tar.bz2; else wget https://dl.cihar.com/gammu/releases/gammu-1.38.1.tar.bz2; fi
+# - if [ ${GENERATE_GAMMU} != true ]; then tar xjf gammu-1.38.1-build.tar.bz2; else tar xjf gammu-1.38.1.tar.bz2; fi
+# - cd gammu-1.38.1
+# - if [ ${GENERATE_GAMMU} != true ]; then echo "Bypass GAMMU/configure"; else CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar RANLIB=arm-linux-gnueabihf-ranlib ./configure --prefix=$PWD/depsBuild/gammu; fi
+# - if [ ${GENERATE_GAMMU} != true ]; then echo "Bypass GAMMU/make"; else make; fi
+# - make install
+# - cd ..
+# - if [ ${GENERATE_GAMMU} = true ]; then tar cjf gammu-1.38.1-build.tar.bz2 gammu-1.38.1; fi
+# - if [ ${GENERATE_GAMMU} = true ]; then curl --ftp-create-dirs -T gammu-1.38.1-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
+# - if [ ${GENERATE_GAMMU} = true ]; then rm -f gammu-1.38.1-build.tar.bz2; fi
+
+
  # SWIG
 - echo 'Building SWIG'
 - if [ ${GENERATE_SWIG} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/swig-3.0.12-build.tar.bz2; else wget http://prdownloads.sourceforge.net/swig/swig-3.0.12.tar.gz; fi
@@ -141,6 +155,35 @@ before_install:
 - if [ ${GENERATE_SWIG} = true ]; then curl --ftp-create-dirs -T swig-3.0.12-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
 - if [ ${GENERATE_SWIG} = true ]; then rm -f swig-3.0.12-build.tar.bz2; fi
 
+# Python HOST
+- sudo apt-get install install python-dev
+- echo 'Building Python HOST'
+- if [ ${GENERATE_PYTHON_HOST} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/Python-2.7.13-host-build.tar.bz2; else wget https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz; fi
+- if [ ${GENERATE_PYTHON_HOST} != true ]; then tar xjf Python-2.7.13-host-build.tar.bz2; else tar xzf Python-2.7.13.tgz; fi
+- cd python-2.7.13
+- if [ ${GENERATE_PYTHON_HOST} != true ]; then echo "Bypass PYTHON HOST/configure"; else ./configure; fi
+- if [ ${GENERATE_PYTHON_HOST} != true ]; then echo "Bypass PYTHON HOST/make"; else make python; fi
+- sudo make install
+- cd ..
+- if [ ${GENERATE_PYTHON_HOST} = true ]; then tar cjf Python-2.7.13-host-build.tar.bz2 python-2.7.13; fi
+- if [ ${GENERATE_PYTHON_HOST} = true ]; then curl --ftp-create-dirs -T Python-2.7.13-host-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
+- if [ ${GENERATE_PYTHON_HOST} = true ]; then rm -f Python-2.7.13-host-build.tar.bz2; fi
+- rm -Rf python-2.7.13
+
+# Python PI
+- echo 'Building Python PI'
+- if [ ${GENERATE_PYTHON} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/Python-2.7.13-pi-build.tar.bz2; else wget https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz; fi
+- if [ ${GENERATE_PYTHON} != true ]; then tar xjf Python-2.7.13-pi-build.tar.bz2; else tar xzf Python-2.7.13.tgz; fi
+- cd python-2.7.13
+- if [ ${GENERATE_PYTHON} != true ]; then echo "Bypass PYTHON PI/configure"; else CC="arm-linux-gnueabihf-gcc" CXX="arm-linux-gnueabihf-g++" AR="arm-linux-gnueabihf-ar" RANLIB="arm-linux-gnueabihf-ranlib" ./configure --host=arm-linux --build=arm-linux-gnueabihf --prefix=$PWD/depsBuild/python --disable-ipv6 ac_cv_file__dev_ptmx=no ac_cv_file__dev_ptc=no ac_cv_have_long_long_format=yes --enable-shared; fi
+- if [ ${GENERATE_PYTHON} != true ]; then echo "Bypass PYTHON PI/make"; else make; fi
+- make install
+- cd ..
+- if [ ${GENERATE_PYTHON} = true ]; then tar cjf Python-2.7.13-pi-build.tar.bz2 python-2.7.13; fi
+- if [ ${GENERATE_PYTHON} = true ]; then curl --ftp-create-dirs -T Python-2.7.13-pi-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
+- if [ ${GENERATE_PYTHON} = true ]; then rm -f Python-2.7.13-pi-build.tar.bz2; fi
+- rm -Rf python-2.7.13
+
 #
 ## PostgreSQL
 #- sudo apt-get install libpq-dev postgresql-server-dev-9.3
@@ -148,7 +191,7 @@ before_install:
 script:
 # Yadoms configuration file
 - echo 'Configuring Yadoms CMakeListsUserConfig.txt'
-- cp sources/CMakeListsUserConfig.sample.txt sources/CMakeListsUserConfig.txt 
+#- cp sources/CMakeListsUserConfig.sample.txt sources/CMakeListsUserConfig.txt 
 - echo 'set(BOOST_ROOT "'$PWD'/boost_1_63_0")' > sources/CMakeListsUserConfig.txt
 - echo 'set(POCO_ROOT "'$PWD'/poco-1.7.7-all")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
@@ -160,7 +203,14 @@ script:
 - echo 'set(PROTOBUF_LITE_LIBRARY "'$PWD'/depsBuild/protobuf/lib/libprotobuf-lite.a")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PROTOBUF_LITE_LIBRARY_DEBUG "'$PWD'/depsBuild/protobuf/lib/libprotobuf-lite.a")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(OPENSSL_ROOT "'$PWD'/depsBuild/openssl")' >> sources/CMakeListsUserConfig.txt
-
+- echo 'set(DEBUG_WITH_GCC OFF)' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PYTHON_USE_PKGCONFIG OFF)' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PYTHON_USE_SOURCES ON)' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PYTHON_ROOT "'$PWD'/depsBuild/python")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PYTHON_INCLUDE_DIRS "'$PWD'/depsBuild/python/include/python27")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PYTHON_LIBRARIES "'$PWD'/depsBuild/python/lib/libpython2.7.so")' >> sources/CMakeListsUserConfig.txt
+- echo 'SET(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
+- echo 'SET(COTIRE_USE_UNITY ON)' >> sources/CMakeListsUserConfig.txt
 #- echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.36.8")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.12")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(CC_RPI_ROOT "'$PWD'/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf")' >> sources/CMakeListsUserConfig.txt
