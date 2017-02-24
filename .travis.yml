@@ -88,9 +88,6 @@ before_install:
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass cd build"; else cd build; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass cmake -DBUILD_SHARED_LIBS=OFF .."; else cmake -DBUILD_SHARED_LIBS=OFF .. > yadoms_gammu.log; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass make"; else make > yadoms_gammu.log; fi
-- pwd
-- ls -l build/include
-- ls -l build/libgammu
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass cd .."; else cd ..; fi
 - cd ..
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf gammu-1.38.1-build.tar.bz2 gammu-1.38.1; fi

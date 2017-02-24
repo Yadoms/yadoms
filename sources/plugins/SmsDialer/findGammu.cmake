@@ -48,7 +48,7 @@ if(NOT APPLE)
       message ("GAMMU_PKG_INCLUDE_DIRS=${GAMMU_PKG_INCLUDE_DIRS}")
       message ("GAMMU_PKG_LIBRARY_DIRS=${GAMMU_PKG_LIBRARY_DIRS}")
       message ("GAMMU_PKG_LIBRARIES=${GAMMU_PKG_LIBRARIES}")
-      set(GAMMU_ADDITIONAL_LIBRARIES ${GAMMU_STRING_LIBRARIES} ${GAMMU_WIN32DIRENT_LIBRARIES} usb-1.0 bluetooth glib-2.0)
+      set(GAMMU_ADDITIONAL_LIBRARIES usb-1.0 bluetooth glib-2.0)
          
       message ("GAMMU_ADDITIONAL_LIBRARIES=${GAMMU_ADDITIONAL_LIBRARIES}")
       find_library(GAMMU_LIBRARIES NAMES ${GAMMU_PKG_LIBRARIES} PATHS ${GAMMU_PKG_LIBRARY_DIRS} NO_DEFAULT_PATH)
@@ -57,20 +57,18 @@ if(NOT APPLE)
    endif()
 
    
-   if(GAMMU_FOUND)
+   set(GAMMU_INCLUDE_DIRS ${GAMMU_PKG_INCLUDE_DIRS})
 
-      set(GAMMU_INCLUDE_DIRS ${GAMMU_PKG_INCLUDE_DIRS})
+   # Add additional libraries
+   set(GAMMU_LIBRARIES ${GAMMU_LIBRARIES} ${GAMMU_ADDITIONAL_LIBRARIES})
 
-      # Add additional libraries
-      set(GAMMU_LIBRARIES ${GAMMU_LIBRARIES} ${GAMMU_ADDITIONAL_LIBRARIES})
-
-      # handle the QUIETLY and REQUIRED arguments and set GAMMU_FOUND to TRUE if 
-      # all listed variables are TRUE
-      include(FindPackageHandleStandardArgs)
-      find_package_handle_standard_args(Gammu DEFAULT_MSG GAMMU_INCLUDE_DIRS GAMMU_LIBRARIES)
-      message ("GAMMU_FOUND=${GAMMU_FOUND}")
-      
-   endif()
+   # handle the QUIETLY and REQUIRED arguments and set GAMMU_FOUND to TRUE if 
+   # all listed variables are TRUE
+   include(FindPackageHandleStandardArgs)
+   message ("GAMMU_INCLUDE_DIRS=${GAMMU_INCLUDE_DIRS}")
+   message ("GAMMU_LIBRARIES=${GAMMU_LIBRARIES}")
+   find_package_handle_standard_args(Gammu DEFAULT_MSG GAMMU_INCLUDE_DIRS GAMMU_LIBRARIES)
+   message ("GAMMU_FOUND=${GAMMU_FOUND}")
 
 endif()
 
