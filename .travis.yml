@@ -80,7 +80,7 @@ before_install:
 
 # gammu
 - echo 'Building Gammu 1.38.1'
-- sudo apt-get install cmake python-dev pkg-config libmysqlclient-dev libpq-dev libcurl4-gnutls-dev libusb-1.0-0-dev libdbi0-dev libbluetooth-dev libgudev-1.0-dev libglib2.0-dev unixodbc-dev
+- sudo apt-get install python-dev pkg-config libmysqlclient-dev libpq-dev libcurl4-gnutls-dev libusb-1.0-0-dev libdbi0-dev libbluetooth-dev libgudev-1.0-dev libglib2.0-dev unixodbc-dev
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/static/gammu-1.38.1-build.tar.bz2; else wget http://dl.cihar.com/gammu/releases/gammu-1.38.1.tar.gz; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar xjf gammu-1.38.1-build.tar.bz2; else tar zxf gammu-1.38.1.tar.gz; fi
 - cd gammu-1.38.1
@@ -88,6 +88,8 @@ before_install:
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass cd build"; else cd build; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass cmake -DBUILD_SHARED_LIBS=OFF .."; else cmake -DBUILD_SHARED_LIBS=OFF .. > yadoms_gammu.log; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass make"; else make > yadoms_gammu.log; fi
+- pwd
+- ls -l libGammu
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass cd .."; else cd ..; fi
 - cd ..
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf gammu-1.38.1-build.tar.bz2 gammu-1.38.1; fi
@@ -115,14 +117,13 @@ before_install:
 script:
 # Yadoms configuration file
 - echo 'Configuring Yadoms CMakeListsUserConfig.txt'
-- cp sources/CMakeListsUserConfig.sample.txt sources/CMakeListsUserConfig.txt 
 - echo 'set(BOOST_ROOT "'$PWD'/boost_1_63_0")' > sources/CMakeListsUserConfig.txt
 - echo 'set(POCO_ROOT "'$PWD'/poco-1.7.7-all")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
-- echo 'set(COTIRE_USE_UNITY ON)' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PROTOBUF_ROOT "'$PWD'/protobuf-3.1.0")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.38.1")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.8")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
+- echo 'set(COTIRE_USE_UNITY ON)' >> sources/CMakeListsUserConfig.txt
 - echo 'Result:'
 - cat sources/CMakeListsUserConfig.txt
 
