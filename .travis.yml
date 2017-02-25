@@ -119,7 +119,7 @@ before_install:
 #libudev
 - echo 'Get libudev from yadoms.com'
 - wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/libudev.tar.gz
-- tar xzf libudev.tar.gz
+- tar xzf libudev.tar.gz -C $HOME/depsBuild
 
 #gammu
 # - echo 'Building Gammu 1.36.8'
@@ -222,9 +222,9 @@ script:
 - echo 'set(PYTHON_LIBRARIES "'$PWD'/Python-2.7.13/libpython2.7.so")' >> sources/CMakeListsUserConfig.txt
 - echo 'SET(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
 - echo 'SET(COTIRE_USE_UNITY ON)' >> sources/CMakeListsUserConfig.txt
-- echo 'set(LIBUDEV_ROOT "'$PWD'/libudev")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(UDEV_PATH "'$PWD'/libudev")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(UDEV_LIBRARIES "'$PWD'/libudev")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(LIBUDEV_ROOT "'$HOME'/depsBuild/libudev")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(UDEV_PATH_LIB "'$HOME'/depsBuild/libudev")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(UDEV_PATH_INCLUDES "'$HOME'/depsBuild/libudev")' >> sources/CMakeListsUserConfig.txt
 
 #- echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.36.8")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.12")' >> sources/CMakeListsUserConfig.txt
