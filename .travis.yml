@@ -182,7 +182,7 @@ before_install:
 - if [ ${GENERATE_PYTHON} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/Python-2.7.13-pi-build.tar.bz2; else wget https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz; fi
 - if [ ${GENERATE_PYTHON} != true ]; then tar xjf Python-2.7.13-pi-build.tar.bz2; else tar xzf Python-2.7.13.tgz; fi
 - cd Python-2.7.13
-- if [ ${GENERATE_PYTHON} != true ]; then echo "Bypass PYTHON PI/configure"; else CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar RANLIB=arm-linux-gnueabihf-ranlib ./configure --host=arm-linux-gnueabihf --target=arm-linux-gnueabihf --build=x86_64-linux-gnu --prefix=$PWD/depsBuild/python --disable-ipv6 ac_cv_file__dev_ptmx=no ac_cv_file__dev_ptc=no ac_cv_have_long_long_format=yes --enable-shared > yadoms_pythonpi.log; fi
+- if [ ${GENERATE_PYTHON} != true ]; then echo "Bypass PYTHON PI/configure"; else CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar RANLIB=arm-linux-gnueabihf-ranlib ./configure --host=arm-linux-gnueabihf --target=arm-linux-gnueabihf --build=x86_64-linux-gnu --prefix=$PWD/../depsBuild/python --disable-ipv6 ac_cv_file__dev_ptmx=no ac_cv_file__dev_ptc=no ac_cv_have_long_long_format=yes --enable-shared > yadoms_pythonpi.log; fi
 - if [ ${GENERATE_PYTHON} != true ]; then echo "Bypass PYTHON PI/make"; else make HOSTPYTHON=../pythonhost/python HOSTPGEN=../pythonhost/pgen BLDSHARED="arm-linux-gnueabihf-cc -shared" CROSS-COMPILE=arm-linux-gnueabihf- CROSS_COMPILE_TARGET=yes HOSTARCH=arm-linux BUILDARCH=arm-linux-gnueabihf > yadoms_pythonpi.log; fi
 - cd ..
 - if [ ${GENERATE_PYTHON} = true ]; then tar cjf Python-2.7.13-pi-build.tar.bz2 Python-2.7.13; fi
