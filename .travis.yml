@@ -73,7 +73,7 @@ before_install:
 - sudo apt-get install autoconf libtool
 - if [ ${GENERATE_PROTOBUF_HOST} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/protobuf-3.2.0-host-build.tar.bz2; else wget https://github.com/google/protobuf/releases/download/v3.2.0/protobuf-cpp-3.2.0.tar.gz; fi
 - if [ ${GENERATE_PROTOBUF_HOST} != true ]; then tar xjf protobuf-3.2.0-host-build.tar.bz2; else tar xzf protobuf-cpp-3.2.0.tar.gz; fi
-- mv protobuf-3.2.0 protobuf-3.2.0-host
+- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then echo "Bypass protobuf/mv dir"; else mv protobuf-3.2.0 protobuf-3.2.0-host; fi
 - cd protobuf-3.2.0-host
 - if [ ${GENERATE_PROTOBUF_HOST} != true ]; then echo "Bypass protobuf/mkdir build"; else mkdir build > yadoms_protobuf_host.log; fi
 - cd build
