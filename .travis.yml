@@ -189,6 +189,10 @@ before_install:
 - if [ ${GENERATE_PYTHON} = true ]; then curl --ftp-create-dirs -T Python-2.7.13-pi-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
 - if [ ${GENERATE_PYTHON} = true ]; then rm -f Python-2.7.13-pi-build.tar.bz2; fi
 
+- echo 'Save all depsBuild to ftp'
+- tar cjf depsBuild.tar.bz2 depsBuild
+- curl --ftp-create-dirs -T depsBuild.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}
+- rm -f depsBuild.tar.bz2
 
 #
 ## PostgreSQL
