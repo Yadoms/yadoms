@@ -44,7 +44,7 @@ before_install:
 - if [ ${GENERATE_OPENSSL} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/openssl-1.0.2k-build.tar.bz2; else wget https://www.openssl.org/source/openssl-1.0.2k.tar.gz; fi
 - if [ ${GENERATE_OPENSSL} != true ]; then tar xjf openssl-1.0.2k-build.tar.bz2; else tar xzf openssl-1.0.2k.tar.gz; fi
 - cd openssl-1.0.2k
-- if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/configure"; else ./Configure --prefix=$PWD/../depsBuild/openssl os/compiler:arm-linux-gnueabihf; fi
+- if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/configure"; else ./Configure --prefix=$HOME/depsBuild/openssl os/compiler:arm-linux-gnueabihf; fi
 - if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/make"; else make CC="arm-linux-gnueabihf-gcc" AR="arm-linux-gnueabihf-ar r" RANLIB="arm-linux-gnueabihf-ranlib"; fi
 - make install  > yadoms_openssl.log
 - cd ..
@@ -60,7 +60,7 @@ before_install:
 - cd poco-1.7.7-all/
 - if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/configure_config_file"; else echo 'TOOL               = arm-linux-gnueabihf' > build/config/RaspberryPI; fi
 - if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/copy_config_file"; else cat build/config/ARM-Linux >> build/config/RaspberryPI; fi
-- if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/configure"; else ./configure --static --config=RaspberryPI --no-samples --no-tests --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page --include-path=$PWD/../depsBuild/openssl/include --library-path=$PWD/../depsBuild/openssl/lib> yadoms_poco.log; fi
+- if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/configure"; else ./configure --static --config=RaspberryPI --no-samples --no-tests --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page --include-path=$HOME/depsBuild/openssl/include --library-path=$HOME/depsBuild/openssl/lib> yadoms_poco.log; fi
 - if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/make"; else make > yadoms_poco.log; fi
 - cd ..
 - if [ ${GENERATE_POCO} = true ]; then tar cjf poco-1.7.7-all-build.tar.bz2 poco-1.7.7-all; fi
@@ -93,7 +93,7 @@ before_install:
 - if [ ${GENERATE_PROTOBUF} != true ]; then tar xjf protobuf-3.2.0-build-pi.tar.bz2; else tar xzf protobuf-cpp-3.2.0.tar.gz; fi
 - cd protobuf-3.2.0
 - if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/autogen"; else ./autogen.sh; fi
-- if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/configure"; else ./configure --enable-shared=no --host=arm-linux CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar STRIP=arm-linux-gnueabihf-strip RANLIB=arm-linux-gnueabihf-ranlib --prefix=$PWD/../depsBuild/protobuf --with-protoc=protoc > yadoms_protobuf_pi.log; fi
+- if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/configure"; else ./configure --enable-shared=no --host=arm-linux CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar STRIP=arm-linux-gnueabihf-strip RANLIB=arm-linux-gnueabihf-ranlib --prefix=$HOME/depsBuild/protobuf --with-protoc=protoc > yadoms_protobuf_pi.log; fi
 - if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/make"; else make > yadoms_protobuf_pi.log; fi
 - make install > yadoms_protobuf_pi.log
 - cd ..
@@ -107,7 +107,7 @@ before_install:
 - if [ ${GENERATE_PCRE} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/pcre-8.40-build.tar.bz2; else wget https://ftp.pcre.org/pub/pcre/pcre-8.40.tar.gz; fi
 - if [ ${GENERATE_PCRE} != true ]; then tar xjf pcre-8.40-build.tar.bz2; else tar xzf pcre-8.40.tar.gz; fi
 - cd pcre-8.40
-- if [ ${GENERATE_PCRE} != true ]; then echo "Bypass PCRE/configure"; else ./configure --host=arm-linux-gnueabihf CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar STRIP=arm-linux-gnueabihf-strip RANLIB=arm-linux-gnueabihf-ranlib --prefix=$PWD/depsBuild/pcre > yadoms_pcre.log; fi
+- if [ ${GENERATE_PCRE} != true ]; then echo "Bypass PCRE/configure"; else ./configure --host=arm-linux-gnueabihf CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar STRIP=arm-linux-gnueabihf-strip RANLIB=arm-linux-gnueabihf-ranlib --prefix=$HOME/depsBuild/pcre > yadoms_pcre.log; fi
 - if [ ${GENERATE_PCRE} != true ]; then echo "Bypass PCRE/make"; else make  > yadoms_pcre.log; fi
 - make install > yadoms_pcre.log
 - cd ..
@@ -137,7 +137,7 @@ before_install:
 # - if [ ${GENERATE_GAMMU} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/gammu-1.38.1-build.tar.bz2; else wget https://dl.cihar.com/gammu/releases/gammu-1.38.1.tar.bz2; fi
 # - if [ ${GENERATE_GAMMU} != true ]; then tar xjf gammu-1.38.1-build.tar.bz2; else tar xjf gammu-1.38.1.tar.bz2; fi
 # - cd gammu-1.38.1
-# - if [ ${GENERATE_GAMMU} != true ]; then echo "Bypass GAMMU/configure"; else CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar RANLIB=arm-linux-gnueabihf-ranlib ./configure --prefix=$PWD/depsBuild/gammu; fi
+# - if [ ${GENERATE_GAMMU} != true ]; then echo "Bypass GAMMU/configure"; else CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar RANLIB=arm-linux-gnueabihf-ranlib ./configure --prefix=$HOME/depsBuild/gammu; fi
 # - if [ ${GENERATE_GAMMU} != true ]; then echo "Bypass GAMMU/make"; else make; fi
 # - make install
 # - cd ..
@@ -182,7 +182,7 @@ before_install:
 - if [ ${GENERATE_PYTHON} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/Python-2.7.13-pi-build.tar.bz2; else wget https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz; fi
 - if [ ${GENERATE_PYTHON} != true ]; then tar xjf Python-2.7.13-pi-build.tar.bz2; else tar xzf Python-2.7.13.tgz; fi
 - cd Python-2.7.13
-- if [ ${GENERATE_PYTHON} != true ]; then echo "Bypass PYTHON PI/configure"; else CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar RANLIB=arm-linux-gnueabihf-ranlib ./configure --host=arm-linux-gnueabihf --target=arm-linux-gnueabihf --build=x86_64-linux-gnu --prefix=$PWD/../depsBuild/python --disable-ipv6 ac_cv_file__dev_ptmx=no ac_cv_file__dev_ptc=no ac_cv_have_long_long_format=yes --enable-shared > yadoms_pythonpi.log; fi
+- if [ ${GENERATE_PYTHON} != true ]; then echo "Bypass PYTHON PI/configure"; else CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar RANLIB=arm-linux-gnueabihf-ranlib ./configure --host=arm-linux-gnueabihf --target=arm-linux-gnueabihf --build=x86_64-linux-gnu --prefix=$HOME/depsBuild/python --disable-ipv6 ac_cv_file__dev_ptmx=no ac_cv_file__dev_ptc=no ac_cv_have_long_long_format=yes --enable-shared > yadoms_pythonpi.log; fi
 - if [ ${GENERATE_PYTHON} != true ]; then echo "Bypass PYTHON PI/make"; else make HOSTPYTHON=../pythonhost/python HOSTPGEN=../pythonhost/pgen BLDSHARED="arm-linux-gnueabihf-cc -shared" CROSS-COMPILE=arm-linux-gnueabihf- CROSS_COMPILE_TARGET=yes HOSTARCH=arm-linux BUILDARCH=arm-linux-gnueabihf > yadoms_pythonpi.log; fi
 - cd ..
 - if [ ${GENERATE_PYTHON} = true ]; then tar cjf Python-2.7.13-pi-build.tar.bz2 Python-2.7.13; fi
@@ -190,7 +190,7 @@ before_install:
 - if [ ${GENERATE_PYTHON} = true ]; then rm -f Python-2.7.13-pi-build.tar.bz2; fi
 
 - echo 'Save all depsBuild to ftp'
-- tar cjf depsBuild.tar.bz2 $PWD/depsBuild
+- tar cjf depsBuild.tar.bz2 $HOME/depsBuild
 - curl --ftp-create-dirs -T depsBuild.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}
 - rm -f depsBuild.tar.bz2
 
@@ -206,13 +206,13 @@ script:
 - echo 'set(POCO_ROOT "'$PWD'/poco-1.7.7-all")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
 - echo 'set(COTIRE_USE_UNITY ON)' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_ROOT "'$PWD'/depsBuild/protobuf")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_INCLUDE_DIR "'$PWD'/depsBuild/protobuf/include")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_LIBRARY "'$PWD'/depsBuild/protobuf/lib/libprotobuf.a")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_LIBRARY_DEBUG "'$PWD'/depsBuild/protobuf/lib/libprotobuf.a")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_LITE_LIBRARY "'$PWD'/depsBuild/protobuf/lib/libprotobuf-lite.a")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_LITE_LIBRARY_DEBUG "'$PWD'/depsBuild/protobuf/lib/libprotobuf-lite.a")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(OPENSSL_ROOT "'$PWD'/depsBuild/openssl")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_ROOT "'$HOME'/depsBuild/protobuf")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_INCLUDE_DIR "'$HOME'/depsBuild/protobuf/include")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_LIBRARY "'$HOME'/depsBuild/protobuf/lib/libprotobuf.a")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_LIBRARY_DEBUG "'$HOME'/depsBuild/protobuf/lib/libprotobuf.a")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_LITE_LIBRARY "'$HOME'/depsBuild/protobuf/lib/libprotobuf-lite.a")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_LITE_LIBRARY_DEBUG "'$HOME'/depsBuild/protobuf/lib/libprotobuf-lite.a")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(OPENSSL_ROOT "'$HOME'/depsBuild/openssl")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(DEBUG_WITH_GCC OFF)' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PYTHON_USE_PKGCONFIG OFF)' >> sources/CMakeListsUserConfig.txt
 - echo 'set(PYTHON_USE_SOURCES ON)' >> sources/CMakeListsUserConfig.txt
