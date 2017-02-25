@@ -10,10 +10,13 @@ MACRO(PLUGIN_SOURCES _targetName)
    
    FILE(GLOB TRANSLATION_FILES locales/*)
    source_group(locales locales/*)
+
+   # Add package.json if exists (can be absent if generated)
+   FILE(GLOB PACKAGE_JSON_FILE package.json)
    
    set(PLUGIN_SOURCE_FILES
       ${ARGN}
-      package.json
+      ${PACKAGE_JSON_FILE}
       ${TRANSLATION_FILES}
       )
       

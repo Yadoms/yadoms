@@ -227,7 +227,7 @@ set(ENOCEAN_ADDITIONAL_LIB
 ## Always leave this three lines to configure plugin correctly
 ## even if ENOCEAN_ADDITIONAL_INC_DIR or ENOCEAN_ADDITIONAL_LIB are empty
 #########################################
-# Workaround to tell CMake to not looking for package.json as it will be generated later
+# Workaround to tell CMake to not looking for package.json as it will be generated at compile time
 set_source_files_properties(package.json PROPERTIES GENERATED TRUE)
 PLUGIN_SOURCES(enOcean ${ENOCEAN_SOURCES})
 PLUGIN_INCLDIR(enOcean ${ENOCEAN_ADDITIONAL_INC_DIR})

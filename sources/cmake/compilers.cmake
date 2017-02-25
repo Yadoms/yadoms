@@ -1,7 +1,6 @@
 # Compilers/IDE specific configurations
 #
 message("System Name = ${CMAKE_SYSTEM_NAME}")
-message("Yadoms Platform = ${CMAKE_YADOMS_PLATFORM}")
 
 if(MSVC)
 

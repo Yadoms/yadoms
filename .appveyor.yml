@@ -1,0 +1,66 @@
+# Notes:
+#   - Minimal appveyor.yml file is an empty file. All sections are optional.
+#   - Indent each level of configuration with 2 spaces. Do not use tabs!
+#   - All section names are case-sensitive.
+#   - Section names should be unique on each level.
+
+# version format
+version: 1.0.{build}
+
+# Build worker image (VM template)
+image: Visual Studio 2015
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+platform: Any CPU
+
+# build Configuration, i.e. Debug, Release, etc.
+configuration: Release
+
+# scripts that run after cloning repository
+install:
+  - cmake --version
+  - pushd ..
+  - ps: Invoke-WebRequest ftp://yadoms.com/appveyor_build/boost_1_61_0-build.7z
+  - 7z x boost_1_61_0-build.7z
+  - ps: Invoke-WebRequest ftp://yadoms.com/appveyor_build/OpenSSL-1.1.0d-build.7z
+  - 7z x OpenSSL-1.1.0d-build.7z
+  - ps: Invoke-WebRequest ftp://yadoms.com/appveyor_build/poco-1.7.7-all-build.7z
+  - 7z x poco-1.7.7-all-build.7z
+  - ps: Invoke-WebRequest ftp://yadoms.com/appveyor_build/swigwin-3.0.8-build.7z
+  - 7z x swigwin-3.0.8-build.7z
+  - ps: Invoke-WebRequest ftp://yadoms.com/appveyor_build/protobuf-3.1.0-build.7z
+  - 7z x protobuf-3.1.0-build.7z
+  - popd
+
+# scripts to run before build
+before_build:
+  # Some information
+  - echo Current directory = %cd%
+  
+  # Yadoms configuration file
+  - echo Configuring Yadoms CMakeListsUserConfig.txt"
+  - set "cd_for_cmake=%cd:\=/%"
+  - echo set(BOOST_ROOT "%cd_for_cmake%/../boost_1_63_0") > sources/CMakeListsUserConfig.txt
+  - echo set(POCO_ROOT "%cd_for_cmake%/../poco-1.7.7-all") >> sources/CMakeListsUserConfig.txt
+  - echo set(PROTOBUF_ROOT "%cd_for_cmake%/../protobuf-3.1.0") >> sources/CMakeListsUserConfig.txt
+  # TODO - echo set(GAMMU_ROOT "%cd_for_cmake%/../gammu-1.38.1") >> sources/CMakeListsUserConfig.txt
+  - echo set(SWIG_ROOT "%cd_for_cmake%/../swig-3.0.8") >> sources/CMakeListsUserConfig.txt
+  - echo set(COTIRE_USE ON) >> sources/CMakeListsUserConfig.txt
+  - echo set(COTIRE_USE_UNITY ON) >> sources/CMakeListsUserConfig.txt
+  - echo Result:
+  - cat sources/CMakeListsUserConfig.txt
+  
+  # Build solution
+  - cmake_windows.cmd
+  
+  
+build:
+  parallel: true                  # enable MSBuild parallel builds
+  project: projects/yadoms.sln    # path to Visual Studio solution or project
+
+  # MSBuild verbosity level
+  verbosity: detailed
