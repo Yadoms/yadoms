@@ -11,6 +11,7 @@ before_install:
 - export PATH=$PATH:$PWD/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin
 
 # deps
+- mkdir -p $HOME/depsBuild
 
 #CMake
 - echo 'Installing CMake 3.7.2'
@@ -168,9 +169,9 @@ before_install:
 - if [ ${GENERATE_PYTHON_HOST} != true ]; then echo "Bypass PYTHON HOST/configure"; else ./configure > yadoms_pythonhost.log; fi
 - if [ ${GENERATE_PYTHON_HOST} != true ]; then echo "Bypass PYTHON HOST/make"; else make python Parser/pgen > yadoms_pythonhost.log; fi
 - sudo make install > yadoms_pythonhost.log
-- mkdir -p ../pythonhost
-- cp python ../pythonhost/
-- cp Parser/pgen ../pythonhost/
+- mkdir -p $HOME/depsBuild/pythonhost
+- cp python $HOME/depsBuild/pythonhost/
+- cp Parser/pgen $HOME/depsBuild/pythonhost/
 - cd ..
 - if [ ${GENERATE_PYTHON_HOST} = true ]; then tar cjf Python-2.7.13-host-build.tar.bz2 Python-2.7.13; fi
 - if [ ${GENERATE_PYTHON_HOST} = true ]; then curl --ftp-create-dirs -T Python-2.7.13-host-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
@@ -183,16 +184,16 @@ before_install:
 - if [ ${GENERATE_PYTHON} != true ]; then tar xjf Python-2.7.13-pi-build.tar.bz2; else tar xzf Python-2.7.13.tgz; fi
 - cd Python-2.7.13
 - if [ ${GENERATE_PYTHON} != true ]; then echo "Bypass PYTHON PI/configure"; else CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar RANLIB=arm-linux-gnueabihf-ranlib ./configure --host=arm-linux-gnueabihf --target=arm-linux-gnueabihf --build=x86_64-linux-gnu --prefix=$HOME/depsBuild/python --disable-ipv6 ac_cv_file__dev_ptmx=no ac_cv_file__dev_ptc=no ac_cv_have_long_long_format=yes --enable-shared > yadoms_pythonpi.log; fi
-- if [ ${GENERATE_PYTHON} != true ]; then echo "Bypass PYTHON PI/make"; else make HOSTPYTHON=../pythonhost/python HOSTPGEN=../pythonhost/pgen BLDSHARED="arm-linux-gnueabihf-cc -shared" CROSS-COMPILE=arm-linux-gnueabihf- CROSS_COMPILE_TARGET=yes HOSTARCH=arm-linux BUILDARCH=arm-linux-gnueabihf > yadoms_pythonpi.log; fi
+- if [ ${GENERATE_PYTHON} != true ]; then echo "Bypass PYTHON PI/make"; else make HOSTPYTHON=$HOME/depsBuild/pythonhost/python HOSTPGEN=$HOME/depsBuild/pythonhost/pgen BLDSHARED="arm-linux-gnueabihf-cc -shared" CROSS-COMPILE=arm-linux-gnueabihf- CROSS_COMPILE_TARGET=yes HOSTARCH=arm-linux BUILDARCH=arm-linux-gnueabihf > yadoms_pythonpi.log; fi
 - cd ..
 - if [ ${GENERATE_PYTHON} = true ]; then tar cjf Python-2.7.13-pi-build.tar.bz2 Python-2.7.13; fi
 - if [ ${GENERATE_PYTHON} = true ]; then curl --ftp-create-dirs -T Python-2.7.13-pi-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
 - if [ ${GENERATE_PYTHON} = true ]; then rm -f Python-2.7.13-pi-build.tar.bz2; fi
 
-- echo 'Save all depsBuild to ftp'
-- tar cjf depsBuild.tar.bz2 $HOME/depsBuild
-- curl --ftp-create-dirs -T depsBuild.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}
-- rm -f depsBuild.tar.bz2
+#- echo 'Save all depsBuild to ftp'
+#- tar cjf depsBuild.tar.bz2 $HOME/depsBuild
+#- curl --ftp-create-dirs -T depsBuild.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}
+#- rm -f depsBuild.tar.bz2
 
 #
 ## PostgreSQL
