@@ -240,11 +240,13 @@ script:
 - make all_unity
 - cd ..
 
-# Make Package
-- cd projects
-- echo 'Building Yadoms Package'
-- make package
-- cd ..
+# Make Package => should not be executed if "make all_unity" is done before; 
+# because it run "make all"  to do packaging, and exceed job limit time to compile yadoms
+# 
+#- cd projects
+#- echo 'Building Yadoms Package'
+#- make package
+#- cd ..
 
 # Package binaries
 - echo 'Package binaries'
