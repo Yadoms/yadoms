@@ -240,3 +240,15 @@ script:
 - make all_unity
 - cd ..
 
+# Make Package
+- cd projects
+- echo 'Building Yadoms Package'
+- make package
+- cd ..
+
+# Package binaries
+- echo 'Package binaries'
+- tar cjf yadoms.${TRAVIS_COMMIT}.tar.bz2 builds
+- curl --ftp-create-dirs -T yadoms.${TRAVIS_COMMIT}.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}
+
+
