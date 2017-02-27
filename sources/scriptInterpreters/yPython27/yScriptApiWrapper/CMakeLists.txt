@@ -83,12 +83,19 @@ SCRIPT_API_SOURCE_GROUP(${YPYTHON27_PARENT_INTERPRETER})
 add_custom_command(OUTPUT swigpyrun.h 
   COMMAND ${SWIG_EXECUTABLE} -${YPYTHON27_TARGET_LANGUAGE} -external-runtime ${CMAKE_CURRENT_SOURCE_DIR}/swigpyrun.h)
   
-
 #########################################
 ## Add post-build step to deploy Swig-generated file
 #########################################
+#SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE(_yScriptApiWrapper ${YPYTHON27_PARENT_INTERPRETER} ${CMAKE_CURRENT_BINARY_DIR}/yScriptApiWrapper.py)
 add_custom_command(TARGET _yScriptApiWrapper POST_BUILD
    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/yScriptApiWrapper.py $<TARGET_FILE_DIR:_yScriptApiWrapper>/yScriptApiWrapper.py)
+
+if(COTIRE_USE)
+   if(COTIRE_USE_UNITY)
+      add_custom_command(TARGET _yScriptApiWrapper_unity POST_BUILD
+         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/yScriptApiWrapper.py $<TARGET_FILE_DIR:_yScriptApiWrapper_unity>/yScriptApiWrapper.py)
+   endif()	
+endif()	
   
 
 #########################################
@@ -97,3 +104,9 @@ add_custom_command(TARGET _yScriptApiWrapper POST_BUILD
 add_custom_command(TARGET _yScriptApiWrapper POST_BUILD
    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/yScriptApiDoc.md $<TARGET_FILE_DIR:_yScriptApiWrapper>/yScriptApiDoc.md)
 
+if(COTIRE_USE)
+   if(COTIRE_USE_UNITY)
+      add_custom_command(TARGET _yScriptApiWrapper_unity POST_BUILD
+         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/yScriptApiDoc.md $<TARGET_FILE_DIR:_yScriptApiWrapper_unity>/yScriptApiDoc.md)
+   endif()	
+endif()	
