@@ -26,6 +26,10 @@ ENDMACRO()
 
 MACRO(SCRIPT_API_WRAPPER_LINK)
    SWIG_LINK_LIBRARIES(yScriptApiWrapper yadoms-shared ${ARGN})
+   
+	if(COTIRE_USE)
+		cotire(_yScriptApiWrapper)
+	endif()	   
 ENDMACRO()
 
 MACRO(SCRIPT_API_SOURCE_GROUP parentInterpreter)
