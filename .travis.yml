@@ -5,252 +5,131 @@ git:
   depth: 1
   
 before_install:
-#g++ arm-linux-gnueabihf 
-- echo 'Installing arm-linux-gnueabihf cross toolchain'
-- git clone --depth=1 git://github.com/raspberrypi/tools.git
-- export PATH=$PATH:$PWD/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin
+#log environment variables configuration
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "using uploaded components"; else echo "using official components and build them"; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Upload build components"; else echo "Do not upload built components"; fi
+
+#g++ 4.8
+- echo 'Installing G++ 4.8'
+- sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+- sudo apt-get update -qq
+- if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+- if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90
 
 # deps
-- mkdir -p $HOME/depsBuild
+- echo 'Installing some dependencies'
+- sudo apt-get install libbz2-dev python-dev libudev-dev
 
-#CMake
-- echo 'Installing CMake 3.7.2'
+# CMake
+- echo 'Installing CMake 3.7.1'
 - sudo apt-get remove cmake
-- if [ ${GENERATE_CMAKE} != true ]; then wget  -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/cmake-3.7.2-build.tar.bz2; else wget --no-check-certificate https://cmake.org/files/v3.7/cmake-3.7.2.tar.gz; fi
-- if [ ${GENERATE_CMAKE} != true ]; then tar jxf cmake-3.7.2-build.tar.bz2; else tar zxf cmake-3.7.2.tar.gz; fi
-- cd cmake-3.7.2
-- if [ ${GENERATE_CMAKE} != true ]; then echo "Bypass CMake/bootstrap" ; else ./bootstrap  > yadoms_cmake.log; fi
-- if [ ${GENERATE_CMAKE} != true ]; then echo "Bypass CMake/make"; else make > yadoms_cmake.log; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget  -U 'Mozilla/5.0' http://yadoms.com/travis_build/static/cmake-3.7.1-build.tar.bz2; else wget --no-check-certificate https://cmake.org/files/v3.7/cmake-3.7.1.tar.gz; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar jxf cmake-3.7.1-build.tar.bz2; else tar zxf cmake-3.7.1.tar.gz; fi
+- cd cmake-3.7.1 
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass bootstrap" ; else ./bootstrap  > yadoms_cmake.log; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass make"; else make  > yadoms_cmake.log; fi
 - sudo make install  > yadoms_cmake.log
 - cd ..
-- if [ ${GENERATE_CMAKE} = true ]; then tar cjf cmake-3.7.2-build.tar.bz2 cmake-3.7.2; fi
-- if [ ${GENERATE_CMAKE} = true ]; then curl --ftp-create-dirs -T cmake-3.7.2-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${GENERATE_CMAKE} = true ]; then rm -f cmake-3.7.2-build.tar.bz2; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf cmake-3.7.1-build.tar.bz2 cmake-3.7.1; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then curl --ftp-create-dirs -T cmake-3.7.1-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/static/; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then rm -f cmake-3.7.1-build.tar.bz2; fi
 
 # boost
 - echo 'Building Boost 1.63.0'
-- if [ ${GENERATE_BOOST} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/boost_1_63_0-build.tar.bz2; else wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.63.0/boost_1_63_0.tar.bz2; fi
-- if [ ${GENERATE_BOOST} != true ]; then tar xjf boost_1_63_0-build.tar.bz2; else tar xjf boost_1_63_0.tar.bz2; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/static/boost_1_63_0-build.tar.bz2; else wget http://netcologne.dl.sourceforge.net/project/boost/boost/1.63.0/boost_1_63_0.tar.bz2; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar xjf boost_1_63_0-build.tar.bz2; else tar xjf boost_1_63_0.tar.bz2; fi
 - cd boost_1_63_0
-- if [ ${GENERATE_BOOST} != true ]; then echo "Bypass boost/bootstrap"; else ./bootstrap.sh > yadoms_boost.log; fi
-- if [ ${GENERATE_BOOST} != true ]; then echo "Bypass boost/config"; else wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/user-config.txt -O $HOME/user-config.jam; fi
-- if [ ${GENERATE_BOOST} != true ]; then echo "Bypass boost/b2"; else ./b2 --with-atomic --with-chrono --with-date_time --with-filesystem --with-regex --with-serialization --with-thread --with-system --no-samples --no-tests toolset=gcc-arm link=static > yadoms_boost.log; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass boost/bootstrap"; else ./bootstrap.sh > yadoms_boost.log; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass boost/b2"; else ./b2 --with-atomic --with-chrono --with-date_time --with-filesystem --with-regex --with-thread --with-system link=static runtime-link=static > yadoms_boost.log; fi
 - cd ..
-- if [ ${GENERATE_BOOST} = true ]; then tar cjf boost_1_63_0-build.tar.bz2 boost_1_63_0; fi
-- if [ ${GENERATE_BOOST} = true ]; then curl --ftp-create-dirs -T boost_1_63_0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${GENERATE_BOOST} = true ]; then rm -f boost_1_63_0-build.tar.bz2; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf boost_1_63_0-build.tar.bz2 boost_1_63_0; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then curl --ftp-create-dirs -T boost_1_63_0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/static/; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then rm -f boost_1_63_0-build.tar.bz2; fi
   
- # openssl
-- echo 'Building OpenSSL'
-- if [ ${GENERATE_OPENSSL} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/openssl-1.0.2k-build.tar.bz2; else wget https://www.openssl.org/source/openssl-1.0.2k.tar.gz; fi
-- if [ ${GENERATE_OPENSSL} != true ]; then tar xjf openssl-1.0.2k-build.tar.bz2; else tar xzf openssl-1.0.2k.tar.gz; fi
-- cd openssl-1.0.2k
-- if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/configure"; else ./Configure --prefix=$HOME/depsBuild/openssl os/compiler:arm-linux-gnueabihf; fi
-- if [ ${GENERATE_OPENSSL} != true ]; then echo "Bypass OpenSSL/make"; else make CC="arm-linux-gnueabihf-gcc" AR="arm-linux-gnueabihf-ar r" RANLIB="arm-linux-gnueabihf-ranlib"; fi
-- make install  > yadoms_openssl.log
-- cd ..
-- if [ ${GENERATE_OPENSSL} = true ]; then tar cjf openssl-1.0.2k-build.tar.bz2 openssl-1.0.2k; fi
-- if [ ${GENERATE_OPENSSL} = true ]; then curl --ftp-create-dirs -T openssl-1.0.2k-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${GENERATE_OPENSSL} = true ]; then rm -f openssl-1.0.2k-build.tar.bz2; fi
-
-# poco
+ # poco
 - echo 'Building Poco 1.7.7-all'
-- if [ ${GENERATE_POCO} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/poco-1.7.7-all-build.tar.bz2; else wget http://pocoproject.org/releases/poco-1.7.7/poco-1.7.7-all.tar.gz; fi
-- if [ ${GENERATE_POCO} != true ]; then tar xjf poco-1.7.7-all-build.tar.bz2; else tar xzf poco-1.7.7-all.tar.gz; fi
-- sudo apt-get install libssl-dev libgnutls-dev libopencv-gpu-dev > yadoms_poco.log
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/static/poco-1.7.7-all-build.tar.bz2; else wget http://pocoproject.org/releases/poco-1.7.7/poco-1.7.7-all.tar.gz; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar xjf poco-1.7.7-all-build.tar.bz2; else tar xzf poco-1.7.7-all.tar.gz; fi
+- sudo apt-get install libssl-dev libgnutls-dev libopencv-gpu-dev
 - cd poco-1.7.7-all/
-- if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/configure_config_file"; else echo 'TOOL               = arm-linux-gnueabihf' > build/config/RaspberryPI; fi
-- if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/copy_config_file"; else cat build/config/ARM-Linux >> build/config/RaspberryPI; fi
-- if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/configure"; else ./configure --static --config=RaspberryPI --no-samples --no-tests --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page --include-path=$HOME/depsBuild/openssl/include --library-path=$HOME/depsBuild/openssl/lib> yadoms_poco.log; fi
-- if [ ${GENERATE_POCO} != true ]; then echo "Bypass poco/make"; else make > yadoms_poco.log; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass poco/configure"; else ./configure --static --omit=CppUnit,CppUnit/WinTestRunner,Data,Data/SQLite,Data/ODBCData/MySQL,MongoDB,PageCompiler,PageCompiler/File2Page --no-samples --no-tests > yadoms_poco.log; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass poco/make"; else make > yadoms_poco.log; fi
 - cd ..
-- if [ ${GENERATE_POCO} = true ]; then tar cjf poco-1.7.7-all-build.tar.bz2 poco-1.7.7-all; fi
-- if [ ${GENERATE_POCO} = true ]; then curl --ftp-create-dirs -T poco-1.7.7-all-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${GENERATE_POCO} = true ]; then rm -f poco-1.7.7-all-build.tar.bz2; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf poco-1.7.7-all-build.tar.bz2 poco-1.7.7-all; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then curl --ftp-create-dirs -T poco-1.7.7-all-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/static/; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then rm -f poco-1.7.7-all-build.tar.bz2; fi
 
-
-# protobuf (host)
-- echo 'Building Protobuf 3.2.0 HOST '
+# protobuf
+- echo 'Building Protobuf 3.1.0'
 - sudo apt-get install autoconf libtool
-- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/protobuf-3.2.0-host-build.tar.bz2; else wget https://github.com/google/protobuf/releases/download/v3.2.0/protobuf-cpp-3.2.0.tar.gz; fi
-- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then tar xjf protobuf-3.2.0-host-build.tar.bz2; else tar xzf protobuf-cpp-3.2.0.tar.gz; fi
-- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then echo "Bypass protobuf/mv dir"; else mv protobuf-3.2.0 protobuf-3.2.0-host; fi
-- cd protobuf-3.2.0-host
-- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then echo "Bypass protobuf/mkdir build"; else mkdir build > yadoms_protobuf_host.log; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/static/protobuf-3.1.0-build.tar.bz2; else wget https://github.com/google/protobuf/releases/download/v3.1.0/protobuf-cpp-3.1.0.tar.gz; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar xjf protobuf-3.1.0-build.tar.bz2; else tar xzf protobuf-cpp-3.1.0.tar.gz; fi
+- cd protobuf-3.1.0
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/mkdir build"; else mkdir build > yadoms_protobuf.log; fi
 - cd build
-- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then echo "Bypass protobuf/cmake ../cmake"; else cmake ../cmake > yadoms_protobuf_host.log; fi
-- if [ ${GENERATE_PROTOBUF_HOST} != true ]; then echo "Bypass protobuf/cmake --build ."; else cmake --build . > yadoms_protobuf_host.log; fi
-- sudo make install > yadoms_protobuf_host.log
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/cmake ../cmake"; else cmake ../cmake > yadoms_protobuf.log; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/cmake --build ."; else cmake --build . > yadoms_protobuf.log; fi
+- sudo make install
 - sudo ldconfig
 - cd ..
 - cd ..
-- if [ ${GENERATE_PROTOBUF_HOST} = true ]; then tar cjf protobuf-3.2.0-host-build.tar.bz2 protobuf-3.2.0-host; fi
-- if [ ${GENERATE_PROTOBUF_HOST} = true ]; then curl --ftp-create-dirs -T protobuf-3.2.0-host-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${GENERATE_PROTOBUF_HOST} = true ]; then rm -f protobuf-3.2.0-host-build.tar.bz2; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf protobuf-3.1.0-build.tar.bz2 protobuf-3.1.0; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then curl --ftp-create-dirs -T protobuf-3.1.0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/static/; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then rm -f protobuf-3.1.0-build.tar.bz2; fi
 
-# protobuf (pi)
-- echo 'Building Protobuf 3.2.0 PI'
-- if [ ${GENERATE_PROTOBUF} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/protobuf-3.2.0-build-pi.tar.bz2; else wget https://github.com/google/protobuf/releases/download/v3.2.0/protobuf-cpp-3.2.0.tar.gz; fi
-- if [ ${GENERATE_PROTOBUF} != true ]; then tar xjf protobuf-3.2.0-build-pi.tar.bz2; else tar xzf protobuf-cpp-3.2.0.tar.gz; fi
-- cd protobuf-3.2.0
-- if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/autogen"; else ./autogen.sh; fi
-- if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/configure"; else ./configure --enable-shared=no --host=arm-linux CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar STRIP=arm-linux-gnueabihf-strip RANLIB=arm-linux-gnueabihf-ranlib --prefix=$HOME/depsBuild/protobuf --with-protoc=protoc > yadoms_protobuf_pi.log; fi
-- if [ ${GENERATE_PROTOBUF} != true ]; then echo "Bypass protobuf/make"; else make > yadoms_protobuf_pi.log; fi
-- make install > yadoms_protobuf_pi.log
+# gammu
+- echo 'Building Gammu 1.38.1'
+- sudo apt-get install python-dev pkg-config libmysqlclient-dev libpq-dev libcurl4-gnutls-dev libusb-1.0-0-dev libdbi0-dev libbluetooth-dev libgudev-1.0-dev libglib2.0-dev unixodbc-dev
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/static/gammu-1.38.1-build.tar.bz2; else wget http://dl.cihar.com/gammu/releases/gammu-1.38.1.tar.gz; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar xjf gammu-1.38.1-build.tar.bz2; else tar zxf gammu-1.38.1.tar.gz; fi
+- cd gammu-1.38.1
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass mkdir build"; else mkdir build; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass cd build"; else cd build; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass cmake -DBUILD_SHARED_LIBS=OFF .."; else cmake -DBUILD_SHARED_LIBS=OFF .. > yadoms_gammu.log; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass make"; else make > yadoms_gammu.log; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass cd .."; else cd ..; fi
 - cd ..
-- if [ ${GENERATE_PROTOBUF} = true ]; then tar cjf protobuf-3.2.0-build-pi.tar.bz2 protobuf-3.2.0; fi
-- if [ ${GENERATE_PROTOBUF} = true ]; then curl --ftp-create-dirs -T protobuf-3.2.0-build-pi.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${GENERATE_PROTOBUF} = true ]; then rm -f protobuf-3.2.0-build-pi.tar.bz2; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf gammu-1.38.1-build.tar.bz2 gammu-1.38.1; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then curl --ftp-create-dirs -T gammu-1.38.1-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/static/; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then rm -f gammu-1.38.1-build.tar.bz2; fi
 
 
- # pcre
-- echo 'Building PCRE'
-- if [ ${GENERATE_PCRE} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/pcre-8.40-build.tar.bz2; else wget https://ftp.pcre.org/pub/pcre/pcre-8.40.tar.gz; fi
-- if [ ${GENERATE_PCRE} != true ]; then tar xjf pcre-8.40-build.tar.bz2; else tar xzf pcre-8.40.tar.gz; fi
-- cd pcre-8.40
-- if [ ${GENERATE_PCRE} != true ]; then echo "Bypass PCRE/configure"; else ./configure --host=arm-linux-gnueabihf CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar STRIP=arm-linux-gnueabihf-strip RANLIB=arm-linux-gnueabihf-ranlib --prefix=$HOME/depsBuild/pcre > yadoms_pcre.log; fi
-- if [ ${GENERATE_PCRE} != true ]; then echo "Bypass PCRE/make"; else make  > yadoms_pcre.log; fi
-- make install > yadoms_pcre.log
-- cd ..
-- if [ ${GENERATE_PCRE} = true ]; then tar cjf pcre-8.40-build.tar.bz2 pcre-8.40; fi
-- if [ ${GENERATE_PCRE} = true ]; then curl --ftp-create-dirs -T pcre-8.40-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${GENERATE_PCRE} = true ]; then rm -f pcre-8.40-build.tar.bz2; fi
+# PCRE
+- echo 'Installing PRCE'
+- sudo apt-get install libpcre3 libpcre3-dev
 
-#libudev
-- echo 'Get libudev from yadoms.com'
-- wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/libudev.tar.gz
-- tar xzf libudev.tar.gz -C $HOME/depsBuild
-
-#gammu
-# - echo 'Building Gammu 1.36.8'
-# - wget http://dl.cihar.com/gammu/releases/gammu-1.36.8.tar.gz
-# - tar zxf gammu-1.36.8.tar.gz
-# - cd gammu-1.36.8
-# - mkdir build
-# - cd build
-# - cmake .. -DBUILD_SHARED_LIBS=ON > yadoms_gammu.log
-# - make > yadoms_gammu.log
-# - cd ..
-# - cd ..
-
-# GAMMU
-# - echo 'Building GAMMU'
-# - if [ ${GENERATE_GAMMU} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/gammu-1.38.1-build.tar.bz2; else wget https://dl.cihar.com/gammu/releases/gammu-1.38.1.tar.bz2; fi
-# - if [ ${GENERATE_GAMMU} != true ]; then tar xjf gammu-1.38.1-build.tar.bz2; else tar xjf gammu-1.38.1.tar.bz2; fi
-# - cd gammu-1.38.1
-# - if [ ${GENERATE_GAMMU} != true ]; then echo "Bypass GAMMU/configure"; else CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar RANLIB=arm-linux-gnueabihf-ranlib ./configure --prefix=$HOME/depsBuild/gammu; fi
-# - if [ ${GENERATE_GAMMU} != true ]; then echo "Bypass GAMMU/make"; else make; fi
-# - make install
-# - cd ..
-# - if [ ${GENERATE_GAMMU} = true ]; then tar cjf gammu-1.38.1-build.tar.bz2 gammu-1.38.1; fi
-# - if [ ${GENERATE_GAMMU} = true ]; then curl --ftp-create-dirs -T gammu-1.38.1-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-# - if [ ${GENERATE_GAMMU} = true ]; then rm -f gammu-1.38.1-build.tar.bz2; fi
-
-
- # SWIG
-- echo 'Building SWIG'
-- if [ ${GENERATE_SWIG} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/swig-3.0.12-build.tar.bz2; else wget http://prdownloads.sourceforge.net/swig/swig-3.0.12.tar.gz; fi
-- if [ ${GENERATE_SWIG} != true ]; then tar xjf swig-3.0.12-build.tar.bz2; else tar xzf swig-3.0.12.tar.gz; fi
-- cd swig-3.0.12
-- if [ ${GENERATE_SWIG} != true ]; then echo "Bypass SWIG/configure"; else ./configure > yadoms_swig.log; fi
-- if [ ${GENERATE_SWIG} != true ]; then echo "Bypass SWIG/make"; else make > yadoms_swig.log; fi
+# SWIG
+- echo 'Building Swig 3.0.8'
+- wget http://prdownloads.sourceforge.net/swig/swig-3.0.8.tar.gz
+- tar xzf swig-3.0.8.tar.gz
+- cd swig-3.0.8
+- ./configure > yadoms_swig.log
+- make> yadoms_swig.log
 - sudo make install > yadoms_swig.log
 - cd ..
-- if [ ${GENERATE_SWIG} = true ]; then tar cjf swig-3.0.12-build.tar.bz2 swig-3.0.12; fi
-- if [ ${GENERATE_SWIG} = true ]; then curl --ftp-create-dirs -T swig-3.0.12-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${GENERATE_SWIG} = true ]; then rm -f swig-3.0.12-build.tar.bz2; fi
 
-# Python HOST
-- sudo apt-get install python-dev
-- echo 'Building Python HOST'
-- if [ ${GENERATE_PYTHON_HOST} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/Python-2.7.13-host-build.tar.bz2; else wget https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz; fi
-- if [ ${GENERATE_PYTHON_HOST} != true ]; then tar xjf Python-2.7.13-host-build.tar.bz2; else tar xzf Python-2.7.13.tgz; fi
-- cd Python-2.7.13
-- if [ ${GENERATE_PYTHON_HOST} != true ]; then echo "Bypass PYTHON HOST/configure"; else ./configure > yadoms_pythonhost.log; fi
-- if [ ${GENERATE_PYTHON_HOST} != true ]; then echo "Bypass PYTHON HOST/make"; else make python Parser/pgen > yadoms_pythonhost.log; fi
-- sudo make install > yadoms_pythonhost.log
-- mkdir -p $HOME/depsBuild/pythonhost
-- cp python $HOME/depsBuild/pythonhost/
-- cp Parser/pgen $HOME/depsBuild/pythonhost/
-- cd ..
-- if [ ${GENERATE_PYTHON_HOST} = true ]; then tar cjf Python-2.7.13-host-build.tar.bz2 Python-2.7.13; fi
-- if [ ${GENERATE_PYTHON_HOST} = true ]; then curl --ftp-create-dirs -T Python-2.7.13-host-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${GENERATE_PYTHON_HOST} = true ]; then rm -f Python-2.7.13-host-build.tar.bz2; fi
-- sudo rm -Rf Python-2.7.13
-
-# Python PI
-- echo 'Building Python PI'
-- if [ ${GENERATE_PYTHON} != true ]; then wget -U 'Mozilla/5.0' ${YADOMS_DOWNLOAD_URL}/Python-2.7.13-pi-build.tar.bz2; else wget https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz; fi
-- if [ ${GENERATE_PYTHON} != true ]; then tar xjf Python-2.7.13-pi-build.tar.bz2; else tar xzf Python-2.7.13.tgz; fi
-- cd Python-2.7.13
-- if [ ${GENERATE_PYTHON} != true ]; then echo "Bypass PYTHON PI/configure"; else CC=arm-linux-gnueabihf-gcc CXX=arm-linux-gnueabihf-g++ AR=arm-linux-gnueabihf-ar RANLIB=arm-linux-gnueabihf-ranlib ./configure --host=arm-linux-gnueabihf --target=arm-linux-gnueabihf --build=x86_64-linux-gnu --prefix=$HOME/depsBuild/python --disable-ipv6 ac_cv_file__dev_ptmx=no ac_cv_file__dev_ptc=no ac_cv_have_long_long_format=yes --enable-shared > yadoms_pythonpi.log; fi
-- if [ ${GENERATE_PYTHON} != true ]; then echo "Bypass PYTHON PI/make"; else make HOSTPYTHON=$HOME/depsBuild/pythonhost/python HOSTPGEN=$HOME/depsBuild/pythonhost/pgen BLDSHARED="arm-linux-gnueabihf-cc -shared" CROSS-COMPILE=arm-linux-gnueabihf- CROSS_COMPILE_TARGET=yes HOSTARCH=arm-linux BUILDARCH=arm-linux-gnueabihf > yadoms_pythonpi.log; fi
-- cd ..
-- if [ ${GENERATE_PYTHON} = true ]; then tar cjf Python-2.7.13-pi-build.tar.bz2 Python-2.7.13; fi
-- if [ ${GENERATE_PYTHON} = true ]; then curl --ftp-create-dirs -T Python-2.7.13-pi-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}; fi
-- if [ ${GENERATE_PYTHON} = true ]; then rm -f Python-2.7.13-pi-build.tar.bz2; fi
-
-#- echo 'Save all depsBuild to ftp'
-#- tar cjf depsBuild.tar.bz2 $HOME/depsBuild
-#- curl --ftp-create-dirs -T depsBuild.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}
-#- rm -f depsBuild.tar.bz2
-
-#
-## PostgreSQL
-#- sudo apt-get install libpq-dev postgresql-server-dev-9.3
+# PostgreSQL
+- sudo apt-get install libpq-dev postgresql-server-dev-9.3
 
 script:
 # Yadoms configuration file
 - echo 'Configuring Yadoms CMakeListsUserConfig.txt'
-#- cp sources/CMakeListsUserConfig.sample.txt sources/CMakeListsUserConfig.txt 
 - echo 'set(BOOST_ROOT "'$PWD'/boost_1_63_0")' > sources/CMakeListsUserConfig.txt
 - echo 'set(POCO_ROOT "'$PWD'/poco-1.7.7-all")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_ROOT "'$PWD'/protobuf-3.1.0")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.38.1")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.8")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
 - echo 'set(COTIRE_USE_UNITY ON)' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_ROOT "'$HOME'/depsBuild/protobuf")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_INCLUDE_DIR "'$HOME'/depsBuild/protobuf/include")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_LIBRARY "'$HOME'/depsBuild/protobuf/lib/libprotobuf.a")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_LIBRARY_DEBUG "'$HOME'/depsBuild/protobuf/lib/libprotobuf.a")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_LITE_LIBRARY "'$HOME'/depsBuild/protobuf/lib/libprotobuf-lite.a")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_LITE_LIBRARY_DEBUG "'$HOME'/depsBuild/protobuf/lib/libprotobuf-lite.a")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(OPENSSL_ROOT "'$HOME'/depsBuild/openssl")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(DEBUG_WITH_GCC OFF)' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PYTHON_USE_PKGCONFIG OFF)' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PYTHON_USE_SOURCES ON)' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PYTHON_ROOT "'$PWD'/Python-2.7.13")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PYTHON_INCLUDE_DIRS "'$PWD'/Python-2.7.13/include")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PYTHON_LIBRARIES "'$PWD'/Python-2.7.13/libpython2.7.so")' >> sources/CMakeListsUserConfig.txt
-- echo 'SET(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
-- echo 'SET(COTIRE_USE_UNITY ON)' >> sources/CMakeListsUserConfig.txt
-- echo 'set(LIBUDEV_ROOT "'$HOME'/depsBuild/libudev")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(UDEV_PATH_LIB "'$HOME'/depsBuild/libudev")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(UDEV_PATH_INCLUDES "'$HOME'/depsBuild/libudev")' >> sources/CMakeListsUserConfig.txt
-
-#- echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.36.8")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.12")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(CC_RPI_ROOT "'$PWD'/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf")' >> sources/CMakeListsUserConfig.txt
 - echo 'Result:'
 - cat sources/CMakeListsUserConfig.txt
 
 # Yadoms
 - echo 'Generating makefile'
-- sh cmake_raspberry.sh c
+- sh cmake_linux.sh m
 - cd projects
 - echo 'Building Yadoms'
 - make all_unity
 - cd ..
-
-# Make Package => should not be executed if "make all_unity" is done before; 
-# because it run "make all"  to do packaging, and exceed job limit time to compile yadoms
-# 
-#- cd projects
-#- echo 'Building Yadoms Package'
-#- make package
-#- cd ..
-
-# Package binaries
-- echo 'Package binaries'
-- tar cjf yadoms.${TRAVIS_COMMIT}.tar.bz2 builds
-- curl --ftp-create-dirs -T yadoms.${TRAVIS_COMMIT}.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ${YADOMS_UPLOAD_URL}
-
 
