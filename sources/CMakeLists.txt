@@ -958,53 +958,7 @@ set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 ##################################################################################################
 target_link_libraries(yadoms yadoms-shared plugin_IPC interpreter_IPC script_IPC ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
 
-##################################################################################################
-## Manifest
-## Allow Windows10 detection ability by Poco
-##################################################################################################
-if(WIN32)
-   if(MSVC)
-      # extract Yadoms version from Version.h
-      include(cmake/version.cmake)
-      
-      # apply templating to the manifest for setting the version
-      configure_file(${CMAKE_SOURCE_DIR}/../distribution/yadoms.exe.manifest.in
-         "${CMAKE_BINARY_DIR}/yadoms.exe.manifest"
-      @ONLY)
-      
-      #add a custom command
-      add_custom_command(TARGET yadoms POST_BUILD
-          COMMAND "mt.exe" -manifest \"${CMAKE_BINARY_DIR}\\yadoms.exe.manifest\" -outputresource:"$(TargetDir)$(TargetFileName)"\;\#1
-          COMMENT "Adding manifest..." 
-      )
-   endif(MSVC)
-endif(WIN32)
-
-##################################################################################################
-## Post build commands
-##################################################################################################
-
-#copy Poco depends
-FOREACH (PocoNetSSLDepends ${PocoNetSSLDepends})
-   add_custom_command(TARGET yadoms POST_BUILD
-                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                          ${PocoNetSSLDepends} $<TARGET_FILE_DIR:yadoms>/)
-ENDFOREACH(PocoNetSSLDepends)
-
-#copy PostgreSql depends
-FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
-   add_custom_command(TARGET yadoms POST_BUILD
-                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                          ${PostgreSqlDepend} $<TARGET_FILE_DIR:yadoms>/)
-ENDFOREACH(PostgreSqlDepend)
-
-
-#copy www directory into build directory
-add_custom_command(TARGET yadoms POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-                   ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
-		
-
+                       
 ##################################################################################################
 ## COTIRE
 ##################################################################################################
@@ -1025,6 +979,88 @@ if(COTIRE_USE)
 	endif()	
 endif()
       
+      
+##################################################################################################
+## Manifest
+## Allow Windows10 detection ability by Poco
+##################################################################################################
+if(WIN32)
+   if(MSVC)
+      # extract Yadoms version from Version.h
+      include(cmake/version.cmake)
+      
+      # apply templating to the manifest for setting the version
+      configure_file(${CMAKE_SOURCE_DIR}/../distribution/yadoms.exe.manifest.in
+         "${CMAKE_BINARY_DIR}/yadoms.exe.manifest"
+      @ONLY)
+      
+      #add a custom command
+      add_custom_command(TARGET yadoms POST_BUILD
+          COMMAND "mt.exe" -manifest \"${CMAKE_BINARY_DIR}\\yadoms.exe.manifest\" -outputresource:"$(TargetDir)$(TargetFileName)"\;\#1
+          COMMENT "Adding manifest..." 
+      )
+      
+      if(COTIRE_USE)   
+         if(COTIRE_USE_UNITY)
+            add_custom_command(TARGET yadoms_unity POST_BUILD
+                COMMAND "mt.exe" -manifest \"${CMAKE_BINARY_DIR}\\yadoms.exe.manifest\" -outputresource:"$(TargetDir)$(TargetFileName)"\;\#1
+                COMMENT "Adding manifest..." 
+            )
+         endif(COTIRE_USE_UNITY)
+      endif(COTIRE_USE)
+      
+   endif(MSVC)
+endif(WIN32)
+
+##################################################################################################
+## Post build commands
+##################################################################################################
+
+#copy Poco depends
+FOREACH (PocoNetSSLDepends ${PocoNetSSLDepends})
+   add_custom_command(TARGET yadoms POST_BUILD
+                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                          ${PocoNetSSLDepends} $<TARGET_FILE_DIR:yadoms>/)
+                          
+   if(COTIRE_USE)   
+      if(COTIRE_USE_UNITY)
+         add_custom_command(TARGET yadoms_unity POST_BUILD
+                            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                            ${PocoNetSSLDepends} $<TARGET_FILE_DIR:yadoms>/)
+      endif(COTIRE_USE_UNITY)
+   endif(COTIRE_USE)                          
+ENDFOREACH(PocoNetSSLDepends)
+
+#copy PostgreSql depends
+FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
+   add_custom_command(TARGET yadoms POST_BUILD
+                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                          ${PostgreSqlDepend} $<TARGET_FILE_DIR:yadoms>/)
+
+   if(COTIRE_USE)   
+      if(COTIRE_USE_UNITY)
+         add_custom_command(TARGET yadoms_unity POST_BUILD
+                            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                                ${PostgreSqlDepend} $<TARGET_FILE_DIR:yadoms>/)
+      endif(COTIRE_USE_UNITY)
+   endif(COTIRE_USE)                          
+                          
+ENDFOREACH(PostgreSqlDepend)
+
+
+#copy www directory into build directory
+add_custom_command(TARGET yadoms POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                   ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
+		
+if(COTIRE_USE)   
+   if(COTIRE_USE_UNITY)
+      add_custom_command(TARGET yadoms_unity POST_BUILD
+                         COMMAND ${CMAKE_COMMAND} -E copy_directory
+                         ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
+   endif(COTIRE_USE_UNITY)
+endif(COTIRE_USE)                          
+
 ##################################################################################################
 ## CPACK
 ##################################################################################################
