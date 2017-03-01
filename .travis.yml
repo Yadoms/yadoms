@@ -67,7 +67,7 @@ before_install:
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar xjf protobuf-2.6.1-build.tar.bz2; else tar xzf protobuf-2.6.1.tar.gz; fi
 - cd protobuf-2.6.1
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/autogen"; else ./autogen.sh > yadoms_protobuf.log; fi
-- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/configure"; else ./configure > yadoms_protobuf.log; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/configure"; else ./configure --with-pic > yadoms_protobuf.log; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/make"; else make > yadoms_protobuf.log; fi
 - sudo make install > yadoms_protobuf.log
 - sudo ldconfig
