@@ -3,6 +3,7 @@
 	"description": "Un widget qui permet d'afficher un graphe d'historisation de données",
 	"errorDuringGettingDeviceData": "Erreur lors de la récupération des données",
    "errorInitialization" : "Erreur lors de l'initialisation du widget chart",
+   "incompatibilityDifferential": "L'affichage différentiel n'est pas compatible avec l'affichage min/max",  
 	"loadingData": "Chargement des données",
 	"RangeTooBroad" : "Echelle trop large",
   "noAvailableData": "Données indisponibles",
@@ -58,7 +59,7 @@
 			      },               
 					"PlotType": {
 						"name": "Type de graphique",
-						"description": "Choisir le type de graphique",
+						"description": "Choisir le type de graphique. Les min/max ne sont pas affichés pour une période horaire",
 						"values": {
 							"line": "Ligne",
 							"bar": "Barres",
