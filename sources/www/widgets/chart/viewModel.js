@@ -394,6 +394,7 @@ widgetViewModelCtor =
                            self.chart.yAxis[0].remove(false);
 
                        var arrayOfDeffered = [];
+                       self.chartLastValue = [];
                        //for each plot in the configuration we request for data
                        $.each(self.widget.configuration.devices, function (index, device) {
 
@@ -499,10 +500,22 @@ widgetViewModelCtor =
                                            // The differential display is disabled if the type of the data is enum or boolean
                                            if (!self.isBoolVariable(index) && !self.isEnumVariable(index))
                                            {
-                                              if (device.content.PlotType === "arearange")
-                                                  range.push([d, vMin, vMax]);
+                                              if (self.differentialDisplay)                                              
+                                              {
+                                                 if (!isNullOrUndefined(self.chartLastValue[self.seriesUuid[index]]))
+                                                    plot.push([d, v-self.chartLastValue[self.seriesUuid[index]]]);
+                                                 
+                                                 self.chartLastValue[self.seriesUuid[index]] = v;
+                                              }
+                                              else{
+                                                 if (device.content.PlotType === "arearange")
+                                                     range.push([d, vMin, vMax]);
 
-                                              plot.push([d, v]);                                              
+                                                 plot.push([d, v]);                                                   
+                                              }
+                                           }
+                                           else
+                                           {
                                            }
                                        });
                                    }
@@ -848,7 +861,7 @@ widgetViewModelCtor =
                                  serie.addPoint([DateTimeFormatter.isoDateToDate(data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data[0].avg)], true, false, true);
 						      
                               //Add also for ranges if any
-                              if (serieRange)
+                              if (serieRange && !self.differentialDisplay)
                               {                           
                                  serieRange.addPoint([DateTimeFormatter.isoDateToDate(data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data[0].min), parseFloat(data.data[0].max)], true, false, true);
                               }
