@@ -18,8 +18,18 @@ string(REPLACE "." "" PYTHON_REQUIRED_VERSION_NO_DOT ${PYTHON_REQUIRED_VERSION})
 # find_package seems to not work correctly under Windows, so use CMakeListsUserConfig.txt to get Python path
 if (PYTHON_ROOT)
 
-   find_path(PYTHON_INCLUDE_DIRS NAMES Python.h PATHS ${PYTHON_ROOT}/include)
+   find_path(PYTHON_INCLUDE_DIRS NAMES Python.h 
+      PATHS 
+         ${PYTHON_ROOT}/include
+         ${PYTHON_ROOT}/Include
+         ${PYTHON_ROOT}
+      )
    
+   #include Python.h path and parent dir
+   set(PYTHON_INCLUDE_DIRS
+      ${PYTHON_INCLUDE_DIRS}
+      ${PYTHON_INCLUDE_DIRS}/..)
+      
    if(WIN32)
       if(PYTHON_USE_SOURCES)
    
