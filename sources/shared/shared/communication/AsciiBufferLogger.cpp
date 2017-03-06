@@ -16,12 +16,12 @@ namespace shared
 
       void CAsciiBufferLogger::logReceived(const CByteBuffer& data)
       {
-         YADOMS_LOG(information) << "Yadoms <<< " << msgToString(data) << std::endl;
+         YADOMS_LOG(information) << "Yadoms <<< " << msgToString(data);
       }
 
       void CAsciiBufferLogger::logSent(const CByteBuffer& data)
       {
-         YADOMS_LOG(information) << "Yadoms >>> " << msgToString(data) << std::endl;
+         YADOMS_LOG(information) << "Yadoms >>> " << msgToString(data);
       }
 
       std::string CAsciiBufferLogger::msgToString(const CByteBuffer& data)
