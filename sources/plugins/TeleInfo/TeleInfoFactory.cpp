@@ -40,7 +40,7 @@ boost::shared_ptr<shared::communication::IReceiveBufferHandler> CTeleInfoFactory
 	boost::shared_ptr<shared::communication::IBufferLogger> logger;
 
 	if (developerMode)
-		logger = boost::make_shared<shared::communication::CAsciiBufferLogger>(YADOMS_LOG(information));
+		logger = boost::make_shared<shared::communication::CAsciiBufferLogger>();
 	else
       logger = boost::make_shared<shared::communication::CNoBufferLogger>();
 
