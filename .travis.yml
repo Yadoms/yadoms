@@ -71,8 +71,7 @@ before_install:
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/autogen"; else ./autogen.sh > yadoms_protobuf_pi.log; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/configure"; else ./configure --enable-shared=no --with-pic > yadoms_protobuf_pi.log; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/make"; else make > yadoms_protobuf_pi.log; fi
-- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/make install"; else make install > $HOME/logs/yadoms_protobuf_pi.log; fi
-- sudo make install
+- sudo make install > yadoms_protobuf_pi.log
 - sudo ldconfig
 - cd ..
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf protobuf-3.1.0-build.tar.bz2 protobuf-3.1.0; fi
