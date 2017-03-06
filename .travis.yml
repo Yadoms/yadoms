@@ -63,20 +63,20 @@ before_install:
 - if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then rm -f poco-1.7.7-all-build.tar.bz2; fi
 
 # protobuf
-- echo 'Building Protobuf 3.1.0'
+- echo 'Building Protobuf 3.2.0'
 - sudo apt-get install autoconf libtool
-- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/static/protobuf-3.1.0-build.tar.bz2; else wget https://github.com/google/protobuf/releases/download/v3.1.0/protobuf-cpp-3.1.0.tar.gz; fi
-- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar xjf protobuf-3.1.0-build.tar.bz2; else tar xzf protobuf-cpp-3.1.0.tar.gz; fi
-- cd protobuf-3.1.0
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then wget -U 'Mozilla/5.0' http://yadoms.com/travis_build/static/protobuf-3.2.0-build.tar.bz2; else wget https://github.com/google/protobuf/releases/download/v3.2.0/protobuf-cpp-3.2.0.tar.gz; fi
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then tar xjf protobuf-3.2.0-build.tar.bz2; else tar xzf protobuf-cpp-3.2.0.tar.gz; fi
+- cd protobuf-3.2.0
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/autogen"; else ./autogen.sh > yadoms_protobuf_pi.log; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/configure"; else ./configure --enable-shared=no --with-pic > yadoms_protobuf_pi.log; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/make"; else make > yadoms_protobuf_pi.log; fi
 - sudo make install > yadoms_protobuf_pi.log
 - sudo ldconfig
 - cd ..
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf protobuf-3.1.0-build.tar.bz2 protobuf-3.1.0; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then curl --ftp-create-dirs -T protobuf-3.1.0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/static/; fi
-- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then rm -f protobuf-3.1.0-build.tar.bz2; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then tar cjf protobuf-3.2.0-build.tar.bz2 protobuf-3.2.0; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then curl --ftp-create-dirs -T protobuf-3.2.0-build.tar.bz2 -u $FTP_USER:$FTP_PASSWORD ftp://ftp.jano42.fr/travis_build/static/; fi
+- if [ ${TRAVIS_UPLOAD_COMPONENTS} = true ]; then rm -f protobuf-3.2.0-build.tar.bz2; fi
 
 # gammu
 - echo 'Building Gammu 1.38.1'
@@ -117,7 +117,7 @@ script:
 - echo 'Configuring Yadoms CMakeListsUserConfig.txt'
 - echo 'set(BOOST_ROOT "'$PWD'/boost_1_63_0")' > sources/CMakeListsUserConfig.txt
 - echo 'set(POCO_ROOT "'$PWD'/poco-1.7.7-all")' >> sources/CMakeListsUserConfig.txt
-- echo 'set(PROTOBUF_ROOT "'$PWD'/protobuf-3.1.0")' >> sources/CMakeListsUserConfig.txt
+- echo 'set(PROTOBUF_ROOT "'$PWD'/protobuf-3.2.0")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(GAMMU_ROOT "'$PWD'/gammu-1.38.1")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(SWIG_ROOT "'$PWD'/swig-3.0.8")' >> sources/CMakeListsUserConfig.txt
 - echo 'set(COTIRE_USE ON)' >> sources/CMakeListsUserConfig.txt
