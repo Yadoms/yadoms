@@ -70,6 +70,7 @@ before_install:
 - cd protobuf-3.1.0
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/mkdir build"; else mkdir build > yadoms_protobuf.log; fi
 - cd build
+- if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/configure"; else ./configure --with-pic > yadoms_protobuf.log; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/cmake ../cmake"; else cmake ../cmake > yadoms_protobuf.log; fi
 - if [ ${TRAVIS_USE_UPLOADED_COMPONENTS} = true ]; then echo "Bypass protobuf/cmake --build ."; else cmake --build . > yadoms_protobuf.log; fi
 - sudo make install

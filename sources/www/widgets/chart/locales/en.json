@@ -3,6 +3,7 @@
   "description": "A widget that provide a chart to display historized data",
   "errorDuringGettingDeviceData": "Error during getting device data",
   "errorInitialization" : "Error During widget chart initialization",
+  "incompatibilityDifferential": "Differential display and range configuration are incompatible",  
   "loadingData": "Loading data",
   "RangeTooBroad": "Range is too broad",
   "noAvailableData": "No available data",
@@ -58,7 +59,7 @@
 			 },
           "PlotType": {
             "name": "Plot Type",
-            "description": "choose beetween following plot type",
+            "description": "choose beetween following plot type. Range are not displayed in hour interval",
             "values": {
               "line": "Line",
               "bar": "Bar",
