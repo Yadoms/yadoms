@@ -1,5 +1,5 @@
 #pragma once
-#include <toPlugin.pb.h>
+#include <plugin_IPC/yadomsToPlugin.pb.h>
 #include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
 
 
@@ -8,7 +8,7 @@ namespace plugin_cpp_api
    class CSetDeviceConfiguration : public shared::plugin::yPluginApi::ISetDeviceConfiguration
    {
    public:
-      explicit CSetDeviceConfiguration(const toPlugin::SetDeviceConfiguration& msg);
+      explicit CSetDeviceConfiguration(const plugin_IPC::toPlugin::SetDeviceConfiguration& msg);
       virtual ~CSetDeviceConfiguration();
 
       // ISetDeviceConfiguration Implementation

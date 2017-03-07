@@ -15,7 +15,7 @@ namespace shared
                              const EMeasureType& measureType,
                              typeInfo::CDoubleTypeInfo& additionalInfo)
                : CSingleHistorizableData<Poco::Int64>(keywordName,
-                                                      CStandardCapacities::Energy,
+                                                      CStandardCapacities::Energy(),
                                                       accessMode,
                                                       0,
                                                       measureType,
@@ -32,7 +32,7 @@ namespace shared
                                          const EMeasureType& measureType,
                                          typeInfo::CDoubleTypeInfo& additionalInfo)
                : CSingleHistorizableData<double>(keywordName,
-                                                 CStandardCapacities::Energy,
+                                                 CStandardCapacities::Energy(),
                                                  accessMode,
                                                  0,
                                                  measureType,

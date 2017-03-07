@@ -28,7 +28,7 @@ namespace shared
 
             const CStandardCapacity& CEvent::getCapacity() const
             {
-               return CStandardCapacities::Event;
+               return CStandardCapacities::Event();
             }
 
             const EKeywordAccessMode& CEvent::getAccessMode() const

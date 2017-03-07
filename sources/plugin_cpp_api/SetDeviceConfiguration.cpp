@@ -4,7 +4,7 @@
 
 namespace plugin_cpp_api
 {
-   CSetDeviceConfiguration::CSetDeviceConfiguration(const toPlugin::SetDeviceConfiguration& msg)
+   CSetDeviceConfiguration::CSetDeviceConfiguration(const plugin_IPC::toPlugin::SetDeviceConfiguration& msg)
       : m_device(msg.device()),
         m_configuration(msg.configuration())
    {

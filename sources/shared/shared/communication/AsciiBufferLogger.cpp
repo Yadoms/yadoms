@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "AsciiBufferLogger.h"
+#include <shared/Log.h>
 
 namespace shared
 {
    namespace communication
    {
-      CAsciiBufferLogger::CAsciiBufferLogger(std::ostream& os)
-         : m_os(os)
+      CAsciiBufferLogger::CAsciiBufferLogger()
       {
       }
 
@@ -16,15 +16,15 @@ namespace shared
 
       void CAsciiBufferLogger::logReceived(const CByteBuffer& data)
       {
-         m_os << "Yadoms <<< " << msgToString(data) << std::endl;
+         YADOMS_LOG(information) << "Yadoms <<< " << msgToString(data);
       }
 
       void CAsciiBufferLogger::logSent(const CByteBuffer& data)
       {
-         m_os << "Yadoms >>> " << msgToString(data) << std::endl;
+         YADOMS_LOG(information) << "Yadoms >>> " << msgToString(data);
       }
 
-      std::string CAsciiBufferLogger::msgToString(const CByteBuffer& data) const
+      std::string CAsciiBufferLogger::msgToString(const CByteBuffer& data)
       {
          std::ostringstream ss;
          for (size_t idx = 0; idx < data.size(); ++ idx)

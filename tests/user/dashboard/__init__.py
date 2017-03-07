@@ -26,10 +26,20 @@ def open(browser):
 def openPage(browser, pageElementId, elementIdToWait):
    """Open a specific dashboard page"""
    
-   pluginItem = browser.find_element_by_id(pageElementId)
-   pluginItem.click()
-
+   browser.find_element_by_id(pageElementId).click()
    WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, elementIdToWait)))
+
+   
+def openSummary(browser):
+   """Open the summary page of dashboard"""
+   
+   openPage(browser, "btn-dashboard-summary", "dashboard-summary")
+
+   
+def openSystemConfiguration(browser):
+   """Open the system configuration page of dashboard"""
+   
+   openPage(browser, "btn-dashboard-system-configuration", "dashboard-system-configuration")
 
    
 def openAutomation(browser):

@@ -11,14 +11,14 @@ namespace shared
          namespace historization
          {
             const std::string& ByteUnit("B");
-            const CStandardCapacity& ByteCapacity = CStandardCapacity("Byte", ByteUnit, EKeywordDataType::kNumeric);
+            DECLARE_CAPACITY(ByteCapacity, "Byte", ByteUnit, EKeywordDataType::kNumeric);
 
             CByte::CByte(const std::string& keywordName,
                          const EKeywordAccessMode& accessMode,
                          const EMeasureType& measureType,
                          typeInfo::CIntTypeInfo& additionalInfo)
                : CSingleHistorizableData<long>(keywordName,
-                                               ByteCapacity,
+                                               ByteCapacity(),
                                                accessMode,
                                                0,
                                                measureType,

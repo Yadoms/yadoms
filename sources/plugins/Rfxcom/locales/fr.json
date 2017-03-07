@@ -590,6 +590,18 @@
                   }              
                }
             },
+            "kangtai":
+            {
+               "name": "Kangtai,Cotech",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (1-65535)"
+                  }              
+               }
+            },
             
             "blyss":
             {
@@ -928,6 +940,23 @@
                   {
                      "name": "Unité",
                      "description": "L'identifiant de la fonction de l'équipement (1-15)"
+                  }               
+               }
+            },
+            "screenline":
+            {
+               "name": "Screenline",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (0-65535)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unité",
+                     "description": "L'identifiant de la fonction de l'équipement (1-99)"
                   }               
                }
             },

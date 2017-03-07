@@ -21,12 +21,12 @@ public:
              boost::function<bool(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> isExpectedMessageFct,
              boost::function<void(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> onReceiveFct) override;
    void send(message::CEsp3SendPacket& sendMessage) override;
-
    // [END] IMessageHandler implementation
 
 protected:
    void setHook(boost::function<bool(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> isExpectedMessageFct,
                 boost::function<void(boost::shared_ptr<const message::CEsp3ReceivedPacket>)> onReceiveFct);
+   void clearHook();
 
    bool waitAnswer(const boost::posix_time::time_duration& enOceanAnswerTimeout);
 

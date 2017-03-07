@@ -3,7 +3,7 @@
 
 namespace message
 {
-   CResponseReceivedMessage::CResponseReceivedMessage(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+   CResponseReceivedMessage::CResponseReceivedMessage(boost::shared_ptr<const CEsp3ReceivedPacket> esp3Packet)
       : m_returnCode(static_cast<EReturnCode>(esp3Packet->data()[0])),
         m_responseData(esp3Packet->data().begin() + 1, esp3Packet->data().end())
    {

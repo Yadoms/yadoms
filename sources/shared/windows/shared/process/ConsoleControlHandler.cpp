@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ConsoleControlHandler.h"
 #include <windows.h> 
-#include <shared/Log.h>
 
 namespace shared
 {
@@ -12,7 +11,7 @@ namespace shared
       void CConsoleControlHandler::setOnStopRequestedHandler(boost::function<bool()> onStopRequestedFct)
       {
          m_onStopRequestedFct = onStopRequestedFct;
-         SetConsoleCtrlHandler(reinterpret_cast<PHANDLER_ROUTINE>(ctrlHandler), TRUE);
+         SetConsoleCtrlHandler(m_onStopRequestedFct.empty() ? NULL : reinterpret_cast<PHANDLER_ROUTINE>(ctrlHandler), TRUE);
       }
 
       BOOL CConsoleControlHandler::ctrlHandler(DWORD fdwCtrlType)
@@ -25,13 +24,7 @@ namespace shared
          case CTRL_CLOSE_EVENT:
             {
                // Signal stop request and wait for application fully stops
-               if (!m_onStopRequestedFct())
-               {
-                  YADOMS_LOG(error) << "CConsoleControlHandler : Fail to wait the app end event";
-                  return FALSE;
-               }
-
-               return TRUE;
+               return m_onStopRequestedFct() ? TRUE : FALSE;
             }
             // Pass other signals to the next handler. 
          case CTRL_BREAK_EVENT:

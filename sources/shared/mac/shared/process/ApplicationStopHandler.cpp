@@ -40,8 +40,16 @@ namespace shared
 
          CSoftwareStop::setOnStopRequestedHandler(onStopRequestedFct);
 
-         signal(SIGINT, CApplicationStopHandler::stopHandler);     // CTRL+C signal
-         signal(SIGTERM, CApplicationStopHandler::stopHandler);    // Termination request
+         if (m_onStopRequestedFct.empty())
+         {
+            signal(SIGINT, SIG_IGN);     // CTRL+C signal
+            signal(SIGTERM, SIG_IGN);    // Termination request
+         }
+         else
+         {
+            signal(SIGINT, CApplicationStopHandler::stopHandler);     // CTRL+C signal
+            signal(SIGTERM, CApplicationStopHandler::stopHandler);    // Termination request
+         }
       }
    }
 } // namespace shared::process

@@ -4,7 +4,7 @@
 
 namespace plugin_cpp_api
 {
-   CPluginInformation::CPluginInformation(boost::shared_ptr<const toPlugin::Information> buffer)
+   CPluginInformation::CPluginInformation(boost::shared_ptr<const plugin_IPC::toPlugin::Information> buffer)
       : m_buffer(buffer),
         m_path(m_buffer->path()),
         m_version(m_buffer->version())

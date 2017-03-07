@@ -14,9 +14,8 @@ namespace shared
       public:
          //--------------------------------------------------------------
          /// \brief	            Constructor
-         /// \param[in] os       Log target
          //--------------------------------------------------------------
-         explicit CAsciiBufferLogger(std::ostream& os);
+         explicit CAsciiBufferLogger();
 
          //--------------------------------------------------------------
          /// \brief	            Destructor
@@ -29,10 +28,7 @@ namespace shared
          // [END] IBufferLogger implementation
 
       protected:
-         std::string msgToString(const CByteBuffer& data) const;
-
-      private:
-         std::ostream& m_os;
+         static std::string msgToString(const CByteBuffer& data);
       };
    }
 } // namespace shared::communication

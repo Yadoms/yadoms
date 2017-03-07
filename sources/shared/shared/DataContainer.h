@@ -456,13 +456,15 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief		Output operator (write the serialized container)
       /// \param [in] os  The stream to write
+      /// \param [in] dt  The input data container
       /// \return   The stream
       //--------------------------------------------------------------
       friend YADOMS_SHARED_EXPORT std::ostream& operator<<(std::ostream& os, const CDataContainer& dt);
       
       //--------------------------------------------------------------
       /// \brief		Input operator (read a serialized container)
-      /// \param [in] os  The stream to read
+      /// \param [in] is  The stream to read
+      /// \param [in] dt  The output data container
       /// \return   The stream
       //--------------------------------------------------------------
       friend YADOMS_SHARED_EXPORT std::istream& operator>>(std::istream& is, CDataContainer& dt);
@@ -490,13 +492,13 @@ namespace shared
       //--------------------------------------------------------------
 
       // IDataSerializable implementation
-      virtual std::string serialize() const;
-      virtual void deserialize(const std::string & data);
+      std::string serialize() const override;
+      void deserialize(const std::string & data) override;
       // [END] IDataSerializable implementation
 
       // IDataFileSerializable implementation
-      virtual void serializeToFile(const std::string & filename) const;
-      virtual void deserializeFromFile(const std::string & filename);
+      void serializeToFile(const std::string & filename) const override;
+      void deserializeFromFile(const std::string & filename) override;
       // [END] IDataFileSerializable implementation
 
       // IDataContainable implementation
@@ -818,7 +820,7 @@ namespace shared
          //--------------------------------------------------------------
          static T getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
-            return (T)tree->getInternal<int>(parameterName, pathChar);
+            return static_cast<T>(tree->getInternal<int>(parameterName, pathChar));
          }
 
          //--------------------------------------------------------------
@@ -826,7 +828,7 @@ namespace shared
          //--------------------------------------------------------------
          static void setInternal(CDataContainer * tree, const std::string& parameterName, const T & value, const char pathChar)
          {
-            tree->setInternal<int>(parameterName, (int)value, pathChar);
+            tree->setInternal<int>(parameterName, static_cast<int>(value), pathChar);
          }
 
       };
@@ -852,7 +854,7 @@ namespace shared
          //--------------------------------------------------------------
          static void setInternal(CDataContainer * tree, const std::string& parameterName, const T & value, const char pathChar)
          {
-            tree->setInternal<std::string>(parameterName, (std::string)value, pathChar);
+            tree->setInternal<std::string>(parameterName, static_cast<std::string>(value), pathChar);
          }
 
       };
@@ -1080,9 +1082,9 @@ namespace shared
    }
 
    template<>
-   inline char* CDataContainer::get(const std::string& parameterName, const char pathChar) const
+   inline const char* CDataContainer::get(const std::string& parameterName, const char pathChar) const
    {
-      return (char*)(get<std::string>(parameterName, pathChar).c_str());
+      return (get<std::string>(parameterName, pathChar).c_str());
    }
 
 
@@ -1261,11 +1263,11 @@ namespace shared
       std::vector<T> result;
       try
       {
-         boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
+         auto child = m_tree.get_child(generatePath(parameterName, pathChar));
 
          boost::property_tree::ptree::const_iterator end = child.end();
          for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it) {
-            result.push_back((T)it->second.get_value<int>());
+            result.push_back(static_cast<T>(it->second.get_value<int>()));
          }
          return result;
       }
@@ -1535,7 +1537,7 @@ namespace shared
          for (i = values.begin(); i != values.end(); ++i)
          {
             boost::property_tree::ptree t;
-            t.put("", (int)(*i));
+            t.put("", static_cast<int>(*i));
             innerData.push_back(std::make_pair("", t));
          }
 
@@ -1672,10 +1674,10 @@ namespace shared
    template<typename EnumType>
    EnumType CDataContainer::getEnumValue(const std::string& parameterName, const EnumValuesNames& valuesNames, const char pathChar) const
    {
-      std::string stringValue = get<std::string>(parameterName, pathChar);
-      EnumValuesNames::const_iterator it = valuesNames.find(stringValue);
+      auto stringValue = get<std::string>(parameterName, pathChar);
+      auto it = valuesNames.find(stringValue);
       if (it != valuesNames.end())
-         return (EnumType)(it->second);
+         return static_cast<EnumType>(it->second);
 
       throw exception::COutOfRange(std::string("Value ") + stringValue + " was not found for " + parameterName + " parameter");
    }

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Information.h"
-#include <boost/regex.hpp>
 #include "tools/SupportedPlatformsChecker.h"
 #include "InvalidPluginException.hpp"
 
@@ -34,7 +33,7 @@ namespace pluginSystem
          {
             m_version = shared::versioning::CVersion(m_package->get<std::string>("version"));
          }
-         catch (std::exception &ex)
+         catch (std::exception&)
          {
             throw shared::exception::CInvalidParameter("Error reading package.json : plugin version doesn't match expected SEMVER format (x.x.x)");
          }

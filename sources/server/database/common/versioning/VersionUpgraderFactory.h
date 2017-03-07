@@ -3,20 +3,23 @@
 #include "IVersionUpgrade.h"
 
 
-namespace database { namespace common { namespace versioning { 
-
-
-   class CVersionUpgraderFactory
+namespace database
+{
+   namespace common
    {
-   public:
-      static boost::shared_ptr<IVersionUpgrade> GetUpgrader();
+      namespace versioning
+      {
+         class CVersionUpgraderFactory
+         {
+         public:
+            static boost::shared_ptr<IVersionUpgrade> GetUpgrader();
 
-   private:
-      CVersionUpgraderFactory();
-      virtual ~CVersionUpgraderFactory();
-   };
-
-} //namespace versioning
-} //namespace common
+         private:
+            CVersionUpgraderFactory();
+            virtual ~CVersionUpgraderFactory();
+         };
+      } //namespace versioning
+   } //namespace common
 } //namespace database 
+
 

@@ -17,11 +17,12 @@ class CreateWidget(unittest.TestCase):
    """Create widget test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.deploy('OneFakePlugin')
       config.deploy("withDeveloperMode")
       scripts.deleteAll()
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Firefox()
+      self.browser = webdriver.Chrome()
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
             
@@ -38,8 +39,7 @@ class CreateWidget(unittest.TestCase):
       print '  Change widget title'
       editWidgetModal.setWidgetTitle(widgetTitle)
       print '  Select device'
-      editWidgetModal.getConfigurationPanel().getAddObjectButton('widgets/switch:configurationSchema.devices.name').click()
-      selects = editWidgetModal.getConfigurationPanel().getItemsByName('widgets/switch:configurationSchema.devices.item.content.source.name')
+      selects = editWidgetModal.getConfigurationPanel().getItemsByName('widgets/switch:configurationSchema.device.name')
       Select(selects[0]).select_by_visible_text(device)
       Select(selects[1]).select_by_visible_text(keyword)
       print '  Confirm'

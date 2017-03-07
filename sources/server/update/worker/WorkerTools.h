@@ -2,7 +2,6 @@
 #include <Poco/Path.h>
 #include <shared/DataContainer.h>
 #include <shared/web/FileDownloader.h>
-#include <shared/enumeration/EnumHelpers.hpp>
 
 namespace update {
    namespace worker {

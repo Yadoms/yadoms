@@ -20,14 +20,12 @@ namespace shared
                ((Custom))
             );
 
-            const shared::plugin::yPluginApi::CStandardCapacity& PluginStateCapacity = shared::plugin::yPluginApi::CStandardCapacity("pluginState_capacity",
-                                                                                                                                     shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                                                                     shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+            DECLARE_CAPACITY(PluginStateCapacity, "pluginState_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
             CPluginState::CPluginState(const std::string& keywordName,
                                        const EKeywordAccessMode& accessMode)
                : CSingleHistorizableData<EPluginState>(keywordName,
-                                                       PluginStateCapacity,
+                                                       PluginStateCapacity(),
                                                        accessMode)
             {
             }

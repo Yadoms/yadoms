@@ -15,7 +15,7 @@ namespace shared
                                        const EMeasureType& measureType,
                                        typeInfo::CDoubleTypeInfo& additionalInfo)
                : CSingleHistorizableData<double>(keywordName,
-                                                 CStandardCapacities::Temperature,
+                                                 CStandardCapacities::Temperature(),
                                                  accessMode,
                                                  0.0,
                                                  measureType,

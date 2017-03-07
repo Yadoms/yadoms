@@ -78,16 +78,14 @@ namespace xplrules
             ((V2End))
             ((X))
             ((XEnd))
-         );
+         )
 
-         const shared::plugin::yPluginApi::CStandardCapacity& RemoteMedionCapacity = shared::plugin::yPluginApi::CStandardCapacity("RemoteMedion",
-                                                                                                                                   shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                                                                   shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(RemoteMedionCapacity, "RemoteMedion", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CRemoteMedion::CRemoteMedion(const std::string& keywordName)
             : CSingleHistorizableData<ERemoteMedionCodes>(keywordName,
-                                                          RemoteMedionCapacity,
+                                                          RemoteMedionCapacity(),
                                                           shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
          {
          }

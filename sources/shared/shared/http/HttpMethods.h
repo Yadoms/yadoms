@@ -1,7 +1,6 @@
 #pragma once
 #include <shared/Export.h>
 #include <shared/DataContainer.h>
-#include <Poco/Net/HTTPSession.h>
 #include <Poco/Net/HTTPClientSession.h>
 #include <Poco/Net/HTTPResponse.h>
 
@@ -10,7 +9,6 @@ namespace shared
    //--------------------------------------------------------------
    /// \brief	default value for HTTP Request default timeout
    //--------------------------------------------------------------
-
    static boost::posix_time::time_duration httpRequestDefaultTimeout(boost::posix_time::time_duration(boost::posix_time::seconds(45)));
 
    //--------------------------------------------------------------
@@ -35,7 +33,7 @@ namespace shared
       /// \return     the answer of the request
       //--------------------------------------------------------------
       static CDataContainer SendGetRequest(const std::string & url, 
-                                           const shared::CDataContainer & parameters,
+                                           const CDataContainer & parameters,
                                            const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
@@ -47,8 +45,8 @@ namespace shared
       /// \return     false if the time has expired. In this case the onReceived is not executed
       //--------------------------------------------------------------
       static bool SendGetRequest(const std::string & url, 
-                                 const shared::CDataContainer& parameters,
-                                 boost::function1<void, shared::CDataContainer&> onReceive,
+                                 const CDataContainer& parameters,
+                                 boost::function1<void, CDataContainer&> onReceive,
                                  const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
@@ -59,6 +57,6 @@ namespace shared
       //--------------------------------------------------------------
       static bool JsonResponseReader(Poco::Net::HTTPClientSession& session,
                                      Poco::Net::HTTPResponse& httpresponse,
-                                     shared::CDataContainer& response);
+                                     CDataContainer& response);
    };
 } // namespace shared

@@ -12,11 +12,12 @@ class CreatePlugin(unittest.TestCase):
    """Create systemInformation plugin test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.new()
       config.deploy("nominal")
       scripts.deleteAll()
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Firefox()
+      self.browser = webdriver.Chrome()
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
             

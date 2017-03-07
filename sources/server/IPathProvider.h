@@ -1,7 +1,7 @@
 #pragma once
 
 //-----------------------------------------------------------------------------
-/// \class   Interface on Yadoms paths provider
+/// \biref   Interface on Yadoms paths provider
 //-----------------------------------------------------------------------------
 class IPathProvider
 {
@@ -55,6 +55,12 @@ public:
    /// \return  	                     the script interpreters path, ususally {yadoms_binary_path}/scriptInterpreters
    //-----------------------------------------------------------------------------
    virtual const boost::filesystem::path& scriptInterpretersPath() const = 0;
+
+   //-----------------------------------------------------------------------------
+   /// \brief		                     get the logs of script interpreters path
+   /// \return  	                     the logs of script interpreters path, ususally {yadoms_binary_path}/logs/scriptInterpreters
+   //-----------------------------------------------------------------------------
+   virtual const boost::filesystem::path& scriptInterpretersLogPath() const = 0;
 
    //--------------------------------------------------------------
    /// \brief	    Get the path of the SQLite database file

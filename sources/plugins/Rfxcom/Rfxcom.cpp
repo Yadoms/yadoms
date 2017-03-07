@@ -21,7 +21,7 @@ enum
 
 
 CRfxcom::CRfxcom()
-   : m_logger(YADOMS_LOG(information)),
+   : m_logger(),
      m_configurationUpdated(false),
      m_lastRequest(sizeof(RBUF)),
      m_isDeveloperMode(false)

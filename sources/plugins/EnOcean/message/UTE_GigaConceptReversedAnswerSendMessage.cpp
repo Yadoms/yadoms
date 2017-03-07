@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "UTE_GigaConceptReversedAnswerSendMessage.h"
-#include "../profiles/bitsetHelpers.hpp"
-#include "../profiles/generated-eep.h"
+#include "profiles/bitsetHelpers.hpp"
+#include "profiles/eep.h"
 
 namespace message
 {

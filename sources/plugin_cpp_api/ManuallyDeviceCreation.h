@@ -1,5 +1,5 @@
 #pragma once
-#include <toPlugin.pb.h>
+#include <plugin_IPC/yadomsToPlugin.pb.h>
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include "ManuallyDeviceCreationData.h"
 
@@ -8,7 +8,7 @@ namespace plugin_cpp_api
    class CManuallyDeviceCreation : public shared::plugin::yPluginApi::IManuallyDeviceCreationRequest
    {
    public:
-      CManuallyDeviceCreation(const toPlugin::ManuallyDeviceCreation& msg,
+      CManuallyDeviceCreation(const plugin_IPC::toPlugin::ManuallyDeviceCreation& msg,
                               boost::function1<void, const std::string&> sucessCallback,
                               boost::function1<void, const std::string&> errorCallback);
       virtual ~CManuallyDeviceCreation();

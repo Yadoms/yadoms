@@ -15,7 +15,7 @@ namespace shared
                          const EMeasureType& measureType,
                          typeInfo::CDoubleTypeInfo& additionalInfo)
                : CSingleHistorizableData<double>(keywordName,
-                                                 CStandardCapacities::Rain,
+                                                 CStandardCapacities::Rain(),
                                                  EKeywordAccessMode::kGet,
                                                  0.0,
                                                  measureType,

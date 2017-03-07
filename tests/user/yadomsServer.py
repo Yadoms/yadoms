@@ -6,6 +6,7 @@ import os.path
 import psutil
 import platform
 from selenium.webdriver.support.ui import WebDriverWait
+from psutil import process_iter
 
 def binaryPath():
    """return the server binary path"""
@@ -14,7 +15,12 @@ def binaryPath():
       return os.path.join("..", "..", "builds", "DEBUG")
    else:
       return os.path.join("..", "..", "builds")
-   
+
+
+def executableName():
+   """Return the executable name"""
+   return "yadoms.exe" if platform.system() == "Windows" else "yadoms"
+
    
 def databasePath():
    """return the server database path"""
@@ -58,13 +64,27 @@ def wwwLocalesPath():
    return os.path.join(binaryPath(), "www", "locales")
    
    
-def start():
+def start(startupArgs=[]):
    """Start the Yadoms server"""
    
-   if (platform.system() == "Windows"):
-      return subprocess.Popen(os.path.join(binaryPath(), "yadoms.exe --logLevel=none"))
-   else:
-      return subprocess.Popen(os.path.join(binaryPath(), "yadoms"))
+   # Set logLevel to none if not provided
+   if not startupArgs or all("logLevel=" not in arg for arg in startupArgs):
+      startupArgs.append("logLevel=none")
+
+   argsLine = ""
+   for arg in startupArgs:
+      argsLine += " --" + arg
+
+   print 'Start server...'
+   serverProcess = subprocess.Popen("python yadomsServerWrapper.py " + os.path.join(binaryPath(), executableName() + " " + argsLine), stdin=subprocess.PIPE)
+
+   if waitServerStarted() == True:
+      return serverProcess
+
+   print 'Server failed to start'
+   stop(serverProcess)
+   assert False
+   return None
    
    
 def isProcessRunning(pid):  
@@ -85,9 +105,12 @@ def killProcTree(pid, including_parent=True):
    """Kill a parent process with its children"""
    parent = psutil.Process(pid)
    children = parent.children(recursive=True)
-   for child in children:
-      child.kill()
-      psutil.wait_procs(children, timeout=5)
+   while parent.children(recursive=True):
+      try:
+         parent.children(recursive=True)[0].kill()
+      except:
+         pass
+   psutil.wait_procs(parent.children(recursive=True), timeout=5)
    if including_parent:
       try:
          parent.kill()
@@ -95,27 +118,64 @@ def killProcTree(pid, including_parent=True):
          print 'Process killed'
       except:
          print 'Error : process still alive'
-         raise
+         assert False
       
   
 def stop(yadomsProcess):
-   """Kill Yadoms server with its sup-processes"""
+   """Kill Yadoms server with its sub-processes"""
 
-   print 'Kill Yadoms...'
+   print 'Stop Yadoms...'
+   try:
+      yadomsProcess.communicate(input=' ')  
+   except KeyboardInterrupt:
+      print 'Stopped'
+      return
+   except Exception, e:
+      print 'Error stopping Yadoms', str(e)
+
+   print 'Yadoms was not gracefully stopped, try to kill...'
    killProcTree(yadomsProcess.pid)
+      
+  
+def ensureStopped():
+   """Ensure that Yadoms server is stopped"""
+   for process in process_iter():
+      if process.name() == executableName():
+         try:
+            killProcTree(process.ppid())
+         except:
+            pass
 
-           
-def restart():
-   """Restart the Yadoms server"""
-   stop()
-   start()
 
-def openClient(browser):
+def waitServerStarted():
+   import datetime
+   import requests
+   timeout = datetime.datetime.now() + datetime.timedelta(seconds = 30)
+   while datetime.datetime.now() < timeout:
+      try:
+         response = requests.post('http://127.0.0.1:8080/rest/general/system', timeout=1)
+         if response.status_code == requests.codes.ok:
+            print 'Server started'
+            return True
+      except:
+        pass
+
+   print 'Server not responding'
+   return False
+
+
+def openClient(browser, waitForReadyForNormalOperation = True):
    """Open a client on local server and wait for full loading"""
 
-   import time
-   time.sleep(10)  # TODO : improve that to be sure that yadomsServer is ready for web client connection
+   try:
+      browser.get("http://127.0.0.1:8080")
+      if WebDriverWait(browser, 60).until(lambda browser: browser.execute_script("return document.readyState") == u"complete" and browser.execute_script("return jQuery.active") == 0):
+         if not waitForReadyForNormalOperation:
+            return
+         if WebDriverWait(browser, 60).until(lambda browser: len(browser.find_elements_by_class_name("tabPagePills")) > 0):
+            return
+   except:
+      print 'Exception waiting page loding'
 
-   browser.get("http://127.0.0.1:8080")
-   WebDriverWait(browser, 10).until(lambda driver: driver.execute_script("return document.readyState") == u"complete" and driver.execute_script("return jQuery.active") == 0)
-   
+   print 'Unable to load client'
+   assert False

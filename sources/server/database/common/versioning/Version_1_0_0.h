@@ -31,17 +31,21 @@ namespace database
                                  const shared::versioning::CVersion& currentVersion) override;
             // [END] ISQLiteVersionUpgrade implementation
 
+         protected:
+            static void updateDatabaseVersion(const boost::shared_ptr<IDatabaseRequester> pRequester,
+                                              const shared::versioning::CVersion& newVersion);
+
          private:
             //-----------------------------------
             /// \brief     The version (1.0.0.0)
             //-----------------------------------
-            shared::versioning::CVersion m_version;
+            static const shared::versioning::CVersion Version;
 
             //-----------------------------------
             /// \brief     Create the database (when tables are not found)
             ///\param [in] pRequester : database requester object
             //-----------------------------------
-            void CreateDatabase(const boost::shared_ptr<IDatabaseRequester>& pRequester) const;
+            static void CreateDatabase(const boost::shared_ptr<IDatabaseRequester>& pRequester);
          };
       } //namespace versioning
    } //namespace common

@@ -21,11 +21,12 @@ class RemoveRule(unittest.TestCase):
    """Remove rule test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.deploy('OneStoppedRule')
       config.deploy("nominal")
       scripts.deploy(["DisplayServerVersion"])
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Firefox()
+      self.browser = webdriver.Chrome()
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       

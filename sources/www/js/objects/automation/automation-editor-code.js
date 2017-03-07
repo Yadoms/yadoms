@@ -7,12 +7,23 @@ AutomationEditorCode.prototype = new IAutomationRuleEditor();
 AutomationEditorCode.prototype.constructor = AutomationEditorCode;
 
 AutomationEditorCode.getSupportedInterpreters = function() {
-   return ["python"];
+   return ["ypython27"];
+};
+
+/**
+ * Get the ACE language denomination associated to an interpreter
+ * @param interpreterName : name of the interpreter
+ * @return the ACE language denomination supporter by this interpreter
+ */
+AutomationEditorCode.getAceLanguageFromInterpreterName = function(interpreterName) {
+   switch(interpreterName) {
+      case "ypython27": return "python";
+   }
 };
 
 /**
  * Ctor
- * @param intrepreters : list of available interpreters
+ * @param interpreters : list of available interpreters
  * @constructor
  */
 function AutomationEditorCode(interpreters) {
@@ -123,7 +134,8 @@ AutomationEditorCode.prototype.setRule = function(rule) {
 
    var self = this;
    self.rule = rule;
-   self.editor.getSession().setMode("ace/mode/" + self.rule.interpreter.toLowerCase());
+
+   self.editor.getSession().setMode("ace/mode/" + AutomationEditorCode.getAceLanguageFromInterpreterName(self.rule.interpreter.toLowerCase()));
 
    //we get the code only if the rule exist server side
    if (rule.id === -1) {
@@ -195,7 +207,7 @@ AutomationEditorCode.prototype.setInterpreter = function(newInterpreter) {
    if (found) {
       //we change the current interpreter
       this.rule.interpreter = newInterpreter;
-      this.editor.getSession().setMode("ace/mode/" + this.rule.interpreter.toLowerCase());
+      this.editor.getSession().setMode("ace/mode/" + AutomationEditorCode.getAceLanguageFromInterpreterName(this.rule.interpreter.toLowerCase()));
    }
 };
 

@@ -7,34 +7,35 @@
 
 #include "web/ws/FrameBase.h"
 
-namespace web { namespace poco {
-
-   class CWebSocketRequestHandler : public Poco::Net::HTTPRequestHandler
+namespace web
+{
+   namespace poco
    {
-   public:
-      CWebSocketRequestHandler();
-      virtual ~CWebSocketRequestHandler();
+      class CWebSocketRequestHandler : public Poco::Net::HTTPRequestHandler
+      {
+      public:
+         CWebSocketRequestHandler();
+         virtual ~CWebSocketRequestHandler();
 
-      void handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response);
-      
-   private:
-      //--------------------------------------------------------------
-      /// \brief           Send data on the webSocket
-      /// \param[in] client Web socket client
-      /// \param[in] toSend Data to send
-      /// \return true is sending OK, false if connection lost
-      //--------------------------------------------------------------
-      bool send(Poco::Net::WebSocket & webSocket, const ws::CFrameBase& toSend) const;    
-      
-      //--------------------------------------------------------------
-      /// \brief           Send PING frame on the webSocket
-      /// \param[in] client Web socket client
-      /// \return true is sending OK, false if connection lost
-      //--------------------------------------------------------------
-      bool sendPing(Poco::Net::WebSocket & webSocket) const;
-   };
+         void handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response) override;
 
+      private:
+         //--------------------------------------------------------------
+         /// \brief           Send data on the webSocket
+         /// \param[in] client Web socket client
+         /// \param[in] toSend Data to send
+         /// \return true is sending OK, false if connection lost
+         //--------------------------------------------------------------
+         static bool send(Poco::Net::WebSocket& webSocket, const ws::CFrameBase& toSend);
 
-} //namespace poco
+         //--------------------------------------------------------------
+         /// \brief           Send PING frame on the webSocket
+         /// \param[in] client Web socket client
+         /// \return true is sending OK, false if connection lost
+         //--------------------------------------------------------------
+         static bool sendPing(Poco::Net::WebSocket& webSocket);
+      };
+   } //namespace poco
 } //namespace web
+
 

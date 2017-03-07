@@ -15,10 +15,11 @@ class RemovePlugin(unittest.TestCase):
    """Remove plugin test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.deploy('OneFakePlugin')
       config.deploy("withDeveloperMode")
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Firefox()
+      self.browser = webdriver.Chrome()
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       
@@ -34,11 +35,6 @@ class RemovePlugin(unittest.TestCase):
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
       self.assertTrue(tools.waitUntil(lambda: dashboard.plugins.getPluginRemoveButton(pluginsTable, pluginNumber).is_enabled()))
       removeButton = dashboard.plugins.getPluginRemoveButton(pluginsTable, pluginNumber)
-      
-      # TODO nettoyer
-      if not tools.waitUntil(lambda: dashboard.plugins.getPluginState(pluginsTable, pluginNumber) is dashboard.plugins.PluginState.Running):
-         saveContext(self.browser)
-         self.assertTrue(False)
    
       print 'Remove plugin'
       removeButton.click()

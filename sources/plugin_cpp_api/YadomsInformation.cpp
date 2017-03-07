@@ -5,7 +5,7 @@
 
 namespace plugin_cpp_api
 {
-   CYadomsInformation::CYadomsInformation(const toPlugin::YadomsInformationAnswer& buffer)
+   CYadomsInformation::CYadomsInformation(const plugin_IPC::toPlugin::YadomsInformationAnswer& buffer)
       : m_buffer(buffer)
    {
    }

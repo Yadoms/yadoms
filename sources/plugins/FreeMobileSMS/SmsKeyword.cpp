@@ -3,7 +3,7 @@
 
 CSmsKeyword::CSmsKeyword(const std::string& keywordName)
    : yApi::historization::CSingleHistorizableData<std::string>(keywordName,
-                                                               yApi::CStandardCapacities::Message,
+                                                               yApi::CStandardCapacities::Message(),
                                                                yApi::EKeywordAccessMode::kGetSet)
 {
 }

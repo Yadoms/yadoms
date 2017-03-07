@@ -402,26 +402,6 @@ Function un.RemoveFromPath
     Pop $0
 FunctionEnd
 
-Function CheckRedistributableInstalled
-
-  ;{13A4EE12-23EA-3371-91EE-EFB36DDFFF3E} - msvs2013 x86
-  
-  Push $R0
-  ClearErrors
-   
-  ;try to read Version subkey to R0
-  ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{13A4EE12-23EA-3371-91EE-EFB36DDFFF3E}" "Version"
-
-  ;was there error or not?
-  IfErrors 0 NoErrors
-   
-  ;error occured, copy "Error" to R0
-  StrCpy $R0 "Error"
-
-  NoErrors:
-  
-    Exch $R0 
-FunctionEnd
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Uninstall sutff
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -745,23 +725,6 @@ Section "-Core installation"
   desktop_withoutservice:
 @CPACK_NSIS_CREATE_ICONS_DESKTOP_NOSERVICE@
   end_of_install_desktop_icons:
-  
-  
-  ;Check if we have redistributable installed
-  Call  CheckRedistributableInstalled
-  Pop $R0
-
-  ${If} $R0 == "Error"
-    File @CPACK_NSIS_VCREDIST@
-	
-	SetDetailsPrint both
-	DetailPrint "Installing VCRedist 2013 32 Bits "
-	DetailPrint "$INSTDIR\vcredist_x86.exe"
-	SetDetailsPrint none
-
-    ExecWait '"$INSTDIR\bin\vcredist_x86.exe" /install /passive /norestart'	
-    Delete "$INSTDIR\bin\vcredist_x86.exe"
-  ${EndIf}
   
   
   IntCmp $INSTALL_SERVICE 0 end_of_install_service

@@ -17,11 +17,11 @@ def waitNewRuleModal(browser):
    
       
 def waitRulesTable(browser):
-   return browser.find_element_by_id("automation-rule-list")
+   return WebDriverWait(browser, 10).until(Condition.presence_of_element_located((By.ID, "automation-rule-list")))
 
 def waitRulesTableHasNRules(browser, rulesNumberExpected):
    rulesTable = waitRulesTable(browser)
-   WebDriverWait(browser, 10).until(lambda driver: getRuleNumberInTable(browser, rulesTable) == rulesNumberExpected)
+   tools.waitUntil(lambda: getRuleNumberInTable(browser, rulesTable) == rulesNumberExpected)
    return rulesTable
 
 def getRuleNumberInTable(browser, rulesTable):
@@ -36,9 +36,12 @@ def getRuleName(rulesTable, ruleNumber):
 
 def getRuleDescription(rulesTable, ruleNumber):
    return getRuleDatas(rulesTable, ruleNumber)[1].text
-
+   
 def getRuleAutoStart(rulesTable, ruleNumber):
-   return getRuleDatas(rulesTable, ruleNumber)[2].find_element_by_tag_name("input").is_selected()
+   return getRuleDatas(rulesTable, ruleNumber)[2].find_element_by_tag_name("input")
+   
+def getRuleAutoStartState(rulesTable, ruleNumber):
+   return getRuleAutoStart(rulesTable, ruleNumber).is_selected()
    
 def getRuleButtons(rulesTable, ruleNumber):
    rulesDataButtonsCell = getRuleDatas(rulesTable, ruleNumber)[3]
@@ -188,16 +191,8 @@ class AceCodeEditor:
    
       # Need a workaround for Selenium bug #1723 (Left parenthesis don't work, see https://code.google.com/p/selenium/issues/detail?id=1723)
       for codeLine in code:
-         if ('(' in codeLine):
-            subStrings = codeLine.split("(")
-            for subString in subStrings[:-1]:
-               self.__codeEditorWebElement.send_keys(subString)
-               self.__codeEditorWebElement.send_keys(Keys.SHIFT + "9")
-            self.__codeEditorWebElement.send_keys(subStrings[-1])
-            self.__writeCR(codeLine)
-         else:
-            self.__codeEditorWebElement.send_keys(codeLine)
-            self.__writeCR(codeLine)
+         self.__codeEditorWebElement.send_keys(codeLine)
+         self.__writeCR(codeLine)
       
       
    def __writeCR(self, codeLine):

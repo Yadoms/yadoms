@@ -13,7 +13,7 @@ namespace shared
             CDuration::CDuration(const std::string& keywordName,
                                  const EKeywordAccessMode& accessMode)
                : CSingleHistorizableData<boost::posix_time::time_duration>(keywordName,
-                                                                           CStandardCapacities::Duration,
+                                                                           CStandardCapacities::Duration(),
                                                                            accessMode,
                                                                            boost::date_time::not_a_date_time,
                                                                            EMeasureType::kAbsolute)

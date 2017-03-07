@@ -1,5 +1,5 @@
 #pragma once
-#include <toPlugin.pb.h>
+#include <plugin_IPC/yadomsToPlugin.pb.h>
 #include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
 
 namespace plugin_cpp_api
@@ -7,7 +7,7 @@ namespace plugin_cpp_api
    class CDeviceConfigurationSchemaRequest : public shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest
    {
    public:
-      CDeviceConfigurationSchemaRequest(const toPlugin::DeviceConfigurationSchemaRequest& msg,
+      CDeviceConfigurationSchemaRequest(const plugin_IPC::toPlugin::DeviceConfigurationSchemaRequest& msg,
                                         boost::function1<void, const shared::CDataContainer&> sucessCallback,
                                         boost::function1<void, const std::string&> errorCallback);
       virtual ~CDeviceConfigurationSchemaRequest();

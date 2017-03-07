@@ -33,7 +33,7 @@ namespace shared
                                                  const EKeywordAccessMode& accessMode,
                                                  const EMeasureType& measureType)
                : CSingleHistorizableData<EWeatherCondition>(keywordName,
-                                                            CStandardCapacities::WeatherCondition,
+                                                            CStandardCapacities::WeatherCondition(),
                                                             accessMode,
                                                             EWeatherCondition::kCloudy,
                                                             measureType)

@@ -54,6 +54,7 @@ namespace rfxcomMessages
       case sTypeBlindsT10:
       case sTypeBlindsT11:
       case sTypeBlindsT12:
+      case sTypeBlindsT13:
          break;
       default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
@@ -87,6 +88,7 @@ namespace rfxcomMessages
       case sTypeBlindsT0:
       case sTypeBlindsT1:
       case sTypeBlindsT12:
+      case sTypeBlindsT13:
          m_id = rbuf.BLINDS1.id2 << 8 | rbuf.BLINDS1.id3;
          break;
 
@@ -162,6 +164,7 @@ namespace rfxcomMessages
       case sTypeBlindsT0:
       case sTypeBlindsT1:
       case sTypeBlindsT12:
+      case sTypeBlindsT13:
          buffer.BLINDS1.id1 = 0;
          buffer.BLINDS1.id2 = static_cast<unsigned char>(0xFF & (m_id >> 8));
          buffer.BLINDS1.id3 = static_cast<unsigned char>(0xFF & m_id);
@@ -256,6 +259,8 @@ namespace rfxcomMessages
       case sTypeBlindsT11: ssModel << "ASP";
          break;
       case sTypeBlindsT12: ssModel << "Confexx CNF24-2435";
+         break;
+      case sTypeBlindsT13: ssModel << "Screenline";
          break;
       default: ssModel << boost::lexical_cast<std::string>(m_subType);
          break;

@@ -27,8 +27,10 @@ namespace shared
          /// \param[in] returnCode  The process return code
          /// \param[in] error       The error output content (can be empty)
          //--------------------------------------------------------------
-         virtual void onFinish(int returnCode, const std::string& error) = 0;
+         virtual void onFinish(int returnCode,
+                               const std::string& error) = 0;
       };
    }
 } // namespace shared::process
+
 

@@ -577,10 +577,22 @@
                      "description": "The device ID (1-65535)"
                   }              
                }
-            },            
+            },
             "mdRemote108":
             {
                "name": "MD remote 108 LED dimmer",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-65535)"
+                  }              
+               }
+            }, 
+            "kangtai":
+            {
+               "name": "Kangtai, Cotech",
                "content":
                {
                   "id":
@@ -928,6 +940,23 @@
                   {
                      "name": "Unit Code",
                      "description": "The unit code (1-15)"
+                  }               
+               }
+            },
+            "screenline":
+            {
+               "name": "Screenline",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (0-65535)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-99)"
                   }               
                }
             },

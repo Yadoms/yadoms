@@ -5,7 +5,6 @@
 #include "database/IDataProvider.h"
 #include "dataAccessLayer/IDataAccessLayer.h"
 #include "IQualifier.h"
-#include "IInstanceStoppedListener.h"
 
 namespace pluginSystem
 {
@@ -36,19 +35,18 @@ namespace pluginSystem
 
       //--------------------------------------------------------------
       /// \brief	                     Create a plugin instance
-      /// \param [in]	pluginInformation          Information on the plugin
       /// \param [in]   instanceData               the plugin instance data
       /// \param [in]   dataProvider               the database accessor
       /// \param [in]   dataAccessLayer            the data access layer
       /// \param [in]   qualifier                  the plugin qualifier
-      /// \param [in]   instanceStoppedListener    Listener to call when instance stopped
+      /// \param [in]   onPluginsStoppedFct        Function called when plugin is stopped
       /// \return                      The plugin instance
       //--------------------------------------------------------------
       virtual boost::shared_ptr<IInstance> createInstance(boost::shared_ptr<const database::entities::CPlugin> instanceData,
                                                           boost::shared_ptr<database::IDataProvider> dataProvider,
                                                           boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                           boost::shared_ptr<IQualifier> qualifier,
-                                                          boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const = 0;
+                                                          boost::function1<void, int> onPluginsStoppedFct) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                  Get the plugin instance log file path
@@ -65,5 +63,3 @@ namespace pluginSystem
       virtual boost::filesystem::path pluginDataPath(int instanceId) const = 0;
    };
 } // namespace pluginSystem
-
-

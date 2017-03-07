@@ -1,7 +1,6 @@
 # Compilers/IDE specific configurations
 #
 message("System Name = ${CMAKE_SYSTEM_NAME}")
-message("Yadoms Platform = ${CMAKE_YADOMS_PLATFORM}")
 
 if(MSVC)
 
@@ -53,6 +52,11 @@ if(MSVC)
    #  dont use third party script to get current windows version because it fails with win10 and greaters
    #  so just specify it as Win7 (avoid link with Win8 and Win10 sdk; because they are useless for our app)
 	add_definitions(-D_WIN32_WINNT=0x0601)
+
+   # Overrides compilers flag to link with static runtime libraries
+   SET(MSVC_RUNTIME "static")
+   configure_msvc_runtime()
+
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX)

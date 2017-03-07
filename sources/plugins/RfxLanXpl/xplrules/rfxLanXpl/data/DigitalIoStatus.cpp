@@ -13,14 +13,12 @@ namespace xplrules
             ((Low))
          );
 
-         const shared::plugin::yPluginApi::CStandardCapacity& RfxLanDigitalIoStatusCapacity = shared::plugin::yPluginApi::CStandardCapacity("digitalio",
-                                                                                                                                            shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                                                                            shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(RfxLanDigitalIoStatusCapacity, "digitalio", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CDigitalIoStatus::CDigitalIoStatus(const std::string& keywordName)
             : CSingleHistorizableData<EDigitalIoStatus>(keywordName,
-                                                        RfxLanDigitalIoStatusCapacity,
+                                                        RfxLanDigitalIoStatusCapacity(),
                                                         shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
          {
          }

@@ -32,7 +32,7 @@ namespace shared
 
             const CStandardCapacity& CMessage::getCapacity() const
             {
-               return CStandardCapacities::Message;
+               return CStandardCapacities::Message();
             }
 
             const EKeywordAccessMode& CMessage::getAccessMode() const

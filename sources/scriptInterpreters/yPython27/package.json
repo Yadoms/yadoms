@@ -1,0 +1,9 @@
+{
+  "name": "Python 2.7",
+  "description": "Python 2.7.x rules interpreter",
+  "version": "0.1.0-beta",
+  "author": "yadoms-team",
+  "url": "https://github.com/Yadoms/yadoms/",
+  "credits": "",
+  "supportedPlatforms": "all"
+}

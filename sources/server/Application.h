@@ -15,7 +15,7 @@ public:
    ///\brief Constructor
    //-----------------------------
    CYadomsServer();
-   
+
    //-----------------------------
    ///\brief Destructor
    //-----------------------------
@@ -39,16 +39,9 @@ private:
    ///\brief Startup options
    //-----------------------------
    boost::shared_ptr<startupOptions::CStartupOptions> m_startupOptions;
-   
+
    //-----------------------------
    ///\brief Running information
    //-----------------------------
    boost::shared_ptr<IRunningInformation> m_runningInformation;
-
-
-   //-----------------------------
-   ///\brief Event handlers used to manage application stop
-   //-----------------------------
-   shared::event::CEventHandler m_stopRequestEventHandler;
-   shared::event::CEventHandler m_stoppedEventHandler;
 };

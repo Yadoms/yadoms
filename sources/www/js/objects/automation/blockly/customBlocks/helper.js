@@ -95,8 +95,8 @@ Blockly.Yadoms.ConfigureBlockForYadomsCapacitySelection = function(thisBlock, ca
         }
 
         var result = Blockly.FieldDropdown.prototype.setValue.call(this, newValue);
-        if (!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
-            this.changeHandler_(this.getValue());
+        if (!isNullOrUndefined(this.validator_) && $.isFunction(this.validator_))
+            this.validator_(this.getValue());
         return result;
     };
 	
@@ -283,8 +283,8 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, on
         }
 
         var result = Blockly.FieldDropdown.prototype.setValue.call(this, newValue);
-        if (!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
-            this.changeHandler_(this.getValue());
+        if (!isNullOrUndefined(this.validator_) && $.isFunction(this.validator_))
+            this.validator_(this.getValue());
         return result;
     };
 
@@ -296,8 +296,8 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, on
         }
 
         var result = Blockly.FieldDropdown.prototype.setValue.call(this, newValue);
-        if (!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
-            this.changeHandler_(this.getValue());
+        if (!isNullOrUndefined(this.validator_) && $.isFunction(this.validator_))
+            this.validator_(this.getValue());
         return result;
     };
 

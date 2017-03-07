@@ -45,7 +45,7 @@ CSupervisor::~CSupervisor()
 void CSupervisor::run()
 {
    YADOMS_LOG_CONFIGURE("Supervisor");
-   YADOMS_LOG(information) << "Supervisor is starting";
+   YADOMS_LOG(debug) << "Supervisor is starting";
 
    boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal;
    try
@@ -86,13 +86,9 @@ void CSupervisor::run()
 
       // Start automation rules manager
       boost::shared_ptr<automation::IRuleManager> automationRulesManager(boost::make_shared<automation::CRuleManager>(m_pathProvider,
-                                                                                                                      pDataProvider->getRuleRequester(),
+                                                                                                                      pDataProvider,
                                                                                                                       pluginGateway,
-                                                                                                                      pDataProvider->getAcquisitionRequester(),
-                                                                                                                      pDataProvider->getDeviceRequester(),
                                                                                                                       dal->getKeywordManager(),
-                                                                                                                      pDataProvider->getRecipientRequester(),
-                                                                                                                      dal->getConfigurationManager(),
                                                                                                                       dal->getEventLogger(),
                                                                                                                       location));
       shared::CServiceLocator::instance().push<automation::IRuleManager>(automationRulesManager);
@@ -157,7 +153,7 @@ void CSupervisor::run()
       {
       }
 
-      YADOMS_LOG(information) << "Supervisor is stopping...";
+      YADOMS_LOG(debug) << "Supervisor is stopping...";
 
       //stop datetime notification service
       dateTimeNotificationService.stop();
@@ -183,8 +179,6 @@ void CSupervisor::run()
       //stop database tasks
       pDataProvider->stopMaintenanceTasks();
 
-      YADOMS_LOG(information) << "Supervisor is stopped";
-
       dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStopped, "yadoms", std::string());
    }
    catch (Poco::Net::NetException& pe)
@@ -207,7 +201,7 @@ void CSupervisor::run()
    }
 
    //notify application that supervisor ends
-   YADOMS_LOG(debug) << "Supervisor stopped";
+   YADOMS_LOG(information) << "Supervisor is stopped";
 }
 
 void CSupervisor::requestToStop()

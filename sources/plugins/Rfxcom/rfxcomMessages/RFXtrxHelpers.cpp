@@ -24,7 +24,7 @@ shared::communication::CByteBuffer toBuffer(const RBUF& rbuf, size_t subStructur
 
 boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > toBufferQueue(const RBUF& rbuf, size_t subStructureSize)
 {
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > buffers(new std::queue<shared::communication::CByteBuffer>);
+   auto buffers = boost::make_shared<std::queue<shared::communication::CByteBuffer>>();
    buffers->push(toBuffer(rbuf, subStructureSize));
    return buffers;
 }
