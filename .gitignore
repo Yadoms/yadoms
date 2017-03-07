@@ -24,3 +24,4 @@ ideTools/versionPreBuildTool/VersionPreBuildTool/VersionPreBuildTool/bin/Debug
 *.vshost.exe
 *.vshost.exe.manifest
 *.pdb
+sources/scriptInterpreters/yPython27/yScriptApiWrapper/swigpyrun.h
