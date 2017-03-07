@@ -1,6 +1,11 @@
 .widget-shutter .mainDiv {
     flex: 1;
     display: flex;
+    cursor: pointer;
+}
+
+.widget-shutter .disabled {
+    cursor: not-allowed;
 }
 
 .widget-shutter .shutter-image {
