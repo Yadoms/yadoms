@@ -2,9 +2,10 @@
 #include "RemoteMedionHistorizer.h"
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 
-namespace rfxcomMessages {
-   namespace specificHistorizers {
-
+namespace rfxcomMessages
+{
+   namespace specificHistorizers
+   {
       DECLARE_ENUM_IMPLEMENTATION(ERemoteMedionCodes,
          ((Mute))
          ((B))
@@ -75,13 +76,15 @@ namespace rfxcomMessages {
          ((V2End))
          ((X))
          ((XEnd))
-      );
+      )
 
-      const shared::plugin::yPluginApi::CStandardCapacity& RemoteMedionCapacity = shared::plugin::yPluginApi::CStandardCapacity("RemoteMedion", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+      DECLARE_CAPACITY(RemoteMedionCapacity, "RemoteMedion", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
       CRemoteMedionHistorizer::CRemoteMedionHistorizer(const std::string& keywordName)
-         :CSingleHistorizableData<ERemoteMedionCodes>(keywordName, RemoteMedionCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
+         : CSingleHistorizableData<ERemoteMedionCodes>(keywordName,
+                                                       RemoteMedionCapacity(),
+                                                       shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
       {
       }
 
@@ -90,4 +93,5 @@ namespace rfxcomMessages {
       }
    }
 } // namespace rfxcomMessages::specificHistorizers
+
 

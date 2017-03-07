@@ -2,18 +2,21 @@
 #
 
 MACRO(PLUGIN_SOURCES _targetName)
-   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${youroutputdirectory}/plugins/${_targetName} )
+   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${YADOMS_OUTPUT_DIR}/plugins/${_targetName} )
    foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
        string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
-       set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG}/plugins/${_targetName} )
+       set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${YADOMS_OUTPUT_DIR}/${OUTPUTCONFIG}/plugins/${_targetName})
    endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
    
    FILE(GLOB TRANSLATION_FILES locales/*)
    source_group(locales locales/*)
+
+   # Add package.json if exists (can be absent if generated)
+   FILE(GLOB PACKAGE_JSON_FILE package.json)
    
    set(PLUGIN_SOURCE_FILES
       ${ARGN}
-      package.json
+      ${PACKAGE_JSON_FILE}
       ${TRANSLATION_FILES}
       )
       
@@ -51,7 +54,6 @@ MACRO(PLUGIN_LINK _targetName)
       ${LIBS}
       ${CMAKE_DL_LIBS}
       ${PROTOBUF_LIBRARIES}
-      ${plugin_IPC_LIBRARY}
       ${ARGN}
       )
 	
@@ -92,74 +94,70 @@ ENDMACRO()
 # param [in] _resource The resource (absolute path) to copy to the target output dir
 MACRO(PLUGIN_POST_BUILD_COPY_FILE _targetName _resource)
 
-   get_filename_component(_resourcePath ${_resource}  DIRECTORY)
+   if (IS_ABSOLUTE ${_resource})
+      set(resource ${_resource})
+   else()
+      set(resource "${CMAKE_CURRENT_SOURCE_DIR}/${_resource}")
+   endif()
+
+   get_filename_component(_resourcePath ${resource}  DIRECTORY)
+   get_filename_component(_resourceFile ${resource}  NAME)
 
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
    
-   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 
+   install(FILES ${resource} 
 			DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}/${_resourcePath}
 			COMPONENT  ${ComponentCompatibleName})
 			
    add_custom_command(TARGET ${_targetName} POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} $<TARGET_FILE_DIR:${_targetName}>/${_resource})
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${resource} $<TARGET_FILE_DIR:${_targetName}>/${_resourceFile})
    if(COTIRE_USE)
       if(COTIRE_USE_UNITY)
          add_custom_command(TARGET ${_targetName}_unity POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} $<TARGET_FILE_DIR:${_targetName}_unity>/${_resource})
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${resource} $<TARGET_FILE_DIR:${_targetName}_unity>/${_resourceFile})
 	  endif()	
    endif()	
-ENDMACRO()
-
-
-
-# brief Copy a dependency (dll or so) to yadoms output dir (not next to _targetName)
-# param [in] _targetName The current target (ie: pluginName)
-# param [in] _resource The resource (absolute path) to copy to Yadoms dir
-MACRO(PLUGIN_POST_BUILD_COPY_FILE_DEPENDENCY _targetName _resource)
-   get_filename_component(_resourcePath ${_resource}  DIRECTORY)
-   
-   string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
-   
-   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 
-			DESTINATION ${_resourcePath}
-			COMPONENT  ${ComponentCompatibleName})
-			
-   add_custom_command(TARGET ${_targetName} POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${_resource} $<TARGET_FILE_DIR:yadoms>/)
-   if(COTIRE_USE)
-      if(COTIRE_USE_UNITY)
-         add_custom_command(TARGET ${_targetName}_unity POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${_resource} $<TARGET_FILE_DIR:yadoms_unity>/)
-	  endif()	
-   endif()	
-ENDMACRO()
-
-# brief Copy list of dependencies (dll or so) to yadoms output dir (not next to _targetName)
-# param [in] _targetName The current target (ie: pluginName)
-# param [in] _resources The resources (absolute path) to copy to Yadoms dir
-MACRO(PLUGIN_POST_BUILD_COPY_FILE_DEPENDENCIES _targetName _resources)
-   foreach(resource ${_resources})
-      PLUGIN_POST_BUILD_COPY_FILE_DEPENDENCY(${_targetName} ${resource})
-   endforeach(resource)
 ENDMACRO()
 
 # brief Copy a directory (and its content) to the target output dir
 # param [in] _targetName The current target (ie: pluginName)
 # param [in] _resource The resource folder (absolute path) to copy to the target output dir
+# param [in/optional] To specify the target destination (if omit, destination will be the last part of _resource tree)
 MACRO(PLUGIN_POST_BUILD_COPY_DIRECTORY _targetName _resource)
+
+   set (extra_args ${ARGN})
+   list(LENGTH extra_args num_extra_args)
+   if (${num_extra_args} GREATER 0)
+      # A target folder is given
+      list(GET extra_args 0 where)
+   else()
+      # No target folder
+      if (IS_ABSOLUTE ${_resource})
+         get_filename_component(where "${_resource}" NAME)
+      else()
+         set(where ${_resource})
+      endif()
+   endif()
+   
+   if (IS_ABSOLUTE ${_resource})
+      set(resource ${_resource})
+   else()
+      set(resource "${CMAKE_CURRENT_SOURCE_DIR}/${_resource}")
+   endif()
+
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
 
-   install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} 
-			DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}
+   install(DIRECTORY ${resource} 
+			DESTINATION ${INSTALL_BINDIR}/plugins/${where}
 			COMPONENT  ${ComponentCompatibleName})
 
    add_custom_command(TARGET ${_targetName} POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} $<TARGET_FILE_DIR:${_targetName}>/${_resource})
+      COMMAND ${CMAKE_COMMAND} -E copy_directory ${resource} $<TARGET_FILE_DIR:${_targetName}>/${where})
 	  
    if(COTIRE_USE)
       if(COTIRE_USE_UNITY)
          add_custom_command(TARGET ${_targetName}_unity POST_BUILD
-           COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} $<TARGET_FILE_DIR:${_targetName}_unity>/${_resource})
+           COMMAND ${CMAKE_COMMAND} -E copy_directory ${resource} $<TARGET_FILE_DIR:${_targetName}_unity>/${where})
 	  endif()	
    endif()		  
 ENDMACRO()

@@ -6,7 +6,7 @@ namespace communication
    {
       //--------------------------------------------------------------
       /// \brief	Interface for SynchronousCallback
-      /// \template  TCallbackResult   the type of object excpected in callback answer 
+      /// \template  TCallbackResult   the type of expected object in callback answer 
       //--------------------------------------------------------------
       template <class TCallbackResult>
       class ISynchronousCallback

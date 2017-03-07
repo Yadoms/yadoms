@@ -48,12 +48,8 @@ namespace shared
       /// \return     Name of the thread (empty if never defined)
       //--------------------------------------------------------------
       static const std::string & getCurrentThreadName();
-   private:
-      //--------------------------------------------------------------
-      /// \brief	    The main logger
-      //--------------------------------------------------------------
-      static Poco::Logger& m_logger;
 
+   private:
       //--------------------------------------------------------------
       /// \brief	    The thread names
       //--------------------------------------------------------------

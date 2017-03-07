@@ -38,11 +38,13 @@ if(WIN32)
 	include(cmake/windows.cmake)
 endif()
 
+if(MSVC)
+   set (LINK_WITH_STATIC_RUNTIME 1)
+   include(cmake/MSVCRuntime.cmake)
+endif()
+   
 # Compilers/IDE configurations
 include(cmake/compilers.cmake)
-
-# Boost built libraries copy helper
-include(cmake/copyBoost.cmake)
 
 
 
@@ -58,19 +60,16 @@ set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME "YadomsCore")
 ##################################################################################################
 
 #define outputs
-set(youroutputdirectory ${PROJECT_SOURCE_DIR}/../builds)
+set(YADOMS_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/../builds)
 
 # First for the generic no-config case (e.g. with gcc)
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${youroutputdirectory} )
-set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${youroutputdirectory}/plugins )
-set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${youroutputdirectory} )
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${YADOMS_OUTPUT_DIR})
+set(CMAKE_PDB_OUTPUT_DIRECTORY .)
 # Second, for multi-config builds (e.g. msvc)
-foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
-    string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
-    set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG} )
-    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG}/plugins )
-    set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG} )
-endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
+foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
+   string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
+   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${YADOMS_OUTPUT_DIR}/${OUTPUTCONFIG})
+endforeach(OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES)
 
 
 ##################################################################################################
@@ -82,13 +81,10 @@ endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 # Boost
 #
 ###############################################
-set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME OFF)
-add_definitions( -DBOOST_WHATEVER_DYN_LINK )
-add_definitions( -DBOOST_ALL_NO_LIB )
-add_definitions( -DBOOST_ALL_DYN_LINK )
-add_definitions( -DBOOST_SPIRIT_THREADSAFE )
+set(Boost_USE_STATIC_RUNTIME ON)
+add_definitions(-DBOOST_SPIRIT_THREADSAFE)
 
 # define all needed boost libraries
 set(BOOST_LIBS 
@@ -102,7 +98,7 @@ set(BOOST_LIBS
 )
 
 # search boost libs
-find_package(Boost 1.60.0 REQUIRED COMPONENTS ${BOOST_LIBS} )
+find_package(Boost 1.60.0 REQUIRED COMPONENTS ${BOOST_LIBS})
 set(BOOST_INCL_DIR ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
 
 
@@ -111,9 +107,18 @@ FIND_PACKAGE(Threads)
 
 ## RT Library
 if(UNIX AND NOT APPLE)
-    set(RT_LIBRARY rt)
+   set(LIBS ${LIBS} rt)
 endif()
 
+## Poco dependencies
+if(WIN32)
+   set(LIBS ${LIBS} Iphlpapi.lib)
+endif()
+
+## OpenSSL dependencies
+if(WIN32)
+   set(LIBS ${LIBS} legacy_stdio_definitions.lib Crypt32.lib)
+endif()
 
 ## IOKIT (needed for Mac)
 if(APPLE)
@@ -134,6 +139,9 @@ endif()
 # OpenSSL
 #
 ###############################################
+SET(OPENSSL_USE_STATIC_LIBS TRUE)
+SET(OPENSSL_MSVC_STATIC_RT TRUE)
+SET(OPENSSL_ROOT_DIR ${OPENSSL_ROOT})
 FIND_PACKAGE(OpenSSL)
 
 if(NOT ${OPENSSL_FOUND})
@@ -148,54 +156,24 @@ endif()
 # POCO_LIBS : define all required poco libraries
 ###############################################
 
-SET ( POCO_LIBS
-	PocoFoundation
-   PocoJSON
-	PocoNet
+SET (POCO_LIBS
 	PocoUtil
-   PocoXML
+   PocoNetSSL
+   PocoCrypto
    PocoZip
+   PocoXML
+	PocoNet
+   PocoJSON
+	PocoFoundation
 )
 
-#if openssl is found, just add ssl libraries (PocoCrypto and PocoNetSSL)
-if(${OPENSSL_FOUND})
-	SET ( POCO_LIBS
-      ${POCO_LIBS}
-      PocoCrypto
-      PocoNetSSL
-   )
-endif()
-
-
-set( POCO_REQUIRE_MINIMUM_VERSION "1.6.1")
+set(POCO_REQUIRE_MINIMUM_VERSION "1.7.3")
+set(POCO_USE_STATIC_RUNTIME 1)
+add_definitions(-DPOCO_STATIC) 
 include(cmake/FindPoco.cmake)
 
 IF(NOT ${Poco_FOUND})
 	message(FATAL_ERROR "Unable to find the required POCO libraries")
-ENDIF()
-
-if(${OPENSSL_FOUND})
-   list(FIND Poco_FOUND_LIBS_NAME PocoNetSSL PocoNetSSLFoundIndex)
-   if( ${PocoNetSSLFoundIndex} GREATER -1)
-      SET(PocoNetSSLFound true)
-   endif()
-endif()
-
-
-
-#in case of OpenSSL use
-IF(${PocoNetSSLFound})
-   IF(WIN32)
-      #add libeay32.dll and ssleay32.dll as dependencies
-      IF(EXISTS "${OPENSSL_ROOT_DIR}/bin/libeay32.dll")
-         SET(PocoNetSSLDepends "${OPENSSL_ROOT_DIR}/bin/libeay32.dll")
-      ENDIF()
-       
-      IF(EXISTS "${OPENSSL_ROOT_DIR}/bin/ssleay32.dll")
-         SET(PocoNetSSLDepends ${PocoNetSSLDepends} "${OPENSSL_ROOT_DIR}/bin/ssleay32.dll")
-      ENDIF()
-       
-   ENDIF(WIN32)
 ENDIF()
 
 
@@ -204,21 +182,19 @@ ENDIF()
 #
 ###############################################
 set (PROTOBUF_SRC_ROOT_FOLDER ${PROTOBUF_ROOT})
-find_package(Protobuf 2.6.1 REQUIRED)
+set (Protobuf_USE_STATIC_LIBS ON)
+find_package(Protobuf 3.0.0 REQUIRED)
 
 if(NOT ${PROTOBUF_FOUND})
 	message(FATAL_ERROR "Unable to find the required Protobuf tool")
 endif()
 
 
-
 ###############################################
 # define libraries to link with
 #
 ###############################################
-set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Poco_FOUND_LIBS})
-
-
+set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Poco_FOUND_LIBS} ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} ${Protobuf_LIBRARIES})
 
 ##################################################################################################
 ## Internal libraries (SQlite, Webem) completely build from sources
@@ -243,345 +219,366 @@ add_subdirectory(external-libs)
 
 # Executable sources
 set(YADOMS_SRC
-	server/stdafx.cpp
-	server/stdafx.h
+   server/stdafx.cpp
+   server/stdafx.h
 	
-	server/Application.h
-	server/Application.cpp
-	server/ErrorHandler.h
-	server/ErrorHandler.cpp
-	server/IPathProvider.h
-	server/PathProvider.cpp
-	server/PathProvider.h	
-	server/IRunningInformation.h
-	server/RunningInformation.cpp
-	server/RunningInformation.h	
-	server/Supervisor.cpp
-	server/Supervisor.h
+   server/Application.h
+   server/Application.cpp
+   server/ErrorHandler.h
+   server/ErrorHandler.cpp
+   server/IPathProvider.h
+   server/PathProvider.cpp
+   server/PathProvider.h	
+   server/IRunningInformation.h
+   server/RunningInformation.cpp
+   server/RunningInformation.h	
+   server/Supervisor.cpp
+   server/Supervisor.h
 
-	server/authentication/IAuthentication.h
-	server/authentication/BasicAuthentication.h
-	server/authentication/BasicAuthentication.cpp
+   server/authentication/IAuthentication.h
+   server/authentication/BasicAuthentication.h
+   server/authentication/BasicAuthentication.cpp
 
-	server/dateTime/DateTimeNotifier.h
-	server/dateTime/DateTimeNotifier.cpp
+   server/dateTime/DateTimeNotifier.h
+   server/dateTime/DateTimeNotifier.cpp
    
-	server/automation/IRule.h
-	server/automation/IRuleManager.h
-	server/automation/IRuleStartErrorObserver.h
-	server/automation/IRuleStateHandler.h
-	server/automation/IRuleThreadHandler.h
-	server/automation/Rule.h
-	server/automation/Rule.cpp
-	server/automation/RuleException.hpp
-	server/automation/RuleStateHandler.h
-	server/automation/RuleStateHandler.cpp
-	server/automation/RuleManager.h
-	server/automation/RuleManager.cpp
+   server/automation/IRule.h
+   server/automation/IRuleManager.h
+   server/automation/IRuleThreadHandler.h
+   server/automation/Rule.h
+   server/automation/Rule.cpp
+   server/automation/RuleException.hpp
+   server/automation/RuleManager.h
+   server/automation/RuleManager.cpp
    
-	server/automation/script/DayLightProvider.h
-	server/automation/script/DayLightProvider.cpp
-	server/automation/script/GeneralInfo.h
-	server/automation/script/GeneralInfo.cpp
-	server/automation/script/IDayLightProvider.h
-	server/automation/script/IManager.h
-	server/automation/script/IGeneralInfo.h
-	server/automation/script/IInterpreterLibrary.h
-	server/automation/script/InterpreterNotFound.hpp
-	server/automation/script/InterpreterLibrary.h
-	server/automation/script/InterpreterLibrary.cpp
-	server/automation/script/IProperties.h
-	server/automation/script/Manager.h
-	server/automation/script/Manager.cpp
-	server/automation/script/Properties.h
-	server/automation/script/Properties.cpp
-	server/automation/script/ScriptLogConfiguration.h
-	server/automation/script/ScriptLogConfiguration.cpp
-	server/automation/script/StopNotifier.h
-	server/automation/script/StopNotifier.cpp
-	server/automation/script/YScriptApiImplementation.h
-	server/automation/script/YScriptApiImplementation.cpp
+   server/automation/interpreter/AvalaibleRequest.h
+   server/automation/interpreter/AvalaibleRequest.cpp
+   server/automation/interpreter/IFactory.h
+   server/automation/interpreter/Factory.h
+   server/automation/interpreter/Factory.cpp
+   server/automation/interpreter/Information.h
+   server/automation/interpreter/Information.cpp
+   server/automation/interpreter/IInstance.h
+   server/automation/interpreter/IManager.h
+   server/automation/interpreter/Instance.h
+   server/automation/interpreter/Instance.cpp
+   server/automation/interpreter/InstanceStateHandler.h
+   server/automation/interpreter/InstanceStateHandler.cpp
+   server/automation/interpreter/IIpcAdapter.h
+   server/automation/interpreter/IpcAdapter.h
+   server/automation/interpreter/IpcAdapter.cpp
+   server/automation/interpreter/LoadScriptContentRequest.h
+   server/automation/interpreter/LoadScriptContentRequest.cpp
+   server/automation/interpreter/Manager.h
+   server/automation/interpreter/Manager.cpp
+   server/automation/interpreter/SaveScriptContentRequest.h
+   server/automation/interpreter/SaveScriptContentRequest.cpp
+   server/automation/interpreter/StartScript.h
+   server/automation/interpreter/StartScript.cpp
+   server/automation/interpreter/StopScript.h
+   server/automation/interpreter/StopScript.cpp
+   server/automation/interpreter/yInterpreterApiImplementation.h
+   server/automation/interpreter/yInterpreterApiImplementation.cpp
 
-	server/communication/ISendMessageAsync.h
-	server/communication/PluginGateway.h
-	server/communication/PluginGateway.cpp	
-	server/communication/callback/CallbackRequest.h
-	server/communication/callback/SynchronousCallback.h
-	server/communication/callback/CallbackException.hpp
-	server/communication/callback/ICallbackRequest.h
-	server/communication/callback/ISynchronousCallback.h
+   server/automation/interpreter/serializers/IInformation.h
+   server/automation/interpreter/serializers/Information.h
+   server/automation/interpreter/serializers/Information.cpp
+   
+   server/automation/script/DayLightProvider.h
+   server/automation/script/DayLightProvider.cpp
+   server/automation/script/GeneralInfo.h
+   server/automation/script/GeneralInfo.cpp
+   server/automation/script/IDayLightProvider.h
+   server/automation/script/IGeneralInfo.h
+   server/automation/script/IIpcAdapter.h
+   server/automation/script/IpcAdapter.h
+   server/automation/script/IpcAdapter.cpp
+   server/automation/script/IProperties.h
+   server/automation/script/Properties.h
+   server/automation/script/Properties.cpp
+   server/automation/script/YScriptApiImplementation.h
+   server/automation/script/YScriptApiImplementation.cpp
 
-	server/dataAccessLayer/AcquisitionHistorizer.h
-	server/dataAccessLayer/AcquisitionHistorizer.cpp
-	server/dataAccessLayer/ConfigurationManager.h
-	server/dataAccessLayer/ConfigurationManager.cpp
-	server/dataAccessLayer/DataAccessLayer.h
-	server/dataAccessLayer/DataAccessLayer.cpp
-	server/dataAccessLayer/DeviceManager.h
-	server/dataAccessLayer/DeviceManager.cpp
-	server/dataAccessLayer/EventLogger.h
-	server/dataAccessLayer/EventLogger.cpp
-	server/dataAccessLayer/KeywordManager.h
-	server/dataAccessLayer/KeywordManager.cpp
-	server/dataAccessLayer/IAcquisitionHistorizer.h
-	server/dataAccessLayer/IConfigurationManager.h
-	server/dataAccessLayer/IDataAccessLayer.h
-	server/dataAccessLayer/IDeviceManager.h
-	server/dataAccessLayer/IEventLogger.h
-	server/dataAccessLayer/IKeywordManager.h
+
+   server/communication/ISendMessageAsync.h
+   server/communication/PluginGateway.h
+   server/communication/PluginGateway.cpp	
+   server/communication/callback/CallbackRequest.h
+   server/communication/callback/NoDataCallbackRequest.h
+   server/communication/callback/SynchronousCallback.h
+   server/communication/callback/CallbackException.hpp
+   server/communication/callback/ICallbackRequest.h
+   server/communication/callback/ISynchronousCallback.h
+
+   server/dataAccessLayer/AcquisitionHistorizer.h
+   server/dataAccessLayer/AcquisitionHistorizer.cpp
+   server/dataAccessLayer/ConfigurationManager.h
+   server/dataAccessLayer/ConfigurationManager.cpp
+   server/dataAccessLayer/DataAccessLayer.h
+   server/dataAccessLayer/DataAccessLayer.cpp
+   server/dataAccessLayer/DeviceManager.h
+   server/dataAccessLayer/DeviceManager.cpp
+   server/dataAccessLayer/EventLogger.h
+   server/dataAccessLayer/EventLogger.cpp
+   server/dataAccessLayer/KeywordManager.h
+   server/dataAccessLayer/KeywordManager.cpp
+   server/dataAccessLayer/IAcquisitionHistorizer.h
+   server/dataAccessLayer/IConfigurationManager.h
+   server/dataAccessLayer/IDataAccessLayer.h
+   server/dataAccessLayer/IDeviceManager.h
+   server/dataAccessLayer/IEventLogger.h
+   server/dataAccessLayer/IKeywordManager.h
 	
-	server/database/DatabaseException.hpp
-	server/database/IConfigurationRequester.h
-	server/database/IAcquisitionRequester.h
-	server/database/IDataProvider.h
-	server/database/Factory.h
-	server/database/Factory.cpp
-	server/database/IDatabaseEngine.h
-	server/database/IDatabaseRequester.h
-	server/database/IDataBackup.h
-	server/database/IDeviceRequester.h
-	server/database/IEventLoggerRequester.h
-	server/database/IRuleRequester.h
-	server/database/IKeywordRequester.h
-	server/database/IPageRequester.h
-	server/database/IPluginEventLoggerRequester.h
-	server/database/IPluginRequester.h
-	server/database/IRecipientRequester.h
-	server/database/ITableCreationScriptProvider.h
-	server/database/ITransactionalProvider.h
-	server/database/IWidgetRequester.h
+   server/database/DatabaseException.hpp
+   server/database/IConfigurationRequester.h
+   server/database/IAcquisitionRequester.h
+   server/database/IDataProvider.h
+   server/database/Factory.h
+   server/database/Factory.cpp
+   server/database/IDatabaseEngine.h
+   server/database/IDatabaseRequester.h
+   server/database/IDataBackup.h
+   server/database/IDeviceRequester.h
+   server/database/IEventLoggerRequester.h
+   server/database/IRuleRequester.h
+   server/database/IKeywordRequester.h
+   server/database/IPageRequester.h
+   server/database/IPluginEventLoggerRequester.h
+   server/database/IPluginRequester.h
+   server/database/IRecipientRequester.h
+   server/database/ITableCreationScriptProvider.h
+   server/database/ITransactionalProvider.h
+   server/database/IWidgetRequester.h
 
-	server/database/entities/Entities.h
-	server/database/entities/Entities.cpp
-	server/database/entities/EntityHelpers.hpp
+   server/database/entities/Entities.h
+   server/database/entities/Entities.cpp
+   server/database/entities/EntityHelpers.hpp
   
-	server/i18n/ClientStrings.h
-	server/i18n/ClientStrings.cpp
+   server/i18n/ClientStrings.h
+   server/i18n/ClientStrings.cpp
    
-	server/location/IAutoLocation.h
-	server/location/IpApiAutoLocation.h
-	server/location/IpApiAutoLocation.cpp
-	server/location/Location.h
-	server/location/Location.cpp
+   server/location/IAutoLocation.h
+   server/location/IpApiAutoLocation.h
+   server/location/IpApiAutoLocation.cpp
+   server/location/Location.h
+   server/location/Location.cpp
    
-	server/logConfiguration/LogConfiguration.h
-	server/logConfiguration/LogConfiguration.cpp   
-	server/logConfiguration/LogConfigurationImpl.h
-	server/logConfiguration/LogConfigurationImpl.cpp
-	server/logConfiguration/LogConfigurationException.h
+   server/logging/YadomsSubModuleProcessLogger.h
+   server/logging/YadomsSubModuleProcessLogger.cpp  
+   server/logging/LogConfiguration.h
+   server/logging/LogConfiguration.cpp   
+   server/logging/LogConfigurationImpl.h
+   server/logging/LogConfigurationImpl.cpp
+   server/logging/LogConfigurationException.h
    
-	server/pluginSystem/BasicQualifier.h
-	server/pluginSystem/BasicQualifier.cpp
-	server/pluginSystem/BindingQueryData.cpp
-	server/pluginSystem/BindingQueryData.h
-	server/pluginSystem/BindingQueryRequest.cpp
-	server/pluginSystem/BindingQueryRequest.h
-	server/pluginSystem/CommandHistorizer.h
-	server/pluginSystem/CommandHistorizer.cpp
-	server/pluginSystem/DeviceCommand.h
-	server/pluginSystem/DeviceCommand.cpp
-	server/pluginSystem/DeviceConfigurationSchemaRequest.h
-	server/pluginSystem/DeviceConfigurationSchemaRequest.cpp
-	server/pluginSystem/DeviceRemoved.h
-	server/pluginSystem/DeviceRemoved.cpp
-	server/pluginSystem/DummyQualifier.h
-	server/pluginSystem/DummyQualifier.cpp
-	server/pluginSystem/ExtraQuery.h
-	server/pluginSystem/ExtraQuery.cpp
-	server/pluginSystem/ExtraQueryData.cpp
-	server/pluginSystem/ExtraQueryData.h
-	server/pluginSystem/Factory.cpp
-	server/pluginSystem/Factory.h
-	server/pluginSystem/FromPluginHistorizer.h
-	server/pluginSystem/FromPluginHistorizer.cpp
-	server/pluginSystem/IdentityForQualifier.h
-	server/pluginSystem/IdentityForQualifier.cpp
-	server/pluginSystem/IFactory.h
-	server/pluginSystem/IInstance.h
-	server/pluginSystem/IInstanceStartErrorObserver.h
-	server/pluginSystem/IInstanceStateHandler.h
-	server/pluginSystem/IInstanceStoppedListener.h
-	server/pluginSystem/IIpcAdapter.h
-	server/pluginSystem/IndicatorQualifier.h
-	server/pluginSystem/IndicatorQualifier.cpp
-	server/pluginSystem/Information.h
-	server/pluginSystem/Information.cpp
-	server/pluginSystem/Instance.h
-	server/pluginSystem/Instance.cpp
-	server/pluginSystem/InstanceRemover.h
-	server/pluginSystem/InstanceRemover.cpp
-	server/pluginSystem/InstanceRemoverRaii.hpp
-	server/pluginSystem/InstanceStateHandler.h
-	server/pluginSystem/InstanceStateHandler.cpp
-	server/pluginSystem/InvalidPluginException.hpp
-	server/pluginSystem/IpcAdapter.h
-	server/pluginSystem/IpcAdapter.cpp
-	server/pluginSystem/IQualifier.h
-	server/pluginSystem/Manager.h
-	server/pluginSystem/Manager.cpp
-	server/pluginSystem/ManuallyDeviceCreationData.cpp
-	server/pluginSystem/ManuallyDeviceCreationData.h
-	server/pluginSystem/ManuallyDeviceCreationRequest.h
-	server/pluginSystem/ManuallyDeviceCreationRequest.cpp
-	server/pluginSystem/NativeExecutableCommandLine.cpp
-	server/pluginSystem/NativeExecutableCommandLine.h
-	server/pluginSystem/PluginException.hpp
-	server/pluginSystem/SetDeviceConfiguration.h
-	server/pluginSystem/SetDeviceConfiguration.cpp
-	server/pluginSystem/yPluginApiImplementation.h
-	server/pluginSystem/yPluginApiImplementation.cpp
-	server/pluginSystem/YadomsInformation.h
-	server/pluginSystem/YadomsInformation.cpp
+   server/pluginSystem/BasicQualifier.h
+   server/pluginSystem/BasicQualifier.cpp
+   server/pluginSystem/BindingQueryData.cpp
+   server/pluginSystem/BindingQueryData.h
+   server/pluginSystem/BindingQueryRequest.cpp
+   server/pluginSystem/BindingQueryRequest.h
+   server/pluginSystem/CommandHistorizer.h
+   server/pluginSystem/CommandHistorizer.cpp
+   server/pluginSystem/DeviceCommand.h
+   server/pluginSystem/DeviceCommand.cpp
+   server/pluginSystem/DeviceConfigurationSchemaRequest.h
+   server/pluginSystem/DeviceConfigurationSchemaRequest.cpp
+   server/pluginSystem/DeviceRemoved.h
+   server/pluginSystem/DeviceRemoved.cpp
+   server/pluginSystem/DummyQualifier.h
+   server/pluginSystem/DummyQualifier.cpp
+   server/pluginSystem/ExtraQuery.h
+   server/pluginSystem/ExtraQuery.cpp
+   server/pluginSystem/ExtraQueryData.cpp
+   server/pluginSystem/ExtraQueryData.h
+   server/pluginSystem/Factory.cpp
+   server/pluginSystem/Factory.h
+   server/pluginSystem/FromPluginHistorizer.h
+   server/pluginSystem/FromPluginHistorizer.cpp
+   server/pluginSystem/IdentityForQualifier.h
+   server/pluginSystem/IdentityForQualifier.cpp
+   server/pluginSystem/IFactory.h
+   server/pluginSystem/IInstance.h
+   server/pluginSystem/IInstanceStartErrorObserver.h
+   server/pluginSystem/IInstanceStateHandler.h
+   server/pluginSystem/IIpcAdapter.h
+   server/pluginSystem/IndicatorQualifier.h
+   server/pluginSystem/IndicatorQualifier.cpp
+   server/pluginSystem/Information.h
+   server/pluginSystem/Information.cpp
+   server/pluginSystem/Instance.h
+   server/pluginSystem/Instance.cpp
+   server/pluginSystem/InstanceStateHandler.h
+   server/pluginSystem/InstanceStateHandler.cpp
+   server/pluginSystem/InvalidPluginException.hpp
+   server/pluginSystem/IpcAdapter.h
+   server/pluginSystem/IpcAdapter.cpp
+   server/pluginSystem/IQualifier.h
+   server/pluginSystem/Manager.h
+   server/pluginSystem/Manager.cpp
+   server/pluginSystem/ManuallyDeviceCreationData.cpp
+   server/pluginSystem/ManuallyDeviceCreationData.h
+   server/pluginSystem/ManuallyDeviceCreationRequest.h
+   server/pluginSystem/ManuallyDeviceCreationRequest.cpp
+   server/pluginSystem/PluginException.hpp
+   server/pluginSystem/SetDeviceConfiguration.h
+   server/pluginSystem/SetDeviceConfiguration.cpp
+   server/pluginSystem/yPluginApiImplementation.h
+   server/pluginSystem/yPluginApiImplementation.cpp
+   server/pluginSystem/YadomsInformation.h
+   server/pluginSystem/YadomsInformation.cpp
    
-	server/pluginSystem/internalPlugin/System.h
-	server/pluginSystem/internalPlugin/System.cpp
-	server/pluginSystem/internalPlugin/Information.h
-	server/pluginSystem/internalPlugin/Information.cpp
-	server/pluginSystem/internalPlugin/Instance.h
-	server/pluginSystem/internalPlugin/Instance.cpp
+   server/pluginSystem/internalPlugin/System.h
+   server/pluginSystem/internalPlugin/System.cpp
+   server/pluginSystem/internalPlugin/Information.h
+   server/pluginSystem/internalPlugin/Information.cpp
+   server/pluginSystem/internalPlugin/Instance.h
+   server/pluginSystem/internalPlugin/Instance.cpp
 
-	server/pluginSystem/serializers/IInformation.h
-	server/pluginSystem/serializers/Information.h
-	server/pluginSystem/serializers/Information.cpp
+   server/pluginSystem/serializers/IInformation.h
+   server/pluginSystem/serializers/Information.h
+   server/pluginSystem/serializers/Information.cpp
    
-	server/notification/NotificationCenter.h
-	server/notification/NotificationCenter.cpp
-	server/notification/Helpers.hpp
-	server/notification/INotification.h
-	server/notification/IObserver.h
+   server/notification/NotificationCenter.h
+   server/notification/NotificationCenter.cpp
+   server/notification/Helpers.hpp
+   server/notification/INotification.h
+   server/notification/IObserver.h
 	
-	server/notification/action/IAction.h
-	server/notification/action/EventAction.hpp
-	server/notification/action/FunctionPointerAction.hpp
-	server/notification/action/WaitAction.hpp
+   server/notification/action/IAction.h
+   server/notification/action/EventAction.hpp
+   server/notification/action/FunctionPointerAction.hpp
+   server/notification/action/WaitAction.hpp
    
-	server/notification/basic/Observer.hpp
-	server/notification/basic/Notification.hpp
+   server/notification/basic/Observer.hpp
+   server/notification/basic/Notification.hpp
    
-	server/notification/change/Observer.hpp
-	server/notification/change/Notification.hpp
-	server/notification/change/Type.h
-	server/notification/change/Type.cpp
+   server/notification/change/Observer.hpp
+   server/notification/change/Notification.hpp
+   server/notification/change/Type.h
+   server/notification/change/Type.cpp
 
-	server/notification/acquisition/Observer.hpp
-	server/notification/acquisition/Notification.hpp
+   server/notification/acquisition/Observer.hpp
+   server/notification/acquisition/Notification.hpp
    
-	server/notification/summary/Notification.hpp
+   server/notification/summary/Notification.hpp
    
-	server/startupOptions/DatabaseEngine.h
-	server/startupOptions/DatabaseEngine.cpp
-	server/startupOptions/EnumValidator.h
-	server/startupOptions/ListValidator.h
-	server/startupOptions/IStartupOptions.h
-	server/startupOptions/StartupOptions.h
-	server/startupOptions/StartupOptions.cpp
-	server/startupOptions/MustExistPathValidator.h
-	server/startupOptions/MustExistPathValidator.cpp
+   server/startupOptions/DatabaseEngine.h
+   server/startupOptions/DatabaseEngine.cpp
+   server/startupOptions/EnumValidator.h
+   server/startupOptions/ListValidator.h
+   server/startupOptions/IStartupOptions.h
+   server/startupOptions/StartupOptions.h
+   server/startupOptions/StartupOptions.cpp
+   server/startupOptions/MustExistPathValidator.h
+   server/startupOptions/MustExistPathValidator.cpp
 	
-	server/task/FinishedInstance.h
-	server/task/FinishedInstance.cpp
-	server/task/GenericTask.h
-	server/task/GenericTask.cpp
-	server/task/IInstance.h
-	server/task/Instance.h
-	server/task/Instance.cpp
-	server/task/InstanceNotificationData.h
-	server/task/InstanceNotificationData.cpp
-	server/task/ITask.h
-	server/task/IUnique.h
-	server/task/Scheduler.h
-	server/task/Scheduler.cpp
-	server/task/TaskEvent.h
-	server/task/TaskEvent.cpp
-	server/task/TaskFactory.h
-	server/task/TaskFactory.cpp
-	server/task/TaskStatus.h
-	server/task/TaskStatus.cpp
-	server/task/backup/Database.h
-	server/task/backup/Database.cpp
+   server/task/FinishedInstance.h
+   server/task/FinishedInstance.cpp
+   server/task/GenericTask.h
+   server/task/GenericTask.cpp
+   server/task/IInstance.h
+   server/task/Instance.h
+   server/task/Instance.cpp
+   server/task/InstanceNotificationData.h
+   server/task/InstanceNotificationData.cpp
+   server/task/ITask.h
+   server/task/IUnique.h
+   server/task/Scheduler.h
+   server/task/Scheduler.cpp
+   server/task/TaskEvent.h
+   server/task/TaskEvent.cpp
+   server/task/TaskFactory.h
+   server/task/TaskFactory.cpp
+   server/task/TaskStatus.h
+   server/task/TaskStatus.cpp
+   server/task/backup/Database.h
+   server/task/backup/Database.cpp
    
    
-	server/update/UpdateManager.h
-	server/update/UpdateManager.cpp
-	server/update/UpdateType.h
-	server/update/UpdateType.cpp
-	server/update/info/UpdateSite.h
-	server/update/info/UpdateSite.cpp
-	server/update/worker/Plugin.h
-	server/update/worker/Plugin.cpp
-	server/update/worker/ScriptInterpreter.h
-	server/update/worker/ScriptInterpreter.cpp
-	server/update/worker/Widget.h
-	server/update/worker/Widget.cpp
-	server/update/worker/Yadoms.h
-	server/update/worker/Yadoms.cpp
-	server/update/worker/WorkerTools.h
-	server/update/worker/WorkerTools.cpp
+   server/update/UpdateManager.h
+   server/update/UpdateManager.cpp
+   server/update/UpdateType.h
+   server/update/UpdateType.cpp
+   server/update/info/UpdateSite.h
+   server/update/info/UpdateSite.cpp
+   server/update/worker/Plugin.h
+   server/update/worker/Plugin.cpp
+   server/update/worker/ScriptInterpreter.h
+   server/update/worker/ScriptInterpreter.cpp
+   server/update/worker/Widget.h
+   server/update/worker/Widget.cpp
+   server/update/worker/Yadoms.h
+   server/update/worker/Yadoms.cpp
+   server/update/worker/WorkerTools.h
+   server/update/worker/WorkerTools.cpp
    
-	server/web/IRestHandler.h
-	server/web/IWebServer.h
-	server/web/IWebServerConfigurator.h
+   server/web/IRestHandler.h
+   server/web/IWebServer.h
+   server/web/IWebServerConfigurator.h
  
-	server/web/rest/RestDispatcher.h
-	server/web/rest/RestDispatcher.cpp
-	server/web/rest/RestDispatcherHelpers.hpp
-	server/web/rest/Result.h
-	server/web/rest/Result.cpp
+   server/web/rest/RestDispatcher.h
+   server/web/rest/RestDispatcher.cpp
+   server/web/rest/RestDispatcherHelpers.hpp
+   server/web/rest/Result.h
+   server/web/rest/Result.cpp
 
-	server/web/rest/service/Acquisition.h
-	server/web/rest/service/Acquisition.cpp
-	server/web/rest/service/AutomationRule.h
-	server/web/rest/service/AutomationRule.cpp
-	server/web/rest/service/Configuration.h
-	server/web/rest/service/Configuration.cpp
-	server/web/rest/service/Device.h
-	server/web/rest/service/Device.cpp
-	server/web/rest/service/EventLogger.h
-	server/web/rest/service/EventLogger.cpp
-	server/web/rest/service/Maintenance.h
-	server/web/rest/service/Maintenance.cpp
-	server/web/rest/service/System.h
-	server/web/rest/service/System.cpp
-	server/web/rest/service/IRestService.h
-	server/web/rest/service/Page.h
-	server/web/rest/service/Page.cpp
-	server/web/rest/service/Plugin.h
-	server/web/rest/service/Plugin.cpp
-	server/web/rest/service/PluginEventLogger.h
-	server/web/rest/service/PluginEventLogger.cpp
-	server/web/rest/service/Recipient.h
-	server/web/rest/service/Recipient.cpp
-	server/web/rest/service/Task.h
-	server/web/rest/service/Task.cpp
-	server/web/rest/service/Update.h
-	server/web/rest/service/Update.cpp
-	server/web/rest/service/Widget.h
-	server/web/rest/service/Widget.cpp
+   server/web/rest/service/Acquisition.h
+   server/web/rest/service/Acquisition.cpp
+   server/web/rest/service/AutomationRule.h
+   server/web/rest/service/AutomationRule.cpp
+   server/web/rest/service/Configuration.h
+   server/web/rest/service/Configuration.cpp
+   server/web/rest/service/Device.h
+   server/web/rest/service/Device.cpp
+   server/web/rest/service/EventLogger.h
+   server/web/rest/service/EventLogger.cpp
+   server/web/rest/service/Maintenance.h
+   server/web/rest/service/Maintenance.cpp
+   server/web/rest/service/System.h
+   server/web/rest/service/System.cpp
+   server/web/rest/service/IRestService.h
+   server/web/rest/service/Page.h
+   server/web/rest/service/Page.cpp
+   server/web/rest/service/Plugin.h
+   server/web/rest/service/Plugin.cpp
+   server/web/rest/service/PluginEventLogger.h
+   server/web/rest/service/PluginEventLogger.cpp
+   server/web/rest/service/Recipient.h
+   server/web/rest/service/Recipient.cpp
+   server/web/rest/service/Task.h
+   server/web/rest/service/Task.cpp
+   server/web/rest/service/Update.h
+   server/web/rest/service/Update.cpp
+   server/web/rest/service/Widget.h
+   server/web/rest/service/Widget.cpp
 	
-	server/web/ws/AcquisitionFilterFrame.h
-	server/web/ws/AcquisitionFilterFrame.cpp
-	server/web/ws/AcquisitionUpdateFrame.h
-	server/web/ws/AcquisitionUpdateFrame.cpp
-	server/web/ws/AcquisitionSummaryUpdateFrame.h
-	server/web/ws/AcquisitionSummaryUpdateFrame.cpp
-	server/web/ws/FrameBase.h
-	server/web/ws/FrameBase.cpp
-	server/web/ws/FrameFactory.h
-	server/web/ws/FrameFactory.cpp
-	server/web/ws/IsAliveFrame.h
-	server/web/ws/IsAliveFrame.cpp
-	server/web/ws/LogEventFrame.h
-	server/web/ws/LogEventFrame.cpp
-	server/web/ws/NewDeviceFrame.h
-	server/web/ws/NewDeviceFrame.cpp
-	server/web/ws/TaskUpdateNotificationFrame.h
-	server/web/ws/TaskUpdateNotificationFrame.cpp
+   server/web/ws/AcquisitionFilterFrame.h
+   server/web/ws/AcquisitionFilterFrame.cpp
+   server/web/ws/AcquisitionUpdateFrame.h
+   server/web/ws/AcquisitionUpdateFrame.cpp
+   server/web/ws/AcquisitionSummaryUpdateFrame.h
+   server/web/ws/AcquisitionSummaryUpdateFrame.cpp
+   server/web/ws/FrameBase.h
+   server/web/ws/FrameBase.cpp
+   server/web/ws/FrameFactory.h
+   server/web/ws/FrameFactory.cpp
+   server/web/ws/IsAliveFrame.h
+   server/web/ws/IsAliveFrame.cpp
+   server/web/ws/LogEventFrame.h
+   server/web/ws/LogEventFrame.cpp
+   server/web/ws/NewDeviceFrame.h
+   server/web/ws/NewDeviceFrame.cpp
+   server/web/ws/TaskUpdateNotificationFrame.h
+   server/web/ws/TaskUpdateNotificationFrame.cpp
 )
 
 # Project folders
 source_group(server server/*.*)
 source_group(server\\authentication  server/authentication/*.*)
 source_group(server\\automation  server/automation/*.*)
+source_group(server\\automation\\interpreter  server/automation/interpreter/*.*)
+source_group(server\\automation\\interpreter\\serializers server/automation/interpreter/serializers/*.* )
 source_group(server\\automation\\script  server/automation/script/*.*)
 source_group(server\\communication  server/communication/*.*)
 source_group(server\\communication\\callback  server/communication/callback/*.*)
@@ -591,7 +588,7 @@ source_group(server\\database\\entities  server/database/entities/*.*)
 source_group(server\\dateTime  server/dateTime/*.*)
 source_group(server\\i18n  server/i18n/*.*)
 source_group(server\\location  server/location/*.*)
-source_group(server\\logConfiguration  server/logConfiguration/*.*)
+source_group(server\\logging  server/logging/*.*)
 source_group(server\\notification  server/notification/*.*)
 source_group(server\\notification\\action  server/notification/action/*.*)
 source_group(server\\notification\\basic  server/notification/basic/*.*)
@@ -715,6 +712,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/versioning/Version_2_0_0.cpp
 	server/database/common/versioning/Version_3_0_0.h
 	server/database/common/versioning/Version_3_0_0.cpp
+	server/database/common/versioning/Version_3_0_1.h
+	server/database/common/versioning/Version_3_0_1.cpp
 	server/database/common/versioning/VersionUpgraderFactory.h
 	server/database/common/versioning/VersionUpgraderFactory.cpp
 	server/database/common/versioning/VersionException.h
@@ -779,25 +778,29 @@ IF(USE_PGSQL_DATABASE)
       source_group(server\\database\\pgsql  server/database/pgsql/*.*)
 	
       IF(WIN32)
-         #add libpq.dll and intl.dll as dependencies
+         #add PostgreSQL as dependencies
          IF(EXISTS "${PostgreSQL_ROOT}/bin/libpq.dll")
             SET(PostgreSqlDepends "${PostgreSQL_ROOT}/bin/libpq.dll")
-         ENDIF()        
+         ENDIF()
+         
+         IF(EXISTS "${PostgreSQL_ROOT}/bin/ssleay32.dll")
+            SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/ssleay32.dll")
+         ENDIF()
+         
+         IF(EXISTS "${PostgreSQL_ROOT}/bin/libeay32.dll")
+            SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/libeay32.dll")
+         ENDIF()
 
          IF(EXISTS "${PostgreSQL_ROOT}/bin/intl.dll")
             SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/intl.dll")
          ENDIF()
-          
-                   
-         IF(NOT ${PocoNetSSLFound})
-            #add libeay32.dll and ssleay32.dll as dependencies
-            IF(EXISTS "${PostgreSQL_ROOT}/bin/libeay32.dll")
-               SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/libeay32.dll")
-            ENDIF()
-             
-            IF(EXISTS "${PostgreSQL_ROOT}/bin/ssleay32.dll")
-               SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/ssleay32.dll")
-            ENDIF()
+
+         IF(EXISTS "${PostgreSQL_ROOT}/bin/libintl-8.dll")
+            SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/libintl-8.dll")
+         ENDIF()
+
+         IF(EXISTS "${PostgreSQL_ROOT}/bin/libiconv-2.dll")
+            SET(PostgreSqlDepends ${PostgreSqlDepends} "${PostgreSQL_ROOT}/bin/libiconv-2.dll")
          ENDIF()
       ENDIF(WIN32)
    
@@ -895,24 +898,34 @@ ENDIF()
 
 
 ##################################################################################################
-## IPC messages static library for plugins
-##################################################################################################
-add_subdirectory(plugin_IPC)
-
-##################################################################################################
 ## Plugins
 ##################################################################################################
+# IPC messages static library for plugins
+add_subdirectory(plugin_IPC)
 
-#include Plugins CMake file
+# C++ API for plugins
 add_subdirectory(plugin_cpp_api)
+
+# Plugins
 add_subdirectory(plugins)
 
 
 ##################################################################################################
 ## Script interpreters
 ##################################################################################################
+# IPC messages static library for interpreters
+add_subdirectory(interpreter_IPC)
 
-#include Script interpreters CMake file
+# C++ API for interpreters
+add_subdirectory(interpreter_cpp_api)
+
+# IPC messages static library for scripts
+add_subdirectory(script_IPC)
+
+# C++ API for script wrappers
+add_subdirectory(script_cpp_api)
+
+# Interpreters
 add_subdirectory(scriptInterpreters)
 
 
@@ -927,6 +940,8 @@ set(YADOMS_INCL_DIR
 	${SHARED_INCL_DIR}
 	${PROTOBUF_INCLUDE_DIRS}
 	${plugin_IPC_INCLUDE_DIRS}
+	${interpreter_IPC_INCLUDE_DIRS}
+	${script_IPC_INCLUDE_DIRS}
 )
 
 set(YADOMS_ALL_INCL_DIR
@@ -936,63 +951,14 @@ set(YADOMS_ALL_INCL_DIR
 	${Poco_INCLUDE_DIRS}
 )
 
-set_property( TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
+set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 
 ##################################################################################################
 ## Link
 ##################################################################################################
-target_link_libraries(yadoms yadoms-shared plugin_IPC ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
+target_link_libraries(yadoms yadoms-shared plugin_IPC interpreter_IPC script_IPC ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
 
-##################################################################################################
-## Manifest
-## Allow Windows10 detection ability by Poco
-##################################################################################################
-if(WIN32)
-   if(MSVC)
-      # extract Yadoms version from Version.h
-      include(cmake/version.cmake)
-      
-      # apply templating to the manifest for setting the version
-      configure_file(${CMAKE_SOURCE_DIR}/../distribution/yadoms.exe.manifest.in
-         "${CMAKE_BINARY_DIR}/yadoms.exe.manifest"
-      @ONLY)
-      
-      #add a custom command
-      add_custom_command(TARGET yadoms POST_BUILD
-          COMMAND "mt.exe" -manifest \"${CMAKE_BINARY_DIR}\\yadoms.exe.manifest\" -outputresource:"$(TargetDir)$(TargetFileName)"\;\#1
-          COMMENT "Adding manifest..." 
-      )
-   endif(MSVC)
-endif(WIN32)
-
-##################################################################################################
-## Post build commands
-##################################################################################################
-
-POST_BUILD_COPY_BOOST_LIBRARIES(yadoms)
-POST_BUILD_COPY_POCO(yadoms)
-
-#copy PocoNetSSL depends
-FOREACH (PocoNetSSLDepend ${PocoNetSSLDepends})
-   add_custom_command(TARGET yadoms POST_BUILD
-                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                          ${PocoNetSSLDepend} $<TARGET_FILE_DIR:yadoms>/)
-ENDFOREACH(PocoNetSSLDepend)
-
-#copy PostgreSql depends
-FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
-   add_custom_command(TARGET yadoms POST_BUILD
-                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                          ${PostgreSqlDepend} $<TARGET_FILE_DIR:yadoms>/)
-ENDFOREACH(PostgreSqlDepend)
-
-
-#copy www directory into build directory
-add_custom_command(TARGET yadoms POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-                   ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
-		
-
+                       
 ##################################################################################################
 ## COTIRE
 ##################################################################################################
@@ -1013,6 +979,88 @@ if(COTIRE_USE)
 	endif()	
 endif()
       
+      
+##################################################################################################
+## Manifest
+## Allow Windows10 detection ability by Poco
+##################################################################################################
+if(WIN32)
+   if(MSVC)
+      # extract Yadoms version from Version.h
+      include(cmake/version.cmake)
+      
+      # apply templating to the manifest for setting the version
+      configure_file(${CMAKE_SOURCE_DIR}/../distribution/yadoms.exe.manifest.in
+         "${CMAKE_BINARY_DIR}/yadoms.exe.manifest"
+      @ONLY)
+      
+      #add a custom command
+      add_custom_command(TARGET yadoms POST_BUILD
+          COMMAND "mt.exe" -manifest \"${CMAKE_BINARY_DIR}\\yadoms.exe.manifest\" -outputresource:"$(TargetDir)$(TargetFileName)"\;\#1
+          COMMENT "Adding manifest..." 
+      )
+      
+      if(COTIRE_USE)   
+         if(COTIRE_USE_UNITY)
+            add_custom_command(TARGET yadoms_unity POST_BUILD
+                COMMAND "mt.exe" -manifest \"${CMAKE_BINARY_DIR}\\yadoms.exe.manifest\" -outputresource:"$(TargetDir)$(TargetFileName)"\;\#1
+                COMMENT "Adding manifest..." 
+            )
+         endif(COTIRE_USE_UNITY)
+      endif(COTIRE_USE)
+      
+   endif(MSVC)
+endif(WIN32)
+
+##################################################################################################
+## Post build commands
+##################################################################################################
+
+#copy Poco depends
+FOREACH (PocoNetSSLDepends ${PocoNetSSLDepends})
+   add_custom_command(TARGET yadoms POST_BUILD
+                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                          ${PocoNetSSLDepends} $<TARGET_FILE_DIR:yadoms>/)
+                          
+   if(COTIRE_USE)   
+      if(COTIRE_USE_UNITY)
+         add_custom_command(TARGET yadoms_unity POST_BUILD
+                            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                            ${PocoNetSSLDepends} $<TARGET_FILE_DIR:yadoms>/)
+      endif(COTIRE_USE_UNITY)
+   endif(COTIRE_USE)                          
+ENDFOREACH(PocoNetSSLDepends)
+
+#copy PostgreSql depends
+FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
+   add_custom_command(TARGET yadoms POST_BUILD
+                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                          ${PostgreSqlDepend} $<TARGET_FILE_DIR:yadoms>/)
+
+   if(COTIRE_USE)   
+      if(COTIRE_USE_UNITY)
+         add_custom_command(TARGET yadoms_unity POST_BUILD
+                            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                                ${PostgreSqlDepend} $<TARGET_FILE_DIR:yadoms>/)
+      endif(COTIRE_USE_UNITY)
+   endif(COTIRE_USE)                          
+                          
+ENDFOREACH(PostgreSqlDepend)
+
+
+#copy www directory into build directory
+add_custom_command(TARGET yadoms POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                   ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
+		
+if(COTIRE_USE)   
+   if(COTIRE_USE_UNITY)
+      add_custom_command(TARGET yadoms_unity POST_BUILD
+                         COMMAND ${CMAKE_COMMAND} -E copy_directory
+                         ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
+   endif(COTIRE_USE_UNITY)
+endif(COTIRE_USE)                          
+
 ##################################################################################################
 ## CPACK
 ##################################################################################################
@@ -1031,67 +1079,6 @@ if(UNIX AND NOT APPLE)
    set(CMAKE_EXE_LINKER_FLAGS "-Wl,-rpath='$ORIGIN' ")
 endif()
    
-#Boost 
-if (DEFINED CMAKE_CONFIGURATION_TYPES)
-	if(UNIX)
-		FOREACH (BOOSTLIBRARY ${BOOST_LIBS})
-			string(TOUPPER ${BOOSTLIBRARY} boostLibUpperCase)
-			install(FILES ${Boost_${boostLibUpperCase}_LIBRARY_DEBUG} CONFIGURATIONS Debug DESTINATION ${INSTALL_BINDIR})
-			install(FILES ${Boost_${boostLibUpperCase}_LIBRARY_RELEASE} CONFIGURATIONS Release;RelWithDebInfo;MinSizeRel DESTINATION ${INSTALL_BINDIR})
-		ENDFOREACH(BOOSTLIBRARY)
-	else(UNIX)
-		FOREACH (BOOSTLIBRARY ${BOOST_FOUND_RELEASE_BINS})
-			install(FILES ${BOOSTLIBRARY} CONFIGURATIONS Release;RelWithDebInfo;MinSizeRel DESTINATION ${INSTALL_BINDIR})
-		ENDFOREACH(BOOSTLIBRARY)
-		FOREACH (BOOSTLIBRARY ${BOOST_FOUND_DEBUG_BINS})
-			install(FILES ${BOOSTLIBRARY} CONFIGURATIONS Debug DESTINATION ${INSTALL_BINDIR})
-		ENDFOREACH(BOOSTLIBRARY)
-	endif(UNIX)
-else()
-	if(UNIX)
-		FOREACH (BOOSTLIBRARY ${BOOST_LIBS})
-			string(TOUPPER ${BOOSTLIBRARY} boostLibUpperCase)
-			install(FILES ${Boost_${boostLibUpperCase}_LIBRARY} DESTINATION ${INSTALL_BINDIR})
-		ENDFOREACH(BOOSTLIBRARY)
-	else(UNIX)
-		FOREACH (BOOSTLIBRARY ${BOOST_FOUND_RELEASE_BINS})
-			install(FILES ${BOOSTLIBRARY} DESTINATION ${INSTALL_BINDIR})
-		ENDFOREACH(BOOSTLIBRARY)
-		FOREACH (BOOSTLIBRARY ${BOOST_FOUND_DEBUG_BINS})
-			install(FILES ${BOOSTLIBRARY} DESTINATION ${INSTALL_BINDIR})
-		ENDFOREACH(BOOSTLIBRARY)
-	endif(UNIX)
-endif()
-
-
-
-#Poco
-if (DEFINED CMAKE_CONFIGURATION_TYPES)
-	FOREACH (POCOLIBRARY ${Poco_FOUND_DEBUG_BINS})
-		get_filename_component(_filepathreal ${POCOLIBRARY} REALPATH)
-		install(FILES ${POCOLIBRARY} CONFIGURATIONS Debug RUNTIME DESTINATION ${INSTALL_BINDIR})
-	ENDFOREACH(POCOLIBRARY)
-
-	FOREACH (POCOLIBRARY ${Poco_FOUND_RELEASE_BINS})
-		get_filename_component(_filepathreal ${POCOLIBRARY} REALPATH)
-		install(FILES ${_filepathreal} CONFIGURATIONS Release;RelWithDebInfo;MinSizeRel RUNTIME DESTINATION ${INSTALL_BINDIR})
-	ENDFOREACH(POCOLIBRARY)
-else()
-	FOREACH (POCOLIBRARY ${Poco_FOUND_RELEASE_BINS})
-		get_filename_component(_filepathreal ${POCOLIBRARY} REALPATH)
-		install(FILES ${_filepathreal} DESTINATION ${INSTALL_BINDIR})
-	ENDFOREACH(POCOLIBRARY)
-endif()   
-   
-   
-#add depends
-FOREACH (PocoNetSSLDepend ${PocoNetSSLDepends})
-   if (DEFINED CMAKE_CONFIGURATION_TYPES)
-      install(FILES ${PocoNetSSLDepend} CONFIGURATIONS Debug;Release;RelWithDebInfo;MinSizeRel RUNTIME DESTINATION ${INSTALL_BINDIR})
-   else()
-      install(FILES ${PocoNetSSLDepend} RUNTIME DESTINATION ${INSTALL_BINDIR})
-   endif()
-ENDFOREACH(PocoNetSSLDepend)
 
 #add depends
 FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
@@ -1105,21 +1092,6 @@ ENDFOREACH(PostgreSqlDepend)
 
 #add www directory
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/www DESTINATION ${INSTALL_BINDIR})
-
-
-
-if(WIN32)
-   #indicate that debug distribution are allowed (so required debug components are copied in debug mode)
-   SET(CMAKE_INSTALL_DEBUG_LIBRARIES ON)
-   SET(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION ${INSTALL_BINDIR})
-
-   #add common runtime libs
-   INCLUDE(InstallRequiredSystemLibraries)
-   INSTALL(FILES ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION ${INSTALL_BINDIR})
-
-   #add specific runtime libs
-   InstallWindowsSdkDependencies()
-endif()
 
 
 set(CPACK_COMPONENT_YADOMSCORE_DISPLAY_NAME "Yadoms Server")
@@ -1139,7 +1111,7 @@ SET(CPACK_PACKAGE_CONTACT "Jean-Michel DECORET <decoretjm@gmail.com>")
 set(CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE 0)
 
    
-#configure the plugin to be grouped in plugins sub components
+#configure the plugin to be grouped in sub components
 FOREACH (PLUGIN ${PLUGINLIST})
    string(TOUPPER ${PLUGIN} _pluginNameUpperCase)
    string(REPLACE "-" "_" pluginCompatibleName ${_pluginNameUpperCase})
@@ -1148,7 +1120,7 @@ ENDFOREACH(PLUGIN)
 set(CPACK_COMPONENT_GROUP_PLUGINS_DISPLAY_NAME  "Plugins")
 set(CPACK_COMPONENT_GROUP_PLUGINS_DESCRIPTION  "All the plugins which control hardware components")
 
-#configure the plugin to be grouped in plugins sub components
+#configure the script interpreters to be grouped in sub components
 FOREACH (SCRIPTINTERPRETER ${SCRIPTINTERPRETERSLIST})
    string(TOUPPER ${SCRIPTINTERPRETER} _scriptInterpreterNameUpperCase)
    string(REPLACE "-" "_" scriptInterpreterCompatibleName ${_scriptInterpreterNameUpperCase})
@@ -1177,8 +1149,6 @@ IF(WIN32 AND NOT UNIX)
 		SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.yadoms.com")
 		SET(CPACK_NSIS_CONTACT "contact@yadoms.com")
 		SET(CPACK_NSIS_MODIFY_PATH ON)
-	  
-		SET(CPACK_NSIS_VCREDIST "${CMAKE_CURRENT_SOURCE_DIR}/..\\\\distribution\\\\NSIS\\\\vcredist_x86.exe")
 
 		set(CPACK_NSIS_CREATE_ICONS_STARTMENU
 			"SetOutPath $INSTDIR\\\\bin
@@ -1215,8 +1185,7 @@ IF(WIN32 AND NOT UNIX)
 			ExecWait '\$INSTDIR\\\\bin\\\\yadoms.exe --unregisterService' $0"
 		)
       
-		#d\E9fini les permissions pour le r\E9pertoire d'install pour tous les utilisateurs
-		#pour l'utilisateur TOUT LE MONDE (identifi\E9 par (S-1-1-0) )
+		# Grant full authorisations for install directory (all users : identified by (S-1-1-0) )
 		set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
 			"AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1)\\\" \\\"FullAccess\\\"
 			AccessControl::GrantOnFile  \\\"$INSTDIR\\\" \\\"(S-1-1-0)\\\" \\\"FullAccess\\\""

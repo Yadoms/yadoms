@@ -6,7 +6,7 @@
       <tr>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.displayName"></td>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.type"></td>
-         <td data-i18n="modals.dashboard.sub-windows.plugins.table.launchAtStartup"></td>
+         <td data-i18n="modals.dashboard.sub-windows.plugins.table.autoStart"></td>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.actions"></td>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.status"></td>
       </tr>
@@ -131,7 +131,10 @@
       $pluginInstanceRow.find("td.plugin-status").html(statusField);
 
       //we set autostart value
-      $pluginInstanceRow.find("input.cb-autoStart").prop("checked", pi.autoStart);
+      if (pi.autoStart)
+         $pluginInstanceRow.find("input.cb-autoStart").prop("checked", true);
+      else
+         $pluginInstanceRow.find("input.cb-autoStart").removeProp("checked");
 
 	  //translation of the line
 	  $pluginInstanceRow.i18n();
@@ -345,8 +348,9 @@
 
             PluginInstanceManager.getState(pluginInstance)
             .done(function (status) {
+               var $row = getPluginDomRow(pluginInstance);
+               
                if (status) {
-                  var $row = getPluginDomRow(pluginInstance);
                   if (status.state !== pluginInstance.lastState || 
 				      status.messageId !== pluginInstance.lastMessageId ||
                   status.messageData !== pluginInstance.lastMessageData) {
@@ -396,6 +400,9 @@
                   pluginInstance.lastMessageId = status.messageId;
                   pluginInstance.lastMessageData = status.messageData;
                }
+                                 
+               //autoStart property
+               $row.find("input.cb-autoStart").prop("checked", parseBool(pluginInstance.autoStart));
             });
          });
       }

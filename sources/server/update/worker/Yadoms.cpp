@@ -7,7 +7,7 @@
 #include <shared/compression/Extract.h>
 #include "tools/FileSystem.h"
 #include "i18n/ClientStrings.h"
-#include <shared/shared/process/SoftwareStop.h>
+#include <shared/process/SoftwareStop.h>
 
 namespace update
 {

@@ -10,7 +10,7 @@ namespace specificHistorizers
 					   const yApi::historization::EMeasureType& measureType,
                       yApi::historization::typeInfo::ITypeInfo& additionalInfo)
 	   : CSingleHistorizableData<Poco::Int64>(keywordName,
-											  yApi::CStandardCapacities::Counter,
+											  yApi::CStandardCapacities::Counter(),
 											  accessMode,
 											  0,
 											  measureType,
@@ -19,7 +19,7 @@ namespace specificHistorizers
 	{
 	}
    
-   std::string CCounter::getHardwareName()
+   std::string CCounter::getHardwareName() const
    {
       return m_hardwareName;
    }

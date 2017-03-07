@@ -1,0 +1,22 @@
+syntax = "proto3";
+package interpreter_IPC.toInterpreter;
+
+message Information {
+	string type = 1;
+	string name = 2;
+	string description = 3;
+	string version = 4;
+	string author = 5;
+	string url = 6;
+	string credits = 7;
+	bool supportedOnThisPlatform = 8;
+	string packageFileContent = 9;
+	string path = 10;
+}
+
+message Init {
+	Information interpreterInformation = 1;
+	string logFile = 2;
+	string logLevel = 3;
+}
+

@@ -4,7 +4,7 @@
 
 namespace plugin_cpp_api
 {
-   CDeviceConfigurationSchemaRequest::CDeviceConfigurationSchemaRequest(const toPlugin::DeviceConfigurationSchemaRequest& msg,
+   CDeviceConfigurationSchemaRequest::CDeviceConfigurationSchemaRequest(const plugin_IPC::toPlugin::DeviceConfigurationSchemaRequest& msg,
                                                                         boost::function1<void, const shared::CDataContainer&> sucessCallback,
                                                                         boost::function1<void, const std::string&> errorCallback)
       : m_device(msg.device()),

@@ -16,10 +16,11 @@ class CreateDevice(unittest.TestCase):
    """Manually device creation test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.deploy('OneFakePlugin')
       config.deploy("withDeveloperMode")
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Firefox()
+      self.browser = webdriver.Chrome()
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       

@@ -15,7 +15,7 @@ namespace shared
                                const EMeasureType& measureType,
                                typeInfo::CIntTypeInfo& additionalInfo)
                : CSingleHistorizableData<Poco::Int64>(keywordName,
-                                                      CStandardCapacities::Counter,
+                                                      CStandardCapacities::Counter(),
                                                       accessMode,
                                                       0,
                                                       measureType,

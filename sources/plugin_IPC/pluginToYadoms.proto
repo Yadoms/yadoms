@@ -1,0 +1,187 @@
+syntax = "proto3";
+package plugin_IPC.toYadoms;
+
+message SetPluginState {
+	enum EPluginState {
+		kUnknown = 0; kError = 1; kStopped = 2; kRunning = 3; kCustom = 4;
+	}
+	EPluginState pluginState = 1;
+	string customMessageId = 2;
+	string customMessageData = 3;
+}
+
+message ConfigurationRequest {
+}
+
+message BindingQueryAnswer {
+	bool success = 1;
+	string result = 2;
+}
+
+message DeviceExitsRequest {
+	string device = 1;
+}
+
+message DeviceDetailsRequest {
+	string device = 1;
+}
+
+message KeywordExitsRequest {
+	string device = 1;
+	string keyword = 2;
+}
+
+message DeclareDevice {
+	string device = 1;
+	string model = 2;
+	repeated Historizable keywords = 3;
+	string details = 4;
+}
+
+message Capacity {
+	string name = 1;
+	string unit = 2;
+	string type = 3;
+}
+
+message Historizable {
+	Capacity capacity = 1;
+	string accessMode = 2;
+	string name = 3;
+	string type = 4;
+	string units = 5;
+	string typeInfo = 6;
+	string measure = 7;
+}
+
+message DeclareKeyword {
+	string device = 1;
+	Historizable keyword = 2;
+	string details = 3;
+}
+
+message RecipientValueRequest {
+	int32 recipientId = 1;
+	string fieldName = 2;
+}
+
+message FindRecipientsFromFieldRequest {
+	string fieldName = 1;
+	string expectedFieldValue = 2;
+}
+
+message RecipientFieldExitsRequest {
+	string fieldName = 1;
+}
+
+message HistorizeData {
+	message Value {
+		Historizable historizable = 1;
+		string formattedValue = 2;
+	}
+
+	string device = 1;
+	repeated Value value = 2;
+}
+
+message ManuallyDeviceCreationAnswer {
+	message Success {
+		string NewDeviceName = 1;
+	}
+	message Error {
+		string Message = 1;
+	}
+
+	oneof OneOf {
+		Success sucess = 1;
+		Error error = 2;
+	}
+}
+
+message DeviceConfigurationSchemaAnswer {
+	bool success = 1;
+	string result = 2;
+}
+
+message ExtraQueryAnswer {
+	bool success = 1;
+	string result = 2;
+}
+
+message RemoveDevice {
+	string device = 1;
+}
+
+message YadomsInformationRequest {
+}
+
+message AllDevicesRequest {
+}
+
+message RemoveKeyword {
+	string device = 1;
+	string keyword = 2;
+}
+
+message UpdateDeviceDetails {
+	string device = 1;
+	string details = 2;
+}
+
+message DeviceModelRequest {
+	string device = 1;
+}
+
+message UpdateDeviceModel {
+	string device = 1;
+	string model = 2;
+}
+
+message DeviceConfigurationRequest {
+	string device = 1;
+}
+
+message UpdateDeviceConfiguration {
+	string device = 1;
+	string configuration = 2;
+}
+
+message AllKeywordsRequest {
+	string device = 1;
+}
+
+message DeclareKeywords {
+	string device = 1;
+	repeated Historizable keywords = 3;
+}
+
+message msg {
+	oneof OneOf {
+		SetPluginState pluginState = 1;
+		ConfigurationRequest configurationRequest = 2;
+		BindingQueryAnswer bindingQueryAnswer = 3;
+		DeviceExitsRequest deviceExists = 4;
+		DeviceDetailsRequest deviceDetails = 5;
+		KeywordExitsRequest keywordExists = 6;
+		DeclareDevice declareDevice = 7;
+		DeclareKeyword declareKeyword = 8;
+		RecipientValueRequest recipientValueRequest = 9;
+		FindRecipientsFromFieldRequest findRecipientsFromFieldRequest = 10;
+		RecipientFieldExitsRequest recipientFieldExitsRequest = 11;
+		HistorizeData historizeData = 12;
+		ManuallyDeviceCreationAnswer manuallyDeviceCreationAnswer = 13;
+		YadomsInformationRequest yadomsInformationRequest = 14;
+		DeviceConfigurationSchemaAnswer deviceConfigurationSchemaAnswer = 15;
+		ExtraQueryAnswer extraQueryAnswer = 16;
+		RemoveDevice removeDevice = 17;
+		AllDevicesRequest allDevicesRequest = 18;
+		RemoveKeyword removeKeyword = 19;
+		UpdateDeviceDetails updateDeviceDetails = 20;
+		DeviceModelRequest deviceModelRequest = 21;
+		UpdateDeviceModel updateDeviceModel = 22;
+		DeviceConfigurationRequest deviceConfigurationRequest = 23;
+		UpdateDeviceConfiguration updateDeviceConfiguration = 24;
+		AllKeywordsRequest allKeywordsRequest = 25;
+		DeclareKeywords declareKeywords = 26;
+	}
+}

@@ -4,34 +4,35 @@
 #include <Poco/URI.h>
 #include <shared/exception/Exception.hpp>
 #include <shared/Log.h>
-#include <boost/function.hpp>
 
 
 namespace shared
 {
-   CDataContainer CHttpMethods::SendGetRequest(const std::string & url)
+   CDataContainer CHttpMethods::SendGetRequest(const std::string& url)
    {
-      return SendGetRequest(url, shared::CDataContainer());
+      return SendGetRequest(url, CDataContainer());
    }
 
-   bool CHttpMethods::SendGetRequest(const std::string & url,
-                                     const shared::CDataContainer & parameters,
-                                     boost::function1<void, shared::CDataContainer&> onReceive,
+   bool CHttpMethods::SendGetRequest(const std::string& url,
+                                     const CDataContainer& parameters,
+                                     boost::function1<void, CDataContainer&> onReceive,
                                      const boost::posix_time::time_duration& timeout)
    {
       try
       {
-         std::map<std::string, std::string> mapParameters = parameters.getAsMap();
+         auto mapParameters = parameters.getAsMap();
          Poco::URI uri(url);
 
          if (!parameters.empty())
          {
-            for (std::map<std::string, std::string>::iterator parametersIterator = mapParameters.begin(); parametersIterator != mapParameters.end(); ++parametersIterator)
-               uri.addQueryParameter(parametersIterator->first, parametersIterator->second);
+            for (const auto& parametersIterator : mapParameters)
+               uri.addQueryParameter(parametersIterator.first, parametersIterator.second);
          }
 
          Poco::Net::HTTPClientSession session(uri.getHost(), uri.getPort());
-         Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET, uri.getPathAndQuery(), Poco::Net::HTTPMessage::HTTP_1_1);
+         Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET,
+                                        uri.getPathAndQuery(),
+                                        Poco::Net::HTTPMessage::HTTP_1_1);
 
          session.setTimeout(Poco::Timespan(timeout.seconds(), 0));
          session.sendRequest(request);
@@ -47,19 +48,15 @@ namespace shared
                onReceive(data);
                return true;
             }
-            else
-            {
-               auto message = (boost::format("content not yet managed : %1%") % response.getContentType()).str();
-               YADOMS_LOG(error) << message;
-               throw exception::CException(message);
-            }
-         }
-         else
-         {
-            auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
+
+            auto message = (boost::format("content not yet managed : %1%") % response.getContentType()).str();
             YADOMS_LOG(error) << message;
             throw exception::CException(message);
          }
+
+         auto message = (boost::format("Invalid HTTP result : %1%") % response.getReason()).str();
+         YADOMS_LOG(error) << message;
+         throw exception::CException(message);
       }
       catch (Poco::Exception& e)
       {
@@ -67,18 +64,17 @@ namespace shared
          YADOMS_LOG(error) << message;
          throw exception::CException(message);
       }
-      return false;
    }
 
-   CDataContainer CHttpMethods::SendGetRequest(const std::string & url, 
-                                               const shared::CDataContainer & parameters,
+   CDataContainer CHttpMethods::SendGetRequest(const std::string& url,
+                                               const CDataContainer& parameters,
                                                const boost::posix_time::time_duration& timeout)
    {
       CDataContainer responseData;
 
       SendGetRequest(url,
                      parameters,
-                     [&](shared::CDataContainer& data)
+                     [&](CDataContainer& data)
                      {
                         responseData = data;
                      },
@@ -89,7 +85,7 @@ namespace shared
 
    bool CHttpMethods::JsonResponseReader(Poco::Net::HTTPClientSession& session,
                                          Poco::Net::HTTPResponse& httpresponse,
-                                         shared::CDataContainer& response)
+                                         CDataContainer& response)
    {
       std::string content;
       auto& rs = session.receiveResponse(httpresponse);
@@ -106,7 +102,9 @@ namespace shared
          //request content may be empty
          return true;
       }
-      else
-         return false;
+
+      return false;
    }
 } // namespace shared
+
+

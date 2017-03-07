@@ -1,0 +1,91 @@
+syntax = "proto3";
+package script_IPC.toYadoms;
+
+message GetKeywordId
+{
+   string deviceName = 1;
+   string keywordName = 2;
+}
+
+message GetRecipientId
+{
+   string firstName = 1;
+   string lastName = 2;
+}
+
+message ReadKeyword
+{
+   int32 keywordId = 1;
+}
+
+message WaitForNextAcquisition
+{
+   int32 keywordId = 1;
+   string timeout = 2;
+}
+
+message WaitForNextAcquisitions
+{
+   repeated int32 keywordId = 1;
+   string timeout = 2;
+}
+
+message WaitForEvent
+{
+   repeated int32 keywordId = 1;
+   bool receiveDateTimeEvent = 2;
+   string timeout = 4;
+}
+
+message GetKeywordsByCapacity
+{
+   string capacity = 1;
+}
+
+message WriteKeyword
+{
+   int32 keywordId = 1;
+   string newState = 2;
+}
+
+message SendNotification
+{
+   int32 keywordId = 1;
+   int32 recipientId = 2;
+   string message = 3;
+}
+
+message GetInfo
+{
+   enum Key { kSunrise = 0; kSunset = 1; kLatitude = 2; kLongitude = 3; kAltitude = 4; kYadomsServerOS = 5; kYadomsServerVersion = 6; }
+   Key key = 1;
+}
+   
+message GetKeywordName
+{
+   int32 keywordId = 1;
+}
+
+message GetKeywordDeviceName
+{
+   int32 keywordId = 1;
+}
+
+message msg
+{
+   oneof OneOf
+   {
+      GetKeywordId getKeywordId = 1;
+      GetRecipientId getRecipientId = 2;
+      ReadKeyword readKeyword = 3;
+      WaitForNextAcquisition waitForNextAcquisition = 4;
+      WaitForNextAcquisitions waitForNextAcquisitions = 5;
+      WaitForEvent waitForEvent = 6;
+      WriteKeyword writeKeyword = 7;
+      SendNotification sendNotification = 8;
+      GetInfo getInfo = 9;
+      GetKeywordsByCapacity getKeywordsByCapacity = 10;
+      GetKeywordName getKeywordName = 11;
+      GetKeywordDeviceName getKeywordDeviceName = 12;
+   }
+}

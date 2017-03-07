@@ -1,0 +1,132 @@
+syntax = "proto3";
+package plugin_IPC.toPlugin;
+
+import "pluginInit.proto";
+
+
+message System {
+	enum EventType {
+		kRequestStop = 0;
+	}
+	EventType type = 1;
+}
+
+message BindingQuery {
+	string query = 1;
+}
+
+message Configuration {
+	string configuration = 1;
+}
+
+message DeviceCommand {
+	string device = 1;
+	string keyword = 2;
+	string body = 3;
+}
+
+message ExtraQuery {
+	string query = 1;
+	string data = 2;
+}
+
+message DeviceExitsAnswer {
+	bool exists = 1;
+}
+
+message DeviceDetailsAnswer {
+	string details = 1;
+}
+
+message KeywordExitsAnswer {
+	bool exists = 1;
+}
+
+message RecipientValueAnswer {
+	string value = 1;
+}
+
+message FindRecipientsFromFieldAnswer {
+	repeated int32 recipientIds = 1 [packed=true];
+}
+
+message RecipientFieldExitsAnswer {
+	bool exists = 1;
+}
+
+message ManuallyDeviceCreation {
+	string name = 1;
+	string configuration = 2;
+}
+
+message Location{
+	double latitude = 1;
+	double longitude = 2;
+	double altitude = 3;
+}
+
+message YadomsInformationAnswer {
+	bool developperMode = 1;
+	string version = 2;
+
+	Location location = 3;
+}
+
+message DeviceConfigurationSchemaRequest {
+	string device = 1;
+}
+
+message SetDeviceConfiguration {
+	string device = 1;
+	string configuration = 2;
+}
+
+message DeviceRemoved {
+	string device = 1;
+	string details = 2;
+}
+
+message AllDevicesAnswer {
+	repeated string devices = 1;
+}
+
+message DeviceModelAnswer {
+	string model = 1;
+}
+
+message DeviceConfigurationAnswer {
+	string configuration = 1;
+}
+
+message AllKeywordsAnswer {
+	repeated string keywords = 1;
+}
+
+message msg {
+	oneof OneOf {
+		string error = 1;
+		System system = 2;
+		Init init = 3;
+		Configuration configurationAnswer = 5;
+		Configuration updateConfiguration = 6;
+		BindingQuery bindingQuery = 7;
+		DeviceCommand deviceCommand = 8;
+		ExtraQuery extraQuery = 9;
+		DeviceExitsAnswer deviceExists = 10;
+		DeviceDetailsAnswer deviceDetails = 11;
+		KeywordExitsAnswer keywordExists = 12;
+		RecipientValueAnswer recipientValue = 13;
+		FindRecipientsFromFieldAnswer findRecipientsFromFieldAnswer = 14;
+		RecipientFieldExitsAnswer recipientFieldExitsAnswer = 15;
+		ManuallyDeviceCreation manuallyDeviceCreation = 16;
+		YadomsInformationAnswer yadomsInformationAnswer = 17;
+		DeviceConfigurationSchemaRequest deviceConfigurationSchemaRequest = 18;
+		SetDeviceConfiguration setDeviceConfiguration = 19;
+		DeviceRemoved deviceRemoved = 20;
+		AllDevicesAnswer allDevicesAnswer = 21;
+		DeviceModelAnswer deviceModelAnswer = 22;
+		DeviceConfigurationAnswer deviceConfigurationAnswer = 23;
+		AllKeywordsAnswer allKeywordsAnswer = 24;
+	}
+}
+

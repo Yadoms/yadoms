@@ -23,9 +23,7 @@ namespace xplrules
             ((LightsOff))
          )
 
-         const shared::plugin::yPluginApi::CStandardCapacity& SecurityCapacity = shared::plugin::yPluginApi::CStandardCapacity("security",
-                                                                                                                               shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                                                               shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(SecurityCapacity, "security", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
          CSecurity::CSecurity(const std::string& keywordName,
                               const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode)
@@ -46,7 +44,7 @@ namespace xplrules
 
          const shared::plugin::yPluginApi::CStandardCapacity& CSecurity::getCapacity() const
          {
-            return SecurityCapacity;
+            return SecurityCapacity();
          }
 
          const shared::plugin::yPluginApi::EKeywordAccessMode& CSecurity::getAccessMode() const

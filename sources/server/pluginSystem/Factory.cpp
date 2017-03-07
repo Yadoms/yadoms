@@ -7,15 +7,13 @@
 #include "InstanceStateHandler.h"
 #include "yPluginApiImplementation.h"
 #include "IQualifier.h"
-#include "NativeExecutableCommandLine.h"
 #include "InvalidPluginException.hpp"
 #include "IpcAdapter.h"
-#include <shared/process/Process.h>
-#include <shared/process/ProcessException.hpp>
-#include <shared/FileSystemExtension.h>
 #include "internalPlugin/Instance.h"
 #include "internalPlugin/Information.h"
-
+#include <shared/process/NativeExecutableCommandLine.h>
+#include <shared/process/Process.h>
+#include <server/logging/YadomsSubModuleProcessLogger.h>
 
 
 namespace pluginSystem
@@ -40,14 +38,14 @@ namespace pluginSystem
                                                          boost::shared_ptr<database::IDataProvider> dataProvider,
                                                          boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                          boost::shared_ptr<IQualifier> qualifier,
-                                                         boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const
+                                                         boost::function1<void, int> onPluginsStoppedFct) const
    {
       if (instanceData->Id() == dataProvider->getPluginRequester()->getSystemInstance()->Id())
          return createInternalPluginInstance(instanceData,
                                              dataProvider,
                                              dataAccessLayer,
                                              qualifier,
-                                             instanceStoppedListener);
+                                             onPluginsStoppedFct);
 
       auto pluginInformation = createInformation(instanceData->Type());
 
@@ -56,7 +54,7 @@ namespace pluginSystem
                                                              dataProvider,
                                                              dataAccessLayer,
                                                              qualifier,
-                                                             instanceStoppedListener);
+                                                             onPluginsStoppedFct);
 
       auto yPluginApi = createInstanceRunningContext(pluginInformation,
                                                      instanceData,
@@ -67,8 +65,11 @@ namespace pluginSystem
       auto commandLine = createCommandLine(pluginInformation,
                                            yPluginApi->id());
 
+      auto logger = createLogger("Plugin." + std::to_string(instanceData->Id()));
+
       auto process = createInstanceProcess(commandLine,
-                                           instanceStateHandler);
+                                           instanceStateHandler,
+                                           logger);
 
       return boost::make_shared<CInstance>(instanceData,
                                            pluginInformation,
@@ -82,7 +83,7 @@ namespace pluginSystem
                                                                        boost::shared_ptr<database::IDataProvider> dataProvider,
                                                                        boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                                        boost::shared_ptr<IQualifier> qualifier,
-                                                                       boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const
+                                                                       boost::function1<void, int> onPluginsStoppedFct) const
    {
       auto pluginInformation = boost::make_shared<internalPlugin::CInformation>();
 
@@ -91,7 +92,7 @@ namespace pluginSystem
                                                              dataProvider,
                                                              dataAccessLayer,
                                                              qualifier,
-                                                             instanceStoppedListener);
+                                                             onPluginsStoppedFct);
 
       auto apiImplementation = createApiPluginImplementation(pluginInformation,
                                                              instanceData,
@@ -126,7 +127,7 @@ namespace pluginSystem
                                                                                  boost::shared_ptr<database::IDataProvider> dataProvider,
                                                                                  boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                                                  boost::shared_ptr<IQualifier> qualifier,
-                                                                                 boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const
+                                                                                 boost::function1<void, int> onPluginsStoppedFct) const
    {
       return boost::make_shared<CInstanceStateHandler>(instanceData,
                                                        pluginInformation,
@@ -134,7 +135,7 @@ namespace pluginSystem
                                                        qualifier,
                                                        dataProvider->getPluginEventLoggerRequester(),
                                                        dataAccessLayer->getAcquisitionHistorizer(),
-                                                       instanceStoppedListener,
+                                                       onPluginsStoppedFct,
                                                        dataAccessLayer->getDeviceManager(),
                                                        dataAccessLayer->getKeywordManager());
    }
@@ -145,19 +146,27 @@ namespace pluginSystem
       std::vector<std::string> args;
       args.push_back(messageQueueId);
 
-      return boost::make_shared<CNativeExecutableCommandLine>(pluginInformation->getPath() / shared::CExecutable::ToFileName(pluginInformation->getType()),
-                                                              ".",
-                                                              args);
+      return boost::make_shared<shared::process::CNativeExecutableCommandLine>(pluginInformation->getPath() / shared::CExecutable::ToFileName(pluginInformation->getType()),
+                                                                               ".",
+                                                                               args);
    }
 
-   boost::shared_ptr<shared::process::IProcess> CFactory::createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine, boost::shared_ptr<CInstanceStateHandler> instanceStateHandler) const
+   boost::shared_ptr<shared::process::IExternalProcessLogger> CFactory::createLogger(const std::string& loggerName) const
+   {
+      return boost::make_shared<logging::CYadomsSubModuleProcessLogger>(loggerName);
+   }
+
+   boost::shared_ptr<shared::process::IProcess> CFactory::createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
+                                                                                boost::shared_ptr<CInstanceStateHandler> instanceStateHandler,
+                                                                                boost::shared_ptr<shared::process::IExternalProcessLogger> logger) const
    {
       try
       {
-         std::string loggerName = "plugin";
-         return boost::make_shared<shared::process::CProcess>(commandLine, shared::CFileSystemExtension::getModulePath().string(), instanceStateHandler, loggerName);
+         return boost::make_shared<shared::process::CProcess>(commandLine,
+                                                              instanceStateHandler,
+                                                              logger);
       }
-      catch (shared::process::CProcessException& e)
+      catch (std::runtime_error& e)
       {
          YADOMS_LOG(error) << "Error starting plugin " << commandLine->executable() << " : " << e.what();
          instanceStateHandler->signalStartError(e.what());

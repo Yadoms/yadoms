@@ -1,5 +1,5 @@
 
-IF(NOT DISABLE_TEST_FAKEPLUGIN)
+IF(NOT DISABLE_TEST_PLUGIN_FAKEPLUGIN)
    ADD_YADOMS_SOURCES(
       shared/shared/plugin/yPluginApi/IYPluginApi.h
       shared/shared/plugin/yPluginApi/historization/BatteryLevel.cpp
@@ -39,7 +39,6 @@ IF(NOT DISABLE_TEST_FAKEPLUGIN)
       shared/shared/DataContainer.h
       shared/shared/DataContainer.cpp
       shared/shared/StringExtension.h
-      shared/shared/StringExtension.cpp
       shared/shared/plugin/yPluginApi/KeywordAccessMode.h
       shared/shared/plugin/yPluginApi/KeywordAccessMode.cpp
       shared/shared/plugin/yPluginApi/KeywordDataType.h

@@ -4,9 +4,7 @@
 
 namespace specificHistorizer
 {
-   const yApi::CStandardCapacity& MoonCapacity = yApi::CStandardCapacity("Moon",
-                                                                         yApi::CStandardUnits::NoUnits,
-                                                                         yApi::EKeywordDataType::kJson);
+   DECLARE_CAPACITY(MoonCapacity, "Moon", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kJson);
 
 
    CMoonHistorizer::CMoonHistorizer(const std::string& keywordName,
@@ -28,7 +26,7 @@ namespace specificHistorizer
 
    const yApi::CStandardCapacity& CMoonHistorizer::getCapacity() const
    {
-      return MoonCapacity;
+      return MoonCapacity();
    }
 
    const yApi::EKeywordAccessMode& CMoonHistorizer::getAccessMode() const
@@ -37,14 +35,14 @@ namespace specificHistorizer
    }
 
    void CMoonHistorizer::addUnit(const std::string& unitName,
-                                 const std::string& unitValue)
+                                 const std::string& unitValue) const
    {
       m_content->addUnit(unitName,
                            unitValue);
    }
 
    void CMoonHistorizer::setParameters(const std::string& illuminatedMoon,
-                                       const std::string& dayofMoon)
+                                       const std::string& dayofMoon) const
    {
       m_content->setParameters(illuminatedMoon, dayofMoon);
    }

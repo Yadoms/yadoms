@@ -21,11 +21,12 @@ class EditRule(unittest.TestCase):
    """Edit rule test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.deploy('OneStoppedRule')
       config.deploy("nominal")
       scripts.deploy(["DisplayServerVersion"])
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Firefox()
+      self.browser = webdriver.Chrome()
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       
@@ -58,7 +59,7 @@ class EditRule(unittest.TestCase):
       tools.waitUntil(lambda: len(ruleDatas[1].text) > 0)
       self.assertEqual(ruleDatas[1].text, ruleNewDescription)
       self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Stopped)
-      self.assertFalse(dashboard.automation.getRuleAutoStart(rulesTable, ruleNumber))
+      self.assertFalse(dashboard.automation.getRuleAutoStartState(rulesTable, ruleNumber))
          
       
    def test_editRunningRule(self):
@@ -69,7 +70,7 @@ class EditRule(unittest.TestCase):
       rulesTable = dashboard.automation.waitRulesTableHasNRules(self.browser, 1)
       tools.waitUntil(lambda: dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).is_enabled())
       dashboard.automation.getRuleStartStopButton(rulesTable, ruleNumber).click()
-      WebDriverWait(self.browser, 10).until(lambda driver: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running)
+      WebDriverWait(self.browser, 10).until(lambda browser: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running)
       
       # Edit the first rule
       print 'Open the rule edit modal'
@@ -91,7 +92,7 @@ class EditRule(unittest.TestCase):
       tools.waitUntil(lambda: len(ruleDatas[1].text) > 0)
       self.assertEqual(ruleDatas[1].text, ruleNewDescription)
       self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Running)
-      self.assertFalse(dashboard.automation.getRuleAutoStart(rulesTable, ruleNumber))
+      self.assertFalse(dashboard.automation.getRuleAutoStartState(rulesTable, ruleNumber))
       
       
       

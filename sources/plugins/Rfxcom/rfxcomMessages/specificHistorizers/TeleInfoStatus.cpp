@@ -12,17 +12,19 @@ namespace teleInfo
          ((Ok))
          ((Error))
          ((Desactivated))
-         );
+      );
 
-      const shared::plugin::yPluginApi::CStandardCapacity& statusCapacity = shared::plugin::yPluginApi::CStandardCapacity("Status", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+      DECLARE_CAPACITY(StatusCapacity, "Status", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
       CTeleInfoStatus::CTeleInfoStatus(const std::string& keywordName)
-         : CSingleHistorizableData<EStatus>(keywordName, statusCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
-      {}
+         : CSingleHistorizableData<EStatus>(keywordName,
+                                            StatusCapacity(),
+                                            shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
+      {
+      }
 
       CTeleInfoStatus::~CTeleInfoStatus()
-      {}
+      {
+      }
    }
 } // namespace teleInfo::specificHistorizer
-
-

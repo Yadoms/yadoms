@@ -343,12 +343,6 @@
                   //we fill the data
                   var fn = keyword.friendlyName;
                   
-                  if(keyword.type.toLowerCase() ==="enum" && keyword.friendlyName === keyword.name) {
-                     //try translate
-                     fn = $.t("plugins/" + device.attachedPlugin.type + ":enumerations." + keyword.typeInfo.name + ".name");
-                     
-                  }
-                  
                   if(parseBool(keyword.blacklist)===true)
                      fn = "<del>"+keyword.friendlyName+"</del>";
                   var friendlyName = "<span>" + fn + "</span>";
@@ -532,33 +526,36 @@
    function updateKeywordDomLine($keywordRow, acquisition, keyword, pluginInstance) {
       //$keywordRow exists
       var keywordValue = "<span></span>";
+      
+      if (acquisition.value)
+      {
+         try {
+            //manage boolean keyword
+            var $tdvalue = $keywordRow.find("td.keyword-value");
 
-      try {
-         //manage boolean keyword
-         var $tdvalue = $keywordRow.find("td.keyword-value");
-
-         if(keyword.type.toLowerCase() === "bool") {
-            if(parseBool(acquisition.value) === true) {
-               keywordValue = "<input type=\"checkbox\" disabled readonly checked/>"
-            } else {
-               keywordValue = "<input type=\"checkbox\" disabled readonly/>"
+            if(keyword.type.toLowerCase() === "bool") {
+               if(parseBool(acquisition.value) === true) {
+                  keywordValue = "<input type=\"checkbox\" disabled readonly checked/>"
+               } else {
+                  keywordValue = "<input type=\"checkbox\" disabled readonly/>"
+               }
             }
-         }
-         else if(keyword.type.toLowerCase() === "enum") {
-            var translatedEnumValue = $.t("plugins/" + pluginInstance.type + ":enumerations." + keyword.typeInfo.name + ".values." + acquisition.value, { defaultValue:acquisition.value} );
-            keywordValue = "<span>" + translatedEnumValue + "</span>";
-         }
-         else if(keyword.type.toLowerCase() === "json") {
-            keywordValue = "<span></span>";
-         } else {
+            else if(keyword.type.toLowerCase() === "enum") {
+               var translatedEnumValue = $.t("plugins/" + pluginInstance.type + ":enumerations." + keyword.typeInfo.name + ".values." + acquisition.value, { defaultValue:acquisition.value} );
+               keywordValue = "<span>" + translatedEnumValue + "</span>";
+            }
+            else if(keyword.type.toLowerCase() === "json") {
+               keywordValue = "<span></span>";
+            } else {
+               keywordValue = "<span>" + acquisition.value + "</span>";
+            }
+         } catch (err) {
             keywordValue = "<span>" + acquisition.value + "</span>";
-         }
-      } catch (err) {
-         keywordValue = "<span>" + acquisition.value + "</span>";
-      } // If catch error, the string is not a JSON String
+         } // If catch error, the string is not a JSON String
 
-      var acquisitionDate = isNullOrUndefinedOrEmpty(acquisition.date) ? $.t("modals.dashboard.sub-windows.devices.noAcquisition") : DateTimeFormatter.isoDateToString(acquisition.date);
-      var lastStateValue = "<span>" + acquisitionDate + "</span>";
+         var acquisitionDate = isNullOrUndefinedOrEmpty(acquisition.date) ? $.t("modals.dashboard.sub-windows.devices.noAcquisition") : DateTimeFormatter.isoDateToString(acquisition.date);
+         var lastStateValue = "<span>" + acquisitionDate + "</span>";
+      }
 
       $keywordRow.find("td.keyword-value").html(keywordValue);
       $keywordRow.find("td.keyword-update").html(lastStateValue);

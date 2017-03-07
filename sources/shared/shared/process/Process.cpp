@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Process.h"
-#include "ProcessException.hpp"
 #include <shared/Log.h>
 
 namespace shared
@@ -8,16 +7,14 @@ namespace shared
    namespace process
    {
       CProcess::CProcess(boost::shared_ptr<ICommandLine> commandLine,
-                         const std::string& workingDirectory,
                          boost::shared_ptr<IProcessObserver> processObserver,
-                         const std::string& logger)
+                         boost::shared_ptr<IExternalProcessLogger> logger)
          : m_commandLine(commandLine),
            m_processObserver(processObserver),
-           m_logger(logger),
            m_returnCode(0),
            m_lastError(boost::make_shared<std::string>())
       {
-         start();
+         start(logger);
       }
 
       CProcess::~CProcess()
@@ -25,7 +22,7 @@ namespace shared
          CProcess::kill();
       }
 
-      void CProcess::start()
+      void CProcess::start(boost::shared_ptr<IExternalProcessLogger> logger)
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_processMutex);
 
@@ -38,30 +35,24 @@ namespace shared
 
             YADOMS_LOG(debug) << "Start process " << m_commandLine->executable() << " from " << m_commandLine->workingDirectory();
 
-            if (m_logger.empty())
-            {
-               m_process = boost::make_shared<Poco::ProcessHandle>(Poco::Process::launch(m_commandLine->executable().string(),
-                                                                                         args,
-                                                                                         m_commandLine->workingDirectory().string()));
-            }
-            else
-            {
-               Poco::Pipe outPipe, errPipe;
-               m_process = boost::make_shared<Poco::ProcessHandle>(Poco::Process::launch(m_commandLine->executable().string(),
-                                                                                         args,
-                                                                                         m_commandLine->workingDirectory().string(),
-                                                                                         nullptr,
-                                                                                         &outPipe,
-                                                                                         &errPipe));
+            Poco::Pipe outPipe, errPipe;
+            m_processHandle = boost::make_shared<Poco::ProcessHandle>(Poco::Process::launch(m_commandLine->executable().string(),
+                                                                                            args,
+                                                                                            m_commandLine->workingDirectory().string(),
+                                                                                            nullptr,
+                                                                                            logger ? &outPipe : nullptr,
+                                                                                            logger ? &errPipe : nullptr));
 
+            if (logger)
+            {
                auto moduleStdOut = boost::make_shared<Poco::PipeInputStream>(outPipe);
                auto moduleStdErr = boost::make_shared<Poco::PipeInputStream>(errPipe);
                m_StdOutRedirectingThread = boost::make_shared<boost::thread>(&CProcess::stdOutRedirectWorker,
                                                                              moduleStdOut,
-                                                                             m_logger);
+                                                                             logger);
                m_StdErrRedirectingThread = boost::make_shared<boost::thread>(&CProcess::stdErrRedirectWorker,
                                                                              moduleStdErr,
-                                                                             m_logger,
+                                                                             logger,
                                                                              m_lastError);
             }
 
@@ -70,27 +61,33 @@ namespace shared
          }
          catch (Poco::Exception& ex)
          {
-            throw CProcessException(std::string("Unable to start process, ") + ex.what());
+            throw std::runtime_error(std::string("Unable to start process, ") + ex.what());
          }
       }
 
       void CProcess::createProcessObserver()
       {
-         m_processMonitorThread = boost::make_shared<boost::thread>(&CProcess::monitorThreaded, this);
+         m_processMonitorThread = boost::make_shared<boost::thread>(&CProcess::monitorThreaded,
+                                                                    this);
       }
 
       void CProcess::monitorThreaded()
       {
+         // Work on local copy of the process handle to avoid to lock mutex while wait for process end
+         m_processMutex.lock();
+         auto processHandle = *m_processHandle;
+         m_processMutex.unlock();
+
          if (!!m_processObserver)
             m_processObserver->onStart();
 
-         if (!m_process)
+         if (!Poco::Process::isRunning(processHandle))
             m_returnCode = 0;
          else
          {
             try
             {
-               m_returnCode = Poco::Process::wait(*m_process);
+               m_returnCode = Poco::Process::wait(processHandle);
             }
             catch (Poco::SystemException&)
             {
@@ -105,7 +102,8 @@ namespace shared
             m_StdErrRedirectingThread->join();
 
          if (!!m_processObserver)
-            m_processObserver->onFinish(m_returnCode, getError());
+            m_processObserver->onFinish(m_returnCode,
+                                        getError());
       }
 
       void CProcess::kill()
@@ -113,12 +111,12 @@ namespace shared
          try
          {
             boost::lock_guard<boost::recursive_mutex> lock(m_processMutex);
-            if (!!m_process)
+            if (Poco::Process::isRunning(*m_processHandle))
             {
-               Poco::Process::kill(*m_process);
+               Poco::Process::kill(*m_processHandle);
 
-               if (Poco::Process::isRunning(*m_process))
-                  m_process->wait();
+               if (Poco::Process::isRunning(*m_processHandle))
+                  m_processHandle->wait();
             }
          }
          catch (Poco::NotFoundException&)
@@ -129,6 +127,9 @@ namespace shared
          {
             // Nothing to do. This exception can occur when process is already stopped
          }
+
+         if (m_processMonitorThread)
+            m_processMonitorThread->join();
       }
 
       int CProcess::getReturnCode() const
@@ -141,38 +142,24 @@ namespace shared
          return *m_lastError;
       }
 
-      void CProcess::stdOutRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut, const std::string & scriptLogger)
+      void CProcess::stdOutRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdOut,
+                                          boost::shared_ptr<IExternalProcessLogger> logger)
       {
-         /*
-         Function which catch every process output.
+         logger->init();
+         logger->information("#### START ####");
 
-         As the output is generated by 
-         */
-
-         Poco::Logger &logger = Poco::Logger::get(scriptLogger);
-         YADOMS_LOG_CONFIGURE(scriptLogger);
-         logger.information("#### START ####");
          char line[1024];
          while (moduleStdOut->getline(line, sizeof(line)))
          {
-            //Trim the trailing \n and \r, to have a correct output
-            std::string l(line);
-            while (boost::ends_with(l, "\n") || boost::ends_with(l, "\r"))
-               l.erase(l.size() - 1, 1);
-            if (!l.empty())
-            {
-               logger.information(l);
-
-               if (scriptLogger != "plugin") //if script logger, log it in yadoms logger
-                  YADOMS_LOG(information) << l;
-            }
+            logger->information(line);
          }
       }
 
-      void CProcess::stdErrRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdErr, const std::string & scriptLogger, boost::shared_ptr<std::string> lastError)
+      void CProcess::stdErrRedirectWorker(boost::shared_ptr<Poco::PipeInputStream> moduleStdErr,
+                                          boost::shared_ptr<IExternalProcessLogger> logger,
+                                          boost::shared_ptr<std::string> lastError)
       {
-         Poco::Logger &logger = Poco::Logger::get(scriptLogger);
-         YADOMS_LOG_CONFIGURE(scriptLogger);
+         logger->init();
 
          char line[1024];
          while (moduleStdErr->getline(line, sizeof(line)))
@@ -180,20 +167,8 @@ namespace shared
             if (!!lastError)
                *lastError += line;
 
-            //Trim the trailing \n and \r, to have a correct output
-            std::string l(line);
-            while (boost::ends_with(l, "\n") || boost::ends_with(l, "\r"))
-               l.erase(l.size() - 1, 1);
-            if (!l.empty())
-            {
-               logger.error(l);
-
-               if (scriptLogger != "plugin")
-                  YADOMS_LOG(error) << l;
-            }
+            logger->error(line);
          }
       }
    }
 } // namespace shared::process
-
-

@@ -5,28 +5,30 @@
 
 namespace specificHistorizers
 {
-
-   const yApi::CStandardCapacity& analogCapacity = yApi::CStandardCapacity("analog", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kNumeric);
+   DECLARE_CAPACITY(analogCapacity, "analog", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kNumeric);
 
    CAnalog::CAnalog(const std::string& keywordName,
                     const std::string& hardwareName,
-                   const yApi::EKeywordAccessMode& accessMode,
-                   const yApi::historization::EMeasureType& measureType,
-                   yApi::historization::typeInfo::ITypeInfo& additionalInfo)
+                    const yApi::EKeywordAccessMode& accessMode,
+                    const yApi::historization::EMeasureType& measureType,
+                    yApi::historization::typeInfo::ITypeInfo& additionalInfo)
       : CSingleHistorizableData<unsigned int>(keywordName,
-                                              analogCapacity,
+                                              analogCapacity(),
                                               accessMode,
                                               0,
                                               measureType,
                                               additionalInfo),
-      m_hardwareName(hardwareName)
-   {}
+        m_hardwareName(hardwareName)
+   {
+   }
 
-   std::string CAnalog::getHardwareName()
+   std::string CAnalog::getHardwareName() const
    {
       return m_hardwareName;
    }
 
    CAnalog::~CAnalog()
-   {}
+   {
+   }
 }
+

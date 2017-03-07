@@ -21,12 +21,14 @@ namespace teleInfo
          ((NormalCostBlueDays))
          ((NormalCostWhiteDays))
          ((NormalCostRedDays))
-       );
+      );
 
-      const shared::plugin::yPluginApi::CStandardCapacity& PeriodCapacity = shared::plugin::yPluginApi::CStandardCapacity("Period", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+      DECLARE_CAPACITY(PeriodCapacity, "Period", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
       CPeriod::CPeriod(const std::string& keywordName)
-         : CSingleHistorizableData<EPeriod>(keywordName, PeriodCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
+         : CSingleHistorizableData<EPeriod>(keywordName,
+                                            PeriodCapacity(),
+                                            shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
       {
       }
 

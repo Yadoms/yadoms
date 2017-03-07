@@ -1,0 +1,86 @@
+syntax = "proto3";
+package script_IPC.toScript;
+
+message GetKeywordId
+{
+   int32 id = 1;
+}
+
+message GetRecipientId
+{
+   int32 id = 1;
+}
+
+message ReadKeyword
+{
+   string value = 1;
+}
+
+message WaitForNextAcquisition
+{
+   string acquisition = 1;
+}
+
+message WaitForNextAcquisitions
+{
+   int32 keywordId = 1;
+   string acquisition = 2;
+}
+
+message WaitForEvent
+{
+   enum EventType { kTimeout = 0; kKeyword = 1; kDateTime = 2; }
+   EventType type = 1;
+   int32 keywordId = 2;
+   string acquisition = 3;
+}
+
+message GetKeywordsByCapacity
+{
+	repeated int32 keywordIds = 1;
+}
+
+message WriteKeyword
+{
+}
+
+message SendNotification
+{
+}
+
+message GetInfo
+{
+   string value = 1;
+}
+
+message GetKeywordName
+{
+   string keywordName = 1;
+}
+
+message GetKeywordDeviceName
+{
+   string deviceName = 1;
+}
+
+   
+message msg
+{
+   oneof OneOf
+   {
+      string error = 1;
+      GetKeywordId getKeywordId = 2;
+      GetRecipientId getRecipientId = 3;
+      ReadKeyword readKeyword = 4;
+      WaitForNextAcquisition waitForNextAcquisition = 5;
+      WaitForNextAcquisitions waitForNextAcquisitions = 6;
+      WaitForEvent waitForEvent = 7;
+      WriteKeyword writeKeyword = 8;
+      SendNotification sendNotification = 9;
+      GetInfo getInfo = 10;
+      GetKeywordsByCapacity getKeywordsByCapacity = 11;
+      GetKeywordName getKeywordName = 12;
+      GetKeywordDeviceName getKeywordDeviceName = 13;
+   }
+}
+

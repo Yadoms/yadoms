@@ -16,7 +16,6 @@
 #include <shared/Log.h>
 #include "PluginException.hpp"
 #include "InvalidPluginException.hpp"
-#include "InstanceRemoverRaii.hpp"
 #include "DeviceConfigurationSchemaRequest.h"
 #include "SetDeviceConfiguration.h"
 #include "DeviceRemoved.h"
@@ -36,8 +35,7 @@ namespace pluginSystem
 #else
       m_qualifier(boost::make_shared<CIndicatorQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
 #endif
-        m_dataAccessLayer(dataAccessLayer),
-        m_instanceRemover(boost::make_shared<CInstanceRemover>(m_runningInstancesMutex, m_runningInstances))
+        m_dataAccessLayer(dataAccessLayer)
    {
    }
 
@@ -320,10 +318,10 @@ namespace pluginSystem
 
       // Find instances to stop
       std::vector<int> instancesToStop;
-      for (PluginInstanceMap::const_iterator instance = m_runningInstances.begin(); instance != m_runningInstances.end(); ++instance)
+      for (const auto& instance : m_runningInstances)
       {
-         if (instance->second && boost::iequals(instance->second->aboutPlugin()->getType(), pluginName))
-            instancesToStop.push_back(instance->first);
+         if (instance.second && boost::iequals(instance.second->aboutPlugin()->getType(), pluginName))
+            instancesToStop.push_back(instance.first);
       }
 
       // Stop all instances of this plugin
@@ -370,7 +368,10 @@ namespace pluginSystem
                                                                             m_dataProvider,
                                                                             m_dataAccessLayer,
                                                                             m_qualifier,
-                                                                            m_instanceRemover);
+                                                                            [this](int pluginInstanceId)
+                                                                            {
+                                                                               onPluginStopped(pluginInstanceId);
+                                                                            });
       }
       catch (shared::exception::CEmptyResult& e)
       {
@@ -398,20 +399,32 @@ namespace pluginSystem
    {
       YADOMS_LOG(information) << "pluginSystem::CManager stop plugins...";
 
-      stopInternalPlugin();
-
-      // Mutex must be released to process instance stop, so use a temporary vector of instances to stop
-      std::vector<int> idsToStop;
       {
          boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-         for (auto runningInstance = m_runningInstances.begin(); runningInstance != m_runningInstances.end(); ++runningInstance)
-            idsToStop.push_back(runningInstance->first);
+         for (const auto& runningInstance : m_runningInstances)
+            requestStopInstance(runningInstance.first);
       }
 
-      boost::thread_group threads;
-      for (auto idToStop = idsToStop.begin(); idToStop != idsToStop.end(); ++idToStop)
-         threads.create_thread(boost::bind(&CManager::stopInstanceAndWaitForStoppedThreaded, this, *idToStop));
-      threads.join_all();
+      auto timeout = shared::currentTime::Provider().now() + boost::posix_time::seconds(30);
+      do
+      {
+         {
+            boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+            if (m_runningInstances.empty())
+               break;
+         }
+         boost::this_thread::yield();
+      }
+      while (shared::currentTime::Provider().now() < timeout);
+
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+         if (!m_runningInstances.empty())
+         {
+            for (const auto& instance : m_runningInstances)
+               instance.second->kill();         
+         }
+      }
 
       YADOMS_LOG(information) << "pluginSystem::CManager all plugins are stopped";
    }
@@ -445,31 +458,56 @@ namespace pluginSystem
       if (!isInstanceRunning(id))
          return;
 
-      CInstanceRemoverRaii instanceRemover(m_instanceRemover, id);
-
       requestStopInstance(id);
-      if (instanceRemover.eventHandler()->waitForEvents(boost::posix_time::seconds(20)) != shared::event::kTimeout)
-         return;
 
-      YADOMS_LOG(warning) << "pluginSystem::CManager, instance #" << id << " didn't stop when requested. Will be killed.";
-      killInstance(id);
+      auto timeout = shared::currentTime::Provider().now() + boost::posix_time::seconds(20);
+      do
+      {
+         {
+            boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+            if (m_runningInstances.find(id) == m_runningInstances.end())
+               break;
+         }
+         boost::this_thread::yield();
+      } while (shared::currentTime::Provider().now() < timeout);
 
-      if (instanceRemover.eventHandler()->waitForEvents(boost::posix_time::seconds(20)) != shared::event::kTimeout)
-         return;
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+         if (m_runningInstances.find(id) != m_runningInstances.end())
+         {
+            YADOMS_LOG(warning) << "pluginSystem::CManager, instance #" << id << " didn't stop when requested. Will be killed.";
+            killInstance(id);
+         }
+      }
 
-      throw CPluginException((boost::format("pluginSystem::CManager, unable to stop instance #%1%") % id).str());
+      timeout = shared::currentTime::Provider().now() + boost::posix_time::seconds(20);
+      do
+      {
+         {
+            boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+            if (m_runningInstances.find(id) == m_runningInstances.end())
+               break;
+         }
+         boost::this_thread::yield();
+      } while (shared::currentTime::Provider().now() < timeout);
+
+      {
+         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+         if (m_runningInstances.find(id) != m_runningInstances.end())
+            throw CPluginException((boost::format("pluginSystem::CManager, unable to stop instance #%1%") % id).str());
+      }
    }
 
-   void CManager::stopInstanceAndWaitForStoppedThreaded(int id)
+   void CManager::onPluginStopped(int pluginInstanceId)
    {
-      try
-      {
-         stopInstanceAndWaitForStopped(id);
-      }
-      catch (CPluginException& exception)
-      {
-         YADOMS_LOG(error) << exception.what();
-      }
+      boost::thread([this, pluginInstanceId]()
+         {
+            boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+
+            const auto interpreter = m_runningInstances.find(pluginInstanceId);
+            if (interpreter != m_runningInstances.end())
+               m_runningInstances.erase(interpreter);
+         });
    }
 
    void CManager::startInternalPlugin()
@@ -694,5 +732,3 @@ namespace pluginSystem
       instance->postSetDeviceConfiguration(command);
    }
 } // namespace pluginSystem
-
-

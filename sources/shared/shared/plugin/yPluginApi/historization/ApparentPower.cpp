@@ -16,7 +16,7 @@ namespace shared
                                            const EMeasureType& measureType,
                                            typeInfo::CDoubleTypeInfo& additionalInfo)
                : CSingleHistorizableData<double>(keywordName,
-                                                 CStandardCapacities::ApparentPower,
+                                                 CStandardCapacities::ApparentPower(),
                                                  accessMode,
                                                  0.0,
                                                  measureType,

@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "BufferLogger.h"
+#include <shared/Log.h>
 
 namespace shared
 {
    namespace communication
    {
-      CBufferLogger::CBufferLogger(std::ostream& os)
-         : m_os(os)
+      CBufferLogger::CBufferLogger()
       {
       }
 
@@ -16,15 +16,15 @@ namespace shared
 
       void CBufferLogger::logReceived(const CByteBuffer& data)
       {
-         m_os << "Yadoms <<< " << msgToString(data) << std::endl;
+         YADOMS_LOG(information) << "Yadoms <<< " << msgToString(data);
       }
 
       void CBufferLogger::logSent(const CByteBuffer& data)
       {
-         m_os << "Yadoms >>> " << msgToString(data) << std::endl;
+         YADOMS_LOG(information) << "Yadoms >>> " << msgToString(data);
       }
 
-      std::string CBufferLogger::msgToString(const CByteBuffer& data) const
+      std::string CBufferLogger::msgToString(const CByteBuffer& data)
       {
          if (data.size() == 0)
             return std::string();

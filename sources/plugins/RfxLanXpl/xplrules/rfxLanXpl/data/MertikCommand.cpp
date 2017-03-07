@@ -27,14 +27,12 @@ namespace xplrules
             ((ProgSweep)("prog_sweep"))
          );
 
-         const shared::plugin::yPluginApi::CStandardCapacity& MertikCommandCapacity = shared::plugin::yPluginApi::CStandardCapacity("mertik",
-                                                                                                                                    shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-                                                                                                                                    shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(MertikCommandCapacity, "mertik", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CMertickCommand::CMertickCommand(const std::string& keywordName)
             : CSingleHistorizableData<EMertikCommand>(keywordName,
-                                                      MertikCommandCapacity,
+                                                      MertikCommandCapacity(),
                                                       shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
          {
          }

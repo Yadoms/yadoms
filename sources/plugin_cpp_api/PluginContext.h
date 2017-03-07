@@ -1,5 +1,4 @@
 #pragma once
-
 #include "IPluginContext.h"
 #include "plugin_cpp_api/IPlugin.h"
 #include "ICommandLine.h"
@@ -48,6 +47,11 @@ namespace plugin_cpp_api
       ///\brief               Wait for debugger (debug only)
       //--------------------------------------------------------------
       void waitDebugger(boost::shared_ptr<CApiImplementation> api) const;
+
+      //--------------------------------------------------------------
+      ///\brief               Configure the logger
+      //--------------------------------------------------------------
+      static void configureLogger(boost::shared_ptr<CApiImplementation> api);
 
    private:
       //--------------------------------------------------------------

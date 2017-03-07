@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Application.h"
-#include "logConfiguration/LogConfiguration.h"
+#include "logging/LogConfiguration.h"
 #include <shared/Log.h>
 
 #include <Poco/Util/Option.h>
@@ -20,7 +20,7 @@ POCO_SERVER_MAIN(CYadomsServer)
 
 CYadomsServer::CYadomsServer()
    : m_helpRequested(false),
-     m_startupOptions(new startupOptions::CStartupOptions(config()))
+     m_startupOptions(boost::make_shared<startupOptions::CStartupOptions>(config()))
 {
    //define unixstyle for command line parsing
    //so in Windows platform we use --option and -o for options (instead of /option)
@@ -35,18 +35,18 @@ CYadomsServer::~CYadomsServer()
 void CYadomsServer::initialize(Application& self)
 {
    loadConfiguration(); // load default configuration files, if present
-   Poco::Util::ServerApplication::initialize(self);
+   ServerApplication::initialize(self);
 
    boost::filesystem::path workingDir(config().getString("application.path"));
    boost::filesystem::current_path(workingDir.parent_path());
 
-   logConfiguration::CLogConfiguration::configure(m_startupOptions->getLogLevel());
+   logging::CLogConfiguration::configure(m_startupOptions->getLogLevel());
 }
 
 void CYadomsServer::uninitialize()
 {
-   YADOMS_LOG(information) << "Yadoms is shutting down";
    ServerApplication::uninitialize();
+   std::cout << "Yadoms is shutted down" << std::endl;
 }
 
 void CYadomsServer::defineOptions(Poco::Util::OptionSet& options)
@@ -88,6 +88,7 @@ int CYadomsServer::main(const ArgVec& /*args*/)
       {
          kApplicationFullyStopped = shared::event::kUserFirstId
       };
+   auto stoppedEventHandler = boost::make_shared<shared::event::CEventHandler>();
 
    if (!m_helpRequested)
    {
@@ -126,6 +127,9 @@ int CYadomsServer::main(const ArgVec& /*args*/)
          YADOMS_LOG(information) << "\t\tPostgresql database = " << m_startupOptions->getDatabasePostgresqlDbName();
          YADOMS_LOG(information) << "\t\tPostgresql login = " << m_startupOptions->getDatabasePostgresqlLogin();
          break;
+      default:
+         YADOMS_LOG(error) << "\t\tUnsupported database engine" << m_startupOptions->getDatabaseEngine();
+         break;
       }
 
 
@@ -143,12 +147,17 @@ int CYadomsServer::main(const ArgVec& /*args*/)
 
       //configure stop handler
       enum { kTerminationRequested = shared::event::kUserFirstId };
+      auto stopRequestEventHandler = boost::make_shared<shared::event::CEventHandler>();
       auto stopHandler = boost::make_shared<shared::process::CApplicationStopHandler>(m_startupOptions->getIsRunningAsService());
-      stopHandler->setApplicationStopHandler([&]() -> bool
+      stopHandler->setApplicationStopHandler([stopRequestEventHandler, stoppedEventHandler]() -> bool
          {
             // Ask for application stop and wait for application full stop
-            m_stopRequestEventHandler.postEvent(kTerminationRequested);
-            return m_stoppedEventHandler.waitForEvents(boost::posix_time::seconds(30)) == kApplicationFullyStopped;
+            YADOMS_LOG(debug) << "Receive termination request";
+            stopRequestEventHandler->postEvent(kTerminationRequested);
+            const auto stopSuccess = stoppedEventHandler->waitForEvents(boost::posix_time::seconds(30)) == kApplicationFullyStopped;
+            if (!stopSuccess)
+               YADOMS_LOG(error) << "Fail to wait the app end event";
+            return stopSuccess;
          });
 
       //create supervisor
@@ -162,12 +171,12 @@ int CYadomsServer::main(const ArgVec& /*args*/)
 
       // Wait for stop
       YADOMS_LOG(debug) << "Yadoms is running...";
-      while (m_stopRequestEventHandler.waitForEvents() != kTerminationRequested)
+      while (stopRequestEventHandler->waitForEvents() != kTerminationRequested)
       {
-         YADOMS_LOG(warning) << "Wrong application stop event received : " << m_stopRequestEventHandler.getEventId();
+         YADOMS_LOG(warning) << "Wrong application stop event received : " << stopRequestEventHandler->getEventId();
       }
 
-      YADOMS_LOG(debug) << "Receive termination request : ask supervisor to stop...";
+      YADOMS_LOG(information) << "Receive termination request : ask supervisor to stop...";
       supervisor.requestToStop();
       supervisorThread.join();
       YADOMS_LOG(debug) << "Supervisor stopped";
@@ -176,8 +185,8 @@ int CYadomsServer::main(const ArgVec& /*args*/)
       Poco::ErrorHandler::set(pOldEH);
    }
 
-   YADOMS_LOG(debug) << "Yadoms is stopped";
-   m_stoppedEventHandler.postEvent(kApplicationFullyStopped);
+   YADOMS_LOG(information) << "Yadoms is stopped";
+   stoppedEventHandler->postEvent(kApplicationFullyStopped);
    return EXIT_OK;
 }
 

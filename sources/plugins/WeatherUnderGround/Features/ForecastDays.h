@@ -65,14 +65,14 @@ private:
    std::string m_deviceName;
 
    //--------------------------------------------------------------
-   /// \brief	    The url link to access properly the web site
-   //--------------------------------------------------------------
-   std::stringstream m_url;
-
-   //--------------------------------------------------------------
    /// \brief	    Keywords
    //--------------------------------------------------------------
    boost::shared_ptr<CForecast> m_forecast;
+
+   //--------------------------------------------------------------
+   /// \brief	    The url link to access properly the web site
+   //--------------------------------------------------------------
+   std::stringstream m_url;
 
    //--------------------------------------------------------------
    /// \brief	    Tab of rain keywords for 3 next days

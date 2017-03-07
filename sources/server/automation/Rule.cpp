@@ -1,59 +1,88 @@
 #include "stdafx.h"
 #include "Rule.h"
-#include <shared/Log.h>
-#include "script/IProperties.h"
-#include "script/ScriptLogConfiguration.h"
+#include "script/YScriptApiImplementation.h"
+#include "script/Properties.h"
+#include "script/IpcAdapter.h"
+
 namespace automation
 {
    CRule::CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
-                boost::shared_ptr<script::IManager> scriptManager,
-                boost::shared_ptr<IRuleStateHandler> ruleStateHandler)
-      : m_ruleData(ruleData),
-        m_scriptManager(scriptManager),
-        m_ruleStateHandler(ruleStateHandler)
+                const IPathProvider& pathProvider,
+                boost::shared_ptr<interpreter::IManager> interpreterManager,
+                boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+                boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+                boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
+                boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
+                boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
+                boost::shared_ptr<script::IGeneralInfo> generalInfo)
+      : m_pathProvider(pathProvider),
+        m_ruleData(ruleData),
+        m_interpreterManager(interpreterManager)
    {
-      start();
+      start(pluginGateway,
+            dbAcquisitionRequester,
+            dbDeviceRequester,
+            keywordAccessLayer,
+            dbRecipientRequester,
+            generalInfo);
    }
 
    CRule::~CRule()
    {
    }
 
-   void CRule::start()
+   void CRule::start(boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+                     boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+                     boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
+                     boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
+                     boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
+                     boost::shared_ptr<script::IGeneralInfo> generalInfo)
    {
-      if (!!m_process)
-      {
-         YADOMS_LOG(warning) << "Can not start rule " << m_ruleData->Name() << " : already started";
-         return;
-      }
-      try
-      {
-         auto scriptProperties = m_scriptManager->createScriptProperties(m_ruleData);
+      auto apiImplementation = createScriptApiImplementation(pluginGateway,
+                                                             dbAcquisitionRequester,
+                                                             dbDeviceRequester,
+                                                             keywordAccessLayer,
+                                                             dbRecipientRequester,
+                                                             generalInfo);
 
-         script::CScriptLogConfiguration config;
-         boost::filesystem::path file = m_scriptManager->getScriptLogFileName(m_ruleData);
-         const std::string loggerName = "script/" + m_ruleData->Name() + " #" + std::to_string(m_ruleData->Id());
-         Poco::Logger & scriptLogger = Poco::Logger::get(loggerName);
-         config.configure(scriptLogger, "debug", file);
+      m_ipcAdapter = createScriptIpcAdapter(m_ruleData->Id(),
+                                            apiImplementation);
 
-         auto yScriptApi = m_scriptManager->createScriptContext(scriptLogger);
-         auto stopNotifier = m_scriptManager->createStopNotifier(m_ruleStateHandler, m_ruleData->Id());
+      script::CProperties ruleProperties(m_ruleData,
+                                         m_pathProvider);
 
-         auto scriptInterpreter = m_scriptManager->getAssociatedInterpreter(scriptProperties->interpreterName());
-         m_process = scriptInterpreter->createProcess(scriptProperties->scriptPath(), loggerName, yScriptApi, stopNotifier);
+      m_scriptInterpreter = m_interpreterManager->getInterpreterInstance(m_ruleData->Interpreter());
 
-      }
-      catch (std::exception &ex)
-      {
-         YADOMS_LOG(error) << "Can not start rule " << m_ruleData->Name() << " : " << ex.what();
-      }
+      m_scriptInterpreter->startScript(m_ruleData->Id(),
+                                       ruleProperties.scriptPath(),
+                                       m_ipcAdapter->id(),
+                                       m_interpreterManager->getScriptLogFilename(m_ruleData->Id()));
    }
 
    void CRule::requestStop()
    {
-      if (!!m_process)
-         m_process->kill();
+      m_scriptInterpreter->stopScript(m_ruleData->Id());
+   }
+
+   boost::shared_ptr<script::IIpcAdapter> CRule::createScriptIpcAdapter(int ruleId,
+                                                                        boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> apiImplementation) const
+   {
+      return boost::make_shared<script::CIpcAdapter>(apiImplementation,
+                                                     ruleId);
+   }
+
+   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CRule::createScriptApiImplementation(boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+                                                                                                   boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+                                                                                                   boost::shared_ptr<database::IDeviceRequester> dbDeviceRequester,
+                                                                                                   boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
+                                                                                                   boost::shared_ptr<database::IRecipientRequester> dbRecipientRequester,
+                                                                                                   boost::shared_ptr<script::IGeneralInfo> generalInfo) const
+   {
+      return boost::make_shared<script::CYScriptApiImplementation>(pluginGateway,
+                                                                   dbAcquisitionRequester,
+                                                                   dbDeviceRequester,
+                                                                   keywordAccessLayer,
+                                                                   dbRecipientRequester,
+                                                                   generalInfo);
    }
 } // namespace automation	
-	
-	

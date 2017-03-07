@@ -5,7 +5,8 @@
 #include <shared/currentTime/Local.h>
 #include <Poco/Debugger.h>
 #include <shared/Log.h>
-#include "PluginLogConfiguration.h"
+#include <shared/process/YadomsSubModuleLogConfiguration.h>
+#include <shared/communication/SmallHeaderMessageAssembler.h>
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -40,24 +41,11 @@ namespace plugin_cpp_api
          api->waitInitialized();
 
          std::cout << api->getInformation()->getType() << " starting" << std::endl;
+
          waitDebugger(api);
 
-         try
-         {
-            auto path = api->getLogFile();
-            std::cout << api->getInformation()->getType() << " configure logger : " << path.string() << std::endl;
-            CPluginLogConfiguration logconfig;
-            logconfig.configure("debug", path);
-         }
-         catch (std::exception& e)
-         {
-            std::cerr << api->getInformation()->getType() << " fail to configure log system : " << e.what() << std::endl;
-         }
-         catch (...)
-         {
-            std::cerr << api->getInformation()->getType() << " fail to configure log system with unknown exception" << std::endl;
-         }
-         YADOMS_LOG_CONFIGURE(api->getInformation()->getType());
+         configureLogger(api);
+
          YADOMS_LOG(information) << api->getInformation()->getType() << " started";
 
          if (!api->stopRequested())
@@ -120,6 +108,27 @@ namespace plugin_cpp_api
       }
    }
 
+   void CPluginContext::configureLogger(boost::shared_ptr<CApiImplementation> api)
+   {
+      try
+      {
+         auto path = api->getLogFile();
+         std::cout << api->getInformation()->getType() << " configure logger : " << path.string() << std::endl;
+         shared::process::CYadomsSubModuleLogConfiguration logconfig;
+         logconfig.configure(api->getLogLevel(), path);
+      }
+      catch (std::exception& e)
+      {
+         std::cerr << api->getInformation()->getType() << " fail to configure log system : " << e.what() << std::endl;
+      }
+      catch (...)
+      {
+         std::cerr << api->getInformation()->getType() << " fail to configure log system with unknown exception" << std::endl;
+      }
+
+      YADOMS_LOG_CONFIGURE("mainThread");
+   }
+
    IPluginContext::EProcessReturnCode CPluginContext::getReturnCode() const
    {
       return m_returnCode;
@@ -133,8 +142,8 @@ namespace plugin_cpp_api
 
       try
       {
-         const auto sendMessageQueueId(m_commandLine->yPluginApiAccessorId() + ".toYadoms");
-         const auto receiveMessageQueueId(m_commandLine->yPluginApiAccessorId() + ".toPlugin");
+         const auto sendMessageQueueId(m_commandLine->yPluginApiAccessorId() + ".plugin_IPC.toYadoms");
+         const auto receiveMessageQueueId(m_commandLine->yPluginApiAccessorId() + ".plugin_IPC.toPlugin");
 
          std::cout << "Opening message queues id " << m_commandLine->yPluginApiAccessorId() << std::endl;
 
@@ -164,6 +173,7 @@ namespace plugin_cpp_api
       auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue->get_max_msg_size()));
       size_t messageSize;
       unsigned int messagePriority;
+      const auto messageAssembler = boost::make_shared<shared::communication::SmallHeaderMessageAssembler>(m_receiveMessageQueue->get_max_msg_size());
 
       try
       {
@@ -182,7 +192,16 @@ namespace plugin_cpp_api
                boost::this_thread::interruption_point();
 
                if (messageWasReceived)
-                  api->onReceive(message, messageSize);
+               {
+                  messageAssembler->appendPart(message,
+                                               messageSize);
+
+                  if (messageAssembler->isCompleted())
+                  {
+                     api->onReceive(messageAssembler->message(),
+                                    messageAssembler->messageSize());
+                  }
+               }
             }
             catch (shared::exception::CInvalidParameter& ex)
             {
@@ -194,5 +213,6 @@ namespace plugin_cpp_api
       {
       }
    }
-
 } // namespace plugin_cpp_api
+
+

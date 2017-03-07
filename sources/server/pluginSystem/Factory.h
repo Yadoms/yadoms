@@ -3,6 +3,7 @@
 #include "InstanceStateHandler.h"
 #include <shared/process/IProcess.h>
 #include <shared/process/ICommandLine.h>
+#include <shared/process/IExternalProcessLogger.h>
 #include "IIpcAdapter.h"
 #include <IPathProvider.h>
 #include "yPluginApiImplementation.h"
@@ -33,7 +34,7 @@ namespace pluginSystem
                                                   boost::shared_ptr<database::IDataProvider> dataProvider,
                                                   boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                   boost::shared_ptr<IQualifier> qualifier,
-                                                  boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const override;
+                                                  boost::function1<void, int> onPluginsStoppedFct) const override;
       boost::filesystem::path pluginLogFile(int instanceId) const override;
       boost::filesystem::path pluginDataPath(int instanceId) const override;
       // [END] IFactory Implementation
@@ -44,7 +45,7 @@ namespace pluginSystem
                                                                 boost::shared_ptr<database::IDataProvider> dataProvider,
                                                                 boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                                 boost::shared_ptr<IQualifier> qualifier,
-                                                                boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const;
+                                                                boost::function1<void, int> onPluginsStoppedFct) const;
 
       boost::shared_ptr<const shared::plugin::information::IInformation> createInformation(const std::string& pluginName) const;
 
@@ -52,15 +53,18 @@ namespace pluginSystem
       boost::shared_ptr<shared::process::ICommandLine> createCommandLine(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                                                                          const std::string& messageQueueId) const;
 
+      boost::shared_ptr<shared::process::IExternalProcessLogger> createLogger(const std::string& loggerName) const;
+
       boost::shared_ptr<CInstanceStateHandler> createInstanceStateHandler(boost::shared_ptr<const database::entities::CPlugin> instanceData,
                                                                           boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                                                                           boost::shared_ptr<database::IDataProvider> dataProvider,
                                                                           boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
                                                                           boost::shared_ptr<IQualifier> qualifier,
-                                                                          boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener) const;
+                                                                          boost::function1<void, int> onPluginsStoppedFct) const;
 
       boost::shared_ptr<shared::process::IProcess> createInstanceProcess(boost::shared_ptr<shared::process::ICommandLine> commandLine,
-                                                                         boost::shared_ptr<CInstanceStateHandler> instanceStatteHandler) const;
+                                                                         boost::shared_ptr<CInstanceStateHandler> instanceStatteHandler,
+                                                                         boost::shared_ptr<shared::process::IExternalProcessLogger> logger) const;
 
       boost::shared_ptr<CYPluginApiImplementation> createApiPluginImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
                                                                                  boost::shared_ptr<const database::entities::CPlugin> instanceData,

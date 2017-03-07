@@ -14,7 +14,7 @@ set(BOOST_ROOT "/path/to/boost/boost_1_58_0")
 set(POCO_ROOT "path/to/poco/poco-1.6.0-all")
 
 #define OpenSSL ROOT
-#set(OPENSSL_ROOT_DIR "path/to/openssl")
+#set(OPENSSL_ROOT "path/to/openssl")
 
 #define Protobuf ROOT
 set(PROTOBUF_ROOT "path/to/protobuf")
@@ -67,12 +67,8 @@ SET(COTIRE_USE_UNITY ON)
 ##### Plugin SmsDialer #####
 #
 # Plugin SmsDialer needs Gammu
-#set GAMMU_USE_PKGCONFIG will use PkgConfig tool to find installed Gammu in the system (linux only).
-#If used (set to ON), no need to set GAMMU_ROOT.
-#if you use Gammu compiled by yourself, set GAMMU_USE_PKGCONFIG to OFF and
-#define the GAMMU_ROOT to indicate where Cmake can find your version.
-#set(GAMMU_USE_PKGCONFIG OFF)
-#set(GAMMU_ROOT "/path/to/gammu/gammu-1.34.0")
+#
+#set(GAMMU_ROOT "/path/to/gammu/gammu-1.38.0")
 
 
 ##### Script interpreters ######

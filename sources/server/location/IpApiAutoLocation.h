@@ -24,7 +24,7 @@ namespace location
       void tryAutoLocate(boost::function<void(const shared::CDataContainer&)> onFoundFct) const override;
       // [END] IAutoLocation Implementation
 
-      static void CIpApiAutoLocation::doAutoLocate(boost::function<void(const shared::CDataContainer&)> onFoundFct);
+      static void doAutoLocate(boost::function<void(const shared::CDataContainer&)> onFoundFct);
    };
 } // namespace location
 

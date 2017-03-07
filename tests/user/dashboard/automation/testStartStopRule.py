@@ -19,11 +19,12 @@ class StartStopRule(unittest.TestCase):
    """Start/Stop rule test"""
    
    def setUp(self):
+      yadomsServer.ensureStopped()
       database.deploy('OneStoppedRule')
       config.deploy("nominal")
       scripts.deploy(["DisplayServerVersion"])
       self.serverProcess = yadomsServer.start()
-      self.browser = webdriver.Firefox()
+      self.browser = webdriver.Chrome()
       self.browser.implicitly_wait(10)
       yadomsServer.openClient(self.browser)
       
@@ -42,17 +43,17 @@ class StartStopRule(unittest.TestCase):
       
       self.assertEqual(dashboard.automation.getRuleState(rulesTable, ruleNumber), dashboard.automation.RuleState.Stopped)
       
-      self.assertFalse(dashboard.automation.getRuleAutoStart(rulesTable, ruleNumber))
+      self.assertFalse(dashboard.automation.getRuleAutoStartState(rulesTable, ruleNumber))
       
       print '  Start rule'
       self.assertTrue(tools.waitUntil(lambda: startStopButton.is_enabled()))
       startStopButton.click()
-      WebDriverWait(self.browser, 10).until(lambda driver: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running and startStopButton.is_enabled())
+      WebDriverWait(self.browser, 10).until(lambda browser: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Running and startStopButton.is_enabled())
 
       print '  Stop rule'
       self.assertTrue(tools.waitUntil(lambda: startStopButton.is_enabled()))
       startStopButton.click()
-      WebDriverWait(self.browser, 10).until(lambda driver: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Stopped and startStopButton.is_enabled())
+      WebDriverWait(self.browser, 10).until(lambda browser: dashboard.automation.getRuleState(rulesTable, ruleNumber) is dashboard.automation.RuleState.Stopped and startStopButton.is_enabled())
             
       
    def tearDown(self):

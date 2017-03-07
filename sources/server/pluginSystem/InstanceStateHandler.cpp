@@ -10,7 +10,7 @@ namespace pluginSystem
                                                 boost::shared_ptr<IQualifier> qualifier,
                                                 boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
                                                 boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
-                                                boost::shared_ptr<IInstanceStoppedListener> instanceStoppedListener,
+                                                boost::function1<void, int> onPluginsStoppedFct,
                                                 boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
                                                 boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordManager)
       : m_instanceData(instanceData),
@@ -19,7 +19,7 @@ namespace pluginSystem
         m_qualifier(qualifier),
         m_pluginEventLoggerRequester(pluginEventLoggerRequester),
         m_acquisitionHistorizer(acquisitionHistorizer),
-        m_instanceStoppedListener(instanceStoppedListener),
+        m_onPluginsStoppedFct(onPluginsStoppedFct),
         m_deviceManager(deviceManager),
         m_keywordDataAccessLayer(keywordManager),
         m_pluginStateKeywordId(pluginStateKeywordId()),
@@ -53,19 +53,19 @@ namespace pluginSystem
 
       m_qualifier->signalUnload(m_pluginInformation);
 
-      m_instanceStoppedListener->onStopped(m_instanceData->Id());
+      m_onPluginsStoppedFct(m_instanceData->Id());
    }
 
    void CInstanceStateHandler::signalError(int returnCode,
                                            const std::string& error)
    {
-      YADOMS_LOG(error) << "Stop plugin instance #" << m_instanceData->Id() << " because of error : " << error << ", return code = " << returnCode;
+      YADOMS_LOG(error) << "Stop plugin instance #" << m_instanceData->Id() << " because of error : " << error << ", return code = " << std::hex << returnCode;
 
       setState(shared::plugin::yPluginApi::historization::EPluginState::kError, error);
 
       m_qualifier->signalCrash(m_pluginInformation, error);
 
-      m_instanceStoppedListener->onStopped(m_instanceData->Id());
+      m_onPluginsStoppedFct(m_instanceData->Id());
    }
 
    void CInstanceStateHandler::signalStartError(const std::string& error)
@@ -74,13 +74,13 @@ namespace pluginSystem
 
       setState(shared::plugin::yPluginApi::historization::EPluginState::kError, error);
 
-      m_instanceStoppedListener->onStopped(m_instanceData->Id());
+      m_onPluginsStoppedFct(m_instanceData->Id());
    }
 
-   void CInstanceStateHandler::setState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string & customMessageId, const std::string & customMessageData)
+   void CInstanceStateHandler::setState(const shared::plugin::yPluginApi::historization::EPluginState& state, const std::string& customMessageId, const std::string& customMessageData)
    {
       if (!customMessageId.empty() && (state != shared::plugin::yPluginApi::historization::EPluginState::kCustom && state != shared::plugin::yPluginApi::historization::EPluginState::kError))
-         YADOMS_LOG(warning) << "Custom message ID \"" << customMessageId << "\" will be ignored as state is " << state.toString();
+      YADOMS_LOG(warning) << "Custom message ID \"" << customMessageId << "\" will be ignored as state is " << state.toString();
 
       m_pluginStateKeyword->set(state);
       m_pluginStateMessage->setMessage(customMessageId, customMessageData);
@@ -99,7 +99,7 @@ namespace pluginSystem
          recordPluginEvent(kInfo, "started");
          break;
       case shared::plugin::yPluginApi::historization::EPluginState::kCustomValue:
-         recordPluginEvent(kInfo, (boost::format("custom event (%1%)") % customMessageId).str()); 
+         recordPluginEvent(kInfo, (boost::format("custom event (%1%)") % customMessageId).str());
          break;
       default: break;
       }
@@ -167,7 +167,4 @@ namespace pluginSystem
                                              evenType,
                                              message);
    }
-
 } // namespace pluginSystem	
-	
-	

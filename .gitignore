@@ -13,11 +13,11 @@ tests/user/user.sln
 .DS_Store
 *.suo
 *.db
-sources/plugins/EnOcean/enOceanDescriptors/generated-*
 sources/plugins/EnOcean/package.json
 sources/plugins/EnOcean/locales
 sources/plugins/EnOcean/profiles/generated*.cpp
 sources/plugins/EnOcean/profiles/generated*.h
+sources/scriptInterpreters/Python27/yScriptApiWrapper/swigpyrun.h
 *.csproj.user
 ideTools/versionPreBuildTool/VersionPreBuildTool/VersionPreBuildTool/obj
 ideTools/versionPreBuildTool/VersionPreBuildTool/VersionPreBuildTool/bin/Debug
@@ -25,3 +25,5 @@ ideTools/versionPreBuildTool/VersionPreBuildTool/VersionPreBuildTool/bin/Debug
 *.vshost.exe.manifest
 *.pdb
 sources/scriptInterpreters/yPython27/yScriptApiWrapper/swigpyrun.h
+tests/user/debug.log
+sources/plugins/EnOcean/profiles/generated/*

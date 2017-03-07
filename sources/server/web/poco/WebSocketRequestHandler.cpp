@@ -4,9 +4,7 @@
 #include <Poco/Net/NetException.h>
 
 #include <shared/Log.h>
-#include <shared/DataContainer.h>
 #include <shared/event/EventHandler.hpp>
-#include <shared/ServiceLocator.h>
 
 #include "web/ws/FrameFactory.h"
 #include "web/ws/AcquisitionFilterFrame.h"
@@ -19,15 +17,15 @@
 
 #include "notification/acquisition/Observer.hpp"
 #include "notification/summary/Notification.hpp"
-#include "notification/change/Observer.hpp"
 #include "notification/basic/Observer.hpp"
 #include "notification/Helpers.hpp"
 #include "notification/action/EventAction.hpp"
 
 
-namespace web {
-   namespace poco {
-
+namespace web
+{
+   namespace poco
+   {
       CWebSocketRequestHandler::CWebSocketRequestHandler()
       {
       }
@@ -42,7 +40,7 @@ namespace web {
          YADOMS_LOG_CONFIGURE("Websocket server")
          YADOMS_LOG(information) << "New websocket client";
 
-         std::vector<boost::shared_ptr<notification::IObserver> > observers;
+         std::vector<boost::shared_ptr<notification::IObserver>> observers;
 
          //for each request (each time a new ws connexion is made)
          //then just create a websocket server and wait infinite (until client ends)
@@ -50,44 +48,44 @@ namespace web {
          {
             // Supported events and handler
             enum
-            {
-               kNotifFromWsClient = shared::event::kUserFirstId,
-               kNewAcquisition,
-               kNewAcquisitionSummary,
-               kNewDevice,
-               kNewLogEvent,
-               kTaskProgression
-            };
+               {
+                  kNotifFromWsClient = shared::event::kUserFirstId,
+                  kNewAcquisition,
+                  kNewAcquisitionSummary,
+                  kNewDevice,
+                  kNewLogEvent,
+                  kTaskProgression
+               };
             shared::event::CEventHandler eventHandler;
 
             // Subscribe to new acquisitions depends on filters set by GUI
-            boost::shared_ptr< notification::action::CEventAction< notification::acquisition::CNotification > > acquisitionAction(new notification::action::CEventAction<notification::acquisition::CNotification>(eventHandler, kNewAcquisition));
-            boost::shared_ptr< notification::acquisition::CObserver > newAcquisitionObserver(new notification::acquisition::CObserver(acquisitionAction));
+            auto acquisitionAction(boost::make_shared<notification::action::CEventAction<notification::acquisition::CNotification>>(eventHandler, kNewAcquisition));
+            auto newAcquisitionObserver(boost::make_shared<notification::acquisition::CObserver>(acquisitionAction));
             notification::CHelpers::subscribeCustomObserver(newAcquisitionObserver);
-            observers.push_back(newAcquisitionObserver);         
-            
-            boost::shared_ptr< notification::action::CEventAction< notification::summary::CNotification > > acquisitionSummaryAction(new notification::action::CEventAction<notification::summary::CNotification>(eventHandler, kNewAcquisitionSummary));
-            boost::shared_ptr< notification::basic::CObserver<notification::summary::CNotification> > newAcquisitionSummaryObserver(new notification::basic::CObserver<notification::summary::CNotification>(acquisitionSummaryAction));
+            observers.push_back(newAcquisitionObserver);
+
+            auto acquisitionSummaryAction(boost::make_shared<notification::action::CEventAction<notification::summary::CNotification>>(eventHandler, kNewAcquisitionSummary));
+            auto newAcquisitionSummaryObserver(boost::make_shared<notification::basic::CObserver<notification::summary::CNotification>>(acquisitionSummaryAction));
             notification::CHelpers::subscribeCustomObserver(newAcquisitionSummaryObserver);
             observers.push_back(newAcquisitionSummaryObserver);
 
             // Subscribe to new device notifications
-            observers.push_back(notification::CHelpers::subscribeChangeObserver< database::entities::CDevice >(notification::change::EChangeType::kCreate, eventHandler, kNewDevice));
+            observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CDevice>(notification::change::EChangeType::kCreate, eventHandler, kNewDevice));
 
             // Subscribe to event logger notifications
-            observers.push_back(notification::CHelpers::subscribeBasicObserver< database::entities::CEventLogger >(eventHandler, kNewLogEvent));
+            observers.push_back(notification::CHelpers::subscribeBasicObserver<database::entities::CEventLogger>(eventHandler, kNewLogEvent));
 
             // Subscribe to task progression notifications
-            observers.push_back(notification::CHelpers::subscribeBasicObserver< task::CInstanceNotificationData >(eventHandler, kTaskProgression));
+            observers.push_back(notification::CHelpers::subscribeBasicObserver<task::CInstanceNotificationData>(eventHandler, kTaskProgression));
 
             Poco::Net::WebSocket webSocket(request, response);
 
-            bool clientSeemConnected = true;
+            auto clientSeemConnected = true;
 
-            char buffer[2048] = { 0 };
-            int flags = 0;
-            int pingWaitCount = 0;
-            int pingpongFlag = 0;
+            char buffer[2048] = {0};
+            auto flags = 0;
+            auto pingWaitCount = 0;
+            auto pingpongFlag = 0;
 
             while (clientSeemConnected)
             {
@@ -96,40 +94,39 @@ namespace web {
                   //manage server send to websocket data
                   switch (eventHandler.waitForEvents(boost::posix_time::milliseconds(50)))
                   {
-
                   case kNewAcquisition:
-                  {
-                     boost::shared_ptr<notification::acquisition::CNotification> notif = eventHandler.getEventData< boost::shared_ptr<notification::acquisition::CNotification> >();
-                     clientSeemConnected = send(webSocket, ws::CAcquisitionUpdateFrame(notif->getAcquisition()));
-                     break;
-                  }
+                     {
+                        auto notif = eventHandler.getEventData<boost::shared_ptr<notification::acquisition::CNotification>>();
+                        clientSeemConnected = send(webSocket, ws::CAcquisitionUpdateFrame(notif->getAcquisition()));
+                        break;
+                     }
                   case kNewAcquisitionSummary:
-                  {
-                     boost::shared_ptr<notification::summary::CNotification> notif = eventHandler.getEventData< boost::shared_ptr<notification::summary::CNotification> >();
-                     clientSeemConnected = send(webSocket, ws::CAcquisitionSummaryUpdateFrame(notif->getAcquisitionSummaries()));
-                     break;
-                  }
+                     {
+                        auto notif = eventHandler.getEventData<boost::shared_ptr<notification::summary::CNotification>>();
+                        clientSeemConnected = send(webSocket, ws::CAcquisitionSummaryUpdateFrame(notif->getAcquisitionSummaries()));
+                        break;
+                     }
 
                   case kNewDevice:
-                  {
-                     boost::shared_ptr<database::entities::CDevice> newDevice = eventHandler.getEventData<boost::shared_ptr<database::entities::CDevice> >();
-                     clientSeemConnected = send(webSocket, ws::CNewDeviceFrame(newDevice));
-                     break;
-                  }
+                     {
+                        auto newDevice = eventHandler.getEventData<boost::shared_ptr<database::entities::CDevice>>();
+                        clientSeemConnected = send(webSocket, ws::CNewDeviceFrame(newDevice));
+                        break;
+                     }
 
                   case kNewLogEvent:
-                  {
-                     boost::shared_ptr<database::entities::CEventLogger> logEvent = eventHandler.getEventData<boost::shared_ptr<database::entities::CEventLogger> >();
-                     clientSeemConnected = send(webSocket, ws::CLogEventFrame(logEvent));
-                     break;
-                  }
+                     {
+                        auto logEvent = eventHandler.getEventData<boost::shared_ptr<database::entities::CEventLogger>>();
+                        clientSeemConnected = send(webSocket, ws::CLogEventFrame(logEvent));
+                        break;
+                     }
 
                   case kTaskProgression:
-                  {
-                     boost::shared_ptr<task::CInstanceNotificationData> taskProgression = eventHandler.getEventData<boost::shared_ptr<task::CInstanceNotificationData> >();
-                     clientSeemConnected = send(webSocket, ws::CTaskUpdateNotificationFrame(taskProgression));
-                     break;
-                  }
+                     {
+                        auto taskProgression = eventHandler.getEventData<boost::shared_ptr<task::CInstanceNotificationData>>();
+                        clientSeemConnected = send(webSocket, ws::CTaskUpdateNotificationFrame(taskProgression));
+                        break;
+                     }
 
                   case shared::event::kTimeout:
                      break;
@@ -139,12 +136,12 @@ namespace web {
                      break;
                   } // switch
                }
-               catch (shared::exception::CException & ex)
+               catch (shared::exception::CException& ex)
                {
                   YADOMS_LOG(error) << "Websocket request handler exception : " << ex.what();
                   clientSeemConnected = false;
                }
-               catch (std::exception & ex)
+               catch (std::exception& ex)
                {
                   YADOMS_LOG(error) << "Websocket request handler std exception : " << ex.what();
                   clientSeemConnected = false;
@@ -160,10 +157,10 @@ namespace web {
                {
                   if (webSocket.poll(Poco::Timespan(0, 50 * 1000), Poco::Net::Socket::SELECT_READ))
                   {
-                     int n = webSocket.receiveFrame(buffer, sizeof(buffer), flags);
+                     auto n = webSocket.receiveFrame(buffer, sizeof(buffer), flags);
                      if (n > 0)
                      {
-                        if ( (flags & Poco::Net::WebSocket::FRAME_OP_PONG) == Poco::Net::WebSocket::FRAME_OP_PONG)
+                        if ((flags & Poco::Net::WebSocket::FRAME_OP_PONG) == Poco::Net::WebSocket::FRAME_OP_PONG)
                         {
                            //we receive a pong frame, reset flag
                            pingpongFlag = 0;
@@ -174,22 +171,22 @@ namespace web {
 
                            YADOMS_LOG(debug) << "Websocket receive data : " << bufferString;
 
-                           boost::shared_ptr<ws::CFrameBase> parsedFrame = ws::CFrameFactory::tryParse(bufferString);
+                           auto parsedFrame = ws::CFrameFactory::tryParse(bufferString);
                            if (parsedFrame)
                            {
                               switch (parsedFrame->getType())
                               {
                               case ws::CFrameBase::EFrameType::kAcquisitionFilterValue:
-                              {
-                                 boost::shared_ptr<ws::CAcquisitionFilterFrame> parsedFrameAsqFilter = boost::dynamic_pointer_cast<ws::CAcquisitionFilterFrame>(parsedFrame);
-                                 newAcquisitionObserver->resetKeywordIdFilter(parsedFrameAsqFilter->getFilter());
-                                 break;
-                              }
+                                 {
+                                    auto parsedFrameAsqFilter = boost::dynamic_pointer_cast<ws::CAcquisitionFilterFrame>(parsedFrame);
+                                    newAcquisitionObserver->resetKeywordIdFilter(parsedFrameAsqFilter->getFilter());
+                                    break;
+                                 }
                               case ws::CFrameBase::EFrameType::kIsAliveValue:
-                              {
-                                 send(webSocket, ws::CIsAliveFrame());
-                                 break;
-                              }
+                                 {
+                                    send(webSocket, ws::CIsAliveFrame());
+                                    break;
+                                 }
                               default:
                                  YADOMS_LOG(debug) << "Unmanaged websocket frame from client";
                                  break;
@@ -245,7 +242,7 @@ namespace web {
                   YADOMS_LOG(debug) << "Websocket request handler Poco::Exception : " << exc.displayText();
                   clientSeemConnected = false;
                }
-               catch (shared::exception::CException & ex)
+               catch (shared::exception::CException& ex)
                {
                   //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
                   YADOMS_LOG(debug) << "Websocket request handler exception : " << ex.what();
@@ -275,15 +272,14 @@ namespace web {
                   {
                      YADOMS_LOG(warning) << "Fail to send PING frame";
                   }
-                  
                }
             } //while
          }
-         catch (shared::exception::CException & ex)
+         catch (shared::exception::CException& ex)
          {
             YADOMS_LOG(error) << "Websocket request handler exception : " << ex.what();
          }
-         catch (std::exception & ex)
+         catch (std::exception& ex)
          {
             YADOMS_LOG(error) << "Websocket request handler std exception : " << ex.what();
          }
@@ -293,22 +289,22 @@ namespace web {
          }
 
          //unsubscribe observers
-         for (std::vector<boost::shared_ptr<notification::IObserver> >::iterator observer = observers.begin(); observer != observers.end(); ++observer)
-            notification::CHelpers::unsubscribeObserver(*observer);
+         for (const auto& observer : observers)
+            notification::CHelpers::unsubscribeObserver(observer);
       }
 
-      bool CWebSocketRequestHandler::send(Poco::Net::WebSocket & webSocket, const ws::CFrameBase& toSend) const
+      bool CWebSocketRequestHandler::send(Poco::Net::WebSocket& webSocket, const ws::CFrameBase& toSend)
       {
-         std::string dataString = toSend.serialize();
+         auto dataString = toSend.serialize();
          return (webSocket.sendFrame(dataString.c_str(), dataString.length(), Poco::Net::WebSocket::FRAME_TEXT) != 0);
       }
 
-      bool CWebSocketRequestHandler::sendPing(Poco::Net::WebSocket & webSocket) const
+      bool CWebSocketRequestHandler::sendPing(Poco::Net::WebSocket& webSocket)
       {
          std::string dataString = "Yadoms play PING";
          return (webSocket.sendFrame(dataString.c_str(), dataString.length(), Poco::Net::WebSocket::FRAME_FLAG_FIN | Poco::Net::WebSocket::FRAME_OP_PING) != 0);
       }
-
    }
 } //namespace web::poco
+
 

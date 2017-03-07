@@ -19,7 +19,7 @@ namespace shared
             CArmingAlarm::CArmingAlarm(const std::string& keywordName,
                                        const EKeywordAccessMode& accessMode)
                : CSingleHistorizableData<EArmingAlarmStatus>(keywordName,
-                                                             CStandardCapacities::ArmingAlarm,
+                                                             CStandardCapacities::ArmingAlarm(),
                                                              accessMode,
                                                              EArmingAlarmStatus::kDisarmed,
                                                              EMeasureType::kAbsolute)
