@@ -11,10 +11,6 @@
     background-position: center;
 }
 
-.widget-shutter .shutter-image:hover {
-   cursor:pointer;
-}
-
 .widget-shutter .vertical-inverter {
     margin: auto;
 }
