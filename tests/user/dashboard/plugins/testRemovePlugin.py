@@ -35,11 +35,6 @@ class RemovePlugin(unittest.TestCase):
       pluginsTable = dashboard.plugins.waitPluginsTableHasNPlugins(self.browser, 1)
       self.assertTrue(tools.waitUntil(lambda: dashboard.plugins.getPluginRemoveButton(pluginsTable, pluginNumber).is_enabled()))
       removeButton = dashboard.plugins.getPluginRemoveButton(pluginsTable, pluginNumber)
-      
-      # TODO nettoyer
-      if not tools.waitUntil(lambda: dashboard.plugins.getPluginState(pluginsTable, pluginNumber) is dashboard.plugins.PluginState.Running):
-         saveContext(self.browser)
-         self.assertTrue(False)
    
       print 'Remove plugin'
       removeButton.click()
