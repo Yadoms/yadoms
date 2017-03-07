@@ -183,6 +183,19 @@ ENDIF()
 ###############################################
 set (PROTOBUF_SRC_ROOT_FOLDER ${PROTOBUF_ROOT})
 set (Protobuf_USE_STATIC_LIBS ON)
+
+#Helper (FindProtoBuf.cmake allow defingin all variable before finding it)
+#In case protbuf has been installed in a custom directory (${PROTOBUF_ROOT}) 
+#then predefine all files and path (make it works with old cmake <3.9)
+if(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
+   set(PROTOBUF_INCLUDE_DIR "${PROTOBUF_ROOT}/include")
+   set(PROTOBUF_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf.a")
+   set(PROTOBUF_LIBRARY_DEBUG "${PROTOBUF_ROOT}/lib/libprotobuf.a")
+   set(PROTOBUF_LITE_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf-lite.a")
+   set(PROTOBUF_LITE_LIBRARY_DEBUG "${PROTOBUF_ROOT}/lib/libprotobuf-lite.a")
+   set(PROTOBUF_PROTOC_EXECUTABLE "${PROTOBUF_ROOT}/bin/protoc")
+endif(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
+
 find_package(Protobuf 3.0.0 REQUIRED)
 
 if(NOT ${PROTOBUF_FOUND})
