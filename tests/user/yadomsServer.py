@@ -76,7 +76,15 @@ def start(startupArgs=[]):
       argsLine += " --" + arg
 
    print 'Start server...'
-   return subprocess.Popen("python yadomsServerWrapper.py " + os.path.join(binaryPath(), executableName() + " " + argsLine), stdin=subprocess.PIPE)
+   serverProcess = subprocess.Popen("python yadomsServerWrapper.py " + os.path.join(binaryPath(), executableName() + " " + argsLine), stdin=subprocess.PIPE)
+
+   if waitServerStarted() == True:
+      return serverProcess
+
+   print 'Server failed to start'
+   stop(serverProcess)
+   assert False
+   return None
    
    
 def isProcessRunning(pid):  
@@ -138,12 +146,6 @@ def ensureStopped():
          except:
             pass
 
-           
-def restart():
-   """Restart the Yadoms server"""
-   stop()
-   start()
-
 
 def waitServerStarted():
    import datetime
@@ -154,17 +156,17 @@ def waitServerStarted():
          response = requests.post('http://127.0.0.1:8080/rest/general/system', timeout=1)
          if response.status_code == requests.codes.ok:
             print 'Server started'
-            return
+            return True
       except:
         pass
 
    print 'Server not responding'
-   assert False
+   return False
 
 
 def openClient(browser, waitForReadyForNormalOperation = True):
    """Open a client on local server and wait for full loading"""
-   waitServerStarted()
+
    try:
       browser.get("http://127.0.0.1:8080")
       if WebDriverWait(browser, 60).until(lambda browser: browser.execute_script("return document.readyState") == u"complete" and browser.execute_script("return jQuery.active") == 0):
