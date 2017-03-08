@@ -987,7 +987,6 @@ if(COTIRE_USE)
 	cotire(yadoms)
 	
 	if(COTIRE_USE_UNITY)
-		target_link_libraries(yadoms_unity yadoms-shared_unity ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
 		set_property( TARGET yadoms_unity PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 	endif()	
 endif()
@@ -1013,14 +1012,14 @@ if(WIN32)
           COMMENT "Adding manifest..." 
       )
       
-      if(COTIRE_USE)   
-         if(COTIRE_USE_UNITY)
-            add_custom_command(TARGET yadoms_unity POST_BUILD
-                COMMAND "mt.exe" -manifest \"${CMAKE_BINARY_DIR}\\yadoms.exe.manifest\" -outputresource:"$(TargetDir)$(TargetFileName)"\;\#1
-                COMMENT "Adding manifest..." 
-            )
-         endif(COTIRE_USE_UNITY)
-      endif(COTIRE_USE)
+   if(COTIRE_USE)   
+      if(COTIRE_USE_UNITY)
+         add_custom_command(TARGET yadoms_unity POST_BUILD
+             COMMAND "mt.exe" -manifest \"${CMAKE_BINARY_DIR}\\yadoms.exe.manifest\" -outputresource:"$(TargetDir)$(TargetFileName)"\;\#1
+             COMMENT "Adding manifest..." 
+         )
+      endif(COTIRE_USE_UNITY)
+   endif(COTIRE_USE)
       
    endif(MSVC)
 endif(WIN32)
@@ -1035,13 +1034,13 @@ FOREACH (PocoNetSSLDepends ${PocoNetSSLDepends})
                       COMMAND ${CMAKE_COMMAND} -E copy_if_different
                           ${PocoNetSSLDepends} $<TARGET_FILE_DIR:yadoms>/)
                           
-   if(COTIRE_USE)   
-      if(COTIRE_USE_UNITY)
-         add_custom_command(TARGET yadoms_unity POST_BUILD
-                            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                            ${PocoNetSSLDepends} $<TARGET_FILE_DIR:yadoms>/)
-      endif(COTIRE_USE_UNITY)
-   endif(COTIRE_USE)                          
+  if(COTIRE_USE)   
+     if(COTIRE_USE_UNITY)
+        add_custom_command(TARGET yadoms_unity POST_BUILD
+                           COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                           ${PocoNetSSLDepends} $<TARGET_FILE_DIR:yadoms_unity>/)
+     endif(COTIRE_USE_UNITY)
+  endif(COTIRE_USE)                          
 ENDFOREACH(PocoNetSSLDepends)
 
 #copy PostgreSql depends
@@ -1050,13 +1049,13 @@ FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
                       COMMAND ${CMAKE_COMMAND} -E copy_if_different
                           ${PostgreSqlDepend} $<TARGET_FILE_DIR:yadoms>/)
 
-   if(COTIRE_USE)   
-      if(COTIRE_USE_UNITY)
-         add_custom_command(TARGET yadoms_unity POST_BUILD
-                            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                                ${PostgreSqlDepend} $<TARGET_FILE_DIR:yadoms>/)
-      endif(COTIRE_USE_UNITY)
-   endif(COTIRE_USE)                          
+  if(COTIRE_USE)   
+     if(COTIRE_USE_UNITY)
+        add_custom_command(TARGET yadoms_unity POST_BUILD
+                           COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                               ${PostgreSqlDepend} $<TARGET_FILE_DIR:yadoms_unity>/)
+     endif(COTIRE_USE_UNITY)
+  endif(COTIRE_USE)                          
                           
 ENDFOREACH(PostgreSqlDepend)
 
@@ -1070,7 +1069,7 @@ if(COTIRE_USE)
    if(COTIRE_USE_UNITY)
       add_custom_command(TARGET yadoms_unity POST_BUILD
                          COMMAND ${CMAKE_COMMAND} -E copy_directory
-                         ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
+                         ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms_unity>/www/)
    endif(COTIRE_USE_UNITY)
 endif(COTIRE_USE)                          
 

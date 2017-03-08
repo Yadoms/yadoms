@@ -58,7 +58,12 @@ IF(WIN32)
 	add_definitions("/W3")
 ENDIF()
 
-
+##################################################################################################
+## COTIRE
+##################################################################################################
+if(COTIRE_USE)
+	cotire(sqlite)
+endif()
 
 
 set(SQLITE_INCLUDE_DIR2 "${CMAKE_CURRENT_SOURCE_DIR}/${SQLITE_DIR_NAME}" )

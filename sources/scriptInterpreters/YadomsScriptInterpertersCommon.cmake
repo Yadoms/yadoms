@@ -76,7 +76,7 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
 		cotire(${_targetName})
 		
 		if(COTIRE_USE_UNITY)
-			target_link_libraries(${_targetName}_unity yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS} ${ARGN})
+			target_link_libraries(${_targetName}_unity yadoms-shared_unity interpreter_cpp_api_unity ${LIBS} ${CMAKE_DL_LIBS} ${PROTOBUF_LIBRARIES} ${ARGN})
 		endif()	
 	endif()	
 	

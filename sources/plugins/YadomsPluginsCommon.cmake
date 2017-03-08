@@ -82,9 +82,6 @@ MACRO(PLUGIN_LINK _targetName)
 		
 		cotire(${_targetName})
 		
-		if(COTIRE_USE_UNITY)
-			target_link_libraries(${_targetName}_unity yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS} ${ARGN})
-		endif()	
 	endif()	
 	
 ENDMACRO()

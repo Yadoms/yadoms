@@ -50,12 +50,6 @@ set(plugin_cpp_api_SOURCES
 
 add_library(plugin_cpp_api STATIC ${plugin_cpp_api_SOURCES})
 
-if(COTIRE_USE)
-	#nothing to do
-else()
-	add_precompiled_header(plugin_cpp_api stdafx.h)
-endif()
-
 
 #define the list of all include dirs
 set(plugin_cpp_api_ALL_INCLUDE_DIRS
@@ -77,6 +71,23 @@ target_link_libraries(plugin_cpp_api
    ${plugin_IPC_LIBRARY}
    )
 
+if(COTIRE_USE)
+   set_target_properties(plugin_cpp_api PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
+   
+   if(COTIRE_USE_UNITY)
+      set_target_properties(plugin_cpp_api PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
+   else()
+      set_target_properties(plugin_cpp_api PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
+   endif()
+   
+   cotire(plugin_cpp_api)
+   
+   if(COTIRE_USE_UNITY)
+      target_link_libraries(plugin_cpp_api_unity yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS} ${plugin_IPC_LIBRARY}_unity)
+   endif()	
+else()
+	add_precompiled_header(plugin_cpp_api stdafx.h)
+endif()
 
 IF(MSVC OR XCODE)
    SET_PROPERTY(TARGET plugin_cpp_api PROPERTY FOLDER "plugin_cpp_api")
