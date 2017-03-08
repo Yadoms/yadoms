@@ -25,6 +25,11 @@ if (PYTHON_ROOT)
          ${PYTHON_ROOT}
       )
    
+   #include Python.h path and parent dir
+   set(PYTHON_INCLUDE_DIRS
+      ${PYTHON_INCLUDE_DIRS}
+      ${PYTHON_INCLUDE_DIRS}/..)
+      
    if(WIN32)
       if(PYTHON_USE_SOURCES)
    
