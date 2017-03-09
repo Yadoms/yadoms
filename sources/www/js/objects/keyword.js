@@ -4,7 +4,7 @@
  * Creates an instance of Keyword
  * @constructor
  */
-function Keyword(id, deviceId, capacityName, accessMode, name, friendlyName, type, units, details, typeInfo, blacklist) {
+function Keyword(id, deviceId, capacityName, accessMode, name, friendlyName, type, units, details, typeInfo, blacklist, measure) {
    assert(!isNullOrUndefined(id), "id of a Keyword must be defined");
    assert(!isNullOrUndefined(deviceId), "deviceId of a Keyword must be defined");
    assert(!isNullOrUndefined(capacityName), "capacityName of a Keyword must be defined");
@@ -14,6 +14,7 @@ function Keyword(id, deviceId, capacityName, accessMode, name, friendlyName, typ
    assert(!isNullOrUndefined(type), "type of a Keyword must be defined");
    assert(!isNullOrUndefined(units), "units of a Keyword must be defined");
    assert(!isNullOrUndefined(blacklist), "blacklist of a Keyword must be defined");
+   assert(!isNullOrUndefined(measure), "measure of a Keyword must be defined");
 
    this.id = id;
    this.deviceId = deviceId;
@@ -26,6 +27,7 @@ function Keyword(id, deviceId, capacityName, accessMode, name, friendlyName, typ
    this.details = details;
    this.typeInfo = typeInfo;
    this.blacklist = blacklist;
+   this.measure = measure;
 }
 
 Keyword.prototype.toJSON = function () {
@@ -40,7 +42,8 @@ Keyword.prototype.toJSON = function () {
       units: this.units,
       details: this.details,
       typeInfo : this.typeInfo,
-	  blacklist : this.blacklist
+	   blacklist : this.blacklist,
+	   measure : this.measure
    };
 };
 
@@ -50,4 +53,30 @@ Keyword.prototype.toJSON = function () {
  */
 Keyword.prototype.isWritable = function() {
   return this.accessMode.toLowerCase() === "getset";
+};
+
+/**
+ * Check if the keyword is absolute
+ * @returns {boolean}
+ */
+Keyword.prototype.isAbsolute = function() {
+  return this.measure.toLowerCase() === "absolute";
+};
+
+
+/**
+ * Check if the keyword is increment
+ * @returns {boolean}
+ */
+Keyword.prototype.isIncrement = function() {
+  return this.measure.toLowerCase() === "increment";
+};
+
+
+/**
+ * Check if the keyword is increment
+ * @returns {boolean}
+ */
+Keyword.prototype.isCumulative = function() {
+  return this.measure.toLowerCase() === "cumulative";
 };
