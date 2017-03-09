@@ -13,7 +13,9 @@ def getCreateRuleButton(browser):
    return browser.find_element_by_id("btn-add-new-automation-rule")
    
 def waitNewRuleModal(browser):
-   return NewRuleModal(browser.find_element_by_id("automation-rule-new-modal"))
+   WebDriverWait(browser, 10).until(Condition.visibility_of_element_located((By.ID, 'automation-rule-new-modal')))
+   modals.waitForOpened(browser.find_element_by_id('automation-rule-new-modal'))
+   return NewRuleModal(browser.find_element_by_id('automation-rule-new-modal'))
    
       
 def waitRulesTable(browser):

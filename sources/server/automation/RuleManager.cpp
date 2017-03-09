@@ -414,7 +414,7 @@ namespace automation
                                         const std::string& error) const
    {
       if (!error.empty())
-      YADOMS_LOG(error) << error;
+         YADOMS_LOG(error) << error;
 
       auto ruleData(boost::make_shared<database::entities::CRule>());
       ruleData->Id = ruleId;
