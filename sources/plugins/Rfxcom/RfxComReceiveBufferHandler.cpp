@@ -28,7 +28,7 @@ void CRfxcomReceiveBufferHandler::push(const shared::communication::CByteBuffer&
    }
    m_lastReceivedTime = now;
 
-   for (auto idx = 0; idx < buffer.size(); ++idx)
+   for (unsigned int idx = 0; idx < buffer.size(); ++idx) //don't use auto because wrong type used
       m_content.push_back(buffer[idx]);
 
    // Send message if complete (separate aggregated messages)
