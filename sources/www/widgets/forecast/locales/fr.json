@@ -6,21 +6,6 @@
       "name": "Prévision",
       "description": "Prévision météorologiques pour les prochains jours"
     },
-    "Information": {
-      "name": "Prévision Météo",
-      "description": "Les prévisions peuvent être sélectionnée individuellement:",
-      "content": {
-        "AveWind": {
-          "name": "La vitesse moyenne du vent"
-        },
-        "MaxWind": {
-          "name": "La vitesse maximale du vent"
-        },
-        "RainDay": {
-          "name": "Les chutes de pluie"
-        }
-      }
-    },
     "DateFormat": {
       "name": "Format de la date",
       "description": "Choisir le format de la date du widget",

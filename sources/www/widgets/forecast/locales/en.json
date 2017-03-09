@@ -6,21 +6,6 @@
       "name": "forecast",
       "description": "The forecast for next days"
     },
-    "Information": {
-      "name": "Forecast information",
-      "description": "Information about forecast could be selected individually below:",
-      "content": {
-        "AveWind": {
-          "name": "The average speed of the wind"
-        },
-        "MaxWind": {
-          "name": "The maximum speed of the wind"
-        },
-        "RainDay": {
-          "name": "The rain in the day"
-        }
-      }
-    },
     "DateFormat": {
       "name": "Date Format",
       "description": "Choose the date format of the widget",

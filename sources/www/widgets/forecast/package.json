@@ -11,7 +11,7 @@
       },
       "max": {
          "x": 3,
-         "y": 3
+         "y": 2
       },
       "default": {
          "x": 3,
@@ -24,28 +24,6 @@
          "expectedCapacity" : ["Forecast"],
          "expectedKeywordAccess" : "get"
       },
-      "Information":
-      {
-         "type" : "section",
-         "content":
-         {
-			  "AveWind":
-			  {
-				 "type": "bool",
-				 "defaultValue": "true"
-			  },		 
-			  "MaxWind":
-			  {
-				 "type": "bool",
-				 "defaultValue": "true"
-			  },
-			  "RainDay":
-			  {
-				 "type": "bool",
-				 "defaultValue": "true"
-			  }	  
-		  }
-		},
 		"DateFormat": {
 		  "type": "enum",
 		  "values": {
