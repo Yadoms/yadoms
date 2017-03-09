@@ -7,10 +7,10 @@ CProfile_F6_02_02::CProfile_F6_02_02(const std::string& deviceId,
                                      boost::shared_ptr<yApi::IYPluginApi> api)
    : m_api(api),
      m_deviceId(deviceId),
-     m_buttonA(boost::make_shared<yApi::historization::CSwitch>("Button A")),
-     m_buttonB(boost::make_shared<yApi::historization::CSwitch>("Button B")),
-     m_buttonA2ndAction(boost::make_shared<yApi::historization::CSwitch>("Button A - 2nd action")),
-     m_buttonB2ndAction(boost::make_shared<yApi::historization::CSwitch>("Button B - 2nd action")),
+     m_buttonA(boost::make_shared<yApi::historization::CSwitch>("Button A", yApi::EKeywordAccessMode::kGet)),
+     m_buttonB(boost::make_shared<yApi::historization::CSwitch>("Button B", yApi::EKeywordAccessMode::kGet)),
+     m_buttonA2ndAction(boost::make_shared<yApi::historization::CSwitch>("Button A - 2nd action", yApi::EKeywordAccessMode::kGet)),
+     m_buttonB2ndAction(boost::make_shared<yApi::historization::CSwitch>("Button B - 2nd action", yApi::EKeywordAccessMode::kGet)),
      m_historizers({m_buttonA , m_buttonB}),
      m_secondActionHistorizers({m_buttonA2ndAction , m_buttonB2ndAction})
 {

@@ -22,7 +22,9 @@ namespace shared
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] accessMode      The access mode
                //-----------------------------------------------------
-               explicit CSwitch(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGetSet, typeInfo::CBoolTypeInfo &ti = typeInfo::CBoolTypeInfo::Empty);
+               explicit CSwitch(const std::string& keywordName,
+                                const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGetSet,
+                                typeInfo::CBoolTypeInfo& ti = typeInfo::CBoolTypeInfo::Empty);
 
                //-----------------------------------------------------
                ///\brief                     Destructor

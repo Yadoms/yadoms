@@ -2,6 +2,10 @@
 # coding: utf-8
 #-------------------------------------------------------------------------------
 # CPP code generation script for EnOcean EEP profiles
+#
+# Note : this script create code only for read-only devices. Please consider to
+# write "hard-coded" classes to support read-write devices
+#
 
 import sys
 import os.path
@@ -260,6 +264,12 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
             return cppHistorizerClass
 
 
+         def printCtorExtraParameters(ctorExtraParameters):
+            if not ctorExtraParameters:
+               return ""
+            return ", ".join(ctorExtraParameters)
+
+
          historizersCppName = []
          if len(xmlTypeNode.findall("case")) != 1:            
             util.warning("func/type : Unsupported number of \"case\" tags (expected 1) for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This profile will be ignored.")
@@ -269,6 +279,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                keywordName = xmlDataFieldNode.find("shortcut").text + " - " + dataText
                historizerCppName = "m_" + cppHelper.toCppName(keywordName)
                cppHistorizerClassName = ""
+               ctorExtraParameters = []
                if isLinearValue(xmlDataFieldNode):
                   if dataText == "Temperature":
                      if not supportedUnit(xmlDataFieldNode, u"°C"):
@@ -309,6 +320,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                      continue
                elif isBoolValue(xmlDataFieldNode):
                   cppHistorizerClassName = "yApi::historization::CSwitch"
+                  ctorExtraParameters.append(", yApi::EKeywordAccessMode::kGet")
                elif isEnumValue(xmlDataFieldNode):
                   cppHistorizerClass = createSpecificEnumHistorizer(xmlDataFieldNode, xmlTypeNode)
                   typeClass.addDependency(cppHistorizerClass)
@@ -317,7 +329,7 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
                   util.warning("func/type : Unsupported data type \"" + xmlDataFieldNode.find("data").text.encode("utf-8") + "\" for \"" + xmlTypeNode.find("title").text.encode("utf-8") + "\" node. This data will be ignored.")
                   continue
                typeClass.addMember(cppClass.CppMember(historizerCppName, "boost::shared_ptr<" + cppHistorizerClassName + ">", \
-                  cppClass.PRIVATE, cppClass.NO_QUALIFER, initilizationCode= historizerCppName + "(boost::make_shared<" + cppHistorizerClassName + ">(\"" + keywordName + "\"))"))
+                  cppClass.PRIVATE, cppClass.NO_QUALIFER, initilizationCode= historizerCppName + "(boost::make_shared<" + cppHistorizerClassName + ">(\"" + keywordName + "\"" + printCtorExtraParameters(ctorExtraParameters) + "))"))
                historizersCppName.append(historizerCppName)
                
          typeClass.addMember(cppClass.CppMember("m_historizers", "std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >", cppClass.PRIVATE, cppClass.NO_QUALIFER, \
