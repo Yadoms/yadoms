@@ -75,6 +75,10 @@ if(CMAKE_COMPILER_IS_GNUCXX)
       message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
    endif()
 
+	#optimize binaries in release mode
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
+	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -s")
+
 	#warning: comparison of unsigned expression < 0 is always false (from boost)
 	add_definitions("-Wno-type-limits")
 
