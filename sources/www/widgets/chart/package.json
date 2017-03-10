@@ -74,10 +74,32 @@
 						"type": "color",
 						"defaultValue": "#0000FF"
 					},
-					"differentialDisplay": {
-				      "type": "bool",
-				      "defaultValue": "false"
-					},
+               "advancedConfiguration": {
+                  "type": "section",
+                  "enableWithCheckBox": "true",
+                  "enableWithCheckBoxDefaultValue": "false",
+                  "content": {
+                     "differentialDisplay": {
+                        "type": "enum",
+                        "values": {
+                           "absolute": "",
+                           "relative": ""
+                        },                  
+                        "sort": "true",
+                        "defaultValue": "absolute"
+                     },
+                     "periodtype": {
+                        "type": "enum",
+                        "values": {
+                           "min":"",
+                           "avg": "",
+                           "max": ""
+                        },                  
+                        "sort": "false",
+                        "defaultValue": "avg"
+                     }
+                  }
+               },
 					"PlotType": {
                   "type": "enum",
 						"values": {

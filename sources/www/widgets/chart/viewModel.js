@@ -21,6 +21,9 @@ widgetViewModelCtor =
        
        //This variable is used in differential display
        this.chartLastValue = [];
+       
+       //this variable is for the selection of the computed value used for the chart (min, avg, max)
+       this.periodValueType = [];
 
        /**
         * Initialization method
@@ -205,6 +208,10 @@ widgetViewModelCtor =
 
        this.configurationChanged = function () {
            var self = this;
+           
+           // Reset of some values
+           self.periodValueType = [];
+           self.seriesUuid = [];
 
            if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
                return;
@@ -232,26 +239,6 @@ widgetViewModelCtor =
 
                //we register keyword new acquisition
                self.widgetApi.registerKeywordAcquisitions(device.content.source.keywordId);
-
-               // read the differential display variable
-               try{
-                 self.differentialDisplay = parseBool(device.content.differentialDisplay);
-               }
-               catch(error)
-               {
-                 self.differentialDisplay = false;
-                 console.warn('Fail to retreive the variable device.content.differentialDisplay : ' + error);
-                 console.log(' default value used : differentialDisplay=false ');
-               }
-               
-               if (self.differentialDisplay && device.content.PlotType === "arearange")
-               {
-                  notifyError($.t("widgets/chart:incompatibilityDifferential"), "error");
-                  self.incompatibility = true;
-                  return;                  
-               }
-               else
-                  self.incompatibility = false;
                
                // We ask the current device name
                var deffered = DeviceManager.get(device.content.source.deviceId);
@@ -262,9 +249,59 @@ widgetViewModelCtor =
 
                //we ask the current value
                var deffered2 = KeywordManager.get(device.content.source.keywordId);
-               arrayOfDeffered.push(deffered);
+               arrayOfDeffered.push(deffered2);
                deffered2.done(function (keyword) {
                    self.keywordInfo[index] = keyword;
+                   
+                   if (parseBool(device.content.advancedConfiguration.checkbox)){
+                      
+                      // read the differential display variable
+                      try{
+                         if (device.content.advancedConfiguration.content.differentialDisplay ==="relative")
+                            self.differentialDisplay = true;
+                         else
+                            self.differentialDisplay = false;
+                      }
+                      catch(error)
+                      {
+                         self.differentialDisplay = false;
+                         console.warn('Fail to retreive the variable device.content.differentialDisplay : ' + error);
+                         console.log(' default value used : differentialDisplay=false ');
+                      }
+                     
+                      // read the period value we need
+                      try{
+                         self.periodValueType[self.seriesUuid[index]] = device.content.advancedConfiguration.content.periodtype;
+                      }
+                      catch(error)
+                      {
+                         self.periodValueType[self.seriesUuid[index]] = "avg";
+                         console.warn('Fail to retreive the variable device.content.periodtype : ' + error);
+                         console.log(' default value used : periodtype=avg ');
+                       }
+                   }else{ // automatic managment : the managment of the information is done from the measure type of the keyword
+                     if (keyword.measure === "Absolute"){
+                        self.differentialDisplay = false;
+                        self.periodValueType[self.seriesUuid[index]] = "avg";
+                     } else if (keyword.measure === "Cumulative"){
+                        self.differentialDisplay = true;
+                        self.periodValueType[self.seriesUuid[index]] = "max";
+                     }
+                     else{ // Default values
+                        self.differentialDisplay = false;
+                        self.periodValueType[self.seriesUuid[index]] = "avg";
+                     }
+                  }
+                  
+                  if (self.differentialDisplay && device.content.PlotType === "arearange")
+                  {
+                     notifyError($.t("widgets/chart:incompatibilityDifferential"), "error");
+                     self.incompatibility = true;
+                     return;                  
+                  }
+                  else
+                     self.incompatibility = false;
+                   
                });
            });
 
@@ -444,6 +481,7 @@ widgetViewModelCtor =
                                        $.each(data.data, function (index, value) {
                                            lastDate = d;
                                            d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
+                                           //d = DateTimeFormatter.dateToIsoDate(value.date)._d.getTime();
 
                                            var v;
                                            if (!isNullOrUndefined(value.key)) {
@@ -475,12 +513,14 @@ widgetViewModelCtor =
                                        var vMin;
                                        var vMax;
 
-                                       $.each(data.data, function (index, value) {
+                                       $.each(data.data, function (index2, value) {
                                            lastDate = d;
                                            d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
-                                           var v;
-                                           if (!isNullOrUndefined(value.avg)) {
-                                               v = parseFloat(value.avg);
+                                           var vplot;
+                                           
+                                           if (!isNullOrUndefined(value[self.periodValueType[self.seriesUuid[index]]])) {
+                                               // lecture selon le type souhaité (avg/min/max)
+                                               vplot = parseFloat(value[self.periodValueType[self.seriesUuid[index]]]);
                                                vMin = parseFloat(value.min);
                                                vMax = parseFloat(value.max);
                                            } else {
@@ -498,24 +538,18 @@ widgetViewModelCtor =
                                            }
 
                                            // The differential display is disabled if the type of the data is enum or boolean
-                                           if (!self.isBoolVariable(index) && !self.isEnumVariable(index))
-                                           {
-                                              if (self.differentialDisplay)                                              
-                                              {
-                                                 if (!isNullOrUndefined(self.chartLastValue[self.seriesUuid[index]]))
-                                                    plot.push([d, v-self.chartLastValue[self.seriesUuid[index]]]);
-                                                 
-                                                 self.chartLastValue[self.seriesUuid[index]] = v;
-                                              }
-                                              else{
-                                                 if (device.content.PlotType === "arearange")
-                                                     range.push([d, vMin, vMax]);
-
-                                                 plot.push([d, v]);                                                   
-                                              }
+                                           if (self.differentialDisplay && !self.isBoolVariable(index) && !self.isEnumVariable(index))                                              
+                                           {  
+                                              if (!isNullOrUndefined(self.chartLastValue[self.seriesUuid[index]]))
+                                                 plot.push([d, vplot-self.chartLastValue[self.seriesUuid[index]]]);
+                                              
+                                              self.chartLastValue[self.seriesUuid[index]] = vplot;
                                            }
-                                           else
-                                           {
+                                           else{
+                                              if (device.content.PlotType === "arearange")
+                                                  range.push([d, vMin, vMax]);
+
+                                              plot.push([d, vplot]);                                                   
                                            }
                                        });
                                    }
@@ -649,7 +683,7 @@ widgetViewModelCtor =
                                                    zIndex: 0
                                                }, false, false); // Do not redraw immediately
 											   
-											   ChartIndex = ChartIndex + 1;
+                                               ChartIndex = ChartIndex + 1;
 
                                                var serieRange = self.chart.get('range_' + self.seriesUuid[index]);
 
@@ -662,7 +696,7 @@ widgetViewModelCtor =
                                            self.chart.addSeries({
                                                id: self.seriesUuid[index],
                                                data: plot,
-											   index: ChartIndex,
+                                               index: ChartIndex,
                                                dataGrouping: {
                                                    enabled: false
                                                },
@@ -708,9 +742,9 @@ widgetViewModelCtor =
 
                                    self.refreshingData = false;
                                })
-                                   .fail(function (error) {
-                                       notifyError($.t("widgets/chart:errorDuringGettingDeviceData"), error);
-                                   });
+                               .fail(function (error) {
+                                  notifyError($.t("widgets/chart:errorDuringGettingDeviceData"), error);
+                               });
                            }
                        });
 
