@@ -1,12 +1,7 @@
 # Check dependencies
 
 set (PYTHON_REQUIRED_VERSION 2.7)
-
-#if (PYTHON_ROOT)
-#  set(PYTHON_INCLUDE_DIR ${PYTHON_ROOT}/Include)
-#endif()
-
-find_package(PythonLibs ${PYTHON_REQUIRED_VERSION} REQUIRED)
+include(findPython.cmake)
 
 if(${PYTHONLIBS_FOUND})
    message("Python FOUND : ${PYTHONLIBS_VERSION_STRING}")
@@ -15,7 +10,6 @@ if(${PYTHONLIBS_FOUND})
 else(${PYTHONLIBS_FOUND})
    message(ERROR "Python NOT FOUND")
 endif(${PYTHONLIBS_FOUND})
-#include(findPython.cmake)
   
 if(PYTHONLIBS_FOUND)
 
