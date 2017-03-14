@@ -2,9 +2,9 @@
 
 set (PYTHON_REQUIRED_VERSION 2.7)
 
-if (PYTHON_ROOT)
-   set(PYTHON_INCLUDE_DIR ${PYTHON_ROOT}/Include)
-endif()
+#if (PYTHON_ROOT)
+#  set(PYTHON_INCLUDE_DIR ${PYTHON_ROOT}/Include)
+#endif()
 
 find_package(PythonLibs ${PYTHON_REQUIRED_VERSION} REQUIRED)
 
