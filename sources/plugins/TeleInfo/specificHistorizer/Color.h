@@ -27,8 +27,6 @@ namespace teleInfo
          //-----------------------------------------------------
          ///\brief                     Constructor
          ///\param[in] keywordName     Yadoms keyword name
-         ///\param[in] accessMode      The access mode
-         ///\param[in] measureType     The measure type (normally kAbsolute)
          //-----------------------------------------------------
          explicit CColor(const std::string& keywordName);
 
