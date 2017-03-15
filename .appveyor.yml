@@ -22,9 +22,9 @@ configuration: Release
 
 # scripts that run after cloning repository
 install:
-  - cmake --version
   - pushd ..
   - ps: Invoke-WebRequest http://yadoms.com/appveyor_build/boost_1_61_0-build.7z
+  - dir
   - 7z x boost_1_61_0-build.7z
   - ps: Invoke-WebRequest http://yadoms.com/appveyor_build/OpenSSL-1.1.0d-build.7z
   - 7z x OpenSSL-1.1.0d-build.7z
