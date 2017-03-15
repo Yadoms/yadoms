@@ -39,7 +39,7 @@ install:
   - 7z x gammu.7z -bso0
   - rm *.7z
   - dir
-  - popd
+  - popd && exit 0
   - dir
   - echo [END] install
 
