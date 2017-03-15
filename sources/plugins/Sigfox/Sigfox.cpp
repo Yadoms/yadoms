@@ -126,7 +126,7 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
       if (type.compare("data") == 0)
       {
          m_messageKeyword->set(newMessage.get<std::string>("data"));
-         m_rssi->set(static_cast<int>(newMessage.get<double>("rssi")));
+         m_rssi->set(newMessage.get<double>("rssi"));
          m_snr->set(newMessage.get<double>("snr"));
 
          api->historizeData(deviceName, m_keywordsData);
@@ -135,8 +135,10 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
 
       if (type.compare("service") == 0)
       {
-         m_rssi->set(newMessage.get<int>("rssi"));
-         m_batteryLevel->set(newMessage.get<int>("battery"));
+         m_rssi->set(newMessage.get<double>("rssi"));
+
+         // Receive a voltage
+         m_batteryLevel->set(newMessage.get<double>("battery"));
          m_snr->set(newMessage.get<double>("snr"));
 
          api->historizeData(deviceName, m_keywordsData);
