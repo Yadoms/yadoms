@@ -40,6 +40,8 @@ install:
   - rm *.7z
   - dir
   - popd
+  - dir
+  - echo [END] install
 
 # scripts to run before build
 before_build:
@@ -63,7 +65,11 @@ before_build:
   - echo Result:
   - more sources/CMakeListsUserConfig.txt
   
-  # Build solution
+  #TODO virer
+  - python --version
+  - dir C:
+  
+  # Create solution
   - cmake_windows.cmd
   
   
