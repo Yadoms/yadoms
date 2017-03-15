@@ -17,7 +17,7 @@ CSigfox::CSigfox() :
    m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
    m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
    m_snr(boost::make_shared<specificHistorizers::CSNR>("snr")),
-   m_keywordsData({ m_messageKeyword }),
+   m_keywordsData({ m_messageKeyword, m_rssi, m_snr }),
    m_keywordsService({ m_rssi, m_batteryLevel, m_snr })
 {}
 
@@ -91,6 +91,9 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newMessage) const
 {
+   if (m_isDeveloperMode)
+      newMessage.printToLog(YADOMS_LOG(information));
+
    try {
       std::string deviceName = newMessage.get<std::string>("device");
       std::string type = newMessage.get<std::string>("type");
@@ -99,8 +102,6 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
 
       YADOMS_LOG(information) << "Message received for device " << deviceName;
 
-      if (m_isDeveloperMode)
-         newMessage.printToLog(YADOMS_LOG(information));
 
       // Configuration sur le site https://backend.sigfox.com/
 
@@ -125,6 +126,8 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
       if (type.compare("data") == 0)
       {
          m_messageKeyword->set(newMessage.get<std::string>("data"));
+         m_rssi->set(static_cast<int>(newMessage.get<double>("rssi")));
+         m_snr->set(newMessage.get<double>("snr"));
 
          api->historizeData(deviceName, m_keywordsData);
          YADOMS_LOG(information) << "historize a data message for " << deviceName;
@@ -134,15 +137,15 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
       {
          m_rssi->set(newMessage.get<int>("rssi"));
          m_batteryLevel->set(newMessage.get<int>("battery"));
-         m_snr->set(newMessage.get<int>("snr"));
+         m_snr->set(newMessage.get<double>("snr"));
 
          api->historizeData(deviceName, m_keywordsData);
          YADOMS_LOG(information) << "historize a service message for " << deviceName;
       }
    }
-   catch (...)
+   catch (std::exception &e)
    {
-      YADOMS_LOG(error) << "Message error.";
+      YADOMS_LOG(error) << "Error parsing the received message : " << e.what();
    }
 }
 

@@ -8,7 +8,7 @@ namespace specificHistorizers
    //-----------------------------------------------------
    ///\brief A SNR object
    //-----------------------------------------------------
-   class CSNR : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<int>
+   class CSNR : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<double>
    {
    public:
       //-----------------------------------------------------
