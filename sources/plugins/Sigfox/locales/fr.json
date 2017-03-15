@@ -1,0 +1,12 @@
+﻿{
+   "name": "Sigfox",
+   "description": "Plugin permettant de recevoir des CALLBACK du site Sigfox. Ce plugin reçoit les data au format brut.",
+   "configurationSchema":{
+   },
+	"customLabels": {
+		"pluginState": {
+         "initializationError": "Erreur d'initialisation",
+			"updateConfiguration": "Mise à jour de la configuration..."
+		}
+	}
+}

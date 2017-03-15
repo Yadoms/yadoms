@@ -1,0 +1,12 @@
+{
+   "name": "Sigfox",
+   "description": "This plugin could be accessed by callbacks configured in SIGFOX backend platform. The plugin receive the data in raw format. \n",
+   "configurationSchema":{	  
+	},	
+	"customLabels": {
+		"pluginState": {
+			"initializationError": "Initialization error",
+			"updateConfiguration": "Configuration updating..."
+		}
+	}
+}

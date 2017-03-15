@@ -1,0 +1,12 @@
+{
+   "type": "Sigfox",
+   "version": "1.0.0-beta",
+   "author": "Jean-Michel BERHAULT",
+   "url": "https://github.com/Yadoms/yadoms/wiki/Sigfox",
+   "credits": "",
+   "supportedPlatforms":"all",
+   "configurationSchema": {
+   },
+   "supportManuallyDeviceCreation": "false",
+   "supportDeviceRemovedNotification": "false"
+}
