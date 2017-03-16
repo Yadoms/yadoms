@@ -15,10 +15,10 @@ image: Visual Studio 2015
 #---------------------------------#
 
 # build platform, i.e. x86, x64, Any CPU. This setting is optional.
-platform: Any CPU
+platform: Win32
 
 # build Configuration, i.e. Debug, Release, etc.
-configuration: Release
+configuration: Debug
 
 # Add pre-compiled dependancies in cache
 cache:
@@ -33,13 +33,13 @@ cache:
 # scripts that run after cloning repository
 install:
   - ps: pushd ..
-  - ps: if (-Not(Test-Path 'boost_1_61_0')) { Invoke-WebRequest http://yadoms.com/appveyor_build/boost_1_61_0-build.7z -OutFile boost.7z; 7z x boost.7z -bso0 }
-  - ps: if (-Not(Test-Path 'poco-1.7.7-all')) { Invoke-WebRequest http://yadoms.com/appveyor_build/poco-1.7.7-all-build.7z -OutFile poco.7z; 7z x poco.7z -bso0 }
-  - ps: if (-Not(Test-Path 'OpenSSL-1.1.0d')) { Invoke-WebRequest http://yadoms.com/appveyor_build/OpenSSL-1.1.0d-build.7z -OutFile OpenSSL.7z; 7z x OpenSSL.7z -bso0 }
-  - ps: if (-Not(Test-Path 'swig-3.0.8')) { Invoke-WebRequest http://yadoms.com/appveyor_build/swigwin-3.0.8-build.7z -OutFile swig.7z; 7z x swig.7z -bso0 }
-  - ps: if (-Not(Test-Path 'protobuf-3.1.0')) { Invoke-WebRequest http://yadoms.com/appveyor_build/protobuf-3.1.0-build.7z -OutFile protobuf.7z; 7z x protobuf.7z -bso0 }
-  - ps: if (-Not(Test-Path 'pgsql-9.6.1')) { Invoke-WebRequest http://yadoms.com/appveyor_build/pgsql-9.6.1-build.7z -OutFile pgsql.7z; 7z x pgsql.7z -bso0 }
-  - ps: if (-Not(Test-Path 'gammu-1.38.1-yadoms')) { Invoke-WebRequest http://yadoms.com/appveyor_build/gammu-1.38.1-yadoms-build.7z -OutFile gammu.7z; 7z x gammu.7z -bso0 }
+  - ps: if (!(Test-Path 'boost_1_61_0')) { Invoke-WebRequest http://yadoms.com/appveyor_build/boost_1_61_0-build.7z -OutFile boost.7z; 7z x boost.7z -bso0 }
+  - ps: if (!(Test-Path 'poco-1.7.7-all')) { Invoke-WebRequest http://yadoms.com/appveyor_build/poco-1.7.7-all-build.7z -OutFile poco.7z; 7z x poco.7z -bso0 }
+  - ps: if (!(Test-Path 'OpenSSL-1.1.0d')) { Invoke-WebRequest http://yadoms.com/appveyor_build/OpenSSL-1.1.0d-build.7z -OutFile OpenSSL.7z; 7z x OpenSSL.7z -bso0 }
+  - ps: if (!(Test-Path 'swig-3.0.8')) { Invoke-WebRequest http://yadoms.com/appveyor_build/swig-3.0.8-build.7z -OutFile swig.7z; 7z x swig.7z -bso0 }
+  - ps: if (!(Test-Path 'protobuf-3.1.0')) { Invoke-WebRequest http://yadoms.com/appveyor_build/protobuf-3.1.0-build.7z -OutFile protobuf.7z; 7z x protobuf.7z -bso0 }
+  - ps: if (!(Test-Path 'pgsql-9.6.1')) { Invoke-WebRequest http://yadoms.com/appveyor_build/pgsql-9.6.1-build.7z -OutFile pgsql.7z; 7z x pgsql.7z -bso0 }
+  - ps: if (!(Test-Path 'gammu-1.38.1-yadoms')) { Invoke-WebRequest http://yadoms.com/appveyor_build/gammu-1.38.1-yadoms-build.7z -OutFile gammu.7z; 7z x gammu.7z -bso0 }
   - ps: rm *.7z
   - ps: popd
   - ps: echo "[END] install"
