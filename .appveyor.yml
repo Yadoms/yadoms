@@ -20,6 +20,16 @@ platform: Any CPU
 # build Configuration, i.e. Debug, Release, etc.
 configuration: Release
 
+# Add pre-compiled dependancies in cache
+cache:
+  - ../boost_1_61_0
+  - ../poco-1.7.7-all
+  - ../OpenSSL-1.1.0d
+  - ../protobuf-3.1.0
+  - ../swig-3.0.8
+  - ../pgsql
+  - ../gammu
+
 # scripts that run after cloning repository
 install:
   - ps: pushd ..
