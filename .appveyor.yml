@@ -22,7 +22,7 @@ configuration: Release
 
 # scripts that run after cloning repository
 install:
-  - pushd ..
+  - cd ..
   - ps: Invoke-WebRequest http://yadoms.com/appveyor_build/boost_1_61_0-build.7z -OutFile boost.7z
   - 7z x boost.7z -bso0
   - ps: Invoke-WebRequest http://yadoms.com/appveyor_build/OpenSSL-1.1.0d-build.7z -OutFile OpenSSL.7z
@@ -38,8 +38,6 @@ install:
   - ps: Invoke-WebRequest http://yadoms.com/appveyor_build/gammu-1.38.1-yadoms-build.7z -OutFile gammu.7z
   - 7z x gammu.7z -bso0
   - rm *.7z
-  - dir
-  - popd && exit 0
   - dir
   - echo [END] install
 
