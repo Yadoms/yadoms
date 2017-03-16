@@ -62,8 +62,6 @@ before_build:
   - ps: echo set(COTIRE_USE_UNITY ON) >> sources/CMakeListsUserConfig.txt
   - ps: echo set(PYTHON_USE_SOURCES OFF) >> sources/CMakeListsUserConfig.txt
   - ps: echo set(PYTHON_ROOT "C:/Python27") >> sources/CMakeListsUserConfig.txt
-  - ps: echo Result:
-  - ps: more sources/CMakeListsUserConfig.txt
   
   #TODO virer
   - ps: python --version
