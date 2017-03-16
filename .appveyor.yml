@@ -24,53 +24,53 @@ configuration: Release
 install:
   - ps: pushd ..
   # - ps: Invoke-WebRequest http://yadoms.com/appveyor_build/boost_1_61_0-build.7z -OutFile boost.7z
-  # - 7z x boost.7z -bso0
+  # - ps: 7z x boost.7z -bso0
   # - ps: Invoke-WebRequest http://yadoms.com/appveyor_build/OpenSSL-1.1.0d-build.7z -OutFile OpenSSL.7z
-  # - 7z x OpenSSL.7z -bso0
+  # - ps: 7z x OpenSSL.7z -bso0
   # - ps: Invoke-WebRequest http://yadoms.com/appveyor_build/poco-1.7.7-all-build.7z -OutFile poco.7z
-  # - 7z x poco.7z -bso0
+  # - ps: 7z x poco.7z -bso0
   # - ps: Invoke-WebRequest http://yadoms.com/appveyor_build/swigwin-3.0.8-build.7z -OutFile swig.7z
-  # - 7z x swig.7z -bso0
+  # - ps: 7z x swig.7z -bso0
   # - ps: Invoke-WebRequest http://yadoms.com/appveyor_build/protobuf-3.1.0-build.7z -OutFile protobuf.7z
-  # - 7z x protobuf.7z -bso0
+  # - ps: 7z x protobuf.7z -bso0
   # - ps: Invoke-WebRequest http://yadoms.com/appveyor_build/pgsql-9.6.1-build.7z -OutFile pgsql.7z
-  # - 7z x pgsql.7z -bso0
+  # - ps: 7z x pgsql.7z -bso0
   # - ps: Invoke-WebRequest http://yadoms.com/appveyor_build/gammu-1.38.1-yadoms-build.7z -OutFile gammu.7z
-  # - 7z x gammu.7z -bso0
-  # - rm *.7z
-  - dir
+  # - ps: 7z x gammu.7z -bso0
+  # - ps: rm *.7z
+  - ps: dir
   - ps: popd
-  - dir
-  - echo [END] install
+  - ps: dir
+  - ps: echo [END] install
 
 # scripts to run before build
 before_build:
   # Some information
-  - echo Current directory = %cd%
+  - ps: echo Current directory = %cd%
   
   # Yadoms configuration file
-  - echo Configuring Yadoms CMakeListsUserConfig.txt
-  - set "cd_for_cmake=%cd:\=/%"
-  - echo set(BOOST_ROOT "%cd_for_cmake%/../boost_1_61_0") > sources/CMakeListsUserConfig.txt
-  - echo set(POCO_ROOT "%cd_for_cmake%/../poco-1.7.7-all") >> sources/CMakeListsUserConfig.txt
-  - echo set(OPENSSL_ROOT "%cd_for_cmake%/../OpenSSL-1.1.0d") >> sources/CMakeListsUserConfig.txt
-  - echo set(PROTOBUF_ROOT "%cd_for_cmake%/../protobuf-3.1.0") >> sources/CMakeListsUserConfig.txt
-  - echo set(SWIG_ROOT "%cd_for_cmake%/../swig-3.0.8") >> sources/CMakeListsUserConfig.txt
-  - echo set(PostgreSQL_ROOT "%cd_for_cmake%/../pgsql") >> sources/CMakeListsUserConfig.txt
-  - echo set(GAMMU_ROOT "%cd_for_cmake%/../gammu") >> sources/CMakeListsUserConfig.txt
-  - echo set(COTIRE_USE ON) >> sources/CMakeListsUserConfig.txt
-  - echo set(COTIRE_USE_UNITY ON) >> sources/CMakeListsUserConfig.txt
-  - echo set(PYTHON_USE_SOURCES OFF) >> sources/CMakeListsUserConfig.txt
-  - echo set(PYTHON_ROOT "C:/Python27") >> sources/CMakeListsUserConfig.txt
-  - echo Result:
-  - more sources/CMakeListsUserConfig.txt
+  - ps: echo Configuring Yadoms CMakeListsUserConfig.txt
+  - ps: set "cd_for_cmake=%cd:\=/%"
+  - ps: echo set(BOOST_ROOT "%cd_for_cmake%/../boost_1_61_0") > sources/CMakeListsUserConfig.txt
+  - ps: echo set(POCO_ROOT "%cd_for_cmake%/../poco-1.7.7-all") >> sources/CMakeListsUserConfig.txt
+  - ps: echo set(OPENSSL_ROOT "%cd_for_cmake%/../OpenSSL-1.1.0d") >> sources/CMakeListsUserConfig.txt
+  - ps: echo set(PROTOBUF_ROOT "%cd_for_cmake%/../protobuf-3.1.0") >> sources/CMakeListsUserConfig.txt
+  - ps: echo set(SWIG_ROOT "%cd_for_cmake%/../swig-3.0.8") >> sources/CMakeListsUserConfig.txt
+  - ps: echo set(PostgreSQL_ROOT "%cd_for_cmake%/../pgsql") >> sources/CMakeListsUserConfig.txt
+  - ps: echo set(GAMMU_ROOT "%cd_for_cmake%/../gammu") >> sources/CMakeListsUserConfig.txt
+  - ps: echo set(COTIRE_USE ON) >> sources/CMakeListsUserConfig.txt
+  - ps: echo set(COTIRE_USE_UNITY ON) >> sources/CMakeListsUserConfig.txt
+  - ps: echo set(PYTHON_USE_SOURCES OFF) >> sources/CMakeListsUserConfig.txt
+  - ps: echo set(PYTHON_ROOT "C:/Python27") >> sources/CMakeListsUserConfig.txt
+  - ps: echo Result:
+  - ps: more sources/CMakeListsUserConfig.txt
   
   #TODO virer
-  - python --version
-  - dir C:
+  - ps: python --version
+  - ps: dir C:
   
   # Create solution
-  - cmake_windows.cmd
+  - ps: cmake_windows.cmd
   
   
 build:
