@@ -64,6 +64,9 @@ before_build:
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(COTIRE_USE ON)')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(COTIRE_USE_UNITY ON)')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PYTHON_USE_SOURCES OFF)')
+  # For CMake version < 3.9
+  - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY ON)')
+  - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PROTOBUF_PROTOC_EXECUTABLE "' + $cd_for_cmake + '/../protobuf-3.1.0/vsprojects/Release/protoc.exe")')
   
   # Create solution
   - cmd: cmake_windows.cmd
@@ -74,4 +77,4 @@ build:
   project: projects/yadoms.sln    # path to Visual Studio solution or project
 
   # MSBuild verbosity level
-  verbosity: detailed
+  verbosity: normal
