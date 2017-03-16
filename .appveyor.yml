@@ -65,7 +65,7 @@ before_build:
   
   #TODO virer
   - ps: python --version
-  - ps: dir C:
+  - cmd: dir C:
   
   # Create solution
   - ps: cmake_windows.cmd
