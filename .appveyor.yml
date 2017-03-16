@@ -38,6 +38,7 @@ install:
   - ps: Invoke-WebRequest http://yadoms.com/appveyor_build/gammu-1.38.1-yadoms-build.7z -OutFile gammu.7z
   - ps: 7z x gammu.7z -bso0
   - ps: rm *.7z
+  - ps: popd
   - ps: echo "[END] install"
 
 # scripts to run before build
