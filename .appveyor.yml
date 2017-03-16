@@ -51,17 +51,18 @@ before_build:
   # Yadoms configuration file
   - ps: echo "Configuring Yadoms CMakeListsUserConfig.txt"
   - ps: $cd_for_cmake="$pwd".Replace("\", "/")
-  - ps: 'set(BOOST_ROOT "' + $cd_for_cmake + '/../boost_1_61_0")' > "sources/CMakeListsUserConfig.txt"
-  - ps: 'set(POCO_ROOT "' + $cd_for_cmake + '/../poco-1.7.7-all")' >> "sources/CMakeListsUserConfig.txt"
-  - ps: 'set(OPENSSL_ROOT "' + $cd_for_cmake + '/../OpenSSL-1.1.0d")' >> "sources/CMakeListsUserConfig.txt"
-  - ps: 'set(PROTOBUF_ROOT "' + $cd_for_cmake + '/../protobuf-3.1.0")' >> "sources/CMakeListsUserConfig.txt"
-  - ps: 'set(SWIG_ROOT "' + $cd_for_cmake + '/../swig-3.0.8")' >> "sources/CMakeListsUserConfig.txt"
-  - ps: 'set(PostgreSQL_ROOT "' + $cd_for_cmake + '/../pgsql")' >> "sources/CMakeListsUserConfig.txt"
-  - ps: 'set(GAMMU_ROOT "' + $cd_for_cmake + '/../gammu")' >> "sources/CMakeListsUserConfig.txt"
-  - ps: 'set(PYTHON_ROOT "C:/Python27")' >> "sources/CMakeListsUserConfig.txt"
-  - ps: 'set(COTIRE_USE ON)" >> "sources/CMakeListsUserConfig.txt"
-  - ps: 'set(COTIRE_USE_UNITY ON)" >> "sources/CMakeListsUserConfig.txt"
-  - ps: 'set(PYTHON_USE_SOURCES OFF)" >> "sources/CMakeListsUserConfig.txt"
+  - ps: echo $cd_for_cmake
+  # - ps: 'set(BOOST_ROOT "' + $cd_for_cmake + '/../boost_1_61_0")' > "sources/CMakeListsUserConfig.txt"
+  # - ps: 'set(POCO_ROOT "' + $cd_for_cmake + '/../poco-1.7.7-all")' >> "sources/CMakeListsUserConfig.txt"
+  # - ps: 'set(OPENSSL_ROOT "' + $cd_for_cmake + '/../OpenSSL-1.1.0d")' >> "sources/CMakeListsUserConfig.txt"
+  # - ps: 'set(PROTOBUF_ROOT "' + $cd_for_cmake + '/../protobuf-3.1.0")' >> "sources/CMakeListsUserConfig.txt"
+  # - ps: 'set(SWIG_ROOT "' + $cd_for_cmake + '/../swig-3.0.8")' >> "sources/CMakeListsUserConfig.txt"
+  # - ps: 'set(PostgreSQL_ROOT "' + $cd_for_cmake + '/../pgsql")' >> "sources/CMakeListsUserConfig.txt"
+  # - ps: 'set(GAMMU_ROOT "' + $cd_for_cmake + '/../gammu")' >> "sources/CMakeListsUserConfig.txt"
+  # - ps: 'set(PYTHON_ROOT "C:/Python27")' >> "sources/CMakeListsUserConfig.txt"
+  # - ps: 'set(COTIRE_USE ON)" >> "sources/CMakeListsUserConfig.txt"
+  # - ps: 'set(COTIRE_USE_UNITY ON)" >> "sources/CMakeListsUserConfig.txt"
+  # - ps: 'set(PYTHON_USE_SOURCES OFF)" >> "sources/CMakeListsUserConfig.txt"
   
   #TODO virer
   - cmd: python --version
