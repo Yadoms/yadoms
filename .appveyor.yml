@@ -57,6 +57,8 @@ before_build:
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PROTOBUF_ROOT "' + $cd_for_cmake + '/extra_libs/protobuf-3.1.0")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(SWIG_ROOT "' + $cd_for_cmake + '/extra_libs/swig-3.0.8")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PostgreSQL_ROOT "' + $cd_for_cmake + '/extra_libs/pgsql")')
+  - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PostgreSQL_INCLUDE_DIR "' + $cd_for_cmake + '/extra_libs/pgsql/include")')
+  - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PostgreSQL_LIBRARY_DIR "' + $cd_for_cmake + '/extra_libs/pgsql/lib")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(GAMMU_ROOT "' + $cd_for_cmake + '/extra_libs/gammu-1.38.1-yadoms")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PYTHON_ROOT "C:/Python27")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(COTIRE_USE ON)')
