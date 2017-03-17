@@ -780,6 +780,8 @@ ENDIF()
 ################################################
 
 IF(USE_PGSQL_DATABASE)
+   set(PostgreSQL_INCLUDE_DIR "${PostgreSQL_ROOT}/include"))
+   set(PostgreSQL_LIBRARY_DIR "${PostgreSQL_ROOT}/lib"))
    find_package(PostgreSQL)
 
    if(PostgreSQL_FOUND)
