@@ -27,27 +27,27 @@ cache:
 # scripts that run after cloning repository
 install:
   - ps: >-
-    if (!(Test-Path 'extra_libs'))
-    {
-      mkdir extra_libs
-      pushd extra_libs
-      Invoke-WebRequest http://yadoms.com/appveyor_build/boost_1_61_0-build.7z -OutFile boost.7z;
-      7z x boost.7z -bso0
-      Invoke-WebRequest http://yadoms.com/appveyor_build/poco-1.7.7-all-build.7z -OutFile poco.7z
-      7z x poco.7z -bso0
-      Invoke-WebRequest http://yadoms.com/appveyor_build/OpenSSL-1.1.0d-build.7z -OutFile OpenSSL.7z
-      7z x OpenSSL.7z -bso0
-      Invoke-WebRequest http://yadoms.com/appveyor_build/swig-3.0.8-build.7z -OutFile swig.7z
-      7z x swig.7z -bso0
-      Invoke-WebRequest http://yadoms.com/appveyor_build/protobuf-3.1.0-build.7z -OutFile protobuf.7z
-      7z x protobuf.7z -bso0
-      Invoke-WebRequest http://yadoms.com/appveyor_build/pgsql-9.6.1-build.7z -OutFile pgsql.7z
-      7z x pgsql.7z -bso0
-      Invoke-WebRequest http://yadoms.com/appveyor_build/gammu-1.38.1-yadoms-build.7z -OutFile gammu.7z
-      7z x gammu.7z -bso0
-      rm *.7z
-      popd
-    }
+      if (!(Test-Path 'extra_libs'))
+      {
+        mkdir extra_libs
+        pushd extra_libs
+        Invoke-WebRequest http://yadoms.com/appveyor_build/boost_1_61_0-build.7z -OutFile boost.7z;
+        7z x boost.7z -bso0
+        Invoke-WebRequest http://yadoms.com/appveyor_build/poco-1.7.7-all-build.7z -OutFile poco.7z
+        7z x poco.7z -bso0
+        Invoke-WebRequest http://yadoms.com/appveyor_build/OpenSSL-1.1.0d-build.7z -OutFile OpenSSL.7z
+        7z x OpenSSL.7z -bso0
+        Invoke-WebRequest http://yadoms.com/appveyor_build/swig-3.0.8-build.7z -OutFile swig.7z
+        7z x swig.7z -bso0
+        Invoke-WebRequest http://yadoms.com/appveyor_build/protobuf-3.1.0-build.7z -OutFile protobuf.7z
+        7z x protobuf.7z -bso0
+        Invoke-WebRequest http://yadoms.com/appveyor_build/pgsql-9.6.1-build.7z -OutFile pgsql.7z
+        7z x pgsql.7z -bso0
+        Invoke-WebRequest http://yadoms.com/appveyor_build/gammu-1.38.1-yadoms-build.7z -OutFile gammu.7z
+        7z x gammu.7z -bso0
+        rm *.7z
+        popd
+      }
     
   - ps: echo "[END] install"
 
