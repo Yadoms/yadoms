@@ -146,7 +146,7 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
          m_snr->set(newMessage.get<double>("snr"));
 
          // For the signalStrength, we do a rule to normalize rssi to %.
-         m_signalStrength->set(-(m_rssi->get() - m_configuration.getRssiMax()) * 100 / (m_configuration.getRssiMin() - m_configuration.getRssiMax()));
+         m_signalStrength->set((m_rssi->get() - m_configuration.getRssiMin()) * 100 / (m_configuration.getRssiMax() - m_configuration.getRssiMin()));
 
          // the rule to normalize the battery level
 
@@ -160,14 +160,14 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
          m_snr->set(newMessage.get<double>("snr"));
 
          // For the signalStrength, we do a rule to normalize rssi to %.
-         m_signalStrength->set((m_rssi->get() - m_configuration.getRssiMax()) * 100 / (m_configuration.getRssiMax() - m_configuration.getRssiMin()));
+         m_signalStrength->set((m_rssi->get() - m_configuration.getRssiMin()) * 100 / (m_configuration.getRssiMax() - m_configuration.getRssiMin()));
 
          // the rule to normalize the battery level
          // Receive a voltage
          auto m_voltage = newMessage.get<double>("battery");
          m_batteryLevel->set( (m_voltage - m_configuration.getTensionMin()) * 100 / (m_configuration.getTensionMax() - m_configuration.getTensionMin()) );
 
-         api->historizeData(deviceName, m_keywordsData);
+         api->historizeData(deviceName, m_keywordsService);
          YADOMS_LOG(information) << "historize a service message for " << deviceName;
       }
    }
@@ -190,7 +190,7 @@ void CSigfox::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, co
 void CSigfox::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceName) const
 {
    // keywords list for declaration
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywordsDeclaration({ m_messageKeyword, m_rssi, m_batteryLevel, m_snr });
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywordsDeclaration({ m_messageKeyword, m_rssi, m_batteryLevel, m_snr, m_signalStrength });
 
    if (api->deviceExists(deviceName))
       return;
