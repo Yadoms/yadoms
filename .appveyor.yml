@@ -48,6 +48,7 @@ install:
       rm *.7z
       popd
     }
+    
   - ps: echo "[END] install"
 
 # scripts to run before build
