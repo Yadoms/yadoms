@@ -21,14 +21,14 @@ platform: Win32
 configuration: Debug
 
 # Add pre-compiled dependancies in cache
-# cache:
-  # - extra_libs\boost_1_61_0 -> '.appveyor.yml'
-  # - extra_libs\poco-1.7.7-all -> '.appveyor.yml'
-  # - extra_libs\OpenSSL-1.1.0d -> '.appveyor.yml'
-  # - extra_libs\protobuf-3.1.0 -> '.appveyor.yml'
-  # - extra_libs\swig-3.0.8 -> '.appveyor.yml'
-  # #- extra_libs\pgsql-9.6.1 -> '.appveyor.yml'
-  # - extra_libs\gammu-1.38.1-yadoms") -> '.appveyor.yml'
+cache:
+  - extra_libs\boost_1_61_0 -> '.appveyor.yml'
+  - extra_libs\poco-1.7.7-all -> '.appveyor.yml'
+  - extra_libs\OpenSSL-1.1.0d -> '.appveyor.yml'
+  - extra_libs\protobuf-3.1.0 -> '.appveyor.yml'
+  - extra_libs\swig-3.0.8 -> '.appveyor.yml'
+  #- extra_libs\pgsql-9.6.1 -> '.appveyor.yml'
+  - extra_libs\gammu-1.38.1-yadoms -> '.appveyor.yml'
 
 # scripts that run after cloning repository
 install:
