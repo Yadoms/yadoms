@@ -22,33 +22,27 @@ configuration: Debug
 
 # Add pre-compiled dependancies in cache
 cache:
-  - extra_libs -> appveyor.yml
+  - extra_libs/boost_1_61_0 -> .appveyor.yml
+  - extra_libs/poco-1.7.7-all -> .appveyor.yml
+  - extra_libs/OpenSSL-1.1.0d -> .appveyor.yml
+  - extra_libs/protobuf-3.1.0 -> .appveyor.yml
+  - extra_libs/swig-3.0.8 -> .appveyor.yml
+  #- extra_libs/pgsql-9.6.1 -> .appveyor.yml
+  - extra_libs/gammu-1.38.1-yadoms") -> .appveyor.yml
 
 # scripts that run after cloning repository
 install:
-  - ps: >-
-      if (!(Test-Path 'extra_libs'))
-      {
-        mkdir extra_libs
-        pushd extra_libs
-        Invoke-WebRequest http://yadoms.com/appveyor_build/boost_1_61_0-build.7z -OutFile boost.7z;
-        7z x boost.7z -bso0
-        Invoke-WebRequest http://yadoms.com/appveyor_build/poco-1.7.7-all-build.7z -OutFile poco.7z
-        7z x poco.7z -bso0
-        Invoke-WebRequest http://yadoms.com/appveyor_build/OpenSSL-1.1.0d-build.7z -OutFile OpenSSL.7z
-        7z x OpenSSL.7z -bso0
-        Invoke-WebRequest http://yadoms.com/appveyor_build/swig-3.0.8-build.7z -OutFile swig.7z
-        7z x swig.7z -bso0
-        Invoke-WebRequest http://yadoms.com/appveyor_build/protobuf-3.1.0-build.7z -OutFile protobuf.7z
-        7z x protobuf.7z -bso0
-        Invoke-WebRequest http://yadoms.com/appveyor_build/pgsql-9.6.1-build.7z -OutFile pgsql.7z
-        7z x pgsql.7z -bso0
-        Invoke-WebRequest http://yadoms.com/appveyor_build/gammu-1.38.1-yadoms-build.7z -OutFile gammu.7z
-        7z x gammu.7z -bso0
-        rm *.7z
-        popd
-      }
-    
+  - ps: if (!(Test-Path 'extra_libs')) { mkdir 'extra_libs' }
+  - ps: pushd extra_libs
+  - ps: if (!(Test-Path 'boost_1_61_0')) { Invoke-WebRequest http://yadoms.com/appveyor_build/boost_1_61_0-build.7z -OutFile boost.7z; 7z x boost.7z -bso0 }
+  - ps: if (!(Test-Path 'poco-1.7.7-all')) { Invoke-WebRequest http://yadoms.com/appveyor_build/poco-1.7.7-all-build.7z -OutFile poco.7z; 7z x poco.7z -bso0 }
+  - ps: if (!(Test-Path 'OpenSSL-1.1.0d')) { Invoke-WebRequest http://yadoms.com/appveyor_build/OpenSSL-1.1.0d-build.7z -OutFile OpenSSL.7z; 7z x OpenSSL.7z -bso0 }
+  - ps: if (!(Test-Path 'swig-3.0.8')) { Invoke-WebRequest http://yadoms.com/appveyor_build/swig-3.0.8-build.7z -OutFile swig.7z; 7z x swig.7z -bso0 }
+  - ps: if (!(Test-Path 'protobuf-3.1.0')) { Invoke-WebRequest http://yadoms.com/appveyor_build/protobuf-3.1.0-build.7z -OutFile protobuf.7z; 7z x protobuf.7z -bso0 }
+  - ps: if (!(Test-Path 'pgsql')) { Invoke-WebRequest https://www.enterprisedb.com/postgresql-962-binaries-win32 -OutFile pgsql.zip; 7z x pgsql.zip -bso0 }
+  - ps: if (!(Test-Path 'gammu-1.38.1-yadoms')) { Invoke-WebRequest http://yadoms.com/appveyor_build/gammu-1.38.1-yadoms-build.7z -OutFile gammu.7z; 7z x gammu.7z -bso0 }
+  - ps: rm *.7z
+  - ps: popd    
   - ps: echo "[END] install"
 
 # scripts to run before build
@@ -62,16 +56,14 @@ before_build:
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(OPENSSL_ROOT "' + $cd_for_cmake + '/extra_libs/OpenSSL-1.1.0d")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PROTOBUF_ROOT "' + $cd_for_cmake + '/extra_libs/protobuf-3.1.0")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(SWIG_ROOT "' + $cd_for_cmake + '/extra_libs/swig-3.0.8")')
-  - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PostgreSQL_ROOT "' + $cd_for_cmake + '/extra_libs/pgsql-9.6.1")')
+  - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PostgreSQL_ROOT "' + $cd_for_cmake + '/extra_libs/pgsql")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(GAMMU_ROOT "' + $cd_for_cmake + '/extra_libs/gammu-1.38.1-yadoms")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PYTHON_ROOT "C:/Python27")')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(COTIRE_USE ON)')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(COTIRE_USE_UNITY ON)')
   - ps: Add-Content 'sources/CMakeListsUserConfig.txt' ('set(PYTHON_USE_SOURCES OFF)')
   - ps: cat 'sources/CMakeListsUserConfig.txt'
-  - ps: tree 'extra_libs'
-  - ps: ls 'extra_libs'
-  - ps: ls 'extra_libs/pgsql-9.6.1'
+  - ps: ls 'extra_libs/pgsql'
 
   # For CMake version < 3.9, overwrite FindProtobuf.cmake
   - ps: Invoke-WebRequest https://gitlab.kitware.com/cmake/cmake/raw/master/Modules/FindProtobuf.cmake -OutFile 'C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/FindProtobuf.cmake'
