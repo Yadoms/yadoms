@@ -32,6 +32,7 @@ cache:
 
 # scripts that run after cloning repository
 install:
+  - cmd : set
   - ps: mkdir extra_libs
   - ps: pushd extra_libs
   - ps: if (!(Test-Path 'boost_1_61_0')) { Invoke-WebRequest http://yadoms.com/appveyor_build/boost_1_61_0-build.7z -OutFile boost.7z; 7z x boost.7z -bso0 }
@@ -46,10 +47,7 @@ install:
   - ps: echo "[END] install"
 
 # scripts to run before build
-before_build:
-  # Some information
-  - ps: echo "Current directory = $pwd"
-  
+before_build:  
   # Yadoms configuration file
   - ps: echo "Configuring Yadoms CMakeListsUserConfig.txt"
   - ps: $cd_for_cmake="$pwd".Replace("\", "/")
