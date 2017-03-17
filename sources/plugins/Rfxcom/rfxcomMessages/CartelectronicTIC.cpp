@@ -141,9 +141,9 @@ namespace rfxcomMessages
       return rbuf.TIC.battery_level;
    }
 
-   char CCartelectronicTIC::RssiFromProtocol(const RBUF& rbuf)
+   char CCartelectronicTIC::signalStrengthFromProtocol(const RBUF& rbuf)
    {
-      return rbuf.TIC.rssi;
+      return rbuf.TIC.signalStrength;
    }
 
    std::string CCartelectronicTIC::getModel() const

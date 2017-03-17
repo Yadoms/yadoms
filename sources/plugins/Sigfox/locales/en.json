@@ -1,7 +1,30 @@
 {
    "name": "Sigfox",
    "description": "This plugin could be accessed by callbacks configured in SIGFOX backend platform. The plugin receive the data in raw format. \n",
-   "configurationSchema":{	  
+   "configurationSchema":{	
+      "advancedConfiguration": {
+         "type": "section",
+         "name": "Advanced configuration",
+         "description": "",
+         "content": {   
+             "rssiMax": {
+               "name": "Maximum rssi value",
+               "description": ""
+             },         
+             "rssiMin": {
+               "name": "Minimum rssi value",
+               "description": ""
+             },
+             "tensionMin": {
+               "name": "Minimum tension (in V)",
+               "description": ""
+             },
+             "tensionMax": {
+               "name": "Nominal tension (in V)",
+               "description": ""
+             }    
+         }
+      }   
 	},	
 	"customLabels": {
 		"pluginState": {

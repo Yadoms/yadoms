@@ -15,7 +15,7 @@ namespace shared
             ///\brief A rssi (signal strength) historizable object
             ///\note Rssi value is read-only
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CRssi : public CSingleHistorizableData<int>
+            class YADOMS_SHARED_EXPORT CRssi : public CSingleHistorizableData<double>
             {
             public:
                //-----------------------------------------------------
@@ -33,12 +33,6 @@ namespace shared
                virtual ~CRssi();
 
             protected:
-               //-----------------------------------------------------
-               ///\brief                     Normalize the value
-               ///\param[in] level           Raw value
-               ///\return                    The normalized value (0-100)
-               //-----------------------------------------------------
-               int Normalize(int value) override;
             };
          }
       }

@@ -11,11 +11,11 @@ namespace rfxcomMessages
                       const std::string& command,
                       const shared::CDataContainer& deviceDetails)
       : m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_camera , m_rssi })
+      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_camera , m_signalStrength })
    {
       m_camera->setCommand(command);
-      m_rssi->set(0);
+      m_signalStrength->set(0);
 
       m_subType = deviceDetails.get<unsigned char>("subType");
       m_houseCode = deviceDetails.get<unsigned char>("houseCode");
@@ -27,11 +27,11 @@ namespace rfxcomMessages
                       unsigned int subType,
                       const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_camera , m_rssi })
+      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_camera , m_signalStrength })
    {
       m_camera->set(yApi::historization::ECameraMoveCommand::kCenterPosition);
-      m_rssi->set(0);
+      m_signalStrength->set(0);
 
       m_subType = static_cast<unsigned char>(subType);
       if (m_subType != sTypeNinja)
@@ -46,8 +46,8 @@ namespace rfxcomMessages
                       const RBUF& rbuf,
                       size_t rbufSize)
       : m_camera(boost::make_shared<yApi::historization::CCameraMove>("camera")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_camera , m_rssi })
+      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_camera , m_signalStrength })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -59,7 +59,7 @@ namespace rfxcomMessages
       m_subType = rbuf.CAMERA1.subtype;
       m_houseCode = rbuf.CAMERA1.housecode;
       m_camera->set(fromProtocolState(rbuf.CAMERA1.cmnd));
-      m_rssi->set(NormalizeRssiLevel(rbuf.CAMERA1.rssi));
+      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.CAMERA1.signalStrength));
 
       Init(api);
    }
@@ -100,7 +100,7 @@ namespace rfxcomMessages
       rbuf.CAMERA1.seqnbr = seqNumberProvider->next();
       rbuf.CAMERA1.housecode = m_houseCode;
       rbuf.CAMERA1.cmnd = toProtocolState(*m_camera);
-      rbuf.CAMERA1.rssi = 0;
+      rbuf.CAMERA1.signalStrength = 0;
       rbuf.CAMERA1.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(CAMERA1));

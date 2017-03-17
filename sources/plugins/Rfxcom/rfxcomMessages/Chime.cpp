@@ -11,10 +11,10 @@ namespace rfxcomMessages
    CChime::CChime(boost::shared_ptr<yApi::IYPluginApi> api,
                   const std::string& command,
                   const shared::CDataContainer& deviceDetails)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_signalStrength })
    {
-      m_rssi->set(0);
+      m_signalStrength->set(0);
 
       createSubType(deviceDetails.get<unsigned char>("subType"));
       m_id = deviceDetails.get<unsigned int>("id");
@@ -26,10 +26,10 @@ namespace rfxcomMessages
    CChime::CChime(boost::shared_ptr<yApi::IYPluginApi> api,
                   unsigned int subType,
                   const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_signalStrength })
    {
-      m_rssi->set(0);
+      m_signalStrength->set(0);
 
       createSubType(static_cast<unsigned char>(subType));
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
@@ -41,8 +41,8 @@ namespace rfxcomMessages
    CChime::CChime(boost::shared_ptr<yApi::IYPluginApi> api,
                   const RBUF& rbuf,
                   size_t rbufSize)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_signalStrength })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -54,7 +54,7 @@ namespace rfxcomMessages
       createSubType(rbuf.CHIME.subtype);
       m_id = m_subTypeManager->idFromProtocol(rbuf.CHIME.id1, rbuf.CHIME.id2, rbuf.CHIME.sound);
       m_subTypeManager->setFromProtocolState(rbuf.CHIME.sound);
-      m_rssi->set(NormalizeRssiLevel(rbuf.CHIME.rssi));
+      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.CHIME.signalStrength));
 
       declare(api);
    }
@@ -117,7 +117,7 @@ namespace rfxcomMessages
       rbuf.CHIME.seqnbr = seqNumberProvider->next();
       m_subTypeManager->idToProtocol(m_id, rbuf.CHIME.id1, rbuf.CHIME.id2, rbuf.CHIME.sound);
       m_subTypeManager->toProtocolState(rbuf.CHIME.sound);
-      rbuf.CHIME.rssi = 0;
+      rbuf.CHIME.signalStrength = 0;
       rbuf.CHIME.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(CHIME));

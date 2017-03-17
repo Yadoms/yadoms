@@ -11,10 +11,10 @@ namespace rfxcomMessages
    CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYPluginApi> api,
                               const std::string& command,
                               const shared::CDataContainer& deviceDetails)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_signalStrength })
    {
-      m_rssi->set(0);
+      m_signalStrength->set(0);
 
       createSubType(deviceDetails.get<unsigned char>("subType"));
       m_id = deviceDetails.get<unsigned int>("id");
@@ -26,10 +26,10 @@ namespace rfxcomMessages
    CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYPluginApi> api,
                               unsigned int subType,
                               const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_signalStrength })
    {
-      m_rssi->set(0);
+      m_signalStrength->set(0);
 
       createSubType(static_cast<unsigned char>(subType));
 
@@ -42,8 +42,8 @@ namespace rfxcomMessages
    CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYPluginApi> api,
                               const RBUF& rbuf,
                               size_t rbufSize)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_signalStrength })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -55,7 +55,7 @@ namespace rfxcomMessages
       createSubType(rbuf.THERMOSTAT1.subtype);
       m_id = rbuf.THERMOSTAT1.id1 << 8 | rbuf.THERMOSTAT1.id2;
       m_subTypeManager->setFromProtocolState(rbuf);
-      m_rssi->set(NormalizeRssiLevel(rbuf.THERMOSTAT1.rssi));
+      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.THERMOSTAT1.signalStrength));
 
       declare(api);
    }
@@ -110,7 +110,7 @@ namespace rfxcomMessages
       rbuf.THERMOSTAT1.id1 = static_cast<unsigned char>(0xFF & (m_id >> 8));
       rbuf.THERMOSTAT1.id2 = static_cast<unsigned char>(0xFF & m_id);
       m_subTypeManager->toProtocolState(rbuf);
-      rbuf.THERMOSTAT1.rssi = 0;
+      rbuf.THERMOSTAT1.signalStrength = 0;
       rbuf.THERMOSTAT1.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(THERMOSTAT1));

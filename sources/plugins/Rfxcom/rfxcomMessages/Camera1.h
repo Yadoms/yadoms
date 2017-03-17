@@ -120,9 +120,9 @@ namespace rfxcomMessages
       boost::shared_ptr<yApi::historization::CCameraMove> m_camera;
 
       //--------------------------------------------------------------
-      /// \brief	The keyword associated with rssi
+      /// \brief	The keyword associated with signalStrength
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CRssi> m_rssi;
+      boost::shared_ptr<yApi::historization::CSignalStrength> m_signalStrength;
 
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances

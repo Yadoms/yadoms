@@ -59,7 +59,7 @@ int NormalizeBatteryLevel(unsigned char fromRfxcom)
    return (batteryLevel == 10 ? 0 : batteryLevel);  // 10% = empty ==> force it to 0%
 }
 
-int NormalizeRssiLevel(unsigned char fromRfxcom)
+int NormalizesignalStrengthLevel(unsigned char fromRfxcom)
 {
    return (fromRfxcom * 100 / 0x0F);
 }

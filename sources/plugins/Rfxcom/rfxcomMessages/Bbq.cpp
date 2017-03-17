@@ -13,8 +13,8 @@ namespace rfxcomMessages
       : m_foodTemperature(boost::make_shared<yApi::historization::CTemperature>("food")),
       m_bbqTemperature(boost::make_shared<yApi::historization::CTemperature>("bbq")),
       m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_foodTemperature , m_bbqTemperature , m_batteryLevel , m_rssi })
+      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_foodTemperature , m_bbqTemperature , m_batteryLevel , m_signalStrength })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -31,7 +31,7 @@ namespace rfxcomMessages
       m_foodTemperature->set(static_cast<double>((rbuf.BBQ.sensor1h << 8) | rbuf.BBQ.sensor1l));
       m_bbqTemperature->set(static_cast<double>((rbuf.BBQ.sensor2h << 8) | rbuf.BBQ.sensor2l));
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.BBQ.battery_level));
-      m_rssi->set(NormalizeRssiLevel(rbuf.BBQ.rssi));
+      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.BBQ.signalStrength));
 
       Init(api);
    }

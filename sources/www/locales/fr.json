@@ -987,6 +987,8 @@
     "units": {
       "noUnit": "",
       "ampere": "A",
+      "decibel": "dB",
+      "decibelMeter": "dBm",
       "degrees": "°",
       "degreesCelcius": "°C",
       "degreesFarenheit": "°F",

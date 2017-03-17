@@ -17,6 +17,8 @@ namespace shared
 
          const std::string CStandardUnits::NoUnits("data.units.noUnit");
          const std::string CStandardUnits::Ampere("data.units.ampere");
+         const std::string CStandardUnits::Decibel("data.units.decibel");
+         const std::string CStandardUnits::DecibelMeter("data.units.decibelMeter");
          const std::string CStandardUnits::Degrees("data.units.degrees");
          const std::string CStandardUnits::DegreesCelcius("data.units.degreesCelcius");
          const std::string CStandardUnits::DegreesFarenheit("data.units.degreesFarenheit");
@@ -68,7 +70,8 @@ namespace shared
          DECLARE_CAPACITY(CStandardCapacities::Pressure, "pressure", CStandardUnits::hectoPascal, EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Rain, "rain", CStandardUnits::Millimeter, EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::RainRate, "rainrate", CStandardUnits::MillimeterPerSecond, EKeywordDataType::kNumeric);
-         DECLARE_CAPACITY(CStandardCapacities::Rssi, "rssi", CStandardUnits::Percent, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Rssi, "rssi", CStandardUnits::DecibelMeter, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::SignalStrength, "signalstrength", CStandardUnits::Percent, EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Speed, "speed", CStandardUnits::MetersPerSecond, EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Switch, "switch", CStandardUnits::NoUnits, EKeywordDataType::kBool);
          DECLARE_CAPACITY(CStandardCapacities::Temperature, "temperature", CStandardUnits::DegreesCelcius, EKeywordDataType::kNumeric);

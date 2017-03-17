@@ -10,11 +10,11 @@ namespace rfxcomMessages
                               const std::string& command,
                               const shared::CDataContainer& deviceDetails)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_state , m_rssi })
+      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_state , m_signalStrength })
    {
       m_state->setCommand(command);
-      m_rssi->set(0);
+      m_signalStrength->set(0);
 
       m_subType = deviceDetails.get<unsigned char>("subType");
       m_id = deviceDetails.get<unsigned int>("id");
@@ -28,11 +28,11 @@ namespace rfxcomMessages
                               unsigned int subType,
                               const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_state , m_rssi })
+      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_state , m_signalStrength })
    {
       m_state->set(false);
-      m_rssi->set(0);
+      m_signalStrength->set(0);
 
       m_subType = static_cast<unsigned char>(subType);
       if (m_subType != sTypeHomeConfortTEL010)
@@ -49,8 +49,8 @@ namespace rfxcomMessages
                               const RBUF& rbuf,
                               size_t rbufSize)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_state , m_rssi })
+      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_state , m_signalStrength })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -64,7 +64,7 @@ namespace rfxcomMessages
       m_houseCode = rbuf.HOMECONFORT.housecode;
       m_unitCode = rbuf.HOMECONFORT.unitcode;
       m_state->set(fromProtocolState(rbuf.HOMECONFORT.cmnd));
-      m_rssi->set(NormalizeRssiLevel(rbuf.HOMECONFORT.rssi));
+      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.HOMECONFORT.signalStrength));
 
       Init(api);
    }
@@ -108,7 +108,7 @@ namespace rfxcomMessages
       rbuf.HOMECONFORT.housecode = m_houseCode;
       rbuf.HOMECONFORT.unitcode = m_unitCode;
       rbuf.HOMECONFORT.cmnd = toProtocolState(*m_state);
-      rbuf.HOMECONFORT.rssi = 0;
+      rbuf.HOMECONFORT.signalStrength = 0;
       rbuf.HOMECONFORT.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(HOMECONFORT));

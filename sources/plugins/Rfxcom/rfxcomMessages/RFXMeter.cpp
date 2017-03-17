@@ -12,8 +12,8 @@ namespace rfxcomMessages
                         const RBUF& rbuf,
                         size_t rbufSize)
       : m_counter(boost::make_shared<yApi::historization::CCounter>("counter")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_counter , m_rssi })
+      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_counter , m_signalStrength })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -28,7 +28,7 @@ namespace rfxcomMessages
 
       m_counter->set(rbuf.RFXMETER.count4 | (rbuf.RFXMETER.count3 << 8) | (rbuf.RFXMETER.count2 << 16) | (rbuf.RFXMETER.count1 << 24));
 
-      m_rssi->set(NormalizeRssiLevel(rbuf.RFXMETER.rssi));
+      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.RFXMETER.signalStrength));
 
       Init(api);
    }

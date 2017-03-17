@@ -12,8 +12,8 @@ namespace rfxcomMessages
                     size_t rbufSize)
       : m_weight(boost::make_shared<yApi::historization::CWeight>("weight")),
       m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_weight , m_batteryLevel , m_rssi })
+      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_weight , m_batteryLevel , m_signalStrength })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -29,7 +29,7 @@ namespace rfxcomMessages
       m_weight->set((rbuf.WEIGHT.weighthigh << 8 | rbuf.WEIGHT.weightlow) / 10.0);
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.WEIGHT.filler)); // In SDK specification battery_level is at filler location
-      m_rssi->set(NormalizeRssiLevel(rbuf.WEIGHT.rssi));
+      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.WEIGHT.signalStrength));
 
       Init(api);
    }

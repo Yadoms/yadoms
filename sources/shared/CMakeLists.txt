@@ -198,6 +198,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/RainRate.h
    shared/plugin/yPluginApi/historization/Rssi.cpp
    shared/plugin/yPluginApi/historization/Rssi.h
+   shared/plugin/yPluginApi/historization/SignalStrength.cpp
+   shared/plugin/yPluginApi/historization/SignalStrength.h
    shared/plugin/yPluginApi/historization/Speed.cpp
    shared/plugin/yPluginApi/historization/Speed.h
    shared/plugin/yPluginApi/historization/Switch.cpp

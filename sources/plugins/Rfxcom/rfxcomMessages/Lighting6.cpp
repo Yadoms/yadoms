@@ -11,11 +11,11 @@ namespace rfxcomMessages
                           const std::string& command,
                           const shared::CDataContainer& deviceDetails)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_state , m_rssi })
+      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_state , m_signalStrength })
    {
       m_state->setCommand(command);
-      m_rssi->set(0);
+      m_signalStrength->set(0);
 
       m_subType = deviceDetails.get<unsigned char>("subType");
       m_id = deviceDetails.get<unsigned short>("id");
@@ -29,11 +29,11 @@ namespace rfxcomMessages
                           unsigned int subType,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_state , m_rssi })
+      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_state , m_signalStrength })
    {
       m_state->set(false);
-      m_rssi->set(0);
+      m_signalStrength->set(0);
 
       m_subType = static_cast<unsigned char>(subType);
       if (m_subType != sTypeBlyss)
@@ -50,8 +50,8 @@ namespace rfxcomMessages
                           const RBUF& rbuf,
                           size_t rbufSize)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_state , m_rssi })
+      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_state , m_signalStrength })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -65,7 +65,7 @@ namespace rfxcomMessages
       m_groupCode = rbuf.LIGHTING6.groupcode;
       m_unitCode = rbuf.LIGHTING6.unitcode;
       m_state->set(fromProtocolState(rbuf.LIGHTING6.cmnd));
-      m_rssi->set(NormalizeRssiLevel(rbuf.LIGHTING6.rssi));
+      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.LIGHTING6.signalStrength));
 
       Init(api);
    }
@@ -110,7 +110,7 @@ namespace rfxcomMessages
       rbuf.LIGHTING6.cmnd = toProtocolState(*m_state);
       rbuf.LIGHTING6.cmndseqnbr = seqNumberProvider->last() % 4;
       rbuf.LIGHTING6.seqnbr2 = 0;
-      rbuf.LIGHTING6.rssi = 0;
+      rbuf.LIGHTING6.signalStrength = 0;
       rbuf.LIGHTING6.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(LIGHTING6));

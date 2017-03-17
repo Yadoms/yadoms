@@ -6,8 +6,11 @@ include("../YadomsPluginsCommon.cmake")
 ## Place here all the plugin source files
 #########################################
 set(SIGFOX_PLUGIN_SOURCES
+   ISigfoxConfiguration.h
    Sigfox.cpp
    Sigfox.h
+   SigfoxConfiguration.cpp
+   SigfoxConfiguration.h
    stdafx.cpp
    stdafx.h
    specificHistorizer/SNR.cpp

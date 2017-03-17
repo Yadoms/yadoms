@@ -25,6 +25,7 @@
 #include "Rain.h"
 #include "RainRate.h"
 #include "Rssi.h"
+#include "SignalStrength.h"
 #include "Speed.h"
 #include "Switch.h"
 #include "Temperature.h"

@@ -2,6 +2,29 @@
    "name": "Sigfox",
    "description": "Plugin permettant de recevoir des CALLBACK du site Sigfox. Ce plugin reçoit les data au format brut.",
    "configurationSchema":{
+      "advancedConfiguration": {
+         "type": "section",
+         "name": "Configuration avancée",
+         "description": "",
+         "content": {   
+             "rssiMax": {
+               "name": "Valeur maximale de rssi.",
+               "description": ""
+             },         
+             "rssiMin": {
+               "name": "Valeur minimale de rssi.",
+               "description": ""
+             },
+             "tensionMin": {
+               "name": "Tension minimale (en V)",
+               "description": ""
+             },
+             "tensionMax": {
+               "name": "Tension maximale (en V)",
+               "description": ""
+             }    
+         }
+      }   
    },
 	"customLabels": {
 		"pluginState": {

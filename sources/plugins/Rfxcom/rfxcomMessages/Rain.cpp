@@ -12,8 +12,8 @@ namespace rfxcomMessages
                 const RBUF& rbuf,
                 size_t rbufSize)
       : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_batteryLevel, m_rssi })
+      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_batteryLevel, m_signalStrength })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -48,7 +48,7 @@ namespace rfxcomMessages
       }
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.RAIN.battery_level));
-      m_rssi->set(NormalizeRssiLevel(rbuf.RAIN.rssi));
+      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.RAIN.signalStrength));
 
       Init(api);
    }

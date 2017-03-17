@@ -35,7 +35,7 @@ namespace rfxcomMessages
       const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const override;
       std::string idFromProtocol(const RBUF& rbuf) const override;
       char BatteryLevelFromProtocol(const RBUF& rbuf) override;
-      char RssiFromProtocol(const RBUF& rbuf) override;
+      char signalStrengthFromProtocol(const RBUF& rbuf) override;
       std::string getModel() const override;
       // [END] ICartelectronicSubtype implementation
 

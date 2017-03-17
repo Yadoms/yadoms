@@ -18,11 +18,11 @@ namespace rfxcomMessages
                           const std::string& command,
                           const shared::CDataContainer& deviceDetails)
       : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_batteryLevel, m_rssi})
+        m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+        m_keywords({m_batteryLevel, m_signalStrength})
    {
       m_batteryLevel->set(100);
-      m_rssi->set(0);
+      m_signalStrength->set(0);
 
       createSubType(deviceDetails.get<unsigned char>("subType"));
       m_id = deviceDetails.get<unsigned int>("id");
@@ -35,11 +35,11 @@ namespace rfxcomMessages
                           unsigned int subType,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_batteryLevel, m_rssi})
+        m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+        m_keywords({m_batteryLevel, m_signalStrength})
    {
       m_batteryLevel->set(100);
-      m_rssi->set(0);
+      m_signalStrength->set(0);
 
       createSubType(static_cast<unsigned char>(subType));
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
@@ -52,8 +52,8 @@ namespace rfxcomMessages
                           const RBUF& rbuf,
                           size_t rbufSize)
       : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-        m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-        m_keywords({m_batteryLevel, m_rssi})
+        m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+        m_keywords({m_batteryLevel, m_signalStrength})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -66,7 +66,7 @@ namespace rfxcomMessages
       m_id = m_subTypeManager->idFromProtocol(rbuf);
       m_subTypeManager->setFromProtocolState(rbuf.SECURITY1.status);
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.SECURITY1.battery_level));
-      m_rssi->set(NormalizeRssiLevel(rbuf.SECURITY1.rssi));
+      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.SECURITY1.signalStrength));
 
       declare(api);
    }
@@ -141,7 +141,7 @@ namespace rfxcomMessages
       rbuf.SECURITY1.id1 = static_cast<unsigned char>((m_id & 0xFF00) >> 8);
       rbuf.SECURITY1.id2 = static_cast<unsigned char>(m_id & 0xFF);
       rbuf.SECURITY1.status = m_subTypeManager->toProtocolState();
-      rbuf.SECURITY1.rssi = 0;
+      rbuf.SECURITY1.signalStrength = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(SECURITY1));
    }

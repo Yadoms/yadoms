@@ -15,10 +15,11 @@ CSigfox::CSigfox() :
    m_messageKeyword(boost::make_shared<yApi::historization::CText>("message",
                                                                    yApi::EKeywordAccessMode::kGetSet)),
    m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+   m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
    m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
    m_snr(boost::make_shared<specificHistorizers::CSNR>("snr")),
-   m_keywordsData({ m_messageKeyword, m_rssi, m_snr }),
-   m_keywordsService({ m_rssi, m_batteryLevel, m_snr })
+   m_keywordsData({ m_messageKeyword, m_rssi, m_snr, m_signalStrength }),
+   m_keywordsService({ m_rssi, m_batteryLevel, m_snr, m_signalStrength })
 {}
 
 CSigfox::~CSigfox()
@@ -36,6 +37,8 @@ enum
 void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    YADOMS_LOG(information) << "Sigfox is starting...";
+
+   m_configuration.initializeWith(api->getConfiguration());
       
    try {
 
@@ -61,6 +64,19 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             api->setPluginState(yApi::historization::EPluginState::kStopped);
             return;
          }
+      case yApi::IYPluginApi::kEventUpdateConfiguration:
+      {
+         try {
+            api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+            api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
+         }
+         catch (...)
+         {
+            YADOMS_LOG(information) << "Wrong configuration update";
+         }
+         break;
+      }
       case yApi::IYPluginApi::kEventExtraQuery:
       {
          // Command was received from Yadoms
@@ -129,6 +145,11 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
          m_rssi->set(newMessage.get<double>("rssi"));
          m_snr->set(newMessage.get<double>("snr"));
 
+         // For the signalStrength, we do a rule to normalize rssi to %.
+         m_signalStrength->set(-(m_rssi->get() - m_configuration.getRssiMax()) * 100 / (m_configuration.getRssiMin() - m_configuration.getRssiMax()));
+
+         // the rule to normalize the battery level
+
          api->historizeData(deviceName, m_keywordsData);
          YADOMS_LOG(information) << "historize a data message for " << deviceName;
       }
@@ -136,10 +157,15 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
       if (type.compare("service") == 0)
       {
          m_rssi->set(newMessage.get<double>("rssi"));
-
-         // Receive a voltage
-         m_batteryLevel->set(newMessage.get<double>("battery"));
          m_snr->set(newMessage.get<double>("snr"));
+
+         // For the signalStrength, we do a rule to normalize rssi to %.
+         m_signalStrength->set((m_rssi->get() - m_configuration.getRssiMax()) * 100 / (m_configuration.getRssiMax() - m_configuration.getRssiMin()));
+
+         // the rule to normalize the battery level
+         // Receive a voltage
+         auto m_voltage = newMessage.get<double>("battery");
+         m_batteryLevel->set( (m_voltage - m_configuration.getTensionMin()) * 100 / (m_configuration.getTensionMax() - m_configuration.getTensionMin()) );
 
          api->historizeData(deviceName, m_keywordsData);
          YADOMS_LOG(information) << "historize a service message for " << deviceName;
@@ -149,6 +175,16 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
    {
       YADOMS_LOG(error) << "Error parsing the received message : " << e.what();
    }
+}
+
+void CSigfox::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData)
+{
+   // Configuration was updated
+   YADOMS_LOG(information) << "Update configuration...";
+   BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+
+   // Update configuration
+   m_configuration.initializeWith(newConfigurationData);
 }
 
 void CSigfox::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceName) const

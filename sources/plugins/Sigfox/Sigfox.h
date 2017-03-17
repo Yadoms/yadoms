@@ -2,6 +2,7 @@
 #include <plugin_cpp_api/IPlugin.h>
 #include <shared/event/EventTimer.h>
 #include "specificHistorizer/SNR.h"
+#include "SigfoxConfiguration.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -34,6 +35,14 @@ public:
    void processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                                const shared::CDataContainer& newMessage) const;
 
+   //--------------------------------------------------------------
+   /// \brief Update the configuration of the plugin after a change
+   /// \param[in] api                   pointer to the API
+   /// \param[in] newConfigurationData  The new configuration of the module
+   //--------------------------------------------------------------
+   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                              const shared::CDataContainer& newConfigurationData);
+
 private:
 
    //--------------------------------------------------------------
@@ -44,9 +53,9 @@ private:
    void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceName) const;
 
    //--------------------------------------------------------------
-   /// \brief Name of the plugin
+   /// \brief Configuration of the device
    //--------------------------------------------------------------
-   //std::string m_deviceName;
+   CSigfoxConfiguration m_configuration;
 
    //--------------------------------------------------------------
    /// \brief developer mode for logs
@@ -62,6 +71,7 @@ private:
    /// \brief	The keyword associated with rssi
    //--------------------------------------------------------------
    boost::shared_ptr<yApi::historization::CRssi> m_rssi;
+   boost::shared_ptr<yApi::historization::CSignalStrength> m_signalStrength;
 
    //--------------------------------------------------------------
    /// \brief	The battery level (percent)

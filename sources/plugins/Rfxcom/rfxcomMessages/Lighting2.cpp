@@ -10,10 +10,10 @@ namespace rfxcomMessages
    CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api,
                           const std::string& command,
                           const shared::CDataContainer& deviceDetails)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_signalStrength })
    {
-      m_rssi->set(0);
+      m_signalStrength->set(0);
 
       createSubType(deviceDetails.get<unsigned char>("subType"));
       m_houseCode = deviceDetails.get<unsigned char>("houseCode");
@@ -27,10 +27,10 @@ namespace rfxcomMessages
    CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api,
                           unsigned int subType,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_signalStrength })
    {
-      m_rssi->set(0);
+      m_signalStrength->set(0);
 
       createSubType(static_cast<unsigned char>(subType));
 
@@ -45,8 +45,8 @@ namespace rfxcomMessages
    CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api,
                           const RBUF& rbuf,
                           size_t rbufSize)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_signalStrength })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -59,7 +59,7 @@ namespace rfxcomMessages
       m_subTypeManager->idFromProtocol(rbuf.LIGHTING2.id1, rbuf.LIGHTING2.id2, rbuf.LIGHTING2.id3, rbuf.LIGHTING2.id4, m_houseCode, m_id);
       m_subTypeManager->setFromProtocolState(rbuf.LIGHTING2.cmnd, rbuf.LIGHTING2.level);
       m_unitCode = rbuf.LIGHTING2.unitcode;
-      m_rssi->set(NormalizeRssiLevel(rbuf.LIGHTING2.rssi));
+      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.LIGHTING2.signalStrength));
 
       declare(api);
    }
@@ -120,7 +120,7 @@ namespace rfxcomMessages
       m_subTypeManager->idToProtocol(m_houseCode, m_id, rbuf.LIGHTING2.id1, rbuf.LIGHTING2.id2, rbuf.LIGHTING2.id3, rbuf.LIGHTING2.id4);
       m_subTypeManager->toProtocolState(rbuf.LIGHTING2.cmnd, rbuf.LIGHTING2.level);
       rbuf.LIGHTING2.unitcode = m_unitCode;
-      rbuf.LIGHTING2.rssi = 0;
+      rbuf.LIGHTING2.signalStrength = 0;
       rbuf.LIGHTING2.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(LIGHTING2));

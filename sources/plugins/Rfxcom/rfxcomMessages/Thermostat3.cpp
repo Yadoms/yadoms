@@ -13,10 +13,10 @@ namespace rfxcomMessages
                               const std::string& keyword,
                               const std::string& command,
                               const shared::CDataContainer& deviceDetails)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_signalStrength })
    {
-      m_rssi->set(0);
+      m_signalStrength->set(0);
 
       m_subType = deviceDetails.get<unsigned char>("subType");
       m_unitCode = deviceDetails.get<unsigned int>("unitCode");
@@ -28,10 +28,10 @@ namespace rfxcomMessages
    CThermostat3::CThermostat3(boost::shared_ptr<yApi::IYPluginApi> api,
                               unsigned int subType,
                               const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_signalStrength })
    {
-      m_rssi->set(0);
+      m_signalStrength->set(0);
 
       m_subType = static_cast<unsigned char>(subType);
 
@@ -44,8 +44,8 @@ namespace rfxcomMessages
    CThermostat3::CThermostat3(boost::shared_ptr<yApi::IYPluginApi> api,
                               const RBUF& rbuf,
                               size_t rbufSize)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_signalStrength })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -57,7 +57,7 @@ namespace rfxcomMessages
       m_subType = rbuf.THERMOSTAT3.subtype;
       m_unitCode = rbuf.THERMOSTAT3.unitcode1 << 16 | rbuf.THERMOSTAT3.unitcode2 << 8 | rbuf.THERMOSTAT3.unitcode3;
       m_subTypeManager->setFromProtocolState(rbuf.THERMOSTAT3.cmnd);
-      m_rssi->set(NormalizeRssiLevel(rbuf.THERMOSTAT3.rssi));
+      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.THERMOSTAT3.signalStrength));
 
       Init(api);
    }
@@ -110,7 +110,7 @@ namespace rfxcomMessages
       rbuf.THERMOSTAT3.unitcode2 = static_cast<unsigned char>(0xFF & (m_unitCode >> 8));
       rbuf.THERMOSTAT3.unitcode3 = static_cast<unsigned char>(0xFF & m_unitCode);
       m_subTypeManager->toProtocolState(rbuf.THERMOSTAT3.cmnd);
-      rbuf.THERMOSTAT3.rssi = 0;
+      rbuf.THERMOSTAT3.signalStrength = 0;
       rbuf.THERMOSTAT3.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(THERMOSTAT3));

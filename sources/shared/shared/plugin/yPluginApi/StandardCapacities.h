@@ -45,6 +45,7 @@ namespace shared
             static const CStandardCapacity& Rain();             // rain              | mm                    | Rain counter
             static const CStandardCapacity& RainRate();         // rain rate         | mm/s                  | Rain rate
             static const CStandardCapacity& Rssi();             // rssi              | percent               | Rssi measure capacity
+            static const CStandardCapacity& SignalStrength();   // signal strength   | percent               | signal strength measure capacity
             static const CStandardCapacity& Speed();            // speed             | m/s                   | A speed value, in m/s
             static const CStandardCapacity& Switch();           // switch            | -                     | A on/off value
             static const CStandardCapacity& Temperature();      // temperature       | degrees Celcius       | Temperature

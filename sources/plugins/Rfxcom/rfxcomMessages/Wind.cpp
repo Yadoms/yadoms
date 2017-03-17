@@ -13,8 +13,8 @@ namespace rfxcomMessages
       : m_windDirection(boost::make_shared<yApi::historization::CDirection>("windDirection")),
       m_windMaxSpeed(boost::make_shared<yApi::historization::CSpeed>("windMaxSpeed")),
       m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_windDirection , m_windMaxSpeed , m_batteryLevel , m_rssi })
+      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+      m_keywords({ m_windDirection , m_windMaxSpeed , m_batteryLevel , m_signalStrength })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -51,7 +51,7 @@ namespace rfxcomMessages
       }
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.WIND.battery_level));
-      m_rssi->set(NormalizeRssiLevel(rbuf.WIND.rssi));
+      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.WIND.signalStrength));
 
       Init(api);
    }

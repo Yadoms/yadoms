@@ -91,9 +91,9 @@ namespace rfxcomMessages
       boost::shared_ptr<yApi::historization::CBatteryLevel> m_batteryLevel;
 
       //--------------------------------------------------------------
-      /// \brief	The RSSI (percent)
+      /// \brief	The signalStrength (percent)
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CRssi> m_rssi;
+      boost::shared_ptr<yApi::historization::CSignalStrength> m_signalStrength;
 
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances
