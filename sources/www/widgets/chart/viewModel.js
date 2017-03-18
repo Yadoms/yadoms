@@ -481,7 +481,6 @@ widgetViewModelCtor =
                                        $.each(data.data, function (index, value) {
                                            lastDate = d;
                                            d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
-                                           //d = DateTimeFormatter.dateToIsoDate(value.date)._d.getTime();
 
                                            var v;
                                            if (!isNullOrUndefined(value.key)) {
@@ -519,7 +518,7 @@ widgetViewModelCtor =
                                            var vplot;
                                            
                                            if (!isNullOrUndefined(value[self.periodValueType[self.seriesUuid[index]]])) {
-                                               // lecture selon le type souhaité (avg/min/max)
+                                               // read the computed desired value (avg/min/max)
                                                vplot = parseFloat(value[self.periodValueType[self.seriesUuid[index]]]);
                                                vMin = parseFloat(value.min);
                                                vMax = parseFloat(value.max);
@@ -874,30 +873,32 @@ widgetViewModelCtor =
                RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + "/" + prefix + "/" + dateFrom + "/" + dateTo)
                   .done(function (data) {
                       try {
-                          if (data.data[0] != undefined) {
+                          if (data.data[data.data.length-1] != undefined) {
                               self.chart.hideLoading(); // If a text was displayed before
 							  
                               var serie = self.chart.get(self.seriesUuid[index]);
-                              var serieRange = self.chart.get('range_' + self.seriesUuid[index]);							  
+                              var serieRange = self.chart.get('range_' + self.seriesUuid[index]);
+                              var registerDate = DateTimeFormatter.isoDateToDate(data.data[data.data.length-1].date)._d.getTime().valueOf();
                               
                               if (self.differentialDisplay)
                               {
                                   if (!isNullOrUndefined(self.chartLastValue[self.seriesUuid[index]]))
                                   {
-                                     serie.addPoint([DateTimeFormatter.isoDateToDate(data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data[0].avg)-self.chartLastValue[self.seriesUuid[index]]], 
+                                     serie.addPoint([registerDate, parseFloat(data.data[data.data.length-1][self.periodValueType[self.seriesUuid[index]]])-self.chartLastValue[self.seriesUuid[index]]], 
                                                     true, 
                                                     false, 
                                                     true);
-                                     self.chartLastValue[self.seriesUuid[index]] = parseFloat(data.data[0].avg);
                                   }
+                                  
+                                  self.chartLastValue[self.seriesUuid[index]] = parseFloat(data.data[data.data.length-1][self.periodValueType[self.seriesUuid[index]]]);
                               }
                               else                              
-                                 serie.addPoint([DateTimeFormatter.isoDateToDate(data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data[0].avg)], true, false, true);
+                                 serie.addPoint([registerDate, parseFloat(data.data[data.data.length-1][self.periodValueType[self.seriesUuid[index]]])], true, false, true);
 						      
                               //Add also for ranges if any
                               if (serieRange && !self.differentialDisplay)
                               {                           
-                                 serieRange.addPoint([DateTimeFormatter.isoDateToDate(data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data[0].min), parseFloat(data.data[0].max)], true, false, true);
+                                 serieRange.addPoint([registerDate, parseFloat(data.data[data.data.length-1].min), parseFloat(data.data[data.data.length-1].max)], true, false, true);
                               }
                           }
                       } catch (err) {
@@ -960,24 +961,24 @@ widgetViewModelCtor =
 
                                    case "WEEK":
                                        if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 2))
-                                           self.DisplaySummary(index, 1, device, "weeks", "hour");
+                                           self.DisplaySummary(index, 1, device, "hours", "hour");
 
                                        break;
                                    case "MONTH":
                                        if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
-                                           self.DisplaySummary(index, 1, device, "months", "day");
+                                           self.DisplaySummary(index, 1, device, "days", "day");
 
                                        break;
                                    case "HALF_YEAR":
 
                                        if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
-                                           self.DisplaySummary(index, 6, device, "months", "day");
+                                           self.DisplaySummary(index, 6, device, "days", "day");
 
                                        break;
                                    case "YEAR":
 
                                        if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
-                                           self.DisplaySummary(index, 1, device, "years", "day");
+                                           self.DisplaySummary(index, 1, device, "days", "day");
 
                                        break;
                                    default:
