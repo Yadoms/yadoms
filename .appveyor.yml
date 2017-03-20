@@ -93,7 +93,7 @@ before_build:
   
   
 build:
-  parallel: true                  # enable MSBuild parallel builds
+  parallel: false                  # enable MSBuild parallel builds
   project: projects/yadoms.sln    # path to Visual Studio solution or project
 
   # MSBuild verbosity level
