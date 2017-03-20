@@ -32,6 +32,10 @@ cache:
 
 # scripts that run after cloning repository
 install:
+  # Remove not wanted PostgreSQL pre-installed versions from the Appveyor VM
+  - ps: $uninstall64 = gci "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" | foreach { gp $_.PSPath } | ? { $_ -match "PostgreSQL" } | select UninstallString
+  - ps: foreach ( $uninstallString in $uninstall64.UninstallString ) { echo "Uninstall $uninstallString..."; start-process $uninstallString "--mode unattended" -Wait }
+  # Download extra libs
   - ps: if (!(Test-Path 'extra_libs')) { mkdir 'extra_libs' }
   - ps: pushd extra_libs
   # - ps: if (!(Test-Path 'boost_1_61_0')) { Invoke-WebRequest http://yadoms.com/appveyor_build/boost_1_61_0-build.7z -OutFile boost.7z; 7z x boost.7z -bso0 }
