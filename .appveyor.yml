@@ -36,15 +36,18 @@ install:
   - ps: ls "C:\Program Files\PostgreSQL\9.3"
   - ps: |
      $uninstall64 = gci "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" | foreach { gp $_.PSPath } | ? { $_ -match "PostgreSQL" } | select UninstallString
+     echo $uninstall64
      foreach ( $uninstallString in $uninstall64.UninstallString ) {
         if (Test-Path "$uninstallString") {
-            echo "Uninstall $uninstallString..."; start-process "$uninstallString" "--mode unattended" -Wait
+            echo "Uninstall $uninstallString..."
+            start-process "$uninstallString" "--mode unattended" -Wait
         } else {
             $alternativeUninstallString = "$uninstallString" -replace "-postgis-", "-postgis-bundle-"
             if (Test-Path "$alternativeUninstallString") {
-                echo "Uninstall $uninstallString..."; start-process "$uninstallString" "--mode unattended" -Wait
+                echo "Uninstall $uninstallString..."
+                start-process "$uninstallString" "--mode unattended" -Wait
             } else {
-                echo "Fail to uninstall"
+                echo "Fail to uninstall $uninstallString"
             }
         }
      }
