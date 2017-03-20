@@ -295,6 +295,14 @@ namespace plugin_cpp_api
                                                                                                               answer->set_success(false);
                                                                                                               answer->set_result(r);
                                                                                                               send(ans);
+                                                                                                           },
+                                                                                                           [&](const float progression, const std::string& msg)
+                                                                                                           {
+                                                                                                              plugin_IPC::toYadoms::msg ans;
+                                                                                                              auto answer = ans.mutable_extraqueryprogress();
+                                                                                                              answer->set_progress(progression);
+                                                                                                              answer->set_message(msg);
+                                                                                                              send(ans);
                                                                                                            });
       m_pluginEventHandler.postEvent(kEventExtraQuery, command);
    }

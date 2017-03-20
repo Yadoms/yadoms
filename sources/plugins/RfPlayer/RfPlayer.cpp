@@ -109,7 +109,12 @@ void CRfPlayer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
                   std::string firmwareContent = shared::encryption::CBase64::decode(base64firmware);
 
-                  YADOMS_LOG(information) << "FirmwareUpdate: content =" << firmwareContent;
+                  for (int i = 0; i < 100; ++i)
+                  {
+                     extraQuery->reportProgress(i*1.0f, "firmware.updating");
+                     boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+                  }
+                  //YADOMS_LOG(information) << "FirmwareUpdate: content =" << firmwareContent;
 
                   //m_messageHandler->send(firmwareContent);
                }

@@ -70,11 +70,13 @@ void CSupervisor::run()
       auto location = boost::make_shared<location::CLocation>(dal->getConfigurationManager(),
                                                               boost::make_shared<location::CIpApiAutoLocation>());
 
+      // Create Task manager
+      auto taskManager(boost::make_shared<task::CScheduler>(dal->getEventLogger()));
+
       // Create the Plugin manager
-      auto pluginManager(boost::make_shared<pluginSystem::CManager>(m_pathProvider, pDataProvider, dal, location));
+      auto pluginManager(boost::make_shared<pluginSystem::CManager>(m_pathProvider, pDataProvider, dal, location, taskManager));
 
       // Start Task manager
-      auto taskManager(boost::make_shared<task::CScheduler>(dal->getEventLogger()));
       taskManager->start();
 
       // Create the update manager

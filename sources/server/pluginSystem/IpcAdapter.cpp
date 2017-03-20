@@ -723,8 +723,20 @@ namespace pluginSystem
               },
               [&](const plugin_IPC::toYadoms::msg& ans) -> void
               {
-                 success = ans.extraqueryanswer().success();
-                 result = ans.extraqueryanswer().result();
+                 if (ans.has_extraqueryanswer())
+                 {
+                    success = ans.extraqueryanswer().success();
+                    result = ans.extraqueryanswer().result();
+
+                    if (success)
+                       extraQuery->sendSuccess(shared::CDataContainer(result));
+                    else
+                       extraQuery->sendError(result);
+                 }
+                 else if(ans.has_extraqueryprogress())
+                 {
+                     extraQuery->reportProgress(ans.extraqueryprogress().progress(), ans.extraqueryprogress().message());
+                 }
               });
       }
       catch (std::exception& e)
@@ -732,10 +744,7 @@ namespace pluginSystem
          extraQuery->sendError((boost::format("Plugin doesn't answer to extra query : %1%") % e.what()).str());
       }
 
-      if (success)
-         extraQuery->sendSuccess(shared::CDataContainer(result));
-      else
-         extraQuery->sendError(result);
+
    }
 
    void CIpcAdapter::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request)

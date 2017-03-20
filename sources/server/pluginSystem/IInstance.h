@@ -68,8 +68,8 @@ namespace pluginSystem
       virtual void postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request) = 0;
 
       //--------------------------------------------------------------
-      /// \brief			            Post a device command to the plugin
-      /// \param  information       Device command
+      /// \brief			            Post a device command extra query to instance
+      /// \param  extraQuery        The extra query
       //--------------------------------------------------------------
       virtual void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery) = 0;
 
