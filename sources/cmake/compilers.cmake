@@ -1,7 +1,6 @@
 # Compilers/IDE specific configurations
 #
 message("System Name = ${CMAKE_SYSTEM_NAME}")
-message("Yadoms Platform = ${CMAKE_YADOMS_PLATFORM}")
 
 if(MSVC)
 
@@ -63,7 +62,22 @@ endif()
 if(CMAKE_COMPILER_IS_GNUCXX)
 	add_definitions("-Wall")
 	add_definitions("-fpermissive")
-	add_definitions("-std=c++0x")
+
+   #Manage c++11 (remove warnings and allow using precompiled header with cotire and g++)
+   include(CheckCXXCompilerFlag)
+   CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+   CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+   if(COMPILER_SUPPORTS_CXX11)
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+   elseif(COMPILER_SUPPORTS_CXX0X)
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+   else()
+      message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+   endif()
+
+	#optimize binaries in release mode
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
+	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -s")
 
 	#warning: comparison of unsigned expression < 0 is always false (from boost)
 	add_definitions("-Wno-type-limits")

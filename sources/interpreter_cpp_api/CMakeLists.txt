@@ -18,7 +18,6 @@ set(interpreter_cpp_api_SOURCES
    Information.cpp
    LoadScriptContentRequest.h
    LoadScriptContentRequest.cpp
-   AvalaibleRequest.cpp
    LogConfiguration.h
    LogConfiguration.cpp
    SaveScriptContentRequest.h
@@ -41,13 +40,6 @@ set(interpreter_cpp_api_SOURCES
 
 add_library(interpreter_cpp_api STATIC ${interpreter_cpp_api_SOURCES})
 
-if(COTIRE_USE)
-	#nothing to do
-else()
-	add_precompiled_header(interpreter_cpp_api stdafx.h)
-endif()
-
-
 #define the list of all include dirs
 set(interpreter_cpp_api_ALL_INCLUDE_DIRS
    ${SHARED_INCL_DIR}
@@ -68,6 +60,27 @@ target_link_libraries(interpreter_cpp_api
    ${interpreter_IPC_LIBRARY}
    )
 
+##################################################################################################
+## COTIRE
+##################################################################################################
+if(COTIRE_USE)
+	set_target_properties(interpreter_IPC PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
+	
+	if(COTIRE_USE_UNITY)
+		set_target_properties(interpreter_IPC PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
+	else()
+		set_target_properties(interpreter_IPC PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
+	endif()
+
+   
+	cotire(interpreter_cpp_api)
+	if(COTIRE_USE_UNITY)
+		target_link_libraries(interpreter_cpp_api_unity yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS} ${interpreter_IPC_LIBRARY}_unity)
+		set_property( TARGET interpreter_cpp_api_unity PROPERTY INCLUDE_DIRECTORIES ${interpreter_cpp_api_ALL_INCLUDE_DIRS})
+	endif()	
+else()
+	add_precompiled_header(interpreter_cpp_api stdafx.h)
+endif()
 
 IF(MSVC OR XCODE)
    SET_PROPERTY(TARGET interpreter_cpp_api PROPERTY FOLDER "interpreter_cpp_api")

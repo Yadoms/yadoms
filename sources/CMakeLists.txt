@@ -183,6 +183,31 @@ ENDIF()
 ###############################################
 set (PROTOBUF_SRC_ROOT_FOLDER ${PROTOBUF_ROOT})
 set (Protobuf_USE_STATIC_LIBS ON)
+
+#Helper (FindProtoBuf.cmake allow defingin all variable before finding it)
+#In case protbuf has been installed in a custom directory (${PROTOBUF_ROOT}) 
+#then predefine all files and path (make it works with old cmake <3.9)
+if(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
+   if(NOT PROTOBUF_INCLUDE_DIR)
+      set(PROTOBUF_INCLUDE_DIR "${PROTOBUF_ROOT}/include")
+   endif(NOT PROTOBUF_INCLUDE_DIR)
+   if(NOT PROTOBUF_LIBRARY)
+      set(PROTOBUF_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf.a")
+   endif(NOT PROTOBUF_LIBRARY)
+   if(NOT PROTOBUF_LIBRARY_DEBUG)
+      set(PROTOBUF_LIBRARY_DEBUG "${PROTOBUF_ROOT}/lib/libprotobuf.a")
+   endif(NOT PROTOBUF_LIBRARY_DEBUG)
+   if(NOT PROTOBUF_LITE_LIBRARY)
+      set(PROTOBUF_LITE_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf-lite.a")
+   endif(NOT PROTOBUF_LITE_LIBRARY)
+   if(NOT PROTOBUF_LITE_LIBRARY_DEBUG)
+      set(PROTOBUF_LITE_LIBRARY_DEBUG "${PROTOBUF_ROOT}/lib/libprotobuf-lite.a")
+   endif(NOT PROTOBUF_LITE_LIBRARY_DEBUG)
+   if(NOT PROTOBUF_PROTOC_EXECUTABLE)
+      set(PROTOBUF_PROTOC_EXECUTABLE "${PROTOBUF_ROOT}/bin/protoc")
+   endif(NOT PROTOBUF_PROTOC_EXECUTABLE)
+endif(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
+
 find_package(Protobuf 3.0.0 REQUIRED)
 
 if(NOT ${PROTOBUF_FOUND})
@@ -712,6 +737,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/versioning/Version_2_0_0.cpp
 	server/database/common/versioning/Version_3_0_0.h
 	server/database/common/versioning/Version_3_0_0.cpp
+	server/database/common/versioning/Version_3_0_1.h
+	server/database/common/versioning/Version_3_0_1.cpp
 	server/database/common/versioning/VersionUpgraderFactory.h
 	server/database/common/versioning/VersionUpgraderFactory.cpp
 	server/database/common/versioning/VersionException.h
@@ -956,6 +983,27 @@ set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 ##################################################################################################
 target_link_libraries(yadoms yadoms-shared plugin_IPC interpreter_IPC script_IPC ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
 
+                       
+##################################################################################################
+## COTIRE
+##################################################################################################
+if(COTIRE_USE)
+	set_target_properties(yadoms PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "server/stdafx.h")
+	
+	if(COTIRE_USE_UNITY)
+		set_target_properties(yadoms PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
+	else()
+		set_target_properties(yadoms PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
+	endif()
+	
+	cotire(yadoms)
+	
+	if(COTIRE_USE_UNITY)
+		set_property( TARGET yadoms_unity PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
+	endif()	
+endif()
+      
+      
 ##################################################################################################
 ## Manifest
 ## Allow Windows10 detection ability by Poco
@@ -975,6 +1023,16 @@ if(WIN32)
           COMMAND "mt.exe" -manifest \"${CMAKE_BINARY_DIR}\\yadoms.exe.manifest\" -outputresource:"$(TargetDir)$(TargetFileName)"\;\#1
           COMMENT "Adding manifest..." 
       )
+      
+   if(COTIRE_USE)   
+      if(COTIRE_USE_UNITY)
+         add_custom_command(TARGET yadoms_unity POST_BUILD
+             COMMAND "mt.exe" -manifest \"${CMAKE_BINARY_DIR}\\yadoms.exe.manifest\" -outputresource:"$(TargetDir)$(TargetFileName)"\;\#1
+             COMMENT "Adding manifest..." 
+         )
+      endif(COTIRE_USE_UNITY)
+   endif(COTIRE_USE)
+      
    endif(MSVC)
 endif(WIN32)
 
@@ -987,6 +1045,14 @@ FOREACH (PocoNetSSLDepends ${PocoNetSSLDepends})
    add_custom_command(TARGET yadoms POST_BUILD
                       COMMAND ${CMAKE_COMMAND} -E copy_if_different
                           ${PocoNetSSLDepends} $<TARGET_FILE_DIR:yadoms>/)
+                          
+  if(COTIRE_USE)   
+     if(COTIRE_USE_UNITY)
+        add_custom_command(TARGET yadoms_unity POST_BUILD
+                           COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                           ${PocoNetSSLDepends} $<TARGET_FILE_DIR:yadoms_unity>/)
+     endif(COTIRE_USE_UNITY)
+  endif(COTIRE_USE)                          
 ENDFOREACH(PocoNetSSLDepends)
 
 #copy PostgreSql depends
@@ -994,6 +1060,15 @@ FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
    add_custom_command(TARGET yadoms POST_BUILD
                       COMMAND ${CMAKE_COMMAND} -E copy_if_different
                           ${PostgreSqlDepend} $<TARGET_FILE_DIR:yadoms>/)
+
+  if(COTIRE_USE)   
+     if(COTIRE_USE_UNITY)
+        add_custom_command(TARGET yadoms_unity POST_BUILD
+                           COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                               ${PostgreSqlDepend} $<TARGET_FILE_DIR:yadoms_unity>/)
+     endif(COTIRE_USE_UNITY)
+  endif(COTIRE_USE)                          
+                          
 ENDFOREACH(PostgreSqlDepend)
 
 
@@ -1002,27 +1077,14 @@ add_custom_command(TARGET yadoms POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
                    ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
 		
+if(COTIRE_USE)   
+   if(COTIRE_USE_UNITY)
+      add_custom_command(TARGET yadoms_unity POST_BUILD
+                         COMMAND ${CMAKE_COMMAND} -E copy_directory
+                         ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms_unity>/www/)
+   endif(COTIRE_USE_UNITY)
+endif(COTIRE_USE)                          
 
-##################################################################################################
-## COTIRE
-##################################################################################################
-if(COTIRE_USE)
-	set_target_properties(yadoms PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "server/stdafx.h")
-	
-	if(COTIRE_USE_UNITY)
-		set_target_properties(yadoms PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
-	else()
-		set_target_properties(yadoms PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
-	endif()
-	
-	cotire(yadoms)
-	
-	if(COTIRE_USE_UNITY)
-		target_link_libraries(yadoms_unity yadoms-shared_unity ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
-		set_property( TARGET yadoms_unity PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
-	endif()	
-endif()
-      
 ##################################################################################################
 ## CPACK
 ##################################################################################################

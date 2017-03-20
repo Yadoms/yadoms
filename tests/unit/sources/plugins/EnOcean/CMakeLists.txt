@@ -8,6 +8,7 @@ IF(NOT DISABLE_TEST_PLUGIN_ENOCEAN)
    
    SET(YADOMS_SOURCES
       plugins/EnOcean/message/types.h
+      plugins/EnOcean/message/types.cpp
       plugins/EnOcean/message/DongleVersionResponseReceivedMessage.h
       plugins/EnOcean/message/DongleVersionResponseReceivedMessage.cpp
       plugins/EnOcean/message/ResponseReceivedMessage.h
@@ -22,7 +23,6 @@ IF(NOT DISABLE_TEST_PLUGIN_ENOCEAN)
       plugins/EnOcean/message/Crc8.cpp
       plugins/EnOcean/MessageHandler.h
       plugins/EnOcean/MessageHandler.cpp
-      plugins/EnOcean/profiles/generated-eep.h
       plugins/EnOcean/ProfileHelper.h
       plugins/EnOcean/ProfileHelper.cpp
       plugins/EnOcean/ReceiveBufferHandler.h

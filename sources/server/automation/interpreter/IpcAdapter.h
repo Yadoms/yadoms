@@ -4,6 +4,7 @@
 #include <interpreter_IPC/yadomsToInterpreter.pb.h>
 #include <interpreter_IPC/interpreterToYadoms.pb.h>
 #include <shared/script/yInterpreterApi/IYInterpreterApi.h>
+#include <shared/communication/IMessageCutter.h>
 
 namespace automation
 {
@@ -115,9 +116,9 @@ namespace automation
          mutable boost::recursive_mutex m_sendMutex;
 
          //-----------------------------------------------------
-         ///\brief               The message queue buffer for sending, localy used but defined here to be allocated only once
+         ///\brief               The message cutter, to manage oversized messages
          //-----------------------------------------------------
-         boost::shared_ptr<unsigned char[]> m_sendBuffer;
+         boost::shared_ptr<shared::communication::IMessageCutter> m_messageCutter;
 
          boost::thread m_messageQueueReceiveThread;
 

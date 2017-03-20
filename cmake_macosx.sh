@@ -10,6 +10,7 @@ if [ -z "$1" ]
 then
 	echo "Which choice would you like?"
 	echo " -> Generate a makefile (m)"
+	echo " -> Generate a makefile RELEASE (r)"
 	echo " -> Generate a xcode project (x)"
 	read choice
 else
@@ -23,6 +24,12 @@ case "$choice" in
 	# cmake for makefile
 	cmake -D CMAKE_C_COMPILER=gcc -D CMAKE_CXX_COMPILER=g++ ../sources
 	;;
+
+    r)
+	# cmake for makefile
+	cmake -DCMAKE_BUILD_TYPE="Release" -D CMAKE_C_COMPILER=gcc -D CMAKE_CXX_COMPILER=g++ ../sources
+	;;
+
     x)
 	# cmake for xcode
 	cmake -GXcode ../sources

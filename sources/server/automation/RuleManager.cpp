@@ -136,6 +136,18 @@ namespace automation
          recordRuleStopped(ruleId, error);
          throw CRuleException(error);
       }
+      catch (std::exception& e)
+      {
+         const auto error((boost::format("Failed to start rule %1% : %2%") % ruleId % e.what()).str());
+         recordRuleStopped(ruleId, error);
+         throw CRuleException(error);
+      }
+      catch (...)
+      {
+         const auto error((boost::format("Failed to start rule %1% : unknown error") % ruleId).str());
+         recordRuleStopped(ruleId, error);
+         throw CRuleException(error);
+      }
    }
 
    void CRuleManager::stopRules()
@@ -402,7 +414,7 @@ namespace automation
                                         const std::string& error) const
    {
       if (!error.empty())
-      YADOMS_LOG(error) << error;
+         YADOMS_LOG(error) << error;
 
       auto ruleData(boost::make_shared<database::entities::CRule>());
       ruleData->Id = ruleId;

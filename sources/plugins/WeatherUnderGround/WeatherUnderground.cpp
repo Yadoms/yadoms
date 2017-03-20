@@ -19,7 +19,7 @@ IMPLEMENT_PLUGIN(CWeatherUnderground)
 
 CWeatherUnderground::CWeatherUnderground()
    : m_deviceName("WeatherUnderground"),
-     m_runningState(EWUPluginState::kUndefined)
+     m_runningState(kUndefined)
 {
 }
 

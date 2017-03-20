@@ -421,8 +421,6 @@ endif()
 #specify that openzwave use exception instead of exit statements
 add_definitions(-DOPENZWAVE_USE_EXCEPTIONS)
 
-
-
 #########################################
 ## Share include directories for project which use openzwave
 #########################################

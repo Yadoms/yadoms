@@ -20,12 +20,13 @@ widgetViewModelCtor =
           this.commandClick = function (newState) {
 
               var self = this;
+              if(self.readonly() !== true) {
+                 if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
+                     var cmd = null;
 
-              if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
-                  var cmd = null;
-
-                  cmd = newState;
-                  KeywordManager.sendCommand(this.widget.configuration.device.keywordId, cmd.toString());
+                     cmd = newState;
+                     KeywordManager.sendCommand(this.widget.configuration.device.keywordId, cmd.toString());
+                 }
               }
           };
 
@@ -59,14 +60,16 @@ widgetViewModelCtor =
 
           this.shutterClick = function () {
               self = this;
+              
+              if(self.readonly() !== true) {
+                 if (self.command() === 0)
+                     self.command(1);
+                 else
+                     self.command(0);
 
-              if (self.command() === 0)
-                  self.command(1);
-              else
-                  self.command(0);
-
-              //Send the command
-              this.commandClick(self.command());
+                 //Send the command
+                 this.commandClick(self.command());
+              }
           }
 
           this.configurationChanged = function () {
@@ -82,12 +85,12 @@ widgetViewModelCtor =
 
                   // Get the capacity of the keyword
                   var deffered = KeywordManager.get(this.widget.configuration.device.keywordId)
-				  .done(function (keyword) {
-				      if (keyword.accessMode === "GetSet")
-				          self.readonly(false);
-				      else
-				          self.readonly(true);
-				  });
+                 .done(function (keyword) {
+                     if (keyword.accessMode === "GetSet")
+                         self.readonly(false);
+                     else
+                         self.readonly(true);
+                 });
               }
 
               if (!isNullOrUndefined(this.widget.configuration.kind)) {

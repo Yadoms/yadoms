@@ -1,5 +1,4 @@
 #pragma once
-
 #include "IPluginContext.h"
 #include "plugin_cpp_api/IPlugin.h"
 #include "ICommandLine.h"
@@ -45,13 +44,6 @@ namespace plugin_cpp_api
       static void closeMessageQueues();
 
       //--------------------------------------------------------------
-      ///\brief               Called on receive from messageQueue
-      //--------------------------------------------------------------
-      void onReceive(boost::shared_ptr<CApiImplementation> api,
-                     boost::shared_ptr<const unsigned char[]> message,
-                     size_t messageSize);
-
-      //--------------------------------------------------------------
       ///\brief               Wait for debugger (debug only)
       //--------------------------------------------------------------
       void waitDebugger(boost::shared_ptr<CApiImplementation> api) const;
@@ -85,7 +77,7 @@ namespace plugin_cpp_api
       //--------------------------------------------------------------
       ///\brief               The thread function to receive messages from Yadoms
       //--------------------------------------------------------------
-      void msgReceiverThreaded(boost::shared_ptr<CApiImplementation> api);
+      void msgReceiverThreaded(boost::shared_ptr<CApiImplementation> api) const;
 
       //-----------------------------------------------------
       ///\brief               The message queues used to exchange data with Yadoms
@@ -93,12 +85,6 @@ namespace plugin_cpp_api
       //-----------------------------------------------------
       mutable boost::shared_ptr<boost::interprocess::message_queue> m_sendMessageQueue;
       mutable boost::shared_ptr<boost::interprocess::message_queue> m_receiveMessageQueue;
-
-      //-----------------------------------------------------
-      ///\brief               Receive buffer
-      //-----------------------------------------------------
-      boost::shared_ptr<unsigned char[]> m_fullMessage;
-      size_t m_fullMessageIndex;
    };
 } // namespace plugin_cpp_api
 

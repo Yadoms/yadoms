@@ -7,6 +7,7 @@
 #include "Information.h"
 #include "StartScript.h"
 #include "StopScript.h"
+#include <shared/communication/SmallHeaderMessageCutter.h>
 
 namespace interpreter_cpp_api
 {
@@ -23,7 +24,8 @@ namespace interpreter_cpp_api
    void CApiImplementation::setSendingMessageQueue(boost::shared_ptr<boost::interprocess::message_queue> sendMessageQueue)
    {
       m_sendMessageQueue = sendMessageQueue;
-      m_mqBuffer = boost::make_shared<unsigned char[]>(m_sendMessageQueue->get_max_msg_size());
+      m_messageCutter = boost::make_shared<shared::communication::SmallHeaderMessageCutter>(m_sendMessageQueue->get_max_msg_size(),
+         m_sendMessageQueue->get_max_msg());
    }
 
    bool CApiImplementation::stopRequested() const
@@ -45,20 +47,31 @@ namespace interpreter_cpp_api
    {
       try
       {
-         if (!m_sendMessageQueue)
-            throw std::runtime_error((boost::format("CApiImplementation::send \"%1%\", plugin API not ready to send message") % msg.descriptor()->full_name()).str());
+         boost::lock_guard<boost::recursive_mutex> lock(m_sendMutex);
+
+         if (!m_sendMessageQueue || !m_messageCutter)
+            throw std::runtime_error((boost::format("CApiImplementation::send \"%1%\", interpreter API not ready to send message") % msg.descriptor()->full_name()).str());
 
          if (!msg.IsInitialized())
             throw std::runtime_error((boost::format("CApiImplementation::send \"%1%\", request is not fully initialized") % msg.descriptor()->full_name()).str());
 
-         if (msg.ByteSize() > static_cast<int>(m_sendMessageQueue->get_max_msg_size()))
-            throw std::runtime_error((boost::format("CApiImplementation::send \"%1%\", request is too big") % msg.descriptor()->full_name()).str());
-
-         boost::lock_guard<boost::recursive_mutex> lock(m_sendMutex);
-         if (!msg.SerializeToArray(m_mqBuffer.get(), msg.GetCachedSize()))
+         const auto pbMessageSize = msg.ByteSize();
+         const auto serializedMessage = boost::make_shared<unsigned char[]>(pbMessageSize);
+         if (!msg.SerializeWithCachedSizesToArray(serializedMessage.get()))
             throw std::runtime_error((boost::format("CApiImplementation::send \"%1%\", fail to serialize request (too big ?)") % msg.descriptor()->full_name()).str());
 
-         m_sendMessageQueue->send(m_mqBuffer.get(), msg.GetCachedSize(), 0);
+         const auto cuttedMessage = m_messageCutter->cut(serializedMessage,
+            pbMessageSize);
+
+         if (!cuttedMessage->empty())
+         {
+            for (const auto& part : *cuttedMessage)
+            {
+               m_sendMessageQueue->send(part->formattedMessage(),
+                  part->formattedSize(),
+                  0);
+            }
+         }
       }
       catch (boost::interprocess::interprocess_exception& ex)
       {

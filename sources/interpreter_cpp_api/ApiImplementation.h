@@ -3,6 +3,7 @@
 #include <shared/script/yInterpreterApi/IInformation.h>
 #include <interpreter_IPC/yadomsToInterpreter.pb.h>
 #include <interpreter_IPC/interpreterToYadoms.pb.h>
+#include <shared/communication/IMessageCutter.h>
 
 
 namespace interpreter_cpp_api
@@ -70,8 +71,8 @@ namespace interpreter_cpp_api
       shared::event::CEventHandler m_interpreterEventHandler;
 
 
-      // The message queue buffer, localy used but defined here to be allocated only once
-      boost::shared_ptr<unsigned char[]> m_mqBuffer;
+      // The buffer
+      boost::shared_ptr<shared::communication::IMessageCutter> m_messageCutter;
 
       // The send mutex. Protect m_mqBuffer and m_sendMessageQueue
       mutable boost::recursive_mutex m_sendMutex;

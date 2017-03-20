@@ -2,6 +2,7 @@
 #include <shared/script/yScriptApi/IYScriptApi.h>
 #include "script_IPC/yadomsToScript.pb.h"
 #include "script_IPC/scriptToYadoms.pb.h"
+#include <shared/communication/IMessageCutter.h>
 
 
 //-----------------------------------------------------
@@ -74,8 +75,8 @@ private:
    mutable boost::recursive_mutex m_sendMutex;
 
    //-----------------------------------------------------
-   ///\brief               The message queue buffer, localy used but defined here to be allocated only once
+   ///\brief               The buffer
    //-----------------------------------------------------
-   boost::shared_ptr<unsigned char[]> m_mqBuffer;
+   boost::shared_ptr<shared::communication::IMessageCutter> m_messageCutter;
 };
 

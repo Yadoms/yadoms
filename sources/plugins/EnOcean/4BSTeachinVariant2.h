@@ -1,6 +1,6 @@
 #pragma once
-#include "profiles/generated-manufacturers.h"
-#include "profiles/generated-eep.h"
+#include "manufacturers.h"
+#include "profiles/eep.h"
 
 class C4BSTeachinVariant2
 {

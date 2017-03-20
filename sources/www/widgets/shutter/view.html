@@ -1,9 +1,9 @@
 <script type="text/html" id="shutter-template">
    <div class="mainDiv" >
       <div class="vertical-inverter btn-group-vertical btn-toggle hidden" data-bind="css: { hidden: kind() != 'verticalInverter'}">
-         <button class="btn btn-default" data-bind="disable: readonly, css: { active: command() == 1, 'btn-primary': command() == 1, 'btn-default': command() != 1 }, event: {click: function() {commandClick(1)}}"><span class="glyphicon glyphicon-chevron-up"></span></button>
-         <button class="btn btn-primary active" data-bind="disable: readonly, css: { active: command() == 0, 'btn-primary': command() == 0, 'btn-default': command() != 0 }, event: {click: function() {commandClick(0)}}"><span class="glyphicon glyphicon-chevron-down"></span></button>
+         <button class="btn btn-default" data-bind="disable: readonly, css: { active: command() == 1, 'disabled': readonly(), 'btn-primary': command() == 1, 'btn-default': command() != 1 }, event: {click: function() {commandClick(1)}}"><span class="glyphicon glyphicon-chevron-up"></span></button>
+         <button class="btn btn-primary active" data-bind="disable: readonly, css: { active: command() == 0, 'disabled': readonly(), 'btn-primary': command() == 0, 'btn-default': command() != 0 }, event: {click: function() {commandClick(0)}}"><span class="glyphicon glyphicon-chevron-down"></span></button>
       </div>
-	  <div class="shutter-image" data-bind="disable: readonly, css: { hidden: kind() == 'verticalInverter'}, style: {backgroundImage: 'url(' + shutterIcon() + ')'}, click: shutterClick" ></div>
+	  <div class="shutter-image" data-bind="disable: readonly, css: { hidden: kind() == 'verticalInverter', 'disabled': readonly()}, style: {backgroundImage: 'url(' + shutterIcon() + ')'}, click: shutterClick" ></div>
    </div>
 </script>

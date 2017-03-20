@@ -2,6 +2,7 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <plugin_IPC/pluginToYadoms.pb.h>
 #include <plugin_IPC/yadomsToPlugin.pb.h>
+#include <shared/communication/IMessageCutter.h>
 
 
 namespace plugin_cpp_api
@@ -119,8 +120,8 @@ namespace plugin_cpp_api
       shared::event::CEventHandler m_pluginEventHandler;
 
 
-      // The message queue buffer, localy used but defined here to be allocated only once
-      boost::shared_ptr<unsigned char[]> m_mqBuffer;
+      // The buffer
+      boost::shared_ptr<shared::communication::IMessageCutter> m_messageCutter;
 
       // The send mutex. Protect m_mqBuffer and m_sendMessageQueue
       mutable boost::recursive_mutex m_sendMutex;

@@ -31,7 +31,18 @@ ENDIF()
 set(interpreter_IPC_INCLUDE_DIRS ${interpreter_IPC_GENERATED_DIR}/.. CACHE INTERNAL "interpreter_IPC include directories")
 set(interpreter_IPC_LIBRARY interpreter_IPC CACHE INTERNAL "interpreter_IPC library")
 
-
+##################################################################################################
+## COTIRE
+##################################################################################################
+if(COTIRE_USE)
+	cotire(interpreter_IPC)
+	if(COTIRE_USE_UNITY)
+		target_link_libraries(interpreter_IPC_unity ${PROTOBUF_LIBRARIES})
+		set_property( TARGET interpreter_IPC_unity PROPERTY INCLUDE_DIRECTORIES ${interpreter_IPC_GENERATED_DIR} ${PROTOBUF_INCLUDE_DIRS})
+	endif()	
+endif()
+      
+      
 
 #Ignore some warnings under VisualStudio for Protobuf generated files
 if(MSVC)

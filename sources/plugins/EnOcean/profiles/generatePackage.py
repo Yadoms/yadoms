@@ -44,7 +44,7 @@ def sortProfiles(inProfiles):
 #
 # Take the general structure from package.in.json, and the specific configurations for certain devices (idem for locales files)
 #
-def generate(packageJsonInPath, packageJsonPath, localesPath, supportedProfiles):
+def generate(packageJsonInPath, packageJsonPath, localesInPath, localesPath, supportedProfiles):
    # packege.json
 
    profiles = sortProfiles(supportedProfiles)
@@ -80,7 +80,7 @@ def generate(packageJsonInPath, packageJsonPath, localesPath, supportedProfiles)
          json.dump(outPackage, packageJsonFile, indent=2, ensure_ascii=False)
 
    # Locales
-   for localesInPath in glob.glob(os.path.join(localesPath + '.in', '*.json')):
+   for localesInPath in glob.glob(os.path.join(localesInPath, '*.json')):
       print 'Process locales', localesInPath, 'file...',
       with codecs.open(localesInPath, 'r', 'utf_8') as localesInFile:
 

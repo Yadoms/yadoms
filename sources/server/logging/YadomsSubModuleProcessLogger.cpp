@@ -52,23 +52,23 @@ namespace logging
                                              const std::string& message)
    {
       if (logLevel == "Fatal")
-      YADOMS_LOG(fatal) << message;
+         YADOMS_LOG(fatal) << message;
       else if (logLevel == "Critical")
-      YADOMS_LOG(critical) << message;
+         YADOMS_LOG(critical) << message;
       else if (logLevel == "Error")
-      YADOMS_LOG(error) << message;
+         YADOMS_LOG(error) << message;
       else if (logLevel == "Warning")
-      YADOMS_LOG(warning) << message;
+         YADOMS_LOG(warning) << message;
       else if (logLevel == "Notice")
-      YADOMS_LOG(notice) << message;
+         YADOMS_LOG(notice) << message;
       else if (logLevel == "Information")
-      YADOMS_LOG(information) << message;
+         YADOMS_LOG(information) << message;
       else if (logLevel == "Debug")
-      YADOMS_LOG(debug) << message;
+         YADOMS_LOG(debug) << message;
       else if (logLevel == "Trace")
-      YADOMS_LOG(trace) << message;
+         YADOMS_LOG(trace) << message;
       else
-      YADOMS_LOG(error) << message;
+         YADOMS_LOG(error) << message;
    }
 } // namespace logging
 

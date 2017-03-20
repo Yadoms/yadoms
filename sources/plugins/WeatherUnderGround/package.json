@@ -9,13 +9,14 @@
    "supportDeviceRemovedNotification": "false",
 	"configurationSchema": {
 		"APIKey": {
-			"type": "string"
+			"type": "string",
+         "required" : "true"         
 		},
       "location": {
          "type": "section",
 		   "enableWithCheckBox": "true",
 		   "enableWithCheckBoxDefaultValue": "false",
-         "content": {        
+         "content": {
             "longitude": {
                "type": "decimal",
                "defaultValue" : "0"
