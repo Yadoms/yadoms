@@ -34,8 +34,20 @@ cache:
 install:
   # Remove not wanted PostgreSQL pre-installed versions from the Appveyor VM
   - ps: ls "C:\Program Files\PostgreSQL\9.3"
-  - ps: $uninstall64 = gci "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" | foreach { gp $_.PSPath } | ? { $_ -match "PostgreSQL" } | select UninstallString
-  - ps: foreach ( $uninstallString in $uninstall64.UninstallString ) { echo "Uninstall $uninstallString..."; start-process "$uninstallString" "--mode unattended" -Wait }
+  - ps: |
+     $uninstall64 = gci "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" | foreach { gp $_.PSPath } | ? { $_ -match "PostgreSQL" } | select UninstallString
+     foreach ( $uninstallString in $uninstall64.UninstallString ) {
+        if (Test-Path "$uninstallString") {
+            echo "Uninstall $uninstallString..."; start-process "$uninstallString" "--mode unattended" -Wait
+        } else {
+            $alternativeUninstallString = "$uninstallString" -replace "-postgis-", "-postgis-bundle-"
+            if (Test-Path "$alternativeUninstallString") {
+                echo "Uninstall $uninstallString..."; start-process "$uninstallString" "--mode unattended" -Wait
+            } else {
+                echo "Fail to uninstall"
+            }
+        }
+     }
   # Download extra libs
   - ps: if (!(Test-Path 'extra_libs')) { mkdir 'extra_libs' }
   - ps: pushd extra_libs
