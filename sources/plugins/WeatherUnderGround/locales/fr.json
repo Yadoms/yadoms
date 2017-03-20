@@ -38,7 +38,7 @@
       },
       "Forecast10Days" :
       {
-           "name": "Forecast",
+           "name": "Prévisions météorologiques",
            "content":
            {
               "individualRainForecast" :
