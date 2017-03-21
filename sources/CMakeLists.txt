@@ -781,15 +781,6 @@ ENDIF()
 
 IF(USE_PGSQL_DATABASE)
    find_package(PostgreSQL)
-   
-   message("PostgreSQL_ROOT = ${PostgreSQL_ROOT}")
-   message("PostgreSQL_ROOT_DIRECTORIES = ${PostgreSQL_ROOT_DIRECTORIES}")
-   message("PostgreSQL_LIBRARY_TO_FIND = ${PostgreSQL_LIBRARY_TO_FIND}")
-   message("PostgreSQL_LIBRARY_ADDITIONAL_SEARCH_SUFFIXES = ${PostgreSQL_LIBRARY_ADDITIONAL_SEARCH_SUFFIXES}")
-   message("PostgreSQL_FOUND = ${PostgreSQL_FOUND}")
-   message("PostgreSQL_INCLUDE_DIRS = ${PostgreSQL_INCLUDE_DIRS}")
-   message("PostgreSQL_LIBRARY_DIR = ${PostgreSQL_LIBRARY_DIR}")
-   message("PostgreSQL_LIBRARY = ${PostgreSQL_LIBRARY}")
 
    if(PostgreSQL_FOUND)
       message(STATUS "Found postgresql ${PostgreSQL_VERSION_STRING}")
