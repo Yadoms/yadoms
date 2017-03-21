@@ -14,6 +14,14 @@ project (Yadoms)
 # Check the minimum CMake version
 cmake_minimum_required (VERSION 3.2.0)
 
+
+##################################################################################################
+## Extract Yadoms version from Version.h
+##################################################################################################
+include(cmake/version.cmake)
+message ("### Building Yadoms ${YADOMS_VERSION} ###\n")
+
+
 ##################################################################################################
 ## Include other cmake scripts
 ##################################################################################################
@@ -45,7 +53,6 @@ endif()
    
 # Compilers/IDE configurations
 include(cmake/compilers.cmake)
-
 
 
 ##################################################################################################
@@ -1010,9 +1017,6 @@ endif()
 ##################################################################################################
 if(WIN32)
    if(MSVC)
-      # extract Yadoms version from Version.h
-      include(cmake/version.cmake)
-      
       # apply templating to the manifest for setting the version
       configure_file(${CMAKE_SOURCE_DIR}/../distribution/yadoms.exe.manifest.in
          "${CMAKE_BINARY_DIR}/yadoms.exe.manifest"
@@ -1122,15 +1126,18 @@ set(CPACK_COMPONENT_YADOMSCORE_DISPLAY_NAME "Yadoms Server")
 set(CPACK_COMPONENT_YADOMSCORE_REQUIRED ON)
 set(CPACK_COMPONENT_YADOMSCORE_DESCRIPTION "Yadoms core server software components.")
 
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The ultimate house automation solution")
-SET(CPACK_PACKAGE_VENDOR "Yadoms")
-SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Readme.txt")
-SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Copyright.txt")
-SET(CPACK_PACKAGE_VERSION_MAJOR "1")
-SET(CPACK_PACKAGE_VERSION_MINOR "0")
-SET(CPACK_PACKAGE_VERSION_PATCH "0")
-SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Yadoms")
-SET(CPACK_PACKAGE_CONTACT "Jean-Michel DECORET <decoretjm@gmail.com>")
+set(CPACK_PACKAGE_NAME "Yadoms")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The ultimate house automation solution")
+set(CPACK_PACKAGE_VENDOR "Yadoms")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Readme.txt")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Copyright.txt")
+set(CPACK_PACKAGE_VERSION_MAJOR ${YADOMS_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${YADOMS_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${YADOMS_VERSION_PATCH})
+set(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${YADOMS_VERSION}-${CPACK_SYSTEM_NAME}.") 
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "Yadoms")
+set(CPACK_PACKAGE_CONTACT "Jean-Michel DECORET <decoretjm@gmail.com>")
 
 set(CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE 0)
 

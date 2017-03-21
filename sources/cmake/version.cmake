@@ -1,3 +1,16 @@
-#This macro extract the Yadoms version from "Version.h"
-file (STRINGS "${CMAKE_SOURCE_DIR}/server/Version.h" YADOMS_VERSION REGEX "[0-9]\.[0-9]\.[0-9]")
-STRING(REGEX MATCH "[0-9]\.[0-9]\.[0-9]" YADOMS_VERSION ${YADOMS_VERSION})
+
+# This macro extracts the Yadoms version from "Version.h"
+
+file (STRINGS "${CMAKE_SOURCE_DIR}/server/Version.h" YADOMS_VERSION REGEX "YadomsVersion\(.*\)")
+STRING(REGEX MATCH "YadomsVersion\\(\"(.*)\"\\)" YADOMS_VERSION ${YADOMS_VERSION})
+
+set (YADOMS_VERSION ${CMAKE_MATCH_1})
+
+STRING(REGEX MATCH "([0-9]+).([0-9]+).([0-9]+)(-([a-z]+))?.([0-9]+)" YADOMS_VERSION ${YADOMS_VERSION})
+
+set (YADOMS_VERSION_MAJOR ${CMAKE_MATCH_1})
+set (YADOMS_VERSION_MINOR ${CMAKE_MATCH_2})
+set (YADOMS_VERSION_PATCH ${CMAKE_MATCH_3})
+set (YADOMS_VERSION_LEVEL ${CMAKE_MATCH_5})
+set (YADOMS_VERSION_LEVEL_NUMBER ${CMAKE_MATCH_6})
+
