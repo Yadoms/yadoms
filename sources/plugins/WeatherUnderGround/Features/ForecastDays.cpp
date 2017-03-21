@@ -156,7 +156,7 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
 
          m_forecast->clearAllPeriods();
 
-         setCityName(m_localisation);
+         m_forecast->setCityName(m_localisation);
 
          unsigned char counter = 0;
 
@@ -214,7 +214,7 @@ void CForecastDays::parse(boost::shared_ptr<yApi::IYPluginApi> api,
 
 void CForecastDays::setCityName(const std::string& CityName)
 {
-   m_forecast->setCityName(CityName);
+   m_localisation = CityName;
 }
 
 CForecastDays::~CForecastDays()

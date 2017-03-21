@@ -33,8 +33,6 @@ namespace teleInfo { namespace specificHistorizers
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
-      ///\param[in] accessMode      The access mode
-      ///\param[in] measureType     The measure type (normally kAbsolute)
       //-----------------------------------------------------
       explicit CPeriod(const std::string& keywordName);
 

@@ -33,7 +33,7 @@ namespace shared
 
             protected:
                //-----------------------------------------------------
-               ///\brief                     Normalize the humidity [0; 100]
+               ///\brief                     Normalize the battery level [0; 100]
                ///\param[in] value           Raw value
                ///\return                    The normalized value [0; 100]
                //-----------------------------------------------------

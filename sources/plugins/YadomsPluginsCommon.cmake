@@ -101,9 +101,9 @@ MACRO(PLUGIN_POST_BUILD_COPY_FILE _targetName _resource)
    get_filename_component(_resourceFile ${resource}  NAME)
 
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
-   
+
    install(FILES ${resource} 
-			DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}/${_resourcePath}
+			DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}
 			COMPONENT  ${ComponentCompatibleName})
 			
    add_custom_command(TARGET ${_targetName} POST_BUILD
@@ -144,8 +144,8 @@ MACRO(PLUGIN_POST_BUILD_COPY_DIRECTORY _targetName _resource)
 
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
 
-   install(DIRECTORY ${resource} 
-			DESTINATION ${INSTALL_BINDIR}/plugins/${where}
+   install(DIRECTORY ${resource}
+			DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}/
 			COMPONENT  ${ComponentCompatibleName})
 
    add_custom_command(TARGET ${_targetName} POST_BUILD
