@@ -33,6 +33,7 @@ cache:
 # scripts that run after cloning repository
 install:
   # Remove not wanted PostgreSQL pre-installed versions from the Appveyor VM
+  - ps: echo "Remove not wanted PostgreSQL pre-installed versions from the Appveyor VM..."
   - ps: |
      $uninstall64 = gci "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" | foreach { gp $_.PSPath } | ? { $_ -match "PostgreSQL" } | select UninstallString
      echo $uninstall64
@@ -51,6 +52,7 @@ install:
         }
      }
   # Download extra libs
+  - ps: echo "Download extra libs..."
   - ps: if (!(Test-Path 'extra_libs')) { mkdir 'extra_libs' }
   - ps: pushd extra_libs
   - ps: if (!(Test-Path 'boost_1_61_0')) { Invoke-WebRequest http://yadoms.com/appveyor_build/boost_1_61_0-build.7z -OutFile boost.7z; 7z x boost.7z -bso0 }
@@ -67,7 +69,7 @@ install:
 # scripts to run before build
 before_build:  
   # Yadoms configuration file
-  - ps: echo "Configuring Yadoms CMakeListsUserConfig.txt"
+  - ps: echo "Create Yadoms configuration file CMakeListsUserConfig.txt..."
   - ps: $cd_for_cmake="$pwd".Replace("\", "/")
   - ps: echo $cd_for_cmake
   - ps: Set-Content 'sources/CMakeListsUserConfig.txt' ('set(BOOST_ROOT "' + $cd_for_cmake + '/extra_libs/boost_1_61_0")')
@@ -86,9 +88,11 @@ before_build:
   - ps: cat 'sources/CMakeListsUserConfig.txt'
 
   # For CMake version < 3.9, overwrite FindProtobuf.cmake
+  - ps: echo "For CMake version < 3.9, overwrite FindProtobuf.cmake..."
   - ps: Invoke-WebRequest https://gitlab.kitware.com/cmake/cmake/raw/master/Modules/FindProtobuf.cmake -OutFile 'C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/FindProtobuf.cmake'
   
   # Create solution
+  - ps: echo "Create solution..."
   - cmd: cmake_windows.cmd
   
   
