@@ -882,22 +882,20 @@ if(WIN32)
    if(MSVC)
       #update the Windows specific 'yadoms.rc' file which add properties to executable (version, releaseType=
       #as pre build step (yadoms.rc is modified only if needed, to avoid unjustified build
-      add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/yadoms-generated.rc"
-          PRE_BUILD
-          COMMAND ${CMAKE_SOURCE_DIR}/../ideTools/versionPreBuildTool/VersionPreBuildTool/VersionPreBuildTool/bin/Release/VersionPreBuildTool.exe "${CMAKE_SOURCE_DIR}/server/Version.h" "${CMAKE_SOURCE_DIR}/resources/windows/yadoms.rc" "${CMAKE_BINARY_DIR}/yadoms-generated.rc"
-          MAIN_DEPENDENCY "${CMAKE_SOURCE_DIR}/server/Version.h"
-          DEPENDS "${CMAKE_SOURCE_DIR}/server/Version.h"
-          COMMENT Generating yadoms-generated.rc
-      )
-   endif(MSVC)
 
-   # If we build for windows systems, we also include the resource file
-   # containing the manifest, icon and other resources
-   set(YADOMS_SRC ${YADOMS_SRC} 
-		${CMAKE_BINARY_DIR}/yadoms-generated.rc
-		resources/windows/resource.h
-   )
-   source_group(resources resources/windows/*.*)
+      # apply templating to the manifest for setting the version
+      configure_file(${CMAKE_SOURCE_DIR}/resources/windows/yadoms.rc.in
+         "${CMAKE_BINARY_DIR}/yadoms-generated.rc"
+      @ONLY)
+         
+      # If we build for windows systems, we also include the resource file
+      # containing the manifest, icon and other resources
+      set(YADOMS_SRC ${YADOMS_SRC} 
+         ${CMAKE_BINARY_DIR}/yadoms-generated.rc
+         resources/windows/resource.h
+      )
+      source_group(resources resources/windows/*.*)
+   endif(MSVC)
 endif(WIN32)
 
 
