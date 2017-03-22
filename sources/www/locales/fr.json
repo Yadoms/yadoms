@@ -491,6 +491,7 @@
         "install-update": {
           "title": "Installation & Mise à jour",
           "description": "Installation et mise à jour des composants de Yadoms",
+          "developerModeWarning": "Attention en mode développeur, cette page ne fonctionne pas",
           "includePreRelease": "Inclure les versions préliminaires",
           "yadoms": {
             "title": "Yadoms",
