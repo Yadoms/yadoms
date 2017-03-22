@@ -50,7 +50,7 @@ before_build:
   # Create solution
   - ps: pushd tests/unit
   - ps: echo "Create solution..."
-  - cmd: cmake_windows.cmd
+  - cmd: cmake_windows_tests.cmd
   - ps: popd
   
   
