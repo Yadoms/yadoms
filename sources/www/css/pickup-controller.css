@@ -76,13 +76,14 @@
 }
 
 #add-pickup-details .table-responsive {
-    width: 70%;
+    width: 100%;
     -ms-border-radius: 3px;
     border-radius: 3px;
 }
 
 #add-pickup-details .table-responsive td {
     border: none;
+    white-space: initial;
 }
 
 #add-pickup-details .table-responsive .header-info {
