@@ -9,8 +9,6 @@
         <input type="checkbox" class="cb-release-type">&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.install-update.includePreRelease">Include pre-release versions</span>
         </label>
     </div>
-    <br/>
-    <br/>
 
     <div class="panel-group" id="install-update-accordion" role="tablist" aria-multiselectable="true">
         <!--accordion yadoms update-->
@@ -176,6 +174,12 @@
        return refreshAllData();
     };
 
+    YadomsInformationManager.getList()
+    .done(function (data) {
+      if(data.developerMode) {
+         $("#install-update-accordion").before('<h2><p class="bg-danger">' + $.t("modals.dashboard.sub-windows.install-update.developerModeWarning") + '</p></h2>');
+      }
+    })    
 
     /**
     * Permit to update includePreReleases from the checkbox

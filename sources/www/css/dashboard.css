@@ -454,3 +454,7 @@ Fix dropdown menus hidden by bootstrap modal
 .bs-callout-info h4 {
     color: #1b809e;
 }
+
+.developerModeWarning {
+   display: none;
+}

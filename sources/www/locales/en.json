@@ -491,6 +491,7 @@
         "install-update": {
           "title": "Install & Update",
           "description": "This section allow you to install or update all parts of the software",
+          "developerModeWarning": "Warning : in developer mode, this page is not working",
           "includePreRelease": "Include pre-release versions",
           "yadoms": {
             "title": "Yadoms",
