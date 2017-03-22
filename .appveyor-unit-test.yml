@@ -22,7 +22,7 @@ configuration: Debug
 
 init:
   # Log RDP access information
-  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  #TODO - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 # Add pre-compiled dependancies in cache
 cache:
@@ -67,9 +67,9 @@ build:
   
   
 test_script:
-  - ps: tests/unit/builds/$env:configuration/yadomsTests.exe
+  - cmd: tests/unit/builds/%configuration%/yadomsTests.exe
   
 on_finish:
   # Block to help debug with RDP (60 min max)
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  #TODO - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
