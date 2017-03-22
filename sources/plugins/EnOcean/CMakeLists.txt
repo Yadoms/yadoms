@@ -229,6 +229,7 @@ set(ENOCEAN_ADDITIONAL_LIB
 #########################################
 # Workaround to tell CMake to not looking for package.json as it will be generated at compile time
 set_source_files_properties(package.json PROPERTIES GENERATED TRUE)
+set(PACKAGE_JSON_FILE package.in.json)
 PLUGIN_SOURCES(enOcean ${ENOCEAN_SOURCES})
 PLUGIN_INCLDIR(enOcean ${ENOCEAN_ADDITIONAL_INC_DIR})
 PLUGIN_LINK(enOcean ${ENOCEAN_ADDITIONAL_LIB})

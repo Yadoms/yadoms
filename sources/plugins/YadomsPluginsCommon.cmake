@@ -1,5 +1,4 @@
 # Macros for setting up a plugin
-#
 
 MACRO(PLUGIN_SOURCES _targetName)
    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${YADOMS_OUTPUT_DIR}/plugins/${_targetName} )
@@ -11,15 +10,56 @@ MACRO(PLUGIN_SOURCES _targetName)
    FILE(GLOB TRANSLATION_FILES locales/*)
    source_group(locales locales/*)
 
-   # Add package.json if exists (can be absent if generated)
-   FILE(GLOB PACKAGE_JSON_FILE package.json)
+   if(NOT PACKAGE_JSON_FILE)
+      # Add package.json if exists (can be absent if generated)
+      FILE(GLOB PACKAGE_JSON_FILE package.json)
+   
+   endif(NOT PACKAGE_JSON_FILE)
    
    set(PLUGIN_SOURCE_FILES
       ${ARGN}
       ${PACKAGE_JSON_FILE}
       ${TRANSLATION_FILES}
       )
-      
+
+   ##################################################################################################
+   ## Resources
+   ##################################################################################################
+   if(WIN32)
+
+      ##################################################################################################
+      ## Pre build commands (only visual studio)
+      ##################################################################################################
+      if(MSVC)
+         #update the Windows specific 'plugin.rc' file which add properties to executable (version, releaseType=
+         #as pre build step (plugin.rc is modified only if needed, to avoid unjustified build
+         include(../common/version.cmake)            
+
+         set(PLUGIN_NAME ${_targetName})
+        
+         #Try to use plugin icon
+         FILE(GLOB PLUGIN_EXE_ICON icon.ico)
+         if(NOT EXISTS ${PLUGIN_EXE_ICON})
+            SET(PLUGIN_EXE_ICON "../sources/plugins/common/resources/windows/plugin.ico")
+         endif(NOT EXISTS ${PLUGIN_EXE_ICON})
+         
+         # apply templating to the manifest for setting the version
+         configure_file(../common/resources/windows/plugin.rc.in
+            "${CMAKE_BINARY_DIR}/plugin-${_targetName}-generated.rc"
+         @ONLY)
+            
+         # If we build for windows systems, we also include the resource file
+         # containing the manifest, icon and other resources
+         set(PLUGIN_SOURCE_FILES ${PLUGIN_SOURCE_FILES} 
+            ${PLUGIN_EXE_ICON}
+            ${CMAKE_BINARY_DIR}/plugin-${_targetName}-generated.rc
+            ../common/resources/windows/resource.h
+         )
+         source_group(resources ../common/resources/windows/*.*)
+      endif(MSVC)
+   endif(WIN32)   
+   
+   
    add_executable(${_targetName} ${PLUGIN_SOURCE_FILES})
    project(${_targetName})
 	
@@ -57,7 +97,6 @@ MACRO(PLUGIN_LINK _targetName)
       ${ARGN}
       )
 	
-   
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
    
    #configure plugin as installable component
@@ -83,6 +122,39 @@ MACRO(PLUGIN_LINK _targetName)
 		cotire(${_targetName})
 		
 	endif()	
+
+   ##################################################################################################
+   ## Manifest
+   ##################################################################################################
+   if(WIN32)
+      if(MSVC)  
+         set(PLUGIN_NAME ${_targetName})
+         string(TOLOWER ${PLUGIN_NAME} PLUGIN_NAME_LOWER)
+         
+         #prepare version to be used in windows manifest (only 3 digits)
+         set(PLUGIN_VERSION_FOR_MANIFEST "${YADOMS_VERSION_MAJOR}.${YADOMS_VERSION_MINOR}.${YADOMS_VERSION_PATCH}")
+
+         # apply templating to the manifest for setting the version
+         configure_file(../common/resources/windows/plugin.exe.manifest.in
+            "${CMAKE_BINARY_DIR}/${_targetName}.exe.manifest"
+         @ONLY)
+      
+         #add a custom command
+         add_custom_command(TARGET ${_targetName} POST_BUILD
+             COMMAND "mt.exe" -manifest \"${CMAKE_BINARY_DIR}\\${_targetName}.exe.manifest\" -outputresource:"$(TargetDir)$(TargetFileName)"\;\#1
+             COMMENT "Adding manifest..." 
+         )
+            
+         if(COTIRE_USE)   
+            if(COTIRE_USE_UNITY)
+               add_custom_command(TARGET ${_targetName}_unity POST_BUILD
+                   COMMAND "mt.exe" -manifest \"${CMAKE_BINARY_DIR}\\${_targetName}.exe.manifest\" -outputresource:"$(TargetDir)$(TargetFileName)"\;\#1
+                   COMMENT "Adding manifest..." 
+               )
+            endif(COTIRE_USE_UNITY)
+         endif(COTIRE_USE)
+      endif(MSVC)
+   endif(WIN32)   
 	
 ENDMACRO()
 
