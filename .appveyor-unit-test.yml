@@ -67,7 +67,9 @@ build:
   
   
 test_script:
-  - cmd: tests/unit/builds/%configuration%/yadomsTests.exe
+  - ps: pushd tests/unit/builds/$env:configuration/
+  - cmd: yadomsTests.exe
+  - ps: popd
   
 on_finish:
   # Block to help debug with RDP (60 min max)
