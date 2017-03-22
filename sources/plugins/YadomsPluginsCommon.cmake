@@ -21,36 +21,43 @@ MACRO(PLUGIN_SOURCES _targetName)
       ${PACKAGE_JSON_FILE}
       ${TRANSLATION_FILES}
       )
-   
+
+   ##################################################################################################
+   ## Resources
+   ##################################################################################################
+   if(WIN32)
+
       ##################################################################################################
-      ## Resources
+      ## Pre build commands (only visual studio)
       ##################################################################################################
-      if(WIN32)
+      if(MSVC)
+         #update the Windows specific 'plugin.rc' file which add properties to executable (version, releaseType=
+         #as pre build step (plugin.rc is modified only if needed, to avoid unjustified build
+         include(../common/version.cmake)            
 
-         ##################################################################################################
-         ## Pre build commands (only visual studio)
-         ##################################################################################################
-         if(MSVC)
-            #update the Windows specific 'plugin.rc' file which add properties to executable (version, releaseType=
-            #as pre build step (plugin.rc is modified only if needed, to avoid unjustified build
-            include(../common/version.cmake)            
-
-            set(PLUGIN_NAME ${_targetName})
-
-            # apply templating to the manifest for setting the version
-            configure_file(../common/resources/windows/plugin.rc.in
-               "${CMAKE_BINARY_DIR}/plugin-${_targetName}-generated.rc"
-            @ONLY)
-               
-            # If we build for windows systems, we also include the resource file
-            # containing the manifest, icon and other resources
-            set(PLUGIN_SOURCE_FILES ${PLUGIN_SOURCE_FILES} 
-               ${CMAKE_BINARY_DIR}/plugin-${_targetName}-generated.rc
-               ../common/resources/windows/resource.h
-            )
-            source_group(resources ../common/resources/windows/*.*)
-         endif(MSVC)
-      endif(WIN32)   
+         set(PLUGIN_NAME ${_targetName})
+        
+         #Try to use plugin icon
+         FILE(GLOB PLUGIN_EXE_ICON icon.ico)
+         if(NOT EXISTS ${PLUGIN_EXE_ICON})
+            SET(PLUGIN_EXE_ICON "../sources/plugins/common/resources/windows/plugin.ico")
+         endif(NOT EXISTS ${PLUGIN_EXE_ICON})
+         
+         # apply templating to the manifest for setting the version
+         configure_file(../common/resources/windows/plugin.rc.in
+            "${CMAKE_BINARY_DIR}/plugin-${_targetName}-generated.rc"
+         @ONLY)
+            
+         # If we build for windows systems, we also include the resource file
+         # containing the manifest, icon and other resources
+         set(PLUGIN_SOURCE_FILES ${PLUGIN_SOURCE_FILES} 
+            ${PLUGIN_EXE_ICON}
+            ${CMAKE_BINARY_DIR}/plugin-${_targetName}-generated.rc
+            ../common/resources/windows/resource.h
+         )
+         source_group(resources ../common/resources/windows/*.*)
+      endif(MSVC)
+   endif(WIN32)   
    
    
    add_executable(${_targetName} ${PLUGIN_SOURCE_FILES})
