@@ -1017,6 +1017,11 @@ endif()
 ##################################################################################################
 if(WIN32)
    if(MSVC)
+   
+      #prepare version to be used in windows manifest (only 3 digits)
+      set(YADOMS_VERSION_FOR_MANIFEST "${YADOMS_VERSION_MAJOR}.${YADOMS_VERSION_MINOR}.${YADOMS_VERSION_PATCH}")
+
+   
       # apply templating to the manifest for setting the version
       configure_file(${CMAKE_SOURCE_DIR}/../distribution/yadoms.exe.manifest.in
          "${CMAKE_BINARY_DIR}/yadoms.exe.manifest"
