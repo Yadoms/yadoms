@@ -36,8 +36,7 @@ namespace dataAccessLayer
       /// \return                         The device found
       /// \throw                          shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<database::entities::CDevice> getDeviceInPlugin(const int pluginId,
-                                                                               const std::string& name) const = 0;
+      virtual boost::shared_ptr<database::entities::CDevice> getDeviceInPlugin(const int pluginId, const std::string& name, bool includeBlacklistDevice) const = 0;
 
 
       //--------------------------------------------------------------

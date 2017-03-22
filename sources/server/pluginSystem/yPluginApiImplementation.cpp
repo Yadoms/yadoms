@@ -80,47 +80,41 @@ namespace pluginSystem
 
    shared::CDataContainer CYPluginApiImplementation::getDeviceConfiguration(const std::string& device) const
    {
-      return m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Configuration;
+      return m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Configuration;
    }
 
-   void CYPluginApiImplementation::updateDeviceConfiguration(const std::string& device,
-                                                             const shared::CDataContainer& configuration) const
+   void CYPluginApiImplementation::updateDeviceConfiguration(const std::string& device, const shared::CDataContainer& configuration) const
    {
       if (!deviceExists(device))
          throw shared::exception::CEmptyResult("Fail to update device configuration : device doesn't exist.");
 
-      m_deviceManager->updateDeviceConfiguration(m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Id(),
-                                                 configuration);
+      m_deviceManager->updateDeviceConfiguration(m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Id(), configuration);
    }
 
    shared::CDataContainer CYPluginApiImplementation::getDeviceDetails(const std::string& device) const
    {
-      return m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Details;
+      return m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Details;
    }
 
-   void CYPluginApiImplementation::updateDeviceDetails(const std::string& device,
-                                                       const shared::CDataContainer& details) const
+   void CYPluginApiImplementation::updateDeviceDetails(const std::string& device, const shared::CDataContainer& details) const
    {
       if (!deviceExists(device))
          throw shared::exception::CEmptyResult("Fail to update device details : device doesn't exist.");
 
-      m_deviceManager->updateDeviceDetails(m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Id(),
-                                           details);
+      m_deviceManager->updateDeviceDetails(m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Id(), details);
    }
 
    std::string CYPluginApiImplementation::getDeviceModel(const std::string& device) const
    {
-      return m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Model;
+      return m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Model;
    }
 
-   void CYPluginApiImplementation::updateDeviceModel(const std::string& device,
-                                                     const std::string& model) const
+   void CYPluginApiImplementation::updateDeviceModel(const std::string& device, const std::string& model) const
    {
       if (!deviceExists(device))
          throw shared::exception::CEmptyResult("Fail to update device model : device doesn't exist.");
 
-      m_deviceManager->updateDeviceModel(m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Id(),
-                                         model);
+      m_deviceManager->updateDeviceModel(m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Id(), model);
    }
 
    void CYPluginApiImplementation::removeDevice(const std::string& device)
@@ -138,38 +132,34 @@ namespace pluginSystem
       if (keywordExists(device, keyword))
          throw shared::exception::CEmptyResult((boost::format("Fail to declare %1% keyword : keyword already exists") % keyword->getKeyword()).str());
 
-      m_keywordDataAccessLayer->addKeyword(m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Id(),
-                                           *keyword,
-                                           details);
+      m_keywordDataAccessLayer->addKeyword(m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id(), *keyword, details);
    }
 
-   void CYPluginApiImplementation::declareKeywords(const std::string& device,
-                                                   const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords)
+   void CYPluginApiImplementation::declareKeywords(const std::string& device, const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords)
    {
       std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> keywordsToDeclare;
 
       for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
+      {
          if (!keywordExists(device, *keyword))
             keywordsToDeclare.push_back(*keyword);
+      }
 
       if (keywordsToDeclare.empty())
          return;
 
-      m_keywordDataAccessLayer->addKeywords(m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Id(),
-                                            keywordsToDeclare);
+      m_keywordDataAccessLayer->addKeywords(m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id(), keywordsToDeclare);
    }
 
-   bool CYPluginApiImplementation::keywordExists(const std::string& device,
-                                                 const std::string& keyword) const
+   bool CYPluginApiImplementation::keywordExists(const std::string& device, const std::string& keyword) const
    {
       if (!deviceExists(device))
          throw shared::exception::CEmptyResult("Fail to check if keyword exists : owner device doesn't exist.");
 
-      return m_keywordDataAccessLayer->keywordExists((m_deviceManager->getDeviceInPlugin(getPluginId(), device))->Id, keyword);
+      return m_keywordDataAccessLayer->keywordExists(m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id, keyword);
    }
 
-   bool CYPluginApiImplementation::keywordExists(const std::string& device,
-                                                 boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword) const
+   bool CYPluginApiImplementation::keywordExists(const std::string& device, boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword) const
    {
       return keywordExists(device, keyword->getKeyword());
    }
@@ -177,23 +167,20 @@ namespace pluginSystem
    std::vector<std::string> CYPluginApiImplementation::getAllKeywords(const std::string& device) const
    {
       std::vector<std::string> keywordNames;
-      for (const auto& keyword : m_keywordDataAccessLayer->getKeywords(m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Id()))
+      for (const auto& keyword : m_keywordDataAccessLayer->getKeywords(m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id()))
          keywordNames.push_back(keyword->Name());
       return keywordNames;
    }
 
-   void CYPluginApiImplementation::removeKeyword(const std::string& device,
-                                                 const std::string& keyword)
+   void CYPluginApiImplementation::removeKeyword(const std::string& device, const std::string& keyword)
    {
       if (!keywordExists(device, keyword))
          throw shared::exception::CEmptyResult((boost::format("Fail to remove %1% keyword : keyword doesn't exists") % keyword).str());
 
-      m_keywordDataAccessLayer->removeKeyword(m_deviceManager->getDeviceInPlugin(getPluginId(), device)->Id(),
-                                              keyword);
+      m_keywordDataAccessLayer->removeKeyword(m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Id(), keyword);
    }
 
-   std::string CYPluginApiImplementation::getRecipientValue(int recipientId,
-                                                            const std::string& fieldName) const
+   std::string CYPluginApiImplementation::getRecipientValue(int recipientId, const std::string& fieldName) const
    {
       boost::shared_ptr<const database::entities::CRecipient> recipient = m_recipientRequester->getRecipient(recipientId);
 
@@ -210,8 +197,7 @@ namespace pluginSystem
       throw shared::exception::CEmptyResult((boost::format("Cannot retrieve field %1% for recipient Id %2% in database") % fieldName % recipientId).str());
    }
 
-   std::vector<int> CYPluginApiImplementation::findRecipientsFromField(const std::string& fieldName,
-                                                                       const std::string& expectedFieldValue) const
+   std::vector<int> CYPluginApiImplementation::findRecipientsFromField(const std::string& fieldName, const std::string& expectedFieldValue) const
    {
       auto recipients = m_recipientRequester->findRecipientsFromField(fieldName, expectedFieldValue);
       std::vector<int> recipientIds;
@@ -228,15 +214,27 @@ namespace pluginSystem
    }
 
 
-   void CYPluginApiImplementation::historizeData(const std::string& device,
-                                                 boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> data)
+   void CYPluginApiImplementation::historizeData(const std::string& device, boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> data)
    {
       try
       {
-         boost::shared_ptr<const database::entities::CDevice> deviceEntity = m_deviceManager->getDeviceInPlugin(getPluginId(), device);
-         boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordDataAccessLayer->getKeyword(deviceEntity->Id, data->getKeyword());
-
-         m_acquisitionHistorizer->saveData(keywordEntity->Id, *data);
+         boost::shared_ptr<const database::entities::CDevice> deviceEntity = m_deviceManager->getDeviceInPlugin(getPluginId(), device, true);
+         if (!deviceEntity->Blacklist())
+         {
+            boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordDataAccessLayer->getKeyword(deviceEntity->Id, data->getKeyword());
+            if (!keywordEntity->Blacklist())
+            {
+               m_acquisitionHistorizer->saveData(keywordEntity->Id, *data);
+            }
+            else
+            {
+               YADOMS_LOG(debug) << "Cannot historize data of blacklist keyword : " << keywordEntity->FriendlyName();
+            }
+         }
+         else
+         {
+            YADOMS_LOG(debug) << "Cannot historize data of blacklist device : " << deviceEntity->FriendlyName();
+         }
       }
       catch (shared::exception::CEmptyResult& e)
       {
@@ -244,20 +242,36 @@ namespace pluginSystem
       }
    }
 
-   void CYPluginApiImplementation::historizeData(const std::string& device,
-                                                 const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& dataVect)
+   void CYPluginApiImplementation::historizeData(const std::string& device, const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& dataVect)
    {
       try
       {
          std::vector<int> keywordIdList;
 
-         boost::shared_ptr<const database::entities::CDevice> deviceEntity = m_deviceManager->getDeviceInPlugin(getPluginId(), device);
-         for (auto iter = dataVect.begin(); iter != dataVect.end(); ++iter)
+         boost::shared_ptr<const database::entities::CDevice> deviceEntity = m_deviceManager->getDeviceInPlugin(getPluginId(), device, true);
+         if (!deviceEntity->Blacklist())
          {
-            boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordDataAccessLayer->getKeyword(deviceEntity->Id, (*iter)->getKeyword());
-            keywordIdList.push_back(keywordEntity->Id);
+            std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>> dataVectFilter;
+
+            for (auto iter = dataVect.begin(); iter != dataVect.end(); ++iter)
+            {
+               boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordDataAccessLayer->getKeyword(deviceEntity->Id, (*iter)->getKeyword());
+               if (!keywordEntity->Blacklist())
+               {
+                  keywordIdList.push_back(keywordEntity->Id);
+                  dataVectFilter.push_back(*iter);
+               }
+               else
+               {
+                  YADOMS_LOG(debug) << "Cannot historize data of blacklist keyword : " << keywordEntity->FriendlyName();
+               }
+            }
+            m_acquisitionHistorizer->saveData(keywordIdList, dataVectFilter);
          }
-         m_acquisitionHistorizer->saveData(keywordIdList, dataVect);
+         else
+         {
+            YADOMS_LOG(debug) << "Cannot historize data of blacklist device : " << deviceEntity->FriendlyName();
+         }
       }
       catch (shared::exception::CEmptyResult& e)
       {

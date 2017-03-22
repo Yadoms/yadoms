@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3">
-    <assemblyIdentity type="win32" name="yadoms" version="@YADOMS_VERSION_FOR_MANIFEST@.0" />
-    <description>Yadoms.exe</description>
+    <assemblyIdentity type="win32" name="@PLUGIN_NAME_LOWER@" version="@PLUGIN_VERSION_FOR_MANIFEST@.0" />
+    <description>@PLUGIN_NAME@.exe</description>
     <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
         <security>
             <requestedPrivileges>
