@@ -60,14 +60,14 @@ before_build:
   
 build:
   parallel: false
-  project: projects/yadomsTests.sln    # path to Visual Studio solution or project
+  project: tests/unit/projects/yadomsTests.sln
 
   # MSBuild verbosity level
   verbosity: normal
   
   
 test_script:
-  - ps: yadoms/tests/unit/builds/$env:configuration/yadomsTests.exe
+  - ps: tests/unit/builds/$env:configuration/yadomsTests.exe
   
 on_finish:
   # Block to help debug with RDP (60 min max)
