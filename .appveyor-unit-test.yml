@@ -1,0 +1,67 @@
+# Notes:
+#   - Minimal appveyor.yml file is an empty file. All sections are optional.
+#   - Indent each level of configuration with 2 spaces. Do not use tabs!
+#   - All section names are case-sensitive.
+#   - Section names should be unique on each level.
+
+# version format
+version: 1.0.{build}
+
+# Build worker image (VM template)
+image: Visual Studio 2015
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+platform: Win32
+
+# build Configuration, i.e. Debug, Release, etc.
+configuration: Debug
+
+# Add pre-compiled dependancies in cache
+cache:
+  - extra_libs\boost_1_61_0 -> '.appveyor.yml'
+  - extra_libs\poco-1.7.7-all -> '.appveyor.yml'
+
+# scripts that run after cloning repository
+install:
+  # Download extra libs
+  - ps: echo "Download extra libs..."
+  - ps: if (!(Test-Path 'extra_libs')) { mkdir 'extra_libs' }
+  - ps: pushd extra_libs
+  - ps: if (!(Test-Path 'boost_1_61_0')) { Invoke-WebRequest http://yadoms.com/appveyor_build/boost_1_61_0-build.7z -OutFile boost.7z; 7z x boost.7z -bso0 }
+  - ps: if (!(Test-Path 'poco-1.7.7-all')) { Invoke-WebRequest http://yadoms.com/appveyor_build/poco-1.7.7-all-build.7z -OutFile poco.7z; 7z x poco.7z -bso0 }
+  - ps: rm *.7z
+  - ps: popd    
+  - ps: echo "[END] install"
+
+# scripts to run before build
+before_build:  
+  # Yadoms configuration file
+  - ps: echo "Create Yadoms unit-test configuration file CMakeListsUserConfig.txt..."
+  - ps: $cd_for_cmake="$pwd".Replace("\", "/")
+  - ps: echo $cd_for_cmake
+  - ps: Set-Content 'tests/unit/sources/CMakeListsUserConfig.txt' ('set(BOOST_ROOT "' + $cd_for_cmake + '/extra_libs/boost_1_61_0")')
+  - ps: Add-Content 'tests/unit/sources/CMakeListsUserConfig.txt' ('set(POCO_ROOT "' + $cd_for_cmake + '/extra_libs/poco-1.7.7-all")')
+  - ps: cat 'tests/unit/sources/CMakeListsUserConfig.txt'
+  
+  # Create solution
+  - ps: pushd tests/unit
+  - ps: echo "Create solution..."
+  - cmd: cmake_windows.cmd
+  - ps: popd
+  
+  
+build:
+  parallel: false
+  project: projects/yadomsTests.sln    # path to Visual Studio solution or project
+
+  # MSBuild verbosity level
+  verbosity: normal
+  
+  
+test_script:
+  - ps: echo This is my custom test script
+
