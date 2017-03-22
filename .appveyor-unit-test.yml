@@ -56,12 +56,12 @@ before_build:
   
 build:
   parallel: false
-  project: projects/yadomsTests.sln    # path to Visual Studio solution or project
+  project: tests/unit/projects/yadomsTests.sln    # path to Visual Studio solution or project
 
   # MSBuild verbosity level
   verbosity: normal
   
   
 test_script:
-  - ps: echo This is my custom test script
+  - ps: tests/unit/$env:configuration/yadomsTests.exe
 
