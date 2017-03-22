@@ -20,6 +20,10 @@ platform: Win32
 # build Configuration, i.e. Debug, Release, etc.
 configuration: Debug
 
+init:
+  # Log RDP access information
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
 # Add pre-compiled dependancies in cache
 cache:
   - extra_libs\boost_1_61_0 -> '.appveyor.yml'
@@ -50,7 +54,7 @@ before_build:
   # Create solution
   - ps: pushd tests/unit
   - ps: echo "Create solution..."
-  - cmd: cmake_windows.cmd
+  - cmd: cmake_windows_tests.cmd
   - ps: popd
   
   
@@ -63,5 +67,9 @@ build:
   
   
 test_script:
-  - ps: echo This is my custom test script
+  - ps: yadoms/tests/unit/builds/$env:configuration/yadomsTests.exe
+  
+on_finish:
+  # Block to help debug with RDP (60 min max)
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
