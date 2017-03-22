@@ -279,7 +279,9 @@
                           });
 
                           //we can display the latest version
-                          $line.find("em.latest-version").text(latestVersion.version.toString());
+                          if(latestVersion) {
+                             $line.find("em.latest-version").text(latestVersion.version.toString());
+                          }
 
                           //we order the list
                           serverVersions.sort(function (a, b) {
