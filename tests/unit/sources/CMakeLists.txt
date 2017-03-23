@@ -103,6 +103,11 @@ if(UNIX AND NOT APPLE)
     set(RT_LIBRARY rt)
 endif()
 
+## Poco dependencies
+if(WIN32)
+   set(LIBS ${LIBS} Iphlpapi.lib)
+endif()
+
 ## IOKIT (needed for Mac)
 if(APPLE)
 	include(${YADOMS_PATH}/cmake/mac.cmake)

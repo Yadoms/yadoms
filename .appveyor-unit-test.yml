@@ -20,6 +20,10 @@ platform: Win32
 # build Configuration, i.e. Debug, Release, etc.
 configuration: Debug
 
+init:
+  # Log RDP access information
+  #TODO - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
 # Add pre-compiled dependancies in cache
 cache:
   - extra_libs\boost_1_61_0 -> '.appveyor.yml'
@@ -56,12 +60,18 @@ before_build:
   
 build:
   parallel: false
-  project: tests/unit/projects/yadomsTests.sln    # path to Visual Studio solution or project
+  project: tests/unit/projects/yadomsTests.sln
 
   # MSBuild verbosity level
   verbosity: normal
   
   
 test_script:
-  - ps: tests/unit/$env:configuration/yadomsTests.exe
+  - ps: pushd tests/unit/builds/$env:configuration/
+  - cmd: yadomsTests.exe
+  - ps: popd
+  
+on_finish:
+  # Block to help debug with RDP (60 min max)
+  #TODO - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
