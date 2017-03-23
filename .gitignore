@@ -27,3 +27,4 @@ ideTools/versionPreBuildTool/VersionPreBuildTool/VersionPreBuildTool/bin/Debug
 sources/scriptInterpreters/yPython27/yScriptApiWrapper/swigpyrun.h
 tests/user/debug.log
 sources/plugins/EnOcean/profiles/generated/*
+tests/unit/builds
