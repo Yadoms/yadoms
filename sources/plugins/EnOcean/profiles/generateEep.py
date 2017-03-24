@@ -180,28 +180,6 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
          "   static const std::string title(\"" + xmlFuncNode.find("title").text + "\");\n" \
          "   return title;"))
 
-      def createTypeCode(xmlRorgNode, xmlFuncNode):
-         itemNumber = 0
-         for xmlTypeNode in xmlFuncNode.findall("type"):
-            if profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode) in supportedProfiles:
-               itemNumber += 1
-         if itemNumber == 0:
-            return "   throw std::out_of_range(\"Invalid EFuncIds\");"
-
-         code = "   switch(static_cast<ETypeIds>(typeId))\n"
-         code += "   {\n"
-         for xmlTypeNode in xmlFuncNode.findall("type"):
-            if profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode) not in supportedProfiles:
-               continue
-            enumValue = cppHelper.toEnumValueName(xmlTypeNode.find("number").text)
-            className = cppHelper.toCppName("CProfile_" + profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode))
-            code += "   case " + enumValue + ": return boost::make_shared<" + className + ">(deviceId, api);\n"
-         code += "   default : throw std::out_of_range(\"Invalid EFuncIds\");\n"
-         code += "   }"
-         return code
-      funcClass.addMethod(cppClass.CppMethod("createType", "boost::shared_ptr<IType>", "unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, createTypeCode(xmlRorgNode, xmlFuncNode)))
-
-
       #------------------------------------------------------------------------
       # Type cppTypes
       for xmlTypeNode in xmlFuncNode.findall("type"):
@@ -413,6 +391,29 @@ for xmlRorgNode in xmlProfileNode.findall("rorg"):
 
          typeClass.addMethod(cppClass.CppMethod("states", "std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >", "unsigned char rorg, const boost::dynamic_bitset<>& data, const boost::dynamic_bitset<>& status", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, statesCode(xmlTypeNode)))
          supportedProfiles.append(profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode))
+
+
+      def createTypeCode(xmlRorgNode, xmlFuncNode):
+         itemNumber = 0
+         for xmlTypeNode in xmlFuncNode.findall("type"):
+            if profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode) in supportedProfiles:
+               itemNumber += 1
+         if itemNumber == 0:
+            return "   throw std::out_of_range(\"Invalid EFuncIds\");"
+
+         code = "   switch(static_cast<ETypeIds>(typeId))\n"
+         code += "   {\n"
+         for xmlTypeNode in xmlFuncNode.findall("type"):
+            if profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode) not in supportedProfiles:
+               continue
+            enumValue = cppHelper.toEnumValueName(xmlTypeNode.find("number").text)
+            className = cppHelper.toCppName("CProfile_" + profileHelper.profileName(xmlRorgNode, xmlFuncNode, xmlTypeNode))
+            code += "   case " + enumValue + ": return boost::make_shared<" + className + ">(deviceId, api);\n"
+         code += "   default : throw std::out_of_range(\"Invalid EFuncIds\");\n"
+         code += "   }"
+         return code
+      funcClass.addMethod(cppClass.CppMethod("createType", "boost::shared_ptr<IType>", "unsigned int typeId, const std::string& deviceId, boost::shared_ptr<yApi::IYPluginApi> api", cppClass.PUBLIC, cppClass.OVERRIDE | cppClass.CONST, createTypeCode(xmlRorgNode, xmlFuncNode)))
+
 
 
 
