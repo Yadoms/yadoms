@@ -59,21 +59,28 @@ namespace database
                if (pRequester->transactionSupport())
                   pRequester->transactionBegin();
 
-               auto qUpdate1 = pRequester->newQuery();
-               auto qUpdate2 = pRequester->newQuery();
+               auto qUpdateNameColumn = pRequester->newQuery();
+               auto qUpdateFriendlyNameColumn = pRequester->newQuery();
+               auto qUpdateCapacityNameColumn = pRequester->newQuery();
 
                // Change the name from rssi to signalStrength
-               qUpdate1.Update(CKeywordTable::getTableName()).
+               qUpdateNameColumn.Update(CKeywordTable::getTableName()).
                   Set(CKeywordTable::getNameColumnName(), "signalStrength").
                   Where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, "rssi");
 
                // Change the friendlyName  from rssi to signalStrength
-               qUpdate2.Update(CKeywordTable::getTableName()).
+               qUpdateFriendlyNameColumn.Update(CKeywordTable::getTableName()).
                   Set(CKeywordTable::getFriendlyNameColumnName(), "signalStrength").
                   Where(CKeywordTable::getFriendlyNameColumnName(), CQUERY_OP_EQUAL, "rssi");
 
-               pRequester->queryStatement(qUpdate1);
-               pRequester->queryStatement(qUpdate2);
+               // Change the capacityName  from rssi to signalStrength
+               qUpdateCapacityNameColumn.Update(CKeywordTable::getTableName()).
+                  Set(CKeywordTable::getCapacityNameColumnName(), "signalStrength").
+                  Where(CKeywordTable::getFriendlyNameColumnName(), CQUERY_OP_EQUAL, "rssi");
+
+               pRequester->queryStatement(qUpdateNameColumn);
+               pRequester->queryStatement(qUpdateFriendlyNameColumn);
+               pRequester->queryStatement(qUpdateCapacityNameColumn);
 
                //set the database version
                updateDatabaseVersion(pRequester,
