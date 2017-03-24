@@ -125,6 +125,9 @@ boost::shared_ptr<features::IFeature> CWUFactory::createorUpdateWeatherDevice(bo
       if (wuConfiguration.isLiveConditionsEnabled())
       {
          m_weatherConditions->onPluginUpdate(api, wuConfiguration);
+         api->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions,
+                                            shared::event::CEventTimer::kOneShot,
+                                            boost::posix_time::seconds(0));
          m_weatherConditions->setCityName(m_lookupInformation->getCity());
          YADOMS_LOG(information) << "Update weather device" ;
       }
@@ -167,6 +170,9 @@ boost::shared_ptr<features::IFeature> CWUFactory::createorUpdateAstronomyDevice(
       if (wuConfiguration.isAstronomyEnabled())
       {
          m_astronomy->onPluginUpdate(api, wuConfiguration);
+         api->getEventHandler().createTimer(kEvtTimerRefreshAstronomy,
+                                            shared::event::CEventTimer::kOneShot,
+                                            boost::posix_time::seconds(0));
          YADOMS_LOG(information) << "Update astronomy module" ;
       }
       else
@@ -209,6 +215,10 @@ boost::shared_ptr<features::IFeature> CWUFactory::createorUpdateForecastDevice(b
       {
          m_forecast->onPluginUpdate(api, wuConfiguration);
          m_forecast->setCityName(m_lookupInformation->getCity());
+
+         api->getEventHandler().createTimer(kEvtTimerRefreshForecast10Days,
+                                            shared::event::CEventTimer::kOneShot,
+                                            boost::posix_time::seconds(0));
          YADOMS_LOG(information) << "Update forecast module" ;
       }
       else

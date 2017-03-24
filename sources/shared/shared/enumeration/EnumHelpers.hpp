@@ -113,7 +113,7 @@ ECurtainCommand & operator=(const char * obj);
 ECurtainCommand & operator=(const ECurtainCommand & obj);
 ECurtainCommand const operator() () const;
 const std::string & toString() const;
-const int toInteger() const;
+int toInteger() const;
 virtual void fromString(const std::string & val);
 static ECurtainCommand parse(const std::string & val);
 static bool isDefined(const std::string & stringValue);
@@ -186,7 +186,7 @@ ECurtainCommand::operator int() const
 return m_value;
 }
 
-const int ECurtainCommand::toInteger() const
+int ECurtainCommand::toInteger() const
 {
 return m_value;
 }
@@ -494,7 +494,7 @@ CCurtain::ECommand::ECommand()
 		ENUM_CLASSNAME(_enumName) & operator=(const ENUM_CLASSNAME(_enumName) & obj);														\
 		ENUM_CLASSNAME(_enumName) const operator() () const;																				\
 		const std::string & toString() const;																								\
-		const int toInteger() const;																										\
+      int toInteger() const;																										\
 		virtual void fromString(const std::string & val);																					\
 		virtual const std::multimap<int, std::string> getAllValuesAndStrings() const;														\
 		virtual const std::vector<int> getAllValues() const;																				\
@@ -694,7 +694,7 @@ CCurtain::ECommand::ECommand()
    _fullClassifiedEnumName::ENUM_CLASSNAME(_enumName)(const ENUM_CLASSNAME(_enumName) & val): m_value(val.m_value) {CHECK_VALUE(m_value);}      \
    _fullClassifiedEnumName::~ENUM_CLASSNAME(_enumName)() {}                                                                                     \
    _fullClassifiedEnumName::operator _type() const { return m_value; }                                                                          \
-   const int _fullClassifiedEnumName::toInteger() const { return m_value; }                                                                     \
+   int _fullClassifiedEnumName::toInteger() const { return m_value; }                                                                     \
    _fullClassifiedEnumName::operator std::string() const { return toString(); }                                                                 \
    _fullClassifiedEnumName const _fullClassifiedEnumName::operator() () const { return _fullClassifiedEnumName(m_value); }				            \
    _fullClassifiedEnumName & _fullClassifiedEnumName::operator=(_type const& obj)                                                               \

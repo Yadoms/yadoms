@@ -26,7 +26,7 @@ namespace database
          {
             try
             {
-               getDevice(deviceId);
+               getDevice(deviceId, true);
             }
             catch (shared::exception::CEmptyResult&)
             {
@@ -39,7 +39,7 @@ namespace database
          {
             try
             {
-               getDeviceInPlugin(pluginId, deviceName);
+               getDeviceInPlugin(pluginId, deviceName, true);
             }
             catch (shared::exception::CEmptyResult&)
             {

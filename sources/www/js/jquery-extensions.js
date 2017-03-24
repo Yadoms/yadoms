@@ -27,6 +27,7 @@ function getTextWidth(text, font) {
     // re-use canvas object for better performance
     var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
     var context = canvas.getContext("2d");
+    
     context.font = font;
     var metrics = context.measureText(text);
     return metrics.width;
@@ -51,21 +52,22 @@ function getTextWidth(text, font) {
                     //we get full text of $this including :bfore and :after content for font awesome icons
                     var text = "";
                     var before = getComputedStyle($this[0], ':before');
-                    if ((before) && (before.content))
+                    if ((before) && (before.content) && (before.content!=="none"))
                         text += before.content[1];
                     text += $this.text();
                     var after = getComputedStyle($this[0], ':after');
-                    if ((after) && (after.content))
+                    if ((after) && (after.content) && (after.content!=="none"))
                         text += after.content[1];
 
                     var minFont = $this.attr("min-font") || 10;
                     if (text === "")
                         text = "W";
-
+                     
                     $this.css('font-size', 1);
 
                     //determine the width for a large fontsize
                     var px300 = getTextWidth(text, "300px " + $this.css("font-family"));
+                    
                     //estimate the size relative to the item width, and apply a 0.8 factor to ensure the text will fit
                     var fontSizeFromWidth = ($this.width() * 300 / px300) * .8;
 
@@ -74,6 +76,7 @@ function getTextWidth(text, font) {
                     }
 
                     var fontSizeFromHeight = $this.height() / 1.42857143;
+                    
                     if ($this.hasClass("textfit-in-parent")) {
                         fontSizeFromHeight = $this.parent().height() / 1.42857143;
                     }

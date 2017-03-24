@@ -55,7 +55,7 @@ MACRO(SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE _resource parentInterpreter)
    string(REPLACE "-" "_" ComponentCompatibleName ${parentInterpreter})
    
    install(FILES ${_resource} 
-			DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${parentInterpreter}/${_resourcePath}
+			DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${parentInterpreter}
 			COMPONENT  ${ComponentCompatibleName})
 			
    add_custom_command(TARGET _yScriptApiWrapper POST_BUILD

@@ -14,6 +14,14 @@ project (Yadoms)
 # Check the minimum CMake version
 cmake_minimum_required (VERSION 3.2.0)
 
+
+##################################################################################################
+## Extract Yadoms version from Version.h
+##################################################################################################
+include(cmake/version.cmake)
+message ("### Building Yadoms ${YADOMS_VERSION} ###\n")
+
+
 ##################################################################################################
 ## Include other cmake scripts
 ##################################################################################################
@@ -45,7 +53,6 @@ endif()
    
 # Compilers/IDE configurations
 include(cmake/compilers.cmake)
-
 
 
 ##################################################################################################
@@ -875,22 +882,20 @@ if(WIN32)
    if(MSVC)
       #update the Windows specific 'yadoms.rc' file which add properties to executable (version, releaseType=
       #as pre build step (yadoms.rc is modified only if needed, to avoid unjustified build
-      add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/yadoms-generated.rc"
-          PRE_BUILD
-          COMMAND ${CMAKE_SOURCE_DIR}/../ideTools/versionPreBuildTool/VersionPreBuildTool/VersionPreBuildTool/bin/Release/VersionPreBuildTool.exe "${CMAKE_SOURCE_DIR}/server/Version.h" "${CMAKE_SOURCE_DIR}/resources/windows/yadoms.rc" "${CMAKE_BINARY_DIR}/yadoms-generated.rc"
-          MAIN_DEPENDENCY "${CMAKE_SOURCE_DIR}/server/Version.h"
-          DEPENDS "${CMAKE_SOURCE_DIR}/server/Version.h"
-          COMMENT Generating yadoms-generated.rc
-      )
-   endif(MSVC)
 
-   # If we build for windows systems, we also include the resource file
-   # containing the manifest, icon and other resources
-   set(YADOMS_SRC ${YADOMS_SRC} 
-		${CMAKE_BINARY_DIR}/yadoms-generated.rc
-		resources/windows/resource.h
-   )
-   source_group(resources resources/windows/*.*)
+      # apply templating to the manifest for setting the version
+      configure_file(${CMAKE_SOURCE_DIR}/resources/windows/yadoms.rc.in
+         "${CMAKE_BINARY_DIR}/yadoms-generated.rc"
+      @ONLY)
+         
+      # If we build for windows systems, we also include the resource file
+      # containing the manifest, icon and other resources
+      set(YADOMS_SRC ${YADOMS_SRC} 
+         ${CMAKE_BINARY_DIR}/yadoms-generated.rc
+         resources/windows/resource.h
+      )
+      source_group(resources resources/windows/*.*)
+   endif(MSVC)
 endif(WIN32)
 
 
@@ -1010,9 +1015,11 @@ endif()
 ##################################################################################################
 if(WIN32)
    if(MSVC)
-      # extract Yadoms version from Version.h
-      include(cmake/version.cmake)
-      
+   
+      #prepare version to be used in windows manifest (only 3 digits)
+      set(YADOMS_VERSION_FOR_MANIFEST "${YADOMS_VERSION_MAJOR}.${YADOMS_VERSION_MINOR}.${YADOMS_VERSION_PATCH}")
+
+   
       # apply templating to the manifest for setting the version
       configure_file(${CMAKE_SOURCE_DIR}/../distribution/yadoms.exe.manifest.in
          "${CMAKE_BINARY_DIR}/yadoms.exe.manifest"
@@ -1122,15 +1129,18 @@ set(CPACK_COMPONENT_YADOMSCORE_DISPLAY_NAME "Yadoms Server")
 set(CPACK_COMPONENT_YADOMSCORE_REQUIRED ON)
 set(CPACK_COMPONENT_YADOMSCORE_DESCRIPTION "Yadoms core server software components.")
 
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The ultimate house automation solution")
-SET(CPACK_PACKAGE_VENDOR "Yadoms")
-SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Readme.txt")
-SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Copyright.txt")
-SET(CPACK_PACKAGE_VERSION_MAJOR "1")
-SET(CPACK_PACKAGE_VERSION_MINOR "0")
-SET(CPACK_PACKAGE_VERSION_PATCH "0")
-SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Yadoms")
-SET(CPACK_PACKAGE_CONTACT "Jean-Michel DECORET <decoretjm@gmail.com>")
+set(CPACK_PACKAGE_NAME "Yadoms")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The ultimate house automation solution")
+set(CPACK_PACKAGE_VENDOR "Yadoms")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Readme.txt")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Copyright.txt")
+set(CPACK_PACKAGE_VERSION_MAJOR ${YADOMS_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${YADOMS_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${YADOMS_VERSION_PATCH})
+set(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${YADOMS_VERSION}-${CPACK_SYSTEM_NAME}.") 
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "Yadoms")
+set(CPACK_PACKAGE_CONTACT "Jean-Michel DECORET <decoretjm@gmail.com>")
 
 set(CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE 0)
 
@@ -1238,4 +1248,9 @@ ELSE(WIN32 AND NOT UNIX)
 ENDIF(WIN32 AND NOT UNIX)
 SET(CPACK_PACKAGE_EXECUTABLES "Yadoms" "Yadoms")
 
+# When calling "make package" it do not run "make all" 
+# So package can be realized with make all_unity call before make package
+set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
+
 INCLUDE(CPack)
+

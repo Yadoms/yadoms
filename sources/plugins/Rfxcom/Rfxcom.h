@@ -192,10 +192,5 @@ private:
    /// \brief  The last sent message
    //--------------------------------------------------------------
    shared::communication::CByteBuffer m_lastRequest;
-
-   //--------------------------------------------------------------
-   /// \brief  developerMode state
-   //--------------------------------------------------------------
-   bool m_isDeveloperMode;
 };
 

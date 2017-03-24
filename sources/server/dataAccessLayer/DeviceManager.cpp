@@ -33,9 +33,9 @@ namespace dataAccessLayer
       return m_deviceRequester->getDevice(deviceId);
    }
 
-   boost::shared_ptr<database::entities::CDevice> CDeviceManager::getDeviceInPlugin(const int pluginId, const std::string& name) const
+   boost::shared_ptr<database::entities::CDevice> CDeviceManager::getDeviceInPlugin(const int pluginId, const std::string& name, bool includeBlacklistDevice) const
    {
-      return m_deviceRequester->getDeviceInPlugin(pluginId, name);
+      return m_deviceRequester->getDeviceInPlugin(pluginId, name, includeBlacklistDevice);
    }
 
    std::vector<boost::shared_ptr<database::entities::CDevice>> CDeviceManager::getDeviceWithCapacity(const std::string& capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode& capacityAccessMode) const
