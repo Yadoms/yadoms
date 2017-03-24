@@ -4,14 +4,12 @@
 
 namespace specificHistorizer
 {
-   const yApi::CStandardCapacity& ConditionCapacity = yApi::CStandardCapacity("Condition"
-                                                                              , yApi::CStandardUnits::NoUnits,
-                                                                              yApi::EKeywordDataType::kJson);
+   DECLARE_CAPACITY(ConditionCapacity, "Condition", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kJson);
 
    CConditionHistorizer::CConditionHistorizer(const std::string& keywordName,
                                               const yApi::EKeywordAccessMode& accessMode)
       : m_keywordName(keywordName),
-      m_accessMode(accessMode)
+        m_accessMode(accessMode)
    {
       m_content = boost::make_shared<CConditionFormatter>();
    }
@@ -27,7 +25,7 @@ namespace specificHistorizer
 
    const yApi::CStandardCapacity& CConditionHistorizer::getCapacity() const
    {
-      return ConditionCapacity;
+      return ConditionCapacity();
    }
 
    const yApi::EKeywordAccessMode& CConditionHistorizer::getAccessMode() const
@@ -36,7 +34,7 @@ namespace specificHistorizer
    }
 
    void CConditionHistorizer::addUnit(const std::string& unitName,
-                                      const std::string& unitValue)
+                                      const std::string& unitValue) const
    {
       m_content->addUnit(unitName, unitValue);
    }
@@ -54,7 +52,7 @@ namespace specificHistorizer
                                         const std::string& humidity,
                                         const std::string& rainDay,
                                         const std::string& feelslike,
-                                        const std::string& windChill)
+                                        const std::string& windChill) const
    {
       m_content->setPeriod(time,
                            weatherCondition,
@@ -91,8 +89,9 @@ namespace specificHistorizer
       return shared::CDataContainer();
    }
 
-   void CConditionHistorizer::setCityName(const std::string& cityName)
+   void CConditionHistorizer::setCityName(const std::string& cityName) const
    {
       m_content->setCityName(cityName);
    }
 }
+

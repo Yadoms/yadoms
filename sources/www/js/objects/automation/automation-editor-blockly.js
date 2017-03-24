@@ -7,7 +7,7 @@ AutomationEditorBlockly.prototype = new IAutomationRuleEditor();
 AutomationEditorBlockly.prototype.constructor = AutomationEditorCode;
 
 AutomationEditorBlockly.getSupportedInterpreters = function() {
-   return ["python27", "dart", "javascript"];
+   return ["ypython27", "dart", "javascript"];
 };
 
 /**

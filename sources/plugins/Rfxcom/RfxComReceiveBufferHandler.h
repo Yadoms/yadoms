@@ -2,6 +2,7 @@
 #include <shared/event/EventHandler.hpp>
 #include <shared/communication/IReceiveBufferHandler.h>
 #include <shared/communication/Buffer.hpp>
+#include "shared/communication/IBufferLogger.h"
 
 //--------------------------------------------------------------
 /// \brief	Receive buffer handler for RFXCom
@@ -32,16 +33,10 @@ public:
 
 protected:
    //--------------------------------------------------------------
-   /// \brief	                     Check if we got a complete message
-   /// \return                      true if a message is complete
+   /// \brief	                     Returns the message if complete
+   /// \return                      The complete message, or null
    //--------------------------------------------------------------
-   bool isComplete() const;
-
-   //--------------------------------------------------------------
-   /// \brief	                     Pop the next message from the receive buffer
-   /// \return                      The next complete message
-   //--------------------------------------------------------------
-   boost::shared_ptr<const shared::communication::CByteBuffer> popNextMessage();
+   boost::shared_ptr<const shared::communication::CByteBuffer> getCompleteMessage();
 
    //--------------------------------------------------------------
    /// \brief	                     Send a message to the target event handler
@@ -50,6 +45,11 @@ protected:
    void notifyEventHandler(boost::shared_ptr<const shared::communication::CByteBuffer> buffer) const;
 
 private:
+   //--------------------------------------------------------------
+   /// \brief	Last received time for timout computation
+   //--------------------------------------------------------------
+   boost::posix_time::ptime m_lastReceivedTime;
+
    //--------------------------------------------------------------
    /// \brief	Buffer content
    //--------------------------------------------------------------

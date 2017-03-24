@@ -2,6 +2,8 @@
 	"name": "Graphique",
 	"description": "Un widget qui permet d'afficher un graphe d'historisation de données",
 	"errorDuringGettingDeviceData": "Erreur lors de la récupération des données",
+   "errorInitialization" : "Erreur lors de l'initialisation du widget chart",
+   "incompatibilityDifferential": "L'affichage différentiel n'est pas compatible avec l'affichage min/max",  
 	"loadingData": "Chargement des données",
 	"RangeTooBroad" : "Echelle trop large",
   "noAvailableData": "Données indisponibles",
@@ -51,13 +53,32 @@
 						"name": "Couleur de la courbe",
 						"description": "Permet de changer la couleur de la courbe."
 					},
-			      "differentialDisplay": {
-		            "name": "Affichage différentiel",
-				      "description": "Ce graphique représente la différence de valeur entre chaque acquisition (Précipitations pluviométriques cumulatives, ...). Cette option est ignorée dans le cas de variables booléennes ou d'énumération."
-			      },               
+               "advancedConfiguration": {
+                  "name": "Configuration avancée",
+                  "description": "",
+                  "content": {
+                     "differentialDisplay": {
+                        "name": "Affichage différentiel",
+                        "description": "Ce graphique représente la différence de valeur entre chaque acquisition (Précipitations pluviométriques cumulatives, ...). Cette option est ignorée dans le cas de variables booléennes ou d'énumération.",
+                        "values": {
+                           "absolute": "valeurs absolues",
+                           "relative": "valeurs relative"
+                        }
+                     },
+                     "periodtype": {
+                        "name": "valeur utilisée pour les périodes",
+                        "description": "La valeur utilisée pour les périodes calculées (exemple : pour la température, 'moyenne' doit être utilisé. Pour des précipitations, 'maximum' correspond mieux à la réalité)",
+                        "values": {
+                           "min":"minimum",
+                           "avg": "moyenne",
+                           "max": "maximum"
+                        }
+                     }
+                  }
+               },                 
 					"PlotType": {
 						"name": "Type de graphique",
-						"description": "Choisir le type de graphique",
+						"description": "Choisir le type de graphique. Les min/max ne sont pas affichés pour une période horaire",
 						"values": {
 							"line": "Ligne",
 							"bar": "Barres",

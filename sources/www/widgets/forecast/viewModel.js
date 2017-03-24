@@ -20,12 +20,6 @@ function forecastViewModel() {
    //Definition of the temporary array
    this.TempPeriod = new Array();
 
-   this.MaxTempVisible = ko.observable(true);
-   this.MinTempVisible = ko.observable(true);
-   this.MaxWindVisible = ko.observable(true);
-   this.AveWindVisible = ko.observable(true);
-   this.RainDayVisible = ko.observable(true);
-
    this.dateformat = "";
    this.lastUpdate = "";
 
@@ -53,39 +47,42 @@ function forecastViewModel() {
     * @WindPosition Direction from the Wind
     * @WindSpeed    Speed of the Wind
     */
-   this.canvasload = function (data, windPosition, windSpeed) {
+   this.canvasload = function (data, windPosition, windSpeed, maxWindSpeed) {
       //get a reference to the canvas
       var ctx = this.widgetApi.find("#" + data).get(0).getContext("2d");
 
       // Refresh the canvas, clear all existing information
-      ctx.clearRect(0, 0, 36, 36);
+      ctx.clearRect(0, 0, 42, 42);
 
       ctx.fillStyle = "rgb(0,0,0)"; // black
 
       //draw a circle
       ctx.beginPath();
 
-      ctx.arc(20, 20, 17, 0, Math.PI * 2, true);
+      ctx.arc(22, 22, 21, 0, Math.PI * 2, true);
       ctx.closePath();
 
       ctx.lineWidth = 1;
       ctx.strokeStyle = '#000000';
       ctx.stroke();
-
-      ctx.font = "14px Georgia";
-
-      //write the text at the same position as the height of the column
-      ctx.fillText(windSpeed, 20 - (7 * String(windSpeed).match(/\d/g).length) / 2, 23);
-      ctx.stroke();
-
+      
       //triangle of the direction
       ctx.beginPath();
-      ctx.moveTo(18 - 11 * Math.sin(Math.PI / 180 * parseInt(windPosition)), 18 - 11 * Math.cos(Math.PI / 180 * parseInt(windPosition)));
-      ctx.lineTo(18 - 18 * Math.sin(Math.PI / 180 * (parseInt(windPosition) + 10)), 18 - 18 * Math.cos(Math.PI / 180 * (parseInt(windPosition) + 10)));
-      ctx.lineTo(18 - 18 * Math.sin(Math.PI / 180 * (parseInt(windPosition) - 10)), 18 - 18 * Math.cos(Math.PI / 180 * (parseInt(windPosition) - 10)));
+      ctx.moveTo(22 - 13 * Math.sin(Math.PI / 180 * parseInt(windPosition)), 22 - 13 * Math.cos(Math.PI / 180 * parseInt(windPosition)));
+      ctx.lineTo(22 - 20 * Math.sin(Math.PI / 180 * (parseInt(windPosition) + 10)), 22 - 20 * Math.cos(Math.PI / 180 * (parseInt(windPosition) + 10)));
+      ctx.lineTo(22 - 20 * Math.sin(Math.PI / 180 * (parseInt(windPosition) - 10)), 22 - 20 * Math.cos(Math.PI / 180 * (parseInt(windPosition) - 10)));
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
+      
+      ctx.font = "11px Georgia";
+
+      //write the text at the same position as the height of the column
+      ctx.fillText(windSpeed, 22 - (6 * String(windSpeed).match(/\d/g).length) / 2, 18);
+      
+      ctx.fillStyle = "rgb(255,0,0)"; // blue Azur clair
+      ctx.fillText(maxWindSpeed, 22 - (6 * String(maxWindSpeed).match(/\d/g).length) / 2, 30);
+      ctx.stroke();      
    };
 
    this.RainCanvasLoad = function (data, rainValue) {
@@ -105,8 +102,15 @@ function forecastViewModel() {
       ctx.fillRect(0, positionY, 40, rainValue);
       ctx.stroke();
 
+      ctx.strokeStyle = "rgb(116,208,241)"; // blue Azur clair
+      
+      ctx.beginPath();
+      ctx.moveTo(40, 0);
+      ctx.lineTo(40, 40);
+      ctx.closePath();      
+      
       ctx.fillStyle = "rgb(0,0,255)"; // black
-
+      
       // We use the same font as in the css file
       ctx.font = $( ".cases" ).css( "font-size" ) + " " + $( ".cases" ).css( "font-family" );
 
@@ -126,10 +130,13 @@ function forecastViewModel() {
       if (keywordId === self.widget.configuration.device.keywordId) {
          if (data.value && data.value !== "") {
             var obj = jQuery.parseJSON(data.value);
-			
+            
+            console.log (obj.city);
+            
+            var decodedCity = decodeURI(obj.city);
             //We only keep the city name
-            var res = obj.city.split(",");
-			
+            var res = decodedCity.split(",");
+         
 			   if (res.length >=2)
                self.city(res[1]);
             else
@@ -197,12 +204,6 @@ function forecastViewModel() {
       self.widgetApi.registerKeywordAcquisitions(self.widget.configuration.device.keywordId);
 
       try {
-         self.MaxTempVisible(true);
-         self.MinTempVisible(true);
-         self.MaxWindVisible(parseBool(self.widget.configuration.Information.content.MaxWind));
-         self.AveWindVisible(parseBool(self.widget.configuration.Information.content.AveWind));
-         self.RainDayVisible(parseBool(self.widget.configuration.Information.content.RainDay));
-
          //Read the date format
          self.dateformat = self.widget.configuration.DateFormat;
       }
@@ -213,49 +214,6 @@ function forecastViewModel() {
 
    this.resized = function () {
       var self = this;
-
-      if (self.widget.getHeight() <= 150) {
-         //In one case : we keep only the icon
-         self.MaxTempVisible(false);
-         self.MinTempVisible(false);
-         self.RainDayVisible(false);
-         self.AveWindVisible(false);
-         self.MaxWindVisible(false);
-      }
-      else if ((self.widget.getHeight() <= 220) && (self.widget.getHeight() > 190)) {
-         self.height = 20; // Location 
-         self.height = self.height + 20; // Size of the day
-         self.height = self.height + 40; //Size of the icon of the day
-
-         //In two cases : we enable automatically temperatures. All others information are read from the configuration
-         self.MaxTempVisible(true);
-         self.height = self.height + 20; //Size of the maximum temperature
-         self.MinTempVisible(true);
-         self.height = self.height + 20; //Size of the minimum temperature
-
-         self.AveWindVisible(parseBool(self.widget.configuration.Information.content.AveWind));
-         if (self.AveWindVisible())
-            self.height = self.height + 40; //Size of the Wind Canvas
-
-         self.MaxWindVisible(parseBool(self.widget.configuration.Information.content.MaxWind));
-         if (self.MaxWindVisible())
-            self.height = self.height + 20; //Size of the Maximum Wind
-
-         if (((self.height + 40) <= 200) && parseBool(self.widget.configuration.Information.content.RainDay)) {
-            self.RainDayVisible(true);
-            self.height = self.height + 40; //Size of the rain canvas
-         }
-         else
-            self.RainDayVisible(false);
-      }
-      else if ((self.SizePainted !== 3) && (self.widget.getHeight() > 220)) {
-         //In three cases : we enable automatically temperatures. All others information are read from the configuration
-         self.MaxTempVisible(true);
-         self.MinTempVisible(true);
-         self.MaxWindVisible(parseBool(self.widget.configuration.Information.content.MaxWind));
-         self.AveWindVisible(parseBool(self.widget.configuration.Information.content.AveWind));
-         self.RainDayVisible(parseBool(self.widget.configuration.Information.content.RainDay));
-      }
 
       if (self.widget.getWidth() <= 100) {
           self.DayNumber(1);

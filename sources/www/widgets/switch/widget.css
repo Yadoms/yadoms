@@ -12,3 +12,9 @@
     flex: 1;
     margin: auto;
 }
+
+.widget-switch .toggle-action {
+    flex: 1;
+    align-self: center;
+    justify-content: center;
+}

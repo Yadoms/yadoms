@@ -2,6 +2,8 @@
   "name": "Chart",
   "description": "A widget that provide a chart to display historized data",
   "errorDuringGettingDeviceData": "Error during getting device data",
+  "errorInitialization" : "Error During widget chart initialization",
+  "incompatibilityDifferential": "Differential display and range configuration are incompatible",  
   "loadingData": "Loading data",
   "RangeTooBroad": "Range is too broad",
   "noAvailableData": "No available data",
@@ -51,13 +53,32 @@
             "name": "Color of the plot",
             "description": "Permit to change the color of the plot"
           },
-			 "differentialDisplay": {
-		       "name": "Differential display",
-				 "description": "The display show the difference between each points (useful for cumulative rain measurement, ...). This option is ignore for boolean and enum values."
-			 },
+         "advancedConfiguration": {
+            "name": "Advanced configuration",
+            "description": "",
+            "content": {            
+                "differentialDisplay": {
+                   "name": "Differential display",
+                   "description": "The display show the difference between each points (useful for cumulative rain measurement, ...). This option is ignore for boolean and enum values.",
+                  "values": {
+                     "absolute": "absolute values",
+                     "relative": "relative values"
+                  }             
+                },
+                "periodtype": {
+                  "name": "period value configuration",
+                  "description": "the value used for computed period (example : for temperature, 'average' should be used. For rain drops, 'maximum' match the reality)",
+                  "values": {
+                     "min":"minimum",
+                     "avg": "average",
+                     "max": "maximum"
+                  }
+                }
+            }
+          },
           "PlotType": {
             "name": "Plot Type",
-            "description": "choose beetween following plot type",
+            "description": "choose beetween following plot type. Range are not displayed in hour interval",
             "values": {
               "line": "Line",
               "bar": "Bar",

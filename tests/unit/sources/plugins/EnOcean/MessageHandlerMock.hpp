@@ -2,13 +2,9 @@
 
 // Includes needed to compile tested classes
 #include "../../../../sources/plugins/EnOcean/ReceiveBufferHandler.h"
-#include "../../../../sources/plugins/EnOcean/profiles/generated-eep.h"
+#include <../../../../sources/shared/shared/event/EventHandler.hpp>
 
 
-inline CRorgs::ERorgIds CRorgs::toRorgId(unsigned int)
-{
-   return k4BS_Telegram;
-}
 
 class CMessageHandlerMock : public IMessageHandler
 {

@@ -44,7 +44,7 @@ namespace specificHistorizer
       ///\param[in] unitValue        The Unit Value
       //-----------------------------------------------------
       void addUnit(const std::string& unitName,
-                   const std::string& unitValue);
+                   const std::string& unitValue) const;
 
       //-----------------------------------------------------
       ///\brief                      Add a new period with all integrated parameter
@@ -75,12 +75,12 @@ namespace specificHistorizer
                      const std::string& humidity,
                      const std::string& rainDay,
                      const std::string& feelslike,
-                     const std::string& windChill);
+                     const std::string& windChill) const;
 
       //-----------------------------------------------------
       ///\brief                     Set the city name
       //-----------------------------------------------------
-      void setCityName(const std::string& cityName);
+      void setCityName(const std::string& cityName) const;
 
    private:
       //-----------------------------------------------------

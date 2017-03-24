@@ -5,6 +5,8 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include "serializers/Information.h"
 #include <shared/event/EventHandler.hpp>
+#include <shared/communication/SmallHeaderMessageCutter.h>
+#include <shared/communication/SmallHeaderMessageAssembler.h>
 
 namespace automation
 {
@@ -24,7 +26,7 @@ namespace automation
            m_receiveMessageQueueRemover(m_receiveMessageQueueId),
            m_sendMessageQueue(boost::interprocess::create_only, m_sendMessageQueueId.c_str(), m_maxMessages, m_maxMessageSize),
            m_receiveMessageQueue(boost::interprocess::create_only, m_receiveMessageQueueId.c_str(), m_maxMessages, m_maxMessageSize),
-           m_sendBuffer(boost::make_shared<unsigned char[]>(m_sendMessageQueue.get_max_msg_size())),
+           m_messageCutter(boost::make_shared<shared::communication::SmallHeaderMessageCutter>(m_sendMessageQueue.get_max_msg_size(), m_maxMessages)),
            m_messageQueueReceiveThread(boost::thread(&CIpcAdapter::messageQueueReceiveThreaded, this, shared::CLog::getCurrentThreadName()))
       {
       }
@@ -61,6 +63,8 @@ namespace automation
             auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue.get_max_msg_size()));
             size_t messageSize;
             unsigned int messagePriority;
+            const auto messageAssembler = boost::make_shared<shared::communication::SmallHeaderMessageAssembler>(m_receiveMessageQueue.get_max_msg_size());
+
             while (true)
             {
                try
@@ -76,7 +80,16 @@ namespace automation
                   boost::this_thread::interruption_point();
 
                   if (messageWasReceived)
-                     processMessage(message, messageSize);
+                  {
+                     messageAssembler->appendPart(message,
+                                                  messageSize);
+
+                     if (messageAssembler->isCompleted())
+                     {
+                        processMessage(messageAssembler->message(),
+                                       messageAssembler->messageSize());
+                     }
+                  }
                }
                catch (std::exception& ex)
                {
@@ -108,28 +121,35 @@ namespace automation
 
       void CIpcAdapter::send(const interpreter_IPC::toInterpreter::msg& pbMsg)
       {
+         boost::lock_guard<boost::recursive_mutex> lock(m_sendMutex);
+
          if (!pbMsg.IsInitialized())
          {
-            YADOMS_LOG(error) << "CIpcAdapter::send : message is not fully initialized ==> ignored)";
+            YADOMS_LOG(error) << "CIpcAdapter::send : message is not fully initialized ==> ignored";
             return;
          }
 
-         if (pbMsg.ByteSize() > static_cast<int>(m_sendMessageQueue.get_max_msg_size()))
+         const auto pbMessageSize = pbMsg.ByteSize();
+         const auto serializedMessage = boost::make_shared<unsigned char[]>(pbMessageSize);
+         if (!pbMsg.SerializeWithCachedSizesToArray(serializedMessage.get()))
          {
-            YADOMS_LOG(error) << "CIpcAdapter::send : message is too big (" << pbMsg.ByteSize() << " bytes) ==> ignored)";
+            YADOMS_LOG(error) << "CIpcAdapter::send : fail to serialize message ==> ignored";
             return;
          }
 
-         boost::lock_guard<boost::recursive_mutex> lock(m_sendMutex);
-         if (!pbMsg.SerializeToArray(m_sendBuffer.get(), pbMsg.GetCachedSize()))
+         const auto cuttedMessage = m_messageCutter->cut(serializedMessage,
+                                                         pbMessageSize);
+
+         if (!cuttedMessage->empty())
          {
-            YADOMS_LOG(error) << "CIpcAdapter::send : fail to serialize message (too big ?) ==> ignored)";
-            return;
+            YADOMS_LOG(trace) << "[SEND] message " << pbMsg.OneOf_case() << " to interpreter #" << m_interpreterName;
+            for (const auto& part : *cuttedMessage)
+            {
+               m_sendMessageQueue.send(part->formattedMessage(),
+                                       part->formattedSize(),
+                                       0);
+            }
          }
-
-         YADOMS_LOG(trace) << "[SEND] message " << pbMsg.OneOf_case() << " to interpreter " << m_interpreterName;
-
-         m_sendMessageQueue.send(m_sendBuffer.get(), pbMsg.GetCachedSize(), 0);
       }
 
       void CIpcAdapter::send(const interpreter_IPC::toInterpreter::msg& pbMsg,

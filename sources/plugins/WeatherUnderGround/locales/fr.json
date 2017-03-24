@@ -4,7 +4,7 @@
 	"configurationSchema": {
 		"APIKey": {
 			"name": "API Key",
-			"description": "La clé API est obtenue à cette adresse: <a href=\"https://www.wunderground.com/weather/api/\" target=\"_blank\">."
+			"description": "La clé API est obtenue à cette adresse: <a href=\"https://www.wunderground.com/weather/api/\" target=\"_blank\">https://www.wunderground.com/weather/api/</a>"
 		},
 		"location": {
 			"name": "Localisation",
@@ -38,7 +38,7 @@
       },
       "Forecast10Days" :
       {
-           "name": "Forecast",
+           "name": "Prévisions météorologiques",
            "content":
            {
               "individualRainForecast" :

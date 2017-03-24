@@ -42,8 +42,8 @@ namespace rfxcomMessages
          case OP_CREUSE: NameCounter1 = "LowCostHour";
             NameCounter2 = "NormalHour";
             break;
-         case OP_EJP: NameCounter1 = "EJPHn";
-            NameCounter2 = "EJPPM";
+         case OP_EJP: NameCounter1 = "EJPPM";
+            NameCounter2 = "EJPHn";
             break;
          case OP_TEMPO:
 
@@ -125,9 +125,13 @@ namespace rfxcomMessages
       unsigned long long i_id;
       std::stringstream s_id;
 
-      i_id = (static_cast<unsigned long long>(rbuf.TIC.id1) << 32) + (rbuf.TIC.id2 << 24) + (rbuf.TIC.id3 << 16) + (rbuf.TIC.id4 << 8) + (rbuf.TIC.id5);
+      i_id = (static_cast<unsigned long long>(rbuf.TIC.id1) << 32) + 
+             (static_cast<unsigned long long>(rbuf.TIC.id2) << 24) + 
+             (static_cast<unsigned long long>(rbuf.TIC.id3) << 16) + 
+             (static_cast<unsigned long long>(rbuf.TIC.id4) << 8) + 
+             static_cast<unsigned long long>(rbuf.TIC.id5);
 
-      s_id << std::setfill('0') << std::setw(12) << static_cast<unsigned long long>(i_id);
+      s_id << std::setfill('0') << std::setw(12) << i_id;
 
       return s_id.str();
    }

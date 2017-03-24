@@ -38,7 +38,7 @@ static const std::locale ProtocolFloatFormatingLocale(std::locale(),
 
 
 CMegatecUps::CMegatecUps()
-   : m_logger(YADOMS_LOG(information)),
+   : m_logger(),
      m_protocolErrorCounter(0),
      m_lastSentBuffer(1),
      m_answerIsRequired(true),

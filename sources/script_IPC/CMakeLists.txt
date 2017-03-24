@@ -28,6 +28,20 @@ set(script_IPC_INCLUDE_DIRS ${script_IPC_GENERATED_DIR}/.. CACHE INTERNAL "scrip
 set(script_IPC_LIBRARY script_IPC CACHE INTERNAL "script_IPC library")
 
 
+if(COTIRE_USE)
+   if(COTIRE_USE_UNITY)
+      set_target_properties(script_IPC PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
+   else()
+      set_target_properties(script_IPC PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
+   endif()
+   
+   cotire(script_IPC)
+   
+   if(COTIRE_USE_UNITY)
+      target_link_libraries(script_IPC_unity ${PROTOBUF_LIBRARIES})
+   endif()	
+endif()
+
 
 #Ignore some warnings under VisualStudio for Protobuf generated files
 if(MSVC)

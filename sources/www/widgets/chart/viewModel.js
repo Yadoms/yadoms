@@ -15,8 +15,15 @@ widgetViewModelCtor =
        this.deviceInfo = [];
        this.keywordInfo = [];
        this.ChartPromise = null;
-       
        this.cleaningTask = null;
+       this.differentialDisplay = [];
+       this.incompatibility = false;
+       
+       //This variable is used in differential display
+       this.chartLastValue = [];
+       
+       //this variable is for the selection of the computed value used for the chart (min, avg, max)
+       this.periodValueType = [];
 
        /**
         * Initialization method
@@ -181,6 +188,11 @@ widgetViewModelCtor =
                    });
                });
                d.resolve();
+           })
+           .fail(function (error) {
+               //TODO : To be tested
+               notifyError($.t("widgets/chart:errorInitialization"), error);
+               throw $.t("widgets/chart:errorInitialization");
            });
            return d.promise();
        };
@@ -196,6 +208,10 @@ widgetViewModelCtor =
 
        this.configurationChanged = function () {
            var self = this;
+           
+           // Reset of some values
+           self.periodValueType = [];
+           self.seriesUuid = [];
 
            if ((isNullOrUndefined(self.widget)) || (isNullOrUndefinedOrEmpty(self.widget.configuration)))
                return;
@@ -209,9 +225,8 @@ widgetViewModelCtor =
            self.widgetApi.find(".range-btn[interval='" + self.interval + "']").addClass("widget-toolbar-pressed-button");
 
            //just update some viewmodel info
-           self.seriesUuid = [];
-           self.devicesList = self.widget.configuration.devices.slice(0);
-
+           self.devicesList = self.widget.configuration.devices.slice(0);        
+           
            var arrayOfDeffered = [];
 
            //we create an uuid for each serie
@@ -223,7 +238,7 @@ widgetViewModelCtor =
 
                //we register keyword new acquisition
                self.widgetApi.registerKeywordAcquisitions(device.content.source.keywordId);
-
+               
                // We ask the current device name
                var deffered = DeviceManager.get(device.content.source.deviceId);
                arrayOfDeffered.push(deffered);
@@ -233,9 +248,56 @@ widgetViewModelCtor =
 
                //we ask the current value
                var deffered2 = KeywordManager.get(device.content.source.keywordId);
-               arrayOfDeffered.push(deffered);
+               arrayOfDeffered.push(deffered2);
                deffered2.done(function (keyword) {
                    self.keywordInfo[index] = keyword;
+                   
+                   if (parseBool(device.content.advancedConfiguration.checkbox)){
+                      
+                      // read the differential display variable
+                      try{
+                         if (device.content.advancedConfiguration.content.differentialDisplay ==="relative")
+                            self.differentialDisplay[index] = true;
+                         else
+                            self.differentialDisplay[index] = false;
+                      }
+                      catch(error)
+                      {
+                         self.differentialDisplay[index] = false;
+                         console.warn('Fail to retreive the variable device.content.differentialDisplay : ' + error);
+                         console.log(' default value used : differentialDisplay=false ');
+                      }
+                     
+                      // read the period value we need
+                      try{
+                         self.periodValueType[index] = device.content.advancedConfiguration.content.periodtype;
+                      }
+                      catch(error)
+                      {
+                         self.periodValueType[index] = "avg";
+                         console.warn('Fail to retreive the variable device.content.periodtype : ' + error);
+                         console.log(' default value used : periodtype=avg ');
+                       }
+                   }else{ // automatic managment : the managment of the information is done from the measure type of the keyword                   
+                     if (keyword.measure === "Cumulative"){
+                        self.differentialDisplay[index] = true;
+                        self.periodValueType[index] = "max";
+                     }
+                     else{ // Default values and Absolute value
+                        self.differentialDisplay[index] = false;
+                        self.periodValueType[index] = "avg";
+                     }
+                  }
+                  
+                  if (self.differentialDisplay[index] && device.content.PlotType === "arearange")
+                  {
+                     notifyError($.t("widgets/chart:incompatibilityDifferential"), "error");
+                     self.incompatibility = true;
+                     return;                  
+                  }
+                  else
+                     self.incompatibility = false;
+                   
                });
            });
 
@@ -365,6 +427,8 @@ widgetViewModelCtor =
                            self.chart.yAxis[0].remove(false);
 
                        var arrayOfDeffered = [];
+                       self.chartLastValue = [];
+                       
                        //for each plot in the configuration we request for data
                        $.each(self.widget.configuration.devices, function (index, device) {
 
@@ -408,22 +472,10 @@ widgetViewModelCtor =
 
                                    var lastDate;
                                    var d;
-                                   var lastValue=null;
-                                   var differentialDisplay = false;
-                                   
-                                   try{
-                                      differentialDisplay = parseBool(device.content.differentialDisplay);
-                                   }
-                                   catch(error)
-                                   {
-                                      differentialDisplay = false;
-                                      console.warn('Fail to retreive the variable device.content.differentialDisplay : ' + error);
-                                      console.log(' default value used : differentialDisplay=false ');
-                                   }
 
                                    if (!(deviceIsSummary[index])) {
                                        //data comes from acquisition table
-                                       $.each(data.data, function (index, value) {
+                                       $.each(data.data, function (index2,value) {
                                            lastDate = d;
                                            d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
 
@@ -441,29 +493,30 @@ widgetViewModelCtor =
                                            }
                                            
                                            // The differential display is disabled if the type of the data is enum or boolean
-                                           if (differentialDisplay && !self.isBoolVariable(index) && !self.isEnumVariable(index))
+                                           if (self.differentialDisplay[index] && !self.isBoolVariable(index) && !self.isEnumVariable(index))
                                            {
-                                              if (lastValue != null)
-                                                 plot.push([d, v-lastValue]);
-                                              
-                                              lastValue = v;
+                                              if (!isNullOrUndefined(self.chartLastValue[index]))
+                                                 plot.push([d, v-self.chartLastValue[index]]);
+
+                                              self.chartLastValue[index] = v;
                                            }
                                            else // standard display
                                               plot.push([d, v]);
                                        });
                                    } else {
+                                      
                                        //it is summarized data so we can get min and max curve
                                        var vMin;
                                        var vMax;
-                                       var vMinLastValue=null;
-                                       var vMaxLastValue=null;
 
-                                       $.each(data.data, function (index, value) {
+                                       $.each(data.data, function (index2, value) {
                                            lastDate = d;
                                            d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
-                                           var v;
-                                           if (!isNullOrUndefined(value.avg)) {
-                                               v = parseFloat(value.avg);
+                                           var vplot;
+                                           
+                                           if (!isNullOrUndefined(value[self.periodValueType[index]])) {
+                                               // read the computed desired value (avg/min/max)
+                                               vplot = parseFloat(value[self.periodValueType[index]]);
                                                vMin = parseFloat(value.min);
                                                vMax = parseFloat(value.max);
                                            } else {
@@ -481,28 +534,18 @@ widgetViewModelCtor =
                                            }
 
                                            // The differential display is disabled if the type of the data is enum or boolean
-                                           if (differentialDisplay && !self.isBoolVariable(index) && !self.isEnumVariable(index))
-                                           {
-                                              if (device.content.PlotType === "arearange")
-                                              {
-                                                 if (vMinLastValue!=null && vMaxLastValue!=null)
-                                                    range.push([d, vMin-vMinLastValue, vMax-vMaxLastValue]);
-
-                                                 vMinLastValue=vMin;
-                                                 vMaxLastValue=vMax;
-                                              }
+                                           if (self.differentialDisplay[index] && !self.isBoolVariable(index) && !self.isEnumVariable(index))                                              
+                                           {  
+                                              if (!isNullOrUndefined(self.chartLastValue[index]))
+                                                 plot.push([d, vplot-self.chartLastValue[index]]);
                                               
-                                              if (lastValue != null)
-                                                 plot.push([d, v-lastValue]);
-                                                 
-                                              lastValue = v;                                              
+                                              self.chartLastValue[index] = vplot;
                                            }
-                                           else
-                                           {
+                                           else{
                                               if (device.content.PlotType === "arearange")
                                                   range.push([d, vMin, vMax]);
 
-                                              plot.push([d, v]);                                              
+                                              plot.push([d, vplot]);                                                   
                                            }
                                        });
                                    }
@@ -543,7 +586,7 @@ widgetViewModelCtor =
                                            self.chart.addAxis({
                                                // new axis
                                                id: yAxisName, //The same id as the serie with axis at the beginning
-											   reversedStacks: false,
+                                               reversedStacks: false,
                                                title: {
                                                    text: self.deviceInfo[index].friendlyName + "/" + self.keywordInfo[index].friendlyName,
                                                    style: {
@@ -636,7 +679,7 @@ widgetViewModelCtor =
                                                    zIndex: 0
                                                }, false, false); // Do not redraw immediately
 											   
-											   ChartIndex = ChartIndex + 1;
+                                               ChartIndex = ChartIndex + 1;
 
                                                var serieRange = self.chart.get('range_' + self.seriesUuid[index]);
 
@@ -649,7 +692,7 @@ widgetViewModelCtor =
                                            self.chart.addSeries({
                                                id: self.seriesUuid[index],
                                                data: plot,
-											   index: ChartIndex,
+                                               index: ChartIndex,
                                                dataGrouping: {
                                                    enabled: false
                                                },
@@ -695,9 +738,9 @@ widgetViewModelCtor =
 
                                    self.refreshingData = false;
                                })
-                                   .fail(function (error) {
-                                       notifyError($.t("widgets/chart:errorDuringGettingDeviceData"), error);
-                                   });
+                               .fail(function (error) {
+                                  notifyError($.t("widgets/chart:errorDuringGettingDeviceData"), error);
+                               });
                            }
                        });
 
@@ -724,8 +767,11 @@ widgetViewModelCtor =
            });
 
            // If for all data, length == 0, we display no Data Available
-           if (noAvailableData) {
+           if (noAvailableData && !self.incompatibility) {
                self.chart.showLoading($.t("widgets/chart:noAvailableData"));
+           }
+           else if (self.incompatibility) {
+              self.chart.showLoading($.t("widgets/chart:incompatibilityDifferential"));
            }
            else {
                self.chart.hideLoading();
@@ -824,17 +870,33 @@ widgetViewModelCtor =
                RestEngine.getJson("rest/acquisition/keyword/" + device.content.source.keywordId + "/" + prefix + "/" + dateFrom + "/" + dateTo)
                   .done(function (data) {
                       try {
-                          if (data.data[0] != undefined) {
+                          if (data.data[data.data.length-1] != undefined) {
                               self.chart.hideLoading(); // If a text was displayed before
 							  
                               var serie = self.chart.get(self.seriesUuid[index]);
-                              var serieRange = self.chart.get('range_' + self.seriesUuid[index]);							  
-							  
-                              serie.addPoint([DateTimeFormatter.isoDateToDate(data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data[0].avg)], true, false, true);					  
+                              var serieRange = self.chart.get('range_' + self.seriesUuid[index]);
+                              var registerDate = DateTimeFormatter.isoDateToDate(data.data[data.data.length-1].date)._d.getTime().valueOf();
+                              
+                              if (self.differentialDisplay[index])
+                              {
+                                  if (!isNullOrUndefined(self.chartLastValue[index]))
+                                  {
+                                     serie.addPoint([registerDate, parseFloat(data.data[data.data.length-1][self.periodValueType[index]])-self.chartLastValue[index]], 
+                                                    true, 
+                                                    false, 
+                                                    true);
+                                  }
+                                  
+                                  self.chartLastValue[index] = parseFloat(data.data[data.data.length-1][self.periodValueType[index]]);
+                              }
+                              else                              
+                                 serie.addPoint([registerDate, parseFloat(data.data[data.data.length-1][self.periodValueType[index]])], true, false, true);
 						      
                               //Add also for ranges if any
-                              if (serieRange)
-                                  serieRange.addPoint([DateTimeFormatter.isoDateToDate(data.data[0].date)._d.getTime().valueOf(), parseFloat(data.data[0].min), parseFloat(data.data[0].max)], true, false, true);
+                              if (serieRange && !self.differentialDisplay[index])
+                              {                           
+                                 serieRange.addPoint([registerDate, parseFloat(data.data[data.data.length-1].min), parseFloat(data.data[data.data.length-1].max)], true, false, true);
+                              }
                           }
                       } catch (err) {
                           console.error(err.message);
@@ -876,7 +938,17 @@ widgetViewModelCtor =
                                    case "HOUR":
                                        if (!isNullOrUndefined(serie)) {
                                            self.chart.hideLoading(); // If a text was displayed before
-                                           serie.addPoint([data.date.valueOf(), parseFloat(data.value)], true, false, true);
+                                           
+                                           if (self.differentialDisplay[index])
+                                           {
+                                              if (serie.points.length > 0 && !isNullOrUndefined(self.chartLastValue[index]))
+                                              {
+                                                 serie.addPoint([data.date.valueOf(), parseFloat(data.value) - self.chartLastValue[index]], true, false, true);
+                                              }
+                                              self.chartLastValue[index] = parseFloat(data.value);                                                 
+                                           }
+                                           else
+                                              serie.addPoint([data.date.valueOf(), parseFloat(data.value)], true, false, true);
                                        }
                                        break;
                                    case "DAY":
@@ -886,24 +958,24 @@ widgetViewModelCtor =
 
                                    case "WEEK":
                                        if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 2))
-                                           self.DisplaySummary(index, 1, device, "weeks", "hour");
+                                           self.DisplaySummary(index, 1, device, "hours", "hour");
 
                                        break;
                                    case "MONTH":
                                        if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
-                                           self.DisplaySummary(index, 1, device, "months", "day");
+                                           self.DisplaySummary(index, 1, device, "days", "day");
 
                                        break;
                                    case "HALF_YEAR":
 
                                        if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
-                                           self.DisplaySummary(index, 6, device, "months", "day");
+                                           self.DisplaySummary(index, 6, device, "days", "day");
 
                                        break;
                                    case "YEAR":
 
                                        if ((serie.points.length > 0) && ((isolastdate - serie.points[serie.points.length - 1].x) > 3600000 * 24 * 2))
-                                           self.DisplaySummary(index, 1, device, "years", "day");
+                                           self.DisplaySummary(index, 1, device, "days", "day");
 
                                        break;
                                    default:

@@ -14,6 +14,14 @@ project (Yadoms)
 # Check the minimum CMake version
 cmake_minimum_required (VERSION 3.2.0)
 
+
+##################################################################################################
+## Extract Yadoms version from Version.h
+##################################################################################################
+include(cmake/version.cmake)
+message ("### Building Yadoms ${YADOMS_VERSION} ###\n")
+
+
 ##################################################################################################
 ## Include other cmake scripts
 ##################################################################################################
@@ -45,7 +53,6 @@ endif()
    
 # Compilers/IDE configurations
 include(cmake/compilers.cmake)
-
 
 
 ##################################################################################################
@@ -183,6 +190,31 @@ ENDIF()
 ###############################################
 set (PROTOBUF_SRC_ROOT_FOLDER ${PROTOBUF_ROOT})
 set (Protobuf_USE_STATIC_LIBS ON)
+
+#Helper (FindProtoBuf.cmake allow defingin all variable before finding it)
+#In case protbuf has been installed in a custom directory (${PROTOBUF_ROOT}) 
+#then predefine all files and path (make it works with old cmake <3.9)
+if(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
+   if(NOT PROTOBUF_INCLUDE_DIR)
+      set(PROTOBUF_INCLUDE_DIR "${PROTOBUF_ROOT}/include")
+   endif(NOT PROTOBUF_INCLUDE_DIR)
+   if(NOT PROTOBUF_LIBRARY)
+      set(PROTOBUF_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf.a")
+   endif(NOT PROTOBUF_LIBRARY)
+   if(NOT PROTOBUF_LIBRARY_DEBUG)
+      set(PROTOBUF_LIBRARY_DEBUG "${PROTOBUF_ROOT}/lib/libprotobuf.a")
+   endif(NOT PROTOBUF_LIBRARY_DEBUG)
+   if(NOT PROTOBUF_LITE_LIBRARY)
+      set(PROTOBUF_LITE_LIBRARY "${PROTOBUF_ROOT}/lib/libprotobuf-lite.a")
+   endif(NOT PROTOBUF_LITE_LIBRARY)
+   if(NOT PROTOBUF_LITE_LIBRARY_DEBUG)
+      set(PROTOBUF_LITE_LIBRARY_DEBUG "${PROTOBUF_ROOT}/lib/libprotobuf-lite.a")
+   endif(NOT PROTOBUF_LITE_LIBRARY_DEBUG)
+   if(NOT PROTOBUF_PROTOC_EXECUTABLE)
+      set(PROTOBUF_PROTOC_EXECUTABLE "${PROTOBUF_ROOT}/bin/protoc")
+   endif(NOT PROTOBUF_PROTOC_EXECUTABLE)
+endif(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
+
 find_package(Protobuf 3.0.0 REQUIRED)
 
 if(NOT ${PROTOBUF_FOUND})
@@ -712,6 +744,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/versioning/Version_2_0_0.cpp
 	server/database/common/versioning/Version_3_0_0.h
 	server/database/common/versioning/Version_3_0_0.cpp
+	server/database/common/versioning/Version_3_0_1.h
+	server/database/common/versioning/Version_3_0_1.cpp
 	server/database/common/versioning/VersionUpgraderFactory.h
 	server/database/common/versioning/VersionUpgraderFactory.cpp
 	server/database/common/versioning/VersionException.h
@@ -848,22 +882,20 @@ if(WIN32)
    if(MSVC)
       #update the Windows specific 'yadoms.rc' file which add properties to executable (version, releaseType=
       #as pre build step (yadoms.rc is modified only if needed, to avoid unjustified build
-      add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/yadoms-generated.rc"
-          PRE_BUILD
-          COMMAND ${CMAKE_SOURCE_DIR}/../ideTools/versionPreBuildTool/VersionPreBuildTool/VersionPreBuildTool/bin/Release/VersionPreBuildTool.exe "${CMAKE_SOURCE_DIR}/server/Version.h" "${CMAKE_SOURCE_DIR}/resources/windows/yadoms.rc" "${CMAKE_BINARY_DIR}/yadoms-generated.rc"
-          MAIN_DEPENDENCY "${CMAKE_SOURCE_DIR}/server/Version.h"
-          DEPENDS "${CMAKE_SOURCE_DIR}/server/Version.h"
-          COMMENT Generating yadoms-generated.rc
-      )
-   endif(MSVC)
 
-   # If we build for windows systems, we also include the resource file
-   # containing the manifest, icon and other resources
-   set(YADOMS_SRC ${YADOMS_SRC} 
-		${CMAKE_BINARY_DIR}/yadoms-generated.rc
-		resources/windows/resource.h
-   )
-   source_group(resources resources/windows/*.*)
+      # apply templating to the manifest for setting the version
+      configure_file(${CMAKE_SOURCE_DIR}/resources/windows/yadoms.rc.in
+         "${CMAKE_BINARY_DIR}/yadoms-generated.rc"
+      @ONLY)
+         
+      # If we build for windows systems, we also include the resource file
+      # containing the manifest, icon and other resources
+      set(YADOMS_SRC ${YADOMS_SRC} 
+         ${CMAKE_BINARY_DIR}/yadoms-generated.rc
+         resources/windows/resource.h
+      )
+      source_group(resources resources/windows/*.*)
+   endif(MSVC)
 endif(WIN32)
 
 
@@ -956,53 +988,7 @@ set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 ##################################################################################################
 target_link_libraries(yadoms yadoms-shared plugin_IPC interpreter_IPC script_IPC ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
 
-##################################################################################################
-## Manifest
-## Allow Windows10 detection ability by Poco
-##################################################################################################
-if(WIN32)
-   if(MSVC)
-      # extract Yadoms version from Version.h
-      include(cmake/version.cmake)
-      
-      # apply templating to the manifest for setting the version
-      configure_file(${CMAKE_SOURCE_DIR}/../distribution/yadoms.exe.manifest.in
-         "${CMAKE_BINARY_DIR}/yadoms.exe.manifest"
-      @ONLY)
-      
-      #add a custom command
-      add_custom_command(TARGET yadoms POST_BUILD
-          COMMAND "mt.exe" -manifest \"${CMAKE_BINARY_DIR}\\yadoms.exe.manifest\" -outputresource:"$(TargetDir)$(TargetFileName)"\;\#1
-          COMMENT "Adding manifest..." 
-      )
-   endif(MSVC)
-endif(WIN32)
-
-##################################################################################################
-## Post build commands
-##################################################################################################
-
-#copy Poco depends
-FOREACH (PocoNetSSLDepends ${PocoNetSSLDepends})
-   add_custom_command(TARGET yadoms POST_BUILD
-                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                          ${PocoNetSSLDepends} $<TARGET_FILE_DIR:yadoms>/)
-ENDFOREACH(PocoNetSSLDepends)
-
-#copy PostgreSql depends
-FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
-   add_custom_command(TARGET yadoms POST_BUILD
-                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                          ${PostgreSqlDepend} $<TARGET_FILE_DIR:yadoms>/)
-ENDFOREACH(PostgreSqlDepend)
-
-
-#copy www directory into build directory
-add_custom_command(TARGET yadoms POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-                   ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
-		
-
+                       
 ##################################################################################################
 ## COTIRE
 ##################################################################################################
@@ -1018,11 +1004,94 @@ if(COTIRE_USE)
 	cotire(yadoms)
 	
 	if(COTIRE_USE_UNITY)
-		target_link_libraries(yadoms_unity yadoms-shared_unity ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
 		set_property( TARGET yadoms_unity PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 	endif()	
 endif()
       
+      
+##################################################################################################
+## Manifest
+## Allow Windows10 detection ability by Poco
+##################################################################################################
+if(WIN32)
+   if(MSVC)
+   
+      #prepare version to be used in windows manifest (only 3 digits)
+      set(YADOMS_VERSION_FOR_MANIFEST "${YADOMS_VERSION_MAJOR}.${YADOMS_VERSION_MINOR}.${YADOMS_VERSION_PATCH}")
+
+   
+      # apply templating to the manifest for setting the version
+      configure_file(${CMAKE_SOURCE_DIR}/../distribution/yadoms.exe.manifest.in
+         "${CMAKE_BINARY_DIR}/yadoms.exe.manifest"
+      @ONLY)
+      
+      #add a custom command
+      add_custom_command(TARGET yadoms POST_BUILD
+          COMMAND "mt.exe" -manifest \"${CMAKE_BINARY_DIR}\\yadoms.exe.manifest\" -outputresource:"$(TargetDir)$(TargetFileName)"\;\#1
+          COMMENT "Adding manifest..." 
+      )
+      
+   if(COTIRE_USE)   
+      if(COTIRE_USE_UNITY)
+         add_custom_command(TARGET yadoms_unity POST_BUILD
+             COMMAND "mt.exe" -manifest \"${CMAKE_BINARY_DIR}\\yadoms.exe.manifest\" -outputresource:"$(TargetDir)$(TargetFileName)"\;\#1
+             COMMENT "Adding manifest..." 
+         )
+      endif(COTIRE_USE_UNITY)
+   endif(COTIRE_USE)
+      
+   endif(MSVC)
+endif(WIN32)
+
+##################################################################################################
+## Post build commands
+##################################################################################################
+
+#copy Poco depends
+FOREACH (PocoNetSSLDepends ${PocoNetSSLDepends})
+   add_custom_command(TARGET yadoms POST_BUILD
+                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                          ${PocoNetSSLDepends} $<TARGET_FILE_DIR:yadoms>/)
+                          
+  if(COTIRE_USE)   
+     if(COTIRE_USE_UNITY)
+        add_custom_command(TARGET yadoms_unity POST_BUILD
+                           COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                           ${PocoNetSSLDepends} $<TARGET_FILE_DIR:yadoms_unity>/)
+     endif(COTIRE_USE_UNITY)
+  endif(COTIRE_USE)                          
+ENDFOREACH(PocoNetSSLDepends)
+
+#copy PostgreSql depends
+FOREACH (PostgreSqlDepend ${PostgreSqlDepends})
+   add_custom_command(TARGET yadoms POST_BUILD
+                      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                          ${PostgreSqlDepend} $<TARGET_FILE_DIR:yadoms>/)
+
+  if(COTIRE_USE)   
+     if(COTIRE_USE_UNITY)
+        add_custom_command(TARGET yadoms_unity POST_BUILD
+                           COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                               ${PostgreSqlDepend} $<TARGET_FILE_DIR:yadoms_unity>/)
+     endif(COTIRE_USE_UNITY)
+  endif(COTIRE_USE)                          
+                          
+ENDFOREACH(PostgreSqlDepend)
+
+
+#copy www directory into build directory
+add_custom_command(TARGET yadoms POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                   ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
+		
+if(COTIRE_USE)   
+   if(COTIRE_USE_UNITY)
+      add_custom_command(TARGET yadoms_unity POST_BUILD
+                         COMMAND ${CMAKE_COMMAND} -E copy_directory
+                         ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms_unity>/www/)
+   endif(COTIRE_USE_UNITY)
+endif(COTIRE_USE)                          
+
 ##################################################################################################
 ## CPACK
 ##################################################################################################
@@ -1060,15 +1129,18 @@ set(CPACK_COMPONENT_YADOMSCORE_DISPLAY_NAME "Yadoms Server")
 set(CPACK_COMPONENT_YADOMSCORE_REQUIRED ON)
 set(CPACK_COMPONENT_YADOMSCORE_DESCRIPTION "Yadoms core server software components.")
 
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The ultimate house automation solution")
-SET(CPACK_PACKAGE_VENDOR "Yadoms")
-SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Readme.txt")
-SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Copyright.txt")
-SET(CPACK_PACKAGE_VERSION_MAJOR "1")
-SET(CPACK_PACKAGE_VERSION_MINOR "0")
-SET(CPACK_PACKAGE_VERSION_PATCH "0")
-SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Yadoms")
-SET(CPACK_PACKAGE_CONTACT "Jean-Michel DECORET <decoretjm@gmail.com>")
+set(CPACK_PACKAGE_NAME "Yadoms")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The ultimate house automation solution")
+set(CPACK_PACKAGE_VENDOR "Yadoms")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Readme.txt")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Copyright.txt")
+set(CPACK_PACKAGE_VERSION_MAJOR ${YADOMS_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${YADOMS_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${YADOMS_VERSION_PATCH})
+set(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${YADOMS_VERSION}-${CPACK_SYSTEM_NAME}.") 
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "Yadoms")
+set(CPACK_PACKAGE_CONTACT "Jean-Michel DECORET <decoretjm@gmail.com>")
 
 set(CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE 0)
 
@@ -1176,4 +1248,9 @@ ELSE(WIN32 AND NOT UNIX)
 ENDIF(WIN32 AND NOT UNIX)
 SET(CPACK_PACKAGE_EXECUTABLES "Yadoms" "Yadoms")
 
+# When calling "make package" it do not run "make all" 
+# So package can be realized with make all_unity call before make package
+set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
+
 INCLUDE(CPack)
+

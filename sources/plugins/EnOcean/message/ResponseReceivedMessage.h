@@ -1,5 +1,5 @@
 #pragma once
-#include "../profiles/generated-eep.h"
+#include "Esp3ReceivedPacket.h"
 
 
 namespace message

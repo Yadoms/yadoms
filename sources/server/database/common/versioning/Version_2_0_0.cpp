@@ -6,85 +6,85 @@
 #include "VersionException.h"
 #include <shared/Log.h>
 
-namespace database { namespace common { namespace versioning { 
-
-
-   CVersion_2_0_0::CVersion_2_0_0()
-      :m_version(2, 0, 0) //modify this version to a greater value, to force update of current version
+namespace database
+{
+   namespace common
    {
-   }
-
-   CVersion_2_0_0::~CVersion_2_0_0()
-   {
-   }
-
-   // ISQLiteVersionUpgrade implementation
-   void CVersion_2_0_0::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester> & pRequester, const shared::versioning::CVersion & currentVersion)
-   {
-      if (currentVersion < m_version)
+      namespace versioning
       {
-         //bad version, check base class version
-         CVersion_1_0_0::checkForUpgrade(pRequester, currentVersion);
-         
-         //do update stuff
-         UpdateFrom1_0_0(pRequester);
-      }
-      else
-      {
-         //good version
-      }
-   }
-   // [END] ISQLiteVersionUpgrade implementation
+         // Modify this version to a greater value, to force update of current version
+         const shared::versioning::CVersion CVersion_2_0_0::Version(2, 0, 0);
+
+         CVersion_2_0_0::CVersion_2_0_0()
+         {
+         }
+
+         CVersion_2_0_0::~CVersion_2_0_0()
+         {
+         }
+
+         // ISQLiteVersionUpgrade implementation
+         void CVersion_2_0_0::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& pRequester, const shared::versioning::CVersion& currentVersion)
+         {
+            if (currentVersion < Version)
+            {
+               //bad version, check base class version
+               CVersion_1_0_0::checkForUpgrade(pRequester, currentVersion);
+
+               //do update stuff
+               UpdateFrom1_0_0(pRequester);
+            }
+            else
+            {
+               //good version
+            }
+         }
+
+         // [END] ISQLiteVersionUpgrade implementation
 
 
-   //-----------------------------------
-   /// \brief     Create the database (when tables are not found)
-   ///\param [in] pRequester : database requester object
-   ///\throw      CVersionException if create database failed
-   //-----------------------------------
-   void CVersion_2_0_0::UpdateFrom1_0_0(const boost::shared_ptr<IDatabaseRequester> & pRequester) const
-   {
-      try
-      {
-         YADOMS_LOG(information) << "Upgrading database (1.0.0 -> 2.0.0)";
+         //-----------------------------------
+         /// \brief     Update from previous version
+         ///\param [in] pRequester : database requester object
+         ///\throw      CVersionException if create database failed
+         //-----------------------------------
+         void CVersion_2_0_0::UpdateFrom1_0_0(const boost::shared_ptr<IDatabaseRequester>& pRequester) const
+         {
+            try
+            {
+               YADOMS_LOG(information) << "Upgrading database (1.0.0 -> 2.0.0)";
 
-         //create transaction if supported
-         if(pRequester->transactionSupport())
-            pRequester->transactionBegin();
+               //create transaction if supported
+               if (pRequester->transactionSupport())
+                  pRequester->transactionBegin();
 
-         //add column
-         pRequester->addTableColumn(CDeviceTable::getTableName(), "configuration TEXT");
-         pRequester->addTableColumn(CDeviceTable::getTableName(), "blacklist INTEGER DEFAULT 0");
-         pRequester->addTableColumn(CKeywordTable::getTableName(), "blacklist INTEGER DEFAULT 0");
+               //add column
+               pRequester->addTableColumn(CDeviceTable::getTableName(), "configuration TEXT");
+               pRequester->addTableColumn(CDeviceTable::getTableName(), "blacklist INTEGER DEFAULT 0");
+               pRequester->addTableColumn(CKeywordTable::getTableName(), "blacklist INTEGER DEFAULT 0");
 
-         //set the database version
-         auto qUpdate = pRequester->newQuery();
+               //set the database version
+               updateDatabaseVersion(pRequester,
+                                     Version);
 
-         qUpdate.Update(CConfigurationTable::getTableName())
-            .Set(CConfigurationTable::getValueColumnName(), m_version.toString())
-            .Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "Database")
-            .And(CConfigurationTable::getNameColumnName(), CQUERY_OP_EQUAL, "Version");
+               //commit transaction
+               if (pRequester->transactionSupport())
+                  pRequester->transactionCommit();
 
-         pRequester->queryStatement(qUpdate);
-                  
-         //commit transaction
-         if (pRequester->transactionSupport())
-            pRequester->transactionCommit();
-
-         //compact database
-         pRequester->vacuum();
-      }
-      catch(CVersionException & ex)
-      {
-         YADOMS_LOG(fatal) << "Failed to upgrade database (1.0.0 -> 2.0.0) : " << ex.what();
-         YADOMS_LOG(fatal) << "Rollback transaction";
-         if (pRequester->transactionSupport())
-            pRequester->transactionRollback();
-         throw CVersionException("Failed to update database");
-      }
-   }
-
-} //namespace versioning
-} //namespace common
+               //compact database
+               pRequester->vacuum();
+            }
+            catch (CVersionException& ex)
+            {
+               YADOMS_LOG(fatal) << "Failed to upgrade database (1.0.0 -> 2.0.0) : " << ex.what();
+               YADOMS_LOG(fatal) << "Rollback transaction";
+               if (pRequester->transactionSupport())
+                  pRequester->transactionRollback();
+               throw CVersionException("Failed to update database");
+            }
+         }
+      } //namespace versioning
+   } //namespace common
 } //namespace database 
+
 

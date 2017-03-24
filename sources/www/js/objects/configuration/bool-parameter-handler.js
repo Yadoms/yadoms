@@ -49,7 +49,7 @@ BoolParameterHandler.prototype.getDOMObject = function () {
       input +=          "checked ";
    input +=           "/>";
 
-   return ConfigurationHelper.createControlGroup(self, input, true, "checkbox");
+   return ConfigurationHelper.createControlGroup(self, input);
 };
 
 BoolParameterHandler.prototype.locateInDOM = function () {

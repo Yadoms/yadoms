@@ -1,17 +1,11 @@
 .widget-numeric-display .main-div {
-    flex: 1;
     width: 100%;
     text-align: center;
     display: flex;
     flex-direction: row;
 }
-.widget-numeric-display .value {
-    vertical-align:middle;
-    flex: 2;
-    align-items: stretch;
-    display: flex;
-    flex-direction: row;
-}
+
+/*align-content: stretch;*/
 
 .widget-numeric-display .unit {
     flex: 0 0 20%;
