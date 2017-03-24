@@ -40,10 +40,13 @@ MACRO(PLUGIN_SOURCES _targetName)
          #Try to use plugin icon
          FILE(GLOB PLUGIN_EXE_ICON icon.ico)
          if(NOT EXISTS ${PLUGIN_EXE_ICON})
-            SET(PLUGIN_EXE_ICON "../sources/plugins/common/resources/windows/plugin.ico")
+            SET(PLUGIN_EXE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/../common/resources/windows/plugin.ico")
          endif(NOT EXISTS ${PLUGIN_EXE_ICON})
+         message("PLUGIN_EXE_ICON : ${PLUGIN_EXE_ICON}")
+         
          
          # apply templating to the manifest for setting the version
+         # PLUGIN_EXE_ICON is used in "plugin.rc.in"
          configure_file(../common/resources/windows/plugin.rc.in
             "${CMAKE_BINARY_DIR}/plugin-${_targetName}-generated.rc"
          @ONLY)
