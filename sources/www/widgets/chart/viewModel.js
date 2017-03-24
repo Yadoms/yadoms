@@ -14,7 +14,6 @@ widgetViewModelCtor =
        this.interval = 0;
        this.deviceInfo = [];
        this.keywordInfo = [];
-       this.ChartPromise = null;
        this.cleaningTask = null;
        this.differentialDisplay = [];
        this.incompatibility = false;
@@ -472,6 +471,7 @@ widgetViewModelCtor =
 
                                    var lastDate;
                                    var d;
+                                   var legendText = "";
 
                                    if (!(deviceIsSummary[index])) {
                                        //data comes from acquisition table
@@ -567,6 +567,20 @@ widgetViewModelCtor =
                                        yAxisName = 'axis' + self.seriesUuid[0];
                                    }
 
+                                   console.log (self.deviceInfo);
+                                   
+                                   // axes and series names
+                                   try {
+                                      if (self.widget.configuration.legendLabels ==="Device")
+                                         legendText = self.deviceInfo[index].friendlyName;
+                                      else if (self.widget.configuration.legendLabels ==="Keyword")
+                                         legendText = self.keywordInfo[index].friendlyName;                                       
+                                      else
+                                         legendText = self.deviceInfo[index].friendlyName + "/" + self.keywordInfo[index].friendlyName;
+                                   }catch(error){ // If the configuration doesn't exist (migration, ...) -> default value
+                                      legendText = self.deviceInfo[index].friendlyName + "/" + self.keywordInfo[index].friendlyName;
+                                   }                                   
+                                   
                                    //create axis if needed
                                    if (isNullOrUndefined(self.chart.get(yAxisName))) {
                                        try {
@@ -588,7 +602,7 @@ widgetViewModelCtor =
                                                id: yAxisName, //The same id as the serie with axis at the beginning
                                                reversedStacks: false,
                                                title: {
-                                                   text: self.deviceInfo[index].friendlyName + "/" + self.keywordInfo[index].friendlyName,
+                                                   text: legendText,
                                                    style: {
                                                        color: colorAxis
                                                    }
@@ -634,31 +648,41 @@ widgetViewModelCtor =
                                    }
 
                                    try {
+                                      
+                                       // Standard options
+                                       var serieOption = {
+                                          id: self.seriesUuid[index],
+                                          index: ChartIndex,
+                                          data: plot,
+                                          dataGrouping: {
+                                             enabled: false
+                                          },
+                                          name: legendText,
+                                          connectNulls: self.isBoolVariable(index),
+                                          marker: {
+                                             enabled: null,
+                                             radius: 2,
+                                             symbol: "circle"
+                                          },
+                                          color: color,
+                                          yAxis: yAxisName,
+                                          lineWidth: 2,
+                                          animation: false
+                                       };
+                                      
+                                       if (device.content.PlotType === "arearange") { // arearange
+                                           serieOption.type = 'line';
+                                       }else {                                        // default option
+                                           serieOption.step = self.isBoolVariable(index);  // For boolean values, create steps.
+                                           serieOption.type = device.content.PlotType;
+                                           serieOption.marker.enabled = true;
+                                       }
+                                       
+                                       //Add plot
+                                       self.chart.addSeries( serieOption, false, false); // Do not redraw immediately
+										         ChartIndex = ChartIndex + 1;
+                                           
                                        if (device.content.PlotType === "arearange") {
-
-                                           //Add Line
-                                           self.chart.addSeries({
-                                               id: self.seriesUuid[index],
-                                               index: ChartIndex,
-                                               data: plot,
-                                               dataGrouping: {
-                                                   enabled: false
-                                               },
-                                               name: self.keywordInfo[index].friendlyName,
-                                               connectNulls: self.isBoolVariable(index),
-                                               marker: {
-                                                   enabled: null,
-                                                   radius: 2,
-                                                   symbol: "circle"
-                                               },
-                                               color: color,
-                                               yAxis: yAxisName,
-                                               lineWidth: 2,
-                                               type: 'line'
-                                           }, false, false); // Do not redraw immediately
-										   
-										             ChartIndex = ChartIndex + 1;
-
                                            //Add Ranges
                                            if (deviceIsSummary[index]) {
                                                self.chart.addSeries({
@@ -668,7 +692,7 @@ widgetViewModelCtor =
                                                    dataGrouping: {
                                                        enabled: false
                                                    },
-                                                   name: self.keywordInfo[index].friendlyName + '(Min,Max)',
+                                                   name: legendText + '(Min,Max)',
                                                    linkedTo: self.seriesUuid[index],
                                                    color: color,
                                                    yAxis: yAxisName,
@@ -687,31 +711,6 @@ widgetViewModelCtor =
                                                if (serieRange)
                                                    serieRange.units = $.t(self.keywordInfo[index].units);
                                            }
-                                       } else {
-
-                                           self.chart.addSeries({
-                                               id: self.seriesUuid[index],
-                                               data: plot,
-                                               index: ChartIndex,
-                                               dataGrouping: {
-                                                   enabled: false
-                                               },
-                                               name: self.keywordInfo[index].friendlyName,
-                                               marker: {
-                                                   enabled: true,
-                                                   radius: 2,
-                                                   symbol: "circle"
-                                               },
-                                               color: color,
-                                               yAxis: yAxisName,
-                                               lineWidth: 2,
-                                               connectNulls: self.isBoolVariable(index), // For boolean values, connects points far away.
-                                               step: self.isBoolVariable(index), // For boolean values, create steps.
-                                               type: device.content.PlotType,
-                                               animation: false
-                                           }, false, false); // Do not redraw immediately
-										   
-										             ChartIndex = ChartIndex + 1;
                                        }
                                    } catch (err2) {
                                        console.log('Fail to create serie : ' + err2);

@@ -32,6 +32,15 @@
 			},         
 			"defaultValue": "DAY"
 		},
+      "legendLabels" : {
+			"type": "enum",
+			"values": {
+				"DeviceAndKeyword": "",
+				"Device": "",
+				"Keyword": ""
+			},         
+			"defaultValue": "DeviceAndKeyword"      
+      },
 		"oneAxis": {
 			"type": "section",
 			"defaultValue": "false",
