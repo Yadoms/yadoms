@@ -2,6 +2,14 @@
 
 set (PYTHON_REQUIRED_VERSION 2.7)
 include(findPython.cmake)
+
+if(${PYTHONLIBS_FOUND})
+   message("Python FOUND : ${PYTHONLIBS_VERSION_STRING}")
+   message("PYTHON_LIBRARIES : ${PYTHON_LIBRARIES}")
+   message("PYTHON_INCLUDE_DIRS : ${PYTHON_INCLUDE_DIRS}")
+else(${PYTHONLIBS_FOUND})
+   message(ERROR "Python NOT FOUND")
+endif(${PYTHONLIBS_FOUND})
   
 if(PYTHONLIBS_FOUND)
 

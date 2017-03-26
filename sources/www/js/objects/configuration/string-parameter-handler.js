@@ -162,7 +162,12 @@ StringParameterHandler.prototype.getCurrentConfiguration = function () {
          this.value = $.md5(val);
       }
    }
-   else
+   else {
         this.value = val;
-   return this.value;
+   }
+   
+   var d = new $.Deferred();
+   d.resolve(this.value);
+   return d.promise();
+
 };

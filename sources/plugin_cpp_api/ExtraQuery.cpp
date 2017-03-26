@@ -5,10 +5,12 @@ namespace plugin_cpp_api
 {
    CExtraQuery::CExtraQuery(const plugin_IPC::toPlugin::ExtraQuery& msg,
                             boost::function1<void, const shared::CDataContainer&> sucessCallback,
-                            boost::function1<void, const std::string&> errorCallback)
+                            boost::function1<void, const std::string&> errorCallback,
+                           boost::function2<void, const float, const std::string&> progressionCallback)
       : m_data(msg.query(), shared::CDataContainer(msg.data())),
         m_sucessCallback(sucessCallback),
-        m_errorCallback(errorCallback)
+        m_errorCallback(errorCallback),
+        m_progressionCallback(progressionCallback)
    {
    }
 
@@ -29,6 +31,11 @@ namespace plugin_cpp_api
    void CExtraQuery::sendError(const std::string& errorMessage)
    {
       m_errorCallback(errorMessage);
+   }
+
+   void CExtraQuery::reportProgress(const float progression, const std::string& message)
+   {
+      m_progressionCallback(progression, message);
    }
 } // namespace plugin_cpp_api	
 

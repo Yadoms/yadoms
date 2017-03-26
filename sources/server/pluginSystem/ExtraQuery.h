@@ -1,9 +1,8 @@
 #pragma once
-#include "communication/callback/ISynchronousCallback.h"
-#include "communication/callback/ICallbackRequest.h"
 #include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include <shared/plugin/yPluginApi/IExtraQueryData.h>
-
+#include "task/ITask.h"
+#include <shared/event/EventHandler.hpp>
 
 namespace pluginSystem
 {
@@ -19,8 +18,7 @@ namespace pluginSystem
       ///\param[in] data         The query data
       ///\param [in]  callback   The callback to call when request returns
       //-----------------------------------------------------
-      explicit CExtraQuery(const shared::plugin::yPluginApi::IExtraQueryData& data,
-                           communication::callback::ISynchronousCallback<shared::CDataContainer>& callback);
+      explicit CExtraQuery(const shared::plugin::yPluginApi::IExtraQueryData& data);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -31,13 +29,20 @@ namespace pluginSystem
       const shared::plugin::yPluginApi::IExtraQueryData& getData() const override;
       void sendSuccess(const shared::CDataContainer& data) override;
       void sendError(const std::string& errorMessage) override;
+      void reportProgress(const float progression, const std::string& message) override;
       // [END] IExtraQuery implementation
 
+      void waitForExtraQueryProcess(task::ITask::TaskProgressFunc f);
    private:
       //-----------------------------------------------------
       ///\brief Internal data
       //-----------------------------------------------------
-      boost::shared_ptr<communication::callback::ICallbackRequest<shared::plugin::yPluginApi::IExtraQueryData, shared::CDataContainer> > m_requestPtr;
+      const shared::plugin::yPluginApi::IExtraQueryData& m_data;
+
+      //-----------------------------------------------------
+      ///\brief Internal event handler
+      //-----------------------------------------------------
+      shared::event::CEventHandler m_eventHandler;
    };
 } // namespace pluginSystem	
 

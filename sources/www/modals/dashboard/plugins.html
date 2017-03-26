@@ -89,7 +89,7 @@
       
       actionsBtns += "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.delete\"><span class=\"fa fa-trash\"></span></button>\n</div>";
 
-      var statusField = "<span class=\"label label-success label-status\"></span>\n";
+      var statusField = "<div class=\"progress\"> <div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" style=\"width: 0\"> <span class=\"hidden\">60% Complete</span> </div> </div><span class=\"label label-success label-status\"></span>\n";
       if (failToLoadPluginPackage === true)
          statusField = "<span class=\"label label-danger\" data-i18n=\"modals.dashboard.sub-windows.plugins.packageError\"></span>\n";
 
@@ -103,7 +103,7 @@
 			  "<td class=\"plugin-actions vert-align\"></td>" +
 			  "<td class=\"plugin-status vert-align\"></td>" +
 			  "</tr>";
-	  
+
 	  if ( positionNewPluginInstance == null )
 		  $pluginInstanceList.append( frameworkPluginInstance );
 	  else
@@ -327,18 +327,50 @@
       });
    }
 
+   function postExtraQuery(pi, commandName, data) {
+      PluginInstanceManager.postExtraQuery(pi, commandName, data)
+      .done(function (taskId) {
+            if(taskId) {
+                  //we listen for webSocket event
+                  $(document).on("taskupdatenotification." + taskId, function (e, taskUpdateInformation) {
+                        var $line = getPluginDomRow(pi);
+                        $line.find("div.progress-bar").css("width", taskUpdateInformation.progression + "%");
+                        $line.find("span.message").text($.t("core." + taskUpdateInformation.message));
+
+                        //we manage the end of the task
+                        if (taskUpdateInformation.taskState.toLowerCase() === "fail") {
+                              console.error("Unable to update Yadoms : " + taskUpdateInformation.exception);
+                              notifyError($.t("core." + taskUpdateInformation.message));
+
+                              //we remove the progress information and restore buttons
+                              item.processing = false;
+                              $line.find("div.progress-bar").css("width", "100%");
+                        }
+
+                        if (taskUpdateInformation.taskState.toLowerCase() === "success") {
+                              notifySuccess($.t("core." + taskUpdateInformation.message));
+                              //we display a non closable modal and wait for yadoms restart
+                              waitForUpdateFinished();
+                        }
+
+                  });
+            }
+      });
+   }
+
    function onExtraQuery(pi, commandName, commandConfig) {
       if (commandConfig && commandConfig.commandData) {
          Yadoms.modals.pluginExtraQueriesConfigure.loadAsync()
             .done(function() {
                Yadoms.ConfigureExtraQueries(commandName, commandConfig.commandData, pi)
-               .done(function (result) {
-                  PluginInstanceManager.postExtraQuery(pi, commandName, result);
+               .done(function(data) {
+                  postExtraQuery(pi, commandName, data);
                });
             });
       } else {
-         PluginInstanceManager.postExtraQuery(pi, commandName);
+            postExtraQuery(pi, commandName);      
       }
+
    }
 
    function periodicDashboardPluginTask() {

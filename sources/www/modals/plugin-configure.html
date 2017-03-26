@@ -57,13 +57,20 @@
                   },
                   submitSuccess: function($form, event) {
                      event.preventDefault();
-                     pluginInstance.displayName = nameParameter.getCurrentConfiguration();
-                     pluginInstance.configuration = configMgr.getCurrentConfiguration();
+                     
+                     nameParameter.getCurrentConfiguration()
+                     .done(function(pdn) {
+                        configMgr.getCurrentConfiguration()
+                        .done(function(cfg) {
+                           pluginInstance.displayName = pdn;
+                           pluginInstance.configuration = cfg;
 
-                     console.debug("End of Plugin Configuration : " + JSON.stringify(pluginInstance));
+                           console.debug("End of Plugin Configuration : " + JSON.stringify(pluginInstance));
 
-                     $("div#configure-plugin-modal").modal("hide");
-                     callback();
+                           $("div#configure-plugin-modal").modal("hide");
+                           callback();                        
+                        });
+                     });
                   },
                   filter: function() {
                      //we check only control that have class enable-validation and are visible

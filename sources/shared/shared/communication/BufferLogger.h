@@ -27,7 +27,6 @@ namespace shared
          void logSent(const CByteBuffer& data) override;
          // [END] IBufferLogger implementation
 
-      protected:
          static std::string msgToString(const CByteBuffer& data);
       };
    }

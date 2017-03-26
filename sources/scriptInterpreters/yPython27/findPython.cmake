@@ -17,18 +17,13 @@ string(REPLACE "." "" PYTHON_REQUIRED_VERSION_NO_DOT ${PYTHON_REQUIRED_VERSION})
 
 # find_package seems to not work correctly under Windows, so use CMakeListsUserConfig.txt to get Python path
 if (PYTHON_ROOT)
-
    find_path(PYTHON_INCLUDE_DIRS NAMES Python.h 
       PATHS 
          ${PYTHON_ROOT}/include
          ${PYTHON_ROOT}/Include
          ${PYTHON_ROOT}
       )
-   
-   #include Python.h path and parent dir
-   set(PYTHON_INCLUDE_DIRS
-      ${PYTHON_INCLUDE_DIRS}
-      ${PYTHON_INCLUDE_DIRS}/..)
+
       
    if(WIN32)
       if(PYTHON_USE_SOURCES)
@@ -45,17 +40,28 @@ if (PYTHON_ROOT)
          )
       select_library_configurations(PYTHON)
          
-      else()
+      else(PYTHON_USE_SOURCES)
 
          find_library(PYTHON_LIBRARIES NAMES python${PYTHON_REQUIRED_VERSION_NO_DOT}.lib PATHS ${PYTHON_ROOT}/libs)
       
-      endif()
+      endif(PYTHON_USE_SOURCES)
       
-   else()
-
-      find_library(PYTHON_LIBRARIES NAMES libpython${PYTHON_REQUIRED_VERSION}.a PATHS ${PYTHON_ROOT}/libs)
-   
-   endif()
+   else(WIN32)
+      if(PYTHON_USE_SOURCES)
+         #include also root path
+         SET(PYTHON_INCLUDE_DIRS
+            ${PYTHON_INCLUDE_DIRS}
+            ${PYTHON_ROOT}
+         )
+         
+         #define libraroies and executable
+         SET(PYTHON_LIBRARIES ${PYTHON_ROOT}/libpython${PYTHON_REQUIRED_VERSION}.a)
+         SET(PYTHON_EXECUTABLE ${PYTHON_ROOT}/python)
+            
+      else(PYTHON_USE_SOURCES)
+         find_library(PYTHON_LIBRARIES NAMES libpython${PYTHON_REQUIRED_VERSION}.a PATHS ${PYTHON_ROOT}/libs)
+      endif(PYTHON_USE_SOURCES)
+   endif(WIN32)
 
    # handle the QUIETLY and REQUIRED arguments and set PYTHONLIBS_FOUND to TRUE if 
    # all listed variables are TRUE

@@ -108,6 +108,11 @@ message ExtraQueryAnswer {
 	string result = 2;
 }
 
+message ExtraQueryProgression {
+	float progress = 1;
+	string message = 2;
+}
+
 message RemoveDevice {
 	string device = 1;
 }
@@ -183,5 +188,6 @@ message msg {
 		UpdateDeviceConfiguration updateDeviceConfiguration = 24;
 		AllKeywordsRequest allKeywordsRequest = 25;
 		DeclareKeywords declareKeywords = 26;
+		ExtraQueryProgression extraQueryProgress = 27;
 	}
 }

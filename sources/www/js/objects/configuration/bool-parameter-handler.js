@@ -49,7 +49,7 @@ BoolParameterHandler.prototype.getDOMObject = function () {
       input +=          "checked ";
    input +=           "/>";
 
-   return ConfigurationHelper.createControlGroup(self, input, true, "checkbox");
+   return ConfigurationHelper.createControlGroup(self, input);
 };
 
 BoolParameterHandler.prototype.locateInDOM = function () {
@@ -82,9 +82,13 @@ BoolParameterHandler.prototype.setEnabled = function (enabled) {
  * @returns {bool}
  */
 BoolParameterHandler.prototype.getCurrentConfiguration = function () {
+   var d = new $.Deferred();
    this.value = parseBool($("input#" + this.uuid).prop("checked"));
    
+   
    if(this.useIntegerResult && this.useIntegerResult === true)
-      return (this.value == true)?1:0;
-   return this.value;
+      d.resolve((this.value == true)?1:0);
+   else
+      d.resolve(this.value);
+   return d.promise();
 };

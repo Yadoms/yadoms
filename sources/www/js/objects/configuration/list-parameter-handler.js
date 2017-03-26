@@ -289,11 +289,24 @@ ListParameterHandler.prototype.setEnabled = function (enabled) {
  */
 ListParameterHandler.prototype.getCurrentConfiguration = function () {
    //we update configurationValues with content of DOM
+   var d= new $.Deferred();
    var self = this;
    self.configurationValues = [];
+   var deferredArray =[];
+   
    $.each(self.items, function (key, value) {
-      self.configurationValues.push(value.getCurrentConfiguration());
+      var deferred = value.getCurrentConfiguration();
+      deferredArray.push(deferred);
+      deferred.done(function (data) {
+          self.configurationValues.push(data);
+      });      
    });
 
-   return self.configurationValues;
+
+   $.whenAll(deferredArray)
+   .done(function() {
+      d.resolve(self.configurationValues);
+   });   
+   
+   return d.promise();
 };
