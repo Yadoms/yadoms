@@ -84,7 +84,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The keyword associated with signal strengh
    //--------------------------------------------------------------
-   boost::shared_ptr<yApi::historization::CSignalStrength> m_signalStrength;
+   boost::shared_ptr<yApi::historization::CSignalPower> m_signalPower;
 
    //--------------------------------------------------------------
    /// \brief	The keyword associated with date time under string format useful only for demo

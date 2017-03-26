@@ -72,9 +72,9 @@ namespace rfxcomMessages
       boost::shared_ptr<ICartelectronicSubtype> m_subTypeManager;
 
       //--------------------------------------------------------------
-      /// \brief	The keyword associated with signalStrength
+      /// \brief	The keyword associated with signalPower
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CSignalStrength> m_signalStrength;
+      boost::shared_ptr<yApi::historization::CSignalPower> m_signalPower;
 
       //--------------------------------------------------------------
       /// \brief	The battery level (percent)

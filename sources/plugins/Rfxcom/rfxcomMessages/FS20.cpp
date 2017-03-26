@@ -28,11 +28,11 @@ namespace rfxcomMessages
                 const std::string& command,
                 const shared::CDataContainer& deviceDetails)
       : m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
-      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_state , m_signalStrength })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_state , m_signalPower })
    {
       m_state->set(command);
-      m_signalStrength->set(0);
+      m_signalPower->set(0);
 
       m_subType = deviceDetails.get<unsigned char>("subType");
       m_houseCode = deviceDetails.get<std::string>("houseCode");
@@ -46,11 +46,11 @@ namespace rfxcomMessages
                 unsigned int subType,
                 const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
-      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_state , m_signalStrength })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_state , m_signalPower })
    {
       m_state->set(0);
-      m_signalStrength->set(0);
+      m_signalPower->set(0);
 
       m_subType = static_cast<unsigned char>(subType);
       switch (m_subType)
@@ -74,8 +74,8 @@ namespace rfxcomMessages
                 const RBUF& rbuf,
                 size_t rbufSize)
       : m_state(boost::make_shared<yApi::historization::CDimmable>("state")),
-      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_state , m_signalStrength })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_state , m_signalPower })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -170,7 +170,7 @@ namespace rfxcomMessages
       }
       }
 
-      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.FS20.signalStrength));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.FS20.signalPower));
 
       Init(api);
    }
@@ -340,7 +340,7 @@ namespace rfxcomMessages
       }
       }
 
-      rbuf.FS20.signalStrength = 0;
+      rbuf.FS20.signalPower = 0;
       rbuf.FS20.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(FS20));

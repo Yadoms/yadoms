@@ -11,11 +11,11 @@ namespace rfxcomMessages
                               const std::string& command,
                               const shared::CDataContainer& deviceDetails)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
-      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_state, m_signalStrength })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_state, m_signalPower })
    {
       m_state->setCommand(command);
-      m_signalStrength->set(0);
+      m_signalPower->set(0);
 
       m_subType = deviceDetails.get<unsigned char>("subType");
       m_unitCode = deviceDetails.get<unsigned int>("unitCode");
@@ -27,11 +27,11 @@ namespace rfxcomMessages
                               unsigned int subType,
                               const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
-      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_state, m_signalStrength })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_state, m_signalPower })
    {
       m_state->set(false);
-      m_signalStrength->set(0);
+      m_signalPower->set(0);
 
       m_subType = static_cast<unsigned char>(subType);
       switch (m_subType)
@@ -52,8 +52,8 @@ namespace rfxcomMessages
                               const RBUF& rbuf,
                               size_t rbufSize)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
-      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_state, m_signalStrength })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_state, m_signalPower })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -65,7 +65,7 @@ namespace rfxcomMessages
       m_subType = rbuf.THERMOSTAT2.subtype;
       m_unitCode = rbuf.THERMOSTAT2.unitcode;
       m_state->set(fromProtocolState(rbuf.THERMOSTAT2.cmnd));
-      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.THERMOSTAT2.signalStrength));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.THERMOSTAT2.signalPower));
 
       Init(api);
    }
@@ -103,7 +103,7 @@ namespace rfxcomMessages
       rbuf.THERMOSTAT2.seqnbr = seqNumberProvider->next();
       rbuf.THERMOSTAT2.unitcode = static_cast<BYTE>(m_unitCode);
       rbuf.THERMOSTAT2.cmnd = toProtocolState(*m_state);
-      rbuf.THERMOSTAT2.signalStrength = 0;
+      rbuf.THERMOSTAT2.signalPower = 0;
       rbuf.THERMOSTAT2.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(THERMOSTAT2));

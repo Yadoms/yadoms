@@ -10,10 +10,10 @@ namespace rfxcomMessages
                           const std::string& command,
                           const shared::CDataContainer& deviceDetails)
       : m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
-      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_keyword , m_signalStrength })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_keyword , m_signalPower })
    {
-      m_signalStrength->set(0);
+      m_signalPower->set(0);
 
       m_subType = deviceDetails.get<unsigned char>("subType");
       m_id = deviceDetails.get<unsigned int>("id");
@@ -25,10 +25,10 @@ namespace rfxcomMessages
                           unsigned int subType,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
-      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_keyword , m_signalStrength })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_keyword , m_signalPower })
    {
-      m_signalStrength->set(0);
+      m_signalPower->set(0);
 
       m_subType = static_cast<unsigned char>(subType);
       if (m_subType != sTypePT2262)
@@ -43,8 +43,8 @@ namespace rfxcomMessages
                           const RBUF& rbuf,
                           size_t rbufSize)
       : m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
-      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_keyword , m_signalStrength })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_keyword , m_signalPower })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -55,7 +55,7 @@ namespace rfxcomMessages
 
       m_subType = rbuf.LIGHTING4.subtype;
       m_id = rbuf.LIGHTING4.cmd1 << 16 | rbuf.LIGHTING4.cmd2 << 8 | rbuf.LIGHTING4.cmd3;
-      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.LIGHTING4.signalStrength));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING4.signalPower));
 
       Init(api);
    }
@@ -96,7 +96,7 @@ namespace rfxcomMessages
       unsigned short pulse = 1400; // See RFXCom specification
       rbuf.LIGHTING4.pulseHigh = static_cast<unsigned char>(0xFF & (pulse >> 8));
       rbuf.LIGHTING4.pulseLow = static_cast<unsigned char>(0xFF & pulse);
-      rbuf.LIGHTING4.signalStrength = 0;
+      rbuf.LIGHTING4.signalPower = 0;
       rbuf.LIGHTING4.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(LIGHTING4));

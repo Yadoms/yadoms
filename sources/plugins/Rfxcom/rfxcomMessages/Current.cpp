@@ -14,8 +14,8 @@ namespace rfxcomMessages
       m_current2(boost::make_shared<yApi::historization::CCurrent>("channel_2")),
       m_current3(boost::make_shared<yApi::historization::CCurrent>("channel_3")),
       m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_current1 , m_current2, m_current3, m_batteryLevel , m_signalStrength })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_current1 , m_current2, m_current3, m_batteryLevel , m_signalPower })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -33,7 +33,7 @@ namespace rfxcomMessages
       m_current3->set(rbuf.CURRENT.ch3h << 8 | rbuf.CURRENT.ch3l);
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.CURRENT.battery_level));
-      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.CURRENT.signalStrength));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.CURRENT.signalPower));
 
       Init(api);
    }

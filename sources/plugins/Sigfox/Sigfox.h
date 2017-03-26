@@ -71,7 +71,7 @@ private:
    /// \brief	The keyword associated with rssi
    //--------------------------------------------------------------
    boost::shared_ptr<yApi::historization::CRssi> m_rssi;
-   boost::shared_ptr<yApi::historization::CSignalStrength> m_signalStrength;
+   boost::shared_ptr<yApi::historization::CSignalPower> m_signalPower;
 
    //--------------------------------------------------------------
    /// \brief	The battery level (percent)

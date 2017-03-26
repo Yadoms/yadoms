@@ -12,8 +12,8 @@ namespace rfxcomMessages
                         size_t rbufSize)
       : m_dateTime(boost::make_shared<yApi::historization::CDateTime>("datetime")),
       m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_dateTime, m_batteryLevel , m_signalStrength })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_dateTime, m_batteryLevel , m_signalPower })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -30,7 +30,7 @@ namespace rfxcomMessages
                                                boost::posix_time::time_duration(rbuf.DT.hr, rbuf.DT.min, rbuf.DT.sec)));
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.DT.battery_level));
-      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.DT.signalStrength));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.DT.signalPower));
 
       Init(api);
    }

@@ -12,12 +12,12 @@ namespace rfxcomMessages
                       const shared::CDataContainer& deviceDetails)
       : m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
       m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_state, m_batteryLevel, m_signalStrength })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_state, m_batteryLevel, m_signalPower })
    {
       m_state->setCommand(command);
       m_batteryLevel->set(100);
-      m_signalStrength->set(0);
+      m_signalPower->set(0);
 
       m_subType = deviceDetails.get<unsigned char>("subType");
       m_id = deviceDetails.get<unsigned int>("id");
@@ -31,12 +31,12 @@ namespace rfxcomMessages
                       const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
       m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_state, m_batteryLevel, m_signalStrength })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_state, m_batteryLevel, m_signalPower })
    {
       m_state->set(yApi::historization::ECurtainCommand::kStop);
       m_batteryLevel->set(100);
-      m_signalStrength->set(0);
+      m_signalPower->set(0);
 
       m_subType = static_cast<unsigned char>(subType);
       switch (m_subType)
@@ -71,8 +71,8 @@ namespace rfxcomMessages
                       size_t rbufSize)
       : m_state(boost::make_shared<yApi::historization::CCurtain>("state")),
       m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_state, m_batteryLevel, m_signalStrength })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_state, m_batteryLevel, m_signalPower })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -118,7 +118,7 @@ namespace rfxcomMessages
       m_unitCode = rbuf.BLINDS1.unitcode;
       m_state->set(fromProtocolState(rbuf.BLINDS1.cmnd));
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.BLINDS1.filler)); // filler is specified as battery level in RFXtrx SDF.pdf
-      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.BLINDS1.signalStrength));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.BLINDS1.signalPower));
 
       Init(api);
    }
@@ -205,7 +205,7 @@ namespace rfxcomMessages
 
       buffer.BLINDS1.unitcode = m_unitCode;
       buffer.BLINDS1.cmnd = toProtocolState(*m_state);
-      buffer.BLINDS1.signalStrength = 0;
+      buffer.BLINDS1.signalPower = 0;
       buffer.BLINDS1.filler = 0;
 
       return toBufferQueue(buffer, GET_RBUF_STRUCT_SIZE(BLINDS1));

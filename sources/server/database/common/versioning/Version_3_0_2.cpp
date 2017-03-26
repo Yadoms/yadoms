@@ -65,17 +65,17 @@ namespace database
 
                // Change the name from rssi to signalStrength
                qUpdateNameColumn.Update(CKeywordTable::getTableName()).
-                  Set(CKeywordTable::getNameColumnName(), "signalStrength").
+                  Set(CKeywordTable::getNameColumnName(), "signalPower").
                   Where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, "rssi");
 
                // Change the friendlyName  from rssi to signalStrength
                qUpdateFriendlyNameColumn.Update(CKeywordTable::getTableName()).
-                  Set(CKeywordTable::getFriendlyNameColumnName(), "signalStrength").
+                  Set(CKeywordTable::getFriendlyNameColumnName(), "signalPower").
                   Where(CKeywordTable::getFriendlyNameColumnName(), CQUERY_OP_EQUAL, "rssi");
 
                // Change the capacityName  from rssi to signalStrength
                qUpdateCapacityNameColumn.Update(CKeywordTable::getTableName()).
-                  Set(CKeywordTable::getCapacityNameColumnName(), "signalStrength").
+                  Set(CKeywordTable::getCapacityNameColumnName(), "signalPower").
                   Where(CKeywordTable::getFriendlyNameColumnName(), CQUERY_OP_EQUAL, "rssi");
 
                pRequester->queryStatement(qUpdateNameColumn);

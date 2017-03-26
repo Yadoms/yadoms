@@ -12,8 +12,8 @@ namespace rfxcomMessages
                         size_t rbufSize)
       : m_humidity(boost::make_shared<yApi::historization::CHumidity>("humidity")),
       m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_humidity , m_batteryLevel , m_signalStrength })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_humidity , m_batteryLevel , m_signalPower })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -29,7 +29,7 @@ namespace rfxcomMessages
       m_humidity->set(rbuf.HUM.humidity);
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.HUM.battery_level));
-      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.HUM.signalStrength));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.HUM.signalPower));
 
       Init(api);
    }

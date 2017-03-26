@@ -12,10 +12,10 @@ namespace rfxcomMessages
    CLighting5::CLighting5(boost::shared_ptr<yApi::IYPluginApi> api,
                           const std::string& command,
                           const shared::CDataContainer& deviceDetails)
-      : m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_signalStrength })
+      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_signalPower })
    {
-      m_signalStrength->set(0);
+      m_signalPower->set(0);
 
       createSubType(deviceDetails.get<unsigned char>("subType"));
       m_id = deviceDetails.get<unsigned int>("id");
@@ -28,10 +28,10 @@ namespace rfxcomMessages
    CLighting5::CLighting5(boost::shared_ptr<yApi::IYPluginApi> api,
                           unsigned int subType,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_signalStrength })
+      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_signalPower })
    {
-      m_signalStrength->set(0);
+      m_signalPower->set(0);
 
       createSubType(static_cast<unsigned char>(subType));
 
@@ -45,8 +45,8 @@ namespace rfxcomMessages
    CLighting5::CLighting5(boost::shared_ptr<yApi::IYPluginApi> api,
                           const RBUF& rbuf,
                           size_t rbufSize)
-      : m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_signalStrength })
+      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_signalPower })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -59,7 +59,7 @@ namespace rfxcomMessages
       m_id = rbuf.LIGHTING5.id1 << 16 | rbuf.LIGHTING5.id2 << 8 | rbuf.LIGHTING5.id3;
       m_unitCode = rbuf.LIGHTING5.unitcode;
       m_subTypeManager->setFromProtocolState(rbuf.LIGHTING5.cmnd, rbuf.LIGHTING5.level);
-      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.LIGHTING5.signalStrength));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING5.signalPower));
 
       declare(api);
    }
@@ -148,7 +148,7 @@ namespace rfxcomMessages
       rbuf.LIGHTING5.id2 = static_cast<unsigned char>(0xFF & (m_id >> 8));
       rbuf.LIGHTING5.id3 = static_cast<unsigned char>(0xFF & m_id);
       rbuf.LIGHTING5.unitcode = m_unitCode;
-      rbuf.LIGHTING5.signalStrength = 0;
+      rbuf.LIGHTING5.signalPower = 0;
       rbuf.LIGHTING5.filler = 0;
 
       // Some sub-protocols need several messages

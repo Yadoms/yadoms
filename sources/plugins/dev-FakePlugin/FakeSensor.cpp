@@ -11,17 +11,17 @@ CFakeSensor::CFakeSensor(const std::string& deviceName)
                                                                  yApi::EKeywordAccessMode::kGet,
                                                                  yApi::historization::EMeasureType::kAbsolute,
                                                                  yApi::historization::typeInfo::CDoubleTypeInfo().setMin(0).setMax(5).setPrecision(0.1))),
-   m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+   m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
      m_dateTime(boost::make_shared<yApi::historization::CDateTime>("dateTime",
                                                                    shared::plugin::yPluginApi::EKeywordAccessMode::kGet)),
-     m_historizers({m_temperature1, m_temperature2, m_batteryLevel, m_signalStrength, m_dateTime, m_current}),
+     m_historizers({m_temperature1, m_temperature2, m_batteryLevel, m_signalPower, m_dateTime, m_current}),
      m_dist(0, 20)
 {
    m_temperature1->set(25.0);
    m_temperature2->set(10.0);
    m_batteryLevel->set(100);
    m_current->set(2);
-   m_signalStrength->set(50);
+   m_signalPower->set(50);
    m_dateTime->set(shared::currentTime::Provider().now());
 }
 

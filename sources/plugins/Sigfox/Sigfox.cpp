@@ -15,11 +15,11 @@ CSigfox::CSigfox() :
    m_messageKeyword(boost::make_shared<yApi::historization::CText>("message",
                                                                    yApi::EKeywordAccessMode::kGetSet)),
    m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-   m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
+   m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalStrength")),
    m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
    m_snr(boost::make_shared<specificHistorizers::CSNR>("snr")),
-   m_keywordsData({ m_messageKeyword, m_rssi, m_snr, m_signalStrength }),
-   m_keywordsService({ m_rssi, m_batteryLevel, m_snr, m_signalStrength })
+   m_keywordsData({ m_messageKeyword, m_rssi, m_snr, m_signalPower }),
+   m_keywordsService({ m_rssi, m_batteryLevel, m_snr, m_signalPower })
 {}
 
 CSigfox::~CSigfox()
@@ -146,7 +146,7 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
          m_snr->set(newMessage.get<double>("snr"));
 
          // For the signalStrength, we do a rule to normalize rssi to %.
-         m_signalStrength->set((m_rssi->get() - m_configuration.getRssiMin()) * 100 / (m_configuration.getRssiMax() - m_configuration.getRssiMin()));
+         m_signalPower->set((m_rssi->get() - m_configuration.getRssiMin()) * 100 / (m_configuration.getRssiMax() - m_configuration.getRssiMin()));
 
          // the rule to normalize the battery level
 
@@ -160,7 +160,7 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
          m_snr->set(newMessage.get<double>("snr"));
 
          // For the signalStrength, we do a rule to normalize rssi to %.
-         m_signalStrength->set((m_rssi->get() - m_configuration.getRssiMin()) * 100 / (m_configuration.getRssiMax() - m_configuration.getRssiMin()));
+         m_signalPower->set((m_rssi->get() - m_configuration.getRssiMin()) * 100 / (m_configuration.getRssiMax() - m_configuration.getRssiMin()));
 
          // the rule to normalize the battery level
          // Receive a voltage
@@ -190,7 +190,7 @@ void CSigfox::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, co
 void CSigfox::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceName) const
 {
    // keywords list for declaration
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywordsDeclaration({ m_messageKeyword, m_rssi, m_batteryLevel, m_snr, m_signalStrength });
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywordsDeclaration({ m_messageKeyword, m_rssi, m_batteryLevel, m_snr, m_signalPower });
 
    if (api->deviceExists(deviceName))
       return;

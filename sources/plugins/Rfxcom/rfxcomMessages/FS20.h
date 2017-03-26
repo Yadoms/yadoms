@@ -115,9 +115,9 @@ namespace rfxcomMessages
       boost::shared_ptr<yApi::historization::CDimmable> m_state;
 
       //--------------------------------------------------------------
-      /// \brief	The keyword associated with signalStrength
+      /// \brief	The keyword associated with signalPower
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CSignalStrength> m_signalStrength;
+      boost::shared_ptr<yApi::historization::CSignalPower> m_signalPower;
 
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances

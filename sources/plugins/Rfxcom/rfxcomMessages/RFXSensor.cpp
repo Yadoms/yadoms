@@ -11,8 +11,8 @@ namespace rfxcomMessages
    CRFXSensor::CRFXSensor(boost::shared_ptr<yApi::IYPluginApi> api,
                           const RBUF& rbuf,
                           size_t rbufSize)
-      : m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_signalStrength })
+      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_signalPower })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -66,7 +66,7 @@ namespace rfxcomMessages
       }
       }
 
-      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.RFXSENSOR.signalStrength));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.RFXSENSOR.signalPower));
 
       Init(api);
    }

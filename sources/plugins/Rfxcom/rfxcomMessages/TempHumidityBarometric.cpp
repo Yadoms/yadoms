@@ -14,8 +14,8 @@ namespace rfxcomMessages
       m_humidity(boost::make_shared<yApi::historization::CHumidity>("humidity")),
       m_pressure(boost::make_shared<yApi::historization::CPressure>("pressure")),
       m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalStrength(boost::make_shared<yApi::historization::CSignalStrength>("signalStrength")),
-      m_keywords({ m_temperature , m_humidity, m_pressure, m_batteryLevel , m_signalStrength })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_temperature , m_humidity, m_pressure, m_batteryLevel , m_signalPower })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -34,7 +34,7 @@ namespace rfxcomMessages
       m_pressure->set(rbuf.TEMP_HUM_BARO.baroh << 8 | (rbuf.TEMP_HUM_BARO.barol));
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.TEMP_HUM_BARO.battery_level));
-      m_signalStrength->set(NormalizesignalStrengthLevel(rbuf.TEMP_HUM_BARO.signalStrength));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.TEMP_HUM_BARO.signalPower));
 
       Init(api);
    }

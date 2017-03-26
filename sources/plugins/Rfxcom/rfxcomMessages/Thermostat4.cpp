@@ -139,7 +139,7 @@ namespace rfxcomMessages
       rbuf.THERMOSTAT4.fan3_speed = (m_subType == sTypeMCZ1 || m_subType == sTypeMCZ2) ? 1 : (m_fan3AutoMode->get() ? 6 : normalizeFanSpeed(m_fan3->switchLevel()));
       rbuf.THERMOSTAT4.flame_power = (m_flame->switchLevel() == 100) ? 5 : static_cast<BYTE>(floor(m_flame->switchLevel() / 20)) + 1;
       rbuf.THERMOSTAT4.mode = m_onOff->get() ? thermostat4_sManual : thermostat4_sOff;
-      rbuf.THERMOSTAT4.signalStrength = 0;
+      rbuf.THERMOSTAT4.signalPower = 0;
       rbuf.THERMOSTAT4.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(LIGHTING3));
