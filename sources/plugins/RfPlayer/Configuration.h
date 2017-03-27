@@ -34,7 +34,7 @@ public:
 
       }
 
-      CProtocols & CProtocols::operator =(const CProtocols & rhs)
+      CProtocols & operator =(const CProtocols & rhs)
       {
          m_protocols = rhs.m_protocols;
          return *this;

@@ -662,9 +662,16 @@ namespace pluginSystem
 
       std::string taskUid = "";
       bool result = m_taskScheduler->runTask(task, taskUid);
-
-      instance->postExtraQuery(query);
-
+      if(result)
+      {
+         instance->postExtraQuery(query);
+      }
+      else
+      {
+         YADOMS_LOG(error) << "Fail to send extra query " << query->getData().query() << " to plugin " << instance->about()->DisplayName();
+         //ensure taskId is set to ""
+         taskUid = "";
+      }
       return taskUid;
    }
 
