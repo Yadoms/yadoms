@@ -15,7 +15,7 @@ namespace specificHistorizers {
    DECLARE_CAPACITY(Type3ShutterCodeCapacity, "shutterCode", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kEnum);
 
    CType3ShutterCode::CType3ShutterCode(const std::string& keywordName)
-      : CSingleHistorizableData<EType3ShutterCodeValues>(keywordName, Type3ShutterCodeCapacity, yApi::EKeywordAccessMode::kGetSet)
+      : CSingleHistorizableData<EType3ShutterCodeValues>(keywordName, Type3ShutterCodeCapacity(), yApi::EKeywordAccessMode::kGetSet)
    {
    }
 

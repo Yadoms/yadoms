@@ -20,7 +20,7 @@ namespace specificHistorizers {
    DECLARE_CAPACITY(Type10OperatingModeCapacity, "shutterCode", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kEnum);
 
    CType10OperatingMode::CType10OperatingMode(const std::string& keywordName)
-      : CSingleHistorizableData<EType10OperatingModeValues>(keywordName, Type10OperatingModeCapacity, yApi::EKeywordAccessMode::kGetSet)
+      : CSingleHistorizableData<EType10OperatingModeValues>(keywordName, Type10OperatingModeCapacity(), yApi::EKeywordAccessMode::kGetSet)
    {
    }
 

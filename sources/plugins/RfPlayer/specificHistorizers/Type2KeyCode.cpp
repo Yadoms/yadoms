@@ -15,7 +15,7 @@ namespace specificHistorizers {
    DECLARE_CAPACITY(Type2KeyCodeCapacity, "keyCode", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kEnum);
 
    CType2KeyCode::CType2KeyCode(const std::string& keywordName)
-      : CSingleHistorizableData<EType2KeyCodeValues>(keywordName, Type2KeyCodeCapacity, yApi::EKeywordAccessMode::kGetSet)
+      : CSingleHistorizableData<EType2KeyCodeValues>(keywordName, Type2KeyCodeCapacity(), yApi::EKeywordAccessMode::kGetSet)
    {
    }
 
