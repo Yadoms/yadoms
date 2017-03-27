@@ -15,7 +15,7 @@ CSigfox::CSigfox() :
    m_messageKeyword(boost::make_shared<yApi::historization::CText>("message",
                                                                    yApi::EKeywordAccessMode::kGetSet)),
    m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-   m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalStrength")),
+   m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
    m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
    m_snr(boost::make_shared<specificHistorizers::CSNR>("snr")),
    m_keywordsData({ m_messageKeyword, m_rssi, m_snr, m_signalPower }),
