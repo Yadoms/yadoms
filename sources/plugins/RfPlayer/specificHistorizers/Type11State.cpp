@@ -12,9 +12,7 @@ namespace specificHistorizers {
 
    )
 
-
-   const yApi::CStandardCapacity& Type11StateCapacity = yApi::CStandardCapacity("alarmRemoteControl", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kEnum);
-
+   DECLARE_CAPACITY(Type11StateCapacity, "alarmRemoteControl", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kEnum);
 
    CType11State::CType11State(const std::string& keywordName)
       : CSingleHistorizableData<EType11StateValues>(keywordName, Type11StateCapacity, yApi::EKeywordAccessMode::kGetSet)

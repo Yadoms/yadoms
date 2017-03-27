@@ -10,9 +10,7 @@ namespace specificHistorizers {
       ((Right))
    )
 
-
-   const yApi::CStandardCapacity& Type3RemoteCodeCapacity = yApi::CStandardCapacity("remoteCode", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kEnum);
-
+   DECLARE_CAPACITY(Type3RemoteCodeCapacity, "remoteCode", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kEnum);
 
    CType3RemoteCode::CType3RemoteCode(const std::string& keywordName)
       : CSingleHistorizableData<EType3RemoteCodeValues>(keywordName, Type3RemoteCodeCapacity, yApi::EKeywordAccessMode::kGetSet)
