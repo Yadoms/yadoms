@@ -20,13 +20,22 @@
 				"YEAR": "1 an"
 			}
 		},
+      "legendLabels" : {
+         "name": "Construction des noms des axes",
+         "description": "Légende des axes",
+         "values": {
+            "DeviceAndKeyword": "Nom de l'équipement + nom de la donnée",
+            "Device": "Nom de l'équipement",
+            "Keyword": "Nom de la donnée"
+         }
+      },      
 		"oneAxis": {
 			"name": "1 axe pour toutes les séries de données",
 			"description": "Permet de mettre l'ensemble des séries sur un seul et même axe. Cette option permet ainsi de comparer des données à la même échelle.",
 			"content": {
 				"customYAxisMinMax": {
 					"name": "Applique manuellement une valeur minimum et maximum",
-					"description": "Activer cette section permet de configurer le minimum et le maximum de la gauge. Si cette option n'est pas activée, le minimum et le maximum seront calculés automatiquement. Cette option est disponible si la précédente est activée.",
+					"description": "Activer cette section permet de configurer le minimum et le maximum de l'axe du graphique. Si cette option n'est pas activée, le minimum et le maximum seront calculés automatiquement. Cette option est disponible si la précédente est activée.",
 					"content": {
 						"minimumValue": {
 							"name": "Valeur minimale"
