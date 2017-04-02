@@ -54,7 +54,7 @@
       "description": "L'interface réseau utilisée pour connecter le périphérique"
     },
     "dynamicSection": {
-      "name": "A dynamic section",
+      "name": "Une section dynamique",
       "description": "Exemple de section renseignée par la méthode 'test' du plugin en utilisant le binding."
     }
   },
