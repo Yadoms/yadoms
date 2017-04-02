@@ -4,7 +4,7 @@
 	"configurationSchema": {
 		"SerialPort": {
 			"name": "Port série",
-			"description": "Le port série (virtuel) connecté au RFXCom"
+			"description": "Le port série (virtuel) connecté à l'onduleur"
 		},
 		"UpsBeep": {
 			"name": "Bip onduleur",
