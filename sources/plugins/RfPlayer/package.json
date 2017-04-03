@@ -52,13 +52,40 @@
       },
       "ledactiviy" : {  "type" : "bool", "defaultValue" : "true" }      
 	},
+   "supportManuallyDeviceCreation": "true",
+   "manuallyDeviceCreationConfigurationSchema": {
+      "type": {
+         "type": "radioSection",
+         "content": {
+            "blyss":
+            {
+               "type": "section",
+               "content":
+               {
+                  "groupCode":
+                  {
+                     "type": "string",
+                     "regex" : "[A-P]",
+                     "defaultValue": "A"
+                  },
+                  "unitCode":
+                  {
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "5"
+                  }               
+               }
+            }
+         }
+      }
+   },
    "extraQueries": {
     "firmwareUpdate": {
       "iconClass": "fa  fa-upload",
       "commandData": {
         "fileContent": {
           "type": "file",
-          "filter": ".txt"
+          "filter": ".RFP"
         }
       }
     }  

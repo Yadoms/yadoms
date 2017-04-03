@@ -43,6 +43,27 @@
       },
       "ledactiviy" : {  "name" : "LED", "description" : "Active ou désactive la LED selon l'activité RF 433/868."}      
 	},
+   "manuallyDeviceCreationConfigurationSchema": {
+      "type": {
+         "name": "Type",
+         "description": "Type d'équipement",
+         "content": {
+            "blyss": {
+               "name": "Blyss",
+               "content": {
+                  "groupCode": {
+                     "name": "Groupe",
+                     "description": "L'identifiant du groupe de l'équipement (A-P)"
+                  },
+                  "unitCode": {
+                     "name": "Unité",
+                     "description": "L'identifiant de la fonction de l'équipement (1-5)"
+                  }               
+               }
+            }
+         }
+      }
+   },
    "extraQueries": {
     "firmwareUpdate": {
       "name": "Mise à jour firmware",
