@@ -576,6 +576,10 @@
     }
   },
   "configuration": {
+    "manually-device-model" : {
+      "title": "Model",
+      "description": "Choose the equipment model to create"
+    },
     "validationForm": {
       "incorrectValue": "Incorrect value",
       "onlyIntegerNumberAllowed": "Only integer number are allowed",

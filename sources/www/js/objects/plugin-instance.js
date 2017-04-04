@@ -123,11 +123,11 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
                type:
                {
                   type: "comboSection", 
-                  name:"Modèle", 
-                  description:"Choisir le modèle d'équipement à créer", 
+                  name: $.t("configuration.manually-device-model.title"), 
+                  description:$.t("configuration.manually-device-model.description"), 
                   content : {}
                }
-            };            
+            };
             
             for (var k in schema){
                 if (schema.hasOwnProperty(k)) {
@@ -141,8 +141,6 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
                      });                  
                 }
             }    
-
-            console.log(tmp);
             d.resolve(tmp);
          })
          .fail(d.reject);
@@ -157,26 +155,6 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
    return d.promise();
 };
 
-/*
-PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = function () {
-   var d = new $.Deferred();
-
-   if (!isNullOrUndefined(this.package)) {
-      if (this.package.manuallyDeviceCreationConfigurationSchema && Object.keys(this.package.manuallyDeviceCreationConfigurationSchema).length > 0) {
-         var tmp = this.package.manuallyDeviceCreationConfigurationSchema;
-         this.applyBindingPrivate(tmp, ["plugin", "system"])
-         .done(d.resolve)
-         .fail(d.reject);
-      } else {
-         d.resolve(this.package.manuallyDeviceCreationConfigurationSchema);
-      }
-   } else {
-      d.reject("undefined package");
-   }
-   return d.promise();
-};
-
-*/
 /**
  *  Get the bound extra queries configuration schema
  * @returns {*}

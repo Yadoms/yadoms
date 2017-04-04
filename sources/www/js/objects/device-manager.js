@@ -183,13 +183,10 @@ DeviceManager.getConfigurationSchema = function(device) {
                                      sub[l] = config.content[l];
                                      schema = _.merge(schema, sub);
                                   }                            
-                                  //schema = _.merge(schema, config);
                                }
                                
                             }
                         }
-                        
-                        console.log(schema);
                     }
 
                     //Manage dynamic configuration
