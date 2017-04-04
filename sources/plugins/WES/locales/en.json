@@ -2,24 +2,6 @@
    "name": "WES",
    "description": "This plugin provide access to WES equipment\n",
    "configurationSchema":{
-      "IPAddress":{
-			"name": "IP Address",
-			"description": "the IP address of the equipment"
-      },	
-      "Port":{
-			"name": "Port",
-			"description": "the WES local socket opened (example: 80)"
-      },
-	  "authentication": {
-		   "name": "key to access the WES",
-		   "description": "Only if the key is enabled",
-		   "content": {
-		      "Password": {
-		         "name": "password",
-		         "description": ""
-		      }
-		 }
-	  }	  
 	},
    "manuallyDeviceCreationConfigurationSchema": {
       "type":
@@ -27,84 +9,65 @@
          "name": "Type",
          "description": "Type of the device",
          "content":
-         {
-			  "X8R" :
+         { 
+           "WES" :
 			  {
-                 "name": "X-8R Extension module with 8 relays",
+                 "name": "WES Module v2",
                  "content":
-                 {
-				    "Name" :
-				    {				 
-                       "name": "Name of the device",
-                       "description": ""
-					},		 
-				    "Position" :
-				    {				 
-                       "name" : "Slot position",
-                       "description" : "slot defined in the WES (Ex:X-8R N°1)",
-					   "values": {
-					      "1" : "X8-R Slot n°1",
-						  "2" : "X8-R Slot n°2",
-						  "3" : "X8-R Slot n°3",
-						  "4" : "X8-R Slot n°4",
-						  "5" : "X8-R Slot n°5",
-						  "6" : "X8-R Slot n°6"
-					   }
-					}
-				 }
-			  },
-			  "X8D" :
+                 {         
+                     "IPAddress":{
+                        "name": "IP Address",
+                        "description": "the IP address of the equipment"
+                     },	
+                     "Port":{
+                        "name": "Port",
+                        "description": "the WES local socket opened (example: 80)"
+                     },
+                    "authentication": {
+                        "name": "key to access the WES",
+                        "description": "Only if the key is enabled",
+                        "content": {
+                           "Password": {
+                              "name": "password",
+                              "description": ""
+                           }
+                      }
+                    }
+                  }
+            },
+           "Other" :
 			  {
-                 "name": "X-8D Extension module with 8 digital inputs",
+                 "type": "section",
                  "content":
-                 {
-				    "Name" :
-				    {				 
-                       "name": "Name of the device",
-                       "description": ""
-					},				 
-				    "Position" :
-				    {				 
-                       "name" : "Slot position",
-                       "description" : "slot defined in the WES (Ex:X-8D N°1)",
-					   "values": {
-					      "1" : "X8-D Slot n°1",
-						  "2" : "X8-D Slot n°2",
-						  "3" : "X8-D Slot n°3",
-						  "4" : "X8-D Slot n°4",
-						  "5" : "X8-D Slot n°5",
-						  "6" : "X8-D Slot n°6"
-					   }					   
-					}
-				 }
-			  },
-			  "X24D" :
-			  {
-                 "name": "X-24D Extension module with 24 digital inputs",
-                 "content":
-                 {
-				    "Name" :
-				    {				 
-                       "name": "Name of the device",
-                       "description": ""
-					},				 
-				    "Position" :
-				    {				 
-                       "name" : "Slot position",
-                       "description" : "slot defined in the WES (Ex:X-24D N°1)",
-					   "values": {
-					      "1" : "X24-D Slot n°1",
-						  "2" : "X24-D Slot n°2"
-					   }					   
-					}
-				 }
-			 }
+                 {         
+                     "IPAddress":{
+                        "name": "IP Address",
+                        "description": "the IP address of the equipment"
+                     },	
+                     "Port":{
+                        "name": "Port",
+                        "description": "the WES local socket opened (example: 80)"
+                     },
+                    "authentication": {
+                        "name": "key to access the WES",
+                        "description": "Only if the key is enabled",
+                        "content": {
+                           "Password": {
+                              "name": "password",
+                              "description": ""
+                           }
+                      }
+                    }
+                  }
+            }            
+         }
 		 }
-	  }
-   },	
+	  },
 	"customLabels": {
 		"pluginState": {
 			"initializationError": "Initialization error",
+         "ready" : "Plugin ready",
+         "faulty" : "At least, one device is not connected",
          "noConnection": "Could not connect to the equipment",
          "noInformation": "The equipment is connected. No information returned. Please check the apikey",
 			"updateConfiguration": "Configuration updating..."

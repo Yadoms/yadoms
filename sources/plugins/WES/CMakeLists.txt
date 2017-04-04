@@ -36,10 +36,10 @@ set(WES_PLUGIN_SOURCES
    pluginStateMachine/pluginStateMachine.cpp
    pluginStateMachine/pluginStateMachine.hpp
    pluginStateMachine/pluginStateConnected.hpp
-   pluginStateMachine/pluginStateDisconnected.hpp
+   pluginStateMachine/pluginStateFaulty.hpp
    pluginStateMachine/pluginStateInitialization.hpp
    pluginStateMachine/pluginStateTerminate.hpp
-   pluginStateMachine/pluginStateTimeout.hpp
+   pluginStateMachine/pluginStateReady.hpp
    pluginStateMachine/pluginStateUpdateConfiguration.hpp
 )
 

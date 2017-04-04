@@ -14,10 +14,40 @@ namespace equipments
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
       shared::CDataContainer details;
       details.set("provider", "WES");
-      details.set("shortProvider", "ipx");
       details.set("type", m_deviceType);
 
-      // TODO : Declarations of all IOs here ...
+      // Relay Configuration
+      for (int counter = 0; counter<WES_RELAY_QTY; ++counter)
+      {
+         std::stringstream name;
+         name << "R" << std::setfill('0') << std::setw(2) << boost::lexical_cast<int>(counter + 1);
+         boost::shared_ptr<yApi::historization::CSwitch> temp = boost::make_shared<yApi::historization::CSwitch>(name.str(),
+                                                                                                                 yApi::EKeywordAccessMode::kGetSet);
+         m_relaysList.push_back(temp);
+         keywordsToDeclare.push_back(temp);
+      }
+
+      // TIC Counters Configuration
+      for (int counter = 0; counter<WES_TIC_QTY; ++counter)
+      {
+         std::stringstream name;
+         name << "TIC" << std::setfill('0') << std::setw(2) << boost::lexical_cast<int>(counter + 1);
+         boost::shared_ptr<yApi::historization::CEnergy> temp = boost::make_shared<yApi::historization::CEnergy>(name.str(),
+                                                                                                                 yApi::EKeywordAccessMode::kGet);
+         m_counterTICList.push_back(temp);
+         keywordsToDeclare.push_back(temp);
+      }
+
+      // Pulse Counters Configuration
+      for (int counter = 0; counter<WES_PULSE_QTY; ++counter)
+      {
+         std::stringstream name;
+         name << "IMP" << std::setfill('0') << std::setw(2) << boost::lexical_cast<int>(counter + 1);
+         boost::shared_ptr<yApi::historization::CCounter> temp = boost::make_shared<yApi::historization::CCounter>(name.str(),
+                                                                                                                 yApi::EKeywordAccessMode::kGet);
+         m_PulseCounterList.push_back(temp);
+         keywordsToDeclare.push_back(temp);
+      }
 
       //Déclaration of all IOs
       api->declareDevice(device, m_deviceType, keywordsToDeclare, details);
@@ -31,11 +61,6 @@ namespace equipments
    std::string CWESEquipment::getDeviceType() const
    {
       return m_deviceType;
-   }
-
-   int CWESEquipment::getSlot() const
-   {
-      throw shared::exception::CException("Module WES have no slot");
    }
 
    void CWESEquipment::updateFromDevice(const std::string& type,

@@ -15,13 +15,6 @@ namespace msm = boost::msm;
 using namespace boost::msm::front::euml;
 
 //--------------------------------------------------------------
-/// \brief	attributes déclaration, parameters to pass to states or events
-/// \note   
-//--------------------------------------------------------------
-
-BOOST_MSM_EUML_DECLARE_ATTRIBUTE(boost::shared_ptr<CWESFactory>      , m_factory);
-
-//--------------------------------------------------------------
 /// \brief	Déclaration de l'état initialization
 /// \note   
 //--------------------------------------------------------------
@@ -33,12 +26,17 @@ BOOST_MSM_EUML_ACTION(pluginInitializationEntryState)
    {
       auto api = evt.get_attribute(m_pluginApi);
       auto configuration = pluginInitialization.get_attribute(m_configuration);
-      auto factory = pluginInitialization.get_attribute(m_factory);
+      auto factory = evt.get_attribute(m_factory);
 
       api->setPluginState(yApi::historization::EPluginState::kCustom, "initialization");
-      factory = boost::make_shared<CWESFactory>(api, configuration);
+      //factory = boost::make_shared<CWESFactory>(api, configuration);
+      factory->loadConfiguration(api, configuration);
 
-      stateMachine.process_event(EvtInitialized(api));
+      if (factory->getMasterEquipment() == 0)
+         stateMachine.process_event(EvtInitializedNoEquipment(api));
+      else
+         stateMachine.process_event(EvtInitialized(api));
+
    }
 
    template <class Evt, class Fsm, class State>
@@ -53,6 +51,6 @@ BOOST_MSM_EUML_ACTION(pluginInitializationEntryState)
 
 BOOST_MSM_EUML_STATE((pluginInitializationEntryState,
                       no_action,
-                      attributes_ << m_configuration << m_factory,
+                      attributes_ << m_configuration,
                       configure_ << no_configure_),
                      pluginInitialization);

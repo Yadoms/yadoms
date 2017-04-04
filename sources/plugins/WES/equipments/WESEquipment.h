@@ -6,6 +6,10 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
+#define WES_RELAY_QTY 4
+#define WES_TIC_QTY   2
+#define WES_PULSE_QTY 4
+
 namespace equipments
 {
    //-----------------------------------------------------
@@ -20,12 +24,11 @@ namespace equipments
       ///\param[in] device         The device name
       //-----------------------------------------------------
       CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
-                       const std::string& device);
+                    const std::string& device);
 
       // IExtension implementation
       std::string getDeviceName() const override;
       std::string getDeviceType() const override;
-      int getSlot() const override;
       void updateFromDevice(const std::string& type, 
                             boost::shared_ptr<yApi::IYPluginApi> api, 
                             shared::CDataContainer& values,
@@ -75,7 +78,7 @@ namespace equipments
       //--------------------------------------------------------------
       /// \brief	vector of all Digital input
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<yApi::historization::CSwitch> > m_DIList;
+      //std::vector<boost::shared_ptr<yApi::historization::CSwitch> > m_DIList;
 
       //--------------------------------------------------------------
       /// \brief	vector of all Analog input
@@ -85,12 +88,7 @@ namespace equipments
       //--------------------------------------------------------------
       /// \brief  counter TIC 1
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<yApi::historization::CEnergy> > m_counterTIC1;
-
-      //--------------------------------------------------------------
-      /// \brief  counter TIC 2
-      //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<yApi::historization::CEnergy> > m_counterTIC2;
+      std::vector<boost::shared_ptr<yApi::historization::CEnergy> > m_counterTICList;
 
       //--------------------------------------------------------------
       /// \brief	The keyword Counter 1

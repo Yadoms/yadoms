@@ -28,7 +28,7 @@ BOOST_MSM_EUML_STATE((), InitialState);
 /// \note   
 //--------------------------------------------------------------
 
-BOOST_MSM_EUML_EVENT(EvtStop);
+BOOST_MSM_EUML_EVENT(EvtdeviceStop);
 
 //--------------------------------------------------------------
 /// \brief	Transition table

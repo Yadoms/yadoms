@@ -24,17 +24,18 @@ using namespace boost::msm::front::euml;
 BOOST_MSM_EUML_ACTION(pluginTerminateExitState)
 {
    template <class Evt, class Fsm, class State>
-   void operator()(Evt const& evt, Fsm& stateMachine, State&)
+   void operator()(Evt const& evt, Fsm&, State&)
    {
-      auto api = pluginTerminateState.get_attribute(m_pluginApi);
+      // TODO : to be integrated
+      //auto api = evt.get_attribute(m_pluginApi);
 
       YADOMS_LOG(information) << "Stop requested";
-      api->setPluginState(yApi::historization::EPluginState::kStopped);
+      //api->setPluginState(yApi::historization::EPluginState::kStopped);
    }
 };
 
-BOOST_MSM_EUML_TERMINATE_STATE((no_action, 
-                                pluginTerminateExitState,
-                                attributes_ << m_pluginApi,
-                                configure_ << no_configure_),
-                                pluginTerminateState);
+BOOST_MSM_EUML_STATE((no_action,
+                      pluginTerminateExitState,
+                      attributes_ << no_attributes_,
+                      configure_ << no_configure_),
+                     pluginTerminateState);

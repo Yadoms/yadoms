@@ -2,24 +2,6 @@
    "name": "WES",
    "description": "Plugin permettant de dialoguer avec un module WES",
    "configurationSchema":{
-      "IPAddress":{
-			"name": "Adresse IP",
-			"description": "L'adresse IP du module"
-      },
-      "Port":{
-			"name": "Port",
-			"description": "Le port de communication de l'WES (exemple: 80)"
-      },
-	  "authentication": {
-		   "name": "clé d'accès au module WES",
-		   "description": "seulement si la clé est activée",
-		   "content": {
-		      "Password": {
-		         "name": "Mot de passe",
-		         "description": "la clé d'accès"	
-		      }
-		 }
-	  }
    },
    "manuallyDeviceCreationConfigurationSchema": {
       "type":
@@ -28,83 +10,64 @@
          "description": "Type de l'équipement",
          "content":
          {
-			  "X8R" :
+			  "WES" :
 			  {
-                 "name": "X-8R module d'extension 8 relais",
+                 "name": "module WES v2",
                  "content":
                  {
-				    "Name" :
-				    {				 
-                       "name": "Nom de l'équipement",
-                       "description": ""
-					},		 
-				    "Position" :
-				    {
-                       "name" : "Position",
-                       "description" : "configuration définie dans l'WES (Ex:X-8R N°1)",
-					   "values": {
-					      "1" : "X8-R Slot n°1",
-						  "2" : "X8-R Slot n°2",
-						  "3" : "X8-R Slot n°3",
-						  "4" : "X8-R Slot n°4",
-						  "5" : "X8-R Slot n°5",
-						  "6" : "X8-R Slot n°6"
-					   }					   
-					}
-				 }
+				          "IPAddress":{
+                        "name": "Adresse IP",
+                        "description": "L'adresse IP du module"
+                     },
+                     "Port":{
+                        "name": "Port",
+                        "description": "Le port de communication du WES (exemple: 80)"
+                     },
+                    "authentication": {
+                        "name": "clé d'accès au module WES",
+                        "description": "seulement si la clé est activée",
+                        "content": {
+                           "Password": {
+                              "name": "Mot de passe",
+                              "description": "la clé d'accès"	
+                           }
+                      }
+                    }
+				     }
 			  },
-			  "X8D" :
+			  "Other" :
 			  {
-                 "name": "X-8D module d'extension 8 entrées digitales",
+                 "name": "---",
                  "content":
                  {
-				    "Name" :
-				    {				 
-                       "name": "Nom de l'équipement",
-                       "description": ""
-					},				 
-				    "Position" :
-				    {				 
-                       "name" : "Position",
-                       "description" : "configuration définie dans l'WES (Ex:X-8D N°1)",
-					   "values": {
-					      "1" : "X8-D Slot n°1",
-						  "2" : "X8-D Slot n°2",
-						  "3" : "X8-D Slot n°3",
-						  "4" : "X8-D Slot n°4",
-						  "5" : "X8-D Slot n°5",
-						  "6" : "X8-D Slot n°6"
-					   }					   
-					}
-				 }
-			  },
-			  "X24D" :
-			  {
-                 "name": "X-24D module d'extension 24 entrées digitales",
-                 "content":
-                 {
-				    "Name" :
-				    {				 
-                       "name": "Nom de l'équipement",
-                       "description": ""
-					},				 
-				    "Position" :
-				    {				 
-                       "name" : "Position",
-                       "description" : "configuration définie dans l'WES (Ex:X-24D N°1)",
-					   "values": {
-					     "1" : "X24-D Slot n°1",
-						  "2" : "X24-D Slot n°2"
-					   }
-					}
-				 }
-			 }
+				          "IPAddress":{
+                        "name": "Adresse IP",
+                        "description": "L'adresse IP du module"
+                     },
+                     "Port":{
+                        "name": "Port",
+                        "description": "Le port de communication du WES (exemple: 80)"
+                     },
+                    "authentication": {
+                        "name": "clé d'accès au module WES",
+                        "description": "seulement si la clé est activée",
+                        "content": {
+                           "Password": {
+                              "name": "Mot de passe",
+                              "description": "la clé d'accès"	
+                           }
+                      }
+                    }
+				     }
+			  }           
 		 }
 	  }	  
 	},
 	"customLabels": {
 		"pluginState": {
          "initializationError": "Erreur d'initialisation",
+         "ready" : "plugin prêt",
+         "faulty" : "Au moins un équipement est déconnecté",
          "noConnection": "Pas de connexion à l'équipement",
          "noInformation": "L'équipement est connecté, mais aucune information n'est retournée. Vérifiez la clé apikey.",
 			"updateConfiguration": "Mise à jour de la configuration..."

@@ -15,13 +15,6 @@ namespace msm = boost::msm;
 using namespace boost::msm::front::euml;
 
 //--------------------------------------------------------------
-/// \brief	attributes déclaration, parameters to pass to states or events
-/// \note   
-//--------------------------------------------------------------
-
-BOOST_MSM_EUML_DECLARE_ATTRIBUTE(boost::shared_ptr<CWESFactory>      , m_factory);
-
-//--------------------------------------------------------------
 /// \brief	Déclaration de l'état initialization
 /// \note   
 //--------------------------------------------------------------

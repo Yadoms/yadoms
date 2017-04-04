@@ -4,6 +4,8 @@
 #include "IOManager.h"
 #include "WESFactory.h"
 #include <shared/event/EventTimer.h>
+
+#include "equipments/IEquipment.h"
 #include "pluginStateMachine/PluginStateMachine.hpp"
 
 // Shortcut to yPluginApi namespace
@@ -50,7 +52,7 @@ private:
    //--------------------------------------------------------------
    /// \brief The IO Manager
    //--------------------------------------------------------------
-   boost::shared_ptr<CIOManager> m_ioManager;
+   boost::shared_ptr<equipments::IEquipment> m_deviceManager;
 
    //--------------------------------------------------------------
    /// \brief The factory

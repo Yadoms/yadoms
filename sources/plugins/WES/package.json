@@ -6,29 +6,6 @@
    "credits": "",
    "supportedPlatforms":"all",
    "configurationSchema": {
-		"IPAddress": {
-		  "type": "string",
-		  "regex" : "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$",
-		  "required" : "true"
-		},
-		"Port": {
-		  "type": "int",
-		  "required" : "true",
-		  "defaultValue": "80",
-        "required" : "true"
-		},
-	    "authentication": {
-		   "type": "section",
-		   "enableWithCheckBox": "true",
-		   "enableWithCheckBoxDefaultValue": "true",
-		   "content": {
-		      "Password": {
-			     "type": "string",
-			     "encrypted": "true",
-              "required" : "true"
-			}
-		 }
-	  }
    },
    "supportManuallyDeviceCreation": "true",
    "supportDeviceRemovedNotification": "true",
@@ -38,50 +15,65 @@
          "type": "radioSection",
          "content":
          {
-			  "X8R" :
+           "WES" :
 			  {
                  "type": "section",
                  "content":
                  {
-				    "Position" :
-				    {				 
-				       "type" : "enum",
-					   "__Binding__" : {
-						 "type" : "plugin", 
-						 "query" : "X8R"
-					   }
-					}
-				 }
+                     "IPAddress": {
+                       "type": "string",
+                       "regex" : "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$",
+                       "required" : "true"
+                     },
+                     "Port": {
+                       "type": "int",
+                       "required" : "true",
+                       "defaultValue": "80",
+                       "required" : "true"
+                     },
+                      "authentication": {
+                        "type": "section",
+                        "enableWithCheckBox": "true",
+                        "enableWithCheckBoxDefaultValue": "true",
+                        "content": {
+                           "Password": {
+                             "type": "string",
+                             "encrypted": "true",
+                             "required" : "true"
+                        }
+                      }
+                    }
+				     }
 			  },
-			  "X8D" :
+           "Other" :
 			  {
                  "type": "section",
                  "content":
                  {
-				    "Position" :
-				    {				 
-				       "type" : "enum",
-				       "__Binding__" : {
-					      "type" : "plugin", 
-						  "query" : "X8D"
-					   }
-					}
-				 }
-			  },
-			  "X24D" :
-			  {
-                 "type": "section",
-                 "content":
-                 {
-				    "Position" :
-				    {				 
-				       "type" : "enum",
-				       "__Binding__" : {
-					      "type" : "plugin", 
-						  "query" : "X24D"
-					   }
-					}
-				 }
+                     "IPAddress": {
+                       "type": "string",
+                       "regex" : "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$",
+                       "required" : "true"
+                     },
+                     "Port": {
+                       "type": "int",
+                       "required" : "true",
+                       "defaultValue": "80",
+                       "required" : "true"
+                     },
+                      "authentication": {
+                        "type": "section",
+                        "enableWithCheckBox": "true",
+                        "enableWithCheckBoxDefaultValue": "true",
+                        "content": {
+                           "Password": {
+                             "type": "string",
+                             "encrypted": "true",
+                             "required" : "true"
+                        }
+                      }
+                    }
+				     }
 			  }			  
 		 }
 	  }

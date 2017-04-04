@@ -5,9 +5,9 @@
 
 #include "pluginStateInitialization.hpp"
 #include "pluginStateUpdateConfiguration.hpp"
-#include "pluginStateDisconnected.hpp"
+#include "pluginStateFaulty.hpp"
 #include "pluginStateConnected.hpp"
-#include "pluginStateTimeOut.hpp"
+#include "pluginStateReady.hpp"
 #include "pluginStateTerminate.hpp"
 
 // Shortcut to yPluginApi namespace
@@ -24,13 +24,6 @@ using namespace boost::msm::front::euml;
 BOOST_MSM_EUML_STATE((), pluginInitialState);
 
 //--------------------------------------------------------------
-/// \brief	Events to pass from one state to another.
-/// \note   
-//--------------------------------------------------------------
-
-BOOST_MSM_EUML_EVENT(EvtStop);
-
-//--------------------------------------------------------------
 /// \brief	Transition table
 /// \note   
 //--------------------------------------------------------------
@@ -39,25 +32,24 @@ BOOST_MSM_EUML_TRANSITION_TABLE((
    //             Start             Event                   Action		       Guard        Next
    //    +--------------------------+--------------------+-----------------------+------------+------------------+
           pluginInitialState        + EvtStart                                                == pluginInitialization,
-          pluginInitialization      + EvtInitialized                                          == pluginDisconnected,
-          pluginDisconnected        + EvtConnection                                           == pluginConnected,
-          pluginConnected           + EvtConnectionLost                                       == pluginTimeOut,
-          pluginTimeOut             + EvtDisconnected                                         == pluginDisconnected,
+          pluginInitialization      + EvtInitialized                                          == pluginFaulty,
+          pluginInitialization      + EvtInitializedNoEquipment                               == pluginReady,
+          pluginReady               + EvtConfigurationUpdated                                 == pluginFaulty,
+          pluginFaulty              + EvtConnection                                           == pluginConnected,
 
-          pluginDisconnected        + EvtNewConfigurationRequested                            == pluginUpdateConfiguration,
+          pluginFaulty              + EvtNewConfigurationRequested                            == pluginUpdateConfiguration,
           pluginConnected           + EvtNewConfigurationRequested                            == pluginUpdateConfiguration,
-          pluginTimeOut             + EvtNewConfigurationRequested                            == pluginUpdateConfiguration,
-          pluginUpdateConfiguration + EvtConfigurationUpdated                                 == pluginDisconnected,
+          pluginReady               + EvtNewConfigurationRequested                            == pluginUpdateConfiguration,
+          pluginUpdateConfiguration + EvtConfigurationUpdated                                 == pluginFaulty,
           pluginInitialization      + EvtStop                                                 == pluginTerminateState,
-          pluginDisconnected        + EvtStop                                                 == pluginTerminateState,
-          pluginConnected           + EvtStop                                                 == pluginTerminateState,
-          pluginTimeOut             + EvtStop                                                 == pluginTerminateState
+          pluginFaulty              + EvtStop                                                 == pluginTerminateState,
+          pluginConnected           + EvtStop                                                 == pluginTerminateState
    ), plugin_state_table);
 
 BOOST_MSM_EUML_DECLARE_STATE_MACHINE(
 (plugin_state_table, 
- init_ << pluginInitialState,
+ init_ << pluginInitialState/*,
  no_action, // Entry
  no_action, // Exit
- attributes_ << m_factory // Attributes
+ attributes_ << no_attributes_*/ /*m_factory*/ // Attributes
  ), pluginStateMachine);

@@ -19,24 +19,20 @@ using namespace boost::msm::front::euml;
 /// \note   
 //--------------------------------------------------------------
 
-BOOST_MSM_EUML_ACTION(pluginTimeOutEntryState)
+BOOST_MSM_EUML_ACTION(pluginReadyEntryState)
 {
    template <class Evt, class Fsm, class State>
    void operator()(Evt const& evt, Fsm&, State&)
    {
       auto api = evt.get_attribute(m_pluginApi);
-      auto refreshTimer = pluginTimeOut.get_attribute(m_refreshTimer);
 
-      YADOMS_LOG(error) << "No answer received, try to reconnect in a while...";
-      refreshTimer->stop();
-
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "noConnection");
-      api->getEventHandler().createTimer(kConnectionRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
+      YADOMS_LOG(error) << "Plugin Ready : Waiting for the creation of a device";
+      api->setPluginState(yApi::historization::EPluginState::kCustom, "ready");
    }
 };
 
-BOOST_MSM_EUML_STATE((pluginTimeOutEntryState,
+BOOST_MSM_EUML_STATE((pluginReadyEntryState,
                       no_action,
-                      attributes_ << m_refreshTimer,
+                      attributes_ << no_attributes_,
                       configure_ << no_configure_),
-                     pluginTimeOut);
+                     pluginReady);

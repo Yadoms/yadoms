@@ -19,23 +19,22 @@ using namespace boost::msm::front::euml;
 /// \note   
 //--------------------------------------------------------------
 
-BOOST_MSM_EUML_ACTION(pluginDisconnectedEntryState)
+BOOST_MSM_EUML_ACTION(pluginFaultyEntryState)
 {
    template <class Evt, class Fsm, class State>
    void operator()(Evt const& evt, Fsm& stateMachine, State&)
    {
       auto api = evt.get_attribute(m_pluginApi);
-      auto configuration = pluginDisconnected.get_attribute(m_configuration);
-      auto refreshTimer = pluginDisconnected.get_attribute(m_refreshTimer);
-      //auto factory = Initialization.get_attribute(m_factory);
+      auto configuration = pluginFaulty.get_attribute(m_configuration);
+      auto refreshTimer = pluginFaulty.get_attribute(m_refreshTimer);
 
-      YADOMS_LOG(information) << "Init the connexion ...";
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "noConnection");
-
-      //m_ioManager->readAllIOFromDevice(api, true);
+      api->setPluginState(yApi::historization::EPluginState::kCustom, "faulty");
 
       // Timer used to read periodically IOs from the WES
       refreshTimer = api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
+
+      // Send an event to refresh all IOs
+      api->getEventHandler().postEvent<bool>(kRefreshStatesReceived, true);
 
       stateMachine.process_event(EvtConnection(api));
    }
@@ -48,8 +47,8 @@ BOOST_MSM_EUML_ACTION(pluginDisconnectedEntryState)
    }
 };
 
-BOOST_MSM_EUML_STATE((pluginDisconnectedEntryState,
+BOOST_MSM_EUML_STATE((pluginFaultyEntryState,
                       no_action,
                       attributes_ << m_configuration << m_refreshTimer,
                       configure_ << no_configure_),
-                     pluginDisconnected);
+                     pluginFaulty);
