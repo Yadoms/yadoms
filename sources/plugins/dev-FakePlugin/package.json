@@ -53,26 +53,6 @@
     }
   },
   "supportManuallyDeviceCreation": "true",
-  "manuallyDeviceCreationConfigurationSchema": {
-    "networkInterface": {
-      "type": "enum",
-      "values": {
-        "__Binding__": {
-          "type": "system",
-          "query": "networkInterfaces"
-        }
-      }
-    },
-    "dynamicSection": {
-      "type": "section",
-      "content": {
-        "__Binding__": {
-          "type": "plugin",
-          "query": "test"
-        }
-      }
-    }
-  },
   "supportDeviceRemovedNotification": "true",
   "enumerations": {
     "EFakeControllerValues": {

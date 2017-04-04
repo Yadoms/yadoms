@@ -114,10 +114,11 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
    var d = new $.Deferred();
 
    if (!isNullOrUndefined(self.package)) {
-      if (self.package.manuallyDeviceCreationConfigurationSchema && self.package.deviceConfiguration 
-      && self.package.deviceConfiguration.staticConfigurationSchema && Object.keys(self.package.deviceConfiguration.staticConfigurationSchema).length > 0) {
+      if (  self.package.deviceConfiguration && 
+            self.package.deviceConfiguration.staticConfigurationSchema && 
+            Object.keys(self.package.deviceConfiguration.staticConfigurationSchema).length > 0) {
 
-      self.applyBindingPrivate(self.package.deviceConfiguration.staticConfigurationSchema, ["plugin", "system"])
+        self.applyBindingPrivate(self.package.deviceConfiguration.staticConfigurationSchema, ["plugin", "system"])
          .done(function(schema) {
             var tmp = { 
                type:
@@ -145,9 +146,9 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
          })
          .fail(d.reject);
       } else {
-         //if manuallyDeviceCreationConfigurationSchema is not defined, to not try to do any binding...
-         //just resolve with undefined manuallyDeviceCreationConfigurationSchema
-         d.resolve(self.package.manuallyDeviceCreationConfigurationSchema);
+         //if device configruation schema are not defined, to not try to do any binding...
+         //just resolve with undefined
+         d.resolve();
       }
    } else {
       d.reject("undefined package");

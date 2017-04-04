@@ -48,16 +48,6 @@
       "defaultValue": "Si vous voyez ceci, c'est que Yadoms toune sous Windows."
     }
   },
-  "manuallyDeviceCreationConfigurationSchema": {
-    "networkInterface": {
-      "name": "Interface réseau",
-      "description": "L'interface réseau utilisée pour connecter le périphérique"
-    },
-    "dynamicSection": {
-      "name": "A dynamic section",
-      "description": "Exemple de section renseignée par la méthode 'test' du plugin en utilisant le binding."
-    }
-  },
   "enumerations": {
     "EFakeControllerValues": {
       "name": "Etat",

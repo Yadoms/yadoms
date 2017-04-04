@@ -48,16 +48,6 @@
 			"defaultValue": "If you see it, Yadoms is running under Windows."
 		}
 	},
-	"manuallyDeviceCreationConfigurationSchema": {
-		"networkInterface": {
-			"name": "Network interface",
-			"description": "The network interface used to connect the peripheral"
-		},
-		"dynamicSection": {
-			"name": "A dynamic section",
-			"description": "Example of section filled by 'test' method from the plugin using binding."
-		}
-	},
 	"enumerations": {
 		"EFakeControllerValues": {
 			"name" : "State",

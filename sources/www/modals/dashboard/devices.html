@@ -172,7 +172,7 @@
       //we bind event on the different actions
       $deviceRow.find("button.btn-configure").unbind('click').bind('click', function (e) { 
             e.stopPropagation();
-            updateDeviceFiendlyName(device); 
+            updateDeviceConfiguration(device); 
       });
 
       $deviceRow.find("button.btn-delete").unbind('click').bind('click', function (e) { 
@@ -227,7 +227,7 @@
       });
    }
 
-   function updateDeviceFiendlyName(device) {
+   function updateDeviceConfiguration(device) {
       //device represent the device concerned
       //we just ask for the friendly name
       Yadoms.modals.deviceConfigure.loadAsync()
