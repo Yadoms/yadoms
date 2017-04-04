@@ -212,6 +212,7 @@ ComboSectionParameterHandler.prototype.getCurrentConfiguration = function () {
       if (value.uuid == uuidOfActive) {
          //it's the active section
          self.configurationValues.activeSection = value.getParamName();
+         self.configurationValues.activeSectionText = value.name; //value.name is available
       }
    });
 

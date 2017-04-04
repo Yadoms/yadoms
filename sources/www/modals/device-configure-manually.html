@@ -34,13 +34,9 @@
                //we append the common parameters section
                var friendlyNameParameter = new StringParameterHandler("modals.configure-manually-device.", "friendlyName-configuration", { required: "true" }, "");
                $modalBody.append(friendlyNameParameter.getDOMObject());
-               var modelParameter = new StringParameterHandler("modals.configure-device.", "model-configuration", { required: false }, "");
-               $modalBody.append(modelParameter.getDOMObject());
                //we finish parmeters instantiation
                if ($.isFunction(friendlyNameParameter.applyScript))
                    friendlyNameParameter.applyScript();
-               if ($.isFunction(modelParameter.applyScript))
-                   modelParameter.applyScript();
 
                //we append classic configuration
                var configMgr = new ConfigurationControlManager(configurationSchema, undefined, "plugins/" + pluginInstance.type + ":deviceConfiguration.staticConfigurationSchema.", $modalBody);
@@ -57,10 +53,11 @@
                    },
                    submitSuccess: function ($form, event) {
                        event.preventDefault();
-
                        var deviceName = friendlyNameParameter.getCurrentConfiguration();
-                       var deviceModel = modelParameter.getCurrentConfiguration();
-                       var configuration = configMgr.getCurrentConfiguration();
+                       var completeConfiguration = configMgr.getCurrentConfiguration();
+                       var deviceModel = completeConfiguration.type.activeSectionText;
+                       //get only the parameters
+                       var configuration = completeConfiguration.type.content[completeConfiguration.type.activeSection].content;
 
                        $("div#configure-manually-device-modal").modal("hide");
                        callback(deviceName, deviceModel, configuration);
