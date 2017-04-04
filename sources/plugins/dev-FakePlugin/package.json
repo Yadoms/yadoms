@@ -150,10 +150,10 @@
     }
   },
   "deviceConfiguration": {
-    "staticConfigurationSchema": [
-      {
+    "staticConfigurationSchema": {
+      "genericsensor" : {
         "models": [ "Fake sensor" ],
-        "schema": {
+        "content": {
           "CounterDivider": {
             "type": "int",
             "defaultValue": "2",
@@ -162,18 +162,30 @@
           }
         }
       },
-      {
+      "genericcounter" : {
         "models": [ "Fake counter" ],
-        "schema": {
+        "content": {
           "CounterDivider2": {
             "type": "int",
             "defaultValue": "2",
             "minimumValue": "1",
             "maximumValue": "10"
+          },
+          "MySection": {
+            "type": "section",
+            "content": {
+              "SubIntParameter": {
+                "type": "int",
+                "defaultValue": "65535"
+              },
+              "SubStringParameter": {
+                "type": "string"
+              }
+            }
           }
         }
       }
-    ],
+    },
     "dynamicConfigurationSchema": "true"
   }
 }

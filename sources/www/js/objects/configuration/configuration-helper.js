@@ -97,15 +97,19 @@ ConfigurationHelper.createControlGroup = function (parameterHandler, controlToIn
  * @param parentRadioSectionActive: used only for containers to add a radio button at the beginning for radiosection handler
  * @returns {*}
  */
-ConfigurationHelper.createParameterHandler = function (i18nContext, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive) {
+ConfigurationHelper.createParameterHandler = function (i18nCtxt, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive) {
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined in " + paramName + " parameter");
    assert(content.type !== undefined, "type field must be found in " + paramName + " parameter");
-   assert(i18nContext !== undefined, "i18nContext must contain path of i18n " + paramName + " parameter");
+   assert(i18nCtxt !== undefined, "i18nCtxt must contain path of i18n " + paramName + " parameter");
    
    if (content.show !== undefined && content.show.result === "false")
       return null;
 
+   let i18nContext = i18nCtxt;
+   if(content.i18nBasePath)
+      i18nContext = content.i18nBasePath;
+   
    switch (content.type.toLowerCase()) {
       case "int" :
          return new IntParameterHandler(i18nContext, paramName, content, currentValue);

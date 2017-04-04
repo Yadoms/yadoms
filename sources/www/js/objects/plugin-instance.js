@@ -110,6 +110,55 @@ PluginInstance.prototype.applyBinding  = function(schema, plugin, system) {
  * @returns {*}
  */
 PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = function () {
+   var self = this;
+   var d = new $.Deferred();
+
+   if (!isNullOrUndefined(self.package)) {
+      if (self.package.manuallyDeviceCreationConfigurationSchema && self.package.deviceConfiguration 
+      && self.package.deviceConfiguration.staticConfigurationSchema && Object.keys(self.package.deviceConfiguration.staticConfigurationSchema).length > 0) {
+
+      self.applyBindingPrivate(self.package.deviceConfiguration.staticConfigurationSchema, ["plugin", "system"])
+         .done(function(schema) {
+            var tmp = { 
+               type:
+               {
+                  type: "comboSection", 
+                  name:"Modèle", 
+                  description:"Choisir le modèle d'équipement à créer", 
+                  content : {}
+               }
+            };            
+            
+            for (var k in schema){
+                if (schema.hasOwnProperty(k)) {
+                     schema[k].models.forEach( function(model) {
+                        tmp.type.content[k] = {
+                           type: "section",
+                           name: model,
+                           content: schema[k].content,
+                           i18nBasePath: "plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema."
+                        };
+                     });                  
+                }
+            }    
+
+            console.log(tmp);
+            d.resolve(tmp);
+         })
+         .fail(d.reject);
+      } else {
+         //if manuallyDeviceCreationConfigurationSchema is not defined, to not try to do any binding...
+         //just resolve with undefined manuallyDeviceCreationConfigurationSchema
+         d.resolve(self.package.manuallyDeviceCreationConfigurationSchema);
+      }
+   } else {
+      d.reject("undefined package");
+   }
+   return d.promise();
+};
+
+/*
+PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = function () {
    var d = new $.Deferred();
 
    if (!isNullOrUndefined(this.package)) {
@@ -119,8 +168,6 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
          .done(d.resolve)
          .fail(d.reject);
       } else {
-         //if manuallyDeviceCreationConfigurationSchema is not defined, to not try to do any binding...
-         //just resolve with undefined manuallyDeviceCreationConfigurationSchema
          d.resolve(this.package.manuallyDeviceCreationConfigurationSchema);
       }
    } else {
@@ -129,7 +176,7 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
    return d.promise();
 };
 
-
+*/
 /**
  *  Get the bound extra queries configuration schema
  * @returns {*}
