@@ -149,7 +149,7 @@ namespace rfxcomMessages
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CBlinds1::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CBlinds1::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF buffer;
       MEMCLEAR(buffer.BLINDS1);
