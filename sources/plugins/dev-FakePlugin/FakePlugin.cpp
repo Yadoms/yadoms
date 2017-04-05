@@ -234,17 +234,30 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             auto creation = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
             try
             {
-               //determine the device name (as an example, it take the provided deviceName and append an hexadecimal value)
-               std::string devId = (boost::format("%1%_0x%2$08X") % creation->getData().getDeviceName() % shared::tools::CRandom::generateNbBits(26, false)).str();
+               if (api->getYadomsInformation()->developperMode())
+               {
+                  YADOMS_LOG(information) << "Receive event kEventManuallyDeviceCreation : \n"
+                     << "\tDevice name : " << creation->getData().getDeviceName()
+                     << "\tDevice model : " << creation->getData().getDeviceModel();
 
+                  creation->getData().getConfiguration().printToLog(YADOMS_LOG(information));
+               }
+
+               //determine the device name (as an example, it take the provided deviceName and append an hexadecimal value) to ensure devicename is unique
+               std::string devId = (boost::format("%1%_0x%2$08X") % creation->getData().getDeviceName() % shared::tools::CRandom::generateNbBits(26, false)).str();
                if (creation->getData().getDeviceModel() == CFakeCounter::getModel())
                {
+                  YADOMS_LOG(information) << "CFakeCounter config : CounterDivider2 : " << creation->getData().getConfiguration().get<std::string>("CounterDivider2");
+                  YADOMS_LOG(information) << "CFakeCounter config : MySection/SubIntParameter : " << creation->getData().getConfiguration().get<int>("MySection.content.SubIntParameter");
+                  YADOMS_LOG(information) << "CFakeCounter config : MySection/SubStringParameter : " << creation->getData().getConfiguration().get<std::string>("MySection.content.SubStringParameter");
+
                   auto fakeCounterManual = boost::make_shared<CFakeCounter>(devId, creation->getData().getConfiguration());
                   fakeCounterManual->declareDevice(api);
                   manuallyCreatedCounters.push_back(fakeCounterManual);
                } 
                else if (creation->getData().getDeviceModel() == CFakeSensor::getModel())
                {
+                  YADOMS_LOG(information) << "CFakeSensor config : CounterDivider2 : " << creation->getData().getConfiguration().get<std::string>("CounterDivider");
                   auto fakeSensorManual = boost::make_shared<CFakeSensor>(devId, creation->getData().getConfiguration());
                   fakeSensorManual->declareDevice(api);
                   manuallyCreatedSensors.push_back(fakeSensorManual);
