@@ -503,7 +503,8 @@ namespace web
                      communication::callback::CSynchronousCallback<std::string> cb;
 
                      //create the data container to send to plugin
-                     pluginSystem::CManuallyDeviceCreationData data(content.get<std::string>("name"), content.get<shared::CDataContainer>("configuration"));
+                     shared::CDataContainer deviceConfig = content.get<shared::CDataContainer>("configuration");
+                     pluginSystem::CManuallyDeviceCreationData data(content.get<std::string>("name"), content.get<std::string>("model"), deviceConfig);
 
                      //send request to plugin
                      m_messageSender.sendManuallyDeviceCreationRequest(pluginId, data, cb);
@@ -526,6 +527,9 @@ namespace web
                               //update model
                               if (!content.get<std::string>("model").empty())
                                  m_dataProvider->getDeviceRequester()->updateDeviceModel(createdDevice->Id(), content.get<std::string>("model"));
+
+                              //set the device configuration
+                              m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(createdDevice->Id(), deviceConfig);
 
                               //get device with friendly name updated
                               createdDevice = m_dataProvider->getDeviceRequester()->getDeviceInPlugin(pluginId, res.Result);

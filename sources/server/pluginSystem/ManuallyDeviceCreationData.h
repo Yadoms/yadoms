@@ -14,9 +14,10 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief                        Constructor
       ///\param[in] deviceName         The device name to create
+      ///\param[in] deviceName         The device model to create
       ///\param[in] configuration      The creation configuration of the device 
       //-----------------------------------------------------
-      CManuallyDeviceCreationData(const std::string& deviceName, const shared::CDataContainer & configuration);
+      CManuallyDeviceCreationData(const std::string& deviceName, const std::string& deviceModel, const shared::CDataContainer & configuration);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -25,6 +26,7 @@ namespace pluginSystem
 
       // IManuallyDeviceCreationData implementation
       const std::string& getDeviceName() const override;
+      const std::string& getDeviceModel() const override;
       const shared::CDataContainer & getConfiguration() const override;
       // [END] IManuallyDeviceCreationData implementation
 
@@ -33,6 +35,11 @@ namespace pluginSystem
       ///\brief               Device
       //-----------------------------------------------------
       std::string m_deviceName;
+
+      //-----------------------------------------------------
+      ///\brief               Device model
+      //-----------------------------------------------------
+      std::string m_deviceModel;
 
       //-----------------------------------------------------
       ///\brief               Device creation parameters
