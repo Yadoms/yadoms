@@ -53,7 +53,7 @@
    {
       "type":
       {
-         "type": "radioSection",
+         "type": "comboSection",
          "content":
          {
             "x10":
@@ -347,6 +347,12 @@
                "type": "section",
                "content":
                {
+                  "houseCode":
+                  {
+                     "type": "string",
+                     "regex" : "[A-D]",
+                     "defaultValue": "A"
+                  },
                   "id":
                   {
                      "type": "int",
