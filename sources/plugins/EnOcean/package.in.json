@@ -18,10 +18,10 @@
   },
   "supportDeviceRemovedNotification": "true",
   "deviceConfiguration": {
-    "staticConfigurationSchema": [
+    "staticConfigurationSchema": {
       "all" : {
         "models": [ "*" ],
-        "schema": {
+        "content": {
           "manufacturer": {
             "type": "string"
           },
@@ -31,7 +31,7 @@
           }
         }
       }
-    ]
+    }
   },
   "specificProfilesConfigurations": {
     "D2-01-04": {
