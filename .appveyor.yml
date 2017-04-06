@@ -102,3 +102,11 @@ build:
 
   # MSBuild verbosity level
   verbosity: normal
+
+  
+notifications:
+  - provider: Email
+  to:
+    - '{{commitAuthorEmail}}'
+  on_build_status_changed: true
+  
