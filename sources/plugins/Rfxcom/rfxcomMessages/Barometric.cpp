@@ -58,7 +58,7 @@ namespace rfxcomMessages
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CBarometric::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CBarometric::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("Barometric is a read-only message, can not be encoded");
    }

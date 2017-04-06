@@ -2,7 +2,7 @@
 
 #include "ITransceiver.h"
 #include "rfxcomMessages/IRfxcomMessage.h"
-#include "ISequenceNumberProvider.h"
+#include "ISequenceNumber.h"
 #include "IUnsecuredProtocolFilter.h"
 
 // Shortcut to yPluginApi namespace
@@ -45,7 +45,7 @@ private:
    //--------------------------------------------------------------
    /// \brief  The message sequence number
    //--------------------------------------------------------------
-   boost::shared_ptr<ISequenceNumberProvider> m_seqNumberProvider;
+   boost::shared_ptr<ISequenceNumber> m_seqNumberProvider;
 
    //--------------------------------------------------------------
    /// \brief  The list of filters used for unsecured protocols, to filter bad receptions and avoid bad device creations

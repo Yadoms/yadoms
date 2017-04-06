@@ -3,7 +3,6 @@
 #include <shared/communication/AsyncSerialPort.h>
 #include <shared/communication/EOFReceiveBufferHandler.h>
 #include <shared/communication/BufferLogger.h>
-#include <shared/communication/NoBufferLogger.h>
 #include "ReceiveBufferHandler.h"
 #include "MessageHandler.h"
 
@@ -30,11 +29,9 @@ boost::shared_ptr<shared::communication::IReceiveBufferHandler> CFactory::constr
    return boost::make_shared<CReceiveBufferHandler>(messageHandler);
 }
 
-boost::shared_ptr<shared::communication::IBufferLogger> CFactory::constructBufferLogger(bool fullLog)
+boost::shared_ptr<shared::communication::IBufferLogger> CFactory::constructBufferLogger()
 {
-   return fullLog ?
-             static_cast<boost::shared_ptr<shared::communication::IBufferLogger>>(boost::make_shared<shared::communication::CBufferLogger>()) :
-             static_cast<boost::shared_ptr<shared::communication::IBufferLogger>>(boost::make_shared<shared::communication::CNoBufferLogger>());
+   return boost::make_shared<shared::communication::CBufferLogger>("trace");
 }
 
 boost::shared_ptr<IMessageHandler> CFactory::constructMessageHandler(boost::shared_ptr<shared::communication::IAsyncPort> port,

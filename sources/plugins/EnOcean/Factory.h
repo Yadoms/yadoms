@@ -32,10 +32,9 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	                           Create the buffer logger (use to log in/out messages)
-   /// \param[in] fullLog                 Disable log if false
    /// \return                            The buffer loger
    //--------------------------------------------------------------
-   static boost::shared_ptr<shared::communication::IBufferLogger> constructBufferLogger(bool fullLog);
+   static boost::shared_ptr<shared::communication::IBufferLogger> constructBufferLogger();
 
    //--------------------------------------------------------------
    /// \brief	                           Create the message handler

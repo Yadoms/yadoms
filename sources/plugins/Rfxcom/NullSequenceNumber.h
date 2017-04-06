@@ -1,29 +1,45 @@
 #pragma once
 
-#include "ISequenceNumberProvider.h"
+#include "ISequenceNumber.h"
 
 //--------------------------------------------------------------
 /// \brief	A always null sequence number
 //--------------------------------------------------------------
-class CNullSequenceNumber : public ISequenceNumberProvider
-{  
+class CNullSequenceNumber : public ISequenceNumber
+{
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    //--------------------------------------------------------------
-   CNullSequenceNumber() {}
+   CNullSequenceNumber()
+   {
+   }
 
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~CNullSequenceNumber() {}
+   virtual ~CNullSequenceNumber()
+   {
+   }
 
-   // ISequenceNumberProvider implementation
-   virtual void reset() {}
-   virtual unsigned char next() { return 0; }
-   virtual unsigned char last() { return 0; }
-   // [END] ISequenceNumberProvider implementation
+   // ISequenceNumber implementation
+   void reset(unsigned char value = 0) override
+   {
+   }
+
+   unsigned char next() override
+   {
+      return 0;
+   }
+
+   unsigned char last() const override
+   {
+      return 0;
+   }
+
+   bool isExpected(unsigned char) const override
+   {
+      return true;
+   }
+   // [END] ISequenceNumber implementation
 };
-
-
-

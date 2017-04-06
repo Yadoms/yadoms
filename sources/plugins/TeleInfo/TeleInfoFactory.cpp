@@ -2,7 +2,6 @@
 #include "TeleInfoFactory.h"
 #include <shared/communication/AsyncSerialPort.h>
 #include <shared/communication/AsciiBufferLogger.h>
-#include <shared/communication/NoBufferLogger.h>
 #include "TeleInfoReceiveBufferHandler.h"
 #include "Decoder.h"
 #include <shared/Log.h>
@@ -34,15 +33,11 @@ boost::shared_ptr<shared::communication::IAsyncPort> CTeleInfoFactory::construct
 }
 
 boost::shared_ptr<shared::communication::IReceiveBufferHandler> CTeleInfoFactory::GetBufferHandler(shared::event::CEventHandler& eventHandler,
-                                                                                                   int evtPortDataReceived,
-																								   bool developerMode)
+                                                                                                   int evtPortDataReceived)
 {
-	boost::shared_ptr<shared::communication::IBufferLogger> logger;
+   boost::shared_ptr<shared::communication::IBufferLogger> logger;
 
-	if (developerMode)
-		logger = boost::make_shared<shared::communication::CAsciiBufferLogger>();
-	else
-      logger = boost::make_shared<shared::communication::CNoBufferLogger>();
+   logger = boost::make_shared<shared::communication::CAsciiBufferLogger>("trace");
 
    return boost::make_shared<CTeleInfoReceiveBufferHandler>(eventHandler,
                                                             evtPortDataReceived,
@@ -54,3 +49,4 @@ boost::shared_ptr<IDecoder> CTeleInfoFactory::constructDecoder(boost::shared_ptr
 {
    return boost::make_shared<CDecoder>(api);
 }
+
