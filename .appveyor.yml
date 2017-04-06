@@ -106,7 +106,7 @@ build:
   
 notifications:
   - provider: Email
-  to:
-    - '{{commitAuthorEmail}}'
-  on_build_status_changed: true
+    to:
+      - '{{commitAuthorEmail}}'
+    on_build_status_changed: true
   
