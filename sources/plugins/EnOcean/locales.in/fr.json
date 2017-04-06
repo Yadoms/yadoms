@@ -8,17 +8,23 @@
     }
   },
   "deviceConfiguration": {
-    "manufacturer": {
-      "name": "Fabricant",
-      "description": "Saisir ici le fabricant de l'équipement"
-    },
-    "model": {
-      "name": "Modèle",
-      "description": "Saisir ici le modèle de l'équipement"
-    },
-    "profile": {
-      "name": "Profil",
-      "description": "Sélectionner le profil de l'équipement, tel qu'indiqué sur l'étiquette ou dans le manuel utilisateur"
+    "staticConfigurationSchema": {
+      "all" : {
+        "content" : {
+          "manufacturer": {
+            "name": "Fabricant",
+            "description": "Saisir ici le fabricant de l'équipement"
+          },
+          "model": {
+            "name": "Modèle",
+            "description": "Saisir ici le modèle de l'équipement"
+          },
+          "profile": {
+            "name": "Profil",
+            "description": "Sélectionner le profil de l'équipement, tel qu'indiqué sur l'étiquette ou dans le manuel utilisateur"
+          }         
+        }
+      }
     }
   },
   "customLabels": {
