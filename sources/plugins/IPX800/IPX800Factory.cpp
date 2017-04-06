@@ -84,22 +84,22 @@ std::string CIPX800Factory::createDeviceManually(boost::shared_ptr<yApi::IYPlugi
    boost::shared_ptr<equipments::IEquipment> extension;
 
    try {
-
-      if (data.getConfiguration().get<bool>("type.content.X8R.radio"))
+      
+      if (data.getDeviceModel() == "X8R")
       {
-         int position = data.getConfiguration().get<int>("type.content.X8R.content.Position");
+         int position = data.getConfiguration().get<int>("Position");
          extension = boost::make_shared<equipments::CX8RExtension>(api, data.getDeviceName(), position);
          X8RSlotused[position-1] = true;
       }
-      else if (data.getConfiguration().get<bool>("type.content.X8D.radio"))
+      else if (data.getDeviceModel() == "X8D")
       {
-         int position = data.getConfiguration().get<int>("type.content.X8D.content.Position");
+         int position = data.getConfiguration().get<int>("Position");
          extension = boost::make_shared<equipments::CX8DExtension>(api, data.getDeviceName(), position);
          X8DSlotused[position-1] = true;
       }
-      else if (data.getConfiguration().get<bool>("type.content.X24D.radio"))
+      else if (data.getDeviceModel() == "X24D")
       {
-         int position = data.getConfiguration().get<int>("type.content.X24D.content.Position");
+         int position = data.getConfiguration().get<int>("Position");
          extension = boost::make_shared<equipments::CX24DExtension>(api, data.getDeviceName(), position);
 
          // The corresponding slots for X-8D could not be installed

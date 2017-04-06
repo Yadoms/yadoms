@@ -1,11 +1,10 @@
 #include "stdafx.h"
 #include "FakeCounter.h"
 
-CFakeCounter::CFakeCounter(const std::string& deviceName)
+CFakeCounter::CFakeCounter(const std::string& deviceName, const shared::CDataContainer & deviceConfiguration)
    : m_deviceName(deviceName),
-     m_incrementCount(boost::make_shared<yApi::historization::CCounter>("incrementCount",
-                                                                        yApi::EKeywordAccessMode::kGet,
-                                                                        yApi::historization::EMeasureType::kIncrement)),
+     m_deviceConfiguration(deviceConfiguration),
+     m_incrementCount(boost::make_shared<yApi::historization::CCounter>("incrementCount", yApi::EKeywordAccessMode::kGet, yApi::historization::EMeasureType::kIncrement)),
      m_totalCount(boost::make_shared<yApi::historization::CCounter>("totalCounter")),
      m_historizers({m_incrementCount , m_totalCount}),
      m_dist(0, 15)

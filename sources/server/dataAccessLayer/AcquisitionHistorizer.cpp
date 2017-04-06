@@ -105,12 +105,12 @@ namespace dataAccessLayer
          //post notification
 
          //post notification
-         boost::shared_ptr<notification::acquisition::CNotification> notificationData(new notification::acquisition::CNotification(acq));
+         auto notificationData = boost::make_shared<notification::acquisition::CNotification>(acq);
          notification::CHelpers::postNotification(notificationData);
 
          if (!acquisitionSummary.empty())
          {
-            boost::shared_ptr<notification::summary::CNotification> notificationDataSummary(new notification::summary::CNotification(acquisitionSummary));
+            auto notificationDataSummary = boost::make_shared<notification::summary::CNotification>(acquisitionSummary);
             notification::CHelpers::postNotification(notificationDataSummary);
          }
       }

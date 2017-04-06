@@ -649,6 +649,7 @@ namespace pluginSystem
       plugin_IPC::toPlugin::msg req;
       auto message = req.mutable_manuallydevicecreation();
       message->set_name(request->getData().getDeviceName());
+      message->set_model(request->getData().getDeviceModel());
       message->set_configuration(request->getData().getConfiguration().serialize());
 
       auto success = false;

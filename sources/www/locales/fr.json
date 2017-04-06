@@ -576,6 +576,10 @@
     }
   },
     "configuration": {
+        "manually-device-model" : {
+            "title": "Modèle",
+            "description": "Choisir le modèle d'équipement à créer"
+        },
         "validationForm": {
             "incorrectValue": "Valeur incorrecte",
             "onlyIntegerNumberAllowed": "Nombre entier attendu",

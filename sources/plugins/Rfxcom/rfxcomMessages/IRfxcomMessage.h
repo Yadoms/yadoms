@@ -2,7 +2,7 @@
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/communication/Buffer.hpp>
-#include "../ISequenceNumberProvider.h"
+#include "../ISequenceNumber.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -24,7 +24,7 @@ namespace rfxcomMessages
       /// \param[in] seqNumberProvider    The sequence number provider
       /// \return                         Buffers (a command can be parted in several messages)
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const = 0;
+      virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Historize message data to Yadoms

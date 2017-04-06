@@ -3,19 +3,25 @@
 
 namespace rfxcomMessages
 {
-
-   CAck::CAck(const RBUF& rbuf, size_t rbufSize, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+   CAck::CAck(const RBUF& rbuf,
+              size_t rbufSize,
+              boost::shared_ptr<ISequenceNumber> seqNumberProvider)
    {
-      CheckReceivedMessage(rbuf, rbufSize, pTypeRecXmitMessage, sTypeTransmitterResponse, GET_RBUF_STRUCT_SIZE(RXRESPONSE), seqNumberProvider->last());
+      CheckReceivedMessage(rbuf,
+                           rbufSize,
+                           pTypeRecXmitMessage,
+                           sTypeTransmitterResponse,
+                           GET_RBUF_STRUCT_SIZE(RXRESPONSE),
+                           seqNumberProvider);
 
-      m_ack = rbuf.RXRESPONSE.msg == 0x00;  // Ack is OK if rbuf->RXRESPONSE.msg == 0
+      m_ack = rbuf.RXRESPONSE.msg == 0x00; // Ack is OK if rbuf->RXRESPONSE.msg == 0
    }
 
    CAck::~CAck()
    {
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CAck::encode(boost::shared_ptr<ISequenceNumberProvider> /*seqNumberProvider*/) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CAck::encode(boost::shared_ptr<ISequenceNumber> /*seqNumberProvider*/) const
    {
       throw shared::exception::CInvalidParameter("Ack is a read-only message, can not be encoded");
    }
@@ -30,5 +36,4 @@ namespace rfxcomMessages
       static const std::string emptyString;
       return emptyString;
    }
-
 } // namespace rfxcomMessages

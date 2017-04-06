@@ -80,7 +80,7 @@
                var latitudeParameter = new StringParameterHandler(i18NContext,
                   ConfigurationManager.items.system.location.latitude,
                   {
-                     "regex" : "^[0-9]+(\.[0-9]+)?$",
+                     "regex" : "^-?[0-9]+(\.[0-9]+)?$",
                      "required": "true"
                   },
                   Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.latitude]);
@@ -88,7 +88,7 @@
                var longitudeParameter = new StringParameterHandler(i18NContext,
                   ConfigurationManager.items.system.location.longitude,
                   {
-                     "regex" : "^[0-9]+(\.[0-9]+)?$",
+                     "regex" : "^-?[0-9]+(\.[0-9]+)?$",
                      "required": "true"
                   },
                   Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.longitude]);                        

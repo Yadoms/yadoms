@@ -19,7 +19,7 @@
   "supportDeviceRemovedNotification": "true",
   "deviceConfiguration": {
     "staticConfigurationSchema": [
-      {
+      "all" : {
         "models": [ "*" ],
         "schema": {
           "manufacturer": {

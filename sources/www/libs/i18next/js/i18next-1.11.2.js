@@ -1,8 +1,8 @@
-// i18next, v1.7.7
-// Copyright (c)2014 Jan Mühlemann (jamuhl).
+// i18next, v1.11.2
+// Copyright (c)2015 Jan Mühlemann (jamuhl).
 // Distributed under MIT license
 // http://i18next.com
-(function() {
+(function(root) {
 
     // add indexOf to non ECMA-262 standard compliant browsers
     if (!Array.prototype.indexOf) {
@@ -76,15 +76,15 @@
         }
     }
 
-    var root = this
-      , $ = root.jQuery || root.Zepto
+    var $ = root.jQuery || root.Zepto
       , i18n = {}
       , resStore = {}
       , currentLng
       , replacementCounter = 0
       , languages = []
       , initialized = false
-      , sync = {};
+      , sync = {}
+      , conflictReference = null;
 
 
 
@@ -92,23 +92,16 @@
     // If we're not in CommonJS, add `i18n` to the
     // global object or to jquery.
     if (typeof module !== 'undefined' && module.exports) {
-        if (!$) {
-          try {
-            $ = require('jquery');
-          } catch(e) {
-            // just ignore
-          }
-        }
-        if ($) {
-            $.i18n = $.i18n || i18n;
-        }
         module.exports = i18n;
     } else {
         if ($) {
             $.i18n = $.i18n || i18n;
         }
         
-        root.i18n = root.i18n || i18n;
+        if (root.i18n) {
+        	conflictReference = root.i18n;
+        }
+        root.i18n = i18n;
     }
     sync = {
     
@@ -125,15 +118,15 @@
                             f.extend(store, fetched);
                             sync._storeLocal(fetched);
     
-                            cb(null, store);
+                            cb(err, store);
                         });
                     } else {
-                        cb(null, store);
+                        cb(err, store);
                     }
                 });
             } else {
                 sync._fetch(lngs, options, function(err, store){
-                    cb(null, store);
+                    cb(err, store);
                 });
             }
         },
@@ -147,7 +140,7 @@
                 var todo = lngs.length;
     
                 f.each(lngs, function(key, lng) {
-                    var local = window.localStorage.getItem('res_' + lng);
+                    var local = f.localStorage.getItem('res_' + lng);
     
                     if (local) {
                         local = JSON.parse(local);
@@ -210,7 +203,7 @@
             } else {
                 // Call this once our translation has returned.
                 var loadComplete = function(err, data) {
-                    cb(null, data);
+                    cb(err, data);
                 };
     
                 if(typeof options.customLoad == 'function'){
@@ -221,6 +214,7 @@
                     // load all needed stuff once
                     f.ajax({
                         url: url,
+                        cache: options.cache,
                         success: function(data, status, xhr) {
                             f.log('loaded: ' + url);
                             loadComplete(null, data);
@@ -230,7 +224,8 @@
                             loadComplete('failed loading resource.json error: ' + error);
                         },
                         dataType: "json",
-                        async : options.getAsync
+                        async : options.getAsync,
+                        timeout: options.ajaxTimeout
                     });
                 }    
             }
@@ -240,6 +235,7 @@
             var url = applyReplacement(options.resGetPath, { lng: lng, ns: ns });
             f.ajax({
                 url: url,
+                cache: options.cache,
                 success: function(data, status, xhr) {
                     f.log('loaded: ' + url);
                     done(null, data);
@@ -258,7 +254,9 @@
                     done(error, {});
                 },
                 dataType: "json",
-                async : options.getAsync
+                async : options.getAsync,
+                timeout: options.ajaxTimeout,
+                headers: options.headers
             });
         },
     
@@ -306,7 +304,8 @@
                         f.log('failed posting missing key \'' + key + '\' to: ' + item.url);
                     },
                     dataType: "json",
-                    async : o.postAsync
+                    async : o.postAsync,
+                    timeout: o.ajaxTimeout
                 });
             }
         },
@@ -324,15 +323,19 @@
         fallbackNS: [],
         detectLngQS: 'setLng',
         detectLngFromLocalStorage: false,
-        ns: 'translation',
+        ns: {
+            namespaces: ['translation'],
+            defaultNs: 'translation'
+        },
         fallbackOnNull: true,
         fallbackOnEmpty: false,
         fallbackToDefaultNS: false,
+        showKeyIfEmpty: false,
         nsseparator: ':',
         keyseparator: '.',
         selectorAttr: 'data-i18n',
         debug: false,
-        
+    
         resGetPath: 'locales/__lng__/__ns__.json',
         resPostPath: 'locales/add/__lng__/__ns__',
     
@@ -372,6 +375,7 @@
         postProcess: undefined,
         parseMissingKey: undefined,
         missingKeyHandler: sync.postMissing,
+        ajaxTimeout: 0,
     
         shortcutFunction: 'sprintf' // or: defaultValue
     };
@@ -384,12 +388,20 @@
         return target;
     }
     
-    function _deepExtend(target, source) {
+    function _deepExtend(target, source, overwrite) {
         for (var prop in source)
-            if (prop in target)
-                _deepExtend(target[prop], source[prop]);
-            else
+            if (prop in target) {
+                // If we reached a leaf string in target or source then replace with source or skip depending on the 'overwrite' switch
+                if (typeof target[prop] === 'string' || target[prop] instanceof String || typeof source[prop] === 'string' || source[prop] instanceof String) {
+                    if (overwrite) {
+                        target[prop] = source[prop];
+                    }
+                } else {
+                    _deepExtend(target[prop], source[prop], overwrite);
+                }
+            } else {
                 target[prop] = source[prop];
+            }
         return target;
     }
     
@@ -805,8 +817,12 @@
             if (lng === 'nb-NO' || lng === 'nn-NO' || lng === 'nb-no' || lng === 'nn-no') lng_index = 1;
             return lng_index;
         },
-        toLanguages: function(lng) {
+        toLanguages: function(lng, fallbackLng) {
             var log = this.log;
+    
+            fallbackLng = fallbackLng || o.fallbackLng;
+            if (typeof fallbackLng === 'string')
+                fallbackLng = [fallbackLng];
     
             function applyCase(l) {
                 var ret = l;
@@ -843,8 +859,8 @@
                 addLanguage(applyCase(lng));
             }
     
-            for (var i = 0; i < o.fallbackLng.length; i++) {
-                if (languages.indexOf(o.fallbackLng[i]) === -1 && o.fallbackLng[i]) languages.push(applyCase(o.fallbackLng[i]));
+            for (var i = 0; i < fallbackLng.length; i++) {
+                if (languages.indexOf(fallbackLng[i]) === -1 && fallbackLng[i]) languages.push(applyCase(fallbackLng[i]));
             }
             return languages;
         },
@@ -867,17 +883,27 @@
                         f.log('failed to set value for key "' + key + '" to localStorage.');
                     }
                 }
+            },
+            getItem: function(key, value) {
+                if (window.localStorage) {
+                    try {
+                        return window.localStorage.getItem(key, value);
+                    } catch (e) {
+                        f.log('failed to get value for key "' + key + '" from localStorage.');
+                        return undefined;
+                    }
+                }
             }
         }
     };
     function init(options, cb) {
-        
+    
         if (typeof options === 'function') {
             cb = options;
             options = {};
         }
         options = options || {};
-        
+    
         // override defaults with passed in options
         f.extend(o, options);
         delete o.fixLng; /* passed in each time */
@@ -933,7 +959,11 @@
         pluralExtensions.setCurrentLng(currentLng);
     
         // add JQuery extensions
-        if ($ && o.setJqueryExt) addJqueryFunct();
+        if ($ && o.setJqueryExt) {
+            addJqueryFunct && addJqueryFunct();
+        } else {
+           addJqueryLikeFunctionality && addJqueryLikeFunctionality();
+        }
     
         // jQuery deferred
         var deferred;
@@ -945,7 +975,7 @@
         if (o.resStore) {
             resStore = o.resStore;
             initialized = true;
-            if (cb) cb(lngTranslate);
+            if (cb) cb(null, lngTranslate);
             if (deferred) deferred.resolve(lngTranslate);
             if (deferred) return deferred.promise();
             return;
@@ -968,11 +998,15 @@
             resStore = store;
             initialized = true;
     
-            if (cb) cb(lngTranslate);
-            if (deferred) deferred.resolve(lngTranslate);
+            if (cb) cb(err, lngTranslate);
+            if (deferred) (!err ? deferred.resolve : deferred.reject)(err || lngTranslate);
         });
     
         if (deferred) return deferred.promise();
+    }
+    
+    function isInitialized() {
+        return initialized;
     }
     function preload(lngs, cb) {
         if (typeof lngs === 'string') lngs = [lngs];
@@ -984,7 +1018,7 @@
         return init(cb);
     }
     
-    function addResourceBundle(lng, ns, resources, deep) {
+    function addResourceBundle(lng, ns, resources, deep, overwrite) {
         if (typeof ns !== 'string') {
             resources = ns;
             ns = o.ns.defaultNs;
@@ -996,9 +1030,12 @@
         resStore[lng][ns] = resStore[lng][ns] || {};
     
         if (deep) {
-            f.deepExtend(resStore[lng][ns], resources);
+            f.deepExtend(resStore[lng][ns], resources, overwrite);
         } else {
             f.extend(resStore[lng][ns], resources);
+        }
+        if (o.useLocalStorage) {
+            sync._storeLocal(resStore);
         }
     }
     
@@ -1020,6 +1057,15 @@
         return hasValues;
     }
     
+    function getResourceBundle(lng, ns) {
+        if (typeof ns !== 'string') {
+            ns = o.ns.defaultNs;
+        }
+    
+        resStore[lng] = resStore[lng] || {};
+        return f.extend({}, resStore[lng][ns]);
+    }
+    
     function removeResourceBundle(lng, ns) {
         if (typeof ns !== 'string') {
             ns = o.ns.defaultNs;
@@ -1027,6 +1073,9 @@
     
         resStore[lng] = resStore[lng] || {};
         resStore[lng][ns] = {};
+        if (o.useLocalStorage) {
+            sync._storeLocal(resStore);
+        }
     }
     
     function addResource(lng, ns, key, value) {
@@ -1056,11 +1105,14 @@
             }
             x++;
         }
+        if (o.useLocalStorage) {
+            sync._storeLocal(resStore);
+        }
     }
     
     function addResources(lng, ns, resources) {
         if (typeof ns !== 'string') {
-            resource = ns;
+            resources = ns;
             ns = o.ns.defaultNs;
         } else if (o.ns.namespaces.indexOf(ns) < 0) {
             o.ns.namespaces.push(ns);
@@ -1161,9 +1213,36 @@
         return currentLng;
     }
     
+    function dir() {   
+        var rtlLangs = [ "ar", "shu", "sqr", "ssh", "xaa", "yhd", "yud", "aao", "abh", "abv", "acm",
+            "acq", "acw", "acx", "acy", "adf", "ads", "aeb", "aec", "afb", "ajp", "apc", "apd", "arb",
+            "arq", "ars", "ary", "arz", "auz", "avl", "ayh", "ayl", "ayn", "ayp", "bbz", "pga", "he",
+            "iw", "ps", "pbt", "pbu", "pst", "prp", "prd", "ur", "ydd", "yds", "yih", "ji", "yi", "hbo",
+            "men", "xmn", "fa", "jpr", "peo", "pes", "prs", "dv", "sam"
+        ];
+    
+        if ( rtlLangs.some( function( lang ) {
+                return new RegExp( '^' + lang ).test( currentLng );
+            } ) ) {
+            return 'rtl';
+        }
+        return 'ltr';
+    }
+    
     function reload(cb) {
         resStore = {};
         setLng(currentLng, cb);
+    }
+    
+    function noConflict() {
+        
+        window.i18next = window.i18n;
+    
+        if (conflictReference) {
+            window.i18n = conflictReference;
+        } else {
+            delete window.i18n;
+        }
     }
     function addJqueryFunct() {
         // $.t shortcut
@@ -1238,7 +1317,13 @@
                 parse(target, key, options);
             }
     
-            if (o.useDataAttrOptions === true) ele.data("i18n-options", options);
+            if (o.useDataAttrOptions === true) {
+              var clone = $.extend({lng: 'non', lngs: [], _origLng: 'non'}, options);
+              delete clone.lng;
+              delete clone.lngs;
+              delete clone._origLng;
+              ele.data("i18n-options", clone);
+            }
         }
     
         // fn
@@ -1249,10 +1334,73 @@
     
                 // localize childs
                 var elements =  $(this).find('[' + o.selectorAttr + ']');
-                elements.each(function() { 
+                elements.each(function() {
                     localize($(this), options);
                 });
             });
+        };
+    }
+    function addJqueryLikeFunctionality() {
+    
+        function parse(ele, key, options) {
+            if (key.length === 0) return;
+    
+            var attr = 'text';
+    
+            if (key.indexOf('[') === 0) {
+                var parts = key.split(']');
+                key = parts[1];
+                attr = parts[0].substr(1, parts[0].length-1);
+            }
+    
+            if (key.indexOf(';') === key.length-1) {
+                key = key.substr(0, key.length-2);
+            }
+    
+            if (attr === 'html') {
+                ele.innerHTML = translate(key, options);
+            } else if (attr === 'text') {
+                ele.textContent = translate(key, options);
+            } else if (attr === 'prepend') {
+                ele.insertAdjacentHTML(translate(key, options), 'afterbegin');
+            } else if (attr === 'append') {
+                ele.insertAdjacentHTML(translate(key, options), 'beforeend');
+            } else {
+                ele.setAttribute(attr, translate(key, options));
+            }
+        }
+    
+        function localize(ele, options) {
+            var key = ele.getAttribute(o.selectorAttr);
+            if (!key && typeof key !== 'undefined' && key !== false) key = ele.textContent || ele.value;
+            if (!key) return;
+    
+            var target = ele
+              , targetSelector = ele.getAttribute("i18n-target");
+            if (targetSelector) {
+                target = ele.querySelector(targetSelector) || ele;
+            }
+            
+            if (key.indexOf(';') >= 0) {
+                var keys = key.split(';'), index = 0, length = keys.length;
+                
+                for ( ; index < length; index++) {
+                    if (keys[index] !== '') parse(target, keys[index], options);
+                }
+    
+            } else {
+                parse(target, key, options);
+            }
+        }
+    
+        // fn
+        i18n.translateObject = function (object, options) {
+            // localize childs
+            var elements =  object.querySelectorAll('[' + o.selectorAttr + ']');
+            var index = 0, length = elements.length;
+            for ( ; index < length; index++) {
+                localize(elements[index], options);
+            }
         };
     }
     function applyReplacement(str, replacementHash, nestedKey, options) {
@@ -1263,24 +1411,32 @@
     
         var prefix = options.interpolationPrefix ? f.regexEscape(options.interpolationPrefix) : o.interpolationPrefixEscaped
           , suffix = options.interpolationSuffix ? f.regexEscape(options.interpolationSuffix) : o.interpolationSuffixEscaped
+          , keyseparator = options.keyseparator || o.keyseparator
           , unEscapingSuffix = 'HTML'+suffix;
     
         var hash = replacementHash.replace && typeof replacementHash.replace === 'object' ? replacementHash.replace : replacementHash;
-        f.each(hash, function(key, value) {
-            var nextKey = nestedKey ? nestedKey + o.keyseparator + key : key;
-            if (typeof value === 'object' && value !== null) {
-                str = applyReplacement(str, value, nextKey, options);
-            } else {
-                if (options.escapeInterpolation || o.escapeInterpolation) {
-                    str = str.replace(new RegExp([prefix, nextKey, unEscapingSuffix].join(''), 'g'), f.regexReplacementEscape(value));
-                    str = str.replace(new RegExp([prefix, nextKey, suffix].join(''), 'g'), f.regexReplacementEscape(f.escape(value)));
+        var replacementRegex = new RegExp([prefix, '(.+?)', '(HTML)?', suffix].join(''), 'g');
+        var escapeInterpolation = options.escapeInterpolation || o.escapeInterpolation;
+        return str.replace(replacementRegex, function (wholeMatch, keyMatch, htmlMatched) {
+            // Check for recursive matches of object
+            var objectMatching = hash;
+            var keyLeaf = keyMatch;
+            while (keyLeaf.indexOf(keyseparator) >= 0 && typeof objectMatching === 'object' && objectMatching) {
+                var propName = keyLeaf.slice(0, keyLeaf.indexOf(keyseparator));
+                keyLeaf = keyLeaf.slice(keyLeaf.indexOf(keyseparator) + 1);
+                objectMatching = objectMatching[propName];
+            }
+            if (objectMatching && typeof objectMatching === 'object' && objectMatching.hasOwnProperty(keyLeaf)) {
+                    var value = objectMatching[keyLeaf];
+                if (escapeInterpolation && !htmlMatched) {
+                    return f.escape(objectMatching[keyLeaf]);
                 } else {
-                    str = str.replace(new RegExp([prefix, nextKey, suffix].join(''), 'g'), f.regexReplacementEscape(value));
+                    return objectMatching[keyLeaf];
                 }
-                // str = options.escapeInterpolation;
+            } else {
+                return wholeMatch;
             }
         });
-        return str;
     }
     
     // append it to functions
@@ -1293,6 +1449,7 @@
     
         var opts = f.extend({}, options);
         delete opts.postProcess;
+        delete opts.isFallbackLookup;
     
         while (translated.indexOf(o.reusePrefix) != -1) {
             replacementCounter++;
@@ -1348,11 +1505,14 @@
     }
     
     function translate(key, options) {
-        options = options || {};
-    
         if (!initialized) {
             f.log('i18next not finished initialization. you might have called t function before loading resources finished.')
-            return options.defaultValue || '';
+    
+            if (options && options.defaultValue) {
+                return options.detaultValue;
+            } else {
+                return '';
+            }
         };
         replacementCounter = 0;
         return _translate.apply(null, arguments);
@@ -1378,7 +1538,7 @@
     }
     
     function _translate(potentialKeys, options) {
-        if (options && typeof options !== 'object') {
+        if (typeof options !== 'undefined' && typeof options !== 'object') {
             if (o.shortcutFunction === 'sprintf') {
                 // mh: gettext like sprintf syntax found, automatically create sprintf processor
                 options = _injectSprintfProcessor.apply(null, arguments);
@@ -1397,6 +1557,10 @@
     
         if (potentialKeys === undefined || potentialKeys === null || potentialKeys === '') return '';
     
+        if (typeof potentialKeys === 'number') {
+            potentialKeys = String(potentialKeys);
+        }
+    
         if (typeof potentialKeys === 'string') {
             potentialKeys = [potentialKeys];
         }
@@ -1414,13 +1578,14 @@
     
         var notFound = _getDefaultValue(key, options)
             , found = _find(key, options)
+            , nsseparator = options.nsseparator || o.nsseparator
             , lngs = options.lng ? f.toLanguages(options.lng, options.fallbackLng) : languages
             , ns = options.ns || o.ns.defaultNs
             , parts;
     
         // split ns and key
-        if (key.indexOf(o.nsseparator) > -1) {
-            parts = key.split(o.nsseparator);
+        if (key.indexOf(nsseparator) > -1) {
+            parts = key.split(nsseparator);
             ns = parts[0];
             key = parts[1];
         }
@@ -1433,17 +1598,36 @@
             }
         }
     
-        var postProcessor = options.postProcess || o.postProcess;
-        if (found !== undefined && postProcessor) {
-            if (postProcessors[postProcessor]) {
-                found = postProcessors[postProcessor](found, key, options);
+        var postProcessorsToApply,
+            postProcessor,
+            j;
+        if (typeof o.postProcess === 'string' && o.postProcess !== '') {
+            postProcessorsToApply = [o.postProcess];
+        } else if (typeof o.postProcess === 'array' || typeof o.postProcess === 'object') {
+            postProcessorsToApply = o.postProcess;
+        } else {
+            postProcessorsToApply = [];
+        }
+    
+        if (typeof options.postProcess === 'string' && options.postProcess !== '') {
+            postProcessorsToApply = postProcessorsToApply.concat([options.postProcess]);
+        } else if (typeof options.postProcess === 'array' || typeof options.postProcess === 'object') {
+            postProcessorsToApply = postProcessorsToApply.concat(options.postProcess);
+        }
+    
+        if (found !== undefined && postProcessorsToApply.length) {
+            for (j = 0; j < postProcessorsToApply.length; j += 1) {
+                postProcessor = postProcessorsToApply[j];
+                if (postProcessors[postProcessor]) {
+                    found = postProcessors[postProcessor](found, key, options);
+                }
             }
         }
     
         // process notFound if function exists
         var splitNotFound = notFound;
-        if (notFound.indexOf(o.nsseparator) > -1) {
-            parts = notFound.split(o.nsseparator);
+        if (notFound.indexOf(nsseparator) > -1) {
+            parts = notFound.split(nsseparator);
             splitNotFound = parts[1];
         }
         if (splitNotFound === key && o.parseMissingKey) {
@@ -1454,9 +1638,14 @@
             notFound = applyReplacement(notFound, options);
             notFound = applyReuse(notFound, options);
     
-            if (postProcessor && postProcessors[postProcessor]) {
-                var val = _getDefaultValue(key, options);
-                found = postProcessors[postProcessor](val, key, options);
+            if (postProcessorsToApply.length) {
+                found = _getDefaultValue(key, options);
+                for (j = 0; j < postProcessorsToApply.length; j += 1) {
+                    postProcessor = postProcessorsToApply[j];
+                    if (postProcessors[postProcessor]) {
+                        found = postProcessors[postProcessor](found, key, options);
+                    }
+                }
             }
         }
     
@@ -1492,8 +1681,9 @@
         }
     
         var ns = options.ns || o.ns.defaultNs;
-        if (key.indexOf(o.nsseparator) > -1) {
-            var parts = key.split(o.nsseparator);
+        var nsseparator = options.nsseparator || o.nsseparator;
+        if (key.indexOf(nsseparator) > -1) {
+            var parts = key.split(nsseparator);
             ns = parts[0];
             key = parts[1];
         }
@@ -1503,7 +1693,7 @@
             delete optionWithoutCount.context;
             optionWithoutCount.defaultValue = o.contextNotFound;
     
-            var contextKey = ns + o.nsseparator + key + '_' + options.context;
+            var contextKey = ns + nsseparator + key + '_' + options.context;
     
             translated = translate(contextKey, optionWithoutCount);
             if (translated != o.contextNotFound) {
@@ -1514,19 +1704,20 @@
         if (needsPlural(options, lngs[0])) {
             optionWithoutCount = f.extend({ lngs: [lngs[0]]}, options);
             delete optionWithoutCount.count;
+            optionWithoutCount._origLng = optionWithoutCount._origLng || optionWithoutCount.lng || lngs[0];
             delete optionWithoutCount.lng;
             optionWithoutCount.defaultValue = o.pluralNotFound;
     
             var pluralKey;
             if (!pluralExtensions.needsPlural(lngs[0], options.count)) {
-                pluralKey = ns + o.nsseparator + key;
+                pluralKey = ns + nsseparator + key;
             } else {
-                pluralKey = ns + o.nsseparator + key + o.pluralSuffix;
+                pluralKey = ns + nsseparator + key + o.pluralSuffix;
                 var pluralExtension = pluralExtensions.get(lngs[0], options.count);
                 if (pluralExtension >= 0) {
                     pluralKey = pluralKey + '_' + pluralExtension;
                 } else if (pluralExtension === 1) {
-                    pluralKey = ns + o.nsseparator + key; // singular
+                    pluralKey = ns + nsseparator + key; // singular
                 }
             }
     
@@ -1543,12 +1734,21 @@
                 var clone = lngs.slice();
                 clone.shift();
                 options = f.extend(options, { lngs: clone });
+                options._origLng = optionWithoutCount._origLng;
                 delete options.lng;
                 // retry with fallbacks
-                translated = translate(ns + o.nsseparator + key, options);
+                translated = translate(ns + nsseparator + key, options);
                 if (translated != o.pluralNotFound) return translated;
             } else {
-                return translated;
+                optionWithoutCount.lng = optionWithoutCount._origLng;
+                delete optionWithoutCount._origLng;
+                translated = translate(ns + nsseparator + key, optionWithoutCount);
+    
+                return applyReplacement(translated, {
+                    count: options.count,
+                    interpolationPrefix: options.interpolationPrefix,
+                    interpolationSuffix: options.interpolationSuffix
+                });
             }
         }
     
@@ -1557,7 +1757,7 @@
             delete optionsWithoutIndef.indefinite_article;
             optionsWithoutIndef.defaultValue = o.indefiniteNotFound;
             // If we don't have a count, we want the indefinite, if we do have a count, and needsPlural is false
-            var indefiniteKey = ns + o.nsseparator + key + (((options.count && !needsPlural(options, lngs[0])) || !options.count) ? o.indefiniteSuffix : "");
+            var indefiniteKey = ns + nsseparator + key + (((options.count && !needsPlural(options, lngs[0])) || !options.count) ? o.indefiniteSuffix : "");
             translated = translate(indefiniteKey, optionsWithoutIndef);
             if (translated != o.indefiniteNotFound) {
                 return translated;
@@ -1565,7 +1765,8 @@
         }
     
         var found;
-        var keys = key.split(o.keyseparator);
+        var keyseparator = options.keyseparator || o.keyseparator;
+        var keys = key.split(keyseparator);
         for (var i = 0, len = lngs.length; i < len; i++ ) {
             if (found !== undefined) break;
     
@@ -1577,7 +1778,7 @@
                 value = value && value[keys[x]];
                 x++;
             }
-            if (value !== undefined) {
+            if (value !== undefined && (!o.showKeyIfEmpty || value !== '')) {
                 var valueType = Object.prototype.toString.apply(value);
                 if (typeof value === 'string') {
                     value = applyReplacement(value, options);
@@ -1600,7 +1801,7 @@
                     } else if (valueType !== '[object Number]' && valueType !== '[object Function]' && valueType !== '[object RegExp]') {
                         var copy = (valueType === '[object Array]') ? [] : {}; // apply child translation on a copy
                         f.each(value, function(m) {
-                            copy[m] = _translate(ns + o.nsseparator + key + o.keyseparator + m, options);
+                            copy[m] = _translate(ns + nsseparator + key + keyseparator + m, options);
                         });
                         value = copy;
                     }
@@ -1620,17 +1821,18 @@
             if (o.fallbackNS.length) {
     
                 for (var y = 0, lenY = o.fallbackNS.length; y < lenY; y++) {
-                    found = _find(o.fallbackNS[y] + o.nsseparator + key, options);
+                    found = _find(o.fallbackNS[y] + nsseparator + key, options);
     
                     if (found || (found==="" && o.fallbackOnEmpty === false)) {
                         /* compare value without namespace */
-                        var foundValue = found.indexOf(o.nsseparator) > -1 ? found.split(o.nsseparator)[1] : found
-                          , notFoundValue = notFound.indexOf(o.nsseparator) > -1 ? notFound.split(o.nsseparator)[1] : notFound;
+                        var foundValue = found.indexOf(nsseparator) > -1 ? found.split(nsseparator)[1] : found
+                          , notFoundValue = notFound.indexOf(nsseparator) > -1 ? notFound.split(nsseparator)[1] : notFound;
     
                         if (foundValue !== notFoundValue) break;
                     }
                 }
             } else {
+                options.ns = o.ns.defaultNs;
                 found = _find(key, options); // fallback to default NS
             }
             options.isFallbackLookup = false;
@@ -1669,7 +1871,10 @@
     
         // get from localStorage
         if (o.detectLngFromLocalStorage && typeof window !== 'undefined' && window.localStorage) {
-            userLngChoices.push(window.localStorage.getItem('i18next_lng'));
+            var lang = f.localStorage.getItem('i18next_lng');
+            if (lang) {
+                userLngChoices.push(lang);
+            }
         }
     
         // get from navigator
@@ -1867,7 +2072,7 @@
         15: function(n) {return Number(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);},
         16: function(n) {return Number(n%10==1 && n%100!=11 ? 0 : n !== 0 ? 1 : 2);},
         17: function(n) {return Number(n==1 || n%10==1 ? 0 : 1);},
-        18: function(n) {return Number(0 ? 0 : n==1 ? 1 : 2);},
+        18: function(n) {return Number(n==0 ? 0 : n==1 ? 1 : 2);},
         19: function(n) {return Number(n==1 ? 0 : n===0 || ( n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20 ) ? 2 : 3);},
         20: function(n) {return Number(n==1 ? 0 : (n===0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);},
         21: function(n) {return Number(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0); }
@@ -2098,10 +2303,12 @@
     });
     // public api interface
     i18n.init = init;
+    i18n.isInitialized = isInitialized;
     i18n.setLng = setLng;
     i18n.preload = preload;
     i18n.addResourceBundle = addResourceBundle;
     i18n.hasResourceBundle = hasResourceBundle;
+    i18n.getResourceBundle = getResourceBundle;
     i18n.addResource = addResource;
     i18n.addResources = addResources;
     i18n.removeResourceBundle = removeResourceBundle;
@@ -2116,7 +2323,10 @@
     i18n.sync = sync;
     i18n.functions = f;
     i18n.lng = lng;
+    i18n.dir = dir;
     i18n.addPostProcessor = addPostProcessor;
+    i18n.applyReplacement = f.applyReplacement;
     i18n.options = o;
+    i18n.noConflict = noConflict;
 
-})();
+})(typeof exports === 'undefined' ? window : exports);

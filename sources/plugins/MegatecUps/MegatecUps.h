@@ -2,7 +2,7 @@
 #include <plugin_cpp_api/IPlugin.h>
 #include "MegatecUpsConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
-#include <shared/communication/AsciiBufferLogger.h>
+#include <shared/communication/IBufferLogger.h>
 #include <shared/event/EventTimer.h>
 
 // Shortcut to yPluginApi namespace
@@ -180,7 +180,7 @@ private:
    //--------------------------------------------------------------
    /// \brief  The communication port logger
    //--------------------------------------------------------------
-   shared::communication::CAsciiBufferLogger m_logger;
+   boost::shared_ptr<shared::communication::IBufferLogger> m_logger;
 
    //--------------------------------------------------------------
    /// \brief	Wait for answer timer

@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/Export.h>
 #include "IBufferLogger.h"
+#include <Poco/Message.h>
 
 namespace shared
 {
@@ -14,8 +15,9 @@ namespace shared
       public:
          //--------------------------------------------------------------
          /// \brief	            Constructor
+         /// \param[in] logLevel Log level to use (string from known log levels)
          //--------------------------------------------------------------
-         explicit CAsciiBufferLogger();
+         explicit CAsciiBufferLogger(const std::string& logLevel = "information");
 
          //--------------------------------------------------------------
          /// \brief	            Destructor
@@ -28,6 +30,7 @@ namespace shared
          // [END] IBufferLogger implementation
 
       protected:
+         const Poco::Message::Priority m_logLevel;
          static std::string msgToString(const CByteBuffer& data);
       };
    }

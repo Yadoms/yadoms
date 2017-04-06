@@ -213,7 +213,6 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
 void CIPX800::initIPX800(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-	// Send reset command to the RfxCom
 	YADOMS_LOG(information) << "Init the connexion ..." ;
 
 	try

@@ -53,26 +53,6 @@
     }
   },
   "supportManuallyDeviceCreation": "true",
-  "manuallyDeviceCreationConfigurationSchema": {
-    "networkInterface": {
-      "type": "enum",
-      "values": {
-        "__Binding__": {
-          "type": "system",
-          "query": "networkInterfaces"
-        }
-      }
-    },
-    "dynamicSection": {
-      "type": "section",
-      "content": {
-        "__Binding__": {
-          "type": "plugin",
-          "query": "test"
-        }
-      }
-    }
-  },
   "supportDeviceRemovedNotification": "true",
   "enumerations": {
     "EFakeControllerValues": {
@@ -150,10 +130,10 @@
     }
   },
   "deviceConfiguration": {
-    "staticConfigurationSchema": [
-      {
+    "staticConfigurationSchema": {
+      "genericsensor" : {
         "models": [ "Fake sensor" ],
-        "schema": {
+        "content": {
           "CounterDivider": {
             "type": "int",
             "defaultValue": "2",
@@ -162,18 +142,30 @@
           }
         }
       },
-      {
+      "genericcounter" : {
         "models": [ "Fake counter" ],
-        "schema": {
+        "content": {
           "CounterDivider2": {
             "type": "int",
             "defaultValue": "2",
             "minimumValue": "1",
             "maximumValue": "10"
+          },
+          "MySection": {
+            "type": "section",
+            "content": {
+              "SubIntParameter": {
+                "type": "int",
+                "defaultValue": "65535"
+              },
+              "SubStringParameter": {
+                "type": "string"
+              }
+            }
           }
         }
       }
-    ],
+    },
     "dynamicConfigurationSchema": "true"
   }
 }

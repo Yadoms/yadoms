@@ -188,7 +188,7 @@ set(RFXCOM_SOURCES
    stdafx.cpp
    IncrementSequenceNumber.h
    IRfxcomConfiguration.h
-   ISequenceNumberProvider.h
+   ISequenceNumber.h
    ITransceiver.h
    IUnsecuredProtocolFilter.h
    ManuallyDeviceCreationException.hpp

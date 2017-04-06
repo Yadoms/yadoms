@@ -171,17 +171,22 @@ DeviceManager.getConfigurationSchema = function(device) {
                     if(deviceConfig.staticConfigurationSchema) {
 
                         //find all static configurations matching the device model
-                        var staticConfigMatchingDevice = _.filter(deviceConfig.staticConfigurationSchema, function(o) {
-                            return _.some(o.models, function(model) {
-                                return model == "*" || model == device.model;
-                            });
-                        });
-
-                        //add it to resulting schema
-                        _.forEach(staticConfigMatchingDevice, function(value) {
-                            schema = _.merge(schema, value.schema);
-                        });
-                        
+                        var staticConfigMatchingDevice= {};
+                        for(let k in deviceConfig.staticConfigurationSchema) {
+                            if(_.some(deviceConfig.staticConfigurationSchema[k].models, function(model) { return model == "*" || model == device.model;})) {
+                               //add it to resulting schema
+                               let config = deviceConfig.staticConfigurationSchema[k];
+                               if(config && config.content) {
+                                  for(let l in config.content) {
+                                     config.content[l].i18nBasePath = "plugins/" + device.attachedPlugin.type + ":deviceConfiguration.staticConfigurationSchema." + k + ".content.";
+                                     let sub = {};
+                                     sub[l] = config.content[l];
+                                     schema = _.merge(schema, sub);
+                                  }                            
+                               }
+                               
+                            }
+                        }
                     }
 
                     //Manage dynamic configuration

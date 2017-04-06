@@ -66,12 +66,45 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    fakeController.declareDevice(api);
    configurableDevice.declareDevice(api);
 
+   std::vector< boost::shared_ptr<CFakeSensor> > manuallyCreatedSensors;
+   std::vector< boost::shared_ptr<CFakeCounter> > manuallyCreatedCounters;
+
    // Timer used to send fake sensor states periodically
    api->getEventHandler().createTimer(kSendSensorsStateTimerEventId,
                                       shared::event::CEventTimer::kPeriodic,
                                       boost::posix_time::seconds(10));
 
    api->setPluginState(yApi::historization::EPluginState::kRunning);
+
+   //Retreive previously manually created devices and instance them in plugin
+   auto allDevices = api->getAllDevices();
+   for (auto devName = allDevices.begin(); devName != allDevices.end(); ++devName)
+   {
+      if ((*devName) != fakeSensor1.getDeviceName() &&
+         (*devName) != fakeSensor2.getDeviceName() &&
+         (*devName) != fakeCounter.getDeviceName() &&
+         (*devName) != fakeOnOffReadOnlySwitch.getDeviceName() &&
+         (*devName) != fakeOnOffReadWriteSwitch.getDeviceName() &&
+         (*devName) != fakeDimmableReadOnlySwitch.getDeviceName() &&
+         (*devName) != fakeDimmableReadWriteSwitch.getDeviceName() &&
+         (*devName) != fakeController.getDeviceName() &&
+         (*devName) != configurableDevice.getDeviceName())
+      {
+         std::string model = api->getDeviceModel(*devName);
+         if (model == CFakeCounter::getModel())
+         {
+            auto fakeCounterManual = boost::make_shared<CFakeCounter>(*devName, api->getDeviceConfiguration(*devName));
+            fakeCounterManual->declareDevice(api);
+            manuallyCreatedCounters.push_back(fakeCounterManual);
+         }
+         else if (model == CFakeSensor::getModel())
+         {
+            auto fakeSensorManual = boost::make_shared<CFakeSensor>(*devName, api->getDeviceConfiguration(*devName));
+            fakeSensorManual->declareDevice(api);
+            manuallyCreatedSensors.push_back(fakeSensorManual);
+         }
+      }
+   }
 
    // the main loop
    while (true)
@@ -201,18 +234,44 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             auto creation = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
             try
             {
-               // Yadoms asks for device creation
-               auto sni = creation->getData().getConfiguration().get<std::string>("networkInterface");
-               auto dyn = creation->getData().getConfiguration().get<std::string>("dynamicSection.content.interval");
+               if (api->getYadomsInformation()->developperMode())
+               {
+                  YADOMS_LOG(information) << "Receive event kEventManuallyDeviceCreation : \n"
+                     << "\tDevice name : " << creation->getData().getDeviceName()
+                     << "\tDevice model : " << creation->getData().getDeviceModel();
 
-               auto devId = (boost::format("%1%_%2%_0x%3$08X") % sni % dyn % shared::tools::CRandom::generateNbBits(26, false)).str();
-               api->declareDevice(devId,
-                                  "FakeDevice_" + devId,
-                                  std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>(),
-                                  creation->getData().getConfiguration());
+                  creation->getData().getConfiguration().printToLog(YADOMS_LOG(information));
+               }
 
-               api->declareKeyword(devId, boost::make_shared<yApi::historization::CSwitch>("manualSwitch"));
+               //determine the device name (as an example, it take the provided deviceName and append an hexadecimal value) to ensure devicename is unique
+               std::string devId = (boost::format("%1%_0x%2$08X") % creation->getData().getDeviceName() % shared::tools::CRandom::generateNbBits(26, false)).str();
+               if (creation->getData().getDeviceModel() == CFakeCounter::getModel())
+               {
+                  YADOMS_LOG(information) << "CFakeCounter config : CounterDivider2 : " << creation->getData().getConfiguration().get<std::string>("CounterDivider2");
+                  YADOMS_LOG(information) << "CFakeCounter config : MySection/SubIntParameter : " << creation->getData().getConfiguration().get<int>("MySection.content.SubIntParameter");
+                  YADOMS_LOG(information) << "CFakeCounter config : MySection/SubStringParameter : " << creation->getData().getConfiguration().get<std::string>("MySection.content.SubStringParameter");
 
+                  auto fakeCounterManual = boost::make_shared<CFakeCounter>(devId, creation->getData().getConfiguration());
+                  fakeCounterManual->declareDevice(api);
+                  manuallyCreatedCounters.push_back(fakeCounterManual);
+               } 
+               else if (creation->getData().getDeviceModel() == CFakeSensor::getModel())
+               {
+                  YADOMS_LOG(information) << "CFakeSensor config : CounterDivider2 : " << creation->getData().getConfiguration().get<std::string>("CounterDivider");
+                  auto fakeSensorManual = boost::make_shared<CFakeSensor>(devId, creation->getData().getConfiguration());
+                  fakeSensorManual->declareDevice(api);
+                  manuallyCreatedSensors.push_back(fakeSensorManual);
+               }
+               else
+               {
+                  //any other model
+                  creation->getData().getConfiguration().printToLog(YADOMS_LOG(information));
+                  api->declareDevice(devId, creation->getData().getDeviceModel(), 
+                     std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>(),
+                     creation->getData().getConfiguration());
+                  api->declareKeyword(devId, boost::make_shared<yApi::historization::CSwitch>("manualSwitch"));
+               }
+               
                creation->sendSuccess(devId);
             }
             catch (std::exception& ex)
@@ -289,6 +348,17 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             fakeDimmableReadOnlySwitch.historizeData(api);
             fakeController.historizeData(api);
             configurableDevice.historizeData(api);
+
+            for (auto i = manuallyCreatedCounters.begin(); i != manuallyCreatedCounters.end(); ++i)
+            {
+               (*i)->read();
+               (*i)->historizeData(api);
+            }
+            for (auto i = manuallyCreatedSensors.begin(); i != manuallyCreatedSensors.end(); ++i)
+            {
+               (*i)->read();
+               (*i)->historizeData(api);
+            }
 
             break;
          }
