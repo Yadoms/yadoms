@@ -55,7 +55,7 @@
                        event.preventDefault();
                        var deviceName = friendlyNameParameter.getCurrentConfiguration();
                        var completeConfiguration = configMgr.getCurrentConfiguration();
-                       var deviceModel = completeConfiguration.type.activeSectionText;
+                       var deviceModel = completeConfiguration.type.activeSection;
                        //get only the parameters
                        var configuration = completeConfiguration.type.content[completeConfiguration.type.activeSection].content;
 

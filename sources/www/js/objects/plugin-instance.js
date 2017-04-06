@@ -133,7 +133,7 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
             for (var k in schema){
                 if (schema.hasOwnProperty(k)) {
                      schema[k].models.forEach( function(model) {
-                        tmp.type.content[k] = {
+                        tmp.type.content[model] = {
                            type: "section",
                            name: model,
                            content: schema[k].content,
