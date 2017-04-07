@@ -8,7 +8,7 @@
 #include <shared/event/EventTimer.h>
 #include <shared/DataContainer.h>
 
-#include "../stateCommonDeclaration.hpp"
+#include "deviceStateCommonDeclaration.hpp"
 #include "../WESConfiguration.h"
 #include "../WESFactory.h"
 

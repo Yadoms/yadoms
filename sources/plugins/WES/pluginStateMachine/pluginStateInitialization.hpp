@@ -5,7 +5,7 @@
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/Log.h>
-#include "../stateCommonDeclaration.hpp"
+#include "pluginStateCommonDeclaration.hpp"
 
 
 // Shortcut to yPluginApi namespace
@@ -27,16 +27,18 @@ BOOST_MSM_EUML_ACTION(pluginInitializationEntryState)
       auto api = evt.get_attribute(m_pluginApi);
       auto configuration = pluginInitialization.get_attribute(m_configuration);
       auto factory = evt.get_attribute(m_factory);
+      auto refreshTimer = pluginFaulty.get_attribute(m_refreshTimer);
 
       api->setPluginState(yApi::historization::EPluginState::kCustom, "initialization");
-      //factory = boost::make_shared<CWESFactory>(api, configuration);
       factory->loadConfiguration(api, configuration);
 
-      if (factory->getMasterEquipment() == 0)
-         stateMachine.process_event(EvtInitializedNoEquipment(api));
-      else
-         stateMachine.process_event(EvtInitialized(api));
+      // Create the timer for refresh IOs
+      refreshTimer = api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
 
+      if (factory->getMasterEquipment() == 0)
+         stateMachine.enqueue_event(EvtInitializedNoEquipment(api));
+      else
+         stateMachine.enqueue_event(EvtInitialized(api, factory));
    }
 
    template <class Evt, class Fsm, class State>
@@ -51,6 +53,6 @@ BOOST_MSM_EUML_ACTION(pluginInitializationEntryState)
 
 BOOST_MSM_EUML_STATE((pluginInitializationEntryState,
                       no_action,
-                      attributes_ << m_configuration,
+                      attributes_ << m_configuration << m_refreshTimer,
                       configure_ << no_configure_),
                      pluginInitialization);

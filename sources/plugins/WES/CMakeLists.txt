@@ -9,7 +9,6 @@ set(WES_PLUGIN_SOURCES
    IOManager.cpp
    IOManager.h
    IWESConfiguration.h
-   stateCommonDeclaration.hpp
    WES.cpp
    WES.h
    WESConfiguration.cpp
@@ -28,6 +27,7 @@ set(WES_PLUGIN_SOURCES
    deviceStateMachine/deviceStateTerminate.hpp
    deviceStateMachine/deviceStateTimeout.hpp
    deviceStateMachine/deviceStateUpdateConfiguration.hpp
+   deviceStateMachine/deviceStateCommonDeclaration.hpp
    equipments/IEquipment.h
    equipments/WESEquipment.cpp
    equipments/WESEquipment.h	
@@ -38,9 +38,9 @@ set(WES_PLUGIN_SOURCES
    pluginStateMachine/pluginStateConnected.hpp
    pluginStateMachine/pluginStateFaulty.hpp
    pluginStateMachine/pluginStateInitialization.hpp
-   pluginStateMachine/pluginStateTerminate.hpp
    pluginStateMachine/pluginStateReady.hpp
    pluginStateMachine/pluginStateUpdateConfiguration.hpp
+   pluginStateMachine/pluginStateCommonDeclaration.hpp
 )
 
 source_group(deviceState deviceState/*.*)

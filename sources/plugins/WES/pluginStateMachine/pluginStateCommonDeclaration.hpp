@@ -8,8 +8,8 @@
 #include <shared/event/EventTimer.h>
 #include <shared/DataContainer.h>
 
-#include "WESConfiguration.h"
-#include "WESFactory.h"
+#include "../WESConfiguration.h"
+#include "../WESFactory.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -31,7 +31,7 @@ BOOST_MSM_EUML_DECLARE_ATTRIBUTE(boost::shared_ptr<CWESFactory>               , 
 BOOST_MSM_EUML_ATTRIBUTES((attributes_ << m_pluginApi), 
                           parameters_attributes);
 
-BOOST_MSM_EUML_ATTRIBUTES((attributes_ << m_pluginApi << m_newConfiguration), 
+BOOST_MSM_EUML_ATTRIBUTES((attributes_ << m_pluginApi << m_newConfiguration << m_factory),
                           newConfiguration_attributes);
 
 BOOST_MSM_EUML_ATTRIBUTES((attributes_ << m_pluginApi << m_factory),
@@ -43,11 +43,10 @@ BOOST_MSM_EUML_ATTRIBUTES((attributes_ << m_pluginApi << m_factory),
 //--------------------------------------------------------------
 
 BOOST_MSM_EUML_EVENT_WITH_ATTRIBUTES(EvtStart                    , initialization_attributes);
-BOOST_MSM_EUML_EVENT_WITH_ATTRIBUTES(EvtInitialized              , parameters_attributes);
+BOOST_MSM_EUML_EVENT_WITH_ATTRIBUTES(EvtInitialized              , initialization_attributes);
 BOOST_MSM_EUML_EVENT_WITH_ATTRIBUTES(EvtInitializedNoEquipment   , parameters_attributes);
-BOOST_MSM_EUML_EVENT_WITH_ATTRIBUTES(EvtConnection               , parameters_attributes);
+BOOST_MSM_EUML_EVENT_WITH_ATTRIBUTES(EvtConnection               , initialization_attributes);
 BOOST_MSM_EUML_EVENT_WITH_ATTRIBUTES(EvtConnectionLost           , parameters_attributes);
 BOOST_MSM_EUML_EVENT_WITH_ATTRIBUTES(EvtDisconnected             , parameters_attributes);
-BOOST_MSM_EUML_EVENT_WITH_ATTRIBUTES(EvtConfigurationUpdated     , parameters_attributes);
-BOOST_MSM_EUML_EVENT_WITH_ATTRIBUTES(EvtStop                     , parameters_attributes);
+BOOST_MSM_EUML_EVENT_WITH_ATTRIBUTES(EvtConfigurationUpdated     , initialization_attributes);
 BOOST_MSM_EUML_EVENT_WITH_ATTRIBUTES(EvtNewConfigurationRequested, newConfiguration_attributes);

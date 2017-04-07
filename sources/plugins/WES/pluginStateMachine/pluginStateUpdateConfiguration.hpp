@@ -6,7 +6,7 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/Log.h>
 
-#include "../stateCommonDeclaration.hpp"
+#include "pluginStateCommonDeclaration.hpp"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -27,6 +27,7 @@ BOOST_MSM_EUML_ACTION(pluginUpdateConfigurationEntryState)
       auto configuration = pluginUpdateConfiguration.get_attribute(m_configuration);
       auto api = evt.get_attribute(m_pluginApi);
       auto newConfiguration = evt.get_attribute(m_newConfiguration);
+      auto factory = evt.get_attribute(m_factory);
 
       api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
       YADOMS_LOG(information) << "Update Configuration ...";
@@ -37,10 +38,7 @@ BOOST_MSM_EUML_ACTION(pluginUpdateConfigurationEntryState)
 
       // Update configuration
       configuration->initializeWith(newConfiguration);
-
-      //m_ioManager->OnConfigurationUpdate(api, m_configuration);
-
-      stateMachine.process_event(EvtConfigurationUpdated(api));
+      stateMachine.enqueue_event(EvtConfigurationUpdated(api, factory));
    } 
 
    template <class Evt, class Fsm, class State>

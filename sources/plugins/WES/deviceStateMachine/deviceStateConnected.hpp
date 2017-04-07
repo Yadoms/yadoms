@@ -6,7 +6,7 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/Log.h>
 
-#include "../stateCommonDeclaration.hpp"
+#include "deviceStateCommonDeclaration.hpp"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;

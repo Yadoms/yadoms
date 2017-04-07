@@ -10,7 +10,7 @@
 #include "equipments/noInformationException.hpp"
 #include <shared/Log.h>
 
-#include "stateCommonDeclaration.hpp"
+#include "pluginStateMachine/pluginStateCommonDeclaration.hpp"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -20,7 +20,6 @@ IMPLEMENT_PLUGIN(CWES)
 
 
 CWES::CWES()
-   : m_deviceName("WES")
 {}
 
 CWES::~CWES()
@@ -37,16 +36,23 @@ enum
 
 void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {  
-   // Start the MSM
-   m_pluginState.start();
-
    auto factory = boost::make_shared<CWESFactory>();
 
-   // Lauch the state
-   m_pluginState.process_event(EvtStart(api, factory));
+   // Start the MSM
+   m_pluginState.start(EvtStart(api, factory));
 
    while (true)
    {
+      if (m_pluginState.get_message_queue_size() == 0)
+      {
+         YADOMS_LOG(error) << "No state defined ... exiting";
+         m_pluginState.stop();
+         return;
+      }
+
+      // Execute enqueue event if any.
+      m_pluginState.execute_single_queued_event();
+/*
       // Wait for an event
       switch (api->getEventHandler().waitForEvents())
       {
@@ -152,6 +158,6 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          YADOMS_LOG(error) << "Unknown message id";
          break;
       }
-      }
+      }*/
    }
 }

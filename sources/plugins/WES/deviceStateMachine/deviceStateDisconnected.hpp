@@ -6,7 +6,7 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/Log.h>
 
-#include "../stateCommonDeclaration.hpp"
+#include "deviceStateCommonDeclaration.hpp"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -28,7 +28,7 @@ BOOST_MSM_EUML_ACTION(Disconnected_Entry)
       auto configuration = Disconnected.get_attribute(m_configuration);
       auto refreshTimer = Disconnected.get_attribute(m_refreshTimer);
 
-      stateMachine.process_event(EvtConnection(api));
+      stateMachine.process_event(EvtDeviceConnection(api));
    }
 
    template <class Evt, class Fsm, class State>

@@ -34,7 +34,7 @@ BOOST_MSM_EUML_EVENT(EvtdeviceStop);
 /// \brief	Transition table
 /// \note   
 //--------------------------------------------------------------
-
+/*
 BOOST_MSM_EUML_TRANSITION_TABLE((
    //             Start             Event                   Action		       Guard        Next
    //    +--------------------+--------------------+-----------------------+------------+------------------+
@@ -47,14 +47,10 @@ BOOST_MSM_EUML_TRANSITION_TABLE((
           Disconnected        + EvtNewConfigurationRequested                            == UpdateConfiguration,
           Connected           + EvtNewConfigurationRequested                            == UpdateConfiguration,
           TimeOut             + EvtNewConfigurationRequested                            == UpdateConfiguration,
-          UpdateConfiguration + EvtConfigurationUpdated                                 == Disconnected,
-          Initialization      + EvtStop                                                 == TerminateState,
-          Disconnected        + EvtStop                                                 == TerminateState,
-          Connected           + EvtStop                                                 == TerminateState,
-          TimeOut             + EvtStop                                                 == TerminateState
+          UpdateConfiguration + EvtConfigurationUpdated                                 == Disconnected
    ), plugin_state_table);
 
 BOOST_MSM_EUML_DECLARE_STATE_MACHINE(
 (plugin_state_table, 
  init_ << InitialState
- ), deviceWES);
+ ), deviceWES);*/

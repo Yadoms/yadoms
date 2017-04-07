@@ -33,17 +33,6 @@ public:
 
 private:
 
-	//--------------------------------------------------------------
-	/// \brief Initialize the communication with the WES
-	/// \param[in] api                   pointer to the API
-	//--------------------------------------------------------------
-	void initWES(boost::shared_ptr<yApi::IYPluginApi> api);
-
-   //--------------------------------------------------------------
-   /// \brief Name of the plugin
-   //--------------------------------------------------------------
-   std::string m_deviceName;
-
    //--------------------------------------------------------------
    /// \brief Configuration of the device
    //--------------------------------------------------------------

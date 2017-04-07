@@ -5,7 +5,7 @@
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/Log.h>
-#include "../stateCommonDeclaration.hpp"
+#include "deviceStateCommonDeclaration.hpp"
 
 
 // Shortcut to yPluginApi namespace
@@ -26,9 +26,9 @@ BOOST_MSM_EUML_ACTION(Initialization_Entry)
    {
       auto api = evt.get_attribute(m_pluginApi);
       auto configuration = Initialization.get_attribute(m_configuration);
-      auto factory = Initialization.get_attribute(m_factory);
+      auto factory = evt.get_attribute(m_factory);
 
-      stateMachine.process_event(EvtInitialized(api));
+      stateMachine.process_event(EvtInitialized(api, factory));
    }
 
    template <class Evt, class Fsm, class State>
@@ -40,6 +40,6 @@ BOOST_MSM_EUML_ACTION(Initialization_Entry)
 
 BOOST_MSM_EUML_STATE((Initialization_Entry, 
                       no_action,
-                      attributes_ << m_configuration << m_factory,
+                      attributes_ << m_configuration,
                       configure_ << no_configure_),
                      Initialization);

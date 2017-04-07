@@ -6,7 +6,7 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/Log.h>
 
-#include "../stateCommonDeclaration.hpp"
+#include "deviceStateCommonDeclaration.hpp"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -40,7 +40,7 @@ BOOST_MSM_EUML_ACTION(UpdateConfiguration_Entry)
 
       //m_ioManager->OnConfigurationUpdate(api, m_configuration);
 
-      stateMachine.process_event(EvtConfigurationUpdated(api));
+      //stateMachine.process_event(EvtConfigurationUpdated(api));
    } 
 
    template <class Evt, class Fsm, class State>
