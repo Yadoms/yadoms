@@ -10,19 +10,19 @@ namespace yApi = shared::plugin::yPluginApi;
 /// \brief	Fake configurable device
 /// \note   User can configurate the counter divider (increment each N read operations)
 //--------------------------------------------------------------
-class CFakeConfigurableDevice
+class CFakeDynamicallyConfigurableDevice
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    /// \param[in] deviceName    The device name
    //--------------------------------------------------------------
-   explicit CFakeConfigurableDevice(const std::string& deviceName);
+   explicit CFakeDynamicallyConfigurableDevice(const std::string& deviceName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CFakeConfigurableDevice();
+   virtual ~CFakeDynamicallyConfigurableDevice();
 
    //--------------------------------------------------------------
    /// \brief	            Declare device and associated keywords if necessary
@@ -54,6 +54,12 @@ public:
    static const std::string& getModel();
 
    //--------------------------------------------------------------
+   /// \brief	            Get the device dynamic configuration schema
+   /// \return             The device dynmaic configuration schema
+   //--------------------------------------------------------------
+   static shared::CDataContainer getDynamicConfiguration();
+
+   //--------------------------------------------------------------
    /// \brief	    Change the device configuration
    /// \param[in] newConfiguration  The new configuration
    //--------------------------------------------------------------
@@ -78,7 +84,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The divider (set by configuration)
    //--------------------------------------------------------------
-   unsigned int m_divider;
+   double m_divider;
 
    //--------------------------------------------------------------
    /// \brief	Historizers vector

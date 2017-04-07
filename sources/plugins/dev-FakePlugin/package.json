@@ -131,19 +131,8 @@
   },
   "deviceConfiguration": {
     "staticConfigurationSchema": {
-      "genericsensor" : {
-        "models": [ "Fake sensor" ],
-        "content": {
-          "CounterDivider": {
-            "type": "int",
-            "defaultValue": "2",
-            "minimumValue": "1",
-            "maximumValue": "10"
-          }
-        }
-      },
-      "genericcounter" : {
-        "models": [ "Fake counter" ],
+      "fakeConfigurableDevice" : {
+        "models": [ "Fake configurable device" ],
         "content": {
           "CounterDivider2": {
             "type": "int",

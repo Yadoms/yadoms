@@ -62,27 +62,11 @@ const std::string& CFakeConfigurableDevice::getModel()
    return model;
 }
 
-shared::CDataContainer CFakeConfigurableDevice::getDynamicConfiguration()
-{
-   //this code must be runtime dynamic.
-   //in case of static configration, define the configuration schema in package.json
-   shared::CDataContainer results;
-
-   shared::CDataContainer options;
-   options.set("type", "decimal");
-   options.set("name", "Dynamic divider");
-   options.set("minimumValue", "0.01");
-   options.set("maximumValue", "20.0");
-   options.set("precision", "0.01");
-
-   results.set("DynamicDivider", options);
-
-   return results;
-}
 
 void CFakeConfigurableDevice::setConfiguration(const shared::CDataContainer& newConfiguration)
 {
    YADOMS_LOG(information) << "Configuration = " << newConfiguration.serialize();
-   m_divider = newConfiguration.get<int>("CounterDivider2");
+   if(newConfiguration.containsValue("CounterDivider2"))
+      m_divider = newConfiguration.get<int>("CounterDivider2");
 }
 

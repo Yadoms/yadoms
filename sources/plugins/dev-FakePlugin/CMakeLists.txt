@@ -11,6 +11,8 @@ set(FAKE_PLUGIN_SOURCES
 	FakePlugin.cpp 
 	FakeConfigurableDevice.h
 	FakeConfigurableDevice.cpp 
+	FakeDynamicallyConfigurableDevice.h
+	FakeDynamicallyConfigurableDevice.cpp 
 	FakePluginConfiguration.h
 	FakePluginConfiguration.cpp 
 	FakeCounter.h
