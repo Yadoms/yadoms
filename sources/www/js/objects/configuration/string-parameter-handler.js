@@ -91,8 +91,12 @@ StringParameterHandler.prototype.getDOMObject = function () {
                         "id=\"" + this.uuid + "\" " +
                         "name=\"" + this.uuid + "\" " +
                         "data-content=\"" + this.description + "\" ";
-   if (this.required)
-    input +=            "required aria-required ";
+   if (this.required) {
+      input +=            "required aria-required ";
+      //this line MUST be translated before rendering
+      input += "data-validation-required-message=\"" + $.t("configuration.validationForm.required") + "\" ";
+   }
+   
    var dataI18n = "data-i18n=\"";
    dataI18n += "[data-content]" + this.i18nContext + this.i18nKey + ".description";
 
