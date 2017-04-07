@@ -1,572 +1,652 @@
 {
-   "type": "rfxcom",
-   "version": "1.0.2-beta",
-   "author": "Sébastien GALLOU",
-   "url": "https://github.com/Yadoms/yadoms/wiki/Rfxcom",
-   "credits": "",
-   "supportedPlatforms": "all",
-   "configurationSchema":
-   {
-      "SerialPort" :
-      {
-         "type" : "enum",
-		   "values" : {"__Binding__" : {"type" : "system", "query" : "serialPorts"}}
-      },
-      "Protocols":
-      {
-          "type" : "section",
-          "enableWithCheckBox" : "false",
-          "enableWithCheckBoxDefaultValue" : "false",
-          "content" :
-          {
-             "AE Blyss" : { "type" : "bool", "defaultValue" : "false" },
-             "Rubicson" : { "type" : "bool", "defaultValue" : "false" },
-             "FineOffset/Viking" : { "type" : "bool", "defaultValue" : "false" },
-             "Lighting4" : { "type" : "bool", "defaultValue" : "false" },
-             "RSL" : { "type" : "bool", "defaultValue" : "false" },
-             "Byron SX" : { "type" : "bool", "defaultValue" : "false" },
-             "Imagintronix" : { "type" : "bool", "defaultValue" : "false" },
-             "undecoded messages" : { "type" : "bool", "defaultValue" : "false" },
-             "Mertik" : { "type" : "bool", "defaultValue" : "false" },
-             "AD LightwaveRF" : { "type" : "bool", "defaultValue" : "false" },
-             "Hideki/UPM" : { "type" : "bool", "defaultValue" : "true" },
-             "La Crosse" : { "type" : "bool", "defaultValue" : "true" },
-             "FS20" : { "type" : "bool", "defaultValue" : "false" },
-             "ProGuard" : { "type" : "bool", "defaultValue" : "false" },
-             "BlindsT0" : { "type" : "bool", "defaultValue" : "false" },
-             "BlindsT1" : { "type" : "bool", "defaultValue" : "false" },
-             "X10" : { "type" : "bool", "defaultValue" : "true" },
-             "ARC" : { "type" : "bool", "defaultValue" : "true" },
-             "AC" : { "type" : "bool", "defaultValue" : "true" },
-             "HomeEasy EU" : { "type" : "bool", "defaultValue" : "true" },
-             "Meiantech" : { "type" : "bool", "defaultValue" : "false" },
-             "Oregon Scientific" : { "type" : "bool", "defaultValue" : "true" },
-             "ATI" : { "type" : "bool", "defaultValue" : "false" },
-             "Visonic" : { "type" : "bool", "defaultValue" : "false" },
-             "KeeLoq" : { "type" : "bool", "defaultValue" : "false" },
-             "HomeConfort" : { "type" : "bool", "defaultValue" : "false" }
-          }
-       }
-   },
-   "supportManuallyDeviceCreation": "true",
-   "deviceConfiguration": {
-      "staticConfigurationSchema": {
-         "hcA_P-uc1_16": {
-            "models": [ "x10", "arc", "ab400d", "waveman", "emw200", "impuls", "risingSun", "philips", "energenie", "energenie5", "harrisonCurtain" ],
-            "content": {
-               "houseCode": {
-                  "type": "string",
-                  "regex" : "[A-P]",
-                  "defaultValue": "A"
-               },
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "16"
-               }
-            }
-         },
-         "hcA_D-uc1_4": {
-            "models": [ "gdr2", "hqCoco20" ],
-            "content": {
-               "houseCode": {
-                  "type": "string",
-                  "regex" : "[A-D]",
-                  "defaultValue": "A"
-               },
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "4"
-               }
-            }
-         },
-         "id1_67108863-unitCode1_16": {
-            "models": [ "ac", "homeEasyEU" , "anslut", "smartwares"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "67108863"
-               },
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "16"
-               }
-            }
-         },
-         "id1_16777215-unitCode1_5": {
-            "models": [ "kambrookRf3672"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "16777215"
-               }, 
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "5"
-               }  
-            }
-         },  
-         "id1_16777215-unitCode1_6": {
-            "models": [ "sunperyBtx"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "16777215"
-               }, 
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "6"
-               }  
-            }
-         },  
-         "s0_16-c0_1023": {
-            "models": [ "koppla"],
-            "content": {
-               "system": {
-                  "type": "int",
-                  "minimumValue": "0",
-                  "maximumValue": "16"
-               },
-               "channel": {
-                  "type": "int",
-                  "minimumValue": "0",
-                  "maximumValue": "1023"
-               }
-            }
-         },
-         "id0_16777215": {
-            "models": [ "pt2262", "mcz1PelletStove", "mcz2PelletStove", "mcz3PelletStove"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "0",
-                  "maximumValue": "16777215"
-               }
-            }
-         },
-         "id1_16777215-unitCode1_16": {
-            "models": [ "lightwaveRf", "rsl"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "16777215"
-               }, 
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "16"
-               }  
-            }
-         },             
-         "id1_16383-unitCode1_4": {
-            "models": [ "emw100"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "16383"
-               }, 
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "4"
-               }  
-            }
-         },             
-         "id1_524287-unitCode1_6": {
-            "models": [ "bbsb"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "524287"
-               }, 
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "6"
-               }  
-            }
-         },  
-         "id0_16": {
-            "models": [ "lucciAir", "westinghouse7226640"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "0",
-                  "maximumValue": "16"
-               }
-            }
-         },    
-         "id0_255": {
-            "models": [ "byronSx"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "0",
-                  "maximumValue": "255"
-               }
-            }
-         },    
-         "id0_1023": {
-            "models": [ "selectPlus"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "0",
-                  "maximumValue": "1023"
-               }
-            }
-         },
-         "id0_65535": {
-            "models": [ "byronMp001", "envivo", "x10SecurityR", "digimax", "digimaxShort" ],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "0",
-                  "maximumValue": "65535"
-               }
-            }
-         },
-         "id1_65535": {
-            "models": [ "mdRemote106", "livolo", "aoke", "rgb432w", "mdremote107", "legrandCad", "it", "mdRemote108", "kangtai"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "65535"
-               }
-            }
-         },
-         "id1_1048575": {
-            "models": [ "avantek"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "1048575"
-               }
-            }
-         },
-         "id1_16777215": {
-            "models": [ "trc02", "aOkRf01", "aOkAc114", "mediaMount", "raex", "dolatDlm1", "asp"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "16777215"
-               }
-            }
-         },
-         "id0_32767": {
-            "models": [ "siemensSf01"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "0",
-                  "maximumValue": "32767"
-               }
-            }
-         },
-         "id1_32767": {
-            "models": [ "trc02_2"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "32767"
-               }
-            }
-         },
-          "id1_524287-unitCode1_4": {
-            "models": [ "eurodomest"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "524287"
-               }, 
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "4"
-               }  
-            }
-         },    
-         "id1_32767-unitCode1_10": {
-            "models": [ "livoloAppliance"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "32767"
-               }, 
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "10"
-               }  
-            }
-         },
-         "id0_65535-gcA_P-uc1_5": {
-            "models": [ "blyss"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "0",
-                  "maximumValue": "65535"
-               }, 
-               "groupCode": {
-                  "type": "string",
-                  "regex" : "[A-P]",
-                  "defaultValue": "A"
-               },
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "5"
-               }  
-            }
-         },
-         "seavTxs4": {
-            "models": [ "seavTxs4"],
-            "content": {
-               "sw2-1": {
-                  "type": "bool"
-               },
-               "sw2-2": {
-                  "type": "bool"
-               },
-               "id": {
-                  "type": "int",
-                  "minimumValue": "0",
-                  "maximumValue": "32767"
-               }  
-            }
-         }, 
-
-         "id1_65535-uc1_15": {
-            "models": [ "rollerTrolHastaNew", "hastaOld", "confexx"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "65535"
-               },
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "15"
-               }
-            }
-         },
-              
-         "id1_65535-uc1_99": {
-            "models": [ "screenline"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "65535"
-               },
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "99"
-               }
-            }
-         },
-         
-         "id1_4294967295-uc1_15": {
-            "models": [ "dc106", "forest"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "4294967295"
-               },
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "15"
-               }
-            }
-         },           
-
-         "id1_4095-uc0_5": {
-            "models": [ "chamberlaincs4330cn"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "4095"
-               },
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "0",
-                  "maximumValue": "5"
-               }
-            }
-         },     
-         "id1_1048575-uc1_4": {
-            "models": [ "rfy"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "1048575"
-               },
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "4"
-               }
-            }
-         },
-         "id1_1048575-uc1_5": {
-            "models": [ "asa"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "1048575"
-               },
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "5"
-               }
-            }
-         },
-         "id1_1048575-uc0_15": {
-            "models": [ "rfyExt"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "1048575"
-               },
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "0",
-                  "maximumValue": "15"
-               }
-            }
-         },
-         "id1_524287-hcA_D-uc1_4": {
-            "models": [ "homeConfort"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "524287"
-               },
-               "houseCode": {
-                  "type": "string",
-                  "regex" : "[A-D]",
-                  "defaultValue": "A"
-               },
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "1",
-                  "maximumValue": "4"
-               }
-            }
-         },
-         "id0_268435456": {
-            "models": [ "keeLoq"],
-            "content": {
-               "id": {
-                  "type": "int",
-                  "minimumValue": "0",
-                  "maximumValue": "268435456"
-               }
-            }
-         },
-         "uc0_31": {
-            "models": [ "he105"],
-            "content": {
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "0",
-                  "maximumValue": "31"
-               }
-            }
-         },
-         "uc0_255": {
-            "models": [ "rts10", "g6rH4t1"],
-            "content": {
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "0",
-                  "maximumValue": "255"
-               }
-            }
-         },
-         "uc0_262143": {
-            "models": [ "g6rH4tb", "g6rH4s"],
-            "content": {
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "0",
-                  "maximumValue": "262143"
-               }
-            }
-         },            
-
-         "uc0_65535": {
-            "models": [ "g6rH4td"],
-            "content": {
-               "unitCode": {
-                  "type": "int",
-                  "minimumValue": "0",
-                  "maximumValue": "65535"
-               }
-            }
-         },            
-
-         "hcrx-garx-sarx":
-         {
-            "models": [ "fs20", "fht8v", "fht80"],
-            "content":
-            {
-               "houseCode": {
-                  "type": "string",
-                  "regex" : "[1-4]{8}",
-                  "defaultValue": "11111111"
-               },
-               "groupAddress": {
-                  "type": "string",
-                  "regex" : "[1-4]{2}",
-                  "defaultValue": "11"
-               },
-               "subAddress": {
-                  "type": "string",
-                  "regex" : "[1-4]{2}",
-                  "defaultValue": "11"
-               }             
-            }
-         },
-         "cameraX10Ninja":
-         {
-            "models": [ "cameraX10Ninja"],
-            "content":
-            {
-               "houseCode": {
-                  "type": "string",
-                  "regex" : "[A-P]",
-                  "defaultValue": "A"
-               }              
-            }
-         }
+  "type": "rfxcom",
+  "version": "1.0.2-beta",
+  "author": "Sébastien GALLOU",
+  "url": "https://github.com/Yadoms/yadoms/wiki/Rfxcom",
+  "credits": "",
+  "supportedPlatforms": "all",
+  "configurationSchema": {
+    "SerialPort": {
+      "type": "enum",
+      "values": {
+        "__Binding__": {
+          "type": "system",
+          "query": "serialPorts"
+        }
       }
-   }
+    },
+    "Protocols": {
+      "type": "section",
+      "enableWithCheckBox": "false",
+      "enableWithCheckBoxDefaultValue": "false",
+      "content": {
+        "AE Blyss": {
+          "type": "bool",
+          "defaultValue": "false"
+        },
+        "Rubicson": {
+          "type": "bool",
+          "defaultValue": "false"
+        },
+        "FineOffset/Viking": {
+          "type": "bool",
+          "defaultValue": "false"
+        },
+        "Lighting4": {
+          "type": "bool",
+          "defaultValue": "false"
+        },
+        "RSL": {
+          "type": "bool",
+          "defaultValue": "false"
+        },
+        "Byron SX": {
+          "type": "bool",
+          "defaultValue": "false"
+        },
+        "Imagintronix": {
+          "type": "bool",
+          "defaultValue": "false"
+        },
+        "undecoded messages": {
+          "type": "bool",
+          "defaultValue": "false"
+        },
+        "Mertik": {
+          "type": "bool",
+          "defaultValue": "false"
+        },
+        "AD LightwaveRF": {
+          "type": "bool",
+          "defaultValue": "false"
+        },
+        "Hideki/UPM": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "La Crosse": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "FS20": {
+          "type": "bool",
+          "defaultValue": "false"
+        },
+        "ProGuard": {
+          "type": "bool",
+          "defaultValue": "false"
+        },
+        "BlindsT0": {
+          "type": "bool",
+          "defaultValue": "false"
+        },
+        "BlindsT1": {
+          "type": "bool",
+          "defaultValue": "false"
+        },
+        "X10": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "ARC": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "AC": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "HomeEasy EU": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "Meiantech": {
+          "type": "bool",
+          "defaultValue": "false"
+        },
+        "Oregon Scientific": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "ATI": {
+          "type": "bool",
+          "defaultValue": "false"
+        },
+        "Visonic": {
+          "type": "bool",
+          "defaultValue": "false"
+        },
+        "KeeLoq": {
+          "type": "bool",
+          "defaultValue": "false"
+        },
+        "HomeConfort": {
+          "type": "bool",
+          "defaultValue": "false"
+        }
+      }
+    }
+  },
+  "supportManuallyDeviceCreation": "true",
+  "deviceConfiguration": {
+    "staticConfigurationSchema": {
+      "hcA_P-uc1_16": {
+        "models": [ "x10", "arc", "ab400d", "waveman", "emw200", "impuls", "risingSun", "philips", "energenie", "energenie5", "harrisonCurtain" ],
+        "content": {
+          "houseCode": {
+            "type": "string",
+            "regex": "[A-P]",
+            "defaultValue": "A"
+          },
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "16"
+          }
+        }
+      },
+      "hcA_D-uc1_4": {
+        "models": [ "gdr2", "hqCoco20" ],
+        "content": {
+          "houseCode": {
+            "type": "string",
+            "regex": "[A-D]",
+            "defaultValue": "A"
+          },
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "4"
+          }
+        }
+      },
+      "id1_67108863-unitCode1_16": {
+        "models": [ "ac", "homeEasyEU", "anslut", "smartwares" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "67108863"
+          },
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "16"
+          }
+        }
+      },
+      "id1_16777215-unitCode1_5": {
+        "models": [ "kambrookRf3672" ],
+        "content": {
+          "houseCode": {
+            "type": "string",
+            "regex": "[A-D]",
+            "defaultValue": "A"
+          },
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "16777215"
+          },
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "5"
+          }
+        }
+      },
+      "id1_16777215-unitCode1_6": {
+        "models": [ "sunperyBtx" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "16777215"
+          },
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "6"
+          }
+        }
+      },
+      "s0_16-c0_1023": {
+        "models": [ "koppla" ],
+        "content": {
+          "system": {
+            "type": "int",
+            "minimumValue": "0",
+            "maximumValue": "16"
+          },
+          "channel": {
+            "type": "int",
+            "minimumValue": "0",
+            "maximumValue": "1023"
+          }
+        }
+      },
+      "id0_16777215": {
+        "models": [ "pt2262", "mcz1PelletStove", "mcz2PelletStove", "mcz3PelletStove" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "0",
+            "maximumValue": "16777215"
+          }
+        }
+      },
+      "id1_16777215-unitCode1_16": {
+        "models": [ "lightwaveRf", "rsl" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "16777215"
+          },
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "16"
+          }
+        }
+      },
+      "id1_16383-unitCode1_4": {
+        "models": [ "emw100" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "16383"
+          },
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "4"
+          }
+        }
+      },
+      "id1_524287-unitCode1_6": {
+        "models": [ "bbsb" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "524287"
+          },
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "6"
+          }
+        }
+      },
+      "id0_16": {
+        "models": [ "lucciAir", "westinghouse7226640" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "0",
+            "maximumValue": "16"
+          }
+        }
+      },
+      "id0_255": {
+        "models": [ "byronSx" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "0",
+            "maximumValue": "255"
+          }
+        }
+      },
+      "id0_1023": {
+        "models": [ "selectPlus" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "0",
+            "maximumValue": "1023"
+          }
+        }
+      },
+      "id0_65535": {
+        "models": [ "byronMp001", "envivo", "x10SecurityR", "digimax", "digimaxShort" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "0",
+            "maximumValue": "65535"
+          }
+        }
+      },
+      "id1_65535": {
+        "models": [ "mdRemote106", "livolo", "aoke", "rgb432w", "mdremote107", "legrandCad", "it", "mdRemote108", "kangtai" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "65535"
+          }
+        }
+      },
+      "id1_1048575": {
+        "models": [ "avantek" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "1048575"
+          }
+        }
+      },
+      "id1_16777215": {
+        "models": [ "trc02", "aOkRf01", "aOkAc114", "mediaMount", "raex", "dolatDlm1", "asp" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "16777215"
+          }
+        }
+      },
+      "id0_32767": {
+        "models": [ "siemensSf01" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "0",
+            "maximumValue": "32767"
+          }
+        }
+      },
+      "id1_32767": {
+        "models": [ "trc02_2" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "32767"
+          }
+        }
+      },
+      "id1_524287-unitCode1_4": {
+        "models": [ "eurodomest" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "524287"
+          },
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "4"
+          }
+        }
+      },
+      "id1_32767-unitCode1_10": {
+        "models": [ "livoloAppliance" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "32767"
+          },
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "10"
+          }
+        }
+      },
+      "id0_65535-gcA_P-uc1_5": {
+        "models": [ "blyss" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "0",
+            "maximumValue": "65535"
+          },
+          "groupCode": {
+            "type": "string",
+            "regex": "[A-P]",
+            "defaultValue": "A"
+          },
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "5"
+          }
+        }
+      },
+      "seavTxs4": {
+        "models": [ "seavTxs4" ],
+        "content": {
+          "sw2-1": {
+            "type": "bool"
+          },
+          "sw2-2": {
+            "type": "bool"
+          },
+          "id": {
+            "type": "int",
+            "minimumValue": "0",
+            "maximumValue": "32767"
+          }
+        }
+      },
+
+      "id1_65535-uc1_15": {
+        "models": [ "rollerTrolHastaNew", "hastaOld", "confexx" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "65535"
+          },
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "15"
+          }
+        }
+      },
+
+      "id1_65535-uc1_99": {
+        "models": [ "screenline" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "65535"
+          },
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "99"
+          }
+        }
+      },
+
+      "id1_4294967295-uc1_15": {
+        "models": [ "dc106", "forest" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "4294967295"
+          },
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "15"
+          }
+        }
+      },
+
+      "id1_4095-uc0_5": {
+        "models": [ "chamberlaincs4330cn" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "4095"
+          },
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "0",
+            "maximumValue": "5"
+          }
+        }
+      },
+      "id1_1048575-uc1_4": {
+        "models": [ "rfy" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "1048575"
+          },
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "4"
+          }
+        }
+      },
+      "id1_1048575-uc1_5": {
+        "models": [ "asa" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "1048575"
+          },
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "5"
+          }
+        }
+      },
+      "id1_1048575-uc0_15": {
+        "models": [ "rfyExt" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "1048575"
+          },
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "0",
+            "maximumValue": "15"
+          }
+        }
+      },
+      "id1_524287-hcA_D-uc1_4": {
+        "models": [ "homeConfort" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "524287"
+          },
+          "houseCode": {
+            "type": "string",
+            "regex": "[A-D]",
+            "defaultValue": "A"
+          },
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "1",
+            "maximumValue": "4"
+          }
+        }
+      },
+      "id0_268435456": {
+        "models": [ "keeLoq" ],
+        "content": {
+          "id": {
+            "type": "int",
+            "minimumValue": "0",
+            "maximumValue": "268435456"
+          }
+        }
+      },
+      "uc0_31": {
+        "models": [ "he105" ],
+        "content": {
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "0",
+            "maximumValue": "31"
+          }
+        }
+      },
+      "uc0_255": {
+        "models": [ "rts10", "g6rH4t1" ],
+        "content": {
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "0",
+            "maximumValue": "255"
+          }
+        }
+      },
+      "uc0_262143": {
+        "models": [ "g6rH4tb", "g6rH4s" ],
+        "content": {
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "0",
+            "maximumValue": "262143"
+          }
+        }
+      },
+
+      "uc0_65535": {
+        "models": [ "g6rH4td" ],
+        "content": {
+          "unitCode": {
+            "type": "int",
+            "minimumValue": "0",
+            "maximumValue": "65535"
+          }
+        }
+      },
+
+      "hcrx-garx-sarx": {
+        "models": [ "fs20", "fht8v", "fht80" ],
+        "content": {
+          "houseCode": {
+            "type": "string",
+            "regex": "[1-4]{8}",
+            "defaultValue": "11111111"
+          },
+          "groupAddress": {
+            "type": "string",
+            "regex": "[1-4]{2}",
+            "defaultValue": "11"
+          },
+          "subAddress": {
+            "type": "string",
+            "regex": "[1-4]{2}",
+            "defaultValue": "11"
+          }
+        }
+      },
+      "cameraX10Ninja": {
+        "models": [ "cameraX10Ninja" ],
+        "content": {
+          "houseCode": {
+            "type": "string",
+            "regex": "[A-P]",
+            "defaultValue": "A"
+          }
+        }
+      }
+    }
+  }
 }

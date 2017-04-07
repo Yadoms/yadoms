@@ -16,7 +16,7 @@ namespace rfxcomMessages
       m_rssi->set(0);
 
       createSubType(deviceDetails.get<unsigned char>("subType"));
-      m_houseCode = deviceDetails.get<unsigned char>("houseCode");
+      m_houseCode = (m_subType == sTypeKambrook) ? deviceDetails.get<unsigned char>("houseCode") : 0;
       m_id = deviceDetails.get<unsigned int>("id");
       m_unitCode = deviceDetails.get<unsigned char>("unitCode");
 
@@ -34,7 +34,7 @@ namespace rfxcomMessages
 
       createSubType(static_cast<unsigned char>(subType));
 
-      m_houseCode = manuallyDeviceCreationConfiguration.get<unsigned char>("houseCode", 0);
+      m_houseCode = (m_subType == sTypeKambrook) ? (manuallyDeviceCreationConfiguration.get<char>("houseCode", 0) - 'A') : 0;
       m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
       m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
@@ -101,7 +101,8 @@ namespace rfxcomMessages
          shared::CDataContainer details;
          details.set("type", pTypeLighting2);
          details.set("subType", m_subType);
-         details.set("houseCode", m_houseCode);
+         if (m_subType == sTypeKambrook)
+            details.set("houseCode", m_houseCode);
          details.set("id", m_id);
          details.set("unitCode", m_unitCode);
          api->declareDevice(m_deviceName, m_subTypeManager->getModel(), m_keywords, details);
@@ -139,8 +140,10 @@ namespace rfxcomMessages
    void CLighting2::buildDeviceName()
    {
       std::ostringstream ssdeviceName;
-      ssdeviceName << static_cast<unsigned int>(m_subType) <<
-         "." << static_cast<unsigned int>(m_houseCode) <<
+      ssdeviceName << static_cast<unsigned int>(m_subType);
+      if (m_subType == sTypeKambrook)
+         ssdeviceName << "." << static_cast<unsigned int>(m_houseCode);
+      ssdeviceName <<
          "." << static_cast<unsigned int>(m_id) <<
          "." << static_cast<unsigned int>(m_unitCode);
       m_deviceName = ssdeviceName.str();
