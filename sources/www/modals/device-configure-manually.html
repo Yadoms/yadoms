@@ -32,7 +32,7 @@
                $modalBody.empty();
 
                //we append the common parameters section
-               var friendlyNameParameter = new StringParameterHandler("modals.configure-manually-device.", "friendlyName-configuration", { required: "true" }, "");
+               var friendlyNameParameter = new StringParameterHandler("modals.configure-manually-device.", undefined, "friendlyName-configuration", { required: "true" }, "");
                $modalBody.append(friendlyNameParameter.getDOMObject());
                //we finish parmeters instantiation
                if ($.isFunction(friendlyNameParameter.applyScript))
@@ -43,6 +43,9 @@
 
                //i18n
                $modalBody.i18n();
+               
+               //finalize treatments (ie sort items after trnaslation)
+               configMgr.afterI18n();
 
                //validation form
                //erase previous jqBootstrapValidation

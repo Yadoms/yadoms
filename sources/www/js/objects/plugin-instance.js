@@ -132,21 +132,18 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
             
             for (var k in schema){
                 if (schema.hasOwnProperty(k)) {
-                     let models= '';
                      schema[k].models.forEach( function(model) {
-                        if(models !== '')
-                           models += ', ';
-                        models += model;
+                        tmp.type.content[model] = {
+                           type: "section",
+                           name: model,
+                           content: schema[k].content,
+                           i18nBasePath: "plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.",
+                           i18nKey: k
+                        };
                      });
                      
-                     tmp.type.content[k] = {
-                        type: "section",
-                        name: models,
-                        content: schema[k].content,
-                        i18nBasePath: "plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema."
-                     };
                 }
-            }    
+            }
             d.resolve(tmp);
          })
          .fail(d.reject);

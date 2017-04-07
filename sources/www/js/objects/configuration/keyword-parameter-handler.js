@@ -10,7 +10,7 @@
  * @param currentValue
  * @constructor
  */
-function KeywordParameterHandler(i18NContext, paramName, content, currentValue) {
+function KeywordParameterHandler(i18NContext, i18nKey, paramName, content, currentValue) {
    assert(i18NContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
@@ -31,6 +31,7 @@ function KeywordParameterHandler(i18NContext, paramName, content, currentValue) 
       this.paramName = paramName;
       this.description = isNullOrUndefined(content.description) ? "" : content.description;
       this.i18nContext = i18NContext;
+      this.i18nKey = i18nKey || paramName;
       this.content = content;
 
       if (!isNullOrUndefined(content.expectedKeywordType)) {

@@ -10,7 +10,7 @@
  * @param currentValue
  * @constructor
  */
-function StringParameterHandler(i18nContext, paramName, content, currentValue) {
+function StringParameterHandler(i18nContext, i18nKey, paramName, content, currentValue) {
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
@@ -71,6 +71,7 @@ function StringParameterHandler(i18nContext, paramName, content, currentValue) {
    this.paramName = paramName;
    this.description = isNullOrUndefined(content.description)?"":content.description;
    this.i18nContext = i18nContext;
+   this.i18nKey = i18nKey || paramName;
    this.content = content;
 }
 
@@ -93,19 +94,19 @@ StringParameterHandler.prototype.getDOMObject = function () {
    if (this.required)
     input +=            "required aria-required ";
    var dataI18n = "data-i18n=\"";
-   dataI18n += "[data-content]" + this.i18nContext + this.paramName + ".description";
+   dataI18n += "[data-content]" + this.i18nContext + this.i18nKey + ".description";
 
    if (!isNaN(this.maximumLength))
       input += "maxlength=\"" + this.maximumLength + "\" ";
 
    if (!isNullOrUndefined(this.regex)) {
       input += "pattern=\"" + this.regex + "\" data-validation-pattern-message=\"" + this.regexErrorMessage + "\"";
-      dataI18n += ";[data-validation-pattern-message]" + this.i18nContext + this.paramName + ".regexErrorMessage";
+      dataI18n += ";[data-validation-pattern-message]" + this.i18nContext + this.i18nKey + ".regexErrorMessage";
    }
 
    if (!isNullOrUndefined(this.mustMatchTo)) {
       input += "data-validation-match-match=\"" + this.mustMatchTo + "\"";
-      dataI18n += ";[data-validation-match-message]" + this.i18nContext + this.paramName + ".matchToErrorMessage";
+      dataI18n += ";[data-validation-match-message]" + this.i18nContext + this.i18nKey + ".matchToErrorMessage";
    }
 
    dataI18n += "\"";
