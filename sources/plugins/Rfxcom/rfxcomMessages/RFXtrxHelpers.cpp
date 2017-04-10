@@ -53,7 +53,7 @@ void CheckReceivedMessage(const RBUF& rbuf,
 
    if (sequenceNumberChecker->isExpected(rbuf.RXRESPONSE.seqnbr))
    {
-      YADOMS_LOG(information) << "Wrong message sequence number, received : " << static_cast<unsigned int>(rbuf.RXRESPONSE.seqnbr) << ", expected : " << sequenceNumberChecker->last();
+      YADOMS_LOG(information) << "Wrong message sequence number, received : " << static_cast<unsigned int>(rbuf.RXRESPONSE.seqnbr) << ", expected : " << static_cast<unsigned int>(sequenceNumberChecker->last());
       sequenceNumberChecker->reset(rbuf.RXRESPONSE.seqnbr);
    }
 }
