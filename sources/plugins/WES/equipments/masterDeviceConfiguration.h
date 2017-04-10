@@ -1,28 +1,30 @@
 #pragma once
-#include "IWESConfiguration.h"
-#include "IOManager.h"
+#include "ImasterDeviceConfiguration.h"
 #include <shared/DataContainer.h>
 
 //--------------------------------------------------------------
 /// \brief	Configuration of the plugin
 //--------------------------------------------------------------
-class CWESConfiguration : public IWESConfiguration
+class CmasterDeviceConfiguration : public ImasterDeviceConfiguration
 {
 public:
 
    //--------------------------------------------------------------
    /// \brief	    Constructor
    //--------------------------------------------------------------
-   CWESConfiguration();
+   CmasterDeviceConfiguration();
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CWESConfiguration();
+   virtual ~CmasterDeviceConfiguration();
 
-   // IWESConfiguration implementation
+   // ImasterDeviceConfiguration implementation
    void initializeWith(const shared::CDataContainer& data) override;
-   // [END] IWESConfiguration implementation
+   virtual Poco::Net::SocketAddress getIPAddressWithSocket() const override;
+   bool isPasswordActivated() const override;
+   std::string getPassword() const override;
+   // [END] ImasterDeviceConfiguration implementation
 
 private:
    //--------------------------------------------------------------

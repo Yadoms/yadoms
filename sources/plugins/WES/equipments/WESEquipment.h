@@ -2,6 +2,7 @@
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "IEquipment.h"
+#include "masterDeviceConfiguration.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -24,17 +25,15 @@ namespace equipments
       ///\param[in] device         The device name
       //-----------------------------------------------------
       CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
-                    const std::string& device);
+                    const std::string& device,
+                    const shared::CDataContainer& deviceConfiguration);
 
       // IExtension implementation
       std::string getDeviceName() const override;
       std::string getDeviceType() const override;
-      void updateFromDevice(const std::string& type, 
-                            boost::shared_ptr<yApi::IYPluginApi> api, 
-                            shared::CDataContainer& values,
-                            bool forceHistorization = false) override;
-      void historizePendingCommand(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command) override;
-      void resetPendingCommand() override;
+      bool isMasterDevice() const override;
+      void updateFromDevice( boost::shared_ptr<yApi::IYPluginApi> api,
+                             bool forceHistorization = false) override;
       shared::CDataContainer buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& parameters, boost::shared_ptr<const yApi::IDeviceCommand> command) override;
       // [END] IExtension implementation
 
@@ -46,21 +45,6 @@ namespace equipments
    private:
 
       //-----------------------------------------------------
-      ///\brief                     Update IOs from different types
-      ///\param[in]   api                 Yadoms API
-      ///\param[in] values                values received from the WES
-      ///\param[in] keywordsList          the list of keywords to be updated
-      ///\param[in] ToHistorize           keywords to historize at the end of the function
-      ///\param[in] forceHistorization    force the historization of all the keyword list, if necessary (initialization, ...)
-      //-----------------------------------------------------
-      template<class T1, class T2>
-      void updateIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                              shared::CDataContainer& values,
-                              std::vector<boost::shared_ptr<T1> >& keywordsList,
-                              std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& ToHistorize,
-                              bool forceHistorization = false);
-
-      //-----------------------------------------------------
       ///\brief                     The device name
       //-----------------------------------------------------
       std::string m_deviceName;
@@ -69,6 +53,8 @@ namespace equipments
       ///\brief                     The device type
       //-----------------------------------------------------
       std::string m_deviceType;
+
+      CmasterDeviceConfiguration m_configuration;
 
       //--------------------------------------------------------------
       /// \brief	vector of all relays

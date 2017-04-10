@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "WESEquipment.h"
+#include "masterdeviceConfiguration.h"
 #include <shared/DataContainer.h>
 #include "noInformationException.hpp"
 #include <shared/Log.h>
@@ -7,7 +8,8 @@
 namespace equipments
 {
    CWESEquipment::CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
-                                      const std::string& device):
+                                const std::string& device,
+                                const shared::CDataContainer& deviceConfiguration):
       m_deviceName(device),
       m_deviceType("WES")
    {
@@ -15,6 +17,10 @@ namespace equipments
       shared::CDataContainer details;
       details.set("provider", "WES");
       details.set("type", m_deviceType);
+
+      deviceConfiguration.printToLog(YADOMS_LOG(information));
+
+      m_configuration.initializeWith(deviceConfiguration);
 
       // Relay Configuration
       for (int counter = 0; counter<WES_RELAY_QTY; ++counter)
@@ -58,60 +64,24 @@ namespace equipments
       return m_deviceName;
    }
 
+   bool CWESEquipment::isMasterDevice() const
+   {
+      return true;
+   }
+
    std::string CWESEquipment::getDeviceType() const
    {
       return m_deviceType;
    }
 
-   void CWESEquipment::updateFromDevice(const std::string& type,
-                                           boost::shared_ptr<yApi::IYPluginApi> api,
-                                           shared::CDataContainer& values,
-                                           bool forceHistorization)
+   void CWESEquipment::updateFromDevice( boost::shared_ptr<yApi::IYPluginApi> api,
+                                         bool forceHistorization)
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize;
 
+      //TODO : create the call to the function here
+
       api->historizeData(m_deviceName, keywordsToHistorize);
-   }
-
-   template<class T1, class T2>
-   void CWESEquipment::updateIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                             shared::CDataContainer& values,
-                                             std::vector<boost::shared_ptr<T1> >& keywordsList,
-                                             std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& ToHistorize,
-                                             bool forceHistorization)
-   {
-      typename std::vector<boost::shared_ptr<T1> >::const_iterator diIterator;
-      std::string productRevision("");
-
-      try
-      {
-         productRevision = values.getWithDefault<std::string>("product","");
-         for (diIterator = keywordsList.begin(); diIterator != keywordsList.end(); ++diIterator)
-         {
-            T2 newValue = values.get<T2>((*diIterator)->getHardwareName());
-
-            //historize only for new value
-            if ((*diIterator)->get() != newValue || forceHistorization)
-            {
-               YADOMS_LOG(information) << "read IO : " << (*diIterator)->getHardwareName() << " : " << boost::lexical_cast<std::string>(newValue) ;
-               (*diIterator)->set(newValue);
-               ToHistorize.push_back((*diIterator));
-            }
-         }
-      }
-      catch (shared::exception::CInvalidParameter&)
-      {
-         // If we could read the product revision, IOs have not been return : so it's an error of conception, or a wrong apikey
-         if (productRevision == "WES_V4") throw CNoInformationException("Equipment connected, but no information received. Please check apikey");
-      }
-   }
-
-   void CWESEquipment::historizePendingCommand(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command)
-   {
-   }
-
-   void CWESEquipment::resetPendingCommand()
-   {
    }
 
    shared::CDataContainer CWESEquipment::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, 

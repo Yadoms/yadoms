@@ -7,9 +7,11 @@
 CWESFactory::CWESFactory()
 {}
 
-void CWESFactory::loadConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                    const boost::shared_ptr<IWESConfiguration> configuration)
+boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                             const boost::shared_ptr<IWESConfiguration> configuration)
 {
+   std::vector<boost::shared_ptr<equipments::IEquipment> > masterdeviceList;
+   //std::vector<boost::shared_ptr<equipments::IEquipment> > WESList;
 
    std::vector<std::string> devices = api->getAllDevices();
    std::vector<std::string>::iterator devicesIterator;
@@ -26,8 +28,8 @@ void CWESFactory::loadConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
 
          if (type == "WES")
          {
-            equipment = boost::make_shared<equipments::CWESEquipment>(api, (*devicesIterator));
-            m_WESList.push_back(equipment);
+            equipment = boost::make_shared<equipments::CWESEquipment>(api, (*devicesIterator), api->getDeviceConfiguration((*devicesIterator)));
+            masterdeviceList.push_back(equipment);
          }
 
          // TODO : For other extension
@@ -42,30 +44,30 @@ void CWESFactory::loadConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
       YADOMS_LOG(information) << "Name : " << (*devicesIterator);
       YADOMS_LOG(information) << "Model : " << type;
    }
-}
 
-int CWESFactory::getMasterEquipment()
-{
-   return m_WESList.size();
+   return boost::make_shared<CIOManager>(masterdeviceList);
 }
 
 std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
+                                              const boost::shared_ptr<CIOManager> ioManager,
                                               const yApi::IManuallyDeviceCreationData& data)
 {
    boost::shared_ptr<equipments::IEquipment> equipment;
 
    try {
 
+      data.getConfiguration().printToLog(YADOMS_LOG(information));
+
       if (data.getConfiguration().get<bool>("type.content.WES.radio"))
       {
-         equipment = boost::make_shared<equipments::CWESEquipment>(api, data.getDeviceName());
-         m_WESList.push_back(equipment);
+         equipment = boost::make_shared<equipments::CWESEquipment>(api, data.getDeviceName(), data.getConfiguration().get<shared::CDataContainer>("type.content.WES.content"));
+         ioManager->addEquipment(equipment);
       }
       else if (data.getConfiguration().get<bool>("type.content.Other.radio"))
-      {}
-
-      if (equipment)
-         m_devicesList.push_back(equipment);
+      {
+         //subEquipment = boost::make_shared<equipments::CWESEquipment>(api, data.getDeviceName());
+         //ioManager->addEquipment(subEquipment);
+      }
    }
    catch (std::exception& e)
    {
@@ -73,32 +75,6 @@ std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginAp
    }
 
    return equipment->getDeviceName();
-}
-
-void CWESFactory::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved)
-{
-   for (unsigned char counter = 0; counter < m_devicesList.size(); ++counter)
-   {
-      YADOMS_LOG(information) << "device Name : " << m_devicesList[counter]->getDeviceName() ;
-      YADOMS_LOG(information) << "deviceRemoved : " << deviceRemoved ;
-
-      // Deletion from the list of the device
-      if (m_devicesList[counter]->getDeviceName() == deviceRemoved)
-      {
-
-         // If it's an extension, we delete the extension.
-         // If it's the WES
-         if (m_devicesList[counter]->getDeviceType() == "WES")
-         {
-            // remove the extension
-            m_WESList.erase(m_devicesList.begin() + counter);
-         }
-         else
-            m_devicesList.erase(m_devicesList.begin() + counter);
-      }
-   }
-
-   YADOMS_LOG(information) << deviceRemoved << " was removed";
 }
 
 CWESFactory::~CWESFactory()

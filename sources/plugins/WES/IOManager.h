@@ -16,21 +16,9 @@ class CIOManager
 public:
    //--------------------------------------------------------------
    /// \brief	   Constructor
-   /// \param[in] device            The device name
-   /// \param[in] socket            The IP Address with the socket number of the WES
-   /// \param[in] passwordActivated If the password is used
-   /// \param[in] password          password used to access the equipment
+   /// \param[in]  extensionList   Set a new equipment
    //--------------------------------------------------------------
-   explicit CIOManager(const std::string device, 
-                       Poco::Net::SocketAddress socket,
-                       bool passwordActivated, 
-                       std::string password);
-
-   //--------------------------------------------------------------
-   /// \brief	    Initialize all elements
-   /// \param[in]  extensionList   Set a new list of IOs
-   //--------------------------------------------------------------
-   void Initialize(std::vector<boost::shared_ptr<equipments::IEquipment> >& extensionList);
+   explicit CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment> >& extensionList);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -60,7 +48,7 @@ public:
    /// \param [in] api                   Plugin execution context (Yadoms API)
    /// \param [in] forceHistorization    force the historization of all keywords
    //--------------------------------------------------------------
-   void readAllIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, bool forceHistorization = false);
+   void readAllDevices(boost::shared_ptr<yApi::IYPluginApi> api, bool forceHistorization = false);
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
@@ -77,30 +65,18 @@ public:
    void OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                               const IWESConfiguration& configuration);
 
+   void addEquipment(boost::shared_ptr<equipments::IEquipment> equipment);
+
+   //--------------------------------------------------------------
+   /// \brief	    getMasterEquipment
+   /// \return the number of master equipment
+   //--------------------------------------------------------------
+   int getMasterEquipment();
+
 private:
 
    //--------------------------------------------------------------
-   /// \brief	The plugin name
+   /// \brief The IO Manager
    //--------------------------------------------------------------
-   std::string m_deviceName;
-
-   //--------------------------------------------------------------
-   /// \brief	socket and address used to access the equipment
-   //--------------------------------------------------------------
-   Poco::Net::SocketAddress m_socketAddress;
-
-   //--------------------------------------------------------------
-   /// \brief	Password activation
-   //--------------------------------------------------------------
-   bool m_isPasswordActivated;
-
-   //--------------------------------------------------------------
-   /// \brief	Password
-   //--------------------------------------------------------------
-   std::string m_password;
-
-   //--------------------------------------------------------------
-   /// \brief	All extensions
-   //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<equipments::IEquipment> > m_devicesList;
+   std::vector<boost::shared_ptr<equipments::IEquipment>> m_deviceManager;
 };

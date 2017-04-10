@@ -4,48 +4,51 @@
 #include <boost/regex.hpp>
 #include <shared/Log.h>
 
-CIOManager::CIOManager(const std::string device, Poco::Net::SocketAddress socket, bool passwordActivated, std::string password):
-     m_deviceName (device),
-     m_socketAddress(socket),
-     m_isPasswordActivated(passwordActivated),
-     m_password (password)
-{}
-
-void CIOManager::Initialize(std::vector<boost::shared_ptr<equipments::IEquipment> >& extensionList)
+CIOManager::CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment> >& extensionList)
 {
-   m_devicesList = extensionList;
+   m_deviceManager = extensionList;
+}
+
+void CIOManager::addEquipment(boost::shared_ptr<equipments::IEquipment> equipment)
+{
+   if (equipment->isMasterDevice())
+      m_deviceManager.push_back(equipment);
+   else
+   { 
+      // TODO : Create subdevice 
+   }
 }
 
 void CIOManager::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved)
 {
-   for (unsigned char counter = 0; counter < m_devicesList.size(); ++counter)
+   for (unsigned char counter = 0; counter < m_deviceManager.size(); ++counter)
    {
       // Deletion from the list of the device
-      if (m_devicesList[counter]->getDeviceName() == deviceRemoved)
+      if (m_deviceManager[counter]->getDeviceName() == deviceRemoved)
       {
          // If it's an extension, we delete the extension.
          // If it's the WES, we delete all elements
-         if (m_devicesList[counter]->getDeviceType() != "WES")
-            m_devicesList.erase(m_devicesList.begin()+counter);
+         if (m_deviceManager[counter]->getDeviceType() != "WES")
+            m_deviceManager.erase(m_deviceManager.begin()+counter);
          else
-            m_devicesList.clear();
+            m_deviceManager.clear();
       }
    }
 }
 
-void CIOManager::readAllIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, bool forceHistorization)
+int CIOManager::getMasterEquipment()
 {
-   // Initial Reading of relays
-   readIOFromDevice(api, "R", forceHistorization);
+   return m_deviceManager.size();
+}
 
-   // Initial Reading of DIs
-   readIOFromDevice(api, "D", forceHistorization);
+void CIOManager::readAllDevices(boost::shared_ptr<yApi::IYPluginApi> api, bool forceHistorization)
+{
+   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize;
 
-   // Initial Reading of Analog Input
-   readIOFromDevice(api, "A", forceHistorization);
-
-   // Initial Reading of Counters
-   readIOFromDevice(api, "C", forceHistorization);
+   for (unsigned char counter = 0; counter < m_deviceManager.size(); ++counter)
+   {
+      m_deviceManager[counter]->updateFromDevice(api, forceHistorization);
+   }
 }
 
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -56,7 +59,7 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
    std::string commandSelected;
 
    YADOMS_LOG(information) << "Command received :" << yApi::IDeviceCommand::toString(command) ;
-
+/*
    const auto& deviceDetails = api->getDeviceDetails(command->getDevice());
    auto deviceType = deviceDetails.get<std::string>("type");
 
@@ -82,13 +85,14 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
             (*iteratorExtension)->resetPendingCommand();
          }
       }
-   }
+   }*/
 }
 
 void CIOManager::readIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
                                   const std::string& type,
                                   bool forceHistorization)
 {
+/*
    shared::CDataContainer parameters;
    shared::CDataContainer results;
 
@@ -104,14 +108,17 @@ void CIOManager::readIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
 
    for (iteratorExtension = m_devicesList.begin(); iteratorExtension != m_devicesList.end(); ++iteratorExtension)
       (*iteratorExtension)->updateFromDevice(type, api, results, forceHistorization);
+*/
 }
 
 void CIOManager::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                            const IWESConfiguration& configuration)
 {
+   /*
    m_socketAddress = configuration.getIPAddressWithSocket();
    m_isPasswordActivated = configuration.isPasswordActivated();
    m_password = configuration.getPassword();
+   */
 }
 
 CIOManager::~CIOManager()

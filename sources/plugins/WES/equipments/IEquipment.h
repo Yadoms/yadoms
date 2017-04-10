@@ -28,17 +28,10 @@ namespace equipments
       virtual std::string getDeviceType() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief      historizePendingCommand
-      ///\param[in]   api         Yadoms API
-      ///\param[in]   command     the pending command to historize
-      //--------------------------------------------------------------
-      virtual void historizePendingCommand(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command) = 0;
-
-      //--------------------------------------------------------------
-      /// \brief      resetPendingCommand  reset the pending command, if necessary (error return by the device, ...)
+      /// \brief      getDeviceType
       /// \return  the device type
       //--------------------------------------------------------------
-      virtual void resetPendingCommand() = 0;
+      virtual bool isMasterDevice() const = 0;
 
       //--------------------------------------------------------------
       /// \brief      updateFromDevice
@@ -46,7 +39,7 @@ namespace equipments
       ///\param[in]   values                  New Values to enter
       ///\param[in]   forceHistorization      force historization for all values (initialization of the device, reset of the device, ...)
       //--------------------------------------------------------------
-      virtual void updateFromDevice(const std::string& type, boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& values, bool forceHistorization) = 0;
+      virtual void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, bool forceHistorization) = 0;
 
       //--------------------------------------------------------------
       /// \brief      buildMessageToDevice    build the message to send to the WES

@@ -1,16 +1,17 @@
 #pragma once
 #include <shared/DataContainer.h>
+#include <Poco/Net/SocketAddress.h>
 
 //--------------------------------------------------------------
 /// \brief	Interface of plugin configuration
 //--------------------------------------------------------------
-class IWESConfiguration
+class ImasterDeviceConfiguration
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~IWESConfiguration()
+   virtual ~ImasterDeviceConfiguration()
    {}
 
    //--------------------------------------------------------------
@@ -18,7 +19,7 @@ public:
    /// \param [in] data The data container
    //--------------------------------------------------------------
    virtual void initializeWith(const shared::CDataContainer& data) = 0;
-/*
+
    //--------------------------------------------------------------
    /// \brief      retrieve the IP address with the port from the configuration
    /// \return     the IP address withe the port
@@ -35,5 +36,5 @@ public:
    /// \brief      retrieve the password used to connect the WES
    /// \return     the password
    //--------------------------------------------------------------
-   virtual std::string getPassword() const = 0;*/
+   virtual std::string getPassword() const = 0;
 };

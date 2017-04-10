@@ -30,21 +30,16 @@ public:
    /// \param[in] api                  yPluginApi API
    /// \param[in] configuration        configuration of the plugin
    //--------------------------------------------------------------
-   void loadConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                          const boost::shared_ptr<IWESConfiguration> configuration);
-
-   //--------------------------------------------------------------
-   /// \brief	    getMasterEquipment
-   /// \return the number of master equipment
-   //--------------------------------------------------------------
-   int getMasterEquipment();
+   boost::shared_ptr<CIOManager> loadConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                                 const boost::shared_ptr<IWESConfiguration> configuration);
 
    //--------------------------------------------------------------
    /// \brief	    createDeviceManually
    /// \param[in] api                  yPluginApi API
    /// \param[in] data                 information for the creation of the new device
    //--------------------------------------------------------------
-   std::string createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api, 
+   std::string createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
+                                    const boost::shared_ptr<CIOManager> iomanager,
                                     const yApi::IManuallyDeviceCreationData& data);
 
    //--------------------------------------------------------------
@@ -56,9 +51,4 @@ public:
 
 private:
    
-   //--------------------------------------------------------------
-   /// \brief	All extensions
-   //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<equipments::IEquipment> > m_devicesList;
-   std::vector<boost::shared_ptr<equipments::IEquipment> > m_WESList;
 };

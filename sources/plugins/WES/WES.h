@@ -6,10 +6,25 @@
 #include <shared/event/EventTimer.h>
 
 #include "equipments/IEquipment.h"
-#include "pluginStateMachine/PluginStateMachine.hpp"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
+
+//-----------------------------------------------------
+///\brief The plugin state
+//-----------------------------------------------------
+
+enum EWESPluginState
+{
+   kUndefined = 0,
+   kStop,
+   kInitialization,
+   kInitializationError,
+   kReady,
+   kupdateConfiguration,
+   kAtLeastOneConnectionFaulty,
+   kRunning
+};
 
 //--------------------------------------------------------------
 /// \brief	This class is the WES plugin
@@ -21,6 +36,13 @@ public:
    /// \brief	Constructor
    //--------------------------------------------------------------
    CWES();
+
+   //--------------------------------------------------------------
+   /// \brief	Update of the configuration
+   //--------------------------------------------------------------
+   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData);
+
+   void setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, EWESPluginState newState);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -36,25 +58,25 @@ private:
    //--------------------------------------------------------------
    /// \brief Configuration of the device
    //--------------------------------------------------------------
-   CWESConfiguration m_configuration;
-
-   //--------------------------------------------------------------
-   /// \brief The IO Manager
-   //--------------------------------------------------------------
-   boost::shared_ptr<equipments::IEquipment> m_deviceManager;
+   boost::shared_ptr<CWESConfiguration> m_configuration;
 
    //--------------------------------------------------------------
    /// \brief The factory
    //--------------------------------------------------------------
-   //boost::shared_ptr<CWESFactory> m_factory;
+   boost::shared_ptr<CWESFactory> m_factory;
+
+   //--------------------------------------------------------------
+   /// \brief The IO Manager
+   //--------------------------------------------------------------
+   boost::shared_ptr<CIOManager> m_ioManager;
 
    //--------------------------------------------------------------
    /// \brief	Refresh timer
    //--------------------------------------------------------------
-   //boost::shared_ptr<shared::event::CEventTimer> m_refreshTimer;
+   boost::shared_ptr<shared::event::CEventTimer> m_refreshTimer;
 
    //--------------------------------------------------------------
    /// \brief	PluginState
    //--------------------------------------------------------------
-   msm::back::state_machine<pluginStateMachine> m_pluginState;
+   EWESPluginState m_pluginState;
 };

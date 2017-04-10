@@ -19,33 +19,17 @@ set(WES_PLUGIN_SOURCES
    stdafx.h
    urlManager.cpp
    urlManager.h
-   deviceStateMachine/deviceStateMachine.cpp
-   deviceStateMachine/deviceStateMachine.hpp
-   deviceStateMachine/deviceStateConnected.hpp
-   deviceStateMachine/deviceStateDisconnected.hpp
-   deviceStateMachine/deviceStateInitialization.hpp
-   deviceStateMachine/deviceStateTerminate.hpp
-   deviceStateMachine/deviceStateTimeout.hpp
-   deviceStateMachine/deviceStateUpdateConfiguration.hpp
-   deviceStateMachine/deviceStateCommonDeclaration.hpp
    equipments/IEquipment.h
+   equipments/ImasterDeviceConfiguration.h
    equipments/WESEquipment.cpp
    equipments/WESEquipment.h	
-   equipments/manuallyDeviceCreationException.hpp	
+   equipments/manuallyDeviceCreationException.hpp
+   equipments/masterDeviceConfiguration.cpp
+   equipments/masterDeviceConfiguration.h	
    equipments/noInformationException.hpp
-   pluginStateMachine/pluginStateMachine.cpp
-   pluginStateMachine/pluginStateMachine.hpp
-   pluginStateMachine/pluginStateConnected.hpp
-   pluginStateMachine/pluginStateFaulty.hpp
-   pluginStateMachine/pluginStateInitialization.hpp
-   pluginStateMachine/pluginStateReady.hpp
-   pluginStateMachine/pluginStateUpdateConfiguration.hpp
-   pluginStateMachine/pluginStateCommonDeclaration.hpp
 )
 
-source_group(deviceState deviceState/*.*)
 source_group(equipments equipments/*.*)
-source_group(pluginState pluginState/*.*)
 	
 #########################################
 ## Place here all additional include directories
