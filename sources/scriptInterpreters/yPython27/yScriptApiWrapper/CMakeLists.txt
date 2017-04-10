@@ -92,3 +92,6 @@ SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE(${CMAKE_CURRENT_BINARY_DIR}/yScriptApiWr
 ## Add post-build step to deploy Api doc file
 #########################################
 SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE(${CMAKE_CURRENT_SOURCE_DIR}/yScriptApiDoc.md ${YPYTHON27_PARENT_INTERPRETER})
+
+
+install(TARGETS _yScriptApiWrapper DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/yPython27)
