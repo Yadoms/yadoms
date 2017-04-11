@@ -82,7 +82,8 @@ set(SHARED_LIB_SRC
    shared/encryption/Xor.cpp
    shared/encryption/Base64.h
    shared/encryption/Base64.cpp
-   shared/encryption/md5.h
+   shared/encryption/Md5.h
+   shared/encryption/Md5.cpp
 	
    shared/enumeration/IExtendedEnum.h
    shared/enumeration/ExtendedEnumHelpers.cpp
