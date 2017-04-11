@@ -3,7 +3,7 @@
 
 namespace message
 {
-   CRadioErp1ReceivedMessage::CRadioErp1ReceivedMessage(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
+   CRadioErp1ReceivedMessage::CRadioErp1ReceivedMessage(boost::shared_ptr<const CEsp3ReceivedPacket> esp3Packet)
       : m_rorg(CRorgs::toRorgId(esp3Packet->data()[0])),
         m_senderId(deviceIdToString(
            esp3Packet->data()[esp3Packet->data().size() - 5] << 24
@@ -15,6 +15,7 @@ namespace message
            | esp3Packet->optional()[2] << 16
            | esp3Packet->optional()[3] << 8
            | esp3Packet->optional()[4])),
+        m_dBm(- esp3Packet->optional()[5]),
         m_status(esp3Packet->data()[esp3Packet->data().size() - 1]),
         m_userData(esp3Packet->data().begin() + 1, esp3Packet->data().begin() + esp3Packet->data().size() - 6 + 1)
    {
@@ -37,6 +38,11 @@ namespace message
    std::string CRadioErp1ReceivedMessage::destinationId() const
    {
       return m_destinationId;
+   }
+
+   int CRadioErp1ReceivedMessage::dBm() const
+   {
+      return m_dBm;
    }
 
    const std::vector<unsigned char>& CRadioErp1ReceivedMessage::userData() const
