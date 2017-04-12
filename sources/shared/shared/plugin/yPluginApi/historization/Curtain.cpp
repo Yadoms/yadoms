@@ -20,7 +20,7 @@ namespace shared
             CCurtain::CCurtain(const std::string& keywordName)
                : CSingleHistorizableData<ECurtainCommand>(keywordName,
                                                           CStandardCapacities::Curtain(),
-                                                          EKeywordAccessMode::kGet,
+                                                          EKeywordAccessMode::kGetSet,
                                                           ECurtainCommand::kStop)
             {
             }

@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "AsciiBufferLogger.h"
-#include <shared/Log.h>
+#include "BufferLoggerHelper.h"
 
 namespace shared
 {
    namespace communication
    {
-      CAsciiBufferLogger::CAsciiBufferLogger()
+      CAsciiBufferLogger::CAsciiBufferLogger(const std::string& logLevel)
+         : m_logLevel(CBufferLoggerHelper::fromLoglevelString(logLevel))
       {
       }
 
@@ -16,12 +17,12 @@ namespace shared
 
       void CAsciiBufferLogger::logReceived(const CByteBuffer& data)
       {
-         YADOMS_LOG(information) << "Yadoms <<< " << msgToString(data);
+         CBufferLoggerHelper::log(m_logLevel, "Yadoms <<< " + msgToString(data));
       }
 
       void CAsciiBufferLogger::logSent(const CByteBuffer& data)
       {
-         YADOMS_LOG(information) << "Yadoms >>> " << msgToString(data);
+         CBufferLoggerHelper::log(m_logLevel, "Yadoms >>> " + msgToString(data));
       }
 
       std::string CAsciiBufferLogger::msgToString(const CByteBuffer& data)

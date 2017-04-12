@@ -27,17 +27,14 @@ boost::shared_ptr<shared::process::IProcessObserver> CFactory::createScriptProce
                                                onInstanceStateChangedFct);
 }
 
-boost::shared_ptr<shared::process::IExternalProcessLogger> CFactory::createScriptLogger(const std::string& interpreterLoggerName,
-                                                                                        int scriptInstanceId,
+boost::shared_ptr<shared::process::IExternalProcessLogger> CFactory::createScriptLogger(int scriptInstanceId,
                                                                                         const boost::filesystem::path& scriptLogPath) const
 {
-   return boost::make_shared<interpreter_cpp_api::CScriptLogger>(interpreterLoggerName,
-                                                                 scriptInstanceId,
+   return boost::make_shared<interpreter_cpp_api::CScriptLogger>(scriptInstanceId,
                                                                  scriptLogPath);
 }
 
-boost::shared_ptr<shared::process::IProcess> CFactory::createScriptProcess(boost::shared_ptr<yApi::IYInterpreterApi> api,
-                                                                           int scriptInstanceId,
+boost::shared_ptr<shared::process::IProcess> CFactory::createScriptProcess(int scriptInstanceId,
                                                                            const boost::filesystem::path& scriptPath,
                                                                            boost::shared_ptr<IPythonExecutable> pythonExecutable,
                                                                            const boost::filesystem::path& interpreterPath,
@@ -45,8 +42,7 @@ boost::shared_ptr<shared::process::IProcess> CFactory::createScriptProcess(boost
                                                                            const boost::filesystem::path& scriptLogPath,
                                                                            boost::function3<void, bool, int, const std::string&> onInstanceStateChangedFct) const
 {
-   auto scriptLogger = createScriptLogger(api->getInformation()->getType(),
-                                          scriptInstanceId,
+   auto scriptLogger = createScriptLogger(scriptInstanceId,
                                           scriptLogPath);
 
    auto processObserver = createScriptProcessObserver(scriptInstanceId,

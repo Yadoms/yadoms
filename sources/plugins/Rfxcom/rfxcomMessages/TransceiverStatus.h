@@ -42,7 +42,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       CTransceiverStatus(const RBUF& rbuf,
                          size_t rbufSize,
-                         boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+                         boost::shared_ptr<ISequenceNumber> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	                           Destructor
@@ -50,7 +50,7 @@ namespace rfxcomMessages
       virtual ~CTransceiverStatus();
 
       // IRfxcomMessage implementation
-      boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const override;
+      boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const override;
       void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
       const std::string& getDeviceName() const override;
       // [END] IRfxcomMessage implementation

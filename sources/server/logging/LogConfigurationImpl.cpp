@@ -35,6 +35,7 @@ namespace logging
          if (!boost::filesystem::create_directories( Logpath ))
             throw CLogConfigurationException( "Cannot create directory " + Logpath );
 
+      m_fileChannel->setProperty("times", "local"); //use local datetime for rotation strategy
       m_fileChannel->setProperty("path", Logpath + "/yadoms.log");
       m_fileChannel->setProperty("rotation", "daily");
       m_fileChannel->setProperty("archive", "timestamp");

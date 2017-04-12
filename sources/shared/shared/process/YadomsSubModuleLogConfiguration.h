@@ -34,15 +34,9 @@ namespace shared
          void configure(const std::string& logLevel,
                         boost::filesystem::path& logfilepath);
       private:
-         Poco::AutoPtr<Poco::PatternFormatter> m_consolePatternFormatter;
-         Poco::AutoPtr<Poco::FormattingChannel> m_formattingConsoleChannel;
-         Poco::AutoPtr<CCoutCerrConsoleLogChannel> m_consoleChannel;
-
          Poco::AutoPtr<Poco::PatternFormatter> m_patternFormatter;
          Poco::AutoPtr<Poco::FormattingChannel> m_formattingFileChannel;
          Poco::AutoPtr<Poco::FileChannel> m_fileChannel;
-
-         Poco::AutoPtr<Poco::SplitterChannel> m_splitterChannel;
       };
    }
 } // namespace shared::process

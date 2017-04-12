@@ -1,19 +1,23 @@
 #pragma once
 #include "ICurrentTime.h"
 
-namespace shared { namespace currentTime
+namespace shared
 {
-   //--------------------------------------------------------------
-   /// \brief	   The local time implementation of current time
-   //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT Local : public ICurrentTime
+   namespace currentTime
    {
-   public:
-      virtual ~Local();
-      
-      // ICurrentTime Implementation
-      boost::posix_time::ptime now() const override;
-      // [END] ICurrentTime Implementation
-   };   
+      //--------------------------------------------------------------
+      /// \brief	   The local time implementation of current time
+      //--------------------------------------------------------------
+      class YADOMS_SHARED_EXPORT Local : public ICurrentTime
+      {
+      public:
+         virtual ~Local();
 
-} } // namespace shared::currentTime
+         // ICurrentTime Implementation
+         boost::posix_time::ptime now() const override;
+         // [END] ICurrentTime Implementation
+      };
+   }
+} // namespace shared::currentTime
+
+

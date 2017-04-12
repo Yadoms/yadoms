@@ -312,6 +312,11 @@
                "name": "Kambrook RF3672 (Australia)",
                "content":
                {
+                  "houseCode":
+                  {
+                     "name": "House Code",
+                     "description": "The house code (A-D)"
+                  },
                   "id":
                   {
                      "name": "ID",
