@@ -10,6 +10,8 @@
 #include "equipments/noInformationException.hpp"
 #include <shared/Log.h>
 
+#include <boost/property_tree/xml_parser.hpp>
+
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
 // This macro also defines the static PluginInformations value that can be used by plugin to get information values
@@ -114,9 +116,81 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
          break;
       }
+      case yApi::IYPluginApi::kEventDeviceRemoved:
+      {
+         try {
+            auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
+            m_ioManager->removeDevice(api, device->device());
+            YADOMS_LOG(information) << device->device() << " is removed";
+         }
+         catch (std::exception &e)
+         {
+            YADOMS_LOG(information) << "Unknow error : " << e.what();
+         }
+         break;
+      }
+      case yApi::IYPluginApi::kBindingQuery:
+      {
+         // Yadoms ask for a binding query 
+         try {
+            auto data = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IBindingQueryRequest> >();
+
+            if (data->getData().getQuery() == "wes")
+            {
+               // TODO : return all master wes device already present
+            }
+            else
+            {
+               std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
+               data->sendError(errorMessage);
+               YADOMS_LOG(error) << errorMessage;
+            }
+         }
+         catch (std::exception &e)
+         {
+            YADOMS_LOG(information) << "Unknow error : " << e.what();
+         }
+         break;
+      }
+      case yApi::IYPluginApi::kEventExtraQuery:
+      {
+         // TODO : To be developped when received directly information from the WES
+         // TODO : Check the IP address to know how send us data
+
+         // Extra-command was received from Yadoms
+         auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();
+
+         if (extraQuery)
+         {
+            YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData().query();
+
+            if (extraQuery->getData().query() == "wes")
+            {
+               YADOMS_LOG(information) << "Simple command received";
+            }
+         }
+         // Extra-query can return success or error indicator. In case of success, can also return data.
+         // Return here a success without data (=empty container)
+         extraQuery->sendSuccess(shared::CDataContainer());
+         break;
+      }
+      case yApi::IYPluginApi::kSetDeviceConfiguration:
+      {
+         // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
+         auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
+
+         setPluginState(api, EWESPluginState::kupdateConfiguration);
+         m_ioManager->OnDeviceConfigurationUpdate(api, 
+                                                  deviceConfiguration->device(),
+                                                  deviceConfiguration->configuration());
+
+         setPluginState(api, EWESPluginState::kRunning);
+
+         break;
+      }
       default:
       {
-         YADOMS_LOG(information) << "Unknown message id for pluginStateFaulty";
+         YADOMS_LOG(information) << "Unknown message id received";
          break;
       }
       }
@@ -129,9 +203,8 @@ void CWES::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const
    YADOMS_LOG(information) << "Update configuration...";
    BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
-                                                // Update configuration
+   // Update configuration
    m_configuration->initializeWith(newConfigurationData);
-   //m_ioManager->OnConfigurationUpdate(api, m_configuration);
 }
 
 void CWES::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, EWESPluginState newState)

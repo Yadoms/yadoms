@@ -37,4 +37,10 @@ public:
    /// \return     the password
    //--------------------------------------------------------------
    virtual std::string getPassword() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief      retrieve the password used to connect the WES
+   /// \return     the password
+   //--------------------------------------------------------------
+   virtual std::string getUser() const = 0;
 };

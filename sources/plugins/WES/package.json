@@ -6,6 +6,10 @@
    "credits": "",
    "supportedPlatforms":"all",
    "configurationSchema": {
+    "retrieveNamesFromdevice": {
+      "type": "bool",
+      "defaultValue": "true"
+    }
    },
    "supportManuallyDeviceCreation": "true",
    "supportDeviceRemovedNotification": "true",
@@ -40,7 +44,11 @@
                              "type": "string",
                              "encrypted": "true",
                              "required" : "true"
-                        }
+                        },
+                           "User": {
+                             "type": "string",
+                             "required" : "true"
+                        }                        
                       }
                     }
 				     }

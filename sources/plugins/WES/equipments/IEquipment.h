@@ -42,14 +42,13 @@ namespace equipments
       virtual void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, bool forceHistorization) = 0;
 
       //--------------------------------------------------------------
-      /// \brief      buildMessageToDevice    build the message to send to the WES
+      /// \brief      updateConfiguration    build the message to send to the WES
       ///\param[in]   api                     Yadoms API
       ///\param[in] parameters                parameters that have to be included in addition of elements processed into this function
       ///\param[in] command                   the command received from the Yadoms web client
       //--------------------------------------------------------------
-      virtual shared::CDataContainer buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                          shared::CDataContainer& parameters,
-                                                          boost::shared_ptr<const yApi::IDeviceCommand> command) = 0;
+      virtual void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                                       shared::CDataContainer& newConfiguration) = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Destructor

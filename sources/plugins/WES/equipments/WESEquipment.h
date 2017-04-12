@@ -34,7 +34,8 @@ namespace equipments
       bool isMasterDevice() const override;
       void updateFromDevice( boost::shared_ptr<yApi::IYPluginApi> api,
                              bool forceHistorization = false) override;
-      shared::CDataContainer buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& parameters, boost::shared_ptr<const yApi::IDeviceCommand> command) override;
+      void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                               shared::CDataContainer& newConfiguration) override;
       // [END] IExtension implementation
 
       //-----------------------------------------------------
@@ -54,6 +55,9 @@ namespace equipments
       //-----------------------------------------------------
       std::string m_deviceType;
 
+      //--------------------------------------------------------------
+      /// \brief	vector of all Digital input
+      //--------------------------------------------------------------
       CmasterDeviceConfiguration m_configuration;
 
       //--------------------------------------------------------------

@@ -18,7 +18,8 @@ public:
    /// \brief	   Constructor
    /// \param[in]  extensionList   Set a new equipment
    //--------------------------------------------------------------
-   explicit CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment> >& extensionList);
+   explicit CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment> >& deviceList,
+                       std::vector<boost::shared_ptr<equipments::IEquipment> >& masterDeviceList);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -62,9 +63,17 @@ public:
    /// \param[in] api                  yPluginApi API
    /// \param[in] configuration        the new plugin configuration
    //--------------------------------------------------------------
-   void OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                              const IWESConfiguration& configuration);
+   //void OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+   //                           const IWESConfiguration& configuration);
 
+   void OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                                    const std::string &deviceName,
+                                    const shared::CDataContainer newConfiguration);
+
+   //--------------------------------------------------------------
+   /// \brief	    getMasterEquipment
+   /// \return the number of master equipment
+   //--------------------------------------------------------------
    void addEquipment(boost::shared_ptr<equipments::IEquipment> equipment);
 
    //--------------------------------------------------------------
@@ -76,7 +85,12 @@ public:
 private:
 
    //--------------------------------------------------------------
-   /// \brief The IO Manager
+   /// \brief The device Manager
    //--------------------------------------------------------------
    std::vector<boost::shared_ptr<equipments::IEquipment>> m_deviceManager;
+
+   //--------------------------------------------------------------
+   /// \brief The master device Manager
+   //--------------------------------------------------------------
+   std::vector<boost::shared_ptr<equipments::IEquipment>> m_masterDeviceManager;
 };

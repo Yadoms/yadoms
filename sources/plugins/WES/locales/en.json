@@ -2,6 +2,10 @@
    "name": "WES",
    "description": "This plugin provide access to WES equipment\n",
    "configurationSchema":{
+    "retrieveNamesFromdevice": {
+       "name": "keyword names",
+       "description": "Retrieve names from devices"
+    }   
 	},
    "manuallyDeviceCreationConfigurationSchema": {
       "type":
@@ -27,10 +31,14 @@
                         "name": "key to access the WES",
                         "description": "Only if the key is enabled",
                         "content": {
+                           "User": {
+                              "name": "User",
+                              "description": ""
+                           },                        
                            "Password": {
                               "name": "password",
                               "description": ""
-                           }
+                           }                           
                       }
                     }
                   }

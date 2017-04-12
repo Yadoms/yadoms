@@ -13,3 +13,8 @@ void CWESConfiguration::initializeWith(const shared::CDataContainer& data)
 {
    m_data.initializeWith(data);
 }
+
+bool CWESConfiguration::isRetrieveNamesFromdevice() const
+{
+   return m_data.get<bool>("retrieveNamesFromdevice");
+}

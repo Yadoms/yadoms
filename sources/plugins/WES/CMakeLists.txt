@@ -27,9 +27,14 @@ set(WES_PLUGIN_SOURCES
    equipments/masterDeviceConfiguration.cpp
    equipments/masterDeviceConfiguration.h	
    equipments/noInformationException.hpp
+   http/failedSendingException.hpp
+   http/HttpMethods.cpp
+   http/HttpMethods.h
+   http/invalidHTTPResultException.hpp
 )
 
 source_group(equipments equipments/*.*)
+source_group(http http/*.*)
 	
 #########################################
 ## Place here all additional include directories

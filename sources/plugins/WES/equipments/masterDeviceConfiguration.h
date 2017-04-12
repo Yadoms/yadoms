@@ -24,6 +24,7 @@ public:
    virtual Poco::Net::SocketAddress getIPAddressWithSocket() const override;
    bool isPasswordActivated() const override;
    std::string getPassword() const override;
+   std::string getUser() const override;
    // [END] ImasterDeviceConfiguration implementation
 
 private:

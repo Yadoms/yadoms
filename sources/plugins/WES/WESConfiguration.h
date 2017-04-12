@@ -22,6 +22,7 @@ public:
 
    // IWESConfiguration implementation
    void initializeWith(const shared::CDataContainer& data) override;
+   bool isRetrieveNamesFromdevice() const override;
    // [END] IWESConfiguration implementation
 
 private:

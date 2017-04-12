@@ -2,12 +2,17 @@
 #include "urlManager.h"
 #include "shared/http/HttpMethods.h"
 
-shared::CDataContainer urlManager::sendCommand(Poco::Net::SocketAddress socket, shared::CDataContainer parameters)
+shared::CDataContainer urlManager::sendCommand(Poco::Net::SocketAddress socket,
+                                               std::string &user,
+                                               std::string &password,
+                                               std::string &file)
 {
    std::stringstream url;
 
-   // create the URL
-   url << "http://" << socket.toString() << "/api/xdevices.json";
+   //TODO : How to integrate the user and the password ?
 
-   return shared::CHttpMethods::SendGetRequest(url.str(), parameters);
+   // create the URL
+   url << "http://" << socket.toString() << "ASSETS/CGX/YADOMS/" + file;
+
+   return shared::CHttpMethods::SendGetRequest(url.str()/*, parameters*/);
 }

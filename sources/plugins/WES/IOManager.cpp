@@ -4,9 +4,11 @@
 #include <boost/regex.hpp>
 #include <shared/Log.h>
 
-CIOManager::CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment> >& extensionList)
+CIOManager::CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment> >& deviceList,
+                       std::vector<boost::shared_ptr<equipments::IEquipment> >& masterDeviceList)
 {
-   m_deviceManager = extensionList;
+   m_deviceManager = deviceList;
+   m_masterDeviceManager = masterDeviceList;
 }
 
 void CIOManager::addEquipment(boost::shared_ptr<equipments::IEquipment> equipment)
@@ -26,12 +28,7 @@ void CIOManager::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::str
       // Deletion from the list of the device
       if (m_deviceManager[counter]->getDeviceName() == deviceRemoved)
       {
-         // If it's an extension, we delete the extension.
-         // If it's the WES, we delete all elements
-         if (m_deviceManager[counter]->getDeviceType() != "WES")
-            m_deviceManager.erase(m_deviceManager.begin()+counter);
-         else
-            m_deviceManager.clear();
+         m_deviceManager.erase(m_deviceManager.begin()+counter);
       }
    }
 }
@@ -111,14 +108,26 @@ void CIOManager::readIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
 */
 }
 
-void CIOManager::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-                                           const IWESConfiguration& configuration)
+void CIOManager::OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                                             const std::string &deviceName,
+                                             const shared::CDataContainer newConfiguration)
 {
-   /*
-   m_socketAddress = configuration.getIPAddressWithSocket();
-   m_isPasswordActivated = configuration.isPasswordActivated();
-   m_password = configuration.getPassword();
-   */
+   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorDevice;
+
+   for (iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
+   {
+      if (deviceName == (*iteratorDevice)->getDeviceName())
+      {
+         // delete it from the master device if it's an extension
+         if (!(*iteratorDevice)->isMasterDevice())
+         {
+            //TODO : Delete the extension from the master
+         }
+
+         // Delete the device
+         m_deviceManager.erase(iteratorDevice); // TODO : Check the good working
+      }
+   }
 }
 
 CIOManager::~CIOManager()

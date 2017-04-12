@@ -3,6 +3,7 @@
 #include "masterdeviceConfiguration.h"
 #include <shared/DataContainer.h>
 #include "noInformationException.hpp"
+#include "../urlmanager.h"
 #include <shared/Log.h>
 
 namespace equipments
@@ -78,33 +79,20 @@ namespace equipments
                                          bool forceHistorization)
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize;
+      std::string CGXfileName = "tics.cgx";
 
-      //TODO : create the call to the function here
+      shared::CDataContainer results = urlManager::sendCommand(m_configuration.getIPAddressWithSocket(), 
+                                                               m_configuration.getUser(),
+                                                               m_configuration.getPassword(),
+                                                               CGXfileName);
 
       api->historizeData(m_deviceName, keywordsToHistorize);
    }
 
-   shared::CDataContainer CWESEquipment::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
-                                                                 shared::CDataContainer& parameters, 
-                                                                 boost::shared_ptr<const yApi::IDeviceCommand> command)
+   void CWESEquipment::updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                            shared::CDataContainer& newConfiguration)
    {
-      std::string keywordName = command->getKeyword();
-
-      //separation of letters and digits
-      boost::regex reg("([a-zA-Z]+)(\\d+)");
-      boost::smatch match;
-/*
-      //Set parameters
-      if (boost::regex_search(keywordName, match, reg))
-      {
-         if (match[1] == "R") setParameter(keywordName, m_relaysList, command, match[2], parameters);
-         else if (match[1] == "C") setParameter(keywordName, m_countersList, command, command->getBody(), parameters);
-         else throw shared::exception::CException("Invalid or Read-Only Keyword:" + keywordName);
-
-         // No command should be received for DI and Analog Values
-      }*/
-
-      return parameters;
+      m_configuration.initializeWith(newConfiguration);
    }
 
    CWESEquipment::~CWESEquipment()

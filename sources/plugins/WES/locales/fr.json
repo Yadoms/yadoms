@@ -2,6 +2,10 @@
    "name": "WES",
    "description": "Plugin permettant de dialoguer avec un module WES",
    "configurationSchema":{
+    "retrieveNamesFromdevice": {
+       "name": "nom des données",
+       "description": "Récupère le nom des données de l'équipement"
+    }   
    },
    "manuallyDeviceCreationConfigurationSchema": {
       "type":
@@ -27,10 +31,14 @@
                         "name": "clé d'accès au module WES",
                         "description": "seulement si la clé est activée",
                         "content": {
+                           "User": {
+                              "name": "Utilisateur",
+                              "description": ""	
+                           },
                            "Password": {
                               "name": "Mot de passe",
-                              "description": "la clé d'accès"	
-                           }
+                              "description": ""	
+                           } 
                       }
                     }
 				     }
