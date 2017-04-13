@@ -1,18 +1,19 @@
 #include "stdafx.h"
 #include "urlManager.h"
-#include "shared/http/HttpMethods.h"
+#include "http/HttpMethods.h"
 
 shared::CDataContainer urlManager::sendCommand(Poco::Net::SocketAddress socket,
-                                               std::string &user,
-                                               std::string &password,
-                                               std::string &file)
+                                               const std::string &user,
+                                               const std::string &password,
+                                               const std::string &file)
 {
    std::stringstream url;
 
    //TODO : How to integrate the user and the password ?
 
    // create the URL
-   url << "http://" << socket.toString() << "ASSETS/CGX/YADOMS/" + file;
+   //url << "http://" << socket.toString() << "/ASSETS/CGX/YADOMS/" + file;
+   url << "http://192.168.1.37:80/ASSETS/CGX/YADOMS/" + file;
 
-   return shared::CHttpMethods::SendGetRequest(url.str()/*, parameters*/);
+   return http::CHttpMethods::SendGetRequest(url.str()/*, parameters*/);
 }

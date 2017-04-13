@@ -40,7 +40,8 @@ public:
    //--------------------------------------------------------------
    std::string createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const boost::shared_ptr<CIOManager> iomanager,
-                                    const yApi::IManuallyDeviceCreationData& data);
+                                    const yApi::IManuallyDeviceCreationData& data,
+                                    const boost::shared_ptr<IWESConfiguration> configuration);
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms

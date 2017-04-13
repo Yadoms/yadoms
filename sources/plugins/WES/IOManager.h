@@ -63,9 +63,6 @@ public:
    /// \param[in] api                  yPluginApi API
    /// \param[in] configuration        the new plugin configuration
    //--------------------------------------------------------------
-   //void OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
-   //                           const IWESConfiguration& configuration);
-
    void OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const std::string &deviceName,
                                     const shared::CDataContainer newConfiguration);
@@ -81,6 +78,12 @@ public:
    /// \return the number of master equipment
    //--------------------------------------------------------------
    int getMasterEquipment();
+
+   //--------------------------------------------------------------
+   /// \brief	    bindMasterDevice
+   /// \return the number of master equipment
+   //--------------------------------------------------------------
+   shared::CDataContainer bindMasterDevice();
 
 private:
 

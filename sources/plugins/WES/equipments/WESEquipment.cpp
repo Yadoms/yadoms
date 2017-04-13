@@ -10,7 +10,9 @@ namespace equipments
 {
    CWESEquipment::CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
                                 const std::string& device,
-                                const shared::CDataContainer& deviceConfiguration):
+                                const shared::CDataContainer& deviceConfiguration,
+                                const boost::shared_ptr<IWESConfiguration> pluginConfiguration
+   ):
       m_deviceName(device),
       m_deviceType("WES")
    {
@@ -22,6 +24,16 @@ namespace equipments
       deviceConfiguration.printToLog(YADOMS_LOG(information));
 
       m_configuration.initializeWith(deviceConfiguration);
+
+      if (pluginConfiguration->isRetrieveNamesFromdevice())
+      {
+         // request to obtain names
+         std::string CGXfileName = "rel1.cgx";
+         shared::CDataContainer results = urlManager::sendCommand(m_configuration.getIPAddressWithSocket(),
+                                                                  m_configuration.getUser(),
+                                                                  m_configuration.getPassword(),
+                                                                  CGXfileName);
+      }
 
       // Relay Configuration
       for (int counter = 0; counter<WES_RELAY_QTY; ++counter)

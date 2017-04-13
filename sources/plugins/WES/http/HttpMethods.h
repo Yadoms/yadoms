@@ -14,7 +14,7 @@ namespace http
    //--------------------------------------------------------------
    /// \brief	Base class for threads
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CHttpMethods
+   class CHttpMethods
    {
    public:
 
@@ -65,6 +65,6 @@ namespace http
       /// \param[in]  httpresponse        the HTTP response answer
       /// \param[in]  response            the response
       //--------------------------------------------------------------
-      void parseNode(shared::CDataContainer &container, boost::property_tree::ptree node);
+      static void parseNode(shared::CDataContainer &container, boost::property_tree::ptree node);
    };
 } // namespace http

@@ -43,36 +43,25 @@
                     }
 				     }
 			  },
-			  "Other" :
+           "TemperatureProbe" :
 			  {
-                 "name": "---",
+                 "type": "section",
+                 "name": "sonde de température",
                  "content":
-                 {
-				          "IPAddress":{
-                        "name": "Adresse IP",
-                        "description": "L'adresse IP du module"
-                     },
-                     "Port":{
-                        "name": "Port",
-                        "description": "Le port de communication du WES (exemple: 80)"
-                     },
-                    "authentication": {
-                        "name": "clé d'accès au module WES",
-                        "description": "seulement si la clé est activée",
-                        "content": {
-                           "Password": {
-                              "name": "Mot de passe",
-                              "description": "la clé d'accès"	
-                           }
-                      }
-                    }
-				     }
-			  }           
+                 {         
+                   "masterDevice" :
+                   {
+                          "name" : "Equipement maître",
+                          "description" : "Equipement sur lequel est connecté la sonde de température."
+                   }
+                 }
+            }           
 		 }
 	  }	  
 	},
 	"customLabels": {
 		"pluginState": {
+         "initialization": "Initialisation...",
          "initializationError": "Erreur d'initialisation",
          "ready" : "plugin prêt",
          "faulty" : "Au moins un équipement est déconnecté",

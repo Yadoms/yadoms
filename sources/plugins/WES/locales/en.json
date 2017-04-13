@@ -43,36 +43,25 @@
                     }
                   }
             },
-           "Other" :
+           "TemperatureProbe" :
 			  {
                  "type": "section",
+                 "name": "température probe",
                  "content":
                  {         
-                     "IPAddress":{
-                        "name": "IP Address",
-                        "description": "the IP address of the equipment"
-                     },	
-                     "Port":{
-                        "name": "Port",
-                        "description": "the WES local socket opened (example: 80)"
-                     },
-                    "authentication": {
-                        "name": "key to access the WES",
-                        "description": "Only if the key is enabled",
-                        "content": {
-                           "Password": {
-                              "name": "password",
-                              "description": ""
-                           }
-                      }
-                    }
-                  }
-            }            
+                   "masterDevice" :
+                   {
+                          "name" : "Master device",
+                          "description" : "The temperature probe is connected to the following WES"
+                   }
+                 }
+            }
          }
 		 }
 	  },
 	"customLabels": {
 		"pluginState": {
+         "initialization": "Initializing...",
 			"initializationError": "Initialization error",
          "ready" : "Plugin ready",
          "faulty" : "At least, one device is not connected",

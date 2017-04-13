@@ -39,10 +39,8 @@ enum
 void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    try {
-      m_configuration->initializeWith(api->getConfiguration());
-
       setPluginState(api, EWESPluginState::kInitialization);
-      api->setPluginState(yApi::historization::EPluginState::kCustom, "initialization");
+      m_configuration->initializeWith(api->getConfiguration());
       m_ioManager = m_factory->loadConfiguration(api, m_configuration);
 
       if (m_ioManager->getMasterEquipment() == 0)
@@ -77,6 +75,7 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          setPluginState(api, EWESPluginState::kupdateConfiguration);
          onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+         setPluginState(api, EWESPluginState::kRunning);
          break;
       }
       case kRefreshStatesReceived:
@@ -88,8 +87,7 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          try { forceRefresh = api->getEventHandler().getEventData<bool>(); }
          catch (shared::exception::CBadConversion&) {}
 
-         // TODO : device list to parse and update
-         m_ioManager->readAllDevices(api, false);
+         m_ioManager->readAllDevices(api, forceRefresh);
          break;
       }
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
@@ -100,8 +98,13 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          YADOMS_LOG(information) << "Manually device creation request received for device : " << request->getData().getDeviceName();
          try
          {
+            // Refuse the device if the name already exist
+
             // Creation of the device
-            request->sendSuccess(m_factory->createDeviceManually(api, m_ioManager, request->getData()));
+            request->sendSuccess(m_factory->createDeviceManually(api, m_ioManager, request->getData(), m_configuration));
+
+            // ask immediately for reading values
+            m_refreshTimer = api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
             setPluginState(api, EWESPluginState::kRunning);
          }
          catch (CManuallyDeviceCreationException& e)
@@ -137,7 +140,7 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             if (data->getData().getQuery() == "wes")
             {
-               // TODO : return all master wes device already present
+               data->sendSuccess(m_ioManager->bindMasterDevice());
             }
             else
             {
@@ -217,7 +220,7 @@ void CWES::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, EWESPluginSt
          api->setPluginState(yApi::historization::EPluginState::kCustom, "initialization");
          break;
       case EWESPluginState::kInitializationError:
-         api->setPluginState(yApi::historization::EPluginState::kCustom, "InitializationError");
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "initializationError");
          break;
       case EWESPluginState::kReady:
          api->setPluginState(yApi::historization::EPluginState::kCustom, "ready");

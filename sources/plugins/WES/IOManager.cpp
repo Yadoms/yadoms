@@ -130,5 +130,24 @@ void CIOManager::OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi
    }
 }
 
+shared::CDataContainer CIOManager::bindMasterDevice()
+{
+   shared::CDataContainer ev;
+   int counter = 0;
+   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorMasterDevice;
+
+   for (iteratorMasterDevice = m_masterDeviceManager.begin(); iteratorMasterDevice != m_masterDeviceManager.end(); ++iteratorMasterDevice)
+   {
+      ev.set(boost::lexical_cast<std::string>(counter + 1), (*iteratorMasterDevice)->getDeviceName());
+   }
+
+   shared::CDataContainer en;
+   en.set("type", "enum");
+   en.set("values", ev);
+   en.set("defaultValue", "1");
+
+   return en;
+}
+
 CIOManager::~CIOManager()
 {}

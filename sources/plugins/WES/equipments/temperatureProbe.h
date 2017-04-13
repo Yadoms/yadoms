@@ -8,16 +8,12 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-#define WES_RELAY_QTY 4
-#define WES_TIC_QTY   2
-#define WES_PULSE_QTY 4
-
 namespace equipments
 {
    //-----------------------------------------------------
    ///\brief WES equipment
    //-----------------------------------------------------
-   class CWESEquipment : public IEquipment
+   class CtemperatureProbe : public IEquipment
    {
    public:
       //-----------------------------------------------------
@@ -25,10 +21,10 @@ namespace equipments
       ///\param[in]   api          Yadoms API
       ///\param[in] device         The device name
       //-----------------------------------------------------
-      CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
-                    const std::string& device,
-                    const shared::CDataContainer& deviceConfiguration,
-                    const boost::shared_ptr<IWESConfiguration> pluginConfiguration);
+      CtemperatureProbe(boost::shared_ptr<yApi::IYPluginApi> api,
+                        const std::string& device,
+                        const shared::CDataContainer& deviceConfiguration,
+                        const boost::shared_ptr<IWESConfiguration> pluginConfiguration);
 
       // IExtension implementation
       std::string getDeviceName() const override;
@@ -43,7 +39,7 @@ namespace equipments
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CWESEquipment();
+      virtual ~CtemperatureProbe();
 
    private:
 
@@ -63,18 +59,8 @@ namespace equipments
       CmasterDeviceConfiguration m_configuration;
 
       //--------------------------------------------------------------
-      /// \brief	vector of all relays
-      //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<yApi::historization::CSwitch> > m_relaysList;
-
-      //--------------------------------------------------------------
-      /// \brief  counter TIC 1
-      //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<yApi::historization::CEnergy> > m_counterTICList;
-
-      //--------------------------------------------------------------
       /// \brief	The keyword Counter 1
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<yApi::historization::CCounter> > m_PulseCounterList;
+      boost::shared_ptr<yApi::historization::CTemperature> m_temperature;
    };
 } // namespace equipments

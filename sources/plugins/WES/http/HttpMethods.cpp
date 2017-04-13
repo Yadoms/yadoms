@@ -131,13 +131,7 @@ namespace http
             content.resize(static_cast<unsigned int>(httpresponse.getContentLength()));
             boost::property_tree::xml_parser::read_xml(const_cast<const char*>(content.c_str()), pt); //
             
-            boost::property_tree::ptree::const_iterator end = pt.end(); //child
-            
-            for (boost::property_tree::ptree::const_iterator it = pt.begin(); it != end; ++it) //child
-            {
-               YADOMS_LOG(information) << "it->first" << it->first;
-               //response.set(it->first, it->second);
-            }
+            parseNode(response, pt);
          }
 
          //request content may be empty

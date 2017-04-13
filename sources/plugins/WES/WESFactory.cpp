@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "WESFactory.h"
 #include "equipments/WESEquipment.h"
+#include "equipments/temperatureProbe.h"
 #include "equipments/manuallyDeviceCreationException.hpp"
 #include <shared/Log.h>
 
@@ -28,15 +29,16 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
 
          if (type == "WES")
          {
-            equipment = boost::make_shared<equipments::CWESEquipment>(api, (*devicesIterator), api->getDeviceConfiguration((*devicesIterator)));
+            equipment = boost::make_shared<equipments::CWESEquipment>(api, (*devicesIterator), api->getDeviceConfiguration(*devicesIterator), configuration);
             masterdeviceList.push_back(equipment);
             deviceList.push_back(equipment);
          }
 
-         // TODO : For other extension
-         //devicesList.push_back(equipment);
-
-         // TODO : Add here the other creations
+         if (type == "temperatureProbe")
+         {
+            equipment = boost::make_shared<equipments::CtemperatureProbe>(api, (*devicesIterator), api->getDeviceConfiguration(*devicesIterator), configuration);
+            deviceList.push_back(equipment);
+         }
       }
       catch (...)
       {
@@ -51,7 +53,8 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
 
 std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> api,
                                               const boost::shared_ptr<CIOManager> ioManager,
-                                              const yApi::IManuallyDeviceCreationData& data)
+                                              const yApi::IManuallyDeviceCreationData& data,
+                                              const boost::shared_ptr<IWESConfiguration> configuration)
 {
    boost::shared_ptr<equipments::IEquipment> equipment;
 
@@ -61,11 +64,19 @@ std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginAp
 
       if (data.getConfiguration().get<bool>("type.content.WES.radio"))
       {
-         equipment = boost::make_shared<equipments::CWESEquipment>(api, data.getDeviceName(), data.getConfiguration().get<shared::CDataContainer>("type.content.WES.content"));
+         equipment = boost::make_shared<equipments::CWESEquipment>(api, 
+                                                                   data.getDeviceName(), 
+                                                                   data.getConfiguration().get<shared::CDataContainer>("type.content.WES.content"),
+                                                                   configuration);
          ioManager->addEquipment(equipment);
       }
-      else if (data.getConfiguration().get<bool>("type.content.Other.radio"))
+      else if (data.getConfiguration().get<bool>("type.content.temperatureProbe.radio"))
       {
+         equipment = boost::make_shared<equipments::CtemperatureProbe>(api,
+                                                                       data.getDeviceName(),
+                                                                       data.getConfiguration().get<shared::CDataContainer>("type.content.temperatureProbe.content"),
+                                                                       configuration);
+
          //subEquipment = boost::make_shared<equipments::CWESEquipment>(api, data.getDeviceName());
          //ioManager->addEquipment(subEquipment);
       }

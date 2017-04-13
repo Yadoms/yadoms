@@ -21,7 +21,7 @@ Poco::Net::SocketAddress CmasterDeviceConfiguration::getIPAddressWithSocket() co
    value.append(":");
    value.append(m_data.get<std::string>("Port"));
    */
-   return Poco::Net::SocketAddress("192.168.1.12:80");
+   return Poco::Net::SocketAddress("192.168.1.37:80");
 }
 
 bool CmasterDeviceConfiguration::isPasswordActivated() const
