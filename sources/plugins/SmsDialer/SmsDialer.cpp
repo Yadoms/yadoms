@@ -139,7 +139,7 @@ bool CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> a
          }
          default:
          {
-            YADOMS_LOG(error) << "Unknown message id" ;
+            YADOMS_LOG(warning) << "Unknown message id " << api->getEventHandler().getEventId();
             break;
          }
          }
@@ -240,7 +240,7 @@ bool CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> api)
          }
          default:
          {
-            YADOMS_LOG(error) << "Unknown message id" ;
+            YADOMS_LOG(warning) << "Unknown message id " << api->getEventHandler().getEventId();
             break;
          }
          }
