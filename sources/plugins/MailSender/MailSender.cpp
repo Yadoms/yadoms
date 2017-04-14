@@ -137,6 +137,10 @@ void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       YADOMS_LOG(error) << "Invalid Mail sending request \"" << sendMailRequest << "\" : " << e.what() ;
    }
+   catch (std::exception& e)
+   {
+      YADOMS_LOG(error) << "Error sending Mail : " << e.what();
+   }
    catch (...)
    {
       YADOMS_LOG(error) << "Error sending Mail" ;

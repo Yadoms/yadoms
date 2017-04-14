@@ -47,6 +47,25 @@ namespace shared
             {
                return (boost::format("%1%.%2%=%3%") % command->getDevice() % command->getKeyword() % command->getBody()).str();
             }
+
+
+            //-----------------------------------------------------
+            ///\brief                  Convert a numeric value to int
+            ///\param[in] commandBody  The command body containing the numeric value (can be "75" or "75.0")
+            ///\return                 The integer value
+            ///\throw                  boost::lexical_cast if not convertible
+            //-----------------------------------------------------
+            static int simpleNumericCommandHelperToInt(const std::string& commandBody)
+            {
+               try
+               {
+                  return boost::lexical_cast<int>(commandBody);
+               }
+               catch (boost::bad_lexical_cast&)
+               {
+                  return static_cast<int>(boost::lexical_cast<float>(commandBody));
+               }
+            }
          };
       }
    }
