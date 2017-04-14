@@ -57,22 +57,29 @@ void CFreeMobileSms::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
             YADOMS_LOG(information) << "Command received from Yadoms :" << yApi::IDeviceCommand::toString(command) ;
 
-            //parse the command data
-            yApi::historization::CMessageFormatter msgInfo(command->getBody());
+            try
+            {
+               //parse the command data
+               yApi::historization::CMessageFormatter msgInfo(command->getBody());
 
 
-            if (msgInfo.isToProvided() && msgInfo.isBodyProvided())
-            {
-               //send sms
-               sendSms(api, msgInfo.to(), msgInfo.body());
+               if (msgInfo.isToProvided() && msgInfo.isBodyProvided())
+               {
+                  //send sms
+                  sendSms(api, msgInfo.to(), msgInfo.body());
+               }
+               else if (!msgInfo.isToProvided())
+               {
+                  YADOMS_LOG(error) << "SMS recipient ('to') not found in command data" << yApi::IDeviceCommand::toString(command) ;
+               }
+               else if (!msgInfo.isBodyProvided())
+               {
+                  YADOMS_LOG(error) << "SMS content ('body') not found in command data" << yApi::IDeviceCommand::toString(command) ;
+               }
             }
-            else if (!msgInfo.isToProvided())
+            catch (std::exception& e)
             {
-               YADOMS_LOG(error) << "SMS recipient ('to') not found in command data" << yApi::IDeviceCommand::toString(command) ;
-            }
-            else if (!msgInfo.isBodyProvided())
-            {
-               YADOMS_LOG(error) << "SMS content ('body') not found in command data" << yApi::IDeviceCommand::toString(command) ;
+               YADOMS_LOG(error) << "Fail to send command " << yApi::IDeviceCommand::toString(command) << ", error : " << e.what();
             }
             break;
          }

@@ -156,7 +156,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
          default:
             {
-               YADOMS_LOG(error) << "Unknown message id" ;
+               YADOMS_LOG(warning) << "Unknown message id " << api->getEventHandler().getEventId();
                break;
             }
          }
@@ -273,10 +273,17 @@ void CEnOcean::processDeviceCommand(boost::shared_ptr<const shared::plugin::yPlu
       return;
    }
 
-   m_devices[command->getDevice()]->sendCommand(command->getKeyword(),
-                                                command->getBody(),
-                                                m_senderId,
-                                                m_messageHandler);
+   try
+   {
+      m_devices[command->getDevice()]->sendCommand(command->getKeyword(),
+                                                   command->getBody(),
+                                                   m_senderId,
+                                                   m_messageHandler);
+   }
+   catch (std::exception& e)
+   {
+      YADOMS_LOG(error) << "Fail to send command " << yApi::IDeviceCommand::toString(command) << ", error : " << e.what();
+   }
 }
 
 void CEnOcean::processConnectionEvent()

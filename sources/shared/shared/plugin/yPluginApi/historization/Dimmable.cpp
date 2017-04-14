@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Dimmable.h"
 #include "../StandardCapacities.h"
+#include <shared/plugin/yPluginApi/IDeviceCommand.h>
 
 namespace shared
 {
@@ -10,7 +11,10 @@ namespace shared
       {
          namespace historization
          {
-            CDimmable::CDimmable(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType, typeInfo::CIntTypeInfo& additionalInfo)
+            CDimmable::CDimmable(const std::string& keywordName,
+                                 const EKeywordAccessMode& accessMode,
+                                 const EMeasureType& measureType,
+                                 typeInfo::CIntTypeInfo& additionalInfo)
                : m_keywordName(keywordName),
                  m_switchLevel(0),
                  m_measureType(measureType),
@@ -40,7 +44,7 @@ namespace shared
 
             void CDimmable::set(const std::string& yadomsCommand)
             {
-               set(boost::lexical_cast<int>(yadomsCommand));
+               set(IDeviceCommand::simpleNumericCommandHelperToInt(yadomsCommand));
             }
 
             void CDimmable::set(bool isOn)

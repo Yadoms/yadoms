@@ -38,11 +38,11 @@ public:
 
 private:
 
-	//--------------------------------------------------------------
-	/// \brief Initialize the communication with the IPX800
-	/// \param[in] api                   pointer to the API
-	//--------------------------------------------------------------
-	void initIPX800(boost::shared_ptr<yApi::IYPluginApi> api);
+   //--------------------------------------------------------------
+   /// \brief Initialize the communication with the IPX800
+   /// \param[in] api                   pointer to the API
+   //--------------------------------------------------------------
+   void initIPX800(boost::shared_ptr<yApi::IYPluginApi> api) const;
 
    //--------------------------------------------------------------
    /// \brief Name of the plugin
@@ -69,3 +69,4 @@ private:
    //--------------------------------------------------------------
    boost::shared_ptr<shared::event::CEventTimer> m_refreshTimer;
 };
+
