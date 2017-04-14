@@ -85,19 +85,19 @@ std::string CIPX800Factory::createDeviceManually(boost::shared_ptr<yApi::IYPlugi
 
    try {
       
-      if (data.getDeviceModel() == "X8R")
+      if (data.getDeviceType() == "X8R")
       {
          int position = data.getConfiguration().get<int>("Position");
          extension = boost::make_shared<equipments::CX8RExtension>(api, data.getDeviceName(), position);
          X8RSlotused[position-1] = true;
       }
-      else if (data.getDeviceModel() == "X8D")
+      else if (data.getDeviceType() == "X8D")
       {
          int position = data.getConfiguration().get<int>("Position");
          extension = boost::make_shared<equipments::CX8DExtension>(api, data.getDeviceName(), position);
          X8DSlotused[position-1] = true;
       }
-      else if (data.getDeviceModel() == "X24D")
+      else if (data.getDeviceType() == "X24D")
       {
          int position = data.getConfiguration().get<int>("Position");
          extension = boost::make_shared<equipments::CX24DExtension>(api, data.getDeviceName(), position);

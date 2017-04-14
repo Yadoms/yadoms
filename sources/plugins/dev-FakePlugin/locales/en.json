@@ -127,6 +127,16 @@
    "deviceConfiguration": {
       "staticConfigurationSchema": {
         "fakeConfigurableDevice" : {
+           "types" : { 
+               "fakeConfigurableDeviceType" : {
+                  "title" : "configurable device",
+                  "description" : "compatible with Chacon, DIO,..."
+               },
+               "anotherFakeConfigurableDeviceType" : {
+                  "title" : "another configurable device",
+                  "description" : "compatible with Blyss, ..."
+               }
+           },
            "content": {
               "CounterDivider2": {
                "name": "Divider n°2",

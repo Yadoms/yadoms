@@ -9,6 +9,8 @@ set(FAKE_PLUGIN_SOURCES
 	stdafx.cpp
 	FakePlugin.h
 	FakePlugin.cpp 
+	FakeAnotherConfigurableDevice.h
+	FakeAnotherConfigurableDevice.cpp 
 	FakeConfigurableDevice.h
 	FakeConfigurableDevice.cpp 
 	FakeDynamicallyConfigurableDevice.h

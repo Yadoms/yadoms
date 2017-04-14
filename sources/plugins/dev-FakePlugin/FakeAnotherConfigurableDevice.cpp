@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "FakeConfigurableDevice.h"
+#include "FakeAnotherConfigurableDevice.h"
 #include <shared/Log.h>
 
-CFakeConfigurableDevice::CFakeConfigurableDevice(const std::string& deviceName)
+CFakeAnotherConfigurableDevice::CFakeAnotherConfigurableDevice(const std::string& deviceName)
    : m_deviceName(deviceName),
      m_counter(boost::make_shared<yApi::historization::CCounter>("counter")),
      m_internalCounter(0),
@@ -12,11 +12,11 @@ CFakeConfigurableDevice::CFakeConfigurableDevice(const std::string& deviceName)
    m_counter->set(0);
 }
 
-CFakeConfigurableDevice::~CFakeConfigurableDevice()
+CFakeAnotherConfigurableDevice::~CFakeAnotherConfigurableDevice()
 {
 }
 
-void CFakeConfigurableDevice::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api)
+void CFakeAnotherConfigurableDevice::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    // Declare device and associated keywords (= values managed by this device)
    if (!api->deviceExists(m_deviceName))
@@ -35,14 +35,14 @@ void CFakeConfigurableDevice::declareDevice(boost::shared_ptr<yApi::IYPluginApi>
    }
 }
 
-void CFakeConfigurableDevice::read()
+void CFakeAnotherConfigurableDevice::read()
 {
    ++m_internalCounter;
    if (m_internalCounter % m_divider)
       m_counter->set(m_counter->get() + 1);
 }
 
-void CFakeConfigurableDevice::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
+void CFakeAnotherConfigurableDevice::historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
    if (!api)
       throw shared::exception::CException("api must be defined");
@@ -51,19 +51,19 @@ void CFakeConfigurableDevice::historizeData(boost::shared_ptr<yApi::IYPluginApi>
    api->historizeData(m_deviceName, m_historizers);
 }
 
-const std::string& CFakeConfigurableDevice::getDeviceName() const
+const std::string& CFakeAnotherConfigurableDevice::getDeviceName() const
 {
    return m_deviceName;
 }
 
-const std::string& CFakeConfigurableDevice::getModel()
+const std::string& CFakeAnotherConfigurableDevice::getModel()
 {
-   static const std::string model("fakeConfigurableDeviceType");
+   static const std::string model("anotherFakeConfigurableDeviceType");
    return model;
 }
 
 
-void CFakeConfigurableDevice::setConfiguration(const shared::CDataContainer& newConfiguration)
+void CFakeAnotherConfigurableDevice::setConfiguration(const shared::CDataContainer& newConfiguration)
 {
    YADOMS_LOG(information) << "Configuration = " << newConfiguration.serialize();
    if(newConfiguration.containsValue("CounterDivider2"))

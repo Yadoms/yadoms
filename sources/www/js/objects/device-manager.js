@@ -164,25 +164,23 @@ DeviceManager.getConfigurationSchema = function(device) {
             device.attachedPlugin.getPackageDeviceConfigurationSchema()
             .done(function(deviceConfig) {
                 var schema = {};
-
                 if(deviceConfig) {
-
                     //Manage static configuration
-                    if(deviceConfig.staticConfigurationSchema) {
+                    if(deviceConfig.staticConfigurationSchema && deviceConfig.staticConfigurationSchema.schemas) {
 
                         //find all static configurations matching the device model
                         var staticConfigMatchingDevice= {};
-                        for(let k in deviceConfig.staticConfigurationSchema) {
-                            if(_.some(deviceConfig.staticConfigurationSchema[k].models, function(model) { return model == "*" || model == device.model;})) {
+                        for(let k in deviceConfig.staticConfigurationSchema.schemas) {
+                            if(_.some(deviceConfig.staticConfigurationSchema.schemas[k].types, function(typeContent, model) { 
+                              return model == "*" || model == device.configuration.type;
+                            }))  {
                                //add it to resulting schema
-                               let config = deviceConfig.staticConfigurationSchema[k];
+                               let config = deviceConfig.staticConfigurationSchema.schemas[k];
                                if(config && config.content) {
                                   for(let l in config.content) {
-                                     config.content[l].i18nBasePath = "plugins/" + device.attachedPlugin.type + ":deviceConfiguration.staticConfigurationSchema." + k + ".content.";
-                                     let sub = {};
-                                     sub[l] = config.content[l];
-                                     schema = _.merge(schema, sub);
+                                     config.content[l].i18nBasePath = "plugins/" + device.attachedPlugin.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".content.";
                                   }                            
+                                  schema = _.merge(schema, config.content);
                                }
                                
                             }

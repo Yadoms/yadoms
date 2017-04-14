@@ -286,6 +286,21 @@ Fix dropdown menus hidden by bootstrap modal
     border: 1px #ccc solid;
 }
 
+
+.btn-combo {
+   text-align: left;
+}
+.combo-item-title {
+   font-weight: bold;
+}
+.combo-item-description {
+   font-style: italic;
+}
+
+.current-selected-item {
+   margin-right: 8px;
+}
+
 /*Menu with dropdown management*/
 .dropdown-submenu {
     position: relative;

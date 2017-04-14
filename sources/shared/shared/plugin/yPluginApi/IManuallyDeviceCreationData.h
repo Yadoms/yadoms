@@ -22,16 +22,16 @@ namespace shared { namespace plugin { namespace yPluginApi
       virtual const std::string& getDeviceName() const = 0;
 
       //-----------------------------------------------------
-      ///\brief               Get the device model
-      ///\return              The device model to create
+      ///\brief               Get the device
+      ///\return              The device to create
       //-----------------------------------------------------
-      virtual const std::string& getDeviceModel() const = 0;
+      virtual const std::string& getDeviceType() const = 0;
 
       //-----------------------------------------------------
       ///\brief               Get the device configuration
       ///\return              The device parameters (in data container)
       //-----------------------------------------------------
-      virtual const CDataContainer & getConfiguration() const = 0;
+      virtual const CDataContainer& getConfiguration() const = 0;
 };
 	
 } } } // namespace shared::plugin::yPluginApi	

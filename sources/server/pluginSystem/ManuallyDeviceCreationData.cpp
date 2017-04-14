@@ -1,12 +1,14 @@
 #include "stdafx.h"
 #include "ManuallyDeviceCreationData.h"
+#include <shared/Log.h>
 
 namespace pluginSystem
 {
 
-   CManuallyDeviceCreationData::CManuallyDeviceCreationData(const std::string& deviceName, const std::string& deviceModel, const shared::CDataContainer & configuration)
-      :m_deviceName(deviceName), m_deviceModel(deviceModel), m_configuration(configuration)
+   CManuallyDeviceCreationData::CManuallyDeviceCreationData(const std::string& deviceName, const shared::CDataContainer & configuration)
+      :m_deviceName(deviceName), m_configuration(configuration)
    {
+         m_deviceType = configuration.get<std::string>("type");
    }
       
    CManuallyDeviceCreationData::~CManuallyDeviceCreationData() 
@@ -18,12 +20,12 @@ namespace pluginSystem
       return m_deviceName;
    }
 
-   const std::string& CManuallyDeviceCreationData::getDeviceModel() const
+   const std::string& CManuallyDeviceCreationData::getDeviceType() const
    {
-      return m_deviceModel;
+      return m_deviceType;
    }
 
-   const shared::CDataContainer &  CManuallyDeviceCreationData::getConfiguration() const
+   const shared::CDataContainer& CManuallyDeviceCreationData::getConfiguration() const
    {
       return m_configuration;
    }

@@ -123,8 +123,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
                auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
-               processDeviceConfiguration(deviceConfiguration->device(),
-                                          deviceConfiguration->configuration());
+               processDeviceConfiguration(deviceConfiguration->name(), deviceConfiguration->configuration());
                break;
             }
 

@@ -6,7 +6,7 @@
 #include "pluginSystem/BindingQueryData.h"
 #include "pluginSystem/ExtraQueryData.h"
 #include "communication/callback/SynchronousCallback.h"
-
+#include <shared/Log.h>
 
 namespace web
 {
@@ -504,7 +504,8 @@ namespace web
 
                      //create the data container to send to plugin
                      shared::CDataContainer deviceConfig = content.get<shared::CDataContainer>("configuration");
-                     pluginSystem::CManuallyDeviceCreationData data(content.get<std::string>("name"), content.get<std::string>("model"), deviceConfig);
+                     deviceConfig.printToLog(YADOMS_LOG(information));
+                     pluginSystem::CManuallyDeviceCreationData data(content.get<std::string>("name"), deviceConfig);
 
                      //send request to plugin
                      m_messageSender.sendManuallyDeviceCreationRequest(pluginId, data, cb);

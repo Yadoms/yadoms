@@ -33,40 +33,42 @@
    "supportDeviceRemovedNotification": "true",
    "deviceConfiguration": {
       "staticConfigurationSchema": {
-         "x8r" : {
-            "models": [ "X8R" ],
-            "content" : {
-               "Position" : {				 
-				       "type" : "enum",
-					    "__Binding__" : {
-                     "type" : "plugin", 
-                     "query" : "X8R"
-					   }
-					}
-            }
-         },
-         "x8d" : {
-            "models": [ "X8D" ],
-            "content" : {
-               "Position" : {				 
-				       "type" : "enum",
-					    "__Binding__" : {
-                     "type" : "plugin", 
-                     "query" : "X8D"
-					   }
-					}
-            }
-         },
-         "x24d" : {
-            "models": [ "X24D" ],
-            "content" : {
-               "Position" : {				 
-				       "type" : "enum",
-					    "__Binding__" : {
-                     "type" : "plugin", 
-                     "query" : "X24D"
-					   }
-					}
+         "schemas" : {         
+            "x8r" : {
+               "types": { "X8R" : { "canBeCreatedManually" : "true" } },
+               "content" : {
+                  "Position" : {				 
+                      "type" : "enum",
+                      "__Binding__" : {
+                        "type" : "plugin", 
+                        "query" : "X8R"
+                     }
+                  }
+               }
+            },
+            "x8d" : {
+               "types": { "X8D" : { "canBeCreatedManually" : "true" } },
+               "content" : {
+                  "Position" : {				 
+                      "type" : "enum",
+                      "__Binding__" : {
+                        "type" : "plugin", 
+                        "query" : "X8D"
+                     }
+                  }
+               }
+            },
+            "x24d" : {
+               "types": { "X24D" : { "canBeCreatedManually" : "true" } },
+               "content" : {
+                  "Position" : {				 
+                      "type" : "enum",
+                      "__Binding__" : {
+                        "type" : "plugin", 
+                        "query" : "X24D"
+                     }
+                  }
+               }
             }
          }
       }

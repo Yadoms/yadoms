@@ -42,7 +42,7 @@
 
         //we haven't any other configuration
         //we append classic configuration
-        var configMgr = new ConfigurationControlManager(schema, device.configuration, "plugins/" + device.attachedPlugin.type + ":deviceConfiguration.", $modalBody);
+        var configMgr = new ConfigurationControlManager(schema, device.configuration.configuration.content, "plugins/" + device.attachedPlugin.type + ":deviceConfiguration.", $modalBody);
 
         //i18n
         $modalBody.i18n();
@@ -61,7 +61,8 @@
                 event.preventDefault();
                 device.friendlyName = friendlyNameParameter.getCurrentConfiguration();
                 device.model = modelParameter.getCurrentConfiguration();
-                device.configuration = configMgr.getCurrentConfiguration();
+                debugger;
+                device.configuration.configuration.content = configMgr.getCurrentConfiguration();
 
                 console.debug("End of Device Configuration : " + JSON.stringify(device));
 

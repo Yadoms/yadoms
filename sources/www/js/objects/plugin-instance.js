@@ -116,32 +116,34 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
    if (!isNullOrUndefined(self.package)) {
       if (  self.package.deviceConfiguration && 
             self.package.deviceConfiguration.staticConfigurationSchema && 
-            Object.keys(self.package.deviceConfiguration.staticConfigurationSchema).length > 0) {
+            self.package.deviceConfiguration.staticConfigurationSchema.schemas && 
+            Object.keys(self.package.deviceConfiguration.staticConfigurationSchema.schemas).length > 0) {
 
-        self.applyBindingPrivate(self.package.deviceConfiguration.staticConfigurationSchema, ["plugin", "system"])
+        self.applyBindingPrivate(self.package.deviceConfiguration.staticConfigurationSchema.schemas, ["plugin", "system"])
          .done(function(schema) {
             var tmp = { 
                type:
                {
                   type: "comboSection", 
-                  name: $.t("configuration.manually-device-model.title"), 
-                  description:$.t("configuration.manually-device-model.description"), 
+                  name: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.title", { defaultValue: $.t("configuration.manually-device-model.title") }), 
+                  name: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.description", { defaultValue: $.t("configuration.manually-device-model.description") }), 
                   content : {}
                }
             };
-            
             for (var k in schema){
                 if (schema.hasOwnProperty(k)) {
-                     schema[k].models.forEach( function(model) {
-                        tmp.type.content[model] = {
+                   for(var typeName in schema[k].types) {
+                     if(schema[k].types[typeName].canBeCreatedManually == "true") {
+                        tmp.type.content[typeName] = {
                            type: "section",
-                           name: model,
+                           name: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".types." + typeName + ".title"),
+                           description: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".types." + typeName + ".description"),
                            content: schema[k].content,
-                           i18nBasePath: "plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.",
+                           i18nBasePath: "plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas.",
                            i18nKey: k
                         };
-                     });
-                     
+                     }
+                   }
                 }
             }
             d.resolve(tmp);

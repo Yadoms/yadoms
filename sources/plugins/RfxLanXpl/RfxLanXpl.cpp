@@ -358,10 +358,10 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
 
       YADOMS_LOG(information) << deviceCfg.serialize() ;
       std::string internalProtocol;
-      std::string deviceModel = data->getData().getDeviceModel();
-      if (boost::istarts_with(deviceModel, "x10"))
+      std::string deviceType = data->getData().getDeviceType();
+      if (boost::istarts_with(deviceType, "x10"))
          internalProtocol = "x10.basic";
-      if (boost::istarts_with(deviceModel, "ac"))
+      if (boost::istarts_with(deviceType, "ac"))
          internalProtocol = "ac.basic";
 
       auto innerContent = data->getData().getConfiguration();
@@ -409,7 +409,7 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
       }
       else
       {
-         auto errorMessage = (boost::format("Unsupported protocol = %1%") % deviceModel).str();
+         auto errorMessage = (boost::format("Unsupported protocol = %1%") % deviceType).str();
          data->sendError(errorMessage);
          YADOMS_LOG(error) << errorMessage ;
       }

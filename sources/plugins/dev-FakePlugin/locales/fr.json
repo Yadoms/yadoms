@@ -126,29 +126,43 @@
   },
   "deviceConfiguration": {
    "staticConfigurationSchema": {
-      "fakeConfigurableDevice" : {
-        "content": {
-           "CounterDivider2": {
-            "name": "Prédiviseur n°2",
-            "description": "Prédiviseur permettant de diminuer la fréquence du compteur (tous les devices)"
+      "title" : "Type d'équipements",
+      "description" : "Choisir le type d'équipment",
+      "schemas" : {
+        "fakeConfigurableDevice" : {
+           "types" : { 
+               "fakeConfigurableDeviceType" : {
+                  "title" : "équipement configurable",
+                  "description" : "compatible avec Chacon, DIO,..."
+               },
+               "anotherFakeConfigurableDeviceType" : {
+                  "title" : "un autre équipement configurable",
+                  "description" : "compatible avec Blyss, ..."
+               }
            },
-           "MySection": {
-            "name": "Une section",
-            "description": "Exemple d'utilisation d'une section de configuration.",
-            "content": {
-              "SubIntParameter": {
-                "name": "Entier dans une section",
-                "description": "Un exemple de paramètre entier dans une section"
+           "content": {
+              "CounterDivider2": {
+               "name": "Prédiviseur n°2",
+               "description": "Prédiviseur permettant de diminuer la fréquence du compteur (tous les devices)"
               },
-              "SubStringParameter": {
-                "name": "Chaîne dans une section",
-                "description": "Un exemple de paramètre chaîne dans une section",
-                "defaultValue": "Les sous-sections rendent la configuration vraiment puissante !"
-              }
-            }
-          }           
+              "MySection": {
+               "name": "Une section",
+               "description": "Exemple d'utilisation d'une section de configuration.",
+               "content": {
+                 "SubIntParameter": {
+                   "name": "Entier dans une section",
+                   "description": "Un exemple de paramètre entier dans une section"
+                 },
+                 "SubStringParameter": {
+                   "name": "Chaîne dans une section",
+                   "description": "Un exemple de paramètre chaîne dans une section",
+                   "defaultValue": "Les sous-sections rendent la configuration vraiment puissante !"
+                 }
+               }
+             }           
+           }
         }
-     }
-  }
+      }
+    }
   }
 }

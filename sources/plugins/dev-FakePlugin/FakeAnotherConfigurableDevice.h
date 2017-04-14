@@ -7,22 +7,22 @@ namespace yApi = shared::plugin::yPluginApi;
 
 
 //--------------------------------------------------------------
-/// \brief	Fake configurable device (cannot be manually created)
+/// \brief	Fake another configurable device (can be manually created)
 /// \note   User can configurate the counter divider (increment each N read operations)
 //--------------------------------------------------------------
-class CFakeConfigurableDevice
+class CFakeAnotherConfigurableDevice
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    /// \param[in] deviceName    The device name
    //--------------------------------------------------------------
-   explicit CFakeConfigurableDevice(const std::string& deviceName);
+   explicit CFakeAnotherConfigurableDevice(const std::string& deviceName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CFakeConfigurableDevice();
+   virtual ~CFakeAnotherConfigurableDevice();
 
    //--------------------------------------------------------------
    /// \brief	            Declare device and associated keywords if necessary

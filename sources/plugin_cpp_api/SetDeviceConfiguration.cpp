@@ -5,18 +5,25 @@
 namespace plugin_cpp_api
 {
    CSetDeviceConfiguration::CSetDeviceConfiguration(const plugin_IPC::toPlugin::SetDeviceConfiguration& msg)
-      : m_device(msg.device()),
-        m_configuration(msg.configuration())
+      : m_device(msg.device())
    {
+      shared::CDataContainer t(msg.configuration());
+      m_deviceType = t.get<std::string>("type");
+      m_configuration = t.get<shared::CDataContainer>("configuration");
    }
 
    CSetDeviceConfiguration::~CSetDeviceConfiguration()
    {
    }
 
-   const std::string& CSetDeviceConfiguration::device() const
+   const std::string& CSetDeviceConfiguration::name() const
    {
       return m_device;
+   }
+
+   const std::string& CSetDeviceConfiguration::type() const
+   {
+      return m_deviceType;
    }
 
    const shared::CDataContainer& CSetDeviceConfiguration::configuration() const

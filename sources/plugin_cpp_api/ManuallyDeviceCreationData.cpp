@@ -4,13 +4,12 @@
 
 namespace plugin_cpp_api
 {
-   CManuallyDeviceCreationData::CManuallyDeviceCreationData(const std::string& deviceName,
-                                                            const std::string& deviceModel,
-                                                            const std::string& configuration)
-      : m_deviceName(deviceName),
-        m_deviceModel(deviceModel),
-        m_configuration(configuration)
+   CManuallyDeviceCreationData::CManuallyDeviceCreationData(const std::string& deviceName,  const std::string& configuration)
+      : m_deviceName(deviceName)
    {
+      shared::CDataContainer t(configuration);
+      m_deviceType = t.get<std::string>("type");
+      m_configuration = t.get<shared::CDataContainer>("configuration.content");
    }
 
    CManuallyDeviceCreationData::~CManuallyDeviceCreationData()
@@ -22,15 +21,16 @@ namespace plugin_cpp_api
       return m_deviceName;
    }
 
-   const std::string& CManuallyDeviceCreationData::getDeviceModel() const
+   const std::string& CManuallyDeviceCreationData::getDeviceType() const
    {
-      return m_deviceModel;
+      return m_deviceType;
    }
 
    const shared::CDataContainer& CManuallyDeviceCreationData::getConfiguration() const
    {
       return m_configuration;
    }
+
 } // namespace plugin_cpp_api	
 
 
