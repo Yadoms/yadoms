@@ -51,9 +51,9 @@ void CheckReceivedMessage(const RBUF& rbuf,
    if (expectedSize != DONT_CHECK_SIZE && (expectedSize - 1) != rbuf.RXRESPONSE.packetlength)
       throw shared::exception::CException((boost::format("Wrong message length, received : %1%, expected : %2% (total_message_size - 1)") % static_cast<unsigned int>(rbuf.RXRESPONSE.packetlength) % (expectedSize - 1)).str());
 
-   if (sequenceNumberChecker->isExpected(rbuf.RXRESPONSE.seqnbr))
+   if (!sequenceNumberChecker->isExpected(rbuf.RXRESPONSE.seqnbr))
    {
-      YADOMS_LOG(information) << "Wrong message sequence number, received : " << static_cast<unsigned int>(rbuf.RXRESPONSE.seqnbr) << ", expected : " << sequenceNumberChecker->last();
+      YADOMS_LOG(information) << "Wrong message sequence number, received : " << static_cast<unsigned int>(rbuf.RXRESPONSE.seqnbr) << ", expected : " << static_cast<unsigned int>(sequenceNumberChecker->last());
       sequenceNumberChecker->reset(rbuf.RXRESPONSE.seqnbr);
    }
 }

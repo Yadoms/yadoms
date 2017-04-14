@@ -185,7 +185,7 @@ namespace common {
             }
             catch (shared::exception::CEmptyResult & ex)
             {
-               YADOMS_LOG(information) << "Cannot compute summary values : " << ex.what();
+               YADOMS_LOG(debug) << "Cannot compute summary values : " << ex.what();
             }
             catch (std::exception & ex)
             {
