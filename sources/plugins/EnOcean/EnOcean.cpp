@@ -650,7 +650,7 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
          throw CProtocolException("Unable to send UTE response, timeout waiting acknowledge");
 
       if (returnCode != message::CResponseReceivedMessage::RET_OK)
-      YADOMS_LOG(error) << "TeachIn response not successfully acknowledged : " << returnCode ;
+         YADOMS_LOG(error) << "TeachIn response not successfully acknowledged : " << returnCode ;
    }
 }
 
