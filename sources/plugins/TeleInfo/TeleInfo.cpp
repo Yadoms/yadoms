@@ -135,7 +135,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       default:
          {
-            YADOMS_LOG(error) << "Unknown message id" ;
+            YADOMS_LOG(error) << "Unknown message id " << api->getEventHandler().getEventId();
             break;
          }
       }

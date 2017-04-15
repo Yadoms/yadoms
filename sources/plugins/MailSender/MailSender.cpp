@@ -46,35 +46,42 @@ void CMailSender::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       switch (api->getEventHandler().waitForEvents())
       {
       case yApi::IYPluginApi::kEventStopRequested:
-      {
-         YADOMS_LOG(information) << "Stop requested" ;
-         api->setPluginState(yApi::historization::EPluginState::kStopped);
-         return;
-      }
+         {
+            YADOMS_LOG(information) << "Stop requested" ;
+            api->setPluginState(yApi::historization::EPluginState::kStopped);
+            return;
+         }
       case yApi::IYPluginApi::kEventUpdateConfiguration:
-      {
-         onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
-         break;
-      }
+         {
+            onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
+            break;
+         }
 
       case yApi::IYPluginApi::kEventDeviceCommand:
-      {
-         // Command received
-         auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
-         YADOMS_LOG(information) << "Command received :" << yApi::IDeviceCommand::toString(command) ;
+         {
+            // Command received
+            auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>();
+            YADOMS_LOG(information) << "Command received :" << yApi::IDeviceCommand::toString(command) ;
 
-         if (boost::iequals(command->getKeyword(), m_messageKeyword->getKeyword()))
-            onSendMailRequest(api, command->getBody());
-         else
-            YADOMS_LOG(information) << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command) ;
-      }
-      break;
+            try
+            {
+               if (boost::iequals(command->getKeyword(), m_messageKeyword->getKeyword()))
+                  onSendMailRequest(api, command->getBody());
+               else
+               YADOMS_LOG(information) << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command) ;
+            }
+            catch (std::exception& e)
+            {
+               YADOMS_LOG(error) << "Fail to send command " << yApi::IDeviceCommand::toString(command) << ", error : " << e.what();
+            }
+         }
+         break;
 
       default:
-      {
-         YADOMS_LOG(error) << "Unknown message id" ;
-         break;
-      }
+         {
+            YADOMS_LOG(warning) << "Unknown message id " << api->getEventHandler().getEventId();
+            break;
+         }
       }
    }
 }
@@ -129,6 +136,10 @@ void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> api,
    catch (shared::exception::CInvalidParameter& e)
    {
       YADOMS_LOG(error) << "Invalid Mail sending request \"" << sendMailRequest << "\" : " << e.what() ;
+   }
+   catch (std::exception& e)
+   {
+      YADOMS_LOG(error) << "Error sending Mail : " << e.what();
    }
    catch (...)
    {

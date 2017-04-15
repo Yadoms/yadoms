@@ -9,7 +9,6 @@
 #include "equipments/manuallyDeviceCreationException.hpp"
 #include "equipments/noInformationException.hpp"
 #include "http/failedSendingException.hpp"
-#include "http/invalidHTTPResultException.hpp"
 #include <shared/Log.h>
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
@@ -193,25 +192,26 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          // Command received from Yadoms
          auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
 
-         try {
+         try
+         {
             m_ioManager->onCommand(api, command);
          }
-         catch (std::exception &e)
+         catch (std::exception& e)
          {
-            YADOMS_LOG(information) << "Exception : " << e.what() ;
+            YADOMS_LOG(error) << "Fail to send command " << yApi::IDeviceCommand::toString(command) << ", error : " << e.what();
          }
          break;
       }
       default:
          {
-            YADOMS_LOG(error) << "Unknown message id" ;
+            YADOMS_LOG(warning) << "Unknown message id " << api->getEventHandler().getEventId();
             break;
          }
       }
    }
 }
 
-void CIPX800::initIPX800(boost::shared_ptr<yApi::IYPluginApi> api)
+void CIPX800::initIPX800(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
 	YADOMS_LOG(information) << "Init the connexion ..." ;
 

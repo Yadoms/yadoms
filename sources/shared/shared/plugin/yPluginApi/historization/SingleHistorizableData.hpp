@@ -236,6 +236,30 @@ namespace shared
                ///\brief     Helpers specialization for bool
                //-----------------------------------------------------      
                template <typename TData>
+               struct helper<TData, typename boost::enable_if<boost::is_same<int, TData> >::type>
+               {
+                  static bool getInternal(const std::string& value)
+                  {
+                     try
+                     {
+                        return boost::lexical_cast<int>(value);
+                     }
+                     catch (boost::bad_lexical_cast&)
+                     {
+                        return static_cast<int>(boost::lexical_cast<float>(value));
+                     }
+                  }
+
+                  static CDataContainer createDefaultTypeInfo()
+                  {
+                     return CDataContainer();
+                  }
+               };
+
+               //-----------------------------------------------------
+               ///\brief     Helpers specialization for bool
+               //-----------------------------------------------------      
+               template <typename TData>
                struct helper<TData, typename boost::enable_if<boost::is_same<bool, TData> >::type>
                {
                   static bool getInternal(const std::string& value)

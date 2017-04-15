@@ -126,7 +126,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
          default:
             {
-               YADOMS_LOG(error) << "Unknown message id";
+               YADOMS_LOG(warning) << "Unknown message id " << api->getEventHandler().getEventId();
                break;
             }
          }
@@ -201,12 +201,19 @@ void CRfxcom::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
 
    if (!m_port)
    {
-      YADOMS_LOG(information) << "Command not sent (RFXCom is not ready) : " << yApi::IDeviceCommand::toString(command);
+      YADOMS_LOG(warning) << "Command not sent (RFXCom is not ready) : " << yApi::IDeviceCommand::toString(command);
       return;
    }
 
-   auto message(m_transceiver->buildMessageToDevice(api, command));
-   send(api, message);
+   try
+   {
+      auto message(m_transceiver->buildMessageToDevice(api, command));
+      send(api, message);
+   }
+   catch(std::exception& e)
+   {
+      YADOMS_LOG(error) << "Fail to send command " << yApi::IDeviceCommand::toString(command) << ", error : "<< e.what();
+   }
 }
 
 void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
