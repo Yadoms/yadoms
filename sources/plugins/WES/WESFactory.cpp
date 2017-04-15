@@ -40,9 +40,8 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
             deviceList.push_back(equipment);
          }
       }
-      catch (...)
-      {
-      }
+      catch (std::exception& e)
+      {}
 
       YADOMS_LOG(information) << "Name : " << (*devicesIterator);
       YADOMS_LOG(information) << "Model : " << type;
@@ -62,7 +61,9 @@ std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginAp
 
       data.getConfiguration().printToLog(YADOMS_LOG(information));
 
-      if (data.getConfiguration().get<bool>("type.content.WES.radio"))
+      std::string activeSection = data.getConfiguration().get<std::string>("type.activeSection");
+
+      if (activeSection == "WES")
       {
          equipment = boost::make_shared<equipments::CWESEquipment>(api, 
                                                                    data.getDeviceName(), 
@@ -70,7 +71,7 @@ std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginAp
                                                                    configuration);
          ioManager->addEquipment(equipment);
       }
-      else if (data.getConfiguration().get<bool>("type.content.temperatureProbe.radio"))
+      else if (activeSection == "TemperatureProbe")
       {
          equipment = boost::make_shared<equipments::CtemperatureProbe>(api,
                                                                        data.getDeviceName(),
@@ -79,6 +80,10 @@ std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginAp
 
          //subEquipment = boost::make_shared<equipments::CWESEquipment>(api, data.getDeviceName());
          //ioManager->addEquipment(subEquipment);
+      }
+      else
+      {
+         YADOMS_LOG(error) << "no section defined for " << activeSection;
       }
    }
    catch (std::exception& e)

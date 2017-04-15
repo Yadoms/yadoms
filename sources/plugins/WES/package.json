@@ -16,7 +16,7 @@
    "manuallyDeviceCreationConfigurationSchema": {
       "type":
       {
-         "type": "radioSection",
+         "type": "comboSection",
          "content":
          {
            "WES" :

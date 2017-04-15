@@ -55,7 +55,7 @@ namespace http
       /// \param[in]  response            the response
       /// \return     true if the response is Xml, otherwise false
       //--------------------------------------------------------------
-      static bool XmlResponseReader(Poco::Net::HTTPClientSession& session,
+      static bool XmlResponseReader(std::istream& stream,
                                     Poco::Net::HTTPResponse& httpresponse,
                                     shared::CDataContainer& response);
 

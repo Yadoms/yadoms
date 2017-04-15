@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "HttpMethods.h"
 #include <Poco/Net/HTTPRequest.h>
+#include <Poco/Net/HTTPCredentials.h>
 #include <Poco/URI.h>
 #include <boost/property_tree/xml_parser.hpp>
 #include <shared/exception/Exception.hpp>
 #include <shared/Log.h>
-
+#include "Poco/StreamCopier.h"
 
 namespace http
 {
@@ -62,23 +63,49 @@ namespace http
          }
 
          Poco::Net::HTTPClientSession session(uri.getHost(), uri.getPort());
+         session.setTimeout(Poco::Timespan(timeout.seconds(), 0));
+
+         Poco::Net::HTTPCredentials creds("admin", "wes");
+
          Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET,
                                         uri.getPathAndQuery(),
                                         Poco::Net::HTTPMessage::HTTP_1_1);
-
-         session.setTimeout(Poco::Timespan(timeout.seconds(), 0));
+         
+         Poco::Net::HTTPResponse response;
          session.sendRequest(request);
 
-         Poco::Net::HTTPResponse response;
+         auto& rs = session.receiveResponse(response);
+         std::string buffer;
+         std::ostringstream oss;
+         if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED)
+         {
+            creds.authenticate(request, response);
+            session.sendRequest(request);
+            auto& rs = session.receiveResponse(response);
+            
+            Poco::StreamCopier::copyStream(rs, oss);
+            buffer = oss.str();
+         }
 
          if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK)
          {
             shared::CDataContainer data;
+            //auto& rs = session.receiveResponse(response);
 
-            if (XmlResponseReader(session, response, data))
+            std::istringstream oss1(buffer);
+            //oss1 << buffer.c_str();// << oss.str();//
+
+            if (XmlResponseReader(oss1, response, data))
             {
                onReceive(data);
                return true;
+            }
+
+            if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED)
+            {
+               auto message = "HTTP : unauthorized access";
+               YADOMS_LOG(error) << message;
+               throw shared::exception::CException(message);
             }
 
             auto message = (boost::format("content not yet managed : %1%") % response.getContentType()).str();
@@ -115,23 +142,24 @@ namespace http
       return responseData;
    }
 
-   bool CHttpMethods::XmlResponseReader(Poco::Net::HTTPClientSession& session,
+   bool CHttpMethods::XmlResponseReader(std::istream& stream,
                                         Poco::Net::HTTPResponse& httpresponse,
                                         shared::CDataContainer& response)
    {
       std::string content;
-      auto& rs = session.receiveResponse(httpresponse);
 
-      if (boost::icontains(httpresponse.getContentType(), "application/xml"))
+      if (boost::icontains(httpresponse.getContentType(), "text/xml"))
       {
-         if (httpresponse.hasContentLength())
+         //if (httpresponse.hasContentLength())
          {
             boost::property_tree::ptree pt;
 
-            content.resize(static_cast<unsigned int>(httpresponse.getContentLength()));
-            boost::property_tree::xml_parser::read_xml(const_cast<const char*>(content.c_str()), pt); //
+            //content.resize(static_cast<unsigned int>(httpresponse.getContentLength()));const_cast<const char*>().c_str()
+            boost::property_tree::xml_parser::read_xml(stream, pt, boost::property_tree::detail::rapidxml::parse_no_data_nodes); //
             
             parseNode(response, pt);
+
+            response.printToLog(YADOMS_LOG(information));
          }
 
          //request content may be empty

@@ -49,7 +49,8 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          m_ioManager->readAllDevices(api, true); // first reading
          setPluginState(api, EWESPluginState::kRunning);
-         // Create the timer for refresh IOs
+        
+         // Create timer for refresh IOs
          m_refreshTimer = api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
       }
    }

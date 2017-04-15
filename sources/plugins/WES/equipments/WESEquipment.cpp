@@ -28,7 +28,7 @@ namespace equipments
       if (pluginConfiguration->isRetrieveNamesFromdevice())
       {
          // request to obtain names
-         std::string CGXfileName = "rel1.cgx";
+         std::string CGXfileName = "tics.cgx";
          shared::CDataContainer results = urlManager::sendCommand(m_configuration.getIPAddressWithSocket(),
                                                                   m_configuration.getUser(),
                                                                   m_configuration.getPassword(),
