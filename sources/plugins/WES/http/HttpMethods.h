@@ -40,11 +40,24 @@ namespace http
       /// \brief	    SendGetRequest
       /// \param[in]  url                 the url to send the request
       /// \param[in]  parameters          parameters at the end of the url
+      /// \param[in]  timeout             timeout for the request
+      /// \return     the answer of the request
+      //--------------------------------------------------------------
+      static shared::CDataContainer SendGetRequest(const std::string & url,
+                                                   const shared::CDataContainer & credentials,
+                                                   const shared::CDataContainer & parameters,
+                                                   const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
+
+      //--------------------------------------------------------------
+      /// \brief	    SendGetRequest
+      /// \param[in]  url                 the url to send the request
+      /// \param[in]  parameters          parameters at the end of the url
       /// \param[in]  onReceive           function called on received data
       /// \param[in]  timeout             timeout for the request
       /// \return     false if the time has expired. In this case the onReceived is not executed
       //--------------------------------------------------------------
       static bool SendGetRequest(const std::string & url, 
+                                 const shared::CDataContainer& credentials,
                                  const shared::CDataContainer& parameters,
                                  boost::function1<void, shared::CDataContainer&> onReceive,
                                  const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);

@@ -47,6 +47,7 @@ namespace http
    }
 
    bool CHttpMethods::SendGetRequest(const std::string& url,
+                                     const shared::CDataContainer& credentials,
                                      const shared::CDataContainer& parameters,
                                      boost::function1<void, shared::CDataContainer&> onReceive,
                                      const boost::posix_time::time_duration& timeout)
@@ -65,7 +66,8 @@ namespace http
          Poco::Net::HTTPClientSession session(uri.getHost(), uri.getPort());
          session.setTimeout(Poco::Timespan(timeout.seconds(), 0));
 
-         Poco::Net::HTTPCredentials creds("admin", "wes");
+         Poco::Net::HTTPCredentials creds(credentials.get<std::string>("user"), 
+                                          credentials.get<std::string>("password"));
 
          Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET,
                                         uri.getPathAndQuery(),
@@ -127,8 +129,29 @@ namespace http
                                                        const boost::posix_time::time_duration& timeout)
    {
       shared::CDataContainer responseData;
+      shared::CDataContainer credentials;
 
       SendGetRequest(url,
+                     credentials,
+                     parameters,
+                     [&](shared::CDataContainer& data)
+                     {
+                        responseData = data;
+                     },
+                     timeout);
+
+      return responseData;
+   }
+
+   shared::CDataContainer CHttpMethods::SendGetRequest(const std::string& url,
+                                                       const shared::CDataContainer& credentials,
+                                                       const shared::CDataContainer& parameters,
+                                                       const boost::posix_time::time_duration& timeout)
+   {
+      shared::CDataContainer responseData;
+
+      SendGetRequest(url,
+                     credentials,
                      parameters,
                      [&](shared::CDataContainer& data)
                      {

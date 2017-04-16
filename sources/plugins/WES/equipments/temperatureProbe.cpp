@@ -27,11 +27,15 @@ namespace equipments
 
       if (pluginConfiguration->isRetrieveNamesFromdevice())
       {
+         shared::CDataContainer credentials;
+
+         credentials.set("user", m_configuration.getUser());
+         credentials.set("password", m_configuration.getPassword());
+
          // request to obtain the name
          std::string CGXfileName = "rel1.cgx";
          shared::CDataContainer results = urlManager::sendCommand(m_configuration.getIPAddressWithSocket(),
-                                                                  m_configuration.getUser(),
-                                                                  m_configuration.getPassword(),
+                                                                  credentials,
                                                                   CGXfileName);
       }
 
@@ -64,12 +68,16 @@ namespace equipments
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize;
 
+      shared::CDataContainer credentials;
+
+      credentials.set("user", m_configuration.getUser());
+      credentials.set("password", m_configuration.getPassword());
+
       //TODO be modified
       const std::string CGXfileName = "tics.cgx";
 
       shared::CDataContainer results = urlManager::sendCommand(m_configuration.getIPAddressWithSocket(), 
-                                                               m_configuration.getUser(),
-                                                               m_configuration.getPassword(),
+                                                               credentials,
                                                                CGXfileName);
 
       api->historizeData(m_deviceName, keywordsToHistorize);

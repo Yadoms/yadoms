@@ -25,11 +25,18 @@ namespace equipments
 
       if (pluginConfiguration->isRetrieveNamesFromdevice())
       {
+         shared::CDataContainer credentials;
+
+         // TODO : To be replaced when manual configuration device is properly finished !
+         credentials.set("user", "admin"/*m_configuration.getUser()*/);
+         credentials.set("password", "wes"/*m_configuration.getPassword()*/);
+
+         credentials.printToLog(YADOMS_LOG(information));
+
          // request to obtain names
          std::string CGXfileName = "WESNAMES.CGX";
          shared::CDataContainer results = urlManager::sendCommand(m_configuration.getIPAddressWithSocket(),
-                                                                  m_configuration.getUser(),
-                                                                  m_configuration.getPassword(),
+                                                                  credentials,
                                                                   CGXfileName);
 
          results.printToLog(YADOMS_LOG(information));
@@ -153,9 +160,16 @@ namespace equipments
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize;
       std::string CGXfileName = "tics.cgx";
 
+      shared::CDataContainer credentials;
+
+      // TODO : To be replaced when manual configuration device is properly finished !
+      credentials.set("user", "admin"/*m_configuration.getUser()*/);
+      credentials.set("password", "wes"/*m_configuration.getPassword()*/);
+
+      credentials.printToLog(YADOMS_LOG(information));
+
       shared::CDataContainer results = urlManager::sendCommand(m_configuration.getIPAddressWithSocket(), 
-                                                               m_configuration.getUser(),
-                                                               m_configuration.getPassword(),
+                                                               credentials,
                                                                CGXfileName);
 
       api->historizeData(m_deviceName, keywordsToHistorize);
@@ -168,5 +182,7 @@ namespace equipments
    }
 
    CWESEquipment::~CWESEquipment()
-   {}
+   {
+      //TODO : Check how to destroy subModules
+   }
 }// namespace equipments

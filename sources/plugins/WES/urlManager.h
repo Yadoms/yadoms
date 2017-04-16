@@ -18,8 +18,7 @@ public:
    /// \return     the answer of the request
    //--------------------------------------------------------------
    static shared::CDataContainer sendCommand(Poco::Net::SocketAddress socket, 
-                                             const std::string &user, 
-                                             const std::string &password,
+                                             const shared::CDataContainer& credentials,
                                              const std::string &file);
 
 };
