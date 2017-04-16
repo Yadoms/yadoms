@@ -1,0 +1,30 @@
+# ------------------------------------
+# --
+# --  Configuration files for Yadoms v1.00 beta
+# --  This file is for retrieve all names from the WES equipment.
+# --
+# ------------------------------------
+t <form>
+# COMPTEURS TELEINFO
+c e n <html><id>CPT1_name</id><value>%s</value></html>
+c e N <html><id>CPT2_name</id><value>%s</value></html>
+# PINCES AMEREMETRIQUES
+c Pn1 <html><id>nPCE1</id><value>%s</value></html>
+c Pn2 <html><id>nPCE2</id><value>%s</value></html>
+c Pn3 <html><id>nPCE3</id><value>%s</value></html>
+c Pn4 <html><id>nPCE4</id><value>%s</value></html>
+# COMPTEURS IMPULSIONNELS
+c pn1 <text><id>npls1</id><value>%s</value></text>
+c pn2 <text><id>npls2</id><value>%s</value></text>
+c pn3 <text><id>npls3</id><value>%s</value></text>
+c pn4 <text><id>npls4</id><value>%s</value></text>
+# RELAIS
+c o n0 <bssw><id>RL1</id><value>%s</value></bssw>
+c o n1 <bssw><id>RL2</id><value>%s</value></bssw>
+# ANALOGIQUE
+c l a1 <text><id>ANA1</id><value>%s</value></text>
+c l a2 <text><id>ANA2</id><value>%s</value></text>
+c l a3 <text><id>ANA3</id><value>%s</value></text>
+c l a4 <text><id>ANA4</id><value>%s</value></text>
+t </form>
+.

@@ -9,11 +9,7 @@ shared::CDataContainer urlManager::sendCommand(Poco::Net::SocketAddress socket,
 {
    std::stringstream url;
 
-   //TODO : How to integrate the user and the password ?
    shared::CDataContainer parameters;
-
-   //parameters.set("user", "admin");
-   //parameters.set("password", "wes");
 
    // create the URL
    //url << "http://" << socket.toString() << "/ASSETS/CGX/YADOMS/" + file;

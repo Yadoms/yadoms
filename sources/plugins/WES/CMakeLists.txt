@@ -29,6 +29,8 @@ set(WES_PLUGIN_SOURCES
    equipments/masterDeviceConfiguration.cpp
    equipments/masterDeviceConfiguration.h	
    equipments/noInformationException.hpp
+   equipments/specificHistorizers/Analog.cpp
+   equipments/specificHistorizers/Analog.h
    http/failedSendingException.hpp
    http/HttpMethods.cpp
    http/HttpMethods.h
@@ -37,6 +39,7 @@ set(WES_PLUGIN_SOURCES
 
 source_group(equipments equipments/*.*)
 source_group(http http/*.*)
+source_group(equipments\\specificHistorizers equipments/specificHistorizers/*.*)
 	
 #########################################
 ## Place here all additional include directories

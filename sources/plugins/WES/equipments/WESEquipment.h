@@ -2,6 +2,7 @@
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "IEquipment.h"
+#include "specificHistorizers/Analog.h"
 #include "../IWESConfiguration.h"
 #include "masterDeviceConfiguration.h"
 
@@ -12,6 +13,7 @@ namespace yApi = shared::plugin::yPluginApi;
 #define WES_TIC_QTY   2
 #define WES_PULSE_QTY 4
 #define WES_CLAMP_QTY 4
+#define WES_ANA_QTY   4
 
 namespace equipments
 {
@@ -81,6 +83,11 @@ namespace equipments
       //--------------------------------------------------------------
       /// \brief	Current clamps
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<yApi::historization::CCounter> > m_CurrentClampList;
+      std::vector<boost::shared_ptr<yApi::historization::CCurrent> > m_CurrentClampList;
+
+      //--------------------------------------------------------------
+      /// \brief	Analog Values
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<specificHistorizers::CAnalog> > m_AnalogList;
    };
 } // namespace equipments

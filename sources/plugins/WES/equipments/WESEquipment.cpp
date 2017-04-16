@@ -17,7 +17,7 @@ namespace equipments
       m_deviceType("WES")
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
-      std::string relayName[2], TICName[2], PulseName[4], ClampName[4];
+      std::string relayName[2], TICName[2], PulseName[4], ClampName[4], AnalogName[4];
 
       deviceConfiguration.printToLog(YADOMS_LOG(information));
 
@@ -49,6 +49,11 @@ namespace equipments
          ClampName[1] = results.get<std::string>("nPCE2");
          ClampName[2] = results.get<std::string>("nPCE3");
          ClampName[3] = results.get<std::string>("nPCE4");
+
+         AnalogName[0] = results.get<std::string>("ANA1");
+         AnalogName[1] = results.get<std::string>("ANA2");
+         AnalogName[2] = results.get<std::string>("ANA3");
+         AnalogName[3] = results.get<std::string>("ANA4");
       }
       else  // Defaults names
       {
@@ -67,13 +72,16 @@ namespace equipments
          ClampName[1] = "PCE2";
          ClampName[2] = "PCE3";
          ClampName[3] = "PCE4";
+
+         AnalogName[0] = "ANA1";
+         AnalogName[1] = "ANA2";
+         AnalogName[2] = "ANA3";
+         AnalogName[3] = "ANA4";
       }
 
       // Relay Configuration
       for (int counter = 0; counter<WES_RELAY_QTY; ++counter)
       {
-         //std::stringstream name;
-         //name << "R" << std::setfill('0') << std::setw(2) << boost::lexical_cast<int>(counter + 1);
          boost::shared_ptr<yApi::historization::CSwitch> temp = boost::make_shared<yApi::historization::CSwitch>(relayName[counter].c_str(),
                                                                                                                  yApi::EKeywordAccessMode::kGetSet);
          m_relaysList.push_back(temp);
@@ -83,8 +91,6 @@ namespace equipments
       // TIC Counters Configuration
       for (int counter = 0; counter<WES_TIC_QTY; ++counter)
       {
-         //std::stringstream name;
-         //name << "TIC" << std::setfill('0') << std::setw(2) << boost::lexical_cast<int>(counter + 1);
          boost::shared_ptr<yApi::historization::CEnergy> temp = boost::make_shared<yApi::historization::CEnergy>(TICName[counter].c_str(),
                                                                                                                  yApi::EKeywordAccessMode::kGet);
          m_counterTICList.push_back(temp);
@@ -94,8 +100,6 @@ namespace equipments
       // Pulse Counters Configuration
       for (int counter = 0; counter<WES_PULSE_QTY; ++counter)
       {
-         //std::stringstream name;
-         //name << "IMP" << std::setfill('0') << std::setw(2) << boost::lexical_cast<int>(counter + 1);
          boost::shared_ptr<yApi::historization::CCounter> temp = boost::make_shared<yApi::historization::CCounter>(PulseName[counter].c_str(),
                                                                                                                  yApi::EKeywordAccessMode::kGet);
          m_PulseCounterList.push_back(temp);
@@ -105,11 +109,18 @@ namespace equipments
       // Current clamp Configuration
       for (int counter = 0; counter<WES_CLAMP_QTY; ++counter)
       {
-         std::stringstream name;
-         name << "Current Clamp" << std::setfill('0') << std::setw(2) << boost::lexical_cast<int>(counter + 1);
-         boost::shared_ptr<yApi::historization::CCounter> temp = boost::make_shared<yApi::historization::CCounter>(ClampName[counter].c_str(),
+         boost::shared_ptr<yApi::historization::CCurrent> temp = boost::make_shared<yApi::historization::CCurrent>(ClampName[counter].c_str(),
                                                                                                                    yApi::EKeywordAccessMode::kGet);
          m_CurrentClampList.push_back(temp);
+         keywordsToDeclare.push_back(temp);
+      }
+
+      // Analog Values Configuration
+      for (int counter = 0; counter<WES_ANA_QTY; ++counter)
+      {
+         boost::shared_ptr<specificHistorizers::CAnalog> temp = boost::make_shared<specificHistorizers::CAnalog>(AnalogName[counter].c_str(),
+                                                                                                                 yApi::EKeywordAccessMode::kGet);
+         m_AnalogList.push_back(temp);
          keywordsToDeclare.push_back(temp);
       }
 
