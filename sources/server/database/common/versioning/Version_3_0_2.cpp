@@ -76,7 +76,7 @@ namespace database
                // Change the capacityName  from rssi to signalStrength
                qUpdateCapacityNameColumn.Update(CKeywordTable::getTableName()).
                   Set(CKeywordTable::getCapacityNameColumnName(), "signalPower").
-                  Where(CKeywordTable::getFriendlyNameColumnName(), CQUERY_OP_EQUAL, "rssi");
+                  Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, "rssi");
 
                pRequester->queryStatement(qUpdateNameColumn);
                pRequester->queryStatement(qUpdateFriendlyNameColumn);
