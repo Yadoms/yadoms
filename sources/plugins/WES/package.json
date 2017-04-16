@@ -40,15 +40,16 @@
                         "enableWithCheckBox": "true",
                         "enableWithCheckBoxDefaultValue": "true",
                         "content": {
+                           "User": {
+                             "type": "string",
+                             "defaultValue": "Admin",
+                             "required" : "true"
+                        },                        
                            "Password": {
                              "type": "string",
                              "encrypted": "true",
                              "required" : "true"
-                        },
-                           "User": {
-                             "type": "string",
-                             "required" : "true"
-                        }                        
+                        }
                       }
                     }
 				     }

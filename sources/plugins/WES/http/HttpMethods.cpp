@@ -18,8 +18,8 @@ namespace http
 
       for (boost::property_tree::ptree::const_iterator it = node.begin(); it != end; ++it)
       {
-         YADOMS_LOG(information) << "it->first : " << it->first;
-         YADOMS_LOG(information) << "it->second.data() : " << it->second.data();
+         //YADOMS_LOG(information) << "it->first : " << it->first;
+         //YADOMS_LOG(information) << "it->second.data() : " << it->second.data();
 
          if (it->second.size() != 0)
          {
@@ -76,13 +76,13 @@ namespace http
 
          auto& rs = session.receiveResponse(response);
          std::string buffer;
-         std::ostringstream oss;
          if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED)
          {
             creds.authenticate(request, response);
             session.sendRequest(request);
             auto& rs = session.receiveResponse(response);
             
+            std::ostringstream oss;
             Poco::StreamCopier::copyStream(rs, oss);
             buffer = oss.str();
          }
@@ -90,10 +90,7 @@ namespace http
          if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_OK)
          {
             shared::CDataContainer data;
-            //auto& rs = session.receiveResponse(response);
-
             std::istringstream oss1(buffer);
-            //oss1 << buffer.c_str();// << oss.str();//
 
             if (XmlResponseReader(oss1, response, data))
             {
@@ -150,17 +147,12 @@ namespace http
 
       if (boost::icontains(httpresponse.getContentType(), "text/xml"))
       {
-         //if (httpresponse.hasContentLength())
-         {
-            boost::property_tree::ptree pt;
-
-            //content.resize(static_cast<unsigned int>(httpresponse.getContentLength()));const_cast<const char*>().c_str()
-            boost::property_tree::xml_parser::read_xml(stream, pt, boost::property_tree::detail::rapidxml::parse_no_data_nodes); //
+         boost::property_tree::ptree pt;
+         boost::property_tree::xml_parser::read_xml(stream, pt); 
             
-            parseNode(response, pt);
+         parseNode(response, pt);
 
-            response.printToLog(YADOMS_LOG(information));
-         }
+         response.printToLog(YADOMS_LOG(information));
 
          //request content may be empty
          return true;

@@ -17,8 +17,7 @@ shared::CDataContainer urlManager::sendCommand(Poco::Net::SocketAddress socket,
 
    // create the URL
    //url << "http://" << socket.toString() << "/ASSETS/CGX/YADOMS/" + file;
-   url << "http://192.168.1.37/ASSETS/CGX/YADOMS/tics.cgx"; //admin:wes@
-   //url << "http://admin:wes@192.168.1.37:80/ASSETS/CGX/YADOMS/" + file;
+   url << "http://192.168.1.37/ASSETS/CGX/YADOMS/" + file; //admin:wes@
 
    return http::CHttpMethods::SendGetRequest(url.str(), parameters);
 }

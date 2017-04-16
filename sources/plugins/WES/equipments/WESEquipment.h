@@ -8,9 +8,10 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-#define WES_RELAY_QTY 4
+#define WES_RELAY_QTY 2
 #define WES_TIC_QTY   2
 #define WES_PULSE_QTY 4
+#define WES_CLAMP_QTY 4
 
 namespace equipments
 {
@@ -73,8 +74,13 @@ namespace equipments
       std::vector<boost::shared_ptr<yApi::historization::CEnergy> > m_counterTICList;
 
       //--------------------------------------------------------------
-      /// \brief	The keyword Counter 1
+      /// \brief	The pulse Counter 1
       //--------------------------------------------------------------
       std::vector<boost::shared_ptr<yApi::historization::CCounter> > m_PulseCounterList;
+
+      //--------------------------------------------------------------
+      /// \brief	Current clamps
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<yApi::historization::CCounter> > m_CurrentClampList;
    };
 } // namespace equipments
