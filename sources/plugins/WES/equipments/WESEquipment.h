@@ -81,9 +81,10 @@ namespace equipments
       std::vector<boost::shared_ptr<yApi::historization::CCounter> > m_PulseCounterList;
 
       //--------------------------------------------------------------
-      /// \brief	Current clamps
+      /// \brief	Clamps
       //--------------------------------------------------------------
       std::vector<boost::shared_ptr<yApi::historization::CCurrent> > m_CurrentClampList;
+      std::vector<boost::shared_ptr<yApi::historization::CEnergy> >  m_CounterClampList;
 
       //--------------------------------------------------------------
       /// \brief	Analog Values

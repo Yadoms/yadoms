@@ -40,13 +40,35 @@
                               "description": ""
                            }                           
                       }
+                    },
+                      "clampConfiguration": {
+                        "name": "Configuration of clamps",
+                        "description": "Activate intant current data for clamps",
+                        "content": {
+                            "displayCurrentClamp1": {
+                              "name": "Instant current data for clamp 1",
+                              "description": ""	
+                            },
+                            "displayCurrentClamp2": {
+                              "name": "Instant current data for clamp 2",
+                              "description": ""	
+                            },
+                            "displayCurrentClamp3": {
+                              "name": "Instant current data for clamp 3",
+                              "description": ""	
+                            },
+                            "displayCurrentClamp4": {
+                              "name": "Instant current data for clamp 4",
+                              "description": ""	
+                            }
+                      }
                     }
                   }
             },
            "TemperatureProbe" :
 			  {
                  "type": "section",
-                 "name": "température probe",
+                 "name": "Température probe",
                  "content":
                  {         
                    "masterDevice" :

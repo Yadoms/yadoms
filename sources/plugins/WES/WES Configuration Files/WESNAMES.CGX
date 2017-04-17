@@ -6,8 +6,14 @@
 # ------------------------------------
 t <form>
 # COMPTEURS TELEINFO
+# COMPTEUR 1
 c e n <html><id>CPT1_name</id><value>%s</value></html>
+c e a <html><id>CPT1_adco</id><value>%s</value></html>
+c e b <html><id>CPT1_abo_name</id><value>%s</value></html>
+# COMPTEUR 2
 c e N <html><id>CPT2_name</id><value>%s</value></html>
+c e a <html><id>CPT2_adco</id><value>%s</value></html>
+c e b <html><id>CPT2_abo_name</id><value>%s</value></html>
 # PINCES AMEREMETRIQUES
 c Pn1 <html><id>nPCE1</id><value>%s</value></html>
 c Pn2 <html><id>nPCE2</id><value>%s</value></html>

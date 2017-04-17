@@ -40,8 +40,6 @@ int CIOManager::getMasterEquipment()
 
 void CIOManager::readAllDevices(boost::shared_ptr<yApi::IYPluginApi> api, bool forceHistorization)
 {
-   std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize;
-
    for (unsigned char counter = 0; counter < m_deviceManager.size(); ++counter)
    {
       m_deviceManager[counter]->updateFromDevice(api, forceHistorization);

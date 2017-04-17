@@ -40,13 +40,35 @@
                               "description": ""	
                            }
                       }
+                    },
+                      "clampConfiguration": {
+                        "name": "Configuration des pinces ampèremétriques",
+                        "description": "Active l'enregistrement des intensités des pinces ampèremétriques",
+                        "content": {
+                            "displayCurrentClamp1": {
+                              "name": "Intensité instantanée de la pince 1",
+                              "description": ""	
+                            },
+                            "displayCurrentClamp2": {
+                              "name": "Intensité instantanée de la pince 2",
+                              "description": ""	
+                            },
+                            "displayCurrentClamp3": {
+                              "name": "Intensité instantanée de la pince 3",
+                              "description": ""	
+                            },
+                            "displayCurrentClamp4": {
+                              "name": "Intensité instantanée de la pince 4",
+                              "description": ""	
+                            }
+                      }
                     }
 				     }
 			  },
            "TemperatureProbe" :
 			  {
                  "type": "section",
-                 "name": "sonde de température",
+                 "name": "Sonde de température",
                  "content":
                  {         
                    "masterDevice" :

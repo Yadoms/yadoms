@@ -1,35 +1,18 @@
 #include "stdafx.h"
-#include "WESEquipment.h"
-#include "masterdeviceConfiguration.h"
-#include <shared/DataContainer.h>
-#include "noInformationException.hpp"
-#include "../urlmanager.h"
+#include "TIC.h"
 #include <shared/Log.h>
 
 namespace equipments
 {
-   CWESEquipment::CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
-                                const std::string& device,
-                                const shared::CDataContainer& deviceConfiguration,
-                                const boost::shared_ptr<IWESConfiguration> pluginConfiguration
+   CTIC::CTIC(boost::shared_ptr<yApi::IYPluginApi> api,
+                                const std::string& name,
+                                const shared::CDataContainer& deviceConfiguration
    ):
-      m_deviceName(device),
-      m_deviceType("WES")
+      m_deviceName(name)
    {
+/*
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
       std::string relayName[2], TICName[2], PulseName[4], ClampName[4], AnalogName[4];
-
-      deviceConfiguration.printToLog(YADOMS_LOG(information));
-
-      m_configuration.initializeWith(deviceConfiguration);
-
-      if (pluginConfiguration->isRetrieveNamesFromdevice())
-      {
-         shared::CDataContainer credentials;
-
-         // TODO : To be replaced when manual configuration device is properly finished !
-         credentials.set("user", "admin"/*m_configuration.getUser()*/);
-         credentials.set("password", "wes"/*m_configuration.getPassword()*/);
 
          credentials.printToLog(YADOMS_LOG(information));
 
@@ -149,51 +132,21 @@ namespace equipments
 
       //Déclaration of all IOs
       api->declareDevice(device, m_deviceType, keywordsToDeclare, details);
+*/
    }
 
-   std::string CWESEquipment::getDeviceName() const
+   std::string CTIC::getDeviceName() const
    {
       return m_deviceName;
    }
 
-   bool CWESEquipment::isMasterDevice() const
-   {
-      return true;
-   }
-
-   std::string CWESEquipment::getDeviceType() const
-   {
-      return m_deviceType;
-   }
-
-   void CWESEquipment::updateFromDevice( boost::shared_ptr<yApi::IYPluginApi> api,
-                                         bool forceHistorization)
+   void CTIC::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api)
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize;
       std::string CGXfileName = "WESVALUES.CGX";
-
-      shared::CDataContainer credentials;
-
-      // TODO : To be replaced when manual configuration device is properly finished !
-      credentials.set("user", "admin"/*m_configuration.getUser()*/);
-      credentials.set("password", "wes"/*m_configuration.getPassword()*/);
-
-      credentials.printToLog(YADOMS_LOG(information));
-
-      shared::CDataContainer results = urlManager::sendCommand(m_configuration.getIPAddressWithSocket(), 
-                                                               credentials,
-                                                               CGXfileName);
-
-      api->historizeData(m_deviceName, keywordsToHistorize);
    }
 
-   void CWESEquipment::updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                            shared::CDataContainer& newConfiguration)
-   {
-      m_configuration.initializeWith(newConfiguration);
-   }
-
-   CWESEquipment::~CWESEquipment()
+   CTIC::~CTIC()
    {
       //TODO : Check how to destroy subModules
    }
