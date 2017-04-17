@@ -690,7 +690,7 @@
                     "become": ""
                 },
                 "triggeredCapacityType": {
-                    "change": "est émise",
+                    "change": "est reçue",
                     "become": ""
                 },
                 "do": "Alors",
@@ -710,7 +710,7 @@
                         "condition" : "sur une condition"
                     },
                     "capacity": {
-                        "title": "Lorsqu'un type de données est émis",
+                        "title": "Lorsqu'un type de données est reçu",
                         "tooltip": "Ajoute un nouveau block pour observer un changement d'une donnée correspondant à une capacité",
                         "condition" : "sur une condition"
                     },
