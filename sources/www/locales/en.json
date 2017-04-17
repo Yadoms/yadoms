@@ -690,7 +690,7 @@
           "become": "become"
         },
         "triggeredCapacityType": {
-            "change": "is sent",
+            "change": "is received",
             "become": ""
         },
         "do": "Then",
