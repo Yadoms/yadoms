@@ -5,6 +5,7 @@
 #include "specificHistorizers/Analog.h"
 #include "../IWESConfiguration.h"
 #include "masterDeviceConfiguration.h"
+#include "WESSubEquipments/TIC.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -73,7 +74,7 @@ namespace equipments
       //--------------------------------------------------------------
       /// \brief  counter TIC 1
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<yApi::historization::CEnergy> > m_counterTICList;
+      std::vector<boost::shared_ptr<equipments::subdevices::CTIC> > m_TICList;
 
       //--------------------------------------------------------------
       /// \brief	The pulse Counter 1

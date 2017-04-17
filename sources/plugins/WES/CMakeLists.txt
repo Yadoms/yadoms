@@ -31,6 +31,10 @@ set(WES_PLUGIN_SOURCES
    equipments/noInformationException.hpp
    equipments/specificHistorizers/Analog.cpp
    equipments/specificHistorizers/Analog.h
+   equipments/specificHistorizers/Period.cpp
+   equipments/specificHistorizers/Period.h
+   equipments/specificHistorizers/TeleInfoStatus.cpp
+   equipments/specificHistorizers/TeleInfoStatus.h
    equipments/WESSubEquipments/TIC.cpp
    equipments/WESSubEquipments/TIC.h
    http/failedSendingException.hpp

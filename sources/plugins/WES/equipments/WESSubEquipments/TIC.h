@@ -1,47 +1,73 @@
 #pragma once
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
+#include "../specificHistorizers/Period.h"
+#include "../specificHistorizers/TeleInfoStatus.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
 namespace equipments
 {
-   //-----------------------------------------------------
-   ///\brief WES equipment
-   //-----------------------------------------------------
-   class CTIC
+   namespace subdevices
    {
-   public:
       //-----------------------------------------------------
-      ///\brief                     Constructor
-      ///\param[in]   api          Yadoms API
-      ///\param[in] device         The device name
+      ///\brief WES equipment
       //-----------------------------------------------------
-      CTIC(boost::shared_ptr<yApi::IYPluginApi> api,
-                    const std::string& name,
-                    const shared::CDataContainer& deviceConfiguration);
+      class CTIC
+      {
+      public:
+         //-----------------------------------------------------
+         ///\brief                     Constructor
+         ///\param[in]   api          Yadoms API
+         ///\param[in] device         The device name
+         //-----------------------------------------------------
+         CTIC(boost::shared_ptr<yApi::IYPluginApi> api,
+              const std::string& deviceName);
 
-      std::string getDeviceName() const;
-      std::string getDeviceType() const;
-      void updateFromDevice( boost::shared_ptr<yApi::IYPluginApi> api);
+         std::string getDeviceName() const;
+         void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api);
 
-      //-----------------------------------------------------
-      ///\brief                     Destructor
-      //-----------------------------------------------------
-      virtual ~CTIC();
+         //-----------------------------------------------------
+         ///\brief                     Destructor
+         //-----------------------------------------------------
+         virtual ~CTIC();
 
-   private:
+      private:
 
-      //-----------------------------------------------------
-      ///\brief                     The device name
-      //-----------------------------------------------------
-      std::string m_deviceName;
+         //-----------------------------------------------------
+         ///\brief                     The device name
+         //-----------------------------------------------------
+         std::string m_deviceName;
 
-      //--------------------------------------------------------------
-      /// \brief  counter TIC 1
-      //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<yApi::historization::CEnergy> > m_counterTICList;
+         //--------------------------------------------------------------
+         /// \brief  Keywords list
+         //--------------------------------------------------------------
+         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
 
-   };
-} // namespace equipments
+         //--------------------------------------------------------------
+         /// \brief  Keywords
+         //--------------------------------------------------------------
+         boost::shared_ptr<yApi::historization::CEnergy> m_baseCounter;
+         boost::shared_ptr<yApi::historization::CEnergy> m_lowCostCounter;
+         boost::shared_ptr<yApi::historization::CEnergy> m_normalCostCounter;
+         boost::shared_ptr<yApi::historization::CEnergy> m_EJPPeakPeriod;
+         boost::shared_ptr<yApi::historization::CEnergy> m_EJPNormalPeriod;
+         boost::shared_ptr<yApi::historization::CEnergy> m_tempoBlueDaysLowCostPeriod;
+         boost::shared_ptr<yApi::historization::CEnergy> m_tempoBlueDaysNormalCostPeriod;
+         boost::shared_ptr<yApi::historization::CEnergy> m_tempoRedDaysLowCostPeriod;
+         boost::shared_ptr<yApi::historization::CEnergy> m_tempoRedDaysNormalCostPeriod;
+         boost::shared_ptr<yApi::historization::CEnergy> m_tempoWhiteDaysLowCostPeriod;
+         boost::shared_ptr<yApi::historization::CEnergy> m_tempoWhiteDaysNormalCostPeriod;
+
+         boost::shared_ptr<yApi::historization::CApparentPower> m_apparentPower;
+
+         boost::shared_ptr<specificHistorizers::CPeriod> m_TimePeriod;
+
+         //--------------------------------------------------------------
+         /// \brief	TeleInfo Status
+         //--------------------------------------------------------------
+         boost::shared_ptr<specificHistorizers::CTeleInfoStatus> m_teleInfoStatus;
+      };
+   }
+} // namespace equipments::subdevices

@@ -98,13 +98,9 @@ namespace equipments
       // TIC Counters Configuration
       for (int counter = 0; counter<WES_TIC_QTY; ++counter)
       {
-         // TODO : To be created when received a WESVALUES Frame
          // TODO : Create a function to analyze the contract and create all needed counters
-         // TODO : Create all the necessary for counters period time, couleur, puissance apparente
-         boost::shared_ptr<yApi::historization::CEnergy> temp = boost::make_shared<yApi::historization::CEnergy>(TICName[counter].c_str(),
-                                                                                                                 yApi::EKeywordAccessMode::kGet);
-         m_counterTICList.push_back(temp);
-         keywordsToDeclare.push_back(temp);
+         boost::shared_ptr<equipments::subdevices::CTIC> temp = boost::make_shared<equipments::subdevices::CTIC>(api, TICName[counter].c_str());
+         m_TICList.push_back(temp);
       }
 
       // Pulse Counters Configuration
