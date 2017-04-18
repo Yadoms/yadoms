@@ -1078,7 +1078,7 @@
                   "unitCode":
                   {
                      "type": "int",
-                     "minimumValue": "1",
+                     "minimumValue": "0",
                      "maximumValue": "4"
                   }             
                }

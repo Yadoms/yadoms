@@ -9,7 +9,8 @@ widgetViewModelCtor =
           //observable data
           this.command = ko.observable(1);
           this.icon = ko.observable("");
-		  this.readonly = ko.observable(true);
+		    this.readonly = ko.observable(true);
+          this.capacity = "";
 
           // default size
           this.WidgetHeight = 70;
@@ -22,7 +23,11 @@ widgetViewModelCtor =
               if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
                   var cmd = null;
 
-                  cmd = newState;
+                  switch (self.capacity) {
+                     case "dimmable": cmd = newState == 1 ? 100 : 0; break;
+                     default: cmd = newState; break;
+                  }
+                                    
                   KeywordManager.sendCommand(this.widget.configuration.device.keywordId, cmd.toString());
               }
           };
@@ -49,7 +54,7 @@ widgetViewModelCtor =
 
           this.LightClick = function () {
               var self = this;
-
+              
               if (self.command() === 0)
                   self.command(1);
               else
@@ -75,6 +80,8 @@ widgetViewModelCtor =
 						  self.readonly ( false );
 					   else
 						  self.readonly ( true );
+                 
+                  self.capacity   = keyword.capacityName;
 				  });				  
               }
 
@@ -103,7 +110,12 @@ widgetViewModelCtor =
 
                       // Adapt for dimmable or switch capacities
                       if (parseInt(data.value) !== 0)
-                          self.command(1);
+                      {
+                        switch (self.capacity) {
+                           case "dimmable": self.command(100); break;
+                           default: self.command(1); break;
+                        }                         
+                      }
                       else
                           self.command(0);
                   }

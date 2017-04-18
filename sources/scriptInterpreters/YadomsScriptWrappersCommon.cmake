@@ -5,6 +5,15 @@
 
 INCLUDE(${SWIG_USE_FILE})
 
+function(SCRIPT_INTERPRETER_IS_IN_DEV_STATE _targetName)
+   string(FIND ${_targetName} "dev-" DEV_SUBSTRING_POSITION)
+   if (${DEV_SUBSTRING_POSITION} EQUAL 0)
+      set(DEV_SCRIPT_INTERPRETER TRUE PARENT_SCOPE)
+   else()
+      set(DEV_SCRIPT_INTERPRETER FALSE PARENT_SCOPE)
+   endif()
+endfunction()
+
 MACRO(SCRIPT_API_WRAPPER_SET_PARENT_INTERPRETER parentInterpreter)
    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${YADOMS_OUTPUT_DIR}/scriptInterpreters/${parentInterpreter})
    foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
@@ -53,11 +62,14 @@ MACRO(SCRIPT_API_WRAPPER_POST_BUILD_COPY_FILE _resource parentInterpreter)
    get_filename_component(_resourceFile ${_resource}  NAME)
 
    string(REPLACE "-" "_" ComponentCompatibleName ${parentInterpreter})
-   
-   install(FILES ${_resource} 
-			DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${parentInterpreter}
-			COMPONENT  ${ComponentCompatibleName})
-			
+
+   SCRIPT_INTERPRETER_IS_IN_DEV_STATE(${parentInterpreter})
+   if (NOT ${DEV_SCRIPT_INTERPRETER})
+      install(FILES ${_resource} 
+            DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${parentInterpreter}
+            COMPONENT  ${ComponentCompatibleName})
+   endif()
+
    add_custom_command(TARGET _yScriptApiWrapper POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_if_different ${_resource} $<TARGET_FILE_DIR:_yScriptApiWrapper>/${_resourceFile})
    if(COTIRE_USE)
