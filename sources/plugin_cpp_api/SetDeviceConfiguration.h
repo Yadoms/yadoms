@@ -13,13 +13,11 @@ namespace plugin_cpp_api
 
       // ISetDeviceConfiguration Implementation
       const std::string& name() const override;
-      const std::string& type() const override;
       const shared::CDataContainer& configuration() const override;
       // [END] ISetDeviceConfiguration Implementation
 
    private:
       const std::string m_device;
-      std::string m_deviceType;
-      shared::CDataContainer m_configuration;
+      const shared::CDataContainer m_configuration;
    };
 } // namespace plugin_cpp_api	

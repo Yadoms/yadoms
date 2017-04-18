@@ -70,7 +70,7 @@ namespace equipments
       }
 
       //Déclaration of all IOs
-      api->declareDevice(device, m_deviceType, keywordsToDeclare, details);
+      api->declareDevice(device, m_deviceType, m_deviceType, keywordsToDeclare, details);
    }
 
    std::string CIPX800Equipment::getDeviceName() const

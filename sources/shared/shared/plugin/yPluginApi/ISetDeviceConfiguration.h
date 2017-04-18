@@ -27,12 +27,6 @@ namespace shared
             virtual const std::string& name() const = 0;
 
             //-----------------------------------------------------
-            ///\brief               Get the device type
-            ///\return              The device type
-            //-----------------------------------------------------
-            virtual const std::string& type() const = 0;
-
-            //-----------------------------------------------------
             ///\brief               Get the new configuration
             ///\return              The configuration
             //-----------------------------------------------------

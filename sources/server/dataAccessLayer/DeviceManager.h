@@ -36,6 +36,7 @@ namespace dataAccessLayer
       boost::shared_ptr<database::entities::CDevice> createDevice(int pluginId,
                                                                   const std::string& name,
                                                                   const std::string& friendlyName,
+                                                                  const std::string& type,
                                                                   const std::string& model,
                                                                   const shared::CDataContainer& details) override;
       std::vector<boost::shared_ptr<database::entities::CDevice>> getDevices() const override;

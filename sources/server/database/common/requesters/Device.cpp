@@ -157,7 +157,7 @@ namespace database
          }
 
 
-         boost::shared_ptr<entities::CDevice> CDevice::createDevice(int pluginId, const std::string& name, const std::string& friendlyName, const std::string& model, const shared::CDataContainer& details)
+         boost::shared_ptr<entities::CDevice> CDevice::createDevice(int pluginId, const std::string& name, const std::string& friendlyName, const std::string& type, const std::string& model, const shared::CDataContainer& details)
          {
             if (deviceExists(pluginId, name))
                throw shared::exception::CEmptyResult("The device already exists, cannot create it a new time");
@@ -175,11 +175,13 @@ namespace database
                                CDeviceTable::getPluginIdColumnName(),
                                CDeviceTable::getNameColumnName(),
                                CDeviceTable::getFriendlyNameColumnName(),
+                               CDeviceTable::getTypeColumnName(),
                                CDeviceTable::getModelColumnName(),
                                CDeviceTable::getDetailsColumnName()).
                    Values(pluginId,
                           name,
                           realFriendlyName,
+                          type,
                           model,
                           details.serialize());
             if (m_databaseRequester->queryStatement(qInsert) <= 0)

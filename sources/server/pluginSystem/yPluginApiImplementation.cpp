@@ -46,24 +46,26 @@ namespace pluginSystem
    }
 
    void CYPluginApiImplementation::declareDevice(const std::string& device,
+                                                 const std::string& type,
                                                  const std::string& model,
                                                  boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
                                                  const shared::CDataContainer& details)
    {
       if (!deviceExists(device))
-         m_deviceManager->createDevice(getPluginId(), device, device, model, details);
+         m_deviceManager->createDevice(getPluginId(), device, device, type, model, details);
 
       if (!keywordExists(device, keyword))
          declareKeyword(device, keyword);
    }
 
    void CYPluginApiImplementation::declareDevice(const std::string& device,
+                                                 const std::string& type,
                                                  const std::string& model,
                                                  const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords,
                                                  const shared::CDataContainer& details)
    {
       if (!deviceExists(device))
-         m_deviceManager->createDevice(getPluginId(), device, device, model, details);
+         m_deviceManager->createDevice(getPluginId(), device, device, type, model, details);
 
       declareKeywords(device, keywords);
    }

@@ -280,7 +280,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                {
                   //any other model
                   creation->getData().getConfiguration().printToLog(YADOMS_LOG(information));
-                  api->declareDevice(devId, creation->getData().getDeviceType(),
+                  api->declareDevice(devId, creation->getData().getDeviceType(), creation->getData().getDeviceType(),
                      std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>(),
                      creation->getData().getConfiguration());
                   api->declareKeyword(devId, boost::make_shared<yApi::historization::CSwitch>("manualSwitch"));

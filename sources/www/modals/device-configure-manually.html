@@ -64,12 +64,11 @@
                        
                        var deviceName = friendlyNameParameter.getCurrentConfiguration();
                        var deviceModel = modelParameter.getCurrentConfiguration();
-                       var configuration = {
-                           "type" : configMgr.getCurrentConfiguration().type.activeSection,
-                           "configuration" : _.get(configMgr.getCurrentConfiguration().type.content, configMgr.getCurrentConfiguration().type.activeSection, 'content')
-                       };
+                       var deviceType = configMgr.getCurrentConfiguration().type.activeSection;
+                       var deviceConfiguration = _.get(configMgr.getCurrentConfiguration().type.content, [configMgr.getCurrentConfiguration().type.activeSection, 'content']);
+                       
                        $("div#configure-manually-device-modal").modal("hide");
-                       callback(deviceName, deviceModel, configuration);
+                       callback(deviceName, deviceModel, deviceType, deviceConfiguration);
                    },
                    filter: function () {
                        //we check only control that have class enable-validation and are visible

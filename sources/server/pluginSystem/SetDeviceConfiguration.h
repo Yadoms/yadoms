@@ -23,7 +23,6 @@ namespace pluginSystem
 
       // ISetDeviceConfiguration implementation
       const std::string& name() const override;
-      const std::string& type() const override;
       const shared::CDataContainer&  configuration() const override;
       // [END] ISetDeviceConfiguration implementation
 
@@ -32,11 +31,6 @@ namespace pluginSystem
       ///\brief               Device
       //-----------------------------------------------------
       const std::string m_device;
-
-      //-----------------------------------------------------
-      ///\brief               Device type
-      //-----------------------------------------------------
-      const std::string m_deviceType;
 
       //-----------------------------------------------------
       ///\brief               Configuration

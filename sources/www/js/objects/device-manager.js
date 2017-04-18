@@ -15,8 +15,9 @@ DeviceManager.factory = function (json) {
     assert(!isNullOrUndefined(json.name), "json.name must be defined");
     assert(!isNullOrUndefined(json.friendlyName), "json.friendlyName must be defined");
     assert(!isNullOrUndefined(json.model), "json.model must be defined");
+    assert(!isNullOrUndefined(json.type), "json.model must be defined");
 
-    return new Device(json.id, json.pluginId, json.name, json.friendlyName, json.model, json.configuration, json.blacklist);
+    return new Device(json.id, json.pluginId, json.name, json.friendlyName, json.model, json.type, json.configuration, json.blacklist);
 };
 
 /**
@@ -172,7 +173,7 @@ DeviceManager.getConfigurationSchema = function(device) {
                         var staticConfigMatchingDevice= {};
                         for(let k in deviceConfig.staticConfigurationSchema.schemas) {
                             if(_.some(deviceConfig.staticConfigurationSchema.schemas[k].types, function(typeContent, model) { 
-                              return model == "*" || model == device.configuration.type;
+                              return model == "*" || model == device.type;
                             }))  {
                                //add it to resulting schema
                                let config = deviceConfig.staticConfigurationSchema.schemas[k];

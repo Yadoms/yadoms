@@ -56,7 +56,8 @@ message RecipientFieldExitsAnswer {
 
 message ManuallyDeviceCreation {
 	string name = 1;
-	string configuration = 2;
+	string type = 2;
+	string configuration = 3;
 }
 
 message Location{

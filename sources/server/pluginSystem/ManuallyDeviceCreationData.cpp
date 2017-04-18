@@ -5,10 +5,9 @@
 namespace pluginSystem
 {
 
-   CManuallyDeviceCreationData::CManuallyDeviceCreationData(const std::string& deviceName, const shared::CDataContainer & configuration)
-      :m_deviceName(deviceName), m_configuration(configuration)
+   CManuallyDeviceCreationData::CManuallyDeviceCreationData(const std::string& deviceName, const std::string& deviceType, const shared::CDataContainer & configuration)
+      :m_deviceName(deviceName), m_deviceType(deviceType), m_configuration(configuration)
    {
-         m_deviceType = configuration.get<std::string>("type");
    }
       
    CManuallyDeviceCreationData::~CManuallyDeviceCreationData() 

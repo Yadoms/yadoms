@@ -488,9 +488,9 @@
                Yadoms.modals.deviceConfigureManually.loadAsync()
                .done(function () {
                   //we launch configureInstance GUI
-                   Yadoms.showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceModel, newDeviceConfiguration) {
+                   Yadoms.showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration) {
                        //we ask for manually device creation
-                       PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceConfiguration)
+                       PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
                      .done(function () {
                         refreshDeviceList();
                      })

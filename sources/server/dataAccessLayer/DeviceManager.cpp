@@ -48,10 +48,10 @@ namespace dataAccessLayer
       return m_deviceRequester->getDeviceWithCapacityType(capacityAccessMode, capacityType);
    }
 
-   boost::shared_ptr<database::entities::CDevice> CDeviceManager::createDevice(int pluginId, const std::string& name, const std::string& friendlyName, const std::string& model, const shared::CDataContainer& details)
+   boost::shared_ptr<database::entities::CDevice> CDeviceManager::createDevice(int pluginId, const std::string& name, const std::string& friendlyName, const std::string& type, const std::string& model, const shared::CDataContainer& details)
    {
       //create the device
-      auto result = m_deviceRequester->createDevice(pluginId, name, friendlyName, model, details);
+      auto result = m_deviceRequester->createDevice(pluginId, name, friendlyName, type, model, details);
 
       //post notification
       notification::CHelpers::postChangeNotification(result, notification::change::EChangeType::kCreate);

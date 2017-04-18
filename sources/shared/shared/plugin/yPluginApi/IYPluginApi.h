@@ -199,12 +199,14 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Declare new device to Yadoms, with its keyword (all-in-one function)
             ///\param    [in]    device            The device name
+            ///\param    [in]    type              The device type (ex : "osCN185")
             ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185")
             ///\param    [in]    keyword           Keyword to declare for this device
             ///\param    [in]    details           Device details
             ///\note Do nothing if device already exist
             //-----------------------------------------------------
             virtual void declareDevice(const std::string& device,
+                                       const std::string& type,
                                        const std::string& model,
                                        boost::shared_ptr<const historization::IHistorizable> keyword,
                                        const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
@@ -212,12 +214,14 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Declare new device to Yadoms, with its keywords (all-in-one function)
             ///\param    [in]    device            The device name
+            ///\param    [in]    type              The device type (ex : "osCN185")
             ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185")
             ///\param    [in]    keywords          List of keywords to declare for this device
             ///\param    [in]    details           Device details
             ///\note Do nothing if device already exist
             //-----------------------------------------------------
             virtual void declareDevice(const std::string& device,
+                                       const std::string& type,
                                        const std::string& model,
                                        const std::vector<boost::shared_ptr<const historization::IHistorizable>>& keywords = std::vector<boost::shared_ptr<const historization::IHistorizable>>(),
                                        const CDataContainer& details = CDataContainer::EmptyContainer) = 0;

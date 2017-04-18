@@ -518,6 +518,7 @@ void CEnOcean::declareDeviceWithoutProfile(const std::string& deviceId) const
 
    m_api->declareDevice(deviceId,
                         std::string(),
+                        std::string(),
                         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>());
 }
 
@@ -679,6 +680,7 @@ boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
       throw std::logic_error("Device " + deviceId + " already exist");
 
    m_api->declareDevice(deviceId,
+                        modelLabel,
                         modelLabel,
                         keywordsToDeclare);
 

@@ -342,6 +342,7 @@ namespace pluginSystem
          keywords.push_back(boost::make_shared<CFromPluginHistorizer>(*keyword));
 
       m_pluginApi->declareDevice(msg.device(),
+                                 msg.type(),
                                  msg.model(),
                                  keywords,
                                  msg.details().empty() ? shared::CDataContainer::EmptyContainer : shared::CDataContainer(msg.details()));

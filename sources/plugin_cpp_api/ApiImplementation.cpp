@@ -387,6 +387,7 @@ namespace plugin_cpp_api
    }
 
    void CApiImplementation::declareDevice(const std::string& device,
+                                          const std::string& type,
                                           const std::string& model,
                                           boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
                                           const shared::CDataContainer& details)
@@ -394,6 +395,7 @@ namespace plugin_cpp_api
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_declaredevice();
       request->set_device(device);
+      request->set_type(type);
       request->set_model(model);
       fillHistorizable(keyword, request->add_keywords());
       if (!details.empty())
@@ -410,6 +412,7 @@ namespace plugin_cpp_api
    }
 
    void CApiImplementation::declareDevice(const std::string& device,
+                                          const std::string& type,
                                           const std::string& model,
                                           const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords,
                                           const shared::CDataContainer& details)
@@ -417,6 +420,7 @@ namespace plugin_cpp_api
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_declaredevice();
       request->set_device(device);
+      request->set_type(type);
       request->set_model(model);
       for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
          fillHistorizable(*keyword, request->add_keywords());

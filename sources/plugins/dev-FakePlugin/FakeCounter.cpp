@@ -19,7 +19,7 @@ void CFakeCounter::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
    // Declare device and associated keywords (= values managed by this device)
    if (!api->deviceExists(m_deviceName))
-      api->declareDevice(m_deviceName, getModel(), m_historizers);
+      api->declareDevice(m_deviceName, GetType(), getModel(), m_historizers);
 }
 
 void CFakeCounter::read()
@@ -48,5 +48,11 @@ const std::string& CFakeCounter::getModel()
 {
    static const std::string model("Fake counter");
    return model;
+}
+
+const std::string& CFakeCounter::getType()
+{
+   static const std::string type("fakeCounterType");
+   return type;
 }
 

@@ -79,7 +79,7 @@ namespace database
       /// \return                         The device created (null if creation failed)
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CDevice> createDevice(int pluginId, const std::string& name, const std::string& friendlyName, const std::string& model, const shared::CDataContainer& details) = 0;
+      virtual boost::shared_ptr<entities::CDevice> createDevice(int pluginId, const std::string& name, const std::string& friendlyName, const std::string& type, const std::string& model, const shared::CDataContainer& details) = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all devices

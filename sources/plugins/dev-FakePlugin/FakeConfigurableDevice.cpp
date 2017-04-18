@@ -20,7 +20,7 @@ void CFakeConfigurableDevice::declareDevice(boost::shared_ptr<yApi::IYPluginApi>
 {
    // Declare device and associated keywords (= values managed by this device)
    if (!api->deviceExists(m_deviceName))
-      api->declareDevice(m_deviceName, getModel(), m_historizers);
+      api->declareDevice(m_deviceName, getType(), getModel(), m_historizers);
 
    // Get the divider value from the device configuration
    try
@@ -58,10 +58,15 @@ const std::string& CFakeConfigurableDevice::getDeviceName() const
 
 const std::string& CFakeConfigurableDevice::getModel()
 {
-   static const std::string model("fakeConfigurableDeviceType");
+   static const std::string model("Fake Configurable Device");
    return model;
 }
 
+const std::string& CFakeConfigurableDevice::getType()
+{
+   static const std::string type("fakeConfigurableDeviceType");
+   return type;
+}
 
 void CFakeConfigurableDevice::setConfiguration(const shared::CDataContainer& newConfiguration)
 {
