@@ -27,6 +27,9 @@ c pn4 <text><id>npls4</id><value>%s</value></text>
 # RELAIS
 c o n0 <bssw><id>RL1</id><value>%s</value></bssw>
 c o n1 <bssw><id>RL2</id><value>%s</value></bssw>
+# ENTREE
+c l n1 <text><id>I1</id><value>%s</value></text>
+c l n2 <text><id>I2</id><value>%s</value></text>
 # ANALOGIQUE
 c l a1 <text><id>ANA1</id><value>%s</value></text>
 c l a2 <text><id>ANA2</id><value>%s</value></text>

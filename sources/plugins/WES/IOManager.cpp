@@ -38,11 +38,13 @@ int CIOManager::getMasterEquipment()
    return m_deviceManager.size();
 }
 
-void CIOManager::readAllDevices(boost::shared_ptr<yApi::IYPluginApi> api, bool forceHistorization)
+void CIOManager::readAllDevices(boost::shared_ptr<yApi::IYPluginApi> api, 
+                                const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
+                                bool forceHistorization)
 {
    for (unsigned char counter = 0; counter < m_deviceManager.size(); ++counter)
    {
-      m_deviceManager[counter]->updateFromDevice(api, forceHistorization);
+      m_deviceManager[counter]->updateFromDevice(api, pluginConfiguration, forceHistorization);
    }
 }
 
@@ -53,7 +55,7 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
    std::string keywordName = command->getKeyword();
    std::string commandSelected;
 
-   YADOMS_LOG(information) << "Command received :" << yApi::IDeviceCommand::toString(command) ;
+   YADOMS_LOG(information) << "Command received : " << yApi::IDeviceCommand::toString(command) ;
 /*
    const auto& deviceDetails = api->getDeviceDetails(command->getDevice());
    auto deviceType = deviceDetails.get<std::string>("type");

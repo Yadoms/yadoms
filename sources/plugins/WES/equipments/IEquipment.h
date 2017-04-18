@@ -2,6 +2,7 @@
 #include <shared/DataContainer.h>
 #include <Poco/Net/SocketAddress.h>
 #include <Poco/Net/NetworkInterface.h>
+#include "../IWESConfiguration.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -39,7 +40,9 @@ namespace equipments
       ///\param[in]   values                  New Values to enter
       ///\param[in]   forceHistorization      force historization for all values (initialization of the device, reset of the device, ...)
       //--------------------------------------------------------------
-      virtual void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, bool forceHistorization) = 0;
+      virtual void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
+                                    const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
+                                    bool forceHistorization) = 0;
 
       //--------------------------------------------------------------
       /// \brief      updateConfiguration    build the message to send to the WES

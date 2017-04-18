@@ -64,6 +64,7 @@ namespace equipments
    }
 
    void CtemperatureProbe::updateFromDevice( boost::shared_ptr<yApi::IYPluginApi> api,
+                                            const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
                                              bool forceHistorization)
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize;

@@ -27,16 +27,16 @@ public:
    virtual Poco::Net::SocketAddress getIPAddressWithSocket() const = 0;
 
    //--------------------------------------------------------------
-   /// \brief      return if the password is activated
-   /// \return     if the password is activated
-   //--------------------------------------------------------------
-   virtual bool isPasswordActivated() const = 0;
-
-   //--------------------------------------------------------------
    /// \brief      retrieve the password used to connect the WES
    /// \return     the password
    //--------------------------------------------------------------
    virtual std::string getPassword() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief      return if the instant current for the selected clamp should be registered
+   /// \return     true if the instant current element is selected
+   //--------------------------------------------------------------
+   virtual bool isInstantCurrentClampRegistered(const int selectedClamp) const = 0;
 
    //--------------------------------------------------------------
    /// \brief      retrieve the password used to connect the WES

@@ -49,7 +49,9 @@ public:
    /// \param [in] api                   Plugin execution context (Yadoms API)
    /// \param [in] forceHistorization    force the historization of all keywords
    //--------------------------------------------------------------
-   void readAllDevices(boost::shared_ptr<yApi::IYPluginApi> api, bool forceHistorization = false);
+   void readAllDevices(boost::shared_ptr<yApi::IYPluginApi> api, 
+                       const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
+                       bool forceHistorization = false);
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms

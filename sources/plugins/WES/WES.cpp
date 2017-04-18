@@ -43,15 +43,19 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       m_configuration->initializeWith(api->getConfiguration());
       m_ioManager = m_factory->loadConfiguration(api, m_configuration);
 
+      // Create timer for refresh IOs
+      m_refreshTimer = api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(15));
+
       if (m_ioManager->getMasterEquipment() == 0)
+      {
          setPluginState(api, EWESPluginState::kReady);
+         m_refreshTimer->stop();
+      }
       else
       {
-         m_ioManager->readAllDevices(api, true); // first reading
+         m_ioManager->readAllDevices(api, m_configuration, true); // first reading
+         m_refreshTimer->start();
          setPluginState(api, EWESPluginState::kRunning);
-        
-         // Create timer for refresh IOs
-         m_refreshTimer = api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(15));
       }
    }
    catch (std::exception &e)
@@ -79,6 +83,21 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          setPluginState(api, EWESPluginState::kRunning);
          break;
       }
+      case yApi::IYPluginApi::kEventDeviceCommand:
+      {
+         // Command received from Yadoms
+         auto command(api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
+
+         try
+         {
+            m_ioManager->onCommand(api, command);
+         }
+         catch (std::exception& e)
+         {
+            YADOMS_LOG(error) << "Fail to send command " << yApi::IDeviceCommand::toString(command) << ", error : " << e.what();
+         }
+         break;
+      }
       case kRefreshStatesReceived:
       {
          YADOMS_LOG(information) << "Timer received";
@@ -88,7 +107,7 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          try { forceRefresh = api->getEventHandler().getEventData<bool>(); }
          catch (shared::exception::CBadConversion&) {}
 
-         m_ioManager->readAllDevices(api, forceRefresh);
+         m_ioManager->readAllDevices(api, m_configuration, forceRefresh);
          break;
       }
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
@@ -99,13 +118,16 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          YADOMS_LOG(information) << "Manually device creation request received for device : " << request->getData().getDeviceName();
          try
          {
-            // Refuse the device if the name already exist
+            // TODO : Refuse the device if the name already exist
 
             // Creation of the device
             request->sendSuccess(m_factory->createDeviceManually(api, m_ioManager, request->getData(), m_configuration));
 
             // ask immediately for reading values
-            m_refreshTimer = api->getEventHandler().createTimer(kRefreshStatesReceived, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(0));
+            api->getEventHandler().postEvent<bool>(kRefreshStatesReceived, true);
+
+            m_refreshTimer->start();
+
             setPluginState(api, EWESPluginState::kRunning);
          }
          catch (CManuallyDeviceCreationException& e)

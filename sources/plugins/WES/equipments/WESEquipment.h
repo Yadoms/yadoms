@@ -12,6 +12,7 @@ namespace yApi = shared::plugin::yPluginApi;
 
 #define WES_RELAY_QTY 2
 #define WES_TIC_QTY   2
+#define WES_INPUT_QTY 2
 #define WES_PULSE_QTY 4
 #define WES_CLAMP_QTY 4
 #define WES_ANA_QTY   4
@@ -38,8 +39,9 @@ namespace equipments
       std::string getDeviceName() const override;
       std::string getDeviceType() const override;
       bool isMasterDevice() const override;
-      void updateFromDevice( boost::shared_ptr<yApi::IYPluginApi> api,
-                             bool forceHistorization = false) override;
+      void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                            const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
+                            bool forceHistorization = false) override;
       void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
                                shared::CDataContainer& newConfiguration) override;
       // [END] IExtension implementation
@@ -50,6 +52,15 @@ namespace equipments
       virtual ~CWESEquipment();
 
    private:
+
+      void createUpdatePulsesKeywords(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
+                                      shared::CDataContainer& values,
+                                      const boost::shared_ptr<IWESConfiguration> pluginConfiguration);
+
+      void updateSwitchValue(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize, 
+                             boost::shared_ptr<yApi::historization::CSwitch> keyword, 
+                             bool newValue, 
+                             bool forceHistorization);
 
       //-----------------------------------------------------
       ///\brief                     The device name
@@ -70,6 +81,11 @@ namespace equipments
       /// \brief	vector of all relays
       //--------------------------------------------------------------
       std::vector<boost::shared_ptr<yApi::historization::CSwitch> > m_relaysList;
+
+      //--------------------------------------------------------------
+      /// \brief	vector of inputs
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<yApi::historization::CSwitch> > m_inputList;
 
       //--------------------------------------------------------------
       /// \brief  counter TIC 1

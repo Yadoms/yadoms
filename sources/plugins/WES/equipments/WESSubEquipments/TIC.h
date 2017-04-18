@@ -23,7 +23,8 @@ namespace equipments
          ///\param[in] device         The device name
          //-----------------------------------------------------
          CTIC(boost::shared_ptr<yApi::IYPluginApi> api,
-              const std::string& deviceName);
+              const std::string& deviceName,
+              const std::string& contract);
 
          std::string getDeviceName() const;
          void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api);
@@ -35,10 +36,17 @@ namespace equipments
 
       private:
 
+         void initializeTIC(boost::shared_ptr<yApi::IYPluginApi> api);
+
          //-----------------------------------------------------
          ///\brief                     The device name
          //-----------------------------------------------------
          std::string m_deviceName;
+
+         //-----------------------------------------------------
+         ///\brief                     The contract name
+         //-----------------------------------------------------
+         std::string m_contractName;
 
          //--------------------------------------------------------------
          /// \brief  Keywords list

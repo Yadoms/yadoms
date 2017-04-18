@@ -22,9 +22,9 @@ public:
    // ImasterDeviceConfiguration implementation
    void initializeWith(const shared::CDataContainer& data) override;
    virtual Poco::Net::SocketAddress getIPAddressWithSocket() const override;
-   bool isPasswordActivated() const override;
    std::string getPassword() const override;
    std::string getUser() const override;
+   bool isInstantCurrentClampRegistered(const int selectedClamp) const override;
    // [END] ImasterDeviceConfiguration implementation
 
 private:

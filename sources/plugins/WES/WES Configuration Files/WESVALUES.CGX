@@ -62,6 +62,9 @@ c po4 <java><var>PLSU4</var><value>%s</value></java>
 # RELAIS
 c o E1 <bssw><id>RL1</id><value>%d</value></bssw>
 c o E2 <bssw><id>RL2</id><value>%d</value></bssw>
+# ENTREES
+c l E1 <text><id>I1</id><value>%d</value></text>
+c l E2 <text><id>I2</id><value>%d</value></text>
 # ANALOGIQUE
 #c l a1 <text><id>ANA1</id><value>%s</value></text>
 #c l a2 <text><id>ANA2</id><value>%s</value></text>

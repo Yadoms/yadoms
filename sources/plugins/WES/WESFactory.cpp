@@ -88,6 +88,7 @@ std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginAp
    }
    catch (std::exception& e)
    {
+      YADOMS_LOG(error) << "Error : " << e.what();
       throw CManuallyDeviceCreationException(e.what());
    }
 
