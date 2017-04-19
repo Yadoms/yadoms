@@ -582,6 +582,10 @@
     }
   },
     "configuration": {
+        "manually-device-model" : {
+            "title": "Modèle",
+            "description": "Choisir le modèle d'équipement à créer"
+        },
         "validationForm": {
             "incorrectValue": "Valeur incorrecte",
             "onlyIntegerNumberAllowed": "Nombre entier attendu",
@@ -589,7 +593,8 @@
             "maxValueExceeded": "La valeur ne peut être supérieure à __maxValue__",
             "minValueExceeded": "La valeur ne peut être inférieure à __minValue__",
             "minNumberItemsRequired": "La liste doit contenir au moins __minValue__ éléments",
-            "maxNumberItemsAllowed": "La liste ne peut contenir plus de __maxValue__ éléments"
+            "maxNumberItemsAllowed": "La liste ne peut contenir plus de __maxValue__ éléments",
+            "required": "Une valeur est nécessaire"
         },
         "iconpicker-search-prompt" : "Rechercher une icone..."
     },

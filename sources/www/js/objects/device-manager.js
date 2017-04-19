@@ -15,8 +15,9 @@ DeviceManager.factory = function (json) {
     assert(!isNullOrUndefined(json.name), "json.name must be defined");
     assert(!isNullOrUndefined(json.friendlyName), "json.friendlyName must be defined");
     assert(!isNullOrUndefined(json.model), "json.model must be defined");
+    assert(!isNullOrUndefined(json.type), "json.model must be defined");
 
-    return new Device(json.id, json.pluginId, json.name, json.friendlyName, json.model, json.configuration, json.blacklist);
+    return new Device(json.id, json.pluginId, json.name, json.friendlyName, json.model, json.type, json.configuration, json.blacklist);
 };
 
 /**
@@ -185,24 +186,27 @@ DeviceManager.getConfigurationSchema = function(device) {
             device.attachedPlugin.getPackageDeviceConfigurationSchema()
             .done(function(deviceConfig) {
                 var schema = {};
-
                 if(deviceConfig) {
-
                     //Manage static configuration
-                    if(deviceConfig.staticConfigurationSchema) {
+                    if(deviceConfig.staticConfigurationSchema && deviceConfig.staticConfigurationSchema.schemas) {
 
                         //find all static configurations matching the device model
-                        var staticConfigMatchingDevice = _.filter(deviceConfig.staticConfigurationSchema, function(o) {
-                            return _.some(o.models, function(model) {
-                                return model == "*" || model == device.model;
-                            });
-                        });
-
-                        //add it to resulting schema
-                        _.forEach(staticConfigMatchingDevice, function(value) {
-                            schema = _.merge(schema, value.schema);
-                        });
-                        
+                        var staticConfigMatchingDevice= {};
+                        for(let k in deviceConfig.staticConfigurationSchema.schemas) {
+                            if(_.some(deviceConfig.staticConfigurationSchema.schemas[k].types, function(typeContent, model) { 
+                              return model == "*" || model == device.type;
+                            }))  {
+                               //add it to resulting schema
+                               let config = deviceConfig.staticConfigurationSchema.schemas[k];
+                               if(config && config.content) {
+                                  for(let l in config.content) {
+                                     config.content[l].i18nBasePath = "plugins/" + device.attachedPlugin.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".content.";
+                                  }                            
+                                  schema = _.merge(schema, config.content);
+                               }
+                               
+                            }
+                        }
                     }
 
                     //Manage dynamic configuration

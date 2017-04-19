@@ -31,7 +31,7 @@ void CFreeMobileSms::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    auto keyword(boost::make_shared<CSmsKeyword>(m_keywordName));
 
    if (!api->deviceExists(m_deviceName))
-      api->declareDevice(m_deviceName, "FreeMobile SMS Api");
+      api->declareDevice(m_deviceName, "smsDevice", "FreeMobile SMS Api");
 
    // Declare these sensors to Yadoms (devices and associated keywords) if not already declared
    if (!api->keywordExists(m_deviceName, keyword))

@@ -11,146 +11,142 @@
 			"description": "Start an Xpl hub at plugin startup"
 		}
 	},
-	"manuallyDeviceCreationConfigurationSchema": {
-		"type": {
-			"name": "Type",
-			"description": "Type of the device",
-			"content": {
-				"ac": {
-					"name": "ac",
-					"description": "AC Basic",
-					"content": {
-						"deviceAddress": {
-							"name": "Device address",
-							"description": "Set the device address"
-						}
-					}
-				},
-				"x10": {
-					"name": "x10",
-					"description": "X10",
-					"content": {
-						"Protocol": {
-							"name": "Protocol",
-							"description": "Protocol of the device",
-							"content": {
-								"proto_x10": {
-									"name": "x10",
-									"description": "standardx10",
-									"content": {
-										"HouseCode": {
-											"name": "HouseCode",
-											"description": "The X10housecode"
-										},
-										"UnitCode": {
-											"name": "UnitCode",
-											"description": "TheX10unitcode"
-										}
-									}
-								},
-								"proto_arc": {
-									"name": "arc",
-									"description": "KlikAanKlikUit,Chacon,HomeEasy,DomiaLite,Domia,ByeByeStandBy,ELROAB600,NEXAProoveIntertechnoDuwi",
-									"content": {
-										"HouseCode": {
-											"name": "HouseCode",
-											"description": "TheX10housecode"
-										},
-										"UnitCode": {
-											"name": "UnitCode",
-											"description": "TheX10unitcode"
-										}
-									}
-								},
-								"proto_flamingo": {
-									"name": "flamingo",
-									"description": "Flamingo",
-									"content": {
-										"HouseCode": {
-											"name": "HouseCode",
-											"description": "TheX10housecode"
-										},
-										"UnitCode": {
-											"name": "UnitCode",
-											"description": "TheX10unitcode"
-										}
-									}
-								},
-								"proto_koppla": {
-									"name": "koppla",
-									"description": "IkeaKoppla",
-									"content": {
-										"HouseCode": {
-											"name": "HouseCode",
-											"description": "TheX10housecode"
-										},
-										"UnitCode": {
-											"name": "UnitCode",
-											"description": "TheX10unitcode"
-										}
-									}
-								},
-								"proto_waveman": {
-									"name": "waveman",
-									"description": "Waveman",
-									"content": {
-										"HouseCode": {
-											"name": "HouseCode",
-											"description": "TheX10housecode"
-										},
-										"UnitCode": {
-											"name": "UnitCode",
-											"description": "TheX10unitcode"
-										}
-									}
-								},
-								"proto_harrison": {
-									"name": "Harrison",
-									"description": "Harrison",
-									"content": {
-										"HouseCode": {
-											"name": "HouseCode",
-											"description": "TheX10housecode"
-										},
-										"UnitCode": {
-											"name": "UnitCode",
-											"description": "TheX10unitcode"
-										}
-									}
-								},
-								"proto_he105": {
-									"name": "he105",
-									"description": "HomeEasyHeaterHE105",
-									"content": {
-										"HouseCode": {
-											"name": "HouseCode",
-											"description": "TheX10housecode"
-										},
-										"UnitCode": {
-											"name": "UnitCode",
-											"description": "TheX10unitcode"
-										}
-									}
-								},
-								"proto_rts10": {
-									"name": "Rts10",
-									"description": "Rts10",
-									"content": {
-										"HouseCode": {
-											"name": "HouseCode",
-											"description": "TheX10housecode"
-										},
-										"UnitCode": {
-											"name": "UnitCode",
-											"description": "TheX10unitcode"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
+   "deviceConfiguration": {
+      "staticConfigurationSchema": {
+         "ac": {
+            "name": "ac",
+            "description": "AC Basic",
+            "content": {
+               "deviceAddress": {
+                  "name": "Device address",
+                  "description": "Set the device address"
+               }
+            }
+         },
+         "x10": {
+            "name": "x10",
+            "description": "X10",
+            "content": {
+               "Protocol": {
+                  "name": "Protocol",
+                  "description": "Protocol of the device",
+                  "content": {
+                     "proto_x10": {
+                        "name": "x10",
+                        "description": "standardx10",
+                        "content": {
+                           "HouseCode": {
+                              "name": "HouseCode",
+                              "description": "The X10housecode"
+                           },
+                           "UnitCode": {
+                              "name": "UnitCode",
+                              "description": "TheX10unitcode"
+                           }
+                        }
+                     },
+                     "proto_arc": {
+                        "name": "arc",
+                        "description": "KlikAanKlikUit,Chacon,HomeEasy,DomiaLite,Domia,ByeByeStandBy,ELROAB600,NEXAProoveIntertechnoDuwi",
+                        "content": {
+                           "HouseCode": {
+                              "name": "HouseCode",
+                              "description": "TheX10housecode"
+                           },
+                           "UnitCode": {
+                              "name": "UnitCode",
+                              "description": "TheX10unitcode"
+                           }
+                        }
+                     },
+                     "proto_flamingo": {
+                        "name": "flamingo",
+                        "description": "Flamingo",
+                        "content": {
+                           "HouseCode": {
+                              "name": "HouseCode",
+                              "description": "TheX10housecode"
+                           },
+                           "UnitCode": {
+                              "name": "UnitCode",
+                              "description": "TheX10unitcode"
+                           }
+                        }
+                     },
+                     "proto_koppla": {
+                        "name": "koppla",
+                        "description": "IkeaKoppla",
+                        "content": {
+                           "HouseCode": {
+                              "name": "HouseCode",
+                              "description": "TheX10housecode"
+                           },
+                           "UnitCode": {
+                              "name": "UnitCode",
+                              "description": "TheX10unitcode"
+                           }
+                        }
+                     },
+                     "proto_waveman": {
+                        "name": "waveman",
+                        "description": "Waveman",
+                        "content": {
+                           "HouseCode": {
+                              "name": "HouseCode",
+                              "description": "TheX10housecode"
+                           },
+                           "UnitCode": {
+                              "name": "UnitCode",
+                              "description": "TheX10unitcode"
+                           }
+                        }
+                     },
+                     "proto_harrison": {
+                        "name": "Harrison",
+                        "description": "Harrison",
+                        "content": {
+                           "HouseCode": {
+                              "name": "HouseCode",
+                              "description": "TheX10housecode"
+                           },
+                           "UnitCode": {
+                              "name": "UnitCode",
+                              "description": "TheX10unitcode"
+                           }
+                        }
+                     },
+                     "proto_he105": {
+                        "name": "he105",
+                        "description": "HomeEasyHeaterHE105",
+                        "content": {
+                           "HouseCode": {
+                              "name": "HouseCode",
+                              "description": "TheX10housecode"
+                           },
+                           "UnitCode": {
+                              "name": "UnitCode",
+                              "description": "TheX10unitcode"
+                           }
+                        }
+                     },
+                     "proto_rts10": {
+                        "name": "Rts10",
+                        "description": "Rts10",
+                        "content": {
+                           "HouseCode": {
+                              "name": "HouseCode",
+                              "description": "TheX10housecode"
+                           },
+                           "UnitCode": {
+                              "name": "UnitCode",
+                              "description": "TheX10unitcode"
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
 		}
 	},
 	"customLabels": {

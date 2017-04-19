@@ -18,20 +18,24 @@
   },
   "supportDeviceRemovedNotification": "true",
   "deviceConfiguration": {
-    "staticConfigurationSchema": [
-      {
-        "models": [ "*" ],
-        "schema": {
-          "manufacturer": {
-            "type": "string"
-          },
-          "profile": {
-            "type": "comboSection",
-            "content": ""
-          }
-        }
+    "staticConfigurationSchema": {
+      "schemas" : {
+         "all" : {
+           "types": { "*" : {
+                  "canBeCreatedManually" : "true"
+               } },
+           "content": {
+             "manufacturer": {
+               "type": "string"
+             },
+             "profile": {
+               "type": "comboSection",
+               "content": ""
+             }
+           }
+         }
       }
-    ]
+    }
   },
   "specificProfilesConfigurations": {
     "D2-01-04": {

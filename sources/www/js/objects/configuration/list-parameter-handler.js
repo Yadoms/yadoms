@@ -10,7 +10,7 @@
  * @param currentValue
  * @constructor
  */
-function ListParameterHandler(i18nContext, paramName, content, currentValue) {
+function ListParameterHandler(i18nContext, i18nKey, paramName, content, currentValue) {
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
@@ -22,6 +22,7 @@ function ListParameterHandler(i18nContext, paramName, content, currentValue) {
    this.paramName = paramName;
    this.description = isNullOrUndefined(content.description)?"":content.description;
    this.i18nContext = i18nContext;
+   this.i18nKey = i18nKey || paramName;
    this.content = content;
    this.uuid = createUUID();
    this.addBtnUuid = createUUID();
@@ -46,8 +47,8 @@ function ListParameterHandler(i18nContext, paramName, content, currentValue) {
    if (!isNullOrUndefined(self.configurationValues)) {
       $.each(self.configurationValues, function (key, value) {
 
-         var newI18nContext = i18nContext + self.paramName + ".item.";
-         var item = ConfigurationHelper.createParameterHandler(newI18nContext, null, self.content.item, value);
+         var newI18nContext = i18nContext + self.i18nKey + ".item.";
+         var item = ConfigurationHelper.createParameterHandler(newI18nContext, value.i18nKey, null, self.content.item, value);
          self.items.push(item);
       });
    }
@@ -69,13 +70,13 @@ ListParameterHandler.prototype.getDOMObject = function () {
    var input = "<div id=\"" + this.uuid + "\" class=\"control-group configuration-section well\" >" +
                   "<div class=\"configuration-header\" >";
 
-   input +=                "<span data-i18n=\"" + this.i18nContext + this.paramName + ".name\" >" +
+   input +=                "<span data-i18n=\"" + this.i18nContext + this.i18nKey + ".name\" >" +
                               this.name +
                            "</span>";
    input +=                "<button class=\"pull-right btn btn-primary\" id=\"" + this.addBtnUuid + "\" type=\"button\"><span><i class=\"fa fa-file-o\"></i></span></button>";
 
    input +=       "</div>" +
-                  "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.paramName + ".description\" >" +
+                  "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.i18nKey + ".description\" >" +
                      this.description +
                   "</div>" +
                   "<div class=\"controls\" style=\"height: 0px\">" +
@@ -143,8 +144,8 @@ ListParameterHandler.prototype.applyScript = function () {
    var self = this;
 
    $("button#" + self.addBtnUuid).unbind("click").bind("click", function() {
-      var newI18nContext = self.i18nContext + self.paramName + ".item.";
-      var item = ConfigurationHelper.createParameterHandler(newI18nContext, null, self.content.item, "");
+      var newI18nContext = self.i18nContext + self.i18nKey + ".item.";
+      var item = ConfigurationHelper.createParameterHandler(newI18nContext, undefined, null, self.content.item, "");
       self.items.push(item);
       var itemLine = self.createItemLine(item);
       $("div#" + self.uuid).find("div.list-item-container").append(itemLine);
@@ -203,8 +204,8 @@ ListParameterHandler.prototype.duplicateLine = function() {
 
       var confToDuplicate = self.items[i].getCurrentConfiguration();
 
-      var newI18nContext = self.i18nContext + self.paramName + ".item.";
-      var item = ConfigurationHelper.createParameterHandler(newI18nContext, null, self.content.item, confToDuplicate);
+      var newI18nContext = self.i18nContext + self.i18nKey + ".item.";
+      var item = ConfigurationHelper.createParameterHandler(newI18nContext, undefined, null, self.content.item, confToDuplicate);
 
       //we insert item in the right place
       self.items.insert(i+1, item);

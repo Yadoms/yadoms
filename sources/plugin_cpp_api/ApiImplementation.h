@@ -32,10 +32,12 @@ namespace plugin_cpp_api
                           const std::string& customMessageId = std::string(),
                           const std::map<std::string, std::string>& customMessageDataParams = std::map<std::string, std::string>()) override;
       void declareDevice(const std::string& device,
+                         const std::string& type,
                          const std::string& model,
                          boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
                          const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
       void declareDevice(const std::string& device,
+                         const std::string& type,
                          const std::string& model,
                          const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords,
                          const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override;
@@ -48,8 +50,9 @@ namespace plugin_cpp_api
       void updateDeviceDetails(const std::string& device,
                                const shared::CDataContainer& details) const override;
       std::string getDeviceModel(const std::string& device) const override;
-      void updateDeviceModel(const std::string& device,
-                             const std::string& model) const override;
+      void updateDeviceModel(const std::string& device, const std::string& model) const override;
+      std::string getDeviceType(const std::string& device) const override;
+      void updateDeviceType(const std::string& device, const std::string& type) const override;
       void removeDevice(const std::string& device) override;
       void declareKeyword(const std::string& device,
                           boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,

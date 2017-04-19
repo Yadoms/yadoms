@@ -42,6 +42,13 @@ MACRO(SCRIPT_API_WRAPPER_LINK)
    SWIG_LINK_LIBRARIES(yScriptApiWrapper yadoms-shared ${ARGN})
    
 	if(COTIRE_USE)
+   
+		if(COTIRE_USE_UNITY)
+			set_target_properties(_yScriptApiWrapper PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
+		else()
+			set_target_properties(_yScriptApiWrapper PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
+		endif()
+      
 		cotire(_yScriptApiWrapper)
 	endif()	   
 ENDMACRO()
