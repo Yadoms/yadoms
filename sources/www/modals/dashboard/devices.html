@@ -249,9 +249,8 @@
                               deviceList = sortListItemsWithFriendlyName ( deviceList );					 
                               
                               var isIdentical = (TempdeviceList.length == deviceList.length) && TempdeviceList.every(function(element, index) {
-                                    return element.friendlyName === deviceList[index].friendlyName; 					 
+                                    return element.friendlyName === deviceList[index].friendlyName && element.model === deviceList[index].model; 					 
                               })					 
-                              
                               var $row = getDeviceDomRow(updateDevice);
                               
                               if (!isIdentical)
@@ -262,6 +261,9 @@
                               } else {
                                     var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + device.friendlyName + "</span>";
                                     $row.find("td.device-friendlyName").html(friendlyName);
+                                    
+                                    var model = "<span>" + device.model + "</span>"
+                                    $row.find("td.device-model").html(model);
                               }
                         })                        
                         .fail(function (error) {
