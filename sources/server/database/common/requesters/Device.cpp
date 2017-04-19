@@ -258,6 +258,20 @@ namespace database
                throw shared::exception::CEmptyResult("Fail to update device model");
          }
 
+         void CDevice::updateDeviceType(int deviceId, const std::string& type)
+         {
+            if (!deviceExists(deviceId))
+               throw shared::exception::CEmptyResult("The device does not exists");
+
+            auto qUpdate = m_databaseRequester->newQuery();
+            qUpdate.Update(CDeviceTable::getTableName()).
+                   Set(CDeviceTable::getTypeColumnName(), type).
+                   Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
+
+            if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+               throw shared::exception::CEmptyResult("Fail to update device type");
+         }
+
          void CDevice::updateDeviceBlacklistState(int deviceId, const bool blacklist)
          {
             if (!deviceExists(deviceId))

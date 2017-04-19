@@ -275,7 +275,7 @@ namespace shared
 
             //-----------------------------------------------------
             ///\brief Get the model of a device
-            ///\param    [in]    device            The device name
+            ///\param    [in]    device            The device model (could have been edited by user)
             ///\return the device model
             ///\throw shared::exception::CEmptyResult if device dosen't exist
             //-----------------------------------------------------
@@ -287,8 +287,23 @@ namespace shared
             ///\param    [in]    model             Device model
             ///\throw shared::exception::CEmptyResult if device dosen't exist
             //-----------------------------------------------------
-            virtual void updateDeviceModel(const std::string& device,
-                                           const std::string& model) const = 0;
+            virtual void updateDeviceModel(const std::string& device, const std::string& model) const = 0;
+
+            //-----------------------------------------------------
+            ///\brief Get the type of a device
+            ///\param    [in]    device            The device type
+            ///\return the device type
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual std::string getDeviceType(const std::string& device) const = 0;
+
+            //-----------------------------------------------------
+            ///\brief Update the type of a device (replace the existing type)
+            ///\param    [in]    device            The device name
+            ///\param    [in]    model             Device type
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual void updateDeviceType(const std::string& device, const std::string& model) const = 0;
 
             //-----------------------------------------------------
             ///\brief Remove device (and remove all associated keywords and acquisitions)

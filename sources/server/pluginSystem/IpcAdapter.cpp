@@ -245,6 +245,10 @@ namespace pluginSystem
          break;
       case plugin_IPC::toYadoms::msg::kUpdateDeviceModel: processUpdateDeviceModel(toYadomsProtoBuffer.updatedevicemodel());
          break;
+      case plugin_IPC::toYadoms::msg::kDeviceTypeRequest: processDeviceTypeRequest(toYadomsProtoBuffer.devicetyperequest());
+         break;
+      case plugin_IPC::toYadoms::msg::kUpdateDeviceType: processUpdateDeviceType(toYadomsProtoBuffer.updatedevicetype());
+         break;
       case plugin_IPC::toYadoms::msg::kDeviceConfigurationRequest: processDeviceConfigurationRequest(toYadomsProtoBuffer.deviceconfigurationrequest());
          break;
       case plugin_IPC::toYadoms::msg::kUpdateDeviceConfiguration: processUpdateDeviceConfiguration(toYadomsProtoBuffer.updatedeviceconfiguration());
@@ -467,6 +471,19 @@ namespace pluginSystem
    {
       m_pluginApi->updateDeviceModel(msg.device(),
                                      msg.model());
+   }  
+   
+   void CIpcAdapter::processDeviceTypeRequest(const plugin_IPC::toYadoms::DeviceTypeRequest& msg)
+   {
+      plugin_IPC::toPlugin::msg ans;
+      auto answer = ans.mutable_devicetypeanswer();
+      answer->set_type(m_pluginApi->getDeviceType(msg.device()));
+      send(ans);
+   }
+
+   void CIpcAdapter::processUpdateDeviceType(const plugin_IPC::toYadoms::UpdateDeviceType& msg) const
+   {
+      m_pluginApi->updateDeviceType(msg.device(), msg.type());
    }
 
    void CIpcAdapter::processDeviceConfigurationRequest(const plugin_IPC::toYadoms::DeviceConfigurationRequest& msg)
@@ -641,6 +658,7 @@ namespace pluginSystem
       plugin_IPC::toPlugin::msg req;
       auto message = req.mutable_manuallydevicecreation();
       message->set_name(request->getData().getDeviceName());
+      message->set_type(request->getData().getDeviceType());
       message->set_configuration(request->getData().getConfiguration().serialize());
 
       auto success = false;

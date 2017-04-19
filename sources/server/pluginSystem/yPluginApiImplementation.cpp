@@ -119,6 +119,19 @@ namespace pluginSystem
       m_deviceManager->updateDeviceModel(m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Id(), model);
    }
 
+   std::string CYPluginApiImplementation::getDeviceType(const std::string& device) const
+   {
+      return m_deviceManager->getDeviceInPlugin(getPluginId(), device, true)->Type;
+   }
+
+   void CYPluginApiImplementation::updateDeviceType(const std::string& device, const std::string& type) const
+   {
+      if (!deviceExists(device))
+         throw shared::exception::CEmptyResult("Fail to update device type : device doesn't exist.");
+
+      m_deviceManager->updateDeviceType(m_deviceManager->getDeviceInPlugin(getPluginId(), device, false)->Id(), type);
+   }
+
    void CYPluginApiImplementation::removeDevice(const std::string& device)
    {
       if (!deviceExists(device))

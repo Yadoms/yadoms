@@ -93,6 +93,11 @@ namespace dataAccessLayer
       m_deviceRequester->updateDeviceModel(deviceId, model);
    }
 
+   void CDeviceManager::updateDeviceType(int deviceId, const std::string& type)
+   {
+      m_deviceRequester->updateDeviceType(deviceId, type);
+   }
+
    void CDeviceManager::updateDeviceBlacklistState(int deviceId, const bool blacklist)
    {
       //cleanup data

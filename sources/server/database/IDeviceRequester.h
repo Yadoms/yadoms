@@ -137,6 +137,14 @@ namespace database
       virtual void updateDeviceModel(int deviceId, const std::string& model) = 0;
 
       //--------------------------------------------------------------
+      /// \brief                          Update the device type
+      /// \param [in] deviceId            The device id
+      /// \param [in] model               The new type
+      /// \throw  shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual void updateDeviceType(int deviceId, const std::string& type) = 0;
+
+      //--------------------------------------------------------------
       /// \brief                          Update the device blacklist state
       /// \param [in] deviceId            The device id
       /// \param [in] blacklist           The device blacklist state

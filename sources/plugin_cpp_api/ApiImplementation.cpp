@@ -633,6 +633,50 @@ namespace plugin_cpp_api
       }
    }
 
+   std::string CApiImplementation::getDeviceType(const std::string& device) const
+   {
+      plugin_IPC::toYadoms::msg req;
+      auto request = req.mutable_devicetyperequest();
+      request->set_device(device);
+
+      std::string type;
+      try
+      {
+         send(req,
+              [](const plugin_IPC::toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_devicetypeanswer();
+              },
+              [&](const plugin_IPC::toPlugin::msg& ans) -> void
+              {
+                 type = ans.devicetypeanswer().type();
+              });
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : getDeviceType(" << device << ")" << std::endl;
+         throw;
+      }
+      return type;
+   }
+
+   void CApiImplementation::updateDeviceType(const std::string& device, const std::string& type) const
+   {
+      plugin_IPC::toYadoms::msg req;
+      auto request = req.mutable_updatedevicetype();
+      request->set_device(device);
+      request->set_type(type);
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : updateDeviceType(" << device << ", " << type << ")" << std::endl;
+         throw;
+      }
+   }
+
    void CApiImplementation::removeDevice(const std::string& device)
    {
       plugin_IPC::toYadoms::msg req;
