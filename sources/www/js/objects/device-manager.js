@@ -133,17 +133,38 @@ DeviceManager.getKeywords = function (device, forceReload) {
 /**
  * Delete a device
  * @param {Object} device The device to delete
- * @param {Boolean} deleteDevice Indicate if the device is deleted
+ * @param {Boolean} deleteDevice Indicate if the device should be deleted (true) or just blacklisted (true)
  * @ return {Promise}
  */
-DeviceManager.deleteFromServer = function (device, deleteDevice) {
+DeviceManager.deleteDevice = function (device, deleteDevice) {
     assert(!isNullOrUndefined(device), "device must be defined");
 
     if (isNullOrUndefined(deleteDevice)) {
         deleteDevice = false;
     }
 
-    return RestEngine.deleteJson("/rest/device/" + device.id + (deleteDevice ? "/removeDevice" : "/cleanupOnly"));
+    return RestEngine.deleteJson("/rest/device/" + device.id + (deleteDevice ? "/removeDevice" : "/blacklist"));
+};
+
+/**
+ * Restore a device
+ * @param {Object} device The device to restore
+ * @ return {Promise}
+ */
+DeviceManager.restoreDevice = function(device) {
+    assert(!isNullOrUndefined(device), "device must be defined");
+
+    var d = new $.Deferred();
+
+    RestEngine.putJson("/rest/device/" + device.id + "/restore")
+    .done(function (data) {
+        //it's okay
+        //we update our information from the server
+        device = DeviceManager.factory(data);
+        d.resolve(device);
+    }).fail(d.reject);
+
+    return d.promise();
 };
 
 /**
@@ -226,27 +247,6 @@ DeviceManager.updateToServer = function (device) {
     var d = new $.Deferred();
 
     RestEngine.putJson("/rest/device/" + device.id + "/configuration", { data: JSON.stringify(device) })
-    .done(function (data) {
-        //it's okay
-        //we update our information from the server
-        device = DeviceManager.factory(data);
-        d.resolve(device);
-    }).fail(d.reject);
-
-    return d.promise();
-};
-
-/**
- * (un)blacklist a device
- * @param {Object} device The device to (un)blacklist
- * @ return {Promise}
- */
-DeviceManager.updateBlacklistStateToServer = function(device) {
-    assert(!isNullOrUndefined(device), "device must be defined");
-
-    var d = new $.Deferred();
-
-    RestEngine.putJson("/rest/device/" + device.id + "/blacklist", { data: JSON.stringify(device) })
     .done(function (data) {
         //it's okay
         //we update our information from the server

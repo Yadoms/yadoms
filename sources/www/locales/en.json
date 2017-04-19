@@ -199,8 +199,10 @@
       "errorDuringGettingPluginTypes": "Error during requesting plugin types"
     },
     "delete-device": {
-      "title": "Delete device historic",
-      "text": "This operation will delete device __deviceName__ and its data history. Continue anyway ?"
+      "title": "Blacklist device",
+      "text": "This operation will blacklist __deviceName__  device, and remove its data hostoric.",
+      "explanation": "A blacklisted device will be ignored by Yadoms, even if associated sensor send data. A blacklisted device can be restored. Blacklist the device if associated sensor is not interesting you (ie this sensor is not yours). Permanently delete device if you don't have it anymore.",
+      "checkbox": "Permanently delete"
     },
     "configure-plugin": {
       "title": "Plugin configuration",
@@ -440,7 +442,7 @@
           "errorGettingDeviceList": "An error has occurred acquiring device list",
           "errorGettingDeviceDetailsList": "An error has occurred acquiring device details list",
           "errorUpdatingKeyword": "An error occurred updating data __keyword__",
-          "errorBlacklistingDevice": "An error occurred while removing/restoring __device__",
+          "errorDeletingDevice": "An error occurred while removing/restoring __device__",
           "errorBlacklistingKeyword": "An error occurred while removing/restoring __keyword__",
           "noAcquisition": "No acquisition",
 		  "showBlacklistedDevices" : "Show deleted devices"

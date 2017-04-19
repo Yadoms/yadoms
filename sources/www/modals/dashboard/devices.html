@@ -177,12 +177,12 @@
 
       $deviceRow.find("button.btn-delete").unbind('click').bind('click', function (e) { 
             e.stopPropagation();
-            blacklistDevice(device);
+            deleteDevice(device);
       });
 
       $deviceRow.find("button.btn-restore").unbind('click').bind('click', function (e) { 
             e.stopPropagation();
-            unblacklistDevice(device);
+            restoreDevice(device);
       });
       
       $deviceRow.unbind('click').bind('click', function () { clickDevice(device); });
@@ -389,14 +389,11 @@
    }
    
    
-   function blacklistDevice(device) {
-   
-      //device represent the device concerned
+   function deleteDevice(device) {
       Yadoms.modals.deviceDelete.loadAsync()
       .done(function () {
          Yadoms.showDeleteDeviceModal(device, function (deleteDevice) {
-            device.blacklist = true;
-            DeviceManager.updateBlacklistStateToServer(device)
+            DeviceManager.deleteDevice(device, deleteDevice)
             .done(function () {
                //force a device and associated keyword refresh
                DeviceManager.getKeywords(device, true)
@@ -405,18 +402,15 @@
                });
             })
             .fail(function (error) {
-               notifyError($.t("modals.dashboard.sub-windows.devices.errorBlacklistingDevice", { device: device.friendlyName }), error);
+               notifyError($.t("modals.dashboard.sub-windows.devices.errorDeletingDevice", { device: device.friendlyName }), error);
             });
          });
-      });
-      
-      
+      });   
    }
 
-   function unblacklistDevice(device) {
+   function restoreDevice(device) {
       //device represent the device concerned
-      device.blacklist = false;
-      DeviceManager.updateBlacklistStateToServer(device)
+      DeviceManager.restoreDevice(device)
       .done(function () {
          //force a device and associated keyword refresh
          DeviceManager.getKeywords(device, true)
@@ -425,7 +419,7 @@
          });
       })
       .fail(function (error) {
-         notifyError($.t("modals.dashboard.sub-windows.devices.errorBlacklistingDevice", { device: device.friendlyName }), error);
+         notifyError($.t("modals.dashboard.sub-windows.devices.errorDeletingDevice", { device: device.friendlyName }), error);
       });
    }
 

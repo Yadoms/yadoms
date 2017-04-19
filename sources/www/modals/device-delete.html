@@ -1,6 +1,6 @@
 <!--Device delete confirmation Modal -->
 <div class="modal fade" id="device-delete-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-   <div class="modal-dialog">
+   <div class="modal-dialog confirm-dialog">
        <div class="modal-content">
            <div class="modal-header">
                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -8,6 +8,8 @@
            </div>
            <div class="modal-body">
                <div class="modal-text"></div>
+               <div class="modal-explanation" data-i18n="modals.delete-device.explanation"></div>
+               <input type="checkbox" class="cb-delete-device">&nbsp;&nbsp;<span data-i18n="modals.delete-device.checkbox"></input>
            </div>
            <div class="modal-footer">
               <button type="button" class="btn btn-default btn-cancel" data-dismiss="modal" data-i18n="common.cancel"></button>
@@ -28,6 +30,10 @@
       
       //we set text
       $modalBody.find("div.modal-text").text($.t("modals.delete-device.text", { deviceName: device.friendlyName }));
+      
+      //Checkbox unckeched by default
+      debugger;
+      $modalBody.find("input.cb-delete-device").prop("checked", false);
 
       //we bind the two callbacks
       if ($.isFunction(cancelCallback))
@@ -35,7 +41,9 @@
 
       $modalBody.find("button.btn-confirm").unbind('click').bind('click', function() {
          $("div#device-delete-modal").modal("hide");
-         confirmCallBack();
+         
+         deleteDeviceCheckbox = $modalBody.find("input.cb-delete-device").is(":checked")
+         confirmCallBack(deleteDeviceCheckbox);
       });
 
       //we display the modal
