@@ -55,7 +55,7 @@ def generate(packageJsonInPath, packageJsonPath, localesInPath, localesPath, sup
       inPackage = json.load(packageJsonInFile, object_pairs_hook=OrderedDict)
 
       outPackage = copy.deepcopy(inPackage)
-      outPackage['deviceConfiguration']['staticConfigurationSchema']['all']['content']['profile']['content'] = OrderedDict()
+      outPackage['deviceConfiguration']['staticConfigurationSchema']['schemas']['all']['content']['profile']['content'] = OrderedDict()
       del outPackage['specificProfilesConfigurations']
 
       for rorg in profiles:
@@ -74,7 +74,7 @@ def generate(packageJsonInPath, packageJsonPath, localesInPath, localesPath, sup
                      profileNode['content'] = inPackage['specificProfilesConfigurations'][profileName]['content']
                else:
                   profileNode['content'] = ''
-               outPackage['deviceConfiguration']['staticConfigurationSchema']['all']['content']['profile']['content'][profileName] = profileNode
+               outPackage['deviceConfiguration']['staticConfigurationSchema']['schemas']['all']['content']['profile']['content'][profileName] = profileNode
 
       with codecs.open(packageJsonPath, 'w', 'utf_8') as packageJsonFile:
          json.dump(outPackage, packageJsonFile, indent=2, ensure_ascii=False)
@@ -87,7 +87,7 @@ def generate(packageJsonInPath, packageJsonPath, localesInPath, localesPath, sup
          inPackage = json.load(localesInFile, object_pairs_hook=OrderedDict)
 
          outPackage = copy.deepcopy(inPackage)
-         outPackage['deviceConfiguration']['staticConfigurationSchema']['all']['content']['profile']['content'] = OrderedDict()
+         outPackage['deviceConfiguration']['staticConfigurationSchema']['schemas']['all']['content']['profile']['content'] = OrderedDict()
          del outPackage['specificProfilesConfigurations']
 
          for rorg in profiles:
@@ -105,7 +105,7 @@ def generate(packageJsonInPath, packageJsonPath, localesInPath, localesPath, sup
                         profileNode['content'] = inPackage['specificProfilesConfigurations'][profileName]['content']
                   else:
                      profileNode['content'] = ''
-                  outPackage['deviceConfiguration']['staticConfigurationSchema']['all']['content']['profile']['content'][profileName] = profileNode
+                  outPackage['deviceConfiguration']['staticConfigurationSchema']['schemas']['all']['content']['profile']['content'][profileName] = profileNode
 
          localesOutPath = os.path.join(localesPath, os.path.basename(localesInPath))
          util.createParentDir(localesOutPath)
