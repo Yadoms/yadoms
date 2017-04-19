@@ -199,12 +199,14 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Declare new device to Yadoms, with its keyword (all-in-one function)
             ///\param    [in]    device            The device name
-            ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185")
+            ///\param    [in]    type              The device configuration type (ex : "osCN185"). This is the identifiers used to retreive configuration schema package.json (deviceConfiguation.staticConfigurationSchema.schemas.anySchemaName.types.osCN185). Never displayed or modified.
+            ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185"). Displayed and editable by user
             ///\param    [in]    keyword           Keyword to declare for this device
             ///\param    [in]    details           Device details
             ///\note Do nothing if device already exist
             //-----------------------------------------------------
             virtual void declareDevice(const std::string& device,
+                                       const std::string& type,
                                        const std::string& model,
                                        boost::shared_ptr<const historization::IHistorizable> keyword,
                                        const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
@@ -212,12 +214,14 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Declare new device to Yadoms, with its keywords (all-in-one function)
             ///\param    [in]    device            The device name
-            ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185")
+            ///\param    [in]    type              The device configuration type (ex : "osCN185"). This is the identifiers used to retreive configuration schema package.json (deviceConfiguation.staticConfigurationSchema.schemas.anySchemaName.types.osCN185). Never displayed or modified.
+            ///\param    [in]    model             The device model or description (ex : "Oregon Scientific CN185"). Displayed and editable by user
             ///\param    [in]    keywords          List of keywords to declare for this device
             ///\param    [in]    details           Device details
             ///\note Do nothing if device already exist
             //-----------------------------------------------------
             virtual void declareDevice(const std::string& device,
+                                       const std::string& type,
                                        const std::string& model,
                                        const std::vector<boost::shared_ptr<const historization::IHistorizable>>& keywords = std::vector<boost::shared_ptr<const historization::IHistorizable>>(),
                                        const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
@@ -271,7 +275,7 @@ namespace shared
 
             //-----------------------------------------------------
             ///\brief Get the model of a device
-            ///\param    [in]    device            The device name
+            ///\param    [in]    device            The device model (could have been edited by user)
             ///\return the device model
             ///\throw shared::exception::CEmptyResult if device dosen't exist
             //-----------------------------------------------------
@@ -283,8 +287,23 @@ namespace shared
             ///\param    [in]    model             Device model
             ///\throw shared::exception::CEmptyResult if device dosen't exist
             //-----------------------------------------------------
-            virtual void updateDeviceModel(const std::string& device,
-                                           const std::string& model) const = 0;
+            virtual void updateDeviceModel(const std::string& device, const std::string& model) const = 0;
+
+            //-----------------------------------------------------
+            ///\brief Get the type of a device
+            ///\param    [in]    device            The device type
+            ///\return the device type
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual std::string getDeviceType(const std::string& device) const = 0;
+
+            //-----------------------------------------------------
+            ///\brief Update the type of a device (replace the existing type)
+            ///\param    [in]    device            The device name
+            ///\param    [in]    model             Device type
+            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            //-----------------------------------------------------
+            virtual void updateDeviceType(const std::string& device, const std::string& model) const = 0;
 
             //-----------------------------------------------------
             ///\brief Remove device (and remove all associated keywords and acquisitions)

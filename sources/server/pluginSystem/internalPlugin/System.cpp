@@ -35,6 +35,7 @@ namespace pluginSystem {
          // Device creation if needed
          if (!api->deviceExists(systemDevice))
             api->declareDevice(systemDevice,
+                               "system",
                                "yadoms system",
                                keywords);
 

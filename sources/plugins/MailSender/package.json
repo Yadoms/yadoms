@@ -6,7 +6,6 @@
 	"credits": "",
 	"supportedPlatforms": "all",
 	"supportManuallyDeviceCreation": "false",
-	"manuallyDeviceCreationConfigurationSchema": {},
 	"configurationSchema": {
 		"Sender": {
 			"type": "string",

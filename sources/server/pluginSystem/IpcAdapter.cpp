@@ -245,6 +245,10 @@ namespace pluginSystem
          break;
       case plugin_IPC::toYadoms::msg::kUpdateDeviceModel: processUpdateDeviceModel(toYadomsProtoBuffer.updatedevicemodel());
          break;
+      case plugin_IPC::toYadoms::msg::kDeviceTypeRequest: processDeviceTypeRequest(toYadomsProtoBuffer.devicetyperequest());
+         break;
+      case plugin_IPC::toYadoms::msg::kUpdateDeviceType: processUpdateDeviceType(toYadomsProtoBuffer.updatedevicetype());
+         break;
       case plugin_IPC::toYadoms::msg::kDeviceConfigurationRequest: processDeviceConfigurationRequest(toYadomsProtoBuffer.deviceconfigurationrequest());
          break;
       case plugin_IPC::toYadoms::msg::kUpdateDeviceConfiguration: processUpdateDeviceConfiguration(toYadomsProtoBuffer.updatedeviceconfiguration());
@@ -342,6 +346,7 @@ namespace pluginSystem
          keywords.push_back(boost::make_shared<CFromPluginHistorizer>(*keyword));
 
       m_pluginApi->declareDevice(msg.device(),
+                                 msg.type(),
                                  msg.model(),
                                  keywords,
                                  msg.details().empty() ? shared::CDataContainer::EmptyContainer : shared::CDataContainer(msg.details()));
@@ -466,6 +471,19 @@ namespace pluginSystem
    {
       m_pluginApi->updateDeviceModel(msg.device(),
                                      msg.model());
+   }  
+   
+   void CIpcAdapter::processDeviceTypeRequest(const plugin_IPC::toYadoms::DeviceTypeRequest& msg)
+   {
+      plugin_IPC::toPlugin::msg ans;
+      auto answer = ans.mutable_devicetypeanswer();
+      answer->set_type(m_pluginApi->getDeviceType(msg.device()));
+      send(ans);
+   }
+
+   void CIpcAdapter::processUpdateDeviceType(const plugin_IPC::toYadoms::UpdateDeviceType& msg) const
+   {
+      m_pluginApi->updateDeviceType(msg.device(), msg.type());
    }
 
    void CIpcAdapter::processDeviceConfigurationRequest(const plugin_IPC::toYadoms::DeviceConfigurationRequest& msg)
@@ -586,7 +604,7 @@ namespace pluginSystem
    {
       plugin_IPC::toPlugin::msg msg;
       auto message = msg.mutable_setdeviceconfiguration();
-      message->set_device(command->device());
+      message->set_device(command->name());
       message->set_configuration(command->configuration().serialize());
       send(msg);
    }
@@ -640,6 +658,7 @@ namespace pluginSystem
       plugin_IPC::toPlugin::msg req;
       auto message = req.mutable_manuallydevicecreation();
       message->set_name(request->getData().getDeviceName());
+      message->set_type(request->getData().getDeviceType());
       message->set_configuration(request->getData().getConfiguration().serialize());
 
       auto success = false;

@@ -37,7 +37,7 @@ namespace equipments
       keywordsToDeclare.insert(keywordsToDeclare.end(), m_keywordList.begin(), m_keywordList.end());
 
       //Déclaration of all IOs
-      api->declareDevice(device, m_deviceType, keywordsToDeclare, details);
+      api->declareDevice(device, m_deviceType, m_deviceType, keywordsToDeclare, details);
    }
 
    std::string CX24DExtension::getDeviceName() const

@@ -576,6 +576,10 @@
     }
   },
   "configuration": {
+    "manually-device-model" : {
+      "title": "Model",
+      "description": "Choose the equipment model to create"
+    },
     "validationForm": {
       "incorrectValue": "Incorrect value",
       "onlyIntegerNumberAllowed": "Only integer number are allowed",
@@ -583,7 +587,8 @@
       "maxValueExceeded": "The value can't be higher than __maxValue__",
       "minValueExceeded": "The value can't be lower than __minValue__",
       "minNumberItemsRequired": "the list must have at least __minValue__ items",
-      "maxNumberItemsAllowed": "the list can't have more than __maxValue__ items"
+      "maxNumberItemsAllowed": "the list can't have more than __maxValue__ items",
+      "required": "This is required"
     },
     "iconpicker-search-prompt" : "Search icon..."
   },

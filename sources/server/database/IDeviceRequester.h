@@ -79,7 +79,7 @@ namespace database
       /// \return                         The device created (null if creation failed)
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CDevice> createDevice(int pluginId, const std::string& name, const std::string& friendlyName, const std::string& model, const shared::CDataContainer& details) = 0;
+      virtual boost::shared_ptr<entities::CDevice> createDevice(int pluginId, const std::string& name, const std::string& friendlyName, const std::string& type, const std::string& model, const shared::CDataContainer& details) = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all devices
@@ -135,6 +135,14 @@ namespace database
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void updateDeviceModel(int deviceId, const std::string& model) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                          Update the device type
+      /// \param [in] deviceId            The device id
+      /// \param [in] model               The new type
+      /// \throw  shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual void updateDeviceType(int deviceId, const std::string& type) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Update the device blacklist state

@@ -85,7 +85,7 @@ namespace rfxcomMessages
          details.set("subType", m_subType);
          details.set("system", m_system);
          details.set("channel", m_channel);
-         api->declareDevice(m_deviceName, m_deviceModel, m_keywords, details);
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
       }
    }
 

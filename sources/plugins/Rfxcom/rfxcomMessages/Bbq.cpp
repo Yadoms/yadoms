@@ -54,6 +54,7 @@ namespace rfxcomMessages
          details.set("subType", m_subType);
          details.set("id", m_id);
          api->declareDevice(m_deviceName,
+                            "maverickET732",
                             m_deviceModel,
                             m_keywords,
                             details);

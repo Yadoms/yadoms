@@ -122,7 +122,7 @@ void CForecastDays::InitializeForecastDays(boost::shared_ptr<yApi::IYPluginApi> 
       std::string m_type = "forecast";
       shared::CDataContainer details;
       details.set("type", m_type);
-      api->declareDevice(m_deviceName, m_type, m_keywords, details);
+      api->declareDevice(m_deviceName, m_type, m_type, m_keywords, details);
    }
 }
 

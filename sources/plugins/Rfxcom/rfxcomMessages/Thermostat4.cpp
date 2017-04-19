@@ -117,7 +117,7 @@ namespace rfxcomMessages
          details.set("type", pTypeThermostat4);
          details.set("subType", m_subType);
          details.set("unitCode", m_unitCode);
-         api->declareDevice(m_deviceName, m_deviceModel, m_keywords, details);
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
       }
    }
 
