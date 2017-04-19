@@ -566,7 +566,7 @@ void CMegatecUps::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    if (!api->deviceExists(DeviceName))
    {
-      api->declareDevice(DeviceName, model, m_keywords);
+      api->declareDevice(DeviceName, model, model, m_keywords);
 
       // Force a first historization to let Yadoms know the shutdown state
       api->historizeData(DeviceName, m_upsShutdown);

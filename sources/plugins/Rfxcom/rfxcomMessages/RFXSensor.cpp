@@ -88,7 +88,7 @@ namespace rfxcomMessages
          details.set("type", pTypeRFXSensor);
          details.set("subType", m_subType);
          details.set("id", m_id);
-         api->declareDevice(m_deviceName, m_deviceModel, m_keywords, details);
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
       }
    }
 

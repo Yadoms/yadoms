@@ -39,7 +39,7 @@ void CAstronomy::initializeKeywords(boost::shared_ptr<yApi::IYPluginApi> api, IW
       std::string m_type = "astronomy";
       shared::CDataContainer details;
       details.set("type", m_type);
-      api->declareDevice(m_deviceName, m_type, m_keywords, details);
+      api->declareDevice(m_deviceName, m_type, m_type, m_keywords, details);
    }
 }
 

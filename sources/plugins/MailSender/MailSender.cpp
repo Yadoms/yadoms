@@ -84,7 +84,7 @@ void CMailSender::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
    if (api->deviceExists(m_deviceName))
       return;
 
-   api->declareDevice(m_deviceName, m_deviceName, m_messageKeyword);
+   api->declareDevice(m_deviceName, m_deviceName, m_deviceName, m_messageKeyword);
 }
 
 void CMailSender::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,

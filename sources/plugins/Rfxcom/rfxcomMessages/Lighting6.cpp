@@ -90,7 +90,7 @@ namespace rfxcomMessages
          details.set("groupCode", m_groupCode);
          details.set("unitCode", m_unitCode);
 
-         api->declareDevice(m_deviceName, m_deviceModel, m_keywords, details);
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
       }
    }
 

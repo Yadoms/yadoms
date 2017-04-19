@@ -230,6 +230,7 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage& xplMessage,
                details.set("source", realSource);
                api->declareDevice(deviceAddress.getId(),
                                   deviceAddress.getCommercialName(),
+                                  deviceAddress.getCommercialName(),
                                   std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(),
                                   details);
             }
@@ -385,6 +386,7 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
                details.set("writingProtocol", deviceAddress.getWritingXplProtocol().toString());
                details.set("source", std::string("yadomssource!"));
                api->declareDevice(deviceAddress.getId(),
+                                  deviceAddress.getCommercialName(),
                                   deviceAddress.getCommercialName(),
                                   std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(),
                                   details);
