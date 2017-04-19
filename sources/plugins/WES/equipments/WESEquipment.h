@@ -6,6 +6,8 @@
 #include "../IWESConfiguration.h"
 #include "masterDeviceConfiguration.h"
 #include "WESSubEquipments/TIC.h"
+#include "WESSubEquipments/Pulse.h"
+#include "WESSubEquipments/Clamp.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -53,10 +55,6 @@ namespace equipments
 
    private:
 
-      void createUpdatePulsesKeywords(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
-                                      shared::CDataContainer& values,
-                                      const boost::shared_ptr<IWESConfiguration> pluginConfiguration);
-
       void updateSwitchValue(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize, 
                              boost::shared_ptr<yApi::historization::CSwitch> keyword, 
                              bool newValue, 
@@ -95,13 +93,12 @@ namespace equipments
       //--------------------------------------------------------------
       /// \brief	The pulse Counter 1
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<yApi::historization::CCounter> > m_PulseCounterList;
+      std::vector<boost::shared_ptr<equipments::subdevices::CPulse> > m_PulseList;
 
       //--------------------------------------------------------------
       /// \brief	Clamps
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<yApi::historization::CCurrent> > m_CurrentClampList;
-      std::vector<boost::shared_ptr<yApi::historization::CEnergy> >  m_CounterClampList;
+      std::vector<boost::shared_ptr<equipments::subdevices::CClamp> > m_ClampList;
 
       //--------------------------------------------------------------
       /// \brief	Analog Values

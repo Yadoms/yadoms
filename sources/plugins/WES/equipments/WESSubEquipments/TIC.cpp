@@ -26,6 +26,7 @@ namespace equipments
          m_TimePeriod(boost::make_shared<specificHistorizers::CPeriod>("RunningPeriod")),
          m_teleInfoStatus(boost::make_shared<specificHistorizers::CTeleInfoStatus>("Status"))
       {
+         // TODO : Add need to declare
          initializeTIC(api);
       }
 

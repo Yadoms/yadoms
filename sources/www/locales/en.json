@@ -988,6 +988,7 @@
     "units": {
       "noUnit": "",
       "ampere": "A",
+      "cubicMetre" : "m3",
       "degrees": "°",
       "degreesCelcius": "°C",
       "degreesFarenheit": "°F",

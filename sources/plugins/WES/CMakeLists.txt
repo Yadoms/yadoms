@@ -35,6 +35,10 @@ set(WES_PLUGIN_SOURCES
    equipments/specificHistorizers/Period.h
    equipments/specificHistorizers/TeleInfoStatus.cpp
    equipments/specificHistorizers/TeleInfoStatus.h
+   equipments/WESSubEquipments/Clamp.cpp
+   equipments/WESSubEquipments/Clamp.h
+   equipments/WESSubEquipments/Pulse.cpp
+   equipments/WESSubEquipments/Pulse.h
    equipments/WESSubEquipments/TIC.cpp
    equipments/WESSubEquipments/TIC.h
    http/failedSendingException.hpp

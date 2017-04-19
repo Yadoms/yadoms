@@ -19,6 +19,8 @@ namespace equipments
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
       std::string relayName[2], TICName[2], ClampName[4], AnalogName[4], inputName[2];
       std::string contract[2];
+      std::string PulseType[4];
+      std::string PulseName[4];
 
       m_configuration.initializeWith(deviceConfiguration);
       deviceConfiguration.printToLog(YADOMS_LOG(information));
@@ -62,6 +64,16 @@ namespace equipments
          AnalogName[1] = results.get<std::string>("ANA2");
          AnalogName[2] = results.get<std::string>("ANA3");
          AnalogName[3] = results.get<std::string>("ANA4");
+
+         PulseName[0] = results.get<std::string>("npls1");
+         PulseName[1] = results.get<std::string>("npls2");
+         PulseName[2] = results.get<std::string>("npls3");
+         PulseName[3] = results.get<std::string>("npls4");
+
+         PulseType[0] = results.get<std::string>("PLSU1");
+         PulseType[1] = results.get<std::string>("PLSU2");
+         PulseType[2] = results.get<std::string>("PLSU3");
+         PulseType[3] = results.get<std::string>("PLSU4");
       }
       else  // Defaults names
       {
@@ -86,6 +98,16 @@ namespace equipments
          AnalogName[1] = "ANA2";
          AnalogName[2] = "ANA3";
          AnalogName[3] = "ANA4";
+
+         PulseName[0] = "pls1";
+         PulseName[1] = "pls2";
+         PulseName[2] = "pls3";
+         PulseName[3] = "pls4";
+
+         PulseType[0] = "ND";
+         PulseType[1] = "ND";
+         PulseType[2] = "ND";
+         PulseType[3] = "ND";
       }
 
       // Relay Configuration
@@ -98,7 +120,7 @@ namespace equipments
       }
 
       // Input Configuration
-      for (int counter = 0; counter<WES_INPUT_QTY; ++counter)
+      for (int counter = 0; counter < WES_INPUT_QTY; ++counter)
       {
          boost::shared_ptr<yApi::historization::CSwitch> temp = boost::make_shared<yApi::historization::CSwitch>(inputName[counter],
                                                                                                                  yApi::EKeywordAccessMode::kGet);
@@ -109,28 +131,32 @@ namespace equipments
       // TIC Counters Configuration
       for (int counter = 0; counter<WES_TIC_QTY; ++counter)
       {
-         boost::shared_ptr<equipments::subdevices::CTIC> temp = boost::make_shared<equipments::subdevices::CTIC>(api, TICName[counter], contract[counter]);
+         boost::shared_ptr<equipments::subdevices::CTIC> temp = boost::make_shared<equipments::subdevices::CTIC>(api, m_deviceName + " - " + TICName[counter], contract[counter]);
          m_TICList.push_back(temp);
       }
 
       // Pulse Counters Configuration
-      //createUpdatePulsesKeywords(keywordsToDeclare, results, pluginConfiguration);
+      for (int counter = 0; counter<WES_PULSE_QTY; ++counter)
+      {
+         // TODO : Create a function to analyze the type and create the correct one
+         boost::shared_ptr<equipments::subdevices::CPulse> temp = boost::make_shared<equipments::subdevices::CPulse>(api,
+                                                                                                                     keywordsToDeclare,
+                                                                                                                     m_deviceName,
+                                                                                                                     PulseName[counter],
+                                                                                                                     PulseType[counter]);
+         m_PulseList.push_back(temp);
+      }
 
       // Current clamp Configuration
       for (int counter = 0; counter<WES_CLAMP_QTY; ++counter)
       {
-         if (m_configuration.isInstantCurrentClampRegistered(counter))
-         {
-            boost::shared_ptr<yApi::historization::CCurrent> tempCurrent = boost::make_shared<yApi::historization::CCurrent>("I - " + ClampName[counter],
-                                                                                                                             yApi::EKeywordAccessMode::kGet);
-            m_CurrentClampList.push_back(tempCurrent);
-            keywordsToDeclare.push_back(tempCurrent);
-         }
-         boost::shared_ptr<yApi::historization::CEnergy>  tempCounter = boost::make_shared<yApi::historization::CEnergy>("Wh - " + ClampName[counter],
-                                                                                                                   yApi::EKeywordAccessMode::kGet);
-
-         m_CounterClampList.push_back(tempCounter);
-         keywordsToDeclare.push_back(tempCounter);
+         boost::shared_ptr<equipments::subdevices::CClamp> temp = boost::make_shared<equipments::subdevices::CClamp>(api,
+                                                                                                                     keywordsToDeclare,
+                                                                                                                     pluginConfiguration,
+                                                                                                                     m_configuration.isInstantCurrentClampRegistered(counter),
+                                                                                                                     m_deviceName,
+                                                                                                                     ClampName[counter]);
+         m_ClampList.push_back(temp);
       }
 
       // Analog Values Configuration
@@ -148,49 +174,6 @@ namespace equipments
 
       //Déclaration of all IOs
       api->declareDevice(device, m_deviceType, keywordsToDeclare, details);
-   }
-
-   void CWESEquipment::createUpdatePulsesKeywords(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
-                                                  shared::CDataContainer& values,
-                                                  const boost::shared_ptr<IWESConfiguration> pluginConfiguration)
-   {
-      std::string PulseType[4];
-      std::string PulseName[4];
-
-      if (pluginConfiguration->isRetrieveNamesFromdevice())
-      {
-         PulseName[0] = values.get<std::string>("npls1");
-         PulseName[1] = values.get<std::string>("npls2");
-         PulseName[2] = values.get<std::string>("npls3");
-         PulseName[3] = values.get<std::string>("npls4");
-
-         PulseType[0] = values.get<std::string>("PLSU1");
-         PulseType[1] = values.get<std::string>("PLSU2");
-         PulseType[2] = values.get<std::string>("PLSU3");
-         PulseType[3] = values.get<std::string>("PLSU4");
-      }
-      else
-      {
-         PulseName[0] = "pls1";
-         PulseName[1] = "pls2";
-         PulseName[2] = "pls3";
-         PulseName[3] = "pls4";
-
-         PulseType[0] = "ND";
-         PulseType[1] = "ND";
-         PulseType[2] = "ND";
-         PulseType[3] = "ND";
-      }
-
-      // Pulse Counters Configuration
-      for (int counter = 0; counter<WES_PULSE_QTY; ++counter)
-      {
-         // TODO : Create a function to analyze the type and create the correct one
-         boost::shared_ptr<yApi::historization::CCounter> temp = boost::make_shared<yApi::historization::CCounter>(PulseName[counter],
-                                                                                                                   yApi::EKeywordAccessMode::kGet);
-         m_PulseCounterList.push_back(temp);
-         keywordsToHistorize.push_back(temp);
-      }
    }
 
    std::string CWESEquipment::getDeviceName() const
@@ -250,7 +233,7 @@ namespace equipments
          keyword->set(newValue);
          keywordsToHistorize.push_back(keyword);
 
-         YADOMS_LOG(trace) << "relay " << keyword->getKeyword() << " set to " << newValue;
+         YADOMS_LOG(trace) << keyword->getKeyword() << " set to " << newValue;
       }
    }
 

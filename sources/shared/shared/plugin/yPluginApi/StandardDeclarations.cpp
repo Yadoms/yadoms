@@ -17,6 +17,7 @@ namespace shared
 
          const std::string CStandardUnits::NoUnits("data.units.noUnit");
          const std::string CStandardUnits::Ampere("data.units.ampere");
+         const std::string CStandardUnits::CubicMetre("data.units.cubicMetre");
          const std::string CStandardUnits::Degrees("data.units.degrees");
          const std::string CStandardUnits::DegreesCelcius("data.units.degreesCelcius");
          const std::string CStandardUnits::DegreesFarenheit("data.units.degreesFarenheit");
@@ -76,6 +77,7 @@ namespace shared
          DECLARE_CAPACITY(CStandardCapacities::UpDownStop, "upDownStop", CStandardUnits::NoUnits, EKeywordDataType::kEnum);
          DECLARE_CAPACITY(CStandardCapacities::Uv, "uv", CStandardUnits::Uv, EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Voltage, "voltage", CStandardUnits::Volt, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Volume, "volume", CStandardUnits::CubicMetre, EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::WeatherCondition, "weathercondition", CStandardUnits::NoUnits, EKeywordDataType::kString);
          DECLARE_CAPACITY(CStandardCapacities::Weight, "weight", CStandardUnits::Kg, EKeywordDataType::kNumeric);
       }
