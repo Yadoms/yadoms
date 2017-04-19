@@ -121,6 +121,7 @@
 
       var actionsBtnsBlacklist = "<div class=\"btn-group\">\n" +
                                  "<button type=\"button\" class=\"btn btn-success btn-restore\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.restore\"><span class=\"fa fa-reply\"></span></button>\n" +
+                                 "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
                                  "</div>";
 
       
@@ -390,22 +391,42 @@
    
    
    function deleteDevice(device) {
-      Yadoms.modals.deviceDelete.loadAsync()
-      .done(function () {
-         Yadoms.showDeleteDeviceModal(device, function (deleteDevice) {
-            DeviceManager.deleteDevice(device, deleteDevice)
-            .done(function () {
-               //force a device and associated keyword refresh
-               DeviceManager.getKeywords(device, true)
-               .always(function () {   
-                  refreshDeviceList();
+      if(parseBool(device.blacklist)===true)
+      {
+         Yadoms.modals.confirmation.loadAsync()
+         .done(function () {
+            Yadoms.showConfirmModal(Yadoms.btnKind.confirmCancel, $.t("modals.confirm-delete-device.title"), $.t("modals.confirm-delete-device.text", { deviceName: device.friendlyName }), function () {
+               DeviceManager.deleteDevice(device, true)
+               .done(function () {
+                  //force a device and associated keyword refresh
+                  DeviceManager.getKeywords(device, true)
+                  .always(function () {   
+                     refreshDeviceList();
+                  });
+               })
+               .fail(function (error) {
+                  notifyError($.t("modals.dashboard.sub-windows.devices.errorDeletingDevice", { device: device.friendlyName }), error);
                });
-            })
-            .fail(function (error) {
-               notifyError($.t("modals.dashboard.sub-windows.devices.errorDeletingDevice", { device: device.friendlyName }), error);
             });
          });
-      });   
+      } else {
+         Yadoms.modals.deviceDelete.loadAsync()
+         .done(function () {
+            Yadoms.showDeleteDeviceModal(device, function (deleteDevice) {
+               DeviceManager.deleteDevice(device, deleteDevice)
+               .done(function () {
+                  //force a device and associated keyword refresh
+                  DeviceManager.getKeywords(device, true)
+                  .always(function () {   
+                     refreshDeviceList();
+                  });
+               })
+               .fail(function (error) {
+                  notifyError($.t("modals.dashboard.sub-windows.devices.errorDeletingDevice", { device: device.friendlyName }), error);
+               });
+            });
+         });   
+      }
    }
 
    function restoreDevice(device) {

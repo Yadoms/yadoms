@@ -204,6 +204,10 @@
       "explanation": "A blacklisted device will be ignored by Yadoms, even if associated sensor send data. A blacklisted device can be restored. Blacklist the device if associated sensor is not interesting you (ie this sensor is not yours). Permanently delete device if you don't have it anymore.",
       "checkbox": "Permanently delete"
     },
+    "confirm-delete-device": {
+      "title": "Delete device permanently",
+      "text": "This operation will delete permanently the __deviceName__ device, with its associated data historic."
+    },
     "configure-plugin": {
       "title": "Plugin configuration",
       "name-configuration": {

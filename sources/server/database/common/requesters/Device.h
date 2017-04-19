@@ -43,6 +43,7 @@ namespace database
             void updateDeviceDetails(int deviceId, const shared::CDataContainer& details) override;
             void updateDeviceModel(int deviceId, const std::string& model) override;
             void updateDeviceBlacklistState(int deviceId, const bool blacklist) override;
+            bool isDeviceBlacklisted(int deviceId) const override;
             void removeDevice(int deviceId) override;
             void removeDevice(int pluginId, const std::string& deviceName) override;
             void removeAllDeviceForPlugin(int pluginId) override;

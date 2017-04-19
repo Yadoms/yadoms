@@ -270,6 +270,12 @@ namespace database
                throw shared::exception::CEmptyResult("Fail to update device blacklist");
          }
 
+         bool CDevice::isDeviceBlacklisted(int deviceId) const
+         {
+            const auto& device = getDevice(deviceId, true);
+            return device->Blacklist();
+         }
+
          std::vector<boost::shared_ptr<entities::CDevice>> CDevice::getDevices(bool blacklistedIncluded) const
          {
             auto qSelect = m_databaseRequester->newQuery();
@@ -365,3 +371,5 @@ namespace database
       } //namespace requesters
    } //namespace common
 } //namespace database 
+
+

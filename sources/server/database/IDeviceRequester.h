@@ -145,6 +145,14 @@ namespace database
       virtual void updateDeviceBlacklistState(int deviceId, const bool blacklist) = 0;
 
       //--------------------------------------------------------------
+      /// \brief                          Check if device is blacklisted
+      /// \param [in] deviceId            The device id
+      /// \return                         true if blacklisted
+      /// \throw  shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual bool isDeviceBlacklisted(int deviceId) const = 0;
+
+      //--------------------------------------------------------------
       /// \brief           Remove device 
       /// \param [in] deviceId   Device Id
       /// \throw           shared::exception::CEmptyResult if fails

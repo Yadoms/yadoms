@@ -204,6 +204,10 @@
       "explanation": "Un équipement en liste noire sera ignoré par Yadoms, même si le matériel associé continue d'envoyer des données. Un équipement en liste noire peut également être restauré. Mettez un équipement en liste noire si le capteur associé ne vous intéresse pas (capteur ne vous appartenant pas par exemple). Supprimer définitivement un équipement si vous ne disposez plus du capteur associé.",
       "checkbox": "Supprimer définitivement"
     },
+    "confirm-delete-device": {
+      "title": "Supprimer définitivement l'équipement",
+      "text": "Cette opération va supprimer définitivement l'équipement __deviceName__, ainsi que son historique de données."
+    },
     "configure-plugin": {
       "title": "Configuration du plugin",
       "name-configuration": {
