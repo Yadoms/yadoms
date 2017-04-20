@@ -43,1261 +43,432 @@
           }
       }
    },
-   "manuallyDeviceCreationConfigurationSchema":
-   {
-      "type":
-      {
-         "name": "Type",
-         "description": "Type d'équipement",
-         "content":
+   "deviceConfiguration": {
+      "staticConfigurationSchema": {
+         "hcA_P-uc1_16": {
+            "content": {
+               "houseCode": {
+                  "name": "Bâtiment",
+                  "description": "L'identifiant du bâtiment (A-P)",
+                  "regexErrorMessage": "L'identifiant doit être entre A et P (inclus)"
+               },
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de l'équipement (1-16)"
+               }
+            }
+         },
+         "hcA_D-uc1_4": {
+            "content": {
+               "houseCode": {
+                  "name": "Bâtiment",
+                  "description": "L'identifiant du bâtiment (A-D)",
+                  "regexErrorMessage": "L'identifiant doit être entre A et D (inclus)"
+               },
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de l'équipement (1-4)"
+               }
+            }
+         },
+         "id1_67108863-unitCode1_16": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-67108863)"
+               },
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de la fonction de l'équipement (1-16)"
+               }
+            }
+         },
+         "id1_16777215-unitCode1_5": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-16777215)"
+               }, 
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de la fonction de l'équipement (1-5)"
+               }  
+            }
+         },  
+         "id1_16777215-unitCode1_6": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-16777215)"
+               }, 
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de la fonction de l'équipement (1-6)"
+               }  
+            }
+         },  
+         "s0_16-c0_1023": {
+            "content": {
+               "system": {
+                  "name": "Système",
+                  "description": "Code système (1-16)"
+               },
+               "channel": {
+                  "name": "Canal",
+                  "description": "Canal (0-1023)"
+               }
+            }
+         },
+         "id0_16777215": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-16777215)"
+               }
+            }
+         },
+         "id1_16777215-unitCode1_16": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-16777215)"
+               }, 
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de la fonction de l'équipement (1-16)"
+               }  
+            }
+         },             
+         "id1_16383-unitCode1_4": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-16383)"
+               }, 
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de la fonction de l'équipement (1-4)"
+               }  
+            }
+         },             
+         "id1_524287-unitCode1_6": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-524287)"
+               }, 
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de la fonction de l'équipement (1-6)"
+               }  
+            }
+         },  
+         "id0_16": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (0-16)"
+               }
+            }
+         },    
+         "id0_255": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (0-255)"
+               }
+            }
+         },    
+         "id0_1023": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (0-1023)"
+               }
+            }
+         },
+         "id0_65535": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (0-65535)"
+               }
+            }
+         },
+         "id1_65535": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-65535)"
+               }
+            }
+         },
+         "id1_1048575": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-1048575)"
+               }
+            }
+         },
+         "id1_16777215": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-16777215)"
+               }
+            }
+         },
+         "id0_32767": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (0-32767)"
+               }
+            }
+         },
+         "id1_32767": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-32767)"
+               }
+            }
+         },
+          "id1_524287-unitCode1_4": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-524287)"
+               }, 
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de la fonction de l'équipement (1-4)"
+               }  
+            }
+         },    
+         "id1_32767-unitCode1_10": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-32767)"
+               }, 
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de la fonction de l'équipement (1-10)"
+               }  
+            }
+         },
+         "id0_65535-gcA_P-uc1_5": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (0-65535)"
+               }, 
+               "groupCode": {
+                  "name": "Groupe",
+                  "description": "L'identifiant du groupe de l'équipement (A-P)",
+                  "regexErrorMessage": "L'identifiant doit être entre A et P (inclus)"
+               },
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de la fonction de l'équipement (1-5)"
+               }  
+            }
+         },
+         "seavTxs4": {
+            "content": {
+               "sw2-1": {
+                  "name": "sw2-1",
+                  "description": "Position du micro-interrupteur sw2-1"
+               },
+               "sw2-2": {
+                  "name": "sw2-2",
+                  "description": "Position du micro-interrupteur sw2-2"
+               },
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (0-32767)"
+               }  
+            }
+         }, 
+
+         "id1_65535-uc1_15": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-65535)"
+               },
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de la fonction de l'équipement (1-15)"
+               }
+            }
+         },
+              
+         "id1_65535-uc1_99": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-65535)"
+               },
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de la fonction de l'équipement (1-99)"
+               }
+            }
+         },
+         
+         "id1_4294967295-uc1_15": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-4294967295)"
+               },
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de la fonction de l'équipement (1-15)"
+               }
+            }
+         },           
+
+         "id1_4095-uc0_5": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-4095)"
+               },
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de la fonction de l'équipement (0-5)"
+               }
+            }
+         },     
+         "id1_1048575-uc0_4": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-1048575)"
+               },
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de la fonction de l'équipement (0-4)"
+               }
+            }
+         },
+         "id1_1048575-uc1_5": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-1048575)"
+               },
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de la fonction de l'équipement (1-5)"
+               }
+            }
+         },
+         "id1_1048575-uc0_15": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-1048575)"
+               },
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de la fonction de l'équipement (1-15)"
+               }
+            }
+         },
+         "id1_524287-hcA_D-uc1_4": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (1-524287)"
+               },
+               "houseCode": {
+                  "name": "Bâtiment",
+                  "description": "L'identifiant du bâtiment (A-D)",
+                  "regexErrorMessage": "L'identifiant doit être entre A et D (inclus)"
+               },
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de la fonction de l'équipement (1-4)"
+               }
+            }
+         },
+         "id0_268435456": {
+            "content": {
+               "id": {
+                  "name": "ID",
+                  "description": "L'identifiant de l'équipement (0-268435456)"
+               }
+            }
+         },
+         "uc0_31": {
+            "content": {
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de l'équipement (0-31)"
+               }
+            }
+         },
+         "uc0_255": {
+            "content": {
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de l'équipement (0-255)"
+               }
+            }
+         },
+         "uc0_262143": {
+            "content": {
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de l'équipement (0-262143)"
+               }
+            }
+         },            
+
+         "uc0_65535": {
+            "content": {
+               "unitCode": {
+                  "name": "Unité",
+                  "description": "L'identifiant de l'équipement (0-65535)"
+               }
+            }
+         },            
+
+         "hcrx-garx-sarx":
          {
-            "x10":
-            {
-               "name": "X10 lighting",
-               "content":
-               {
-                  "houseCode":
-                  {
-                     "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (A-P)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (1-16)"
-                  }               
-               }
-            },
-            "arc":
-            {
-               "name": "ARC",
-               "content":
-               {
-                  "houseCode":
-                  {
-                     "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (A-P)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (1-16)"
-                  }               
-               }
-            },
-            "ab400d":
-            {
-               "name": "ELRO AB400D (Flamingo)",
-               "content":
-               {
-                  "houseCode":
-                  {
-                     "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (A-P)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (1-16)"
-                  }               
-               }
-            },
-            "waveman":
-            {
-               "name": "Waveman",
-               "content":
-               {
-                  "houseCode":
-                  {
-                     "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (A-P)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (1-16)"
-                  }               
-               }
-            },
-            "emw200":
-            {
-               "name": "Chacon EMW200",
-               "content":
-               {
-                  "houseCode":
-                  {
-                     "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (A-P)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (1-16)"
-                  }               
-               }
-            },
-            "impuls":
-            {
-               "name": "IMPULS",
-               "content":
-               {
-                  "houseCode":
-                  {
-                     "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (A-P)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (1-16)"
-                  }               
-               }
-            },
-            "risingSun":
-            {
-               "name": "RisingSun",
-               "content":
-               {
-                  "houseCode":
-                  {
-                     "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (A-P)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (1-16)"
-                  }               
-               }
-            },
-            "philips":
-            {
-               "name": "Philips SBC",
-               "content":
-               {
-                  "houseCode":
-                  {
-                     "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (A-P)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (1-16)"
-                  }               
-               }
-            },
-            "energenie":
-            {
-               "name": "Energenie ENER010",
-               "content":
-               {
-                  "houseCode":
-                  {
-                     "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (A-P)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (1-16)"
-                  }               
-               }
-            },
-            "energenie5":
-            {
-               "name": "Energenie 5-gang",
-               "content":
-               {
-                  "houseCode":
-                  {
-                     "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (A-P)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (1-16)"
-                  }               
-               }
-            },
-            "gdr2":
-            {
-               "name": "COCO GDR2-2000R",
-               "content":
-               {
-                  "houseCode":
-                  {
-                     "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (A-D)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (1-4)"
-                  }               
-               }
-            },   
-            "hqCoco20":
-            {
-               "name": "HQ COCO-20",
-               "content":
-               {
-                  "houseCode":
-                  {
-                     "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (A-D)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (1-4)"
-                  }               
-               }
-            },      
-
-            "ac":
-            {
-               "name": "AC",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-67108863)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-16)"
-                  }               
-               }
-            },        
-            "homeEasyEU":
-            {
-               "name": "HomeEasy EU",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-67108863)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-16)"
-                  }               
-               }
-            },
-            "anslut":
-            {
-               "name": "ANSLUT",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-67108863)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-16)"
-                  }               
-               }
-            },
-            "kambrookRf3672":
-            {
-               "name": "Kambrook RF3672 (Australia)",
-               "content":
-               {
-                  "houseCode":
-                  {
-                     "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (A-D)"
-                  },
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-16777215)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-5)"
-                  }               
-               }
-            },
-
-            "koppla":
-            {
-               "name": "Ikea Koppla",
-               "content":
-               {
-                  "system":
-                  {
-                     "name": "Système",
-                     "description": "Code système (1-16)"
-                  },
-                  "channel":
-                  {
-                     "name": "Canal",
-                     "description": "Canal (0-1023)"
-                  }              
-               }
-            },
-
-            "pt2262":
-            {
-               "name": "PT2262 (télécommandes)",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-16777215)"
-                  }         
-               }
-            },
-            
-            "lightwaveRf":
-            {
-               "name": "LightwaveRF (prtocole Siemens AD)",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-16777215)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-16)"
-                  }               
-               }
-            },
-            "emw100":
-            {
-               "name": "EMW100 GAO/Everflourish",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-16383)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-4)"
-                  }               
-               }
-            },
-            "bbsb":
-            {
-               "name": "BBSB new types",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-524287)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-6)"
-                  }               
-               }
-            },
-            "mdRemote106":
-            {
-               "name": "MD remote 106 LED dimmer",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-65535)"
-                  }              
-               }
-            },
-            "rsl":
-            {
-               "name": "Conrad RSL2 / OTIO",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-16777215)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-16)"
-                  }               
-               }
-            },
-            "livolo":
-            {
-               "name": "Livolo",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-65535)"
-                  }              
-               }
-            },
-            "trc02":
-            {
-               "name": "TRC02 (2 batt)",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-16777215)"
-                  }              
-               }
-            },
-            "aoke":
-            {
-               "name": "Relais Aoke",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-65535)"
-                  }              
-               }
-            },
-            "trc02_2":
-            {
-               "name": "TRC02 (3 batt)",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-32767)"
-                  }              
-               }
-            },
-            "eurodomest":
-            {
-               "name": "Eurodomest",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-524287)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-4)"
-                  }               
-               }
-            },
-            "livoloAppliance":
-            {
-               "name": "Livolo Appliance",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-32767)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-10)"
-                  }               
-               }
-            },
-            "rgb432w":
-            {
-               "name": "RGB432W",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-65535)"
-                  }              
-               }
-            },
-            "mdremote107":
-            {
-               "name": "MD remote 107 LED",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-65535)"
-                  }              
-               }
-            },
-            "legrandCad":
-            {
-               "name": "Legrand CAD",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-65535)"
-                  }              
-               }
-            },
-            "avantek":
-            {
-               "name": "Avantek",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-1048575)"
-                  }              
-               }
-            },
-            "it":
-            {
-               "name": " IT(Intertek, FA500, PROmax...)",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-65535)"
-                  }              
-               }
-            },
-            "mdRemote108":
-            {
-               "name": "MD remote 108 LED dimmer",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-65535)"
-                  }              
-               }
-            },
-            "kangtai":
-            {
-               "name": "Kangtai,Cotech",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-65535)"
-                  }              
-               }
-            },
-            
-            "blyss":
-            {
-               "name": "Blyss",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-65535)"
-                  },
-                  "groupCode":
-                  {
-                     "name": "Groupe",
-                     "description": "L'identifiant du groupe de l'équipement (A-P)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-5)"
-                  }               
-               }
-            },
-            
-            "byronSx":
-            {
-               "name": "Byron SX",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-65535)"
-                  }              
-               }
-            },
-            "byronMp001":
-            {
-               "name": "Byron MP001",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (positions des interrupteurs DIP 0=OFF, 1=ON : 000000 à 111111)"
-                  }              
-               }
-            },
-            "selectPlus":
-            {
-               "name": "Select Plus",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-1023)"
-                  }              
-               }
-            },
-            "envivo":
-            {
-               "name": "Envivo",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-65535)"
-                  }              
-               }
-            },
-                        
-            "siemensSf01":
-            {
-               "name": "Siemens SF01 (hotte aspirante LF959RA50/LF259RB50/LF959RB50)",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-32767)"
-                  }              
-               }
-            },
-            "lucciAir":
-            {
-               "name": "Lucci Air fan",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-16)"
-                  }              
-               }
-            },
-            "seavTxs4":
-            {
-               "type": "section",
-               "content":
-               {
-                  "sw2-1":
-                  {
-                     "name": "sw2-1",
-                     "description": "Position du micro-interrupteur sw2-1"
-                  },
-                  "sw2-2":
-                  {
-                     "name": "sw2-2",
-                     "description": "Position du micro-interrupteur sw2-2"
-                  },
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-32767)"
-                  }              
-               }
-            },
-            "westinghouse7226640":
-            {
-               "name": "Westinghouse 7226640",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-16)"
-                  }              
-               }
-            },
-            
-            "harrisonCurtain":
-            {
-               "name": "Harrison Curtain",
-               "content":
-               {
-                  "houseCode":
-                  {
-                     "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (A-P)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (1-16)"
-                  }              
-               }
-            },
-            
-            "rollerTrolHastaNew":
-            {
-               "name": "RollerTrol, Hasta new",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-65535)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-15)"
-                  }               
-               }
-            },
-            "hastaOld":
-            {
-               "name": "Hasta old",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-65535)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-15)"
-                  }               
-               }
-            },
-            "aOkRf01":
-            {
-               "name": "A-OK RF01",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-16777215)"
-                  }              
-               }
-            },
-            "aOkAc114":
-            {
-               "name": "A-OK AC114",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-16777215)"
-                  }              
-               }
-            },
-            "raex":
-            {
-               "name": "Raex YR1326",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-16777215)"
-                  }              
-               }
-            },
-            "mediaMount":
-            {
-               "name": "Media Mount",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-16777215)"
-                  }              
-               }
-            },
-            "dc106":
-            {
-               "name": "DC106/Rohrmotor24-RMF/Yooda",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-4294967295)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-15)"
-                  }             
-               }
-            },
-            "forest":
-            {
-               "name": "Forest",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-4294967295)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-15)"
-                  }             
-               }
-            },
-            "chamberlaincs4330cn":
-            {
-               "name": "Chamberlain CS4330CN",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-4095)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (0-5)"
-                  }             
-               }
-            },
-            "sunperyBtx":
-            {
-               "name": "Sunpery/BTX",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-16777215)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-6)"
-                  }             
-               }
-            },
-            "dolatDlm1":
-            {
-               "name": "Dolat DLM-1, Topstar",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-16777215)"
-                  }             
-               }
-            },
-            "asp":
-            {
-               "name": "ASP",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-16777215)"
-                  }             
-               }
-            },
-            "confexx":
-            {
-               "name": "Confexx CNF24-2435",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-65535)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-15)"
-                  }               
-               }
-            },
-            "screenline":
-            {
-               "name": "Screenline",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-65535)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-99)"
-                  }               
-               }
-            },
-            
-            "rfy":
-            {
-               "name": "RFY",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-1048575)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-4)"
-                  }             
-               }
-            },
-            "rfyExt":
-            {
-               "name": "RFY ext",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-1048575)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (0-15)"
-                  }             
-               }
-            },
-            "asa":
-            {
-               "name": "ASA",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-1048575)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-5)"
-                  }             
-               }
-            },
-            
-            "homeConfort":
-            {
-               "name": "Home Confort",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-524287)"
-                  },
-                  "houseCode":
-                  {
-                     "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (A-D)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-4)"
-                  }             
-               }
-            },
-            
-            "x10SecurityR":
-            {
-               "name": "X10-security, télécommande",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-65535)"
-                  }           
-               }
-            },
-            
-            "keeLoq":
-            {
-               "name": "KeeLoq Classic, télécommande ou capteur",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (28 bits)"
-                  }           
-               }
-            },
-            
-            "digimax":
-            {
-               "name": "Digimax, TLX7506",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-65535)"
-                  }           
-               }
-            },            
-            "digimaxShort":
-            {
-               "name": "Digimax short (no set point)",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (0-65535)"
-                  }           
-               }
-            },
-            
-            "he105":
-            {
-               "name": "HE105",
-               "content":
-               {
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (0-31)"
-                  }               
-               }
-            },            
-            "rts10":
-            {
-               "name": "RTS10, RFS10, TLX1206",
-               "content":
-               {
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (0-255)"
-                  }               
-               }
-            },  
-            
-            "fs20":
-            {
-               "name": "FS20",
-               "content":
-               {
-                  "houseCode":
-                  {
-                     "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (8 chiffres de 1 à 4 : 11111111 à 44444444)"
-                  },
-                  "groupAddress":
-                  {
-                     "name": "Adresse du groupe",
-                     "description": "L'adresse du groupe (2 chiffres de 1 à 4 : 11 à 44)"
-                  },
-                  "subAddress":
-                  {
-                     "name": "Sous-adresse",
-                     "description": "La sous-adresse (2 chiffres de 1 à 4 : 11 à 44)"
-                  }             
-               }
-            },
-            "fht8v":
-            {
-               "name": "Vanne FHT8V",
-               "content":
-               {
-                  "houseCode":
-                  {
-                     "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (8 chiffres de 1 à 4 : 11111111 à 44444444)"
-                  },
-                  "groupAddress":
-                  {
-                     "name": "Adresse du groupe",
-                     "description": "L'adresse du groupe (2 chiffres de 1 à 4 : 11 à 44)"
-                  },
-                  "subAddress":
-                  {
-                     "name": "Sous-adresse",
-                     "description": "La sous-adresse (2 chiffres de 1 à 4 : 11 à 44)"
-                  }                        
-               }
-            },
-            "fht80":
-            {
-               "name": "capteur d'ouverture FHT80",
-               "content":
-               {
-                  "houseCode":
-                  {
-                     "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (8 chiffres de 1 à 4 : 11111111 à 44444444)"
-                  },
-                  "groupAddress":
-                  {
-                     "name": "Adresse du groupe",
-                     "description": "L'adresse du groupe (2 chiffres de 1 à 4 : 11 à 44)"
-                  },
-                  "subAddress":
-                  {
-                     "name": "Sous-adresse",
-                     "description": "La sous-adresse (2 chiffres de 1 à 4 : 11 à 44)"
-                  }                        
-               }
-            },
-            
-            "g6rH4t1":
-            {
-               "name": "Mertik G6R-H4T1",
-               "content":
-               {
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (0-255)"
-                  }               
-               }
-            },
-            "g6rH4tb":
-            {
-               "name": "Mertik G6R-H4TB / G6-H4T / G6R-H4T21-Z22",
-               "content":
-               {
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (0-262143)"
-                  }               
-               }
-            },
-            "g6rH4td":
-            {
-               "name": "Mertik G6R-H4TD",
-               "content":
-               {
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (0-65535)"
-                  }               
-               }
-            },
-            "g6rH4s":
-            {
-               "name": "Mertik G6R-H4S",
-               "content":
-               {
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (0-262143)"
-                  }               
-               }
-            },
-               
-            "mcz1PelletStove":
-            {
-               "name": "MCZ Pellet Stove (modèle avec 1 ventilateur)",
-               "content":
-               {
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (0-16777215)"
-                  }               
-               }
-            },
-            "mcz2PelletStove":
-            {
-               "name": "MCZ Pellet Stove (modèle avec 2 ventilateurs)",
-               "content":
-               {
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (0-16777215)"
-                  }               
-               }
-            },
-            "mcz3PelletStove":
-            {
-               "name": "MCZ Pellet Stove (modèle avec 3 ventilateurs)",
-               "content":
-               {
-                  "unitCode":
-                  {
-                     "name": "Equipement",
-                     "description": "L'identifiant de l'équipement (0-16777215)"
-                  }               
-               }
-            },
-            
-            "cameraX10Ninja":
-            {
-               "name": "Camera X10 Ninja",
-               "content":
-               {
-                  "houseCode":
-                  {
-                     "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment (A-P)"
-                  }              
-               }
-            },        
-
-            "smartwares":
-            {
-               "name": "Smartwares",
-               "content":
-               {
-                  "id":
-                  {
-                     "name": "ID",
-                     "description": "L'identifiant de l'équipement (1-67108863)"
-                  },
-                  "unitCode":
-                  {
-                     "name": "Unité",
-                     "description": "L'identifiant de la fonction de l'équipement (1-16)"
-                  }               
+            "content":
+            {
+               "houseCode": {
+                  "name": "Bâtiment",
+                  "description": "L'identifiant du bâtiment (8 chiffres de 1 à 4 : 11111111 à 44444444)",
+                  "regexErrorMessage": "L'identifiant doit contenir 8 chiffres entre 1 et 4 : exemple : 12341234"
+               },
+               "groupAddress": {
+                  "name": "Adresse du groupe",
+                  "description": "L'adresse du groupe (2 chiffres de 1 à 4 : 11 à 44)",
+                  "regexErrorMessage": "L'adresse doit contenir 2 chiffres entre 1 et 4 : exemple : 14"
+               },
+               "subAddress": {
+                  "name": "Sous-adresse",
+                  "description": "La sous-adresse (2 chiffres de 1 à 4 : 11 à 44)",
+                  "regexErrorMessage": "La sous-adresse doit contenir 2 chiffres entre 1 et 4 : exemple : 14"
+               }             
+            }
+         },
+         "cameraX10Ninja":
+         {
+            "models": [ "cameraX10Ninja"],
+            "content":
+            {
+               "houseCode": {
+                  "name": "Bâtiment",
+                  "description": "L'identifiant du bâtiment (A-P)",
+                  "regexErrorMessage": "L'identifiant doit être entre A et P (inclus)"
                }
             }
          }

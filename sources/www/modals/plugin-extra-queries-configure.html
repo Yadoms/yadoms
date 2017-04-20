@@ -42,6 +42,9 @@
          //i18n
          $("div#plugin-extra-queries-configure-modal").i18n();
 
+         //finalize treatments (ie sort items after trnaslation)
+         configMgr.afterI18n();
+
          var success = false;
          
          //validation form

@@ -199,8 +199,14 @@
       "errorDuringGettingPluginTypes": "Erreur lors de la récupération de la liste des types de plugins"
     },
     "delete-device": {
-      "title": "Suppression d'un équipement",
-      "text": "Cette opération va supprimer l'équipement __deviceName__ ainsi que son historique de données. Voulez-vous continuer ?"
+      "title": "Mettre l'équipement en liste noire",
+      "text": "Cette opération va mettre l'équipement __deviceName__ en liste noire, et supprimer son historique de données.",
+      "explanation": "Un équipement en liste noire sera ignoré par Yadoms, même si le matériel associé continue d'envoyer des données. Un équipement en liste noire peut également être restauré. Mettez un équipement en liste noire si le capteur associé ne vous intéresse pas (capteur ne vous appartenant pas par exemple). Supprimer définitivement un équipement si vous ne disposez plus du capteur associé.",
+      "checkbox": "Supprimer définitivement"
+    },
+    "confirm-delete-device": {
+      "title": "Supprimer définitivement l'équipement",
+      "text": "Cette opération va supprimer définitivement l'équipement __deviceName__, ainsi que son historique de données."
     },
     "configure-plugin": {
       "title": "Configuration du plugin",
@@ -440,7 +446,7 @@
           "errorGettingDeviceList": "Erreur lors de la récupération de la liste des équipements",
           "errorGettingDeviceDetailsList": "Erreur lors de la récupération des détails de l'équipement",
           "errorUpdatingKeyword": "Erreur lors de la mise à jour de la donnée __keyword__",
-          "errorBlacklistingDevice": "Erreur lors de la suppression/restauration de l'équipement __device__",
+          "errorDeletingDevice": "Erreur lors de la suppression/restauration de l'équipement __device__",
           "errorBlacklistingKeyword": "Erreur lors de la suppression/restauration de la donnée __keyword__",
           "noAcquisition": "Aucune acquisition",
 		  "showBlacklistedDevices" : "Afficher les équipements supprimés"
@@ -576,6 +582,10 @@
     }
   },
     "configuration": {
+        "manually-device-model" : {
+            "title": "Modèle",
+            "description": "Choisir le modèle d'équipement à créer"
+        },
         "validationForm": {
             "incorrectValue": "Valeur incorrecte",
             "onlyIntegerNumberAllowed": "Nombre entier attendu",
@@ -583,7 +593,8 @@
             "maxValueExceeded": "La valeur ne peut être supérieure à __maxValue__",
             "minValueExceeded": "La valeur ne peut être inférieure à __minValue__",
             "minNumberItemsRequired": "La liste doit contenir au moins __minValue__ éléments",
-            "maxNumberItemsAllowed": "La liste ne peut contenir plus de __maxValue__ éléments"
+            "maxNumberItemsAllowed": "La liste ne peut contenir plus de __maxValue__ éléments",
+            "required": "Une valeur est nécessaire"
         },
         "iconpicker-search-prompt" : "Rechercher une icone..."
     },

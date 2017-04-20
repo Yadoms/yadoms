@@ -105,7 +105,8 @@ namespace rfxcomMessages
             details.set("houseCode", m_houseCode);
          details.set("id", m_id);
          details.set("unitCode", m_unitCode);
-         api->declareDevice(m_deviceName, m_subTypeManager->getModel(), m_keywords, details);
+         std::string model = m_subTypeManager->getModel();
+         api->declareDevice(m_deviceName, model, model, m_keywords, details);
       }
    }
 

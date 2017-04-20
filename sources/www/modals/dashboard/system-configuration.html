@@ -45,7 +45,7 @@
       $.when(promise).done(function() {               
                //*************
                //language
-               var languageParameter = new EnumParameterHandler(i18NContext, ConfigurationManager.items.system.language,
+               var languageParameter = new EnumParameterHandler(i18NContext, undefined, ConfigurationManager.items.system.language,
                {
                   "values": window.getSupportedLanguages(),
                   "defaultValue": Yadoms.systemConfiguration[ConfigurationManager.items.system.language].defaultValue,
@@ -54,7 +54,7 @@
 
                //*************
                //City section parameters
-               var citySectionParameters = new SectionParameterHandler(i18NContext,
+               var citySectionParameters = new SectionParameterHandler(i18NContext,undefined,
                   ConfigurationManager.items.system.locationSection,
                   {},
                   ConfigurationManager.items.system.locationSection);            
@@ -77,18 +77,18 @@
                   Yadoms.systemConfiguration.location.value = location;
                }
                
-               var latitudeParameter = new StringParameterHandler(i18NContext,
+               var latitudeParameter = new StringParameterHandler(i18NContext,undefined,
                   ConfigurationManager.items.system.location.latitude,
                   {
-                     "regex" : "^[0-9]+(\.[0-9]+)?$",
+                     "regex" : "^-?[0-9]+(\.[0-9]+)?$",
                      "required": "true"
                   },
                   Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.latitude]);
                   
-               var longitudeParameter = new StringParameterHandler(i18NContext,
+               var longitudeParameter = new StringParameterHandler(i18NContext,undefined,
                   ConfigurationManager.items.system.location.longitude,
                   {
-                     "regex" : "^[0-9]+(\.[0-9]+)?$",
+                     "regex" : "^-?[0-9]+(\.[0-9]+)?$",
                      "required": "true"
                   },
                   Yadoms.systemConfiguration.location.value[ConfigurationManager.items.system.location.longitude]);                        
@@ -111,7 +111,7 @@
 
                var value = {};
                value.checkbox = basicAuth.active;
-               var basicAuthenticationSectionParameters = new SectionParameterHandler(i18NContext,
+               var basicAuthenticationSectionParameters = new SectionParameterHandler(i18NContext,undefined,
                   ConfigurationManager.items.system.basicAuthentication,
                   {
                      "enableWithCheckBox": true,
@@ -121,7 +121,7 @@
 
                //*************
                //user authentication
-               var userAuthenticationParameter = new StringParameterHandler(i18NContext,
+               var userAuthenticationParameter = new StringParameterHandler(i18NContext,undefined,
                   ConfigurationManager.items.system.basicAuthenticationUser,
                   {
                      "defaultValue": basicAuthDefaultValue.user,
@@ -131,7 +131,7 @@
 
                //*************
                //password authentication
-               var passwordAuthenticationParameter = new StringParameterHandler(i18NContext,
+               var passwordAuthenticationParameter = new StringParameterHandler(i18NContext,undefined,
                   ConfigurationManager.items.system.basicAuthenticationPassword,
                   {
                      "defaultValue": basicAuthDefaultValue.password,
@@ -143,7 +143,7 @@
 
                //*************
                //password authentication
-               var password2AuthenticationParameter = new StringParameterHandler(i18NContext,
+               var password2AuthenticationParameter = new StringParameterHandler(i18NContext,undefined,
                   ConfigurationManager.items.system.basicAuthenticationPassword2,
                   {
                      "defaultValue": basicAuthDefaultValue.password,
@@ -162,7 +162,7 @@
                //advanced parameters
                value = {};
                value.checkbox = Yadoms.systemConfiguration[ConfigurationManager.items.system.advancedParameters].value;
-               var advancedSectionParameters = new SectionParameterHandler(i18NContext,
+               var advancedSectionParameters = new SectionParameterHandler(i18NContext,undefined,
                   ConfigurationManager.items.system.advancedParameters,
                   {
                      "enableWithCheckBox": true,
@@ -172,7 +172,7 @@
 
                //*************
                //dateFormatString
-               var dateFormatStringParameter = new StringParameterHandler(i18NContext, ConfigurationManager.items.system.dateFormatString, { defaultValue: Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].defaultValue, "required": "true" }, Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value);
+               var dateFormatStringParameter = new StringParameterHandler(i18NContext, undefined,ConfigurationManager.items.system.dateFormatString, { defaultValue: Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].defaultValue, "required": "true" }, Yadoms.systemConfiguration[ConfigurationManager.items.system.dateFormatString].value);
                advancedSectionParameters.configurationHandlers.push(dateFormatStringParameter);
                
                //and add it to the gui

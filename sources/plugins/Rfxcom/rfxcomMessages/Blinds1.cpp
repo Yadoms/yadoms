@@ -144,6 +144,7 @@ namespace rfxcomMessages
 
          api->declareDevice(m_deviceName,
                             m_deviceModel,
+                            m_deviceModel,
                             m_keywords,
                             details);
       }

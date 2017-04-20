@@ -333,6 +333,12 @@ namespace pluginSystem
    {
       try
       {
+         if (!m_dataProvider->getDeviceRequester()->deviceExists(deviceId))
+            return;
+
+         if (m_dataProvider->getDeviceRequester()->isDeviceBlacklisted(deviceId))
+            return;
+
          auto device = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
          auto pluginInstanceId = device->PluginId();
 

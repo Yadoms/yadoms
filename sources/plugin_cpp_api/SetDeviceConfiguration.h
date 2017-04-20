@@ -12,7 +12,7 @@ namespace plugin_cpp_api
       virtual ~CSetDeviceConfiguration();
 
       // ISetDeviceConfiguration Implementation
-      const std::string& device() const override;
+      const std::string& name() const override;
       const shared::CDataContainer& configuration() const override;
       // [END] ISetDeviceConfiguration Implementation
 

@@ -97,62 +97,66 @@ ConfigurationHelper.createControlGroup = function (parameterHandler, controlToIn
  * @param parentRadioSectionActive: used only for containers to add a radio button at the beginning for radiosection handler
  * @returns {*}
  */
-ConfigurationHelper.createParameterHandler = function (i18nContext, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive) {
+ConfigurationHelper.createParameterHandler = function (i18nCtxt, i18nKey, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive) {
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined in " + paramName + " parameter");
    assert(content.type !== undefined, "type field must be found in " + paramName + " parameter");
-   assert(i18nContext !== undefined, "i18nContext must contain path of i18n " + paramName + " parameter");
+   assert(i18nCtxt !== undefined, "i18nCtxt must contain path of i18n " + paramName + " parameter");
    
    if (content.show !== undefined && content.show.result === "false")
       return null;
 
+   let i18nContext = i18nCtxt;
+   if(content.i18nBasePath)
+      i18nContext = content.i18nBasePath;
+   
    switch (content.type.toLowerCase()) {
       case "int" :
-         return new IntParameterHandler(i18nContext, paramName, content, currentValue);
+         return new IntParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
          break;
 
       case "decimal" :
-         return new DecimalParameterHandler(i18nContext, paramName, content, currentValue);
+         return new DecimalParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
          break;
 
       case "enum" :
-         return new EnumParameterHandler(i18nContext, paramName, content, currentValue);
+         return new EnumParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
          break;
 
       case "string" :
-         return new StringParameterHandler(i18nContext, paramName, content, currentValue);
+         return new StringParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
          break;
 
       case "bool" :
-         return new BoolParameterHandler(i18nContext, paramName, content, currentValue);
+         return new BoolParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
          break;
 
       case "section" :
-         return new SectionParameterHandler(i18nContext, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive);
+         return new SectionParameterHandler(i18nContext, i18nKey, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive);
          break;
 
       case "radiosection" :
-         return new RadioSectionParameterHandler(i18nContext, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive);
+         return new RadioSectionParameterHandler(i18nContext, i18nKey, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive);
          break;
 
       case "combosection" :
-         return new ComboSectionParameterHandler(i18nContext, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive);
+         return new ComboSectionParameterHandler(i18nContext, i18nKey, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive);
          break;
 
       case "keyword" :
-         return new KeywordParameterHandler(i18nContext, paramName, content, currentValue);
+         return new KeywordParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
          break;
 
       case "color" :
-         return new ColorParameterHandler(i18nContext, paramName, content, currentValue);
+         return new ColorParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
          break;
 
       case "icon" :
-         return new IconParameterHandler(i18nContext, paramName, content, currentValue);
+         return new IconParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
          break;
 
       case "list" :
-         return new ListParameterHandler(i18nContext, paramName, content, currentValue);
+         return new ListParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
          break;
 
       default :
@@ -171,7 +175,7 @@ ConfigurationHelper.createParameterHandler = function (i18nContext, paramName, c
  * @param currentValue
  * @returns {*}
  */
-ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, paramName, keyword, currentValue, pluginInstance) {
+ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, i18nKey, paramName, keyword, currentValue, pluginInstance) {
    assert(paramName !== undefined, "paramName must be defined");
    assert(keyword !== undefined, "keyword must be defined in " + paramName + " parameter");
    assert(keyword.type !== undefined, "type field must be found in " + paramName + " parameter");
@@ -186,7 +190,7 @@ ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, 
    
    switch (keyword.type.toLowerCase()) {
       case "numeric":
-         return new DecimalParameterHandler(i18NContext, paramName, obj, currentValue);
+         return new DecimalParameterHandler(i18NContext, i18nKey, paramName, obj, currentValue);
 
       case "enum":
          var enumValues = {};
@@ -194,13 +198,13 @@ ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, 
             enumValues[item]=item;
          }
          obj.values = enumValues;
-         return new EnumParameterHandler("plugins/" + pluginInstance.type + ":enumerations.", keyword.typeInfo.name, obj, currentValue);
+         return new EnumParameterHandler("plugins/" + pluginInstance.type + ":enumerations.", i18nKey, keyword.typeInfo.name, obj, currentValue);
 
       case "string":
-         return new StringParameterHandler(i18NContext, paramName, obj, currentValue);
+         return new StringParameterHandler(i18NContext, i18nKey, paramName, obj, currentValue);
 
       case "bool":
-         return new BoolParameterHandler(i18NContext, paramName, obj, currentValue, true);
+         return new BoolParameterHandler(i18NContext, i18nKey, paramName, obj, currentValue, true);
 
       default:
          return null;

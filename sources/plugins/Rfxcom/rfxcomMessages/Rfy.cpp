@@ -76,7 +76,7 @@ namespace rfxcomMessages
          details.set("subType", m_subType);
          details.set("id", m_id);
          details.set("unitCode", m_unitCode);
-         api->declareDevice(m_deviceName, m_deviceModel, m_state, details);
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_state, details);
       }
    }
 

@@ -59,7 +59,7 @@ void CDecoder::createDeviceAndKeywords(bool apparentPowerPresent)
 
    if (!isERDFCounterDesactivated())
    {
-      m_api->declareDevice(m_deviceName,
+      m_api->declareDevice(m_deviceName, "teleInfoUSB", 
                            "TeleInfoUSB : Id = " + m_deviceName,
                            m_keywords,
                            m_DeviceDetails);

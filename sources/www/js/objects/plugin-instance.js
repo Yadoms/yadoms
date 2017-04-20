@@ -110,25 +110,55 @@ PluginInstance.prototype.applyBinding  = function(schema, plugin, system) {
  * @returns {*}
  */
 PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = function () {
+   var self = this;
    var d = new $.Deferred();
 
-   if (!isNullOrUndefined(this.package)) {
-      if (this.package.manuallyDeviceCreationConfigurationSchema && Object.keys(this.package.manuallyDeviceCreationConfigurationSchema).length > 0) {
-         var tmp = this.package.manuallyDeviceCreationConfigurationSchema;
-         this.applyBindingPrivate(tmp, ["plugin", "system"])
-         .done(d.resolve)
+   if (!isNullOrUndefined(self.package)) {
+      if (  self.package.deviceConfiguration && 
+            self.package.deviceConfiguration.staticConfigurationSchema && 
+            self.package.deviceConfiguration.staticConfigurationSchema.schemas && 
+            Object.keys(self.package.deviceConfiguration.staticConfigurationSchema.schemas).length > 0) {
+
+        self.applyBindingPrivate(self.package.deviceConfiguration.staticConfigurationSchema.schemas, ["plugin", "system"])
+         .done(function(schema) {
+            var tmp = { 
+               type:
+               {
+                  type: "comboSection", 
+                  name: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.title", { defaultValue: $.t("configuration.manually-device-model.title") }), 
+                  name: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.description", { defaultValue: $.t("configuration.manually-device-model.description") }), 
+                  content : {}
+               }
+            };
+            for (var k in schema){
+                if (schema.hasOwnProperty(k)) {
+                   for(var typeName in schema[k].types) {
+                     if(schema[k].types[typeName].canBeCreatedManually == "true") {
+                        tmp.type.content[typeName] = {
+                           type: "section",
+                           name: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".types." + typeName + ".title"),
+                           description: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".types." + typeName + ".description"),
+                           content: schema[k].content,
+                           i18nBasePath: "plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas.",
+                           i18nKey: k
+                        };
+                     }
+                   }
+                }
+            }
+            d.resolve(tmp);
+         })
          .fail(d.reject);
       } else {
-         //if manuallyDeviceCreationConfigurationSchema is not defined, to not try to do any binding...
-         //just resolve with undefined manuallyDeviceCreationConfigurationSchema
-         d.resolve(this.package.manuallyDeviceCreationConfigurationSchema);
+         //if device configruation schema are not defined, to not try to do any binding...
+         //just resolve with undefined
+         d.resolve();
       }
    } else {
       d.reject("undefined package");
    }
    return d.promise();
 };
-
 
 /**
  *  Get the bound extra queries configuration schema
