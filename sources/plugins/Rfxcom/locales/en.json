@@ -49,7 +49,8 @@
             "content": {
                "houseCode": {
                   "name": "House Code",
-                  "description": "The house code (A-P)"
+                  "description": "The house code (A-P)",
+                  "regexErrorMessage": "The house code must be between A and P (included)"
                },
                "unitCode": {
                   "name": "Unit Code",
@@ -61,7 +62,8 @@
             "content": {
                "houseCode": {
                   "name": "House Code",
-                  "description": "The house code (A-D)"
+                  "description": "The house code (A-D)",
+                  "regexErrorMessage": "The house code must be between A and P (included)"
                },
                "unitCode": {
                   "name": "Unit Code",
@@ -265,7 +267,8 @@
                }, 
                "groupCode": {
                   "name": "Groupe",
-                  "description": "The group code (A-P)"
+                  "description": "The group code (A-P)",
+                  "regexErrorMessage": "The group code must be between A and P (included)"
                },
                "unitCode": {
                   "name": "Unit Code",
@@ -341,7 +344,7 @@
                }
             }
          },     
-         "id1_1048575-uc1_4": {
+         "id1_1048575-uc0_4": {
             "content": {
                "id": {
                   "name": "ID",
@@ -349,7 +352,7 @@
                },
                "unitCode": {
                   "name": "Unit Code",
-                  "description": "The unit code (1-4)"
+                  "description": "The unit code (0-4)"
                }
             }
          },
@@ -385,7 +388,8 @@
                },
                "houseCode": {
                   "name": "House Code",
-                  "description": "The house code (A-D)"
+                  "description": "The house code (A-D)",
+                  "regexErrorMessage": "The house code must be between A and D (included)"
                },
                "unitCode": {
                   "name": "Unit Code",
@@ -440,15 +444,18 @@
             {
                "houseCode": {
                   "name": "House Code",
-                  "description": "The house code (8 digits from 1-4 : 11111111 to 44444444)"
+                  "description": "The house code (8 digits from 1-4 : 11111111 to 44444444)",
+                  "regexErrorMessage": "The house code must contains 8 digits, each one between 1 and 4 included. From 11111111 to 44444444"
                },
                "groupAddress": {
                   "name": "Adresse du groupe",
-                  "description": "The group address (2 digits from 1-4 : 11 to 44)"
+                  "description": "The group address (2 digits from 1-4 : 11 to 44)",
+                  "regexErrorMessage": "The group address must contains 2 digits, each one between 1 and 4 included. From 11 to 44"
                },
                "subAddress": {
                   "name": "Sous-adresse",
-                  "description": "The sub-address (2 digits from 1-4 : 11 to 44)"
+                  "description": "The sub-address (2 digits from 1-4 : 11 to 44)",
+                  "regexErrorMessage": "The sub-address must contains 2 digits, each one between 1 and 4 included. From 11 to 44"
                }             
             }
          },
@@ -459,7 +466,8 @@
             {
                "houseCode": {
                   "name": "House Code",
-                  "description": "The house code (A-P)"
+                  "description": "The house code (A-P)",
+                  "regexErrorMessage": "The house code must be between A and P (included)"
                }              
             }
          }

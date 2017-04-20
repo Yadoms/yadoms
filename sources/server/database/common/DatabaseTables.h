@@ -72,6 +72,7 @@ namespace common {
       (Model)
       (Details)
       (Configuration)
+      (Type)
       (Blacklist)
    )
 

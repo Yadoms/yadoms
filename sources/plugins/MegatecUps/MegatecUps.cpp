@@ -184,7 +184,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       default:
          {
-            YADOMS_LOG(error) << "Unknown message id" ;
+            YADOMS_LOG(warning) << "Unknown message id " << api->getEventHandler().getEventId();
             break;
          }
       }
@@ -566,7 +566,7 @@ void CMegatecUps::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    if (!api->deviceExists(DeviceName))
    {
-      api->declareDevice(DeviceName, model, m_keywords);
+      api->declareDevice(DeviceName, model, model, m_keywords);
 
       // Force a first historization to let Yadoms know the shutdown state
       api->historizeData(DeviceName, m_upsShutdown);

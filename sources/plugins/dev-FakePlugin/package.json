@@ -131,39 +131,37 @@
   },
   "deviceConfiguration": {
     "staticConfigurationSchema": {
-      "genericsensor" : {
-        "models": [ "Fake sensor" ],
-        "content": {
-          "CounterDivider": {
-            "type": "int",
-            "defaultValue": "2",
-            "minimumValue": "1",
-            "maximumValue": "10"
-          }
-        }
-      },
-      "genericcounter" : {
-        "models": [ "Fake counter" ],
-        "content": {
-          "CounterDivider2": {
-            "type": "int",
-            "defaultValue": "2",
-            "minimumValue": "1",
-            "maximumValue": "10"
-          },
-          "MySection": {
-            "type": "section",
-            "content": {
-              "SubIntParameter": {
-                "type": "int",
-                "defaultValue": "65535"
-              },
-              "SubStringParameter": {
-                "type": "string"
-              }
-            }
-          }
-        }
+      "schemas" : {
+         "fakeConfigurableDevice" : {
+           "types" : { 
+               "fakeConfigurableDeviceType" : {
+                  "canBeCreatedManually" : "false"
+               }, 
+               "anotherFakeConfigurableDeviceType" : {
+                  "canBeCreatedManually" : "true"
+               }
+           },
+           "content": {
+             "CounterDivider2": {
+               "type": "int",
+               "defaultValue": "2",
+               "minimumValue": "1",
+               "maximumValue": "10"
+             },
+             "MySection": {
+               "type": "section",
+               "content": {
+                 "SubIntParameter": {
+                   "type": "int",
+                   "defaultValue": "65535"
+                 },
+                 "SubStringParameter": {
+                   "type": "string"
+                 }
+               }
+             }
+           }
+         }
       }
     },
     "dynamicConfigurationSchema": "true"

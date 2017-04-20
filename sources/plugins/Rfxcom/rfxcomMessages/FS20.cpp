@@ -195,7 +195,7 @@ namespace rfxcomMessages
          details.set("groupAddress", m_groupAddress);
          details.set("subAddress", m_subAddress);
 
-         api->declareDevice(m_deviceName, m_deviceModel, m_keywords, details);
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
       }
    }
 

@@ -126,15 +126,17 @@
 	},
    "deviceConfiguration": {
       "staticConfigurationSchema": {
-         "genericsensor" : {
-           "content": {
-              "CounterDivider": {
-               "name": "Divider",
-               "description": "Divider used to low the counter frequency(only for 'fake sensor')"
-              }
-           }
-        },
-        "genericcounter" : {
+        "fakeConfigurableDevice" : {
+           "types" : { 
+               "fakeConfigurableDeviceType" : {
+                  "title" : "configurable device",
+                  "description" : "compatible with Chacon, DIO,..."
+               },
+               "anotherFakeConfigurableDeviceType" : {
+                  "title" : "another configurable device",
+                  "description" : "compatible with Blyss, ..."
+               }
+           },
            "content": {
               "CounterDivider2": {
                "name": "Divider n°2",

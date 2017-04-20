@@ -395,6 +395,7 @@ namespace plugin_cpp_api
    }
 
    void CApiImplementation::declareDevice(const std::string& device,
+                                          const std::string& type,
                                           const std::string& model,
                                           boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
                                           const shared::CDataContainer& details)
@@ -402,6 +403,7 @@ namespace plugin_cpp_api
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_declaredevice();
       request->set_device(device);
+      request->set_type(type);
       request->set_model(model);
       fillHistorizable(keyword, request->add_keywords());
       if (!details.empty())
@@ -418,6 +420,7 @@ namespace plugin_cpp_api
    }
 
    void CApiImplementation::declareDevice(const std::string& device,
+                                          const std::string& type,
                                           const std::string& model,
                                           const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords,
                                           const shared::CDataContainer& details)
@@ -425,6 +428,7 @@ namespace plugin_cpp_api
       plugin_IPC::toYadoms::msg req;
       auto request = req.mutable_declaredevice();
       request->set_device(device);
+      request->set_type(type);
       request->set_model(model);
       for (auto keyword = keywords.begin(); keyword != keywords.end(); ++keyword)
          fillHistorizable(*keyword, request->add_keywords());
@@ -633,6 +637,50 @@ namespace plugin_cpp_api
       catch (std::exception&)
       {
          std::cerr << "Call was : updateDeviceModel(" << device << ", " << model << ")" << std::endl;
+         throw;
+      }
+   }
+
+   std::string CApiImplementation::getDeviceType(const std::string& device) const
+   {
+      plugin_IPC::toYadoms::msg req;
+      auto request = req.mutable_devicetyperequest();
+      request->set_device(device);
+
+      std::string type;
+      try
+      {
+         send(req,
+              [](const plugin_IPC::toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_devicetypeanswer();
+              },
+              [&](const plugin_IPC::toPlugin::msg& ans) -> void
+              {
+                 type = ans.devicetypeanswer().type();
+              });
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : getDeviceType(" << device << ")" << std::endl;
+         throw;
+      }
+      return type;
+   }
+
+   void CApiImplementation::updateDeviceType(const std::string& device, const std::string& type) const
+   {
+      plugin_IPC::toYadoms::msg req;
+      auto request = req.mutable_updatedevicetype();
+      request->set_device(device);
+      request->set_type(type);
+      try
+      {
+         send(req);
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : updateDeviceType(" << device << ", " << type << ")" << std::endl;
          throw;
       }
    }

@@ -26,6 +26,7 @@ namespace message
       CRorgs::ERorgIds rorg() const;
       std::string senderId() const;
       std::string destinationId() const;
+      int dBm() const;
       const std::vector<unsigned char>& userData() const;
       unsigned char status() const;
 
@@ -33,6 +34,7 @@ namespace message
       const CRorgs::ERorgIds m_rorg;
       const std::string m_senderId;
       const std::string m_destinationId;
+      const int m_dBm;
       const unsigned char m_status;
       const std::vector<unsigned char> m_userData;
    };

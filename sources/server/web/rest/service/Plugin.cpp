@@ -6,7 +6,7 @@
 #include "pluginSystem/BindingQueryData.h"
 #include "pluginSystem/ExtraQueryData.h"
 #include "communication/callback/SynchronousCallback.h"
-
+#include <shared/Log.h>
 
 namespace web
 {
@@ -488,8 +488,8 @@ namespace web
                   auto pluginId = boost::lexical_cast<int>(parameters[1]);
 
                   shared::CDataContainer content(requestContent);
-                  if (!content.exists("name") || !content.exists("configuration"))
-                     return CResult::GenerateError("invalid request content. There must be a name and a configuration field");
+                  if (!content.exists("name") || !content.exists("type") || !content.exists("configuration"))
+                     return CResult::GenerateError("invalid request content. There must be a name, a type and a configuration field");
 
                   try
                   {
@@ -497,8 +497,8 @@ namespace web
                      communication::callback::CSynchronousCallback<std::string> cb;
 
                      //create the data container to send to plugin
-                     shared::CDataContainer deviceConfig = content.get<shared::CDataContainer>("configuration");
-                     pluginSystem::CManuallyDeviceCreationData data(content.get<std::string>("name"), content.get<std::string>("model"), deviceConfig);
+                     content.printToLog(YADOMS_LOG(information));
+                     pluginSystem::CManuallyDeviceCreationData data(content.get<std::string>("name"), content.get<std::string>("type"), content.get<shared::CDataContainer>("configuration"));
 
                      //send request to plugin
                      m_messageSender.sendManuallyDeviceCreationRequest(pluginId, data, cb);
@@ -523,7 +523,7 @@ namespace web
                                  m_dataProvider->getDeviceRequester()->updateDeviceModel(createdDevice->Id(), content.get<std::string>("model"));
 
                               //set the device configuration
-                              m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(createdDevice->Id(), deviceConfig);
+                              m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(createdDevice->Id(), content.get<shared::CDataContainer>("configuration"));
 
                               //get device with friendly name updated
                               createdDevice = m_dataProvider->getDeviceRequester()->getDeviceInPlugin(pluginId, res.Result);

@@ -19,7 +19,7 @@ public:
    /// \brief	    Constructor
    /// \param[in] deviceName    The device name
    //--------------------------------------------------------------
-   explicit CFakeSensor(const std::string& deviceName, const shared::CDataContainer & deviceConfiguration = shared::CDataContainer::EmptyContainer);
+   explicit CFakeSensor(const std::string& deviceName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -51,20 +51,21 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	    Returns the fake sensor model
-   /// \return     The list of device capacities
+   /// \return     The fake sensor model
    //--------------------------------------------------------------
-   static const std::string& getModel();
+   static const std::string& getModel();   
+   
+   //--------------------------------------------------------------
+   /// \brief	    Returns the fake sensor type
+   /// \return     The fake sensor type
+   //--------------------------------------------------------------
+   static const std::string& getType();
 
 private:
    //--------------------------------------------------------------
    /// \brief	    Device name
    //--------------------------------------------------------------
    const std::string m_deviceName;
-
-   //--------------------------------------------------------------
-   /// \brief	The device configuration
-   //--------------------------------------------------------------
-   shared::CDataContainer m_deviceConfiguration;
 
    //--------------------------------------------------------------
    /// \brief	The keyword associated with temperature1

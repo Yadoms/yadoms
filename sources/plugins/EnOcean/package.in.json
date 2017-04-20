@@ -19,17 +19,21 @@
   "supportDeviceRemovedNotification": "true",
   "deviceConfiguration": {
     "staticConfigurationSchema": {
-      "all" : {
-        "models": [ "*" ],
-        "content": {
-          "manufacturer": {
-            "type": "string"
-          },
-          "profile": {
-            "type": "comboSection",
-            "content": ""
-          }
-        }
+      "schemas" : {
+         "all" : {
+           "types": { "*" : {
+                  "canBeCreatedManually" : "true"
+               } },
+           "content": {
+             "manufacturer": {
+               "type": "string"
+             },
+             "profile": {
+               "type": "comboSection",
+               "content": ""
+             }
+           }
+         }
       }
     }
   },

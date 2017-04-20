@@ -33,9 +33,10 @@ message KeywordExitsRequest {
 
 message DeclareDevice {
 	string device = 1;
-	string model = 2;
-	repeated Historizable keywords = 3;
-	string details = 4;
+	string type = 2;
+	string model = 3;
+	repeated Historizable keywords = 4;
+	string details = 5;
 }
 
 message Capacity {
@@ -142,6 +143,15 @@ message UpdateDeviceModel {
 	string model = 2;
 }
 
+message DeviceTypeRequest {
+	string device = 1;
+}
+
+message UpdateDeviceType {
+	string device = 1;
+	string type = 2;
+}
+
 message DeviceConfigurationRequest {
 	string device = 1;
 }
@@ -184,10 +194,12 @@ message msg {
 		UpdateDeviceDetails updateDeviceDetails = 20;
 		DeviceModelRequest deviceModelRequest = 21;
 		UpdateDeviceModel updateDeviceModel = 22;
-		DeviceConfigurationRequest deviceConfigurationRequest = 23;
-		UpdateDeviceConfiguration updateDeviceConfiguration = 24;
-		AllKeywordsRequest allKeywordsRequest = 25;
-		DeclareKeywords declareKeywords = 26;
-		ExtraQueryProgression extraQueryProgress = 27;
+		DeviceTypeRequest deviceTypeRequest = 23;
+		UpdateDeviceType updateDeviceType = 24;
+		DeviceConfigurationRequest deviceConfigurationRequest = 25;
+		UpdateDeviceConfiguration updateDeviceConfiguration = 26;
+		AllKeywordsRequest allKeywordsRequest = 27;
+		DeclareKeywords declareKeywords = 28;
+		ExtraQueryProgression extraQueryProgress = 29;
 	}
 }

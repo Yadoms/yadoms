@@ -10,7 +10,7 @@
  * @param  currentValue
  * @constructor
  */
-function DecimalParameterHandler(i18nContext, paramName, content, currentValue) {
+function DecimalParameterHandler(i18nContext, i18nKey, paramName, content, currentValue) {
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
@@ -43,6 +43,7 @@ function DecimalParameterHandler(i18nContext, paramName, content, currentValue) 
    this.paramName = paramName;
    this.description = isNullOrUndefined(content.description)?"":content.description;
    this.i18nContext = i18nContext;
+   this.i18nKey = i18nKey || paramName;
    this.content = content;
 }
 
@@ -62,7 +63,7 @@ DecimalParameterHandler.prototype.getDOMObject = function () {
    var i18nOptions = {};
    var i18nData = " data-i18n=\"";
 
-   i18nData += "[data-content]" + this.i18nContext + this.paramName + ".description";
+   i18nData += "[data-content]" + this.i18nContext + this.i18nKey + ".description";
    i18nData += ";[data-validation-required-message]configuration.validationForm.incorrectValue";
    i18nData += ";[data-validation-pattern-message]configuration.validationForm.onlyNumberAllowed";
 

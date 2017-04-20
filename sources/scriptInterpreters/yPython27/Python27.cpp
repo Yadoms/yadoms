@@ -175,8 +175,7 @@ void CPython27::startScript(int scriptInstanceId,
 
    try
    {
-      m_scriptProcesses[scriptInstanceId] = m_factory->createScriptProcess(m_api,
-                                                                           scriptInstanceId,
+      m_scriptProcesses[scriptInstanceId] = m_factory->createScriptProcess(scriptInstanceId,
                                                                            scriptPath,
                                                                            m_pythonExecutable,
                                                                            getInterpreterPath(),

@@ -121,6 +121,7 @@
 
       var actionsBtnsBlacklist = "<div class=\"btn-group\">\n" +
                                  "<button type=\"button\" class=\"btn btn-success btn-restore\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.restore\"><span class=\"fa fa-reply\"></span></button>\n" +
+                                 "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"fa fa-trash\"></span></button>\n" +
                                  "</div>";
 
       
@@ -177,12 +178,12 @@
 
       $deviceRow.find("button.btn-delete").unbind('click').bind('click', function (e) { 
             e.stopPropagation();
-            blacklistDevice(device);
+            deleteDevice(device);
       });
 
       $deviceRow.find("button.btn-restore").unbind('click').bind('click', function (e) { 
             e.stopPropagation();
-            unblacklistDevice(device);
+            restoreDevice(device);
       });
       
       $deviceRow.unbind('click').bind('click', function () { clickDevice(device); });
@@ -249,9 +250,8 @@
                               deviceList = sortListItemsWithFriendlyName ( deviceList );					 
                               
                               var isIdentical = (TempdeviceList.length == deviceList.length) && TempdeviceList.every(function(element, index) {
-                                    return element.friendlyName === deviceList[index].friendlyName; 					 
+                                    return element.friendlyName === deviceList[index].friendlyName && element.model === deviceList[index].model; 					 
                               })					 
-                              
                               var $row = getDeviceDomRow(updateDevice);
                               
                               if (!isIdentical)
@@ -262,6 +262,9 @@
                               } else {
                                     var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + device.friendlyName + "</span>";
                                     $row.find("td.device-friendlyName").html(friendlyName);
+                                    
+                                    var model = "<span>" + device.model + "</span>"
+                                    $row.find("td.device-model").html(model);
                               }
                         })                        
                         .fail(function (error) {
@@ -389,34 +392,48 @@
    }
    
    
-   function blacklistDevice(device) {
-   
-      //device represent the device concerned
-      Yadoms.modals.deviceDelete.loadAsync()
-      .done(function () {
-         Yadoms.showDeleteDeviceModal(device, function (deleteDevice) {
-            device.blacklist = true;
-            DeviceManager.updateBlacklistStateToServer(device)
-            .done(function () {
-               //force a device and associated keyword refresh
-               DeviceManager.getKeywords(device, true)
-               .always(function () {   
-                  refreshDeviceList();
+   function deleteDevice(device) {
+      if(parseBool(device.blacklist)===true)
+      {
+         Yadoms.modals.confirmation.loadAsync()
+         .done(function () {
+            Yadoms.showConfirmModal(Yadoms.btnKind.confirmCancel, $.t("modals.confirm-delete-device.title"), $.t("modals.confirm-delete-device.text", { deviceName: device.friendlyName }), function () {
+               DeviceManager.deleteDevice(device, true)
+               .done(function () {
+                  //force a device and associated keyword refresh
+                  DeviceManager.getKeywords(device, true)
+                  .always(function () {   
+                     refreshDeviceList();
+                  });
+               })
+               .fail(function (error) {
+                  notifyError($.t("modals.dashboard.sub-windows.devices.errorDeletingDevice", { device: device.friendlyName }), error);
                });
-            })
-            .fail(function (error) {
-               notifyError($.t("modals.dashboard.sub-windows.devices.errorBlacklistingDevice", { device: device.friendlyName }), error);
             });
          });
-      });
-      
-      
+      } else {
+         Yadoms.modals.deviceDelete.loadAsync()
+         .done(function () {
+            Yadoms.showDeleteDeviceModal(device, function (deleteDevice) {
+               DeviceManager.deleteDevice(device, deleteDevice)
+               .done(function () {
+                  //force a device and associated keyword refresh
+                  DeviceManager.getKeywords(device, true)
+                  .always(function () {   
+                     refreshDeviceList();
+                  });
+               })
+               .fail(function (error) {
+                  notifyError($.t("modals.dashboard.sub-windows.devices.errorDeletingDevice", { device: device.friendlyName }), error);
+               });
+            });
+         });   
+      }
    }
 
-   function unblacklistDevice(device) {
+   function restoreDevice(device) {
       //device represent the device concerned
-      device.blacklist = false;
-      DeviceManager.updateBlacklistStateToServer(device)
+      DeviceManager.restoreDevice(device)
       .done(function () {
          //force a device and associated keyword refresh
          DeviceManager.getKeywords(device, true)
@@ -425,7 +442,7 @@
          });
       })
       .fail(function (error) {
-         notifyError($.t("modals.dashboard.sub-windows.devices.errorBlacklistingDevice", { device: device.friendlyName }), error);
+         notifyError($.t("modals.dashboard.sub-windows.devices.errorDeletingDevice", { device: device.friendlyName }), error);
       });
    }
 
@@ -488,9 +505,9 @@
                Yadoms.modals.deviceConfigureManually.loadAsync()
                .done(function () {
                   //we launch configureInstance GUI
-                   Yadoms.showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceModel, newDeviceConfiguration) {
-                     //we ask for manually device creation
-                       PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceConfiguration)
+                   Yadoms.showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration) {
+                       //we ask for manually device creation
+                       PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
                      .done(function () {
                         refreshDeviceList();
                      })

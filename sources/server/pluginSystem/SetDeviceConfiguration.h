@@ -14,8 +14,7 @@ namespace pluginSystem
       ///\param[in] device          The target device
       ///\param[in] configuration   The device configuration
       //-----------------------------------------------------
-      CSetDeviceConfiguration(const std::string& device,
-                              const shared::CDataContainer& configuration);
+      CSetDeviceConfiguration(const std::string& device, const shared::CDataContainer& configuration);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -23,7 +22,7 @@ namespace pluginSystem
       virtual ~CSetDeviceConfiguration();
 
       // ISetDeviceConfiguration implementation
-      const std::string& device() const override;
+      const std::string& name() const override;
       const shared::CDataContainer&  configuration() const override;
       // [END] ISetDeviceConfiguration implementation
 

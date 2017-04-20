@@ -103,6 +103,8 @@ namespace pluginSystem
       void processDeclareKeywords(const plugin_IPC::toYadoms::DeclareKeywords& msg) const;
       void processDeviceModelRequest(const plugin_IPC::toYadoms::DeviceModelRequest& msg);
       void processUpdateDeviceModel(const plugin_IPC::toYadoms::UpdateDeviceModel& msg) const;
+      void processDeviceTypeRequest(const plugin_IPC::toYadoms::DeviceTypeRequest& msg);
+      void processUpdateDeviceType(const plugin_IPC::toYadoms::UpdateDeviceType& msg) const;
       void processDeviceConfigurationRequest(const plugin_IPC::toYadoms::DeviceConfigurationRequest& msg);
       void processUpdateDeviceConfiguration(const plugin_IPC::toYadoms::UpdateDeviceConfiguration& msg) const;
 

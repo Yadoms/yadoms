@@ -3,7 +3,7 @@
 #include <boost/regex.hpp>
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
-#include <shared/encryption/md5.h>
+#include <shared/encryption/Md5.h>
 #include <Poco/URI.h>
 #include "exception/InvalidHash.hpp"
 #include "exception/DownloadFailed.hpp"
@@ -204,7 +204,7 @@ namespace shared { namespace web {
       Poco::Path result = downloadFile(toDownload, location, reporter);
 
       //we re-read the file and compute the md5 (the md5 can be generated online using ie http://onlinemd5.com/)
-      std::string md5HashCalculated = shared::encryption::CMD5().digestFile(location.toString().c_str());
+      std::string md5HashCalculated = shared::encryption::CMd5::digestFile(location.toString().c_str());
       if (!boost::iequals(md5HashCalculated, md5HashExpected))
       {
          //fail to verify checksum

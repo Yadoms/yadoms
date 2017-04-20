@@ -56,7 +56,7 @@ message RecipientFieldExitsAnswer {
 
 message ManuallyDeviceCreation {
 	string name = 1;
-	string model = 2;
+	string type = 2;
 	string configuration = 3;
 }
 
@@ -95,6 +95,10 @@ message DeviceModelAnswer {
 	string model = 1;
 }
 
+message DeviceTypeAnswer {
+	string type = 1;
+}
+
 message DeviceConfigurationAnswer {
 	string configuration = 1;
 }
@@ -126,8 +130,9 @@ message msg {
 		DeviceRemoved deviceRemoved = 20;
 		AllDevicesAnswer allDevicesAnswer = 21;
 		DeviceModelAnswer deviceModelAnswer = 22;
-		DeviceConfigurationAnswer deviceConfigurationAnswer = 23;
-		AllKeywordsAnswer allKeywordsAnswer = 24;
+		DeviceTypeAnswer deviceTypeAnswer = 23;
+		DeviceConfigurationAnswer deviceConfigurationAnswer = 24;
+		AllKeywordsAnswer allKeywordsAnswer = 25;
 	}
 }
 

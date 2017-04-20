@@ -54,7 +54,7 @@ namespace rfxcomMessages
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
       }
 
-      m_houseCode = static_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<char>("houseCode"));
+      m_houseCode = manuallyDeviceCreationConfiguration.get<char>("houseCode");
       m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
       Init(api);
@@ -101,7 +101,7 @@ namespace rfxcomMessages
          details.set("subType", m_subType);
          details.set("houseCode", m_houseCode);
          details.set("unitCode", m_unitCode);
-         api->declareDevice(m_deviceName, m_deviceModel, m_keywords, details);
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
       }
    }
 

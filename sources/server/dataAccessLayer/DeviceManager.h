@@ -36,6 +36,7 @@ namespace dataAccessLayer
       boost::shared_ptr<database::entities::CDevice> createDevice(int pluginId,
                                                                   const std::string& name,
                                                                   const std::string& friendlyName,
+                                                                  const std::string& type,
                                                                   const std::string& model,
                                                                   const shared::CDataContainer& details) override;
       std::vector<boost::shared_ptr<database::entities::CDevice>> getDevices() const override;
@@ -44,6 +45,7 @@ namespace dataAccessLayer
       void updateDeviceConfiguration(int deviceId, const shared::CDataContainer& configuration) override;
       void updateDeviceDetails(int deviceId, const shared::CDataContainer& details) override;
       void updateDeviceModel(int deviceId, const std::string& model) override;
+      void updateDeviceType(int deviceId, const std::string& type) override;
       void updateDeviceBlacklistState(int deviceId, const bool blacklist) override;
       void removeDevice(int deviceId) override;
       void removeDevice(int pluginId, const std::string& deviceName) override;

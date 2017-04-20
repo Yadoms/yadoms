@@ -32,17 +32,25 @@
                $modalBody.empty();
 
                //we append the common parameters section
-               var friendlyNameParameter = new StringParameterHandler("modals.configure-manually-device.", "friendlyName-configuration", { required: "true" }, "");
+               var friendlyNameParameter = new StringParameterHandler("modals.configure-manually-device.", undefined, "friendlyName-configuration", { required: "true" }, "");
                $modalBody.append(friendlyNameParameter.getDOMObject());
+               var modelParameter = new StringParameterHandler("modals.configure-device.", undefined, "model-configuration", { required: false }, "");
+               $modalBody.append(modelParameter.getDOMObject());     
+               
                //we finish parmeters instantiation
                if ($.isFunction(friendlyNameParameter.applyScript))
                    friendlyNameParameter.applyScript();
-
+               if ($.isFunction(modelParameter.applyScript))
+                   modelParameter.applyScript();
+                   
                //we append classic configuration
-               var configMgr = new ConfigurationControlManager(configurationSchema, undefined, "plugins/" + pluginInstance.type + ":deviceConfiguration.staticConfigurationSchema.", $modalBody);
+               var configMgr = new ConfigurationControlManager(configurationSchema, undefined, "plugins/" + pluginInstance.type + ":deviceConfiguration.staticConfigurationSchema.schemas.", $modalBody);
 
                //i18n
                $modalBody.i18n();
+               
+               //finalize treatments (ie sort items after trnaslation)
+               configMgr.afterI18n();
 
                //validation form
                //erase previous jqBootstrapValidation
@@ -53,14 +61,14 @@
                    },
                    submitSuccess: function ($form, event) {
                        event.preventDefault();
+                       
                        var deviceName = friendlyNameParameter.getCurrentConfiguration();
-                       var completeConfiguration = configMgr.getCurrentConfiguration();
-                       var deviceModel = completeConfiguration.type.activeSection;
-                       //get only the parameters
-                       var configuration = completeConfiguration.type.content[completeConfiguration.type.activeSection].content;
-
+                       var deviceModel = modelParameter.getCurrentConfiguration();
+                       var deviceType = configMgr.getCurrentConfiguration().type.activeSection;
+                       var deviceConfiguration = _.get(configMgr.getCurrentConfiguration().type.content, [configMgr.getCurrentConfiguration().type.activeSection, 'content']);
+                       
                        $("div#configure-manually-device-modal").modal("hide");
-                       callback(deviceName, deviceModel, configuration);
+                       callback(deviceName, deviceModel, deviceType, deviceConfiguration);
                    },
                    filter: function () {
                        //we check only control that have class enable-validation and are visible

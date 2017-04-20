@@ -7,7 +7,7 @@ namespace plugin_cpp_api
    CManuallyDeviceCreation::CManuallyDeviceCreation(const plugin_IPC::toPlugin::ManuallyDeviceCreation& msg,
                                                     boost::function1<void, const std::string&> sucessCallback,
                                                     boost::function1<void, const std::string&> errorCallback)
-      : m_data(msg.name(), msg.model(), msg.configuration()),
+      : m_data(msg.name(), msg.type(), msg.configuration()),
         m_sucessCallback(sucessCallback),
         m_errorCallback(errorCallback)
    {

@@ -12,7 +12,7 @@
  * @param parentRadioSectionActive
  * @constructor
  */
-function SectionParameterHandler(i18nContext, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive) {
+function SectionParameterHandler(i18nContext, i18nKey, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive) {
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
@@ -23,6 +23,7 @@ function SectionParameterHandler(i18nContext, paramName, content, currentValue, 
    this.paramName = paramName;
    this.description = isNullOrUndefined(content.description)?"":content.description;
    this.i18nContext = i18nContext;
+   this.i18nKey = i18nKey || paramName;
    this.content = content;
    this.cbValue = undefined;
    this.uuid = createUUID();
@@ -69,14 +70,14 @@ function SectionParameterHandler(i18nContext, paramName, content, currentValue, 
          if ((self.configurationValues !== undefined) && (self.configurationValues != null) && (self.configurationValues.content != null) && (self.configurationValues.content != undefined))
             v = self.configurationValues.content[key];
 
-		if (!isNullOrUndefined(self.paramName)){
-           newI18nContext = i18nContext + self.paramName + ".content.";
+		if (!isNullOrUndefined(self.i18nKey)){
+           newI18nContext = i18nContext + self.i18nKey + ".content.";
 		}
 		else{
 		   newI18nContext = i18nContext + "content.";
 		}
 		 
-         var handler = ConfigurationHelper.createParameterHandler(newI18nContext, key, value, v);
+         var handler = ConfigurationHelper.createParameterHandler(newI18nContext, value.i18nKey, key, value, v);
          if (!isNullOrUndefined(handler))
             self.configurationHandlers.push(handler);
       });
@@ -128,8 +129,8 @@ SectionParameterHandler.prototype.getDOMObject = function () {
       input +=             ">";
    }
    
-   if (!isNullOrUndefined(this.paramName)){
-	   input +=                "<span data-i18n=\"" + this.i18nContext + this.paramName + ".name\" >" +
+   if (!isNullOrUndefined(this.i18nKey)){
+	   input +=                "<span data-i18n=\"" + this.i18nContext + this.i18nKey + ".name\" >" +
 								  this.name +
 							   "</span>";
    }
@@ -144,13 +145,13 @@ SectionParameterHandler.prototype.getDOMObject = function () {
                      "</div>";
    }
    
-   if (!isNullOrUndefined(this.paramName)){
+   if (!isNullOrUndefined(this.i18nKey)){
       
    // Convert markdown for the designation field.
-      var result = md.renderInline( $.t(this.i18nContext + this.paramName + ".description", {defaultValue: ""}) );
+      var result = md.renderInline( $.t(this.i18nContext + this.i18nKey + ".description", {defaultValue: ""}) );
       
 	   input +=       "</div>" +
-					  //"<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.paramName + ".description\" >" +
+					  //"<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.i18nKey + ".description\" >" +
                  "<div class=\"configuration-description\" >" + result +
 						 this.description +
 					  "</div>" +

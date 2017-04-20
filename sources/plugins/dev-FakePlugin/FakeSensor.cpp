@@ -2,9 +2,8 @@
 #include "FakeSensor.h"
 #include <shared/currentTime/Provider.h>
 
-CFakeSensor::CFakeSensor(const std::string& deviceName, const shared::CDataContainer & deviceConfiguration)
+CFakeSensor::CFakeSensor(const std::string& deviceName)
    : m_deviceName(deviceName),
-     m_deviceConfiguration(deviceConfiguration),
      m_temperature1(boost::make_shared<yApi::historization::CTemperature>("temp1")),
      m_temperature2(boost::make_shared<yApi::historization::CTemperature>("temp2")),
      m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("Battery")),
@@ -34,7 +33,7 @@ void CFakeSensor::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
    // Declare device and associated keywords (= values managed by this device)
    if (!api->deviceExists(m_deviceName))
-      api->declareDevice(m_deviceName, getModel(), m_historizers);
+      api->declareDevice(m_deviceName, getType(), getModel(), m_historizers);
 }
 
 void CFakeSensor::read()
@@ -88,5 +87,12 @@ const std::string& CFakeSensor::getModel()
 {
    static const std::string model("Fake sensor");
    return model;
+}
+
+
+const std::string& CFakeSensor::getType()
+{
+   static const std::string type("fakeSensorType");
+   return type;
 }
 

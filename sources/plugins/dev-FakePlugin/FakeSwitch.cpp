@@ -23,7 +23,7 @@ CFakeSwitch::~CFakeSwitch()
 void CFakeSwitch::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
    if (!api->deviceExists(m_deviceName))
-      api->declareDevice(m_deviceName, getModel());
+      api->declareDevice(m_deviceName, getType(), getModel());
 
    // Declare associated keywords (= values managed by this device)
    if (m_isDimmable)
@@ -72,5 +72,11 @@ const std::string& CFakeSwitch::getModel()
 {
    static const std::string model("Fake switch");
    return model;
+}
+
+const std::string& CFakeSwitch::getType()
+{
+   static const std::string type("fakeSwitchType");
+   return type;
 }
 

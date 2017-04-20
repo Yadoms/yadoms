@@ -132,7 +132,7 @@ namespace web
                      break;
 
                   default:
-                     YADOMS_LOG(error) << "Unknown message id";
+                     YADOMS_LOG(error) << "Unknown message id " << eventHandler.getEventId();
                      break;
                   } // switch
                }

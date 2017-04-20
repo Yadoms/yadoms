@@ -74,6 +74,7 @@ namespace database
             ((Model)(std::string)(""))
             ((Details)(shared::CDataContainer)(shared::CDataContainer()))
             ((Configuration)(shared::CDataContainer)(shared::CDataContainer()))
+            ((Type)(std::string)(""))
             ((Blacklist)(bool)(false))
          );
 

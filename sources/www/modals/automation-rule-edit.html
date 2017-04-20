@@ -44,7 +44,7 @@
    });
 
    if (interpreterList > 1) {
-      var interpreterParameter = new EnumParameterHandler(i18NContext, "interpreter-rule", { "values": interpreterList }, rule.interpreter);
+      var interpreterParameter = new EnumParameterHandler(i18NContext, undefined, "interpreter-rule", { "values": interpreterList }, rule.interpreter);
       $modalConfiguration.append(interpreterParameter.getDOMObject());
       //we finish interpreterParameter instantiation
       if ($.isFunction(interpreterParameter.applyScript))
@@ -57,13 +57,13 @@
       });
    }
 
-   var nameParameter = new StringParameterHandler(i18NContext, "name-rule", { required: "true" }, rule.name);
+   var nameParameter = new StringParameterHandler(i18NContext, undefined, "name-rule", { required: "true" }, rule.name);
    $modalConfiguration.append(nameParameter.getDOMObject());
    //we finish nameParameter instantiation
    if ($.isFunction(nameParameter.applyScript))
       nameParameter.applyScript();
 
-   var descriptionParameter = new StringParameterHandler(i18NContext, "description-rule", {}, rule.description);
+   var descriptionParameter = new StringParameterHandler(i18NContext, undefined, "description-rule", {}, rule.description);
    $modalConfiguration.append(descriptionParameter.getDOMObject());
    //we finish descriptionParameter instantiation
    if ($.isFunction(descriptionParameter.applyScript))

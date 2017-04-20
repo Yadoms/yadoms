@@ -49,7 +49,8 @@
             "content": {
                "houseCode": {
                   "name": "Bâtiment",
-                  "description": "L'identifiant du bâtiment (A-P)"
+                  "description": "L'identifiant du bâtiment (A-P)",
+                  "regexErrorMessage": "L'identifiant doit être entre A et P (inclus)"
                },
                "unitCode": {
                   "name": "Unité",
@@ -61,7 +62,8 @@
             "content": {
                "houseCode": {
                   "name": "Bâtiment",
-                  "description": "L'identifiant du bâtiment (A-D)"
+                  "description": "L'identifiant du bâtiment (A-D)",
+                  "regexErrorMessage": "L'identifiant doit être entre A et D (inclus)"
                },
                "unitCode": {
                   "name": "Unité",
@@ -265,7 +267,8 @@
                }, 
                "groupCode": {
                   "name": "Groupe",
-                  "description": "L'identifiant du groupe de l'équipement (A-P)"
+                  "description": "L'identifiant du groupe de l'équipement (A-P)",
+                  "regexErrorMessage": "L'identifiant doit être entre A et P (inclus)"
                },
                "unitCode": {
                   "name": "Unité",
@@ -341,7 +344,7 @@
                }
             }
          },     
-         "id1_1048575-uc1_4": {
+         "id1_1048575-uc0_4": {
             "content": {
                "id": {
                   "name": "ID",
@@ -349,7 +352,7 @@
                },
                "unitCode": {
                   "name": "Unité",
-                  "description": "L'identifiant de la fonction de l'équipement (1-4)"
+                  "description": "L'identifiant de la fonction de l'équipement (0-4)"
                }
             }
          },
@@ -385,7 +388,8 @@
                },
                "houseCode": {
                   "name": "Bâtiment",
-                  "description": "L'identifiant du bâtiment (A-D)"
+                  "description": "L'identifiant du bâtiment (A-D)",
+                  "regexErrorMessage": "L'identifiant doit être entre A et D (inclus)"
                },
                "unitCode": {
                   "name": "Unité",
@@ -441,15 +445,18 @@
             {
                "houseCode": {
                   "name": "Bâtiment",
-                  "description": "L'identifiant du bâtiment (8 chiffres de 1 à 4 : 11111111 à 44444444)"
+                  "description": "L'identifiant du bâtiment (8 chiffres de 1 à 4 : 11111111 à 44444444)",
+                  "regexErrorMessage": "L'identifiant doit contenir 8 chiffres entre 1 et 4 : exemple : 12341234"
                },
                "groupAddress": {
                   "name": "Adresse du groupe",
-                  "description": "L'adresse du groupe (2 chiffres de 1 à 4 : 11 à 44)"
+                  "description": "L'adresse du groupe (2 chiffres de 1 à 4 : 11 à 44)",
+                  "regexErrorMessage": "L'adresse doit contenir 2 chiffres entre 1 et 4 : exemple : 14"
                },
                "subAddress": {
                   "name": "Sous-adresse",
-                  "description": "La sous-adresse (2 chiffres de 1 à 4 : 11 à 44)"
+                  "description": "La sous-adresse (2 chiffres de 1 à 4 : 11 à 44)",
+                  "regexErrorMessage": "La sous-adresse doit contenir 2 chiffres entre 1 et 4 : exemple : 14"
                }             
             }
          },
@@ -460,8 +467,9 @@
             {
                "houseCode": {
                   "name": "Bâtiment",
-                  "description": "L'identifiant du bâtiment (A-P)"
-               }              
+                  "description": "L'identifiant du bâtiment (A-P)",
+                  "regexErrorMessage": "L'identifiant doit être entre A et P (inclus)"
+               }
             }
          }
       }

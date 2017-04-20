@@ -26,7 +26,7 @@ function ConfigurationControlManager(configurationSchema, currentConfiguration, 
    //for each key in package
    $.each(self.configurationSchema, function (key, value) {
       var currentValue = self.configurationValues[key];
-      var handler = ConfigurationHelper.createParameterHandler(i18nNamespace, key, value, currentValue);
+      var handler = ConfigurationHelper.createParameterHandler(i18nNamespace, value.i18nKey, key, value, currentValue);
       if (!isNullOrUndefined(handler))
          self.configurationHandlers.push(handler);
    });
@@ -34,6 +34,14 @@ function ConfigurationControlManager(configurationSchema, currentConfiguration, 
    $domContainer.append(this.getDOMObject());
    //after appending the dom object we can call the applyScript method to finish control instantiation
    this.applyScript();
+}
+
+ConfigurationControlManager.prototype.afterI18n = function() {
+   $.each(this.configurationHandlers, function (key, value) {
+      if ($.isFunction(value.afterI18n)) {
+         value.afterI18n();
+      }
+   });
 }
 
 /**
