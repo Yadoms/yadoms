@@ -61,21 +61,19 @@ std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginAp
 
       data.getConfiguration().printToLog(YADOMS_LOG(information));
 
-      std::string activeSection = data.getConfiguration().get<std::string>("type.activeSection");
-
-      if (activeSection == "WES")
+      if (data.getDeviceType() == "WES")
       {
          equipment = boost::make_shared<equipments::CWESEquipment>(api, 
                                                                    data.getDeviceName(), 
-                                                                   data.getConfiguration().get<shared::CDataContainer>("type.content.WES.content"),
+                                                                   data.getConfiguration()/*.getConfiguration().get<shared::CDataContainer>("type.content.WES.content")*/,
                                                                    configuration);
          ioManager->addEquipment(equipment);
       }
-      else if (activeSection == "TemperatureProbe")
+      else if (data.getDeviceType() == "TemperatureProbe")
       {
          equipment = boost::make_shared<equipments::CtemperatureProbe>(api,
                                                                        data.getDeviceName(),
-                                                                       data.getConfiguration().get<shared::CDataContainer>("type.content.temperatureProbe.content"),
+                                                                       data.getConfiguration()/*.getConfiguration().get<shared::CDataContainer>("type.content.temperatureProbe.content")*/,
                                                                        configuration);
 
          //subEquipment = boost::make_shared<equipments::CWESEquipment>(api, data.getDeviceName());
@@ -83,7 +81,7 @@ std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginAp
       }
       else
       {
-         YADOMS_LOG(error) << "no section defined for " << activeSection;
+         YADOMS_LOG(error) << "no section defined for " << data.getDeviceType();
       }
    }
    catch (std::exception& e)

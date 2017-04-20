@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "WESEquipment.h"
-#include "masterdeviceConfiguration.h"
 #include <shared/DataContainer.h>
 #include "noInformationException.hpp"
 #include "../urlmanager.h"
@@ -172,8 +171,10 @@ namespace equipments
       details.set("provider", "WES");
       details.set("type", m_deviceType);
 
+      std::string model = "WES";
+
       //Déclaration of all IOs
-      api->declareDevice(device, m_deviceType, keywordsToDeclare, details);
+      api->declareDevice(device, m_deviceType, model, keywordsToDeclare, details);
    }
 
    std::string CWESEquipment::getDeviceName() const

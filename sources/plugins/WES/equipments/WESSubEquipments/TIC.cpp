@@ -76,8 +76,10 @@ namespace equipments
 
          keywordsToDeclare.push_back(m_teleInfoStatus);
 
+         std::string model = "WES";
+
          //Déclaration of all IOs
-         api->declareDevice(m_deviceName, "TeleInfo", keywordsToDeclare, details);
+         api->declareDevice(m_deviceName, "TeleInfo",model, keywordsToDeclare, details);
       }
 
       std::string CTIC::getDeviceName() const

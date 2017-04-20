@@ -1,94 +1,96 @@
 {
-   "name": "WES",
-   "description": "This plugin provide access to WES equipment\n",
-   "configurationSchema":{
-    "retrieveNamesFromdevice": {
-       "name": "keyword names",
-       "description": "Retrieve names from devices"
-    }   
+	"name": "WES",
+	"description": "This plugin provide access to WES equipment\n",
+	"configurationSchema": {
+		"retrieveNamesFromdevice": {
+			"name": "keyword names",
+			"description": "Retrieve names from devices"
+		}
 	},
-   "manuallyDeviceCreationConfigurationSchema": {
-      "type":
-      {
-         "name": "Type",
-         "description": "Type of the device",
-         "content":
-         { 
-           "WES" :
-			  {
-                 "name": "WES Module v2",
-                 "content":
-                 {         
-                     "IPAddress":{
-                        "name": "IP Address",
-                        "description": "the IP address of the equipment"
-                     },	
-                     "Port":{
-                        "name": "Port",
-                        "description": "the WES local socket opened (example: 80)"
-                     },
-                    "authentication": {
-                        "name": "key to access the WES",
-                        "description": "Only if the key is enabled",
-                        "content": {
-                           "User": {
-                              "name": "User",
-                              "description": ""
-                           },                        
-                           "Password": {
-                              "name": "Password",
-                              "description": ""
-                           }                           
-                      }
-                    },
-                      "clampConfiguration": {
-                        "name": "Configuration of clamps",
-                        "description": "Activate intant current data for clamps",
-                        "content": {
-                            "displayCurrentClamp1": {
-                              "name": "Instant current data for clamp 1",
-                              "description": ""	
-                            },
-                            "displayCurrentClamp2": {
-                              "name": "Instant current data for clamp 2",
-                              "description": ""	
-                            },
-                            "displayCurrentClamp3": {
-                              "name": "Instant current data for clamp 3",
-                              "description": ""	
-                            },
-                            "displayCurrentClamp4": {
-                              "name": "Instant current data for clamp 4",
-                              "description": ""	
-                            }
-                      }
-                    }
-                  }
-            },
-           "TemperatureProbe" :
-			  {
-                 "type": "section",
-                 "name": "Température probe",
-                 "content":
-                 {         
-                   "masterDevice" :
-                   {
-                          "name" : "Master device",
-                          "description" : "The temperature probe is connected to the following WES"
-                   }
-                 }
-            }
-         }
-		 }
-	  },
+	"deviceConfiguration": {
+		"staticConfigurationSchema": {
+			"name": "Type",
+			"description": "Type of the device",
+			"schemas": {
+				"WES": {
+					"types": {
+						"WES": {
+							"title": "WES Module v2",
+							"description": "WES Module v2"
+						}
+					},
+					"content": {
+						"IPAddress": {
+							"name": "IP Address",
+							"description": "the IP address of the equipment"
+						},
+						"Port": {
+							"name": "Port",
+							"description": "the WES local socket opened (example: 80)"
+						},
+						"authentication": {
+							"name": "key to access the WES",
+							"description": "Only if the key is enabled",
+							"content": {
+								"User": {
+									"name": "User",
+									"description": ""
+								},
+								"Password": {
+									"name": "Password",
+									"description": ""
+								}
+							}
+						},
+						"clampConfiguration": {
+							"name": "Configuration of clamps",
+							"description": "Activate intant current data for clamps",
+							"content": {
+								"displayCurrentClamp1": {
+									"name": "Instant current data for clamp 1",
+									"description": ""
+								},
+								"displayCurrentClamp2": {
+									"name": "Instant current data for clamp 2",
+									"description": ""
+								},
+								"displayCurrentClamp3": {
+									"name": "Instant current data for clamp 3",
+									"description": ""
+								},
+								"displayCurrentClamp4": {
+									"name": "Instant current data for clamp 4",
+									"description": ""
+								}
+							}
+						}
+					}
+				},
+				"TemperatureProbe": {
+					"types": {
+						"TemperatureProbe": {
+							"title": "Temperature probe",
+							"description": "Temperature probe"
+						}
+					},
+					"content": {
+						"masterDevice": {
+							"name": "Master device",
+							"description": "The temperature probe is connected to the following WES"
+						}
+					}
+				}
+			}
+		}
+	},
 	"customLabels": {
 		"pluginState": {
-         "initialization": "Initializing...",
+			"initialization": "Initializing...",
 			"initializationError": "Initialization error",
-         "ready" : "Plugin ready",
-         "faulty" : "At least, one device is not connected",
-         "noConnection": "Could not connect to the equipment",
-         "noInformation": "The equipment is connected. No information returned. Please check the apikey",
+			"ready": "Plugin ready",
+			"faulty": "At least, one device is not connected",
+			"noConnection": "Could not connect to the equipment",
+			"noInformation": "The equipment is connected. No information returned. Please check the apikey",
 			"updateConfiguration": "Configuration updating..."
 		}
 	}

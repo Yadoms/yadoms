@@ -38,6 +38,7 @@ namespace equipments
                                                                   credentials,
                                                                   CGXfileName);
       }
+      std::string model = "temperature probe";
 
       m_temperature = boost::make_shared<yApi::historization::CTemperature>("temperature",
                                                                             yApi::EKeywordAccessMode::kGet);
@@ -45,7 +46,7 @@ namespace equipments
       keywordsToDeclare.push_back(m_temperature);
 
       //Déclaration of all IOs
-      api->declareDevice(device, m_deviceType, keywordsToDeclare, details);
+      api->declareDevice(device, m_deviceType, model, keywordsToDeclare, details);
    }
 
    std::string CtemperatureProbe::getDeviceName() const

@@ -207,7 +207,7 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
          setPluginState(api, EWESPluginState::kupdateConfiguration);
          m_ioManager->OnDeviceConfigurationUpdate(api, 
-                                                  deviceConfiguration->device(),
+                                                  deviceConfiguration->name(),
                                                   deviceConfiguration->configuration());
 
          setPluginState(api, EWESPluginState::kRunning);
