@@ -98,9 +98,9 @@ namespace task {
       m_taskData = taskData;
 
       if (m_currentProgression)
-         YADOMS_LOG(information) << m_task->getName() << " report progression " << m_currentProgression.get() << " with message " << m_currentMessage;
+         YADOMS_LOG(debug) << m_task->getName() << " report progression " << m_currentProgression.get() << " with message " << m_currentMessage;
       else
-         YADOMS_LOG(information) << m_task->getName() << " report progression none with message " << m_currentMessage;
+         YADOMS_LOG(debug) << m_task->getName() << " report progression none with message " << m_currentMessage;
 
       // Post notification
       boost::shared_ptr<CInstanceNotificationData> obj(new CInstanceNotificationData(*this));
