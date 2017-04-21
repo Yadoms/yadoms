@@ -32,7 +32,7 @@ namespace task { namespace plugins {
       //------------------------------------------
       ///\brief   The task name
       //------------------------------------------
-      static std::string m_taskName;
+      std::string m_taskName;
 
       //------------------------------------------
       ///\brief   The task id

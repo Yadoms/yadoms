@@ -8,11 +8,10 @@
 
 namespace task { namespace plugins {
 
-   std::string CExtraQuery::m_taskName = "plugins.extraQuery";
-
    CExtraQuery::CExtraQuery(boost::shared_ptr<pluginSystem::IInstance> pluginInstance, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query)
-      :m_pluginInstance(pluginInstance), m_query(query)
+      :m_pluginInstance(pluginInstance), m_query(query), m_taskName("plugins/" + pluginInstance->aboutPlugin()->getType() + ":extraQueries." + query->getData()->query() + ".name")
    {
+      
       if(!m_pluginInstance)
          throw shared::exception::CInvalidParameter("pluginInstance");
    }

@@ -115,7 +115,7 @@ void CRfPlayer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                         extraQuery->reportProgress(i*1.0f, "customLabels.firmwareUpdate.sendFile");
                      else
                         extraQuery->reportProgress(i*1.0f, "customLabels.firmwareUpdate.writeFile");
-                     boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+                     boost::this_thread::sleep(boost::posix_time::milliseconds(200));
                   }
                   //YADOMS_LOG(information) << "FirmwareUpdate: content =" << firmwareContent;
 

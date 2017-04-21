@@ -70,10 +70,9 @@
             }
         },
         "plugins": {
-            "extraQuery" : {
-               "name": "Commande spéciale",
-               "success": "La commande spéciale a réussi",
-               "fail": "Echec de la commande spéciale"
+            "extraquery" : {
+               "success": "__extraquery__ a réussi",
+               "fail": "Echec de __extraquery__"
             }
         }
     },
@@ -939,10 +938,10 @@
         }
     },
   "eventLogger": {
-    "DefaultCode": "Evénement inconnu : __what__ généré par $t(core.__who__.name)",
-    "Started": "$t(core.__who__.name) a démarré",
-    "Stopped": "$t(core.__who__.name) s'est arrêté",
-    "Updated": "The $t(core.__who__.name) a été mise à jour",
+    "DefaultCode": "Evénement inconnu : __what__ généré par __who__",
+    "Started": "__who__ a démarré",
+    "Stopped": "__who__ s'est arrêté",
+    "Updated": "The __who__ a été mise à jour",
     "YadomsCrash": "yadoms a rencontré une erreur et s'est arrêté",
     "PluginCrash": "__who__ a rencontré une erreur et s'est arrêté",
     "TaskFailed": "La tâche __who__ a rencontré une erreur et s'est arrêtée",
