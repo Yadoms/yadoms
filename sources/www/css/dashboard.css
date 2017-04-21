@@ -293,6 +293,11 @@ Fix dropdown menus hidden by bootstrap modal
 .combo-item-title {
    font-weight: bold;
 }
+
+.combo-item-title-without-description {
+   font-weight: normal;
+}
+
 .combo-item-description {
    font-style: italic;
 }

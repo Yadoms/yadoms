@@ -136,8 +136,8 @@ PluginInstance.prototype.getBoundManuallyDeviceCreationConfigurationSchema = fun
                      if(schema[k].types[typeName].canBeCreatedManually == "true") {
                         tmp.type.content[typeName] = {
                            type: "section",
-                           name: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".types." + typeName + ".title"),
-                           description: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".types." + typeName + ".description"),
+                           name: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".types." + typeName + ".title", { defaultValue: typeName}),
+                           description: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".types." + typeName + ".description", { defaultValue: ""}),
                            content: schema[k].content,
                            i18nBasePath: "plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas.",
                            i18nKey: k
