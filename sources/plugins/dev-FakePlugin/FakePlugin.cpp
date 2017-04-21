@@ -11,6 +11,7 @@
 #include "FakeAnotherConfigurableDevice.h"
 #include <Poco/Net/NetworkInterface.h>
 #include <shared/Log.h>
+#include <shared/encryption/Base64.h>
 
 // Use this macro to define all necessary to make your plugin a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -179,12 +180,36 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                {
                   auto message = extraQuery->getData()->data().get<std::string>("newStateMessage");
                   api->setPluginState(shared::plugin::yPluginApi::historization::EPluginState::kCustom, "newCustomStateMessage", {{"messageFromExtraQuery", message}});
+               } 
+               else if (extraQuery->getData()->query() == "asyncEQwithProgression")
+               {
+                  std::string base64firmware = extraQuery->getData()->data().get<std::string>("fileContent");
+                  std::string firmwareContent = shared::encryption::CBase64::decode(base64firmware);
+
+                  for (int i = 0; i < 100; ++i)
+                  {
+                     if (i<25)
+                        extraQuery->reportProgress(i*1.0f, "customLabels.asyncEQwithProgression.step1");
+                     else if (i<50)
+                        extraQuery->reportProgress(i*1.0f, "customLabels.asyncEQwithProgression.step2");
+                     else if (i<75)
+                        extraQuery->reportProgress(i*1.0f, "customLabels.asyncEQwithProgression.step3");
+                     else
+                        extraQuery->reportProgress(i*1.0f, "customLabels.asyncEQwithProgression.step4");
+                     boost::this_thread::sleep(boost::posix_time::milliseconds(200));
+                  }
                }
+
+               // Extra-query can return success or error indicator. In case of success, can also return data.
+               // Return here a success without data (=empty container)
+               extraQuery->sendSuccess(shared::CDataContainer());
+            }
+            else
+            {
+               extraQuery->sendError("error content");
             }
 
-            // Extra-query can return success or error indicator. In case of success, can also return data.
-            // Return here a success without data (=empty container)
-            extraQuery->sendSuccess(shared::CDataContainer());
+            
             break;
          }
 
