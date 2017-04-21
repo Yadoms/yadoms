@@ -32,7 +32,11 @@ namespace equipments
                 const std::string& keywordName);
 
          std::string getDeviceName() const;
-         void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api);
+         void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                               std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
+                               const bool isInstantCurrentClampRegistered,
+                               const std::string& instantCurrent,
+                               const std::string& energyClamp);
 
          //-----------------------------------------------------
          ///\brief                     Destructor

@@ -205,14 +205,11 @@ namespace equipments
       credentials.set("user", "admin"/*m_configuration.getUser()*/);
       credentials.set("password", "wes"/*m_configuration.getPassword()*/);
 
-      credentials.printToLog(YADOMS_LOG(information));
+//      credentials.printToLog(YADOMS_LOG(information));
 
-      shared::CDataContainer results = urlManager::sendCommand(m_configuration.getIPAddressWithSocket(), 
+      shared::CDataContainer results = urlManager::sendCommand(m_configuration.getIPAddressWithSocket(),
                                                                credentials,
                                                                CGXfileName);
-
-      // Pulse Counters Configuration
-      //createUpdatePulsesKeywords(keywordsToDeclare, results, pluginConfiguration);
 
       // Reading relays - historize only on change value or when the historization is forced (initialization, for example)      
       updateSwitchValue(keywordsToHistorize, m_relaysList[0], static_cast<bool>(results.get<int>("RL1")), forceHistorization);
@@ -220,6 +217,15 @@ namespace equipments
 
       updateSwitchValue(keywordsToHistorize, m_inputList[0], static_cast<bool>(results.get<int>("I1")), forceHistorization);
       updateSwitchValue(keywordsToHistorize, m_inputList[1], static_cast<bool>(results.get<int>("I2")), forceHistorization);
+
+      for (int counter = 0; counter<WES_CLAMP_QTY; ++counter)
+      {
+         m_ClampList[counter]->updateFromDevice(api,
+                                                keywordsToHistorize,
+                                                m_configuration.isInstantCurrentClampRegistered(counter),
+                                                results.get<std::string>("IPC"  + boost::lexical_cast<std::string>(counter+1) + "_val"),
+                                                results.get<std::string>("WHPC" + boost::lexical_cast<std::string>(counter+1) + "_val"));
+      }
 
       api->historizeData(m_deviceName, keywordsToHistorize);
    }

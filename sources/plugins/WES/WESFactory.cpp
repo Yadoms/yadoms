@@ -65,7 +65,7 @@ std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginAp
       {
          equipment = boost::make_shared<equipments::CWESEquipment>(api, 
                                                                    data.getDeviceName(), 
-                                                                   data.getConfiguration()/*.getConfiguration().get<shared::CDataContainer>("type.content.WES.content")*/,
+                                                                   data.getConfiguration(),
                                                                    configuration);
          ioManager->addEquipment(equipment);
       }
@@ -73,7 +73,7 @@ std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginAp
       {
          equipment = boost::make_shared<equipments::CtemperatureProbe>(api,
                                                                        data.getDeviceName(),
-                                                                       data.getConfiguration()/*.getConfiguration().get<shared::CDataContainer>("type.content.temperatureProbe.content")*/,
+                                                                       data.getConfiguration(),
                                                                        configuration);
 
          //subEquipment = boost::make_shared<equipments::CWESEquipment>(api, data.getDeviceName());
