@@ -266,7 +266,7 @@ namespace web
                   auto query = parameters[3];
                   shared::CDataContainer queryData(requestContent);
 
-                  pluginSystem::CExtraQueryData data(query, queryData);
+                  auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query, queryData);
                   std::string taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
                   if (!taskId.empty())
                   {

@@ -186,7 +186,7 @@ namespace frames {
          throw new shared::exception::CNotSupported("The binary frame content is not supported or dont contains reference to any device identifier");
 
       //ensure keywords are created (in case of multiple frames giving different keywords)
-      api->declareDevice(m_deviceName, m_deviceModel, m_keywords, m_deviceDetails);
+      api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, m_deviceDetails);
 
       //historize only if keywords exists
       if (!m_keywords.empty())

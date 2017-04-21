@@ -154,30 +154,30 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
             if (extraQuery)
             {
-               YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData().query();
+               YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData()->query();
 
-               if (extraQuery->getData().query() == "simpleCommand")
+               if (extraQuery->getData()->query() == "simpleCommand")
                {
                   YADOMS_LOG(information) << "Simple command received";
                }
-               else if (extraQuery->getData().query() == "dataCommand")
+               else if (extraQuery->getData()->query() == "dataCommand")
                {
-                  auto s = extraQuery->getData().data().get<std::string>("testValue");
+                  auto s = extraQuery->getData()->data().get<std::string>("testValue");
                   YADOMS_LOG(information) << "Command with data received : data=" << s;
                }
-               else if (extraQuery->getData().query() == "dataBindingCommand")
+               else if (extraQuery->getData()->query() == "dataBindingCommand")
                {
-                  auto value = extraQuery->getData().data().get<std::string>("networkInterface");
+                  auto value = extraQuery->getData()->data().get<std::string>("networkInterface");
                   YADOMS_LOG(information) << "Command with binded data received : value=" << value << " text=" << Poco::Net::NetworkInterface::forName(value).displayName();
                }
-               else if (extraQuery->getData().query() == "dataBindingPluginCommand")
+               else if (extraQuery->getData()->query() == "dataBindingPluginCommand")
                {
-                  auto interval = extraQuery->getData().data().get<std::string>("dynamicSection.content.interval");
+                  auto interval = extraQuery->getData()->data().get<std::string>("dynamicSection.content.interval");
                   YADOMS_LOG(information) << "Command with plugin binded data received : value=" << interval;
                }
-               else if (extraQuery->getData().query() == "changePluginStateMessage")
+               else if (extraQuery->getData()->query() == "changePluginStateMessage")
                {
-                  auto message = extraQuery->getData().data().get<std::string>("newStateMessage");
+                  auto message = extraQuery->getData()->data().get<std::string>("newStateMessage");
                   api->setPluginState(shared::plugin::yPluginApi::historization::EPluginState::kCustom, "newCustomStateMessage", {{"messageFromExtraQuery", message}});
                }
             }

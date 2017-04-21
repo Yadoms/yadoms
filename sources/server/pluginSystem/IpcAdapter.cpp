@@ -253,6 +253,8 @@ namespace pluginSystem
          break;
       case plugin_IPC::toYadoms::msg::kUpdateDeviceConfiguration: processUpdateDeviceConfiguration(toYadomsProtoBuffer.updatedeviceconfiguration());
          break;
+      case plugin_IPC::toYadoms::msg::kExtraQueryProgress: processExtraQueryProgression(toYadomsProtoBuffer.extraqueryprogress());
+         break;
       default:
          throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
       }
@@ -500,6 +502,16 @@ namespace pluginSystem
                                              shared::CDataContainer(msg.configuration()));
    }
 
+   void CIpcAdapter::processExtraQueryProgression(const plugin_IPC::toYadoms::ExtraQueryProgression& msg) const
+   {
+      std::map<std::string, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> >::const_iterator extraQueryIter = m_pendingExtraQueries.find(msg.taskid());
+      if (extraQueryIter != m_pendingExtraQueries.end())
+      {
+         extraQueryIter->second->reportProgress(msg.progress(), msg.message());
+      }
+   }
+      
+
    void CIpcAdapter::postStopRequest()
    {
       plugin_IPC::toPlugin::msg msg;
@@ -619,12 +631,15 @@ namespace pluginSystem
       send(msg);
    }
 
-   void CIpcAdapter::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery)
+   void CIpcAdapter::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery, const std::string & taskId)
    {
       plugin_IPC::toPlugin::msg req;
       auto message = req.mutable_extraquery();
-      message->set_query(extraQuery->getData().query());
-      message->set_data(extraQuery->getData().data().serialize());
+      message->set_query(extraQuery->getData()->query());
+      message->set_data(extraQuery->getData()->data().serialize());
+      message->set_taskid(taskId);
+
+      m_pendingExtraQueries[taskId] = extraQuery;
 
       auto success = false;
       std::string result;
@@ -647,12 +662,14 @@ namespace pluginSystem
                        extraQuery->sendSuccess(shared::CDataContainer(result));
                     else
                        extraQuery->sendError(result);
+
+                    m_pendingExtraQueries.erase(taskId);
                  }
                  else if(ans.has_extraqueryprogress())
                  {
                      extraQuery->reportProgress(ans.extraqueryprogress().progress(), ans.extraqueryprogress().message());
                  }
-              });
+              }, boost::posix_time::minutes(10));
       }
       catch (std::exception& e)
       {

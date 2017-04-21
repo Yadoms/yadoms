@@ -65,14 +65,20 @@
       }
    },
    "extraQueries": {
-    "firmwareUpdate": {
-      "name": "Mise à jour firmware",
-      "commandData": {
-        "fileContent": {
-          "name": "Fichier",
-          "description": "Le nouveau firmware à utiliser"
-        }
+      "firmwareUpdate": {
+         "name": "Mise à jour firmware",
+         "commandData": {
+            "fileContent": {
+               "name": "Fichier",
+               "description": "Le nouveau firmware à utiliser"
+            }
+         }
       }
-    }
-  }    
+   },
+   "customLabels" : {
+      "firmwareUpdate" : {
+         "sendFile" : "Envoi du microcode",
+         "writeFile" : "Ecriture du microcode"
+      }
+   }  
 }

@@ -103,16 +103,19 @@ void CRfPlayer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery> >();
             if (extraQuery)
             {
-               if (extraQuery->getData().query() == "firmwareUpdate")
+               if (extraQuery->getData()->query() == "firmwareUpdate")
                {
-                  std::string base64firmware = extraQuery->getData().data().get<std::string>("fileContent");
+                  std::string base64firmware = extraQuery->getData()->data().get<std::string>("fileContent");
 
                   std::string firmwareContent = shared::encryption::CBase64::decode(base64firmware);
 
                   for (int i = 0; i < 100; ++i)
                   {
-                     extraQuery->reportProgress(i*1.0f, "firmware.updating");
-                     boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+                     if(i<50)
+                        extraQuery->reportProgress(i*1.0f, "customLabels.firmwareUpdate.sendFile");
+                     else
+                        extraQuery->reportProgress(i*1.0f, "customLabels.firmwareUpdate.writeFile");
+                     boost::this_thread::sleep(boost::posix_time::milliseconds(500));
                   }
                   //YADOMS_LOG(information) << "FirmwareUpdate: content =" << firmwareContent;
 
@@ -163,9 +166,10 @@ void CRfPlayer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             YADOMS_LOG(information) << "Manually device creation request received for device :" << request->getData().getDeviceName();
             try
             {
-               request->sendSuccess(m_transceiver->createDeviceManually(api, request->getData()));
+               std::string newDeviceName = m_transceiver->createDeviceManually(api, request->getData());
+               request->sendSuccess(newDeviceName);
             }
-            catch (CManuallyDeviceCreationException& e)
+            catch (std::exception& e)
             {
                request->sendError(e.what());
             }

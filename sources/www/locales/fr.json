@@ -68,6 +68,13 @@
                 "success" : "Sauvergarde réussie",
                 "fail" : "Echec de la sauvegarde"
             }
+        },
+        "plugins": {
+            "extraQuery" : {
+               "name": "Commande spéciale",
+               "success": "La commande spéciale a réussi",
+               "fail": "Echec de la commande spéciale"
+            }
         }
     },
     "common": {

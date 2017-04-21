@@ -20,7 +20,7 @@
 #include "SetDeviceConfiguration.h"
 #include "DeviceRemoved.h"
 #include "ExtraQuery.h"
-#include "task/GenericTask.h"
+#include "task/plugins/ExtraQuery.h"
 
 namespace pluginSystem
 {
@@ -661,20 +661,15 @@ namespace pluginSystem
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       auto instance(getRunningInstance(id));
 
-      YADOMS_LOG(debug) << "Send extra query " << query->getData().query() << " to plugin " << instance->about()->DisplayName();
+      YADOMS_LOG(debug) << "Send extra query " << query->getData()->query() << " to plugin " << instance->about()->DisplayName();
 
-      boost::shared_ptr<task::ITask> task(boost::make_shared<task::CGenericTask>("plugin.extraCommand",
-         boost::bind(&CExtraQuery::waitForExtraQueryProcess, (CExtraQuery*)query.get(), _1))); //force to copy parameters because references cannot be used in async task
+      boost::shared_ptr<task::ITask> task(boost::make_shared<task::plugins::CExtraQuery>(instance, query)); 
 
       std::string taskUid = "";
       bool result = m_taskScheduler->runTask(task, taskUid);
-      if(result)
+      if(!result)
       {
-         instance->postExtraQuery(query);
-      }
-      else
-      {
-         YADOMS_LOG(error) << "Fail to send extra query " << query->getData().query() << " to plugin " << instance->about()->DisplayName();
+         YADOMS_LOG(error) << "Fail to send extra query " << query->getData()->query() << " to plugin " << instance->about()->DisplayName();
          //ensure taskId is set to ""
          taskUid = "";
       }

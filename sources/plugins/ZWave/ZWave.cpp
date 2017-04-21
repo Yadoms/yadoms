@@ -112,33 +112,33 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
                if (extraQuery)
                {
-                  YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData().query() ;
+                  YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData()->query() ;
 
-                  if (extraQuery->getData().query() == "inclusionMode")
+                  if (extraQuery->getData()->query() == "inclusionMode")
                   {
                      m_controller->startInclusionMode();
                   }
-                  else if (extraQuery->getData().query() == "exclusionMode")
+                  else if (extraQuery->getData()->query() == "exclusionMode")
                   {
                      m_controller->startExclusionMode();
                   }
-                  else if (extraQuery->getData().query() == "hardReset")
+                  else if (extraQuery->getData()->query() == "hardReset")
                   {
                      m_controller->hardResetController();
                   }
-                  else if (extraQuery->getData().query() == "softReset")
+                  else if (extraQuery->getData()->query() == "softReset")
                   {
                      m_controller->softResetController();
                   }
-                  else if (extraQuery->getData().query() == "testNetwork")
+                  else if (extraQuery->getData()->query() == "testNetwork")
                   {
-                     m_controller->testNetwork(extraQuery->getData().data().get<int>("frameCount"));
+                     m_controller->testNetwork(extraQuery->getData()->data().get<int>("frameCount"));
                   }
-                  else if (extraQuery->getData().query() == "healNetowrk")
+                  else if (extraQuery->getData()->query() == "healNetowrk")
                   {
                      m_controller->healNetwork();
                   }
-                  else if (extraQuery->getData().query() == "cancelCommand")
+                  else if (extraQuery->getData()->query() == "cancelCommand")
                   {
                      m_controller->cancelCurrentCommand();
                   }

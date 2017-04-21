@@ -31,7 +31,7 @@ namespace communication
       // ISendMessageAsync Implementation
       void sendKeywordCommandAsync(int keywordId, const std::string& body) override;
       void sendDeviceCommandAsync(int deviceId, const std::string& body) override;
-      const std::string sendExtraQueryAsync(int pluginId, const shared::plugin::yPluginApi::IExtraQueryData& data) override;
+      const std::string sendExtraQueryAsync(int pluginId, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> data) override;
       void sendManuallyDeviceCreationRequest(int pluginId, const shared::plugin::yPluginApi::IManuallyDeviceCreationData& data, communication::callback::ISynchronousCallback<std::string>& callback) override;
       void sendBindingQueryRequest(int pluginId, const shared::plugin::yPluginApi::IBindingQueryData& data, communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) override;
       void sendDeviceConfigurationSchemaRequest(int deviceId, communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) override;

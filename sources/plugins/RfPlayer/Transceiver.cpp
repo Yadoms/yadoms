@@ -107,3 +107,8 @@ std::string CTransceiver::buildLedActivityCommand(bool ledActivity) const
       return "LEDACTIVITY 1\r\n";
    return "LEDACTIVITY 0\r\n";
 }
+
+std::string CTransceiver::createDeviceManually(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api, const shared::plugin::yPluginApi::IManuallyDeviceCreationData & request)
+{
+   return "";
+}

@@ -70,8 +70,9 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			            Post a device command extra query to instance
       /// \param  extraQuery        The extra query
+      /// \param  taskId            The taskId which have posted the query
       //--------------------------------------------------------------
-      virtual void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery) = 0;
+      virtual void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery, const std::string & taskId) = 0;
 
       //--------------------------------------------------------------
       /// \brief			            Set the configuration of a device

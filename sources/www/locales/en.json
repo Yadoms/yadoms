@@ -68,7 +68,14 @@
         "success": "Backup succeeded",
         "fail": "Backup failed"
       }
-    }
+    },
+     "plugins": {
+         "extraQuery" : {
+            "name": "Extra query",
+            "success": "Extra query succeeded",
+            "fail": "Extra query failed"
+         }
+     }
   },
   "common": {
     "ok": "Ok",

@@ -44,7 +44,7 @@ namespace communication
       ///\param [in] data           The extra query data
       ///\return                    The task id
       //----------------------------------------------
-      virtual const std::string sendExtraQueryAsync(int pluginId, const shared::plugin::yPluginApi::IExtraQueryData& data) = 0;
+      virtual const std::string sendExtraQueryAsync(int pluginId, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> data) = 0;
 
       //----------------------------------------------
       ///\brief                     Send a manually device creation request to a plugin with a mandatory callback

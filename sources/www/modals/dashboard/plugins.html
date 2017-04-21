@@ -89,7 +89,7 @@
       
       actionsBtns += "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.delete\"><span class=\"fa fa-trash\"></span></button>\n</div>";
 
-      var statusField = "<div class=\"progress\"> <div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" style=\"width: 0\"> <span class=\"hidden\">60% Complete</span> </div> </div><span class=\"label label-success label-status\"></span>\n";
+      var statusField = "<div class=\"progress\"> <div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" style=\"width: 0\"> <span class=\"hidden\">60% Complete</span> </div> </div><p><span class=\"message label label-info label-status\"></span></p><span class=\"label label-success label-status\"></span>\n";
       if (failToLoadPluginPackage === true)
          statusField = "<span class=\"label label-danger\" data-i18n=\"modals.dashboard.sub-windows.plugins.packageError\"></span>\n";
 
@@ -136,6 +136,9 @@
       else
          $pluginInstanceRow.find("input.cb-autoStart").removeProp("checked");
 
+     // hide progress bar until usage is made
+ 	  updateProgressInfo($pluginInstanceRow, false);
+     
 	  //translation of the line
 	  $pluginInstanceRow.i18n();
 
@@ -327,32 +330,62 @@
       });
    }
 
+   function updateProgressInfo($line, toshow, progress, message) {
+      var $progressContainer = $line.find("div.progress");
+      var $progressBar = $line.find("div.progress-bar");
+      var $progressMessage = $line.find("span.message");
+
+      if(toshow === true) {
+         $progressContainer.show();
+         $progressMessage.show();
+         $progressBar.css("width", progress + "%");
+         $progressMessage.text(message);
+         
+      } else {
+         $progressContainer.hide();
+         $progressMessage.hide();
+      }
+   }
+   
    function postExtraQuery(pi, commandName, data) {
       PluginInstanceManager.postExtraQuery(pi, commandName, data)
-      .done(function (taskId) {
+      .done(function (taskIdContainer) {
+            var taskId = taskIdContainer.taskId;
             if(taskId) {
+                  var $line = getPluginDomRow(pi);
+                  
                   //we listen for webSocket event
                   $(document).on("taskupdatenotification." + taskId, function (e, taskUpdateInformation) {
-                        var $line = getPluginDomRow(pi);
-                        $line.find("div.progress-bar").css("width", taskUpdateInformation.progression + "%");
-                        $line.find("span.message").text($.t("core." + taskUpdateInformation.message));
+                        
+                        //translate resolution order
+                        // 1. try plugin one
+                        // 2. try core
+                        // 3. try directly
+                        var translatedMessage = $.t("plugins/" + pi.type + ":" + taskUpdateInformation.message, {
+                           defaultValue: $.t("core." + taskUpdateInformation.message, {
+                              defaultValue: $.t(taskUpdateInformation.message)
+                           })
+                        });
+                        
+                        //only manage progression if we get value between 1 and 99.
+                        //if extra query is not done with progress, never display progress bar
+                        if(taskUpdateInformation.progression>0 && taskUpdateInformation.progression<100) {
+                           updateProgressInfo($line, true, taskUpdateInformation.progression, translatedMessage);
+                        } else {
+                           updateProgressInfo($line, false);
+                        }
 
                         //we manage the end of the task
                         if (taskUpdateInformation.taskState.toLowerCase() === "fail") {
-                              console.error("Unable to update Yadoms : " + taskUpdateInformation.exception);
-                              notifyError($.t("core." + taskUpdateInformation.message));
-
-                              //we remove the progress information and restore buttons
-                              item.processing = false;
-                              $line.find("div.progress-bar").css("width", "100%");
+                              updateProgressInfo($line, false);
+                              console.error("Unable to realize extra query : " + taskUpdateInformation.exception);
+                              notifyError(translatedMessage);
                         }
 
                         if (taskUpdateInformation.taskState.toLowerCase() === "success") {
-                              notifySuccess($.t("core." + taskUpdateInformation.message));
-                              //we display a non closable modal and wait for yadoms restart
-                              waitForUpdateFinished();
+                              updateProgressInfo($line, false);
+                              notifySuccess(translatedMessage);
                         }
-
                   });
             }
       });

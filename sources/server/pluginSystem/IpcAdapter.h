@@ -38,7 +38,7 @@ namespace pluginSystem
       void postDeviceConfigurationSchemaRequest(boost::shared_ptr<shared::plugin::yPluginApi::IDeviceConfigurationSchemaRequest> request) override;
       void postSetDeviceConfiguration(boost::shared_ptr<const shared::plugin::yPluginApi::ISetDeviceConfiguration>& command) override;
       void postDeviceCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> deviceCommand) override;
-      void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery) override;
+      void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery, const std::string & taskId) override;
       void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request) override;
       void postDeviceRemoved(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceRemoved> event) override;
       // [END] IIpcAdapter Implementation
@@ -107,7 +107,7 @@ namespace pluginSystem
       void processUpdateDeviceType(const plugin_IPC::toYadoms::UpdateDeviceType& msg) const;
       void processDeviceConfigurationRequest(const plugin_IPC::toYadoms::DeviceConfigurationRequest& msg);
       void processUpdateDeviceConfiguration(const plugin_IPC::toYadoms::UpdateDeviceConfiguration& msg) const;
-
+      void processExtraQueryProgression(const plugin_IPC::toYadoms::ExtraQueryProgression& msg) const;
    private:
       //--------------------------------------------------------------
       /// \brief	Message queue max message size & number
@@ -125,11 +125,34 @@ namespace pluginSystem
       //--------------------------------------------------------------
       std::string m_id;
 
+      //--------------------------------------------------------------
+      /// \brief	SEND message queue ID
+      //--------------------------------------------------------------
       const std::string m_sendMessageQueueId;
+
+      //--------------------------------------------------------------
+      /// \brief	RECEIVE message queue ID
+      //--------------------------------------------------------------
       const std::string m_receiveMessageQueueId;
+
+      //--------------------------------------------------------------
+      /// \brief	SEND message queue remover
+      //--------------------------------------------------------------
       const shared::communication::CMessageQueueRemover m_sendMessageQueueRemover;
+
+      //--------------------------------------------------------------
+      /// \brief	RECEIVE message queue remover
+      //--------------------------------------------------------------
       const shared::communication::CMessageQueueRemover m_receiveMessageQueueRemover;
+
+      //--------------------------------------------------------------
+      /// \brief	SEND message queue ID
+      //--------------------------------------------------------------
       boost::interprocess::message_queue m_sendMessageQueue;
+
+      //--------------------------------------------------------------
+      /// \brief	RECEIVE message queue ID
+      //--------------------------------------------------------------
       boost::interprocess::message_queue m_receiveMessageQueue;
 
       //-----------------------------------------------------
@@ -142,9 +165,24 @@ namespace pluginSystem
       //-----------------------------------------------------
       boost::shared_ptr<shared::communication::IMessageCutter> m_messageCutter;
 
+      //-----------------------------------------------------
+      ///\brief               The receiving thread
+      //-----------------------------------------------------
       boost::thread m_messageQueueReceiveThread;
 
+      //-----------------------------------------------------
+      ///\brief               The receiving hook mutex
+      //-----------------------------------------------------
       mutable boost::recursive_mutex m_onReceiveHookMutex;
+      
+      //-----------------------------------------------------
+      ///\brief               The receiving hook event
+      //-----------------------------------------------------
       boost::function1<bool, const plugin_IPC::toYadoms::msg&> m_onReceiveHook;
+
+      //-----------------------------------------------------
+      ///\brief               The pending extra queries
+      //-----------------------------------------------------
+      std::map<std::string, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> > m_pendingExtraQueries;
    };
 } // namespace pluginSystem

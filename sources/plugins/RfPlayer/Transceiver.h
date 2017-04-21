@@ -2,6 +2,8 @@
 
 #include <shared/communication/StringBuffer.h>
 #include "Configuration.h"
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
+#include <shared/plugin/yPluginApi/IManuallyDeviceCreationData.h>
 
 class CTransceiver 
 {
@@ -55,6 +57,14 @@ public:
    /// \return                            The command as string
    //--------------------------------------------------------------
    std::string buildLedActivityCommand(bool ledActivity) const;
+
+
+   //--------------------------------------------------------------
+   /// \brief	                           Create a device (manually)
+   /// \param [in] request                The device information
+   /// \return                            The new device created
+   //--------------------------------------------------------------
+   std::string createDeviceManually(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api, const shared::plugin::yPluginApi::IManuallyDeviceCreationData & request);
 
 
 };

@@ -121,6 +121,7 @@ namespace task {
          OnTaskProgressUpdated(true, 0.0f, i18n::CClientStrings::TaskStarted, std::string(), shared::CDataContainer::EmptyContainer);
 
          // Execute task code
+         m_task->onSetTaskId(getGuid());
          m_task->doWork(boost::bind(&CInstance::OnTaskProgressUpdated, this, _1, _2, _3, _4, _5));
 
          //check if task is still running (modified by callback)

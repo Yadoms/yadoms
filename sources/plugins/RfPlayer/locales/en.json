@@ -44,15 +44,21 @@
       "ledactiviy" : {  "name" : "leds", "description" : "Enable ou disable LED activity related to RF flow."}      
 	},
    "extraQueries": {
-    "firmwareUpdate": {
-      "name": "Update dongle firmware",
-      "commandData": {
-        "fileContent": {
-          "name": "File",
-          "description": "The firmware file to use"
-        }
+      "firmwareUpdate": {
+         "name": "Update dongle firmware",
+         "commandData": {
+            "fileContent": {
+               "name": "File",
+               "description": "The firmware file to use"
+            }
+         }
       }
-    }
-  }    
+   },
+   "customLabels" : {
+      "firmwareUpdate" : {
+         "sendFile" : "Send firmware",
+         "writeFile" : "Writing firmware"
+      }
+   }    
    
 }

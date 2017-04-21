@@ -55,7 +55,7 @@ namespace communication
 
    
 
-   const std::string CPluginGateway::sendExtraQueryAsync(int pluginId, const shared::plugin::yPluginApi::IExtraQueryData& data)
+   const std::string CPluginGateway::sendExtraQueryAsync(int pluginId, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> data)
    {
       // Create the query
       boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery(boost::make_shared<pluginSystem::CExtraQuery>(data));

@@ -526,6 +526,8 @@ set(YADOMS_SRC
    server/task/TaskStatus.cpp
    server/task/backup/Database.h
    server/task/backup/Database.cpp
+   server/task/plugins/ExtraQuery.h
+   server/task/plugins/ExtraQuery.cpp
    
    
    server/update/UpdateManager.h
@@ -633,6 +635,7 @@ source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPl
 source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\task  server/task/*.*)
 source_group(server\\task\\backup  server/task/backup/*.*)
+source_group(server\\task\\plugins  server/task/plugins/*.*)
 source_group(server\\update  server/update/*.*)
 source_group(server\\update\\info  server/update/info/*.*)
 source_group(server\\update\\worker  server/update/worker/*.*)

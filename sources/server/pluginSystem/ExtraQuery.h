@@ -18,7 +18,7 @@ namespace pluginSystem
       ///\param[in] data         The query data
       ///\param [in]  callback   The callback to call when request returns
       //-----------------------------------------------------
-      explicit CExtraQuery(const shared::plugin::yPluginApi::IExtraQueryData& data);
+      explicit CExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> data);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -26,19 +26,30 @@ namespace pluginSystem
       virtual ~CExtraQuery();
 
       // IExtraQuery implementation
-      const shared::plugin::yPluginApi::IExtraQueryData& getData() const override;
+      boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> getData() const override;
       void sendSuccess(const shared::CDataContainer& data) override;
       void sendError(const std::string& errorMessage) override;
       void reportProgress(const float progression, const std::string& message) override;
       // [END] IExtraQuery implementation
 
-      void waitForExtraQueryProcess(task::ITask::TaskProgressFunc f);
+      //-----------------------------------------------------
+      ///\brief                  Wait for extra query process. It wait for ends of extra query, and use callback (@see registerCallback) to update progression
+      //-----------------------------------------------------
+      void waitForExtraQueryProcess();
+
+      //-----------------------------------------------------
+      ///\brief                  Register the progression notification callback
+      ///\param [in]  callback   The callback to notify for progression update
+      //-----------------------------------------------------
+      void registerCallback(task::ITask::TaskProgressFunc callback);
+      
    private:
       //-----------------------------------------------------
       ///\brief Internal data
       //-----------------------------------------------------
-      const shared::plugin::yPluginApi::IExtraQueryData& m_data;
+      boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> m_data;
 
+      task::ITask::TaskProgressFunc m_progressNotifier;
       //-----------------------------------------------------
       ///\brief Internal event handler
       //-----------------------------------------------------

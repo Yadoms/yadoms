@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "ExtraQuery.h"
 #include "communication/callback/CallbackRequest.h"
+#include <shared/Log.h>
+#include "i18n/ClientStrings.h"
 
 namespace pluginSystem
 {
-   CExtraQuery::CExtraQuery(const shared::plugin::yPluginApi::IExtraQueryData& data)
+   CExtraQuery::CExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> data)
       : m_data(data)
    {
    }
@@ -15,13 +17,12 @@ namespace pluginSystem
 
    enum
    {
-      kProgress = shared::event::kUserFirstId,
-      kFinished,
+      kFinished = shared::event::kUserFirstId, 
       kError
    };
 
 
-   const shared::plugin::yPluginApi::IExtraQueryData& CExtraQuery::getData() const
+   boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> CExtraQuery::getData() const
    {
       return m_data;
    }
@@ -36,7 +37,12 @@ namespace pluginSystem
       m_eventHandler.postEvent(kError, errorMessage);
    }
 
-   void CExtraQuery::waitForExtraQueryProcess(task::ITask::TaskProgressFunc progressNotifier)
+   void CExtraQuery::registerCallback(task::ITask::TaskProgressFunc callback)
+   {
+      m_progressNotifier = callback;
+   }
+
+   void CExtraQuery::waitForExtraQueryProcess()
    {
       bool running = true;
 
@@ -44,18 +50,12 @@ namespace pluginSystem
       {
          switch (m_eventHandler.waitForEvents())
          {
-         case kProgress:
-         {
-            auto dc = m_eventHandler.getEventData<shared::CDataContainer>();
-            progressNotifier(true, dc.get<float>("progression"), dc.get("message"), "", shared::CDataContainer());
-            break;
-         }
          case kFinished:
-            progressNotifier(false, 100, "", "", m_eventHandler.getEventData<shared::CDataContainer>());
+            m_progressNotifier(true, 100, i18n::CClientStrings::ExtraQuerySuccess, "", m_eventHandler.getEventData<shared::CDataContainer>());
             running = false;
             break;
          case kError:
-            progressNotifier(false, 100, m_eventHandler.getEventData<std::string>(), "", shared::CDataContainer());
+            m_progressNotifier(false, 100, i18n::CClientStrings::ExtraQueryFail, m_eventHandler.getEventData<std::string>(), shared::CDataContainer());
             running = false;
             break;
          }
@@ -64,10 +64,8 @@ namespace pluginSystem
 
    void CExtraQuery::reportProgress(const float progression, const std::string& message)
    {
-      shared::CDataContainer dc;
-      dc.set("progression", progression);
-      dc.set("message", message);
-      m_eventHandler.postEvent(kProgress, dc);
+      //use callback directly (if using m_eventHadler, there are bad side effects)
+      m_progressNotifier(true, progression, message, "", shared::CDataContainer());
    }
 
 } // namespace pluginSystem	
