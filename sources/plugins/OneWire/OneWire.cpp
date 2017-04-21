@@ -157,6 +157,7 @@ void COneWire::updateNetwork(boost::shared_ptr<yApi::IYPluginApi> api,
          if (!api->deviceExists(newDevice->ident()->deviceName()))
             api->declareDevice(newDevice->ident()->deviceName(),
                                newDevice->ident()->model(),
+                               newDevice->ident()->model(),
                                newDevice->keywords(),
                                newDevice->ident()->details());
       }
