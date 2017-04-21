@@ -106,10 +106,10 @@ ComboSectionParameterHandler.prototype.getDOMObject = function () {
 '   <ul class="dropdown-menu" id="' + this.dropdownUuid + '" aria-labelledby="' + this.comboUuid + '">';
 
    $.each(this.configurationHandlers, function (key, value) {
-   input += '<li>'+
+      input += '<li>'+
                '<a href="#" data-value="' + value.uuid + '">' + 
-                  '<span class="combo-item-title" data-i18n="' + value.i18nContext + value.i18nKey + '.name">' + value.name + '</span>' + '<br/>' +
-                  '<span class="combo-item-description" data-i18n="' + value.i18nContext + value.i18nKey + '.description">' + value.description + '</span>' +
+                  '<span class="combo-item-title" data-i18n="' + value.i18nContext + value.i18nKey + '.types.' + value.paramName + '.title">' + value.name + '</span>' + '<br/>' +
+                  '<span class="combo-item-description" data-i18n="' + value.i18nContext + value.i18nKey + '.types.' + value.paramName + '.description"></span>' +
                '</a>' + 
             '</li>';
    });  
@@ -198,6 +198,12 @@ ComboSectionParameterHandler.prototype.applyScript = function () {
       if (self.configurationValues.activeSection === value.getParamName()) {
         activeSectionUuid = value.uuid;
       }
+    });
+    
+    $.each($("#" + self.dropdownUuid).find(".combo-item-description"), function (key, value) {
+       if($(value).text() === "") {
+          $(value).siblings(".combo-item-title").removeClass(".combo-item-title").addClass("combo-item-title-without-description");
+       }
     });
     
     //is the active value doesn't match we take the first one
