@@ -32,5 +32,13 @@ public:
    /// \param [in] sendMessage      message to send
    //--------------------------------------------------------------
    virtual void send(const std::string& sendMessage) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	                        Send a file content to RfPlayer dongle
+   /// \param [in] sendMessage         file content
+   /// \param [in] onProgressHandler   handler for progression notification
+   //--------------------------------------------------------------
+   virtual bool sendFile(const std::string & sendMessage, boost::function<void(float, const std::string &)> onProgressHandler) = 0;
+
 };
 

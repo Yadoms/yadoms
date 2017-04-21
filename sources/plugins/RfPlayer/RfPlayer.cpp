@@ -106,20 +106,12 @@ void CRfPlayer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                if (extraQuery->getData()->query() == "firmwareUpdate")
                {
                   std::string base64firmware = extraQuery->getData()->data().get<std::string>("fileContent");
-
                   std::string firmwareContent = shared::encryption::CBase64::decode(base64firmware);
-
-                  for (int i = 0; i < 100; ++i)
-                  {
-                     if(i<50)
-                        extraQuery->reportProgress(i*1.0f, "customLabels.firmwareUpdate.sendFile");
-                     else
-                        extraQuery->reportProgress(i*1.0f, "customLabels.firmwareUpdate.writeFile");
-                     boost::this_thread::sleep(boost::posix_time::milliseconds(200));
-                  }
-                  //YADOMS_LOG(information) << "FirmwareUpdate: content =" << firmwareContent;
-
-                  //m_messageHandler->send(firmwareContent);
+                  m_messageHandler->sendFile(firmwareContent,  [&](float progress, const std::string & msg)
+                                                               {
+                                                                  extraQuery->reportProgress(progress, msg);
+                                                               }
+                  );
                }
             }
             extraQuery->sendSuccess(shared::CDataContainer());

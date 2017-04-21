@@ -25,6 +25,7 @@ public:
    void onReceived(boost::shared_ptr<const frames::CFrame> receivedMessage);
    bool send(const std::string & sendMessage, boost::function<bool(boost::shared_ptr<const frames::CFrame>)> isExpectedMessageFct, boost::function<void(boost::shared_ptr<const frames::CFrame>)> onReceiveFct);
    void send(const std::string& sendMessage);
+   bool sendFile(const std::string & sendMessage, boost::function<void(float, const std::string &)> onProgressHandler);
    // [END] IMessageHandler implementation
 
 protected:

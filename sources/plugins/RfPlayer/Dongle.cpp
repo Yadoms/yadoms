@@ -15,7 +15,8 @@ boost::shared_ptr<CDongle> CDongle::create(const std::string & helloCommandAnswe
    boost::shared_ptr<CDongle> dongle = boost::shared_ptr<CDongle>();
 
    //Welcome to Ziblue Dongle RFPLAYER (RFP1000, Firmware V1.12 Mac 0xF6C09FCC)
-   const std::string regex1_11 = "Welcome to Ziblue Dongle (?<type>[^,\\ ]*) \\((?<model>[^,]*), Firmware V(?<firmwareVersion>\\d{1,}\\.\\d{1,})(?<fullmac> Mac (?<mac>0x[0-9A-fa-f]{8}))?\\)";
+   //Welcome to Ziblue Dongle RFPLAYER (RFP1000, Firmware=V1.14 F=433Mhz & 868Mhz EU)!
+   const std::string regex1_11 = "Welcome to Ziblue Dongle (?<type>[^,\\ ]*) \\((?<model>[^,]*), Firmware[ =]V(?<firmwareVersion>\\d{1,}\\.\\d{1,})(?<fullmac> Mac (?<mac>0x[0-9A-fa-f]{8}))?\\)?(?<fullFreqs> F=(?<f433>[\\d\\.]*)Mhz & (?<f866>[\\d\\.]*)Mhz (?<mode>EU|US))?";
 
    Poco::RegularExpression re(regex1_11);
    std::vector<std::string> results;
@@ -31,8 +32,16 @@ boost::shared_ptr<CDongle> CDongle::create(const std::string & helloCommandAnswe
       dongle->m_firmwareVersion = results[3];
 
       //optionnaly, mac address (not given by all firmwares)
-      if(results.size()>5)
+      if (results.size() > 5)
          dongle->m_macAddress = results[5];
+
+      if (results.size() > 9)
+      {
+         dongle->m_freq433 = results[7];
+         dongle->m_freq868 = results[8];
+         dongle->m_mode = results[9];
+      }
+
    }
    return dongle;
 }
@@ -57,3 +66,17 @@ const std::string & CDongle::getMacAddress() const
    return m_macAddress;
 }
 
+const std::string & CDongle::getFreq433() const
+{
+   return m_freq433;
+}
+
+const std::string & CDongle::getFreq868() const
+{
+   return m_freq868;
+}
+
+const std::string & CDongle::getMode() const
+{
+   return m_mode;
+}

@@ -21,6 +21,28 @@ void CMessageHandler::send(const std::string & sendMessage)
    m_port->sendText(sendMessage);
 }
 
+bool CMessageHandler::sendFile(const std::string & fileContent, boost::function<void(float, const std::string &)> onProgressHandler)
+{
+   if (!m_port)
+      throw shared::exception::CException("Send file failed : dongle is not ready");
+
+   YADOMS_LOG(information) << " RfPlayer Command >>> send file";
+   
+   unsigned int totalSize = fileContent.size();
+   const unsigned int bufferSize = 655536;
+   const std::string stepi18n = "customLabels.firmwareUpdate.writeFile";
+
+   for (unsigned int i = 0; i < totalSize;)
+   {
+      std::string buffer = fileContent.substr(i, bufferSize);
+      if(buffer.size() > 0)
+         m_port->sendText(buffer);
+      i += buffer.size();
+      onProgressHandler(i*100.0f/totalSize, stepi18n);
+   }
+   return true;
+}
+
 bool CMessageHandler::send(const std::string& sendMessage, boost::function<bool(boost::shared_ptr<const frames::CFrame>)> isExpectedMessageFct, boost::function<void(boost::shared_ptr<const frames::CFrame>)> onReceiveFct)
 {
    if (!m_port)
