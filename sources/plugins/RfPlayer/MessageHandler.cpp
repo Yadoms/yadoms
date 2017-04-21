@@ -29,7 +29,7 @@ bool CMessageHandler::sendFile(const std::string & fileContent, boost::function<
    YADOMS_LOG(information) << " RfPlayer Command >>> send file";
    
    unsigned int totalSize = fileContent.size();
-   const unsigned int bufferSize = 655536;
+   const unsigned int bufferSize = 65536;
    const std::string stepi18n = "customLabels.firmwareUpdate.writeFile";
 
    for (unsigned int i = 0; i < totalSize;)
