@@ -32,37 +32,36 @@ namespace equipments
 
       void CTIC::initializeTIC(boost::shared_ptr<yApi::IYPluginApi> api)
       {
-         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
          shared::CDataContainer details;
 
          if (m_contractName.compare("Pas Dispo")!=0)
          {
             m_teleInfoStatus->set(specificHistorizers::EStatus::kOk);
-            keywordsToDeclare.push_back(m_apparentPower);
-            keywordsToDeclare.push_back(m_TimePeriod);
+            m_keywords.push_back(m_apparentPower);
+            m_keywords.push_back(m_TimePeriod);
 
             if (m_contractName.compare("BASE")==0)
             {
-               keywordsToDeclare.push_back(m_baseCounter);
+               m_keywords.push_back(m_baseCounter);
             }
             else if (m_contractName.compare("HP/HC")==0)
             {
-               keywordsToDeclare.push_back(m_lowCostCounter);
-               keywordsToDeclare.push_back(m_normalCostCounter);
+               m_keywords.push_back(m_lowCostCounter);
+               m_keywords.push_back(m_normalCostCounter);
             }
             else if (m_contractName.compare("EJP")==0)
             {
-               keywordsToDeclare.push_back(m_EJPPeakPeriod);
-               keywordsToDeclare.push_back(m_EJPNormalPeriod);
+               m_keywords.push_back(m_EJPPeakPeriod);
+               m_keywords.push_back(m_EJPNormalPeriod);
             }
             else if (m_contractName.compare("BBR")==0)
             {
-               keywordsToDeclare.push_back(m_tempoBlueDaysLowCostPeriod);
-               keywordsToDeclare.push_back(m_tempoBlueDaysNormalCostPeriod);
-               keywordsToDeclare.push_back(m_tempoRedDaysLowCostPeriod);
-               keywordsToDeclare.push_back(m_tempoRedDaysNormalCostPeriod);
-               keywordsToDeclare.push_back(m_tempoWhiteDaysLowCostPeriod);
-               keywordsToDeclare.push_back(m_tempoWhiteDaysNormalCostPeriod);
+               m_keywords.push_back(m_tempoBlueDaysLowCostPeriod);
+               m_keywords.push_back(m_tempoBlueDaysNormalCostPeriod);
+               m_keywords.push_back(m_tempoRedDaysLowCostPeriod);
+               m_keywords.push_back(m_tempoRedDaysNormalCostPeriod);
+               m_keywords.push_back(m_tempoWhiteDaysLowCostPeriod);
+               m_keywords.push_back(m_tempoWhiteDaysNormalCostPeriod);
             }
             else
             {
@@ -74,12 +73,12 @@ namespace equipments
             m_teleInfoStatus->set(specificHistorizers::EStatus::kDesactivated);
          }
 
-         keywordsToDeclare.push_back(m_teleInfoStatus);
+         m_keywords.push_back(m_teleInfoStatus);
 
          std::string model = "WES";
 
          //Déclaration of all IOs
-         api->declareDevice(m_deviceName, "TeleInfo",model, keywordsToDeclare, details);
+         api->declareDevice(m_deviceName, "TeleInfo",model, m_keywords, details);
       }
 
       std::string CTIC::getDeviceName() const
@@ -87,10 +86,46 @@ namespace equipments
          return m_deviceName;
       }
 
-      void CTIC::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api)
+      void CTIC::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                  const long long& counter1,
+                                  const long long& counter2,
+                                  const long long& counter3,
+                                  const long long& counter4,
+                                  const long long& counter5,
+                                  const long long& counter6)
       {
          //TODO : If deviceName or contractName are different then create a new device
          //initializeTIC(api);
+
+         if (m_contractName.compare("BASE") == 0)
+         {
+            m_baseCounter->set(counter1);
+         }
+         else if (m_contractName.compare("HP/HC") == 0)
+         {
+            m_lowCostCounter->set(counter1);
+            m_normalCostCounter->set(counter2);
+         }
+         else if (m_contractName.compare("EJP") == 0)
+         {
+            m_EJPPeakPeriod->set(counter1);
+            m_EJPNormalPeriod->set(counter2);
+         }
+         else if (m_contractName.compare("BBR") == 0)
+         {
+            m_tempoBlueDaysLowCostPeriod->set(counter1);
+            m_tempoBlueDaysNormalCostPeriod->set(counter2);
+            m_tempoRedDaysLowCostPeriod->set(counter3);
+            m_tempoRedDaysNormalCostPeriod->set(counter4);
+            m_tempoWhiteDaysLowCostPeriod->set(counter5);
+            m_tempoWhiteDaysNormalCostPeriod->set(counter6);
+         }
+         else
+         {
+            YADOMS_LOG(error) << "This contract is unknown";
+         }
+
+         api->historizeData(m_deviceName, m_keywords);
       }
 
       CTIC::~CTIC()

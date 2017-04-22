@@ -201,33 +201,62 @@ namespace equipments
 
       shared::CDataContainer credentials;
 
-      // TODO : To be replaced when manual configuration device is properly finished !
-      credentials.set("user", "admin"/*m_configuration.getUser()*/);
-      credentials.set("password", "wes"/*m_configuration.getPassword()*/);
+      try {
+         // TODO : To be replaced when manual configuration device is properly finished !
+         credentials.set("user", "admin"/*m_configuration.getUser()*/);
+         credentials.set("password", "wes"/*m_configuration.getPassword()*/);
 
-//      credentials.printToLog(YADOMS_LOG(information));
+         //      credentials.printToLog(YADOMS_LOG(information));
 
-      shared::CDataContainer results = urlManager::sendCommand(m_configuration.getIPAddressWithSocket(),
-                                                               credentials,
-                                                               CGXfileName);
+         shared::CDataContainer results = urlManager::sendCommand(m_configuration.getIPAddressWithSocket(),
+                                                                  credentials,
+                                                                  CGXfileName);
 
-      // Reading relays - historize only on change value or when the historization is forced (initialization, for example)      
-      updateSwitchValue(keywordsToHistorize, m_relaysList[0], static_cast<bool>(results.get<int>("RL1")), forceHistorization);
-      updateSwitchValue(keywordsToHistorize, m_relaysList[1], static_cast<bool>(results.get<int>("RL2")), forceHistorization);
+         // Reading relays - historize only on change value or when the historization is forced (initialization, for example)      
+         updateSwitchValue(keywordsToHistorize, m_relaysList[0], static_cast<bool>(results.get<int>("RL1")), forceHistorization);
+         updateSwitchValue(keywordsToHistorize, m_relaysList[1], static_cast<bool>(results.get<int>("RL2")), forceHistorization);
 
-      updateSwitchValue(keywordsToHistorize, m_inputList[0], static_cast<bool>(results.get<int>("I1")), forceHistorization);
-      updateSwitchValue(keywordsToHistorize, m_inputList[1], static_cast<bool>(results.get<int>("I2")), forceHistorization);
+         updateSwitchValue(keywordsToHistorize, m_inputList[0], static_cast<bool>(results.get<int>("I1")), forceHistorization);
+         updateSwitchValue(keywordsToHistorize, m_inputList[1], static_cast<bool>(results.get<int>("I2")), forceHistorization);
 
-      for (int counter = 0; counter<WES_CLAMP_QTY; ++counter)
-      {
-         m_ClampList[counter]->updateFromDevice(api,
-                                                keywordsToHistorize,
-                                                m_configuration.isInstantCurrentClampRegistered(counter),
-                                                results.get<std::string>("IPC"  + boost::lexical_cast<std::string>(counter+1) + "_val"),
-                                                results.get<std::string>("WHPC" + boost::lexical_cast<std::string>(counter+1) + "_val"));
+         //Reading clamp values
+         for (int counter = 0; counter < WES_CLAMP_QTY; ++counter)
+         {
+            m_ClampList[counter]->updateFromDevice(api,
+                                                   keywordsToHistorize,
+                                                   m_configuration.isInstantCurrentClampRegistered(counter),
+                                                   results.get<double>("IPC" + boost::lexical_cast<std::string>(counter + 1) + "_val"),
+                                                   results.get<double>("WHPC" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
+         }
+
+         //Reading pulse values
+         for (int counter = 0; counter < WES_PULSE_QTY; ++counter)
+         {
+            m_PulseList[counter]->updateFromDevice(api,
+                                                   keywordsToHistorize,
+                                                   results.get<std::string>("PLSU" + boost::lexical_cast<std::string>(counter + 1)),
+                                                   results.get<double>("debit" + boost::lexical_cast<std::string>(counter + 1) + "_val"),
+                                                   results.get<std::string>("consJ" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
+         }
+
+         api->historizeData(m_deviceName, keywordsToHistorize);
+
+         // TIC Counters Values -> independant from the others keywords
+         for (int counter = 0; counter < WES_TIC_QTY; ++counter)
+         {
+            m_TICList[0]->updateFromDevice(api,
+                                           results.get<double>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_1"),
+                                           results.get<double>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_2"),
+                                           results.get<double>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_3"),
+                                           results.get<double>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_4"),
+                                           results.get<double>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_5"),
+                                           results.get<double>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_6"));
+         }
       }
-
-      api->historizeData(m_deviceName, keywordsToHistorize);
+      catch (std::exception& e)
+      {
+         YADOMS_LOG(error) << e.what();
+      }
    }
 
    void CWESEquipment::updateSwitchValue(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize, 

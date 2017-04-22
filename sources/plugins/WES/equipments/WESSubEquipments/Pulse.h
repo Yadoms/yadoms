@@ -27,7 +27,12 @@ namespace equipments
                 const std::string& unitName);
 
          std::string getDeviceName() const;
-         void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api);
+         void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                               std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
+                               const std::string& unitName,
+                               const double& flowValue,
+                               const std::string& totalValue
+         );
 
          //-----------------------------------------------------
          ///\brief                     Destructor
@@ -53,7 +58,8 @@ namespace equipments
          //--------------------------------------------------------------
          /// \brief  Keywords
          //--------------------------------------------------------------
-         boost::shared_ptr<yApi::historization::IHistorizable> m_Pulse;
+         boost::shared_ptr<yApi::historization::CEnergy> m_pulseEnergy;
+         boost::shared_ptr<yApi::historization::CVolume> m_pulseVolume;
 
       };
    }

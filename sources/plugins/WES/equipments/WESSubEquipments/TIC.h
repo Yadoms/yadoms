@@ -27,7 +27,13 @@ namespace equipments
               const std::string& contract);
 
          std::string getDeviceName() const;
-         void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api);
+         void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                               const long long& counter1,
+                               const long long& counter2,
+                               const long long& counter3,
+                               const long long& counter4,
+                               const long long& counter5,
+                               const long long& counter6);
 
          //-----------------------------------------------------
          ///\brief                     Destructor

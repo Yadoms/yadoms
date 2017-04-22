@@ -57,42 +57,22 @@ namespace equipments
       void CClamp::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                     std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
                                     const bool isInstantCurrentClampRegistered,
-                                    const std::string& instantCurrent,
-                                    const std::string& energyClamp)
+                                    const double& instantCurrentValue,
+                                    const double& energyClampValue)
       {
          //TODO : If deviceName or contractName are different then create a new device
          //initializeTIC(api);
 
          if (isInstantCurrentClampRegistered)
          {
-            double instantCurrentValue = 0;
-            boost::regex regInstantCurrent("([+-]?([0-9]*[.])?[0-9]+) (.+)");
-
-            boost::smatch match;
-            if (boost::regex_search(instantCurrent, match, regInstantCurrent))
-            {
-               instantCurrentValue = boost::lexical_cast<double>(match[1]);
-            }
-
-            YADOMS_LOG(trace) << m_CurrentClamp->getKeyword() << " set to " << instantCurrentValue;
-
             m_CurrentClamp->set(instantCurrentValue);
             keywordsToHistorize.push_back(m_CurrentClamp);
+            YADOMS_LOG(trace) << m_CurrentClamp->getKeyword() << " set to " << instantCurrentValue;
          }
-
-         long energyClampValue = 0;
-         boost::regex regEnergy("([+-]?(\\d+)) (.+)");
-
-         boost::smatch match;
-         if (boost::regex_search(energyClamp, match, regEnergy))
-         {
-            energyClampValue = boost::lexical_cast<long>(match[1]);
-         }
-
-         YADOMS_LOG(trace) << m_CounterClamp->getKeyword() << " set to " << energyClampValue;
 
          m_CounterClamp->set(energyClampValue);
          keywordsToHistorize.push_back(m_CounterClamp);
+         YADOMS_LOG(trace) << m_CounterClamp->getKeyword() << " set to " << energyClampValue;
       }
 
       CClamp::~CClamp()

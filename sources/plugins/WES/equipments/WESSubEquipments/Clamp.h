@@ -35,8 +35,8 @@ namespace equipments
          void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
                                const bool isInstantCurrentClampRegistered,
-                               const std::string& instantCurrent,
-                               const std::string& energyClamp);
+                               const double& instantCurrentValue,
+                               const double& energyClampValue);
 
          //-----------------------------------------------------
          ///\brief                     Destructor
