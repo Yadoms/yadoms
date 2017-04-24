@@ -32,6 +32,7 @@ enum
 
 
 CEnOcean::CEnOcean()
+   : m_rssiKeyword(boost::make_shared<shared::plugin::yPluginApi::historization::CRssi>("rssi"))
 {
 }
 
@@ -45,7 +46,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-   YADOMS_LOG(information) << "EnOcean is starting..." ;
+   YADOMS_LOG(information) << "EnOcean is starting...";
 
    // Load configuration values (provided by database)
    m_configuration.initializeWith(m_api->getConfiguration());
@@ -66,7 +67,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
          case yApi::IYPluginApi::kEventStopRequested:
             {
-               YADOMS_LOG(information) << "Stop requested" ;
+               YADOMS_LOG(information) << "Stop requested";
                m_api->setPluginState(yApi::historization::EPluginState::kStopped);
                return;
             }
@@ -76,7 +77,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                // Configuration was updated
                m_api->setPluginState(yApi::historization::EPluginState::kCustom, "updateConfiguration");
                auto newConfigurationData = m_api->getEventHandler().getEventData<shared::CDataContainer>();
-               YADOMS_LOG(information) << "Update configuration..." ;
+               YADOMS_LOG(information) << "Update configuration...";
                BOOST_ASSERT(!newConfigurationData.empty()); // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
                // Close connection
@@ -104,7 +105,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                // Command received from Yadoms
                auto command(m_api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand>>());
-               YADOMS_LOG(information) << "Command received : " << yApi::IDeviceCommand::toString(command) ;
+               YADOMS_LOG(information) << "Command received : " << yApi::IDeviceCommand::toString(command);
 
                processDeviceCommand(command);
 
@@ -114,7 +115,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          case yApi::IYPluginApi::kEventDeviceRemoved:
             {
                auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved>>();
-               YADOMS_LOG(information) << device->device() << " was removed" ;
+               YADOMS_LOG(information) << device->device() << " was removed";
                processDeviceRemmoved(device);
                break;
             }
@@ -145,7 +146,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
          case kAnswerTimeout:
             {
-               YADOMS_LOG(error) << "No answer received from EnOcean dongle (timeout)" ;
+               YADOMS_LOG(error) << "No answer received from EnOcean dongle (timeout)";
                protocolErrorProcess();
                break;
             }
@@ -163,11 +164,11 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       }
       catch (std::logic_error& e)
       {
-         YADOMS_LOG(error) << "Logical error : " << e.what() ;
+         YADOMS_LOG(error) << "Logical error : " << e.what();
       }
       catch (CProtocolException& e)
       {
-         YADOMS_LOG(error) << "Error communicationg with EnOcean dongle " << e.what() ;
+         YADOMS_LOG(error) << "Error communicationg with EnOcean dongle " << e.what();
          protocolErrorProcess();
       }
    }
@@ -197,7 +198,7 @@ void CEnOcean::loadAllDevices()
       catch (std::exception& e)
       {
          // Don't add a wrong configured device to the m_devices list
-         YADOMS_LOG(error) << "Error loading device from database : device " << deviceId << " is malformed (" << e.what() << "), will be ignored" ;
+         YADOMS_LOG(error) << "Error loading device from database : device " << deviceId << " is malformed (" << e.what() << "), will be ignored";
       }
    }
 }
@@ -263,13 +264,13 @@ void CEnOcean::processDeviceCommand(boost::shared_ptr<const shared::plugin::yPlu
 {
    if (!m_port)
    {
-      YADOMS_LOG(information) << "Unable to process command : dongle is not ready" ;
+      YADOMS_LOG(information) << "Unable to process command : dongle is not ready";
       return;
    }
 
    if (m_devices.find(command->getDevice()) == m_devices.end())
    {
-      YADOMS_LOG(error) << "Unable to process command : device " << command->getDevice() << " unknown" ;
+      YADOMS_LOG(error) << "Unable to process command : device " << command->getDevice() << " unknown";
       return;
    }
 
@@ -288,7 +289,7 @@ void CEnOcean::processDeviceCommand(boost::shared_ptr<const shared::plugin::yPlu
 
 void CEnOcean::processConnectionEvent()
 {
-   YADOMS_LOG(information) << "EnOcean port opened" ;
+   YADOMS_LOG(information) << "EnOcean port opened";
 
    try
    {
@@ -317,7 +318,7 @@ void CEnOcean::protocolErrorProcess()
 
 void CEnOcean::processUnConnectionEvent()
 {
-   YADOMS_LOG(information) << "EnOcean connection was lost" ;
+   YADOMS_LOG(information) << "EnOcean connection was lost";
    m_api->setPluginState(yApi::historization::EPluginState::kCustom, "connectionFailed");
 
    destroyConnection();
@@ -339,7 +340,7 @@ void CEnOcean::processDeviceConfiguration(const std::string& deviceId,
       auto selectedProfile = CProfileHelper(configuration.get<std::string>("profile.activeSection"));
       auto manufacturer = configuration.get<std::string>("manufacturer");
 
-      YADOMS_LOG(information) << "Device \"" << deviceId << "\" is configurated as " << selectedProfile.profile() ;
+      YADOMS_LOG(information) << "Device \"" << deviceId << "\" is configurated as " << selectedProfile.profile();
 
       if (m_devices.find(deviceId) == m_devices.end() || m_devices[deviceId]->profile() != selectedProfile.profile())
       {
@@ -370,11 +371,11 @@ void CEnOcean::processDeviceConfiguration(const std::string& deviceId,
    }
    catch (shared::exception::CEmptyResult&)
    {
-      YADOMS_LOG(error) << "Unable to configure device : unknown device \"" << deviceId << "\"" ;
+      YADOMS_LOG(error) << "Unable to configure device : unknown device \"" << deviceId << "\"";
    }
    catch (std::exception& e)
    {
-      YADOMS_LOG(error) << "Unable to configure device : " << e.what() ;
+      YADOMS_LOG(error) << "Unable to configure device : " << e.what();
    }
 }
 
@@ -399,12 +400,34 @@ void CEnOcean::processDataReceived(boost::shared_ptr<const message::CEsp3Receive
    }
    catch (CProtocolException& e)
    {
-      YADOMS_LOG(error) << "Error processing received message : " << e.what() ;
+      YADOMS_LOG(error) << "Error processing received message : " << e.what();
    }
    catch (std::exception& e)
    {
-      YADOMS_LOG(error) << "Error processing received message : " << e.what() ;
+      YADOMS_LOG(error) << "Error processing received message : " << e.what();
    }
+}
+
+void CEnOcean::AddRssi(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords,
+                       const std::string& deviceId,
+                       int rssiValue) const
+{
+   if (!m_api->keywordExists(deviceId, m_rssiKeyword))
+      m_api->declareKeyword(deviceId, m_rssiKeyword);
+
+   m_rssiKeyword->set(rssiValue);
+   keywords.push_back(m_rssiKeyword);
+}
+
+int CEnOcean::dbmToRssi(int dBm)
+{
+   if (dBm < -80)
+      return 12;
+   if (dBm < -70)
+      return 50;
+   if (dBm < -60)
+      return 87;
+   return 100;
 }
 
 void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
@@ -433,7 +456,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
          {
             // Device exist.
             // It is ether configured or not, but this teachin message give us nothing new (no EEP is provided), so ignore it
-            YADOMS_LOG(information) << "Device " << deviceId << " already declared, teachin message ignored." ;
+            YADOMS_LOG(information) << "Device " << deviceId << " already declared, teachin message ignored.";
             return;
          }
 
@@ -479,7 +502,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
       }
       catch (std::exception& e)
       {
-         YADOMS_LOG(error) << "Unable to declare device : " << e.what() ;
+         YADOMS_LOG(error) << "Unable to declare device : " << e.what();
       }
    }
    else
@@ -491,7 +514,7 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
       {
          if (m_api->deviceExists(deviceId))
          {
-            YADOMS_LOG(information) << "Device " << deviceId << " already declared but not configured, message ignored." ;
+            YADOMS_LOG(information) << "Device " << deviceId << " already declared but not configured, message ignored.";
             return;
          }
 
@@ -506,13 +529,17 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
                                                 erp1Status);
       if (keywordsToHistorize.empty())
       {
-         YADOMS_LOG(information) << "Received message for id#" << deviceId << ", but nothing to historize" ;
+         YADOMS_LOG(information) << "Received message for id#" << deviceId << ", but nothing to historize";
          return;
       }
 
-      YADOMS_LOG(information) << "Received message for id#" << deviceId << " : " ;
+      AddRssi(keywordsToHistorize,
+              deviceId,
+              dbmToRssi(erp1Message.dBm()));
+
+      YADOMS_LOG(information) << "Received message for id#" << deviceId << " : ";
       for (const auto& kw: keywordsToHistorize)
-      YADOMS_LOG(information) << "  - " << kw->getKeyword() << " = " << kw->formatValue() ;;
+      YADOMS_LOG(information) << "  - " << kw->getKeyword() << " = " << kw->formatValue();
 
       m_api->historizeData(deviceId, keywordsToHistorize);
    }
@@ -520,9 +547,9 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
 
 void CEnOcean::declareDeviceWithoutProfile(const std::string& deviceId) const
 {
-   YADOMS_LOG(information) << "New device declared : " ;
-   YADOMS_LOG(information) << "  - Id           : " << deviceId ;
-   YADOMS_LOG(information) << "  - Profile      : Unknown. No historization until user enter profile." ;
+   YADOMS_LOG(information) << "New device declared : ";
+   YADOMS_LOG(information) << "  - Id           : " << deviceId;
+   YADOMS_LOG(information) << "  - Profile      : Unknown. No historization until user enter profile.";
 
    m_api->declareDevice(deviceId,
                         std::string(),
@@ -531,7 +558,7 @@ void CEnOcean::declareDeviceWithoutProfile(const std::string& deviceId) const
 
 void CEnOcean::processResponse(boost::shared_ptr<const message::CEsp3ReceivedPacket>)
 {
-   YADOMS_LOG(error) << "Unexpected response received" ;
+   YADOMS_LOG(error) << "Unexpected response received";
 }
 
 void CEnOcean::processDongleVersionResponse(message::CResponseReceivedMessage::EReturnCode returnCode,
@@ -551,7 +578,7 @@ void CEnOcean::processDongleVersionResponse(message::CResponseReceivedMessage::E
 
    m_senderId = dongleVersionResponse.chipId();
 
-   YADOMS_LOG(information) << dongleVersionResponse.fullVersion() ;
+   YADOMS_LOG(information) << dongleVersionResponse.fullVersion();
 }
 
 void CEnOcean::processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
@@ -571,7 +598,7 @@ void CEnOcean::processEvent(boost::shared_ptr<const message::CEsp3ReceivedPacket
       };
 
    auto eventCode = esp3Packet->data()[0];
-   YADOMS_LOG(information) << "Event " << eventCode << " received" ;
+   YADOMS_LOG(information) << "Event " << eventCode << " received";
 }
 
 void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
@@ -586,13 +613,13 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
    if (uteMessage->teachInRequest() != message::CUTE_ReceivedMessage::kTeachInRequest &&
       uteMessage->teachInRequest() != message::CUTE_ReceivedMessage::kNotSpecified)
    {
-      YADOMS_LOG(information) << "UTE message : teach-in request type " << uteMessage->teachInRequest() << " not supported, message ignored" ;
+      YADOMS_LOG(information) << "UTE message : teach-in request type " << uteMessage->teachInRequest() << " not supported, message ignored";
       return;
    }
 
    if (uteMessage->command() != message::CUTE_ReceivedMessage::kTeachInQuery)
    {
-      YADOMS_LOG(information) << "UTE message : command type " << static_cast<unsigned int>(uteMessage->command()) << " not supported, message ignored" ;
+      YADOMS_LOG(information) << "UTE message : command type " << static_cast<unsigned int>(uteMessage->command()) << " not supported, message ignored";
       return;
    }
 
@@ -615,7 +642,7 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
       }
       catch (std::exception& e)
       {
-         YADOMS_LOG(error) << "Fail to declare device (Universal teachin) : " << e.what() ;
+         YADOMS_LOG(error) << "Fail to declare device (Universal teachin) : " << e.what();
          response = message::CUTE_AnswerSendMessage::kRequestNotAccepted;
       }
    }
@@ -657,7 +684,7 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
          throw CProtocolException("Unable to send UTE response, timeout waiting acknowledge");
 
       if (returnCode != message::CResponseReceivedMessage::RET_OK)
-         YADOMS_LOG(error) << "TeachIn response not successfully acknowledged : " << returnCode ;
+      YADOMS_LOG(error) << "TeachIn response not successfully acknowledged : " << returnCode;
    }
 }
 
@@ -679,7 +706,7 @@ boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
       std::stringstream s;
       s << "Can not declare device id#" << deviceId
          << " (" << profile.profile()
-         << ") : no keyword to declare" ;
+         << ") : no keyword to declare";
       throw std::logic_error(s.str());
    }
 
@@ -690,14 +717,14 @@ boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
                         modelLabel,
                         keywordsToDeclare);
 
-   YADOMS_LOG(information) << "New device declared : " ;
-   YADOMS_LOG(information) << "  - Id           : " << deviceId ;
-   YADOMS_LOG(information) << "  - Profile      : " << profile.profile() ;
-   YADOMS_LOG(information) << "  - Manufacturer : " << manufacturer ;
-   YADOMS_LOG(information) << "  - Model        : " << modelLabel ;
-   YADOMS_LOG(information) << "  - RORG         : " << CRorgs::createRorg(profile.rorg())->title() ;
-   YADOMS_LOG(information) << "  - FUNC         : " << CRorgs::createRorg(profile.rorg())->createFunc(profile.func())->title() ;
-   YADOMS_LOG(information) << "  - TYPE         : " << device->title() ;
+   YADOMS_LOG(information) << "New device declared : ";
+   YADOMS_LOG(information) << "  - Id           : " << deviceId;
+   YADOMS_LOG(information) << "  - Profile      : " << profile.profile();
+   YADOMS_LOG(information) << "  - Manufacturer : " << manufacturer;
+   YADOMS_LOG(information) << "  - Model        : " << modelLabel;
+   YADOMS_LOG(information) << "  - RORG         : " << CRorgs::createRorg(profile.rorg())->title();
+   YADOMS_LOG(information) << "  - FUNC         : " << CRorgs::createRorg(profile.rorg())->createFunc(profile.func())->title();
+   YADOMS_LOG(information) << "  - TYPE         : " << device->title();
 
    m_devices[deviceId] = device;
    return device;
@@ -726,4 +753,3 @@ void CEnOcean::requestDongleVersion()
    processDongleVersionResponse(response->returnCode(),
                                 message::CDongleVersionResponseReceivedMessage(response));
 }
-
