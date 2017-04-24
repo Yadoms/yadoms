@@ -56,8 +56,9 @@
    },
    "customLabels" : {
       "firmwareUpdate" : {
-         "sendFile" : "Send firmware",
-         "writeFile" : "Writing firmware"
+         "fail" : "Fail to upgrade firmware",
+         "writeFile" : "Sending firmware",
+         "waitReboot" : "Writing firmware (~1 min)"
       }
    }    
    

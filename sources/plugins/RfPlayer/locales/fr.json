@@ -77,8 +77,9 @@
    },
    "customLabels" : {
       "firmwareUpdate" : {
-         "sendFile" : "Envoi du microcode",
-         "writeFile" : "Ecriture du microcode"
+         "fail" : "Impossible de mettre à jour le microcode",
+         "writeFile" : "Envoi du microcode",
+         "waitReboot" : "Ecriture du microcode (~1 min)"
       }
-   }  
+   }
 }

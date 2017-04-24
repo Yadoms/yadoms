@@ -105,16 +105,17 @@ void CRfPlayer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                if (extraQuery->getData()->query() == "firmwareUpdate")
                {
-                  std::string base64firmware = extraQuery->getData()->data().get<std::string>("fileContent");
-                  std::string firmwareContent = shared::encryption::CBase64::decode(base64firmware);
-                  m_messageHandler->sendFile(firmwareContent,  [&](float progress, const std::string & msg)
-                                                               {
-                                                                  extraQuery->reportProgress(progress, msg);
-                                                               }
-                  );
+                  processFirmwareUpdate(api, extraQuery);
+               }
+               else
+               {
+                  extraQuery->sendError("unsupported query : " + extraQuery->getData()->query());
                }
             }
-            extraQuery->sendSuccess(shared::CDataContainer());
+            else
+            {
+               extraQuery->sendError("invalid paramerter");
+            }
             break;
          }
 
@@ -355,4 +356,82 @@ void CRfPlayer::updateDongleConfiguration(boost::shared_ptr<yApi::IYPluginApi> a
       // Stop the communication, and try later
       errorProcess(api);
    }
+}
+
+
+void CRfPlayer::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> & api, boost::shared_ptr<yApi::IExtraQuery> & extraQuery)
+{
+   YADOMS_LOG(information) << "Firmware update of dongle :" << m_dongle->getType() << " " << m_dongle->getModel() << " v" << m_dongle->getFirmwareVersion();
+
+   /*
+   Progression:
+   0 -> 75 % : send file to rfplayer
+   75 % : wait for rfplayer to reboot
+   100% : done
+   */
+   
+   
+   std::string base64firmware = extraQuery->getData()->data().get<std::string>("fileContent");
+   std::string firmwareContent = shared::encryption::CBase64::decode(base64firmware);
+
+   const std::string stepi18nSendingFile = "customLabels.firmwareUpdate.writeFile";
+   m_messageHandler->sendFile(firmwareContent, [&](float progress)
+   {
+      //report progression
+      extraQuery->reportProgress(progress * 75.0f / 100.0f, stepi18nSendingFile);
+   });
+
+   //send "HELLO" command until dongle answers
+   //up to 2minutes timeout
+   const std::string stepi18nWriting = "customLabels.firmwareUpdate.writeFile";
+   extraQuery->reportProgress(75.0f, stepi18nWriting);
+
+   
+   boost::posix_time::ptime timeout = shared::currentTime::Provider().now() + boost::posix_time::minutes(2);
+   
+   bool isReady = false;
+   while (!isReady && shared::currentTime::Provider().now() < timeout)
+   {
+      isReady = m_messageHandler->send(m_transceiver->buildHelloCmd(),
+         [&](boost::shared_ptr<const frames::CFrame> frame)
+         {
+            YADOMS_LOG(information) << "Something received";
+            YADOMS_LOG(information) << frame->getAscii()->getContent();
+
+            //expect restart of dongle
+            bool isRestartFrame = frame->isAscii() && boost::icontains(frame->getAscii()->getContent(), "Ziblue Dongle");
+
+            if (!isRestartFrame)
+               extraQuery->reportProgress(75.0f, frame->getAscii()->getContent());
+            return isRestartFrame;
+         },
+         [&](boost::shared_ptr<const frames::CFrame> frame)
+         {
+            YADOMS_LOG(information) << "New dongle";
+
+            //apply the dongle configuration
+            m_dongle = CDongle::create(frame->getAscii()->getContent());
+
+            if (m_dongle)
+            {
+               YADOMS_LOG(information) << "Dongle :" << m_dongle->getType() << " " << m_dongle->getModel() << " v" << m_dongle->getFirmwareVersion();
+            }
+            else
+            {
+               YADOMS_LOG(information) << "Unknown dongle, or not fully supported firmware";
+            }
+            api->setPluginState(yApi::historization::EPluginState::kRunning);
+            updateDongleConfiguration(api);
+            m_messageHandler->send(m_transceiver->buildStartListeningData());
+         }
+      );
+
+   }
+
+   
+   const std::string stepi18nUpgradedFail = "customLabels.firmwareUpdate.fail";
+   if (isReady)
+      extraQuery->sendSuccess(shared::CDataContainer::EmptyContainer);
+   else
+      extraQuery->sendError(stepi18nUpgradedFail);
 }

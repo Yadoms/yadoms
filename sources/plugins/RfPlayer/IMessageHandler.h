@@ -38,7 +38,7 @@ public:
    /// \param [in] sendMessage         file content
    /// \param [in] onProgressHandler   handler for progression notification
    //--------------------------------------------------------------
-   virtual bool sendFile(const std::string & sendMessage, boost::function<void(float, const std::string &)> onProgressHandler) = 0;
+   virtual bool sendFile(const std::string & sendMessage, boost::function<void(float)> onProgressHandler) = 0;
 
 };
 
