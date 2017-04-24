@@ -421,13 +421,22 @@ void CEnOcean::AddRssi(std::vector<boost::shared_ptr<const yApi::historization::
 
 int CEnOcean::dbmToRssi(int dBm)
 {
-   if (dBm < -80)
-      return 12;
-   if (dBm < -70)
+   // Thresholds were determined empirically with DolphinView tool
+   if (dBm >= -65)
+      return 100;
+   if (dBm >= -67)
+      return 90;
+   if (dBm >= -74)
+      return 80;
+   if (dBm >= -76)
+      return 70;
+   if (dBm >= -83)
+      return 60;
+   if (dBm >= -85)
       return 50;
-   if (dBm < -60)
-      return 87;
-   return 100;
+   if (dBm >= -91)
+      return 40;
+   return 20;
 }
 
 void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPacket> esp3Packet)
