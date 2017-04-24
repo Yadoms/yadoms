@@ -287,24 +287,58 @@ namespace frames {
          floorNoiseKeyword->set((int)pFrame->header.floorNoise);
          m_keywords.push_back(floorNoiseKeyword);
 
-         m_deviceDetails.set("protocol", pFrame->header.protocol);
-
          switch (pFrame->header.protocol)
          {
          default:
          case RECEIVED_PROTOCOL_UNDEFINED: m_deviceModel = "";  break;
-         case RECEIVED_PROTOCOL_X10: m_deviceModel = "X10";  break;
-         case RECEIVED_PROTOCOL_VISONIC: m_deviceModel = "VISONIC";  break;
-         case RECEIVED_PROTOCOL_BLYSS:m_deviceModel = "BLYSS";  break;
-         case RECEIVED_PROTOCOL_CHACON: m_deviceModel = "CHACON";  break;
-         case RECEIVED_PROTOCOL_OREGON: m_deviceModel = "OREGON";  break;
-         case RECEIVED_PROTOCOL_DOMIA:  m_deviceModel = "DOMIA";  break;
-         case RECEIVED_PROTOCOL_OWL:    m_deviceModel = "OWL";  break;
-         case RECEIVED_PROTOCOL_X2D:    m_deviceModel = "X2D";  break;
-         case RECEIVED_PROTOCOL_RFY:    m_deviceModel = "RFY";  break;
-         case RECEIVED_PROTOCOL_KD101:  m_deviceModel = "KD101";  break;
-         case RECEIVED_PROTOCOL_PARROT: m_deviceModel = "PARROT";  break;
-         case RECEIVED_PROTOCOL_DIGIMAX:m_deviceModel = "DIGIMAX";  break;
+         case RECEIVED_PROTOCOL_X10: 
+            m_deviceModel = "X10";  
+            m_deviceDetails.set("protocol", "x10"); 
+            break;
+         case RECEIVED_PROTOCOL_VISONIC: 
+            m_deviceModel = "VISONIC";  
+            m_deviceDetails.set("protocol", "visonic");
+            break;
+         case RECEIVED_PROTOCOL_BLYSS:
+            m_deviceModel = "BLYSS";  
+            m_deviceDetails.set("protocol", "blyss");
+            break;
+         case RECEIVED_PROTOCOL_CHACON: 
+            m_deviceModel = "CHACON";  
+            m_deviceDetails.set("protocol", "chacon");
+            break;
+         case RECEIVED_PROTOCOL_OREGON: 
+            m_deviceModel = "OREGON";  
+            m_deviceDetails.set("protocol", "oregon");
+            break;
+         case RECEIVED_PROTOCOL_DOMIA:  
+            m_deviceModel = "DOMIA";  
+            m_deviceDetails.set("protocol", "domia");
+            break;
+         case RECEIVED_PROTOCOL_OWL:    
+            m_deviceModel = "OWL";  
+            m_deviceDetails.set("protocol", "owl");
+            break;
+         case RECEIVED_PROTOCOL_X2D:    
+            m_deviceModel = "X2D";  
+            m_deviceDetails.set("protocol", "x2d");
+            break;
+         case RECEIVED_PROTOCOL_RFY:    
+            m_deviceModel = "RFY";  
+            m_deviceDetails.set("protocol", "rfy");
+            break;
+         case RECEIVED_PROTOCOL_KD101:  
+            m_deviceModel = "KD101";  
+            m_deviceDetails.set("protocol", "kd101");
+            break;
+         case RECEIVED_PROTOCOL_PARROT: 
+            m_deviceModel = "PARROT";  
+            m_deviceDetails.set("protocol", "parrot");
+            break;
+         case RECEIVED_PROTOCOL_DIGIMAX:
+            m_deviceModel = "DIGIMAX";  
+            m_deviceDetails.set("protocol", "digimax");
+            break;
          }
 
          switch (pFrame->header.infoType)

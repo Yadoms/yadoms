@@ -263,21 +263,32 @@ ComboSectionParameterHandler.prototype.getOnlyConfiguration = function () {
  */
 ComboSectionParameterHandler.prototype.getCurrentConfiguration = function () {
    //we update configurationValues with content of DOM
+   var d= new $.Deferred();
    var self = this;
    self.configurationValues = {};
    self.configurationValues.content = {};
+   var deferredArray =[];
+   
    //we save the uuid of the active sub section
    var uuidOfActive = $("#" + self.comboUuid).val();
-
+   
    $.each(self.configurationHandlers, function (key, value) {
-      var currentConfiguration = value.getCurrentConfiguration();
-      self.configurationValues.content[value.getParamName()] = currentConfiguration;
-      if (value.uuid == uuidOfActive) {
-         //it's the active section
-         self.configurationValues.activeSection = value.getParamName();
-         self.configurationValues.activeSectionText = value.name; //value.name is available
-      }
+      var deferred = value.getCurrentConfiguration();
+      deferredArray.push(deferred);
+      deferred.done(function (currentConfiguration) {
+         self.configurationValues.content[value.getParamName()] = currentConfiguration;
+         if (value.uuid == uuidOfActive) {
+            //it's the active section
+            self.configurationValues.activeSection = value.getParamName();
+            self.configurationValues.activeSectionText = value.name; //value.name is available
+         }
+      });      
    });
 
-   return self.configurationValues;
+   $.whenAll(deferredArray)
+   .done(function() {
+      d.resolve(self.configurationValues);
+   });   
+   
+   return d.promise();       
 };

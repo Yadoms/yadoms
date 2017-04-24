@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "Transceiver.h"
 #include <shared/Log.h>
+#include <shared/tools/Random.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 CTransceiver::CTransceiver()
 {
@@ -108,7 +111,99 @@ std::string CTransceiver::buildLedActivityCommand(bool ledActivity) const
    return "LEDACTIVITY 0\r\n";
 }
 
+
+DECLARE_ENUM_HEADER(EBlyssCommands,
+   ((Off))
+   ((On))
+   ((Dim))
+   ((AllOff))
+   ((AllOn))
+   ((Assoc))
+)
+
+
+DECLARE_ENUM_IMPLEMENTATION(EBlyssCommands,
+   ((Off))
+   ((On))
+   ((Dim))
+   ((AllOff))
+   ((AllOn))
+   ((Assoc))
+)
+
+class CBlyssCommandKeyword : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EBlyssCommands>
+{
+public:
+   //-----------------------------------------------------
+   ///\brief                     Constructor
+   ///\param[in] keywordName     Yadoms keyword name
+   //-----------------------------------------------------
+   explicit CBlyssCommandKeyword(const std::string& keywordName);
+
+   //-----------------------------------------------------
+   ///\brief                     Destructor
+   //-----------------------------------------------------
+   virtual ~CBlyssCommandKeyword();
+};
+
+
+DECLARE_CAPACITY(BlyssCommandCapacity, "blyss_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+
+CBlyssCommandKeyword::CBlyssCommandKeyword(const std::string& keywordName)
+   : shared::plugin::yPluginApi::historization::CSingleHistorizableData<EBlyssCommands>(keywordName,
+      BlyssCommandCapacity(),
+      shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
+{
+}
+
+CBlyssCommandKeyword::~CBlyssCommandKeyword()
+{
+}
+
+
 std::string CTransceiver::createDeviceManually(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api, const shared::plugin::yPluginApi::IManuallyDeviceCreationData & request)
 {
+   if (api->getYadomsInformation()->developperMode())
+   {
+      YADOMS_LOG(information) << "Receive event kEventManuallyDeviceCreation : \n"
+         << "\tDevice name : " << request.getDeviceName();
+
+      request.getConfiguration().printToLog(YADOMS_LOG(information));
+   }
+
+   //determine the device name (as an example, it take the provided deviceName and append an hexadecimal value) to ensure devicename is unique
+   std::string devId = (boost::format("%1%_0x%2$08X") % request.getDeviceName() % shared::tools::CRandom::generateNbBits(26, false)).str();
+   if (request.getDeviceType() == "blyss")
+   {
+      YADOMS_LOG(information) << "Blyss config : groupCode : " << request.getConfiguration().get<std::string>("groupCode");
+      YADOMS_LOG(information) << "Blyss config : unitCode : " << request.getConfiguration().get<int>("unitCode");
+
+      //create device
+      if (!api->deviceExists(devId))
+      {
+         auto obj = boost::make_shared<CBlyssCommandKeyword>("command");
+         shared::CDataContainer details;
+         details.set("frequency", "433");
+         details.set("protocol", "blyss");
+         api->declareDevice(devId, request.getDeviceType(), "BLYSS", obj, details);
+      }
+
+
+      //create keywords
+      return devId;
+   }
+
+   return "";
+}
+
+std::string CTransceiver::generateCommand(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command)
+{
+   shared::CDataContainer details = api->getDeviceDetails(command->getDevice());
+   shared::CDataContainer config = api->getDeviceConfiguration(command->getDevice());
+
+   if (details.get<std::string>("protocol") == "blyss" && details.get<std::string>("frequency") == "433")
+   {
+      return (boost::format("ZIA++%1% BLYSS %2%%3%\r\n") % command->getBody() % config.get<std::string>("groupCode") % config.get<std::string>("unitCode")).str();
+   }
    return "";
 }

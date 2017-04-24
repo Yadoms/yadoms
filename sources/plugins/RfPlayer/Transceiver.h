@@ -61,11 +61,19 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	                           Create a device (manually)
+   /// \param [in] api                    The plugin api
    /// \param [in] request                The device information
    /// \return                            The new device created
    //--------------------------------------------------------------
    std::string createDeviceManually(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api, const shared::plugin::yPluginApi::IManuallyDeviceCreationData & request);
 
+   //--------------------------------------------------------------
+   /// \brief	                           Send command to a device
+   /// \param [in] api                    The plugin api
+   /// \param [in] command                The command
+   /// \return                            result of operation (bool)
+   //--------------------------------------------------------------
+   std::string generateCommand(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command);
 
 };
 
