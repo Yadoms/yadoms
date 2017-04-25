@@ -70,7 +70,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          catch (CRequestErrorException&)
          {
             setPluginState(api, EWUPluginState::kNoConnection);
-            api->getEventHandler().createTimer(kEvtInitialization, shared::event::CEventTimer::kOneShot, boost::posix_time::minutes(1));
+            api->getEventHandler().createTimer(kEvtInitialization, shared::event::CEventTimer::kOneShot, boost::posix_time::minutes(5));
          }
          catch (CNoLocationException&)
          { 
@@ -190,7 +190,7 @@ void CWeatherUnderground::onUpdateConfiguration(boost::shared_ptr<yApi::IYPlugin
    else
    {
       YADOMS_LOG(error) << "Factory not yet initialize, please check Ethernet connection" ;
-      api->getEventHandler().createTimer(kEvtInitialization, shared::event::CEventTimer::kOneShot, boost::posix_time::minutes(1));
+      api->getEventHandler().createTimer(kEvtInitialization, shared::event::CEventTimer::kOneShot, boost::posix_time::minutes(5));
    }
 }
 
@@ -267,8 +267,8 @@ shared::CDataContainer CWeatherUnderground::SendUrlRequest(boost::shared_ptr<yAp
    }
    catch (shared::exception::CException& e)
    {
-      YADOMS_LOG(information) << e.what() << ". Retry in 1 minute." ;
-      api->getEventHandler().createTimer(event, shared::event::CEventTimer::kOneShot, boost::posix_time::minutes(1));
+      YADOMS_LOG(information) << e.what() << ". Retry in 5 minutes." ;
+      api->getEventHandler().createTimer(event, shared::event::CEventTimer::kOneShot, boost::posix_time::minutes(5));
 
       if (nbRetry == 3)
          setPluginState(api, EWUPluginState::kNoConnection);
