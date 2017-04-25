@@ -10,46 +10,16 @@
 
 namespace http
 {
-   void CHttpMethods::parseNode(shared::CDataContainer &container, boost::property_tree::ptree node)
-   {
-      boost::property_tree::ptree::const_iterator end = node.end();
-      std::string attributeName;
-      std::string attributeValue;
-
-      for (boost::property_tree::ptree::const_iterator it = node.begin(); it != end; ++it)
-      {
-         //YADOMS_LOG(information) << "it->first : " << it->first;
-         //YADOMS_LOG(information) << "it->second.data() : " << it->second.data();
-
-         if (it->second.size() != 0)
-         {
-            shared::CDataContainer subNode;
-            parseNode(container/*subNode*/, it->second);
-            //container.set(it->first, subNode);
-         }
-         else
-         {
-            if (it->first == "id" || it->first == "var")
-               attributeName = it->second.data();
-
-            if (it->first == "value")
-               attributeValue = it->second.data();
-            //container.set(it->first, it->second.data());
-         }
-      }
-
-      container.set(attributeName, attributeValue);
-   }
-
+   /*
    shared::CDataContainer CHttpMethods::SendGetRequest(const std::string& url)
    {
       return SendGetRequest(url, shared::CDataContainer());
-   }
+   }*/
 
    bool CHttpMethods::SendGetRequest(const std::string& url,
                                      const shared::CDataContainer& credentials,
                                      const shared::CDataContainer& parameters,
-                                     boost::function1<void, shared::CDataContainer&> onReceive,
+                                     boost::function1<void, boost::property_tree::ptree&> onReceive,
                                      const boost::posix_time::time_duration& timeout)
    {
       try
@@ -93,10 +63,11 @@ namespace http
          {
             shared::CDataContainer data;
             std::istringstream oss1(buffer);
+            boost::property_tree::ptree treeResponse;
 
-            if (XmlResponseReader(oss1, response, data))
+            if (XmlResponseReader(oss1, response, treeResponse))
             {
-               onReceive(data);
+               onReceive(treeResponse);
                return true;
             }
 
@@ -124,17 +95,17 @@ namespace http
       }
    }
 
-   shared::CDataContainer CHttpMethods::SendGetRequest(const std::string& url,
-                                                       const shared::CDataContainer& parameters,
-                                                       const boost::posix_time::time_duration& timeout)
+   boost::property_tree::ptree CHttpMethods::SendGetRequest(const std::string& url,
+                                                            const shared::CDataContainer& parameters,
+                                                            const boost::posix_time::time_duration& timeout)
    {
-      shared::CDataContainer responseData;
+      boost::property_tree::ptree responseData;
       shared::CDataContainer credentials;
 
       SendGetRequest(url,
                      credentials,
                      parameters,
-                     [&](shared::CDataContainer& data)
+                     [&](boost::property_tree::ptree& data)
                      {
                         responseData = data;
                      },
@@ -143,17 +114,17 @@ namespace http
       return responseData;
    }
 
-   shared::CDataContainer CHttpMethods::SendGetRequest(const std::string& url,
-                                                       const shared::CDataContainer& credentials,
-                                                       const shared::CDataContainer& parameters,
-                                                       const boost::posix_time::time_duration& timeout)
+   boost::property_tree::ptree CHttpMethods::SendGetRequest(const std::string& url,
+                                                            const shared::CDataContainer& credentials,
+                                                            const shared::CDataContainer& parameters,
+                                                            const boost::posix_time::time_duration& timeout)
    {
-      shared::CDataContainer responseData;
+      boost::property_tree::ptree responseData;
 
       SendGetRequest(url,
                      credentials,
                      parameters,
-                     [&](shared::CDataContainer& data)
+                     [&](boost::property_tree::ptree& data)
                      {
                         responseData = data;
                      },
@@ -164,18 +135,13 @@ namespace http
 
    bool CHttpMethods::XmlResponseReader(std::istream& stream,
                                         Poco::Net::HTTPResponse& httpresponse,
-                                        shared::CDataContainer& response)
+                                        boost::property_tree::ptree& treeResponse)
    {
       std::string content;
 
       if (boost::icontains(httpresponse.getContentType(), "text/xml"))
       {
-         boost::property_tree::ptree pt;
-         boost::property_tree::xml_parser::read_xml(stream, pt); 
-            
-         parseNode(response, pt);
-
-         response.printToLog(YADOMS_LOG(information));
+         boost::property_tree::xml_parser::read_xml(stream, treeResponse);
 
          //request content may be empty
          return true;

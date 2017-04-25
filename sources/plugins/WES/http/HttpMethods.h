@@ -32,9 +32,9 @@ namespace http
       /// \param[in]  timeout             timeout for the request
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      static shared::CDataContainer SendGetRequest(const std::string & url, 
-                                           const shared::CDataContainer & parameters,
-                                           const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
+      boost::property_tree::ptree SendGetRequest(const std::string & url,
+                                                 const shared::CDataContainer & parameters,
+                                                 const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
       /// \brief	    SendGetRequest
@@ -43,10 +43,10 @@ namespace http
       /// \param[in]  timeout             timeout for the request
       /// \return     the answer of the request
       //--------------------------------------------------------------
-      static shared::CDataContainer SendGetRequest(const std::string & url,
-                                                   const shared::CDataContainer & credentials,
-                                                   const shared::CDataContainer & parameters,
-                                                   const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
+      static boost::property_tree::ptree SendGetRequest(const std::string & url,
+                                                        const shared::CDataContainer & credentials,
+                                                        const shared::CDataContainer & parameters,
+                                                        const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
       /// \brief	    SendGetRequest
@@ -59,7 +59,7 @@ namespace http
       static bool SendGetRequest(const std::string & url, 
                                  const shared::CDataContainer& credentials,
                                  const shared::CDataContainer& parameters,
-                                 boost::function1<void, shared::CDataContainer&> onReceive,
+                                 boost::function1<void, boost::property_tree::ptree&> onReceive,
                                  const boost::posix_time::time_duration& timeout = httpRequestDefaultTimeout);
 
       //--------------------------------------------------------------
@@ -70,14 +70,8 @@ namespace http
       //--------------------------------------------------------------
       static bool XmlResponseReader(std::istream& stream,
                                     Poco::Net::HTTPResponse& httpresponse,
-                                    shared::CDataContainer& response);
+                                    boost::property_tree::ptree& treeResponse);
 
    private:
-      //--------------------------------------------------------------
-      /// \brief	    parseNode
-      /// \param[in]  httpresponse        the HTTP response answer
-      /// \param[in]  response            the response
-      //--------------------------------------------------------------
-      static void parseNode(shared::CDataContainer &container, boost::property_tree::ptree node);
    };
 } // namespace http
