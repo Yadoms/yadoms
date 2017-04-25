@@ -87,12 +87,12 @@ namespace equipments
       }
 
       void CTIC::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                  const long long& counter1,
-                                  const long long& counter2,
-                                  const long long& counter3,
-                                  const long long& counter4,
-                                  const long long& counter5,
-                                  const long long& counter6)
+                                  const Poco::Int64& counter1,
+                                  const Poco::Int64& counter2,
+                                  const Poco::Int64& counter3,
+                                  const Poco::Int64& counter4,
+                                  const Poco::Int64& counter5,
+                                  const Poco::Int64& counter6)
       {
          //TODO : If deviceName or contractName are different then create a new device
          //initializeTIC(api);

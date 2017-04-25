@@ -36,9 +36,9 @@ namespace equipments
 
          // request to obtain names
          std::string CGXfileName = "WESNAMES.CGX";
-         shared::CDataContainer results = urlManager::sendCommand(m_configuration.getIPAddressWithSocket(),
-                                                                  credentials,
-                                                                  CGXfileName);
+         shared::CDataContainer results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
+                                                                    credentials,
+                                                                    CGXfileName);
 
          contract[0] = results.get<std::string>("CPT1_abo_name");
          contract[1] = results.get<std::string>("CPT2_abo_name");
@@ -208,9 +208,9 @@ namespace equipments
 
          //      credentials.printToLog(YADOMS_LOG(information));
 
-         shared::CDataContainer results = urlManager::sendCommand(m_configuration.getIPAddressWithSocket(),
-                                                                  credentials,
-                                                                  CGXfileName);
+         shared::CDataContainer results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
+                                                                    credentials,
+                                                                    CGXfileName);
 
          // Reading relays - historize only on change value or when the historization is forced (initialization, for example)      
          updateSwitchValue(keywordsToHistorize, m_relaysList[0], static_cast<bool>(results.get<int>("RL1")), forceHistorization);
@@ -226,7 +226,7 @@ namespace equipments
                                                    keywordsToHistorize,
                                                    m_configuration.isInstantCurrentClampRegistered(counter),
                                                    results.get<double>("IPC" + boost::lexical_cast<std::string>(counter + 1) + "_val"),
-                                                   results.get<double>("WHPC" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
+                                                   results.get<Poco::Int64>("WHPC" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
          }
 
          //Reading pulse values
@@ -235,22 +235,28 @@ namespace equipments
             m_PulseList[counter]->updateFromDevice(api,
                                                    keywordsToHistorize,
                                                    results.get<std::string>("PLSU" + boost::lexical_cast<std::string>(counter + 1)),
-                                                   results.get<double>("debit" + boost::lexical_cast<std::string>(counter + 1) + "_val"),
+                                                   results.get<Poco::Int64>("debit" + boost::lexical_cast<std::string>(counter + 1) + "_val"),
                                                    results.get<std::string>("consJ" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
          }
 
+         //Reading analog values
+         for (int counter = 0; counter < WES_ANA_QTY; ++counter)
+         {
+            m_AnalogList[counter]->set(results.get<unsigned int>("ad" + boost::lexical_cast<std::string>(counter + 1)));
+            keywordsToHistorize.push_back(m_AnalogList[counter]);
+         }
          api->historizeData(m_deviceName, keywordsToHistorize);
 
          // TIC Counters Values -> independant from the others keywords
          for (int counter = 0; counter < WES_TIC_QTY; ++counter)
          {
             m_TICList[0]->updateFromDevice(api,
-                                           results.get<double>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_1"),
-                                           results.get<double>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_2"),
-                                           results.get<double>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_3"),
-                                           results.get<double>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_4"),
-                                           results.get<double>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_5"),
-                                           results.get<double>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_6"));
+                                           results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_1"),
+                                           results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_2"),
+                                           results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_3"),
+                                           results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_4"),
+                                           results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_5"),
+                                           results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_6"));
          }
       }
       catch (std::exception& e)
@@ -285,6 +291,7 @@ namespace equipments
    tu peux controler les relais en UDP, TCP ou par des requêtes HTTP:
    Par une requête HTTP :
    http://WES/RL.cgi?rl1=ON&rl2=OFF
+   http://192.168.1.37/RL.cgx?rl9=ON -> Les 2 relais
    Vous pouvez remplacer WES par l'adresse IP du serveur.
    Si votre navigateur n'est pas logé (admin et mot de passe envoyé au serveur) vous devez les rajouter à la requête HTTP :
    http://user:password@WES/RL.cgx?rl1=ON&rl2=OFF

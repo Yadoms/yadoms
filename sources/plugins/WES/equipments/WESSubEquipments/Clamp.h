@@ -36,7 +36,7 @@ namespace equipments
                                std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
                                const bool isInstantCurrentClampRegistered,
                                const double& instantCurrentValue,
-                               const double& energyClampValue);
+                               const Poco::Int64& energyClampValue);
 
          //-----------------------------------------------------
          ///\brief                     Destructor

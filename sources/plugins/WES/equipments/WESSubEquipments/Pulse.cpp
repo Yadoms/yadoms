@@ -51,7 +51,7 @@ namespace equipments
       void CPulse::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                     std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
                                     const std::string& unitName,
-                                    const double& flowValue,
+                                    const Poco::Int64& flowValue,
                                     const std::string& total)
       {
          //TODO : If deviceName or contractName are different then create a new device

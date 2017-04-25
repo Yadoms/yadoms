@@ -30,7 +30,7 @@ namespace equipments
          void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
                                const std::string& unitName,
-                               const double& flowValue,
+                               const Poco::Int64& flowValue,
                                const std::string& totalValue
          );
 

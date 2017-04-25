@@ -34,9 +34,9 @@ namespace equipments
 
          // request to obtain the name
          std::string CGXfileName = "rel1.cgx";
-         shared::CDataContainer results = urlManager::sendCommand(m_configuration.getIPAddressWithSocket(),
-                                                                  credentials,
-                                                                  CGXfileName);
+         shared::CDataContainer results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
+                                                                    credentials,
+                                                                    CGXfileName);
       }
       std::string model = "temperature probe";
 
@@ -78,9 +78,9 @@ namespace equipments
       //TODO be modified
       const std::string CGXfileName = "tics.cgx";
 
-      shared::CDataContainer results = urlManager::sendCommand(m_configuration.getIPAddressWithSocket(), 
-                                                               credentials,
-                                                               CGXfileName);
+      shared::CDataContainer results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
+                                                                 credentials,
+                                                                 CGXfileName);
 
       api->historizeData(m_deviceName, keywordsToHistorize);
    }

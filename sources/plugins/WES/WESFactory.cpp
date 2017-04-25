@@ -41,7 +41,9 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
          }
       }
       catch (std::exception& e)
-      {}
+      {
+         YADOMS_LOG(error) << e.what();
+      }
 
       YADOMS_LOG(information) << "Name : " << (*devicesIterator);
       YADOMS_LOG(information) << "Model : " << type;
