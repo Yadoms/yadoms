@@ -66,7 +66,9 @@ void CRfPlayer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             try
             {
                //TODO : send command to device
-               m_messageHandler->send(m_transceiver->generateCommand(api, command));
+               //m_messageHandler->send(m_transceiver->generateCommand(api, command));
+               auto buffer = m_transceiver->generateCommandBinary(api, command);
+               m_messageHandler->sendBinary(buffer);
             }
             catch (shared::exception::CException& ex)
             {

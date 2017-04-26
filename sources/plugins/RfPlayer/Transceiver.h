@@ -74,6 +74,7 @@ public:
    /// \return                            result of operation (bool)
    //--------------------------------------------------------------
    std::string generateCommand(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command);
+   shared::communication::CByteBuffer generateCommandBinary(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command);
 
 };
 

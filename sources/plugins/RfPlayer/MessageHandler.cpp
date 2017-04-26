@@ -21,6 +21,15 @@ void CMessageHandler::send(const std::string & sendMessage)
    m_port->sendText(sendMessage);
 }
 
+void CMessageHandler::sendBinary(const shared::communication::CByteBuffer& buffer)
+{
+   if (!m_port)
+      throw shared::exception::CException("Send message failed : dongle is not ready");
+
+   YADOMS_LOG(information) << " RfPlayer Binary Command >>> ";
+   m_port->send(buffer);
+}
+
 bool CMessageHandler::sendFile(const std::string & fileContent, boost::function<void(float)> onProgressHandler)
 {
    if (!m_port)

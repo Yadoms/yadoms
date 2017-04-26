@@ -113,12 +113,12 @@ std::string CTransceiver::buildLedActivityCommand(bool ledActivity) const
 
 
 DECLARE_ENUM_HEADER(EBlyssCommands,
-   ((Off))
-   ((On))
-   ((Dim))
-   ((AllOff))
-   ((AllOn))
-   ((Assoc))
+   ((Off)(0))
+   ((On)(1))
+   ((Dim)(2))
+   ((AllOff)(4))
+   ((AllOn)(5))
+   ((Assoc)(6))
 )
 
 
@@ -203,7 +203,35 @@ std::string CTransceiver::generateCommand(boost::shared_ptr<shared::plugin::yPlu
 
    if (details.get<std::string>("protocol") == "blyss" && details.get<std::string>("frequency") == "433")
    {
-      return (boost::format("ZIA++%1% BLYSS %2%%3%\r\n") % command->getBody() % config.get<std::string>("groupCode") % config.get<std::string>("unitCode")).str();
+      return (boost::format("ZIA++%1% BLYSS %2%%3%\r\n") % command->getBody() % config.get<std::string>("groupCode") % config.get<int>("unitCode")).str();
    }
    return "";
+}
+
+shared::communication::CByteBuffer CTransceiver::generateCommandBinary(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command)
+{
+   shared::communication::CByteBuffer res(12);
+   shared::CDataContainer details = api->getDeviceDetails(command->getDevice());
+   shared::CDataContainer config = api->getDeviceConfiguration(command->getDevice());
+
+   if (details.get<std::string>("protocol") == "blyss" && details.get<std::string>("frequency") == "433")
+   {
+      res[0] = 0; //frame type
+      res[1] = 0; //cluster
+      res[2] = 12; //protocol (blyss_433 = 12)
+      res[4] = EBlyssCommands::parse(command->getBody()).toInteger(); //action
+      std::string gc = config.get<std::string>("groupCode");
+      int uc = config.get<int>("unitCode");
+
+      int g = (gc[0] - 'A') << 4;
+      res[3] = (g & 0xF0) | (uc & 0x0F); //lsb
+      res[5] = 0;
+      res[6] = 0;
+      res[7] = 0; //msb
+      res[8] = 0; //dim = 0
+      res[9] = 0; //burst = 0
+      res[10] = 0; //qualifier = 0
+      res[11] = 0; //reserved= 0
+   }
+   return res;
 }
