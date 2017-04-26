@@ -71,7 +71,7 @@ Yadoms.askPackages = function (elements, instanceManager, thumbnail, title, call
 		      requestInformationDone(elements, instanceManager, thumbnail, title, callback)
 		   })
            .fail(function (error) {
-               notifyError($.t("objects.pickup.errorDuringGettingPackages"), error);
+               notifyError($.t("modals.pickup.errorDuringGettingPackages"), error);
            });		
 };
 

@@ -3,7 +3,6 @@
 #include <Poco/FormattingChannel.h>
 #include <Poco/PatternFormatter.h>
 #include <Poco/FileChannel.h>
-#include <Poco/SplitterChannel.h>
 #include <Poco/AutoPtr.h>
 #include <shared/Log.h>
 #include <shared/StringExtension.h>
@@ -19,7 +18,7 @@ namespace interpreter_cpp_api
       Poco::AutoPtr<Poco::FormattingChannel> formattingFileChannel;
       Poco::AutoPtr<Poco::FileChannel> fileChannel(new Poco::FileChannel());
 
-      patternFormatter->setProperty("pattern", "%H:%M:%S : [%p] : %t");
+      patternFormatter->setProperty("pattern", "%w, %H:%M:%S : [%p] : %t");
       patternFormatter->setProperty("times", "local"); //use local datetime
 
       if (!boost::filesystem::exists(scriptLogPath.parent_path().string()))
@@ -28,7 +27,7 @@ namespace interpreter_cpp_api
 
       fileChannel->setProperty("times", "local"); //use local datetime for rotation strategy
       fileChannel->setProperty("path", scriptLogPath.string());
-      fileChannel->setProperty("rotation", "daily");
+      fileChannel->setProperty("rotation", "weekly");
       fileChannel->setProperty("archive", "timestamp");
       fileChannel->setProperty("compress", "true");
       fileChannel->setProperty("purgeCount", "7");
@@ -45,22 +44,15 @@ namespace interpreter_cpp_api
 
    void CScriptLogger::init()
    {
-      m_msgInformation.setPriority(Poco::Message::PRIO_INFORMATION);
-      m_msgInformation.setThread(m_logger.name());
-
-      m_msgError.setPriority(Poco::Message::PRIO_ERROR);
-      m_msgError.setThread(m_logger.name());
    }
 
    void CScriptLogger::information(const std::string& line)
    {
-      m_msgInformation.setText(shared::CStringExtension::removeEol(line));
-      m_logger.log(m_msgInformation);
+      m_logger.information(shared::CStringExtension::removeEol(line));
    }
 
    void CScriptLogger::error(const std::string& line)
    {
-      m_msgError.setText(shared::CStringExtension::removeEol(line));
-      m_logger.log(m_msgError);
+      m_logger.error(shared::CStringExtension::removeEol(line));
    }
 } // namespace interpreter_cpp_api	

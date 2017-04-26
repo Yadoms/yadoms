@@ -41,7 +41,7 @@
       $("td#dashboard-summary-database-version").text(data.value);
    })
    .fail(function(error) {
-         notifyError($.t("dashboard.sub-windows.summary.errorRequestingDatabaseVersion"), error);
+         notifyError($.t("modals.dashboard.sub-windows.summary.errorRequestingDatabaseVersion"), error);
    });
 
    YadomsInformationManager.getList()
