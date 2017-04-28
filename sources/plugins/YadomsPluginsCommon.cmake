@@ -117,7 +117,7 @@ MACRO(PLUGIN_LINK _targetName)
          RUNTIME DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}
          COMPONENT  ${ComponentCompatibleName})
    else()
-      message ("${_targetName}  will NOT be deployed")
+      message (STATUS "${_targetName} will NOT be deployed")
    endif()
       
    set(PLUGINLIST
