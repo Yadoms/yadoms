@@ -18,7 +18,7 @@ namespace owfs
 
       bool CSingleSwitch::read() const
       {
-         std::string readValue = CCommon::read(m_devicePath);
+         std::string readValue = CCommon::read(m_readDevicePath);
 
          // Caution : read value correspond to voltage level, inverted from the transistor state
          // We have to invert the read value
