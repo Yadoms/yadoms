@@ -65,10 +65,12 @@ void CRfPlayer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             YADOMS_LOG(information) << "Command received from Yadoms :" << yApi::IDeviceCommand::toString(command) ;
             try
             {
+               // try to send ascii command
+               auto buffer = m_transceiver->generateCommand(api, command);
+               m_messageHandler->send(buffer);
+
                //TODO : send command to device
                //m_messageHandler->send(m_transceiver->generateCommand(api, command));
-               auto buffer = m_transceiver->generateCommandBinary(api, command);
-               m_messageHandler->sendBinary(buffer);
             }
             catch (shared::exception::CException& ex)
             {

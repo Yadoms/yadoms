@@ -14,10 +14,10 @@ namespace specificHistorizers {
       ((AllOn)("ALL_ON"))
    )
 
-   DECLARE_CAPACITY(Type0StateCapacity, "x10state", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kEnum);
+   DECLARE_CAPACITY(Type0StateCapacity, "x10_domiaLite_parrot", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kEnum);
 
    CType0State::CType0State(const std::string& keywordName)
-      : CSingleHistorizableData<EType0StateValues>(keywordName, Type0StateCapacity(), yApi::EKeywordAccessMode::kGetSet)
+      : CSingleHistorizableData<EType0StateValues>(keywordName, Type0StateCapacity(), yApi::EKeywordAccessMode::kGet)
    {
    }
 

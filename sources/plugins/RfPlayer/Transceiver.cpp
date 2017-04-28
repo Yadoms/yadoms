@@ -5,6 +5,9 @@
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 
+#define IS_PACKED
+#include "rfplayerApi/usb_frame_api.h"
+
 CTransceiver::CTransceiver()
 {
 }
@@ -123,8 +126,8 @@ DECLARE_ENUM_HEADER(EBlyssCommands,
 
 
 DECLARE_ENUM_IMPLEMENTATION(EBlyssCommands,
-   ((Off))
-   ((On))
+   ((Off)("OFF"))
+   ((On)("ON/Alert"))
    ((Dim))
    ((AllOff))
    ((AllOn))
@@ -203,35 +206,80 @@ std::string CTransceiver::generateCommand(boost::shared_ptr<shared::plugin::yPlu
 
    if (details.get<std::string>("protocol") == "blyss" && details.get<std::string>("frequency") == "433")
    {
-      return (boost::format("ZIA++%1% BLYSS %2%%3%\r\n") % command->getBody() % config.get<std::string>("groupCode") % config.get<int>("unitCode")).str();
+      if(details.containsValue("id"))
+         return (boost::format("ZIA++%1% BLYSS ID %2%\r\n") % command->getBody() % details.get<std::string>("id")).str();
+      else
+         return (boost::format("ZIA++%1% BLYSS %2%%3%\r\n") % command->getBody() % config.get<std::string>("groupCode") % config.get<int>("unitCode")).str();
    }
    return "";
 }
 
+
+struct REGULAR_OUTGOING_BINARY_USB_FRAME
+{
+   MESSAGE_CONTAINER_HEADER header;
+   REGULAR_INCOMING_BINARY_USB_FRAME content;
+};
+
+union IDMAPPER
+{
+   unsigned int id;
+   struct UNITID
+   {
+      unsigned char id1;
+      unsigned char id2;
+      unsigned char id3;
+      unsigned char id4;
+   } mapping;
+};
 shared::communication::CByteBuffer CTransceiver::generateCommandBinary(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command)
 {
-   shared::communication::CByteBuffer res(12);
+   REGULAR_OUTGOING_BINARY_USB_FRAME data;
+   data.header.Sync1 = SYNC1_CONTAINER_CONSTANT;
+   data.header.Sync2 = SYNC2_CONTAINER_CONSTANT;
+   data.header.SourceDestQualifier = SOURCEDEST433_868;
+   data.header.QualifierOrLen_lsb = sizeof(REGULAR_INCOMING_BINARY_USB_FRAME) & 0xFF;
+   data.header.QualifierOrLen_msb = (sizeof(REGULAR_INCOMING_BINARY_USB_FRAME) & 0xFF00) >> 8;
+
    shared::CDataContainer details = api->getDeviceDetails(command->getDevice());
    shared::CDataContainer config = api->getDeviceConfiguration(command->getDevice());
 
-   if (details.get<std::string>("protocol") == "blyss" && details.get<std::string>("frequency") == "433")
+   if (details.get<std::string>("protocol") == "blyss" && details.get<std::string>("frequency") == "433" && details.containsValue("id"))
    {
+     
+      unsigned int id = details.get<unsigned int>("id");
+      data.content.frameType = 0;
+      data.content.cluster = 0;
+      data.content.protocol = SEND_BLYSS_PROTOCOL_433;
+      data.content.action = EBlyssCommands::parse(command->getBody()).toInteger();
+
+      IDMAPPER map;
+      map.mapping.id1 = (unsigned char)((id & 0xFF000000) >> 24);
+      map.mapping.id2 = (unsigned char)((id & 0x00FF0000) >> 16);
+      map.mapping.id3 = (unsigned char)((id & 0x0000FF00) >> 8);
+      map.mapping.id4 = (unsigned char)((id & 0x000000FF));
+
+      data.content.ID = id;
+      data.content.dimValue = 0;
+      data.content.burst = 0;
+      data.content.qualifier = 0;
+      data.content.reserved2 = 0;
+      /*
       res[0] = 0; //frame type
       res[1] = 0; //cluster
       res[2] = 12; //protocol (blyss_433 = 12)
-      res[4] = EBlyssCommands::parse(command->getBody()).toInteger(); //action
-      std::string gc = config.get<std::string>("groupCode");
-      int uc = config.get<int>("unitCode");
-
-      int g = (gc[0] - 'A') << 4;
-      res[3] = (g & 0xF0) | (uc & 0x0F); //lsb
-      res[5] = 0;
-      res[6] = 0;
-      res[7] = 0; //msb
+      res[3] =  //action
+      res[6] = (id & 0x000000FF); //lsb
+      res[7] = ((id & 0x0000FF00) >> 8);
+      res[4] = ((id & 0x00FF0000) >> 16);
+      res[5] = ((id & 0xFF000000) >> 24); //msb
       res[8] = 0; //dim = 0
       res[9] = 0; //burst = 0
       res[10] = 0; //qualifier = 0
       res[11] = 0; //reserved= 0
+      */
    }
+
+   shared::communication::CByteBuffer res((const unsigned char*)&data, sizeof(REGULAR_OUTGOING_BINARY_USB_FRAME));
    return res;
 }

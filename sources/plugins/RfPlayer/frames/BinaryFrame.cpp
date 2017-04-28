@@ -395,11 +395,11 @@ namespace frames {
                   batteryLevelKeyword->set((pFrame->infos.type2.qualifier & 0x0004) == 0 ? 100 : 0);
                   m_keywords.push_back(batteryLevelKeyword);
 
-                  auto tamperKeyword = boost::make_shared<yApi::historization::CTamper>("tamper");
+                  auto tamperKeyword = boost::make_shared<yApi::historization::CTamper>("tamper", yApi::EKeywordAccessMode::kGet);
                   tamperKeyword->set((pFrame->infos.type2.qualifier & 0x0001) != 0);
                   m_keywords.push_back(tamperKeyword);
 
-                  auto alarmKeyword = boost::make_shared<yApi::historization::CAlarm>("alarm");
+                  auto alarmKeyword = boost::make_shared<yApi::historization::CAlarm>("alarm", yApi::EKeywordAccessMode::kGet);
                   alarmKeyword->set((pFrame->infos.type2.qualifier & 0x0002) != 0);
                   m_keywords.push_back(alarmKeyword);
                }
@@ -451,11 +451,11 @@ namespace frames {
             identifyOregonDeviceFromIdPhy(pFrame->infos.type4.idPHY, pFrame->infos.type4.idChannel);
             manageOregonBatteryFromQualifier(pFrame->infos.type4.qualifier);
 
-            auto tempKeyword = boost::make_shared<yApi::historization::CTemperature>("temperature");
+            auto tempKeyword = boost::make_shared<yApi::historization::CTemperature>("temperature", yApi::EKeywordAccessMode::kGet);
             tempKeyword->set(pFrame->infos.type4.temp / 10.0);
             m_keywords.push_back(tempKeyword);
 
-            auto hygroKeyword = boost::make_shared<yApi::historization::CHumidity>("hygrometry");
+            auto hygroKeyword = boost::make_shared<yApi::historization::CHumidity>("hygrometry", yApi::EKeywordAccessMode::kGet);
             hygroKeyword->set(pFrame->infos.type4.hygro);
             m_keywords.push_back(hygroKeyword);
 
@@ -467,15 +467,15 @@ namespace frames {
             identifyOregonDeviceFromIdPhy(pFrame->infos.type5.idPHY, pFrame->infos.type5.idChannel);
             manageOregonBatteryFromQualifier(pFrame->infos.type5.qualifier);
 
-            auto tempKeyword = boost::make_shared<yApi::historization::CTemperature>("temperature");
+            auto tempKeyword = boost::make_shared<yApi::historization::CTemperature>("temperature", yApi::EKeywordAccessMode::kGet);
             tempKeyword->set(pFrame->infos.type5.temp / 10.0);
             m_keywords.push_back(tempKeyword);
 
-            auto hygroKeyword = boost::make_shared<yApi::historization::CHumidity>("hygrometry");
+            auto hygroKeyword = boost::make_shared<yApi::historization::CHumidity>("hygrometry", yApi::EKeywordAccessMode::kGet);
             hygroKeyword->set(pFrame->infos.type5.hygro);
             m_keywords.push_back(hygroKeyword);
 
-            auto pressureKeyword = boost::make_shared<yApi::historization::CPressure>("pressure");
+            auto pressureKeyword = boost::make_shared<yApi::historization::CPressure>("pressure", yApi::EKeywordAccessMode::kGet);
             pressureKeyword->set(pFrame->infos.type5.pressure);
             m_keywords.push_back(pressureKeyword);
 
@@ -487,11 +487,11 @@ namespace frames {
             identifyOregonDeviceFromIdPhy(pFrame->infos.type6.idPHY, pFrame->infos.type6.idChannel);
             manageOregonBatteryFromQualifier(pFrame->infos.type6.qualifier);
 
-            auto speedKeyword = boost::make_shared<yApi::historization::CSpeed>("wind_speed");
+            auto speedKeyword = boost::make_shared<yApi::historization::CSpeed>("wind_speed", yApi::EKeywordAccessMode::kGet);
             speedKeyword->set(pFrame->infos.type6.speed / 10.0);
             m_keywords.push_back(speedKeyword);
 
-            auto directionKeyword = boost::make_shared<yApi::historization::CDirection>("wind_direction");
+            auto directionKeyword = boost::make_shared<yApi::historization::CDirection>("wind_direction", yApi::EKeywordAccessMode::kGet);
             directionKeyword->set(pFrame->infos.type6.direction);
             m_keywords.push_back(directionKeyword);
 
@@ -503,7 +503,7 @@ namespace frames {
             identifyOregonDeviceFromIdPhy(pFrame->infos.type7.idPHY, pFrame->infos.type7.idChannel);
             manageOregonBatteryFromQualifier(pFrame->infos.type7.qualifier);
 
-            auto uvKeyword = boost::make_shared<yApi::historization::CUv>("uv");
+            auto uvKeyword = boost::make_shared<yApi::historization::CUv>("uv", yApi::EKeywordAccessMode::kGet);
             uvKeyword->set(pFrame->infos.type7.light);
             m_keywords.push_back(uvKeyword);
             break;
@@ -535,19 +535,19 @@ namespace frames {
 
                //out << "    " << ((pFrame->infos.type8.qualifier & 0x0002) == 0 ? " Only the total instantaneous Power is given" : " Power on each input 1, 2, 3 are added (CM180i only).");
 
-               auto energyKeyword = boost::make_shared<yApi::historization::CEnergy>("energy");
+               auto energyKeyword = boost::make_shared<yApi::historization::CEnergy>("energy", yApi::EKeywordAccessMode::kGet);
                energyKeyword->set((pFrame->infos.type8.energyLsb + (pFrame->infos.type8.energyMsb << 8)));
                m_keywords.push_back(energyKeyword);
 
-               auto totalPowerKeyword = boost::make_shared<yApi::historization::CPower>("power");
+               auto totalPowerKeyword = boost::make_shared<yApi::historization::CPower>("power", yApi::EKeywordAccessMode::kGet);
                totalPowerKeyword->set(pFrame->infos.type8.power);
                m_keywords.push_back(totalPowerKeyword);
 
                if ((pFrame->infos.type8.qualifier & 0x0002) != 0)
                {
-                  auto power1Keyword = boost::make_shared<yApi::historization::CPower>("line1");
-                  auto power2Keyword = boost::make_shared<yApi::historization::CPower>("line2");
-                  auto power3Keyword = boost::make_shared<yApi::historization::CPower>("line3");
+                  auto power1Keyword = boost::make_shared<yApi::historization::CPower>("line1", yApi::EKeywordAccessMode::kGet);
+                  auto power2Keyword = boost::make_shared<yApi::historization::CPower>("line2", yApi::EKeywordAccessMode::kGet);
+                  auto power3Keyword = boost::make_shared<yApi::historization::CPower>("line3", yApi::EKeywordAccessMode::kGet);
 
                   power1Keyword->set(pFrame->infos.type8.powerI1);
                   power2Keyword->set(pFrame->infos.type8.powerI2);
@@ -603,7 +603,7 @@ namespace frames {
             batteryLevelKeyword->set((pFrame->infos.type10.qualifier & 0x0004) == 0 ? 100 : 0);
             m_keywords.push_back(batteryLevelKeyword);
 
-            auto tamperKeyword = boost::make_shared<yApi::historization::CTamper>("tamper");
+            auto tamperKeyword = boost::make_shared<yApi::historization::CTamper>("tamper", yApi::EKeywordAccessMode::kGet);
             tamperKeyword->set((pFrame->infos.type10.qualifier & 0x0001) != 0);
             m_keywords.push_back(tamperKeyword);
 
@@ -611,21 +611,21 @@ namespace frames {
             {
             case 1: //heating speed
             {
-               auto heatingSpeedKeyword = boost::make_shared<yApi::historization::CSwitch>("heating_speed");
+               auto heatingSpeedKeyword = boost::make_shared<yApi::historization::CSwitch>("heating_speed", yApi::EKeywordAccessMode::kGet);
                heatingSpeedKeyword->set((pFrame->infos.type10.mode & 0x00FF) != 0);
                m_keywords.push_back(heatingSpeedKeyword);
                break;
             }
             case 12: //regulation
             {
-               auto regulationKeyword = boost::make_shared<yApi::historization::CSwitch>("regulation");
+               auto regulationKeyword = boost::make_shared<yApi::historization::CSwitch>("regulation", yApi::EKeywordAccessMode::kGet);
                regulationKeyword->set((pFrame->infos.type10.mode & 0x00FF) != 0);
                m_keywords.push_back(regulationKeyword);
                break;
             }
             case 26: //thermic area state
             {
-               auto thermicAreaStateKeyword = boost::make_shared<yApi::historization::CSwitch>("thermic_area_state");
+               auto thermicAreaStateKeyword = boost::make_shared<yApi::historization::CSwitch>("thermic_area_state", yApi::EKeywordAccessMode::kGet);
                thermicAreaStateKeyword->set((pFrame->infos.type10.mode & 0x00FF) != 0);
                m_keywords.push_back(thermicAreaStateKeyword);
                break;
@@ -654,11 +654,11 @@ namespace frames {
                batteryLevelKeyword->set((pFrame->infos.type11.qualifier & 0x0004) == 0 ? 100 : 0);
                m_keywords.push_back(batteryLevelKeyword);
 
-               auto alarmKeyword = boost::make_shared<yApi::historization::CAlarm>("alarm");
+               auto alarmKeyword = boost::make_shared<yApi::historization::CAlarm>("alarm", yApi::EKeywordAccessMode::kGet);
                alarmKeyword->set((pFrame->infos.type11.qualifier & 0x0002) != 0);
                m_keywords.push_back(alarmKeyword);
 
-               auto tamperKeyword = boost::make_shared<yApi::historization::CTamper>("tamper");
+               auto tamperKeyword = boost::make_shared<yApi::historization::CTamper>("tamper", yApi::EKeywordAccessMode::kGet);
                tamperKeyword->set((pFrame->infos.type11.qualifier & 0x0001) != 0);
                m_keywords.push_back(tamperKeyword);
             }

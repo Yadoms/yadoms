@@ -12,10 +12,10 @@ namespace specificHistorizers {
       ((Assoc))
    )
 
-   DECLARE_CAPACITY(Type3ShutterCodeCapacity, "shutterCode", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kEnum);
+   DECLARE_CAPACITY(Type3ShutterCodeCapacity, "somfyRtsPortalsShutterCode", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kEnum);
 
    CType3ShutterCode::CType3ShutterCode(const std::string& keywordName)
-      : CSingleHistorizableData<EType3ShutterCodeValues>(keywordName, Type3ShutterCodeCapacity(), yApi::EKeywordAccessMode::kGetSet)
+      : CSingleHistorizableData<EType3ShutterCodeValues>(keywordName, Type3ShutterCodeCapacity(), yApi::EKeywordAccessMode::kGet)
    {
    }
 
