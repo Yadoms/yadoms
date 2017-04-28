@@ -127,11 +127,11 @@ DECLARE_ENUM_HEADER(EBlyssCommands,
 
 DECLARE_ENUM_IMPLEMENTATION(EBlyssCommands,
    ((Off)("OFF"))
-   ((On)("ON/Alert"))
-   ((Dim))
-   ((AllOff))
-   ((AllOn))
-   ((Assoc))
+   ((On)("ON"))
+   ((Dim)("DIM"))
+   ((AllOff)("ALL_OFF"))
+   ((AllOn)("ALL_ON"))
+   ((Assoc)("ASSOC"))
 )
 
 class CBlyssCommandKeyword : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EBlyssCommands>
@@ -198,7 +198,7 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<shared::plugin:
 
    return "";
 }
-
+/*
 std::string CTransceiver::generateCommand(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command)
 {
    shared::CDataContainer details = api->getDeviceDetails(command->getDevice());
@@ -264,22 +264,10 @@ shared::communication::CByteBuffer CTransceiver::generateCommandBinary(boost::sh
       data.content.burst = 0;
       data.content.qualifier = 0;
       data.content.reserved2 = 0;
-      /*
-      res[0] = 0; //frame type
-      res[1] = 0; //cluster
-      res[2] = 12; //protocol (blyss_433 = 12)
-      res[3] =  //action
-      res[6] = (id & 0x000000FF); //lsb
-      res[7] = ((id & 0x0000FF00) >> 8);
-      res[4] = ((id & 0x00FF0000) >> 16);
-      res[5] = ((id & 0xFF000000) >> 24); //msb
-      res[8] = 0; //dim = 0
-      res[9] = 0; //burst = 0
-      res[10] = 0; //qualifier = 0
-      res[11] = 0; //reserved= 0
-      */
    }
 
    shared::communication::CByteBuffer res((const unsigned char*)&data, sizeof(REGULAR_OUTGOING_BINARY_USB_FRAME));
    return res;
 }
+
+*/

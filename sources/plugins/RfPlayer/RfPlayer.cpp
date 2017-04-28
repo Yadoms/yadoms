@@ -6,6 +6,7 @@
 #include "Factory.h"
 #include "MessageHandler.h"
 #include <shared/encryption/Base64.h>
+#include "frames/outgoing/Factory.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -61,16 +62,15 @@ void CRfPlayer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          case yApi::IYPluginApi::kEventDeviceCommand:
          {
             // Command was received from Yadoms
+            
             auto command = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
             YADOMS_LOG(information) << "Command received from Yadoms :" << yApi::IDeviceCommand::toString(command) ;
             try
             {
                // try to send ascii command
-               auto buffer = m_transceiver->generateCommand(api, command);
-               m_messageHandler->send(buffer);
-
-               //TODO : send command to device
-               //m_messageHandler->send(m_transceiver->generateCommand(api, command));
+               auto commandFrame = frames::outgoing::CFactory::make(api, command);
+               auto commandAscii = commandFrame->generateAsciiCommand(api, command);
+               m_messageHandler->send(commandAscii);
             }
             catch (shared::exception::CException& ex)
             {

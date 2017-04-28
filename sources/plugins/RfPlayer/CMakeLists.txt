@@ -29,6 +29,12 @@ set(RFPLAYER_PLUGIN_SOURCES
    frames/incoming/BinaryFrame.cpp
    frames/incoming/FrameType.h
 
+   frames/outgoing/IOutgoingFrame.h
+   frames/outgoing/Factory.h
+   frames/outgoing/Factory.cpp
+   frames/outgoing/Blyss433.h
+   frames/outgoing/Blyss433.cpp
+
    specificHistorizers/Type0State.h
    specificHistorizers/Type0State.cpp
    specificHistorizers/Type1State.h
@@ -48,6 +54,7 @@ set(RFPLAYER_PLUGIN_SOURCES
 source_group(sources ./*.*)
 source_group(sources\\frames ./frames/*.*)
 source_group(sources\\frames\\incoming ./frames/incoming/*.*)
+source_group(sources\\frames\\outgoing ./frames/outgoing/*.*)
 source_group(sources\\specificHistorizers ./specificHistorizers/*.*)
 
 #########################################
