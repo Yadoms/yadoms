@@ -7,7 +7,8 @@ namespace owfs
    namespace io
    {
       CSingleSwitch::CSingleSwitch(const boost::filesystem::path& devicePath)
-         :m_devicePath(devicePath / boost::filesystem::path("sensed"))
+         :m_readDevicePath(devicePath / boost::filesystem::path("sensed")),
+         m_writeDevicePath(devicePath / boost::filesystem::path("PIO"))         
       {
       }
 
@@ -26,10 +27,7 @@ namespace owfs
 
       void CSingleSwitch::write(bool state) const
       {
-         std::string filename("PIO");
-
-         boost::filesystem::path writePath = m_devicePath / boost::filesystem::path(filename);
-         CCommon::write(writePath, state ? "1" : "0");
+         CCommon::write(m_writeDevicePath, state ? "1" : "0");
       }
    }
 } // namespace owfs::io
