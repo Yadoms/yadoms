@@ -24,13 +24,13 @@
 #include <shared/plugin/yPluginApi/historization/RainRate.h>
 #include <shared/plugin/yPluginApi/historization/Switch.h>
 
-#include "../../specificHistorizers/Type0State.h"
-#include "../../specificHistorizers/Type1State.h"
-#include "../../specificHistorizers/Type2KeyCode.h"
-#include "../../specificHistorizers/Type3RemoteCode.h"
-#include "../../specificHistorizers/Type3ShutterCode.h"
-#include "../../specificHistorizers/Type10OperatingMode.h"
-#include "../../specificHistorizers/Type11State.h"
+#include "../../specificHistorizers/incoming/Type0State.h"
+#include "../../specificHistorizers/incoming/Type1State.h"
+#include "../../specificHistorizers/incoming/Type2KeyCode.h"
+#include "../../specificHistorizers/incoming/Type3RemoteCode.h"
+#include "../../specificHistorizers/incoming/Type3ShutterCode.h"
+#include "../../specificHistorizers/incoming/Type10OperatingMode.h"
+#include "../../specificHistorizers/incoming/Type11State.h"
 
 namespace frames {
 namespace incoming {
@@ -352,8 +352,8 @@ namespace incoming {
             m_deviceName = (boost::format("%1%%2%") % houseCode % device).str();
             m_deviceDetails.set("id", pFrame->infos.type0.id);
 
-            auto stateKeyword = boost::make_shared<specificHistorizers::CType0State>("state");
-            specificHistorizers::EType0StateValues state((int)pFrame->infos.type0.subtype);
+            auto stateKeyword = boost::make_shared<specificHistorizers::incoming::CType0State>("state");
+            specificHistorizers::incoming::EType0StateValues state((int)pFrame->infos.type0.subtype);
             stateKeyword->set(state);
             m_keywords.push_back(stateKeyword);
 
@@ -367,8 +367,8 @@ namespace incoming {
             m_deviceName = (boost::format("%1%") % device).str();
             m_deviceDetails.set("id", device);
 
-            auto stateKeyword = boost::make_shared<specificHistorizers::CType1State>("state");
-            specificHistorizers::EType1StateValues state((int)pFrame->infos.type1.subtype);
+            auto stateKeyword = boost::make_shared<specificHistorizers::incoming::CType1State>("state");
+            specificHistorizers::incoming::EType1StateValues state((int)pFrame->infos.type1.subtype);
             stateKeyword->set(state);
             m_keywords.push_back(stateKeyword);
 
@@ -410,8 +410,8 @@ namespace incoming {
                //remote control(CodeSecure device)
                m_deviceModel += " Remote Control";
 
-               auto keyCodeKeyword = boost::make_shared<specificHistorizers::CType2KeyCode>("keyCode");
-               keyCodeKeyword->set(specificHistorizers::EType2KeyCodeValues((int)pFrame->infos.type2.qualifier));
+               auto keyCodeKeyword = boost::make_shared<specificHistorizers::incoming::CType2KeyCode>("keyCode");
+               keyCodeKeyword->set(specificHistorizers::incoming::EType2KeyCodeValues((int)pFrame->infos.type2.qualifier));
                m_keywords.push_back(keyCodeKeyword);
 
             }
@@ -429,8 +429,8 @@ namespace incoming {
                //shutter device
                m_deviceModel += " Somfy Shutter";
 
-               auto codeKeyword = boost::make_shared<specificHistorizers::CType3ShutterCode>("shutter");
-               codeKeyword->set(specificHistorizers::EType3ShutterCodeValues((int)pFrame->infos.type3.qualifier & 0x000F));
+               auto codeKeyword = boost::make_shared<specificHistorizers::incoming::CType3ShutterCode>("shutter");
+               codeKeyword->set(specificHistorizers::incoming::EType3ShutterCodeValues((int)pFrame->infos.type3.qualifier & 0x000F));
                m_keywords.push_back(codeKeyword);
 
             }
@@ -439,8 +439,8 @@ namespace incoming {
                //shutter device
                m_deviceModel += " Somfy portal reomte control";
 
-               auto codeKeyword = boost::make_shared<specificHistorizers::CType3RemoteCode>("remote");
-               codeKeyword->set(specificHistorizers::EType3RemoteCodeValues((int)pFrame->infos.type3.qualifier & 0x000F));
+               auto codeKeyword = boost::make_shared<specificHistorizers::incoming::CType3RemoteCode>("remote");
+               codeKeyword->set(specificHistorizers::incoming::EType3RemoteCodeValues((int)pFrame->infos.type3.qualifier & 0x000F));
                m_keywords.push_back(codeKeyword);
             }
 
@@ -633,8 +633,8 @@ namespace incoming {
             }
             case 2: //operating  mode
             {
-               auto operatingModeKeyword = boost::make_shared<specificHistorizers::CType10OperatingMode>("keyCode");
-               operatingModeKeyword->set(specificHistorizers::EType10OperatingModeValues((int)(pFrame->infos.type10.mode & 0x00FF)));
+               auto operatingModeKeyword = boost::make_shared<specificHistorizers::incoming::CType10OperatingMode>("keyCode");
+               operatingModeKeyword->set(specificHistorizers::incoming::EType10OperatingModeValues((int)(pFrame->infos.type10.mode & 0x00FF)));
                m_keywords.push_back(operatingModeKeyword);
 
                break;
@@ -667,8 +667,8 @@ namespace incoming {
             {
                m_deviceModel += " Alarm remote control";
 
-               auto remoteControlKeyword = boost::make_shared<specificHistorizers::CType11State>("remoteControl");
-               remoteControlKeyword->set(specificHistorizers::EType11StateValues((int)pFrame->infos.type11.qualifier));
+               auto remoteControlKeyword = boost::make_shared<specificHistorizers::incoming::CType11State>("remoteControl");
+               remoteControlKeyword->set(specificHistorizers::incoming::EType11StateValues((int)pFrame->infos.type11.qualifier));
                m_keywords.push_back(remoteControlKeyword);
             }
             break;

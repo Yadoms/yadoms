@@ -4,6 +4,7 @@
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 
 namespace specificHistorizers {
+namespace incoming {
       
    DECLARE_ENUM_IMPLEMENTATION(EType11StateValues,
       ((On))
@@ -23,4 +24,5 @@ namespace specificHistorizers {
    {
    }
 
+} //namespace incoming
 } //namespace specificHistorizers

@@ -7,32 +7,29 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 namespace specificHistorizers {
+namespace incoming {
       
-   DECLARE_ENUM_HEADER(EType10OperatingModeValues,
-      ((Eco))
-      ((Moderate))
-      ((Medio))
-      ((Comfort))
-      ((Stop))
-      ((OutOfFrost))
-      ((Special))
-      ((Auto))
-      ((Centralised))
+   DECLARE_ENUM_HEADER(EType1StateValues,
+      ((Off)(0))
+      ((On)(1))
+      ((AllOff)(4))
+      ((AllOn)(5))
    )
 
-   class CType10OperatingMode : public yApi::historization::CSingleHistorizableData<EType10OperatingModeValues>
+   class CType1State : public yApi::historization::CSingleHistorizableData<EType1StateValues>
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      explicit CType10OperatingMode(const std::string& keywordName);
+      explicit CType1State(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CType10OperatingMode();
+      virtual ~CType1State();
    };
 
+} //namespace incoming
 } //namespace specificHistorizers

@@ -4,6 +4,7 @@
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 
 namespace specificHistorizers {
+namespace incoming {
       
    DECLARE_ENUM_IMPLEMENTATION(EType10OperatingModeValues,
       ((Eco))
@@ -28,4 +29,5 @@ namespace specificHistorizers {
    {
    }
 
+} //namespace incoming
 } //namespace specificHistorizers

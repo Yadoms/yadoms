@@ -7,29 +7,32 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 namespace specificHistorizers {
-      
-   DECLARE_ENUM_HEADER(EType0StateValues,
-      ((Off))
-      ((On))
-      ((Bright))
-      ((Dim))
-      ((AllOff))
-      ((AllOn))
+namespace outgoing {
+     
+   DECLARE_ENUM_HEADER(EBlyssCommands,
+      ((Off)(0))
+      ((On)(1))
+      ((Dim)(2))
+      ((AllOff)(4))
+      ((AllOn)(5))
+      ((Assoc)(6))
    )
 
-   class CType0State : public yApi::historization::CSingleHistorizableData<EType0StateValues>
+   class CBlyssCommandKeyword : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EBlyssCommands>
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      explicit CType0State(const std::string& keywordName);
+      explicit CBlyssCommandKeyword(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CType0State();
+      virtual ~CBlyssCommandKeyword();
    };
 
+
+} //namespace outgoin
 } //namespace specificHistorizers

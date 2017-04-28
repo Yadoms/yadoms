@@ -35,20 +35,23 @@ set(RFPLAYER_PLUGIN_SOURCES
    frames/outgoing/Blyss433.h
    frames/outgoing/Blyss433.cpp
 
-   specificHistorizers/Type0State.h
-   specificHistorizers/Type0State.cpp
-   specificHistorizers/Type1State.h
-   specificHistorizers/Type1State.cpp
-   specificHistorizers/Type2KeyCode.h
-   specificHistorizers/Type2KeyCode.cpp
-   specificHistorizers/Type3ShutterCode.h
-   specificHistorizers/Type3ShutterCode.cpp
-   specificHistorizers/Type3RemoteCode.h
-   specificHistorizers/Type3RemoteCode.cpp
-   specificHistorizers/Type10OperatingMode.h
-   specificHistorizers/Type10OperatingMode.cpp
-   specificHistorizers/Type11State.h
-   specificHistorizers/Type11State.cpp
+   specificHistorizers/incoming/Type0State.h
+   specificHistorizers/incoming/Type0State.cpp
+   specificHistorizers/incoming/Type1State.h
+   specificHistorizers/incoming/Type1State.cpp
+   specificHistorizers/incoming/Type2KeyCode.h
+   specificHistorizers/incoming/Type2KeyCode.cpp
+   specificHistorizers/incoming/Type3ShutterCode.h
+   specificHistorizers/incoming/Type3ShutterCode.cpp
+   specificHistorizers/incoming/Type3RemoteCode.h
+   specificHistorizers/incoming/Type3RemoteCode.cpp
+   specificHistorizers/incoming/Type10OperatingMode.h
+   specificHistorizers/incoming/Type10OperatingMode.cpp
+   specificHistorizers/incoming/Type11State.h
+   specificHistorizers/incoming/Type11State.cpp
+
+   specificHistorizers/outgoing/BlyssCommand.h
+   specificHistorizers/outgoing/BlyssCommand.cpp
 )
 
 source_group(sources ./*.*)
@@ -56,6 +59,8 @@ source_group(sources\\frames ./frames/*.*)
 source_group(sources\\frames\\incoming ./frames/incoming/*.*)
 source_group(sources\\frames\\outgoing ./frames/outgoing/*.*)
 source_group(sources\\specificHistorizers ./specificHistorizers/*.*)
+source_group(sources\\specificHistorizers\\incoming ./specificHistorizers/incoming/*.*)
+source_group(sources\\specificHistorizers\\outgoing ./specificHistorizers/outgoing/*.*)
 
 #########################################
 ## Place here all additional include directories

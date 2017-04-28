@@ -7,25 +7,29 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 namespace specificHistorizers {
+namespace incoming {
       
-   DECLARE_ENUM_HEADER(EType3RemoteCodeValues,
-      ((Left)(5))
-      ((Right)(6))
+   DECLARE_ENUM_HEADER(EType2KeyCodeValues,
+      ((Button1)(0x08))
+      ((Button2)(0x10))
+      ((Button3)(0x20))
+      ((Button4)(0x40))
    )
 
-   class CType3RemoteCode : public yApi::historization::CSingleHistorizableData<EType3RemoteCodeValues>
+   class CType2KeyCode : public yApi::historization::CSingleHistorizableData<EType2KeyCodeValues>
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      explicit CType3RemoteCode(const std::string& keywordName);
+      explicit CType2KeyCode(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CType3RemoteCode();
+      virtual ~CType2KeyCode();
    };
 
+} //namespace incoming
 } //namespace specificHistorizers
