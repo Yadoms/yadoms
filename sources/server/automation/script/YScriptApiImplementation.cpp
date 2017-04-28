@@ -180,32 +180,42 @@ namespace automation
 
       shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int>& keywordIdList, bool receiveDateTimeEvent, const std::string& timeout) const
       {
-         for (const auto& kwId : keywordIdList)
-            assertExistingKeyword(kwId);
-
-         auto eventHandler(boost::make_shared<shared::event::CEventHandler>());
-
          enum
             {
                kKeyword = shared::event::kUserFirstId,
                kTime
             };
 
+         auto eventHandler(boost::make_shared<shared::event::CEventHandler>());
 
-         //create the action (= what to do when notification is observed)
-         auto keywordEventAction(boost::make_shared<notification::action::CEventPtrAction<notification::acquisition::CNotification>>(eventHandler, kKeyword));
+         if (!keywordIdList.empty())
+         {
+            for (const auto& kwId : keywordIdList)
+               assertExistingKeyword(kwId);
 
-         //create the acquisition observer
-         auto observer(boost::make_shared<notification::acquisition::CObserver>(keywordEventAction));
-         observer->resetKeywordIdFilter(keywordIdList);
+            //create the action (= what to do when notification is observed)
+            auto keywordEventAction(boost::make_shared<notification::action::CEventPtrAction<notification::acquisition::CNotification>>(eventHandler, kKeyword));
 
-         //register the observer
-         notification::CHelpers::CCustomSubscriber subscriber(observer);
+            //create the acquisition observer
+            auto observer(boost::make_shared<notification::acquisition::CObserver>(keywordEventAction));
+            observer->resetKeywordIdFilter(keywordIdList);
 
+            //register the observer
+            notification::CHelpers::CCustomSubscriber subscriber(observer);
+         }
 
          boost::shared_ptr<notification::IObserver> dateTimeObserver;
+         YADOMS_LOG(debug) << "CYScriptApiImplementation::waitForEvent";
          if (receiveDateTimeEvent)
-            dateTimeObserver = notification::CHelpers::subscribeBasicObserver<shared::dateTime::CDateTimeContainer>(eventHandler, kTime);
+         {
+            const auto now = shared::currentTime::Provider().now();
+            boost::posix_time::ptime nextMinute(now.date(),
+                                                boost::posix_time::time_duration(now.time_of_day().hours(),
+                                                                                 now.time_of_day().minutes() + 1,
+                                                                                 0));
+            eventHandler->createTimePoint(kTime, nextMinute);
+            YADOMS_LOG(debug) << "CYScriptApiImplementation::waitForEvent with dateTime event at " << nextMinute;
+         }
 
          //wait for event
          try
@@ -239,14 +249,8 @@ namespace automation
             case kTime:
                {
                   YADOMS_LOG(debug) << "CYScriptApiImplementation : kTime";
-                  auto timeNotif = eventHandler->getEventData<boost::shared_ptr<shared::dateTime::CDateTimeContainer>>();
-
                   result.setType(shared::script::yScriptApi::CWaitForEventResult::kDateTime);
-                  if (timeNotif)
-                  {
-                     YADOMS_LOG(debug) << "CYScriptApiImplementation : kTime" << timeNotif->getBoostDateTime();
-                     result.setValue(boost::posix_time::to_iso_string(timeNotif->getBoostDateTime()));
-                  }
+                  result.setValue(boost::posix_time::to_iso_string(shared::currentTime::Provider().now()));
                   break;
                }
             default:
