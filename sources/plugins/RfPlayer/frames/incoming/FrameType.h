@@ -1,6 +1,7 @@
 #pragma once
 
 namespace frames {
+namespace incoming {
 
    //--------------------------------------------------------------
    /// \brief Enumeration for frame types
@@ -23,5 +24,6 @@ namespace frames {
       kAsciiFrame
    }EFrameType;
 
+} //namespace incoming
 } //namespace frames
    

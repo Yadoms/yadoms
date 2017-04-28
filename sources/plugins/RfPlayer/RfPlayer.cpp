@@ -185,7 +185,7 @@ void CRfPlayer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
          case kEvtPortFrameReceived:
          {
-            boost::shared_ptr<const frames::CFrame> frame = api->getEventHandler().getEventData< boost::shared_ptr<const frames::CFrame> >();
+            boost::shared_ptr<const frames::incoming::CFrame> frame = api->getEventHandler().getEventData< boost::shared_ptr<const frames::incoming::CFrame> >();
             if(frame->isAscii())
                processZiBlueAsciiFrameReceived(api, frame->getAscii());
             else
@@ -290,7 +290,7 @@ void CRfPlayer::processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginA
    errorProcess(api);
 }
 
-void CRfPlayer::processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::CBinaryFrame> data)
+void CRfPlayer::processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::incoming::CBinaryFrame> data)
 {
    try
    {
@@ -310,7 +310,7 @@ void CRfPlayer::processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPlugi
    }
 }
 
-void CRfPlayer::processZiBlueAsciiFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::CAsciiFrame> data)
+void CRfPlayer::processZiBlueAsciiFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::incoming::CAsciiFrame> data)
 {
    if (m_isDeveloperMode)
       YADOMS_LOG(debug) << "RfPlayer Ascii <<< " << data->getContent();
@@ -321,11 +321,11 @@ void CRfPlayer::processZiBlueAsciiFrameReceived(boost::shared_ptr<yApi::IYPlugin
 void CRfPlayer::initZiBlue(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    if (!m_messageHandler->send(m_transceiver->buildHelloCmd(),
-      [](boost::shared_ptr<const frames::CFrame> frame)
+      [](boost::shared_ptr<const frames::incoming::CFrame> frame)
       {
          return frame->isAscii() && boost::icontains(frame->getAscii()->getContent(), "Ziblue Dongle");
       },
-      [&](boost::shared_ptr<const frames::CFrame> frame)
+      [&](boost::shared_ptr<const frames::incoming::CFrame> frame)
       {
          m_dongle = CDongle::create(frame->getAscii()->getContent());
 
@@ -398,7 +398,7 @@ void CRfPlayer::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> & api
    while (!isReady && shared::currentTime::Provider().now() < timeout)
    {
       isReady = m_messageHandler->send(m_transceiver->buildHelloCmd(),
-         [&](boost::shared_ptr<const frames::CFrame> frame)
+         [&](boost::shared_ptr<const frames::incoming::CFrame> frame)
          {
             YADOMS_LOG(information) << "Something received";
             YADOMS_LOG(information) << frame->getAscii()->getContent();
@@ -410,7 +410,7 @@ void CRfPlayer::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> & api
                extraQuery->reportProgress(75.0f, frame->getAscii()->getContent());
             return isRestartFrame;
          },
-         [&](boost::shared_ptr<const frames::CFrame> frame)
+         [&](boost::shared_ptr<const frames::incoming::CFrame> frame)
          {
             YADOMS_LOG(information) << "New dongle";
 

@@ -2,6 +2,7 @@
 #include "AsciiFrame.h"
 
 namespace frames {
+namespace incoming {
 
    CAsciiFrame::CAsciiFrame(char sourceDest, char qualifier1, char qualifier2, const std::string & data)
       :m_sourceDest(sourceDest), m_content(data)
@@ -43,6 +44,7 @@ namespace frames {
 
    }
 
+} //namespace incoming
 } //namespace frames
 
 

@@ -21,13 +21,13 @@ set(RFPLAYER_PLUGIN_SOURCES
 	Transceiver.h
 	Transceiver.cpp 	
    
-   frames/Frame.h
-   frames/Frame.cpp
-   frames/AsciiFrame.h
-   frames/AsciiFrame.cpp
-   frames/BinaryFrame.h
-   frames/BinaryFrame.cpp
-   frames/FrameType.h
+   frames/incoming/Frame.h
+   frames/incoming/Frame.cpp
+   frames/incoming/AsciiFrame.h
+   frames/incoming/AsciiFrame.cpp
+   frames/incoming/BinaryFrame.h
+   frames/incoming/BinaryFrame.cpp
+   frames/incoming/FrameType.h
 
    specificHistorizers/Type0State.h
    specificHistorizers/Type0State.cpp
@@ -47,6 +47,7 @@ set(RFPLAYER_PLUGIN_SOURCES
 
 source_group(sources ./*.*)
 source_group(sources\\frames ./frames/*.*)
+source_group(sources\\frames\\incoming ./frames/incoming/*.*)
 source_group(sources\\specificHistorizers ./specificHistorizers/*.*)
 
 #########################################

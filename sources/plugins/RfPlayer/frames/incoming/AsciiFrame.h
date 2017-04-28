@@ -3,6 +3,7 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 namespace frames {
+namespace incoming {
 
    class CAsciiFrame
    {
@@ -64,6 +65,7 @@ namespace frames {
       std::string  m_content;
    };
 
+} //namespace incoming
 } //namespace frames
 
 

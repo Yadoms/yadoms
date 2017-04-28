@@ -3,7 +3,7 @@
 #include <shared/communication/IReceiveBufferHandler.h>
 #include <shared/communication/Buffer.hpp>
 
-#include "frames/Frame.h"
+#include "frames/incoming/Frame.h"
 #include "IMessageHandler.h"
 
 //--------------------------------------------------------------
@@ -48,13 +48,13 @@ protected:
    /// \brief	   Pop the next message from the receive buffer
    /// \return    The next complete message
    //--------------------------------------------------------------
-   boost::shared_ptr<frames::CFrame> popNextMessage();
+   boost::shared_ptr<frames::incoming::CFrame> popNextMessage();
 
    //--------------------------------------------------------------
    /// \brief	   Identifies the first frame in buffer
    /// \return    The frame type
    //--------------------------------------------------------------
-   frames::EFrameType identifyFrameType();
+   frames::incoming::EFrameType identifyFrameType();
 
    //--------------------------------------------------------------
    /// \brief	   Sync buffer to start of frame

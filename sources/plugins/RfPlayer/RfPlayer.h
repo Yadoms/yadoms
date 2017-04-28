@@ -82,8 +82,8 @@ private:
    void processZiBlueConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
    void errorProcess(boost::shared_ptr<yApi::IYPluginApi> api);
    void processZiBlueUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> api);
-   void processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::CBinaryFrame> data);
-   void processZiBlueAsciiFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::CAsciiFrame> data);
+   void processZiBlueBinaryFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::incoming::CBinaryFrame> data);
+   void processZiBlueAsciiFrameReceived(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<frames::incoming::CAsciiFrame> data);
    void initZiBlue(boost::shared_ptr<yApi::IYPluginApi> api);
    void updateDongleConfiguration(boost::shared_ptr<yApi::IYPluginApi> api);
    void processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi> & api, boost::shared_ptr<yApi::IExtraQuery> & extraQuery);

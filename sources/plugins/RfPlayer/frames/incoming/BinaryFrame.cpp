@@ -2,7 +2,7 @@
 #include "BinaryFrame.h"
 
 #define IS_PACKED
-#include "../rfplayerApi/usb_frame_api.h"
+#include "../../rfplayerApi/usb_frame_api.h"
 
 #include <shared/Log.h>
 #include <shared/exception/NotSupported.hpp>
@@ -24,15 +24,16 @@
 #include <shared/plugin/yPluginApi/historization/RainRate.h>
 #include <shared/plugin/yPluginApi/historization/Switch.h>
 
-#include "../specificHistorizers/Type0State.h"
-#include "../specificHistorizers/Type1State.h"
-#include "../specificHistorizers/Type2KeyCode.h"
-#include "../specificHistorizers/Type3RemoteCode.h"
-#include "../specificHistorizers/Type3ShutterCode.h"
-#include "../specificHistorizers/Type10OperatingMode.h"
-#include "../specificHistorizers/Type11State.h"
+#include "../../specificHistorizers/Type0State.h"
+#include "../../specificHistorizers/Type1State.h"
+#include "../../specificHistorizers/Type2KeyCode.h"
+#include "../../specificHistorizers/Type3RemoteCode.h"
+#include "../../specificHistorizers/Type3ShutterCode.h"
+#include "../../specificHistorizers/Type10OperatingMode.h"
+#include "../../specificHistorizers/Type11State.h"
 
 namespace frames {
+namespace incoming {
 
 
    CBinaryFrame::CBinaryFrame(char sourceDest, boost::shared_ptr<shared::communication::CByteBuffer> content)
@@ -685,5 +686,6 @@ namespace frames {
       }
    }
 
+} //namespace incoming
 } //namespace frames
 

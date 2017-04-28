@@ -53,7 +53,7 @@ bool CMessageHandler::sendFile(const std::string & fileContent, boost::function<
    return true;
 }
 
-bool CMessageHandler::send(const std::string& sendMessage, boost::function<bool(boost::shared_ptr<const frames::CFrame>)> isExpectedMessageFct, boost::function<void(boost::shared_ptr<const frames::CFrame>)> onReceiveFct)
+bool CMessageHandler::send(const std::string& sendMessage, boost::function<bool(boost::shared_ptr<const frames::incoming::CFrame>)> isExpectedMessageFct, boost::function<void(boost::shared_ptr<const frames::incoming::CFrame>)> onReceiveFct)
 {
    if (!m_port)
       throw shared::exception::CException("Send message failed : dongle is not ready");
@@ -63,7 +63,7 @@ bool CMessageHandler::send(const std::string& sendMessage, boost::function<bool(
    return waitAnswer(boost::posix_time::seconds(5));
 }
 
-void CMessageHandler::setHook(boost::function<bool(boost::shared_ptr<const frames::CFrame>)> isExpectedMessageFct,  boost::function<void(boost::shared_ptr<const frames::CFrame>)> onReceiveFct)
+void CMessageHandler::setHook(boost::function<bool(boost::shared_ptr<const frames::incoming::CFrame>)> isExpectedMessageFct,  boost::function<void(boost::shared_ptr<const frames::incoming::CFrame>)> onReceiveFct)
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_hookMutex);
    m_isExpectedMessageHookFct = isExpectedMessageFct;
@@ -76,7 +76,7 @@ bool CMessageHandler::waitAnswer(const boost::posix_time::time_duration& answerT
    return m_waitAnswerEventHandler.waitForEvents(answerTimeout) != shared::event::kTimeout;
 }
 
-void CMessageHandler::onReceived(boost::shared_ptr<const frames::CFrame> receivedMessage)
+void CMessageHandler::onReceived(boost::shared_ptr<const frames::incoming::CFrame> receivedMessage)
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_hookMutex);
    if (m_isExpectedMessageHookFct.empty() || !m_isExpectedMessageHookFct(receivedMessage))

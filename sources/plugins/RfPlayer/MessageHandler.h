@@ -22,8 +22,8 @@ public:
    virtual ~CMessageHandler();
 
    // IMessageHandler implementation
-   void onReceived(boost::shared_ptr<const frames::CFrame> receivedMessage);
-   bool send(const std::string & sendMessage, boost::function<bool(boost::shared_ptr<const frames::CFrame>)> isExpectedMessageFct, boost::function<void(boost::shared_ptr<const frames::CFrame>)> onReceiveFct);
+   void onReceived(boost::shared_ptr<const frames::incoming::CFrame> receivedMessage);
+   bool send(const std::string & sendMessage, boost::function<bool(boost::shared_ptr<const frames::incoming::CFrame>)> isExpectedMessageFct, boost::function<void(boost::shared_ptr<const frames::incoming::CFrame>)> onReceiveFct);
    void send(const std::string& sendMessage);
    bool sendFile(const std::string & sendMessage, boost::function<void(float)> onProgressHandler);
    void sendBinary(const shared::communication::CByteBuffer& buffer);
@@ -35,7 +35,7 @@ protected:
    /// \param [in] isExpectedMessageFct   Lambda to identify the expected message. Must return true if received message is the expected one. (called by different thread).
    /// \param [in] onReceiveFct           Lambda to process received message. (called by different thread).
    //--------------------------------------------------------------
-   void setHook(boost::function<bool(boost::shared_ptr<const frames::CFrame>)> isExpectedMessageFct, boost::function<void(boost::shared_ptr<const frames::CFrame>)> onReceiveFct);
+   void setHook(boost::function<bool(boost::shared_ptr<const frames::incoming::CFrame>)> isExpectedMessageFct, boost::function<void(boost::shared_ptr<const frames::incoming::CFrame>)> onReceiveFct);
 
    //--------------------------------------------------------------
    /// \brief	                           Wait for an answer of dongle
@@ -68,12 +68,12 @@ private:
    //--------------------------------------------------------------
    /// \brief	                  Lambda to identify the expected message. Must return true if received message is the expected one. (called by different thread).
    //--------------------------------------------------------------
-   boost::function<bool(boost::shared_ptr<const frames::CFrame>)> m_isExpectedMessageHookFct;
+   boost::function<bool(boost::shared_ptr<const frames::incoming::CFrame>)> m_isExpectedMessageHookFct;
 
    //--------------------------------------------------------------
    /// \brief	                  Lambda to process received message. (called by different thread).
    //--------------------------------------------------------------
-   boost::function<void(boost::shared_ptr<const frames::CFrame>)> m_onReceiveHookFct;
+   boost::function<void(boost::shared_ptr<const frames::incoming::CFrame>)> m_onReceiveHookFct;
 
    //--------------------------------------------------------------
    /// \brief	                  The wait event handler (to manage tiemout)

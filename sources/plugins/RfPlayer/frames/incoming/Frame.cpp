@@ -3,6 +3,7 @@
 #include <shared/communication/BufferLogger.h>
 
 namespace frames {
+namespace incoming {
 
 
    CFrame::CFrame(boost::shared_ptr<CBinaryFrame> binaryBuffer)
@@ -77,6 +78,7 @@ namespace frames {
    }
 
 
+} //namespace incoming
 } //namespace frames
 
 

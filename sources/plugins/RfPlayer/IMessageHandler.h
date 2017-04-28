@@ -1,5 +1,5 @@
 #pragma once
-#include "frames/Frame.h"
+#include "frames/incoming/Frame.h"
 
 //--------------------------------------------------------------
 /// \brief	Interface for message handler
@@ -16,7 +16,7 @@ public:
    /// \brief	                     Function called when message is received
    /// \param [in] receivedMessage  Received message
    //--------------------------------------------------------------
-   virtual void onReceived(boost::shared_ptr<const frames::CFrame> receivedMessage) = 0;
+   virtual void onReceived(boost::shared_ptr<const frames::incoming::CFrame> receivedMessage) = 0;
 
    //--------------------------------------------------------------
    /// \brief	                           Send a message to RfPlayer dongle and wait answer
@@ -25,7 +25,7 @@ public:
    /// \param [in] onReceiveFct           Lambda to process received message. (called by different thread).
    /// \return                            false if timeout waiting answer
    //--------------------------------------------------------------
-   virtual bool send(const std::string & sendMessage, boost::function<bool(boost::shared_ptr<const frames::CFrame>)> isExpectedMessageFct, boost::function<void(boost::shared_ptr<const frames::CFrame>)> onReceiveFct) = 0;
+   virtual bool send(const std::string & sendMessage, boost::function<bool(boost::shared_ptr<const frames::incoming::CFrame>)> isExpectedMessageFct, boost::function<void(boost::shared_ptr<const frames::incoming::CFrame>)> onReceiveFct) = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Send a message to RfPlayer dongle

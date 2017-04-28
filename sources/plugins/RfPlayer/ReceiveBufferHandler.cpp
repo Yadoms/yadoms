@@ -18,7 +18,7 @@ void CReceiveBufferHandler::push(const shared::communication::CByteBuffer& buffe
 
    if (isComplete())
    {
-      boost::shared_ptr<frames::CFrame> bufferMessage = popNextMessage();
+      boost::shared_ptr<frames::incoming::CFrame> bufferMessage = popNextMessage();
       if (bufferMessage)
       {
          m_messageHandler->onReceived(bufferMessage);
@@ -54,17 +54,17 @@ bool CReceiveBufferHandler::syncToStartOfFrame()
    return false;
 }
 
-frames::EFrameType CReceiveBufferHandler::identifyFrameType()
+frames::incoming::EFrameType CReceiveBufferHandler::identifyFrameType()
 {
    if (m_content.size() >= 2)
    {
       unsigned char frameType = m_content[2] & 0x70;
       if (frameType == 0x40)
-         return frames::kAsciiFrame;
+         return frames::incoming::kAsciiFrame;
       if (frameType == 0x00)
-         return frames::kBinaryFrame;
+         return frames::incoming::kBinaryFrame;
    }
-   return frames::kUnknown;
+   return frames::incoming::kUnknown;
 }
 
 
@@ -74,7 +74,7 @@ bool CReceiveBufferHandler::isComplete()
    {
       switch (identifyFrameType())
       {
-         case frames::kAsciiFrame:
+         case frames::incoming::kAsciiFrame:
          {
             //search for terminator \0 or \r
             for (int i = 5; i < m_content.size(); ++i)
@@ -84,7 +84,7 @@ bool CReceiveBufferHandler::isComplete()
             }
             break;
          }
-         case frames::kBinaryFrame:
+         case frames::incoming::kBinaryFrame:
          {
             int len = getCurrentBinaryFrameSize();
             return m_content.size() >= (5 + len);
@@ -100,48 +100,48 @@ const int CReceiveBufferHandler::getCurrentBinaryFrameSize()
    return (m_content[4] << 8) + m_content[3];
 }
 
-boost::shared_ptr<frames::CFrame> CReceiveBufferHandler::popNextMessage()
+boost::shared_ptr<frames::incoming::CFrame> CReceiveBufferHandler::popNextMessage()
 {
    if (!isComplete())
       throw shared::exception::CException("CReceiveBufferHandler : Can not pop not completed message. Call isComplete to check if a message is available");
 
-   boost::shared_ptr<frames::CFrame> result;
+   boost::shared_ptr<frames::incoming::CFrame> result;
 
    if (syncToStartOfFrame())
    {
       switch (identifyFrameType())
       {
-      case frames::kAsciiFrame:
+      case frames::incoming::kAsciiFrame:
          {
             //search for terminator \0 or \r
-            for (int i = frames::CAsciiFrame::HeaderSize; i < m_content.size(); ++i)
+            for (int i = frames::incoming::CAsciiFrame::HeaderSize; i < m_content.size(); ++i)
             {
                if (m_content[i] == 0x00 || m_content[i] == 0x0D)
                {
-                  int extractedMessageSize = i - frames::CAsciiFrame::HeaderSize;
+                  int extractedMessageSize = i - frames::incoming::CAsciiFrame::HeaderSize;
                   std::string content;
-                  for (size_t idx = frames::CAsciiFrame::HeaderSize; idx < i; ++idx)
+                  for (size_t idx = frames::incoming::CAsciiFrame::HeaderSize; idx < i; ++idx)
                      content += m_content[idx];
 
-                  result = boost::make_shared<frames::CFrame>(boost::make_shared<frames::CAsciiFrame>(m_content[2], m_content[3], m_content[4], content));
+                  result = boost::make_shared<frames::incoming::CFrame>(boost::make_shared<frames::incoming::CAsciiFrame>(m_content[2], m_content[3], m_content[4], content));
                   // Delete extracted data
-                  m_content.erase(m_content.begin(), m_content.begin() + extractedMessageSize + frames::CAsciiFrame::HeaderSize);
+                  m_content.erase(m_content.begin(), m_content.begin() + extractedMessageSize + frames::incoming::CAsciiFrame::HeaderSize);
                }
             }
             break;
          }
-      case frames::kBinaryFrame:
+      case frames::incoming::kBinaryFrame:
          {
             //size is given in bytes 4 and 5
             int len = getCurrentBinaryFrameSize();
             boost::shared_ptr<shared::communication::CByteBuffer> extractedMessage(new shared::communication::CByteBuffer(len));
-            for (size_t idx = frames::CBinaryFrame::HeaderSize; idx < len+ frames::CBinaryFrame::HeaderSize; ++idx)
-               (*extractedMessage)[idx- frames::CBinaryFrame::HeaderSize] = m_content[idx];
+            for (size_t idx = frames::incoming::CBinaryFrame::HeaderSize; idx < len+ frames::incoming::CBinaryFrame::HeaderSize; ++idx)
+               (*extractedMessage)[idx- frames::incoming::CBinaryFrame::HeaderSize] = m_content[idx];
 
-            result = boost::make_shared<frames::CFrame>(boost::make_shared<frames::CBinaryFrame>(m_content[2], extractedMessage));
+            result = boost::make_shared<frames::incoming::CFrame>(boost::make_shared<frames::incoming::CBinaryFrame>(m_content[2], extractedMessage));
 
             // Delete extracted data
-            m_content.erase(m_content.begin(), m_content.begin() + len + frames::CBinaryFrame::HeaderSize);
+            m_content.erase(m_content.begin(), m_content.begin() + len + frames::incoming::CBinaryFrame::HeaderSize);
          }
       }
    }

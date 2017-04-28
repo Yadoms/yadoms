@@ -7,6 +7,7 @@
 
 namespace yApi = shared::plugin::yPluginApi;
 namespace frames {
+namespace incoming {
 
    class CBinaryFrame
    {
@@ -101,5 +102,6 @@ namespace frames {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };
 
+} //namespace incoming
 } //namespace frames
 

@@ -6,6 +6,7 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 namespace frames {
+namespace incoming {
 
    //--------------------------------------------------------------
    /// \brief container class for ziblue frames
@@ -81,6 +82,7 @@ namespace frames {
       boost::shared_ptr<CAsciiFrame> m_asciiBuffer;
    };
    
+} //namespace incoming
 } //namespace frames
 
 
