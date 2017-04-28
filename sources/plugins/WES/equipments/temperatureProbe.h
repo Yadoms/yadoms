@@ -35,6 +35,9 @@ namespace equipments
                              bool forceHistorization = false) override;
       void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
                                shared::CDataContainer& newConfiguration) override;
+      void sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
+                       std::string& keyword,
+                       std::string& command) override;
       // [END] IExtension implementation
 
       //-----------------------------------------------------

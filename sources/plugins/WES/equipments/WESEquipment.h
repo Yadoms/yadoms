@@ -37,7 +37,7 @@ namespace equipments
                     const shared::CDataContainer& deviceConfiguration,
                     const boost::shared_ptr<IWESConfiguration> pluginConfiguration);
 
-      // IExtension implementation
+      // IEquipment implementation
       std::string getDeviceName() const override;
       std::string getDeviceType() const override;
       bool isMasterDevice() const override;
@@ -46,7 +46,10 @@ namespace equipments
                             bool forceHistorization = false) override;
       void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
                                shared::CDataContainer& newConfiguration) override;
-      // [END] IExtension implementation
+      void sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
+                       std::string& keyword,
+                       std::string& command) override;
+      // [END] IEquipment implementation
 
       //-----------------------------------------------------
       ///\brief                     Destructor

@@ -93,6 +93,13 @@ namespace equipments
       // TODO : If the configuration changed, we need to ask a new time the IP, the password and the user of the master Device
    }
 
+   void CtemperatureProbe::sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
+                                       std::string& keyword,
+                                       std::string& command)
+   {
+      throw shared::exception::CException("No writing keyword for temprature probe");
+   }
+
    CtemperatureProbe::~CtemperatureProbe()
    {}
 }// namespace equipments

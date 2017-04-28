@@ -73,7 +73,12 @@ shared::CDataContainer urlManager::setRelayState(Poco::Net::SocketAddress socket
 
    responseTree = http::CHttpMethods::SendGetRequest(url.str(), credentials, parameters);
 
-   // TODO : Analyze response
+   // TODO : Analyze response, and return a filled element if of
+   if (responseTree.get_value("Relais1") == "on")
+   {
+   }
+
+   YADOMS_LOG(information) << "Relai1 " << responseTree.get_value("Relais1");
 
    return response;
 }

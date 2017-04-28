@@ -287,6 +287,30 @@ namespace equipments
       // TODO : Change the configuration, if any
    }
 
+   void CWESEquipment::sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
+                                   std::string& keyword,
+                                   std::string& command)
+   {
+      shared::CDataContainer credentials;
+      shared::CDataContainer parameters;
+
+      try {
+         // TODO : To be replaced when manual configuration device is properly finished !
+         credentials.set("user", "admin"/*m_configuration.getUser()*/);
+         credentials.set("password", "wes"/*m_configuration.getPassword()*/);
+
+         //parameters to be filled
+
+         shared::CDataContainer results = urlManager::setRelayState(m_configuration.getIPAddressWithSocket(),
+                                                                    credentials,
+                                                                    parameters);
+      }
+      catch (std::exception& e)
+      {
+         YADOMS_LOG(error) << e.what();
+      }
+   }
+
    /*
    tu peux controler les relais en UDP, TCP ou par des requêtes HTTP:
    Par une requête HTTP :

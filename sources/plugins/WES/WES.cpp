@@ -60,6 +60,7 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    }
    catch (std::exception &e)
    {
+      YADOMS_LOG(error) << e.what();
       setPluginState(api, EWESPluginState::kInitializationError);
    }
 

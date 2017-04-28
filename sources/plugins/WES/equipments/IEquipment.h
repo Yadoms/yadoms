@@ -54,6 +54,16 @@ namespace equipments
                                        shared::CDataContainer& newConfiguration) = 0;
 
       //--------------------------------------------------------------
+      /// \brief      updateConfiguration    build the message to send to the WES
+      ///\param[in]   api                     Yadoms API
+      ///\param[in] parameters                parameters that have to be included in addition of elements processed into this function
+      ///\param[in] command                   the command received from the Yadoms web client
+      //--------------------------------------------------------------
+      virtual void sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
+                               std::string& keyword,
+                               std::string& command) = 0;
+
+      //--------------------------------------------------------------
       /// \brief	    Destructor
       //--------------------------------------------------------------
       virtual ~IEquipment()

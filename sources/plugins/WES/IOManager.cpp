@@ -53,14 +53,24 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    shared::CDataContainer parameters;
    std::string keywordName = command->getKeyword();
+   std::string deviceName = command->getDevice();
    std::string commandSelected;
 
    YADOMS_LOG(information) << "Command received : " << yApi::IDeviceCommand::toString(command) ;
-/*
+
+   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorDevice;
+
+   for (iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
+   {
+      if (deviceName == (*iteratorDevice)->getDeviceName())
+      {
+         //shared::CDataContainer results = urlManager::setRelayState(m_socketAddress, (*iteratorExtension)->buildMessageToDevice(api, parameters, command));
+         return;
+      }
+   }
+   /*
    const auto& deviceDetails = api->getDeviceDetails(command->getDevice());
    auto deviceType = deviceDetails.get<std::string>("type");
-
-   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorExtension;
 
    for (iteratorExtension = m_devicesList.begin(); iteratorExtension != m_devicesList.end(); ++iteratorExtension)
    {
