@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "HighPrecisionLiBatteryMonitor.h"
 #include "Identification.h"
+#include <shared/Log.h>
 
 namespace device
 {
@@ -22,6 +23,11 @@ namespace device
    {
    }
 
+   void CHighPrecisionLiBatteryMonitor::setConfiguration(const shared::CDataContainer& configuration)
+   {
+      YADOMS_LOG(error) << "Try to apply a device configuration to an unconfigurable device";
+   }
+
    void CHighPrecisionLiBatteryMonitor::read() const
    {
       m_kwIo->set(m_io->readIo());
@@ -34,7 +40,7 @@ namespace device
    {
       if (m_kwIo->getKeyword() != keyword)
       {
-         std::cerr << "Unknown keyword " << keyword << std::endl;
+         YADOMS_LOG(error) << "Unknown keyword " << keyword;
          return;
       }
 

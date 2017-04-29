@@ -1,6 +1,7 @@
 #pragma once
 #include "IDevice.h"
 #include "IIdentification.h"
+#include "SmartBatteryMonitorConfiguration.h"
 #include "../ioInterfaces/ISmartBatteryMonitor.h"
 
 namespace device
@@ -36,6 +37,7 @@ namespace device
       {
          return m_keywords;
       }
+      void setConfiguration(const shared::CDataContainer& configuration) override;
       void read() const override;
       void write(const std::string& keyword, const std::string& command) override;
       // [END] IDevice implementation
@@ -45,6 +47,11 @@ namespace device
       /// \brief	The device identification
       //--------------------------------------------------------------
       boost::shared_ptr<const IIdentification> m_identification;
+
+      //--------------------------------------------------------------
+      /// \brief	The device configuration
+      //--------------------------------------------------------------
+      boost::shared_ptr<const CSmartBatteryMonitorConfiguration> m_configuration;
 
       //--------------------------------------------------------------
       /// \brief	The I/O access object

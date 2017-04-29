@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "8ChannelAddressableSwitch.h"
 #include "Identification.h"
+#include <shared/Log.h>
 
 namespace device
 {
@@ -26,6 +27,11 @@ namespace device
    {
    }
 
+   void C8ChannelAddressableSwitch::setConfiguration(const shared::CDataContainer& configuration)
+   {
+      YADOMS_LOG(error) << "Try to apply a device configuration to an unconfigurable device";
+   }
+
    void C8ChannelAddressableSwitch::read() const
    {
       for (unsigned char i = 0; i < NbIo; ++i)
@@ -40,7 +46,7 @@ namespace device
          {
             if (m_keyword[i]->getAccessMode() != yApi::EKeywordAccessMode::kGetSetValue)
             {
-               std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
+               YADOMS_LOG(error) << "Try to drive the read-only keyword " << keyword;
                return;
             }
             m_keyword[i]->setCommand(command);

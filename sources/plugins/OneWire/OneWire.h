@@ -36,12 +36,19 @@ protected:
                               const shared::CDataContainer& newConfigurationData);
 
    //--------------------------------------------------------------
+   /// \brief Update the configuration of a device
+   /// \param [in] devices          1-wire available devices
+   /// \param [in] deviceConfiguration  The nex device configuration
+   //--------------------------------------------------------------
+   void onDeviceConfiguration(std::map<std::string, boost::shared_ptr<device::IDevice> >& devices,
+                              boost::shared_ptr<const yApi::ISetDeviceConfiguration> deviceConfiguration);
+
+   //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
    /// \param [in] devices          1-wire available devices
    /// \param [in] command          The received command
    //--------------------------------------------------------------
-   void onCommand(std::map<std::string,
-                  boost::shared_ptr<device::IDevice> >& devices,
+   void onCommand(std::map<std::string, boost::shared_ptr<device::IDevice> >& devices,
                   boost::shared_ptr<const yApi::IDeviceCommand> command);
 
    //--------------------------------------------------------------

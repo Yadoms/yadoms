@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DigitalPotentiometer.h"
 #include "Identification.h"
+#include <shared/Log.h>
 
 namespace device
 {
@@ -18,6 +19,11 @@ namespace device
 
    CDigitalPotentiometer::~CDigitalPotentiometer()
    {
+   }
+
+   void CDigitalPotentiometer::setConfiguration(const shared::CDataContainer& configuration)
+   {
+      YADOMS_LOG(error) << "Try to apply a device configuration to an unconfigurable device";
    }
 
    void CDigitalPotentiometer::read() const
@@ -42,7 +48,7 @@ namespace device
       }
       else
       {
-         std::cerr << "Unknown keyword " << keyword << std::endl;
+         YADOMS_LOG(error) << "Unknown keyword " << keyword;
          return;
       }
    }
