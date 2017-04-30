@@ -30,6 +30,7 @@ namespace equipments
          //-----------------------------------------------------
          ///\brief                                      updateFromDevice
          ///\param[in] api                             Yadoms API
+         ///\param[in] contractName                    contract Name
          ///\param[in] counter1                        1st counter sent by the wes
          ///\param[in] counter2                        2nd counter sent by the wes
          ///\param[in] counter3                        3td counter sent by the wes
@@ -38,6 +39,7 @@ namespace equipments
          ///\param[in] counter6                        6th counter sent by the wes
          //-----------------------------------------------------
          void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                               const std::string& contractName,
                                const Poco::Int64& counter1,
                                const Poco::Int64& counter2,
                                const Poco::Int64& counter3,
@@ -61,6 +63,11 @@ namespace equipments
          ///\brief                     The device name
          //-----------------------------------------------------
          std::string m_deviceName;
+
+         //-----------------------------------------------------
+         ///\brief                     The device type
+         //-----------------------------------------------------
+         std::string m_deviceType;
 
          //-----------------------------------------------------
          ///\brief                     The contract name

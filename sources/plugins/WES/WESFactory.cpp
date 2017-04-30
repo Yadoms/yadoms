@@ -28,7 +28,8 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
       try {
 
          api->getDeviceConfiguration(*devicesIterator).printToLog(YADOMS_LOG(information));
-         api->getDeviceConfiguration(*devicesIterator).get<std::string>("type");
+         api->getDeviceDetails(*devicesIterator).printToLog(YADOMS_LOG(information));
+         api->getDeviceDetails(*devicesIterator).get<std::string>("type");
 
          if (type == "WES")
          {
@@ -42,6 +43,10 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
             equipment = boost::make_shared<equipments::CtemperatureProbe>(api, (*devicesIterator), api->getDeviceConfiguration(*devicesIterator), configuration);
             deviceList.push_back(equipment);
          }
+
+         // Do Noting, all is done into CWESEquipments
+         if (type == "TIC")
+         {}
       }
       catch (std::exception& e)
       {

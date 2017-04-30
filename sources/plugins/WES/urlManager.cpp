@@ -3,6 +3,8 @@
 #include "http/HttpMethods.h"
 #include <shared/Log.h>
 
+static boost::posix_time::time_duration httpRequestWESTimeout(boost::posix_time::time_duration(boost::posix_time::seconds(8)));
+
 void urlManager::parseNode(shared::CDataContainer &container, boost::property_tree::ptree node)
 {
    boost::property_tree::ptree::const_iterator end = node.end();
@@ -11,14 +13,10 @@ void urlManager::parseNode(shared::CDataContainer &container, boost::property_tr
 
    for (boost::property_tree::ptree::const_iterator it = node.begin(); it != end; ++it)
    {
-      //YADOMS_LOG(information) << "it->first : " << it->first;
-      //YADOMS_LOG(information) << "it->second.data() : " << it->second.data();
-
       if (it->second.size() != 0)
       {
          shared::CDataContainer subNode;
-         parseNode(container/*subNode*/, it->second);
-         //container.set(it->first, subNode);
+         parseNode(container, it->second);
       }
       else
       {
@@ -27,7 +25,6 @@ void urlManager::parseNode(shared::CDataContainer &container, boost::property_tr
 
          if (it->first == "value")
             attributeValue = it->second.data();
-         //container.set(it->first, it->second.data());
       }
    }
 
@@ -51,7 +48,8 @@ shared::CDataContainer urlManager::readFileState(Poco::Net::SocketAddress socket
 
    responseTree =  http::CHttpMethods::SendGetRequest(url.str(),
                                                       credentials, 
-                                                      noParameters);
+                                                      noParameters,
+                                                      httpRequestWESTimeout);
    parseNode(response, responseTree);
    response.printToLog(YADOMS_LOG(information));
    return response;
@@ -71,7 +69,10 @@ shared::CDataContainer urlManager::setRelayState(Poco::Net::SocketAddress socket
    credentials.printToLog(YADOMS_LOG(information));
    YADOMS_LOG(information) << url.str();
 
-   responseTree = http::CHttpMethods::SendGetRequest(url.str(), credentials, parameters);
+   responseTree = http::CHttpMethods::SendGetRequest(url.str(), 
+                                                     credentials, 
+                                                     parameters,
+                                                     httpRequestWESTimeout);
 
    // TODO : Analyze response, and return a filled element if of
    if (responseTree.get_value("Relais1") == "on")

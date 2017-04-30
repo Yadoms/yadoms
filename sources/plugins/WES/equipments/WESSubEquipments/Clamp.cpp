@@ -13,19 +13,18 @@ namespace equipments
                      const std::string& deviceName,
                      const std::string& keywordName) :
          m_deviceName(deviceName),
-         m_keywordName(keywordName)
+         m_keywordName(keywordName),
+         m_instantCurrentRegistered(isInstantCurrentClampRegistered)
       {
-         // TODO : Add need to declare
-         initializeClamp(api, keywordsToDeclare, pluginConfiguration, isInstantCurrentClampRegistered, keywordName);
+         initializeClamp(api, keywordsToDeclare, pluginConfiguration, keywordName);
       }
 
       void CClamp::initializeClamp(boost::shared_ptr<yApi::IYPluginApi> api,
                                    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
                                    const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
-                                   const bool isInstantCurrentClampRegistered,
                                    const std::string& keywordName)
       {
-         if (isInstantCurrentClampRegistered)
+         if (m_instantCurrentRegistered)
          {
             boost::shared_ptr<yApi::historization::CCurrent> tempCurrent = boost::make_shared<yApi::historization::CCurrent>("I - " + keywordName,
                                                                                                                              yApi::EKeywordAccessMode::kGet);
@@ -37,14 +36,11 @@ namespace equipments
             if (m_CurrentClamp)
             {
                if (api->keywordExists(m_deviceName, m_CurrentClamp))
-               {
                   api->removeKeyword(m_deviceName, "I - " + keywordName);
-               }
             }
          }
          boost::shared_ptr<yApi::historization::CEnergy>  tempCounter = boost::make_shared<yApi::historization::CEnergy>("Wh - " + keywordName,
                                                                                                                          yApi::EKeywordAccessMode::kGet);
-
          m_CounterClamp = tempCounter;
          keywordsToDeclare.push_back(tempCounter);
       }
@@ -56,7 +52,8 @@ namespace equipments
                                     const Poco::Int64& energyClampValue)
       {
          //TODO : If deviceName or contractName are different then create a new device
-         //initializeTIC(api);
+         //if ( m_instantCurrentRegistered!= isInstantCurrentClampRegistered)
+         //   initializeClamp(api);
 
          if (isInstantCurrentClampRegistered)
          {

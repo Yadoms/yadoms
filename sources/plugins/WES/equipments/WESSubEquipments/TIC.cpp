@@ -10,6 +10,7 @@ namespace equipments
                  const std::string& deviceName,
                  const std::string& contract) :
          m_deviceName(deviceName),
+         m_deviceType("TIC"),
          m_contractName(contract),
          m_baseCounter(boost::make_shared<yApi::historization::CEnergy>("BaseCounter")),
          m_lowCostCounter(boost::make_shared<yApi::historization::CEnergy>("LowCostCounter")),
@@ -33,6 +34,7 @@ namespace equipments
       void CTIC::initializeTIC(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          shared::CDataContainer details;
+         m_keywords.clear();
 
          if (m_contractName.compare("Pas Dispo")!=0)
          {
@@ -75,13 +77,15 @@ namespace equipments
 
          m_keywords.push_back(m_teleInfoStatus);
 
-         std::string model = "WES";
+         std::string model = "TIC";
+         details.set("type", m_deviceType);
 
          //Déclaration of all IOs
          api->declareDevice(m_deviceName, "TeleInfo",model, m_keywords, details);
       }
 
       void CTIC::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                  const std::string& contractName,
                                   const Poco::Int64& counter1,
                                   const Poco::Int64& counter2,
                                   const Poco::Int64& counter3,
@@ -89,8 +93,12 @@ namespace equipments
                                   const Poco::Int64& counter5,
                                   const Poco::Int64& counter6)
       {
-         //TODO : If deviceName or contractName are different then create a new device
-         //initializeTIC(api);
+         // In case of contract change -> create new keywords
+         if (m_contractName.compare(contractName) != 0)
+         {
+            m_contractName = contractName;
+            initializeTIC(api);
+         }
 
          if (m_contractName.compare("BASE") == 0)
          {

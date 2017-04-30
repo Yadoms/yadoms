@@ -204,9 +204,8 @@ namespace equipments
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize;
       std::string CGXfileName = "WESVALUES.CGX";
 
-      shared::CDataContainer credentials;
-
       try {
+         shared::CDataContainer credentials;
          credentials.set("user", m_configuration.getUser());
          credentials.set("password", m_configuration.getPassword());
 
@@ -215,44 +214,76 @@ namespace equipments
                                                                     CGXfileName);
 
          // Reading relays - historize only on change value or when the historization is forced (initialization, for example)      
-         updateSwitchValue(keywordsToHistorize, m_relaysList[0], static_cast<bool>(results.get<int>("RL1")), forceHistorization);
-         updateSwitchValue(keywordsToHistorize, m_relaysList[1], static_cast<bool>(results.get<int>("RL2")), forceHistorization);
+         try {
+            updateSwitchValue(keywordsToHistorize, m_relaysList[0], static_cast<bool>(results.get<int>("RL1")), forceHistorization);
+            updateSwitchValue(keywordsToHistorize, m_relaysList[1], static_cast<bool>(results.get<int>("RL2")), forceHistorization);
+         }
+         catch (std::exception& e)
+         {
+            YADOMS_LOG(warning) << e.what();
+         }
 
-         updateSwitchValue(keywordsToHistorize, m_inputList[0], static_cast<bool>(results.get<int>("I1")), forceHistorization);
-         updateSwitchValue(keywordsToHistorize, m_inputList[1], static_cast<bool>(results.get<int>("I2")), forceHistorization);
+         try {
+            updateSwitchValue(keywordsToHistorize, m_inputList[0], static_cast<bool>(results.get<int>("I1")), forceHistorization);
+            updateSwitchValue(keywordsToHistorize, m_inputList[1], static_cast<bool>(results.get<int>("I2")), forceHistorization);
+         }
+         catch (std::exception& e)
+         {
+            YADOMS_LOG(warning) << e.what();
+         }
 
          //Reading clamp values
          for (int counter = 0; counter < WES_CLAMP_QTY; ++counter)
          {
-            m_ClampList[counter]->updateFromDevice(api,
-                                                   keywordsToHistorize,
-                                                   m_configuration.isInstantCurrentClampRegistered(counter),
-                                                   results.get<double>("IPC" + boost::lexical_cast<std::string>(counter + 1) + "_val"),
-                                                   results.get<Poco::Int64>("WHPC" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
+            try {
+               m_ClampList[counter]->updateFromDevice(api,
+                                                      keywordsToHistorize,
+                                                      m_configuration.isInstantCurrentClampRegistered(counter),
+                                                      results.get<double>("IPC" + boost::lexical_cast<std::string>(counter + 1) + "_val"),
+                                                      results.get<Poco::Int64>("WHPC" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
+            }
+            catch (std::exception& e)
+            {
+               YADOMS_LOG(warning) << e.what();
+            }
          }
 
          //Reading pulse values
          for (int counter = 0; counter < WES_PULSE_QTY; ++counter)
          {
-            m_PulseList[counter]->updateFromDevice(api,
-                                                   keywordsToHistorize,
-                                                   results.get<std::string>("PLSU" + boost::lexical_cast<std::string>(counter + 1)),
-                                                   results.get<Poco::Int64>("debit" + boost::lexical_cast<std::string>(counter + 1) + "_val"),
-                                                   results.get<std::string>("consJ" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
+            try {
+               m_PulseList[counter]->updateFromDevice(api,
+                                                      keywordsToHistorize,
+                                                      results.get<std::string>("PLSU" + boost::lexical_cast<std::string>(counter + 1)),
+                                                      results.get<Poco::Int64>("debit" + boost::lexical_cast<std::string>(counter + 1) + "_val"),
+                                                      results.get<std::string>("consJ" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
+            }
+            catch (std::exception& e)
+            {
+               YADOMS_LOG(warning) << e.what();
+            }
          }
 
          //Reading analog values
          for (int counter = 0; counter < WES_ANA_QTY; ++counter)
          {
-            m_AnalogList[counter]->set(results.get<unsigned int>("ad" + boost::lexical_cast<std::string>(counter + 1)));
-            keywordsToHistorize.push_back(m_AnalogList[counter]);
+            try {
+               m_AnalogList[counter]->set(results.get<unsigned int>("ad" + boost::lexical_cast<std::string>(counter + 1)));
+               keywordsToHistorize.push_back(m_AnalogList[counter]);
+            }
+            catch (std::exception& e)
+            {
+               YADOMS_LOG(warning) << e.what();
+            }
          }
+
          api->historizeData(m_deviceName, keywordsToHistorize);
 
          // TIC Counters Values -> independant from the others keywords
          for (int counter = 0; counter < WES_TIC_QTY; ++counter)
          {
             m_TICList[0]->updateFromDevice(api,
+                                           results.get<std::string>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_abo_name"),
                                            results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_1"),
                                            results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_2"),
                                            results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_3"),
