@@ -79,7 +79,7 @@ shared::CDataContainer CFakeDynamicallyConfigurableDevice::getDynamicConfigurati
    options.set("name", "Dynamic divider");
    options.set("minimumValue", "0.01");
    options.set("maximumValue", "20.0");
-   options.set("precision", "0.01");
+   options.set("precision", "2");
 
    results.set("DynamicDivider", options);
 
