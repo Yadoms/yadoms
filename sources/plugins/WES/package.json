@@ -38,7 +38,7 @@
 							"content": {
 								"User": {
 									"type": "string",
-									"defaultValue": "Admin",
+									"defaultValue": "admin",
 									"required": "true"
 								},
 								"Password": {

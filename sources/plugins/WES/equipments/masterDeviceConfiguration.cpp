@@ -29,7 +29,7 @@ std::string CmasterDeviceConfiguration::getPassword() const
 
 std::string CmasterDeviceConfiguration::getUser() const
 {
-   return shared::encryption::CXor::decryptBase64(m_data.get<std::string>("authentication.content.User"));
+   return m_data.get<std::string>("authentication.content.User");
 }
 
 bool CmasterDeviceConfiguration::isInstantCurrentClampRegistered(const int selectedClamp) const

@@ -127,9 +127,11 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             // ask immediately for reading values
             api->getEventHandler().postEvent<bool>(kRefreshStatesReceived, true);
 
-            m_refreshTimer->start();
-
-            setPluginState(api, EWESPluginState::kRunning);
+            if (m_ioManager->getMasterEquipment() != 0)
+            {
+               m_refreshTimer->start();
+               setPluginState(api, EWESPluginState::kRunning);
+            }
          }
          catch (CManuallyDeviceCreationException& e)
          {

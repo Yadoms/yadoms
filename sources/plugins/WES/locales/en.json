@@ -15,8 +15,7 @@
 				"WES": {
 					"types": {
 						"WES": {
-							"title": "WES Module v2",
-							"description": "WES Module v2"
+							"title": "WES Module v2"
 						}
 					},
 					"content": {
@@ -69,8 +68,7 @@
 				"TemperatureProbe": {
 					"types": {
 						"TemperatureProbe": {
-							"title": "Temperature probe",
-							"description": "Temperature probe"
+							"title": "Temperature probe"
 						}
 					},
 					"content": {
