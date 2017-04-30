@@ -5,6 +5,7 @@
 #include "OneWireException.hpp"
 #include <shared/event/EventTimer.h>
 #include <plugin_cpp_api/ImplementationHelper.h>
+#include <shared/Log.h>
 
 
 IMPLEMENT_PLUGIN(COneWire)
@@ -29,7 +30,7 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-   std::cout << "OneWire is starting..." << std::endl;
+   YADOMS_LOG(information) << "OneWire is starting...";
 
    m_configuration->initializeWith(api->getConfiguration());
    m_engine = CFactory::createEngine(api, m_configuration);
@@ -45,7 +46,7 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    api->setPluginState(yApi::historization::EPluginState::kRunning);
 
    // the main loop
-   std::cout << "OneWire plugin is running..." << std::endl;
+   YADOMS_LOG(information) << "OneWire plugin is running...";
 
    while (1)
    {
@@ -56,7 +57,7 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
          case yApi::IYPluginApi::kEventStopRequested:
          {
-            std::cout << "Stop requested" << std::endl;
+            YADOMS_LOG(information) << "Stop requested";
             api->setPluginState(yApi::historization::EPluginState::kStopped);
             return;
          }
@@ -93,16 +94,22 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
             break;
          }
+         case yApi::IYPluginApi::kSetDeviceConfiguration:
+         {
+            auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
+            onDeviceConfiguration(devices, deviceConfiguration);
+            break;
+         }
          default:
          {
-            std::cerr << "Unknown message id" << std::endl;
+            YADOMS_LOG(error) << "Unknown message id";
             break;
          }
          }
       }
       catch (COneWireException& e)
       {
-         std::cerr << e.what() << std::endl;
+         YADOMS_LOG(error) << e.what();
       }
    }
 }
@@ -113,7 +120,7 @@ void COneWire::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
    BOOST_ASSERT(!newConfigurationData.empty());  // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Configuration was updated
-   std::cout << "Configuration was updated..." << std::endl;
+   YADOMS_LOG(information) << "Configuration was updated...";
 
    auto needToRestartEngine = m_engine->newConfigurationRequireRestart(newConfigurationData);
 
@@ -125,16 +132,29 @@ void COneWire::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
       m_engine = CFactory::createEngine(api, m_configuration);
 }
 
-void COneWire::onCommand(std::map<std::string,
-   boost::shared_ptr<device::IDevice> >& devices,
+void COneWire::onDeviceConfiguration(std::map<std::string, boost::shared_ptr<device::IDevice> >& devices,
+                                     boost::shared_ptr<const yApi::ISetDeviceConfiguration> deviceConfiguration)
+{
+   auto device = devices.find(deviceConfiguration->name());
+   if (device == devices.end())
+   {
+      YADOMS_LOG(error) << "Configurable device " << deviceConfiguration->name() << " not found";
+      return;
+   }
+
+   device->second->setConfiguration(deviceConfiguration->configuration());
+}
+
+
+void COneWire::onCommand(std::map<std::string, boost::shared_ptr<device::IDevice> >& devices,
                          boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
-   std::cout << "Command received :" << yApi::IDeviceCommand::toString(command) << std::endl;
+   YADOMS_LOG(information) << "Command received :" << yApi::IDeviceCommand::toString(command);
 
    std::map<std::string, boost::shared_ptr<device::IDevice> >::iterator device = devices.find(command->getDevice());
    if (device == devices.end())
    {
-      std::cout << "Device " << command->getDevice() << " not found on the 1-wire network" << std::endl;
+      YADOMS_LOG(information) << "Device " << command->getDevice() << " not found on the 1-wire network";
       return;
    }
 

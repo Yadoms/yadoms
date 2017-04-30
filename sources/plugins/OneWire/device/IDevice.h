@@ -33,8 +33,13 @@ namespace device
       virtual const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywords() const = 0;
 
       //--------------------------------------------------------------
+      /// \brief	Change the device configuration
+      /// \param[in] configuration  New device configuration
+      //--------------------------------------------------------------
+      virtual void setConfiguration(const shared::CDataContainer& configuration) = 0;
+
+      //--------------------------------------------------------------
       /// \brief	Read the device state and update keywords
-      /// \return Keywords of the device
       //--------------------------------------------------------------
       virtual void read() const = 0;
 
