@@ -12,15 +12,15 @@ namespace specificHistorizers
    DECLARE_ENUM_HEADER(EPeriod,
       ((AllHours))
       ((LowCostHours))
-	  ((PeakCostHours))
-	  ((NormalCostHours))
-	  ((MobilePeakCostHours))
-	  ((LowCostBlueDays))
-	  ((LowCostWhiteDays))
-	  ((LowCostRedDays))
-	  ((NormalCostBlueDays))
-	  ((NormalCostWhiteDays))
-	  ((NormalCostRedDays))
+      ((PeakCostHours))
+      ((NormalCostHours))
+      ((MobilePeakCostHours))
+      ((LowCostBlueDays))
+      ((LowCostWhiteDays))
+      ((LowCostRedDays))
+      ((NormalCostBlueDays))
+      ((NormalCostWhiteDays))
+      ((NormalCostRedDays))
    );
 
    //-----------------------------------------------------

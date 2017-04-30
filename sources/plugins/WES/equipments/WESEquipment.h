@@ -28,9 +28,11 @@ namespace equipments
    {
    public:
       //-----------------------------------------------------
-      ///\brief                     Constructor
-      ///\param[in]   api          Yadoms API
-      ///\param[in] device         The device name
+      ///\brief                          Constructor
+      ///\param[in]   api               Yadoms API
+      ///\param[in] device              The device name
+      ///\param[in] deviceConfiguration The device configuration
+      ///\param[in] pluginConfiguration The plugin configuration
       //-----------------------------------------------------
       CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
                     const std::string& device,
@@ -58,6 +60,13 @@ namespace equipments
 
    private:
 
+      //-----------------------------------------------------
+      ///\brief                          Constructor
+      ///\param[in] keywordsToHistorize list of keywords to historize
+      ///\param[in] keyword             The keyword to update, if any
+      ///\param[in] newValue            The new value
+      ///\param[in] forceHistorization  force historization if necessary
+      //-----------------------------------------------------
       void updateSwitchValue(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize, 
                              boost::shared_ptr<yApi::historization::CSwitch> keyword, 
                              bool newValue, 
@@ -74,7 +83,7 @@ namespace equipments
       std::string m_deviceType;
 
       //--------------------------------------------------------------
-      /// \brief	vector of all Digital input
+      /// \brief	configuration of the device
       //--------------------------------------------------------------
       CmasterDeviceConfiguration m_configuration;
 
@@ -89,12 +98,12 @@ namespace equipments
       std::vector<boost::shared_ptr<yApi::historization::CSwitch> > m_inputList;
 
       //--------------------------------------------------------------
-      /// \brief  counter TIC 1
+      /// \brief  TIC counters
       //--------------------------------------------------------------
       std::vector<boost::shared_ptr<equipments::subdevices::CTIC> > m_TICList;
 
       //--------------------------------------------------------------
-      /// \brief	The pulse Counter 1
+      /// \brief	Pulse counters
       //--------------------------------------------------------------
       std::vector<boost::shared_ptr<equipments::subdevices::CPulse> > m_PulseList;
 

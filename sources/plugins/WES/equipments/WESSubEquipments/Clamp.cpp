@@ -49,11 +49,6 @@ namespace equipments
          keywordsToDeclare.push_back(tempCounter);
       }
 
-      std::string CClamp::getDeviceName() const
-      {
-         return m_deviceName;
-      }
-
       void CClamp::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                     std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
                                     const bool isInstantCurrentClampRegistered,

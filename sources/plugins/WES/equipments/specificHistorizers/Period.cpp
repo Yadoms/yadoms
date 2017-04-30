@@ -33,5 +33,3 @@ namespace specificHistorizers
    {
    }
 } // namespace specificHistorizers
-
-

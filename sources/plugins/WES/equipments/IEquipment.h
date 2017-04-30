@@ -29,15 +29,15 @@ namespace equipments
       virtual std::string getDeviceType() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief      getDeviceType
-      /// \return  the device type
+      /// \brief      isMasterDevice
+      /// \return  true if this device is a server equipment
       //--------------------------------------------------------------
       virtual bool isMasterDevice() const = 0;
 
       //--------------------------------------------------------------
       /// \brief      updateFromDevice
       ///\param[in]   api                     Yadoms API
-      ///\param[in]   values                  New Values to enter
+      ///\param[in]   pluginConfiguration     Configuration of the plugin
       ///\param[in]   forceHistorization      force historization for all values (initialization of the device, reset of the device, ...)
       //--------------------------------------------------------------
       virtual void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
@@ -46,17 +46,16 @@ namespace equipments
 
       //--------------------------------------------------------------
       /// \brief      updateConfiguration    build the message to send to the WES
-      ///\param[in]   api                     Yadoms API
-      ///\param[in] parameters                parameters that have to be included in addition of elements processed into this function
-      ///\param[in] command                   the command received from the Yadoms web client
+      ///\param[in] api                       Yadoms API
+      ///\param[in] newConfiguration          New device configuration
       //--------------------------------------------------------------
       virtual void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
                                        shared::CDataContainer& newConfiguration) = 0;
 
       //--------------------------------------------------------------
-      /// \brief      updateConfiguration    build the message to send to the WES
-      ///\param[in]   api                     Yadoms API
-      ///\param[in] parameters                parameters that have to be included in addition of elements processed into this function
+      /// \brief      sendCommand             send a message to the WES
+      ///\param[in] api                       Yadoms API
+      ///\param[in] keyword                   keyword to change
       ///\param[in] command                   the command received from the Yadoms web client
       //--------------------------------------------------------------
       virtual void sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,

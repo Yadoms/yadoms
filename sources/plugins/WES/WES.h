@@ -37,12 +37,21 @@ public:
    //--------------------------------------------------------------
    CWES();
 
-   //--------------------------------------------------------------
-   /// \brief	Update of the configuration
-   //--------------------------------------------------------------
-   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const shared::CDataContainer& newConfigurationData);
+   //-----------------------------------------------------
+   ///\brief                                      update the configuration
+   ///\param[in] api                             Yadoms API
+   ///\param[in] keywordsToHistorize             the new plugin configuration
+   //-----------------------------------------------------
+   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, 
+                              const shared::CDataContainer& newConfigurationData);
 
-   void setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, EWESPluginState newState);
+   //-----------------------------------------------------
+   ///\brief                                      set the new plugin state
+   ///\param[in] api                             Yadoms API
+   ///\param[in] newState                        the new plugin state
+   //-----------------------------------------------------
+   void setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, 
+                       EWESPluginState newState);
 
    //--------------------------------------------------------------
    /// \brief	Destructor

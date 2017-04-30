@@ -17,9 +17,11 @@ namespace equipments
    {
    public:
       //-----------------------------------------------------
-      ///\brief                     Constructor
-      ///\param[in]   api          Yadoms API
-      ///\param[in] device         The device name
+      ///\brief                          Constructor
+      ///\param[in]   api               Yadoms API
+      ///\param[in] device              The device name
+      ///\param[in] deviceConfiguration The device configuration
+      ///\param[in] pluginConfiguration The plugin configuration
       //-----------------------------------------------------
       CtemperatureProbe(boost::shared_ptr<yApi::IYPluginApi> api,
                         const std::string& device,
@@ -58,12 +60,12 @@ namespace equipments
       std::string m_deviceType;
 
       //--------------------------------------------------------------
-      /// \brief	vector of all Digital input
+      /// \brief	                  The device configuration
       //--------------------------------------------------------------
       CmasterDeviceConfiguration m_configuration;
 
       //--------------------------------------------------------------
-      /// \brief	The keyword Counter 1
+      /// \brief	                  The keyword of this device
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CTemperature> m_temperature;
    };

@@ -16,7 +16,7 @@ public:
 
    //--------------------------------------------------------------
    /// \brief      Load configuration data
-   /// \param [in] data The data container
+   /// \param [in] data The new configuration
    //--------------------------------------------------------------
    virtual void initializeWith(const shared::CDataContainer& data) = 0;
 
@@ -39,8 +39,8 @@ public:
    virtual bool isInstantCurrentClampRegistered(const int selectedClamp) const = 0;
 
    //--------------------------------------------------------------
-   /// \brief      retrieve the password used to connect the WES
-   /// \return     the password
+   /// \brief      retrieve the user used to connect the WES
+   /// \return     the user
    //--------------------------------------------------------------
    virtual std::string getUser() const = 0;
 };

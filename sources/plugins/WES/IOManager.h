@@ -16,7 +16,8 @@ class CIOManager
 public:
    //--------------------------------------------------------------
    /// \brief	   Constructor
-   /// \param[in]  extensionList   Set a new equipment
+   /// \param[in]  deviceList   list of all devices managed by this plugin
+   /// \param[in]  deviceList   list of all server equipments managed by this plugin
    //--------------------------------------------------------------
    explicit CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment> >& deviceList,
                        std::vector<boost::shared_ptr<equipments::IEquipment> >& masterDeviceList);
@@ -35,9 +36,9 @@ public:
                   boost::shared_ptr<const yApi::IDeviceCommand> command);
 
    //--------------------------------------------------------------
-   /// \brief	                     Process a command received from Yadoms
+   /// \brief	                     read IO of a device
    /// \param [in] api                   Plugin execution context (Yadoms API)
-   /// \param [in] receivedValue         The received value from the interrupt
+   /// \param [in] type                  type of the device
    /// \param [in] forceHistorization    force the historization of all keywords
    //--------------------------------------------------------------
    void readIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
@@ -45,8 +46,9 @@ public:
                          bool forceHistorization = false);
 
    //--------------------------------------------------------------
-   /// \brief	                     Process a command received from Yadoms
+   /// \brief	                     read all devices
    /// \param [in] api                   Plugin execution context (Yadoms API)
+   /// \param [in] pluginConfiguration   plugin configuration
    /// \param [in] forceHistorization    force the historization of all keywords
    //--------------------------------------------------------------
    void readAllDevices(boost::shared_ptr<yApi::IYPluginApi> api, 
@@ -58,32 +60,34 @@ public:
    /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] deviceRemoved    the name of the device removed
    //--------------------------------------------------------------
-   void removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved);
+   void removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
+                     std::string deviceRemoved);
 
    //--------------------------------------------------------------
    /// \brief	    OnConfigurationUpdate
    /// \param[in] api                  yPluginApi API
-   /// \param[in] configuration        the new plugin configuration
+   /// \param[in] deviceName              the device Name
+   /// \param[in] newConfiguration        the new plugin configuration
    //--------------------------------------------------------------
    void OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const std::string &deviceName,
                                     const shared::CDataContainer newConfiguration);
 
    //--------------------------------------------------------------
-   /// \brief	    getMasterEquipment
-   /// \return the number of master equipment
+   /// \brief	    addEquipment
+   /// \param[in]  equipment              add a new equipment
    //--------------------------------------------------------------
    void addEquipment(boost::shared_ptr<equipments::IEquipment> equipment);
 
    //--------------------------------------------------------------
    /// \brief	    getMasterEquipment
-   /// \return the number of master equipment
+   /// \return the number of servers
    //--------------------------------------------------------------
    int getMasterEquipment();
 
    //--------------------------------------------------------------
    /// \brief	    bindMasterDevice
-   /// \return the number of master equipment
+   /// \return a container with all servers equipments that could be used to add a sub-equipment
    //--------------------------------------------------------------
    shared::CDataContainer bindMasterDevice();
 

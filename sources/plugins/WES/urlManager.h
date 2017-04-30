@@ -12,18 +12,20 @@ class urlManager
 public:
 
    //--------------------------------------------------------------
-   /// \brief	    SendUrlRequest
+   /// \brief	    read files Status from the WES
    /// \param[in]  socket              the IP adress with the socket where to send the frame
-   /// \param[in]  parameters          extra-parameters to the url
-   /// \return     the answer of the request
+   /// \param[in]  credentials         credentials (user, password) to access the WES
+   /// \param[in]  file                file we have to access
+   /// \return     the preprocess answer of the request
    //--------------------------------------------------------------
    static shared::CDataContainer readFileState(Poco::Net::SocketAddress socket,
                                                const shared::CDataContainer& credentials,
                                                const std::string &file);
 
    //--------------------------------------------------------------
-   /// \brief	    SendUrlRequest
+   /// \brief	    set relays state to the WES
    /// \param[in]  socket              the IP adress with the socket where to send the frame
+   /// \param[in]  credentials         credentials(user, password) needed to access the WES
    /// \param[in]  parameters          extra-parameters to the url
    /// \return     the answer of the request
    //--------------------------------------------------------------
@@ -32,9 +34,9 @@ public:
                                                const shared::CDataContainer& parameters);
 private:
    //--------------------------------------------------------------
-   /// \brief	    parseNode
-   /// \param[in]  httpresponse        the HTTP response answer
-   /// \param[in]  response            the response
+   /// \brief	    specific function, to read variable names and values
+   /// \param[in]  container        the final container
+   /// \param[in]  node             the tree to parse
    //--------------------------------------------------------------
    static void parseNode(shared::CDataContainer &container, boost::property_tree::ptree node);
 };

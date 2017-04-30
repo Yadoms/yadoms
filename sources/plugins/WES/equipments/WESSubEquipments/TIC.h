@@ -21,12 +21,22 @@ namespace equipments
          ///\brief                     Constructor
          ///\param[in]   api          Yadoms API
          ///\param[in] device         The device name
+         ///\param[in] contract       The contract subscribe
          //-----------------------------------------------------
          CTIC(boost::shared_ptr<yApi::IYPluginApi> api,
               const std::string& deviceName,
               const std::string& contract);
 
-         std::string getDeviceName() const;
+         //-----------------------------------------------------
+         ///\brief                                      updateFromDevice
+         ///\param[in] api                             Yadoms API
+         ///\param[in] counter1                        1st counter sent by the wes
+         ///\param[in] counter2                        2nd counter sent by the wes
+         ///\param[in] counter3                        3td counter sent by the wes
+         ///\param[in] counter4                        4th counter sent by the wes
+         ///\param[in] counter5                        5th counter sent by the wes
+         ///\param[in] counter6                        6th counter sent by the wes
+         //-----------------------------------------------------
          void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                const Poco::Int64& counter1,
                                const Poco::Int64& counter2,
@@ -41,7 +51,10 @@ namespace equipments
          virtual ~CTIC();
 
       private:
-
+         //-----------------------------------------------------
+         ///\brief                     initializeTIC
+         ///\param[in]   api          Yadoms API
+         //-----------------------------------------------------
          void initializeTIC(boost::shared_ptr<yApi::IYPluginApi> api);
 
          //-----------------------------------------------------
@@ -73,9 +86,7 @@ namespace equipments
          boost::shared_ptr<yApi::historization::CEnergy> m_tempoRedDaysNormalCostPeriod;
          boost::shared_ptr<yApi::historization::CEnergy> m_tempoWhiteDaysLowCostPeriod;
          boost::shared_ptr<yApi::historization::CEnergy> m_tempoWhiteDaysNormalCostPeriod;
-
          boost::shared_ptr<yApi::historization::CApparentPower> m_apparentPower;
-
          boost::shared_ptr<specificHistorizers::CPeriod> m_TimePeriod;
 
          //--------------------------------------------------------------

@@ -81,11 +81,6 @@ namespace equipments
          api->declareDevice(m_deviceName, "TeleInfo",model, m_keywords, details);
       }
 
-      std::string CTIC::getDeviceName() const
-      {
-         return m_deviceName;
-      }
-
       void CTIC::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                   const Poco::Int64& counter1,
                                   const Poco::Int64& counter2,

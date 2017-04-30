@@ -43,11 +43,6 @@ namespace equipments
          }
       }
 
-      std::string CPulse::getDeviceName() const
-      {
-         return m_deviceName;
-      }
-
       void CPulse::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                     std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
                                     const std::string& unitName,

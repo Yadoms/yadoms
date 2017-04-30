@@ -15,13 +15,13 @@ public:
 
    //--------------------------------------------------------------
    /// \brief      Load configuration data
-   /// \param [in] data The data container
+   /// \param [in] data The new WES configuration
    //--------------------------------------------------------------
    virtual void initializeWith(const shared::CDataContainer& data) = 0;
 
    //--------------------------------------------------------------
-   /// \brief      retrieve the IP address with the port from the configuration
-   /// \return     the IP address withe the port
+   /// \brief      return true, if we would like to retrieve all names from the WES equipment
+   /// \return     true if we retrieve names
    //--------------------------------------------------------------
    virtual bool isRetrieveNamesFromdevice() const = 0;
 };

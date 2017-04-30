@@ -14,15 +14,19 @@ namespace equipments
    namespace subdevices
    {
       //-----------------------------------------------------
-      ///\brief WES equipment
+      ///\brief Clamp equipment to be connected to the WES
       //-----------------------------------------------------
       class CClamp
       {
       public:
          //-----------------------------------------------------
-         ///\brief                     Constructor
-         ///\param[in]   api          Yadoms API
-         ///\param[in] device         The device name
+         ///\brief                                      Constructor
+         ///\param[in] api                             Yadoms API
+         ///\param[in] keywordsToDeclare               list of keywords to declare
+         ///\param[in] pluginConfiguration             the plugin configuration
+         ///\param[in] isInstantCurrentClampRegistered Boolean value for instant current to historize if check in the interface
+         ///\param[in] deviceName                      The device name
+         ///\param[in] keywordName                     The keyword name
          //-----------------------------------------------------
          CClamp(boost::shared_ptr<yApi::IYPluginApi> api,
                 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
@@ -31,7 +35,14 @@ namespace equipments
                 const std::string& deviceName,
                 const std::string& keywordName);
 
-         std::string getDeviceName() const;
+         //-----------------------------------------------------
+         ///\brief                                      updateFromDevice
+         ///\param[in] api                             Yadoms API
+         ///\param[in] keywordsToHistorize             list of keywords to historize
+         ///\param[in] isInstantCurrentClampRegistered Boolean value for instant current to historize if check in the interface
+         ///\param[in] instantCurrentValue             The instant current value sent by the WES
+         ///\param[in] energyClampValue                The energy clamp value sent by the WES
+         //-----------------------------------------------------
          void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
                                const bool isInstantCurrentClampRegistered,
@@ -45,6 +56,14 @@ namespace equipments
 
       private:
 
+         //-----------------------------------------------------
+         ///\brief                                      initializeClamp
+         ///\param[in] api                             Yadoms API
+         ///\param[in] keywordsToDeclare               list of keywords to declare
+         ///\param[in] pluginConfiguration             the plugin configuration
+         ///\param[in] isInstantCurrentClampRegistered Boolean value for instant current to historize if check in the interface
+         ///\param[in] keywordName                     The keyword name
+         //-----------------------------------------------------
          void initializeClamp(boost::shared_ptr<yApi::IYPluginApi> api,
                               std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
                               const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
