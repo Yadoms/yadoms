@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "HighPrecisionDigitalThermometer.h"
 #include <fstream>
+#include <shared/Log.h>
 
 namespace kernel
 {
@@ -24,7 +25,7 @@ namespace kernel
          std::ifstream file(m_devicePath.string());
          if (!file.is_open())
          {
-            std::cerr << "1-Wire, Unable to read device " << m_devicePath << std::endl;
+            YADOMS_LOG(error) << "1-Wire, Unable to read device " << m_devicePath;
             return 0.0;
          }
 
@@ -48,7 +49,7 @@ namespace kernel
          if (bFoundCrcOk)
             return (float)atoi(data.c_str()) / 1000.0f; // Temperature given by kernel is in thousandths of degrees
 
-         std::cerr << "1-Wire, wrong CRC when reading device value" << std::endl;
+         YADOMS_LOG(error) << "1-Wire, wrong CRC when reading device value";
          return 0.0;
       }
    }

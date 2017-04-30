@@ -8,7 +8,7 @@ namespace owfs
    {
       CSingleSwitch::CSingleSwitch(const boost::filesystem::path& devicePath)
          :m_readDevicePath(devicePath / boost::filesystem::path("sensed")),
-         m_writeDevicePath(devicePath / boost::filesystem::path("PIO"))         
+         m_writeDevicePath(devicePath / boost::filesystem::path("PIO"))
       {
       }
 

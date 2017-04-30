@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SmartBatteryMonitor.h"
 #include "Identification.h"
+#include <shared/Log.h>
 
 namespace device
 {
@@ -47,6 +48,15 @@ namespace device
    {
    }
 
+   void CSmartBatteryMonitor::setConfiguration(const shared::CDataContainer& configuration)
+   {
+      m_configuration = boost::make_shared<const CSmartBatteryMonitorConfiguration>(configuration);
+      // TODO
+      YADOMS_LOG(information) << "Configuration was changed for device " << ident()->deviceName();
+      YADOMS_LOG(information) << "humidity = " << m_configuration->historizeHumidity();
+      YADOMS_LOG(information) << "light = " << m_configuration->historizeLight();
+   }
+
    void CSmartBatteryMonitor::read() const
    {
       m_kwTemperature->set(m_io->readTemperature());
@@ -66,6 +76,6 @@ namespace device
 
    void CSmartBatteryMonitor::write(const std::string& keyword, const std::string& command)
    {
-      std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
+      YADOMS_LOG(error) << "Try to drive the read-only keyword " << keyword;
    }
 } // namespace device

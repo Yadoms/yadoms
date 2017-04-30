@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "4kRamWithCounter.h"
 #include "Identification.h"
+#include <shared/Log.h>
 
 namespace device
 {
@@ -20,6 +21,11 @@ namespace device
    {
    }
 
+   void C4kRamWithCounter::setConfiguration(const shared::CDataContainer& configuration)
+   {
+      YADOMS_LOG(error) << "Try to apply a device configuration to an unconfigurable device";
+   }
+
    void C4kRamWithCounter::read() const
    {
       m_countA->set(m_io->read(0));
@@ -28,6 +34,6 @@ namespace device
 
    void C4kRamWithCounter::write(const std::string& keyword, const std::string& command)
    {
-      std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
+      YADOMS_LOG(error) << "Try to drive the read-only keyword " << keyword;
    }
 } // namespace device

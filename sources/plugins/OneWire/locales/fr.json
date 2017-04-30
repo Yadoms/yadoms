@@ -1,37 +1,60 @@
-﻿{
-	"name": "One Wire",
-	"description": "Support du protocole 1-wire.",
-	"configurationSchema": {
-		"linuxMode": {
-			"name": "Matériel",
-			"description": "Choisissez la méthode de connection du serveur Yadoms au réseau 1-wire.",
-			"content": {
-				"owfs": {
-					"name": "Mode OWVS",
-					"description": "Mode recommandé. Ce mode utilise OWFS (voir http://owfs.org pour plus d'informations). Ce mode supporte la plupart des devices 1-wire, mais nécessite un adaptateur supporté par OWFS. OWFS doit également être correctement configuré sur le serveur (voir le wiki de Yadoms pour la configuration d'OWFS).",
-					"content": {
-						"mountPoint": {
-							"name": "Point de montage OWFS",
-							"description": "Le point de montage d'OWFS sur le serveur Yadoms. Doit correspondre à la valeur indiquée dans le fichier owfs.conf (généralement /mnt/1wire)."
-						}
-					}
-				},
-				"kernel": {
-					"name": "Mode noyau",
-					"description": "Ce mode utilise le support natif du 1-wire par le noyau linux du serveur. Ce mode ne supporte que quelques composants 1-wire (voir le wiki Yadoms pour plus d'informations). Les composants 1-wire peuvent être connectés directement sur une broche d'entrée-sortie du système (aucun adaptateur requis).",
-					"content": {
-						"mountPoint": {
-							"name": "Point de montage",
-							"description": "Le point de montage sur le serveur Yadoms (généralement /sys/bus/w1/devices)."
-						}
-					}
-				}
-			}
-		}
-	},
-	"customLabels": {
-		"pluginState": {
-			"connecting": "Connexion en cours..."
-		}
-	}
+{
+  "name": "One Wire",
+  "description": "Support du protocole 1-wire.",
+  "configurationSchema": {
+    "linuxMode": {
+      "name": "Matériel",
+      "description": "Choisissez la méthode de connection du serveur Yadoms au réseau 1-wire.",
+      "content": {
+        "owfs": {
+          "name": "Mode OWVS",
+          "description": "Mode recommandé. Ce mode utilise OWFS (voir http://owfs.org pour plus d'informations). Ce mode supporte la plupart des devices 1-wire, mais nécessite un adaptateur supporté par OWFS. OWFS doit également être correctement configuré sur le serveur (voir le wiki de Yadoms pour la configuration d'OWFS).",
+          "content": {
+            "mountPoint": {
+              "name": "Point de montage OWFS",
+              "description": "Le point de montage d'OWFS sur le serveur Yadoms. Doit correspondre à la valeur indiquée dans le fichier owfs.conf (généralement /mnt/1wire)."
+            }
+          }
+        },
+        "kernel": {
+          "name": "Mode noyau",
+          "description": "Ce mode utilise le support natif du 1-wire par le noyau linux du serveur. Ce mode ne supporte que quelques composants 1-wire (voir le wiki Yadoms pour plus d'informations). Les composants 1-wire peuvent être connectés directement sur une broche d'entrée-sortie du système (aucun adaptateur requis).",
+          "content": {
+            "mountPoint": {
+              "name": "Point de montage",
+              "description": "Le point de montage sur le serveur Yadoms (généralement /sys/bus/w1/devices)."
+            }
+          }
+        }
+      }
+    }
+  },
+  "customLabels": {
+    "pluginState": {
+      "connecting": "Connexion en cours..."
+    }
+  },
+  "deviceConfiguration": {
+    "staticConfigurationSchema": {
+      "schemas": {
+        "smartBatteryMonitor": {
+          "types": {
+            "DS2438": {
+              "title": "DS2438"
+            }
+          },
+          "content": {
+            "humidity": {
+              "name": "Humidité",
+              "description": "Ce capteur mesure l'humidité"
+            },
+            "light": {
+              "name": "Lumière",
+              "description": "Ce capteur mesure la lumière"
+            }
+          }
+        }
+      }
+    }
+  }
 }

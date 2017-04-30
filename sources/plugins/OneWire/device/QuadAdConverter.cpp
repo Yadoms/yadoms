@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "QuadAdConverter.h"
 #include "Identification.h"
+#include <shared/Log.h>
 
 namespace device
 {
@@ -26,6 +27,11 @@ namespace device
    {
    }
 
+   void CQuadAdConverter::setConfiguration(const shared::CDataContainer& configuration)
+   {
+      YADOMS_LOG(error) << "Try to apply a device configuration to an unconfigurable device";
+   }
+
    void CQuadAdConverter::read() const
    {
       for (auto i = 0; i < NbAdConverter; ++i)
@@ -34,6 +40,6 @@ namespace device
 
    void CQuadAdConverter::write(const std::string& keyword, const std::string& command)
    {
-      std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
+      YADOMS_LOG(error) << "Try to drive the read-only keyword " << keyword;
    }
 } // namespace device
