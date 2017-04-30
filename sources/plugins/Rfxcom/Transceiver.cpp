@@ -360,7 +360,7 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
    boost::shared_ptr<rfxcomMessages::IRfxcomMessage> msg;
    try
    {
-      std::string deviceType = data.getDeviceType();
+      auto deviceType = data.getDeviceType();
       // Lighting1
       if (deviceType == "x10")
          msg = boost::make_shared<rfxcomMessages::CLighting1>(api, sTypeX10, data.getConfiguration());
