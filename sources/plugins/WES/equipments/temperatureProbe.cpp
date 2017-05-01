@@ -100,6 +100,9 @@ namespace equipments
       throw shared::exception::CException("No writing keyword for temprature probe");
    }
 
+   void CtemperatureProbe::remove(boost::shared_ptr<yApi::IYPluginApi> api)
+   {}
+
    CtemperatureProbe::~CtemperatureProbe()
    {}
 }// namespace equipments

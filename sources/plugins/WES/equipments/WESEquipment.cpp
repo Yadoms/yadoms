@@ -209,7 +209,7 @@ namespace equipments
          credentials.set("user", m_configuration.getUser());
          credentials.set("password", m_configuration.getPassword());
 
-         YADOMS_LOG(information) << "Address : " << m_configuration.getIPAddressWithSocket();
+         YADOMS_LOG(information) << "Address : " << m_configuration.getIPAddressWithSocket().toString();
 
          shared::CDataContainer results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
                                                                     credentials,
@@ -318,7 +318,7 @@ namespace equipments
                                            const shared::CDataContainer& newConfiguration)
    {
       m_configuration.initializeWith(newConfiguration);
-      m_configuration.printToLog(YADOMS_LOG(information));
+      //m_configuration.printToLog(YADOMS_LOG(information));
       YADOMS_LOG(information) << "Configuration updated for " << m_deviceName;
    }
 
