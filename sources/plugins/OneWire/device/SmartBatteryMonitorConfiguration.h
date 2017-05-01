@@ -12,7 +12,6 @@ namespace device
       CSmartBatteryMonitorConfiguration(const shared::CDataContainer& configuration);
       virtual ~CSmartBatteryMonitorConfiguration();
 
-   protected:
       bool historizeHumidity() const;
       bool historizeLight() const;
 
