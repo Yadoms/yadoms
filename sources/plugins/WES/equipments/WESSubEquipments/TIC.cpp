@@ -131,6 +131,13 @@ namespace equipments
          api->historizeData(m_deviceName, m_keywords);
       }
 
+      void CTIC::remove(boost::shared_ptr<yApi::IYPluginApi> api)
+      {
+         // remove the device from the database
+         api->removeDevice(m_deviceName);
+         YADOMS_LOG(information) << "remove " << m_deviceName;
+      }
+
       CTIC::~CTIC()
       {}
    }

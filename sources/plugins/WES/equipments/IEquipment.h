@@ -50,7 +50,7 @@ namespace equipments
       ///\param[in] newConfiguration          New device configuration
       //--------------------------------------------------------------
       virtual void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                       shared::CDataContainer& newConfiguration) = 0;
+                                       const shared::CDataContainer& newConfiguration) = 0;
 
       //--------------------------------------------------------------
       /// \brief      sendCommand             send a message to the WES
@@ -61,6 +61,12 @@ namespace equipments
       virtual void sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                                std::string& keyword,
                                std::string& command) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief      remove             remove this equipment, with all subequipment
+      ///\param[in] api                       Yadoms API
+      //--------------------------------------------------------------
+      virtual void remove(boost::shared_ptr<yApi::IYPluginApi> api) = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Destructor

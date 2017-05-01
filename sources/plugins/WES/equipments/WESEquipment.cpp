@@ -209,6 +209,8 @@ namespace equipments
          credentials.set("user", m_configuration.getUser());
          credentials.set("password", m_configuration.getPassword());
 
+         YADOMS_LOG(information) << "Address : " << m_configuration.getIPAddressWithSocket();
+
          shared::CDataContainer results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
                                                                     credentials,
                                                                     CGXfileName);
@@ -282,14 +284,14 @@ namespace equipments
          // TIC Counters Values -> independant from the others keywords
          for (int counter = 0; counter < WES_TIC_QTY; ++counter)
          {
-            m_TICList[0]->updateFromDevice(api,
-                                           results.get<std::string>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_abo_name"),
-                                           results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_1"),
-                                           results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_2"),
-                                           results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_3"),
-                                           results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_4"),
-                                           results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_5"),
-                                           results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_6"));
+            m_TICList[counter]->updateFromDevice(api,
+                                                 results.get<std::string>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_abo_name"),
+                                                 results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_1"),
+                                                 results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_2"),
+                                                 results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_3"),
+                                                 results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_4"),
+                                                 results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_5"),
+                                                 results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_6"));
          }
       }
       catch (std::exception& e)
@@ -313,11 +315,11 @@ namespace equipments
    }
 
    void CWESEquipment::updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                           shared::CDataContainer& newConfiguration)
+                                           const shared::CDataContainer& newConfiguration)
    {
       m_configuration.initializeWith(newConfiguration);
-
-      // TODO : Change the configuration, if any
+      m_configuration.printToLog(YADOMS_LOG(information));
+      YADOMS_LOG(information) << "Configuration updated for " << m_deviceName;
    }
 
    void CWESEquipment::sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -328,9 +330,8 @@ namespace equipments
       shared::CDataContainer parameters;
 
       try {
-         // TODO : To be replaced when manual configuration device is properly finished !
-         credentials.set("user", /*"admin"*/m_configuration.getUser());
-         credentials.set("password", /*"wes"*/m_configuration.getPassword());
+         credentials.set("user", m_configuration.getUser());
+         credentials.set("password", m_configuration.getPassword());
 
          //parameters to be filled
 
@@ -342,6 +343,13 @@ namespace equipments
       {
          YADOMS_LOG(error) << e.what();
       }
+   }
+
+   void CWESEquipment::remove(boost::shared_ptr<yApi::IYPluginApi> api)
+   {
+      // Delete 2 others devices
+      for (int counter = 0; counter < WES_TIC_QTY; ++counter)
+         m_TICList[counter]->remove(api);
    }
 
    /*

@@ -47,10 +47,11 @@ namespace equipments
                             const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
                             bool forceHistorization = false) override;
       void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                               shared::CDataContainer& newConfiguration) override;
+                               const shared::CDataContainer& newConfiguration) override;
       void sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                        std::string& keyword,
                        std::string& command) override;
+      void remove(boost::shared_ptr<yApi::IYPluginApi> api) override;
       // [END] IEquipment implementation
 
       //-----------------------------------------------------

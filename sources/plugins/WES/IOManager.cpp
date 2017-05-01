@@ -120,7 +120,7 @@ void CIOManager::readIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
 
 void CIOManager::OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                                              const std::string &deviceName,
-                                             const shared::CDataContainer newConfiguration)
+                                             const shared::CDataContainer& newConfiguration)
 {
    std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorDevice;
 
@@ -132,10 +132,11 @@ void CIOManager::OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi
          if (!(*iteratorDevice)->isMasterDevice())
          {
             //TODO : Delete the extension from the master
+            (*iteratorDevice)->updateConfiguration(api, newConfiguration);
          }
 
          // Delete the device
-         m_deviceManager.erase(iteratorDevice); // TODO : Check the good working
+         //m_deviceManager.erase(iteratorDevice); // TODO : Check the good working
       }
    }
 }

@@ -86,7 +86,7 @@ namespace equipments
    }
 
    void CtemperatureProbe::updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                               shared::CDataContainer& newConfiguration)
+                                               const shared::CDataContainer& newConfiguration)
    {
       m_configuration.initializeWith(newConfiguration);
 

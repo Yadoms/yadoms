@@ -48,6 +48,12 @@ namespace equipments
                                const Poco::Int64& counter6);
 
          //-----------------------------------------------------
+         ///\brief                     remove
+         ///\param[in]   api          Yadoms API
+         //-----------------------------------------------------
+         void remove(boost::shared_ptr<yApi::IYPluginApi> api);
+
+         //-----------------------------------------------------
          ///\brief                     Destructor
          //-----------------------------------------------------
          virtual ~CTIC();
