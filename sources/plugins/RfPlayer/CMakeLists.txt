@@ -30,10 +30,12 @@ set(RFPLAYER_PLUGIN_SOURCES
    frames/incoming/FrameType.h
 
    frames/outgoing/IOutgoingFrame.h
+   frames/outgoing/AsciiCommand.h
+   frames/outgoing/AsciiCommand.cpp
    frames/outgoing/Factory.h
    frames/outgoing/Factory.cpp
-   frames/outgoing/Blyss433.h
-   frames/outgoing/Blyss433.cpp
+   frames/outgoing/OutgoingFrame.h
+   frames/outgoing/OutgoingFrame.cpp
 
    specificHistorizers/incoming/Type0State.h
    specificHistorizers/incoming/Type0State.cpp

@@ -4,22 +4,25 @@
 namespace frames {
 namespace outgoing {
    
-   class CBlyss433 : public IOutgoingFrame
+   class COutgoingFrame : public IOutgoingFrame
    {
       public:
          //--------------------------------------------------------------
          /// \brief              Constructor
          //--------------------------------------------------------------
-         CBlyss433();
+         COutgoingFrame(const std::string & protocol);
 
          //--------------------------------------------------------------
          /// \brief              Destructor
          //--------------------------------------------------------------
-         virtual ~CBlyss433();
+         virtual ~COutgoingFrame();
          
          // IOutgoingFrame implementation
          virtual const std::string generateAsciiCommand(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) override;
          // [END] - IOutgoingFrame implementation
+         
+      private:
+         const std::string m_protocol;
    };
 } //namespace incoming
 } //namespace frames
