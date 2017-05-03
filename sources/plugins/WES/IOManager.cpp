@@ -30,6 +30,7 @@ void CIOManager::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::str
       // Deletion from the list of the device
       if (m_deviceManager[counter]->getDeviceName() == deviceRemoved)
       {
+         m_deviceManager[counter]->remove(api);
          m_deviceManager.erase(m_deviceManager.begin()+counter);
       }
    }

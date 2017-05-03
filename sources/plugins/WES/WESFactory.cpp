@@ -47,12 +47,12 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
          }
 
          // Do Noting, all is done into CWESEquipments
-         if (type.compare("TIC"))
+         if (type =="TIC")
          {}
       }
       catch (std::exception& e)
       {
-         YADOMS_LOG(error) << "exception : " << e.what();
+         YADOMS_LOG(error) << e.what();
       }
 
       YADOMS_LOG(information) << "Name : " << (*devicesIterator);

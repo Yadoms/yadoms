@@ -15,76 +15,68 @@ namespace equipments
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
 
-      try {
-         m_configuration.initializeWith(deviceConfiguration);
-         shared::CDataContainer details = api->getDeviceDetails(device);
+      m_configuration.initializeWith(deviceConfiguration);
+      shared::CDataContainer details = api->getDeviceDetails(device);
 
-         shared::CDataContainer TICContainerName = details.get<shared::CDataContainer>("TIC");
-         for (int counter = 0; counter < WES_TIC_QTY; ++counter)
-         {
-            boost::shared_ptr<equipments::subdevices::CTIC> temp = boost::make_shared<equipments::subdevices::CTIC>(api, 
-                                                                                                                    TICContainerName.get<std::string>("TIC" + boost::lexical_cast<std::string>(counter)),
-                                                                                                                    TICContainerName.get<std::string>("contract" + boost::lexical_cast<std::string>(counter)));
-            m_TICList.push_back(temp);
-         }
-
-         shared::CDataContainer RelayContainerName = details.get<shared::CDataContainer>("Relays");
-         for (int counter = 0; counter < WES_RELAY_QTY; ++counter)
-         {
-            RelayContainerName.set("R" + boost::lexical_cast<std::string>(counter), m_relaysList[counter]->getKeyword());
-
-            boost::shared_ptr<yApi::historization::CSwitch> temp = boost::make_shared<yApi::historization::CSwitch>(RelayContainerName.get("R" + boost::lexical_cast<std::string>(counter)),
-                                                                                                                    yApi::EKeywordAccessMode::kGetSet);
-           m_relaysList.push_back(temp);
-            keywordsToDeclare.push_back(temp);
-         }
-
-         shared::CDataContainer inputContainerName = details.get<shared::CDataContainer>("Inputs");
-         for (int counter = 0; counter < WES_INPUT_QTY; ++counter)
-         {
-            boost::shared_ptr<yApi::historization::CSwitch> temp = boost::make_shared<yApi::historization::CSwitch>(inputContainerName.get("I" + boost::lexical_cast<std::string>(counter)),
-                                                                                                                    yApi::EKeywordAccessMode::kGet);
-            m_inputList.push_back(temp);
-            keywordsToDeclare.push_back(temp);
-         }
-
-         shared::CDataContainer pulseContainerName = details.get<shared::CDataContainer>("Pulses");
-         for (int counter = 0; counter < WES_PULSE_QTY; ++counter)
-         {
-            boost::shared_ptr<equipments::subdevices::CPulse> temp = boost::make_shared<equipments::subdevices::CPulse>(api,
-                                                                                                                        keywordsToDeclare,
-                                                                                                                        m_deviceName,
-                                                                                                                        pulseContainerName.get<std::string>("P" + boost::lexical_cast<std::string>(counter)),
-                                                                                                                        pulseContainerName.get<std::string>("P" + boost::lexical_cast<std::string>(counter)));
-            m_PulseList.push_back(temp);
-         }
-
-         shared::CDataContainer clampContainerName = details.get<shared::CDataContainer>("Clamps");
-         for (int counter = 0; counter < WES_CLAMP_QTY; ++counter)
-         {
-            boost::shared_ptr<equipments::subdevices::CClamp> temp = boost::make_shared<equipments::subdevices::CClamp>(api,
-                                                                                                                        keywordsToDeclare,
-                                                                                                                        m_configuration.isInstantCurrentClampRegistered(counter),
-                                                                                                                        m_deviceName,
-                                                                                                                        clampContainerName.get<std::string>("C" + boost::lexical_cast<std::string>(counter)));
-            m_ClampList.push_back(temp);
-         }
-
-         shared::CDataContainer analogContainerName = details.get<shared::CDataContainer>("Analogs");
-         for (int counter = 0; counter < WES_ANA_QTY; ++counter)
-         {
-            boost::shared_ptr<specificHistorizers::CAnalog> temp = boost::make_shared<specificHistorizers::CAnalog>(analogContainerName.get<std::string>("A" + boost::lexical_cast<std::string>(counter)),
-                                                                                                                    yApi::EKeywordAccessMode::kGet);
-            m_AnalogList.push_back(temp);
-            keywordsToDeclare.push_back(temp);
-         }
-
-         YADOMS_LOG(information) << "Load configuration for " << m_deviceName;
-      }
-      catch (std::exception& e)
+      shared::CDataContainer TICContainerName = details.get<shared::CDataContainer>("TIC");
+      for (int counter = 0; counter < WES_TIC_QTY; ++counter)
       {
-         YADOMS_LOG(error) << e.what();
+         boost::shared_ptr<equipments::subdevices::CTIC> temp = boost::make_shared<equipments::subdevices::CTIC>(api, 
+                                                                                                                  TICContainerName.get<std::string>("TIC" + boost::lexical_cast<std::string>(counter)),
+                                                                                                                  TICContainerName.get<std::string>("contract" + boost::lexical_cast<std::string>(counter)));
+         m_TICList.push_back(temp);
       }
+
+      shared::CDataContainer RelayContainerName = details.get<shared::CDataContainer>("Relays");
+      for (int counter = 0; counter < WES_RELAY_QTY; ++counter)
+      {
+         boost::shared_ptr<yApi::historization::CSwitch> temp = boost::make_shared<yApi::historization::CSwitch>(RelayContainerName.get("R" + boost::lexical_cast<std::string>(counter)),
+                                                                                                                  yApi::EKeywordAccessMode::kGetSet);
+         m_relaysList.push_back(temp);
+         keywordsToDeclare.push_back(temp);
+      }
+
+      shared::CDataContainer inputContainerName = details.get<shared::CDataContainer>("Inputs");
+      for (int counter = 0; counter < WES_INPUT_QTY; ++counter)
+      {
+         boost::shared_ptr<yApi::historization::CSwitch> temp = boost::make_shared<yApi::historization::CSwitch>(inputContainerName.get("I" + boost::lexical_cast<std::string>(counter)),
+                                                                                                                  yApi::EKeywordAccessMode::kGet);
+         m_inputList.push_back(temp);
+         keywordsToDeclare.push_back(temp);
+      }
+
+      shared::CDataContainer pulseContainerName = details.get<shared::CDataContainer>("Pulses");
+      for (int counter = 0; counter < WES_PULSE_QTY; ++counter)
+      {
+         boost::shared_ptr<equipments::subdevices::CPulse> temp = boost::make_shared<equipments::subdevices::CPulse>(api,
+                                                                                                                     keywordsToDeclare,
+                                                                                                                     m_deviceName,
+                                                                                                                     pulseContainerName.get<std::string>("P" + boost::lexical_cast<std::string>(counter)),
+                                                                                                                     pulseContainerName.get<std::string>("P" + boost::lexical_cast<std::string>(counter)));
+         m_PulseList.push_back(temp);
+      }
+
+      shared::CDataContainer clampContainerName = details.get<shared::CDataContainer>("Clamps");
+      for (int counter = 0; counter < WES_CLAMP_QTY; ++counter)
+      {
+         boost::shared_ptr<equipments::subdevices::CClamp> temp = boost::make_shared<equipments::subdevices::CClamp>(api,
+                                                                                                                     keywordsToDeclare,
+                                                                                                                     m_configuration.isInstantCurrentClampRegistered(counter),
+                                                                                                                     m_deviceName,
+                                                                                                                     clampContainerName.get<std::string>("C" + boost::lexical_cast<std::string>(counter)));
+         m_ClampList.push_back(temp);
+      }
+
+      shared::CDataContainer analogContainerName = details.get<shared::CDataContainer>("Analogs");
+      for (int counter = 0; counter < WES_ANA_QTY; ++counter)
+      {
+         boost::shared_ptr<specificHistorizers::CAnalog> temp = boost::make_shared<specificHistorizers::CAnalog>(analogContainerName.get<std::string>("A" + boost::lexical_cast<std::string>(counter)),
+                                                                                                                  yApi::EKeywordAccessMode::kGet);
+         m_AnalogList.push_back(temp);
+         keywordsToDeclare.push_back(temp);
+      }
+
+      YADOMS_LOG(information) << "Load configuration for " << m_deviceName;
    }
 
    CWESEquipment::CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -268,7 +260,7 @@ namespace equipments
          shared::CDataContainer inputContainerName;
          for (int counter = 0; counter < WES_INPUT_QTY; ++counter)
          {
-            RelayContainerName.set("I" + boost::lexical_cast<std::string>(counter), m_inputList[counter]->getKeyword());
+            inputContainerName.set("I" + boost::lexical_cast<std::string>(counter), m_inputList[counter]->getKeyword());
          }
          details.set("Inputs", inputContainerName);
 
@@ -283,14 +275,14 @@ namespace equipments
          shared::CDataContainer clampContainerName;
          for (int counter = 0; counter < WES_CLAMP_QTY; ++counter)
          {
-            pulseContainerName.set("C" + boost::lexical_cast<std::string>(counter), m_ClampList[counter]->name());
+            clampContainerName.set("C" + boost::lexical_cast<std::string>(counter), m_ClampList[counter]->name());
          }
          details.set("Clamps", clampContainerName);
 
          shared::CDataContainer analogContainerName;
          for (int counter = 0; counter < WES_ANA_QTY; ++counter)
          {
-            pulseContainerName.set("A" + boost::lexical_cast<std::string>(counter), m_AnalogList[counter]->getKeyword());
+            analogContainerName.set("A" + boost::lexical_cast<std::string>(counter), m_AnalogList[counter]->getKeyword());
          }
          details.set("Analogs", analogContainerName);
 
@@ -303,7 +295,7 @@ namespace equipments
       }
       catch (std::exception& e)
       {
-         YADOMS_LOG(error) << "error1";
+         YADOMS_LOG(error) << e.what();
       }
    }
 
