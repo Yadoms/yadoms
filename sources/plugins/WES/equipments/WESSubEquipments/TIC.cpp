@@ -138,6 +138,11 @@ namespace equipments
          YADOMS_LOG(information) << "remove " << m_deviceName;
       }
 
+      std::string CTIC::name()
+      {
+         return m_deviceName;
+      }
+
       CTIC::~CTIC()
       {}
    }

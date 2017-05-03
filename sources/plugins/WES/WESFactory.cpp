@@ -29,11 +29,13 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
 
          api->getDeviceConfiguration(*devicesIterator).printToLog(YADOMS_LOG(information));
          api->getDeviceDetails(*devicesIterator).printToLog(YADOMS_LOG(information));
-         api->getDeviceDetails(*devicesIterator).get<std::string>("type");
+         type = api->getDeviceDetails(*devicesIterator).get<std::string>("type");
 
-         if (type == "WES")
+         if (type =="WES")
          {
-            equipment = boost::make_shared<equipments::CWESEquipment>(api, (*devicesIterator), api->getDeviceConfiguration(*devicesIterator), configuration);
+            equipment = boost::make_shared<equipments::CWESEquipment>(api, 
+                                                                      (*devicesIterator), 
+                                                                      api->getDeviceConfiguration(*devicesIterator));
             masterdeviceList.push_back(equipment);
             deviceList.push_back(equipment);
          }
@@ -45,12 +47,12 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
          }
 
          // Do Noting, all is done into CWESEquipments
-         if (type == "TIC")
+         if (type.compare("TIC"))
          {}
       }
       catch (std::exception& e)
       {
-         YADOMS_LOG(error) << e.what();
+         YADOMS_LOG(error) << "exception : " << e.what();
       }
 
       YADOMS_LOG(information) << "Name : " << (*devicesIterator);

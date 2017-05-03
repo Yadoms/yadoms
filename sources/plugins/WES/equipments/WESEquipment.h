@@ -27,8 +27,19 @@ namespace equipments
    class CWESEquipment : public IEquipment
    {
    public:
+
       //-----------------------------------------------------
-      ///\brief                          Constructor
+      ///\brief                          Constructor from restart (devices and keywords already registered)
+      ///\param[in]   api               Yadoms API
+      ///\param[in] device              The device name
+      ///\param[in] deviceConfiguration The device configuration
+      //-----------------------------------------------------
+      CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
+                    const std::string& device,
+                    const shared::CDataContainer& deviceConfiguration);
+
+      //-----------------------------------------------------
+      ///\brief                          Constructor from manual creation
       ///\param[in]   api               Yadoms API
       ///\param[in] device              The device name
       ///\param[in] deviceConfiguration The device configuration

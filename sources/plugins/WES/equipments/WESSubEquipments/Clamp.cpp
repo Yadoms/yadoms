@@ -8,7 +8,6 @@ namespace equipments
    {
       CClamp::CClamp(boost::shared_ptr<yApi::IYPluginApi> api,
                      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
-                     const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
                      const bool isInstantCurrentClampRegistered,
                      const std::string& deviceName,
                      const std::string& keywordName) :
@@ -16,12 +15,11 @@ namespace equipments
          m_keywordName(keywordName),
          m_instantCurrentRegistered(isInstantCurrentClampRegistered)
       {
-         initializeClamp(api, keywordsToDeclare, pluginConfiguration, keywordName);
+         initializeClamp(api, keywordsToDeclare, keywordName);
       }
 
       void CClamp::initializeClamp(boost::shared_ptr<yApi::IYPluginApi> api,
                                    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
-                                   const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
                                    const std::string& keywordName)
       {
          if (m_instantCurrentRegistered)
@@ -65,6 +63,11 @@ namespace equipments
          m_CounterClamp->set(energyClampValue);
          keywordsToHistorize.push_back(m_CounterClamp);
          YADOMS_LOG(trace) << m_CounterClamp->getKeyword() << " set to " << energyClampValue;
+      }
+
+      std::string CClamp::name()
+      {
+         return m_keywordName;
       }
 
       CClamp::~CClamp()

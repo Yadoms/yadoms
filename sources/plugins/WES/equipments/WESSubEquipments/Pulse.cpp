@@ -12,6 +12,7 @@ namespace equipments
                      const std::string& keywordName,
                      const std::string& unitName) :
          m_deviceName(deviceName),
+         m_keywordName(keywordName),
          m_unitName(unitName)
       {
          // TODO : Add need to declare
@@ -76,6 +77,11 @@ namespace equipments
                YADOMS_LOG(trace) << m_pulseVolume->getKeyword() << " set to " << totalValue;
             }
          }
+      }
+
+      std::string CPulse::name()
+      {
+         return m_keywordName;
       }
 
       CPulse::~CPulse()

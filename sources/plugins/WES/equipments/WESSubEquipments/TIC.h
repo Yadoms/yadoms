@@ -54,6 +54,12 @@ namespace equipments
          void remove(boost::shared_ptr<yApi::IYPluginApi> api);
 
          //-----------------------------------------------------
+         ///\brief                     get the device name
+         ///\return                    the TIC device Name
+         //-----------------------------------------------------
+         std::string name();
+
+         //-----------------------------------------------------
          ///\brief                     Destructor
          //-----------------------------------------------------
          virtual ~CTIC();

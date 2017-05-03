@@ -5,10 +5,12 @@
 #include <shared/Log.h>
 
 CIOManager::CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment> >& deviceList,
-                       std::vector<boost::shared_ptr<equipments::IEquipment> >& masterDeviceList)
+                       std::vector<boost::shared_ptr<equipments::IEquipment> >& masterDeviceList):
+   m_deviceManager(deviceList),
+   m_masterDeviceManager(masterDeviceList)
 {
-   m_deviceManager = deviceList;
-   m_masterDeviceManager = masterDeviceList;
+   //m_deviceManager.swap(deviceList);
+   //m_masterDeviceManager.swap(masterDeviceList);
 }
 
 void CIOManager::addEquipment(boost::shared_ptr<equipments::IEquipment> equipment)

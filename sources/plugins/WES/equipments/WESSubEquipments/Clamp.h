@@ -30,7 +30,6 @@ namespace equipments
          //-----------------------------------------------------
          CClamp(boost::shared_ptr<yApi::IYPluginApi> api,
                 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
-                const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
                 const bool isInstantCurrentClampRegistered,
                 const std::string& deviceName,
                 const std::string& keywordName);
@@ -50,6 +49,12 @@ namespace equipments
                                const Poco::Int64& energyClampValue);
 
          //-----------------------------------------------------
+         ///\brief                     get the device name
+         ///\return                    the clamp keyword Name
+         //-----------------------------------------------------
+         std::string name();
+
+         //-----------------------------------------------------
          ///\brief                     Destructor
          //-----------------------------------------------------
          virtual ~CClamp();
@@ -65,7 +70,6 @@ namespace equipments
          //-----------------------------------------------------
          void initializeClamp(boost::shared_ptr<yApi::IYPluginApi> api,
                               std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
-                              const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
                               const std::string& keywordName);
 
          //-----------------------------------------------------
