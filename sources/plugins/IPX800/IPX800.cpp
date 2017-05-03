@@ -202,6 +202,14 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
          break;
       }
+      case yApi::IYPluginApi::kSetDeviceConfiguration:
+      {
+         // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
+         auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
+
+         m_ioManager->OnDeviceConfigurationUpdate(api, deviceConfiguration);
+         break;
+      }
       default:
          {
             YADOMS_LOG(warning) << "Unknown message id " << api->getEventHandler().getEventId();

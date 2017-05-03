@@ -38,7 +38,8 @@ namespace equipments
       ///\param[in]   api         Yadoms API
       ///\param[in]   command     the pending command to historize
       //--------------------------------------------------------------
-      virtual void historizePendingCommand(boost::shared_ptr<yApi::IYPluginApi> api, boost::shared_ptr<const yApi::IDeviceCommand> command) = 0;
+      virtual void historizePendingCommand(boost::shared_ptr<yApi::IYPluginApi> api, 
+                                           boost::shared_ptr<const yApi::IDeviceCommand> command) = 0;
 
       //--------------------------------------------------------------
       /// \brief      resetPendingCommand  reset the pending command, if necessary (error return by the device, ...)
@@ -52,7 +53,10 @@ namespace equipments
       ///\param[in]   values                  New Values to enter
       ///\param[in]   forceHistorization      force historization for all values (initialization of the device, reset of the device, ...)
       //--------------------------------------------------------------
-      virtual void updateFromDevice(const std::string& type, boost::shared_ptr<yApi::IYPluginApi> api, shared::CDataContainer& values, bool forceHistorization) = 0;
+      virtual void updateFromDevice(const std::string& type, 
+                                    boost::shared_ptr<yApi::IYPluginApi> api, 
+                                    shared::CDataContainer& values, 
+                                    bool forceHistorization) = 0;
 
       //--------------------------------------------------------------
       /// \brief      buildMessageToDevice    build the message to send to the IPX800
@@ -63,6 +67,12 @@ namespace equipments
       virtual shared::CDataContainer buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                                           shared::CDataContainer& parameters,
                                                           boost::shared_ptr<const yApi::IDeviceCommand> command) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief      setNewConfiguration
+      ///\param[in]   newConfiguration        the new Configuration
+      //--------------------------------------------------------------
+      virtual void setNewConfiguration(const shared::CDataContainer& newConfiguration) = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Destructor
