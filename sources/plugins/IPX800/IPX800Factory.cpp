@@ -220,5 +220,43 @@ void CIPX800Factory::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std:
    }
 }
 
+void CIPX800Factory::onDeviceConfigurationChange(const std::string& name,
+                                                 const shared::CDataContainer& newConfiguration)
+{
+   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorExtension;
+
+   for (iteratorExtension = m_devicesList.begin(); iteratorExtension != m_devicesList.end(); ++iteratorExtension)
+   {
+      if ((*iteratorExtension)->getDeviceName() == name)
+      {
+         // free slot(s) associated to this device for future configurations
+         int position = (*iteratorExtension)->getSlot();
+         std::string type = (*iteratorExtension)->getDeviceType();
+
+         if (type == "X-8R") X8RSlotused[position - 1] = false;
+         if (type == "X-8D") X8DSlotused[position - 1] = false;
+         if (type == "X-24D")
+         {
+            X8DSlotused[(position - 1) * 3] = false;
+            X8DSlotused[(position - 1) * 3 + 1] = false;
+            X8DSlotused[(position - 1) * 3 + 2] = false;
+         }
+
+         (*iteratorExtension)->setNewConfiguration(newConfiguration);
+
+         if (type == "X-8R") X8RSlotused[position - 1] = true;
+         if (type == "X-8D") X8DSlotused[position - 1] = true;
+         if (type == "X-24D")
+         {
+            X8DSlotused[(position - 1) * 3] = true;
+            X8DSlotused[(position - 1) * 3 + 1] = true;
+            X8DSlotused[(position - 1) * 3 + 2] = true;
+         }
+
+         return;
+      }
+   }
+}
+
 CIPX800Factory::~CIPX800Factory()
 {}

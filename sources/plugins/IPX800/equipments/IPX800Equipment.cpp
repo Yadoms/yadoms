@@ -263,6 +263,11 @@ namespace equipments
       }
    }
 
+   void CIPX800Equipment::setNewConfiguration(const shared::CDataContainer& newConfiguration)
+   {
+      // No need to change anything for this one
+   }
+
    CIPX800Equipment::~CIPX800Equipment()
    {}
 }// namespace equipments
