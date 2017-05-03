@@ -34,9 +34,11 @@ namespace device
 
       //--------------------------------------------------------------
       /// \brief	Change the device configuration
+      /// \param[in] api            Plugin api
       /// \param[in] configuration  New device configuration
       //--------------------------------------------------------------
-      virtual void setConfiguration(const shared::CDataContainer& configuration) = 0;
+      virtual void setConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                                    const shared::CDataContainer& configuration) = 0;
 
       //--------------------------------------------------------------
       /// \brief	Read the device state and update keywords

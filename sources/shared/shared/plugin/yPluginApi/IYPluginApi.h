@@ -148,7 +148,7 @@ namespace shared
             ///\brief Get the event handler associated to the plugin. The event handler is used
             ///       to received, wait for, or post events from/to Yadoms
             ///\return The plugin event handler
-            //-----------------------------------------------------   
+            //-----------------------------------------------------
             virtual event::CEventHandler& getEventHandler() = 0;
 
 
@@ -172,7 +172,7 @@ namespace shared
             ///\brief Set the current plugin state
             ///\param    [in]    state                   The new state
             ///\param    [in]    customMessageId         The associated message ID (translatable in the locales file of the plugin). Ignored if state != kCustom or kError. (ie: 'i18nStringId' , with 'i18nStringId' : 'Message __something__ received')
-            ///\param    [in]    customMessageDataParams The message data parameters (map<name, value> ) (used as translation parameters). Ignored if state != kCustom or kError.   
+            ///\param    [in]    customMessageDataParams The message data parameters (map<name, value> ) (used as translation parameters). Ignored if state != kCustom or kError.
             ///\note In case of setting states kError or kStopped, plugin must be effectively stopped within 10 seconds or it will be killed.
             //-----------------------------------------------------
             virtual void setPluginState(const historization::EPluginState& state,
@@ -243,7 +243,7 @@ namespace shared
             ///\brief Get the configuration of a device
             ///\param    [in]    device            The device name
             ///\return the device configuration
-            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            ///\throw shared::exception::CEmptyResult if device doesn't exist
             //-----------------------------------------------------
             virtual CDataContainer getDeviceConfiguration(const std::string& device) const = 0;
 
@@ -251,7 +251,7 @@ namespace shared
             ///\brief Update the configuration of a device (replace the existing configuration)
             ///\param    [in]    device            The device name
             ///\param    [in]    configuration     Device configuration
-            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            ///\throw shared::exception::CEmptyResult if device doesn't exist
             //-----------------------------------------------------
             virtual void updateDeviceConfiguration(const std::string& device,
                                                    const CDataContainer& configuration) const = 0;
@@ -260,7 +260,7 @@ namespace shared
             ///\brief Get the details of a device
             ///\param    [in]    device            The device name
             ///\return the device details
-            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            ///\throw shared::exception::CEmptyResult if device doesn't exist
             //-----------------------------------------------------
             virtual CDataContainer getDeviceDetails(const std::string& device) const = 0;
 
@@ -268,7 +268,7 @@ namespace shared
             ///\brief Update the details of a device (replace the existing details)
             ///\param    [in]    device            The device name
             ///\param    [in]    details           Device details
-            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            ///\throw shared::exception::CEmptyResult if device doesn't exist
             //-----------------------------------------------------
             virtual void updateDeviceDetails(const std::string& device,
                                              const CDataContainer& details) const = 0;
@@ -277,7 +277,7 @@ namespace shared
             ///\brief Get the model of a device
             ///\param    [in]    device            The device model (could have been edited by user)
             ///\return the device model
-            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            ///\throw shared::exception::CEmptyResult if device doesn't exist
             //-----------------------------------------------------
             virtual std::string getDeviceModel(const std::string& device) const = 0;
 
@@ -285,7 +285,7 @@ namespace shared
             ///\brief Update the model of a device (replace the existing model)
             ///\param    [in]    device            The device name
             ///\param    [in]    model             Device model
-            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            ///\throw shared::exception::CEmptyResult if device doesn't exist
             //-----------------------------------------------------
             virtual void updateDeviceModel(const std::string& device, const std::string& model) const = 0;
 
@@ -293,7 +293,7 @@ namespace shared
             ///\brief Get the type of a device
             ///\param    [in]    device            The device type
             ///\return the device type
-            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            ///\throw shared::exception::CEmptyResult if device doesn't exist
             //-----------------------------------------------------
             virtual std::string getDeviceType(const std::string& device) const = 0;
 
@@ -301,14 +301,14 @@ namespace shared
             ///\brief Update the type of a device (replace the existing type)
             ///\param    [in]    device            The device name
             ///\param    [in]    model             Device type
-            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            ///\throw shared::exception::CEmptyResult if device doesn't exist
             //-----------------------------------------------------
             virtual void updateDeviceType(const std::string& device, const std::string& model) const = 0;
 
             //-----------------------------------------------------
             ///\brief Remove device (and remove all associated keywords and acquisitions)
             ///\param    [in]    device            The device name
-            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            ///\throw shared::exception::CEmptyResult if device doesn't exist
             ///\note  This call will not send a kEventDeviceRemoved event
             //-----------------------------------------------------
             virtual void removeDevice(const std::string& device) = 0;
@@ -337,7 +337,7 @@ namespace shared
             ///\param    [in]    keyword            The keyword
             ///\param    [in]    details            The keyword details (JSON string, optional. Can be used to declare specific properties like min/max values)
             ///\note Do nothing if keyword already exist
-            //-----------------------------------------------------   
+            //-----------------------------------------------------
             virtual void declareKeyword(const std::string& device,
                                         boost::shared_ptr<const historization::IHistorizable> keyword,
                                         const CDataContainer& details = CDataContainer::EmptyContainer) = 0;
@@ -346,9 +346,9 @@ namespace shared
             ///\brief Declare a list of keywords for a device
             ///\param    [in]    device             The device name owner of the keyword
             ///\param    [in]    keywords           The keywords list
-            ///\note For performance issue use this function to declare multiple keywords instead of callin several declareKeyword
+            ///\note For performance issue use this function to declare multiple keywords instead of calling several declareKeyword
             ///\note Do nothing if keyword already exist
-            //-----------------------------------------------------   
+            //-----------------------------------------------------
             virtual void declareKeywords(const std::string& device,
                                          const std::vector<boost::shared_ptr<const historization::IHistorizable>>& keywords) = 0;
 
@@ -381,7 +381,7 @@ namespace shared
             ///\brief Remove keyword (and remove all associated acquisitions)
             ///\param    [in]    device             The device name owner of the keyword
             ///\param    [in]    keyword            The keyword name
-            ///\throw shared::exception::CEmptyResult if device dosen't exist
+            ///\throw shared::exception::CEmptyResult if device doesn't exist
             //-----------------------------------------------------
             virtual void removeKeyword(const std::string& device,
                                        const std::string& keyword) = 0;
@@ -452,7 +452,7 @@ namespace shared
             ///\param    [in]    device            The device name
             ///\param    [in]    data              The historizable data
             ///\note If you need to historize several keyword at a time, prefer the historizeData method with vector, for better performances
-            //-----------------------------------------------------     
+            //-----------------------------------------------------
             virtual void historizeData(const std::string& device,
                                        boost::shared_ptr<const historization::IHistorizable> data) = 0;
 
@@ -460,7 +460,7 @@ namespace shared
             ///\brief Historize a list of new data
             ///\param    [in]    device            The device name
             ///\param    [in]    dataVect          The list of historizable data
-            //-----------------------------------------------------    
+            //-----------------------------------------------------
             virtual void historizeData(const std::string& device,
                                        const std::vector<boost::shared_ptr<const historization::IHistorizable>>& dataVect) = 0;
 
@@ -483,7 +483,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Get the current plugin information (extracted from package.json file)
             ///\return The current plugin information
-            //-----------------------------------------------------      
+            //-----------------------------------------------------
             virtual boost::shared_ptr<const information::IInformation> getInformation() const = 0;
 
 
@@ -506,7 +506,7 @@ namespace shared
             //-----------------------------------------------------
             ///\brief Get the current plugin configuration
             ///\return The current plugin configuration
-            //-----------------------------------------------------      
+            //-----------------------------------------------------
             virtual CDataContainer getConfiguration() = 0;
 
             //-----------------------------------------------------
@@ -515,7 +515,7 @@ namespace shared
             /// \note       This folder can be used by plugin to store any data it needs.
             ///             This folder is unique per each plugin instance.
             ///             Note that this is folder is not backuped.
-            //-----------------------------------------------------      
+            //-----------------------------------------------------
             virtual const boost::filesystem::path& getDataPath() const = 0;
 
             //----------------------------------------------------------------------------------------------------------------
@@ -542,6 +542,6 @@ namespace shared
          };
       }
    }
-} // namespace shared::plugin::yPluginApi	
+} // namespace shared::plugin::yPluginApi
 
 

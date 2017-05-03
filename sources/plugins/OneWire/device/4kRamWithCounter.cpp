@@ -21,7 +21,8 @@ namespace device
    {
    }
 
-   void C4kRamWithCounter::setConfiguration(const shared::CDataContainer& configuration)
+   void C4kRamWithCounter::setConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                                            const shared::CDataContainer& configuration)
    {
       YADOMS_LOG(error) << "Try to apply a device configuration to an unconfigurable device";
    }

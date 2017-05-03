@@ -49,11 +49,21 @@
             }
           },
           "content": {
-            "humidity": {
-              "type": "bool",
-              "defaultValue": "false"
+            "vadSensor": {
+              "type": "enum",
+              "values" : {
+                "none": "none",
+                "humidity": "humidity",
+                "HIH3600-humidity": "HIH3600 (humidity)",
+                "HIH4000-humidity": "HIH4000 (humidity)",
+                "HTM1735-humidity": "HTM1735 (humidity)",
+                "S3-R1-A-illuminance": "S3-R1-A (illuminance)",
+                "B1-R1-A-pressure": "B1-R1-A (pressure)",
+                "raw": "raw"
+              },
+              "defaultValue": "none"
             },
-            "light": {
+            "visSensor": {
               "type": "bool",
               "defaultValue": "false"
             }
@@ -61,5 +71,6 @@
         }
       }
     }
-  }
+  },
+  "supportDeviceRemovedNotification":"true"
 }
