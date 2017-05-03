@@ -1,6 +1,6 @@
 {
    "type": "IPX800",
-   "version": "1.0.0-beta",
+   "version": "1.0.0-rc.1",
    "author": "Jean-Michel BERHAULT",
    "url": "https://github.com/Yadoms/yadoms/wiki/IPX800",
    "credits": "",
@@ -37,7 +37,7 @@
             "x8r" : {
                "types": { "X8R" : { "canBeCreatedManually" : "true" } },
                "content" : {
-                  "Position" : {				 
+                  "Position" : {
                       "type" : "enum",
                       "__Binding__" : {
                         "type" : "plugin", 
