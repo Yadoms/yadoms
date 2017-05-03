@@ -207,7 +207,7 @@ void CIPX800::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
          auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
 
-         m_ioManager->OnDeviceConfigurationUpdate(api, deviceConfiguration);
+         m_factory->onDeviceConfigurationChange(deviceConfiguration->name(), deviceConfiguration->configuration());
          break;
       }
       default:

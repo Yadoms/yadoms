@@ -37,7 +37,7 @@
             "x8r" : {
                "types": { "X8R" : { "canBeCreatedManually" : "true" } },
                "content" : {
-                  "Position" : {				 
+                  "Position" : {
                       "type" : "enum",
                       "__Binding__" : {
                         "type" : "plugin", 
