@@ -42,7 +42,6 @@ MACRO(PLUGIN_SOURCES _targetName)
          if(NOT EXISTS ${PLUGIN_EXE_ICON})
             SET(PLUGIN_EXE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/../common/resources/windows/plugin.ico")
          endif(NOT EXISTS ${PLUGIN_EXE_ICON})
-         message("PLUGIN_EXE_ICON : ${PLUGIN_EXE_ICON}")
          
          
          # apply templating to the manifest for setting the version
