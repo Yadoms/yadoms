@@ -254,7 +254,7 @@ private:
    boost::shared_ptr<yApi::historization::CVoltage> m_batteryVoltage;
 
    //--------------------------------------------------------------
-   /// \brief	The temperature (°C)
+   /// \brief	The temperature (Â°C)
    //--------------------------------------------------------------
    boost::shared_ptr<yApi::historization::CTemperature> m_temperature;
 

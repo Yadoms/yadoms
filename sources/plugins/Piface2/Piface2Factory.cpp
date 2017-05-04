@@ -31,7 +31,7 @@ CPiface2Factory::CPiface2Factory(boost::shared_ptr<yApi::IYPluginApi> api,
       m_keywordsToDeclare.push_back(m_DigitalInput[counter]->historizable());
    }
 
-   //Déclaration of all IOs
+   //DÃ©claration of all IOs
    api->declareDevice(device, Model, m_keywordsToDeclare, details);
 
    m_ioManager->Initialize(api, m_mapKeywordsName);

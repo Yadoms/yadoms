@@ -103,7 +103,7 @@ namespace rfxcomMessages
          break;
       case sTypeAvantek: m_subTypeManager = boost::make_shared<CLighting5OnOff>("Avantek");
          break;
-      case sTypeIT: m_subTypeManager = boost::make_shared<CLighting5OnOff>("IT (Intertek,FA500,PROmax…)");
+      case sTypeIT: m_subTypeManager = boost::make_shared<CLighting5OnOff>("IT (Intertek,FA500,PROmaxâ€¦)");
          break;
       case sTypeMDREMOTE108: m_subTypeManager = boost::make_shared<CLighting5MdRemote>("MDREMOTE 108 LED dimmer");
          break;

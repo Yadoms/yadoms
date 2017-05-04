@@ -47,7 +47,7 @@ namespace device
       if (temperature <= -300 || temperature >= 381)
          return false;
 
-      // Some devices has a power-on value at 85°, we have to filter it
+      // Some devices has a power-on value at 85Â°, we have to filter it
       if (temperature == 85)
          return false;
 

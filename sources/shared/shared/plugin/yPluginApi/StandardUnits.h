@@ -19,9 +19,9 @@ namespace shared
             //--------------------------------------------------------------
             static const std::string NoUnits;
             static const std::string Ampere; // A
-            static const std::string Degrees; // °
-            static const std::string DegreesCelcius; // °C
-            static const std::string DegreesFarenheit; // °F
+            static const std::string Degrees; // Â°
+            static const std::string DegreesCelcius; // Â°C
+            static const std::string DegreesFarenheit; // Â°F
             static const std::string hectoPascal; // hPa
             static const std::string Hertz; // Hz
             static const std::string Kg; // kg

@@ -4,7 +4,7 @@
 namespace ioInterfaces
 {
    //--------------------------------------------------------------
-   /// \brief	Temperature (°C) io accessor interface
+   /// \brief	Temperature (Â°C) io accessor interface
    //--------------------------------------------------------------
    class ITemperature : public ISingleReadOnlyData<double>
    {

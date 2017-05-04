@@ -53,7 +53,7 @@ namespace rfxcomMessages
 
    void CChimeByronMp001::toProtocolState(unsigned char& sound) const
    {
-      // Nothing to do, sound is used à ID3
+      // Nothing to do, sound is used Ã  ID3
    }
 } // namespace rfxcomMessages
 
