@@ -131,11 +131,12 @@ namespace rfxcomMessages
          details.set("subType", m_subType);
          details.set("id", m_id);
          details.set("unitCode", m_unitCode);
-         api->declareDevice(m_deviceName, m_subTypeManager->getModel(), m_keywords, details);
+         std::string model = m_subTypeManager->getModel();
+         api->declareDevice(m_deviceName, model, model, m_keywords, details);
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CLighting5::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CLighting5::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF rbuf;
       MEMCLEAR(rbuf.LIGHTING5);

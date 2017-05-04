@@ -39,6 +39,8 @@ set(SHARED_LIB_SRC
    shared/communication/AsciiBufferLogger.cpp
    shared/communication/BufferLogger.h
    shared/communication/BufferLogger.cpp
+   shared/communication/BufferLoggerHelper.h
+   shared/communication/BufferLoggerHelper.cpp
    shared/communication/EOFReceiveBufferHandler.h
    shared/communication/EOFReceiveBufferHandler.cpp
    shared/communication/FixedSizeReceiveBufferHandler.h
@@ -80,7 +82,8 @@ set(SHARED_LIB_SRC
    shared/encryption/Xor.cpp
    shared/encryption/Base64.h
    shared/encryption/Base64.cpp
-   shared/encryption/md5.h
+   shared/encryption/Md5.h
+   shared/encryption/Md5.cpp
 	
    shared/enumeration/IExtendedEnum.h
    shared/enumeration/ExtendedEnumHelpers.cpp

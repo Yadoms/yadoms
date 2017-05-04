@@ -51,9 +51,15 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	    Returns the fake sensor model
-   /// \return     The list of device capacities
+   /// \return     The fake sensor model
    //--------------------------------------------------------------
-   static const std::string& getModel();
+   static const std::string& getModel();   
+   
+   //--------------------------------------------------------------
+   /// \brief	    Returns the fake sensor type
+   /// \return     The fake sensor type
+   //--------------------------------------------------------------
+   static const std::string& getType();
 
 private:
    //--------------------------------------------------------------

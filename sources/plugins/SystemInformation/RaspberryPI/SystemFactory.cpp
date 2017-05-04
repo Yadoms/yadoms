@@ -27,8 +27,8 @@ CSystemFactory::CSystemFactory(boost::shared_ptr<yApi::IYPluginApi> api,
       m_lowFrequencyUpdateKeywords.push_back(diskUsage->historizable());
    }
 
-   api->declareDevice(device, Model, m_highFrequencyUpdateKeywords, details);
-   api->declareDevice(device, Model, m_lowFrequencyUpdateKeywords, details);
+   api->declareDevice(device, Model, Model, m_highFrequencyUpdateKeywords, details);
+   api->declareDevice(device, Model, Model, m_lowFrequencyUpdateKeywords, details);
 }
 
 CSystemFactory::~CSystemFactory()

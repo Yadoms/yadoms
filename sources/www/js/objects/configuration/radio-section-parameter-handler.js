@@ -10,7 +10,7 @@
  * @param currentValue
  * @constructor
  */
-function RadioSectionParameterHandler(i18nContext, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive) {
+function RadioSectionParameterHandler(i18nContext, i18nKey, paramName, content, currentValue, parentRadioButtonSectionName, parentRadioSectionActive) {
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
@@ -22,6 +22,7 @@ function RadioSectionParameterHandler(i18nContext, paramName, content, currentVa
    this.paramName = paramName;
    this.description = isNullOrUndefined(content.description)?"":content.description;
    this.i18nContext = i18nContext;
+   this.i18nKey = i18nKey || paramName;
    this.content = content;
    this.containerUuid = createUUID();
    this.uuid = createUUID();
@@ -51,7 +52,7 @@ function RadioSectionParameterHandler(i18nContext, paramName, content, currentVa
       if ((self.configurationValues.content != null) && (self.configurationValues.content != undefined))
          v = self.configurationValues.content[key];
 
-      var newI18nContext = i18nContext + self.paramName + ".content.";
+      var newI18nContext = i18nContext + self.i18nKey + ".content.";
 
       //all items in content must be section values
       assert(ConfigurationHelper.isContainer(value), "Content section of the configuration " + self.name + " must contain only section items");
@@ -63,7 +64,7 @@ function RadioSectionParameterHandler(i18nContext, paramName, content, currentVa
       if (value.show !== undefined && value.show.result === "false")
          return;
       
-	    var handler = ConfigurationHelper.createParameterHandler(newI18nContext, key, value, v, self.uuid, radioActive);
+	    var handler = ConfigurationHelper.createParameterHandler(newI18nContext, value.i18nKey, key, value, v, self.uuid, radioActive);
       if (!isNullOrUndefined(handler))
          self.configurationHandlers.push(handler);
    });
@@ -87,7 +88,7 @@ RadioSectionParameterHandler.prototype.getDOMObject = function () {
       input +=             ">";
    }
 	
-   input +=           "<span data-i18n=\"" + this.i18nContext + this.paramName + ".name\" >" +
+   input +=           "<span data-i18n=\"" + this.i18nContext + this.i18nKey + ".name\" >" +
                         this.name +
                      "</span>";
    //if it's included in a parent radioSection 
@@ -97,7 +98,7 @@ RadioSectionParameterHandler.prototype.getDOMObject = function () {
    }
    
    input +=          "</div>" +
-                  "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.paramName + ".description\" >" +
+                  "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.i18nKey + ".description\" >" +
                      this.description +
                   "</div>" +
                   "<div class=\"toggle-btn-grp\" id=\"" + this.containerUuid + "\" >";

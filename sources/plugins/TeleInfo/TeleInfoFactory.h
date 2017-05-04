@@ -43,6 +43,5 @@ public:
    /// \return                            The Buffer handler
    //--------------------------------------------------------------
    static boost::shared_ptr<shared::communication::IReceiveBufferHandler> GetBufferHandler(shared::event::CEventHandler& eventHandler,
-                                                                                           int evtPortDataReceived,
-																						   bool developerMode);
+                                                                                           int evtPortDataReceived);
 };

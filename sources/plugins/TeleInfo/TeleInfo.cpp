@@ -48,8 +48,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
    // Create the buffer handler
    m_receiveBufferHandler = CTeleInfoFactory::GetBufferHandler(api->getEventHandler(),
-                                                               kEvtPortDataReceived,
-															                  m_isDeveloperMode);
+                                                               kEvtPortDataReceived);
 
    m_waitForAnswerTimer = api->getEventHandler().createTimer(kAnswerTimeout,
                                                              shared::event::CEventTimer::kOneShot,
@@ -136,7 +135,7 @@ void CTeleInfo::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       default:
          {
-            YADOMS_LOG(error) << "Unknown message id" ;
+            YADOMS_LOG(error) << "Unknown message id " << api->getEventHandler().getEventId();
             break;
          }
       }

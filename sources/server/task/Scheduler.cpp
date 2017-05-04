@@ -84,7 +84,7 @@ namespace task
                break;
             }
             default:
-               YADOMS_LOG(error) << "Unknown message id";
+               YADOMS_LOG(error) << "Unknown message id " << m_taskEventHandler->getEventId();
                BOOST_ASSERT(false);
                break;
             }

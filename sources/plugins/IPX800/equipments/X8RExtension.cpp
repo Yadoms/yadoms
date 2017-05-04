@@ -37,7 +37,7 @@ namespace equipments
       keywordsToDeclare.insert(keywordsToDeclare.end(), m_keywordList.begin(), m_keywordList.end());
 
       //Declaration of all IOs
-      api->declareDevice(device, m_deviceType, keywordsToDeclare, details);
+      api->declareDevice(device, m_deviceType, m_deviceType, keywordsToDeclare, details);
    }
 
    std::string CX8RExtension::getDeviceName() const
@@ -148,6 +148,23 @@ namespace equipments
    void CX8RExtension::resetPendingCommand()
    {
       m_pendingHistorizer.reset();
+   }
+
+   void CX8RExtension::setNewConfiguration(const shared::CDataContainer& newConfiguration)
+   {
+      std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >::const_iterator iterator;
+
+      m_position = newConfiguration.get<int>("Position");
+      int counter = 0;
+
+      // change all hardware names
+      for (iterator = m_keywordList.begin(); iterator != m_keywordList.end(); ++iterator)
+      {
+         (*iterator)->setNewHardwareName("R" + boost::lexical_cast<std::string>(m_position * 8 + counter + 1));
+         ++counter;
+      }
+
+      YADOMS_LOG(information) << "equipment " << m_deviceName << " configuration is updated";
    }
 
    CX8RExtension::~CX8RExtension()

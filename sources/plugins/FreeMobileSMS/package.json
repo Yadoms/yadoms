@@ -7,7 +7,6 @@
   "supportedPlatforms": "all",
   "configurationSchema": {},
   "supportManuallyDeviceCreation": "false",
-  "manuallyDeviceCreationConfigurationSchema": {},
   "recipientFields" : {
     "userId": {
       "type": "string",

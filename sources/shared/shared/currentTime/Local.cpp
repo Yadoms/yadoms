@@ -1,16 +1,19 @@
 #include "stdafx.h"
 #include "Local.h"
 
-namespace shared { namespace currentTime
+namespace shared
 {
+   namespace currentTime
+   {
+      Local::~Local()
+      {
+      }
 
-Local::~Local()
-{
-}
+      boost::posix_time::ptime Local::now() const
+      {
+         return boost::posix_time::microsec_clock::local_time();
+      }
+   }
+} // namespace shared::currentTime
 
-boost::posix_time::ptime Local::now() const
-{
-   return boost::posix_time::microsec_clock::local_time();
-}
 
-} } // namespace shared::currentTime

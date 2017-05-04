@@ -15,7 +15,7 @@ namespace rfxcomMessages
 
    CTransceiverStatus::CTransceiverStatus(const RBUF& rbuf,
                                           size_t rbufSize,
-                                          boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+                                          boost::shared_ptr<ISequenceNumber> seqNumberProvider)
    {
       // This message is length variable, so manage all cases :
       if (rbufSize < (GET_RBUF_STRUCT_SIZE(RXRESPONSE) - 1))
@@ -32,7 +32,7 @@ namespace rfxcomMessages
                               pTypeInterfaceMessage,
                               sTypeRecStarted,
                               GET_RBUF_STRUCT_SIZE(IRESPONSE),
-                              seqNumberProvider->last());
+                              seqNumberProvider);
       }
       else
       {
@@ -42,7 +42,7 @@ namespace rfxcomMessages
                               pTypeInterfaceMessage,
                               DONT_CHECK_SUBTYPE,
                               DONT_CHECK_SIZE,
-                              seqNumberProvider->last());
+                              seqNumberProvider);
       }
 
       switch (rbuf.IRESPONSE.subtype)
@@ -129,7 +129,7 @@ namespace rfxcomMessages
    {
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CTransceiverStatus::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CTransceiverStatus::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("Status is a read-only message, can not be encoded");
    }

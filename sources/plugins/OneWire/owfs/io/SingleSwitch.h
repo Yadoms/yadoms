@@ -32,7 +32,8 @@ namespace owfs
          //--------------------------------------------------------------
          /// \brief	OWFS device path
          //--------------------------------------------------------------
-         const boost::filesystem::path m_devicePath;
+         const boost::filesystem::path m_readDevicePath;
+         const boost::filesystem::path m_writeDevicePath;
       };
    }
 } // namespace owfs::io

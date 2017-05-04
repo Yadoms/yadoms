@@ -84,22 +84,22 @@ std::string CIPX800Factory::createDeviceManually(boost::shared_ptr<yApi::IYPlugi
    boost::shared_ptr<equipments::IEquipment> extension;
 
    try {
-
-      if (data.getConfiguration().get<bool>("type.content.X8R.radio"))
+      
+      if (data.getDeviceType() == "X8R")
       {
-         int position = data.getConfiguration().get<int>("type.content.X8R.content.Position");
+         int position = data.getConfiguration().get<int>("Position");
          extension = boost::make_shared<equipments::CX8RExtension>(api, data.getDeviceName(), position);
          X8RSlotused[position-1] = true;
       }
-      else if (data.getConfiguration().get<bool>("type.content.X8D.radio"))
+      else if (data.getDeviceType() == "X8D")
       {
-         int position = data.getConfiguration().get<int>("type.content.X8D.content.Position");
+         int position = data.getConfiguration().get<int>("Position");
          extension = boost::make_shared<equipments::CX8DExtension>(api, data.getDeviceName(), position);
          X8DSlotused[position-1] = true;
       }
-      else if (data.getConfiguration().get<bool>("type.content.X24D.radio"))
+      else if (data.getDeviceType() == "X24D")
       {
-         int position = data.getConfiguration().get<int>("type.content.X24D.content.Position");
+         int position = data.getConfiguration().get<int>("Position");
          extension = boost::make_shared<equipments::CX24DExtension>(api, data.getDeviceName(), position);
 
          // The corresponding slots for X-8D could not be installed
@@ -216,6 +216,44 @@ void CIPX800Factory::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std:
          }
          else // If IPX800, we delete all extensions
             m_devicesList.clear();
+      }
+   }
+}
+
+void CIPX800Factory::onDeviceConfigurationChange(const std::string& name,
+                                                 const shared::CDataContainer& newConfiguration)
+{
+   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorExtension;
+
+   for (iteratorExtension = m_devicesList.begin(); iteratorExtension != m_devicesList.end(); ++iteratorExtension)
+   {
+      if ((*iteratorExtension)->getDeviceName() == name)
+      {
+         // free slot(s) associated to this device for future configurations
+         int position = (*iteratorExtension)->getSlot();
+         std::string type = (*iteratorExtension)->getDeviceType();
+
+         if (type == "X-8R") X8RSlotused[position - 1] = false;
+         if (type == "X-8D") X8DSlotused[position - 1] = false;
+         if (type == "X-24D")
+         {
+            X8DSlotused[(position - 1) * 3] = false;
+            X8DSlotused[(position - 1) * 3 + 1] = false;
+            X8DSlotused[(position - 1) * 3 + 2] = false;
+         }
+
+         (*iteratorExtension)->setNewConfiguration(newConfiguration);
+
+         if (type == "X-8R") X8RSlotused[position - 1] = true;
+         if (type == "X-8D") X8DSlotused[position - 1] = true;
+         if (type == "X-24D")
+         {
+            X8DSlotused[(position - 1) * 3] = true;
+            X8DSlotused[(position - 1) * 3 + 1] = true;
+            X8DSlotused[(position - 1) * 3 + 2] = true;
+         }
+
+         return;
       }
    }
 }

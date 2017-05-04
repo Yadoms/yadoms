@@ -72,6 +72,7 @@ namespace common {
       ((Model)("model"))
 	   ((Details)("details"))
       ((Configuration)("configuration"))
+      ((Type)("type"))
       ((Blacklist)("blacklist"))
    )
 

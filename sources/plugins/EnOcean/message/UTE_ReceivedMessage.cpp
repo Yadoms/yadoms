@@ -4,7 +4,7 @@
 
 namespace message
 {
-   CUTE_ReceivedMessage::CUTE_ReceivedMessage(const message::CRadioErp1ReceivedMessage& message)
+   CUTE_ReceivedMessage::CUTE_ReceivedMessage(const CRadioErp1ReceivedMessage& message)
       : m_erp1(message)
    {
    }

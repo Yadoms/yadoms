@@ -746,6 +746,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/versioning/Version_3_0_0.cpp
 	server/database/common/versioning/Version_3_0_1.h
 	server/database/common/versioning/Version_3_0_1.cpp
+	server/database/common/versioning/Version_4_0_0.h
+	server/database/common/versioning/Version_4_0_0.cpp
 	server/database/common/versioning/VersionUpgraderFactory.h
 	server/database/common/versioning/VersionUpgraderFactory.cpp
 	server/database/common/versioning/VersionException.h
@@ -1122,7 +1124,9 @@ ENDFOREACH(PostgreSqlDepend)
 
 
 #add www directory
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/www DESTINATION ${INSTALL_BINDIR})
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/www 
+   DESTINATION ${INSTALL_BINDIR}
+   PATTERN "widgets/dev-*" EXCLUDE)
 
 
 set(CPACK_COMPONENT_YADOMSCORE_DISPLAY_NAME "Yadoms Server")

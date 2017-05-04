@@ -35,7 +35,7 @@ namespace shared
             protected:
                //-----------------------------------------------------
                ///\brief                     Normalize the value
-               ///\param[in] level           Raw value
+               ///\param[in] value           Raw value
                ///\return                    The normalized value (0-100)
                //-----------------------------------------------------
                int Normalize(int value) override;

@@ -250,34 +250,32 @@ widgetViewModelCtor =
                arrayOfDeffered.push(deffered2);
                deffered2.done(function (keyword) {
                    self.keywordInfo[index] = keyword;
-                   
-                   if (parseBool(device.content.advancedConfiguration.checkbox)){
-                      
-                      // read the differential display variable
-                      try{
+                   try{
+                      if (parseBool(device.content.advancedConfiguration.checkbox)){
+                         
+                         // read the differential display variable
                          if (device.content.advancedConfiguration.content.differentialDisplay ==="relative")
                             self.differentialDisplay[index] = true;
                          else
                             self.differentialDisplay[index] = false;
-                      }
-                      catch(error)
-                      {
-                         self.differentialDisplay[index] = false;
-                         console.warn('Fail to retreive the variable device.content.differentialDisplay : ' + error);
-                         console.log(' default value used : differentialDisplay=false ');
-                      }
-                     
-                      // read the period value we need
-                      try{
+                        
+                         // read the period value we need
                          self.periodValueType[index] = device.content.advancedConfiguration.content.periodtype;
-                      }
-                      catch(error)
-                      {
-                         self.periodValueType[index] = "avg";
-                         console.warn('Fail to retreive the variable device.content.periodtype : ' + error);
-                         console.log(' default value used : periodtype=avg ');
-                       }
-                   }else{ // automatic managment : the managment of the information is done from the measure type of the keyword                   
+
+                      }else{ // automatic managment : the managment of the information is done from the measure type of the keyword                   
+                        if (keyword.measure === "Cumulative"){
+                           self.differentialDisplay[index] = true;
+                           self.periodValueType[index] = "max";
+                        }
+                        else{ // Default values and Absolute value
+                           self.differentialDisplay[index] = false;
+                           self.periodValueType[index] = "avg";
+                        }
+                     }
+                  }
+                  catch(error)
+                  {
+                     console.warn('exception detecting : automatic management');
                      if (keyword.measure === "Cumulative"){
                         self.differentialDisplay[index] = true;
                         self.periodValueType[index] = "max";
@@ -292,7 +290,7 @@ widgetViewModelCtor =
                   {
                      notifyError($.t("widgets/chart:incompatibilityDifferential"), "error");
                      self.incompatibility = true;
-                     return;                  
+                     return;
                   }
                   else
                      self.incompatibility = false;
@@ -566,8 +564,6 @@ widgetViewModelCtor =
                                    if (parseBool(self.widget.configuration.oneAxis.checkbox)) {
                                        yAxisName = 'axis' + self.seriesUuid[0];
                                    }
-
-                                   console.log (self.deviceInfo);
                                    
                                    // axes and series names
                                    try {

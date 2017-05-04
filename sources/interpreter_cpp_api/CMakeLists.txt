@@ -64,12 +64,12 @@ target_link_libraries(interpreter_cpp_api
 ## COTIRE
 ##################################################################################################
 if(COTIRE_USE)
-	set_target_properties(interpreter_IPC PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
+	set_target_properties(interpreter_cpp_api PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
 	
 	if(COTIRE_USE_UNITY)
-		set_target_properties(interpreter_IPC PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
+		set_target_properties(interpreter_cpp_api PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
 	else()
-		set_target_properties(interpreter_IPC PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
+		set_target_properties(interpreter_cpp_api PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
 	endif()
 
    

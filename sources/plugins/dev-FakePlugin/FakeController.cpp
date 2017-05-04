@@ -39,7 +39,7 @@ CFakeController::~CFakeController()
 void CFakeController::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
 {
    if (!api->deviceExists(m_deviceName))
-      api->declareDevice(m_deviceName, getModel());
+      api->declareDevice(m_deviceName, getType(), getModel());
 
    if (!api->keywordExists(m_deviceName, m_currentValues))
       api->declareKeyword(m_deviceName, m_currentValues);
@@ -76,5 +76,11 @@ const std::string& CFakeController::getModel()
 {
    static const std::string model("Fake controller");
    return model;
+}
+
+const std::string& CFakeController::getType()
+{
+   static const std::string type("fakeControllerType");
+   return type;
 }
 

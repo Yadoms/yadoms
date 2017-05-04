@@ -5,7 +5,6 @@
 #include <shared/plugin/yPluginApi/historization/MessageFormatter.h>
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
-#include <shared/dateTime/DateTimeContainer.h>
 
 namespace automation
 {
@@ -178,47 +177,106 @@ namespace automation
          }
       }
 
-      shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int>& keywordIdList, bool receiveDateTimeEvent, const std::string& timeout) const
+      void CYScriptApiImplementation::waitForEventTimeoutConfiguration(bool receiveDateTimeEvent,
+                                                                       const std::string& timeout,
+                                                                       shared::script::yScriptApi::CWaitForEventResult& result,
+                                                                       boost::posix_time::time_duration& timeoutDuration)
       {
-         for (const auto& kwId : keywordIdList)
-            assertExistingKeyword(kwId);
+         if (receiveDateTimeEvent)
+         {
+            const auto now = shared::currentTime::Provider().now();
+            boost::posix_time::ptime nextMinute(now.date(),
+                                                boost::posix_time::time_duration(now.time_of_day().hours(),
+                                                                                 now.time_of_day().minutes() + 1,
+                                                                                 0));
+            const auto durationForNextMinute = nextMinute - now;
+
+            if (!timeout.empty())
+            {
+               // Timeout is defined, use the shortest duration between defined timeout and duration for next minute
+               if (boost::posix_time::duration_from_string(timeout) < durationForNextMinute)
+               {
+                  timeoutDuration = boost::posix_time::duration_from_string(timeout);
+                  result.setType(shared::script::yScriptApi::CWaitForEventResult::kTimeout);
+                  YADOMS_LOG(debug) << "CYScriptApiImplementation::waitForEvent with timeout event of " << timeout;
+               }
+               else
+               {
+                  timeoutDuration = durationForNextMinute;
+                  result.setType(shared::script::yScriptApi::CWaitForEventResult::kDateTime);
+                  YADOMS_LOG(debug) << "CYScriptApiImplementation::waitForEvent with dateTime event at " << (now + timeoutDuration);
+               }
+            }
+            else
+            {
+               // Not timeout defined, use duration for next minute
+               result.setType(shared::script::yScriptApi::CWaitForEventResult::kDateTime);
+               timeoutDuration = durationForNextMinute;
+               YADOMS_LOG(debug) << "CYScriptApiImplementation::waitForEvent with dateTime event at " << (now + timeoutDuration);
+            }
+         }
+         else
+         {
+            if (!timeout.empty())
+            {
+               timeoutDuration = boost::posix_time::duration_from_string(timeout);
+               result.setType(shared::script::yScriptApi::CWaitForEventResult::kTimeout);
+               YADOMS_LOG(debug) << "CYScriptApiImplementation::waitForEvent with timeout event of " << timeout;
+            }
+            else
+            {
+               timeoutDuration = boost::posix_time::pos_infin;
+               YADOMS_LOG(debug) << "CYScriptApiImplementation::waitForEvent";
+            }
+         }
+      }
+
+      shared::script::yScriptApi::CWaitForEventResult CYScriptApiImplementation::waitForEvent(const std::vector<int>& keywordIdList,
+                                                                                              bool receiveDateTimeEvent,
+                                                                                              const std::string& timeout) const
+      {
+         enum
+            {
+               kKeyword = shared::event::kUserFirstId
+            };
 
          auto eventHandler(boost::make_shared<shared::event::CEventHandler>());
 
-         enum
-            {
-               kKeyword = shared::event::kUserFirstId,
-               kTime
-            };
+         if (!keywordIdList.empty())
+         {
+            for (const auto& kwId : keywordIdList)
+               assertExistingKeyword(kwId);
 
+            //create the action (= what to do when notification is observed)
+            auto keywordEventAction(boost::make_shared<notification::action::CEventPtrAction<notification::acquisition::CNotification>>(eventHandler, kKeyword));
 
-         //create the action (= what to do when notification is observed)
-         auto keywordEventAction(boost::make_shared<notification::action::CEventPtrAction<notification::acquisition::CNotification>>(eventHandler, kKeyword));
+            //create the acquisition observer
+            auto observer(boost::make_shared<notification::acquisition::CObserver>(keywordEventAction));
+            observer->resetKeywordIdFilter(keywordIdList);
 
-         //create the acquisition observer
-         auto observer(boost::make_shared<notification::acquisition::CObserver>(keywordEventAction));
-         observer->resetKeywordIdFilter(keywordIdList);
+            //register the observer
+            notification::CHelpers::CCustomSubscriber subscriber(observer);
+         }
 
-         //register the observer
-         notification::CHelpers::CCustomSubscriber subscriber(observer);
-
-
-         boost::shared_ptr<notification::IObserver> dateTimeObserver;
-         if (receiveDateTimeEvent)
-            dateTimeObserver = notification::CHelpers::subscribeBasicObserver<shared::dateTime::CDateTimeContainer>(eventHandler, kTime);
+         shared::script::yScriptApi::CWaitForEventResult result;
+         boost::posix_time::time_duration timeoutDuration;
+         waitForEventTimeoutConfiguration(receiveDateTimeEvent,
+                                          timeout,
+                                          result,
+                                          timeoutDuration);
 
          //wait for event
          try
          {
-            auto resultCode = eventHandler->waitForEvents(timeout.empty() ? boost::posix_time::pos_infin : boost::posix_time::duration_from_string(timeout));
+            auto resultCode = eventHandler->waitForEvents(timeoutDuration);
 
-            shared::script::yScriptApi::CWaitForEventResult result;
             switch (resultCode)
             {
             case shared::event::kTimeout:
                {
                   YADOMS_LOG(debug) << "CYScriptApiImplementation : kTimeout";
-                  result.setType(shared::script::yScriptApi::CWaitForEventResult::kTimeout);
+                  // Type already set (by timeout configuration)
+                  result.setValue(boost::posix_time::to_iso_string(shared::currentTime::Provider().now()));
                   break;
                }
 
@@ -236,19 +294,6 @@ namespace automation
                   break;
                }
 
-            case kTime:
-               {
-                  YADOMS_LOG(debug) << "CYScriptApiImplementation : kTime";
-                  auto timeNotif = eventHandler->getEventData<boost::shared_ptr<shared::dateTime::CDateTimeContainer>>();
-
-                  result.setType(shared::script::yScriptApi::CWaitForEventResult::kDateTime);
-                  if (timeNotif)
-                  {
-                     YADOMS_LOG(debug) << "CYScriptApiImplementation : kTime" << timeNotif->getBoostDateTime();
-                     result.setValue(boost::posix_time::to_iso_string(timeNotif->getBoostDateTime()));
-                  }
-                  break;
-               }
             default:
                {
                   YADOMS_LOG(error) << "CYScriptApiImplementation::waitForEvent : unknown result code " << resultCode;
@@ -256,17 +301,11 @@ namespace automation
                }
             }
 
-            if (dateTimeObserver)
-               notification::CHelpers::unsubscribeObserver(dateTimeObserver);
-
             return result;
          }
          catch (std::exception& exception)
          {
             YADOMS_LOG(error) << "waitForEvent : " << exception.what();
-
-            if (dateTimeObserver)
-               notification::CHelpers::unsubscribeObserver(dateTimeObserver);
             throw;
          }
       }

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "SmartBatteryMonitor.h"
 #include "Identification.h"
+#include "OneWireException.hpp"
+#include <shared/Log.h>
 
 namespace device
 {
@@ -12,60 +14,136 @@ namespace device
    {
       BOOST_ASSERT_MSG(m_identification->family() == kSmartBatteryMonitor, "Invalid family number");
 
-      m_kwTemperature = boost::make_shared<yApi::historization::CTemperature>("temperature");
-      m_keywords.push_back(m_kwTemperature);
-
-      switch (m_io->readSensorType())
-      {
-      case ioInterfaces::ISmartBatteryMonitor::kMultisensorTemperature: break; // Nothing to do, all sensors have temperature (sensor is inside DS2438), temperature is already added
-      case ioInterfaces::ISmartBatteryMonitor::kMultisensorTemperatureHumidity:
-         m_kwHumidity = boost::make_shared<yApi::historization::CHumidity>("humidity");
-         m_keywords.push_back(m_kwHumidity);
-         break;
-      case ioInterfaces::ISmartBatteryMonitor::kMultisensorTemperatureLight:
-         m_kwLight = boost::make_shared<yApi::historization::CIllumination>("light");
-         m_keywords.push_back(m_kwLight);
-         break;
-      default: // Unable to determine sensor connected to DS2438, so add all values
-         m_kwHumidity = boost::make_shared<yApi::historization::CHumidity>("humidity");
-         m_keywords.push_back(m_kwHumidity);
-         m_kwPressure = boost::make_shared<yApi::historization::CPressure>("pressure");
-         m_keywords.push_back(m_kwPressure);
-         m_kwLight = boost::make_shared<yApi::historization::CIllumination>("light");
-         m_keywords.push_back(m_kwLight);
-         m_kwVad = boost::make_shared<yApi::historization::CVoltage>("vad");
-         m_keywords.push_back(m_kwVad);
-         m_kwVdd = boost::make_shared<yApi::historization::CVoltage>("vdd");
-         m_keywords.push_back(m_kwVdd);
-         m_kwVis = boost::make_shared<yApi::historization::CVoltage>("vis");
-         m_keywords.push_back(m_kwVis);
-         break;
-      }
+      creatDefaultKeywordList();
    }
 
    CSmartBatteryMonitor::~CSmartBatteryMonitor()
    {
    }
 
+   void CSmartBatteryMonitor::creatDefaultKeywordList()
+   {
+      // Default keyword list, without configuration
+      m_kwTemperature = boost::make_shared<yApi::historization::CTemperature>("temperature");
+      m_keywords.push_back(m_kwTemperature);
+
+      m_kwVdd = boost::make_shared<yApi::historization::CVoltage>("vdd");
+      m_keywords.push_back(m_kwVdd);
+   }
+
+   void CSmartBatteryMonitor::setConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                                               const shared::CDataContainer& configuration)
+   {
+      m_keywords.clear();
+      creatDefaultKeywordList();
+
+      m_configuration = boost::make_shared<const CSmartBatteryMonitorConfiguration>(configuration);
+
+      YADOMS_LOG(information) << "Configuration for device " << ident()->deviceName() << " :";
+      YADOMS_LOG(information) << "  - vadSensor = " << m_configuration->vadSensor();
+      YADOMS_LOG(information) << "  - visInput = " << m_configuration->visInput();
+
+      switch (m_configuration->vadSensor())
+      {
+      case CSmartBatteryMonitorConfiguration::kNone:
+         break;
+      case CSmartBatteryMonitorConfiguration::kHumidity:
+      case CSmartBatteryMonitorConfiguration::kHIH3600:
+      case CSmartBatteryMonitorConfiguration::kHIH4000:
+      case CSmartBatteryMonitorConfiguration::kHTM1735:
+         m_kwHumidity = boost::make_shared<yApi::historization::CHumidity>("humidity");
+         m_keywords.push_back(m_kwHumidity);
+         break;
+      case CSmartBatteryMonitorConfiguration::kS3_R1_A:
+         m_kwLight = boost::make_shared<yApi::historization::CIllumination>("light");
+         m_keywords.push_back(m_kwLight);
+         break;
+      case CSmartBatteryMonitorConfiguration::kB1_R1_A:
+         m_kwPressure = boost::make_shared<yApi::historization::CPressure>("pressure");
+         m_keywords.push_back(m_kwPressure);
+         break;
+      case CSmartBatteryMonitorConfiguration::kRaw:
+         m_kwVad = boost::make_shared<yApi::historization::CVoltage>("vad");
+         m_keywords.push_back(m_kwVad);
+         break;
+      default:
+         YADOMS_LOG(error) << "Invalid configuration of DS2438 VAD input " << m_configuration->vadSensor();
+         break;
+      }
+
+      if (m_configuration->visInput())
+      {
+         m_kwVis = boost::make_shared<yApi::historization::CVoltage>("vis");
+         m_keywords.push_back(m_kwVis);
+      }
+
+      api->declareKeywords(ident()->deviceName(),
+                           m_keywords);
+   }
+
    void CSmartBatteryMonitor::read() const
    {
       m_kwTemperature->set(m_io->readTemperature());
-      if (!!m_kwHumidity)
-         m_kwHumidity->set(m_io->readHumidity());
-      if (!!m_kwPressure)
-         m_kwPressure->set(m_io->readPressure());
-      if (!!m_kwLight)
-         m_kwLight->set(m_io->readLight());
-      if (!!m_kwVad)
-         m_kwVad->set(m_io->readVad());
-      if (!!m_kwVdd)
-         m_kwVdd->set(m_io->readVdd());
-      if (!!m_kwVis)
-         m_kwVis->set(m_io->readVis());
+      m_kwVdd->set(m_io->readVdd());
+
+      try
+      {
+         auto vadSensor = m_configuration ? m_configuration->vadSensor() : CSmartBatteryMonitorConfiguration::kNone;
+         switch (vadSensor)
+         {
+         case CSmartBatteryMonitorConfiguration::kNone:
+            break;
+         case CSmartBatteryMonitorConfiguration::kHumidity:
+            if (!!m_kwHumidity)
+               m_kwHumidity->set(m_io->readHumidity());
+            break;
+         case CSmartBatteryMonitorConfiguration::kHIH3600:
+            if (!!m_kwHumidity)
+               m_kwHumidity->set(m_io->readHIH3600());
+            break;
+         case CSmartBatteryMonitorConfiguration::kHIH4000:
+            if (!!m_kwHumidity)
+               m_kwHumidity->set(m_io->readHIH4000());
+            break;
+         case CSmartBatteryMonitorConfiguration::kHTM1735:
+            if (!!m_kwHumidity)
+               m_kwHumidity->set(m_io->readHTM1735());
+            break;
+         case CSmartBatteryMonitorConfiguration::kS3_R1_A:
+            if (!!m_kwLight)
+               m_kwLight->set(m_io->readS3_R1_A());
+            break;
+         case CSmartBatteryMonitorConfiguration::kB1_R1_A:
+            if (!!m_kwPressure)
+               m_kwPressure->set(m_io->readB1_R1_A());
+            break;
+         case CSmartBatteryMonitorConfiguration::kRaw:
+            if (!!m_kwVad)
+               m_kwVad->set(m_io->readVad());
+            break;
+         default:
+            YADOMS_LOG(error) << "Invalid configuration of DS2438 VAD input " << m_configuration->vadSensor();
+            break;
+         }
+      }
+      catch(COneWireException& e)
+      {
+         YADOMS_LOG(warning) << "Device " << ident()->deviceName() << " : unable to read VAD sensor";
+      }
+
+      try
+      {
+         if (!!m_kwVis)
+            m_kwVis->set(m_io->readVis());
+      }
+      catch(COneWireException& e)
+      {
+         YADOMS_LOG(warning) << "Device " << ident()->deviceName() << " : unable to read vis value";
+      }
    }
 
    void CSmartBatteryMonitor::write(const std::string& keyword, const std::string& command)
    {
-      std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
+      YADOMS_LOG(error) << "Try to drive the read-only keyword " << keyword;
    }
 } // namespace device

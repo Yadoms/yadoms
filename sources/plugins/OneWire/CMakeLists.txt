@@ -53,6 +53,8 @@ if (UNIX AND NOT APPLE)
       device/SingleTemperature.cpp
       device/SmartBatteryMonitor.h
       device/SmartBatteryMonitor.cpp
+      device/SmartBatteryMonitorConfiguration.h
+      device/SmartBatteryMonitorConfiguration.cpp
       device/TemperatureIo.h
       device/TemperatureIo.cpp
       device/TemperatureMemory.hpp

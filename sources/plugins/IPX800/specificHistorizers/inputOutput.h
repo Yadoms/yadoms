@@ -33,6 +33,12 @@ namespace specificHistorizers
       std::string getHardwareName() const;
 
       //-----------------------------------------------------
+      ///\brief                     set the hardware name
+      ///\param[in]                 set the new Name used by the IPX800 to address this information.
+      //-----------------------------------------------------
+      void setNewHardwareName(std::string& newName);
+
+      //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
       virtual ~CInputOuput();

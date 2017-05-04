@@ -1,6 +1,7 @@
 #pragma once
 
 #include <shared/communication/Buffer.hpp>
+#include "../ISequenceNumber.h"
 
 //--------------------------------------------------------------
 /// \brief	This file provides helpers to use RFXtrx.h file (provided by RFXCom)
@@ -42,13 +43,13 @@ extern const size_t RFXMESSAGE_maxSize;
 //--------------------------------------------------------------
 extern const BYTE DONT_CHECK_SUBTYPE;
 extern const size_t DONT_CHECK_SIZE;
-extern const unsigned int DONT_CHECK_SEQUENCE_NUMBER;
+extern const boost::shared_ptr<ISequenceNumber> DONT_CHECK_SEQUENCE_NUMBER;
 void CheckReceivedMessage(const RBUF& rbuf,
                           size_t rbufSize,
                           BYTE expectedType,
                           BYTE expectedSubType,
                           size_t expectedSize,
-                          unsigned int expectedSeqNumber);
+                          boost::shared_ptr<ISequenceNumber> sequenceNumberChecker);
 
 //--------------------------------------------------------------
 /// \brief	                           Make a send buffer from RBUF structure
@@ -56,7 +57,8 @@ void CheckReceivedMessage(const RBUF& rbuf,
 /// \param[in] subStructureSize        RBUF Substructure size
 /// \return                            Buffer
 //--------------------------------------------------------------
-shared::communication::CByteBuffer toBuffer(const RBUF& rbuf, size_t subStructureSize);
+shared::communication::CByteBuffer toBuffer(const RBUF& rbuf,
+                                            size_t subStructureSize);
 
 //--------------------------------------------------------------
 /// \brief	                           Make a buffer queue from one buffer
@@ -64,7 +66,8 @@ shared::communication::CByteBuffer toBuffer(const RBUF& rbuf, size_t subStructur
 /// \param[in] subStructureSize        RBUF Substructure size
 /// \return                            Buffer queue containing only one buffer
 //--------------------------------------------------------------
-boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > toBufferQueue(const RBUF& rbuf, size_t subStructureSize);
+boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> toBufferQueue(const RBUF& rbuf,
+                                                                                size_t subStructureSize);
 
 //--------------------------------------------------------------
 /// \brief	                           Normalize battery level
@@ -87,5 +90,6 @@ int NormalizeRssiLevel(unsigned char fromRfxcom);
 /// \param[in] negative                Temperature sign (false:positive, true:negative)
 /// \return                            Temperature in °C
 //--------------------------------------------------------------
-double NormalizeTemperature(unsigned char fromRfxcomTemperatureHigh, unsigned char fromRfxcomTemperatureLow, bool negative = false);
-
+double NormalizeTemperature(unsigned char fromRfxcomTemperatureHigh,
+                            unsigned char fromRfxcomTemperatureLow,
+                            bool negative = false);

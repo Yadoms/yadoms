@@ -114,5 +114,20 @@ void CIOManager::OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
    m_password = configuration.getPassword();
 }
 
+void CIOManager::OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                                             const boost::shared_ptr<const yApi::ISetDeviceConfiguration> newConfiguration)
+{
+   /* TODO : To be checked
+   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorExtension;
+
+   for (iteratorExtension = m_devicesList.begin(); iteratorExtension != m_devicesList.end(); ++iteratorExtension)
+   {
+      if ((*iteratorExtension)->getDeviceName() == newConfiguration->name())
+      {
+         (*iteratorExtension)->setNewConfiguration(newConfiguration->configuration());
+      }
+   }*/
+}
+
 CIOManager::~CIOManager()
 {}

@@ -72,7 +72,7 @@ namespace pluginSystem
          switch (startInstancesEventHandler.waitForEvents(boost::posix_time::seconds(2)))
          {
          case kStartInstancesTimeoutId:
-            YADOMS_LOG(error) << "Timeout starting plugin instances : some instance(s) are not running";
+            YADOMS_LOG(warning) << "Timeout starting plugin instances : some instance(s) are not running";
             return;
          case shared::event::kTimeout: // Every 2 seconds
             for (auto it = startedInstanceIds.begin(); it != startedInstanceIds.end();)
@@ -333,6 +333,12 @@ namespace pluginSystem
    {
       try
       {
+         if (!m_dataProvider->getDeviceRequester()->deviceExists(deviceId))
+            return;
+
+         if (m_dataProvider->getDeviceRequester()->isDeviceBlacklisted(deviceId))
+            return;
+
          auto device = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
          auto pluginInstanceId = device->PluginId();
 

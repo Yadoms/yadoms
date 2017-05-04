@@ -156,7 +156,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
          default:
             {
-               YADOMS_LOG(error) << "Unknown message id" ;
+               YADOMS_LOG(warning) << "Unknown message id " << api->getEventHandler().getEventId();
                break;
             }
          }
@@ -229,6 +229,7 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage& xplMessage,
                details.set("innerDetails", deviceAddress.getInnerDetails());
                details.set("source", realSource);
                api->declareDevice(deviceAddress.getId(),
+                                  deviceAddress.getCommercialName(),
                                   deviceAddress.getCommercialName(),
                                   std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(),
                                   details);
@@ -357,15 +358,14 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
       const auto& deviceCfg = data->getData().getConfiguration();
 
       YADOMS_LOG(information) << deviceCfg.serialize() ;
-
-      auto chosenDeviceType = data->getData().getConfiguration().get<std::string>("type.activeSection");
       std::string internalProtocol;
-      if (boost::istarts_with(chosenDeviceType, "x10"))
+      std::string deviceType = data->getData().getDeviceType();
+      if (boost::istarts_with(deviceType, "x10"))
          internalProtocol = "x10.basic";
-      if (boost::istarts_with(chosenDeviceType, "ac"))
+      if (boost::istarts_with(deviceType, "ac"))
          internalProtocol = "ac.basic";
 
-      auto innerContent = data->getData().getConfiguration().get<shared::CDataContainer>("type.content." + chosenDeviceType + ".content");
+      auto innerContent = data->getData().getConfiguration();
 
 
       auto rule = m_deviceManager->identifyRule(internalProtocol, m_instanceManager);
@@ -386,6 +386,7 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
                details.set("writingProtocol", deviceAddress.getWritingXplProtocol().toString());
                details.set("source", std::string("yadomssource!"));
                api->declareDevice(deviceAddress.getId(),
+                                  deviceAddress.getCommercialName(),
                                   deviceAddress.getCommercialName(),
                                   std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(),
                                   details);
@@ -410,7 +411,7 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
       }
       else
       {
-         auto errorMessage = (boost::format("Unsupported protocol = %1%") % chosenDeviceType).str();
+         auto errorMessage = (boost::format("Unsupported protocol = %1%") % deviceType).str();
          data->sendError(errorMessage);
          YADOMS_LOG(error) << errorMessage ;
       }

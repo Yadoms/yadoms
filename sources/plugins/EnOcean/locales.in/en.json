@@ -8,17 +8,25 @@
     }
   },
   "deviceConfiguration": {
-    "manufacturer": {
-      "name": "Manufacturer",
-      "description": "Enter here the manufacturer of your device"
-    },
-    "model": {
-      "name": "Model",
-      "description": "Enter here the model of your device"
-    },
-    "profile": {
-      "name": "Profile",
-      "description": "Select the device profile, normaly provided on the device label or manual"
+    "staticConfigurationSchema": {
+      "schemas" : {
+         "all" : {
+           "content" : {
+             "manufacturer": {
+               "name": "Manufacturer",
+               "description": "Enter here the manufacturer of your device"
+             },
+             "model": {
+               "name": "Model",
+               "description": "Enter here the model of your device"
+             },
+             "profile": {
+               "name": "Profile",
+               "description": "Select the device profile, normaly provided on the device label or manual"
+             }
+           }
+         }
+       }
     }
   },
   "customLabels": {
