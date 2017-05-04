@@ -119,7 +119,7 @@ namespace equipments
       // change all hardware names
       for (iterator = m_keywordList.begin(); iterator != m_keywordList.end(); ++iterator)
       {
-         (*iterator)->setNewHardwareName("D" + boost::lexical_cast<std::string>(m_position * 24 + counter + 1));
+         (*iterator)->setNewHardwareName(std::string("D") + boost::lexical_cast<std::string>(m_position * 24 + counter + 1));
          ++counter;
       }
 

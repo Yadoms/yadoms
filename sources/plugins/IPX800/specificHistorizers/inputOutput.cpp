@@ -20,7 +20,7 @@ namespace specificHistorizers
       return m_hardwareName;
    }
 
-   void CInputOuput::setNewHardwareName(std::string& newName)
+   void CInputOuput::setNewHardwareName(const std::string& newName)
    {
       m_hardwareName = newName;
    }
