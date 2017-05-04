@@ -9,15 +9,28 @@ namespace device
    class CSmartBatteryMonitorConfiguration
    {
    public:
+      enum EVadSensorType
+      {
+         kNone = 0,
+         kHumidity,
+         kHIH3600,
+         kHIH4000,
+         kHTM1735,
+         kS3_R1_A,
+         kB1_R1_A,
+         kRaw
+      };
+
+   public:
       CSmartBatteryMonitorConfiguration(const shared::CDataContainer& configuration);
       virtual ~CSmartBatteryMonitorConfiguration();
 
-      bool historizeHumidity() const;
-      bool historizeLight() const;
+      EVadSensorType vadSensor() const;
+      bool visInput() const;
 
    private:
-      bool m_historizeHumidity;
-      bool m_historizeLight;
+      EVadSensorType m_vadSensor;
+      bool m_visInput;
    };
 
 } // namespace device

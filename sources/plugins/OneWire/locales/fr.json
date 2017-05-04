@@ -44,13 +44,23 @@
             }
           },
           "content": {
-            "humidity": {
-              "name": "Humidité",
-              "description": "Ce capteur mesure l'humidité"
+            "vadSensor": {
+              "name": "Entrée VAD",
+              "description": "Sélectionner le type de capteur connecté à l'entrée VAD du DS2438",
+              "values" : {
+                "none": "Aucun",
+                "humidity" : "Humidité",
+                "HIH3600-humidity" : "HIH3600 (humidité)",
+                "HIH4000-humidity" : "HIH4000 (humidité)",
+                "HTM1735-humidity" : "HTM1735 (humidité)",
+                "S3-R1-A-illuminance" : "S3-R1-A (luminosité)",
+                "B1-R1-A-pressure" : "B1-R1-A (pression)",
+                "raw" : "Enregistrer la valeur brute (tension)"
+              }
             },
-            "light": {
-              "name": "Lumière",
-              "description": "Ce capteur mesure la lumière"
+            "visSensor": {
+              "name": "Entrée VIS",
+              "description": "Active l'enregistrement de l'entrée VIS (en valeur brute)"
             }
           }
         }

@@ -30,14 +30,16 @@ namespace owfs
 
       protected:
          // ioInterfaces::ISmartBatteryMonitor implementation
-         virtual ESensorType readSensorType() const;
-         virtual double readTemperature() const;
-         virtual double readHumidity() const;
-         virtual double readPressure() const;
-         virtual double readLight() const;
-         virtual double readVad() const;
-         virtual double readVdd() const;
-         virtual double readVis() const;
+         double readTemperature() const override;
+         double readHumidity() const override;
+         double readHIH3600() const override;
+         double readHIH4000() const override;
+         double readHTM1735() const override;
+         double readB1_R1_A() const override;
+         double readS3_R1_A() const override;
+         double readVad() const override;
+         double readVdd() const override;
+         double readVis() const override;
          // [END] ioInterfaces::ISmartBatteryMonitor implementation
 
       private:
@@ -51,8 +53,11 @@ namespace owfs
          //--------------------------------------------------------------
          boost::shared_ptr<ioInterfaces::ITemperature> m_temperatureIo;
          boost::shared_ptr<ioInterfaces::IHumidity> m_humidityIo;
-         boost::shared_ptr<ioInterfaces::IPressure> m_pressureIo;
-         boost::shared_ptr<ioInterfaces::IIllumination> m_light;
+         boost::shared_ptr<ioInterfaces::IHumidity> m_HIH3600Io;
+         boost::shared_ptr<ioInterfaces::IHumidity> m_HIH4000Io;
+         boost::shared_ptr<ioInterfaces::IHumidity> m_HTM1735Io;
+         boost::shared_ptr<ioInterfaces::IPressure> m_B1_R1_AIo;
+         boost::shared_ptr<ioInterfaces::IIllumination> m_S3_R1_AIo;
          boost::shared_ptr<ioInterfaces::IVoltage> m_vadIo;
          boost::shared_ptr<ioInterfaces::IVoltage> m_vddIo;
          boost::shared_ptr<ioInterfaces::IVoltage> m_visIo;
