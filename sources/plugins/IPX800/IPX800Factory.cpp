@@ -125,18 +125,25 @@ std::string CIPX800Factory::createDeviceManually(boost::shared_ptr<yApi::IYPlugi
 shared::CDataContainer CIPX800Factory::bindSlotsX8R()
 {
    shared::CDataContainer ev;
+   std::string defaultValue = "";
 
    for (int counter = 0; counter < 6; ++counter)
    {
       // Add only not used slots
       if (!X8RSlotused[counter])
-         ev.set(boost::lexical_cast<std::string>(counter + 1), "");
+      {
+         ev.set(boost::lexical_cast<std::string>(counter + 1), (boost::format("SLOT%1%") % (counter + 1)).str());
+         if (defaultValue.empty())
+            defaultValue = boost::lexical_cast<std::string>(counter + 1);
+      }
    }
 
    shared::CDataContainer en;
    en.set("type", "enum");
+   en.set("name", "SLOT");
+   en.set("description", "Choose the slot");
    en.set("values", ev);
-   en.set("defaultValue", "1");
+   en.set("defaultValue", defaultValue);
 
    return en;
 }
@@ -144,18 +151,26 @@ shared::CDataContainer CIPX800Factory::bindSlotsX8R()
 shared::CDataContainer CIPX800Factory::bindSlotsX8D()
 {
    shared::CDataContainer ev;
+   std::string defaultValue = "";
 
    for (int counter = 0; counter < 6; ++counter)
    {
       // Add only not used slots
       if (!X8DSlotused[counter])
-         ev.set(boost::lexical_cast<std::string>(counter + 1), "");
+      {
+         ev.set(boost::lexical_cast<std::string>(counter + 1), (boost::format("SLOT%1%") % (counter + 1)).str());
+
+         if (defaultValue.empty())
+            defaultValue = boost::lexical_cast<std::string>(counter + 1);
+      }
    }
 
    shared::CDataContainer en;
    en.set("type", "enum");
+   en.set("name", "SLOT");
+   en.set("description", "Choose the slot");
    en.set("values", ev);
-   en.set("defaultValue", "SLOT1");
+   en.set("defaultValue", defaultValue);
 
    return en;
 }
@@ -163,19 +178,26 @@ shared::CDataContainer CIPX800Factory::bindSlotsX8D()
 shared::CDataContainer CIPX800Factory::bindSlotsX24D()
 {
    shared::CDataContainer ev;
+   std::string defaultValue = "";
 
    for (int counter = 0; counter < 2; ++counter)
    {
       // Add only not used slots
-      if (!X8DSlotused[counter*3] && !X8DSlotused[counter * 3 + 1] && !X8DSlotused[counter * 3 + 2])
-         ev.set(boost::lexical_cast<std::string>(counter + 1), "");
+      if (!X8DSlotused[counter * 3] && !X8DSlotused[counter * 3 + 1] && !X8DSlotused[counter * 3 + 2])
+      {
+         ev.set(boost::lexical_cast<std::string>(counter + 1), (boost::format("SLOT%1%") % (counter+1)).str() );
+
+         if (defaultValue.empty())
+            defaultValue = boost::lexical_cast<std::string>(counter + 1);
+      }
    }
 
    shared::CDataContainer en;
    en.set("type", "enum");
+   en.set("name", "SLOT");
+   en.set("description", "Choose the slot");
    en.set("values", ev);
-   en.set("defaultValue", "SLOT1");
-
+   en.set("defaultValue", defaultValue);
    return en;
 }
 
