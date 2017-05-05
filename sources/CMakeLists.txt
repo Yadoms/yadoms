@@ -1258,3 +1258,16 @@ set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
 
 INCLUDE(CPack)
 
+
+##################################################################################################
+## SONARQUBE ANALYSIS
+##################################################################################################
+include(cmake/analysis.cmake)
+analyse(
+      yadoms
+      ${YADOMS_VERSION}
+      "${YADOMS_SRC}"
+      Yadoms.SonarQube.Analysis.txt
+      Yadoms.SonarQube.Analysis.xml
+   )
+   
