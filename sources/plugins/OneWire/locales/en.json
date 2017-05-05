@@ -44,13 +44,23 @@
             }
           },
           "content": {
-            "humidity": {
-              "name": "Humidity",
-              "description": "This sensor measures humidity"
+            "vadSensor": {
+              "name": "VAD input",
+              "description": "Select the sensor type connected to VAD input",
+              "values" : {
+                "none": "None",
+                "humidity" : "Humidity",
+                "HIH3600-humidity" : "HIH3600 (humidity)",
+                "HIH4000-humidity" : "HIH4000 (humidity)",
+                "HTM1735-humidity" : "HTM1735 (humidity)",
+                "S3-R1-A-illuminance" : "S3-R1-A (illuminance)",
+                "B1-R1-A-pressure" : "B1-R1-A (pressure)",
+                "raw" : "Record the raw value (voltage)"
+              }
             },
-            "light": {
-              "name": "Light",
-              "description": "This sensor measures light"
+            "visSensor": {
+              "name": "VIS input",
+              "description": "Enable recording the VIS input (raw value)"
             }
           }
         }

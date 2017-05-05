@@ -37,10 +37,13 @@ namespace device
       {
          return m_keywords;
       }
-      void setConfiguration(const shared::CDataContainer& configuration) override;
+      void setConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                            const shared::CDataContainer& configuration) override;
       void read() const override;
       void write(const std::string& keyword, const std::string& command) override;
       // [END] IDevice implementation
+
+      void creatDefaultKeywordList();
 
    private:
       //--------------------------------------------------------------
@@ -62,11 +65,11 @@ namespace device
       /// \brief	The keywords
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CTemperature> m_kwTemperature;
+      boost::shared_ptr<yApi::historization::CVoltage> m_kwVdd;
       boost::shared_ptr<yApi::historization::CHumidity> m_kwHumidity;
       boost::shared_ptr<yApi::historization::CPressure> m_kwPressure;
       boost::shared_ptr<yApi::historization::CIllumination> m_kwLight;
       boost::shared_ptr<yApi::historization::CVoltage> m_kwVad;
-      boost::shared_ptr<yApi::historization::CVoltage> m_kwVdd;
       boost::shared_ptr<yApi::historization::CVoltage> m_kwVis;
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > m_keywords;
    };
