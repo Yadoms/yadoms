@@ -1,67 +1,63 @@
 
 
-macro(create_sonar_project_properties_file sonarQubeKey target projectVersion sources outputFile)
+macro(create_sonar_project_properties_file projectName projectVersion sources cppCheckReport outputFile)
 
-message("Create SonarQube configuration file ${outputFile} for target ${target}(v${projectVersion})")
-
-		set(SONARQUBE_KEY ${sonarQubeKey})
-		set(SONARQUBE_PROJECT_NAME ${target})
+message(STATUS "  Create SonarQube configuration file ${outputFile} for projectName ${projectName}(v${projectVersion})")
 		
-      set(SONARQUBE_VERSION ${projectVersion})
-		get_sonarqube_defines(SONARQUBE_DEFINES ${target})
-		get_sonarqube_sources(SONARQUBE_SOURCES ${target} "${sources}")
-		get_sonarqube_includes(SONARQUBE_INCLUDES ${target})
-		get_sonarqube_tests(SONARQUBE_TESTS ${target})
-		get_sonarqube_dr_memory(SONARQUBE_DR_MEMORY ${target})
-		get_sonarqube_coverage(SONARQUBE_COVERAGE ${target})
+		get_sonarqube_defines(SONARQUBE_DEFINES ${projectName})
+		get_sonarqube_sources(SONARQUBE_SOURCES ${projectName} "${sources}")
+		get_sonarqube_includes(SONARQUBE_INCLUDES ${projectName})
+		get_sonarqube_tests(SONARQUBE_TESTS ${projectName})
 		
 		list_to_string(CONTENT
-			sonar.projectKey=${SONARQUBE_KEY}
-			sonar.projectVersion=${SONARQUBE_VERSION}
-			sonar.projectName=${SONARQUBE_PROJECT_NAME}
+			sonar.projectKey=${projectName}
+			sonar.projectVersion=${projectVersion}
+			sonar.projectName=${projectName}
 			sonar.language=c++
 			sonar.sources=${SONARQUBE_SOURCES}
 			sonar.cxx.coverage.forceZeroCoverage=False
 			sonar.cxx.includeDirectories=${SONARQUBE_INCLUDES}
+         
+         sonar.cxx.cppcheck.path=${CPPCHECK_EXECUTABLE}        # TODO utile ?
+         sonar.cxx.cppcheck.reportPath=${cppCheckReport}
+         
 			${SONARQUBE_TESTS}
-			${SONARQUBE_DR_MEMORY}
-			${SONARQUBE_COVERAGE}
 		)
 		set(CONTENT "${CONTENT}\nsonar.cxx.defines=${SONARQUBE_DEFINES}")
 	
 		FILE(WRITE ${outputFile} ${CONTENT})
 		
-		get_msbuild_entry(SONAR_LANGUAGE sonar.language c++)
-		get_msbuild_entry(SONAR_SOURCES sonar.inclusions  ${SONARQUBE_SOURCES})
-		get_msbuild_entry(SONAR_FORCE_ZERO_COVERAGE sonar.cxx.coverage.forceZeroCoverage False)
-		get_msbuild_entry(SONAR_INCLUDE_DIRECTORIES sonar.cxx.includeDirectories ${SONARQUBE_INCLUDES})
-		get_msbuild_entry(SONAR_HOST sonar.host.url http://localhost:9000)
-		get_root(LOCAL_REPO_PATH)
-		
-		
-		get_target_property(testTagets ${target} TESTED_BY)
-		set(unitReportPaths)
-		SET(i 1)
-		foreach (testTarget ${testTargets})
-			set(unitReportPaths ${unitReportPaths} ${LOCAL_REPO_PATH}/TestResultsSQ/File${i}.trx)
-			MATH(EXPR i "${i}+1")
-		ENDFOREACH()
-		JOIN("${unitReportPaths}" "," unitReportPaths)
-		
-		if (unitReportPaths)
-		get_msbuild_entry(SONAR_TESTS sonar.cxx.vstest.reportsPaths ${unitReportPaths})
-		endif()
-		# get_target_property(externalSources ${target} EXTERNAL_SOURCES)
-		# get_root(LOCAL_REPO_PATH)
-		# STRING(REGEX REPLACE "${LOCAL_REPO_PATH}/" "" externalSources "${externalSources}" )
-		# STRING(REGEX REPLACE ";" "," externalSources "${externalSources}" )
+		# get_msbuild_entry(SONAR_LANGUAGE sonar.language c++)
+		# get_msbuild_entry(SONAR_SOURCES sonar.inclusions  ${SONARQUBE_SOURCES})
+		# get_msbuild_entry(SONAR_FORCE_ZERO_COVERAGE sonar.cxx.coverage.forceZeroCoverage False)
+		# get_msbuild_entry(SONAR_INCLUDE_DIRECTORIES sonar.cxx.includeDirectories ${SONARQUBE_INCLUDES})
 		# get_msbuild_entry(SONAR_HOST sonar.host.url http://localhost:9000)
+		# get_root(LOCAL_REPO_PATH)
 		
-		#get_msbuild_entry(COVERAGE_UNIT_TESTS sonar.cxx.coverage.reportPath UnitTestCoverageResults.xml)
-		#get_msbuild_entry(COVERAGE_ACCEPTANCE_TESTS sonar.cxx.coverage.itReportPath AcceptanceTestCoverageResults.xml)
-		get_msbuild_entry(COVERAGE_ALL_TESTS sonar.cxx.coverage.overallReportPath ${LOCAL_REPO_PATH}/AllTestCoverageResults.xml)
-		get_msbuild_entry(COVERAGE_ACCEPTANCE_TESTS sonar.cxx.coverage.itReportPath ${LOCAL_REPO_PATH}/AllTestCoverageResults.xml)
-		get_msbuild_entry(CPPCHECK_REPORTS sonar.cxx.cppcheck.reportPath *_cppcheck.xml)
+		
+		# get_target_property(testTagets ${projectName} TESTED_BY)
+		# set(unitReportPaths)
+		# SET(i 1)
+		# foreach (testTarget ${testTargets})
+			# set(unitReportPaths ${unitReportPaths} ${LOCAL_REPO_PATH}/TestResultsSQ/File${i}.trx)
+			# MATH(EXPR i "${i}+1")
+		# ENDFOREACH()
+		# JOIN("${unitReportPaths}" "," unitReportPaths)
+		
+		# if (unitReportPaths)
+		# get_msbuild_entry(SONAR_TESTS sonar.cxx.vstest.reportsPaths ${unitReportPaths})
+		# endif()
+		# # get_target_property(externalSources ${projectName} EXTERNAL_SOURCES)
+		# # get_root(LOCAL_REPO_PATH)
+		# # STRING(REGEX REPLACE "${LOCAL_REPO_PATH}/" "" externalSources "${externalSources}" )
+		# # STRING(REGEX REPLACE ";" "," externalSources "${externalSources}" )
+		# # get_msbuild_entry(SONAR_HOST sonar.host.url http://localhost:9000)
+		
+		# #get_msbuild_entry(COVERAGE_UNIT_TESTS sonar.cxx.coverage.reportPath UnitTestCoverageResults.xml)
+		# #get_msbuild_entry(COVERAGE_ACCEPTANCE_TESTS sonar.cxx.coverage.itReportPath AcceptanceTestCoverageResults.xml)
+		# get_msbuild_entry(COVERAGE_ALL_TESTS sonar.cxx.coverage.overallReportPath ${LOCAL_REPO_PATH}/AllTestCoverageResults.xml)
+		# get_msbuild_entry(COVERAGE_ACCEPTANCE_TESTS sonar.cxx.coverage.itReportPath ${LOCAL_REPO_PATH}/AllTestCoverageResults.xml)
+		# get_msbuild_entry(CPPCHECK_REPORTS sonar.cxx.cppcheck.reportPath *_cppcheck.xml)
 	
 endmacro()
 
@@ -73,9 +69,9 @@ macro(get_msbuild_entry output key value)
 
 endmacro()
 
-MACRO(get_sonarqube_tests output target)
+MACRO(get_sonarqube_tests output projectName)
 
-	get_target_property(testTagets ${target} TESTED_BY)
+	get_target_property(testTagets ${projectName} TESTED_BY)
 	set(SONARQUBE_JUNIT_RESULTS)
 	foreach (testTarget ${testTargets})
 		get_target_property(kind ${testTarget} TEST_FRAMEWORK)
@@ -98,10 +94,10 @@ MACRO(get_sonarqube_tests output target)
 
 ENDMACRO()
 
-MACRO(get_sonarqube_includes output target)
+MACRO(get_sonarqube_includes output projectName)
 
 	# TODO voir si utile get_std_headers_path(stdHeaders)
-	get_target_property(targetIncludes ${target} INCLUDE_DIRECTORIES)
+	get_target_property(targetIncludes ${projectName} INCLUDE_DIRECTORIES)
 	set(targetIncludes ${targetIncludes}
 		"C:/Program Files (x86)/Windows Kits/10/Include/10.0.10240.0/ucrt"#TODO ne pas laisser en dur
 		"C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include"#TODO ne pas laisser en dur
@@ -113,10 +109,10 @@ MACRO(get_sonarqube_includes output target)
 
 ENDMACRO()
 
-MACRO(get_sonarqube_defines output target)
+MACRO(get_sonarqube_defines output projectName)
 
 	get_directory_property( COMPILE_DEFS DIRECTORY ${CMAKE_SOURCE_DIR} COMPILE_DEFINITIONS)
-	get_target_property(targetDefines ${target} COMPILE_DEFINITIONS)
+	get_target_property(targetDefines ${projectName} COMPILE_DEFINITIONS)
 	IF (targetDefines)
 		set(COMPILE_DEFS ${COMPILE_DEFS} ${targetDefines})
 	ENDIF()
@@ -129,13 +125,13 @@ MACRO(get_sonarqube_defines output target)
 	
 ENDMACRO()
 
-MACRO(get_sonarqube_sources output target projectSources)
+MACRO(get_sonarqube_sources output projectName projectSources)
 
 	SET(SRCS)
 	foreach (sourceFile ${projectSources})
 		if ("${sourceFile}" MATCHES "^.*\\.(c|cpp)$")
 			get_filename_component(sourceFile ${sourceFile} REALPATH)
-			GET_SOURCE_FILE_PROPERTY(notASonarSource ${sourceFile} NOT_A_SONARQUBE_SOURCE_FOR_${target})
+			GET_SOURCE_FILE_PROPERTY(notASonarSource ${sourceFile} NOT_A_SONARQUBE_SOURCE_FOR_${projectName})
 			if (NOT notASonarSource)
 				set(SRCS ${SRCS} ${sourceFile})
 			endif()
@@ -152,9 +148,9 @@ MACRO(get_sonarqube_sources output target projectSources)
 	
 ENDMACRO()
 
-MACRO(get_sonarqube_coverage output target)
+MACRO(get_sonarqube_coverage output projectName)
 
-	get_target_property(testTagets ${target} TESTED_BY)
+	get_target_property(testTagets ${projectName} TESTED_BY)
 	set(SONARQUBE_UNIT)
 	set(SONARQUBE_ACCEPTANCE)
 	foreach (testTarget ${testTargets})
@@ -181,7 +177,7 @@ MACRO(get_sonarqube_coverage output target)
 		set(COVERAGE_UNIT_STEPS sonar.cxx.coverage.itReportPath=${SONARQUBE_ACCEPTANCE})
 	endif()
 	IF (SONARQUBE_UNIT OR SONARQUBE_ACCEPTANCE)
-		get_target_property(report ${target} COVERAGE_REPORT_XML_ALL)
+		get_target_property(report ${projectName} COVERAGE_REPORT_XML_ALL)
 		SET(COVERAGE_ALL_STEPS sonar.cxx.coverage.overallReportPath=${report})
 	ENDIF()
 	

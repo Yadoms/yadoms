@@ -32,19 +32,19 @@ MACRO(analyse target projectVersion sources outputFile outputFileMSBuild)
       )
       
       # Build SonarQube properties file
-      # include(cmake/sonarqube.cmake)
-      # create_sonar_project_properties_file(
-            # ${target}
-            # ${target}
-            # ${YADOMS_VERSION}
-            # "${sources}"
-            # ${CMAKE_BINARY_DIR}/analysis/SonarQube.Analysis.txt
-            # ${CMAKE_BINARY_DIR}/analysis/SonarQube.Analysis.xml
-         # )
+      include(cmake/sonarqube.cmake)
+      create_sonar_project_properties_file(
+            ${target}
+            ${YADOMS_VERSION}
+            "${sources}"
+            ${CMAKE_BINARY_DIR}/analysis/cppcheck-report.xml
+            ${CMAKE_BINARY_DIR}/analysis/sonar-project.properties
+         )
       
       # Create the analysis target
       add_custom_target(Analysis
          DEPENDS ${CMAKE_BINARY_DIR}/analysis/cppcheck-report.xml
+                 ${CMAKE_BINARY_DIR}/analysis/sonar-project.properties
          COMMAND ${SONARSCANNER_EXECUTABLE}
       )
 
