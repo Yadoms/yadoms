@@ -77,8 +77,37 @@ namespace device
          m_keywords.push_back(m_kwVis);
       }
 
+      removeNoMoreUsedKeywords(api,
+                               ident()->deviceName(),
+                               m_keywords);
+
       api->declareKeywords(ident()->deviceName(),
                            m_keywords);
+   }
+
+   void CSmartBatteryMonitor::removeNoMoreUsedKeywords(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                       const std::string& device,
+                                                       const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& newKeywords)
+   {
+      // Get existing keywords
+      for (const auto& keyword : api->getAllKeywords(device))
+      {
+         bool keywordExist = false;
+         for (const auto& newKeyword : newKeywords)
+         {
+            if (keyword == newKeyword->getKeyword())
+            {
+               keywordExist = true;
+               break;
+            }
+         }
+         if (!keywordExist)
+         {
+            YADOMS_LOG(information) << "Remove keyword " << keyword;
+            api->removeKeyword(device,
+                               keyword);
+         }
+      }
    }
 
    void CSmartBatteryMonitor::read() const
