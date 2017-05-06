@@ -140,7 +140,7 @@ shared::CDataContainer CIPX800Factory::bindSlotsX8R()
 
    shared::CDataContainer en;
    en.set("type", "enum");
-   en.set("name", "SLOT");
+   en.set("name", "Slot");
    en.set("description", "Choose the slot");
    en.set("values", ev);
    en.set("defaultValue", defaultValue);
@@ -167,7 +167,7 @@ shared::CDataContainer CIPX800Factory::bindSlotsX8D()
 
    shared::CDataContainer en;
    en.set("type", "enum");
-   en.set("name", "SLOT");
+   en.set("name", "Slot");
    en.set("description", "Choose the slot");
    en.set("values", ev);
    en.set("defaultValue", defaultValue);
@@ -194,7 +194,7 @@ shared::CDataContainer CIPX800Factory::bindSlotsX24D()
 
    shared::CDataContainer en;
    en.set("type", "enum");
-   en.set("name", "SLOT");
+   en.set("name", "Slot");
    en.set("description", "Choose the slot");
    en.set("values", ev);
    en.set("defaultValue", defaultValue);
@@ -251,9 +251,13 @@ void CIPX800Factory::onDeviceConfigurationChange(const std::string& name,
    {
       if ((*iteratorExtension)->getDeviceName() == name)
       {
+         YADOMS_LOG(trace) << "Configuration changed for device " << name;
+
          // free slot(s) associated to this device for future configurations
          int position = (*iteratorExtension)->getSlot();
          std::string type = (*iteratorExtension)->getDeviceType();
+
+         YADOMS_LOG(trace) << "free slot" << position;
 
          if (type == "X-8R") X8RSlotused[position - 1] = false;
          if (type == "X-8D") X8DSlotused[position - 1] = false;
@@ -265,6 +269,8 @@ void CIPX800Factory::onDeviceConfigurationChange(const std::string& name,
          }
 
          (*iteratorExtension)->setNewConfiguration(newConfiguration);
+
+         position = newConfiguration.get<int>("Position");
 
          if (type == "X-8R") X8RSlotused[position - 1] = true;
          if (type == "X-8D") X8DSlotused[position - 1] = true;

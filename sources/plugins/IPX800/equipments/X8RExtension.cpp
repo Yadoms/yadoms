@@ -38,6 +38,8 @@ namespace equipments
 
       //Déclaration of all IOs
       api->declareDevice(device, m_deviceType, m_deviceType, keywordsToDeclare, details);
+
+      YADOMS_LOG(trace) << "creation of the device " << device << " of type " << m_deviceType << " at position " << position;
    }
 
    std::string CX8RExtension::getDeviceName() const
