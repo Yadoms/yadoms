@@ -126,20 +126,12 @@ void CIOManager::OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi
                                              const std::string &deviceName,
                                              const shared::CDataContainer& newConfiguration)
 {
-   //YADOMS_LOG(information) << "Configuration changed event for device " << deviceName;
-   //newConfiguration.printToLog(YADOMS_LOG(information));
-   //YADOMS_LOG(information) << "m_deviceManager.size() :" << m_deviceManager.size();
-
    std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorDevice;
 
    for (iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
    {
-      //YADOMS_LOG(information) << "deviceName : " << deviceName;
-      //YADOMS_LOG(information) << "(*iteratorDevice)->getDeviceName() : " << (*iteratorDevice)->getDeviceName();
-
       if (deviceName == (*iteratorDevice)->getDeviceName())
       {
-         //TODO : Delete the extension from the master
          (*iteratorDevice)->updateConfiguration(api, newConfiguration);
       }
    }
