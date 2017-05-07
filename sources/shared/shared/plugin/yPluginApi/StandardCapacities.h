@@ -17,8 +17,8 @@ namespace shared
             //--------------------------------------------------------------
             /// \brief		Standard capacities (please keep in alphabetical order)
             //--------------------------------------------------------------
-            //                                            capacity name      |        unit           |          description
-            //                                          ----------------------------------------------------------------------------------------------
+            //                                                    capacity name      |        unit           |          description
+            //                                              ----------------------------------------------------------------------------------------------
             static const CStandardCapacity& ApparentPower();    // apparentpower     | Volt Ampere           | Apparent Voltage
             static const CStandardCapacity& ArmingAlarm();      // armingAlarm       | -                     | Alarme arming status (disarmed, armedAtHome, armedAway...)
             static const CStandardCapacity& BatteryLevel();     // batteryLevel      | percent               | Battery level capacity

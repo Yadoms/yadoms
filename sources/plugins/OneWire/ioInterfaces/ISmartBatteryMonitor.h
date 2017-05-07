@@ -9,29 +9,11 @@ namespace ioInterfaces
    {
    public:
       //--------------------------------------------------------------
-      /// \brief	The sensor connected to DS2438, when it can be detected
-      //--------------------------------------------------------------
-      enum ESensorType
-      {
-         kUnknown = 0,
-         kMultisensorTemperature,
-         kMultisensorTemperatureHumidity,
-         kMultisensorTemperatureLight
-      };
-
-   public:
-      //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
       virtual ~ISmartBatteryMonitor()
       {
       }
-
-      //--------------------------------------------------------------
-      /// \brief	Read sensor type
-      /// \return Sensor type, if available
-      //--------------------------------------------------------------
-      virtual ESensorType readSensorType() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	Read temperature value
@@ -46,16 +28,34 @@ namespace ioInterfaces
       virtual double readHumidity() const = 0;
 
       //--------------------------------------------------------------
+      /// \brief	Read HIH3600 humidity value
+      /// \return Humidity value (%)
+      //--------------------------------------------------------------
+      virtual double readHIH3600() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	Read HIH4000 humidity value
+      /// \return Humidity value (%)
+      //--------------------------------------------------------------
+      virtual double readHIH4000() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	Read HTM1735 humidity value
+      /// \return Humidity value (%)
+      //--------------------------------------------------------------
+      virtual double readHTM1735() const = 0;
+
+      //--------------------------------------------------------------
       /// \brief	Read pressure value
       /// \return Pressure value (hPa)
       //--------------------------------------------------------------
-      virtual double readPressure() const = 0;
+      virtual double readB1_R1_A() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	Read Light
       /// \return Illuminance (lux)
       //--------------------------------------------------------------
-      virtual double readLight() const = 0;
+      virtual double readS3_R1_A() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	Read VAD

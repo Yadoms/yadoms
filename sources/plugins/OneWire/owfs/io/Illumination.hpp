@@ -19,7 +19,7 @@ namespace owfs
          /// \param[in]	valueSubPath OWFS value sub-path
          //--------------------------------------------------------------
          CIllumination(const boost::filesystem::path& devicePath,
-                       const boost::filesystem::path& valueSubPath = boost::filesystem::path("illumination"))
+                       const boost::filesystem::path& valueSubPath = boost::filesystem::path("illuminance"))
             : CSingleReadOnlyData(devicePath, valueSubPath)
          {
          }
