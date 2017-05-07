@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "temperatureProbe.h"
-#include "masterdeviceConfiguration.h"
+#include "masterDeviceConfiguration.h"
 #include <shared/DataContainer.h>
 #include "noInformationException.hpp"
 #include "../urlmanager.h"
