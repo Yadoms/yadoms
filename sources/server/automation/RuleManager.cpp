@@ -58,8 +58,6 @@ namespace automation
    void CRuleManager::startAllRules()
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_startedRulesMutex);
-      if (!m_startedRules.empty())
-         throw shared::exception::CException("Some rules are already started, are you sure that manager was successfuly stopped ?");
 
       if (!startRules(m_ruleRequester->getRules()))
       YADOMS_LOG(error) << "One or more automation rules failed to start, check automation rules page for details";
