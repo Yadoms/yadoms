@@ -26,10 +26,8 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
 
       // plugin state have no type
       try {
-
-         api->getDeviceConfiguration(*devicesIterator).printToLog(YADOMS_LOG(information));
          api->getDeviceDetails(*devicesIterator).printToLog(YADOMS_LOG(information));
-         type = api->getDeviceDetails(*devicesIterator).get<std::string>("type");
+         type = api->getDeviceDetails(*devicesIterator).getWithDefault<std::string>("type", "");
 
          if (type =="WES")
          {
@@ -53,6 +51,7 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
       catch (std::exception& e)
       {
          YADOMS_LOG(error) << e.what();
+         throw;
       }
 
       YADOMS_LOG(information) << "Name : " << (*devicesIterator);

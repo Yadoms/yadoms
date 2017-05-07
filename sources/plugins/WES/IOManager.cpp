@@ -31,7 +31,8 @@ void CIOManager::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::str
       if (m_deviceManager[counter]->getDeviceName() == deviceRemoved)
       {
          m_deviceManager[counter]->remove(api);
-         m_deviceManager.erase(m_deviceManager.begin()+counter);
+         m_deviceManager.erase(m_deviceManager.begin()+counter); // TODO : Doesn't work properly
+         return;
       }
    }
 }
@@ -125,21 +126,21 @@ void CIOManager::OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi
                                              const std::string &deviceName,
                                              const shared::CDataContainer& newConfiguration)
 {
+   //YADOMS_LOG(information) << "Configuration changed event for device " << deviceName;
+   //newConfiguration.printToLog(YADOMS_LOG(information));
+   //YADOMS_LOG(information) << "m_deviceManager.size() :" << m_deviceManager.size();
+
    std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorDevice;
 
    for (iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
    {
+      //YADOMS_LOG(information) << "deviceName : " << deviceName;
+      //YADOMS_LOG(information) << "(*iteratorDevice)->getDeviceName() : " << (*iteratorDevice)->getDeviceName();
+
       if (deviceName == (*iteratorDevice)->getDeviceName())
       {
-         // delete it from the master device if it's an extension
-         if (!(*iteratorDevice)->isMasterDevice())
-         {
-            //TODO : Delete the extension from the master
-            (*iteratorDevice)->updateConfiguration(api, newConfiguration);
-         }
-
-         // Delete the device
-         //m_deviceManager.erase(iteratorDevice); // TODO : Check the good working
+         //TODO : Delete the extension from the master
+         (*iteratorDevice)->updateConfiguration(api, newConfiguration);
       }
    }
 }

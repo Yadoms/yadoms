@@ -16,10 +16,7 @@ void CmasterDeviceConfiguration::initializeWith(const shared::CDataContainer& da
 
 Poco::Net::SocketAddress CmasterDeviceConfiguration::getIPAddressWithSocket() const
 {
-   auto value = m_data.get<std::string>("IPAddress");
-   value.append(":");
-   value.append(m_data.get<std::string>("Port"));
-   return Poco::Net::SocketAddress("192.168.1.37:80");
+   return Poco::Net::SocketAddress(m_data.get<std::string>("IPAddress"), m_data.get<std::string>("Port"));
 }
 
 std::string CmasterDeviceConfiguration::getPassword() const

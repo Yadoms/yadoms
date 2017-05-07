@@ -30,7 +30,7 @@ namespace equipments
       shared::CDataContainer RelayContainerName = details.get<shared::CDataContainer>("Relays");
       for (int counter = 0; counter < WES_RELAY_QTY; ++counter)
       {
-         boost::shared_ptr<yApi::historization::CSwitch> temp = boost::make_shared<yApi::historization::CSwitch>(RelayContainerName.get("R" + boost::lexical_cast<std::string>(counter)),
+         boost::shared_ptr<yApi::historization::CSwitch> temp = boost::make_shared<yApi::historization::CSwitch>(RelayContainerName.get<std::string>("R" + boost::lexical_cast<std::string>(counter)),
                                                                                                                   yApi::EKeywordAccessMode::kGetSet);
          m_relaysList.push_back(temp);
          keywordsToDeclare.push_back(temp);
@@ -39,7 +39,7 @@ namespace equipments
       shared::CDataContainer inputContainerName = details.get<shared::CDataContainer>("Inputs");
       for (int counter = 0; counter < WES_INPUT_QTY; ++counter)
       {
-         boost::shared_ptr<yApi::historization::CSwitch> temp = boost::make_shared<yApi::historization::CSwitch>(inputContainerName.get("I" + boost::lexical_cast<std::string>(counter)),
+         boost::shared_ptr<yApi::historization::CSwitch> temp = boost::make_shared<yApi::historization::CSwitch>(inputContainerName.get<std::string>("I" + boost::lexical_cast<std::string>(counter)),
                                                                                                                   yApi::EKeywordAccessMode::kGet);
          m_inputList.push_back(temp);
          keywordsToDeclare.push_back(temp);
@@ -326,16 +326,14 @@ namespace equipments
          credentials.set("user", m_configuration.getUser());
          credentials.set("password", m_configuration.getPassword());
 
-         YADOMS_LOG(information) << "Address : " << m_configuration.getIPAddressWithSocket().toString();
-
          shared::CDataContainer results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
                                                                     credentials,
                                                                     CGXfileName);
 
          // Reading relays - historize only on change value or when the historization is forced (initialization, for example)      
          try {
-            updateSwitchValue(keywordsToHistorize, m_relaysList[0], static_cast<bool>(results.get<int>("RL1")), forceHistorization);
-            updateSwitchValue(keywordsToHistorize, m_relaysList[1], static_cast<bool>(results.get<int>("RL2")), forceHistorization);
+            updateSwitchValue(keywordsToHistorize, m_relaysList[0], results.get<bool>("RL1"), forceHistorization);
+            updateSwitchValue(keywordsToHistorize, m_relaysList[1], results.get<bool>("RL2"), forceHistorization);
          }
          catch (std::exception& e)
          {
@@ -343,8 +341,8 @@ namespace equipments
          }
 
          try {
-            updateSwitchValue(keywordsToHistorize, m_inputList[0], static_cast<bool>(results.get<int>("I1")), forceHistorization);
-            updateSwitchValue(keywordsToHistorize, m_inputList[1], static_cast<bool>(results.get<int>("I2")), forceHistorization);
+            updateSwitchValue(keywordsToHistorize, m_inputList[0], results.get<bool>("I1"), forceHistorization);
+            updateSwitchValue(keywordsToHistorize, m_inputList[1], results.get<bool>("I2"), forceHistorization);
          }
          catch (std::exception& e)
          {
@@ -435,9 +433,7 @@ namespace equipments
                                            const shared::CDataContainer& newConfiguration)
    {
       m_configuration.initializeWith(newConfiguration);
-
-      // TODO : delete names from details and update them from the device configuration
-      //m_configuration.printToLog(YADOMS_LOG(information));
+      api->updateDeviceConfiguration(m_deviceName, newConfiguration);
       YADOMS_LOG(information) << "Configuration updated for " << m_deviceName;
    }
 
