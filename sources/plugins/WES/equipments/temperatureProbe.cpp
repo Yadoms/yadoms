@@ -3,7 +3,7 @@
 #include "masterDeviceConfiguration.h"
 #include <shared/DataContainer.h>
 #include "noInformationException.hpp"
-#include "../urlmanager.h"
+#include "../urlManager.h"
 #include <shared/Log.h>
 
 namespace equipments
