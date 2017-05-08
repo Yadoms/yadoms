@@ -3,6 +3,7 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "../specificHistorizers/Period.h"
 #include "../specificHistorizers/TeleInfoStatus.h"
+#include "../specificHistorizers/deviceStatus.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -30,6 +31,7 @@ namespace equipments
          //-----------------------------------------------------
          ///\brief                                      updateFromDevice
          ///\param[in] api                             Yadoms API
+         ///\param[in] newState                        state of the device
          ///\param[in] contractName                    contract Name
          ///\param[in] counter1                        1st counter sent by the wes
          ///\param[in] counter2                        2nd counter sent by the wes
@@ -39,6 +41,7 @@ namespace equipments
          ///\param[in] counter6                        6th counter sent by the wes
          //-----------------------------------------------------
          void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                               specificHistorizers::EdeviceStatus newState,
                                const std::string& contractName,
                                const Poco::Int64& counter1,
                                const Poco::Int64& counter2,
@@ -112,6 +115,11 @@ namespace equipments
          /// \brief	TeleInfo Status
          //--------------------------------------------------------------
          boost::shared_ptr<specificHistorizers::CTeleInfoStatus> m_teleInfoStatus;
+
+         //--------------------------------------------------------------
+         /// \brief	status of the device
+         //--------------------------------------------------------------
+         boost::shared_ptr<specificHistorizers::CdeviceStatus> m_deviceStatus;
       };
    }
 } // namespace equipments::subdevices

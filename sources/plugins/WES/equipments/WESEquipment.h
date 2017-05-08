@@ -3,6 +3,7 @@
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "IEquipment.h"
 #include "specificHistorizers/Analog.h"
+#include "specificHistorizers/deviceStatus.h"
 #include "../IWESConfiguration.h"
 #include "masterDeviceConfiguration.h"
 #include "WESSubEquipments/TIC.h"
@@ -85,6 +86,12 @@ namespace equipments
                              bool forceHistorization);
 
       //-----------------------------------------------------
+      ///\brief                          set the device state
+      ///\param[in] newState            the new state
+      //-----------------------------------------------------
+      void setDeviceState(specificHistorizers::EdeviceStatus newState);
+
+      //-----------------------------------------------------
       ///\brief                     The device name
       //-----------------------------------------------------
       std::string m_deviceName;
@@ -98,6 +105,11 @@ namespace equipments
       /// \brief	configuration of the device
       //--------------------------------------------------------------
       CmasterDeviceConfiguration m_configuration;
+
+      //--------------------------------------------------------------
+      /// \brief	status of the device
+      //--------------------------------------------------------------
+      boost::shared_ptr<specificHistorizers::CdeviceStatus> m_deviceStatus;
 
       //--------------------------------------------------------------
       /// \brief	vector of all relays

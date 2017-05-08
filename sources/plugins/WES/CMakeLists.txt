@@ -35,6 +35,8 @@ set(WES_PLUGIN_SOURCES
    equipments/specificHistorizers/Period.h
    equipments/specificHistorizers/TeleInfoStatus.cpp
    equipments/specificHistorizers/TeleInfoStatus.h
+   equipments/specificHistorizers/deviceStatus.cpp
+   equipments/specificHistorizers/deviceStatus.h
    equipments/WESSubEquipments/Clamp.cpp
    equipments/WESSubEquipments/Clamp.h
    equipments/WESSubEquipments/Pulse.cpp

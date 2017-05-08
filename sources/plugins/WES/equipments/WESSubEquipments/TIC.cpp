@@ -25,7 +25,8 @@ namespace equipments
          m_tempoWhiteDaysNormalCostPeriod(boost::make_shared<yApi::historization::CEnergy>("TempoWhiteDaysNormalCostPeriod")),
          m_apparentPower(boost::make_shared<yApi::historization::CApparentPower>("ApparentPower")),
          m_TimePeriod(boost::make_shared<specificHistorizers::CPeriod>("RunningPeriod")),
-         m_teleInfoStatus(boost::make_shared<specificHistorizers::CTeleInfoStatus>("Status"))
+         m_teleInfoStatus(boost::make_shared<specificHistorizers::CTeleInfoStatus>("TeleInfoStatus")),
+         m_deviceStatus(boost::make_shared<specificHistorizers::CdeviceStatus>("DeviceStatus"))
       {
          // TODO : Add need to declare
          initializeTIC(api);
@@ -35,6 +36,8 @@ namespace equipments
       {
          shared::CDataContainer details;
          m_keywords.clear();
+
+         m_keywords.push_back(m_deviceStatus);
 
          if (m_contractName.compare("Pas Dispo")!=0)
          {
@@ -85,6 +88,7 @@ namespace equipments
       }
 
       void CTIC::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                  specificHistorizers::EdeviceStatus newState,
                                   const std::string& contractName,
                                   const Poco::Int64& counter1,
                                   const Poco::Int64& counter2,
@@ -93,6 +97,8 @@ namespace equipments
                                   const Poco::Int64& counter5,
                                   const Poco::Int64& counter6)
       {
+         m_deviceStatus->set(newState);
+
          // In case of contract change -> create new keywords
          if (m_contractName.compare(contractName) != 0)
          {
