@@ -47,6 +47,7 @@ set(WES_PLUGIN_SOURCES
    http/HttpMethods.cpp
    http/HttpMethods.h
    http/invalidHTTPResultException.hpp
+   http/timeOutException.hpp
 )
 
 source_group(equipments equipments/*.*)

@@ -4,14 +4,14 @@
 //--------------------------------------------------------------
 /// \brief	Exception handling for protocol errors
 //--------------------------------------------------------------
-class CFailedSendingException : public shared::exception::CException
+class CTimeOutException : public shared::exception::CException
 {
 public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
    /// \param[in]  message             Exception message
    //--------------------------------------------------------------
-   explicit CFailedSendingException(const std::string& message)
+   explicit CTimeOutException(const std::string& message)
       :CException(message)
    {
    }
@@ -19,7 +19,7 @@ public:
    //--------------------------------------------------------------
    /// \brief      Destructor
    //--------------------------------------------------------------
-   virtual ~CFailedSendingException() throw()
+   virtual ~CTimeOutException() throw()
    {
    }
 };

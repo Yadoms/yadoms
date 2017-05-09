@@ -45,14 +45,6 @@ public:
    void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, 
                               const shared::CDataContainer& newConfigurationData);
 
-   //-----------------------------------------------------
-   ///\brief                                      set the new plugin state
-   ///\param[in] api                             Yadoms API
-   ///\param[in] newState                        the new plugin state
-   //-----------------------------------------------------
-   void setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, 
-                       EWESPluginState newState);
-
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
@@ -63,6 +55,20 @@ public:
    // [END] IPlugin implementation
 
 private:
+
+   //-----------------------------------------------------
+   ///\brief                                      analyze the new plugin state
+   ///\param[in] api                             Yadoms API
+   //-----------------------------------------------------
+   void analyzePluginState(boost::shared_ptr<yApi::IYPluginApi> api);
+
+   //-----------------------------------------------------
+   ///\brief                                      set the new plugin state
+   ///\param[in] api                             Yadoms API
+   ///\param[in] newState                        the new plugin state
+   //-----------------------------------------------------
+   void setPluginState(boost::shared_ptr<yApi::IYPluginApi> api,
+                       EWESPluginState newState);
 
    //--------------------------------------------------------------
    /// \brief Configuration of the device

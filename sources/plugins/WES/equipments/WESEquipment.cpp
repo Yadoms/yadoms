@@ -4,6 +4,7 @@
 #include "noInformationException.hpp"
 #include "../urlManager.h"
 #include <shared/Log.h>
+#include "../http/timeOutException.hpp"
 
 namespace equipments
 {
@@ -326,7 +327,7 @@ namespace equipments
                                          const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
                                          bool forceHistorization)
    {
-      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize = { m_deviceStatus };
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize;
       std::string CGXfileName = "WESVALUES.CGX";
 
       try {
@@ -402,7 +403,10 @@ namespace equipments
             }
          }
 
+         setDeviceState(keywordsToHistorize, specificHistorizers::EdeviceStatus::kOk);
          api->historizeData(m_deviceName, keywordsToHistorize);
+
+         // TODO : When an exception is thrown before this point, deviceStatus of TIC are not updated ...
 
          // TIC Counters Values -> independant from the others keywords
          for (int counter = 0; counter < WES_TIC_QTY; ++counter)
@@ -417,13 +421,16 @@ namespace equipments
                                                  results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_5"),
                                                  results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_6"));
          }
-
-         setDeviceState(specificHistorizers::EdeviceStatus::kOk);
+      }
+      catch (CTimeOutException&)
+      {
+         setDeviceState(keywordsToHistorize, specificHistorizers::EdeviceStatus::kTimeOut);
+         api->historizeData(m_deviceName, keywordsToHistorize);
       }
       catch (std::exception& e)
       {
          YADOMS_LOG(error) << e.what();
-         setDeviceState(specificHistorizers::EdeviceStatus::kError);
+         setDeviceState(keywordsToHistorize, specificHistorizers::EdeviceStatus::kError);
          api->historizeData(m_deviceName, keywordsToHistorize);
       }
    }
@@ -451,8 +458,8 @@ namespace equipments
    }
 
    void CWESEquipment::sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
-                                   std::string& keyword,
-                                   std::string& command)
+                                   const std::string& keyword,
+                                   const std::string& command)
    {
       shared::CDataContainer credentials;
       shared::CDataContainer parameters;
@@ -461,7 +468,7 @@ namespace equipments
          credentials.set("user", m_configuration.getUser());
          credentials.set("password", m_configuration.getPassword());
 
-         //parameters to be filled
+         //TODO : parameters to be filled
 
          shared::CDataContainer results = urlManager::setRelayState(m_configuration.getIPAddressWithSocket(),
                                                                     credentials,
@@ -473,31 +480,20 @@ namespace equipments
       }
    }
 
-   void CWESEquipment::setDeviceState(specificHistorizers::EdeviceStatus newState)
+   void CWESEquipment::setDeviceState(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize, 
+                                      specificHistorizers::EdeviceStatus newState)
    {
       if (m_deviceStatus->get() != newState)
       {
-         switch (newState)
-         {
-         case specificHistorizers::EdeviceStatus::kOkValue:
-            m_deviceStatus->set(specificHistorizers::EdeviceStatus::kOk);
-            break;
-         case specificHistorizers::EdeviceStatus::kErrorValue:
-            m_deviceStatus->set(specificHistorizers::EdeviceStatus::kError);
-            break;
-         case specificHistorizers::EdeviceStatus::kTimeOutValue:
-            m_deviceStatus->set(specificHistorizers::EdeviceStatus::kTimeOut);
-            break;
-         case specificHistorizers::EdeviceStatus::kUndefinedValue:
-            m_deviceStatus->set(specificHistorizers::EdeviceStatus::kUndefined);
-            break;
-         default:
-            YADOMS_LOG(error) << "this plugin status does not exist : " << newState;
-            break;
-         }
-
          m_deviceStatus->set(newState);
+         keywordsToHistorize.push_back(m_deviceStatus);
+         YADOMS_LOG(trace) << "device state " << m_deviceName << " set to " << newState.toString();
       }
+   }
+
+   specificHistorizers::EdeviceStatus CWESEquipment::getStatus() const
+   {
+      return m_deviceStatus->get();
    }
 
    void CWESEquipment::remove(boost::shared_ptr<yApi::IYPluginApi> api)
@@ -525,7 +521,5 @@ namespace equipments
    */
 
    CWESEquipment::~CWESEquipment()
-   {
-      //TODO : Check how to destroy subModules -> A specific function should be done
-   }
+   {}
 }// namespace equipments

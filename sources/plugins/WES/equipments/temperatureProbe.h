@@ -38,9 +38,10 @@ namespace equipments
       void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
                                const shared::CDataContainer& newConfiguration) override;
       void sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
-                       std::string& keyword,
-                       std::string& command) override;
+                       const std::string& keyword,
+                       const std::string& command) override;
       void remove(boost::shared_ptr<yApi::IYPluginApi> api) override;
+      specificHistorizers::EdeviceStatus getStatus() const override;
       // [END] IExtension implementation
 
       //-----------------------------------------------------
@@ -59,6 +60,11 @@ namespace equipments
       ///\brief                     The device type
       //-----------------------------------------------------
       std::string m_deviceType;
+
+      //--------------------------------------------------------------
+      /// \brief	status of the device
+      //--------------------------------------------------------------
+      boost::shared_ptr<specificHistorizers::CdeviceStatus> m_deviceStatus;
 
       //--------------------------------------------------------------
       /// \brief	                  The device configuration

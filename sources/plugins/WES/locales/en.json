@@ -86,10 +86,10 @@
 			"initialization": "Initializing...",
 			"initializationError": "Initialization error",
 			"ready": "Plugin ready",
-			"faulty": "At least, one device is not connected",
 			"noConnection": "Could not connect to the equipment",
 			"noInformation": "The equipment is connected. No information returned. Please check the apikey",
-			"updateConfiguration": "Configuration updating..."
+			"updateConfiguration": "Configuration updating...",
+         "kAtLeastOneConnectionFaulty": "At least one connection is faulty"
 		}
 	}
 }

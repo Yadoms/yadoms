@@ -86,10 +86,10 @@
 			"initialization": "Initialisation...",
 			"initializationError": "Erreur d'initialisation",
 			"ready": "plugin prêt",
-			"faulty": "Au moins un équipement est déconnecté",
 			"noConnection": "Pas de connexion à l'équipement",
 			"noInformation": "L'équipement est connecté, mais aucune information n'est retournée. Vérifiez la clé apikey.",
-			"updateConfiguration": "Mise à jour de la configuration..."
+			"updateConfiguration": "Mise à jour de la configuration...",
+         "kAtLeastOneConnectionFaulty": "Au moins un équipement est en erreur"
 		}
 	}
 }

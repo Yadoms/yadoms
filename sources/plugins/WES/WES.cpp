@@ -9,7 +9,6 @@
 #include "equipments/manuallyDeviceCreationException.hpp"
 #include "equipments/noInformationException.hpp"
 #include <shared/Log.h>
-
 #include <boost/property_tree/xml_parser.hpp>
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
@@ -109,6 +108,7 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          catch (shared::exception::CBadConversion&) {}
 
          m_ioManager->readAllDevices(api, m_configuration, forceRefresh);
+         analyzePluginState(api);
          break;
       }
       case yApi::IYPluginApi::kEventManuallyDeviceCreation:
@@ -119,18 +119,23 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          YADOMS_LOG(information) << "Manually device creation request received for device : " << request->getData().getDeviceName();
          try
          {
-            // TODO : Refuse the device if the name already exist
-
-            // Creation of the device
-            request->sendSuccess(m_factory->createDeviceManually(api, m_ioManager, request->getData(), m_configuration));
-
-            // ask immediately for reading values
-            api->getEventHandler().postEvent<bool>(kRefreshStatesReceived, true);
-
-            if (m_ioManager->getMasterEquipment() != 0)
+            if (!m_ioManager->deviceAlreadyExist(request->getData().getDeviceName()))
             {
-               m_refreshTimer->start();
-               setPluginState(api, EWESPluginState::kRunning);
+               // Creation of the device only when the name doesn't already exist
+               request->sendSuccess(m_factory->createDeviceManually(api, m_ioManager, request->getData(), m_configuration));
+
+               // ask immediately for reading values
+               api->getEventHandler().postEvent<bool>(kRefreshStatesReceived, true);
+
+               if (m_ioManager->getMasterEquipment() != 0)
+               {
+                  m_refreshTimer->start();
+                  setPluginState(api, EWESPluginState::kRunning);
+               }
+            }
+            else
+            {
+               request->sendError("device Name already exist");
             }
          }
          catch (CManuallyDeviceCreationException& e)
@@ -141,6 +146,7 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          catch (std::exception &e)
          {
             YADOMS_LOG(information) << "Unknow error : " << e.what();
+            request->sendError(e.what());
             setPluginState(api, EWESPluginState::kInitializationError);
          }
          break;
@@ -236,6 +242,25 @@ void CWES::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const
    m_configuration->initializeWith(newConfigurationData);
 }
 
+void CWES::analyzePluginState(boost::shared_ptr<yApi::IYPluginApi> api)
+{
+   std::vector<specificHistorizers::EdeviceStatus>::const_iterator devicesStatusIterator;
+   std::vector<specificHistorizers::EdeviceStatus> devicesStatus = m_ioManager->getMasterdeviceStates();
+   EWESPluginState newState = EWESPluginState::kRunning; // default state
+
+   for (devicesStatusIterator = devicesStatus.begin(); devicesStatusIterator != devicesStatus.end(); ++devicesStatusIterator)
+   {
+      if (
+         ((*devicesStatusIterator) == specificHistorizers::EdeviceStatus::kTimeOut) ||
+         ((*devicesStatusIterator) == specificHistorizers::EdeviceStatus::kError))
+      {
+         newState = EWESPluginState::kAtLeastOneConnectionFaulty;
+      }
+   }
+
+   setPluginState(api, newState);
+}
+
 void CWES::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, EWESPluginState newState)
 {
    if (m_pluginState != newState)
@@ -255,7 +280,7 @@ void CWES::setPluginState(boost::shared_ptr<yApi::IYPluginApi> api, EWESPluginSt
          api->setPluginState(yApi::historization::EPluginState::kCustom, "updateconfiguration");
          break;
       case EWESPluginState::kAtLeastOneConnectionFaulty:
-         api->setPluginState(yApi::historization::EPluginState::kCustom, "NoConnection");
+         api->setPluginState(yApi::historization::EPluginState::kCustom, "kAtLeastOneConnectionFaulty");
          break;
       case EWESPluginState::kRunning:
          api->setPluginState(yApi::historization::EPluginState::kRunning);

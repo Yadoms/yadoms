@@ -3,7 +3,6 @@
 #include <shared/enumeration/EnumHelpers.hpp>
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 
-//TODO_V2 : To be copy in a library teleInfo
 namespace specificHistorizers
 {
    //-----------------------------------------------------

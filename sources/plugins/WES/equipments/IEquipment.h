@@ -3,6 +3,7 @@
 #include <Poco/Net/SocketAddress.h>
 #include <Poco/Net/NetworkInterface.h>
 #include "../IWESConfiguration.h"
+#include "specificHistorizers/deviceStatus.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -59,14 +60,20 @@ namespace equipments
       ///\param[in] command                   the command received from the Yadoms web client
       //--------------------------------------------------------------
       virtual void sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
-                               std::string& keyword,
-                               std::string& command) = 0;
+                               const std::string& keyword,
+                               const std::string& command) = 0;
 
       //--------------------------------------------------------------
       /// \brief      remove             remove this equipment, with all subequipment
       ///\param[in] api                       Yadoms API
       //--------------------------------------------------------------
       virtual void remove(boost::shared_ptr<yApi::IYPluginApi> api) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                              get the device status (Ok, timeOut, Error, ...)
+      ///\return                              the status
+      //--------------------------------------------------------------
+      virtual specificHistorizers::EdeviceStatus getStatus() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Destructor

@@ -3,15 +3,13 @@
 #include "urlManager.h"
 #include <boost/regex.hpp>
 #include <shared/Log.h>
+#include <algorithm>
 
 CIOManager::CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment> >& deviceList,
                        std::vector<boost::shared_ptr<equipments::IEquipment> >& masterDeviceList):
    m_deviceManager(deviceList),
    m_masterDeviceManager(masterDeviceList)
-{
-   //m_deviceManager.swap(deviceList);
-   //m_masterDeviceManager.swap(masterDeviceList);
-}
+{}
 
 void CIOManager::addEquipment(boost::shared_ptr<equipments::IEquipment> equipment)
 {
@@ -55,71 +53,19 @@ void CIOManager::readAllDevices(boost::shared_ptr<yApi::IYPluginApi> api,
 void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                            boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
-   shared::CDataContainer parameters;
-   std::string keywordName = command->getKeyword();
    std::string deviceName = command->getDevice();
-   std::string commandSelected;
 
    YADOMS_LOG(information) << "Command received : " << yApi::IDeviceCommand::toString(command) ;
-
    std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorDevice;
 
    for (iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
    {
       if (deviceName == (*iteratorDevice)->getDeviceName())
       {
-         //shared::CDataContainer results = urlManager::setRelayState(m_socketAddress, (*iteratorExtension)->buildMessageToDevice(api, parameters, command));
+         (*iteratorDevice)->sendCommand(api, command->getKeyword(), yApi::IDeviceCommand::toString(command));
          return;
       }
    }
-   /*
-   const auto& deviceDetails = api->getDeviceDetails(command->getDevice());
-   auto deviceType = deviceDetails.get<std::string>("type");
-
-   for (iteratorExtension = m_devicesList.begin(); iteratorExtension != m_devicesList.end(); ++iteratorExtension)
-   {
-      if (deviceType == (*iteratorExtension)->getDeviceType())
-      {
-         if (m_isPasswordActivated)
-            parameters.set("key", m_password);
-
-		 shared::CDataContainer results = urlManager::sendCommand(m_socketAddress, (*iteratorExtension)->buildMessageToDevice(api, parameters, command));
-
-         // If the answer is a success, we historize the data
-         if (results.containsValue("Success"))
-            (*iteratorExtension)->historizePendingCommand(api, command);
-         else
-         {
-            YADOMS_LOG(error) << "Command is not executed by the WES" ;
-            
-            // if an error is return, we reset the pending operation
-            (*iteratorExtension)->resetPendingCommand();
-         }
-      }
-   }*/
-}
-
-void CIOManager::readIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
-                                  const std::string& type,
-                                  bool forceHistorization)
-{
-/*
-   shared::CDataContainer parameters;
-   shared::CDataContainer results;
-
-   // add the password if activated
-   if (m_isPasswordActivated)
-      parameters.set("key", m_password);
-
-   parameters.set("Get", type);
-
-   results = urlManager::sendCommand( m_socketAddress, parameters);
-
-   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorExtension;
-
-   for (iteratorExtension = m_devicesList.begin(); iteratorExtension != m_devicesList.end(); ++iteratorExtension)
-      (*iteratorExtension)->updateFromDevice(type, api, results, forceHistorization);
-*/
 }
 
 void CIOManager::OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
@@ -127,7 +73,6 @@ void CIOManager::OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi
                                              const shared::CDataContainer& newConfiguration)
 {
    std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorDevice;
-
    for (iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
    {
       if (deviceName == (*iteratorDevice)->getDeviceName())
@@ -154,6 +99,32 @@ shared::CDataContainer CIOManager::bindMasterDevice()
    en.set("defaultValue", "1");
 
    return en;
+}
+
+std::vector<specificHistorizers::EdeviceStatus> CIOManager::getMasterdeviceStates()
+{
+   std::vector<specificHistorizers::EdeviceStatus> devicesStatus;
+   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorMasterDevice;
+
+   for (iteratorMasterDevice = m_masterDeviceManager.begin(); iteratorMasterDevice != m_masterDeviceManager.end(); ++iteratorMasterDevice)
+   {
+      devicesStatus.push_back((*iteratorMasterDevice)->getStatus());
+   }
+
+   return devicesStatus;
+}
+
+bool CIOManager::deviceAlreadyExist(const std::string& deviceName)
+{
+   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorDevice;
+
+   for (iteratorDevice = m_deviceManager.begin(); (iteratorDevice != m_deviceManager.end() && (*iteratorDevice)->getDeviceName() != deviceName); ++iteratorDevice)
+   {}
+
+   if (iteratorDevice != m_deviceManager.end())
+      return true;
+   else
+      return false;
 }
 
 CIOManager::~CIOManager()

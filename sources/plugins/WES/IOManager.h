@@ -3,6 +3,7 @@
 #include <shared/event/EventHandler.hpp>
 #include "equipments/IEquipment.h"
 #include "IWESConfiguration.h"
+#include "equipments/specificHistorizers/deviceStatus.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -34,16 +35,6 @@ public:
    //--------------------------------------------------------------
    void onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                   boost::shared_ptr<const yApi::IDeviceCommand> command);
-
-   //--------------------------------------------------------------
-   /// \brief	                     read IO of a device
-   /// \param [in] api                   Plugin execution context (Yadoms API)
-   /// \param [in] type                  type of the device
-   /// \param [in] forceHistorization    force the historization of all keywords
-   //--------------------------------------------------------------
-   void readIOFromDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
-                         const std::string& type,
-                         bool forceHistorization = false);
 
    //--------------------------------------------------------------
    /// \brief	                     read all devices
@@ -84,6 +75,18 @@ public:
    /// \return the number of servers
    //--------------------------------------------------------------
    int getMasterEquipment();
+
+   //--------------------------------------------------------------
+   /// \brief	    check if a device with the same name already exist into the CioManager
+   /// \return true if already exist
+   //--------------------------------------------------------------
+   bool deviceAlreadyExist(const std::string& deviceName);
+
+   //--------------------------------------------------------------
+   /// \brief	    getMasterEquipment
+   /// \return the number of servers
+   //--------------------------------------------------------------
+   std::vector<specificHistorizers::EdeviceStatus> getMasterdeviceStates();
 
    //--------------------------------------------------------------
    /// \brief	    bindMasterDevice

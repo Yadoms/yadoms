@@ -3,7 +3,6 @@
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 
-//TODO_V2 : To be copy in a library teleInfo
 namespace specificHistorizers
 {
    DECLARE_ENUM_IMPLEMENTATION(EdeviceStatus,

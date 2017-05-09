@@ -37,7 +37,7 @@ namespace equipments
          shared::CDataContainer details;
          m_keywords.clear();
 
-         m_keywords.push_back(m_deviceStatus);
+         m_keywords.push_back(m_deviceStatus); // TODO : Save this device only on change
 
          if (m_contractName.compare("Pas Dispo")!=0)
          {

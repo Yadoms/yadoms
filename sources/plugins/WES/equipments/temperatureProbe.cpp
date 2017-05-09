@@ -14,7 +14,8 @@ namespace equipments
                                         const boost::shared_ptr<IWESConfiguration> pluginConfiguration
    ):
       m_deviceName(device),
-      m_deviceType("temperatureProbe")
+      m_deviceType("temperatureProbe"),
+      m_deviceStatus(boost::make_shared<specificHistorizers::CdeviceStatus>("Status"))
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
       shared::CDataContainer details;
@@ -94,14 +95,19 @@ namespace equipments
    }
 
    void CtemperatureProbe::sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
-                                       std::string& keyword,
-                                       std::string& command)
+                                       const std::string& keyword,
+                                       const std::string& command)
    {
       throw shared::exception::CException("No writing keyword for temprature probe");
    }
 
    void CtemperatureProbe::remove(boost::shared_ptr<yApi::IYPluginApi> api)
    {}
+
+   specificHistorizers::EdeviceStatus CtemperatureProbe::getStatus() const
+   {
+      return m_deviceStatus->get();
+   }
 
    CtemperatureProbe::~CtemperatureProbe()
    {}

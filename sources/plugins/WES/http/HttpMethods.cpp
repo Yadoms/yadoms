@@ -7,6 +7,7 @@
 #include <shared/exception/Exception.hpp>
 #include <shared/Log.h>
 #include "Poco/StreamCopier.h"
+#include "timeOutException.hpp"
 
 namespace http
 {
@@ -93,7 +94,10 @@ namespace http
          YADOMS_LOG(error) << "e.message() : " << e.message();
          YADOMS_LOG(error) << "e.what() : " << e.what();
          YADOMS_LOG(error) << message;
-         throw shared::exception::CException(message);
+         if (boost::contains(e.what(),"Timeout"))
+            throw CTimeOutException(message);
+         else
+            throw shared::exception::CException(message);
       }
    }
 
