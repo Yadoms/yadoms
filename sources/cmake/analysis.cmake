@@ -16,6 +16,12 @@ MACRO(analyse target projectVersion sources outputFile outputFileMSBuild)
       message(WARNING "Suitable SonarQube scanner not found, skip analysis solution generation")
    else()   
       message(STATUS "All analysis tools found, generate Analysis target...")
+      
+      set(sourcesToCheck ${sources})
+      if(MSVC)
+         # Remove .rc files
+         LIST(FILTER sourcesToCheck EXCLUDE REGEX "^.*\.rc$")
+      endif()
             
       # Add CppCheck analysis
       add_custom_command(
@@ -26,7 +32,7 @@ MACRO(analyse target projectVersion sources outputFile outputFileMSBuild)
             --std=c++11
             --xml
             --verbose
-            --quiet ${sources}
+            --quiet ${sourcesToCheck}
             2> ${CMAKE_BINARY_DIR}/analysis/cppcheck-report.xml
          WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       )
@@ -37,7 +43,7 @@ MACRO(analyse target projectVersion sources outputFile outputFileMSBuild)
             ${target}
             ${YADOMS_VERSION}
             ${CMAKE_BINARY_DIR}/..
-            "${sources}"
+            "${sourcesToCheck}"
             ${CMAKE_BINARY_DIR}/analysis/cppcheck-report.xml
             ${CMAKE_BINARY_DIR}/analysis/sonar-project.properties
          )

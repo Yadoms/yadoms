@@ -15,7 +15,6 @@ message(STATUS "  Create SonarQube configuration file ${outputFile} for projectN
 			sonar.projectVersion=${projectVersion}
 			sonar.projectName=${projectName}
 			sonar.language=c++
-         sonar.exclusions=**/*.rc
 			sonar.sources=${SONARQUBE_SOURCES}
 			sonar.cxx.coverage.forceZeroCoverage=False
 			sonar.cxx.includeDirectories=${SONARQUBE_INCLUDES}
@@ -27,6 +26,7 @@ message(STATUS "  Create SonarQube configuration file ${outputFile} for projectN
 		)
 		set(CONTENT "${CONTENT}\nsonar.cxx.defines=${SONARQUBE_DEFINES}")
 	
+      
 		FILE(WRITE ${outputFile} ${CONTENT})
 		
 		# get_msbuild_entry(SONAR_LANGUAGE sonar.language c++)

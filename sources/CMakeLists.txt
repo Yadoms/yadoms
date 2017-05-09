@@ -1270,4 +1270,4 @@ analyse(
       Yadoms.SonarQube.Analysis.txt
       Yadoms.SonarQube.Analysis.xml
    )
-   
+#TODO : add plugins analysis

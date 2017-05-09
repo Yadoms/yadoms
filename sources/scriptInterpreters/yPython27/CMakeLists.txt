@@ -2,14 +2,6 @@
 
 set (PYTHON_REQUIRED_VERSION 2.7)
 include(findPython.cmake)
-
-if(${PYTHONLIBS_FOUND})
-   message(STATUS "  Python FOUND : ${PYTHONLIBS_VERSION_STRING}")
-   message(STATUS "  PYTHON_LIBRARIES : ${PYTHON_LIBRARIES}")
-   message(STATUS "  PYTHON_INCLUDE_DIRS : ${PYTHON_INCLUDE_DIRS}")
-else(${PYTHONLIBS_FOUND})
-   message(ERROR "  Python NOT FOUND")
-endif(${PYTHONLIBS_FOUND})
   
 if(PYTHONLIBS_FOUND)
 
@@ -100,5 +92,5 @@ if(PYTHONLIBS_FOUND)
    add_subdirectory(yScriptApiWrapper)
    
 else()
-   message(WARNING "yPython27 interpreter is not available. Python library is Mssing")
+   message(SEND_ERROR "yPython27 interpreter is not available. Python library is Mssing")
 endif()
