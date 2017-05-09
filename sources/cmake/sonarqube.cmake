@@ -1,6 +1,6 @@
 
 
-macro(create_sonar_project_properties_file projectName projectVersion sources cppCheckReport outputFile)
+macro(create_sonar_project_properties_file projectName projectVersion projectBaseDir sources cppCheckReport outputFile)
 
 message(STATUS "  Create SonarQube configuration file ${outputFile} for projectName ${projectName}(v${projectVersion})")
 		
@@ -10,10 +10,12 @@ message(STATUS "  Create SonarQube configuration file ${outputFile} for projectN
 		get_sonarqube_tests(SONARQUBE_TESTS ${projectName})
 		
 		list_to_string(CONTENT
+			sonar.projectBaseDir=${projectBaseDir}
 			sonar.projectKey=${projectName}
 			sonar.projectVersion=${projectVersion}
 			sonar.projectName=${projectName}
 			sonar.language=c++
+         sonar.exclusions=**/*.rc
 			sonar.sources=${SONARQUBE_SOURCES}
 			sonar.cxx.coverage.forceZeroCoverage=False
 			sonar.cxx.includeDirectories=${SONARQUBE_INCLUDES}

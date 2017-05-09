@@ -36,6 +36,7 @@ MACRO(analyse target projectVersion sources outputFile outputFileMSBuild)
       create_sonar_project_properties_file(
             ${target}
             ${YADOMS_VERSION}
+            ${CMAKE_BINARY_DIR}/..
             "${sources}"
             ${CMAKE_BINARY_DIR}/analysis/cppcheck-report.xml
             ${CMAKE_BINARY_DIR}/analysis/sonar-project.properties
@@ -46,6 +47,7 @@ MACRO(analyse target projectVersion sources outputFile outputFileMSBuild)
          DEPENDS ${CMAKE_BINARY_DIR}/analysis/cppcheck-report.xml
                  ${CMAKE_BINARY_DIR}/analysis/sonar-project.properties
          COMMAND ${SONARSCANNER_EXECUTABLE}
+         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/analysis/
       )
 
    endif()
