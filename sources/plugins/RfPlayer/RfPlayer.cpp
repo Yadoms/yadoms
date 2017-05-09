@@ -7,6 +7,7 @@
 #include "MessageHandler.h"
 #include <shared/encryption/Base64.h>
 #include "frames/outgoing/Factory.h"
+#include "ManuallyDeviceFactory.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -164,7 +165,7 @@ void CRfPlayer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             YADOMS_LOG(information) << "Manually device creation request received for device :" << request->getData().getDeviceName();
             try
             {
-               std::string newDeviceName = m_transceiver->createDeviceManually(api, request->getData());
+               std::string newDeviceName = CManuallyDeviceFactory::createDeviceManually(api, request->getData());
                request->sendSuccess(newDeviceName);
             }
             catch (std::exception& e)

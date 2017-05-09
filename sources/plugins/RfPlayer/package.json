@@ -144,10 +144,54 @@
 							"type": "int",
 							"minimumValue": "1",
 							"maximumValue": "5"
+						},
+						"burst": {
+							"type": "int"
 						}
 					}
-				}
-			}
+				},
+				"x10Device": {
+					"types": {
+						"x10": {
+							"canBeCreatedManually": "true"
+						}
+					},
+					"content": {
+						"id": {
+							"type": "int"
+						},
+						"burst": {
+							"type": "int"
+						}
+					}
+				},
+				"visonicDevice": {
+					"types": {
+						"visonic": {
+							"canBeCreatedManually": "true"
+						}
+					},
+					"content": {
+                  "frequency" : {
+                     "type" : "enum",
+                     "values" : {
+                        "433" : "",
+                        "866" : ""
+                     },
+                     "defaultValue" : "433"
+                  },
+						"id": {
+							"type": "int"
+						},
+						"burst": {
+							"type": "int"
+						},
+						"qualifier": {
+							"type": "int"
+						}
+					}
+				}			
+         }
 		}
 	},
 	"extraQueries": {
@@ -162,7 +206,7 @@
 		}
 	},
   "enumerations": {
-    "EBlyssCommands": {
+    "EBlyss": {
       "name": "",
       "values": {
         "Off": "",

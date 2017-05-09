@@ -24,6 +24,8 @@
 #include <shared/plugin/yPluginApi/historization/RainRate.h>
 #include <shared/plugin/yPluginApi/historization/Switch.h>
 
+#include <shared/communication/BufferLogger.h>
+
 #include "../../specificHistorizers/incoming/Type0State.h"
 #include "../../specificHistorizers/incoming/Type1State.h"
 #include "../../specificHistorizers/incoming/Type2KeyCode.h"
@@ -49,6 +51,8 @@ namespace incoming {
 
    void CBinaryFrame::printToLog(std::ostream & out) const
    {
+      YADOMS_LOG(debug) << "Received frame:" << std::endl << shared::communication::CBufferLogger::msgToString(*m_content.get());
+
       REGULAR_INCOMING_RF_TO_BINARY_USB_FRAME * pFrame = (REGULAR_INCOMING_RF_TO_BINARY_USB_FRAME*)m_content->begin();
 
       switch (pFrame->header.frameType)

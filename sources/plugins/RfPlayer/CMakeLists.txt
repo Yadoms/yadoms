@@ -14,6 +14,8 @@ set(RFPLAYER_PLUGIN_SOURCES
 	Factory.h
 	Factory.cpp
    IMessageHandler.h
+	ManuallyDeviceFactory.h
+	ManuallyDeviceFactory.cpp 	
 	MessageHandler.h
 	MessageHandler.cpp 	
 	ReceiveBufferHandler.h
@@ -52,8 +54,24 @@ set(RFPLAYER_PLUGIN_SOURCES
    specificHistorizers/incoming/Type11State.h
    specificHistorizers/incoming/Type11State.cpp
 
-   specificHistorizers/outgoing/BlyssCommand.h
-   specificHistorizers/outgoing/BlyssCommand.cpp
+   specificHistorizers/outgoing/Blyss.h
+   specificHistorizers/outgoing/Blyss.cpp
+   specificHistorizers/outgoing/Chacon.h
+   specificHistorizers/outgoing/Chacon.cpp
+   specificHistorizers/outgoing/Domia.h
+   specificHistorizers/outgoing/Domia.cpp
+   specificHistorizers/outgoing/Kd101.h
+   specificHistorizers/outgoing/Kd101.cpp
+   specificHistorizers/outgoing/Parrot.h
+   specificHistorizers/outgoing/Parrot.cpp
+   specificHistorizers/outgoing/Rts.h
+   specificHistorizers/outgoing/Rts.cpp
+   specificHistorizers/outgoing/Visonic.h
+   specificHistorizers/outgoing/Visonic.cpp
+   specificHistorizers/outgoing/X10.h
+   specificHistorizers/outgoing/X10.cpp
+   specificHistorizers/outgoing/X2D.h
+   specificHistorizers/outgoing/X2D.cpp
 )
 
 source_group(sources ./*.*)

@@ -57,14 +57,5 @@ public:
    /// \return                            The command as string
    //--------------------------------------------------------------
    std::string buildLedActivityCommand(bool ledActivity) const;
-
-
-   //--------------------------------------------------------------
-   /// \brief	                           Create a device (manually)
-   /// \param [in] api                    The plugin api
-   /// \param [in] request                The device information
-   /// \return                            The new device created
-   //--------------------------------------------------------------
-   std::string createDeviceManually(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api, const shared::plugin::yPluginApi::IManuallyDeviceCreationData & request);
 };
 

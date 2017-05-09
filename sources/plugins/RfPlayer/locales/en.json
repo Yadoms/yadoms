@@ -135,6 +135,57 @@
 						"unitCode": {
 							"name": "Unit",
 							"description": "The unit code (1-5)"
+						},
+						"burst": {
+							"name": "Burst",
+							"description": "Frame repetition factor (0 by default)"
+						}
+					}
+				},
+				"x10Device": {
+					"types": {
+						"x10": {
+							"title": "X10"
+						}
+					},
+					"content": {
+						"id": {
+							"name": "ID",
+							"description": "Device identifier"
+						},
+						"burst": {
+							"name": "Burst",
+							"description": "Frame repetition factor (0 by default)"
+						}
+					}
+				},
+				"visonicDevice": {
+					"types": {
+						"visonic": {
+							"title": "Visonic",
+							"description": "Marque VISONIC, BFT,..."
+						}
+					},
+					"content": {
+                  "frequency" : {
+							"name": "Frequency",
+							"description": "The used frequency",
+                     "values" : {
+                        "433" : "433 MHz",
+                        "866" : "868 MHz"
+                     }
+                  },
+						"id": {
+							"name": "ID",
+							"description": "Device identifier"
+						},
+						"burst": {
+							"name": "Burst",
+							"description": "Frame repetition factor (0 by default)"
+						},
+						"qualifier": {
+							"name": "Burst",
+							"description": "Frame repetition factor (0 by default)"
 						}
 					}
 				}
@@ -160,7 +211,7 @@
 		}
 	},
   "enumerations": {
-    "EBlyssCommands": {
+    "EBlyss": {
       "name": "",
       "values": {
         "Off": "OFF",

@@ -21,6 +21,10 @@ namespace outgoing {
 
          const std::string cmd = command->getBody();
 
+         std::string dim = "";
+         std::string burst = "";
+         std::string qualifier = "";
+
          if (details.containsValue("id"))
          {
             std::string id = details.get<std::string>("id");

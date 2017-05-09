@@ -135,6 +135,57 @@
 						"unitCode": {
 							"name": "Unité",
 							"description": "L'identifiant de la fonction de l'équipement (1-5)"
+						},
+						"burst": {
+							"name": "Burst",
+							"description": "Facteur de répétition de trame (0 par défaut)"
+						}
+					}
+				},
+				"x10Device": {
+					"types": {
+						"x10": {
+							"title": "X10"
+						}
+					},
+					"content": {
+						"id": {
+							"name": "ID",
+							"description": "L'identifiant de l'équipement"
+						},
+						"burst": {
+							"name": "Burst",
+							"description": "Facteur de répétition de trame (0 par défaut)"
+						}
+					}
+				},
+				"visonicDevice": {
+					"types": {
+						"visonic": {
+							"title": "Visonic",
+							"description": "Marque VISONIC, BFT,..."
+						}
+					},
+					"content": {
+                  "frequency" : {
+							"name": "Frequency",
+							"description": "The used frequency",
+                     "values" : {
+                        "433" : "433 MHz",
+                        "866" : "868 MHz"
+                     }
+                  },
+						"id": {
+							"name": "ID",
+							"description": "L'identifiant de l'équipement"
+						},
+						"burst": {
+							"name": "Burst",
+							"description": "Facteur de répétition de trame (0 par défaut)"
+						},
+						"qualifier": {
+							"name": "Qualifier",
+							"description": "Paramètre optionnel"
 						}
 					}
 				}
@@ -160,7 +211,7 @@
 		}
 	},
   "enumerations": {
-    "EBlyssCommands": {
+    "EBlyss": {
       "name": "",
       "values": {
         "Off": "OFF",
