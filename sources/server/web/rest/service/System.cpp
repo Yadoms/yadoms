@@ -5,6 +5,7 @@
 #include "web/rest/Result.h"
 #include "tools/OperatingSystem.h"
 #include <shared/Peripherals.h>
+#include <shared/currentTime/Provider.h>
 #include <Poco/Net/NetworkInterface.h>
 #include <shared/ServiceLocator.h>
 #include <startupOptions/IStartupOptions.h>
@@ -32,6 +33,7 @@ namespace web
          {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("binding")("*"), CSystem::getBinding);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CSystem::getSystemInformation);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("currentTime"), CSystem::getCurrentTime);
          }
 
 
@@ -41,7 +43,8 @@ namespace web
          }
 
 
-         shared::CDataContainer CSystem::getBinding(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         shared::CDataContainer CSystem::getBinding(const std::vector<std::string>& parameters,
+                                                    const std::string& requestContent) const
          {
             if (parameters.size() > 2)
             {
@@ -127,6 +130,25 @@ namespace web
                if (shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>()->getDeveloperMode())
                   result.set("developerMode", "true");
 
+               return CResult::GenerateSuccess(result);
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in retreiving system information");
+            }
+         }
+
+         shared::CDataContainer CSystem::getCurrentTime(const std::vector<std::string>& parameters,
+                                                        const std::string& requestContent) const
+         {
+            try
+            {
+               shared::CDataContainer result;
+               result.set("now", shared::currentTime::Provider().now());
                return CResult::GenerateSuccess(result);
             }
             catch (std::exception& ex)

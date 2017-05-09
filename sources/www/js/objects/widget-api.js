@@ -283,3 +283,10 @@ WidgetApi.prototype.manageRollingTitle = function () {
 		}		
 	}
 }
+
+WidgetApi.prototype.askServerLocalTime = function () {
+   YadomsTimeManager.getCurrentLocalTime()
+   .done(function(data) {
+      return data.now;
+   });
+}
