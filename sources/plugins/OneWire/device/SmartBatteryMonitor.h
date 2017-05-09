@@ -39,6 +39,9 @@ namespace device
       }
       void setConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
                             const shared::CDataContainer& configuration) override;
+      void removeNoMoreUsedKeywords(boost::shared_ptr<yApi::IYPluginApi> api,
+                                    const std::string& device,
+                                    const std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& newKeywords);
       void read() const override;
       void write(const std::string& keyword, const std::string& command) override;
       // [END] IDevice implementation
