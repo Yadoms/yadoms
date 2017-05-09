@@ -1,69 +1,32 @@
 
 
-macro(create_sonar_project_properties_file projectName projectVersion projectBaseDir cppCheckReport outputFile)
+macro(create_cppcheck_command projectName cppcheck_executable cppcheck_report_file)
 
-message(STATUS "  Create SonarQube configuration file ${outputFile} for projectName ${projectName}(v${projectVersion})")
+message(STATUS "  Create CppCheck command line")
 		
-		get_sonarqube_defines(SONARQUBE_DEFINES ${projectName})
-		get_sonarqube_sources(SONARQUBE_SOURCES ${projectName})
-		get_sonarqube_includes(SONARQUBE_INCLUDES ${projectName})
-		get_sonarqube_tests(SONARQUBE_TESTS ${projectName})
+		# TODO remettre get_sonarqube_defines(SONARQUBE_DEFINES ${projectName})
+		get_cppcheck_sources(CPPCHECK_SOURCES ${projectName})
+		get_cppcheck_includes(CPPCHECK_INCLUDE_DIRECTORIES ${projectName})
+		# get_sonarqube_tests(SONARQUBE_TESTS ${projectName})
 		
-		list_to_string(CONTENT
-			sonar.projectBaseDir=${projectBaseDir}
-			sonar.projectKey=${projectName}
-			sonar.projectVersion=${projectVersion}
-			sonar.projectName=${projectName}
-			sonar.language=c++
-			sonar.sources=${SONARQUBE_SOURCES}
-			sonar.cxx.coverage.forceZeroCoverage=False
-			sonar.cxx.includeDirectories=${SONARQUBE_INCLUDES}
-         
-         sonar.cxx.cppcheck.path=${CPPCHECK_EXECUTABLE}        # TODO utile ?
-         sonar.cxx.cppcheck.reportPath=${cppCheckReport}
-         
-			${SONARQUBE_TESTS}
-		)
-		set(CONTENT "${CONTENT}\nsonar.cxx.defines=${SONARQUBE_DEFINES}")
-	
-      
-		FILE(WRITE ${outputFile} ${CONTENT})
-		
-		# get_msbuild_entry(SONAR_LANGUAGE sonar.language c++)
-		# get_msbuild_entry(SONAR_SOURCES sonar.inclusions  ${SONARQUBE_SOURCES})
-		# get_msbuild_entry(SONAR_FORCE_ZERO_COVERAGE sonar.cxx.coverage.forceZeroCoverage False)
-		# get_msbuild_entry(SONAR_INCLUDE_DIRECTORIES sonar.cxx.includeDirectories ${SONARQUBE_INCLUDES})
-		# get_msbuild_entry(SONAR_HOST sonar.host.url http://localhost:9000)
-		# get_root(LOCAL_REPO_PATH)
-		
-		
-		# get_target_property(testTagets ${projectName} TESTED_BY)
-		# set(unitReportPaths)
-		# SET(i 1)
-		# foreach (testTarget ${testTargets})
-			# set(unitReportPaths ${unitReportPaths} ${LOCAL_REPO_PATH}/TestResultsSQ/File${i}.trx)
-			# MATH(EXPR i "${i}+1")
-		# ENDFOREACH()
-		# JOIN("${unitReportPaths}" "," unitReportPaths)
-		
-		# if (unitReportPaths)
-		# get_msbuild_entry(SONAR_TESTS sonar.cxx.vstest.reportsPaths ${unitReportPaths})
-		# endif()
-		# # get_target_property(externalSources ${projectName} EXTERNAL_SOURCES)
-		# # get_root(LOCAL_REPO_PATH)
-		# # STRING(REGEX REPLACE "${LOCAL_REPO_PATH}/" "" externalSources "${externalSources}" )
-		# # STRING(REGEX REPLACE ";" "," externalSources "${externalSources}" )
-		# # get_msbuild_entry(SONAR_HOST sonar.host.url http://localhost:9000)
-		
-		# #get_msbuild_entry(COVERAGE_UNIT_TESTS sonar.cxx.coverage.reportPath UnitTestCoverageResults.xml)
-		# #get_msbuild_entry(COVERAGE_ACCEPTANCE_TESTS sonar.cxx.coverage.itReportPath AcceptanceTestCoverageResults.xml)
-		# get_msbuild_entry(COVERAGE_ALL_TESTS sonar.cxx.coverage.overallReportPath ${LOCAL_REPO_PATH}/AllTestCoverageResults.xml)
-		# get_msbuild_entry(COVERAGE_ACCEPTANCE_TESTS sonar.cxx.coverage.itReportPath ${LOCAL_REPO_PATH}/AllTestCoverageResults.xml)
-		# get_msbuild_entry(CPPCHECK_REPORTS sonar.cxx.cppcheck.reportPath *_cppcheck.xml)
+      add_custom_command(
+         OUTPUT ${cppcheck_report_file}
+         BYPRODUCTS ${cppcheck_report_file}
+         COMMAND ${cppcheck_executable}
+            --enable=all
+            --std=c++11
+            --xml
+            --verbose
+            --quiet
+            ${CPPCHECK_INCLUDE_DIRECTORIES}
+            ${CPPCHECK_SOURCES}
+            2> ${cppcheck_report_file}
+         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      )
 	
 endmacro()
 
-
+#TODO faire ménage dans tout ce qui suit
 
 macro(get_msbuild_entry output key value)
 
@@ -96,20 +59,19 @@ MACRO(get_sonarqube_tests output projectName)
 
 ENDMACRO()
 
-MACRO(get_sonarqube_sources output projectName)
+MACRO(get_cppcheck_sources output projectName)
 
 	get_target_property(sources ${projectName} SOURCES)
    if(MSVC)
       # Remove .rc files
       LIST(FILTER sources EXCLUDE REGEX "^.*\.rc$")
    endif()
-   
-	STRING(REGEX REPLACE ";" "," sources "${sources}" )
+      
 	SET(${output} ${sources})
 	
 ENDMACRO()
 
-MACRO(get_sonarqube_includes output projectName)
+MACRO(get_cppcheck_includes output projectName)
 
 	# TODO voir si utile get_std_headers_path(stdHeaders)
 	get_target_property(includeDirectories ${projectName} INCLUDE_DIRECTORIES)
@@ -118,14 +80,21 @@ MACRO(get_sonarqube_includes output projectName)
 		"C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include"#TODO ne pas laisser en dur
 		${stdHeaders}
 	)
-	STRING(REGEX REPLACE ";" "," includeDirectories "${includeDirectories}" )
+   
+   set(INCS)
+   foreach (includeDirectory ${includeDirectories})
+      STRING(CONCAT includeDirectory "-I\"" "${includeDirectory}" "\"")
+      set(INCS ${INCS} ${includeDirectory})
+	endforeach()
+   set(includeDirectories ${INCS})
+   
 	SET(${output} ${includeDirectories})
 
 ENDMACRO()
 
 MACRO(get_sonarqube_defines output projectName)
 
-	get_directory_property( COMPILE_DEFS DIRECTORY ${CMAKE_SOURCE_DIR} COMPILE_DEFINITIONS)
+	get_directory_property(COMPILE_DEFS DIRECTORY ${CMAKE_SOURCE_DIR} COMPILE_DEFINITIONS)
 	get_target_property(targetDefines ${projectName} COMPILE_DEFINITIONS)
 	IF (targetDefines)
 		set(COMPILE_DEFS ${COMPILE_DEFS} ${targetDefines})
