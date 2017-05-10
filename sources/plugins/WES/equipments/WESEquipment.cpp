@@ -490,7 +490,7 @@ namespace equipments
          parameters.set("rl" + boost::lexical_cast<std::string>(counter+1), stringState);
 
          if (iteratorRelay == m_relaysList.end())
-            throw std::exception("Failed to identify the relay");
+            throw shared::exception::CException("Failed to identify the relay");
 
          shared::CDataContainer results = urlManager::setRelayState(m_configuration.getIPAddressWithSocket(),
                                                                      credentials,

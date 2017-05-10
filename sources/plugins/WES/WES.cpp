@@ -19,8 +19,8 @@ IMPLEMENT_PLUGIN(CWES)
 
 
 CWES::CWES():
-   m_factory(boost::make_shared<CWESFactory>()),
-   m_configuration(boost::make_shared<CWESConfiguration>())
+   m_configuration(boost::make_shared<CWESConfiguration>()),
+   m_factory(boost::make_shared<CWESFactory>())
 {}
 
 CWES::~CWES()
