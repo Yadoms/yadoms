@@ -62,7 +62,7 @@ void CIOManager::onCommand(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       if (deviceName == (*iteratorDevice)->getDeviceName())
       {
-         (*iteratorDevice)->sendCommand(api, command->getKeyword(), yApi::IDeviceCommand::toString(command));
+         (*iteratorDevice)->sendCommand(api, command->getKeyword(), command);
          return;
       }
    }

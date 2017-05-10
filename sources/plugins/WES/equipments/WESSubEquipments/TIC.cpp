@@ -37,7 +37,7 @@ namespace equipments
          shared::CDataContainer details;
          m_keywords.clear();
 
-         m_keywords.push_back(m_deviceStatus); // TODO : Save this device only on change
+         m_keywords.push_back(m_deviceStatus);
 
          if (m_contractName.compare("Pas Dispo")!=0)
          {
@@ -147,6 +147,22 @@ namespace equipments
       std::string CTIC::name()
       {
          return m_deviceName;
+      }
+
+      void CTIC::setDeviceState(boost::shared_ptr<yApi::IYPluginApi> api,
+                                specificHistorizers::EdeviceStatus newState)
+      {
+         setDeviceState(newState);
+         api->historizeData(m_deviceName, m_deviceStatus); // TODO : historize only if the status change
+      }
+
+      void CTIC::setDeviceState(specificHistorizers::EdeviceStatus newState)
+      {
+         if (m_deviceStatus->get() != newState)
+         {
+            m_deviceStatus->set(newState);
+            YADOMS_LOG(trace) << "device state " << m_deviceName << " set to " << newState.toString();
+         }
       }
 
       CTIC::~CTIC()

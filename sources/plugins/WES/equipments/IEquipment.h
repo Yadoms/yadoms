@@ -61,7 +61,7 @@ namespace equipments
       //--------------------------------------------------------------
       virtual void sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                                const std::string& keyword,
-                               const std::string& command) = 0;
+                               boost::shared_ptr<const yApi::IDeviceCommand> command) = 0;
 
       //--------------------------------------------------------------
       /// \brief      remove             remove this equipment, with all subequipment

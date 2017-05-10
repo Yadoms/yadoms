@@ -64,7 +64,7 @@ shared::CDataContainer urlManager::setRelayState(Poco::Net::SocketAddress socket
    boost::property_tree::ptree responseTree;
 
    // create the URL
-   url << "http://" << socket.toString() << "RL.cgi";
+   url << "http://" << socket.toString() << "/RL.cgi";
 
    credentials.printToLog(YADOMS_LOG(information));
    YADOMS_LOG(information) << url.str();

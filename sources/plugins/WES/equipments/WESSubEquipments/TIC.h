@@ -57,6 +57,14 @@ namespace equipments
          void remove(boost::shared_ptr<yApi::IYPluginApi> api);
 
          //-----------------------------------------------------
+         ///\brief                     remove
+         ///\param[in]   api          Yadoms API
+         ///\param[in]   newState     new state of the device
+         //-----------------------------------------------------
+         void setDeviceState(boost::shared_ptr<yApi::IYPluginApi> api,
+                             specificHistorizers::EdeviceStatus newState);
+
+         //-----------------------------------------------------
          ///\brief                     get the device name
          ///\return                    the TIC device Name
          //-----------------------------------------------------
@@ -73,6 +81,12 @@ namespace equipments
          ///\param[in]   api          Yadoms API
          //-----------------------------------------------------
          void initializeTIC(boost::shared_ptr<yApi::IYPluginApi> api);
+
+         //-----------------------------------------------------
+         ///\brief                     set the state of the device only when this one change
+         ///\param[in]   newState          Yadoms API
+         //-----------------------------------------------------
+         void setDeviceState(specificHistorizers::EdeviceStatus newState);
 
          //-----------------------------------------------------
          ///\brief                     The device name

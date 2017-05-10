@@ -406,8 +406,6 @@ namespace equipments
          setDeviceState(keywordsToHistorize, specificHistorizers::EdeviceStatus::kOk);
          api->historizeData(m_deviceName, keywordsToHistorize);
 
-         // TODO : When an exception is thrown before this point, deviceStatus of TIC are not updated ...
-
          // TIC Counters Values -> independant from the others keywords
          for (int counter = 0; counter < WES_TIC_QTY; ++counter)
          {
@@ -426,12 +424,18 @@ namespace equipments
       {
          setDeviceState(keywordsToHistorize, specificHistorizers::EdeviceStatus::kTimeOut);
          api->historizeData(m_deviceName, keywordsToHistorize);
+
+         for (int counter = 0; counter < WES_TIC_QTY; ++counter)
+            m_TICList[counter]->setDeviceState(api, specificHistorizers::EdeviceStatus::kTimeOut);
       }
       catch (std::exception& e)
       {
          YADOMS_LOG(error) << e.what();
          setDeviceState(keywordsToHistorize, specificHistorizers::EdeviceStatus::kError);
          api->historizeData(m_deviceName, keywordsToHistorize);
+
+         for (int counter = 0; counter < WES_TIC_QTY; ++counter)
+            m_TICList[counter]->setDeviceState(api, specificHistorizers::EdeviceStatus::kError);
       }
    }
 
@@ -459,23 +463,52 @@ namespace equipments
 
    void CWESEquipment::sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                                    const std::string& keyword,
-                                   const std::string& command)
+                                   boost::shared_ptr<const yApi::IDeviceCommand> command)
    {
-      shared::CDataContainer credentials;
-      shared::CDataContainer parameters;
+      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize;
 
       try {
+         shared::CDataContainer credentials;
+         shared::CDataContainer parameters;
+         bool newValue = false;
+         std::string stringState;
+         int counter = 0;
+
          credentials.set("user", m_configuration.getUser());
          credentials.set("password", m_configuration.getPassword());
 
-         //TODO : parameters to be filled
+         newValue = boost::lexical_cast<bool>(command->getBody());
+         if (newValue)
+            stringState = "ON";
+         else
+            stringState = "OFF";
+
+         std::vector<boost::shared_ptr<yApi::historization::CSwitch> >::const_iterator iteratorRelay;
+         for (iteratorRelay = m_relaysList.begin(); (iteratorRelay != m_relaysList.end() && (command->getKeyword() != (*iteratorRelay)->getKeyword())); ++iteratorRelay)
+            ++counter;
+
+         parameters.set("rl" + boost::lexical_cast<std::string>(counter+1), stringState);
+
+         if (iteratorRelay == m_relaysList.end())
+            throw std::exception("Failed to identify the relay");
 
          shared::CDataContainer results = urlManager::setRelayState(m_configuration.getIPAddressWithSocket(),
-                                                                    credentials,
-                                                                    parameters);
+                                                                     credentials,
+                                                                     parameters);
+
+         // TODO : Check the return of this function
+
+         // historize the new value after sending and check that the value is well registered and return from the WES Equipment
+         (*iteratorRelay)->set(newValue);
+         keywordsToHistorize.push_back((*iteratorRelay));
+         setDeviceState(keywordsToHistorize, specificHistorizers::EdeviceStatus::kOk);
+         api->historizeData(m_deviceName, keywordsToHistorize);
       }
       catch (std::exception& e)
       {
+         keywordsToHistorize.clear();
+         setDeviceState(keywordsToHistorize, specificHistorizers::EdeviceStatus::kError);
+         api->historizeData(m_deviceName, keywordsToHistorize);
          YADOMS_LOG(error) << e.what();
       }
    }

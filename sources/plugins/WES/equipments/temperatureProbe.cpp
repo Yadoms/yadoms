@@ -96,7 +96,7 @@ namespace equipments
 
    void CtemperatureProbe::sendCommand(boost::shared_ptr<yApi::IYPluginApi> api,
                                        const std::string& keyword,
-                                       const std::string& command)
+                                       boost::shared_ptr<const yApi::IDeviceCommand> command)
    {
       throw shared::exception::CException("No writing keyword for temprature probe");
    }
