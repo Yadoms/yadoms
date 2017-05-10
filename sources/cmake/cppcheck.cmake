@@ -4,7 +4,7 @@ macro(create_cppcheck_command projectName cppcheck_executable cppcheck_report_fi
 
 message(STATUS "  Create CppCheck command line")
 		
-		# TODO remettre get_sonarqube_defines(SONARQUBE_DEFINES ${projectName})
+		get_cppcheck_defines(CPPCHECK_DEFINES ${projectName})
 		get_cppcheck_sources(CPPCHECK_SOURCES ${projectName})
 		get_cppcheck_includes(CPPCHECK_INCLUDE_DIRECTORIES ${projectName})
 		# get_sonarqube_tests(SONARQUBE_TESTS ${projectName})
@@ -18,6 +18,8 @@ message(STATUS "  Create CppCheck command line")
             --xml
             --verbose
             --quiet
+            # --check-config       ## Enable this line only to find missing include (don't do analysis otherwise)
+            ${CPPCHECK_DEFINES}
             ${CPPCHECK_INCLUDE_DIRECTORIES}
             ${CPPCHECK_SOURCES}
             2> ${cppcheck_report_file}
@@ -73,13 +75,16 @@ ENDMACRO()
 
 MACRO(get_cppcheck_includes output projectName)
 
-	# TODO voir si utile get_std_headers_path(stdHeaders)
+	get_directory_property(stdHeaders DIRECTORY ${CMAKE_SOURCE_DIR} INCLUDE_DIRECTORIES)
+   message("stdHeaders=${stdHeaders}")
+	get_directory_property(stdHeaders INCLUDE_DIRECTORIES)
+   message("stdHeaders=${stdHeaders}")
+
 	get_target_property(includeDirectories ${projectName} INCLUDE_DIRECTORIES)
-	set(includeDirectories ${includeDirectories}
-		"C:/Program Files (x86)/Windows Kits/10/Include/10.0.10240.0/ucrt"#TODO ne pas laisser en dur
-		"C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include"#TODO ne pas laisser en dur
-		${stdHeaders}
-	)
+	# TODO voir si utile get_std_headers_path(stdHeaders)
+	# set(includeDirectories ${includeDirectories}
+		# ${stdHeaders}
+	# )
    
    set(INCS)
    foreach (includeDirectory ${includeDirectories})
@@ -92,17 +97,20 @@ MACRO(get_cppcheck_includes output projectName)
 
 ENDMACRO()
 
-MACRO(get_sonarqube_defines output projectName)
+MACRO(get_cppcheck_defines output projectName)
 
 	get_directory_property(COMPILE_DEFS DIRECTORY ${CMAKE_SOURCE_DIR} COMPILE_DEFINITIONS)
 	get_target_property(targetDefines ${projectName} COMPILE_DEFINITIONS)
 	IF (targetDefines)
 		set(COMPILE_DEFS ${COMPILE_DEFS} ${targetDefines})
 	ENDIF()
-	
-	
-	STRING(REGEX REPLACE "=" " " COMPILE_DEFS "${COMPILE_DEFS}" )
-	STRING(REPLACE ";" "\\\\n\\\\\\\n" COMPILE_DEFS "${COMPILE_DEFS}" )
+   
+   set(DEFS)
+   foreach (compileDef ${COMPILE_DEFS})
+      STRING(CONCAT compileDef "-D\"" "${compileDef}" "\"")
+      set(DEFS ${DEFS} ${compileDef})
+	endforeach()
+   set(COMPILE_DEFS ${DEFS})
 	
 	SET(${output} ${COMPILE_DEFS})
 	

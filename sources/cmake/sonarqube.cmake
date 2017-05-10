@@ -1,6 +1,6 @@
 
 
-macro(create_sonar_project_properties_file projectName projectVersion projectBaseDir cppCheckReport outputFile)
+macro(create_sonar_project_properties_file projectName projectVersion cppCheckReport outputFile)
 
 message(STATUS "  Create SonarQube configuration file ${outputFile} for projectName ${projectName}(v${projectVersion})")
 		
@@ -10,7 +10,7 @@ message(STATUS "  Create SonarQube configuration file ${outputFile} for projectN
 		get_sonarqube_tests(SONARQUBE_TESTS ${projectName})
 		
 		list_to_string(CONTENT
-			sonar.projectBaseDir=${projectBaseDir}
+			sonar.projectBaseDir=${CMAKE_SOURCE_DIR}
 			sonar.projectKey=${projectName}
 			sonar.projectVersion=${projectVersion}
 			sonar.projectName=${projectName}
@@ -110,6 +110,8 @@ MACRO(get_sonarqube_sources output projectName)
 ENDMACRO()
 
 MACRO(get_sonarqube_includes output projectName)
+
+message ("CMAKE_INCLUDE_PATH=${CMAKE_INCLUDE_PATH}")
 
 	# TODO voir si utile get_std_headers_path(stdHeaders)
 	get_target_property(includeDirectories ${projectName} INCLUDE_DIRECTORIES)
