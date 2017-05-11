@@ -57,7 +57,7 @@ AutomationInterpreterManager.getAllDetailed = function () {
          //this thread will ask for synchronous package.json requests
          var value = interpreters[key];
 
-         var deferred = RestEngine.get("scriptInterpreters/" + value.type + "/package.json", { dataType: "json" });
+         var deferred = RestEngine.get("scriptInterpreters/" + value.path + "/package.json", { dataType: "json" });
          deferredArray.push(deferred);
 
          deferred.done(function (data) {
