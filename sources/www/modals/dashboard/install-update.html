@@ -576,7 +576,7 @@
             }
         })
         .fail(function (error) {
-            console.error("Unable to get versions for " + objectType + " : " + error);
+            console.warning("Unable to get versions for " + objectType + " : " + error);
             d.reject(error);
         });
 
