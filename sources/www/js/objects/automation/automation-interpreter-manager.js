@@ -81,8 +81,8 @@ AutomationInterpreterManager.getAllDetailed = function () {
 AutomationInterpreterManager.getInterpreterBaseUrl = function (interpreter) {
     assert(!isNullOrUndefined(interpreter), "interpreter must be defined");
 
-    var interpreterType = AutomationInterpreterManager.factory(interpreter).type;
-    return "scriptInterpreters/" + interpreterType ;
+    var interpreterPath = AutomationInterpreterManager.factory(interpreter).path;
+    return "scriptInterpreters/" + interpreterPath ;
 };
 
 
