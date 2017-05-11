@@ -73,9 +73,9 @@ def dateTimeOrTimeDeltaToString(object):
 # returned as is
 def toDatetime(object):
    if type(object) is datetime.time:
-      return datetime.combine(datetime.date.today(), object)
+      return datetime.datetime.combine(datetime.date.today(), object)
    if type(object) is datetime.date:
-      return datetime.combine(object, datetime.time(0,0,0))
+      return datetime.datetime.combine(object, datetime.time(0,0,0))
    return object
 
 # Read a keyword value, and return a default value in case of error (no data,
