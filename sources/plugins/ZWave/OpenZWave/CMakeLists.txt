@@ -15,7 +15,7 @@
 
 #When changing openzwave, remeber to enable exceptions, by undefining OPENZWAVE_DISABLE_EXCEPTIONS (cpp/src/Defs.h, line 149 in v1.4.1)
 #Include "vers.cpp" to git manually
-set(OPENZWAVE_DIR_NAME openzwave-1.4.164 )
+set(OPENZWAVE_DIR_NAME openzwave-1.4.2522 )
 
 
 #########################################
@@ -107,12 +107,12 @@ set(OPENZWAVE_COMMANDCLASSES_SOURCES
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Meter.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/MeterPulse.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/MeterPulse.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/MultiChannelAssociation.cpp
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/MultiChannelAssociation.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/MultiCmd.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/MultiCmd.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/MultiInstance.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/MultiInstance.h
-	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/MultiInstanceAssociation.cpp
-	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/MultiInstanceAssociation.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/NodeNaming.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/NodeNaming.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/NoOperation.cpp
