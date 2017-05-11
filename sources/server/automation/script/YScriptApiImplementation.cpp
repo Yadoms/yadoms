@@ -242,6 +242,8 @@ namespace automation
 
          auto eventHandler(boost::make_shared<shared::event::CEventHandler>());
 
+         // subscriber must leave until function exits
+         boost::shared_ptr<notification::CHelpers::CCustomSubscriber> subscriber;
          if (!keywordIdList.empty())
          {
             for (const auto& kwId : keywordIdList)
@@ -255,7 +257,7 @@ namespace automation
             observer->resetKeywordIdFilter(keywordIdList);
 
             //register the observer
-            notification::CHelpers::CCustomSubscriber subscriber(observer);
+            subscriber = boost::make_shared<notification::CHelpers::CCustomSubscriber>(observer);
          }
 
          shared::script::yScriptApi::CWaitForEventResult result;

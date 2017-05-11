@@ -69,6 +69,13 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
          RUNTIME DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${_targetName}
          COMPONENT  ${ComponentCompatibleName})
    endif()
+   ##################################################################################################
+   ## RPATH
+   ##################################################################################################
+   if(CMAKE_CROSSCOMPILING)
+      #Fix RPATH for cross compilation
+      set_target_properties(${_targetName} PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+   endif(CMAKE_CROSSCOMPILING)
 		
    set(SCRIPTINTERPRETERSLIST
       ${SCRIPTINTERPRETERSLIST}
@@ -89,6 +96,11 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
 		
 		if(COTIRE_USE_UNITY)
 			target_link_libraries(${_targetName}_unity yadoms-shared_unity interpreter_cpp_api_unity ${LIBS} ${CMAKE_DL_LIBS} ${PROTOBUF_LIBRARIES} ${ARGN})
+
+		   if(CMAKE_CROSSCOMPILING)
+		      #Fix RPATH for cross compilation
+		      set_target_properties(${_targetName}_unity PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+		   endif(CMAKE_CROSSCOMPILING)
 		endif()	
 	endif()	
 	
