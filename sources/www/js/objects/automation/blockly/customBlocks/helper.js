@@ -104,7 +104,7 @@ Blockly.Yadoms.ConfigureBlockForYadomsCapacitySelection = function(thisBlock, ca
         return capacityDd.getValue();
     };
 	
-	thisBlock.isValid = function () {
+	thisBlock.validationFunction = function () {
         var capacityValid = thisBlock.getSelectedCapacity() !== thisBlock.emptyCapacityDropDownItem_[1];
         if (capacityDd.textElement_) {
             if (!capacityValid) {
@@ -118,6 +118,12 @@ Blockly.Yadoms.ConfigureBlockForYadomsCapacitySelection = function(thisBlock, ca
 			message : "chooseItemInList"
 		};		
     };
+
+    if ($.isFunction(thisBlock.addValidationFunction)) {
+       thisBlock.addValidationFunction(thisBlock.validationFunction);
+    } else {
+       thisBlock.isValid = thisBlock.validationFunction;
+    }    
 
     var inputNameToUse = inputName;
     if (isNullOrUndefined(inputName)) {
@@ -301,18 +307,7 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, on
         return result;
     };
 
-
-    thisBlock.getSelectedKeyword = function () {
-        return keywordDd.getValue();
-    };
-    thisBlock.getSelectedDevice = function () {
-        return deviceDd.getValue();
-    };
-    thisBlock.getSelectedPlugin = function () {
-        return thisBlock.selectedPlugin_;
-    };
-
-    thisBlock.isValid = function () {
+    thisBlock.validationFunction = function () {
         var deviceValid = thisBlock.getSelectedDevice() !== thisBlock.emptyDeviceDropDownItem_[1];
         if (deviceDd.textElement_) {
             if (!deviceValid) {
@@ -334,6 +329,22 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, on
 			message : "chooseItemInList"
 		};
     };
+    
+    thisBlock.getSelectedKeyword = function () {
+        return keywordDd.getValue();
+    };
+    thisBlock.getSelectedDevice = function () {
+        return deviceDd.getValue();
+    };
+    thisBlock.getSelectedPlugin = function () {
+        return thisBlock.selectedPlugin_;
+    };
+
+    if ($.isFunction(thisBlock.addValidationFunction)) {
+       thisBlock.addValidationFunction(thisBlock.validationFunction);
+    } else {
+       thisBlock.isValid = thisBlock.validationFunction;
+    }    
 
     var inputNameToUse = inputName;
     if (isNullOrUndefined(inputName)) {
