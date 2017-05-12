@@ -49,7 +49,7 @@ namespace dateTime {
       //reschedule the task
       m_nextMinute += m_oneMinuteOffset;//+1minute
 
-      YADOMS_LOG(information) << "DateTimeNotifier : schedule the task @" << Poco::DateTimeFormatter::format(Poco::LocalDateTime(m_nextMinute), "%H:%M:%S.%i");
+      YADOMS_LOG(trace) << "DateTimeNotifier : schedule the task @" << Poco::DateTimeFormatter::format(Poco::LocalDateTime(m_nextMinute), "%H:%M:%S.%i");
       m_dateTimeTimer->schedule(m_dateTimeTask, m_nextMinute.timestamp());
    }
 
