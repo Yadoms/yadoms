@@ -1,210 +1,267 @@
 {
-	"type": "RfPlayer",
-	"version": "1.0.0-beta.1",
-	"author": "Jean-Michel DECORET",
-	"url": "https://github.com/Yadoms/yadoms/wiki/RfPlayer",
-	"credits": "[RfPlayer](https://ziblue.com/)",
-	"supportedPlatforms": "all",
-	"configurationSchema": {
-		"Serial Port": {
-			"type": "enum",
-			"values": {
-				"__Binding__": {
-					"type": "system",
-					"query": "serialPorts"
-				}
-			}
-		},
-		"receiver": {
-			"type": "section",
-			"content": {
-				"X10": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"RTS": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"VISONIC": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"BLYSS": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"CHACON": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"OREGONV1": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"OREGONV2": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"OREGONV3/OWL": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"DOMIA": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"X2D": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"KD101": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"PARROT": {
-					"type": "bool",
-					"defaultValue": "true"
-				}
-			}
-		},
-		"repeater": {
-			"type": "section",
-			"enableWithCheckBox": "true",
-			"enableWithCheckBoxDefaultValue": "false",
-			"content": {
-				"X10": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"RTS": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"VISONIC": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"BLYSS": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"CHACON": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"OREGONV1": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"OREGONV2": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"OREGONV3/OWL": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"DOMIA": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"X2D": {
-					"type": "bool",
-					"defaultValue": "true"
-				},
-				"KD101": {
-					"type": "bool",
-					"defaultValue": "true"
-				}
-			}
-		},
-		"ledactiviy": {
-			"type": "bool",
-			"defaultValue": "true"
-		}
-	},
-	"supportManuallyDeviceCreation": "true",
-	"deviceConfiguration": {
-		"staticConfigurationSchema": {
-			"schemas": {
-				"blyssDevice": {
-					"types": {
-						"blyss": {
-							"canBeCreatedManually": "true"
-						}
-					},
-					"content": {
-						"groupCode": {
-							"type": "string",
-							"regex": "[A-P]",
-							"defaultValue": "A"
-						},
-						"unitCode": {
-							"type": "int",
-							"minimumValue": "1",
-							"maximumValue": "5"
-						},
-						"burst": {
-							"type": "int"
-						}
-					}
-				},
-				"x10Device": {
-					"types": {
-						"x10": {
-							"canBeCreatedManually": "true"
-						}
-					},
-					"content": {
-						"id": {
-							"type": "int"
-						},
-						"burst": {
-							"type": "int"
-						}
-					}
-				},
-				"visonicDevice": {
-					"types": {
-						"visonic": {
-							"canBeCreatedManually": "true"
-						}
-					},
-					"content": {
-                  "frequency" : {
-                     "type" : "enum",
-                     "values" : {
-                        "433" : "",
-                        "866" : ""
-                     },
-                     "defaultValue" : "433"
-                  },
-						"id": {
-							"type": "int"
-						},
-						"burst": {
-							"type": "int"
-						},
-						"qualifier": {
-							"type": "int"
-						}
-					}
-				}			
-         }
-		}
-	},
-	"extraQueries": {
-		"firmwareUpdate": {
-			"iconClass": "fa  fa-upload",
-			"commandData": {
-				"fileContent": {
-					"type": "file",
-					"filter": ".RFP"
-				}
-			}
-		}
-	},
+  "type": "RfPlayer",
+  "version": "1.0.0-alpha.1",
+  "author": "Jean-Michel DECORET",
+  "url": "https://github.com/Yadoms/yadoms/wiki/RfPlayer",
+  "credits": "[RfPlayer](https://ziblue.com/)",
+  "supportedPlatforms": "all",
+  "configurationSchema": {
+    "Serial Port": {
+      "type": "enum",
+      "values": {
+        "__Binding__": {
+          "type": "system",
+          "query": "serialPorts"
+        }
+      }
+    },
+    "receiver": {
+      "type": "section",
+      "content": {
+        "X10": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "RTS": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "VISONIC": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "BLYSS": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "CHACON": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "OREGONV1": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "OREGONV2": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "OREGONV3/OWL": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "DOMIA": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "X2D": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "KD101": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "PARROT": {
+          "type": "bool",
+          "defaultValue": "true"
+        }
+      }
+    },
+    "repeater": {
+      "type": "section",
+      "enableWithCheckBox": "true",
+      "enableWithCheckBoxDefaultValue": "false",
+      "content": {
+        "X10": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "RTS": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "VISONIC": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "BLYSS": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "CHACON": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "OREGONV1": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "OREGONV2": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "OREGONV3/OWL": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "DOMIA": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "X2D": {
+          "type": "bool",
+          "defaultValue": "true"
+        },
+        "KD101": {
+          "type": "bool",
+          "defaultValue": "true"
+        }
+      }
+    },
+    "ledactiviy": {
+      "type": "bool",
+      "defaultValue": "true"
+    }
+  },
+  "supportManuallyDeviceCreation": "true",
+  "deviceConfiguration": {
+    "staticConfigurationSchema": {
+      "schemas": {
+        "blyssDevice": {
+          "types": {
+            "blyss": {
+              "canBeCreatedManually": "true"
+            }
+          },
+          "content": {
+            "groupCode": {
+              "type": "string",
+              "regex": "[A-P]",
+              "defaultValue": "A"
+            },
+            "unitCode": {
+              "type": "int",
+              "minimumValue": "1",
+              "maximumValue": "5"
+            },
+            "burst": {
+              "type": "int"
+            }
+          }
+        },
+        "simpleDevice": {
+          "types": {
+            "x10": {
+              "canBeCreatedManually": "true"
+            },
+            "domia": {
+              "canBeCreatedManually": "true"
+            },
+            "kd101": {
+              "canBeCreatedManually": "true"
+            },
+            "parrot": {
+              "canBeCreatedManually": "true"
+            }
+          },
+          "content": {
+            "id": {
+              "type": "int"
+            },
+            "burst": {
+              "type": "int"
+            }
+          }
+        },
+        "visonicDevice": {
+          "types": {
+            "visonic": {
+              "canBeCreatedManually": "true"
+            }
+          },
+          "content": {
+            "frequency": {
+              "type": "enum",
+              "values": {
+                "433": "",
+                "866": ""
+              },
+              "defaultValue": "433"
+            },
+            "id": {
+              "type": "int"
+            },
+            "burst": {
+              "type": "int"
+            },
+            "qualifier": {
+              "type": "int"
+            }
+          }
+        },
+        "x2dDevice": {
+          "types": {
+            "x2dAlarm433": {
+              "canBeCreatedManually": "true"
+            },
+            "x2dAlarm868": {
+              "canBeCreatedManually": "true"
+            },
+            "x2dShutter": {
+              "canBeCreatedManually": "true"
+            },
+            "x2dElec": {
+              "canBeCreatedManually": "true"
+            },
+            "x2dGas": {
+              "canBeCreatedManually": "true"
+            }
+          },
+          "content": {
+            "id": {
+              "type": "int"
+            },
+            "burst": {
+              "type": "int"
+            },
+            "x2dVariant": {
+              "type": "bool"
+            }
+          }
+        },
+        "genericDevice": {
+          "types": {
+            "rts": {
+              "canBeCreatedManually": "true"
+            }
+          },
+          "content": {
+            "id": {
+              "type": "int"
+            },
+            "burst": {
+              "type": "int"
+            },
+            "qualifier": {
+              "type": "int"
+            }
+          }
+        }
+      }
+    }
+  },
+  "extraQueries": {
+    "firmwareUpdate": {
+      "iconClass": "fa  fa-upload",
+      "commandData": {
+        "fileContent": {
+          "type": "file",
+          "filter": ".RFP"
+        }
+      }
+    }
+  },
   "enumerations": {
     "EBlyss": {
       "name": "",

@@ -119,77 +119,146 @@
 		"staticConfigurationSchema": {
 			"name": "Type",
 			"description": "Type d'équipement",
-			"schemas": {
-				"blyssDevice": {
-					"types": {
-						"blyss": {
-							"title": "BLYSS",
-							"description": "Marque BLYSS distribuée par Cartorama"
-						}
-					},
-					"content": {
-						"groupCode": {
-							"name": "Groupe",
-							"description": "L'identifiant du groupe de l'équipement (A-P)"
-						},
-						"unitCode": {
-							"name": "Unité",
-							"description": "L'identifiant de la fonction de l'équipement (1-5)"
-						},
-						"burst": {
-							"name": "Burst",
-							"description": "Facteur de répétition de trame (0 par défaut)"
-						}
-					}
-				},
-				"x10Device": {
-					"types": {
-						"x10": {
-							"title": "X10"
-						}
-					},
-					"content": {
-						"id": {
-							"name": "ID",
-							"description": "L'identifiant de l'équipement"
-						},
-						"burst": {
-							"name": "Burst",
-							"description": "Facteur de répétition de trame (0 par défaut)"
-						}
-					}
-				},
-				"visonicDevice": {
-					"types": {
-						"visonic": {
-							"title": "Visonic",
-							"description": "Marque VISONIC, BFT,..."
-						}
-					},
-					"content": {
-                  "frequency" : {
-							"name": "Frequency",
-							"description": "The used frequency",
-                     "values" : {
-                        "433" : "433 MHz",
-                        "866" : "868 MHz"
-                     }
-                  },
-						"id": {
-							"name": "ID",
-							"description": "L'identifiant de l'équipement"
-						},
-						"burst": {
-							"name": "Burst",
-							"description": "Facteur de répétition de trame (0 par défaut)"
-						},
-						"qualifier": {
-							"name": "Qualifier",
-							"description": "Paramètre optionnel"
-						}
-					}
-				}
-			}
+      "schemas": {
+        "blyssDevice": {
+          "types": {
+            "blyss": {
+              "title": "BLYSS",
+              "description": "Marque BLYSS distribuée par Cartorama"
+            }
+          },
+          "content": {
+            "groupCode": {
+              "name": "Groupe",
+              "description": "L'identifiant du groupe de l'équipement (A-P)"
+            },
+            "unitCode": {
+              "name": "Unité",
+              "description": "L'identifiant de la fonction de l'équipement (1-5)"
+            },
+            "burst": {
+              "name": "Burst",
+              "description": "Facteur de répétition de trame (0 par défaut)"
+            }
+          }
+        },
+        "simpleDevice": {
+          "types": {
+            "x10": {
+              "title": "X10"
+            },
+            "domia": {
+              "title": "DomiaLite"
+            },
+            "kd101": {
+              "title": "KD101 (détecteur de fumée)"
+            },
+            "parrot": {
+              "title": "Parrot"
+            }
+          },
+          "content": {
+            "id": {
+              "name": "ID",
+              "description": "L'identifiant de l'équipement"
+            },
+            "burst": {
+              "name": "Burst",
+              "description": "Facteur de répétition de trame (0 par défaut)"
+            }
+          }
+        },
+        "visonicDevice": {
+          "types": {
+            "visonic": {
+              "title": "Visonic",
+              "description": "Marque VISONIC, BFT,..."
+            }
+          },
+          "content": {
+            "frequency": {
+              "name": "Frequency",
+              "description": "The used frequency",
+              "values": {
+                "433": "433 MHz",
+                "866": "868 MHz"
+              }
+            },
+            "id": {
+              "name": "ID",
+              "description": "L'identifiant de l'équipement"
+            },
+            "burst": {
+              "name": "Burst",
+              "description": "Facteur de répétition de trame (0 par défaut)"
+            },
+            "qualifier": {
+              "name": "Qualifier",
+              "description": "Paramètre optionnel"
+            }
+          }
+        },
+        "x2dDevice": {
+          "types": {
+            "x2dAlarm433": {
+              "title": "Alarme DeltaDore 433MHz",
+              "description": "Alarme Deltadore/X2D fonctionnant en 433MHz"
+            },
+            "x2dAlarm868": {
+              "title": "Alarme DeltaDore 868MHz",
+              "description": "Alarme Deltadore/X2D fonctionnant en 868MHz"
+            },
+            "x2dShutter": {
+              "title": "Volet X2D",
+              "description": "Commande de volet DeltaDore/X2D"
+            },
+            "x2dElec": {
+              "title": "Commande electrique X2D",
+              "description": "Commande electrique DeltaDore/X2D"
+            },
+            "x2dGas": {
+              "title": "Commande de gaz X2D",
+              "description": "Commande de gaz DeltaDore/X2D"
+            }
+          },
+          "content": {
+            "id": {
+              "name": "ID",
+              "description": "L'identifiant de l'équipement"
+            },
+            "burst": {
+              "name": "Burst",
+              "description": "Facteur de répétition de trame (0 par défaut)"
+            },
+            "x2dVariant": {
+              "name": "Variante X2D",
+              "description": "Si coché, utilise la variante x2d"
+            }
+          }
+        },
+        "genericDevice": {
+          "types": {
+            "rts": {
+              "title": "Somfy RTS",
+              "description": "Somfy"
+            }
+          },
+          "content": {
+            "id": {
+              "name": "ID",
+              "description": "L'identifiant de l'équipement"
+            },
+            "burst": {
+              "name": "Burst",
+              "description": "Facteur de répétition de trame (0 par défaut)"
+            },
+            "qualifier": {
+              "name": "Qualifier",
+              "description": "Paramètre optionnel"
+            }
+          }
+        }
+      }
 		}
 	},
 	"extraQueries": {
