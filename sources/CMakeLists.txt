@@ -266,6 +266,7 @@ set(YADOMS_SRC
    server/RunningInformation.h	
    server/Supervisor.cpp
    server/Supervisor.h
+   server/Version.h
 
    server/authentication/IAuthentication.h
    server/authentication/BasicAuthentication.h
