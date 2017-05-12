@@ -20,7 +20,5 @@ namespace interpreter_cpp_api
 
    private:
       Poco::Logger& m_logger;
-      Poco::Message m_msgInformation;
-      Poco::Message m_msgError;
    };
 } // namespace interpreter_cpp_api	

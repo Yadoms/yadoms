@@ -32,7 +32,7 @@ widgetViewModelCtor =
               }
           };
 
-          this.LightIcon = ko.computed(function () {
+          self.LightIcon = ko.computed(function () {
               if (self.command() === 0)
                   return "widgets/light/icons/off.png";
               else
@@ -83,16 +83,6 @@ widgetViewModelCtor =
                  
                   self.capacity   = keyword.capacityName;
 				  });				  
-              }
-
-              //we ask for device information
-              if ((!isNullOrUndefined(this.widget.configuration.device))) {
-
-                  if (!isNullOrUndefined(this.widget.configuration.device.deviceId)) {
-
-                      //Initialisation
-                      self.command(0);
-                  }
               }
           };
 

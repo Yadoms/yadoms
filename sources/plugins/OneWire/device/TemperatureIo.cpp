@@ -2,6 +2,7 @@
 #include "TemperatureIo.h"
 #include "SingleTemperature.h"
 #include "Identification.h"
+#include <shared/Log.h>
 
 namespace device
 {
@@ -22,6 +23,12 @@ namespace device
 
    CTemperatureIo::~CTemperatureIo()
    {
+   }
+
+   void CTemperatureIo::setConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                                         const shared::CDataContainer& configuration)
+   {
+      YADOMS_LOG(error) << "Try to apply a device configuration to an unconfigurable device";
    }
 
    void CTemperatureIo::read() const
@@ -58,13 +65,13 @@ namespace device
       }
       else
       {
-         std::cerr << "Unknown keyword " << keyword << std::endl;
+         YADOMS_LOG(error) << "Unknown keyword " << keyword;
          return;
       }
 
       if (kw->getAccessMode() != yApi::EKeywordAccessMode::kGetSetValue)
       {
-         std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
+         YADOMS_LOG(error) << "Try to drive the read-only keyword " << keyword;
          return;
       }
       kw->setCommand(command);

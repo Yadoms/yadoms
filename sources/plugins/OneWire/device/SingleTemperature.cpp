@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SingleTemperature.h"
 #include "Identification.h"
+#include <shared/Log.h>
 
 namespace device
 {
@@ -23,6 +24,12 @@ namespace device
    {
    }
 
+   void CSingleTemperature::setConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                                             const shared::CDataContainer& configuration)
+   {
+      YADOMS_LOG(error) << "Try to apply a device configuration to an unconfigurable device";
+   }
+
    void CSingleTemperature::read() const
    {
       double temperature = m_io->read();
@@ -39,7 +46,7 @@ namespace device
 
    void CSingleTemperature::write(const std::string& keyword, const std::string& command)
    {
-      std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
+      YADOMS_LOG(error) << "Try to drive the read-only keyword " << keyword;
    }
 
    bool CSingleTemperature::isTemperatureValid(double temperature)

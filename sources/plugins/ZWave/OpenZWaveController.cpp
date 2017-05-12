@@ -539,6 +539,13 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       break;
 
    case OpenZWave::Notification::Type_NodeQueriesComplete:
+      {
+         auto node = getNode(_notification);
+         if (node)
+         {
+            YADOMS_LOG(information) << "NodeQueriesComplete : " << node->getHomeId() << ":" << (int)node->getNodeId();
+         }
+      }
       break;
 
    default:

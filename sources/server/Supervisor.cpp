@@ -189,6 +189,12 @@ void CSupervisor::run()
       if (dal && dal->getEventLogger())
          dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", pe.displayText());
    }
+   catch (Poco::Exception& e)
+   {
+      YADOMS_LOG(error) << "Supervisor : unhandled exception " << e.displayText();
+      if (dal && dal->getEventLogger())
+         dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", e.displayText());
+   }
    catch (std::exception& e)
    {
       YADOMS_LOG(error) << "Supervisor : unhandled exception " << e.what();

@@ -98,7 +98,7 @@ namespace rfxcomMessages
       rbuf.RFY.rfu2 = 0;
       rbuf.RFY.rfu3 = 0;
       rbuf.RFY.rssi = 0;
-      rbuf.LIGHTING1.filler = 0;
+      rbuf.RFY.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(RFY));
    }

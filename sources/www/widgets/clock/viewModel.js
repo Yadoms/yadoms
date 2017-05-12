@@ -17,8 +17,9 @@ function clockViewModel() {
      * @param target
      */
     function updateTime_(target) {
-        target.time(moment().format("LT"));
-        target.date(moment().format("LL"));
+        serverTime = target.widgetApi.askServerLocalTime();
+        target.time(moment(serverTime).format("LT"));
+        target.date(moment(serverTime).format("LL"));
     }
 
     /**
@@ -34,7 +35,7 @@ function clockViewModel() {
 
         setInterval(function () {
             updateTime_(self);
-        }, 1000);
+        }, 10000);
         updateTime_(self);
 
     };

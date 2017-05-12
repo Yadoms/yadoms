@@ -39,6 +39,8 @@ namespace dateTime {
 
    void CDateTimeNotifier::scheduleOnNextMinute()
    {
+      //TOFIX : Some drift was noticed : event called too early or late
+
       //in case of system date/time change, then reset the nextMinute to match systemDateTime
       Poco::DateTime now;
       if (abs((now - m_nextMinute).totalSeconds()) > 10)

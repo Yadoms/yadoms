@@ -4,7 +4,9 @@
 #include "Configuration.h"
 #include "OneWireException.hpp"
 #include <shared/event/EventTimer.h>
+#include <shared/exception/EmptyResult.hpp>
 #include <plugin_cpp_api/ImplementationHelper.h>
+#include <shared/Log.h>
 
 
 IMPLEMENT_PLUGIN(COneWire)
@@ -29,7 +31,7 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 {
    api->setPluginState(yApi::historization::EPluginState::kCustom, "connecting");
 
-   std::cout << "OneWire is starting..." << std::endl;
+   YADOMS_LOG(information) << "OneWire is starting...";
 
    m_configuration->initializeWith(api->getConfiguration());
    m_engine = CFactory::createEngine(api, m_configuration);
@@ -45,7 +47,7 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    api->setPluginState(yApi::historization::EPluginState::kRunning);
 
    // the main loop
-   std::cout << "OneWire plugin is running..." << std::endl;
+   YADOMS_LOG(information) << "OneWire plugin is running...";
 
    while (1)
    {
@@ -56,7 +58,7 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
          case yApi::IYPluginApi::kEventStopRequested:
          {
-            std::cout << "Stop requested" << std::endl;
+            YADOMS_LOG(information) << "Stop requested";
             api->setPluginState(yApi::historization::EPluginState::kStopped);
             return;
          }
@@ -64,6 +66,7 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          {
             // Scan 1-wire network for new devices and update our network image
             updateNetwork(api, devices, m_engine->scanNetwork());
+            YADOMS_LOG(trace) << "Netword updated, " << devices.size() << " device(s) found";
 
             // Now read all devices state and historize data
             for (auto device = devices.begin(); device != devices.end(); ++device)
@@ -72,12 +75,23 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                boost::this_thread::interruption_point();
 
                boost::shared_ptr<device::IDevice> newDevice = device->second;
+               YADOMS_LOG(trace) << "  Read " << newDevice->ident()->deviceName() << " state...";
                newDevice->read();
                if (!newDevice->keywords().empty())
                   api->historizeData(newDevice->ident()->deviceName(),
                                      newDevice->keywords());
             }
 
+            break;
+         }
+         case yApi::IYPluginApi::kEventDeviceRemoved:
+         {
+            const auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
+            if (devices.find(device->device()) == devices.end())
+               YADOMS_LOG(error) << "Fail to remove " << device->device() << " device : device unknown";
+            else
+               devices.erase(device->device());
+               YADOMS_LOG(information) << "Device " << device->device() << " removed";
             break;
          }
          case yApi::IYPluginApi::kEventDeviceCommand:
@@ -93,16 +107,24 @@ void COneWire::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             onUpdateConfiguration(api, api->getEventHandler().getEventData<shared::CDataContainer>());
             break;
          }
+         case yApi::IYPluginApi::kSetDeviceConfiguration:
+         {
+            auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
+            onDeviceConfiguration(api,
+                                  devices,
+                                  deviceConfiguration);
+            break;
+         }
          default:
          {
-            std::cerr << "Unknown message id" << std::endl;
+            YADOMS_LOG(error) << "Unknown message id";
             break;
          }
          }
       }
       catch (COneWireException& e)
       {
-         std::cerr << e.what() << std::endl;
+         YADOMS_LOG(error) << e.what();
       }
    }
 }
@@ -113,7 +135,7 @@ void COneWire::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
    BOOST_ASSERT(!newConfigurationData.empty());  // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
    // Configuration was updated
-   std::cout << "Configuration was updated..." << std::endl;
+   YADOMS_LOG(information) << "Configuration was updated...";
 
    auto needToRestartEngine = m_engine->newConfigurationRequireRestart(newConfigurationData);
 
@@ -125,16 +147,31 @@ void COneWire::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
       m_engine = CFactory::createEngine(api, m_configuration);
 }
 
-void COneWire::onCommand(std::map<std::string,
-   boost::shared_ptr<device::IDevice> >& devices,
+void COneWire::onDeviceConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                                     std::map<std::string, boost::shared_ptr<device::IDevice> >& devices,
+                                     boost::shared_ptr<const yApi::ISetDeviceConfiguration> deviceConfiguration)
+{
+   auto device = devices.find(deviceConfiguration->name());
+   if (device == devices.end())
+   {
+      YADOMS_LOG(error) << "Configurable device " << deviceConfiguration->name() << " not found";
+      return;
+   }
+
+   device->second->setConfiguration(api,
+                                    deviceConfiguration->configuration());
+}
+
+
+void COneWire::onCommand(std::map<std::string, boost::shared_ptr<device::IDevice> >& devices,
                          boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
-   std::cout << "Command received :" << yApi::IDeviceCommand::toString(command) << std::endl;
+   YADOMS_LOG(information) << "Command received :" << yApi::IDeviceCommand::toString(command);
 
    std::map<std::string, boost::shared_ptr<device::IDevice> >::iterator device = devices.find(command->getDevice());
    if (device == devices.end())
    {
-      std::cout << "Device " << command->getDevice() << " not found on the 1-wire network" << std::endl;
+      YADOMS_LOG(information) << "Device " << command->getDevice() << " not found on the 1-wire network";
       return;
    }
 
@@ -149,17 +186,34 @@ void COneWire::updateNetwork(boost::shared_ptr<yApi::IYPluginApi> api,
    {
       if (devices.find(foundDevice->first) == devices.end())
       {
+         YADOMS_LOG(information) << "New device found " << foundDevice->first;
+
          // New device
          boost::shared_ptr<device::IDevice> newDevice = foundDevice->second;
          // First, add it to main list
          devices[foundDevice->first] = newDevice;
          // Now, declare it to Yadoms
          if (!api->deviceExists(newDevice->ident()->deviceName()))
+         {
+            // Declare device
             api->declareDevice(newDevice->ident()->deviceName(),
                                newDevice->ident()->model(),
                                newDevice->ident()->model(),
                                newDevice->keywords(),
                                newDevice->ident()->details());
+
+            // Ask device configuration to set keywords list
+            try
+            {
+               const auto deviceConfiguration = api->getDeviceConfiguration(newDevice->ident()->deviceName());
+               if (!deviceConfiguration.empty())
+                  newDevice->setConfiguration(api,
+                                              deviceConfiguration);
+            }
+            catch(shared::exception::CEmptyResult&)
+            {
+            }
+         }
       }
    }
 }

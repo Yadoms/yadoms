@@ -70,7 +70,16 @@ public:
    /// \param [in] api              Plugin execution context (Yadoms API)
    /// \param [in] deviceRemoved    The name of the device removed
    //--------------------------------------------------------------
-   void removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved);
+   void removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, 
+                     std::string deviceRemoved);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Change the device configuration
+   /// \param [in] name             name of the device
+   /// \param [in] newPosition      new slot position of the device
+   //--------------------------------------------------------------
+   void onDeviceConfigurationChange(const std::string& name,
+                                    const shared::CDataContainer& newConfiguration);
 
 private:
 

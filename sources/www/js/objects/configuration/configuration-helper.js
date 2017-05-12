@@ -199,8 +199,8 @@ ConfigurationHelper.createKeywordValueParameterHandler = function (i18NContext, 
 
       case "enum":
          var enumValues = {};
-         for(var item of obj.values) {
-            enumValues[item]=item;
+         for(var item in obj.values) { 
+            enumValues[obj.values[item]]=obj.values[item];
          }
          obj.values = enumValues;
          return new EnumParameterHandler("plugins/" + pluginInstance.type + ":enumerations.", i18nKey, keyword.typeInfo.name, obj, currentValue);

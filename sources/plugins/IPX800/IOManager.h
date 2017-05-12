@@ -6,6 +6,7 @@
 #include "specificHistorizers/counter.h"
 #include "equipments/IEquipment.h"
 #include "IIPX800Configuration.h"
+#include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -79,6 +80,14 @@ public:
    //--------------------------------------------------------------
    void OnConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
                               const IIPX800Configuration& configuration);
+
+   //--------------------------------------------------------------
+   /// \brief	    OnDeviceConfigurationUpdate
+   /// \param[in] api                  yPluginApi API
+   /// \param[in] newConfiguration        the new device configuration
+   //--------------------------------------------------------------
+   void OnDeviceConfigurationUpdate(boost::shared_ptr<yApi::IYPluginApi> api,
+                                    const boost::shared_ptr<const yApi::ISetDeviceConfiguration> newConfiguration);
 
 private:
 

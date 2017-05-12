@@ -1091,8 +1091,8 @@
       "name": "Commande du store",
       "values": {
         "Stop": "Arrêter",
-        "Open": "Ouvrir",
-        "Close": "Fermer"
+        "Open": "Ouvrir/Monter",
+        "Close": "Fermer/Descendre"
       }
     },
     "EUpDownStopCommand": {

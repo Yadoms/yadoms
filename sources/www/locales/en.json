@@ -1091,8 +1091,8 @@
       "name": "Curtain command",
       "values": {
         "Stop": "Stop",
-        "Open": "Open",
-        "Close": "Close"
+        "Open": "Open/Up",
+        "Close": "Close/Down"
       }
     },
     "EUpDownStopCommand": {

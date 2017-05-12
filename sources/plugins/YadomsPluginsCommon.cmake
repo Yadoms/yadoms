@@ -117,8 +117,15 @@ MACRO(PLUGIN_LINK _targetName)
          RUNTIME DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}
          COMPONENT  ${ComponentCompatibleName})
    else()
-      message ("${_targetName}  will NOT be deployed")
+      message (STATUS "${_targetName} will NOT be deployed")
    endif()
+   ##################################################################################################
+   ## RPATH
+   ##################################################################################################
+   if(CMAKE_CROSSCOMPILING)
+	  #Fix RPATH for cross compilation
+      set_target_properties(${_targetName} PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+   endif(CMAKE_CROSSCOMPILING)
       
    set(PLUGINLIST
       ${PLUGINLIST}
@@ -137,6 +144,12 @@ MACRO(PLUGIN_LINK _targetName)
 		
 		cotire(${_targetName})
 		
+		if(COTIRE_USE_UNITY)
+		   if(CMAKE_CROSSCOMPILING)
+		      #Fix RPATH for cross compilation
+		      set_target_properties(${_targetName}_unity PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+		   endif(CMAKE_CROSSCOMPILING)
+		endif()
 	endif()	
 
    ##################################################################################################

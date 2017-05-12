@@ -10,7 +10,7 @@
  * @param currentValue
  * @constructor
  */
-function IconParameterHandler(i18nContext, i18nKey, aramName, content, currentValue) {
+function IconParameterHandler(i18nContext, i18nKey, paramName, content, currentValue) {
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
