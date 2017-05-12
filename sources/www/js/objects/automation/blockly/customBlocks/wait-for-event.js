@@ -609,7 +609,8 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
 
         //remove any inputs
         this.removeAllInputs_();
-
+        this.clearValidationFunction();
+        
         //reset mutation data
         this.mutationData_.additionalBlocks = [];
 
@@ -821,6 +822,28 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
             }
         }
         return capacityArray;
+    },
+    
+    validationArray: [],
+    addValidationFunction: function(fct) {
+       validationArray.push(fct);
+    },
+    clearValidationFunction: function(fct) {
+       validationArray = [];
+    },
+    isValid: function () {
+       for(var i in validationArray) {
+           if ($.isFunction(validationArray[i])) {
+               var bvr = validationArray[i]();
+               if(bvr.isValid === false) {
+                  return bvr;
+               }
+           }          
+       }
+       
+       return {
+			isValid : true
+		 };       
     }
 
 };

@@ -110,18 +110,18 @@ Blockly.Yadoms.LoadDataFinalize_ = function(result) {
  * Check if a plugin contains keywords matching specifications
  * @param plugin The plugin to check
  * @param canWrite If true, only keywords with write capacity are allowed
- * @param allowedKeywordTypes Array of allowed types
+ * @param allowedKeywordDataTypes Array of allowed types
  * @param allowedKeywordCapacities Array of allowed capacities (all capacities allowed if undefined)
  * @return {boolean} True if the plugin have matching keywords
  * @constructor
  * @private
  */
-Blockly.Yadoms.PluginHasKeywordMatching_ = function (plugin, canWrite, allowedKeywordTypes, allowedKeywordCapacities) {
+Blockly.Yadoms.PluginHasKeywordMatching_ = function (plugin, canWrite, allowedKeywordDataTypes, allowedKeywordCapacities) {
     var currentPluginMatch = false;
 
     $.each(Blockly.Yadoms.data.devices, function (index, device) {
         if (device.pluginId === plugin.id) {
-            if (Blockly.Yadoms.DeviceHasKeywordMatching_(device, canWrite, allowedKeywordTypes, allowedKeywordCapacities) === true) {
+            if (Blockly.Yadoms.DeviceHasKeywordMatching_(device, canWrite, allowedKeywordDataTypes, allowedKeywordCapacities) === true) {
                 currentPluginMatch = true;
                 return false; //break the $.each, but do not return function
             }
@@ -136,18 +136,18 @@ Blockly.Yadoms.PluginHasKeywordMatching_ = function (plugin, canWrite, allowedKe
  * Check if a device contains keywords matching specifications
  * @param device The device to check
  * @param canWrite If true, only keywords with write capacity are allowed
- * @param allowedKeywordTypes Array of allowed types
+ * @param allowedKeywordDataTypes Array of allowed types
  * @param allowedKeywordCapacities Array of allowed capacities (all capacities allowed if undefined)
  * @return {boolean} True if the device have matching keywords
  * @constructor
  * @private
  */
-Blockly.Yadoms.DeviceHasKeywordMatching_ = function (device, canWrite, allowedKeywordTypes, allowedKeywordCapacities) {
+Blockly.Yadoms.DeviceHasKeywordMatching_ = function (device, canWrite, allowedKeywordDataTypes, allowedKeywordCapacities) {
     var currentDeviceMatch = false;
 
     $.each(Blockly.Yadoms.data.keywords, function (index, keyword) {
         if (keyword.deviceId === device.id) {
-            if (Blockly.Yadoms.KeywordMatching_(keyword, canWrite, allowedKeywordTypes, allowedKeywordCapacities) === true) {
+            if (Blockly.Yadoms.KeywordMatching_(keyword, canWrite, allowedKeywordDataTypes, allowedKeywordCapacities) === true) {
                 currentDeviceMatch = true;
                 return false; //break the $.each, but do not return function
             }
@@ -161,19 +161,19 @@ Blockly.Yadoms.DeviceHasKeywordMatching_ = function (device, canWrite, allowedKe
  * Check if a keyword  matching specifications
  * @param keyword The keyword to check
  * @param canWrite If true, only keywords with write capacity are allowed
- * @param allowedKeywordTypes Array of allowed types
+ * @param allowedKeywordDataTypes Array of allowed types
  * @param allowedKeywordCapacities Array of allowed capacities (all capacities allowed if undefined)
  * @return {boolean} True if the keyword matches
  * @constructor
  * @private
  */
-Blockly.Yadoms.KeywordMatching_ = function (keyword, canWrite, allowedKeywordTypes, allowedKeywordCapacities) {
+Blockly.Yadoms.KeywordMatching_ = function (keyword, canWrite, allowedKeywordDataTypes, allowedKeywordCapacities) {
     //filter on readonly
     if (canWrite && !keyword.isWritable()) {
         return false;
     }
 
-    var matchTypes = Blockly.Yadoms.KeywordMatchingType_(keyword, allowedKeywordTypes);
+    var matchTypes = Blockly.Yadoms.KeywordMatchingDataType_(keyword, allowedKeywordDataTypes);
     var matchCapacity = Blockly.Yadoms.KeywordMatchingCapacity_(keyword, allowedKeywordCapacities);
     return matchTypes && matchCapacity;
 };
@@ -181,16 +181,16 @@ Blockly.Yadoms.KeywordMatching_ = function (keyword, canWrite, allowedKeywordTyp
 /**
  * Check if a keyword  matching allowed types
  * @param keyword The keyword to check
- * @param allowedKeywordTypes Array of allowed types
+ * @param allowedKeywordDataTypes Array of allowed types
  * @return {boolean} True if the keyword matches
  * @constructor
  * @private
  */
-Blockly.Yadoms.KeywordMatchingType_ = function (keyword, allowedKeywordTypes) {
-    if (allowedKeywordTypes != null) {
-        return $.inArray(keyword.type.toLowerCase(), allowedKeywordTypes) !== -1;
+Blockly.Yadoms.KeywordMatchingDataType_ = function (keyword, allowedKeywordDataTypes) {
+    if (allowedKeywordDataTypes != null) {
+        return $.inArray(keyword.type.toLowerCase(), allowedKeywordDataTypes) !== -1;
     }
-    //if allowedKeywordTypes is null or empty
+    //if allowedKeywordDataTypes is null or empty
     return true;
 };
 
@@ -230,17 +230,17 @@ Blockly.Yadoms.GetPluginMatchingDevice_ = function (device) {
  * Return an array of devices (Array: [name, id]) for a plugin instance id
  * @param selectedPluginId The plugin id
  * @param onlyWritableKeywords If true, only devices with writable keywords are allowed
- * @param allowedKeywordTypes Array of allowed keyword types
+ * @param allowedKeywordDataTypes Array of allowed keyword types
  * @param allowedKeywordCapacities Array of allowed capacities
  * @return {Array} The devices array
  * @constructor
  * @private
  */
-Blockly.Yadoms.LoadDevices_ = function (onlyWritableKeywords, allowedKeywordTypes, allowedKeywordCapacities) {
+Blockly.Yadoms.LoadDevices_ = function (onlyWritableKeywords, allowedKeywordDataTypes, allowedKeywordCapacities) {
 
     var deviceList = [];
     $.each(Blockly.Yadoms.data.devices, function (index, device) {
-        if (Blockly.Yadoms.DeviceHasKeywordMatching_(device, onlyWritableKeywords, allowedKeywordTypes, allowedKeywordCapacities)) {
+        if (Blockly.Yadoms.DeviceHasKeywordMatching_(device, onlyWritableKeywords, allowedKeywordDataTypes, allowedKeywordCapacities)) {
             deviceList.push([device.friendlyName, device.id]);
         }
     });
@@ -258,18 +258,18 @@ Blockly.Yadoms.LoadDevices_ = function (onlyWritableKeywords, allowedKeywordType
  * Return an array of devices (Array: [name, id]) for a device id
  * @param selectedDeviceId The device id
  * @param onlyWritableKeywords If true, only devices with writable keywords are allowed
- * @param allowedKeywordTypes Array of allowed keyword types
+ * @param allowedKeywordDataTypes Array of allowed keyword types
  * @param allowedKeywordCapacities Array of allowed capacities
  * @return {Array} The devices array
  * @constructor
  * @private
  */
-Blockly.Yadoms.LoadKeywords_ = function (selectedDeviceId, onlyWritableKeywords, allowedKeywordTypes, allowedKeywordCapacities) {
+Blockly.Yadoms.LoadKeywords_ = function (selectedDeviceId, onlyWritableKeywords, allowedKeywordDataTypes, allowedKeywordCapacities) {
 
     var keywordList = [];
     $.each(Blockly.Yadoms.data.keywords, function (index, keyword) {
         if (keyword.deviceId === selectedDeviceId) {
-            if (Blockly.Yadoms.KeywordMatching_(keyword, onlyWritableKeywords, allowedKeywordTypes, allowedKeywordCapacities)) {
+            if (Blockly.Yadoms.KeywordMatching_(keyword, onlyWritableKeywords, allowedKeywordDataTypes, allowedKeywordCapacities)) {
                 keywordList.push([keyword.friendlyName, keyword.id]);
             }
         }

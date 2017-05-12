@@ -39,7 +39,7 @@ Blockly.Blocks["yadoms_notification_simple"] = {
 
 
 
-        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum", "datetime"], ["message"], function () {
+        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, null, ["message"], function () {
         }, thisBlock.deviceDropDownName, thisBlock.keywordDropDownName);
 
         this.appendValueInput(thisBlock.inputValueName)

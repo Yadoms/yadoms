@@ -119,6 +119,13 @@ MACRO(PLUGIN_LINK _targetName)
    else()
       message (STATUS "  (${_targetName} is a dev plugin, it won't be installed)")
    endif()
+   ##################################################################################################
+   ## RPATH
+   ##################################################################################################
+   if(CMAKE_CROSSCOMPILING)
+	  #Fix RPATH for cross compilation
+      set_target_properties(${_targetName} PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+   endif(CMAKE_CROSSCOMPILING)
       
    set(PLUGINLIST
       ${PLUGINLIST}
@@ -137,6 +144,12 @@ MACRO(PLUGIN_LINK _targetName)
 		
 		cotire(${_targetName})
 		
+		if(COTIRE_USE_UNITY)
+		   if(CMAKE_CROSSCOMPILING)
+		      #Fix RPATH for cross compilation
+		      set_target_properties(${_targetName}_unity PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+		   endif(CMAKE_CROSSCOMPILING)
+		endif()
 	endif()	
 
    ##################################################################################################

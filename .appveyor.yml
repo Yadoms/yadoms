@@ -89,7 +89,7 @@ before_build:
 
   # For CMake version < 3.9, overwrite FindProtobuf.cmake
   - ps: echo "For CMake version < 3.9, overwrite FindProtobuf.cmake..."
-  - ps: Invoke-WebRequest https://gitlab.kitware.com/cmake/cmake/raw/master/Modules/FindProtobuf.cmake -OutFile 'C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/FindProtobuf.cmake'
+  - ps: copy FindProtobuf.cmake 'C:/Program Files (x86)/CMake/share/cmake-3.8/Modules/'
   
   # Create solution
   - ps: echo "Create solution..."

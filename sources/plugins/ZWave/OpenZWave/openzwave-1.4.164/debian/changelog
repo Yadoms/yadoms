@@ -1,5 +1,0 @@
-openzwave (1.3.532.ge3defea) unstable; urgency=low
-
-  * Initial Debian packaging.
-
- -- Lucas Nussbaum <lucas@debian.org>  Sat, 07 Nov 2015 10:46:13 +0100
