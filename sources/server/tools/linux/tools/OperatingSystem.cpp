@@ -1,16 +1,23 @@
 #include "stdafx.h"
 #include "OperatingSystem.h"
-#include <unistd.h>
-#include <sys/reboot.h>
 #include <Poco/Environment.h>
 #include <Poco/StringTokenizer.h>
 #include <shared/exception/Exception.hpp>
+#include <shared/Log.h>
 
-namespace tools {
+namespace tools
+{
    bool COperatingSystem::shutdown(bool andRestart)
    {
       sync();
-      return (reboot(andRestart ? RB_AUTOBOOT : RB_POWER_OFF) == 0);
+      auto rc = system(andRestart ? "shutdown --reboot now" : "shutdown --poweroff now");
+      if (rc != 0)
+      {
+         auto errorMsg = strerror(rc);
+         YADOMS_LOG(error) << "Error when try to shutdown/reboot : " << errorMsg;
+         return false;
+      }
+      return true;
    }
 
    std::string COperatingSystem::getName()
