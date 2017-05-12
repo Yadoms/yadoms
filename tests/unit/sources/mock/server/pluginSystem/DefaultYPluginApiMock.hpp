@@ -11,6 +11,7 @@ class CDefaultYPluginApiMock : public yApi::IYPluginApi
 public:
    struct Device
    {
+      std::string m_type;
       std::string m_model;
       shared::CDataContainer m_details;
    };
@@ -53,20 +54,22 @@ public:
    }
 
    void declareDevice(const std::string& device,
+                      const std::string& type,
                       const std::string& model,
                       boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> keyword,
                       const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override
    {
-      Device dev = {model, details};
+      Device dev = {type, model, details};
       m_devices[device] = dev;
    }
 
    void declareDevice(const std::string& device,
+                      const std::string& type,
                       const std::string& model,
                       const std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>& keywords = std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable>>(),
                       const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) override
    {
-      Device dev = {model, details};
+      Device dev = {type, model, details};
       m_devices[device] = dev;
       std::for_each(keywords.begin(),
                     keywords.end(),
@@ -113,11 +116,21 @@ public:
 
    std::string getDeviceModel(const std::string& device) const override
    {
-      return "device model";
+      return m_devices.find(device)->second.m_model;
    }
 
    void updateDeviceModel(const std::string& device,
                           const std::string& model) const override
+   {
+   }
+
+   std::string getDeviceType(const std::string& device) const override
+   {
+      return m_devices.find(device)->second.m_type;
+   }
+
+   void updateDeviceType(const std::string& device,
+      const std::string& model) const override
    {
    }
 
@@ -251,3 +264,4 @@ protected:
    std::vector<Data> m_data;
    std::vector<int> m_recipients;
 };
+
