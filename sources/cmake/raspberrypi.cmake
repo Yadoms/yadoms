@@ -25,4 +25,4 @@ SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE BOTH)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 
 #define the systemname (for good package name)
-set(CPACK_SYSTEM_NAME "RaspberryPI")
+set(CMAKE_SYSTEM_NAME "RaspberryPI")
