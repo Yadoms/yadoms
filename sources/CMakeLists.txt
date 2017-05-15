@@ -604,6 +604,8 @@ set(YADOMS_SRC
    server/web/ws/NewDeviceFrame.cpp
    server/web/ws/TaskUpdateNotificationFrame.h
    server/web/ws/TaskUpdateNotificationFrame.cpp
+   server/web/ws/TimeNotificationFrame.h
+   server/web/ws/TimeNotificationFrame.cpp
 )
 
 # Project folders

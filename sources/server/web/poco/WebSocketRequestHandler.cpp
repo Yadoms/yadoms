@@ -13,6 +13,7 @@
 #include "web/ws/LogEventFrame.h"
 #include "web/ws/NewDeviceFrame.h"
 #include "web/ws/TaskUpdateNotificationFrame.h"
+#include "web/ws/TimeNotificationFrame.h"
 #include "web/ws/IsAliveFrame.h"
 
 #include "notification/acquisition/Observer.hpp"
@@ -54,7 +55,8 @@ namespace web
                   kNewAcquisitionSummary,
                   kNewDevice,
                   kNewLogEvent,
-                  kTaskProgression
+                  kTaskProgression,
+                  kEveryMinute,
                };
             shared::event::CEventHandler eventHandler;
 
@@ -77,6 +79,11 @@ namespace web
 
             // Subscribe to task progression notifications
             observers.push_back(notification::CHelpers::subscribeBasicObserver<task::CInstanceNotificationData>(eventHandler, kTaskProgression));
+
+            // Every minute timer
+            eventHandler.createTimer(kEveryMinute,
+                                     shared::event::CEventTimer::EPeriodicity::kPeriodic,
+                                     boost::posix_time::minutes(1));
 
             Poco::Net::WebSocket webSocket(request, response);
 
@@ -125,6 +132,12 @@ namespace web
                      {
                         auto taskProgression = eventHandler.getEventData<boost::shared_ptr<task::CInstanceNotificationData>>();
                         clientSeemConnected = send(webSocket, ws::CTaskUpdateNotificationFrame(taskProgression));
+                        break;
+                     }
+
+                  case kEveryMinute:
+                     {
+                        clientSeemConnected = send(webSocket, ws::CTimeNotificationFrame(shared::currentTime::Provider().now()));
                         break;
                      }
 

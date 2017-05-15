@@ -2,12 +2,10 @@
 #include "DateTimeNotifier.h"
 #include <shared/Log.h>
 #include <Poco/DateTimeFormatter.h>
-#include <Poco/Timezone.h>
 #include <Poco/LocalDateTime.h>
 #include <Poco/Util/TimerTaskAdapter.h>
 #include "notification/Helpers.hpp"
 
-#include "notification/Helpers.hpp"
 #include <shared/dateTime/DateTimeContainer.h>
 
 
@@ -60,7 +58,7 @@ namespace dateTime {
       try
       {
          //do the job
-         boost::shared_ptr<shared::dateTime::CDateTimeContainer> notif(new shared::dateTime::CDateTimeContainer(m_nextMinute));
+         auto notif = boost::make_shared<shared::dateTime::CDateTimeContainer>(m_nextMinute);
          notification::CHelpers::postNotification(notif);
 
          if (!task.isCancelled())
