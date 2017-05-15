@@ -243,6 +243,7 @@ namespace automation
          auto eventHandler(boost::make_shared<shared::event::CEventHandler>());
 
          // subscriber must leave until function exits
+         // ReSharper disable once CppEntityAssignedButNoRead
          boost::shared_ptr<notification::CHelpers::CCustomSubscriber> subscriber;
          if (!keywordIdList.empty())
          {
