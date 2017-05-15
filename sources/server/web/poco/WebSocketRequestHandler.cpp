@@ -253,6 +253,8 @@ namespace web
          //unsubscribe observers
          for (const auto& observer : observers)
             notification::CHelpers::unsubscribeObserver(observer);
+         
+         YADOMS_LOG(information) << "Websocket client lost";
       }
 
       void CWebSocketRequestHandler::receiverThreaded(boost::shared_ptr<shared::event::CEventHandler> eventHandler,
