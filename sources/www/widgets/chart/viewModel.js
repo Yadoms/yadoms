@@ -186,6 +186,13 @@ widgetViewModelCtor =
                        filename: 'export'
                    });
                });
+               
+               // TODO : Request the server for its current time
+               self.widgetApi.askServerLocalTime(function (serverLocalTime) {
+                  debugger;
+                  // ...
+               });
+               
                d.resolve();
            })
            .fail(function (error) {
@@ -984,4 +991,10 @@ widgetViewModelCtor =
                }
            }
        };
+       
+       // TODO this function will be called every minute (from server time)
+       this.onTime = function (serverLocalTime) {
+          debugger;
+          // ...
+       }
    };

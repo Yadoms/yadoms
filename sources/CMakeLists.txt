@@ -272,9 +272,6 @@ set(YADOMS_SRC
    server/authentication/BasicAuthentication.h
    server/authentication/BasicAuthentication.cpp
 
-   server/dateTime/DateTimeNotifier.h
-   server/dateTime/DateTimeNotifier.cpp
-   
    server/automation/IRule.h
    server/automation/IRuleManager.h
    server/automation/IRuleThreadHandler.h
@@ -604,6 +601,8 @@ set(YADOMS_SRC
    server/web/ws/NewDeviceFrame.cpp
    server/web/ws/TaskUpdateNotificationFrame.h
    server/web/ws/TaskUpdateNotificationFrame.cpp
+   server/web/ws/TimeNotificationFrame.h
+   server/web/ws/TimeNotificationFrame.cpp
 )
 
 # Project folders
