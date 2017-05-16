@@ -29,6 +29,7 @@ namespace web
             kPongTimeout,
             kReceived,
             kReceivedException,
+            kFirstMinute,
             kEveryMinute,
             kNewAcquisition,
             kNewAcquisitionSummary,

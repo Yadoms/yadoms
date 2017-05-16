@@ -95,6 +95,11 @@ namespace web
                                              webSocket);
 
             auto clientSeemConnected = true;
+
+            // Everything is initialized, send a time event immediately
+            clientSeemConnected = send(webSocket,
+                                       ws::CTimeNotificationFrame(shared::currentTime::Provider().now()));
+
             while (clientSeemConnected)
             {
                //manage server send to websocket data
@@ -253,7 +258,7 @@ namespace web
          //unsubscribe observers
          for (const auto& observer : observers)
             notification::CHelpers::unsubscribeObserver(observer);
-         
+
          YADOMS_LOG(information) << "Websocket client lost";
       }
 

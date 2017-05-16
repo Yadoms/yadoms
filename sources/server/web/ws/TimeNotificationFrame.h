@@ -1,8 +1,5 @@
 #pragma once
-
 #include "FrameBase.h"
-#include "database/entities/Entities.h"
-#include "server/task/InstanceNotificationData.h"
 
 namespace web
 {
@@ -24,12 +21,6 @@ namespace web
          ///\brief Destructor
          //-----------------------------
          virtual ~CTimeNotificationFrame();
-
-      protected:
-         //-----------------------------
-         ///\brief The task name
-         //-----------------------------
-         static const std::string m_time;
       };
    } //namespace ws
 } //namespace web
