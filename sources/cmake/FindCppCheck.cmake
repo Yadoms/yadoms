@@ -21,7 +21,9 @@
 
 
 
-find_program(CPPCHECK_EXECUTABLE cppcheck)
+find_program(CPPCHECK_EXECUTABLE cppcheck
+   PATHS ${CPPCHECK_ROOT}
+)
  
 if(CPPCHECK_EXECUTABLE)
    execute_process(COMMAND ${CPPCHECK_EXECUTABLE} --version

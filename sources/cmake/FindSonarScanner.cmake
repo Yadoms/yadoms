@@ -23,7 +23,8 @@
 
 find_program(SONARSCANNER_EXECUTABLE
    NAMES sonar-scanner.bat sonar-scanner
-   PATH_SUFFIXES sonar-scanner-*/bin)
+   PATHS ${SONARQUBE_SCANNER_ROOT}/bin
+)
  
 if(SONARSCANNER_EXECUTABLE)
    execute_process(COMMAND ${SONARSCANNER_EXECUTABLE} --version
