@@ -6,8 +6,7 @@ message(STATUS "  Create CppCheck command line")
 		
 		get_cppcheck_defines(CPPCHECK_DEFINES ${projectName})
 		get_cppcheck_sources(CPPCHECK_SOURCES ${projectName})
-		get_cppcheck_includes(CPPCHECK_INCLUDE_DIRECTORIES ${projectName})
-		get_cppcheck_excludes(CPPCHECK_EXCLUDE_DIRECTORIES ${projectName})
+		get_cppcheck_includes(CPPCHECK_INCLUDE_DIRECTORIES "${YADOMS_INCL_DIR}")
 		
       add_custom_command(
          OUTPUT ${cppcheck_report_file}
@@ -16,9 +15,11 @@ message(STATUS "  Create CppCheck command line")
             --enable=all
             --std=c++11
             --xml
+            --xml-version=2
             --verbose
             --quiet
             --suppress=missingIncludeSystem 
+            --suppress=*:*.pb.h
             #--check-config       ## Enable this line only to find missing include (don't do analysis otherwise)
             ${CPPCHECK_DEFINES}
             ${CPPCHECK_INCLUDE_DIRECTORIES}
@@ -33,6 +34,10 @@ endmacro()
 MACRO(get_cppcheck_sources output projectName)
 
 	get_target_property(sources ${projectName} SOURCES)
+   
+   # Remove .h files
+   LIST(FILTER sources EXCLUDE REGEX "^.*\.h$")
+      
    if(MSVC)
       # Remove .rc files
       LIST(FILTER sources EXCLUDE REGEX "^.*\.rc$")
@@ -42,39 +47,16 @@ MACRO(get_cppcheck_sources output projectName)
 	
 ENDMACRO()
 
-MACRO(get_cppcheck_includes output projectName)
-
-	get_target_property(includeDirectories ${projectName} INCLUDE_DIRECTORIES)
+MACRO(get_cppcheck_includes output projectIncludeDirectories)
    
    set(INCS)
-   foreach (includeDirectory ${includeDirectories})
+   foreach (includeDirectory ${projectIncludeDirectories})
       STRING(CONCAT includeDirectory "-I\"" "${includeDirectory}" "\"")
       set(INCS ${INCS} ${includeDirectory})
 	endforeach()
    set(includeDirectories ${INCS})
    
 	SET(${output} ${includeDirectories})
-
-ENDMACRO()
-
-MACRO(get_cppcheck_excludes output projectName)
-   
-   set(excludeDirectories
-      ${BOOST_ROOT}
-      ${POCO_ROOT}
-      ${OPENSSL_ROOT}
-      ${PROTOBUF_ROOT}
-      ${PostgreSQL_ROOT}
-   )
-   
-   set(EXCLUDES)
-   foreach (excludeDirectory ${excludeDirectories})
-      STRING(CONCAT excludeDirectory "-i\"" "${excludeDirectory}" "\"")
-      set(EXCLUDES ${EXCLUDES} ${excludeDirectory})
-	endforeach()
-   set(excludeDirectories ${EXCLUDES})
-   
-	SET(${output} ${excludeDirectories})
 
 ENDMACRO()
 
@@ -95,9 +77,4 @@ MACRO(get_cppcheck_defines output projectName)
 	
 	SET(${output} ${COMPILE_DEFS})
 	
-ENDMACRO()
-
-
-MACRO(get_root output)
-   set(${output} "D:/Projets/Domotique/yadoms") #TODO en dur pour test
 ENDMACRO()

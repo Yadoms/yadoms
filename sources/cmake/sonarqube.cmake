@@ -111,8 +111,6 @@ ENDMACRO()
 
 MACRO(get_sonarqube_includes output projectName)
 
-message ("CMAKE_INCLUDE_PATH=${CMAKE_INCLUDE_PATH}")
-
 	# TODO voir si utile get_std_headers_path(stdHeaders)
 	get_target_property(includeDirectories ${projectName} INCLUDE_DIRECTORIES)
 	set(includeDirectories ${includeDirectories}
