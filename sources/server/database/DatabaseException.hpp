@@ -58,7 +58,7 @@ namespace database
       }
 
    private:
-      EDatabaseReturnCodes m_returnCode;
+      const EDatabaseReturnCodes m_returnCode;
    };
 } //namespace database 
 

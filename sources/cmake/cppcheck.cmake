@@ -7,6 +7,7 @@ message(STATUS "  Create CppCheck command line")
 		get_cppcheck_defines(CPPCHECK_DEFINES ${projectName})
 		get_cppcheck_sources(CPPCHECK_SOURCES ${projectName})
 		get_cppcheck_includes(CPPCHECK_INCLUDE_DIRECTORIES "${YADOMS_INCL_DIR}")
+		get_cppcheck_suppress(CPPCHECK_SUPPRESS)
 		
       add_custom_command(
          OUTPUT ${cppcheck_report_file}
@@ -19,7 +20,7 @@ message(STATUS "  Create CppCheck command line")
             --verbose
             --quiet
             --suppress=missingIncludeSystem 
-            --suppress=*:*.pb.h
+            ${CPPCHECK_SUPPRESS}
             #--check-config       ## Enable this line only to find missing include (don't do analysis otherwise)
             ${CPPCHECK_DEFINES}
             ${CPPCHECK_INCLUDE_DIRECTORIES}
@@ -57,6 +58,19 @@ MACRO(get_cppcheck_includes output projectIncludeDirectories)
    set(includeDirectories ${INCS})
    
 	SET(${output} ${includeDirectories})
+
+ENDMACRO()
+
+MACRO(get_cppcheck_suppress output)
+   
+   set(suppress
+      --suppress=*:*.pb.h
+      --suppress=unusedFunction:server/PathProvider.cpp
+      --suppress=unusedFunction:server/automation/interpreter/Instance.cpp
+      --suppress=unusedFunction:server/automation/interpreter/yInterpreterApiImplementation.cpp
+   )
+   
+	SET(${output} ${suppress})
 
 ENDMACRO()
 

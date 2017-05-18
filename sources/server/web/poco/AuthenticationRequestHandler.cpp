@@ -3,20 +3,19 @@
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Net/HTTPServerResponse.h>
 #include <Poco/Net/HTTPBasicCredentials.h>
-#include "MimeType.h"
 
 
-namespace web { namespace poco {
-
+namespace web
+{
+   namespace poco
+   {
       CAuthenticationRequestHandler::CAuthenticationRequestHandler(boost::shared_ptr<authentication::IAuthentication> authenticator, boost::shared_ptr<HTTPRequestHandler> baseRequestHandler, bool allowAuthentication)
-         :m_authenticator(authenticator), m_baseRequestHandler(baseRequestHandler), m_bAllowAuthentication(allowAuthentication)
+         : m_authenticator(authenticator), m_baseRequestHandler(baseRequestHandler), m_bAllowAuthentication(allowAuthentication)
       {
-
       }
 
       CAuthenticationRequestHandler::~CAuthenticationRequestHandler()
       {
-
       }
 
       void CAuthenticationRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response)
@@ -45,8 +44,8 @@ namespace web { namespace poco {
             {
                //the request contains credentials data, just ensure it is valid
                Poco::Net::HTTPBasicCredentials cred(request);
-               const std::string& user = cred.getUsername();
-               const std::string& pwd = cred.getPassword();
+               const auto& user = cred.getUsername();
+               const auto& pwd = cred.getPassword();
                if (!m_authenticator->authenticate(user, pwd))
                {
                   //credentials are no more valid, eturn unauthorized http (401)
@@ -66,6 +65,7 @@ namespace web { namespace poco {
             m_baseRequestHandler->handleRequest(request, response);
          }
       }
-} //namespace poco
+   } //namespace poco
 } //namespace web
+
 

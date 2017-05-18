@@ -68,11 +68,6 @@ namespace automation
          //
 
          //-----------------------------------------------------
-         ///\brief               Check if rule is still enabled
-         //-----------------------------------------------------
-         bool ruleEnabled() const;
-
-         //-----------------------------------------------------
          ///\brief               Check if the provided keyword ID exists
          ///\param[in] keywordId Keyword ID to check
          ///\throw std::out_of_range if keyword not found
@@ -131,11 +126,6 @@ namespace automation
          ///\brief               General information requester
          //-----------------------------------------------------
          boost::shared_ptr<IGeneralInfo> m_generalInfo;
-
-         //-----------------------------------------------------
-         ///\brief               Flag set if rule is still enabled (true by default)
-         //-----------------------------------------------------
-         bool m_ruleEnabled;
       };
    }
 } // namespace automation::script
