@@ -7,7 +7,7 @@
 #include "IGeneralInfo.h"
 #include "notification/action/WaitAction.hpp"
 #include "notification/acquisition/Notification.hpp"
-#include <server/dataAccessLayer/IKeywordManager.h>
+#include "dataAccessLayer/IKeywordManager.h"
 
 namespace automation
 {

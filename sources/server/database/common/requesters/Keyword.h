@@ -1,7 +1,7 @@
 #pragma once
-#include "server/database/IDataProvider.h"
-#include "server/database/IDatabaseRequester.h"
-#include "server/database/IKeywordRequester.h"
+#include "database/IDataProvider.h"
+#include "database/IDatabaseRequester.h"
+#include "database/IKeywordRequester.h"
 
 namespace database
 {

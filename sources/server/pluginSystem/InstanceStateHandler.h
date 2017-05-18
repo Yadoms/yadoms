@@ -1,13 +1,13 @@
 #pragma once
+#include <shared/plugin/yPluginApi/historization/PluginStateMessage.h>
+#include <shared/process/IProcessObserver.h>
 #include "IInstanceStartErrorObserver.h"
 #include "IInstanceStateHandler.h"
-#include <shared/plugin/yPluginApi/historization/PluginStateMessage.h>
-#include <server/database/IPluginRequester.h>
-#include <server/database/IPluginEventLoggerRequester.h>
-#include <server/dataAccessLayer/IDeviceManager.h>
-#include <server/dataAccessLayer/IAcquisitionHistorizer.h>
-#include <server/dataAccessLayer/IKeywordManager.h>
-#include <shared/process/IProcessObserver.h>
+#include "database/IPluginRequester.h"
+#include "database/IPluginEventLoggerRequester.h"
+#include "dataAccessLayer/IDeviceManager.h"
+#include "dataAccessLayer/IAcquisitionHistorizer.h"
+#include "dataAccessLayer/IKeywordManager.h"
 #include "IQualifier.h"
 
 namespace pluginSystem

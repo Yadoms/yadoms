@@ -8,7 +8,7 @@
 #include "StartScript.h"
 #include "StopScript.h"
 #include <shared/ServiceLocator.h>
-#include <server/startupOptions/IStartupOptions.h>
+#include "startupOptions/IStartupOptions.h"
 
 namespace automation
 {

@@ -1,7 +1,7 @@
 #pragma once
 #include "communication/callback/ISynchronousCallback.h"
 #include <shared/script/yInterpreterApi/ISaveScriptContentRequest.h>
-#include <server/communication/callback/NoDataCallbackRequest.h>
+#include "communication/callback/NoDataCallbackRequest.h"
 
 namespace automation
 {
