@@ -13,7 +13,7 @@ message(STATUS "  Create CppCheck command line")
          OUTPUT ${cppcheck_report_file}
          BYPRODUCTS ${cppcheck_report_file}
          COMMAND ${cppcheck_executable}
-            --enable=all
+            --enable=warning,style,performance,information
             --std=c++11
             --xml
             --xml-version=2
@@ -24,7 +24,6 @@ message(STATUS "  Create CppCheck command line")
             #--check-config       ## Enable this line only to find missing include (don't do analysis otherwise)
             ${CPPCHECK_DEFINES}
             ${CPPCHECK_INCLUDE_DIRECTORIES}
-            ${CPPCHECK_EXCLUDE_DIRECTORIES}
             ${CPPCHECK_SOURCES}
             2> ${cppcheck_report_file}
          WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
