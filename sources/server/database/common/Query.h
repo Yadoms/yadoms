@@ -3,7 +3,9 @@
 #include <Poco/Types.h>
 #include <Poco/DateTime.h>
 #include <Poco/Timestamp.h>
-#include <shared/enumeration/IExtendedEnum.h>
+#include <shared/enumeration/IExtendedEnum.h> 
+#include <shared/Field.hpp>
+#include "database/DatabaseException.hpp"
 #include "DatabaseColumn.h"
 
 namespace database
@@ -920,6 +922,7 @@ namespace database
       };
 
       //include template specializations
+#include "QuerySpecializations.h"
    } //namespace common
 } //namespace database 
 
