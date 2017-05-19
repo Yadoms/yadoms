@@ -27,7 +27,6 @@
 #include "automation/RuleManager.h"
 #include <shared/ServiceLocator.h>
 #include "startupOptions/IStartupOptions.h"
-#include "dateTime/DateTimeNotifier.h"
 #include <Poco/Net/NetException.h>
 #include "location/Location.h"
 #include "location/IpApiAutoLocation.h"
@@ -137,10 +136,6 @@ void CSupervisor::run()
       //start the rule manager
       automationRulesManager->start();
 
-      //create and start the dateTime notification scheduler
-      dateTime::CDateTimeNotifier dateTimeNotificationService;
-      dateTimeNotificationService.start();
-
       // Register to event logger started event
       dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", std::string());
 
@@ -154,9 +149,6 @@ void CSupervisor::run()
       }
 
       YADOMS_LOG(debug) << "Supervisor is stopping...";
-
-      //stop datetime notification service
-      dateTimeNotificationService.stop();
 
       //stop web server
       webServer->stop();

@@ -20,7 +20,7 @@ namespace database
       /// \brief	                        Constructor
       //--------------------------------------------------------------
       explicit CDatabaseException(const std::string& errMsg)
-         : CException(std::string(errMsg)),
+         : CException(errMsg),
            m_returnCode(kOk)
       {
       }
@@ -58,7 +58,7 @@ namespace database
       }
 
    private:
-      EDatabaseReturnCodes m_returnCode;
+      const EDatabaseReturnCodes m_returnCode;
    };
 } //namespace database 
 

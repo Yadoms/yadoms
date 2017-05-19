@@ -13,7 +13,7 @@
 #include "internalPlugin/Information.h"
 #include <shared/process/NativeExecutableCommandLine.h>
 #include <shared/process/Process.h>
-#include <server/logging/YadomsSubModuleProcessLogger.h>
+#include "logging/YadomsSubModuleProcessLogger.h"
 
 
 namespace pluginSystem

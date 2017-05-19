@@ -10,7 +10,7 @@
 #include <shared/event/EventHandler.hpp>
 #include <shared/ILocation.h>
 #include "interpreter/IManager.h"
-#include <server/database/IRuleRequester.h>
+#include "database/IRuleRequester.h"
 #include "script/IGeneralInfo.h"
 #include "database/IDataProvider.h"
 #include "dataAccessLayer/IEventLogger.h"

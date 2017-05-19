@@ -11,16 +11,16 @@ namespace database
       {
          //--------------------------------------------------------------
          /// \Brief		Adapter for multiple columns resultset (up to 10 values in a boost::tuple)
-         ///\template   T0 : the type of the column n°0
-         ///\template   T1 : the type of the column n°1
-         ///\template   T2 : the type of the column n°2
-         ///\template   T3 : the type of the column n°3
-         ///\template   T4 : the type of the column n°4
-         ///\template   T5 : the type of the column n°5
-         ///\template   T6 : the type of the column n°6
-         ///\template   T7 : the type of the column n°7
-         ///\template   T8 : the type of the column n°8
-         ///\template   T9 : the type of the column n°9
+         ///\template   T0 : the type of the column nÂ°0
+         ///\template   T1 : the type of the column nÂ°1
+         ///\template   T2 : the type of the column nÂ°2
+         ///\template   T3 : the type of the column nÂ°3
+         ///\template   T4 : the type of the column nÂ°4
+         ///\template   T5 : the type of the column nÂ°5
+         ///\template   T6 : the type of the column nÂ°6
+         ///\template   T7 : the type of the column nÂ°7
+         ///\template   T8 : the type of the column nÂ°8
+         ///\template   T9 : the type of the column nÂ°9
          ///\example    CMultipleValueAdapter<int, double, std::string> will provide std::vector<boost::tuple<int, double, std::string> >
          //--------------------------------------------------------------
          template <class T0,

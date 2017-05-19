@@ -180,7 +180,7 @@ namespace database { namespace pgsql {
    void CPgsqlTableCreationScriptProvider::getTableAcquisitionIndexes(std::vector<std::string> & indexScripts)
    {
       indexScripts.clear();
-      //TODO : créer les index pour pgsql
+      //TODO : crÃ©er les index pour pgsql
       //indexScripts.push_back("CREATE INDEX acqKeywordIdIndex ON Acquisition(keywordId)");
       //indexScripts.push_back("create index if not exists acqKeywordIdDateIndex on Acquisition(keywordId,date)");
    }

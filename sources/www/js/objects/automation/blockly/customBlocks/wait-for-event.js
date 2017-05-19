@@ -22,10 +22,15 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
 
         /**
          * Member which stores the mutation data
-        */
+         */
         this.mutationData_ = {
             additionalBlocks: []
         };
+        
+        /**
+         * Initialize validation array as memeber object
+         */
+        this.validationArray = [];
     },
 
 
@@ -824,23 +829,33 @@ Blockly.Blocks["yadoms_wait_for_event"] = {
         return capacityArray;
     },
     
-    validationArray: [],
+	 /**
+     * Add a validation function (usefull for mutators subblocks)
+     * @param {Function} fct : The function to add
+     */    
     addValidationFunction: function(fct) {
-       validationArray.push(fct);
+       this.validationArray.push(fct);
     },
+	 /**
+     * Clear all validation functions
+     */    
     clearValidationFunction: function(fct) {
-       validationArray = [];
+       this.validationArray = [];
     },
+	 /**
+     * Check if current block is valid (ask for every registered functions = ask for every mutator case)
+     */    
     isValid: function () {
-       for(var i in validationArray) {
-           if ($.isFunction(validationArray[i])) {
-               var bvr = validationArray[i]();
-               if(bvr.isValid === false) {
-                  return bvr;
-               }
-           }          
+       if(this.validationArray) {
+          for(var i in this.validationArray) {
+              if ($.isFunction(this.validationArray[i])) {
+                  var bvr = this.validationArray[i]();
+                  if(bvr.isValid === false) {
+                     return bvr;
+                  }
+              }          
+          }
        }
-       
        return {
 			isValid : true
 		 };       

@@ -3,7 +3,6 @@
 #include <shared/ServiceLocator.h>
 #include "startupOptions/IStartupOptions.h"
 #include "common/DataProvider.h"
-#include "DatabaseException.hpp"
 #include "sqlite/SQLiteRequester.h"
 
 #ifndef PGSQL_NOT_FOUND

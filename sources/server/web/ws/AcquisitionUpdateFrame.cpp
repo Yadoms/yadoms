@@ -1,18 +1,20 @@
 #include "stdafx.h"
 #include "AcquisitionUpdateFrame.h"
 
-namespace web { namespace ws {
-
-   CAcquisitionUpdateFrame::CAcquisitionUpdateFrame(boost::shared_ptr<const database::entities::CAcquisition> acquisition)
-      :CFrameBase(EFrameType::kAcquisitionUpdate)
+namespace web
+{
+   namespace ws
    {
-      m_internalContainer.set(m_dataFieldName, acquisition);
-   }
-   
-   CAcquisitionUpdateFrame::~CAcquisitionUpdateFrame()
-   {
+      CAcquisitionUpdateFrame::CAcquisitionUpdateFrame(boost::shared_ptr<const database::entities::CAcquisition> acquisition)
+         : CFrameBase(EFrameType::kAcquisitionUpdate)
+      {
+         m_internalContainer.set(m_dataFieldName, acquisition);
+      }
 
-   }
-
-} //namespace ws
+      CAcquisitionUpdateFrame::~CAcquisitionUpdateFrame()
+      {
+      }
+   } //namespace ws
 } //namespace web
+
+

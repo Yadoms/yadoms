@@ -3,8 +3,8 @@
 #include <Poco/Types.h>
 #include <Poco/DateTime.h>
 #include <Poco/Timestamp.h>
+#include <shared/enumeration/IExtendedEnum.h> 
 #include <shared/Field.hpp>
-#include <shared/enumeration/IExtendedEnum.h>
 #include "database/DatabaseException.hpp"
 #include "DatabaseColumn.h"
 
@@ -898,11 +898,10 @@ namespace database
          CQuery& ChangeQueryType(const EQueryType newType, bool changeOnlyIfNeverSet = true);
 
 
-      protected:
          //
          /// \brief  The insert or update statement name (can be 'insert or replace', 'upsert',...)
          //
-         std::string m_insertOrUpdateName;
+         const std::string m_insertOrUpdateName;
 
       private:
          //

@@ -21,18 +21,12 @@ namespace automation
            m_dbDeviceRequester(dbDeviceRequester),
            m_keywordAccessLayer(keywordAccessLayer),
            m_dbRecipientRequester(dbRecipientRequester),
-           m_generalInfo(generalInfo),
-           m_ruleEnabled(true)
+           m_generalInfo(generalInfo)
       {
       }
 
       CYScriptApiImplementation::~CYScriptApiImplementation()
       {
-      }
-
-      bool CYScriptApiImplementation::ruleEnabled() const
-      {
-         return m_ruleEnabled;
       }
 
       void CYScriptApiImplementation::assertExistingKeyword(int keywordId) const

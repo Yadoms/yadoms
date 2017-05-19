@@ -3,8 +3,10 @@
 #include <shared/enumeration/EnumHelpers.hpp>
 #include <shared/DataContainer.h>
 
-namespace web {   namespace ws {
-
+namespace web
+{
+   namespace ws
+   {
       //-----------------------------
       ///\brief A base class for frames
       //-----------------------------
@@ -27,20 +29,21 @@ namespace web {   namespace ws {
             ((LogEventNew))
             ((TaskUpdateNotification))
             ((IsAlive))
-         );
+            ((TimeNotification))
+         ) ;
 
       protected:
          //-----------------------------
          ///\brief Constructor
          ///\param [in]  content    A string that will be deserialized
          //-----------------------------
-         explicit CFrameBase(const std::string & content);
+         explicit CFrameBase(const std::string& content);
 
          //-----------------------------
          ///\brief Constructor
          ///\param [in]  type    The type of frame
          //-----------------------------
-         explicit CFrameBase(const EFrameType & type);
+         explicit CFrameBase(const EFrameType& type);
 
 
       public:
@@ -48,7 +51,7 @@ namespace web {   namespace ws {
          ///\brief Get the frame type
          //-----------------------------
          EFrameType getType();
-            
+
          //-----------------------------
          ///\brief Serialize the frame
          //-----------------------------
@@ -58,7 +61,7 @@ namespace web {   namespace ws {
          ///\brief Get the type field name
          ///\return  The type field name
          //-----------------------------
-         static const std::string & getTypeFieldName();
+         static const std::string& getTypeFieldName();
 
       protected:
          //-----------------------------
@@ -75,8 +78,7 @@ namespace web {   namespace ws {
          //-----------------------------
          static const std::string m_dataFieldName;
       };
-
-
-
-} //namespace ws
+   } //namespace ws
 } //namespace web
+
+

@@ -88,7 +88,7 @@ namespace specificHistorizer
       std::vector<shared::CDataContainer> m_periods;
 
       //-----------------------------------------------------
-      ///\brief               L'ensemble des unités
+      ///\brief               L'ensemble des unitÃ©s
       //-----------------------------------------------------
       shared::CDataContainer m_units;
 

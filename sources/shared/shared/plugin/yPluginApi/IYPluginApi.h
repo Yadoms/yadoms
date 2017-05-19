@@ -116,7 +116,8 @@ namespace shared
 
                //-----------------------------------------------------
                ///\brief Yadoms ask the device configuration schema
-               ///\usage Optional, required if device configuration support is declared in package.json (flag "deviceConfiguration" in package.json)
+               ///\usage Optional, required if device configuration support is declared in package.json (flag "deviceConfiguration" present in package.json,
+               ///         and dynamicConfigurationSchema set to true).
                ///\note Data : a boost::shared_ptr<yApi::IDeviceConfigurationSchemaRequest> object containing the device configuration schema request
                ///\note Plugin must process the specified request, and return result within 10 seconds, by calling request->sendSuccess or sendError
                //-----------------------------------------------------
