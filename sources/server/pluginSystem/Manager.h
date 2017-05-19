@@ -271,7 +271,6 @@ namespace pluginSystem
       void onPluginStopped(int pluginInstanceId);
 
       void startInternalPlugin();
-      void stopInternalPlugin();
 
 
       //--------------------------------------------------------------

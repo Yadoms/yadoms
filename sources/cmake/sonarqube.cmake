@@ -7,6 +7,7 @@ message(STATUS "  Create SonarQube configuration file ${outputFile} for projectN
 		get_sonarqube_defines(SONARQUBE_DEFINES ${projectName})
 		get_sonarqube_sources(SONARQUBE_SOURCES ${projectName})
 		get_sonarqube_includes(SONARQUBE_INCLUDES ${projectName})
+		get_sonarqube_excludes(SONARQUBE_EXCLUDES ${projectName})
 		get_sonarqube_tests(SONARQUBE_TESTS ${projectName})
 		
 		list_to_string(CONTENT
@@ -16,6 +17,7 @@ message(STATUS "  Create SonarQube configuration file ${outputFile} for projectN
 			sonar.projectName=${projectName}
 			sonar.language=c++
 			sonar.sources=${SONARQUBE_SOURCES}
+         sonar.exclusions=${SONARQUBE_EXCLUDES}
 			sonar.cxx.coverage.forceZeroCoverage=False
 			sonar.cxx.includeDirectories=${SONARQUBE_INCLUDES}
          
@@ -120,6 +122,12 @@ MACRO(get_sonarqube_includes output projectName)
 	)
 	STRING(REGEX REPLACE ";" "," includeDirectories "${includeDirectories}" )
 	SET(${output} ${includeDirectories})
+
+ENDMACRO()
+
+MACRO(get_sonarqube_excludes output projectName)
+
+	SET(${output} **/resource.h)
 
 ENDMACRO()
 
