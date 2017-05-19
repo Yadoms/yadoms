@@ -37,7 +37,7 @@
             //we display title text field only if the widget allows it in its package.json
             if (parseBool(widgetToConfigure.package.hasTitle)) {
                 //we append the text title section
-                var nameParameter = new StringParameterHandler("modals.configure-widget.", "titleName", { required: "false" }, widgetToConfigure.title);
+                var nameParameter = new StringParameterHandler("modals.configure-widget.", undefined, "titleName", { required: "false" }, widgetToConfigure.title);
                 $modalBody.append(nameParameter.getDOMObject());
                 //we finish title instantiation
                 if ($.isFunction(nameParameter.applyScript))
@@ -53,6 +53,9 @@
 
             //i18n
             $modalBody.i18n();
+            
+            //finalize treatments (ie sort items after trnaslation)
+            configMgr.afterI18n();
 
             //validation form
             //erase previous jqBootstrapValidation

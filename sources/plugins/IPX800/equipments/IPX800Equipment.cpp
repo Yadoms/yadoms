@@ -70,7 +70,7 @@ namespace equipments
       }
 
       //Déclaration of all IOs
-      api->declareDevice(device, m_deviceType, keywordsToDeclare, details);
+      api->declareDevice(device, m_deviceType, m_deviceType, keywordsToDeclare, details);
    }
 
    std::string CIPX800Equipment::getDeviceName() const
@@ -261,6 +261,11 @@ namespace equipments
          //0   : counter is cleared -> Only this one is implemented
          //!=0 : the value is added or sub from the counter
       }
+   }
+
+   void CIPX800Equipment::setNewConfiguration(const shared::CDataContainer& newConfiguration)
+   {
+      // No need to change anything for this one
    }
 
    CIPX800Equipment::~CIPX800Equipment()

@@ -101,7 +101,7 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
                auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration> >();
-               m_controller->setNodeConfiguration(deviceConfiguration->device(), deviceConfiguration->configuration());
+               m_controller->setNodeConfiguration(deviceConfiguration->name(), deviceConfiguration->configuration());
                break;
             }
 
@@ -168,13 +168,14 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   api->setPluginState(yApi::historization::EPluginState::kError);
                break;
             }
+
             case kDeclareDevice:
             {
                try
                {
                   auto deviceData = api->getEventHandler().getEventData<shared::CDataContainer>();
                   if (!api->deviceExists(deviceData.get<std::string>("name")))
-                     api->declareDevice(deviceData.get<std::string>("name"),  deviceData.get<std::string>("friendlyName"),  std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(), deviceData.get<shared::CDataContainer>("details"));
+                     api->declareDevice(deviceData.get<std::string>("name"), deviceData.get<std::string>("friendlyName"), deviceData.get<std::string>("friendlyName"), std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(), deviceData.get<shared::CDataContainer>("details"));
                }
                catch (shared::exception::CException& ex)
                {

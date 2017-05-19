@@ -35,13 +35,13 @@
       $modalBody.empty();
 
       //add first and last name
-      var firstNameParameter = new StringParameterHandler("modals.recipient_configure.", "firstName", { required: "true" }, recipient.firstName);
+      var firstNameParameter = new StringParameterHandler("modals.recipient_configure.", undefined, "firstName", { required: "true" }, recipient.firstName);
       $modalBody.append(firstNameParameter.getDOMObject());
       //we finish instantiation
       if ($.isFunction(firstNameParameter.applyScript))
          firstNameParameter.applyScript();
 
-      var lastNameParameter = new StringParameterHandler("modals.recipient_configure.", "lastName", { required: "true" }, recipient.lastName);
+      var lastNameParameter = new StringParameterHandler("modals.recipient_configure.", undefined, "lastName", { required: "true" }, recipient.lastName);
       $modalBody.append(lastNameParameter.getDOMObject());
       //we finish instantiation
       if ($.isFunction(lastNameParameter.applyScript))
@@ -53,7 +53,7 @@
       $.each(recipient.fields, function(index, field) {
          var valueParameter;
          if (field.pluginType === "system") {
-            valueParameter = new StringParameterHandler("objects.recipient.fields.", field.fieldName, field, field.value); //keep the field
+            valueParameter = new StringParameterHandler("objects.recipient.fields.", undefined, field.fieldName, field, field.value); //keep the field
             valueParameter.field = field;
             recipientConfigurationFields.push(valueParameter);
 
@@ -66,12 +66,12 @@
          } else {
             //create or retrieve section for the plugin
             if (sections[field.pluginType] == undefined) {
-               sections[field.pluginType] = new SectionParameterHandler("[prepend]modals.recipient_configure.", "pluginSection",
+               sections[field.pluginType] = new SectionParameterHandler("[prepend]modals.recipient_configure.", undefined, "pluginSection",
                {
                   name: $.t("plugins/" + field.pluginType + ":name", { "defaultValue": field.pluginDefaultDisplayName })
                });
             }
-            valueParameter = ConfigurationHelper.createParameterHandler("plugins/" + field.pluginType + ":recipientFields.", field.fieldName, field, field.value); //keep the field
+            valueParameter = ConfigurationHelper.createParameterHandler("plugins/" + field.pluginType + ":recipientFields.", undefined, field.fieldName, field, field.value); //keep the field
             valueParameter.field = field;
             recipientConfigurationFields.push(valueParameter);
 

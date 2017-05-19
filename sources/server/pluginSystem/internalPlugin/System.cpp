@@ -35,6 +35,7 @@ namespace pluginSystem {
          // Device creation if needed
          if (!api->deviceExists(systemDevice))
             api->declareDevice(systemDevice,
+                               "system",
                                "yadoms system",
                                keywords);
 
@@ -51,12 +52,14 @@ namespace pluginSystem {
                   if (boost::iequals(command->getKeyword(), keywordShutdown->getKeyword()))
                   {
                      YADOMS_LOG(information) << "Shutdown the system";
-                     tools::COperatingSystem::shutdown();
+                     if (!tools::COperatingSystem::shutdown())
+                        YADOMS_LOG(error) << "Fail to shutdown";
                   }
                   else if (boost::iequals(command->getKeyword(), keywordRestart->getKeyword()))
                   {
-                     YADOMS_LOG(information) << "Restart the system";
-                     tools::COperatingSystem::shutdown(true);
+                     YADOMS_LOG(information) << "Reboot the system";
+                     if (!tools::COperatingSystem::shutdown(true))
+                        YADOMS_LOG(error) << "Fail to reboot";
                   }
                   else
                   {

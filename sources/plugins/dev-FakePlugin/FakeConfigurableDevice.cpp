@@ -20,7 +20,7 @@ void CFakeConfigurableDevice::declareDevice(boost::shared_ptr<yApi::IYPluginApi>
 {
    // Declare device and associated keywords (= values managed by this device)
    if (!api->deviceExists(m_deviceName))
-      api->declareDevice(m_deviceName, getModel(), m_historizers);
+      api->declareDevice(m_deviceName, getType(), getModel(), m_historizers);
 
    // Get the divider value from the device configuration
    try
@@ -58,31 +58,20 @@ const std::string& CFakeConfigurableDevice::getDeviceName() const
 
 const std::string& CFakeConfigurableDevice::getModel()
 {
-   static const std::string model("Fake configurable device");
+   static const std::string model("Fake Configurable Device");
    return model;
 }
 
-shared::CDataContainer CFakeConfigurableDevice::getDynamicConfiguration()
+const std::string& CFakeConfigurableDevice::getType()
 {
-   //this code must be runtime dynamic.
-   //in case of static configration, define the configuration schema in package.json
-   shared::CDataContainer results;
-
-   shared::CDataContainer options;
-   options.set("type", "decimal");
-   options.set("name", "Dynamic divider");
-   options.set("minimumValue", "0.01");
-   options.set("maximumValue", "20.0");
-   options.set("precision", "0.01");
-
-   results.set("DynamicDivider", options);
-
-   return results;
+   static const std::string type("fakeConfigurableDeviceType");
+   return type;
 }
 
 void CFakeConfigurableDevice::setConfiguration(const shared::CDataContainer& newConfiguration)
 {
    YADOMS_LOG(information) << "Configuration = " << newConfiguration.serialize();
-   m_divider = newConfiguration.get<int>("CounterDivider2");
+   if(newConfiguration.containsValue("CounterDivider2"))
+      m_divider = newConfiguration.get<int>("CounterDivider2");
 }
 

@@ -13,6 +13,7 @@
 #include "web/ws/LogEventFrame.h"
 #include "web/ws/NewDeviceFrame.h"
 #include "web/ws/TaskUpdateNotificationFrame.h"
+#include "web/ws/TimeNotificationFrame.h"
 #include "web/ws/IsAliveFrame.h"
 
 #include "notification/acquisition/Observer.hpp"
@@ -34,246 +35,209 @@ namespace web
       {
       }
 
-
-      void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response)
+      void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request,
+                                                   Poco::Net::HTTPServerResponse& response)
       {
-         YADOMS_LOG_CONFIGURE("Websocket server")
+         YADOMS_LOG_CONFIGURE("Websocket connection");
          YADOMS_LOG(information) << "New websocket client";
 
          std::vector<boost::shared_ptr<notification::IObserver>> observers;
 
-         //for each request (each time a new ws connexion is made)
-         //then just create a websocket server and wait infinite (until client ends)
+         boost::thread wsReceiverThread;
+         auto eventHandler = boost::make_shared<shared::event::CEventHandler>();
+
+         // For each request (each time a new ws connexion is made),
+         // just create a websocket server and wait infinite (until client ends)
          try
          {
-            // Supported events and handler
-            enum
-               {
-                  kNotifFromWsClient = shared::event::kUserFirstId,
-                  kNewAcquisition,
-                  kNewAcquisitionSummary,
-                  kNewDevice,
-                  kNewLogEvent,
-                  kTaskProgression
-               };
-            shared::event::CEventHandler eventHandler;
-
             // Subscribe to new acquisitions depends on filters set by GUI
-            auto acquisitionAction(boost::make_shared<notification::action::CEventAction<notification::acquisition::CNotification>>(eventHandler, kNewAcquisition));
+            auto acquisitionAction(boost::make_shared<notification::action::CEventAction<notification::acquisition::CNotification>>(*eventHandler,
+                                                                                                                                    kNewAcquisition));
             auto newAcquisitionObserver(boost::make_shared<notification::acquisition::CObserver>(acquisitionAction));
             notification::CHelpers::subscribeCustomObserver(newAcquisitionObserver);
             observers.push_back(newAcquisitionObserver);
 
-            auto acquisitionSummaryAction(boost::make_shared<notification::action::CEventAction<notification::summary::CNotification>>(eventHandler, kNewAcquisitionSummary));
+            auto acquisitionSummaryAction(boost::make_shared<notification::action::CEventAction<notification::summary::CNotification>>(*eventHandler,
+                                                                                                                                       kNewAcquisitionSummary));
             auto newAcquisitionSummaryObserver(boost::make_shared<notification::basic::CObserver<notification::summary::CNotification>>(acquisitionSummaryAction));
             notification::CHelpers::subscribeCustomObserver(newAcquisitionSummaryObserver);
             observers.push_back(newAcquisitionSummaryObserver);
 
             // Subscribe to new device notifications
-            observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CDevice>(notification::change::EChangeType::kCreate, eventHandler, kNewDevice));
+            observers.push_back(notification::CHelpers::subscribeChangeObserver<database::entities::CDevice>(notification::change::EChangeType::kCreate,
+                                                                                                             *eventHandler,
+                                                                                                             kNewDevice));
 
             // Subscribe to event logger notifications
-            observers.push_back(notification::CHelpers::subscribeBasicObserver<database::entities::CEventLogger>(eventHandler, kNewLogEvent));
+            observers.push_back(notification::CHelpers::subscribeBasicObserver<database::entities::CEventLogger>(*eventHandler,
+                                                                                                                 kNewLogEvent));
 
             // Subscribe to task progression notifications
-            observers.push_back(notification::CHelpers::subscribeBasicObserver<task::CInstanceNotificationData>(eventHandler, kTaskProgression));
+            observers.push_back(notification::CHelpers::subscribeBasicObserver<task::CInstanceNotificationData>(*eventHandler,
+                                                                                                                kTaskProgression));
 
-            Poco::Net::WebSocket webSocket(request, response);
+            // Ping timer
+            eventHandler->createTimer(kPing,
+                                      shared::event::CEventTimer::EPeriodicity::kOneShot,
+                                      boost::posix_time::seconds(2));
+            auto pongReceived = false;
+
+            // Every minute timer
+            eventHandler->createTimer(kEveryMinute,
+                                      shared::event::CEventTimer::EPeriodicity::kPeriodic,
+                                      boost::posix_time::minutes(1));
+
+            auto webSocket = boost::make_shared<Poco::Net::WebSocket>(request,
+                                                                      response);
+
+            wsReceiverThread = boost::thread(&CWebSocketRequestHandler::receiverThreaded,
+                                             eventHandler,
+                                             webSocket);
 
             auto clientSeemConnected = true;
 
-            char buffer[2048] = {0};
-            auto flags = 0;
-            auto pingWaitCount = 0;
-            auto pingpongFlag = 0;
+            // Everything is initialized, send a time event immediately
+            clientSeemConnected = send(webSocket,
+                                       ws::CTimeNotificationFrame(shared::currentTime::Provider().now()));
 
             while (clientSeemConnected)
             {
-               try
+               //manage server send to websocket data
+               switch (eventHandler->waitForEvents())
                {
-                  //manage server send to websocket data
-                  switch (eventHandler.waitForEvents(boost::posix_time::milliseconds(50)))
+               case kConnectionLost:
                   {
-                  case kNewAcquisition:
-                     {
-                        auto notif = eventHandler.getEventData<boost::shared_ptr<notification::acquisition::CNotification>>();
-                        clientSeemConnected = send(webSocket, ws::CAcquisitionUpdateFrame(notif->getAcquisition()));
-                        break;
-                     }
-                  case kNewAcquisitionSummary:
-                     {
-                        auto notif = eventHandler.getEventData<boost::shared_ptr<notification::summary::CNotification>>();
-                        clientSeemConnected = send(webSocket, ws::CAcquisitionSummaryUpdateFrame(notif->getAcquisitionSummaries()));
-                        break;
-                     }
-
-                  case kNewDevice:
-                     {
-                        auto newDevice = eventHandler.getEventData<boost::shared_ptr<database::entities::CDevice>>();
-                        clientSeemConnected = send(webSocket, ws::CNewDeviceFrame(newDevice));
-                        break;
-                     }
-
-                  case kNewLogEvent:
-                     {
-                        auto logEvent = eventHandler.getEventData<boost::shared_ptr<database::entities::CEventLogger>>();
-                        clientSeemConnected = send(webSocket, ws::CLogEventFrame(logEvent));
-                        break;
-                     }
-
-                  case kTaskProgression:
-                     {
-                        auto taskProgression = eventHandler.getEventData<boost::shared_ptr<task::CInstanceNotificationData>>();
-                        clientSeemConnected = send(webSocket, ws::CTaskUpdateNotificationFrame(taskProgression));
-                        break;
-                     }
-
-                  case shared::event::kTimeout:
-                     break;
-
-                  default:
-                     YADOMS_LOG(error) << "Unknown message id " << eventHandler.getEventId();
-                     break;
-                  } // switch
-               }
-               catch (shared::exception::CException& ex)
-               {
-                  YADOMS_LOG(error) << "Websocket request handler exception : " << ex.what();
-                  clientSeemConnected = false;
-               }
-               catch (std::exception& ex)
-               {
-                  YADOMS_LOG(error) << "Websocket request handler std exception : " << ex.what();
-                  clientSeemConnected = false;
-               }
-               catch (...)
-               {
-                  YADOMS_LOG(error) << "Websocket request handler unknown exception";
-                  clientSeemConnected = false;
-               }
-
-               //listen websocket incoming data
-               try
-               {
-                  if (webSocket.poll(Poco::Timespan(0, 50 * 1000), Poco::Net::Socket::SELECT_READ))
-                  {
-                     auto n = webSocket.receiveFrame(buffer, sizeof(buffer), flags);
-                     if (n > 0)
-                     {
-                        if ((flags & Poco::Net::WebSocket::FRAME_OP_PONG) == Poco::Net::WebSocket::FRAME_OP_PONG)
-                        {
-                           //we receive a pong frame, reset flag
-                           pingpongFlag = 0;
-                        }
-                        else
-                        {
-                           std::string bufferString(buffer);
-
-                           YADOMS_LOG(debug) << "Websocket receive data : " << bufferString;
-
-                           auto parsedFrame = ws::CFrameFactory::tryParse(bufferString);
-                           if (parsedFrame)
-                           {
-                              switch (parsedFrame->getType())
-                              {
-                              case ws::CFrameBase::EFrameType::kAcquisitionFilterValue:
-                                 {
-                                    auto parsedFrameAsqFilter = boost::dynamic_pointer_cast<ws::CAcquisitionFilterFrame>(parsedFrame);
-                                    newAcquisitionObserver->resetKeywordIdFilter(parsedFrameAsqFilter->getFilter());
-                                    break;
-                                 }
-                              case ws::CFrameBase::EFrameType::kIsAliveValue:
-                                 {
-                                    send(webSocket, ws::CIsAliveFrame());
-                                    break;
-                                 }
-                              default:
-                                 YADOMS_LOG(debug) << "Unmanaged websocket frame from client";
-                                 break;
-                              }
-                           }
-                           else
-                           {
-                              //log as Debug because : user actions in browser may 'kill' websockets connections and provide bad json data (refresh, close page,....)
-                              YADOMS_LOG(debug) << "Fail to parse received data.";
-                           }
-                        }
-                     }
-                  }
-               }
-               catch (Poco::Net::WebSocketException& exc)
-               {
-                  //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
-                  YADOMS_LOG(debug) << "Websocket request handler Poco::Net::WebSocketException";
-                  switch (exc.code())
-                  {
-                  case Poco::Net::WebSocket::WS_ERR_HANDSHAKE_UNSUPPORTED_VERSION:
-                     response.set("Sec-WebSocket-Version", Poco::Net::WebSocket::WEBSOCKET_VERSION);
-                     // fallthrough
-                  default:
-                     response.setStatusAndReason(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST, exc.message());
-                     response.setContentLength(0);
-                     response.send();
-                     break;
-                  }
-                  clientSeemConnected = false;
-               }
-               catch (Poco::TimeoutException& exc)
-               {
-                  //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
-                  YADOMS_LOG(debug) << "Websocket request handler Poco::TimeoutException : " << exc.displayText();
-                  clientSeemConnected = false;
-               }
-               catch (Poco::Net::NetException& exc)
-               {
-                  //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
-                  YADOMS_LOG(debug) << "Websocket request handler Poco::NetException : " << exc.displayText();
-                  clientSeemConnected = false;
-               }
-               catch (Poco::IOException& exc)
-               {
-                  //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
-                  YADOMS_LOG(debug) << "Websocket request handler Poco::IOException : " << exc.displayText();
-                  clientSeemConnected = false;
-               }
-               catch (Poco::Exception& exc)
-               {
-                  //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
-                  YADOMS_LOG(debug) << "Websocket request handler Poco::Exception : " << exc.displayText();
-                  clientSeemConnected = false;
-               }
-               catch (shared::exception::CException& ex)
-               {
-                  //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
-                  YADOMS_LOG(debug) << "Websocket request handler exception : " << ex.what();
-                  clientSeemConnected = false;
-               }
-               catch (...)
-               {
-                  //log as Debug because : user actions in browser may 'kill' websockets connections (refresh, close page,....)
-                  YADOMS_LOG(debug) << "Websocket request handler unknown exception";
-                  clientSeemConnected = false;
-               }
-
-               //the while take 100ms max (two 50ms timeout)
-               if (pingWaitCount++ >= 20)
-               {
-                  pingWaitCount = 0;
-
-                  //check flag value
-                  if (pingpongFlag++ > 2)
-                  {
-                     YADOMS_LOG(debug) << "WebSocketclient don't answer to ping request";
                      clientSeemConnected = false;
+                     break;
                   }
 
-                  //send ping
-                  if (!sendPing(webSocket))
+               case kPing:
                   {
-                     YADOMS_LOG(warning) << "Fail to send PING frame";
+                     // Send ping
+                     if (sendPing(webSocket))
+                     {
+                        pongReceived = false;
+                        eventHandler->createTimer(kPongTimeout,
+                                                  shared::event::CEventTimer::EPeriodicity::kOneShot,
+                                                  boost::posix_time::seconds(2));
+                     }
+                     else
+                     {
+                        YADOMS_LOG(warning) << "Fail to send PING frame";
+                        // Retry
+                        eventHandler->createTimer(kPing,
+                                                  shared::event::CEventTimer::EPeriodicity::kOneShot,
+                                                  boost::posix_time::seconds(2));
+                     }
+                     break;
                   }
-               }
-            } //while
+
+               case kPongReceived:
+                  {
+                     pongReceived = true;
+                     // Restart timer for next ping
+                     eventHandler->createTimer(kPing,
+                                               shared::event::CEventTimer::EPeriodicity::kOneShot,
+                                               boost::posix_time::seconds(2));
+                     break;
+                  }
+
+               case kPongTimeout:
+                  {
+                     if (!pongReceived)
+                        throw shared::exception::CException("No answer to ping");
+                     break;
+                  }
+
+               case kReceived:
+                  {
+                     auto parsedFrame = eventHandler->getEventData<boost::shared_ptr<ws::CFrameBase>>();
+                     switch (parsedFrame->getType())
+                     {
+                     case ws::CFrameBase::EFrameType::kAcquisitionFilterValue:
+                        {
+                           auto parsedFrameAsqFilter = boost::dynamic_pointer_cast<ws::CAcquisitionFilterFrame>(parsedFrame);
+                           newAcquisitionObserver->resetKeywordIdFilter(parsedFrameAsqFilter->getFilter());
+                           break;
+                        }
+                     case ws::CFrameBase::EFrameType::kIsAliveValue:
+                        {
+                           send(webSocket, ws::CIsAliveFrame());
+                           break;
+                        }
+                     default:
+                        YADOMS_LOG(warning) << "Received websocket frame with unsupported type : " << parsedFrame->getType();
+                        break;
+                     }
+                     break;
+                  }
+
+               case kReceivedException:
+                  {
+                     auto exception = eventHandler->getEventData<Poco::Net::WebSocketException>();
+                     switch (exception.code())
+                     {
+                     case Poco::Net::WebSocket::WS_ERR_HANDSHAKE_UNSUPPORTED_VERSION:
+                        response.set("Sec-WebSocket-Version",
+                                     Poco::Net::WebSocket::WEBSOCKET_VERSION);
+                        // fallthrough
+                     default:
+                        response.setStatusAndReason(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST,
+                                                    exception.message());
+                        response.setContentLength(0);
+                        response.send();
+                        break;
+                     }
+
+                     clientSeemConnected = false;
+                     break;
+                  }
+
+               case kEveryMinute:
+                  {
+                     clientSeemConnected = send(webSocket, ws::CTimeNotificationFrame(shared::currentTime::Provider().now()));
+                     break;
+                  }
+
+               case kNewAcquisition:
+                  {
+                     auto notif = eventHandler->getEventData<boost::shared_ptr<notification::acquisition::CNotification>>();
+                     clientSeemConnected = send(webSocket, ws::CAcquisitionUpdateFrame(notif->getAcquisition()));
+                     break;
+                  }
+               case kNewAcquisitionSummary:
+                  {
+                     auto notif = eventHandler->getEventData<boost::shared_ptr<notification::summary::CNotification>>();
+                     clientSeemConnected = send(webSocket, ws::CAcquisitionSummaryUpdateFrame(notif->getAcquisitionSummaries()));
+                     break;
+                  }
+
+               case kNewDevice:
+                  {
+                     auto newDevice = eventHandler->getEventData<boost::shared_ptr<database::entities::CDevice>>();
+                     clientSeemConnected = send(webSocket, ws::CNewDeviceFrame(newDevice));
+                     break;
+                  }
+
+               case kNewLogEvent:
+                  {
+                     auto logEvent = eventHandler->getEventData<boost::shared_ptr<database::entities::CEventLogger>>();
+                     clientSeemConnected = send(webSocket, ws::CLogEventFrame(logEvent));
+                     break;
+                  }
+
+               case kTaskProgression:
+                  {
+                     auto taskProgression = eventHandler->getEventData<boost::shared_ptr<task::CInstanceNotificationData>>();
+                     clientSeemConnected = send(webSocket, ws::CTaskUpdateNotificationFrame(taskProgression));
+                     break;
+                  }
+
+               default:
+                  YADOMS_LOG(error) << "Unknown message id " << eventHandler->getEventId();
+                  break;
+               } // switch
+            } // while
          }
          catch (shared::exception::CException& ex)
          {
@@ -288,21 +252,117 @@ namespace web
             YADOMS_LOG(error) << "Websocket request handler unknown exception";
          }
 
+         wsReceiverThread.interrupt();
+         wsReceiverThread.timed_join(boost::posix_time::seconds(10));
+
          //unsubscribe observers
          for (const auto& observer : observers)
             notification::CHelpers::unsubscribeObserver(observer);
+
+         YADOMS_LOG(information) << "Websocket client lost";
       }
 
-      bool CWebSocketRequestHandler::send(Poco::Net::WebSocket& webSocket, const ws::CFrameBase& toSend)
+      void CWebSocketRequestHandler::receiverThreaded(boost::shared_ptr<shared::event::CEventHandler> eventHandler,
+                                                      boost::shared_ptr<Poco::Net::WebSocket> webSocket)
+      {
+         YADOMS_LOG_CONFIGURE("Websocket receiver thread");
+         YADOMS_LOG(debug) << "Started";
+
+         try
+         {
+            char buffer[2048] = {0};
+            auto flags = 0;
+
+            while (true)
+            {
+               try
+               {
+                  if (webSocket->receiveFrame(buffer, sizeof(buffer), flags) == 0)
+                  {
+                     eventHandler->postEvent(kConnectionLost);
+                     YADOMS_LOG(debug) << "Websocket connection lost";
+                     return;
+                  }
+
+                  if (flags & Poco::Net::WebSocket::FRAME_OP_PONG)
+                  {
+                     eventHandler->postEvent(kPongReceived);
+                     continue;
+                  }
+
+                  std::string bufferString(buffer);
+
+                  YADOMS_LOG(debug) << "Websocket receive data : " << bufferString;
+
+                  auto parsedFrame = ws::CFrameFactory::tryParse(bufferString);
+                  if (!parsedFrame)
+                  {
+                     // Log as Debug because user actions in browser may 'kill' websockets connections
+                     // and provide bad json data (refresh, close page,....)
+                     YADOMS_LOG(debug) << "Fail to parse received data";
+                  }
+
+                  eventHandler->postEvent(kReceived,
+                                          parsedFrame);
+               }
+               catch (Poco::Net::WebSocketException& exception)
+               {
+                  eventHandler->postEvent(kReceivedException,
+                                          exception);
+                  // Log as Debug because user actions in browser may 'kill' websockets connections
+                  // and provide bad json data (refresh, close page,....)
+                  YADOMS_LOG(debug) << "Websocket receiveFrame Poco::Exception : " << exception.displayText();
+                  return;
+               }
+               catch (Poco::Exception& exception)
+               {
+                  eventHandler->postEvent(kConnectionLost);
+                  // Log as Debug because user actions in browser may 'kill' websockets connections
+                  // and provide bad json data (refresh, close page,....)
+                  YADOMS_LOG(debug) << "Websocket receiveFrame Poco::Exception : " << exception.displayText();
+                  return;
+               }
+               catch (std::exception& exception)
+               {
+                  eventHandler->postEvent(kConnectionLost);
+                  // Log as Debug because user actions in browser may 'kill' websockets connections
+                  // and provide bad json data (refresh, close page,....)
+                  YADOMS_LOG(debug) << "Websocket receiveFrame std::exception : " << exception.what();
+                  return;
+               }
+               catch (...)
+               {
+                  eventHandler->postEvent(kConnectionLost);
+                  // Log as Debug because user actions in browser may 'kill' websockets connections
+                  // and provide bad json data (refresh, close page,....)
+                  YADOMS_LOG(debug) << "Websocket unknown exception : ";
+                  return;
+               }
+            }
+         }
+         catch (boost::thread_interrupted&)
+         {
+         }
+
+         eventHandler->postEvent(kConnectionLost);
+         YADOMS_LOG(debug) << "Ended";
+      }
+
+      bool CWebSocketRequestHandler::send(boost::shared_ptr<Poco::Net::WebSocket> webSocket,
+                                          const ws::CFrameBase& toSend)
       {
          auto dataString = toSend.serialize();
-         return (webSocket.sendFrame(dataString.c_str(), dataString.length(), Poco::Net::WebSocket::FRAME_TEXT) != 0);
+         return (webSocket->sendFrame(dataString.c_str(),
+                                      dataString.length(),
+                                      Poco::Net::WebSocket::FRAME_TEXT) != 0);
       }
 
-      bool CWebSocketRequestHandler::sendPing(Poco::Net::WebSocket& webSocket)
+      bool CWebSocketRequestHandler::sendPing(boost::shared_ptr<Poco::Net::WebSocket> webSocket)
       {
          std::string dataString = "Yadoms play PING";
-         return (webSocket.sendFrame(dataString.c_str(), dataString.length(), Poco::Net::WebSocket::FRAME_FLAG_FIN | Poco::Net::WebSocket::FRAME_OP_PING) != 0);
+         return (webSocket->sendFrame(dataString.c_str(),
+                                      dataString.length(),
+                                      Poco::Net::WebSocket::FRAME_FLAG_FIN | Poco::Net::WebSocket::FRAME_OP_PING) != 0);
       }
    }
 } //namespace web::poco

@@ -22,7 +22,7 @@
   "configurationSchema": {
     "device": {
       "type": "keyword",
-      "expectedCapacity": [ "voltage", "energy", "current", "power", "apparentpower", "weight", "pressure", "load" ],
+      "expectedCapacity": [ "voltage", "energy", "current", "power", "apparentpower", "weight", "pressure", "load", "count" ],
       "expectedKeywordAccess": "get"
     }
   }

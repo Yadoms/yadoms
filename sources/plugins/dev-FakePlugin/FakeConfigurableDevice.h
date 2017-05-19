@@ -7,7 +7,7 @@ namespace yApi = shared::plugin::yPluginApi;
 
 
 //--------------------------------------------------------------
-/// \brief	Fake configurable device
+/// \brief	Fake configurable device (cannot be manually created)
 /// \note   User can configurate the counter divider (increment each N read operations)
 //--------------------------------------------------------------
 class CFakeConfigurableDevice
@@ -49,15 +49,15 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	    Returns the fake sensor model
-   /// \return     The list of device capacities
+   /// \return     The fake sensor model
    //--------------------------------------------------------------
-   static const std::string& getModel();
-
+   static const std::string& getModel();   
+   
    //--------------------------------------------------------------
-   /// \brief	            Get the device dynamic configuration schema
-   /// \return             The device dynmaic configuration schema
+   /// \brief	    Returns the fake sensor type
+   /// \return     The fake sensor type
    //--------------------------------------------------------------
-   static shared::CDataContainer getDynamicConfiguration();
+   static const std::string& getType();
 
    //--------------------------------------------------------------
    /// \brief	    Change the device configuration

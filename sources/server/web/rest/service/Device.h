@@ -84,9 +84,9 @@ namespace web
             shared::CDataContainer sendDeviceCommand(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
             //-----------------------------------------
-            ///\brief   cleanup a device in database
+            ///\brief   Delete a device in database
             //-----------------------------------------
-            shared::CDataContainer cleanupDevice(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            shared::CDataContainer deleteDevice(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief   update a device friendly name
@@ -104,9 +104,9 @@ namespace web
             shared::CDataContainer updateKeywordFriendlyName(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
             //-----------------------------------------
-            ///\brief  (un)blacklist a device
+            ///\brief  Restore a device
             //-----------------------------------------
-            shared::CDataContainer updateDeviceBlacklist(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            shared::CDataContainer restoreDevice(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
             //-----------------------------------------
             ///\brief  (un)blacklist a keyword

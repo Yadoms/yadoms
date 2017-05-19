@@ -64,6 +64,7 @@ namespace dataAccessLayer
       /// \param [in] pluginId            The pluginId
       /// \param [in] name                The device name (plugin internal name)
       /// \param [in] friendlyName        The user friendly device name
+      /// \param [in] model               The device type (ex : "osCN185")
       /// \param [in] model               The device model or description (ex : "Oregon Scientific CN185")
       /// \param [in] model               A free string managed by plugin
       /// \return                         The device created (null if creation failed)
@@ -72,6 +73,7 @@ namespace dataAccessLayer
       virtual boost::shared_ptr<database::entities::CDevice> createDevice(int pluginId,
                                                                           const std::string& name,
                                                                           const std::string& friendlyName,
+                                                                          const std::string& type,
                                                                           const std::string& model,
                                                                           const shared::CDataContainer& details) = 0;
 
@@ -121,8 +123,15 @@ namespace dataAccessLayer
       /// \param [in] model               The device model
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual void updateDeviceModel(int deviceId,
-                                     const std::string& model) = 0;
+      virtual void updateDeviceModel(int deviceId, const std::string& model) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                          Update the device type
+      /// \param [in] deviceId            The device id
+      /// \param [in] type               The device type
+      /// \throw  shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual void updateDeviceType(int deviceId, const std::string& type) = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Update the device blacklist state

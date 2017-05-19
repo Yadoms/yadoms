@@ -76,7 +76,7 @@ namespace rfxcomMessages
          details.set("subType", m_subType);
          details.set("id", m_id);
          details.set("unitCode", m_unitCode);
-         api->declareDevice(m_deviceName, m_deviceModel, m_state, details);
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_state, details);
       }
    }
 
@@ -98,7 +98,7 @@ namespace rfxcomMessages
       rbuf.RFY.rfu2 = 0;
       rbuf.RFY.rfu3 = 0;
       rbuf.RFY.rssi = 0;
-      rbuf.LIGHTING1.filler = 0;
+      rbuf.RFY.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(RFY));
    }

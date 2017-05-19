@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "AdressableSwitch.h"
 #include "Identification.h"
+#include <shared/Log.h>
 
 namespace device
 {
@@ -19,6 +20,12 @@ namespace device
    {
    }
 
+   void CAdressableSwitch::setConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                                            const shared::CDataContainer& configuration)
+   {
+      YADOMS_LOG(error) << "Try to apply a device configuration to an unconfigurable device";
+   }
+
    void CAdressableSwitch::read() const
    {
       m_state->set(m_io->read());
@@ -27,10 +34,10 @@ namespace device
    void CAdressableSwitch::write(const std::string& keyword, const std::string& command)
    {
       if (m_state->getKeyword() != keyword)
-         std::cerr << "Unknown keyword " << keyword << std::endl;
+         YADOMS_LOG(error) << "Unknown keyword " << keyword;
 
       if (m_state->getAccessMode() != yApi::EKeywordAccessMode::kGetSetValue)
-         std::cerr << "Try to drive the read-only keyword " << keyword << std::endl;
+         YADOMS_LOG(error) << "Try to drive the read-only keyword " << keyword;
 
       m_state->setCommand(command);
       m_io->write(m_state->get());

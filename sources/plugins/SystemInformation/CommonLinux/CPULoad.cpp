@@ -6,6 +6,7 @@
 #include <fstream>
 #include <boost/regex.hpp> 
 #include <boost/lexical_cast.hpp>
+#include <shared/Log.h>
 
 CCPULoad::CCPULoad(const std::string& keywordName)
    : m_keyword(boost::make_shared<yApi::historization::CLoad>(keywordName))
@@ -113,11 +114,11 @@ void CCPULoad::read()
          percent /= total;
          percent *= 100;
          m_keyword->set (percent);
-         std::cout << "CPU Load : " << m_keyword->get() << std::endl;
+         YADOMS_LOG(trace) << "CPU Load : " << m_keyword->get();
       }
       else 
       {
-         std::cout << "CPU Load : time too short between execution" << std::endl;
+         YADOMS_LOG(warning) << "CPU Load : time too short between execution";
       }
     }
     m_lastTotalUser    = totalUser;

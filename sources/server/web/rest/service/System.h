@@ -16,7 +16,6 @@ namespace web
             explicit CSystem();
             virtual ~CSystem();
 
-         public:
             // IRestService implementation
             void configureDispatcher(CRestDispatcher& dispatcher) override;
             // [END] IRestService implementation
@@ -24,9 +23,12 @@ namespace web
             static const std::string& getRestKeyword();
 
 
-         public:
-            shared::CDataContainer getBinding(const std::vector<std::string>& parameters, const std::string& requestContent) const;
-            shared::CDataContainer getSystemInformation(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            shared::CDataContainer getBinding(const std::vector<std::string>& parameters,
+                                              const std::string& requestContent) const;
+            shared::CDataContainer getSystemInformation(const std::vector<std::string>& parameters,
+                                                        const std::string& requestContent) const;
+            shared::CDataContainer getCurrentTime(const std::vector<std::string>& parameters,
+                                                  const std::string& requestContent) const;
 
          private:
             shared::CDataContainer getSerialPorts() const;

@@ -104,7 +104,7 @@ Blockly.Yadoms.ConfigureBlockForYadomsCapacitySelection = function(thisBlock, ca
         return capacityDd.getValue();
     };
 	
-	thisBlock.isValid = function () {
+	thisBlock.validationFunction = function () {
         var capacityValid = thisBlock.getSelectedCapacity() !== thisBlock.emptyCapacityDropDownItem_[1];
         if (capacityDd.textElement_) {
             if (!capacityValid) {
@@ -118,6 +118,12 @@ Blockly.Yadoms.ConfigureBlockForYadomsCapacitySelection = function(thisBlock, ca
 			message : "chooseItemInList"
 		};		
     };
+
+    if ($.isFunction(thisBlock.addValidationFunction)) {
+       thisBlock.addValidationFunction(thisBlock.validationFunction);
+    } else {
+       thisBlock.isValid = thisBlock.validationFunction;
+    }    
 
     var inputNameToUse = inputName;
     if (isNullOrUndefined(inputName)) {
@@ -149,14 +155,14 @@ Blockly.Yadoms.ConfigureBlockForYadomsCapacitySelection = function(thisBlock, ca
  * Configure a custom block by adding the dropdowns allowing selecting a keyword
  * @param thisBlock The block to configure
  * @param onlyWritableKeywords If true allow only keywords that could be written
- * @param allowedKeywordTypes Array of allowed keyword type ("numeric", "string", "bool", "json", "nodata"
+ * @param allowedKeywordDataTypes Array of allowed keyword type ("numeric", "string", "bool", "json", "nodata"
  * @param allowedKeywordCapacities Array of allowed keyword capacities (undefined for all, "message",...=
  * @param callbackKeywordSelectionChanged A callback for keyword notification change
  * @param deviceDropDownName The name of the devices DropDown
  * @param keywordDropDownName The name of the keywords DropDown
  * @constructor
  */
-Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, onlyWritableKeywords, allowedKeywordTypes, allowedKeywordCapacities, callbackKeywordSelectionChanged, deviceDropDownName, keywordDropDownName, inputType, inputName, workspace) {
+Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, onlyWritableKeywords, allowedKeywordDataTypes, allowedKeywordCapacities, callbackKeywordSelectionChanged, deviceDropDownName, keywordDropDownName, inputType, inputName, workspace) {
     thisBlock.selectedPlugin_ = null;
     thisBlock.emptyDeviceDropDownItem_ = [$.t("blockly.chooseDeviceHelper"), "__inv@lid__"];
     thisBlock.emptyKeywordDropDownItem_ = [$.t("blockly.chooseKeywordHelper"), "__inv@lid__"];
@@ -165,7 +171,7 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, on
     // ReSharper restore JoinDeclarationAndInitializerJs
 
     var deviceDd = new Blockly.FieldDropdown(function () {
-        var deviceList = Blockly.Yadoms.LoadDevices_(onlyWritableKeywords, allowedKeywordTypes, allowedKeywordCapacities);
+        var deviceList = Blockly.Yadoms.LoadDevices_(onlyWritableKeywords, allowedKeywordDataTypes, allowedKeywordCapacities);
         if (deviceList == null || deviceList.length === 0) {
             //thisBlock.setDisabled(true);
             deviceList = [thisBlock.emptyDeviceDropDownItem_];
@@ -181,7 +187,7 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, on
                 thisBlock.selectedPlugin_ = null;
             } else {
                 //update keyword dropdown
-                var keywordList = Blockly.Yadoms.LoadKeywords_(device, onlyWritableKeywords, allowedKeywordTypes, allowedKeywordCapacities);
+                var keywordList = Blockly.Yadoms.LoadKeywords_(device, onlyWritableKeywords, allowedKeywordDataTypes, allowedKeywordCapacities);
 
                 var toSelect = undefined;
                 if (keywordList.length === 1)
@@ -198,7 +204,7 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, on
 
 
     keywordDd = new Blockly.FieldDropdown(function () {
-        var keywordList = Blockly.Yadoms.LoadKeywords_(deviceDd.getValue(), onlyWritableKeywords, allowedKeywordTypes, allowedKeywordCapacities);
+        var keywordList = Blockly.Yadoms.LoadKeywords_(deviceDd.getValue(), onlyWritableKeywords, allowedKeywordDataTypes, allowedKeywordCapacities);
         if (keywordList == null || keywordList.length === 0) {
             //thisBlock.setDisabled(true);
             keywordList = [thisBlock.emptyKeywordDropDownItem_];
@@ -301,18 +307,7 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, on
         return result;
     };
 
-
-    thisBlock.getSelectedKeyword = function () {
-        return keywordDd.getValue();
-    };
-    thisBlock.getSelectedDevice = function () {
-        return deviceDd.getValue();
-    };
-    thisBlock.getSelectedPlugin = function () {
-        return thisBlock.selectedPlugin_;
-    };
-
-    thisBlock.isValid = function () {
+    thisBlock.validationFunction = function () {
         var deviceValid = thisBlock.getSelectedDevice() !== thisBlock.emptyDeviceDropDownItem_[1];
         if (deviceDd.textElement_) {
             if (!deviceValid) {
@@ -334,6 +329,22 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function (thisBlock, on
 			message : "chooseItemInList"
 		};
     };
+    
+    thisBlock.getSelectedKeyword = function () {
+        return keywordDd.getValue();
+    };
+    thisBlock.getSelectedDevice = function () {
+        return deviceDd.getValue();
+    };
+    thisBlock.getSelectedPlugin = function () {
+        return thisBlock.selectedPlugin_;
+    };
+
+    if ($.isFunction(thisBlock.addValidationFunction)) {
+       thisBlock.addValidationFunction(thisBlock.validationFunction);
+    } else {
+       thisBlock.isValid = thisBlock.validationFunction;
+    }    
 
     var inputNameToUse = inputName;
     if (isNullOrUndefined(inputName)) {

@@ -124,8 +124,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
                auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
-               processDeviceConfiguration(deviceConfiguration->device(),
-                                          deviceConfiguration->configuration());
+               processDeviceConfiguration(deviceConfiguration->name(), deviceConfiguration->configuration());
                break;
             }
 
@@ -562,6 +561,7 @@ void CEnOcean::declareDeviceWithoutProfile(const std::string& deviceId) const
 
    m_api->declareDevice(deviceId,
                         std::string(),
+                        std::string(),
                         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>());
 }
 
@@ -723,6 +723,7 @@ boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
       throw std::logic_error("Device " + deviceId + " already exist");
 
    m_api->declareDevice(deviceId,
+                        modelLabel,
                         modelLabel,
                         keywordsToDeclare);
 

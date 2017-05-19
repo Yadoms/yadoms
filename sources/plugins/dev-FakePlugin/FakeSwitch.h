@@ -55,9 +55,15 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	    Returns the fake switch model
-   /// \return     The list of device capacities
+   /// \return     The the fake switch model
    //--------------------------------------------------------------
    static const std::string& getModel();
+
+   //--------------------------------------------------------------
+   /// \brief	    Returns the fake switch type
+   /// \return     The the fake switch type
+   //--------------------------------------------------------------
+   static const std::string& getType();
 
 private:
    //--------------------------------------------------------------

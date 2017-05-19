@@ -7,6 +7,7 @@
 #include <fstream>
 #include <iostream>
 #include <unistd.h>
+#include <shared/Log.h>
 
 CDisksList::CDisksList()
 {
@@ -26,7 +27,7 @@ CDisksList::CDisksList()
       if (!dname.empty())
       {
          DrivesList.push_back( dname.c_str() );
-         std::cout << "found:" << dname << std::endl;
+         YADOMS_LOG(information) << "found:" << dname;
       }
    }
 }

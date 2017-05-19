@@ -266,7 +266,7 @@ void CSmsDialer::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
    if (api->deviceExists(m_device))
       return;
 
-   api->declareDevice(m_device, m_device, m_keywords);
+   api->declareDevice(m_device, m_device, m_device, m_keywords);
 }
 
 void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYPluginApi> api,

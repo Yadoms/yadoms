@@ -8,7 +8,6 @@
 #include "notification/action/WaitAction.hpp"
 #include "notification/acquisition/Notification.hpp"
 #include <server/dataAccessLayer/IKeywordManager.h>
-#include <Poco/Logger.h>
 
 namespace automation
 {
@@ -94,8 +93,13 @@ namespace automation
          ///\param[in] timeout   Timeout, as string. Can be a duration (format \"hh:mm:ss.xxx\") or a dateTime (format \"YYYY-MM-DD hh:mm:ss.xxx\"). No timeout if empty.
          ///\return              The acquisition (null if timeout)
          //-----------------------------------------------------
-         static boost::shared_ptr<notification::acquisition::CNotification> waitForAction(boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification >> action,
+         static boost::shared_ptr<notification::acquisition::CNotification> waitForAction(boost::shared_ptr<notification::action::CWaitAction<notification::acquisition::CNotification>> action,
                                                                                           const std::string& timeout);
+
+         static void waitForEventTimeoutConfiguration(bool receiveDateTimeEvent,
+                                                      const std::string& timeout,
+                                                      shared::script::yScriptApi::CWaitForEventResult& result,
+                                                      boost::posix_time::time_duration& timeoutDuration);
 
       private:
          //-----------------------------------------------------

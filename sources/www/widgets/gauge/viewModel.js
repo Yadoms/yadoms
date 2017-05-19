@@ -103,14 +103,10 @@ widgetViewModelCtor = function gaugeViewModel() {
                 break;
         }
 
-        //we get the unit of the keyword
-        KeywordManager.get(self.widget.configuration.device.keywordId)
-        .done(function (keyword) {
-            if (self.chart) {
-                var serie = self.chart.series[0];
-                serie.units = $.t(keyword.units);
-            }
-        });
+         //we get the unit of the keyword
+         self.widgetApi.getKeywordInformation(self.widget.configuration.device.keywordId).done(function (keyword) {
+             self.unit($.t(keyword.units));
+         });        
 
         var minValue;
         var maxValue;
@@ -177,7 +173,7 @@ widgetViewModelCtor = function gaugeViewModel() {
                 dataLabels: {
                     formatter: function() {
                         return '<div class="value text-fit" style="text-align:center"><span>' + this.y.toFixed(1) + '</span><br/>' +
-                                '<span class="unit text-fit">' + this.series.units + '</span></div>';
+                                '<span class="unit text-fit">' + self.units + '</span></div>';
                     }
                 },
                 

@@ -121,6 +121,7 @@ namespace database { namespace entities {
       ((Model)(std::string)("")("model"))
       ((Details)(shared::CDataContainer)(shared::CDataContainer())("details"))
       ((Configuration)(shared::CDataContainer)(shared::CDataContainer())("configuration"))
+      ((Type)(std::string)("")("type"))
       ((Blacklist)(bool)(false)("blacklist"))
       );
 
