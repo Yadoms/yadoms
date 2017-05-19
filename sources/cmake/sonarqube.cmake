@@ -19,7 +19,7 @@ message(STATUS "  Create SonarQube configuration file ${outputFile} for projectN
 			sonar.cxx.coverage.forceZeroCoverage=False
 			sonar.cxx.includeDirectories=${SONARQUBE_INCLUDES}
          
-         sonar.cxx.cppcheck.path=${CPPCHECK_EXECUTABLE}        # TODO utile ?
+         sonar.cxx.cppcheck.path=${CPPCHECK_EXECUTABLE}
          sonar.cxx.cppcheck.reportPath=${cppCheckReport}
          
 			${SONARQUBE_TESTS}

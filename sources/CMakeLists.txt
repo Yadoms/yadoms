@@ -1282,4 +1282,4 @@ analyse(
       Yadoms.SonarQube.Analysis.txt
       Yadoms.SonarQube.Analysis.xml
    )
-#TODO : add plugins analysis
+#TODO : add analysis for all libs (shared, xxx_IPC, plugins...)
