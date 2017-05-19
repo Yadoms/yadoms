@@ -7,6 +7,12 @@ set(BOOST_ROOT "/path/to/boost/boost_1_57_0")
 #define Poco ROOT
 set(POCO_ROOT "path/to/poco/poco-1.6.0-all")
 
+##### CMake ######
+#
+# If defined, search for an alternative cmake ROOT (By default, search cmake in path)
+# Actually works under Windows only
+#set(ALTERNATIVE_CMAKE_ROOT "/path/to/cmake")
+
 #activate this option to enable eclipse debugging
 set(DEBUG_WITH_ECLIPSE OFF)
 

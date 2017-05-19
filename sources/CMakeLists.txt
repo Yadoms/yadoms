@@ -644,10 +644,10 @@ source_group(server\\web\\ws  server/web/ws/*.*)
 
 # Tools
 set(YADOMS_SRC ${YADOMS_SRC}
-	server/tools/tools/SupportedPlatformsChecker.h
-	server/tools/tools/SupportedPlatformsChecker.cpp
-	server/tools/tools/FileSystem.h
-	server/tools/tools/FileSystem.cpp
+	server/tools/SupportedPlatformsChecker.h
+	server/tools/SupportedPlatformsChecker.cpp
+	server/tools/FileSystem.h
+	server/tools/FileSystem.cpp
 )
 
 IF(WIN32)
@@ -670,9 +670,7 @@ ELSE()
 	)	
 ENDIF()
 
-# Define include directories (allow easy includes)
-set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools)
-
+# Define include directories
 IF(WIN32)
 	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/windows)
 ELSEIF(APPLE)
@@ -966,11 +964,9 @@ add_subdirectory(scriptInterpreters)
 ## Include directories
 ##################################################################################################
 set(YADOMS_INCL_DIR
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/server
 	${YADOMS_INCL_DIR}
 	${SHARED_INCL_DIR}
-	${PROTOBUF_INCLUDE_DIRS}
+	${CMAKE_CURRENT_SOURCE_DIR}/server
 	${plugin_IPC_INCLUDE_DIRS}
 	${interpreter_IPC_INCLUDE_DIRS}
 	${script_IPC_INCLUDE_DIRS}
@@ -981,6 +977,7 @@ set(YADOMS_ALL_INCL_DIR
 	${BOOST_INCL_DIR} 
 	${OPENSSL_INCLUDE_DIR}
 	${Poco_INCLUDE_DIRS}
+	${PROTOBUF_INCLUDE_DIRS}
 )
 
 set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
@@ -1273,3 +1270,16 @@ set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
 
 INCLUDE(CPack)
 
+
+##################################################################################################
+## SONARQUBE ANALYSIS
+##################################################################################################
+include(cmake/analysis.cmake)
+analyse(
+      yadoms
+      ${YADOMS_VERSION}
+      "${YADOMS_SRC}"
+      Yadoms.SonarQube.Analysis.txt
+      Yadoms.SonarQube.Analysis.xml
+   )
+#TODO : add analysis for all libs (shared, xxx_IPC, plugins...)

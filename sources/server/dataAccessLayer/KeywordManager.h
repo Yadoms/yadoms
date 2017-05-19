@@ -1,6 +1,6 @@
 #pragma once
 #include "IKeywordManager.h"
-#include <server/database/IDataProvider.h>
+#include "database/IDataProvider.h"
 
 namespace dataAccessLayer
 {

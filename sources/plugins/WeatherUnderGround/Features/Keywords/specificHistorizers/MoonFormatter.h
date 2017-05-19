@@ -48,7 +48,7 @@ namespace specificHistorizer
       std::string m_dayOfMoon;
 
       //-----------------------------------------------------
-      ///\brief               L'ensemble des unités
+      ///\brief               L'ensemble des unitÃ©s
       //-----------------------------------------------------
       shared::CDataContainer m_units;
    };

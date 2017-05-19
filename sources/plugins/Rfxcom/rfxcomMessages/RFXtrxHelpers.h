@@ -88,7 +88,7 @@ int NormalizeRssiLevel(unsigned char fromRfxcom);
 /// \param[in] fromRfxcomTemperatureHigh  Temperature (high byte), as encoded in RFXCom messages
 /// \param[in] fromRfxcomTemperatureLow   Temperature (low byte), as encoded in RFXCom messages
 /// \param[in] negative                Temperature sign (false:positive, true:negative)
-/// \return                            Temperature in °C
+/// \return                            Temperature in Â°C
 //--------------------------------------------------------------
 double NormalizeTemperature(unsigned char fromRfxcomTemperatureHigh,
                             unsigned char fromRfxcomTemperatureLow,

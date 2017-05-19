@@ -4,11 +4,11 @@
 #include "Information.h"
 #include <shared/Executable.h>
 #include <shared/process/Process.h>
+#include <shared/process/NativeExecutableCommandLine.h>
 #include "yInterpreterApiImplementation.h"
 #include "IpcAdapter.h"
-#include <shared/process/NativeExecutableCommandLine.h>
 #include "InstanceStateHandler.h"
-#include <server/logging/YadomsSubModuleProcessLogger.h>
+#include "logging/YadomsSubModuleProcessLogger.h"
 
 
 namespace automation

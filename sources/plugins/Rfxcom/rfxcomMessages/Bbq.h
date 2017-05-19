@@ -76,12 +76,12 @@ namespace rfxcomMessages
       std::string m_deviceModel;
 
       //--------------------------------------------------------------
-      /// \brief	The food temperature (°C)
+      /// \brief	The food temperature (Â°C)
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CTemperature> m_foodTemperature;
 
       //--------------------------------------------------------------
-      /// \brief	The BBQ temperature (°C)
+      /// \brief	The BBQ temperature (Â°C)
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CTemperature> m_bbqTemperature;
 

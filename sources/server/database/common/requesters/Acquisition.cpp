@@ -7,6 +7,7 @@
 #include "database/common/adapters/HighchartValueAdapter.hpp"
 #include "database/common/adapters/SingleValueAdapter.hpp"
 #include "database/common/adapters/MultipleValueAdapter.hpp"
+#include "database/DatabaseException.hpp"
 #include "Keyword.h"
 
 namespace database

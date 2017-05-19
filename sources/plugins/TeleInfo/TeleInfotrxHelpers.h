@@ -44,7 +44,7 @@
 #define TE_PAPP "PAPP"//apparent power
 #define TE_HHPHC "HHPHC" // Change between LowCost to normal cost period 1 car (LowCost or TEMPO)
 #define TE_DEMAIN "DEMAIN" // Color of the next day
-#define TE_ADPS "ADPS" // Warning of threshold overrun Ampère
+#define TE_ADPS "ADPS" // Warning of threshold overrun AmpÃ¨re
 #define TE_MOTDETAT "MOTDETAT" //MOTDETAT
 
 

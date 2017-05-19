@@ -1,13 +1,13 @@
 #pragma once
 
-namespace shared {
-
+namespace shared
+{
    //----------------------------------
    ///\brief Class wihch handle a field.
    ///       A field is composed of a typed value (depending on the field, see template)
-   ///       and a boolean (isDefined) which allow to know ig the field is filled
+   ///       and a boolean (isDefined) which allow to know if the field is filled
    //----------------------------------
-   template<class T>
+   template <class T>
    class CField
    {
    public:
@@ -15,7 +15,7 @@ namespace shared {
       ///\brief Default constructor
       //-----------------------------
       CField()
-         :m_defined(false), m_value()
+         : m_defined(false), m_value()
       {
       }
 
@@ -23,8 +23,8 @@ namespace shared {
       ///\brief Constructor. With this signature the field is not yet defined
       ///\param [in] value the field value
       //-----------------------------
-      explicit CField(const T & value)
-         :m_defined(false), m_value(value)
+      explicit CField(const T& value)
+         : m_defined(false), m_value(value)
       {
       }
 
@@ -33,11 +33,11 @@ namespace shared {
       ///\param [in] value the field value
       ///\param [in] defined the field filled status
       //-----------------------------
-      CField(const T & value, bool defined)
-         :m_defined(defined), m_value(value)
+      CField(const T& value, bool defined)
+         : m_defined(defined), m_value(value)
       {
       }
-      
+
 
       //-----------------------------
       ///\brief Operator () to template type. 
@@ -45,7 +45,10 @@ namespace shared {
       ///\example : CField<int> data(12, true);
       ///           int b = data();
       //-----------------------------
-      T const& operator () () const { return m_value; }  
+      T const& operator ()() const
+      {
+         return m_value;
+      }
 
       //-----------------------------
       ///\brief Operator () to template type. 
@@ -53,7 +56,10 @@ namespace shared {
       ///\example : CField<int> data(12, true);
       ///           int b = data();
       //-----------------------------
-      T & operator () () { return m_value; }  
+      T& operator ()()
+      {
+         return m_value;
+      }
 
       //-----------------------------
       ///\brief Implicit cast operator 
@@ -63,26 +69,15 @@ namespace shared {
       //-----------------------------
       operator T() const
       {
-          return m_value;
-      }     
-      
-      //-----------------------------
-      ///\brief Implicit cast operator 
-      ///\return it returns the field value in its real type
-      ///\example : CField<int> data(12, true);
-      ///           int b = data;
-      //-----------------------------
-      operator T()
-      {
-          return m_value;
+         return m_value;
       }
-      
+
       //-----------------------------
       ///\brief Affectation operator (set defined to true)
       ///\return The field (*this)
       ///\example : CField<int> data = 12;
       //-----------------------------
-      CField<T>& operator=(T const& obj)
+      CField<T>& operator=(const T& obj)
       {
          m_value = obj;
          m_defined = true;
@@ -94,7 +89,7 @@ namespace shared {
       ///\return true if the value is the same as value contained in instance
       //-----------------------------
       bool operator==(const T& rhs) const
-      { 
+      {
          return m_value == rhs;
       }
 
@@ -118,9 +113,6 @@ namespace shared {
       //-----------------------------
       T m_value;
    };
-   
-
-
-
 } //namespace shared
+
 

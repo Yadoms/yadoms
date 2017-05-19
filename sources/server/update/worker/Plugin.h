@@ -1,6 +1,6 @@
 #pragma once
 #include "WorkerTools.h"
-#include <server/pluginSystem/Manager.h>
+#include "pluginSystem/Manager.h"
 
 namespace update
 {

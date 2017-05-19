@@ -81,7 +81,7 @@ namespace rfxcomMessages
       std::string m_deviceModel;
 
       //--------------------------------------------------------------
-      /// \brief	The temperature (°C)
+      /// \brief	The temperature (Â°C)
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CTemperature> m_temperature;
 

@@ -30,3 +30,4 @@ sources/plugins/EnOcean/profiles/generated/*
 tests/unit/builds
 *~
 
+.scannerwork

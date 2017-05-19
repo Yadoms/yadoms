@@ -155,7 +155,7 @@ namespace update {
 
       }
       
-      std::string CWorkerTools::getWidgetBasePath() //TODO récupérer du IPathProvider
+      std::string CWorkerTools::getWidgetBasePath() //TODO rÃ©cupÃ©rer du IPathProvider
       {
          //retreive startup options
          boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
@@ -164,14 +164,14 @@ namespace update {
          return websiteFolder.toString();
       }
 
-      std::string CWorkerTools::getPluginBasePath() //TODO récupérer du IPathProvider
+      std::string CWorkerTools::getPluginBasePath() //TODO rÃ©cupÃ©rer du IPathProvider
       {
          //retreive startup options
          boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();
          return startupOptions->getPluginsPath();
       }
 
-      std::string CWorkerTools::getScriptInterpreterBasePath() //TODO récupérer du IPathProvider
+      std::string CWorkerTools::getScriptInterpreterBasePath() //TODO rÃ©cupÃ©rer du IPathProvider
       {
          //retreive startup options
          boost::shared_ptr<startupOptions::IStartupOptions> startupOptions = shared::CServiceLocator::instance().get<startupOptions::IStartupOptions>();

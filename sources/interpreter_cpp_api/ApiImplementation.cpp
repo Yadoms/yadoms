@@ -34,7 +34,7 @@ namespace interpreter_cpp_api
    }
 
    void CApiImplementation::notifyScriptStopped(int scriptInstanceId,
-                                                const std::string error)
+                                                const std::string& error)
    {
       interpreter_IPC::toYadoms::msg req;
       auto request = req.mutable_notifiyscriptstopped();

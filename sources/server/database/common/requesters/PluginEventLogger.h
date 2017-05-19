@@ -1,7 +1,7 @@
 #pragma once
 
-#include "server/database/IPluginEventLoggerRequester.h"
-#include "server/database/IDatabaseRequester.h"
+#include "database/IPluginEventLoggerRequester.h"
+#include "database/IDatabaseRequester.h"
 
 namespace database
 {

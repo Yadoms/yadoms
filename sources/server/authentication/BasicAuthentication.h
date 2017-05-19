@@ -5,8 +5,8 @@
 #include "database/entities/Entities.h"
 
 
-namespace authentication {
-
+namespace authentication
+{
    //-------------------------------------
    ///\brief Class which handle basic authentication (single user/password check)
    //-------------------------------------
@@ -20,18 +20,19 @@ namespace authentication {
       ///\param [in]    m_skipPasswordCheck     If true the password will never be checked
       //-------------------------------------
       CBasicAuthentication(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager, bool skipPasswordCheck);
-      
+
       //-------------------------------------
       ///\brief Destructor
       //-------------------------------------
       virtual ~CBasicAuthentication();
 
       // IAuthentifier implementation
-      virtual bool isAuthenticationActive() const;
-      virtual bool authenticate(const std::string & username, const std::string & password) const;
+      bool isAuthenticationActive() const override;
+      bool authenticate(const std::string& username,
+                        const std::string& password) const override;
       // [END] IAuthentifier implementation
 
-      
+
    private:
       //--------------------------------------------------------------
       /// \brief  Function called when the configuration has been updated
@@ -99,5 +100,6 @@ namespace authentication {
       //--------------------------------------------------------------
       static const std::string m_configurationPassword;
    };
-
 } //namespace authentication
+
+
