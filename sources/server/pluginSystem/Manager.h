@@ -18,7 +18,6 @@
 #include <IPathProvider.h>
 #include "communication/callback/ISynchronousCallback.h"
 #include <shared/ILocation.h>
-#include "task/Scheduler.h"
 
 namespace pluginSystem
 {
@@ -39,8 +38,7 @@ namespace pluginSystem
       CManager(const IPathProvider& pathProvider,
                boost::shared_ptr<database::IDataProvider> dataProvider,
                boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
-               boost::shared_ptr<shared::ILocation> locationProvider,
-               boost::shared_ptr<task::CScheduler> taskScheduler);
+               boost::shared_ptr<shared::ILocation> locationProvider);
 
       //--------------------------------------------------------------
       /// \brief			Destructor
@@ -189,9 +187,9 @@ namespace pluginSystem
       /// \brief                 Post an extra command to a device on a specific plugin
       /// \param [in] id         Plugin instance Id
       /// \param [in] query      The query to post
-      /// \return                The task id
       //--------------------------------------------------------------
-      const std::string postExtraQuery(int id, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query) const;
+      void postExtraQuery(int id,
+                          boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post a manually device creation request to a plugin
@@ -310,11 +308,6 @@ namespace pluginSystem
       /// \brief			Data access layer
       //--------------------------------------------------------------
       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> m_dataAccessLayer;
-
-      //--------------------------------------------------------------
-      /// \brief			Task scheduler
-      //--------------------------------------------------------------
-      boost::shared_ptr<task::CScheduler> m_taskScheduler;
 
       //--------------------------------------------------------------
       /// \brief			Map of all running instances, and its mutex (key are plugin instance id)

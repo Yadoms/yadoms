@@ -112,8 +112,5 @@ IntParameterHandler.prototype.setEnabled = function (enabled) {
  */
 IntParameterHandler.prototype.getCurrentConfiguration = function () {
    this.value = parseInt($("input#" + this.uuid).val());
-   var d = new $.Deferred();
-   d.resolve(this.value);
-   return d.promise();
-
+   return this.value;
 };

@@ -62,17 +62,13 @@
                    submitSuccess: function ($form, event) {
                        event.preventDefault();
                        
-                     friendlyNameParameter.getCurrentConfiguration()
-                     .done(function(deviceName) {
+                       var deviceName = friendlyNameParameter.getCurrentConfiguration();
+                       var deviceModel = modelParameter.getCurrentConfiguration();
                        var deviceType = configMgr.getCurrentConfiguration().type.activeSection;
                        var deviceConfiguration = _.get(configMgr.getCurrentConfiguration().type.content, [configMgr.getCurrentConfiguration().type.activeSection, 'content']);
                        
-                           .done(function(configuration) {
-                              $("div#configure-manually-device-modal").modal("hide");
+                       $("div#configure-manually-device-modal").modal("hide");
                        callback(deviceName, deviceModel, deviceType, deviceConfiguration);
-                           });
-                        });
-                     });                      
                    },
                    filter: function () {
                        //we check only control that have class enable-validation and are visible

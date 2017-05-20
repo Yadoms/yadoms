@@ -43,7 +43,6 @@ namespace communication
       ///\param [in] pluginId       Plugin Id to send extra command
       ///\param [in] data           The extra query data
       ///\param [in] callback       The callback
-      ///\return                    The task id
       //----------------------------------------------
       virtual void sendExtraQueryAsync(int pluginId, 
                                        const shared::plugin::yPluginApi::IExtraQueryData& data,

@@ -4,8 +4,9 @@
 
 namespace pluginSystem
 {
-   CExtraQuery::CExtraQuery(const shared::plugin::yPluginApi::IExtraQueryData& data)
-      : m_data(data)
+   CExtraQuery::CExtraQuery(const shared::plugin::yPluginApi::IExtraQueryData& data,
+                            communication::callback::ISynchronousCallback<shared::CDataContainer>& callback)
+      : m_requestPtr(boost::make_shared<communication::callback::CCallbackRequest<shared::plugin::yPluginApi::IExtraQueryData, shared::CDataContainer> >(data, callback))
    {
    }
 
@@ -13,55 +14,20 @@ namespace pluginSystem
    {
    }
 
-   enum
-   {
-      kProgress = shared::event::kUserFirstId,
-      kFinished,
-      kError
-   };
-
-
    const shared::plugin::yPluginApi::IExtraQueryData& CExtraQuery::getData() const
    {
-      return m_data;
+      return m_requestPtr->getData();
    }
 
    void CExtraQuery::sendSuccess(const shared::CDataContainer& data)
    {
-      m_eventHandler.postEvent(kFinished, data);
+      m_requestPtr->sendSuccess(data);
    }
 
    void CExtraQuery::sendError(const std::string& errorMessage)
    {
-      m_eventHandler.postEvent(kError, errorMessage);
+      m_requestPtr->sendError(errorMessage);
    }
-
-   void CExtraQuery::waitForExtraQueryProcess(task::ITask::TaskProgressFunc progressNotifier)
-   {
-      bool running = true;
-
-      while (running)
-      {
-         switch (m_eventHandler.waitForEvents())
-         {
-         case kProgress:
-         {
-            auto dc = m_eventHandler.getEventData<shared::CDataContainer>();
-            progressNotifier(true, dc.get<float>("progression"), dc.get("message"), "", shared::CDataContainer());
-            break;
-         }
-         case kFinished:
-            progressNotifier(false, 100, "", "", m_eventHandler.getEventData<shared::CDataContainer>());
-            running = false;
-            break;
-         case kError:
-            progressNotifier(false, 100, m_eventHandler.getEventData<std::string>(), "", shared::CDataContainer());
-            running = false;
-            break;
-         }
-      }
-   }
-
 } // namespace pluginSystem	
 
 

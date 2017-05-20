@@ -19,7 +19,6 @@ namespace shared
             //--------------------------------------------------------------
             //                                                    capacity name      |        unit           |          description
             //                                              ----------------------------------------------------------------------------------------------
-            static const CStandardCapacity& Alarm();            // alarm             | -                     | A on/off alarm value 
             static const CStandardCapacity& ApparentPower();    // apparentpower     | Volt Ampere           | Apparent Voltage
             static const CStandardCapacity& ArmingAlarm();      // armingAlarm       | -                     | Alarme arming status (disarmed, armedAtHome, armedAway...)
             static const CStandardCapacity& BatteryLevel();     // batteryLevel      | percent               | Battery level capacity
@@ -50,7 +49,6 @@ namespace shared
             static const CStandardCapacity& SignalPower();      // signal power      | %                     | An signal power in %
             static const CStandardCapacity& Speed();            // speed             | m/s                   | A speed value, in m/s
             static const CStandardCapacity& Switch();           // switch            | -                     | A on/off value
-            static const CStandardCapacity& Tamper();           // tamper            | -                     | A on/off tamper value (alarm systems)
             static const CStandardCapacity& Temperature();      // temperature       | degrees Celcius       | Temperature
             static const CStandardCapacity& Text();             // text              | -                     | A text
             static const CStandardCapacity& UpDownStop();       // upDownStop        | -                     | Used for device accepting orders Up, Down Stop

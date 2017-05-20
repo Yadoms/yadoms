@@ -203,36 +203,26 @@ namespace shared
 
       void CAsyncSerialPort::send(const CByteBuffer& buffer)
       {
-         boost::asio::const_buffers_1 toSend(buffer.begin(), buffer.size());
-         sendBuffer(toSend);
-      }
-
-      void CAsyncSerialPort::sendText(const std::string & content)
-      {
-         boost::asio::const_buffers_1 toSend = boost::asio::buffer(content);
-         sendBuffer(toSend);
-      }
-
-      void CAsyncSerialPort::sendBuffer(boost::asio::const_buffers_1 & buffer)
-      {
          try
          {
-            m_boostSerialPort.write_some(buffer);
+            m_boostSerialPort.write_some(boost::asio::const_buffers_1(buffer.begin(), buffer.size()));
          }
          catch (boost::system::system_error& e)
          {
             // boost::asio::error::eof is the normal stop
             if (e.code() != boost::asio::error::eof)
             {
-               YADOMS_LOG(error) << "Serial port write text error : " << e.what();
+               YADOMS_LOG(error) << "Serial port write error : " << e.what();
                disconnect();
             }
 
             notifyEventHandler(false);
-            throw CPortException((e.code() == boost::asio::error::eof) ? CPortException::kConnectionClosed : CPortException::kConnectionError, e.what());
+
+            throw CPortException(
+               (e.code() == boost::asio::error::eof) ? CPortException::kConnectionClosed : CPortException::kConnectionError,
+               e.what());
          }
       }
-
 
       void CAsyncSerialPort::notifyEventHandler(bool isConnected) const
       {

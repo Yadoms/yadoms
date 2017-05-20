@@ -157,8 +157,5 @@ EnumParameterHandler.prototype.setEnabled = function (enabled) {
  */
 EnumParameterHandler.prototype.getCurrentConfiguration = function () {
    this.value = $("select#" + this.uuid).val();
-   var d = new $.Deferred();
-   d.resolve(this.value);
-   return d.promise();
-   
+   return this.value;
 };

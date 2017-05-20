@@ -1,8 +1,9 @@
 #pragma once
+#include "communication/callback/ISynchronousCallback.h"
+#include "communication/callback/ICallbackRequest.h"
 #include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include <shared/plugin/yPluginApi/IExtraQueryData.h>
-#include "task/ITask.h"
-#include <shared/event/EventHandler.hpp>
+
 
 namespace pluginSystem
 {
@@ -18,7 +19,8 @@ namespace pluginSystem
       ///\param[in] data         The query data
       ///\param [in]  callback   The callback to call when request returns
       //-----------------------------------------------------
-      explicit CExtraQuery(const shared::plugin::yPluginApi::IExtraQueryData& data);
+      explicit CExtraQuery(const shared::plugin::yPluginApi::IExtraQueryData& data,
+                           communication::callback::ISynchronousCallback<shared::CDataContainer>& callback);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -31,17 +33,11 @@ namespace pluginSystem
       void sendError(const std::string& errorMessage) override;
       // [END] IExtraQuery implementation
 
-      void waitForExtraQueryProcess(task::ITask::TaskProgressFunc f);
    private:
       //-----------------------------------------------------
       ///\brief Internal data
       //-----------------------------------------------------
-      const shared::plugin::yPluginApi::IExtraQueryData& m_data;
-
-      //-----------------------------------------------------
-      ///\brief Internal event handler
-      //-----------------------------------------------------
-      shared::event::CEventHandler m_eventHandler;
+      boost::shared_ptr<communication::callback::ICallbackRequest<shared::plugin::yPluginApi::IExtraQueryData, shared::CDataContainer> > m_requestPtr;
    };
 } // namespace pluginSystem	
 

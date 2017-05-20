@@ -86,7 +86,5 @@ IconParameterHandler.prototype.setEnabled = function (enabled) {
  */
 IconParameterHandler.prototype.getCurrentConfiguration = function () {
    this.value = $("button#" + this.uuid + " > input").val();
-   var d = new $.Deferred();
-   d.resolve(this.value);
-   return d.promise();
+   return this.value;
 };

@@ -50,15 +50,12 @@
          },
          submitSuccess: function($form, event) {
             event.preventDefault();
-            friendlyNameParameter.getCurrentConfiguration()
-            .done(function(kfn){
-               keyword.friendlyName = kfn;
+            keyword.friendlyName = friendlyNameParameter.getCurrentConfiguration();
 
-               console.debug("End of Keyword Configuration : " + JSON.stringify(keyword));
+            console.debug("End of Keyword Configuration : " + JSON.stringify(keyword));
 
-               $("div#configure-keyword-modal").modal("hide");
-               callback();
-            });
+            $("div#configure-keyword-modal").modal("hide");
+            callback();
          },
          filter: function() {
             //we check only control that have class enable-validation and are visible

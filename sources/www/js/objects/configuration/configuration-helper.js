@@ -11,7 +11,6 @@ ConfigurationHelper.loadConfigurationLibs = function() {
         "js/objects/configuration/decimal-parameter-handler.js",
         "js/objects/configuration/enum-parameter-handler.js",
         "js/objects/configuration/string-parameter-handler.js",
-        "js/objects/configuration/file-parameter-handler.js",
         "js/objects/configuration/bool-parameter-handler.js",
         "js/objects/configuration/section-parameter-handler.js",
         "js/objects/configuration/keyword-parameter-handler.js",
@@ -126,10 +125,6 @@ ConfigurationHelper.createParameterHandler = function (i18nCtxt, i18nKey, paramN
 
       case "string" :
          return new StringParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
-         break;
-
-      case "file" :
-         return new FileParameterHandler(i18nContext, paramName, content, currentValue);
          break;
 
       case "bool" :

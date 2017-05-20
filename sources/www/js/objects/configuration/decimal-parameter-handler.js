@@ -119,8 +119,6 @@ DecimalParameterHandler.prototype.setEnabled = function (enabled) {
  * @returns {*}
  */
 DecimalParameterHandler.prototype.getCurrentConfiguration = function () {
-   var d = new $.Deferred();
-
    //we allow "," and "."
    var $dom = $("input#" + this.uuid);
    if ((!isNullOrUndefined($dom)) && (!isNullOrUndefined($dom.val()))) {
@@ -128,9 +126,7 @@ DecimalParameterHandler.prototype.getCurrentConfiguration = function () {
       this.value = parseFloat(v);
       if (!isNaN(this.precision))
          this.value = this.value.toFixed(this.precision);
-      d.resolve(this.value);
-   } else {
-      d.reject();
+      return this.value;
    }
-   return d.promise();
+   return null;
 };

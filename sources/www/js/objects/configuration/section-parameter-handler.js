@@ -261,34 +261,23 @@ SectionParameterHandler.prototype.setEnabled = function (enabled) {
  */
 SectionParameterHandler.prototype.getCurrentConfiguration = function () {
    //we update configurationValues with content of DOM
-   var d= new $.Deferred();
    var self = this;
+   
    self.configurationValues = {};
    self.configurationValues.content = {};
-   var deferredArray =[];
-   
    $.each(self.configurationHandlers, function (key, value) {
-      var deferred = value.getCurrentConfiguration();
-      deferredArray.push(deferred);
-      deferred.done(function (currentConfiguration) {
-         self.configurationValues.content[value.getParamName()] = currentConfiguration;
-      });      
+      self.configurationValues.content[value.getParamName()] = value.getCurrentConfiguration();
    });
 
-   $.whenAll(deferredArray)
-   .done(function() {
-      //we get the checkbox value if used
-      if (self.enableWithCheckBox) {
-         self.configurationValues.checkbox = parseBool($("input#" + self.selectorUuid).prop("checked"));
-      }
+   //we get the checkbox value if used
+   if (this.enableWithCheckBox) {
+      self.configurationValues.checkbox = parseBool($("input#" + this.selectorUuid).prop("checked"));
+   }
 
-      //we get the parentRadioButtonSectionName value if used
-      if (self.parentRadioButtonSectionName) {
-         self.configurationValues.radio = ($("input#" + self.selectorUuid + ":checked").val() == 'on');
-      }
-      
-      d.resolve(self.configurationValues);
-   });   
-   
-   return d.promise();      
+   //we get the parentRadioButtonSectionName value if used
+   if (this.parentRadioButtonSectionName) {
+      self.configurationValues.radio = ($("input#" + this.selectorUuid + ":checked").val() == 'on');
+   }
+
+   return self.configurationValues;
 };

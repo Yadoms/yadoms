@@ -53,14 +53,12 @@ namespace communication
       m_pluginManager->postCommand(device->PluginId, command);
    }
 
-   
-
-   void CPluginGateway::sendExtraQueryAsync(int pluginId, 
+   void CPluginGateway::sendExtraQueryAsync(int pluginId,
                                             const shared::plugin::yPluginApi::IExtraQueryData& data,
                                             communication::callback::ISynchronousCallback<shared::CDataContainer>& callback)
    {
       // Create the query
-      boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery(boost::make_shared<pluginSystem::CExtraQuery>(data));
+      boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery(boost::make_shared<pluginSystem::CExtraQuery>(data, callback));
 
       // Dispatch query to the right plugin
       m_pluginManager->postExtraQuery(pluginId, extraQuery);

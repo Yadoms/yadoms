@@ -106,42 +106,23 @@
             event.preventDefault();
 
             //retrieve first and last name
-            firstNameParameter.getCurrentConfiguration()
-            .done(function(fn) {
-               lastNameParameter.getCurrentConfiguration()
-               .done(function(ln) {
-               
-                  //retrieve all fields
-                  var fields = [];
-                  var deferredArray = [];
-                  
-                  $.each(recipientConfigurationFields, function(index, configField) {
-                     var df = configField.getCurrentConfiguration();
-                     deferredArray.push(df);
-                     df.done(function(vl) {
-                        configField.field.value = vl;
-                        fields.push(configField.field);                     
-                     });
-                  });
+            var fn = firstNameParameter.getCurrentConfiguration();
+            var ln = lastNameParameter.getCurrentConfiguration();
 
-                  $.whenAll(deferredArray)
-                  .done(function() {
-                     //create the updated recipient (provided to callback)
-                     var completedRecipient = new Recipient(recipient.id, fn, ln, fields);
+            //retrieve all fields
+            var fields = [];
+            $.each(recipientConfigurationFields, function(index, configField) {
+               configField.field.value = configField.getCurrentConfiguration();
+               fields.push(configField.field);
+            });
 
-                     console.debug("End of recipient configuration");
+            //create the updated recipient (provided to callback)
+            var completedRecipient = new Recipient(recipient.id, fn, ln, fields);
 
-                     $("div#recipient-configure-modal").modal("hide");
-                     d.resolve(completedRecipient);  
-                  }).fail(d.reject);                    
-                  
-             
-               
-               }).fail(d.reject);
-            
-            }).fail(d.reject);
+            console.debug("End of recipient configuration");
 
-
+            $("div#recipient-configure-modal").modal("hide");
+            d.resolve(completedRecipient);
          },
          filter: function() {
             //we check only control that have class enable-validation and are visible

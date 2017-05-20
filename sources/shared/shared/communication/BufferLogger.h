@@ -29,6 +29,7 @@ namespace shared
          void logSent(const CByteBuffer& data) override;
          // [END] IBufferLogger implementation
 
+      protected:
          const Poco::Message::Priority m_logLevel;
          static std::string msgToString(const CByteBuffer& data);
       };

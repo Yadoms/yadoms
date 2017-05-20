@@ -188,33 +188,22 @@ RadioSectionParameterHandler.prototype.setEnabled = function (enabled) {
  */
 RadioSectionParameterHandler.prototype.getCurrentConfiguration = function () {
    //we update configurationValues with content of DOM
-   var d= new $.Deferred();
    var self = this;
    self.configurationValues = {};
    self.configurationValues.content = {};
-   var deferredArray =[];
-   
    $.each(self.configurationHandlers, function (key, value) {
-      var deferred = value.getCurrentConfiguration();
-      deferredArray.push(deferred);
-      deferred.done(function (currentConfiguration) {
-         self.configurationValues.content[value.getParamName()] = currentConfiguration;
-         if (currentConfiguration.radio) {
-            //it's the active section
-            self.configurationValues.activeSection = value.getParamName();
-         }
-      });      
+      var currentConfiguration = value.getCurrentConfiguration();
+      self.configurationValues.content[value.getParamName()] = currentConfiguration;
+      if (currentConfiguration.radio) {
+         //it's the active section
+         self.configurationValues.activeSection = value.getParamName();
+      }
    });
 
-   $.whenAll(deferredArray)
-   .done(function() {
-      //we get the parentRadioButtonSectionName value if used (only for nested radio section into another one)
-      if (self.parentRadioButtonSectionName) {
-         self.configurationValues.radio = ($("input#" + self.selectorUuid + ":checked").val() == 'on');
-      }
-      
-      d.resolve(self.configurationValues);
-   });   
-   
-   return d.promise();      
+   //we get the parentRadioButtonSectionName value if used (only for nested radio section into another one)
+   if (this.parentRadioButtonSectionName) {
+      self.configurationValues.radio = ($("input#" + this.selectorUuid + ":checked").val() == 'on');
+   }
+
+   return self.configurationValues;
 };

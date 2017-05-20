@@ -75,24 +75,11 @@ ConfigurationControlManager.prototype.applyScript = function () {
  * @returns {object}
  */
 ConfigurationControlManager.prototype.getCurrentConfiguration = function () {
-  //we update configurationValues with content of DOM
-   var d= new $.Deferred();
+   //we update configurationValues with content of DOM
+   this.configurationValues = {};
    var self = this;
-   self.configurationValues = {};
-   var deferredArray =[];
-   
-   $.each(self.configurationHandlers, function (key, value) {
-      var deferred = value.getCurrentConfiguration();
-      deferredArray.push(deferred);
-      deferred.done(function (currentConfiguration) {
-         self.configurationValues[value.getParamName()] = currentConfiguration;
-      });      
+   $.each(this.configurationHandlers, function (key, value) {
+      self.configurationValues[value.getParamName()] = value.getCurrentConfiguration();
    });
-
-   $.whenAll(deferredArray)
-   .done(function() {
-      d.resolve(self.configurationValues);
-   });   
-   
-   return d.promise();   
+   return this.configurationValues;
 };
