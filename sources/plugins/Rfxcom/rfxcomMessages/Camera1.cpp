@@ -59,7 +59,7 @@ namespace rfxcomMessages
       m_subType = rbuf.CAMERA1.subtype;
       m_houseCode = rbuf.CAMERA1.housecode;
       m_camera->set(fromProtocolState(rbuf.CAMERA1.cmnd));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.CAMERA1.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.CAMERA1.rssi));
 
       Init(api);
    }
@@ -101,7 +101,7 @@ namespace rfxcomMessages
       rbuf.CAMERA1.seqnbr = seqNumberProvider->next();
       rbuf.CAMERA1.housecode = m_houseCode;
       rbuf.CAMERA1.cmnd = toProtocolState(*m_camera);
-      rbuf.CAMERA1.signalPower = 0;
+      rbuf.CAMERA1.rssi = 0;
       rbuf.CAMERA1.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(CAMERA1));

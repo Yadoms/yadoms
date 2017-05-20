@@ -59,7 +59,7 @@ namespace rfxcomMessages
       m_id = rbuf.LIGHTING5.id1 << 16 | rbuf.LIGHTING5.id2 << 8 | rbuf.LIGHTING5.id3;
       m_unitCode = rbuf.LIGHTING5.unitcode;
       m_subTypeManager->setFromProtocolState(rbuf.LIGHTING5.cmnd, rbuf.LIGHTING5.level);
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING5.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING5.rssi));
 
       declare(api);
    }
@@ -149,7 +149,7 @@ namespace rfxcomMessages
       rbuf.LIGHTING5.id2 = static_cast<unsigned char>(0xFF & (m_id >> 8));
       rbuf.LIGHTING5.id3 = static_cast<unsigned char>(0xFF & m_id);
       rbuf.LIGHTING5.unitcode = m_unitCode;
-      rbuf.LIGHTING5.signalPower = 0;
+      rbuf.LIGHTING5.rssi = 0;
       rbuf.LIGHTING5.filler = 0;
 
       // Some sub-protocols need several messages

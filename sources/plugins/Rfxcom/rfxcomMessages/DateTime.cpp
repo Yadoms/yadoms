@@ -30,7 +30,7 @@ namespace rfxcomMessages
                                                boost::posix_time::time_duration(rbuf.DT.hr, rbuf.DT.min, rbuf.DT.sec)));
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.DT.battery_level));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.DT.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.DT.rssi));
 
       Init(api);
    }

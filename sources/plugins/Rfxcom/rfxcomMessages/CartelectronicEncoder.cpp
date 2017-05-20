@@ -46,7 +46,7 @@ namespace rfxcomMessages
 
    char CCartelectronicEncoder::signalPowerFromProtocol(const RBUF& rbuf)
    {
-      return rbuf.CEENCODER.signalPower;
+      return rbuf.CEENCODER.rssi;
    }
 
    std::string CCartelectronicEncoder::getModel() const

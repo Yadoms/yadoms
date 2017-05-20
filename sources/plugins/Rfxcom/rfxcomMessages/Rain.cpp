@@ -48,7 +48,7 @@ namespace rfxcomMessages
       }
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.RAIN.battery_level));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.RAIN.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.RAIN.rssi));
 
       Init(api);
    }

@@ -31,7 +31,7 @@ namespace rfxcomMessages
       m_foodTemperature->set(static_cast<double>((rbuf.BBQ.sensor1h << 8) | rbuf.BBQ.sensor1l));
       m_bbqTemperature->set(static_cast<double>((rbuf.BBQ.sensor2h << 8) | rbuf.BBQ.sensor2l));
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.BBQ.battery_level));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.BBQ.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.BBQ.rssi));
 
       Init(api);
    }

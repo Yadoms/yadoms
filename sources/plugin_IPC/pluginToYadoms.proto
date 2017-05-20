@@ -109,11 +109,6 @@ message ExtraQueryAnswer {
 	string result = 2;
 }
 
-message ExtraQueryProgression {
-	float progress = 1;
-	string message = 2;
-}
-
 message RemoveDevice {
 	string device = 1;
 }

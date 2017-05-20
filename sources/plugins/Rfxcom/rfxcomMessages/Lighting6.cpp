@@ -65,7 +65,7 @@ namespace rfxcomMessages
       m_groupCode = rbuf.LIGHTING6.groupcode;
       m_unitCode = rbuf.LIGHTING6.unitcode;
       m_state->set(fromProtocolState(rbuf.LIGHTING6.cmnd));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING6.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING6.rssi));
 
       Init(api);
    }
@@ -110,7 +110,7 @@ namespace rfxcomMessages
       rbuf.LIGHTING6.cmnd = toProtocolState(*m_state);
       rbuf.LIGHTING6.cmndseqnbr = seqNumberProvider->last() % 4;
       rbuf.LIGHTING6.seqnbr2 = 0;
-      rbuf.LIGHTING6.signalPower = 0;
+      rbuf.LIGHTING6.rssi = 0;
       rbuf.LIGHTING6.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(LIGHTING6));

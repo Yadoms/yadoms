@@ -44,7 +44,7 @@ namespace rfxcomMessages
       m_id = rbuf.REMOTE.id;
       m_subTypeManager->setFromProtocolState(rbuf);
 
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.REMOTE.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.REMOTE.rssi));
 
       declare(api);
    }
@@ -105,7 +105,7 @@ namespace rfxcomMessages
       rbuf.REMOTE.seqnbr = seqNumberProvider->next();
       rbuf.REMOTE.id = static_cast<BYTE>(m_id);
       m_subTypeManager->toProtocolState(rbuf);
-      rbuf.REMOTE.signalPower = 0;
+      rbuf.REMOTE.rssi = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(REMOTE));
    }

@@ -62,7 +62,7 @@ namespace rfxcomMessages
       m_system = rbuf.LIGHTING3.system;
       m_channel = rbuf.LIGHTING3.channel8_1 & (rbuf.LIGHTING3.channel10_9 << 8);
       m_state->set(fromProtocolState(rbuf.LIGHTING3.cmnd));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING2.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING2.rssi));
 
       Init(api);
    }
@@ -102,7 +102,7 @@ namespace rfxcomMessages
       rbuf.LIGHTING3.channel8_1 = static_cast<unsigned char>(m_channel & 0xFF);
       rbuf.LIGHTING3.channel10_9 = static_cast<unsigned char>((m_channel & 0xFF00) >> 8);
       rbuf.LIGHTING3.cmnd = toProtocolState(*m_state);
-      rbuf.LIGHTING3.signalPower = 0;
+      rbuf.LIGHTING3.rssi = 0;
       rbuf.LIGHTING3.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(LIGHTING3));

@@ -29,7 +29,7 @@ namespace rfxcomMessages
       m_humidity->set(rbuf.HUM.humidity);
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.HUM.battery_level));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.HUM.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.HUM.rssi));
 
       Init(api);
    }

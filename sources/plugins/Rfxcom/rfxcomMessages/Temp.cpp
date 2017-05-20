@@ -28,7 +28,7 @@ namespace rfxcomMessages
 
       m_temperature->set(NormalizeTemperature(rbuf.TEMP.temperatureh, rbuf.TEMP.temperaturel, rbuf.TEMP.tempsign == 1));
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.TEMP.battery_level));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.TEMP.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.TEMP.rssi));
 
       Init(api);
    }

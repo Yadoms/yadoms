@@ -59,7 +59,7 @@ namespace rfxcomMessages
       createSubType(rbuf.SECURITY2.subtype);
       m_subTypeManager->setFromProtocolState(rbuf);
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.SECURITY2.battery_level));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.SECURITY2.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.SECURITY2.rssi));
 
       declare(api);
    }
@@ -112,7 +112,7 @@ namespace rfxcomMessages
       rbuf.SECURITY2.subtype = m_subType;
       rbuf.SECURITY2.seqnbr = seqNumberProvider->next();
       m_subTypeManager->toProtocolState(rbuf);
-      rbuf.SECURITY2.signalPower = 0;
+      rbuf.SECURITY2.rssi = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(SECURITY2));
    }

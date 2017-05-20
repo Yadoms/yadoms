@@ -34,7 +34,7 @@ namespace rfxcomMessages
       m_pressure->set(rbuf.TEMP_HUM_BARO.baroh << 8 | (rbuf.TEMP_HUM_BARO.barol));
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.TEMP_HUM_BARO.battery_level));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.TEMP_HUM_BARO.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.TEMP_HUM_BARO.rssi));
 
       Init(api);
    }

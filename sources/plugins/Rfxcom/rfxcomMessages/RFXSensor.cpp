@@ -66,7 +66,7 @@ namespace rfxcomMessages
       }
       }
 
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.RFXSENSOR.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.RFXSENSOR.rssi));
 
       Init(api);
    }

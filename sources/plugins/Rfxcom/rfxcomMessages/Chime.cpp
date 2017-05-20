@@ -54,7 +54,7 @@ namespace rfxcomMessages
       createSubType(rbuf.CHIME.subtype);
       m_id = m_subTypeManager->idFromProtocol(rbuf.CHIME.id1, rbuf.CHIME.id2, rbuf.CHIME.sound);
       m_subTypeManager->setFromProtocolState(rbuf.CHIME.sound);
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.CHIME.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.CHIME.rssi));
 
       declare(api);
    }
@@ -115,7 +115,7 @@ namespace rfxcomMessages
       rbuf.CHIME.seqnbr = seqNumberProvider->next();
       m_subTypeManager->idToProtocol(m_id, rbuf.CHIME.id1, rbuf.CHIME.id2, rbuf.CHIME.sound);
       m_subTypeManager->toProtocolState(rbuf.CHIME.sound);
-      rbuf.CHIME.signalPower = 0;
+      rbuf.CHIME.rssi = 0;
       rbuf.CHIME.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(CHIME));

@@ -119,7 +119,7 @@ namespace rfxcomMessages
       rbuf.RADIATOR1.id4 = static_cast<unsigned char>(m_id & 0xFF);
       rbuf.RADIATOR1.unitcode = m_unitCode;
       toProtocolState(rbuf);
-      rbuf.RADIATOR1.signalPower = 0;
+      rbuf.RADIATOR1.rssi = 0;
       rbuf.RADIATOR1.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(RADIATOR1));

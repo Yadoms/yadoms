@@ -55,7 +55,7 @@ namespace rfxcomMessages
 
       m_subType = rbuf.LIGHTING4.subtype;
       m_id = rbuf.LIGHTING4.cmd1 << 16 | rbuf.LIGHTING4.cmd2 << 8 | rbuf.LIGHTING4.cmd3;
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING4.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING4.rssi));
 
       Init(api);
    }
@@ -96,7 +96,7 @@ namespace rfxcomMessages
       unsigned short pulse = 1400; // See RFXCom specification
       rbuf.LIGHTING4.pulseHigh = static_cast<unsigned char>(0xFF & (pulse >> 8));
       rbuf.LIGHTING4.pulseLow = static_cast<unsigned char>(0xFF & pulse);
-      rbuf.LIGHTING4.signalPower = 0;
+      rbuf.LIGHTING4.rssi = 0;
       rbuf.LIGHTING4.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(LIGHTING4));

@@ -143,7 +143,7 @@ namespace rfxcomMessages
 
    char CCartelectronicTIC::signalPowerFromProtocol(const RBUF& rbuf)
    {
-      return rbuf.TIC.signalPower;
+      return rbuf.TIC.rssi;
    }
 
    std::string CCartelectronicTIC::getModel() const

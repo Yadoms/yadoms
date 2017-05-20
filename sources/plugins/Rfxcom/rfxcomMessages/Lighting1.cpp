@@ -78,7 +78,7 @@ namespace rfxcomMessages
       m_houseCode = rbuf.LIGHTING1.housecode;
       m_unitCode = rbuf.LIGHTING1.unitcode;
       m_state->set(fromProtocolState(rbuf.LIGHTING1.cmnd));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING1.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING1.rssi));
 
       Init(api);
    }
@@ -117,7 +117,7 @@ namespace rfxcomMessages
       rbuf.LIGHTING1.housecode = m_houseCode;
       rbuf.LIGHTING1.unitcode = m_unitCode;
       rbuf.LIGHTING1.cmnd = toProtocolState(*m_state);
-      rbuf.LIGHTING1.signalPower = 0;
+      rbuf.LIGHTING1.rssi = 0;
       rbuf.LIGHTING1.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(LIGHTING1));

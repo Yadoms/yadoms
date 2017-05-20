@@ -33,7 +33,7 @@ namespace rfxcomMessages
       m_current3->set(rbuf.CURRENT.ch3h << 8 | rbuf.CURRENT.ch3l);
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.CURRENT.battery_level));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.CURRENT.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.CURRENT.rssi));
 
       Init(api);
    }

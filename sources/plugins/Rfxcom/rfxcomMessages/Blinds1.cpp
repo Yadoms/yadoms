@@ -118,7 +118,7 @@ namespace rfxcomMessages
       m_unitCode = rbuf.BLINDS1.unitcode;
       m_state->set(fromProtocolState(rbuf.BLINDS1.cmnd));
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.BLINDS1.filler)); // filler is specified as battery level in RFXtrx SDF.pdf
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.BLINDS1.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.BLINDS1.rssi));
 
       Init(api);
    }
@@ -206,7 +206,7 @@ namespace rfxcomMessages
 
       buffer.BLINDS1.unitcode = m_unitCode;
       buffer.BLINDS1.cmnd = toProtocolState(*m_state);
-      buffer.BLINDS1.signalPower = 0;
+      buffer.BLINDS1.rssi = 0;
       buffer.BLINDS1.filler = 0;
 
       return toBufferQueue(buffer, GET_RBUF_STRUCT_SIZE(BLINDS1));

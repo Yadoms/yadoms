@@ -55,7 +55,7 @@ namespace rfxcomMessages
       createSubType(rbuf.THERMOSTAT1.subtype);
       m_id = rbuf.THERMOSTAT1.id1 << 8 | rbuf.THERMOSTAT1.id2;
       m_subTypeManager->setFromProtocolState(rbuf);
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.THERMOSTAT1.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.THERMOSTAT1.rssi));
 
       declare(api);
    }
@@ -111,7 +111,7 @@ namespace rfxcomMessages
       rbuf.THERMOSTAT1.id1 = static_cast<unsigned char>(0xFF & (m_id >> 8));
       rbuf.THERMOSTAT1.id2 = static_cast<unsigned char>(0xFF & m_id);
       m_subTypeManager->toProtocolState(rbuf);
-      rbuf.THERMOSTAT1.signalPower = 0;
+      rbuf.THERMOSTAT1.rssi = 0;
       rbuf.THERMOSTAT1.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(THERMOSTAT1));

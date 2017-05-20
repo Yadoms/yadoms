@@ -170,7 +170,7 @@ namespace rfxcomMessages
       }
       }
 
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.FS20.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.FS20.rssi));
 
       Init(api);
    }
@@ -340,7 +340,7 @@ namespace rfxcomMessages
       }
       }
 
-      rbuf.FS20.signalPower = 0;
+      rbuf.FS20.rssi = 0;
       rbuf.FS20.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(FS20));

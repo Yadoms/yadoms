@@ -30,7 +30,7 @@ namespace rfxcomMessages
       m_temperature->set(NormalizeTemperature(rbuf.TEMP_RAIN.temperatureh, rbuf.TEMP_RAIN.temperaturel, rbuf.TEMP_RAIN.tempsign == 1));
       m_rain->set(static_cast<double>((rbuf.TEMP_RAIN.raintotal1 << 8) | rbuf.TEMP_RAIN.raintotal2) / 10.0);
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.TEMP_RAIN.battery_level));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.TEMP_RAIN.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.TEMP_RAIN.rssi));
 
       Init(api);
    }

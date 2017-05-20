@@ -64,7 +64,7 @@ namespace rfxcomMessages
       m_houseCode = rbuf.HOMECONFORT.housecode;
       m_unitCode = rbuf.HOMECONFORT.unitcode;
       m_state->set(fromProtocolState(rbuf.HOMECONFORT.cmnd));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.HOMECONFORT.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.HOMECONFORT.rssi));
 
       Init(api);
    }
@@ -108,7 +108,7 @@ namespace rfxcomMessages
       rbuf.HOMECONFORT.housecode = m_houseCode;
       rbuf.HOMECONFORT.unitcode = m_unitCode;
       rbuf.HOMECONFORT.cmnd = toProtocolState(*m_state);
-      rbuf.HOMECONFORT.signalPower = 0;
+      rbuf.HOMECONFORT.rssi = 0;
       rbuf.HOMECONFORT.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(HOMECONFORT));

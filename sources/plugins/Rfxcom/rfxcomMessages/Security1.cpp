@@ -66,7 +66,7 @@ namespace rfxcomMessages
       m_id = m_subTypeManager->idFromProtocol(rbuf);
       m_subTypeManager->setFromProtocolState(rbuf.SECURITY1.status);
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.SECURITY1.battery_level));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.SECURITY1.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.SECURITY1.rssi));
 
       declare(api);
    }
@@ -141,7 +141,7 @@ namespace rfxcomMessages
       rbuf.SECURITY1.id1 = static_cast<unsigned char>((m_id & 0xFF00) >> 8);
       rbuf.SECURITY1.id2 = static_cast<unsigned char>(m_id & 0xFF);
       rbuf.SECURITY1.status = m_subTypeManager->toProtocolState();
-      rbuf.SECURITY1.signalPower = 0;
+      rbuf.SECURITY1.rssi = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(SECURITY1));
    }

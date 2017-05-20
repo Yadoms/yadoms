@@ -65,7 +65,7 @@ namespace rfxcomMessages
       m_subType = rbuf.THERMOSTAT2.subtype;
       m_unitCode = rbuf.THERMOSTAT2.unitcode;
       m_state->set(fromProtocolState(rbuf.THERMOSTAT2.cmnd));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.THERMOSTAT2.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.THERMOSTAT2.rssi));
 
       Init(api);
    }
@@ -103,7 +103,7 @@ namespace rfxcomMessages
       rbuf.THERMOSTAT2.seqnbr = seqNumberProvider->next();
       rbuf.THERMOSTAT2.unitcode = static_cast<BYTE>(m_unitCode);
       rbuf.THERMOSTAT2.cmnd = toProtocolState(*m_state);
-      rbuf.THERMOSTAT2.signalPower = 0;
+      rbuf.THERMOSTAT2.rssi = 0;
       rbuf.THERMOSTAT2.filler = 0;
 
       return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(THERMOSTAT2));

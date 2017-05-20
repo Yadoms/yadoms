@@ -51,7 +51,7 @@ namespace rfxcomMessages
       }
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.WIND.battery_level));
-      m_signalPower->set(NormalizesignalPowerLevel(rbuf.WIND.signalPower));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.WIND.rssi));
 
       Init(api);
    }
