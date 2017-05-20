@@ -2,8 +2,6 @@
 #include "Instance.h"
 #include "startupOptions/IStartupOptions.h"
 #include "shared/ServiceLocator.h"
-#include "task/GenericTask.h"
-#include "ExtraQuery.h"
 
 namespace pluginSystem
 {
