@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/script/yInterpreterApi/IStartScript.h>
-#include <server/communication/callback/NoDataCallbackRequest.h>
 
 namespace automation
 {

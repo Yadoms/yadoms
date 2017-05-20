@@ -5,8 +5,8 @@
 #include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include <shared/plugin/yPluginApi/IDeviceConfigurationSchemaRequest.h>
 #include <shared/plugin/yPluginApi/IDeviceRemoved.h>
-#include <server/database/entities/Entities.h>
 #include <shared/plugin/yPluginApi/ISetDeviceConfiguration.h>
+#include "database/entities/Entities.h"
 
 namespace pluginSystem
 {

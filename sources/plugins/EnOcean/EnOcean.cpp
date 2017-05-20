@@ -123,8 +123,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                // Yadoms sent the new device configuration. Plugin must apply this configuration to device.
                auto deviceConfiguration = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::ISetDeviceConfiguration>>();
-               processDeviceConfiguration(deviceConfiguration->device(),
-                                          deviceConfiguration->configuration());
+               processDeviceConfiguration(deviceConfiguration->name(), deviceConfiguration->configuration());
                break;
             }
 
@@ -156,7 +155,7 @@ void CEnOcean::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             }
          default:
             {
-               YADOMS_LOG(error) << "Unknown message id" ;
+               YADOMS_LOG(warning) << "Unknown message id " << api->getEventHandler().getEventId();
                break;
             }
          }
@@ -207,7 +206,7 @@ void CEnOcean::createConnection()
    // Create the port instance
    m_port = CFactory::constructPort(m_configuration);
 
-   auto bufferLogger = CFactory::constructBufferLogger(m_api->getYadomsInformation()->developperMode());
+   auto bufferLogger = CFactory::constructBufferLogger();
 
    m_messageHandler = CFactory::constructMessageHandler(m_port,
                                                         m_api->getEventHandler(),
@@ -273,10 +272,17 @@ void CEnOcean::processDeviceCommand(boost::shared_ptr<const shared::plugin::yPlu
       return;
    }
 
-   m_devices[command->getDevice()]->sendCommand(command->getKeyword(),
-                                                command->getBody(),
-                                                m_senderId,
-                                                m_messageHandler);
+   try
+   {
+      m_devices[command->getDevice()]->sendCommand(command->getKeyword(),
+                                                   command->getBody(),
+                                                   m_senderId,
+                                                   m_messageHandler);
+   }
+   catch (std::exception& e)
+   {
+      YADOMS_LOG(error) << "Fail to send command " << yApi::IDeviceCommand::toString(command) << ", error : " << e.what();
+   }
 }
 
 void CEnOcean::processConnectionEvent()
@@ -519,6 +525,7 @@ void CEnOcean::declareDeviceWithoutProfile(const std::string& deviceId) const
 
    m_api->declareDevice(deviceId,
                         std::string(),
+                        std::string(),
                         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>());
 }
 
@@ -650,7 +657,7 @@ void CEnOcean::processUTE(message::CRadioErp1ReceivedMessage& erp1Message)
          throw CProtocolException("Unable to send UTE response, timeout waiting acknowledge");
 
       if (returnCode != message::CResponseReceivedMessage::RET_OK)
-      YADOMS_LOG(error) << "TeachIn response not successfully acknowledged : " << returnCode ;
+         YADOMS_LOG(error) << "TeachIn response not successfully acknowledged : " << returnCode ;
    }
 }
 
@@ -680,6 +687,7 @@ boost::shared_ptr<IType> CEnOcean::declareDevice(const std::string& deviceId,
       throw std::logic_error("Device " + deviceId + " already exist");
 
    m_api->declareDevice(deviceId,
+                        modelLabel,
                         modelLabel,
                         keywordsToDeclare);
 

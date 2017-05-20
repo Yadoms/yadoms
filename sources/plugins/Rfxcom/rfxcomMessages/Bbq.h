@@ -32,7 +32,7 @@ namespace rfxcomMessages
       virtual ~CBbq();
 
       // IRfxcomMessage implementation
-      boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const override;
+      boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const override;
       void historizeData(boost::shared_ptr<yApi::IYPluginApi> api) const override;
       const std::string& getDeviceName() const override;
       // [END] IRfxcomMessage implementation
@@ -76,12 +76,12 @@ namespace rfxcomMessages
       std::string m_deviceModel;
 
       //--------------------------------------------------------------
-      /// \brief	The food temperature (°C)
+      /// \brief	The food temperature (Â°C)
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CTemperature> m_foodTemperature;
 
       //--------------------------------------------------------------
-      /// \brief	The BBQ temperature (°C)
+      /// \brief	The BBQ temperature (Â°C)
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CTemperature> m_bbqTemperature;
 

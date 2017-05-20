@@ -10,7 +10,7 @@
  * @param currentValue
  * @constructor
  */
-function EnumParameterHandler(i18NContext, paramName, content, currentValue) {
+function EnumParameterHandler(i18NContext, i18nKey, paramName, content, currentValue) {
    assert(i18NContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
@@ -25,6 +25,7 @@ function EnumParameterHandler(i18NContext, paramName, content, currentValue) {
    this.paramName = paramName;
    this.description = isNullOrUndefined(content.description)?"":content.description;
    this.i18nContext = i18NContext;
+   this.i18nKey = i18nKey || paramName;
    this.content = content;
 }
 
@@ -54,7 +55,7 @@ EnumParameterHandler.prototype.getDOMObject = function () {
    var i18NData = " data-i18n=\"";
 
    var self = this;
-   i18NData += "[data-content]" + self.i18nContext + self.paramName + ".description";
+   i18NData += "[data-content]" + self.i18nContext + self.i18nKey + ".description";
 
    i18NData += "\" ";
    input += i18NData + " >";
@@ -95,8 +96,8 @@ EnumParameterHandler.prototype.updateValues = function () {
    var translatedValues = {};
    $.each(self.values, function (key, value) {
        var newValue = "";
-       if (i18n.exists(self.i18nContext + self.paramName + ".values." + key)) {
-           newValue = $.t(self.i18nContext + self.paramName + ".values." + key);
+       if (i18n.exists(self.i18nContext + self.i18nKey + ".values." + key)) {
+           newValue = $.t(self.i18nContext + self.i18nKey + ".values." + key);
        }
        else { //if the precedent line doesn't exist into the i18n we are in the case of binding. So we have to display the "value"
            newValue = value;

@@ -8,8 +8,7 @@ namespace interpreter_cpp_api
    class CScriptLogger : public shared::process::IExternalProcessLogger
    {
    public:
-      CScriptLogger(const std::string& interpreterLoggerName,
-                    int scriptInstanceId,
+      CScriptLogger(int scriptInstanceId,
                     const boost::filesystem::path& scriptLogPath);
       virtual ~CScriptLogger();
 
@@ -21,7 +20,5 @@ namespace interpreter_cpp_api
 
    private:
       Poco::Logger& m_logger;
-      Poco::Message m_msgInformation;
-      Poco::Message m_msgError;
    };
 } // namespace interpreter_cpp_api	

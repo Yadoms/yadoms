@@ -3,6 +3,7 @@
 #include <plugin_cpp_api/ImplementationHelper.h>
 #include "MegatecUpsFactory.h"
 #include <shared/communication/PortException.hpp>
+#include <shared/communication/AsciiBufferLogger.h>
 #include "ProtocolException.hpp"
 #include <shared/Log.h>
 
@@ -38,7 +39,7 @@ static const std::locale ProtocolFloatFormatingLocale(std::locale(),
 
 
 CMegatecUps::CMegatecUps()
-   : m_logger(),
+   : m_logger(boost::make_shared<shared::communication::CAsciiBufferLogger>("trace")),
      m_protocolErrorCounter(0),
      m_lastSentBuffer(1),
      m_answerIsRequired(true),
@@ -113,7 +114,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             if (boost::iequals(command->getKeyword(), m_upsShutdown->getKeyword()))
                onCommandShutdown(api, command->getBody());
             else
-               YADOMS_LOG(information) << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command) ;
+            YADOMS_LOG(information) << "Received command for unknown keyword from Yadoms : " << yApi::IDeviceCommand::toString(command) ;
 
             break;
          }
@@ -157,7 +158,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case kEvtPortDataReceived:
          {
             const auto buffer(api->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
-            m_logger.logReceived(buffer);
+            m_logger->logReceived(buffer);
 
             // Message are in ASCII format
             std::string message(reinterpret_cast<const char*>(buffer.begin()), buffer.size());
@@ -183,7 +184,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          }
       default:
          {
-            YADOMS_LOG(error) << "Unknown message id" ;
+            YADOMS_LOG(warning) << "Unknown message id " << api->getEventHandler().getEventId();
             break;
          }
       }
@@ -231,7 +232,7 @@ void CMegatecUps::send(const shared::communication::CByteBuffer& buffer,
    if (!m_port)
       return;
 
-   m_logger.logSent(buffer);
+   m_logger->logSent(buffer);
    m_port->send(buffer);
    // Cache the buffer only if not already sending last buffer
    if (&m_lastSentBuffer != &buffer)
@@ -245,7 +246,7 @@ void CMegatecUps::onCommandShutdown(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const std::string& command)
 {
    if (!m_port)
-      YADOMS_LOG(information) << "Command not send (UPS is not ready) : " << command ;
+   YADOMS_LOG(information) << "Command not send (UPS is not ready) : " << command ;
 
    sendShtudownCmd();
 }
@@ -457,7 +458,7 @@ void CMegatecUps::sendShtudownCmd()
 void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> api,
                                         const boost::tokenizer<boost::char_separator<char>>& tokens)
 {
-   boost::tokenizer<boost::char_separator<char>>::const_iterator itToken = tokens.begin();
+   auto itToken = tokens.begin();
    m_inputVoltage->set(upsStr2Double(*itToken));
    ++itToken;
    m_inputfaultVoltage->set(upsStr2Double(*itToken));
@@ -517,12 +518,12 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> api
 void CMegatecUps::processReceivedInformation(boost::shared_ptr<yApi::IYPluginApi> api,
                                              const boost::tokenizer<boost::char_separator<char>>& tokens) const
 {
-   boost::tokenizer<boost::char_separator<char>>::const_iterator itToken = tokens.begin();
-   std::string company(*itToken);
+   auto itToken = tokens.begin();
+   auto company(*itToken);
    ++itToken;
-   std::string model(*itToken);
+   auto model(*itToken);
    ++itToken;
-   std::string version(*itToken);
+   auto version(*itToken);
 
    YADOMS_LOG(information) << "UPS Informations :" ;
    YADOMS_LOG(information) << "   - company : " << company ;
@@ -565,7 +566,7 @@ void CMegatecUps::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api,
 {
    if (!api->deviceExists(DeviceName))
    {
-      api->declareDevice(DeviceName, model, m_keywords);
+      api->declareDevice(DeviceName, model, model, m_keywords);
 
       // Force a first historization to let Yadoms know the shutdown state
       api->historizeData(DeviceName, m_upsShutdown);

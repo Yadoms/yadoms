@@ -1,23 +1,27 @@
 #pragma once
 #include <shared/Export.h>
 
-namespace shared { namespace currentTime
+namespace shared
 {
-   //--------------------------------------------------------------
-   /// \brief	   The current time provider interface
-   //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT ICurrentTime
+   namespace currentTime
    {
-   public:
-      virtual ~ICurrentTime()
+      //--------------------------------------------------------------
+      /// \brief	   The current time provider interface
+      //--------------------------------------------------------------
+      class YADOMS_SHARED_EXPORT ICurrentTime
       {
-      }
-      
-      //--------------------------------------------------------------
-      /// \brief	   Get the current time
-      /// \return    The current time
-      //--------------------------------------------------------------
-      virtual boost::posix_time::ptime now() const = 0;
-   };   
+      public:
+         virtual ~ICurrentTime()
+         {
+         }
 
-} } // namespace shared::currentTime
+         //--------------------------------------------------------------
+         /// \brief	   Get the current time
+         /// \return    The current time
+         //--------------------------------------------------------------
+         virtual boost::posix_time::ptime now() const = 0;
+      };
+   }
+} // namespace shared::currentTime
+
+

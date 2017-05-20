@@ -32,7 +32,7 @@
 
       PluginInstanceManager.downloadPackage(pluginInstance)
       .done(function() {
-        var configObject = ConfigurationHelper.createKeywordValueParameterHandler("modals.set-value-keyword.", "keyword-configuration", keyword, value, pluginInstance);
+        var configObject = ConfigurationHelper.createKeywordValueParameterHandler("modals.set-value-keyword.", undefined, "keyword-configuration", keyword, value, pluginInstance);
 
         if(configObject) {
            //we append the text section

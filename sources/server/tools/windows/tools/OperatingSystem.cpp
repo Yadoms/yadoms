@@ -3,11 +3,11 @@
 #include <windows.h>
 #include <shared/exception/Exception.hpp>
 
-namespace tools {
-
+namespace tools
+{
    bool COperatingSystem::shutdown(bool andRestart)
    {
-      bool success = false;
+      auto success = false;
       UINT exitWindowsFlags = EWX_FORCE | (andRestart ? EWX_REBOOT : EWX_SHUTDOWN);
 
       // This function opens the access token associated with a process.
@@ -32,11 +32,11 @@ namespace tools {
                   success = true;
             }
          }
-         CloseHandle (handle);
+         CloseHandle(handle);
       }
 
       if (!success)
-         ExitWindowsEx (exitWindowsFlags, 0);
+         ExitWindowsEx(exitWindowsFlags, 0);
 
       return success;
    }
@@ -45,7 +45,7 @@ namespace tools {
    {
       return "windows";
    }
-   
+
    shared::versioning::CVersion COperatingSystem::getVersion()
    {
       OSVERSIONINFO osvi;
@@ -57,5 +57,6 @@ namespace tools {
       shared::versioning::CVersion version(osvi.dwMajorVersion, osvi.dwMinorVersion, osvi.dwBuildNumber);
       return version;
    }
-   
 } //namespace tools
+
+

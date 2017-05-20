@@ -27,7 +27,7 @@ namespace rfxcomMessages
 
       m_id = rbuf.BBQ.id1 | (rbuf.BBQ.id2 << 8);
 
-      // Don't use NormalizeTemperature, as temperature is given in °C, not in °C/10
+      // Don't use NormalizeTemperature, as temperature is given in Â°C, not in Â°C/10
       m_foodTemperature->set(static_cast<double>((rbuf.BBQ.sensor1h << 8) | rbuf.BBQ.sensor1l));
       m_bbqTemperature->set(static_cast<double>((rbuf.BBQ.sensor2h << 8) | rbuf.BBQ.sensor2l));
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.BBQ.battery_level));
@@ -54,13 +54,14 @@ namespace rfxcomMessages
          details.set("subType", m_subType);
          details.set("id", m_id);
          api->declareDevice(m_deviceName,
+                            "maverickET732",
                             m_deviceModel,
                             m_keywords,
                             details);
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CBbq::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CBbq::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("Temp is a read-only message, can not be encoded");
    }

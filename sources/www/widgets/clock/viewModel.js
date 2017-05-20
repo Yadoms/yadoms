@@ -5,37 +5,42 @@ widgetViewModelCtor =
  * @constructor
  */
 function clockViewModel() {
-    /**
-     * Observable data
-     */
-    this.time = ko.observable("00:00");
-    this.date = ko.observable("");
+   /**
+   * Observable data
+   */
+   this.time = ko.observable("00:00");
+   this.date = ko.observable("");
 
+   var self = this;
 
-    /**
-     * Update the time onto the widget
-     * @param target
-     */
-    function updateTime_(target) {
-        target.time(moment().format("LT"));
-        target.date(moment().format("LL"));
-    }
+   /**
+   * Update the time onto the widget
+   * @param target
+   */
+   this.updateTime = function(serverTime) {      
+      serverTimeMoment = DateTimeFormatter.isoDateToDate(serverTime);
+      self.time(serverTimeMoment.format("LT"));
+      self.date(serverTimeMoment.format("LL"));
+   };
 
-    /**
-     * Initialization method
-     * @param widget widget class object
-     */
-    this.initialize = function () {
-        var self = this;
-        
-        self.widgetApi.toolbar({
-            activated: false
-        });
+   /**
+   * Initialization method
+   * @param widget widget class object
+   */
+   this.initialize = function () {
 
-        setInterval(function () {
-            updateTime_(self);
-        }, 1000);
-        updateTime_(self);
+      self.widgetApi.toolbar({
+         activated: false
+      });
+      
+      self.widgetApi.askServerLocalTime(self.updateTime);
+   };
 
-    };
+   /**
+   * Time event handler
+   * @param serverLocalTime Time data
+   */
+   this.onTime = function (serverLocalTime) {
+      self.updateTime(serverLocalTime);
+   }
 };

@@ -1,13 +1,12 @@
 #pragma once
-
 #include <shared/ThreadBase.h>
 #include "ITask.h"
 #include <shared/event/EventHandler.hpp>
 #include "IInstance.h"
 #include "TaskStatus.h"
 
-namespace task {
-
+namespace task
+{
    //------------------------------
    ///\brief Class which handle one task
    //------------------------------
@@ -17,8 +16,11 @@ namespace task {
       //------------------------------
       ///\brief Constructor
       //------------------------------
-      CInstance(boost::shared_ptr<ITask> task, boost::shared_ptr<shared::event::CEventHandler> eventHandler, const int eventCode, const std::string & guid);
-      
+      CInstance(boost::shared_ptr<ITask> task,
+                boost::shared_ptr<shared::event::CEventHandler> eventHandler,
+                const int eventCode,
+                const std::string& guid);
+
       //------------------------------
       ///\brief public destructor
       //------------------------------
@@ -27,17 +29,17 @@ namespace task {
       //---------------------------------
       ///\brief Get the current task
       //---------------------------------
-      boost::shared_ptr<ITask> getTask();
+      boost::shared_ptr<ITask> getTask() const;
 
       // IInstance implementation
-      virtual std::string getGuid() const;
-      virtual boost::optional<float> getProgression() const;
-      virtual std::string getMessage() const;
-      virtual std::string getExceptionMessage() const;
-      virtual ETaskStatus getStatus() const;
-      virtual shared::CDataContainer getTaskData() const;
-      virtual std::string getName() const;
-      virtual boost::posix_time::ptime getCreationDate() const;
+      std::string getGuid() const override;
+      boost::optional<float> getProgression() const override;
+      std::string getMessage() const override;
+      std::string getExceptionMessage() const override;
+      ETaskStatus getStatus() const override;
+      shared::CDataContainer getTaskData() const override;
+      std::string getName() const override;
+      boost::posix_time::ptime getCreationDate() const override;
       // [END] - IInstance implementation
 
    private:
@@ -49,8 +51,11 @@ namespace task {
       ///\param [in] exception : the internal error message (not i18n)
       ///\param [in] taskData : some free data provided by task implementation
       //---------------------------------
-      void OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, std::string message, std::string exception, shared::CDataContainer taskData);
-
+      void OnTaskProgressUpdated(bool isRunning,
+                                 boost::optional<float> progression,
+                                 const std::string& message,
+                                 const std::string& exception,
+                                 const shared::CDataContainer& taskData);
 
 
       //--------------------------------------------------------------
@@ -77,12 +82,13 @@ namespace task {
       /// \brief			The current task custom data
       //--------------------------------------------------------------
       shared::CDataContainer m_taskData;
+
    protected:
       //--------------------------------------------------------------
       /// \brief			The main instance work
       //--------------------------------------------------------------
-      virtual void doWork();
-      
+      void doWork() override;
+
    private:
       //--------------------------------------------------------------
       /// \brief			The plugin used for this instance
@@ -114,5 +120,6 @@ namespace task {
       //------------------------------------------
       boost::posix_time::ptime m_creationDate;
    };
-
 } //namespace task
+
+

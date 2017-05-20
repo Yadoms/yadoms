@@ -266,14 +266,12 @@ set(YADOMS_SRC
    server/RunningInformation.h	
    server/Supervisor.cpp
    server/Supervisor.h
+   server/Version.h
 
    server/authentication/IAuthentication.h
    server/authentication/BasicAuthentication.h
    server/authentication/BasicAuthentication.cpp
 
-   server/dateTime/DateTimeNotifier.h
-   server/dateTime/DateTimeNotifier.cpp
-   
    server/automation/IRule.h
    server/automation/IRuleManager.h
    server/automation/IRuleThreadHandler.h
@@ -603,6 +601,8 @@ set(YADOMS_SRC
    server/web/ws/NewDeviceFrame.cpp
    server/web/ws/TaskUpdateNotificationFrame.h
    server/web/ws/TaskUpdateNotificationFrame.cpp
+   server/web/ws/TimeNotificationFrame.h
+   server/web/ws/TimeNotificationFrame.cpp
 )
 
 # Project folders
@@ -644,10 +644,10 @@ source_group(server\\web\\ws  server/web/ws/*.*)
 
 # Tools
 set(YADOMS_SRC ${YADOMS_SRC}
-	server/tools/tools/SupportedPlatformsChecker.h
-	server/tools/tools/SupportedPlatformsChecker.cpp
-	server/tools/tools/FileSystem.h
-	server/tools/tools/FileSystem.cpp
+	server/tools/SupportedPlatformsChecker.h
+	server/tools/SupportedPlatformsChecker.cpp
+	server/tools/FileSystem.h
+	server/tools/FileSystem.cpp
 )
 
 IF(WIN32)
@@ -670,9 +670,7 @@ ELSE()
 	)	
 ENDIF()
 
-# Define include directories (allow easy includes)
-set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools)
-
+# Define include directories
 IF(WIN32)
 	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/windows)
 ELSEIF(APPLE)
@@ -746,8 +744,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/versioning/Version_3_0_0.cpp
 	server/database/common/versioning/Version_3_0_1.h
 	server/database/common/versioning/Version_3_0_1.cpp
-	server/database/common/versioning/Version_3_0_2.h
-	server/database/common/versioning/Version_3_0_2.cpp
+	server/database/common/versioning/Version_4_0_0.h
+	server/database/common/versioning/Version_4_0_0.cpp
 	server/database/common/versioning/VersionUpgraderFactory.h
 	server/database/common/versioning/VersionUpgraderFactory.cpp
 	server/database/common/versioning/VersionException.h
@@ -966,11 +964,9 @@ add_subdirectory(scriptInterpreters)
 ## Include directories
 ##################################################################################################
 set(YADOMS_INCL_DIR
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/server
 	${YADOMS_INCL_DIR}
 	${SHARED_INCL_DIR}
-	${PROTOBUF_INCLUDE_DIRS}
+	${CMAKE_CURRENT_SOURCE_DIR}/server
 	${plugin_IPC_INCLUDE_DIRS}
 	${interpreter_IPC_INCLUDE_DIRS}
 	${script_IPC_INCLUDE_DIRS}
@@ -981,6 +977,7 @@ set(YADOMS_ALL_INCL_DIR
 	${BOOST_INCL_DIR} 
 	${OPENSSL_INCLUDE_DIR}
 	${Poco_INCLUDE_DIRS}
+	${PROTOBUF_INCLUDE_DIRS}
 )
 
 set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
@@ -990,6 +987,13 @@ set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 ##################################################################################################
 target_link_libraries(yadoms yadoms-shared plugin_IPC interpreter_IPC script_IPC ${YADOMS_EXTERNAL_LINK} ${LIBS} ${CMAKE_DL_LIBS})
 
+##################################################################################################
+## RPATH
+##################################################################################################
+if(CMAKE_CROSSCOMPILING)
+	#Fix RPATH for cross compilation of Yadoms
+	set_target_properties(yadoms PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+endif(CMAKE_CROSSCOMPILING)
                        
 ##################################################################################################
 ## COTIRE
@@ -1007,6 +1011,10 @@ if(COTIRE_USE)
 	
 	if(COTIRE_USE_UNITY)
 		set_property( TARGET yadoms_unity PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
+	    if(CMAKE_CROSSCOMPILING)
+	       #Fix RPATH for cross compilation of yadoms_unity
+	       set_target_properties(yadoms_unity PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+	    endif(CMAKE_CROSSCOMPILING)
 	endif()	
 endif()
       
@@ -1124,7 +1132,9 @@ ENDFOREACH(PostgreSqlDepend)
 
 
 #add www directory
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/www DESTINATION ${INSTALL_BINDIR})
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/www 
+   DESTINATION ${INSTALL_BINDIR}
+   PATTERN "widgets/dev-*" EXCLUDE)
 
 
 set(CPACK_COMPONENT_YADOMSCORE_DISPLAY_NAME "Yadoms Server")
@@ -1139,8 +1149,12 @@ set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Cop
 set(CPACK_PACKAGE_VERSION_MAJOR ${YADOMS_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${YADOMS_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${YADOMS_VERSION_PATCH})
-set(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
-set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${YADOMS_VERSION}-${CPACK_SYSTEM_NAME}.") 
+if(CMAKE_PACKAGE_PLATFORM_NAME)
+   set(CPACK_SYSTEM_NAME ${CMAKE_PACKAGE_PLATFORM_NAME})
+else(CMAKE_PACKAGE_PLATFORM_NAME)
+   set(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
+endif(CMAKE_PACKAGE_PLATFORM_NAME)
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${YADOMS_VERSION}-${CPACK_SYSTEM_NAME}") 
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "Yadoms")
 set(CPACK_PACKAGE_CONTACT "Jean-Michel DECORET <decoretjm@gmail.com>")
 
@@ -1256,3 +1270,16 @@ set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
 
 INCLUDE(CPack)
 
+
+##################################################################################################
+## SONARQUBE ANALYSIS
+##################################################################################################
+include(cmake/analysis.cmake)
+analyse(
+      yadoms
+      ${YADOMS_VERSION}
+      "${YADOMS_SRC}"
+      Yadoms.SonarQube.Analysis.txt
+      Yadoms.SonarQube.Analysis.xml
+   )
+#TODO : add analysis for all libs (shared, xxx_IPC, plugins...)

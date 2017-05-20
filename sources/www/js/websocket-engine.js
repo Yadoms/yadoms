@@ -24,12 +24,6 @@ WebSocketEngine.isActive = function() {
 };
 
 /**
- * Event used when aa acquisition update message is received from server
- * @type {function({data: (String|Blob|ArrayBuffer|Object)})}
- */
-WebSocketEngine.onAcquisitionUpdated = null;
-
-/**
  * Update the acquisition filter
  * @param keywordCollectionToFilter The collection of keyword id to filter
  */
@@ -89,8 +83,11 @@ WebSocketEngine.initializeWebSocketEngine = function(callback) {
                             $(document).trigger("taskupdatenotification." + websocketData.uuid, websocketData);
                             console.log("TaskUpdateNotification : " + JSON.stringify(websocketData));
                             break;
-                        case "isAlive":
-                            $(document).trigger("isAlive");
+                        case "isalive":
+                            $(document).trigger("isalive");
+                            break;
+                        case "timenotification":
+                            $(document).trigger("timenotification", websocketData);
                             break;
                     }
                 }

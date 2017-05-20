@@ -87,10 +87,6 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 	
 	#warning:  typedef ‘value_t’ locally defined but not used [-Wunused-local-typedefs]
 	add_definitions("-Wno-unused-local-typedefs")
-
-
-
-	
 endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")

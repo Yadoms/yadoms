@@ -1,37 +1,70 @@
 {
-	"name": "One Wire",
-	"description": "Support of the 1-wire protocol.",
-	"configurationSchema": {
-		"linuxMode": {
-			"name": "Hardware mode",
-			"description": "Choose the hardware used to connect to the 1-wire network",
-			"content": {
-				"owfs": {
-					"name": "OWFS mode",
-					"description": "Recommanded mode. Use OWFS (see http://owfs.org for more information). This mode supports most of 1-wire devices, but needs an adapter supported by OWFS. OWFS must be correctly configured (see Yadoms wiki page for how to configure OWFS).",
-					"content": {
-						"mountPoint": {
-							"name": "OWFS mount point",
-							"description": "The OWFS mount point on Yadoms server. See your owfs.conf file (generally set to /mnt/1wire)."
-						}
-					}
-				},
-				"kernel": {
-					"name": "Kernel mode",
-					"description": "Use the kernel native 1-wire support. This mode supports only a few devices (see Yadoms wiki pages for more information). 1-wire devices can be directly connected on a GPIO pin (no adapter required).",
-					"content": {
-						"mountPoint": {
-							"name": "Mount point",
-							"description": "The mount point on Yadoms server (generally set to /sys/bus/w1/devices)."
-						}
-					}
-				}
-			}
-		}
-	},
-	"customLabels": {
-		"pluginState": {
-			"connecting": "Connecting..."
-		}
-	}
+  "name": "One Wire",
+  "description": "Support of the 1-wire protocol.",
+  "configurationSchema": {
+    "linuxMode": {
+      "name": "Hardware mode",
+      "description": "Choose the hardware used to connect to the 1-wire network",
+      "content": {
+        "owfs": {
+          "name": "OWFS mode",
+          "description": "Recommanded mode. Use OWFS (see http://owfs.org for more information). This mode supports most of 1-wire devices, but needs an adapter supported by OWFS. OWFS must be correctly configured (see Yadoms wiki page for how to configure OWFS).",
+          "content": {
+            "mountPoint": {
+              "name": "OWFS mount point",
+              "description": "The OWFS mount point on Yadoms server. See your owfs.conf file (generally set to /mnt/1wire)."
+            }
+          }
+        },
+        "kernel": {
+          "name": "Kernel mode",
+          "description": "Use the kernel native 1-wire support. This mode supports only a few devices (see Yadoms wiki pages for more information). 1-wire devices can be directly connected on a GPIO pin (no adapter required).",
+          "content": {
+            "mountPoint": {
+              "name": "Mount point",
+              "description": "The mount point on Yadoms server (generally set to /sys/bus/w1/devices)."
+            }
+          }
+        }
+      }
+    }
+  },
+  "customLabels": {
+    "pluginState": {
+      "connecting": "Connecting..."
+    }
+  },
+  "deviceConfiguration": {
+    "staticConfigurationSchema": {
+      "schemas": {
+        "smartBatteryMonitor": {
+          "types": {
+            "DS2438": {
+              "title": "DS2438"
+            }
+          },
+          "content": {
+            "vadSensor": {
+              "name": "VAD input",
+              "description": "Select the sensor type connected to VAD input",
+              "values" : {
+                "none": "None",
+                "humidity" : "Humidity",
+                "HIH3600-humidity" : "HIH3600 (humidity)",
+                "HIH4000-humidity" : "HIH4000 (humidity)",
+                "HTM1735-humidity" : "HTM1735 (humidity)",
+                "S3-R1-A-illuminance" : "S3-R1-A (illuminance)",
+                "B1-R1-A-pressure" : "B1-R1-A (pressure)",
+                "raw" : "Record the raw value (voltage)"
+              }
+            },
+            "visSensor": {
+              "name": "VIS input",
+              "description": "Enable recording the VIS input (raw value)"
+            }
+          }
+        }
+      }
+    }
+  }
 }

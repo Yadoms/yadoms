@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Configuration.h"
 #include <shared/plugin/yPluginApi/YPluginConfiguration.hpp>
+#include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -35,7 +36,7 @@ void CConfiguration::initializeWith(const shared::CDataContainer &data)
    }
    catch (const shared::exception::CException& e)
    {
-      std::cerr << "OneWire configuration could not be loaded, " << e.what() << std::endl;
+      YADOMS_LOG(error) << "OneWire configuration could not be loaded, " << e.what();
    }
 }
 

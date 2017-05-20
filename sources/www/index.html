@@ -115,7 +115,7 @@
     <script src="libs/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
     <script src="libs/bootstrap/js/bootstrap.min.js"></script>
     <script src="libs/knockout/js/knockout-3.4.0.js"></script>
-    <script src="libs/i18next/js/i18next-1.7.7.min.js"></script>
+    <script src="libs/i18next/js/i18next-1.11.2.min.js"></script>
     <script src="libs/lazyload/js/lazyload.js"></script>
     <script src="libs/moment.js/js/moment-with-langs.min.js"></script>
     <script src="libs/moment.js/js/moment-timezone.min.js"></script>
@@ -138,6 +138,7 @@
     <script src="js/utility.js"></script>
     <script src="js/objects/version.js"></script>
     <script src="js/objects/yadoms-information-manager.js"></script>
+    <script src="js/objects/yadoms-time-manager.js"></script>
     <script src="js/objects/maintenance-manager.js"></script>
     <script src="js/objects/page.js"></script>
     <script src="js/objects/widget.js"></script>
@@ -156,6 +157,7 @@
     <script src="js/objects/keyword.js"></script>
     <script src="js/objects/keyword-manager.js"></script>
     <script src="js/objects/acquisition.js"></script>
+    <script src="js/objects/time.js"></script>
     <script src="js/objects/acquisition-manager.js"></script>
     <script src="js/objects/recipient.js"></script>
     <script src="js/objects/recipient-field.js"></script>
@@ -484,7 +486,11 @@
                  //we listen acquisitionupdate event
                  $(document).on("acquisitionupdate", function (e, websocketData) {
                      var acq = AcquisitionManager.factory(websocketData.data);
-                     dispatchToWidgets(acq);
+                     dispatchNewAcquisitionsToWidgets(acq);
+                 });
+                 //we listen time event
+                 $(document).on("timenotification", function (e, websocketData) {
+                     dispatchTimeToWidgets(websocketData.time);
                  });
 
                  //web socket opened

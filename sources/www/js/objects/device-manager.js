@@ -15,8 +15,9 @@ DeviceManager.factory = function (json) {
     assert(!isNullOrUndefined(json.name), "json.name must be defined");
     assert(!isNullOrUndefined(json.friendlyName), "json.friendlyName must be defined");
     assert(!isNullOrUndefined(json.model), "json.model must be defined");
+    assert(!isNullOrUndefined(json.type), "json.model must be defined");
 
-    return new Device(json.id, json.pluginId, json.name, json.friendlyName, json.model, json.configuration, json.blacklist);
+    return new Device(json.id, json.pluginId, json.name, json.friendlyName, json.model, json.type, json.configuration, json.blacklist);
 };
 
 /**
@@ -133,17 +134,38 @@ DeviceManager.getKeywords = function (device, forceReload) {
 /**
  * Delete a device
  * @param {Object} device The device to delete
- * @param {Boolean} deleteDevice Indicate if the device is deleted
+ * @param {Boolean} deleteDevice Indicate if the device should be deleted (true) or just blacklisted (true)
  * @ return {Promise}
  */
-DeviceManager.deleteFromServer = function (device, deleteDevice) {
+DeviceManager.deleteDevice = function (device, deleteDevice) {
     assert(!isNullOrUndefined(device), "device must be defined");
 
     if (isNullOrUndefined(deleteDevice)) {
         deleteDevice = false;
     }
 
-    return RestEngine.deleteJson("/rest/device/" + device.id + (deleteDevice ? "/removeDevice" : "/cleanupOnly"));
+    return RestEngine.deleteJson("/rest/device/" + device.id + (deleteDevice ? "/removeDevice" : "/blacklist"));
+};
+
+/**
+ * Restore a device
+ * @param {Object} device The device to restore
+ * @ return {Promise}
+ */
+DeviceManager.restoreDevice = function(device) {
+    assert(!isNullOrUndefined(device), "device must be defined");
+
+    var d = new $.Deferred();
+
+    RestEngine.putJson("/rest/device/" + device.id + "/restore")
+    .done(function (data) {
+        //it's okay
+        //we update our information from the server
+        device = DeviceManager.factory(data);
+        d.resolve(device);
+    }).fail(d.reject);
+
+    return d.promise();
 };
 
 /**
@@ -164,24 +186,27 @@ DeviceManager.getConfigurationSchema = function(device) {
             device.attachedPlugin.getPackageDeviceConfigurationSchema()
             .done(function(deviceConfig) {
                 var schema = {};
-
                 if(deviceConfig) {
-
                     //Manage static configuration
-                    if(deviceConfig.staticConfigurationSchema) {
+                    if(deviceConfig.staticConfigurationSchema && deviceConfig.staticConfigurationSchema.schemas) {
 
                         //find all static configurations matching the device model
-                        var staticConfigMatchingDevice = _.filter(deviceConfig.staticConfigurationSchema, function(o) {
-                            return _.some(o.models, function(model) {
-                                return model == "*" || model == device.model;
-                            });
-                        });
-
-                        //add it to resulting schema
-                        _.forEach(staticConfigMatchingDevice, function(value) {
-                            schema = _.merge(schema, value.schema);
-                        });
-                        
+                        var staticConfigMatchingDevice= {};
+                        for(let k in deviceConfig.staticConfigurationSchema.schemas) {
+                            if(_.some(deviceConfig.staticConfigurationSchema.schemas[k].types, function(typeContent, model) { 
+                              return model == "*" || model == device.type;
+                            }))  {
+                               //add it to resulting schema
+                               let config = deviceConfig.staticConfigurationSchema.schemas[k];
+                               if(config && config.content) {
+                                  for(let l in config.content) {
+                                     config.content[l].i18nBasePath = "plugins/" + device.attachedPlugin.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".content.";
+                                  }                            
+                                  schema = _.merge(schema, config.content);
+                               }
+                               
+                            }
+                        }
                     }
 
                     //Manage dynamic configuration
@@ -226,27 +251,6 @@ DeviceManager.updateToServer = function (device) {
     var d = new $.Deferred();
 
     RestEngine.putJson("/rest/device/" + device.id + "/configuration", { data: JSON.stringify(device) })
-    .done(function (data) {
-        //it's okay
-        //we update our information from the server
-        device = DeviceManager.factory(data);
-        d.resolve(device);
-    }).fail(d.reject);
-
-    return d.promise();
-};
-
-/**
- * (un)blacklist a device
- * @param {Object} device The device to (un)blacklist
- * @ return {Promise}
- */
-DeviceManager.updateBlacklistStateToServer = function(device) {
-    assert(!isNullOrUndefined(device), "device must be defined");
-
-    var d = new $.Deferred();
-
-    RestEngine.putJson("/rest/device/" + device.id + "/blacklist", { data: JSON.stringify(device) })
     .done(function (data) {
         //it's okay
         //we update our information from the server

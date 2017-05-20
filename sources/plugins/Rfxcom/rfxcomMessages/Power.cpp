@@ -64,11 +64,11 @@ namespace rfxcomMessages
          details.set("type", pTypePOWER);
          details.set("subType", m_subType);
          details.set("id", m_id);
-         api->declareDevice(m_deviceName, m_deviceModel, m_keywords, details);
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CPower::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CPower::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("Power is a read-only message, can not be encoded");
    }

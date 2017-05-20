@@ -121,6 +121,7 @@ namespace database
          ((Model)(std::string))
          ((Details)(shared::CDataContainer))
          ((Configuration)(shared::CDataContainer))
+         ((Type)(std::string))
          ((Blacklist)(bool))
       )
 

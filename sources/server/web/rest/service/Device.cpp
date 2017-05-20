@@ -3,7 +3,7 @@
 #include <shared/exception/EmptyResult.hpp>
 #include "web/rest/Result.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
-#include <server/communication/callback/SynchronousCallback.h>
+#include "communication/callback/SynchronousCallback.h"
 
 namespace web
 {
@@ -49,12 +49,12 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*")("*"), CDevice::getDeviceKeywordsForCapacity);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("configuration"), CDevice::updateDeviceConfiguration, CDevice::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("blacklist"), CDevice::updateDeviceBlacklist, CDevice::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")("restore"), CDevice::restoreDevice, CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*"), CDevice::updateKeywordFriendlyName, CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("keyword")("*")("blacklist"), CDevice::updateKeywordBlacklist, CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keyword")("*")("command"), CDevice::sendKeywordCommand, CDevice::transactionalMethod);
             REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("command"), CDevice::sendDeviceCommand, CDevice::transactionalMethod);
-            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("*"), CDevice::cleanupDevice, CDevice::transactionalMethod);
+            REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")("*"), CDevice::deleteDevice, CDevice::transactionalMethod);
          }
 
          shared::CDataContainer CDevice::getOneDevice(const std::vector<std::string>& parameters, const std::string& requestContent) const
@@ -340,7 +340,7 @@ namespace web
             }
          }
 
-         shared::CDataContainer CDevice::cleanupDevice(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         shared::CDataContainer CDevice::deleteDevice(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
@@ -356,9 +356,10 @@ namespace web
                      m_pluginManager->notifyDeviceRemoved(deviceId);
                      m_deviceManager->removeDevice(deviceId);
                   }
-                  else
+                  else // Only blacklisted
                   {
                      m_deviceManager->cleanupDevice(deviceId);
+                     m_deviceManager->updateDeviceBlacklistState(deviceId, true);
                   }
 
                   return CResult::GenerateSuccess();
@@ -460,27 +461,14 @@ namespace web
          }
 
 
-         shared::CDataContainer CDevice::updateDeviceBlacklist(const std::vector<std::string>& parameters, const std::string& requestContent) const
+         shared::CDataContainer CDevice::restoreDevice(const std::vector<std::string>& parameters, const std::string& requestContent) const
          {
             try
             {
                if (parameters.size() >= 1)
                {
-                  //get device id from URL
                   auto deviceId = boost::lexical_cast<int>(parameters[1]);
-
-                  //deserialize device from request data
-                  database::entities::CDevice deviceToUpdate;
-                  deviceToUpdate.fillFromSerializedString(requestContent);
-
-                  //update blacklist state
-                  if (deviceToUpdate.Blacklist.isDefined())
-                  {
-                     if (deviceToUpdate.Blacklist())
-                        m_pluginManager->notifyDeviceRemoved(deviceId);
-
-                     m_deviceManager->updateDeviceBlacklistState(deviceId, deviceToUpdate.Blacklist());
-                  }
+                  m_deviceManager->updateDeviceBlacklistState(deviceId, false);
 
                   //return the device info
                   auto deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId, true);

@@ -29,7 +29,7 @@ namespace message
       /// \brief	                           Constructor
       /// \param[in] message                 The ERP1 radio message
       //--------------------------------------------------------------
-      explicit CUTE_ReceivedMessage(const message::CRadioErp1ReceivedMessage& message);
+      explicit CUTE_ReceivedMessage(const CRadioErp1ReceivedMessage& message);
 
       //--------------------------------------------------------------
       /// \brief	                           Destructor

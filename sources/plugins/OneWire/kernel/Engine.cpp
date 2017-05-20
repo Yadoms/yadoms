@@ -2,6 +2,7 @@
 #include "Engine.h"
 #include "../Configuration.h"
 #include <shared/exception/NotImplemented.hpp>
+#include <shared/Log.h>
 
 #include "../device/Identification.h"
 
@@ -60,7 +61,7 @@ namespace kernel
          std::ifstream infile(slavesFile.string());
          if (!infile.is_open())
          {
-            std::cout << "1-Wire, Unable to read devices from " << slavesFile << std::endl;
+            YADOMS_LOG(information) << "1-Wire, Unable to read devices from " << slavesFile;
             return;
          }
 
@@ -72,7 +73,7 @@ namespace kernel
       }
       catch (...)
       {
-         std::cerr << "1-Wire, OWFS mode, unable to scan 1-wire network : " << std::endl;
+         YADOMS_LOG(error) << "1-Wire, OWFS mode, unable to scan 1-wire network : ";
       }
    }
 

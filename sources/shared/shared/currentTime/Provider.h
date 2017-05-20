@@ -31,7 +31,7 @@ namespace shared
          void setProvider(boost::shared_ptr<ICurrentTime> timeInstance);
 
          //--------------------------------------------------------------
-         /// \brief	   Returns now time
+         /// \brief	   Returns now time (local time)
          /// \return Now
          //--------------------------------------------------------------
          boost::posix_time::ptime now();

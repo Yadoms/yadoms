@@ -7,6 +7,7 @@
 #include "database/common/adapters/HighchartValueAdapter.hpp"
 #include "database/common/adapters/SingleValueAdapter.hpp"
 #include "database/common/adapters/MultipleValueAdapter.hpp"
+#include "database/DatabaseException.hpp"
 #include "Keyword.h"
 
 namespace database
@@ -141,7 +142,7 @@ namespace database
                    Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
                    And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_EQUAL, time);
 
-            database::common::adapters::CAcquisitionAdapter adapter;
+            adapters::CAcquisitionAdapter adapter;
             m_databaseRequester->queryEntities(&adapter, qSelect);
 
             if (adapter.getResults().size() >= 1)
@@ -193,7 +194,7 @@ namespace database
 
             qSelect.OrderBy(CAcquisitionTable::getDateColumnName());
 
-            database::common::adapters::CMultipleValueAdapter<boost::posix_time::ptime, std::string> mva;
+            adapters::CMultipleValueAdapter<boost::posix_time::ptime, std::string> mva;
             m_databaseRequester->queryEntities(&mva, qSelect);
 
             return mva.getResults();

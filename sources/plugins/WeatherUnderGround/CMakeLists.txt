@@ -78,7 +78,7 @@ source_group(Features\\Keywords\\specificHistorizers Features/Keywords/specificH
 
 #########################################
 ## Always leave this three lines to configure plugin correctly
-## even if RFXCOM_ADDITIONAL_INC_DIR or RFXCOM_ADDITIONAL_LIB are empty
+## even if WUNDERGROUND_ADDITIONAL_INC_DIR or WUNDERGROUND_ADDITIONAL_LIB are empty
 #########################################
 PLUGIN_SOURCES(WeatherUnderground ${WUNDERGROUND_SOURCES})
 PLUGIN_INCLDIR(WeatherUnderground ${WUNDERGROUND_ADDITIONAL_INC_DIR})

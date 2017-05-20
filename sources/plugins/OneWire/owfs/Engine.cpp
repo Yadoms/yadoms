@@ -2,6 +2,7 @@
 #include "Engine.h"
 #include "../Configuration.h"
 #include <shared/exception/NotImplemented.hpp>
+#include <shared/Log.h>
 
 #include "../device/Identification.h"
 
@@ -107,7 +108,7 @@ namespace owfs
                const std::string unsupportedFamily(dir->path().filename().string().substr(0, 2));
                if (m_unsupporterFamilies.find(unsupportedFamily) == m_unsupporterFamilies.end())
                {
-                  std::cout << "1-Wire, Device family 0x" << unsupportedFamily << " is not actually supported" << std::endl;
+                  YADOMS_LOG(information) << "1-Wire, Device family 0x" << unsupportedFamily << " is not actually supported";
                   m_unsupporterFamilies.insert(unsupportedFamily);
                }
             }
@@ -115,7 +116,7 @@ namespace owfs
       }
       catch (const boost::filesystem::filesystem_error& ex)
       {
-         std::cerr << "1-Wire, OWFS mode, unable to scan 1-wire network : " << ex.what() << std::endl;
+         YADOMS_LOG(error) << "1-Wire, OWFS mode, unable to scan 1-wire network : " << ex.what();
       }
    }
 

@@ -1,6 +1,6 @@
 {
    "type": "IPX800",
-   "version": "1.0.0-beta",
+   "version": "1.0.0-rc.1",
    "author": "Jean-Michel BERHAULT",
    "url": "https://github.com/Yadoms/yadoms/wiki/IPX800",
    "credits": "",
@@ -14,8 +14,7 @@
 		"Port": {
 		  "type": "int",
 		  "required" : "true",
-		  "defaultValue": "80",
-        "required" : "true"
+		  "defaultValue": "80"
 		},
 	    "authentication": {
 		   "type": "section",
@@ -32,58 +31,46 @@
    },
    "supportManuallyDeviceCreation": "true",
    "supportDeviceRemovedNotification": "true",
-   "manuallyDeviceCreationConfigurationSchema": {
-      "type":
-      {
-         "type": "radioSection",
-         "content":
-         {
-			  "X8R" :
-			  {
-                 "type": "section",
-                 "content":
-                 {
-				    "Position" :
-				    {				 
-				       "type" : "enum",
-					   "__Binding__" : {
-						 "type" : "plugin", 
-						 "query" : "X8R"
-					   }
-					}
-				 }
-			  },
-			  "X8D" :
-			  {
-                 "type": "section",
-                 "content":
-                 {
-				    "Position" :
-				    {				 
-				       "type" : "enum",
-				       "__Binding__" : {
-					      "type" : "plugin", 
-						  "query" : "X8D"
-					   }
-					}
-				 }
-			  },
-			  "X24D" :
-			  {
-                 "type": "section",
-                 "content":
-                 {
-				    "Position" :
-				    {				 
-				       "type" : "enum",
-				       "__Binding__" : {
-					      "type" : "plugin", 
-						  "query" : "X24D"
-					   }
-					}
-				 }
-			  }			  
-		 }
-	  }
+   "deviceConfiguration": {
+      "staticConfigurationSchema": {
+         "schemas" : {         
+            "x8r" : {
+               "types": { "X8R" : { "canBeCreatedManually" : "true" } },
+               "content" : {
+                  "Position" : {
+                      "type" : "enum",
+                      "__Binding__" : {
+                        "type" : "plugin", 
+                        "query" : "X8R"
+                     }
+                  }
+               }
+            },
+            "x8d" : {
+               "types": { "X8D" : { "canBeCreatedManually" : "true" } },
+               "content" : {
+                  "Position" : {				 
+                      "type" : "enum",
+                      "__Binding__" : {
+                        "type" : "plugin", 
+                        "query" : "X8D"
+                     }
+                  }
+               }
+            },
+            "x24d" : {
+               "types": { "X24D" : { "canBeCreatedManually" : "true" } },
+               "content" : {
+                  "Position" : {				 
+                      "type" : "enum",
+                      "__Binding__" : {
+                        "type" : "plugin", 
+                        "query" : "X24D"
+                     }
+                  }
+               }
+            }
+         }
+      }
    }
 }

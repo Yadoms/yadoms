@@ -48,16 +48,6 @@
 			"defaultValue": "If you see it, Yadoms is running under Windows."
 		}
 	},
-	"manuallyDeviceCreationConfigurationSchema": {
-		"networkInterface": {
-			"name": "Network interface",
-			"description": "The network interface used to connect the peripheral"
-		},
-		"dynamicSection": {
-			"name": "A dynamic section",
-			"description": "Example of section filled by 'test' method from the plugin using binding."
-		}
-	},
 	"enumerations": {
 		"EFakeControllerValues": {
 			"name" : "State",
@@ -134,14 +124,41 @@
 			}
 		}
 	},
-    "deviceConfiguration": {
-	  "CounterDivider": {
-		"name": "Divider",
-		"description": "Divider used to low the counter frequency(only for 'fake sensor')"
-	  },
-	  "CounterDivider2": {
-		"name": "Divider n°2",
-		"description": "Divider used to low the counter frequency (all devices)"
-	  }
+   "deviceConfiguration": {
+      "staticConfigurationSchema": {
+        "fakeConfigurableDevice" : {
+           "types" : { 
+               "fakeConfigurableDeviceType" : {
+                  "title" : "configurable device",
+                  "description" : "compatible with Chacon, DIO,..."
+               },
+               "anotherFakeConfigurableDeviceType" : {
+                  "title" : "another configurable device",
+                  "description" : "compatible with Blyss, ..."
+               }
+           },
+           "content": {
+              "CounterDivider2": {
+               "name": "Divider n°2",
+               "description": "Divider used to low the counter frequency (all devices)"
+              },
+               "MySection": {
+                  "name": "A section",
+                  "description": "Example of using a section in configuration tree.",
+                  "content": {
+                     "SubIntParameter": {
+                        "name": "An integer-in-section example",
+                        "description": "An int in sub-section example"
+                     },
+                     "SubStringParameter": {
+                        "name": "A string-in-section example",
+                        "description": "Just a string parameter in the sub-section",
+                        "defaultValue": "Sub-sections make configuration very powerful !"
+                     }
+                  }
+               }
+           }
+        }
+     }
   }
 }

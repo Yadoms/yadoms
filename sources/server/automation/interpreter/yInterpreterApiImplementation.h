@@ -17,7 +17,7 @@ namespace automation
 
          // IYInterpreterApi implementation
          void notifyScriptStopped(int scriptInstanceId,
-                                  const std::string error) override;
+                                  const std::string& error) override;
          boost::shared_ptr<const shared::script::yInterpreterApi::IInformation> getInformation() const override;
          shared::event::CEventHandler& getEventHandler() override;
          // [END] IYInterpreterApi implementation

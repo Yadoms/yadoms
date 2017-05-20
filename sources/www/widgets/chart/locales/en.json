@@ -20,6 +20,15 @@
         "YEAR": "1 year"
       }
     },
+    "legendLabels" : {
+      "name": "Legend names",
+      "description": "Axes legends",
+       "values": {
+          "DeviceAndKeyword": "Device name + keyword name",
+          "Device": "Device name",
+          "Keyword": "Keyword name"
+       }
+      },
     "oneAxis": {
       "name": "Only one axis for all series",
       "description": "It allows you to create one axis for all series, with this option, series could be compare with the same scale.",

@@ -93,11 +93,12 @@ namespace rfxcomMessages
          details.set("type", pTypeThermostat3);
          details.set("subType", m_subType);
          details.set("unitCode", m_unitCode);
-         api->declareDevice(m_deviceName, m_subTypeManager->getModel(), m_keywords, details);
+         std::string model = m_subTypeManager->getModel();
+         api->declareDevice(m_deviceName, model, model, m_keywords, details);
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CThermostat3::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CThermostat3::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF rbuf;
       MEMCLEAR(rbuf.THERMOSTAT3);

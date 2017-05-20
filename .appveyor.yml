@@ -60,7 +60,7 @@ install:
   - ps: if (!(Test-Path 'OpenSSL-1.1.0d')) { Invoke-WebRequest http://yadoms.com/appveyor_build/OpenSSL-1.1.0d-build.7z -OutFile OpenSSL.7z; 7z x OpenSSL.7z -bso0 }
   - ps: if (!(Test-Path 'swig-3.0.8')) { Invoke-WebRequest http://yadoms.com/appveyor_build/swig-3.0.8-build.7z -OutFile swig.7z; 7z x swig.7z -bso0 }
   - ps: if (!(Test-Path 'protobuf-3.1.0')) { Invoke-WebRequest http://yadoms.com/appveyor_build/protobuf-3.1.0-build.7z -OutFile protobuf.7z; 7z x protobuf.7z -bso0 }
-  - ps: if (!(Test-Path 'pgsql')) { Invoke-WebRequest https://www.enterprisedb.com/postgresql-962-binaries-win32 -OutFile pgsql.zip; 7z x pgsql.zip -bso0 }
+  - ps: if (!(Test-Path 'pgsql')) { Invoke-WebRequest https://get.enterprisedb.com/postgresql/postgresql-9.6.2-3-windows-binaries.zip -OutFile pgsql.zip; 7z x pgsql.zip -bso0 }
   - ps: if (!(Test-Path 'gammu-1.38.1-yadoms')) { Invoke-WebRequest http://yadoms.com/appveyor_build/gammu-1.38.1-yadoms-build.7z -OutFile gammu.7z; 7z x gammu.7z -bso0 }
   - ps: rm *.7z
   - ps: popd    
@@ -89,7 +89,7 @@ before_build:
 
   # For CMake version < 3.9, overwrite FindProtobuf.cmake
   - ps: echo "For CMake version < 3.9, overwrite FindProtobuf.cmake..."
-  - ps: Invoke-WebRequest https://gitlab.kitware.com/cmake/cmake/raw/master/Modules/FindProtobuf.cmake -OutFile 'C:/Program Files (x86)/CMake/share/cmake-3.7/Modules/FindProtobuf.cmake'
+  - ps: copy FindProtobuf.cmake 'C:/Program Files (x86)/CMake/share/cmake-3.8/Modules/'
   
   # Create solution
   - ps: echo "Create solution..."
@@ -102,3 +102,11 @@ build:
 
   # MSBuild verbosity level
   verbosity: normal
+
+  
+notifications:
+  - provider: Email
+    to:
+      - '{{commitAuthorEmail}}'
+    on_build_status_changed: true
+  

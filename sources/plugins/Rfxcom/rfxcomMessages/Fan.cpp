@@ -109,11 +109,11 @@ namespace rfxcomMessages
          details.set("type", pTypeFan);
          details.set("subType", m_subType);
          details.set("id", m_id);
-         api->declareDevice(m_deviceName, m_deviceModel, m_keywords, details);
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CFan::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CFan::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF buffer;
       MEMCLEAR(buffer.FAN);

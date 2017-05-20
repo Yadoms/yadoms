@@ -4,6 +4,7 @@
 #include <sys/sysinfo.h>
 #include <sys/types.h>
 #include <shared/DataContainer.h>
+#include <shared/Log.h>
 
 #define NB_LINE_TO_PARSE 10
 
@@ -82,5 +83,5 @@ void CMemoryLoad::read()
       m_keyword->set(MemoryLoad);
    }
    else
-      std::cout << "the memory load could not be calculated" << std::endl;
+      YADOMS_LOG(warning) << "the memory load could not be calculated";
 }

@@ -79,7 +79,7 @@ Blockly.Yadoms.Python.castFromPython = function(keywordId, command) {
 					code = "int(" + command + ")";
 					break;
 				default:
-					code = "\"" + command + "\"";
+					code = command;
 					break;
 			}
 		}

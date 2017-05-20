@@ -73,12 +73,13 @@ namespace rfxcomMessages
          details.set("unitCode", m_unitCode);
          api->declareDevice(m_deviceName,
                             m_deviceModel,
+                            m_deviceModel,
                             m_state,
                             details);
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CCurtain1::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CCurtain1::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF buffer;
       MEMCLEAR(buffer.CURTAIN1);

@@ -1,6 +1,15 @@
 # Macros for setting up a script interpreter
 #
 
+function(SCRIPT_INTERPRETER_IS_IN_DEV_STATE _targetName)
+   string(FIND ${_targetName} "dev-" DEV_SUBSTRING_POSITION)
+   if (${DEV_SUBSTRING_POSITION} EQUAL 0)
+      set(DEV_SCRIPT_INTERPRETER TRUE PARENT_SCOPE)
+   else()
+      set(DEV_SCRIPT_INTERPRETER FALSE PARENT_SCOPE)
+   endif()
+endfunction()
+
 MACRO(SCRIPT_INTERPRETER_SOURCES _targetName)
    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${YADOMS_OUTPUT_DIR}/scriptInterpreters/${_targetName} )
    foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
@@ -54,9 +63,19 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
    
    #configure interpreter as installable component
-	install(TARGETS ${_targetName} 
-		RUNTIME DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${_targetName}
-		COMPONENT  ${ComponentCompatibleName})
+   SCRIPT_INTERPRETER_IS_IN_DEV_STATE(${_targetName})
+   if (NOT ${DEV_SCRIPT_INTERPRETER})
+      install(TARGETS ${_targetName} 
+         RUNTIME DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${_targetName}
+         COMPONENT  ${ComponentCompatibleName})
+   endif()
+   ##################################################################################################
+   ## RPATH
+   ##################################################################################################
+   if(CMAKE_CROSSCOMPILING)
+      #Fix RPATH for cross compilation
+      set_target_properties(${_targetName} PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+   endif(CMAKE_CROSSCOMPILING)
 		
    set(SCRIPTINTERPRETERSLIST
       ${SCRIPTINTERPRETERSLIST}
@@ -77,6 +96,11 @@ MACRO(SCRIPT_INTERPRETER_LINK _targetName)
 		
 		if(COTIRE_USE_UNITY)
 			target_link_libraries(${_targetName}_unity yadoms-shared_unity interpreter_cpp_api_unity ${LIBS} ${CMAKE_DL_LIBS} ${PROTOBUF_LIBRARIES} ${ARGN})
+
+		   if(CMAKE_CROSSCOMPILING)
+		      #Fix RPATH for cross compilation
+		      set_target_properties(${_targetName}_unity PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+		   endif(CMAKE_CROSSCOMPILING)
 		endif()	
 	endif()	
 	
@@ -98,9 +122,12 @@ MACRO(SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE _targetName _resource)
 
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
    
-   install(FILES ${resource} 
-			DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${_targetName}
-			COMPONENT  ${ComponentCompatibleName})
+   SCRIPT_INTERPRETER_IS_IN_DEV_STATE(${_targetName})
+   if (NOT ${DEV_SCRIPT_INTERPRETER})
+      install(FILES ${resource} 
+         DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${_targetName}
+         COMPONENT  ${ComponentCompatibleName})
+   endif()
 			
    add_custom_command(TARGET ${_targetName} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_if_different ${resource} $<TARGET_FILE_DIR:${_targetName}>/${_resourceFile})
@@ -140,9 +167,12 @@ MACRO(SCRIPT_INTERPRETER_POST_BUILD_COPY_DIRECTORY _targetName _resource)
 
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
 
-   install(DIRECTORY ${resource} 
+   SCRIPT_INTERPRETER_IS_IN_DEV_STATE(${_targetName})
+   if (NOT ${DEV_SCRIPT_INTERPRETER})
+      install(DIRECTORY ${resource} 
 			DESTINATION ${INSTALL_BINDIR}/scriptInterpreters/${_targetName}/
 			COMPONENT  ${ComponentCompatibleName})
+   endif()
 
    add_custom_command(TARGET ${_targetName} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_directory ${resource} $<TARGET_FILE_DIR:${_targetName}>/${where})

@@ -39,38 +39,6 @@ namespace automation
       #define atan2d(y,x) (RADEG*atan2(y,x))
 
 
-      /* Following are some macros around the "workhorse" function __daylen__ */
-      /* They mainly fill in the desired values for the reference altitude    */
-      /* below the horizon, and also selects whether this altitude should     */
-      /* refer to the Sun's center or its upper limb.                         */
-
-
-      /* This macro computes the length of the day, from sunrise to sunset. */
-      /* Sunrise/set is considered to occur when the Sun's upper limb is    */
-      /* 35 arc minutes below the horizon (this accounts for the refraction */
-      /* of the Earth's atmosphere).                                        */
-      #define day_length(year,month,day,lon,lat)  \
-         __daylen__( year, month, day, lon, lat, -35.0/60.0, 1 )
-
-      /* This macro computes the length of the day, including civil twilight. */
-      /* Civil twilight starts/ends when the Sun's center is 6 degrees below  */
-      /* the horizon.                                                         */
-      #define day_civil_twilight_length(year,month,day,lon,lat)  \
-         __daylen__( year, month, day, lon, lat, -6.0, 0 )
-
-      /* This macro computes the length of the day, incl. nautical twilight.  */
-      /* Nautical twilight starts/ends when the Sun's center is 12 degrees    */
-      /* below the horizon.                                                   */
-      #define day_nautical_twilight_length(year,month,day,lon,lat)  \
-         __daylen__( year, month, day, lon, lat, -12.0, 0 )
-
-      /* This macro computes the length of the day, incl. astronomical twilight. */
-      /* Astronomical twilight starts/ends when the Sun's center is 18 degrees   */
-      /* below the horizon.                                                      */
-      #define day_astronomical_twilight_length(year,month,day,lon,lat)  \
-         __daylen__( year, month, day, lon, lat, -18.0, 0 )
-
-
       /* This macro computes times for sunrise/sunset.                      */
       /* Sunrise/set is considered to occur when the Sun's upper limb is    */
       /* 35 arc minutes below the horizon (this accounts for the refraction */
@@ -98,9 +66,6 @@ namespace automation
 
 
       /* Function prototypes */
-
-      double __daylen__(int year, int month, int day, double lon, double lat,
-                        double altit, int upper_limb);
 
       int __sunriset__(int year, int month, int day, double lon, double lat,
                        double altit, int upper_limb, double* rise, double* set);
@@ -199,72 +164,6 @@ namespace automation
 
          return rc;
       } /* __sunriset__ */
-
-
-      /* The "workhorse" function */
-
-
-      double __daylen__(int year, int month, int day, double lon, double lat,
-                        double altit, int upper_limb)
-      /**********************************************************************/
-      /* Note: year,month,date = calendar date, 1801-2099 only.             */
-      /*       Eastern longitude positive, Western longitude negative       */
-      /*       Northern latitude positive, Southern latitude negative       */
-      /*       The longitude value is not critical. Set it to the correct   */
-      /*       longitude if you're picky, otherwise set to to, say, 0.0     */
-      /*       The latitude however IS critical - be sure to get it correct */
-      /*       altit = the altitude which the Sun should cross              */
-      /*               Set to -35/60 degrees for rise/set, -6 degrees       */
-      /*               for civil, -12 degrees for nautical and -18          */
-      /*               degrees for astronomical twilight.                   */
-      /*         upper_limb: non-zero -> upper limb, zero -> center         */
-      /*               Set to non-zero (e.g. 1) when computing day length   */
-      /*               and to zero when computing day+twilight length.      */
-      /**********************************************************************/
-      {
-         double d, /* Days since 2000 Jan 0.0 (negative before) */
-                obl_ecl, /* Obliquity (inclination) of Earth's axis */
-                sr, /* Solar distance, astronomical units */
-                slon, /* True solar longitude */
-                sin_sdecl, /* Sine of Sun's declination */
-                cos_sdecl, /* Cosine of Sun's declination */
-                sradius, /* Sun's apparent radius */
-                t; /* Diurnal arc */
-
-         /* Compute d of 12h local mean solar time */
-         d = days_since_2000_Jan_0(year,month,day) + 0.5 - lon / 360.0;
-
-         /* Compute obliquity of ecliptic (inclination of Earth's axis) */
-         obl_ecl = 23.4393 - 3.563E-7 * d;
-
-         /* Compute Sun's ecliptic longitude and distance */
-         sunpos(d, &slon, &sr);
-
-         /* Compute sine and cosine of Sun's declination */
-         sin_sdecl = sind(obl_ecl) * sind(slon);
-         cos_sdecl = sqrt(1.0 - sin_sdecl * sin_sdecl);
-
-         /* Compute the Sun's apparent radius, degrees */
-         sradius = 0.2666 / sr;
-
-         /* Do correction to upper limb, if necessary */
-         if (upper_limb)
-            altit -= sradius;
-
-         /* Compute the diurnal arc that the Sun traverses to reach */
-         /* the specified altitude altit: */
-         {
-            double cost;
-            cost = (sind(altit) - sind(lat) * sin_sdecl) /
-               (cosd(lat) * cos_sdecl);
-            if (cost >= 1.0)
-               t = 0.0; /* Sun always below altit */
-            else if (cost <= -1.0)
-               t = 24.0; /* Sun always above altit */
-            else t = (2.0 / 15.0) * acosd(cost); /* The diurnal arc, hours */
-         }
-         return t;
-      } /* __daylen__ */
 
 
       /* This function computes the Sun's position at any instant */

@@ -32,7 +32,7 @@
          $modalBody.empty();
 
          //we append the text section
-         var nameParameter = new StringParameterHandler("modals.configure-plugin.", "name-configuration", { required: "true" }, pluginInstance.displayName);
+         var nameParameter = new StringParameterHandler("modals.configure-plugin.", undefined, "name-configuration", { required: "true" }, pluginInstance.displayName);
          $modalBody.append(nameParameter.getDOMObject());
          //we finish friendlyNameParameter instantiation
          if ($.isFunction(nameParameter.applyScript))
@@ -47,6 +47,9 @@
 
                //i18n
                $modalBody.i18n();
+
+               //finalize treatments (ie sort items after trnaslation)
+               configMgr.afterI18n();
 
                //validation form
                //erase previous jqBootstrapValidation

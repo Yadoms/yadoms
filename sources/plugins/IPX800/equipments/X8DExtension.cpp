@@ -35,8 +35,10 @@ namespace equipments
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
       keywordsToDeclare.insert(keywordsToDeclare.end(), m_keywordList.begin(), m_keywordList.end());
 
-      //Déclaration of all IOs
-      api->declareDevice(device, m_deviceType, keywordsToDeclare, details);
+      //Declaration of all IOs
+      api->declareDevice(device, m_deviceType, m_deviceType, keywordsToDeclare, details);
+
+      YADOMS_LOG(trace) << "creation of the device " << device << " of type " << m_deviceType << " at position " << position;
    }
 
    std::string CX8DExtension::getDeviceName() const
@@ -107,6 +109,24 @@ namespace equipments
    void CX8DExtension::resetPendingCommand()
    {
       throw shared::exception::CException("Extension module X-8D have no pending operation");
+   }
+
+   void CX8DExtension::setNewConfiguration(const shared::CDataContainer& newConfiguration)
+   {
+      std::vector<boost::shared_ptr<specificHistorizers::CInputOuput> >::const_iterator iterator;
+
+      // change the position
+      m_position = newConfiguration.get<int>("Position");
+      int counter = 0;
+
+      // change all hardware names
+      for (iterator = m_keywordList.begin(); iterator != m_keywordList.end(); ++iterator)
+      {
+         (*iterator)->setNewHardwareName(std::string("D") + boost::lexical_cast<std::string>(m_position * 8 + counter + 1));
+         ++counter;
+      }
+
+      YADOMS_LOG(information) << "equipment " << m_deviceName << " configuration is updated";
    }
 
    CX8DExtension::~CX8DExtension()

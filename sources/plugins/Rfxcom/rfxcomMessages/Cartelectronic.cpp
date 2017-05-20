@@ -59,11 +59,12 @@ namespace rfxcomMessages
          details.set("subType", m_subType);
          details.set("id", m_id);
 
-         api->declareDevice(m_id, m_subTypeManager->getModel(), m_keywords, details);
+         std::string model = m_subTypeManager->getModel();
+         api->declareDevice(m_id, model, model, m_keywords, details);
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CCartelectronic::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CCartelectronic::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("Cartelectronic is a read-only message, can not be encoded");
    }

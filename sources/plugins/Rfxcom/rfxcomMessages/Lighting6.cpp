@@ -90,11 +90,11 @@ namespace rfxcomMessages
          details.set("groupCode", m_groupCode);
          details.set("unitCode", m_unitCode);
 
-         api->declareDevice(m_deviceName, m_deviceModel, m_keywords, details);
+         api->declareDevice(m_deviceName, m_deviceModel, m_deviceModel, m_keywords, details);
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CLighting6::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CLighting6::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       RBUF rbuf;
       MEMCLEAR(rbuf.LIGHTING6);

@@ -1,5 +1,14 @@
 # Macros for setting up a plugin
 
+function(PLUGIN_IS_IN_DEV_STATE _targetName)
+   string(FIND ${_targetName} "dev-" DEV_SUBSTRING_POSITION)
+   if (${DEV_SUBSTRING_POSITION} EQUAL 0)
+      set(DEV_PLUGIN TRUE PARENT_SCOPE)
+   else()
+      set(DEV_PLUGIN FALSE PARENT_SCOPE)
+   endif()
+endfunction()
+
 MACRO(PLUGIN_SOURCES _targetName)
    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${YADOMS_OUTPUT_DIR}/plugins/${_targetName} )
    foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
@@ -42,7 +51,6 @@ MACRO(PLUGIN_SOURCES _targetName)
          if(NOT EXISTS ${PLUGIN_EXE_ICON})
             SET(PLUGIN_EXE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/../common/resources/windows/plugin.ico")
          endif(NOT EXISTS ${PLUGIN_EXE_ICON})
-         message("PLUGIN_EXE_ICON : ${PLUGIN_EXE_ICON}")
          
          
          # apply templating to the manifest for setting the version
@@ -102,10 +110,22 @@ MACRO(PLUGIN_LINK _targetName)
 	
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
    
-   #configure plugin as installable component
-	install(TARGETS ${_targetName} 
-		RUNTIME DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}
-		COMPONENT  ${ComponentCompatibleName})
+   #configure plugin as installable component if not in devlopment state (target name begin by 'dev-')
+   PLUGIN_IS_IN_DEV_STATE(${_targetName})
+   if (NOT ${DEV_PLUGIN})
+      install(TARGETS ${_targetName} 
+         RUNTIME DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}
+         COMPONENT  ${ComponentCompatibleName})
+   else()
+      message (STATUS "  (${_targetName} is a dev plugin, it won't be installed)")
+   endif()
+   ##################################################################################################
+   ## RPATH
+   ##################################################################################################
+   if(CMAKE_CROSSCOMPILING)
+	  #Fix RPATH for cross compilation
+      set_target_properties(${_targetName} PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+   endif(CMAKE_CROSSCOMPILING)
       
    set(PLUGINLIST
       ${PLUGINLIST}
@@ -124,6 +144,12 @@ MACRO(PLUGIN_LINK _targetName)
 		
 		cotire(${_targetName})
 		
+		if(COTIRE_USE_UNITY)
+		   if(CMAKE_CROSSCOMPILING)
+		      #Fix RPATH for cross compilation
+		      set_target_properties(${_targetName}_unity PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+		   endif(CMAKE_CROSSCOMPILING)
+		endif()
 	endif()	
 
    ##################################################################################################
@@ -177,10 +203,13 @@ MACRO(PLUGIN_POST_BUILD_COPY_FILE _targetName _resource)
 
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
 
-   install(FILES ${resource} 
-			DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}
-			COMPONENT  ${ComponentCompatibleName})
-			
+   PLUGIN_IS_IN_DEV_STATE(${_targetName})
+   if (NOT ${DEV_PLUGIN})
+      install(FILES ${resource} 
+            DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}
+            COMPONENT  ${ComponentCompatibleName})
+   endif()
+         
    add_custom_command(TARGET ${_targetName} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_if_different ${resource} $<TARGET_FILE_DIR:${_targetName}>/${_resourceFile})
    if(COTIRE_USE)
@@ -219,9 +248,12 @@ MACRO(PLUGIN_POST_BUILD_COPY_DIRECTORY _targetName _resource)
 
    string(REPLACE "-" "_" ComponentCompatibleName ${_targetName})
 
-   install(DIRECTORY ${resource}
-			DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}/
-			COMPONENT  ${ComponentCompatibleName})
+   PLUGIN_IS_IN_DEV_STATE(${_targetName})
+   if (NOT ${DEV_PLUGIN})
+      install(DIRECTORY ${resource}
+            DESTINATION ${INSTALL_BINDIR}/plugins/${_targetName}/
+            COMPONENT  ${ComponentCompatibleName})
+   endif()
 
    add_custom_command(TARGET ${_targetName} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_directory ${resource} $<TARGET_FILE_DIR:${_targetName}>/${where})

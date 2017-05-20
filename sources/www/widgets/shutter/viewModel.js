@@ -30,16 +30,14 @@ widgetViewModelCtor =
               }
           };
 
-          this.shutterIcon = ko.computed(function () {
-
-              console.log("widgets/shutter/icons/" + self.kind() + "-close.png");
-
-              command = self.command();
+          self.shutterIcon = ko.computed(function () {
+              
+              var displayValue = self.command();
               if (self.invert) {
-                  command = !command;
+                  displayValue = !displayValue;
               }
-
-              if (command)
+              
+              if (displayValue)
                   return "widgets/shutter/icons/" + self.kind() + "-close.png";
               else
                   return "widgets/shutter/icons/" + self.kind() + "-open.png";
@@ -59,7 +57,7 @@ widgetViewModelCtor =
           };
 
           this.shutterClick = function () {
-              self = this;
+              var self = this;
               
               if(self.readonly() !== true) {
                  if (self.command() === 0)
@@ -74,8 +72,6 @@ widgetViewModelCtor =
 
           this.configurationChanged = function () {
               var self = this;
-
-              console.log("kind :", this.widget.configuration);
 
               if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
                   return;
@@ -99,16 +95,6 @@ widgetViewModelCtor =
 
               if (!isNullOrUndefined(this.widget.configuration.invert)) {
                   this.invert = this.widget.configuration.invert;
-              }
-
-              //we ask for device information
-              if ((!isNullOrUndefined(this.widget.configuration.device))) {
-
-                  if (!isNullOrUndefined(this.widget.configuration.device.deviceId)) {
-
-                      //Initialisation
-                      self.command(0);
-                  }
               }
           };
 

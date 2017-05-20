@@ -1,5 +1,6 @@
 .widget-dev-fake-widget .main {
     height: 100%;
+    display: flex;
 }
 .widget-dev-fake-widget .smiley {
 	margin: auto;

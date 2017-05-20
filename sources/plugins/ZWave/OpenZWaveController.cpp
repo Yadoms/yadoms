@@ -315,9 +315,9 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    case OpenZWave::Notification::Type_Group:
       {
          // One of the node's association groups has changed
-         int groupIdx = _notification->GetGroupIdx();
+         unsigned char groupIdx = _notification->GetGroupIdx();
          auto groupLabel = OpenZWave::Manager::Get()->GetGroupLabel(_notification->GetHomeId(), _notification->GetNodeId(), groupIdx);
-         YADOMS_LOG(debug) << "Group change : id= " << groupIdx << " label=" << groupLabel;
+         YADOMS_LOG(debug) << "Group change : id= " << (int)groupIdx << " label=" << groupLabel;
          break;
       }
 
@@ -539,6 +539,13 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       break;
 
    case OpenZWave::Notification::Type_NodeQueriesComplete:
+      {
+         auto node = getNode(_notification);
+         if (node)
+         {
+            YADOMS_LOG(information) << "NodeQueriesComplete : " << node->getHomeId() << ":" << (int)node->getNodeId();
+         }
+      }
       break;
 
    default:
