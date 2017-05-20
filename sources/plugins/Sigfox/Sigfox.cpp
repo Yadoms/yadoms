@@ -195,5 +195,6 @@ void CSigfox::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::strin
    if (api->deviceExists(deviceName))
       return;
 
-   api->declareDevice(deviceName, deviceName, m_keywordsDeclaration);
+   std::string m_model = "";
+   api->declareDevice(deviceName, deviceName, m_model, m_keywordsDeclaration);
 }

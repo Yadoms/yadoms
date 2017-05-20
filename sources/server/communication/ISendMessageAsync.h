@@ -42,9 +42,12 @@ namespace communication
       ///\brief                     Send an extra command
       ///\param [in] pluginId       Plugin Id to send extra command
       ///\param [in] data           The extra query data
+      ///\param [in] callback       The callback
       ///\return                    The task id
       //----------------------------------------------
-      virtual const std::string sendExtraQueryAsync(int pluginId, const shared::plugin::yPluginApi::IExtraQueryData& data) = 0;
+      virtual void sendExtraQueryAsync(int pluginId, 
+                                       const shared::plugin::yPluginApi::IExtraQueryData& data,
+                                       communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) = 0;
 
       //----------------------------------------------
       ///\brief                     Send a manually device creation request to a plugin with a mandatory callback

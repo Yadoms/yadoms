@@ -62,14 +62,6 @@ namespace pluginSystem
       }
    }
 
-   void CExtraQuery::reportProgress(const float progression, const std::string& message)
-   {
-      shared::CDataContainer dc;
-      dc.set("progression", progression);
-      dc.set("message", message);
-      m_eventHandler.postEvent(kProgress, dc);
-   }
-
 } // namespace pluginSystem	
 
 

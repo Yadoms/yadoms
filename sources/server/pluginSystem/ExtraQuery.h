@@ -29,7 +29,6 @@ namespace pluginSystem
       const shared::plugin::yPluginApi::IExtraQueryData& getData() const override;
       void sendSuccess(const shared::CDataContainer& data) override;
       void sendError(const std::string& errorMessage) override;
-      void reportProgress(const float progression, const std::string& message) override;
       // [END] IExtraQuery implementation
 
       void waitForExtraQueryProcess(task::ITask::TaskProgressFunc f);
