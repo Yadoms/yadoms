@@ -149,15 +149,28 @@
                "name": "Une section",
                "description": "Exemple d'utilisation d'une section de configuration.",
                "content": {
-                 "SubIntParameter": {
-                   "name": "Entier dans une section",
-                   "description": "Un exemple de paramètre entier dans une section"
-                 },
-                 "SubStringParameter": {
-                   "name": "Chaîne dans une section",
-                   "description": "Un exemple de paramètre chaîne dans une section",
-                   "defaultValue": "Les sous-sections rendent la configuration vraiment puissante !"
-                 }
+                  "SubIntParameter": {
+                     "name": "Entier dans une section",
+                     "description": "Un exemple de paramètre entier dans une section"
+                  },
+                  "SubStringParameter": {
+                     "name": "Chaîne dans une section",
+                     "description": "Un exemple de paramètre chaîne dans une section",
+                     "defaultValue": "Les sous-sections rendent la configuration vraiment puissante !"
+                  },
+                  "SubComboParameter": {
+                     "name": "Sous liste dans une section",
+                     "content": {
+                        "first": {
+                           "name": "Première section",
+                           "description": "Première section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                        }, 
+                        "second": {
+                           "name": "Seconde section",
+                           "description": "Seconde section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                        }
+                     }
+                  }
                }
              }           
            }

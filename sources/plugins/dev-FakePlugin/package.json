@@ -147,17 +147,30 @@
                "defaultValue": "2",
                "minimumValue": "1",
                "maximumValue": "10"
-             },
-             "MySection": {
+            },
+            "MySection": {
                "type": "section",
                "content": {
-                 "SubIntParameter": {
-                   "type": "int",
-                   "defaultValue": "65535"
-                 },
-                 "SubStringParameter": {
-                   "type": "string"
-                 }
+                  "SubIntParameter": {
+                     "type": "int",
+                     "defaultValue": "65535"
+                  },
+                  "SubStringParameter": {
+                     "type": "string"
+                  },
+                  "SubComboParameter": {
+                     "type": "comboSection",
+                     "content": {
+                        "first": {
+                           "name": "First section",
+                           "type": "section"
+                        }, 
+                        "second": {
+                           "name": "Second section",
+                           "type": "section"
+                        }
+                     }
+                  }
                }
              }
            }
