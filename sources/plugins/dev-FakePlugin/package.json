@@ -168,6 +168,10 @@
                         "second": {
                            "name": "Second section",
                            "type": "section"
+                        },
+                        "third": {
+                           "name": "Third section",
+                           "type": "section"
                         }
                      }
                   }

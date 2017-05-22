@@ -157,6 +157,7 @@
                      },
                      "SubComboParameter": {
                         "name": "Sublist in section",
+                        "description": "Example of combo parameter in the sub-section",
                         "content": {
                            "first": {
                               "name": "First section",
@@ -165,6 +166,10 @@
                            "second": {
                               "name": "Second section",
                               "description": "The second list section : you can add here some other configuration parameters"
+                           },
+                           "third": {
+                              "name": "Third section",
+                              "description": "The third list section : you can add here some other configuration parameters"
                            }
                         }
                      }

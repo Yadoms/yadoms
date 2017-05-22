@@ -160,6 +160,7 @@
                   },
                   "SubComboParameter": {
                      "name": "Sous liste dans une section",
+                     "description": "Exemple d'une liste dans une sous-section",
                      "content": {
                         "first": {
                            "name": "Première section",
@@ -168,6 +169,10 @@
                         "second": {
                            "name": "Seconde section",
                            "description": "Seconde section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                        }, 
+                        "third": {
+                           "name": "Troisième section",
+                           "description": "Troisième section de la liste : vous pouvez ajouter ici d'autres données de configuration"
                         }
                      }
                   }
