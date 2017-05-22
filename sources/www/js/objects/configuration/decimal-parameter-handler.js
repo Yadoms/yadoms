@@ -15,21 +15,21 @@ function DecimalParameterHandler(i18nContext, i18nKey, paramName, content, curre
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
 
-   //if value is setted we use it else we use the default value else we use 0
+   //we search min and max value
+   this.minValue = parseFloat(content.minimumValue);
+   this.maxValue = parseFloat(content.maximumValue);
+   this.precision = parseInt(content.precision);
+
+   //if value is setted we use it
    this.value = parseFloat(currentValue);
 
    if (isNaN(this.value)) {
       this.value = parseFloat(content.defaultValue);
       if (isNaN(this.value)) {
-         console.warn("Unable to parse as int content.defaultValue of " + name + " parameter. Set to 0");
-         this.value = 0;
+         console.warn("Unable to parse as decimal content.defaultValue of " + paramName + " parameter. Set to minValue if available, else 0.0.");
+         this.value = isNaN(this.minValue) ? 0.0 : this.minValue;
       }
    }
-
-   //we search min and max value
-   this.minValue = parseFloat(content.minimumValue);
-   this.maxValue = parseFloat(content.maximumValue);
-   this.precision = parseInt(content.precision);
 
    //we round the actual value with max and min
    this.value = Math.max((isNaN(this.minValue)?-Infinity:this.minValue) , Math.min((isNaN(this.maxValue)?Infinity:this.maxValue), this.value));
