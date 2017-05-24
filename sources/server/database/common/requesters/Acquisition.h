@@ -1,7 +1,7 @@
 #pragma once
 
-#include "server/database/IAcquisitionRequester.h"
-#include "server/database/IDatabaseRequester.h"
+#include "database/IAcquisitionRequester.h"
+#include "database/IDatabaseRequester.h"
 
 namespace database
 {
@@ -19,7 +19,7 @@ namespace database
          public:
             //--------------------------------------------------------------
             /// \Brief		   Constructor
-            /// \param [in]	pDatabaseHandler: the database handler
+            /// \param [in]	databaseRequester the database handler
             //--------------------------------------------------------------
             CAcquisition(boost::shared_ptr<IDatabaseRequester> databaseRequester,
                          boost::shared_ptr<CKeyword> keywordRequester);

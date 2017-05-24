@@ -1,6 +1,6 @@
 #pragma once
 #include "FrameBase.h"
-#include "server/task/InstanceNotificationData.h"
+#include "task/InstanceNotificationData.h"
 
 namespace web
 {

@@ -85,7 +85,7 @@ namespace specificHistorizer
       shared::CDataContainer m_conditionFrame;
 
       //-----------------------------------------------------
-      ///\brief               L'ensemble des unités
+      ///\brief               L'ensemble des unitÃ©s
       //-----------------------------------------------------
       shared::CDataContainer m_units;
    };

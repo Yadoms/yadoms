@@ -8,7 +8,7 @@ namespace owfs
    namespace io
    {
       //--------------------------------------------------------------
-      /// \brief	OWFS temperature (°C) device reader
+      /// \brief	OWFS temperature (Â°C) device reader
       //--------------------------------------------------------------
       class CTemperature : public CSingleReadOnlyData<ioInterfaces::ITemperature, double>
       {

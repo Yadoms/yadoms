@@ -1,7 +1,7 @@
 #pragma once
 #include "task/Scheduler.h"
 #include <shared/DataContainer.h>
-#include <server/pluginSystem/Manager.h>
+#include "pluginSystem/Manager.h"
 
 namespace update
 {

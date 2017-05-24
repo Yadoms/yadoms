@@ -56,7 +56,6 @@ namespace communication
          }
          // [END] - shared::communication::callback::ICallbackRequest implementation
 
-      private:
          // shared::communication::callback::ICallbackRequest implementation
          const DummyType& getData() const override
          {
@@ -65,6 +64,7 @@ namespace communication
          }
          // [END] - shared::communication::callback::ICallbackRequest implementation
 
+      private:
          //----------------------------------------------
          ///\brief Current callback used state or not 
          ///       true : the callback has been called

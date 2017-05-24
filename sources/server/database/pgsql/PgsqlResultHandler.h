@@ -34,7 +34,7 @@ namespace database { namespace pgsql {
       PGresult *m_res;
 
       //--------------------------------------------------------------
-      /// \Brief		Current result index (n° row)
+      /// \Brief		Current result index (nÂ° row)
       //--------------------------------------------------------------
       int m_currentResultIndex;     
       

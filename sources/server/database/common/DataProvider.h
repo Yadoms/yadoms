@@ -1,6 +1,6 @@
 #pragma once
-#include "../IDataProvider.h"
-#include "../IDatabaseRequester.h"
+#include "database/IDataProvider.h"
+#include "database/IDatabaseRequester.h"
 #include "requesters/Plugin.h"
 #include "requesters/Configuration.h"
 #include "requesters/Device.h"

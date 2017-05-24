@@ -36,7 +36,7 @@ namespace equipments
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
       keywordsToDeclare.insert(keywordsToDeclare.end(), m_keywordList.begin(), m_keywordList.end());
 
-      //Déclaration of all IOs
+      //Declaration of all IOs
       api->declareDevice(device, m_deviceType, m_deviceType, keywordsToDeclare, details);
 
       YADOMS_LOG(trace) << "creation of the device " << device << " of type " << m_deviceType << " at position " << position;
