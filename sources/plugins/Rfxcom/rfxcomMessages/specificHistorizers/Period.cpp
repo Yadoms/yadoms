@@ -23,7 +23,7 @@ namespace teleInfo
          ((NormalCostRedDays))
       );
 
-      DECLARE_CAPACITY(PeriodCapacity, "Period", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+      DECLARE_CAPACITY(PeriodCapacity, "Period", shared::plugin::yPluginApi::CStandardUnits::NoUnits(), shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
       CPeriod::CPeriod(const std::string& keywordName)
          : CSingleHistorizableData<EPeriod>(keywordName,

@@ -14,7 +14,7 @@ namespace teleInfo
          ((Desactivated))
       );
 
-      DECLARE_CAPACITY(StatusCapacity, "Status", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+      DECLARE_CAPACITY(StatusCapacity, "Status", shared::plugin::yPluginApi::CStandardUnits::NoUnits(), shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
       CTeleInfoStatus::CTeleInfoStatus(const std::string& keywordName)
          : CSingleHistorizableData<EStatus>(keywordName,

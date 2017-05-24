@@ -27,7 +27,7 @@ namespace xplrules
             ((ProgSweep)("prog_sweep"))
          );
 
-         DECLARE_CAPACITY(MertikCommandCapacity, "mertik", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(MertikCommandCapacity, "mertik", shared::plugin::yPluginApi::CStandardUnits::NoUnits(), shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CMertickCommand::CMertickCommand(const std::string& keywordName)

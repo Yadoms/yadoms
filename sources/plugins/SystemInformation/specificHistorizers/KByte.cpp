@@ -10,8 +10,12 @@ namespace shared
       {
          namespace historization
          {
-            const std::string& KByteUnit("K");
-            DECLARE_CAPACITY(KByteCapacity, "KByte", KByteUnit, EKeywordDataType::kNumeric);
+            static const std::string& KByteUnit()
+            {
+               static const std::string value("K");
+               return value;
+            }
+            DECLARE_CAPACITY(KByteCapacity, "KByte", KByteUnit(), EKeywordDataType::kNumeric);
 
             CKByte::CKByte(const std::string& keywordName,
                            const EKeywordAccessMode& accessMode,
