@@ -90,6 +90,7 @@ namespace equipments
       void CTIC::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                   specificHistorizers::EdeviceStatus newState,
                                   const std::string& contractName,
+                                  const std::string& timePeriod,
                                   const unsigned int apparentPower,
                                   const Poco::Int64& counter1,
                                   const Poco::Int64& counter2,
@@ -133,6 +134,19 @@ namespace equipments
          else
          {
             YADOMS_LOG(error) << "This contract is unknown";
+         }
+
+         YADOMS_LOG(information) << "Time period :" << timePeriod;
+
+         // Time Period
+         // TODO : Ne doit pas être appliquer si rien d'actif
+         if (timePeriod.compare("Toutes Heures") == 0)
+         {
+            m_TimePeriod->set(specificHistorizers::EPeriod::kAllHours);
+         }
+         else
+         {
+            YADOMS_LOG(error) << "This time period is unknown";
          }
 
          m_apparentPower->set(apparentPower);
