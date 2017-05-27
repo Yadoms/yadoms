@@ -31,6 +31,9 @@ if(COTIRE_USE)
       set_target_properties(plugin_IPC PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
    endif()
    
+   # this target is for protobuf and precompiled header has no real sense
+   set_target_properties(plugin_IPC PROPERTIES COTIRE_ENABLE_PRECOMPILED_HEADER FALSE)
+
    cotire(plugin_IPC)
    
    if(COTIRE_USE_UNITY)

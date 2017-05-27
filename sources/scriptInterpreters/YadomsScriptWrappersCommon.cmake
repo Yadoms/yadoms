@@ -49,6 +49,9 @@ MACRO(SCRIPT_API_WRAPPER_LINK)
 			set_target_properties(_yScriptApiWrapper PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
 		endif()
       
+      # for this target, precompiled header has no real sense
+      set_target_properties(_yScriptApiWrapper PROPERTIES COTIRE_ENABLE_PRECOMPILED_HEADER FALSE)
+      
 		cotire(_yScriptApiWrapper)
 	endif()	   
 ENDMACRO()

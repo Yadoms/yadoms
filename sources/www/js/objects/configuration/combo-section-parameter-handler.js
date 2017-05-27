@@ -75,7 +75,7 @@ function ComboSectionParameterHandler(i18nContext, i18nKey, paramName, content, 
  */
 ComboSectionParameterHandler.prototype.getDOMObject = function () {
 
-   var input = "<div class=\"control-group configuration-radio-section well\" id=\"" + this.uuid + "\">" +
+   var input = "<div class=\"control-group configuration-combo-section well\" id=\"" + this.uuid + "\">" +
                   "<div class=\"configuration-header\" >";
 	
    if (this.parentRadioButtonSectionName) {
@@ -202,7 +202,7 @@ ComboSectionParameterHandler.prototype.applyScript = function () {
     
     $.each($("#" + self.dropdownUuid).find(".combo-item-description"), function (key, value) {
        if($(value).text() === "") {
-          $(value).siblings(".combo-item-title").removeClass(".combo-item-title").addClass("combo-item-title-without-description");
+          $(value).siblings(".combo-item-title").removeClass("combo-item-title").addClass("combo-item-title-without-description");
        }
     });
     
@@ -210,7 +210,7 @@ ComboSectionParameterHandler.prototype.applyScript = function () {
     if (!activeSectionUuid)
       activeSectionUuid = this.configurationHandlers[0].uuid;
     
-    $("#" + self.dropdownUuid).find("li a").first().trigger('click');
+    $("[data-value=" + activeSectionUuid + "]").trigger("click");
 };
 
 /**
