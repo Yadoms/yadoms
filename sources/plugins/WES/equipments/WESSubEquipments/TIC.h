@@ -33,6 +33,7 @@ namespace equipments
          ///\param[in] api                             Yadoms API
          ///\param[in] newState                        state of the device
          ///\param[in] contractName                    contract Name
+         ///\param[in] apparentPower                   apparent power of the counter
          ///\param[in] counter1                        1st counter sent by the wes
          ///\param[in] counter2                        2nd counter sent by the wes
          ///\param[in] counter3                        3td counter sent by the wes
@@ -43,6 +44,7 @@ namespace equipments
          void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                specificHistorizers::EdeviceStatus newState,
                                const std::string& contractName,
+                               const unsigned int apparentPower,
                                const Poco::Int64& counter1,
                                const Poco::Int64& counter2,
                                const Poco::Int64& counter3,

@@ -12,9 +12,9 @@ c e a <html><id>CPT1_adco</id><value>%s</value></html>
 c e b <html><id>CPT1_abo_name</id><value>%s</value></html>
 # COMPTEUR 2
 c e N <html><id>CPT2_name</id><value>%s</value></html>
-c e a <html><id>CPT2_adco</id><value>%s</value></html>
-c e b <html><id>CPT2_abo_name</id><value>%s</value></html>
-# PINCES AMEREMETRIQUES
+c e A <html><id>CPT2_adco</id><value>%s</value></html>
+c e B <html><id>CPT2_abo_name</id><value>%s</value></html>
+# PINCES AMPERMETRIQUES
 c Pn1 <html><id>nPCE1</id><value>%s</value></html>
 c Pn2 <html><id>nPCE2</id><value>%s</value></html>
 c Pn3 <html><id>nPCE3</id><value>%s</value></html>

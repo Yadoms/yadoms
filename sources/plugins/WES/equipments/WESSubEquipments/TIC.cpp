@@ -45,7 +45,7 @@ namespace equipments
             m_keywords.push_back(m_apparentPower);
             m_keywords.push_back(m_TimePeriod);
 
-            if (m_contractName.compare("BASE")==0)
+            if (m_contractName.compare("Base")==0)
             {
                m_keywords.push_back(m_baseCounter);
             }
@@ -90,6 +90,7 @@ namespace equipments
       void CTIC::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                   specificHistorizers::EdeviceStatus newState,
                                   const std::string& contractName,
+                                  const unsigned int apparentPower,
                                   const Poco::Int64& counter1,
                                   const Poco::Int64& counter2,
                                   const Poco::Int64& counter3,
@@ -106,7 +107,7 @@ namespace equipments
             initializeTIC(api);
          }
 
-         if (m_contractName.compare("BASE") == 0)
+         if (m_contractName.compare("Base") == 0)
          {
             m_baseCounter->set(counter1);
          }
@@ -133,6 +134,8 @@ namespace equipments
          {
             YADOMS_LOG(error) << "This contract is unknown";
          }
+
+         m_apparentPower->set(apparentPower);
 
          api->historizeData(m_deviceName, m_keywords);
       }
