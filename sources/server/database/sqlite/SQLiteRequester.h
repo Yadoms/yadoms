@@ -3,6 +3,7 @@
 #include "sqlite3.h"
 #include "database/common/Query.h"
 #include "database/IDatabaseRequester.h"
+#include "database/DatabaseException.hpp"
 
 namespace database
 {

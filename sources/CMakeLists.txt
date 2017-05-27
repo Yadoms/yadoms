@@ -266,14 +266,12 @@ set(YADOMS_SRC
    server/RunningInformation.h	
    server/Supervisor.cpp
    server/Supervisor.h
+   server/Version.h
 
    server/authentication/IAuthentication.h
    server/authentication/BasicAuthentication.h
    server/authentication/BasicAuthentication.cpp
 
-   server/dateTime/DateTimeNotifier.h
-   server/dateTime/DateTimeNotifier.cpp
-   
    server/automation/IRule.h
    server/automation/IRuleManager.h
    server/automation/IRuleThreadHandler.h
@@ -603,6 +601,8 @@ set(YADOMS_SRC
    server/web/ws/NewDeviceFrame.cpp
    server/web/ws/TaskUpdateNotificationFrame.h
    server/web/ws/TaskUpdateNotificationFrame.cpp
+   server/web/ws/TimeNotificationFrame.h
+   server/web/ws/TimeNotificationFrame.cpp
 )
 
 # Project folders
@@ -644,10 +644,10 @@ source_group(server\\web\\ws  server/web/ws/*.*)
 
 # Tools
 set(YADOMS_SRC ${YADOMS_SRC}
-	server/tools/tools/SupportedPlatformsChecker.h
-	server/tools/tools/SupportedPlatformsChecker.cpp
-	server/tools/tools/FileSystem.h
-	server/tools/tools/FileSystem.cpp
+	server/tools/SupportedPlatformsChecker.h
+	server/tools/SupportedPlatformsChecker.cpp
+	server/tools/FileSystem.h
+	server/tools/FileSystem.cpp
 )
 
 IF(WIN32)
@@ -670,9 +670,7 @@ ELSE()
 	)	
 ENDIF()
 
-# Define include directories (allow easy includes)
-set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools)
-
+# Define include directories
 IF(WIN32)
 	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/windows)
 ELSEIF(APPLE)
@@ -748,6 +746,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/database/common/versioning/Version_3_0_1.cpp
 	server/database/common/versioning/Version_4_0_0.h
 	server/database/common/versioning/Version_4_0_0.cpp
+	server/database/common/versioning/Version_4_0_1.h
+	server/database/common/versioning/Version_4_0_1.cpp
 	server/database/common/versioning/VersionUpgraderFactory.h
 	server/database/common/versioning/VersionUpgraderFactory.cpp
 	server/database/common/versioning/VersionException.h
@@ -966,11 +966,9 @@ add_subdirectory(scriptInterpreters)
 ## Include directories
 ##################################################################################################
 set(YADOMS_INCL_DIR
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/server
 	${YADOMS_INCL_DIR}
 	${SHARED_INCL_DIR}
-	${PROTOBUF_INCLUDE_DIRS}
+	${CMAKE_CURRENT_SOURCE_DIR}/server
 	${plugin_IPC_INCLUDE_DIRS}
 	${interpreter_IPC_INCLUDE_DIRS}
 	${script_IPC_INCLUDE_DIRS}
@@ -981,6 +979,7 @@ set(YADOMS_ALL_INCL_DIR
 	${BOOST_INCL_DIR} 
 	${OPENSSL_INCLUDE_DIR}
 	${Poco_INCLUDE_DIRS}
+	${PROTOBUF_INCLUDE_DIRS}
 )
 
 set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
@@ -1152,7 +1151,11 @@ set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/../distribution/Cop
 set(CPACK_PACKAGE_VERSION_MAJOR ${YADOMS_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${YADOMS_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${YADOMS_VERSION_PATCH})
-set(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
+if(CMAKE_PACKAGE_PLATFORM_NAME)
+   set(CPACK_SYSTEM_NAME ${CMAKE_PACKAGE_PLATFORM_NAME})
+else(CMAKE_PACKAGE_PLATFORM_NAME)
+   set(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
+endif(CMAKE_PACKAGE_PLATFORM_NAME)
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${YADOMS_VERSION}-${CPACK_SYSTEM_NAME}") 
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "Yadoms")
 set(CPACK_PACKAGE_CONTACT "Jean-Michel DECORET <decoretjm@gmail.com>")
@@ -1269,3 +1272,16 @@ set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
 
 INCLUDE(CPack)
 
+
+##################################################################################################
+## SONARQUBE ANALYSIS
+##################################################################################################
+include(cmake/analysis.cmake)
+analyse(
+      yadoms
+      ${YADOMS_VERSION}
+      "${YADOMS_SRC}"
+      Yadoms.SonarQube.Analysis.txt
+      Yadoms.SonarQube.Analysis.xml
+   )
+#TODO : add analysis for all libs (shared, xxx_IPC, plugins...)

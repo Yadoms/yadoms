@@ -107,9 +107,9 @@ namespace rfxcomMessages
       boost::shared_ptr<ILighting5Subtype> m_subTypeManager;
 
       //--------------------------------------------------------------
-      /// \brief	The RSSI (percent)
+      /// \brief	The signalPower (percent)
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CRssi> m_rssi;
+      boost::shared_ptr<yApi::historization::CSignalPower> m_signalPower;
 
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances

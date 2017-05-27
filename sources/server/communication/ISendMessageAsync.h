@@ -41,11 +41,10 @@ namespace communication
       //----------------------------------------------
       ///\brief                     Send an extra command
       ///\param [in] pluginId       Plugin Id to send extra command
-      ///\param [in] query          The extra query
       ///\param [in] data           The extra query data
       ///\param [in] callback       The callback
       //----------------------------------------------
-      virtual void sendExtraQueryAsync(int pluginId,
+      virtual void sendExtraQueryAsync(int pluginId, 
                                        const shared::plugin::yPluginApi::IExtraQueryData& data,
                                        communication::callback::ISynchronousCallback<shared::CDataContainer>& callback) = 0;
 

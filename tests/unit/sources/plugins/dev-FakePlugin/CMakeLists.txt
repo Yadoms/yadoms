@@ -20,6 +20,8 @@ IF(NOT DISABLE_TEST_PLUGIN_FAKEPLUGIN)
       shared/shared/plugin/yPluginApi/historization/MessageFormatter.h
       shared/shared/plugin/yPluginApi/historization/Rssi.cpp
       shared/shared/plugin/yPluginApi/historization/Rssi.h
+      shared/shared/plugin/yPluginApi/historization/SignalPower.cpp
+      shared/shared/plugin/yPluginApi/historization/SignalPower.h
       shared/shared/plugin/yPluginApi/historization/Switch.cpp
       shared/shared/plugin/yPluginApi/historization/Switch.h
       shared/shared/plugin/yPluginApi/historization/Temperature.cpp

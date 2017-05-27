@@ -15,10 +15,10 @@ namespace rfxcomMessages
    CRemote::CRemote(boost::shared_ptr<yApi::IYPluginApi> api,
                     const std::string& command,
                     const shared::CDataContainer& deviceDetails)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_signalPower })
    {
-      m_rssi->set(0);
+      m_signalPower->set(0);
 
       createSubType(deviceDetails.get<unsigned char>("subType"));
       m_id = deviceDetails.get<unsigned int>("id");
@@ -30,8 +30,8 @@ namespace rfxcomMessages
    CRemote::CRemote(boost::shared_ptr<yApi::IYPluginApi> api,
                     const RBUF& rbuf,
                     size_t rbufSize)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_signalPower })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -44,7 +44,7 @@ namespace rfxcomMessages
       m_id = rbuf.REMOTE.id;
       m_subTypeManager->setFromProtocolState(rbuf);
 
-      m_rssi->set(NormalizeRssiLevel(rbuf.REMOTE.rssi));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.REMOTE.rssi));
 
       declare(api);
    }

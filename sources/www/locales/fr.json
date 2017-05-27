@@ -999,6 +999,8 @@
     "units": {
       "noUnit": "",
       "ampere": "A",
+      "db": "dB",
+      "dbm": "dBm",
       "cubicMetre" : "m3",
       "degrees": "°",
       "degreesCelcius": "°C",

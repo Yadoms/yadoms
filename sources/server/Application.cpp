@@ -123,7 +123,8 @@ int CYadomsServer::main(const ArgVec& /*args*/)
          YADOMS_LOG(information) << "\t\tSqlite Database path = " << m_startupOptions->getDatabaseSqliteFile();
          break;
       case startupOptions::EDatabaseEngine::kPostgresqlValue:
-         YADOMS_LOG(information) << "\t\tPostgresql host = " << m_startupOptions->getDatabasePostgresqlHost() << ":" << m_startupOptions->getDatabasePostgresqlPort();
+         YADOMS_LOG(information) << "\t\tPostgresql host = " << m_startupOptions->getDatabasePostgresqlHost()
+            << ":" << m_startupOptions->getDatabasePostgresqlPort();
          YADOMS_LOG(information) << "\t\tPostgresql database = " << m_startupOptions->getDatabasePostgresqlDbName();
          YADOMS_LOG(information) << "\t\tPostgresql login = " << m_startupOptions->getDatabasePostgresqlLogin();
          break;
@@ -146,7 +147,10 @@ int CYadomsServer::main(const ArgVec& /*args*/)
       auto pOldEH = Poco::ErrorHandler::set(&eh);
 
       //configure stop handler
-      enum { kTerminationRequested = shared::event::kUserFirstId };
+      enum
+         {
+            kTerminationRequested = shared::event::kUserFirstId
+         };
       auto stopRequestEventHandler = boost::make_shared<shared::event::CEventHandler>();
       auto stopHandler = boost::make_shared<shared::process::CApplicationStopHandler>(m_startupOptions->getIsRunningAsService());
       stopHandler->setApplicationStopHandler([stopRequestEventHandler, stoppedEventHandler]() -> bool

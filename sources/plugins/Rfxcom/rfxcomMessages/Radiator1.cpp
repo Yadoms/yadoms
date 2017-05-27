@@ -13,8 +13,8 @@ namespace rfxcomMessages
                           const shared::CDataContainer& deviceDetails)
       : m_day(boost::make_shared<yApi::historization::CSwitch>("day")),
       m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_day , m_setPoint , m_rssi })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_day , m_setPoint , m_signalPower })
    {
       if (boost::iequals(keyword, m_day->getKeyword()))
       {
@@ -29,7 +29,7 @@ namespace rfxcomMessages
       else
          throw shared::exception::CInvalidParameter(keyword);
 
-      m_rssi->set(0);
+      m_signalPower->set(0);
 
       m_subType = deviceDetails.get<unsigned char>("subType");
       m_id = deviceDetails.get<unsigned int>("id");
@@ -44,12 +44,12 @@ namespace rfxcomMessages
       : m_dayNightCmd(false),
       m_day(boost::make_shared<yApi::historization::CSwitch>("day")),
       m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_day , m_setPoint , m_rssi })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_day , m_setPoint , m_signalPower })
    {
       m_day->set(false);
       m_setPoint->set(0.0);
-      m_rssi->set(0);
+      m_signalPower->set(0);
 
       m_subType = static_cast<unsigned char>(subType);
       switch (m_subType)
@@ -75,8 +75,8 @@ namespace rfxcomMessages
       m_dayNightCmd(false),
       m_day(boost::make_shared<yApi::historization::CSwitch>("day")),
       m_setPoint(boost::make_shared<yApi::historization::CTemperature>("setPoint")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_day , m_setPoint , m_rssi })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_day , m_setPoint , m_signalPower })
    {
       // Should not be called (transmitter-only device)
       throw std::logic_error("Constructing CRadiator1 object from received buffer is not possible, CRadiator1 is transmitter-only device");

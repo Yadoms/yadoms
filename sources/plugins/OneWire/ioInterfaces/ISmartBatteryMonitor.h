@@ -17,7 +17,7 @@ namespace ioInterfaces
 
       //--------------------------------------------------------------
       /// \brief	Read temperature value
-      /// \return Temperature value (°C)
+      /// \return Temperature value (Â°C)
       //--------------------------------------------------------------
       virtual double readTemperature() const = 0;
 

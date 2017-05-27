@@ -1,10 +1,9 @@
 #pragma once
-
 #include <Poco/Net/HTTPRequestHandler.h>
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Net/HTTPServerResponse.h>
 #include <Poco/Net/WebSocket.h>
-
+#include <shared/event/EventHandler.hpp>
 #include "web/ws/FrameBase.h"
 
 namespace web
@@ -17,23 +16,34 @@ namespace web
          CWebSocketRequestHandler();
          virtual ~CWebSocketRequestHandler();
 
-         void handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response) override;
+         void handleRequest(Poco::Net::HTTPServerRequest& request,
+                            Poco::Net::HTTPServerResponse& response) override;
 
       private:
-         //--------------------------------------------------------------
-         /// \brief           Send data on the webSocket
-         /// \param[in] client Web socket client
-         /// \param[in] toSend Data to send
-         /// \return true is sending OK, false if connection lost
-         //--------------------------------------------------------------
-         static bool send(Poco::Net::WebSocket& webSocket, const ws::CFrameBase& toSend);
+         // Internal events
+         enum
+         {
+            kConnectionLost = shared::event::kUserFirstId,
+            kPing,
+            kPongReceived,
+            kPongTimeout,
+            kReceived,
+            kReceivedException,
+            kFirstMinute,
+            kEveryMinute,
+            kNewAcquisition,
+            kNewAcquisitionSummary,
+            kNewDevice,
+            kNewLogEvent,
+            kTaskProgression,
+         };
 
-         //--------------------------------------------------------------
-         /// \brief           Send PING frame on the webSocket
-         /// \param[in] client Web socket client
-         /// \return true is sending OK, false if connection lost
-         //--------------------------------------------------------------
-         static bool sendPing(Poco::Net::WebSocket& webSocket);
+         static void receiverThreaded(boost::shared_ptr<shared::event::CEventHandler> eventHandler,
+                               boost::shared_ptr<Poco::Net::WebSocket> webSocket);
+
+         static bool send(boost::shared_ptr<Poco::Net::WebSocket> webSocket,
+                          const ws::CFrameBase& toSend);
+         static bool sendPing(boost::shared_ptr<Poco::Net::WebSocket> webSocket);
       };
    } //namespace poco
 } //namespace web

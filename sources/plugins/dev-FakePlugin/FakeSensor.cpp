@@ -11,17 +11,17 @@ CFakeSensor::CFakeSensor(const std::string& deviceName)
                                                                  yApi::EKeywordAccessMode::kGet,
                                                                  yApi::historization::EMeasureType::kAbsolute,
                                                                  yApi::historization::typeInfo::CDoubleTypeInfo().setMin(0).setMax(5).setPrecision(0.1))),
-     m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+   m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
      m_dateTime(boost::make_shared<yApi::historization::CDateTime>("dateTime",
                                                                    shared::plugin::yPluginApi::EKeywordAccessMode::kGet)),
-     m_historizers({m_temperature1, m_temperature2, m_batteryLevel, m_rssi, m_dateTime, m_current}),
+     m_historizers({m_temperature1, m_temperature2, m_batteryLevel, m_signalPower, m_dateTime, m_current}),
      m_dist(0, 20)
 {
    m_temperature1->set(25.0);
    m_temperature2->set(10.0);
    m_batteryLevel->set(100);
    m_current->set(2);
-   m_rssi->set(50);
+   m_signalPower->set(50);
    m_dateTime->set(shared::currentTime::Provider().now());
 }
 
@@ -38,14 +38,14 @@ void CFakeSensor::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
 
 void CFakeSensor::read()
 {
-   // Generate a random variation on temperature (+/- 0 to 1.0°)
+   // Generate a random variation on temperature (+/- 0 to 1.0Â°)
    auto offset = static_cast<int>(m_dist(m_gen) - 10.0) / 10.0; // Random offset, value from -1.0 to 1.0
    auto temperature = m_temperature1->get() + offset;
 
    //we keep 2 decimals
    m_temperature1->set(static_cast<int>(temperature * 100) / 100.0);
 
-   // Generate a random variation on temperature (+/- 0 to 2.0°)
+   // Generate a random variation on temperature (+/- 0 to 2.0Â°)
    offset = static_cast<int>(m_dist(m_gen) - 20.0) / 20.0; // Random offset, value from -2.0 to 2.0
    temperature = m_temperature2->get() + offset;
 
@@ -59,7 +59,7 @@ void CFakeSensor::read()
    //set the current date time onto m_datetime keyword
    m_dateTime->set(shared::currentTime::Provider().now());
 
-   // Generate a random variation on temperature (+/- 0 to 1°)
+   // Generate a random variation on temperature (+/- 0 to 1Â°)
    offset = static_cast<int>(m_dist(m_gen) - 10.0) / 10.0; // Random offset, value from -1.0 to 1.0
    auto current = m_current->get() + offset;
    if (current < 0)

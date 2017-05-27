@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "CPULoad.h"
 #include <shared/exception/Exception.hpp>
-#include <stdio.h>
 #include <shared/Log.h>
 
 CCPULoad::CCPULoad(const std::string& keywordName)
@@ -63,10 +62,10 @@ void CCPULoad::read()
    try
    {
       m_keyword->set(getCpuUsage());
-      YADOMS_LOG(information) << "CPU Load : " << m_keyword->get() ;
+      YADOMS_LOG(trace) << "CPU Load : " << m_keyword->get() ;
    }
    catch (shared::exception::CException& exception)
    {
-      YADOMS_LOG(information) << "CPU Load reading failed:" << exception.what() ;
+      YADOMS_LOG(warning) << "CPU Load reading failed:" << exception.what() ;
    }
 }

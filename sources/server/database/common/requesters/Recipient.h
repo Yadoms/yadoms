@@ -1,7 +1,7 @@
 #pragma once
 
-#include "server/database/IRecipientRequester.h"
-#include "server/database/IDatabaseRequester.h"
+#include "database/IRecipientRequester.h"
+#include "database/IDatabaseRequester.h"
 
 namespace database { namespace common { namespace requesters {
 

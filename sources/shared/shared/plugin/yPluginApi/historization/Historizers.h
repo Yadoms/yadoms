@@ -27,6 +27,7 @@
 #include "Rssi.h"
 #include "Speed.h"
 #include "Switch.h"
+#include "SignalPower.h"
 #include "Temperature.h"
 #include "Text.h"
 #include "UpDownStop.h"
