@@ -8,11 +8,11 @@
          "description": "",
          "content": {   
              "rssiMax": {
-               "name": "Valeur maximale de rssi.",
+               "name": "Valeur maximale de rssi",
                "description": ""
              },         
              "rssiMin": {
-               "name": "Valeur minimale de rssi.",
+               "name": "Valeur minimale de rssi",
                "description": ""
              },
              "tensionMin": {
