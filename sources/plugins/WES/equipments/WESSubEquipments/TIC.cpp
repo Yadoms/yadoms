@@ -8,7 +8,7 @@ namespace equipments
    {
       CTIC::CTIC(boost::shared_ptr<yApi::IYPluginApi> api,
                  const std::string& deviceName,
-                 const std::string& contract) :
+                 const int contract) :
          m_deviceName(deviceName),
          m_deviceType("TIC"),
          m_contractName(contract),
@@ -39,48 +39,48 @@ namespace equipments
 
          m_keywords.push_back(m_deviceStatus);
 
-         if (m_contractName.compare("Pas Dispo")!=0)
+         switch (m_contractName)
          {
+         case 0:
+            m_keywords.push_back(m_baseCounter);
             m_teleInfoStatus->set(specificHistorizers::EStatus::kOk);
             m_keywords.push_back(m_apparentPower);
             m_keywords.push_back(m_TimePeriod);
-
-            if (m_contractName.compare("Base")==0)
-            {
-               m_keywords.push_back(m_baseCounter);
-            }
-            else if (m_contractName.compare("HP/HC")==0)
-            {
-               m_keywords.push_back(m_lowCostCounter);
-               m_keywords.push_back(m_normalCostCounter);
-            }
-            else if (m_contractName.compare("EJP")==0)
-            {
-               m_keywords.push_back(m_EJPPeakPeriod);
-               m_keywords.push_back(m_EJPNormalPeriod);
-            }
-            else if (m_contractName.compare("BBR")==0)
-            {
-               m_keywords.push_back(m_tempoBlueDaysLowCostPeriod);
-               m_keywords.push_back(m_tempoBlueDaysNormalCostPeriod);
-               m_keywords.push_back(m_tempoRedDaysLowCostPeriod);
-               m_keywords.push_back(m_tempoRedDaysNormalCostPeriod);
-               m_keywords.push_back(m_tempoWhiteDaysLowCostPeriod);
-               m_keywords.push_back(m_tempoWhiteDaysNormalCostPeriod);
-            }
-            else
-            {
-               YADOMS_LOG(error) << "This contract is unknown";
-            }
-         }
-         else
-         {
+            break;
+         case 1:
+            m_keywords.push_back(m_lowCostCounter);
+            m_keywords.push_back(m_normalCostCounter);
+            m_teleInfoStatus->set(specificHistorizers::EStatus::kOk);
+            m_keywords.push_back(m_apparentPower);
+            m_keywords.push_back(m_TimePeriod);
+            break;
+         case 2:
+            m_keywords.push_back(m_EJPPeakPeriod);
+            m_keywords.push_back(m_EJPNormalPeriod);
+            m_teleInfoStatus->set(specificHistorizers::EStatus::kOk);
+            m_keywords.push_back(m_apparentPower);
+            m_keywords.push_back(m_TimePeriod);
+            break;
+         case 3:
+            m_keywords.push_back(m_tempoBlueDaysLowCostPeriod);
+            m_keywords.push_back(m_tempoBlueDaysNormalCostPeriod);
+            m_keywords.push_back(m_tempoRedDaysLowCostPeriod);
+            m_keywords.push_back(m_tempoRedDaysNormalCostPeriod);
+            m_keywords.push_back(m_tempoWhiteDaysLowCostPeriod);
+            m_keywords.push_back(m_tempoWhiteDaysNormalCostPeriod);
+            m_teleInfoStatus->set(specificHistorizers::EStatus::kOk);
+            m_keywords.push_back(m_apparentPower);
+            m_keywords.push_back(m_TimePeriod);
+            break;
+         default:
+            YADOMS_LOG(error) << "This contract is unknown";
             m_teleInfoStatus->set(specificHistorizers::EStatus::kDesactivated);
+            break;
          }
 
          m_keywords.push_back(m_teleInfoStatus);
 
-         std::string model = "TIC";
+         std::string model = "TIC"; // TODO : Ajouter ici l'identifiant du compteur
          details.set("type", m_deviceType);
 
          //Déclaration of all IOs
@@ -89,8 +89,8 @@ namespace equipments
 
       void CTIC::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                   specificHistorizers::EdeviceStatus newState,
-                                  const std::string& contractName,
-                                  const std::string& timePeriod,
+                                  const int contractName,
+                                  const int timePeriod,
                                   const unsigned int apparentPower,
                                   const Poco::Int64& counter1,
                                   const Poco::Int64& counter2,
@@ -102,52 +102,43 @@ namespace equipments
          m_deviceStatus->set(newState);
 
          // In case of contract change -> create new keywords
-         if (m_contractName.compare(contractName) != 0)
+         if (m_contractName != contractName)
          {
             m_contractName = contractName;
             initializeTIC(api);
          }
 
-         if (m_contractName.compare("Base") == 0)
+         switch (contractName)
          {
+         case 0:
             m_baseCounter->set(counter1);
-         }
-         else if (m_contractName.compare("HP/HC") == 0)
-         {
+            break;
+         case 1:
             m_lowCostCounter->set(counter1);
             m_normalCostCounter->set(counter2);
-         }
-         else if (m_contractName.compare("EJP") == 0)
-         {
+            break;
+         case 2:
             m_EJPPeakPeriod->set(counter1);
             m_EJPNormalPeriod->set(counter2);
-         }
-         else if (m_contractName.compare("BBR") == 0)
-         {
+            break;
+         case 3:
             m_tempoBlueDaysLowCostPeriod->set(counter1);
             m_tempoBlueDaysNormalCostPeriod->set(counter2);
             m_tempoRedDaysLowCostPeriod->set(counter3);
             m_tempoRedDaysNormalCostPeriod->set(counter4);
             m_tempoWhiteDaysLowCostPeriod->set(counter5);
             m_tempoWhiteDaysNormalCostPeriod->set(counter6);
-         }
-         else
-         {
+            break;
+         default:
             YADOMS_LOG(error) << "This contract is unknown";
+            break;
          }
 
          YADOMS_LOG(information) << "Time period :" << timePeriod;
 
-         // Time Period
-         // TODO : Ne doit pas être appliquer si rien d'actif
-         if (timePeriod.compare("Toutes Heures") == 0)
-         {
+         // TODO : A voir comment traiter les cas interdits !
+         if (timePeriod==0)
             m_TimePeriod->set(specificHistorizers::EPeriod::kAllHours);
-         }
-         else
-         {
-            YADOMS_LOG(error) << "This time period is unknown";
-         }
 
          m_apparentPower->set(apparentPower);
 

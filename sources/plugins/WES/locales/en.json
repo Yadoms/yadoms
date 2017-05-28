@@ -7,6 +7,41 @@
 			"description": "Retrieve names from devices"
 		}
 	},
+	"enumerations": {
+		"EdeviceStatus": {
+			"name" : "Device status",
+			"values" : {
+				"Undefined": "Undefined",
+				"Ok": "Ok",
+				"Error": "Error",
+				"TimeOut": "Time out"
+			}
+		},
+		"EPeriod": {
+			"name" : "Running period",
+			"values" : {
+				"AllHours": "All hours",
+				"LowCostHours": "Low cost hours",
+				"PeakCostHour": "Peak cost hour",
+				"NormalCostHours": "Normal cost hours",
+            "MobilePeakCostHours": "Mobile peak cost hours",
+            "LowCostBlueDays": "Low cost blue day",
+            "LowCostWhiteDays": "Low cost white day",
+            "LowCostRedDays": "Low cost red day",
+            "NormalCostBlueDays": "Normal cost blue day",
+            "NormalCostWhiteDays": "Normal cost white day",
+            "NormalCostRedDays": "Normal cost red day"
+			}
+		},
+		"EStatus": {
+			"name" : "Télé-info Status",
+			"values" : {
+				"Ok": "Ok",
+				"Error": "Error",
+				"Desactivated": "Désactivate"
+			}
+		}      
+	},     
 	"deviceConfiguration": {
 		"staticConfigurationSchema": {
 			"name": "Type",
@@ -80,7 +115,7 @@
 				}
 			}
 		}
-	},
+	}, 
 	"customLabels": {
 		"pluginState": {
 			"initialization": "Initializing...",

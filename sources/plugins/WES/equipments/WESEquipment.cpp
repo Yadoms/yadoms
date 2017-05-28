@@ -28,7 +28,7 @@ namespace equipments
       {
          boost::shared_ptr<equipments::subdevices::CTIC> temp = boost::make_shared<equipments::subdevices::CTIC>(api, 
                                                                                                                   TICContainerName.get<std::string>("TIC" + boost::lexical_cast<std::string>(counter)),
-                                                                                                                  TICContainerName.get<std::string>("contract" + boost::lexical_cast<std::string>(counter)));
+                                                                                                                  TICContainerName.get<int>("contract" + boost::lexical_cast<std::string>(counter)));
          m_TICList.push_back(temp);
       }
 
@@ -95,7 +95,7 @@ namespace equipments
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
       std::string relayName[2], TICName[2], ClampName[4], AnalogName[4], inputName[2];
-      std::string contract[2];
+      int contract[2];
       std::string PulseType[4];
       std::string PulseName[4];
 
@@ -121,8 +121,8 @@ namespace equipments
                                                                        credentials,
                                                                        CGXfileName);
 
-            contract[0] = results.get<std::string>("CPT1_abo_name");
-            contract[1] = results.get<std::string>("CPT2_abo_name");
+            contract[0] = results.get<int>("CPT1_abo_name");
+            contract[1] = results.get<int>("CPT2_abo_name");
 
             results.printToLog(YADOMS_LOG(information));
 
@@ -157,8 +157,8 @@ namespace equipments
          }
          else  // Defaults names
          {
-            contract[0] = "Pas Dispo";
-            contract[1] = "Pas Dispo";
+            contract[0] = 6;
+            contract[1] = 6;
 
             relayName[0] = "R01";
             relayName[1] = "R02";
@@ -411,8 +411,8 @@ namespace equipments
          {
             m_TICList[counter]->updateFromDevice(api,
                                                  m_deviceStatus->get(),
-                                                 results.get<std::string>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_abo_name"),
-                                                 results.get<std::string>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_PTarif"),
+                                                 results.get<int>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_abo_name"),
+                                                 results.get<int>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_PTarif"),
                                                  results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_P"),
                                                  results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_1"),
                                                  results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_2"),
@@ -436,8 +436,11 @@ namespace equipments
          setDeviceState(keywordsToHistorize, specificHistorizers::EdeviceStatus::kError);
          api->historizeData(m_deviceName, keywordsToHistorize);
 
-         for (int counter = 0; counter < WES_TIC_QTY; ++counter)
-            m_TICList[counter]->setDeviceState(api, specificHistorizers::EdeviceStatus::kError);
+         if (m_TICList.size() == WES_TIC_QTY)
+         {
+            for (int counter = 0; counter < WES_TIC_QTY; ++counter)
+               m_TICList[counter]->setDeviceState(api, specificHistorizers::EdeviceStatus::kError);
+         }
       }
    }
 

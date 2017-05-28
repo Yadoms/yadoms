@@ -7,6 +7,41 @@
 			"description": "Récupère le nom des données de l'équipement"
 		}
 	},
+	"enumerations": {
+		"EdeviceStatus": {
+			"name" : "Etat de l'équipement",
+			"values" : {
+				"Undefined": "Indéfini",
+				"Ok": "Ok",
+				"Error": "Erreur",
+				"TimeOut": "Connection perdue"
+			}
+		},
+		"EPeriod": {
+			"name" : "Période tarifaire",
+			"values" : {
+				"AllHours": "Toutes heures",
+				"LowCostHours": "Heures creuses",
+				"PeakCostHour": "Heures pleines",
+				"NormalCostHours": "Heures pleines",
+            "MobilePeakCostHours": "heures pointe mobile",
+            "LowCostBlueDays": "Heures creuses bleues",
+            "LowCostWhiteDays": "Heures creuses blanches",
+            "LowCostRedDays": "Heures creuses rouges",
+            "NormalCostBlueDays": "Heures pleines bleues",
+            "NormalCostWhiteDays": "Heures pleines blanches",
+            "NormalCostRedDays": "Heures pleines rouges"
+			}
+		},
+		"EStatus": {
+			"name" : "Etat de la télé-info",
+			"values" : {
+				"Ok": "Ok",
+				"Error": "Erreur",
+				"Desactivated": "Désactivée"
+			}
+		}      
+	},   
 	"deviceConfiguration": {
 		"staticConfigurationSchema": {
 			"name": "Type",

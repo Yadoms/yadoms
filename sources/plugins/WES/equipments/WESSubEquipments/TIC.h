@@ -26,7 +26,7 @@ namespace equipments
          //-----------------------------------------------------
          CTIC(boost::shared_ptr<yApi::IYPluginApi> api,
               const std::string& deviceName,
-              const std::string& contract);
+              const int contract);
 
          //-----------------------------------------------------
          ///\brief                                      updateFromDevice
@@ -44,8 +44,8 @@ namespace equipments
          //-----------------------------------------------------
          void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                specificHistorizers::EdeviceStatus newState,
-                               const std::string& contractName,
-                               const std::string& timePeriod,
+                               const int contractName,
+                               const int timePeriod,
                                const unsigned int apparentPower,
                                const Poco::Int64& counter1,
                                const Poco::Int64& counter2,
@@ -105,7 +105,8 @@ namespace equipments
          //-----------------------------------------------------
          ///\brief                     The contract name
          //-----------------------------------------------------
-         std::string m_contractName;
+         //TODO : Créer un enum
+         int m_contractName;
 
          //--------------------------------------------------------------
          /// \brief  Keywords list
