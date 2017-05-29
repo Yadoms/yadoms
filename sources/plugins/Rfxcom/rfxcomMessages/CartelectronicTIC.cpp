@@ -50,24 +50,24 @@ namespace rfxcomMessages
             // Forecast information
             m_forecast = boost::make_shared<teleInfo::specificHistorizers::CColor>("ForecastTomorrow");
             m_keywords.push_back(m_forecast);
-            m_forecast->set(teleInfo::specificHistorizers::EColor((rbuf.TIC.state & 0x18) >> 3));
+            m_forecast->set(teleInfo::specificHistorizers::ERFXCOMTeleInfoColor((rbuf.TIC.state & 0x18) >> 3));
             //---------------------
 
             // Counter dependant of the Period
             switch (rbuf.TIC.contract_type & 0x0f)
             {
-            case teleInfo::specificHistorizers::EPeriod::kLowCostBlueDaysValue:
-            case teleInfo::specificHistorizers::EPeriod::kNormalCostBlueDaysValue:
+            case teleInfo::specificHistorizers::ERFXCOMTeleInfoPeriod::kLowCostBlueDaysValue:
+            case teleInfo::specificHistorizers::ERFXCOMTeleInfoPeriod::kNormalCostBlueDaysValue:
                NameCounter1 = "LowCostBLUE";
                NameCounter2 = "NormalCostBLUE";
                break;
-            case teleInfo::specificHistorizers::EPeriod::kLowCostWhiteDaysValue:
-            case teleInfo::specificHistorizers::EPeriod::kNormalCostWhiteDaysValue:
+            case teleInfo::specificHistorizers::ERFXCOMTeleInfoPeriod::kLowCostWhiteDaysValue:
+            case teleInfo::specificHistorizers::ERFXCOMTeleInfoPeriod::kNormalCostWhiteDaysValue:
                NameCounter1 = "LowCostWHITE";
                NameCounter2 = "NormalCostWHITE";
                break;
-            case teleInfo::specificHistorizers::EPeriod::kLowCostRedDaysValue:
-            case teleInfo::specificHistorizers::EPeriod::kNormalCostRedDaysValue:
+            case teleInfo::specificHistorizers::ERFXCOMTeleInfoPeriod::kLowCostRedDaysValue:
+            case teleInfo::specificHistorizers::ERFXCOMTeleInfoPeriod::kNormalCostRedDaysValue:
                NameCounter1 = "LowCostRED";
                NameCounter2 = "NormalCostRED";
                break;
@@ -106,7 +106,7 @@ namespace rfxcomMessages
          //Period time
          m_period = boost::make_shared<teleInfo::specificHistorizers::CPeriod>("RunningPeriod");
          m_keywords.push_back(m_period);
-         m_period->set(teleInfo::specificHistorizers::EPeriod(rbuf.TIC.contract_type & 0x0F));
+         m_period->set(teleInfo::specificHistorizers::ERFXCOMTeleInfoPeriod(rbuf.TIC.contract_type & 0x0F));
          //---------
       }
    }

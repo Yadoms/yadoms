@@ -11,7 +11,7 @@ namespace teleInfo {
       //-----------------------------------------------------
       ///\brief  All periods
       //-----------------------------------------------------   
-      DECLARE_ENUM_HEADER(EPeriod,
+      DECLARE_ENUM_HEADER(ERFXCOMTeleInfoPeriod,
          ((NotDefined))
          ((AllHours))
          ((LowCostHours))
@@ -29,7 +29,7 @@ namespace teleInfo {
       //-----------------------------------------------------
       ///\brief A Running Period object
       //-----------------------------------------------------
-      class CPeriod : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EPeriod>
+      class CPeriod : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<ERFXCOMTeleInfoPeriod>
       {
       public:
          //-----------------------------------------------------

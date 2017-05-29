@@ -15,17 +15,17 @@ CForecastTomorrow::CForecastTomorrow(boost::shared_ptr<yApi::IYPluginApi> api, c
 void CForecastTomorrow::set(const std::string& Value) const
 {
    static const EnumColorMap EEnumColorMap = boost::assign::map_list_of
-      ("----", teleInfo::specificHistorizers::EColor::kNOTDEFINED)
-      ("BLEU", teleInfo::specificHistorizers::EColor::kBLUE)
-      ("BLAN", teleInfo::specificHistorizers::EColor::kWHITE)
-      ("ROUG", teleInfo::specificHistorizers::EColor::kRED);
+      ("----", teleInfo::specificHistorizers::ETeleInfoColor::kNOTDEFINED)
+      ("BLEU", teleInfo::specificHistorizers::ETeleInfoColor::kBLUE)
+      ("BLAN", teleInfo::specificHistorizers::ETeleInfoColor::kWHITE)
+      ("ROUG", teleInfo::specificHistorizers::ETeleInfoColor::kRED);
 
    try
    {
       auto it = EEnumColorMap.find(Value);
       if (it != EEnumColorMap.end())
       {
-         m_forecastPeriod->set(static_cast<teleInfo::specificHistorizers::EColor>(it->second));
+         m_forecastPeriod->set(static_cast<teleInfo::specificHistorizers::ETeleInfoColor>(it->second));
 
          if (m_isDeveloperMode) YADOMS_LOG(information) << m_forecastPeriod->getKeyword() << "=" << m_forecastPeriod->get() ;
       }

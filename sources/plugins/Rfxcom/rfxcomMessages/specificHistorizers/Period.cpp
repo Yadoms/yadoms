@@ -8,7 +8,7 @@ namespace teleInfo
 {
    namespace specificHistorizers
    {
-      DECLARE_ENUM_IMPLEMENTATION(EPeriod,
+      DECLARE_ENUM_IMPLEMENTATION(ERFXCOMTeleInfoPeriod,
          ((NotDefined))
          ((AllHours))
          ((LowCostHours))
@@ -23,12 +23,12 @@ namespace teleInfo
          ((NormalCostRedDays))
       );
 
-      DECLARE_CAPACITY(PeriodCapacity, "Period", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+      DECLARE_CAPACITY(PeriodCapacity, "Period", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
       CPeriod::CPeriod(const std::string& keywordName)
-         : CSingleHistorizableData<EPeriod>(keywordName,
-                                            PeriodCapacity(),
-                                            shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
+         : CSingleHistorizableData<ERFXCOMTeleInfoPeriod>(keywordName,
+                                                          PeriodCapacity(),
+                                                          shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
       {
       }
 
