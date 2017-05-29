@@ -8,7 +8,7 @@
 		}
 	},
 	"enumerations": {
-		"ETeleInfoColor": {
+		"EColor": {
 			"name" : "Couleur de demain",
 			"values" : {
 				"NOTDEFINED": "Pas définie",
@@ -17,7 +17,7 @@
 				"RED": "Rouge"
 			}
 		},
-		"ETeleInfoPeriod": {
+		"EPeriod": {
 			"name" : "Période tarifaire",
 			"values" : {
 				"AllHours": "Toutes heures",

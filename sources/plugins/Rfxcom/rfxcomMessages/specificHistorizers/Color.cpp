@@ -8,7 +8,7 @@ namespace teleInfo
 {
    namespace specificHistorizers
    {
-      DECLARE_ENUM_IMPLEMENTATION(ERFXCOMTeleInfoColor,
+      DECLARE_ENUM_IMPLEMENTATION(EColor,
          ((NOTDEFINED))
          ((BLUE))
          ((WHITE))
@@ -18,9 +18,9 @@ namespace teleInfo
       DECLARE_CAPACITY(ColorCapacity, "ForecastPrice", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
       CColor::CColor(const std::string& keywordName)
-         : CSingleHistorizableData<ERFXCOMTeleInfoColor>(keywordName,
-                                                         ColorCapacity(),
-                                                         shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
+         : CSingleHistorizableData<EColor>(keywordName,
+                                           ColorCapacity(),
+                                           shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
       {
       }
 

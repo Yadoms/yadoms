@@ -44,7 +44,7 @@
       }
    },
 	"enumerations": {
-		"ERFXCOMTeleInfoColor": {
+		"EColor": {
 			"name" : "Couleur de demain",
 			"values" : {
 				"NOTDEFINED": "Pas définie",
@@ -53,7 +53,7 @@
 				"RED": "Rouge"
 			}
 		},
-		"ERFXCOMTeleInfoPeriod": {
+		"EPeriod": {
 			"name" : "Période tarifaire",
 			"values" : {
 				"AllHours": "Toutes heures",

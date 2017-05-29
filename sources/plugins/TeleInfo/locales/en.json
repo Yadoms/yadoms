@@ -8,7 +8,7 @@
 		}
 	},
 	"enumerations": {
-		"ETeleInfoColor": {
+		"EColor": {
 			"name" : "Period color for tomorrow",
 			"values" : {
 				"NOTDEFINED": "Not defined",
@@ -17,7 +17,7 @@
 				"RED": "Red"
 			}
 		},
-		"ETeleInfoPeriod": {
+		"EPeriod": {
 			"name" : "Running period",
 			"values" : {
 				"AllHours": "All hours",
