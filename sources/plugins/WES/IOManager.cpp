@@ -101,9 +101,9 @@ shared::CDataContainer CIOManager::bindMasterDevice()
    return en;
 }
 
-std::vector<specificHistorizers::EdeviceStatus> CIOManager::getMasterdeviceStates()
+std::vector<specificHistorizers::EWESdeviceStatus> CIOManager::getMasterdeviceStates()
 {
-   std::vector<specificHistorizers::EdeviceStatus> devicesStatus;
+   std::vector<specificHistorizers::EWESdeviceStatus> devicesStatus;
    std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorMasterDevice;
 
    for (iteratorMasterDevice = m_masterDeviceManager.begin(); iteratorMasterDevice != m_masterDeviceManager.end(); ++iteratorMasterDevice)

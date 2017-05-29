@@ -7,7 +7,7 @@
 t <form>
 # COMPTEURS TELEINFO
 # COMPTEUR 1
-c T P1 <html><id>CPT1_PTarif</id><value>%d</value></html>
+c TP1 <html><id>CPT1_PTarif</id><value>%d</value></html>
 c e d <html><id>CPT1_abo_name</id><value>%d</value></html>
 c ii0 <html><id>CPT1_IINST_mono</id><value>%d A</value></html>
 c i p <html><id>CPT1_P</id><value>%d</value></html>
@@ -18,7 +18,7 @@ c Ti4 <html><id>CPT1_INDEX_4</id><value>%09d</value></html>
 c Ti5 <html><id>CPT1_INDEX_5</id><value>%09d</value></html>
 c Ti6 <html><id>CPT1_INDEX_6</id><value>%09d</value></html>
 # COMPTEUR 2
-c T P2 <html><id>CPT2_PTarif</id><value>%d</value></html>
+c TP2 <html><id>CPT2_PTarif</id><value>%d</value></html>
 c e D <html><id>CPT2_abo_name</id><value>%d</value></html>
 c Ii0 <html><id>CPT2_IINST_mono</id><value>%d A</value></html>
 c I p <html><id>CPT2_P</id><value>%d</value></html>

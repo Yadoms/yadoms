@@ -15,7 +15,7 @@
 				"Ok": "Ok",
 				"Error": "Erreur",
 				"TimeOut": "Connection perdue"
-			}
+			},         
 		},
 		"EPeriod": {
 			"name" : "Période tarifaire",
@@ -30,7 +30,12 @@
             "LowCostRedDays": "Heures creuses rouges",
             "NormalCostBlueDays": "Heures pleines bleues",
             "NormalCostWhiteDays": "Heures pleines blanches",
-            "NormalCostRedDays": "Heures pleines rouges"
+            "NormalCostRedDays": "Heures pleines rouges",
+            "WinterNormalCost": "Heures pleines hiver",
+            "WinterLowCost": "Heures creuses hiver",
+            "SummerNormalCost": "Heures pleines été",
+            "SummerLowCost": "Heures creuses été",
+            "WinterCost": "Heures hiver"            
 			}
 		},
 		"EStatus": {
@@ -38,6 +43,7 @@
 			"values" : {
 				"Ok": "Ok",
 				"Error": "Erreur",
+            "TeleInfoLost": "Perte télé-info",
 				"Desactivated": "Désactivée"
 			}
 		}      

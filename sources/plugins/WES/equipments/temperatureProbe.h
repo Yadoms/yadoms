@@ -41,7 +41,7 @@ namespace equipments
                        const std::string& keyword,
                        boost::shared_ptr<const yApi::IDeviceCommand> command) override;
       void remove(boost::shared_ptr<yApi::IYPluginApi> api) override;
-      specificHistorizers::EdeviceStatus getStatus() const override;
+      specificHistorizers::EWESdeviceStatus getStatus() const override;
       // [END] IExtension implementation
 
       //-----------------------------------------------------

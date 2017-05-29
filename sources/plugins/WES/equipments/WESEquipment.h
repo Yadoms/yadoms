@@ -63,7 +63,7 @@ namespace equipments
                        const std::string& keyword,
                        boost::shared_ptr<const yApi::IDeviceCommand> command) override;
       void remove(boost::shared_ptr<yApi::IYPluginApi> api) override;
-      specificHistorizers::EdeviceStatus getStatus() const override;
+      specificHistorizers::EWESdeviceStatus getStatus() const override;
       // [END] IEquipment implementation
 
       //-----------------------------------------------------
@@ -90,7 +90,7 @@ namespace equipments
       ///\param[in] newState            the new state
       //-----------------------------------------------------
       void setDeviceState(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize, 
-                          specificHistorizers::EdeviceStatus newState);
+                          specificHistorizers::EWESdeviceStatus newState);
 
       //-----------------------------------------------------
       ///\brief                     The device name

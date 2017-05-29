@@ -3,13 +3,13 @@
 #include <shared/enumeration/EnumHelpers.hpp>
 #include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 
-//TODO V2 : To be copy in a library teleInfo
 namespace specificHistorizers
 {  
    //-----------------------------------------------------
    ///\brief  All periods
    //-----------------------------------------------------   
-   DECLARE_ENUM_HEADER(EPeriod,
+   DECLARE_ENUM_HEADER(EWESTeleInfoPeriod,
+      ((NotDefined))
       ((AllHours))
       ((LowCostHours))
       ((PeakCostHours))
@@ -21,12 +21,17 @@ namespace specificHistorizers
       ((NormalCostBlueDays))
       ((NormalCostWhiteDays))
       ((NormalCostRedDays))
+      ((WinterNormalCost))
+      ((WinterLowCost))
+      ((SummerNormalCost))
+      ((SummerLowCost))
+      ((WinterCost))
    );
 
    //-----------------------------------------------------
    ///\brief A Running Period object
    //-----------------------------------------------------
-   class CPeriod : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EPeriod>
+   class CPeriod : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EWESTeleInfoPeriod>
    {
    public:
       //-----------------------------------------------------

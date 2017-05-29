@@ -3,10 +3,10 @@
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 
-//TODO V2 : To be copy in a library teleInfo
 namespace specificHistorizers
 {
-   DECLARE_ENUM_IMPLEMENTATION(EPeriod,
+   DECLARE_ENUM_IMPLEMENTATION(EWESTeleInfoPeriod,
+      ((NotDefined))
       ((AllHours))
       ((LowCostHours))
       ((PeakCostHours))
@@ -18,14 +18,19 @@ namespace specificHistorizers
       ((NormalCostBlueDays))
       ((NormalCostWhiteDays))
       ((NormalCostRedDays))
+      ((WinterNormalCost))
+      ((WinterLowCost))
+      ((SummerNormalCost))
+      ((SummerLowCost))
+      ((WinterCost))
    );
 
-   DECLARE_CAPACITY(PeriodCapacity, "Period", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+   DECLARE_CAPACITY(PeriodCapacity, "Period", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
    CPeriod::CPeriod(const std::string& keywordName)
-      : CSingleHistorizableData<EPeriod>(keywordName,
-                                          PeriodCapacity(),
-                                          shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
+      : CSingleHistorizableData<EWESTeleInfoPeriod>(keywordName,
+                                                    PeriodCapacity(),
+                                                    shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
    {
    }
 

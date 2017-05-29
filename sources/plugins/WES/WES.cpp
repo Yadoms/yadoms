@@ -244,15 +244,15 @@ void CWES::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, const
 
 void CWES::analyzePluginState(boost::shared_ptr<yApi::IYPluginApi> api)
 {
-   std::vector<specificHistorizers::EdeviceStatus>::const_iterator devicesStatusIterator;
-   std::vector<specificHistorizers::EdeviceStatus> devicesStatus = m_ioManager->getMasterdeviceStates();
+   std::vector<specificHistorizers::EWESdeviceStatus>::const_iterator devicesStatusIterator;
+   std::vector<specificHistorizers::EWESdeviceStatus> devicesStatus = m_ioManager->getMasterdeviceStates();
    EWESPluginState newState = EWESPluginState::kRunning; // default state
 
    for (devicesStatusIterator = devicesStatus.begin(); devicesStatusIterator != devicesStatus.end(); ++devicesStatusIterator)
    {
       if (
-         ((*devicesStatusIterator) == specificHistorizers::EdeviceStatus::kTimeOut) ||
-         ((*devicesStatusIterator) == specificHistorizers::EdeviceStatus::kError))
+         ((*devicesStatusIterator) == specificHistorizers::EWESdeviceStatus::kTimeOut) ||
+         ((*devicesStatusIterator) == specificHistorizers::EWESdeviceStatus::kError))
       {
          newState = EWESPluginState::kAtLeastOneConnectionFaulty;
       }

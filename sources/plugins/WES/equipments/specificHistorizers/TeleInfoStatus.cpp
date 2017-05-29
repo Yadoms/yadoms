@@ -3,21 +3,21 @@
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 
-//TODO_V2 : To be copy in a library teleInfo
 namespace specificHistorizers
 {
-   DECLARE_ENUM_IMPLEMENTATION(EStatus,
+   DECLARE_ENUM_IMPLEMENTATION(EWESTeleInfoStatus,
       ((Ok))
       ((Error))
+      ((TeleInfoLost))
       ((Desactivated))
    );
 
-   DECLARE_CAPACITY(StatusCapacity, "Status", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+   DECLARE_CAPACITY(StatusCapacity, "Status", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
    CTeleInfoStatus::CTeleInfoStatus(const std::string& keywordName)
-      : CSingleHistorizableData<EStatus>(keywordName,
-                                          StatusCapacity(),
-                                          shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
+      : CSingleHistorizableData<EWESTeleInfoStatus>(keywordName,
+                                                    StatusCapacity(),
+                                                    shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
    {
    }
 

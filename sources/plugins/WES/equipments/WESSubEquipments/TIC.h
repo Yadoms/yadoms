@@ -13,6 +13,19 @@ namespace equipments
    namespace subdevices
    {
       //-----------------------------------------------------
+      ///\brief                     Contracts list
+      //-----------------------------------------------------
+      typedef enum {
+         Base,
+         HpHc,
+         Ejp,
+         Tempo,
+         BT4SUP36,
+         BJEJP,
+         NotAvailable
+      }ContractAvailable;
+
+      //-----------------------------------------------------
       ///\brief WES equipment
       //-----------------------------------------------------
       class CTIC
@@ -22,11 +35,13 @@ namespace equipments
          ///\brief                     Constructor
          ///\param[in]   api          Yadoms API
          ///\param[in] device         The device name
+         ///\param[in] counterId      The counter Id with 12 digits
          ///\param[in] contract       The contract subscribe
          //-----------------------------------------------------
          CTIC(boost::shared_ptr<yApi::IYPluginApi> api,
               const std::string& deviceName,
-              const int contract);
+              const std::string& counterId,
+              const ContractAvailable contract);
 
          //-----------------------------------------------------
          ///\brief                                      updateFromDevice
@@ -43,8 +58,9 @@ namespace equipments
          ///\param[in] counter6                        6th counter sent by the wes
          //-----------------------------------------------------
          void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                               specificHistorizers::EdeviceStatus newState,
-                               const int contractName,
+                               specificHistorizers::EWESdeviceStatus newState,
+                               const ContractAvailable contractName,
+                               const std::string& counterId,
                                const int timePeriod,
                                const unsigned int apparentPower,
                                const Poco::Int64& counter1,
@@ -66,7 +82,7 @@ namespace equipments
          ///\param[in]   newState     new state of the device
          //-----------------------------------------------------
          void setDeviceState(boost::shared_ptr<yApi::IYPluginApi> api,
-                             specificHistorizers::EdeviceStatus newState);
+                             specificHistorizers::EWESdeviceStatus newState);
 
          //-----------------------------------------------------
          ///\brief                     get the device name
@@ -83,14 +99,22 @@ namespace equipments
          //-----------------------------------------------------
          ///\brief                     initializeTIC
          ///\param[in]   api          Yadoms API
+         ///\param[in]   counterId    the counterId with 12 digits
          //-----------------------------------------------------
-         void initializeTIC(boost::shared_ptr<yApi::IYPluginApi> api);
+         void initializeTIC(boost::shared_ptr<yApi::IYPluginApi> api,
+                            const std::string& counterId);
 
          //-----------------------------------------------------
          ///\brief                     set the state of the device only when this one change
          ///\param[in]   newState          Yadoms API
          //-----------------------------------------------------
-         void setDeviceState(specificHistorizers::EdeviceStatus newState);
+         void setDeviceState(specificHistorizers::EWESdeviceStatus newState);
+
+         //-----------------------------------------------------
+         ///\brief                     set the period time. The value depends of the contract
+         ///\param[in]   period          the period number
+         //-----------------------------------------------------
+         void setPeriodTime(const int period);
 
          //-----------------------------------------------------
          ///\brief                     The device name
@@ -105,8 +129,7 @@ namespace equipments
          //-----------------------------------------------------
          ///\brief                     The contract name
          //-----------------------------------------------------
-         //TODO : Créer un enum
-         int m_contractName;
+         ContractAvailable m_contractName;
 
          //--------------------------------------------------------------
          /// \brief  Keywords list

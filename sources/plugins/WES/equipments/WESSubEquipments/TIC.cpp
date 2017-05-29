@@ -8,7 +8,8 @@ namespace equipments
    {
       CTIC::CTIC(boost::shared_ptr<yApi::IYPluginApi> api,
                  const std::string& deviceName,
-                 const int contract) :
+                 const std::string& counterId,
+                 const ContractAvailable contract) :
          m_deviceName(deviceName),
          m_deviceType("TIC"),
          m_contractName(contract),
@@ -29,10 +30,11 @@ namespace equipments
          m_deviceStatus(boost::make_shared<specificHistorizers::CdeviceStatus>("DeviceStatus"))
       {
          // TODO : Add need to declare
-         initializeTIC(api);
+         initializeTIC(api, counterId);
       }
 
-      void CTIC::initializeTIC(boost::shared_ptr<yApi::IYPluginApi> api)
+      void CTIC::initializeTIC(boost::shared_ptr<yApi::IYPluginApi> api,
+                               const std::string& counterId)
       {
          shared::CDataContainer details;
          m_keywords.clear();
@@ -41,46 +43,50 @@ namespace equipments
 
          switch (m_contractName)
          {
-         case 0:
+         case Base:
             m_keywords.push_back(m_baseCounter);
-            m_teleInfoStatus->set(specificHistorizers::EStatus::kOk);
+            m_teleInfoStatus->set(specificHistorizers::EWESTeleInfoStatus::kOk);
             m_keywords.push_back(m_apparentPower);
             m_keywords.push_back(m_TimePeriod);
             break;
-         case 1:
+         case HpHc:
             m_keywords.push_back(m_lowCostCounter);
             m_keywords.push_back(m_normalCostCounter);
-            m_teleInfoStatus->set(specificHistorizers::EStatus::kOk);
+            m_teleInfoStatus->set(specificHistorizers::EWESTeleInfoStatus::kOk);
             m_keywords.push_back(m_apparentPower);
             m_keywords.push_back(m_TimePeriod);
             break;
-         case 2:
+         case Ejp:
             m_keywords.push_back(m_EJPPeakPeriod);
             m_keywords.push_back(m_EJPNormalPeriod);
-            m_teleInfoStatus->set(specificHistorizers::EStatus::kOk);
+            m_teleInfoStatus->set(specificHistorizers::EWESTeleInfoStatus::kOk);
             m_keywords.push_back(m_apparentPower);
             m_keywords.push_back(m_TimePeriod);
             break;
-         case 3:
+         case Tempo:
             m_keywords.push_back(m_tempoBlueDaysLowCostPeriod);
             m_keywords.push_back(m_tempoBlueDaysNormalCostPeriod);
             m_keywords.push_back(m_tempoRedDaysLowCostPeriod);
             m_keywords.push_back(m_tempoRedDaysNormalCostPeriod);
             m_keywords.push_back(m_tempoWhiteDaysLowCostPeriod);
             m_keywords.push_back(m_tempoWhiteDaysNormalCostPeriod);
-            m_teleInfoStatus->set(specificHistorizers::EStatus::kOk);
+            m_teleInfoStatus->set(specificHistorizers::EWESTeleInfoStatus::kOk);
             m_keywords.push_back(m_apparentPower);
             m_keywords.push_back(m_TimePeriod);
             break;
+         case BT4SUP36:
+            break;
+         case BJEJP:
+            break;
          default:
             YADOMS_LOG(error) << "This contract is unknown";
-            m_teleInfoStatus->set(specificHistorizers::EStatus::kDesactivated);
+            m_teleInfoStatus->set(specificHistorizers::EWESTeleInfoStatus::kDesactivated);
             break;
          }
 
          m_keywords.push_back(m_teleInfoStatus);
 
-         std::string model = "TIC"; // TODO : Ajouter ici l'identifiant du compteur
+         std::string model = "TIC Id = " + counterId;
          details.set("type", m_deviceType);
 
          //Déclaration of all IOs
@@ -88,8 +94,9 @@ namespace equipments
       }
 
       void CTIC::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                  specificHistorizers::EdeviceStatus newState,
-                                  const int contractName,
+                                  specificHistorizers::EWESdeviceStatus newState,
+                                  const ContractAvailable contractName,
+                                  const std::string& counterId,
                                   const int timePeriod,
                                   const unsigned int apparentPower,
                                   const Poco::Int64& counter1,
@@ -105,29 +112,40 @@ namespace equipments
          if (m_contractName != contractName)
          {
             m_contractName = contractName;
-            initializeTIC(api);
+            initializeTIC(api, counterId);
          }
 
          switch (contractName)
          {
-         case 0:
+         case Base:
             m_baseCounter->set(counter1);
+            setPeriodTime(timePeriod);
+
             break;
-         case 1:
+         case HpHc:
             m_lowCostCounter->set(counter1);
             m_normalCostCounter->set(counter2);
+            setPeriodTime(timePeriod);
+
             break;
-         case 2:
+         case Ejp:
             m_EJPPeakPeriod->set(counter1);
             m_EJPNormalPeriod->set(counter2);
+            setPeriodTime(timePeriod);
+
             break;
-         case 3:
+         case Tempo:
             m_tempoBlueDaysLowCostPeriod->set(counter1);
             m_tempoBlueDaysNormalCostPeriod->set(counter2);
             m_tempoRedDaysLowCostPeriod->set(counter3);
             m_tempoRedDaysNormalCostPeriod->set(counter4);
             m_tempoWhiteDaysLowCostPeriod->set(counter5);
             m_tempoWhiteDaysNormalCostPeriod->set(counter6);
+            setPeriodTime(timePeriod);
+            break;
+         case BT4SUP36:
+            break;
+         case BJEJP:
             break;
          default:
             YADOMS_LOG(error) << "This contract is unknown";
@@ -135,10 +153,6 @@ namespace equipments
          }
 
          YADOMS_LOG(information) << "Time period :" << timePeriod;
-
-         // TODO : A voir comment traiter les cas interdits !
-         if (timePeriod==0)
-            m_TimePeriod->set(specificHistorizers::EPeriod::kAllHours);
 
          m_apparentPower->set(apparentPower);
 
@@ -158,13 +172,17 @@ namespace equipments
       }
 
       void CTIC::setDeviceState(boost::shared_ptr<yApi::IYPluginApi> api,
-                                specificHistorizers::EdeviceStatus newState)
+                                specificHistorizers::EWESdeviceStatus newState)
       {
-         setDeviceState(newState);
-         api->historizeData(m_deviceName, m_deviceStatus); // TODO : historize only if the status change
+         if (m_deviceStatus->get() != newState)
+         {
+            m_deviceStatus->set(newState);
+            api->historizeData(m_deviceName, m_deviceStatus);
+            YADOMS_LOG(trace) << "device state " << m_deviceName << " set to " << newState.toString();
+         }
       }
 
-      void CTIC::setDeviceState(specificHistorizers::EdeviceStatus newState)
+      void CTIC::setDeviceState(specificHistorizers::EWESdeviceStatus newState)
       {
          if (m_deviceStatus->get() != newState)
          {
@@ -175,5 +193,77 @@ namespace equipments
 
       CTIC::~CTIC()
       {}
+
+      void CTIC::setPeriodTime(const int period)
+      {
+         switch (period)
+         {
+         case 0:
+            if (m_contractName == Base)
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kAllHours);
+            else if (m_contractName == HpHc || m_contractName == Ejp)
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNormalCostHours);
+            else if (m_contractName == Tempo)
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kLowCostBlueDays);
+            else if (m_contractName == BT4SUP36)
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kWinterNormalCost);
+            else if (m_contractName == BJEJP)
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kPeakCostHours);
+            else
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNotDefined);
+            break;
+         case 1:
+            if (m_contractName == HpHc)
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kLowCostHours);
+            else if (m_contractName == Ejp)
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kPeakCostHours);
+            else if (m_contractName == Tempo)
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNormalCostBlueDays);
+            else if (m_contractName == BT4SUP36)
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kWinterLowCost);
+            else if (m_contractName == BJEJP)
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kWinterCost);
+            else
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNotDefined);
+            break;
+         case 2:
+            if (m_contractName == Tempo)
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kLowCostWhiteDays);
+            else if (m_contractName == BT4SUP36 || m_contractName == BJEJP)
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kSummerNormalCost);
+            else
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNotDefined);
+            break;
+         case 3:
+            if (m_contractName == Tempo)
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNormalCostWhiteDays);
+            else if (m_contractName == BT4SUP36 || m_contractName == BJEJP)
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kSummerLowCost);
+            else
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNotDefined);
+            break;
+         case 4:
+            if (m_contractName == Tempo)
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kLowCostRedDays);
+            else
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNotDefined);
+            break;
+         case 5:
+            if (m_contractName == Tempo)
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNormalCostRedDays);
+            else
+               m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNotDefined);
+            break;
+         case 7:
+            m_teleInfoStatus->set(specificHistorizers::EWESTeleInfoStatus::kError);
+            break;
+         case 8:
+            m_teleInfoStatus->set(specificHistorizers::EWESTeleInfoStatus::kTeleInfoLost);
+            break;
+         default:
+            m_TimePeriod->set(specificHistorizers::EWESTeleInfoPeriod::kNotDefined);
+            break;
+         }
+      }
    }
 }// namespace equipments::subdevices

@@ -8,7 +8,7 @@ namespace specificHistorizers
    //-----------------------------------------------------
    ///\brief  Status of the TeleInfo
    //-----------------------------------------------------   
-   DECLARE_ENUM_HEADER(EdeviceStatus,
+   DECLARE_ENUM_HEADER(EWESdeviceStatus,
       ((Undefined))
       ((Ok))
       ((Error))
@@ -18,7 +18,7 @@ namespace specificHistorizers
    //-----------------------------------------------------
    ///\brief A Status object
    //-----------------------------------------------------
-   class CdeviceStatus : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EdeviceStatus>
+   class CdeviceStatus : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EWESdeviceStatus>
    {
    public:
       //-----------------------------------------------------

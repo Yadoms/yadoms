@@ -30,7 +30,12 @@
             "LowCostRedDays": "Low cost red day",
             "NormalCostBlueDays": "Normal cost blue day",
             "NormalCostWhiteDays": "Normal cost white day",
-            "NormalCostRedDays": "Normal cost red day"
+            "NormalCostRedDays": "Normal cost red day",
+            "WinterNormalCost": "Winter normal cost",
+            "WinterLowCost": "Winter low cost",
+            "SummerNormalCost": "Summer normal cost",
+            "SummerLowCost": "Summer low cost",
+            "WinterCost": "Winter cost"
 			}
 		},
 		"EStatus": {
@@ -38,7 +43,8 @@
 			"values" : {
 				"Ok": "Ok",
 				"Error": "Error",
-				"Desactivated": "Désactivate"
+            "TeleInfoLost": "TeleInfo lost",
+				"Desactivated": "Désactivated"
 			}
 		}      
 	},     

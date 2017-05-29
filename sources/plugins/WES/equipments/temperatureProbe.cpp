@@ -104,7 +104,7 @@ namespace equipments
    void CtemperatureProbe::remove(boost::shared_ptr<yApi::IYPluginApi> api)
    {}
 
-   specificHistorizers::EdeviceStatus CtemperatureProbe::getStatus() const
+   specificHistorizers::EWESdeviceStatus CtemperatureProbe::getStatus() const
    {
       return m_deviceStatus->get();
    }

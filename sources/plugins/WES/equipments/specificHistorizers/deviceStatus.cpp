@@ -5,19 +5,19 @@
 
 namespace specificHistorizers
 {
-   DECLARE_ENUM_IMPLEMENTATION(EdeviceStatus,
+   DECLARE_ENUM_IMPLEMENTATION(EWESdeviceStatus,
       ((Undefined))
       ((Ok))
       ((Error))
       ((TimeOut))
    );
 
-   DECLARE_CAPACITY(WESdeviceCapacity, "Status", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+   DECLARE_CAPACITY(WESdeviceCapacity, "Status", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
    CdeviceStatus::CdeviceStatus(const std::string& keywordName)
-      : CSingleHistorizableData<EdeviceStatus>(keywordName,
-                                          WESdeviceCapacity(),
-                                          shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
+      : CSingleHistorizableData<EWESdeviceStatus>(keywordName,
+                                                  WESdeviceCapacity(),
+                                                  shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
    {
    }
 
