@@ -32,7 +32,7 @@
             "NormalCostWhiteDays": "Normal cost white day",
             "NormalCostRedDays": "Normal cost red day"
 			}
-		},      
+		}    
    },      
 	"customLabels": {
 		"pluginState": {

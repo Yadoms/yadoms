@@ -68,7 +68,7 @@
             "NormalCostWhiteDays": "Heures pleines blanches",
             "NormalCostRedDays": "Heures pleines rouges"
 			}
-		},      
+		}
    },    
    "deviceConfiguration": {
       "staticConfigurationSchema": {
