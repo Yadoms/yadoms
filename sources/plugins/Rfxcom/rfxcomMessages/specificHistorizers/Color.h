@@ -10,7 +10,7 @@ namespace teleInfo
       //-----------------------------------------------------
       ///\brief  The color of the next period
       //-----------------------------------------------------   
-      DECLARE_ENUM_HEADER(ERFXCOMTeleInfoColor,
+      DECLARE_ENUM_HEADER(EColor,
          ((NOTDEFINED))
          ((BLUE))
          ((WHITE))
@@ -20,7 +20,7 @@ namespace teleInfo
       //-----------------------------------------------------
       ///\brief A Color object
       //-----------------------------------------------------
-      class CColor : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<ERFXCOMTeleInfoColor>
+      class CColor : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EColor>
       {
       public:
          //-----------------------------------------------------

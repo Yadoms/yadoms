@@ -10,7 +10,7 @@ namespace teleInfo { namespace specificHistorizers
    //-----------------------------------------------------
    ///\brief  All periods
    //-----------------------------------------------------   
-   DECLARE_ENUM_HEADER(ETeleInfoPeriod,
+   DECLARE_ENUM_HEADER(EPeriod,
       ((AllHours))
       ((LowCostHours))
 	  ((PeakCostHours))
@@ -27,7 +27,7 @@ namespace teleInfo { namespace specificHistorizers
    //-----------------------------------------------------
    ///\brief A Running Period object
    //-----------------------------------------------------
-   class CPeriod : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<ETeleInfoPeriod>
+   class CPeriod : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EPeriod>
    {
    public:
       //-----------------------------------------------------

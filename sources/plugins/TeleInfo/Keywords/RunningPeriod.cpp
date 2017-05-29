@@ -15,24 +15,24 @@ CRunningPeriod::CRunningPeriod(boost::shared_ptr<yApi::IYPluginApi> api, const s
 void CRunningPeriod::set(const std::string& value) const
 {
    static const EnumPeriod EEnumPeriod = boost::assign::map_list_of
-      ("TH..", teleInfo::specificHistorizers::ETeleInfoPeriod::kAllHours)
-      ("HC..", teleInfo::specificHistorizers::ETeleInfoPeriod::kLowCostHours)
-      ("HP..", teleInfo::specificHistorizers::ETeleInfoPeriod::kPeakCostHours)
-      ("HN..", teleInfo::specificHistorizers::ETeleInfoPeriod::kNormalCostHours)
-      ("PM..", teleInfo::specificHistorizers::ETeleInfoPeriod::kMobilePeakCostHours)
-      ("HCJB", teleInfo::specificHistorizers::ETeleInfoPeriod::kLowCostBlueDays)
-      ("HCJW", teleInfo::specificHistorizers::ETeleInfoPeriod::kLowCostWhiteDays)
-      ("HCJR", teleInfo::specificHistorizers::ETeleInfoPeriod::kLowCostRedDays)
-      ("HPJB", teleInfo::specificHistorizers::ETeleInfoPeriod::kNormalCostBlueDays)
-      ("HPJW", teleInfo::specificHistorizers::ETeleInfoPeriod::kNormalCostWhiteDays)
-      ("HPJR", teleInfo::specificHistorizers::ETeleInfoPeriod::kNormalCostRedDays);
+      ("TH..", teleInfo::specificHistorizers::EPeriod::kAllHours)
+      ("HC..", teleInfo::specificHistorizers::EPeriod::kLowCostHours)
+      ("HP..", teleInfo::specificHistorizers::EPeriod::kPeakCostHours)
+      ("HN..", teleInfo::specificHistorizers::EPeriod::kNormalCostHours)
+      ("PM..", teleInfo::specificHistorizers::EPeriod::kMobilePeakCostHours)
+      ("HCJB", teleInfo::specificHistorizers::EPeriod::kLowCostBlueDays)
+      ("HCJW", teleInfo::specificHistorizers::EPeriod::kLowCostWhiteDays)
+      ("HCJR", teleInfo::specificHistorizers::EPeriod::kLowCostRedDays)
+      ("HPJB", teleInfo::specificHistorizers::EPeriod::kNormalCostBlueDays)
+      ("HPJW", teleInfo::specificHistorizers::EPeriod::kNormalCostWhiteDays)
+      ("HPJR", teleInfo::specificHistorizers::EPeriod::kNormalCostRedDays);
 
    try
    {
       auto it = EEnumPeriod.find(value);
       if (it != EEnumPeriod.end())
       {
-         m_runningPeriod->set(static_cast<teleInfo::specificHistorizers::ETeleInfoPeriod>(it->second));
+         m_runningPeriod->set(static_cast<teleInfo::specificHistorizers::EPeriod>(it->second));
 
          if (m_isDeveloperMode) YADOMS_LOG(information) << m_runningPeriod->getKeyword() << "=" << m_runningPeriod->get() ;
       }
