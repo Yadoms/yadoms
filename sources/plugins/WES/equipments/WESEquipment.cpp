@@ -126,8 +126,8 @@ namespace equipments
             contract[0] = results.get<equipments::subdevices::ContractAvailable>("CPT1_abo_name");
             contract[1] = results.get<equipments::subdevices::ContractAvailable>("CPT2_abo_name");
 
-            counterId[0] = results.get<std::string>("counterId0");
-            counterId[1] = results.get<std::string>("counterId1");
+            counterId[0] = results.get<std::string>("CPT1_adco");
+            counterId[1] = results.get<std::string>("CPT2_adco");
 
             results.printToLog(YADOMS_LOG(information));
 
@@ -423,7 +423,7 @@ namespace equipments
             m_TICList[counter]->updateFromDevice(api,
                                                  m_deviceStatus->get(),
                                                  results.get<equipments::subdevices::ContractAvailable>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_abo_name"),
-                                                 results.get<std::string>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_Id"),
+                                                 results.get<std::string>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_adco"),
                                                  results.get<int>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_PTarif"),
                                                  results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_P"),
                                                  results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_1"),

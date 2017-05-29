@@ -8,16 +8,16 @@
 		}
 	},
 	"enumerations": {
-		"EdeviceStatus": {
+		"EWESdeviceStatus": {
 			"name" : "Etat de l'équipement",
 			"values" : {
 				"Undefined": "Indéfini",
 				"Ok": "Ok",
 				"Error": "Erreur",
 				"TimeOut": "Connection perdue"
-			},         
+			}
 		},
-		"EPeriod": {
+		"EWESTeleInfoPeriod": {
 			"name" : "Période tarifaire",
 			"values" : {
 				"AllHours": "Toutes heures",
@@ -38,7 +38,7 @@
             "WinterCost": "Heures hiver"            
 			}
 		},
-		"EStatus": {
+		"EWESTeleInfoStatus": {
 			"name" : "Etat de la télé-info",
 			"values" : {
 				"Ok": "Ok",

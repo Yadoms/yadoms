@@ -8,7 +8,7 @@
 		}
 	},
 	"enumerations": {
-		"EdeviceStatus": {
+		"EWESdeviceStatus": {
 			"name" : "Device status",
 			"values" : {
 				"Undefined": "Undefined",
@@ -17,7 +17,7 @@
 				"TimeOut": "Time out"
 			}
 		},
-		"EPeriod": {
+		"EWESTeleInfoPeriod": {
 			"name" : "Running period",
 			"values" : {
 				"AllHours": "All hours",
@@ -38,13 +38,13 @@
             "WinterCost": "Winter cost"
 			}
 		},
-		"EStatus": {
+		"EWESTeleInfoStatus": {
 			"name" : "Télé-info Status",
 			"values" : {
 				"Ok": "Ok",
 				"Error": "Error",
             "TeleInfoLost": "TeleInfo lost",
-				"Desactivated": "Désactivated"
+				"Desactivated": "Desactivated"
 			}
 		}      
 	},     
