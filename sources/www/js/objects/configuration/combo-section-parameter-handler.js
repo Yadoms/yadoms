@@ -235,27 +235,6 @@ ComboSectionParameterHandler.prototype.setEnabled = function (enabled) {
     });
 }
 
-/**
- * Get the current configuration in the form
- * @returns {object}
- */
-ComboSectionParameterHandler.prototype.getOnlyConfiguration = function () {
-   //we update configurationValues with content of DOM
-   var result = {};
-   //we save the uuid of the active sub section
-   var uuidOfActive = $("#" + this.comboUuid).val();
-
-   $.each(this.configurationHandlers, function (key, value) {
-      if (value.uuid == uuidOfActive) {
-         //it's the active section
-         result.selected = value.getParamName();
-         result.content = value.getCurrentConfiguration().content;
-      }
-   });
-
-   return result;
-};
-
 
 /**
  * Get the current configuration in the form
