@@ -475,6 +475,11 @@ namespace equipments
    {
       m_configuration.initializeWith(newConfiguration);
       api->updateDeviceConfiguration(m_deviceName, newConfiguration);
+
+      //
+      // TODO : Update keywords configuration
+      //
+
       YADOMS_LOG(information) << "Configuration updated for " << m_deviceName;
    }
 

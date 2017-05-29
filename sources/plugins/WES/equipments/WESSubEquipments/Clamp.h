@@ -49,6 +49,14 @@ namespace equipments
                                const Poco::Int64& energyClampValue);
 
          //-----------------------------------------------------
+         ///\brief                                      updateFromDevice
+         ///\param[in] api                             Yadoms API
+         ///\param[in] isInstantCurrentClampRegistered Boolean value for instant current to historize if check in the interface
+         //-----------------------------------------------------
+         void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, 
+                                  const bool isInstantCurrentClampRegistered);
+
+         //-----------------------------------------------------
          ///\brief                     get the device name
          ///\return                    the clamp keyword Name
          //-----------------------------------------------------

@@ -43,6 +43,12 @@ namespace equipments
          keywordsToDeclare.push_back(tempCounter);
       }
 
+      void CClamp::updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                                       const bool isInstantCurrentClampRegistered)
+      {
+         //TODO : A remplir avec la partie au-dessus
+      }
+
       void CClamp::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                     std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
                                     const bool isInstantCurrentClampRegistered,
