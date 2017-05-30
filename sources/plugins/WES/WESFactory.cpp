@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "WESFactory.h"
 #include "equipments/WESEquipment.h"
-#include "equipments/temperatureProbe.h"
 #include "equipments/manuallyDeviceCreationException.hpp"
 #include <shared/Log.h>
 
@@ -35,12 +34,6 @@ boost::shared_ptr<CIOManager> CWESFactory::loadConfiguration(boost::shared_ptr<y
                                                                       (*devicesIterator), 
                                                                       api->getDeviceConfiguration(*devicesIterator));
             masterdeviceList.push_back(equipment);
-            deviceList.push_back(equipment);
-         }
-
-         if (type == "temperatureProbe")
-         {
-            equipment = boost::make_shared<equipments::CtemperatureProbe>(api, (*devicesIterator), api->getDeviceConfiguration(*devicesIterator), configuration);
             deviceList.push_back(equipment);
          }
 
@@ -79,16 +72,6 @@ std::string CWESFactory::createDeviceManually(boost::shared_ptr<yApi::IYPluginAp
                                                                    data.getConfiguration(),
                                                                    configuration);
          ioManager->addEquipment(equipment);
-      }
-      else if (data.getDeviceType() == "TemperatureProbe")
-      {
-         equipment = boost::make_shared<equipments::CtemperatureProbe>(api,
-                                                                       data.getDeviceName(),
-                                                                       data.getConfiguration(),
-                                                                       configuration);
-
-         //subEquipment = boost::make_shared<equipments::CWESEquipment>(api, data.getDeviceName());
-         //ioManager->addEquipment(subEquipment);
       }
       else
       {

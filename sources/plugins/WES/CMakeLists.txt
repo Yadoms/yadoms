@@ -22,9 +22,7 @@ set(WES_PLUGIN_SOURCES
    equipments/IEquipment.h
    equipments/ImasterDeviceConfiguration.h
    equipments/WESEquipment.cpp
-   equipments/WESEquipment.h	
-   equipments/temperatureProbe.cpp
-   equipments/temperatureProbe.h
+   equipments/WESEquipment.h
    equipments/manuallyDeviceCreationException.hpp
    equipments/masterDeviceConfiguration.cpp
    equipments/masterDeviceConfiguration.h	

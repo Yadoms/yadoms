@@ -190,7 +190,7 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       case yApi::IYPluginApi::kEventExtraQuery:
       {
          // TODO : To be developped when received directly information from the WES
-         // TODO : Check the IP address to know how send us data
+         // Check the IP address to know how send us data
 
          // Extra-command was received from Yadoms
          auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery>>();

@@ -29,7 +29,6 @@ namespace equipments
          m_teleInfoStatus(boost::make_shared<specificHistorizers::CTeleInfoStatus>("TeleInfoStatus")),
          m_deviceStatus(boost::make_shared<specificHistorizers::CdeviceStatus>("DeviceStatus"))
       {
-         // TODO : Add need to declare
          initializeTIC(api, counterId);
       }
 

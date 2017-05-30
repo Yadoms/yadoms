@@ -24,19 +24,11 @@ namespace equipments
       {
          if (m_instantCurrentRegistered)
          {
-            boost::shared_ptr<yApi::historization::CCurrent> tempCurrent = boost::make_shared<yApi::historization::CCurrent>("I - " + keywordName,
-                                                                                                                             yApi::EKeywordAccessMode::kGet);
-            m_CurrentClamp = tempCurrent;
-            keywordsToDeclare.push_back(tempCurrent);
+            m_CurrentClamp = boost::make_shared<yApi::historization::CCurrent>("I - " + keywordName,
+                                                                               yApi::EKeywordAccessMode::kGet);
+            keywordsToDeclare.push_back(m_CurrentClamp);
          }
-         else
-         {
-            if (m_CurrentClamp)
-            {
-               if (api->keywordExists(m_deviceName, m_CurrentClamp))
-                  api->removeKeyword(m_deviceName, "I - " + keywordName);
-            }
-         }
+
          boost::shared_ptr<yApi::historization::CEnergy>  tempCounter = boost::make_shared<yApi::historization::CEnergy>("Wh - " + keywordName,
                                                                                                                          yApi::EKeywordAccessMode::kGet);
          m_CounterClamp = tempCounter;
@@ -46,20 +38,33 @@ namespace equipments
       void CClamp::updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
                                        const bool isInstantCurrentClampRegistered)
       {
-         //TODO : A remplir avec la partie au-dessus
+         // Declare or remove the keyword independantly
+
+         if (m_instantCurrentRegistered)
+         {
+            m_CurrentClamp = boost::make_shared<yApi::historization::CCurrent>("I - " + m_keywordName,
+                                                                               yApi::EKeywordAccessMode::kGet);
+            api->declareKeyword(m_deviceName, m_CurrentClamp);
+         }
+         else
+         {
+            if (m_CurrentClamp)
+            {
+               if (api->keywordExists(m_deviceName, m_CurrentClamp))
+               {
+                  api->removeKeyword(m_deviceName, "I - " + m_keywordName);
+                  m_CurrentClamp.reset();
+               }
+            }
+         }
       }
 
       void CClamp::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                     std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
-                                    const bool isInstantCurrentClampRegistered,
                                     const double& instantCurrentValue,
                                     const Poco::Int64& energyClampValue)
       {
-         //TODO : If deviceName or contractName are different then create a new device
-         //if ( m_instantCurrentRegistered!= isInstantCurrentClampRegistered)
-         //   initializeClamp(api);
-
-         if (isInstantCurrentClampRegistered)
+         if (m_instantCurrentRegistered)
          {
             m_CurrentClamp->set(instantCurrentValue);
             keywordsToHistorize.push_back(m_CurrentClamp);

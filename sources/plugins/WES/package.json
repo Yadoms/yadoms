@@ -70,22 +70,6 @@
 							}
 						}
 					}
-				},
-				"TemperatureProbe": {
-					"types": {
-						"TemperatureProbe": {
-							"canBeCreatedManually": "true"
-						}
-					},
-					"content": {
-						"masterDevice": {
-							"type": "enum",
-							"__Binding__": {
-								"type": "plugin",
-								"query": "wes"
-							}
-						}
-					}
 				}
 			}
 		}

@@ -56,7 +56,7 @@
 				"WES": {
 					"types": {
 						"WES": {
-							"title": "WES Module v2"
+							"title": "WES Module"
 						}
 					},
 					"content": {
@@ -103,19 +103,6 @@
 									"description": ""
 								}
 							}
-						}
-					}
-				},
-				"TemperatureProbe": {
-					"types": {
-						"TemperatureProbe": {
-							"title": "Temperature probe"
-						}
-					},
-					"content": {
-						"masterDevice": {
-							"name": "Master device",
-							"description": "The temperature probe is connected to the following WES"
 						}
 					}
 				}

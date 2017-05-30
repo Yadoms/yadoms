@@ -45,6 +45,14 @@ namespace equipments
          );
 
          //-----------------------------------------------------
+         ///\brief                                      updateConfiguration
+         ///\param[in] api                             Yadoms API
+         ///\param[in] unitName                        the unit used
+         //-----------------------------------------------------
+         void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
+                                  const std::string& unitName);
+
+         //-----------------------------------------------------
          ///\brief                     get the device name
          ///\return                    the pulse keyword Name
          //-----------------------------------------------------

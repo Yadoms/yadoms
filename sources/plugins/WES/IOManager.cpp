@@ -15,10 +15,6 @@ void CIOManager::addEquipment(boost::shared_ptr<equipments::IEquipment> equipmen
 {
    if (equipment->isMasterDevice())
       m_deviceManager.push_back(equipment);
-   else
-   { 
-      // TODO : Create subdevice 
-   }
 }
 
 void CIOManager::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved)

@@ -12,13 +12,6 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-#define WES_RELAY_QTY 2
-#define WES_TIC_QTY   2
-#define WES_INPUT_QTY 2
-#define WES_PULSE_QTY 4
-#define WES_CLAMP_QTY 4
-#define WES_ANA_QTY   4
-
 namespace equipments
 {
    //-----------------------------------------------------
@@ -141,5 +134,23 @@ namespace equipments
       /// \brief	Analog Values
       //--------------------------------------------------------------
       std::vector<boost::shared_ptr<specificHistorizers::CAnalog> > m_AnalogList;
+
+      //--------------------------------------------------------------
+      /// \brief	WES IP Mapping. Differentiation v1/v2
+      //--------------------------------------------------------------
+
+      struct WESIOMapping{
+         unsigned char relayQty;
+         unsigned char ticQty;
+         unsigned char inputQty;
+         unsigned char pulseQty;
+         unsigned char clampQty;
+         unsigned char anaQty;
+      };
+
+      static const WESIOMapping WESv1;
+      static const WESIOMapping WESv2;
+
+      WESIOMapping m_WESIOMapping;
    };
 } // namespace equipments

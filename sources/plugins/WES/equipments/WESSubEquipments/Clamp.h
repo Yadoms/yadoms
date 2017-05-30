@@ -38,18 +38,16 @@ namespace equipments
          ///\brief                                      updateFromDevice
          ///\param[in] api                             Yadoms API
          ///\param[in] keywordsToHistorize             list of keywords to historize
-         ///\param[in] isInstantCurrentClampRegistered Boolean value for instant current to historize if check in the interface
          ///\param[in] instantCurrentValue             The instant current value sent by the WES
          ///\param[in] energyClampValue                The energy clamp value sent by the WES
          //-----------------------------------------------------
          void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
-                               const bool isInstantCurrentClampRegistered,
                                const double& instantCurrentValue,
                                const Poco::Int64& energyClampValue);
 
          //-----------------------------------------------------
-         ///\brief                                      updateFromDevice
+         ///\brief                                      updateConfiguration
          ///\param[in] api                             Yadoms API
          ///\param[in] isInstantCurrentClampRegistered Boolean value for instant current to historize if check in the interface
          //-----------------------------------------------------

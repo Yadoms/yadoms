@@ -56,7 +56,7 @@
 				"WES": {
 					"types": {
 						"WES": {
-							"title": "module WES v2"
+							"title": "module WES"
 						}
 					},
 					"content": {
@@ -103,19 +103,6 @@
 									"description": ""
 								}
 							}
-						}
-					}
-				},
-				"TemperatureProbe": {
-					"types": {
-						"TemperatureProbe": {
-							"title": "Sonde de température"
-						}
-					},
-					"content": {
-						"masterDevice": {
-							"name": "Equipement maître",
-							"description": "Equipement sur lequel est connecté la sonde de température."
 						}
 					}
 				}
