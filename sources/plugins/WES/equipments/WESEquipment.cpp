@@ -8,15 +8,16 @@
 
 namespace equipments
 {
-   const CWESEquipment::WESIOMapping CWESEquipment::WESv1 = { 2, 2, 2, 4, 4, 4 };
-   const CWESEquipment::WESIOMapping CWESEquipment::WESv2 = { 2, 2, 2, 2, 2, 4 };
+   const CWESEquipment::WESIOMapping CWESEquipment::WESv1 = { 2, 2, 2, 2, 2, 4 };
+   const CWESEquipment::WESIOMapping CWESEquipment::WESv2 = { 2, 2, 2, 4, 4, 4 };
 
    CWESEquipment::CWESEquipment(boost::shared_ptr<yApi::IYPluginApi> api,
                                 const std::string& device,
                                 const shared::CDataContainer& deviceConfiguration) :
       m_deviceName(device),
       m_deviceType("WES"),
-      m_deviceStatus(boost::make_shared<specificHistorizers::CdeviceStatus>("Status"))
+      m_deviceStatus(boost::make_shared<specificHistorizers::CdeviceStatus>("Status")),
+      m_version(0)
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
 
@@ -27,14 +28,14 @@ namespace equipments
       shared::CDataContainer details = api->getDeviceDetails(device);
 
       // get the revision, for E/S numbers
-      int version = details.get<int>("version");
+      m_version = details.get<int>("version");
 
-      if (version == 1)
+      if (m_version == 1)
          m_WESIOMapping = WESv1;
-      else if (version == 2)
+      else if (m_version == 2)
          m_WESIOMapping = WESv2;
       else
-         throw shared::exception::CException("WES Revision not properly set : " + boost::lexical_cast<std::string>(version));
+         throw shared::exception::CException("WES Revision not properly set : " + boost::lexical_cast<std::string>(m_version));
 
       shared::CDataContainer TICContainerName = details.get<shared::CDataContainer>("TIC");
       for (int counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
@@ -105,7 +106,8 @@ namespace equipments
    ):
       m_deviceName(device),
       m_deviceType("WES"),
-      m_deviceStatus(boost::make_shared<specificHistorizers::CdeviceStatus>("Status"))
+      m_deviceStatus(boost::make_shared<specificHistorizers::CdeviceStatus>("Status")),
+      m_version(0)
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
       std::string relayName[2], TICName[2], ClampName[4], AnalogName[4], inputName[2];
@@ -133,21 +135,21 @@ namespace equipments
                                                                     CGXfileName);
 
          // get the revision, for E/S numbers
-         int version = results.get<int>("version");
+         m_version = results.get<int>("version");
 
-         if (version == 1)
+         if (m_version == 1)
             m_WESIOMapping = WESv1;
-         else if (version == 2)
+         else if (m_version == 2)
             m_WESIOMapping = WESv2;
          else
-            throw shared::exception::CException("WES Revision not properly set : " + boost::lexical_cast<std::string>(version));
+            throw shared::exception::CException("WES Revision not properly set : " + boost::lexical_cast<std::string>(m_version));
 
          if (pluginConfiguration->isRetrieveNamesFromdevice())
          {
             credentials.printToLog(YADOMS_LOG(information));
 
             // request to obtain names
-            CGXfileName = "WESNAMES.CGX";
+            CGXfileName = "WESNAMES" + boost::lexical_cast<std::string>(m_version) + ".CGX";
             results = urlManager::readFileState(m_configuration.getIPAddressWithSocket(),
                                                 credentials,
                                                 CGXfileName);
@@ -335,7 +337,7 @@ namespace equipments
          }
          details.set("Analogs", analogContainerName);
 
-         details.set("version", version);
+         details.set("version", m_version);
 
          details.printToLog(YADOMS_LOG(information));
 
@@ -370,9 +372,13 @@ namespace equipments
                                          bool forceHistorization)
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToHistorize;
-      std::string CGXfileName = "WESVALUES.CGX";
 
       try {
+         if (m_version == 0 || m_version > 2)
+            throw shared::exception::CException("m_version is not set properly : " + boost::lexical_cast<std::string>(m_version));
+
+         std::string CGXfileName = "WESVALUES" + boost::lexical_cast<std::string>(m_version) + ".CGX";
+
          shared::CDataContainer credentials;
          credentials.set("user", m_configuration.getUser());
          credentials.set("password", m_configuration.getPassword());

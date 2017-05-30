@@ -155,8 +155,14 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       {
          try {
             auto device = api->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceRemoved> >();
-            m_ioManager->removeDevice(api, device->device());
-            YADOMS_LOG(information) << device->device() << " is removed";
+
+            if (m_ioManager)
+            {
+               m_ioManager->removeDevice(api, device->device());
+               YADOMS_LOG(information) << device->device() << " is removed";
+            }
+            else
+               YADOMS_LOG(error) << "Cannot remove the device " << device->device() << ". IO Manager is not initialized";
          }
          catch (std::exception &e)
          {

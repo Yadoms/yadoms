@@ -152,5 +152,6 @@ namespace equipments
       static const WESIOMapping WESv2;
 
       WESIOMapping m_WESIOMapping;
+      int m_version;
    };
 } // namespace equipments

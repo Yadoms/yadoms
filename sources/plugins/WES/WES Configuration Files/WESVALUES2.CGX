@@ -1,0 +1,72 @@
+# ------------------------------------
+# --
+# --  Configuration files for Yadoms v1.00 beta
+# --  This file is for retrieve all values from the WES equipment revision 2.
+# --
+# ------------------------------------
+t <form>
+# COMPTEURS TELEINFO
+# COMPTEUR 1
+c e a <html><id>CPT1_adco</id><value>%s</value></html>
+c TP1 <html><id>CPT1_PTarif</id><value>%d</value></html>
+c e d <html><id>CPT1_abo_name</id><value>%d</value></html>
+c ii0 <html><id>CPT1_IINST_mono</id><value>%d A</value></html>
+c i p <html><id>CPT1_P</id><value>%d</value></html>
+c Ti1 <html><id>CPT1_INDEX_1</id><value>%09d</value></html>
+c Ti2 <html><id>CPT1_INDEX_2</id><value>%09d</value></html>
+c Ti3 <html><id>CPT1_INDEX_3</id><value>%09d</value></html>
+c Ti4 <html><id>CPT1_INDEX_4</id><value>%09d</value></html>
+c Ti5 <html><id>CPT1_INDEX_5</id><value>%09d</value></html>
+c Ti6 <html><id>CPT1_INDEX_6</id><value>%09d</value></html>
+# COMPTEUR 2
+c e A <html><id>CPT2_adco</id><value>%s</value></html>
+c TP2 <html><id>CPT2_PTarif</id><value>%d</value></html>
+c e D <html><id>CPT2_abo_name</id><value>%d</value></html>
+c Ii0 <html><id>CPT2_IINST_mono</id><value>%d A</value></html>
+c I p <html><id>CPT2_P</id><value>%d</value></html>
+c TI1 <html><id>CPT2_INDEX_1</id><value>%09d</value></html>
+c TI2 <html><id>CPT2_INDEX_2</id><value>%09d</value></html>
+c TI3 <html><id>CPT2_INDEX_3</id><value>%09d</value></html>
+c TI4 <html><id>CPT2_INDEX_4</id><value>%09d</value></html>
+c TI5 <html><id>CPT2_INDEX_5</id><value>%09d</value></html>
+c TI6 <html><id>CPT2_INDEX_6</id><value>%09d</value></html>
+# PINCES AMPEREMETRIQUES
+c P A1 <html><id>IPC1_val</id><value>%.02f</value></html>
+c P A2 <html><id>IPC2_val</id><value>%.02f</value></html>
+c P A3 <html><id>IPC3_val</id><value>%.02f</value></html>
+c P A4 <html><id>IPC4_val</id><value>%.02f</value></html>
+c P P1 <html><id>VAPC1_val</id><value>%d</value></html>
+c P P2 <html><id>VAPC2_val</id><value>%d</value></html>
+c P P3 <html><id>VAPC3_val</id><value>%d</value></html>
+c P P4 <html><id>VAPC4_val</id><value>%d</value></html>
+c P W1 <html><id>WHPC1_val</id><value>%d</value></html>
+c P W2 <html><id>WHPC2_val</id><value>%d</value></html>
+c P W3 <html><id>WHPC3_val</id><value>%d</value></html>
+c P W4 <html><id>WHPC4_val</id><value>%d</value></html>
+# COMPTEURS IMPULSIONNELS
+c pd1 <text><id>debit1_val</id><value>%.02f</value></text>
+c pd2 <text><id>debit2_val</id><value>%.02f</value></text>
+c pd3 <text><id>debit3_val</id><value>%.02f</value></text>
+c pd4 <text><id>debit4_val</id><value>%.02f</value></text>
+c pIU1<text><id>actuel1_val</id><value>%.0f</value></text>
+c pIU2<text><id>actuel2_val</id><value>%.0f</value></text>
+c pIU3<text><id>actuel3_val</id><value>%.0f</value></text>
+c pIU4<text><id>actuel4_val</id><value>%.0f</value></text>
+#UNITES COMPTEURS IMPULSIONNELS
+c po1 <java><var>PLSU1</var><value>%s</value></java>
+c po2 <java><var>PLSU2</var><value>%s</value></java>
+c po3 <java><var>PLSU3</var><value>%s</value></java>
+c po4 <java><var>PLSU4</var><value>%s</value></java>
+# RELAIS
+c o E1 <bssw><id>RL1</id><value>%d</value></bssw>
+c o E2 <bssw><id>RL2</id><value>%d</value></bssw>
+# ENTREES
+c l E1 <text><id>I1</id><value>%d</value></text>
+c l E2 <text><id>I2</id><value>%d</value></text>
+# ANALOGIQUE
+c l A1 <html><id>ad1</id><value>%d</value></html>
+c l A2 <html><id>ad2</id><value>%d</value></html>
+c l A3 <html><id>ad3</id><value>%d</value></html>
+c l A4 <html><id>ad4</id><value>%d</value></html>
+t </form>
+.

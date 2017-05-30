@@ -24,27 +24,29 @@ namespace equipments
       {
          if (m_instantCurrentRegistered)
          {
+            YADOMS_LOG(information) << "create keyword " << "I - " + keywordName;
             m_CurrentClamp = boost::make_shared<yApi::historization::CCurrent>("I - " + keywordName,
                                                                                yApi::EKeywordAccessMode::kGet);
             keywordsToDeclare.push_back(m_CurrentClamp);
          }
 
-         boost::shared_ptr<yApi::historization::CEnergy>  tempCounter = boost::make_shared<yApi::historization::CEnergy>("Wh - " + keywordName,
-                                                                                                                         yApi::EKeywordAccessMode::kGet);
-         m_CounterClamp = tempCounter;
-         keywordsToDeclare.push_back(tempCounter);
+         m_CounterClamp = boost::make_shared<yApi::historization::CEnergy>("Wh - " + keywordName,
+                                                                           yApi::EKeywordAccessMode::kGet);
+         keywordsToDeclare.push_back(m_CounterClamp);
       }
 
       void CClamp::updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
                                        const bool isInstantCurrentClampRegistered)
       {
-         // Declare or remove the keyword independantly
+         m_instantCurrentRegistered = isInstantCurrentClampRegistered;
 
+         // Declare or remove the keyword independantly
          if (m_instantCurrentRegistered)
          {
             m_CurrentClamp = boost::make_shared<yApi::historization::CCurrent>("I - " + m_keywordName,
                                                                                yApi::EKeywordAccessMode::kGet);
             api->declareKeyword(m_deviceName, m_CurrentClamp);
+            YADOMS_LOG(trace) << "Create keyword " << "I - " + m_keywordName;
          }
          else
          {
@@ -54,6 +56,7 @@ namespace equipments
                {
                   api->removeKeyword(m_deviceName, "I - " + m_keywordName);
                   m_CurrentClamp.reset();
+                  YADOMS_LOG(trace) << "Delete keyword " << "I - " + m_keywordName;
                }
             }
          }
