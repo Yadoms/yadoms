@@ -42,16 +42,13 @@ shared::CDataContainer urlManager::readFileState(Poco::Net::SocketAddress socket
 
    // create the URL
    url << "http://" << socket.toString() << "/ASSETS/CGX/YADOMS/" + file;
-
-   credentials.printToLog(YADOMS_LOG(information));
-   YADOMS_LOG(information) << url.str();
+   YADOMS_LOG(trace) << "URL : " << url.str();
 
    responseTree =  http::CHttpMethods::SendGetRequest(url.str(),
                                                       credentials, 
                                                       noParameters,
                                                       httpRequestWESTimeout);
    parseNode(response, responseTree);
-   response.printToLog(YADOMS_LOG(information));
    return response;
 }
 
@@ -64,24 +61,17 @@ shared::CDataContainer urlManager::setRelayState(Poco::Net::SocketAddress socket
    boost::property_tree::ptree responseTree;
 
    // create the URL
-   url << "http://" << socket.toString() << "/RL.cgi";
-
-   credentials.printToLog(YADOMS_LOG(information));
-   YADOMS_LOG(information) << url.str();
+   url << "http://" << socket.toString() << "/RL.cgx";
+   YADOMS_LOG(trace) << "URL : " << url.str();
 
    responseTree = http::CHttpMethods::SendGetRequest(url.str(), 
                                                      credentials, 
                                                      parameters,
                                                      httpRequestWESTimeout);
 
-   // TODO : Analyze response, and return a filled element if of
-   if (responseTree.get_value("Relais1") == "on")
-   {
-   }
-
-   YADOMS_LOG(information) << "Relai1 " << responseTree.get_value("Relais1");
+   response.set("Relai1", responseTree.get_child("data").get_child("relais").get_child("RELAIS1").data());
+   response.set("Relai2", responseTree.get_child("data").get_child("relais").get_child("RELAIS2").data());
+   response.printToLog(YADOMS_LOG(trace));
 
    return response;
 }
-
-//http://WES/RL.cgi?rl1=ON&rl2=OFF
