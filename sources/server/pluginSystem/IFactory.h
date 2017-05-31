@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/plugin/information/IInformation.h>
 #include "IInstance.h"
-#include <server/database/entities/Entities.h>
+#include "database/entities/Entities.h"
 #include "database/IDataProvider.h"
 #include "dataAccessLayer/IDataAccessLayer.h"
 #include "IQualifier.h"

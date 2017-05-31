@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "TemperatureSensor.h"
 #include <fstream>
+#include <shared/Log.h>
 
 CTemperatureSensor::CTemperatureSensor(const std::string & keywordName)
    :m_keyword(boost::make_shared<yApi::historization::CTemperature>(keywordName))
@@ -30,11 +31,11 @@ void CTemperatureSensor::read()
    }
    catch(std::exception & ex)
    {
-      std::cerr << "Fail to read RaspberryPI thermal sensor : " << ex.what() << std::endl;
+      YADOMS_LOG(error) << "Fail to read RaspberryPI thermal sensor : " << ex.what();
    }
    catch(...)
    {
-      std::cerr << "Fail to read RaspberryPI thermal sensor" << std::endl;
+      YADOMS_LOG(error) << "Fail to read RaspberryPI thermal sensor";
    }
 }
 

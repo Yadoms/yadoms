@@ -9,7 +9,7 @@ namespace yApi = shared::plugin::yPluginApi;
 //--------------------------------------------------------------
 /// \brief	Fake temperature sensor
 /// \note   Use to simulate a temperature sensor, with 2 variables values :
-///         - temperature : start at 25°, and vary from +- 0.0 to 1.0° at each read
+///         - temperature : start at 25Â°, and vary from +- 0.0 to 1.0Â° at each read
 ///         - battery level : start at 100%, decrease by 1% at each read, to 20%
 //--------------------------------------------------------------
 class CFakeSensor
@@ -90,7 +90,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The keyword associated with signal strengh
    //--------------------------------------------------------------
-   boost::shared_ptr<yApi::historization::CRssi> m_rssi;
+   boost::shared_ptr<yApi::historization::CSignalPower> m_signalPower;
 
    //--------------------------------------------------------------
    /// \brief	The keyword associated with date time under string format useful only for demo

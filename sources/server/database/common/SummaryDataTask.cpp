@@ -63,16 +63,16 @@ namespace common {
 
       Contexte
       ------------
-      Cette méthode est lancée une seule fois au lancement de l'application
+      Cette mÃ©thode est lancÃ©e une seule fois au lancement de l'application
 
-      On récupère la dernière donnée (brute) de chaque keyword
+      On rÃ©cupÃ¨re la derniÃ¨re donnÃ©e (brute) de chaque keyword
 
       Pour chaque keywords de type numeric
-         si la date d'enregistrement de la dernière valeur est d'une heure différente de maintenant (comparaison date+heure) et que la donnée résumée HEURE n'existe pas
-         alors on recalcule la donnée résumée HEURE
+         si la date d'enregistrement de la derniÃ¨re valeur est d'une heure diffÃ©rente de maintenant (comparaison date+heure) et que la donnÃ©e rÃ©sumÃ©e HEURE n'existe pas
+         alors on recalcule la donnÃ©e rÃ©sumÃ©e HEURE
 
-         si la date d'enregistrement de la dernière valeur est différente de maintenant (comparaison date) et que la donnée résumée JOUR n'existe pas
-         alors on recalcule la donnée résumée JOUR
+         si la date d'enregistrement de la derniÃ¨re valeur est diffÃ©rente de maintenant (comparaison date) et que la donnÃ©e rÃ©sumÃ©e JOUR n'existe pas
+         alors on recalcule la donnÃ©e rÃ©sumÃ©e JOUR
       */
 
 
@@ -204,10 +204,10 @@ namespace common {
 
       Contexte
       ------------
-      Cette méthode est lancée chaque heure
+      Cette mÃ©thode est lancÃ©e chaque heure
 
-      Pour tous les keywords ayant émis à l'heure précédente, on lance le calcul des valeurs résumées (si la valeur n'existe pas)
-      Pour tous les keywords ayant émis le jour précédent, on lance le calcul des valeurs résumées (si la valeur n'existe pas)
+      Pour tous les keywords ayant Ã©mis Ã  l'heure prÃ©cÃ©dente, on lance le calcul des valeurs rÃ©sumÃ©es (si la valeur n'existe pas)
+      Pour tous les keywords ayant Ã©mis le jour prÃ©cÃ©dent, on lance le calcul des valeurs rÃ©sumÃ©es (si la valeur n'existe pas)
 
       */
       boost::posix_time::ptime now = shared::currentTime::Provider().now();

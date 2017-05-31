@@ -44,7 +44,7 @@ namespace rfxcomMessages
       return rbuf.CEENCODER.battery_level;
    }
 
-   char CCartelectronicEncoder::RssiFromProtocol(const RBUF& rbuf)
+   char CCartelectronicEncoder::signalPowerFromProtocol(const RBUF& rbuf)
    {
       return rbuf.CEENCODER.rssi;
    }

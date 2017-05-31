@@ -58,7 +58,7 @@ namespace pluginSystem {
                   else if (boost::iequals(command->getKeyword(), keywordRestart->getKeyword()))
                   {
                      YADOMS_LOG(information) << "Reboot the system";
-                     if (!tools::COperatingSystem::shutdown(true));
+                     if (!tools::COperatingSystem::shutdown(true))
                         YADOMS_LOG(error) << "Fail to reboot";
                   }
                   else

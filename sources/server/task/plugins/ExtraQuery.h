@@ -1,7 +1,7 @@
 #pragma once
 #include "task/ITask.h"
 #include <shared/event/EventHandler.hpp>
-#include "server/pluginSystem/IInstance.h"
+#include "pluginSystem/IInstance.h"
 
 namespace task { namespace plugins {
 

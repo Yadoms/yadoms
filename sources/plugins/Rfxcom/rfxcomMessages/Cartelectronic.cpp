@@ -12,15 +12,15 @@ namespace rfxcomMessages
    CCartelectronic::CCartelectronic(boost::shared_ptr<yApi::IYPluginApi> api,
                                     const RBUF& rbuf,
                                     size_t rbufSize)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
+      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
       m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_keywords({ m_rssi, m_batteryLevel })
+      m_keywords({ m_signalPower, m_batteryLevel })
    {
       createSubType(rbuf.TIC.subtype, rbuf, rbufSize);
 
       m_id = m_subTypeManager->idFromProtocol(rbuf);
       m_batteryLevel->set(NormalizeBatteryLevel(m_subTypeManager->BatteryLevelFromProtocol(rbuf)));
-      m_rssi->set(NormalizeRssiLevel(m_subTypeManager->RssiFromProtocol(rbuf)));
+      m_signalPower->set(NormalizesignalPowerLevel(m_subTypeManager->signalPowerFromProtocol(rbuf)));
       declare(api);
    }
 

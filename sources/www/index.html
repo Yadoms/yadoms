@@ -157,6 +157,7 @@
     <script src="js/objects/keyword.js"></script>
     <script src="js/objects/keyword-manager.js"></script>
     <script src="js/objects/acquisition.js"></script>
+    <script src="js/objects/time.js"></script>
     <script src="js/objects/acquisition-manager.js"></script>
     <script src="js/objects/recipient.js"></script>
     <script src="js/objects/recipient-field.js"></script>
@@ -485,7 +486,11 @@
                  //we listen acquisitionupdate event
                  $(document).on("acquisitionupdate", function (e, websocketData) {
                      var acq = AcquisitionManager.factory(websocketData.data);
-                     dispatchToWidgets(acq);
+                     dispatchNewAcquisitionsToWidgets(acq);
+                 });
+                 //we listen time event
+                 $(document).on("timenotification", function (e, websocketData) {
+                     dispatchTimeToWidgets(websocketData.time);
                  });
 
                  //web socket opened

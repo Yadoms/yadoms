@@ -169,6 +169,24 @@
                         "name": "A string-in-section example",
                         "description": "Just a string parameter in the sub-section",
                         "defaultValue": "Sub-sections make configuration very powerful !"
+                     },
+                     "SubComboParameter": {
+                        "name": "Sublist in section",
+                        "description": "Example of combo parameter in the sub-section",
+                        "content": {
+                           "first": {
+                              "name": "First section",
+                              "description": "The first list section : you can add here some other configuration parameters"
+                           }, 
+                           "second": {
+                              "name": "Second section",
+                              "description": "The second list section : you can add here some other configuration parameters"
+                           },
+                           "third": {
+                              "name": "Third section",
+                              "description": "The third list section : you can add here some other configuration parameters"
+                           }
+                        }
                      }
                   }
                }

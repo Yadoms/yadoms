@@ -3,7 +3,7 @@
 #include <shared/exception/EmptyResult.hpp>
 #include "web/rest/Result.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
-#include <server/communication/callback/SynchronousCallback.h>
+#include "communication/callback/SynchronousCallback.h"
 
 namespace web
 {

@@ -7,6 +7,33 @@
 			"description": "Le port série sur lequel est connecté le module de téléinfo"
 		}
 	},
+	"enumerations": {
+		"EColor": {
+			"name" : "Couleur de demain",
+			"values" : {
+				"NOTDEFINED": "Pas définie",
+				"BLUE": "Bleu",
+				"WHITE": "Blanc",
+				"RED": "Rouge"
+			}
+		},
+		"EPeriod": {
+			"name" : "Période tarifaire",
+			"values" : {
+				"AllHours": "Toutes heures",
+				"LowCostHours": "Heures creuses",
+				"PeakCostHour": "Heures pleines",
+				"NormalCostHours": "Heures pleines",
+            "MobilePeakCostHours": "heures pointe mobile",
+            "LowCostBlueDays": "Heures creuses bleues",
+            "LowCostWhiteDays": "Heures creuses blanches",
+            "LowCostRedDays": "Heures creuses rouges",
+            "NormalCostBlueDays": "Heures pleines bleues",
+            "NormalCostWhiteDays": "Heures pleines blanches",
+            "NormalCostRedDays": "Heures pleines rouges"
+			}
+		}
+   },    
 	"customLabels": {
 		"pluginState": {
 		    "connecting": "Connexion en cours...",

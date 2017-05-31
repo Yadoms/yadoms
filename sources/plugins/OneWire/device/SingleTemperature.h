@@ -65,7 +65,7 @@ namespace device
       boost::shared_ptr<ioInterfaces::ITemperature> m_io;
 
       //--------------------------------------------------------------
-      /// \brief	The temperature (°C)
+      /// \brief	The temperature (Â°C)
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CTemperature> m_temperature;
 

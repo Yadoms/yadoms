@@ -103,9 +103,9 @@ namespace rfxcomMessages
       boost::shared_ptr<IChimeSubtype> m_subTypeManager;
 
       //--------------------------------------------------------------
-      /// \brief	The keyword associated with rssi
+      /// \brief	The keyword associated with signalPower
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CRssi> m_rssi;
+      boost::shared_ptr<yApi::historization::CSignalPower> m_signalPower;
 
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances

@@ -686,7 +686,7 @@
         }
 
         if (objectType === "scriptInterpreter") {
-            s += "<td><img src=\"" + (item.iconUrl ? item.iconUrl : "scriptInterpreters/" + item.type + "/icon.png") + "\" class=\"img-thumbnail dashboard-table-icon\"></td>";
+            s += "<td><img src=\"" + (item.iconUrl ? item.iconUrl : "scriptInterpreters/" + item.path + "/icon.png") + "\" class=\"img-thumbnail dashboard-table-icon\"></td>";
         }
 
         s += "<td><span>" + $.t(objectType + "s/" + item.type + ":description", { defaultValue: item.package.description }) + "</span></td>" +

@@ -64,7 +64,6 @@ namespace pluginSystem
       /// \param[in] pbMsg The message
       /// \param[in] checkExpectedMessageFunction Callback checking that answer is the expected one
       /// \param[in] onReceiveFunction Callback to process the received message
-      /// \param[in] onProgressFunction Callback to process a new progression update
       //--------------------------------------------------------------
       void send(const plugin_IPC::toPlugin::msg& pbMsg,
                 boost::function1<bool, const plugin_IPC::toYadoms::msg&> checkExpectedMessageFunction,

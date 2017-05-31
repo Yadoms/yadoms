@@ -16,7 +16,7 @@
 #include <shared/plugin/yPluginApi/IExtraQuery.h>
 #include <shared/plugin/yPluginApi/historization/PluginState.h>
 #include <IPathProvider.h>
-#include <server/communication/callback/ISynchronousCallback.h>
+#include "communication/callback/ISynchronousCallback.h"
 #include <shared/ILocation.h>
 #include "task/Scheduler.h"
 

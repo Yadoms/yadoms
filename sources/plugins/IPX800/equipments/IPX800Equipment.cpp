@@ -69,7 +69,7 @@ namespace equipments
          keywordsToDeclare.push_back(temp);
       }
 
-      //Déclaration of all IOs
+      //Declaration of all IOs
       api->declareDevice(device, m_deviceType, m_deviceType, keywordsToDeclare, details);
    }
 

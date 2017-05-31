@@ -14,7 +14,7 @@ namespace shared
             CRssi::CRssi(const std::string& keywordName,
                          const EMeasureType& measureType,
                          typeInfo::CIntTypeInfo& additionalInfo)
-               : CSingleHistorizableData<int>(keywordName,
+               : CSingleHistorizableData<double>(keywordName,
                                               CStandardCapacities::Rssi(),
                                               EKeywordAccessMode::kGet,
                                               0,
@@ -25,16 +25,6 @@ namespace shared
 
             CRssi::~CRssi()
             {
-            }
-
-
-            int CRssi::Normalize(int rssi)
-            {
-               if (rssi > 100)
-                  return 100;
-               if (rssi < 0)
-                  return 0;
-               return rssi;
             }
          }
       }

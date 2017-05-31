@@ -8,10 +8,10 @@
 
 
 #define Boost ROOT
-set(BOOST_ROOT "/path/to/boost/boost_1_58_0")
+set(BOOST_ROOT "/path/to/boost")
 
 #define Poco ROOT
-set(POCO_ROOT "path/to/poco/poco-1.6.0-all")
+set(POCO_ROOT "path/to/poco")
 
 #define OpenSSL ROOT
 set(OPENSSL_ROOT "path/to/openssl")
@@ -58,6 +58,20 @@ SET(COTIRE_USE_UNITY ON)
 # There are needed to activate some parts of Yadoms (script interpreters, plugins, etc...)
 # They can be disabled if the corresponding part is not needed.
 ################################################################################################
+
+
+##### CMake ######
+#
+# If defined, search for an alternative cmake ROOT (By default, search cmake in path)
+# Actually works under Windows only
+#set(ALTERNATIVE_CMAKE_ROOT "/path/to/cmake")
+
+
+##### Analysis ######
+#
+# Tools needed for code analysis
+#set(CPPCHECK_ROOT "path/to/cppcheck")
+#set(SONARQUBE_SCANNER_ROOT "path/to/sonar-scanner")
 
 
 

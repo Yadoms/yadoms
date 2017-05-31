@@ -21,18 +21,12 @@ namespace automation
            m_dbDeviceRequester(dbDeviceRequester),
            m_keywordAccessLayer(keywordAccessLayer),
            m_dbRecipientRequester(dbRecipientRequester),
-           m_generalInfo(generalInfo),
-           m_ruleEnabled(true)
+           m_generalInfo(generalInfo)
       {
       }
 
       CYScriptApiImplementation::~CYScriptApiImplementation()
       {
-      }
-
-      bool CYScriptApiImplementation::ruleEnabled() const
-      {
-         return m_ruleEnabled;
       }
 
       void CYScriptApiImplementation::assertExistingKeyword(int keywordId) const
@@ -243,6 +237,7 @@ namespace automation
          auto eventHandler(boost::make_shared<shared::event::CEventHandler>());
 
          // subscriber must leave until function exits
+         // ReSharper disable once CppEntityAssignedButNoRead
          boost::shared_ptr<notification::CHelpers::CCustomSubscriber> subscriber;
          if (!keywordIdList.empty())
          {

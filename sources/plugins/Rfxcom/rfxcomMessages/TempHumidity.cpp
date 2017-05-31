@@ -13,8 +13,8 @@ namespace rfxcomMessages
       : m_temperature(boost::make_shared<yApi::historization::CTemperature>("temperature")),
       m_humidity(boost::make_shared<yApi::historization::CHumidity>("humidity")),
       m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_temperature , m_humidity, m_batteryLevel , m_rssi })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_temperature , m_humidity, m_batteryLevel , m_signalPower })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -31,7 +31,7 @@ namespace rfxcomMessages
       m_humidity->set(rbuf.TEMP_HUM.humidity);
 
       m_batteryLevel->set(NormalizeBatteryLevel(rbuf.TEMP_HUM.battery_level));
-      m_rssi->set(NormalizeRssiLevel(rbuf.TEMP_HUM.rssi));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.TEMP_HUM.rssi));
 
       Init(api);
    }

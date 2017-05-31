@@ -132,7 +132,7 @@ namespace shared
             ///\param[in] error                 Error string (empty if no error)
             //-----------------------------------------------------   
             virtual void notifyScriptStopped(int scriptInstanceId,
-                                             const std::string error = std::string()) = 0;
+                                             const std::string& error = std::string()) = 0;
 
             //-----------------------------------------------------
             ///\brief                           Get the current plugin information (extracted from package.json file)

@@ -75,7 +75,7 @@ namespace rfxcomMessages
       std::string m_deviceModel;
 
       //--------------------------------------------------------------
-      /// \brief	The temperature (°C)
+      /// \brief	The temperature (Â°C)
       //--------------------------------------------------------------
       boost::shared_ptr<yApi::historization::CTemperature> m_temperature;
 
@@ -85,9 +85,9 @@ namespace rfxcomMessages
       boost::shared_ptr<yApi::historization::CBatteryLevel> m_batteryLevel;
 
       //--------------------------------------------------------------
-      /// \brief	The RSSI (percent)
+      /// \brief	The signalPower (percent)
       //--------------------------------------------------------------
-      boost::shared_ptr<yApi::historization::CRssi> m_rssi;
+      boost::shared_ptr<yApi::historization::CSignalPower> m_signalPower;
 
       //--------------------------------------------------------------
       /// \brief	The keywords list to historize in one step for better performances

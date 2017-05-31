@@ -167,8 +167,12 @@ function periodicUpdateTask() {
                 //we listen acquisitionupdate event
                 $(document).on("acquisitionupdate", function (e, websocketData) {
                     var acq = AcquisitionManager.factory(websocketData.data);
-                    dispatchToWidgets(acq);
+                    dispatchNewAcquisitionsToWidgets(acq);
                 });
+                 //we listen time event
+                 $(document).on("timenotification", function (e, websocketData) {
+                     dispatchTimeToWidgets(websocketData.time);
+                 });
 
                 //Maybe there is a lot of time between the turn off of the server and the turn on, so we must ask all widget
                 //data to be sure that all information displayed are fresh
@@ -241,7 +245,7 @@ function periodicUpdateTask() {
     });
 }
 
-function dispatchToWidgets(acq) {
+function dispatchNewAcquisitionsToWidgets(acq) {
     assert(!isNullOrUndefined(acq), "data must be defined");
 
     var page = PageManager.getCurrentPage();
@@ -257,8 +261,8 @@ function dispatchToWidgets(acq) {
                     if (keywordId == acq.keywordId) {
                         console.debug("onNewAcquisition : " + JSON.stringify(acq));
                         try {
-                            //we signal the new acquisition to the widget if the widget support the method
-                            if (widget.viewModel.onNewAcquisition !== undefined)
+                            //we signal the new acquisition to the widget if the widget supports the method
+                            if (typeof widget.viewModel.onNewAcquisition === 'function')
                                 widget.viewModel.onNewAcquisition(keywordId, acq);
                         }
                         catch (e) {
@@ -277,6 +281,27 @@ function dispatchToWidgets(acq) {
             });
         }
     });
+}
+
+function dispatchTimeToWidgets(timeData) {
+   assert(!isNullOrUndefined(timeData), "timeData must be defined");
+
+   var page = PageManager.getCurrentPage();
+   if (page == null)
+      return; 
+
+   $.each(page.widgets, function (widgetIndex, widget) {
+      serverLocalTime = new Time(timeData);
+      console.debug("onTime : " + serverLocalTime.toJSON().time);
+      try {
+          //we signal the time event to the widget if the widget supports the method
+          if (typeof widget.viewModel.onTime === 'function')
+              widget.viewModel.onTime(timeData);
+      }
+      catch (e) {
+          console.error(widget.type + " has encouter an error in onTime() method:" + e.message);
+      }
+   });
 }
 
 function updateWebSocketFilter() {

@@ -33,7 +33,6 @@ WidgetApi.prototype.getKeywordInformation = function (keywordId) {
 /**
  * Register keywords to receive notifications when a new acquisition triggers
  * @param {} keywordIds to register (can be a single value or an array of values)
- * @returns {} a promise that's return done when information grabbed from server
  */
 WidgetApi.prototype.registerKeywordAcquisitions = function (keywordIds) {
    assert(!isNullOrUndefined(keywordIds), "keywordIds must be defined");
@@ -284,9 +283,14 @@ WidgetApi.prototype.manageRollingTitle = function () {
 	}
 }
 
-WidgetApi.prototype.askServerLocalTime = function () {
+WidgetApi.prototype.askServerLocalTime = function (callback) {
+   assert(typeof callback === 'function', "callback must be defined");
+   
    YadomsTimeManager.getCurrentLocalTime()
    .done(function(data) {
-      return data.now;
+      callback(data.now);
+   })
+   .fail(function(error) {
+      console.warn("Fail to get server local time " + error);
    });
 }

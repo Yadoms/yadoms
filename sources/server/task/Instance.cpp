@@ -34,7 +34,7 @@ namespace task {
       stop();
    }
    
-   boost::shared_ptr<ITask> CInstance::getTask()
+   boost::shared_ptr<ITask> CInstance::getTask() const
    {
       return m_task;
    }
@@ -79,7 +79,7 @@ namespace task {
       return m_creationDate;
    }
 
-   void CInstance::OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, std::string message, std::string exception, shared::CDataContainer taskData)
+   void CInstance::OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, const std::string& message, const std::string& exception, const shared::CDataContainer& taskData)
    {
       if (!isRunning)
          m_currentStatus = ETaskStatus::kFail;

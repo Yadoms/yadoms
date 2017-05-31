@@ -25,7 +25,7 @@
 template <typename T, class Enable = void>
 struct queryhelper
 {
-   static const std::string format(CQuery * obj, const T & anyValue)
+   static std::string format(CQuery * obj, const T & anyValue)
    {
       //dont use queryhelper <std::string> because Clang iisue it
       return obj->formatStringToSql(boost::lexical_cast<std::string>(anyValue));
@@ -39,7 +39,7 @@ struct queryhelper
 template <>
 struct queryhelper <std::string>
 {
-   static const std::string format(CQuery * obj, const std::string & anyValue)
+   static std::string format(CQuery * obj, const std::string & anyValue)
    {
       return obj->formatStringToSql(anyValue);
    }
@@ -52,7 +52,7 @@ struct queryhelper <std::string>
 template <>
 struct queryhelper <Poco::Int8>
 {
-   static const std::string format(CQuery * obj, const Poco::Int8 & anyValue)
+   static std::string format(CQuery * obj, const Poco::Int8 & anyValue)
    {
       return obj->formatInt8ToSql(anyValue);
    }
@@ -64,7 +64,7 @@ struct queryhelper <Poco::Int8>
 template <>
 struct queryhelper <Poco::UInt8>
 {
-   static const std::string format(CQuery * obj, const Poco::UInt8 & anyValue)
+   static std::string format(CQuery * obj, const Poco::UInt8 & anyValue)
    {
       return obj->formatUInt8ToSql(anyValue);
    }
@@ -77,7 +77,7 @@ struct queryhelper <Poco::UInt8>
 template <>
 struct queryhelper <Poco::Int16>
 {
-   static const std::string format(CQuery * obj, const Poco::Int16 & anyValue)
+   static std::string format(CQuery * obj, const Poco::Int16 & anyValue)
    {
       return obj->formatInt16ToSql(anyValue);
    }
@@ -89,7 +89,7 @@ struct queryhelper <Poco::Int16>
 template <>
 struct queryhelper <Poco::UInt16>
 {
-   static const std::string format(CQuery * obj, const Poco::UInt16 & anyValue)
+   static std::string format(CQuery * obj, const Poco::UInt16 & anyValue)
    {
       return obj->formatUInt16ToSql(anyValue);
    }
@@ -102,7 +102,7 @@ struct queryhelper <Poco::UInt16>
 template <>
 struct queryhelper <Poco::Int32>
 {
-   static const std::string format(CQuery * obj, const Poco::Int32 & anyValue)
+   static std::string format(CQuery * obj, const Poco::Int32 & anyValue)
    {
       return obj->formatInt32ToSql(anyValue);
    }
@@ -114,7 +114,7 @@ struct queryhelper <Poco::Int32>
 template <>
 struct queryhelper <Poco::UInt32>
 {
-   static const std::string format(CQuery * obj, const Poco::UInt32 & anyValue)
+   static std::string format(CQuery * obj, const Poco::UInt32 & anyValue)
    {
       return obj->formatUInt32ToSql(anyValue);
    }
@@ -127,7 +127,7 @@ struct queryhelper <Poco::UInt32>
 template <>
 struct queryhelper <Poco::Int64>
 {
-   static const std::string format(CQuery * obj, const Poco::Int64 & anyValue)
+   static std::string format(CQuery * obj, const Poco::Int64 & anyValue)
    {
       return obj->formatInt64ToSql(anyValue);
    }
@@ -139,7 +139,7 @@ struct queryhelper <Poco::Int64>
 template <>
 struct queryhelper <Poco::UInt64>
 {
-   static const std::string format(CQuery * obj, const Poco::UInt64 & anyValue)
+   static std::string format(CQuery * obj, const Poco::UInt64 & anyValue)
    {
       return obj->formatUInt64ToSql(anyValue);
    }
@@ -150,7 +150,7 @@ struct queryhelper <Poco::UInt64>
 template <>
 struct queryhelper <boost::posix_time::ptime>
 {
-   static const std::string format(CQuery * obj, const boost::posix_time::ptime & anyValue)
+   static std::string format(CQuery * obj, const boost::posix_time::ptime & anyValue)
    {
       return obj->formatDateToSql(anyValue);
    }
@@ -162,7 +162,7 @@ struct queryhelper <boost::posix_time::ptime>
 template <>
 struct queryhelper <Poco::DateTime>
 {
-   static const std::string format(CQuery * obj, const Poco::DateTime & anyValue)
+   static std::string format(CQuery * obj, const Poco::DateTime & anyValue)
    {
       return obj->formatDateToSql(anyValue);
    }
@@ -174,7 +174,7 @@ struct queryhelper <Poco::DateTime>
 template <>
 struct queryhelper <Poco::Timestamp>
 {
-   static const std::string format(CQuery * obj, const Poco::Timestamp & anyValue)
+   static std::string format(CQuery * obj, const Poco::Timestamp & anyValue)
    {
       return obj->formatDateToSql(anyValue);
    }
@@ -186,7 +186,7 @@ struct queryhelper <Poco::Timestamp>
 template <>
 struct queryhelper <CQuery>
 {
-   static const std::string format(CQuery * obj, const CQuery & anyValue)
+   static std::string format(CQuery * obj, const CQuery & anyValue)
    {
       return obj->formatSubQueryToSql(anyValue);
    }
@@ -200,7 +200,7 @@ struct queryhelper <CQuery>
 template <typename T>
 struct queryhelper < T, typename boost::enable_if< boost::is_base_of< shared::enumeration::IExtendedEnum, T > >::type >
 {
-   static const std::string format(CQuery * obj, const T & anyValue)
+   static std::string format(CQuery * obj, const T & anyValue)
    {
       return obj->formatEnumToSql(anyValue);
    }
@@ -213,7 +213,7 @@ struct queryhelper < T, typename boost::enable_if< boost::is_base_of< shared::en
 template <typename T>
 struct queryhelper < boost::shared_ptr< T > >
 {
-   static const std::string format(CQuery * obj, const T & anyValue)
+   static std::string format(CQuery * obj, const T & anyValue)
    {
       return queryhelper<T>::format(obj, *anyValue.get());
    }
@@ -225,7 +225,7 @@ struct queryhelper < boost::shared_ptr< T > >
 template <typename T>
 struct queryhelper < shared::CField< T > >
 {
-   static const std::string format(CQuery * obj, const T & anyValue)
+   static std::string format(CQuery * obj, const T & anyValue)
    {
       return queryhelper<T>::format(obj, anyValue());
    }
@@ -239,7 +239,7 @@ struct queryhelper < shared::CField< T > >
 template <>
 struct queryhelper < CQuery::CFunction >
 {
-   static const std::string format(CQuery * obj, const CQuery::CFunction & anyValue)
+   static std::string format(CQuery * obj, const CQuery::CFunction & anyValue)
    {
       return anyValue.toSql();
    }
@@ -252,7 +252,7 @@ struct queryhelper < CQuery::CFunction >
 template <>
 struct queryhelper < CDatabaseColumn >
 {
-   static const std::string format(CQuery * obj, const CDatabaseColumn & anyValue)
+   static std::string format(CQuery * obj, const CDatabaseColumn & anyValue)
    {
       return anyValue.GetName();
    }
@@ -266,7 +266,7 @@ struct queryhelper < CDatabaseColumn >
 template <>
 struct queryhelper < CDatabaseTable >
 {
-   static const std::string format(CQuery * obj, const CDatabaseTable & tableInfo)
+   static std::string format(CQuery * obj, const CDatabaseTable & tableInfo)
    {
       return tableInfo.GetName();
    }
@@ -281,7 +281,7 @@ struct queryhelper < CDatabaseTable >
 template <>
 struct queryhelper <CQuery::CNotUsedTemplateField>
 {
-   static const std::string format(CQuery * obj, const CQuery::CNotUsedTemplateField & anyValue)
+   static std::string format(CQuery * obj, const CQuery::CNotUsedTemplateField & anyValue)
    {
       throw CDatabaseException("CNotUsedTemplateField must not be used");
    }
