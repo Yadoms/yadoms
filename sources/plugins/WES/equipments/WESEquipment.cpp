@@ -428,8 +428,8 @@ namespace equipments
                m_PulseList[counter]->updateFromDevice(api,
                                                       keywordsToHistorize,
                                                       results.get<std::string>("PLSU" + boost::lexical_cast<std::string>(counter + 1)),
-                                                      results.get<Poco::Int64>("debit" + boost::lexical_cast<std::string>(counter + 1) + "_val"),
-                                                      results.get<std::string>("consJ" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
+                                                      results.get<double>("debit" + boost::lexical_cast<std::string>(counter + 1) + "_val"),
+                                                      results.get<std::string>("actuel" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
             }
             catch (std::exception& e)
             {

@@ -40,7 +40,7 @@ namespace equipments
          void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
                                const std::string& unitName,
-                               const Poco::Int64& flowValue,
+                               const double& flowValue,
                                const std::string& totalValue
          );
 
@@ -93,7 +93,7 @@ namespace equipments
          //--------------------------------------------------------------
          /// \brief  Keywords
          //--------------------------------------------------------------
-         boost::shared_ptr<yApi::historization::CEnergy> m_pulseEnergy;
+         boost::shared_ptr<yApi::historization::CEnergyDouble> m_pulseEnergy; // Check if not CPower
          boost::shared_ptr<yApi::historization::CVolume> m_pulseVolume;
 
       };
