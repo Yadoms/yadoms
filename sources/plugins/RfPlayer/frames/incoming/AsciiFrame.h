@@ -11,7 +11,7 @@ namespace incoming {
       //--------------------------------------------------------------
       /// \brief	               The header size of ascii frame
       //--------------------------------------------------------------
-      static const int HeaderSize = 5;
+      static const unsigned int HeaderSize = 5;
 
       //--------------------------------------------------------------
       /// \brief	               Constructor

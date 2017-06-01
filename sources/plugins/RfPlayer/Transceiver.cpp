@@ -5,9 +5,6 @@
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 
-#define IS_PACKED
-#include "rfplayerApi/usb_frame_api.h"
-
 CTransceiver::CTransceiver()
 {
 }

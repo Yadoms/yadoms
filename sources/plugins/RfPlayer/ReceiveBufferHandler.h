@@ -42,7 +42,7 @@ protected:
    /// \brief	   Get the binary frame size (only if current frame is synchronized and binary)
    /// \return    The binary frame size
    //--------------------------------------------------------------
-   const int getCurrentBinaryFrameSize();
+   unsigned int getCurrentBinaryFrameSize();
 
    //--------------------------------------------------------------
    /// \brief	   Pop the next message from the receive buffer

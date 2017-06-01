@@ -13,7 +13,7 @@ CReceiveBufferHandler::~CReceiveBufferHandler()
 
 void CReceiveBufferHandler::push(const shared::communication::CByteBuffer& buffer)
 {
-   for (auto idx = 0; idx < buffer.size(); ++idx)
+   for (unsigned int idx = 0; idx < buffer.size(); ++idx)
       m_content.push_back(buffer[idx]);
 
    if (isComplete())
@@ -38,7 +38,7 @@ bool CReceiveBufferHandler::syncToStartOfFrame()
    if (m_content.size() < 5)
       return false;
 
-   for (int i = 0; i < m_content.size()-1; ++i)
+   for (unsigned int i = 0; i < m_content.size()-1; ++i)
    {
       if (m_content[i] == 0x5A && m_content[i + 1] == 0x49) //Z and I
       {
@@ -77,7 +77,7 @@ bool CReceiveBufferHandler::isComplete()
          case frames::incoming::kAsciiFrame:
          {
             //search for terminator \0 or \r
-            for (int i = 5; i < m_content.size(); ++i)
+            for (unsigned int i = 5; i < m_content.size(); ++i)
             {
                if (m_content[i] == 0x00 || m_content[i] == 0x0D)
                   return true;
@@ -86,15 +86,17 @@ bool CReceiveBufferHandler::isComplete()
          }
          case frames::incoming::kBinaryFrame:
          {
-            int len = getCurrentBinaryFrameSize();
+            unsigned int len = getCurrentBinaryFrameSize();
             return m_content.size() >= (5 + len);
          }
+         default:
+            break;
       }
    }
    return false;
 }
 
-const int CReceiveBufferHandler::getCurrentBinaryFrameSize()
+unsigned int CReceiveBufferHandler::getCurrentBinaryFrameSize()
 {
    //size is given in bytes 4 and 5
    return (m_content[4] << 8) + m_content[3];
@@ -114,11 +116,11 @@ boost::shared_ptr<frames::incoming::CFrame> CReceiveBufferHandler::popNextMessag
       case frames::incoming::kAsciiFrame:
          {
             //search for terminator \0 or \r
-            for (int i = frames::incoming::CAsciiFrame::HeaderSize; i < m_content.size(); ++i)
+            for (unsigned int i = frames::incoming::CAsciiFrame::HeaderSize; i < m_content.size(); ++i)
             {
                if (m_content[i] == 0x00 || m_content[i] == 0x0D)
                {
-                  int extractedMessageSize = i - frames::incoming::CAsciiFrame::HeaderSize;
+                  unsigned int extractedMessageSize = i - frames::incoming::CAsciiFrame::HeaderSize;
                   std::string content;
                   for (size_t idx = frames::incoming::CAsciiFrame::HeaderSize; idx < i; ++idx)
                      content += m_content[idx];
@@ -133,7 +135,7 @@ boost::shared_ptr<frames::incoming::CFrame> CReceiveBufferHandler::popNextMessag
       case frames::incoming::kBinaryFrame:
          {
             //size is given in bytes 4 and 5
-            int len = getCurrentBinaryFrameSize();
+            unsigned int len = getCurrentBinaryFrameSize();
             boost::shared_ptr<shared::communication::CByteBuffer> extractedMessage(new shared::communication::CByteBuffer(len));
             for (size_t idx = frames::incoming::CBinaryFrame::HeaderSize; idx < len+ frames::incoming::CBinaryFrame::HeaderSize; ++idx)
                (*extractedMessage)[idx- frames::incoming::CBinaryFrame::HeaderSize] = m_content[idx];

@@ -28,7 +28,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Get the dongle type
    //--------------------------------------------------------------
-   const std::string & CDongle::getType() const;
+   const std::string & getType() const;
 
    //--------------------------------------------------------------
    /// \brief	    Get the dongle model

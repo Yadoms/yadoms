@@ -49,8 +49,10 @@ namespace incoming {
 
       case kBinaryFrame:
          return shared::communication::CBufferLogger::msgToString(*m_binaryBuffer->getContent());
+
+      default:
+         return "";
       }
-      return "";
    }
 
    void CFrame::printToLog(std::ostream & out) const
@@ -62,6 +64,9 @@ namespace incoming {
 
       case kBinaryFrame:
          return m_binaryBuffer->printToLog(out);
+
+      default:
+         break;
       }
    }
 
@@ -74,6 +79,9 @@ namespace incoming {
 
       case kBinaryFrame:
          return m_binaryBuffer->historizeData(api);
+
+      default:
+         break;
       }
    }
 
