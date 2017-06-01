@@ -1,6 +1,8 @@
 #pragma once
 #include "ISmtpServiceProvider.h"
 #include "IMSConfiguration.h"
+#include <Poco/Net/PrivateKeyPassphraseHandler.h>
+#include <Poco/SharedPtr.h>
 
 //--------------------------------------------------------------
 /// \brief	Interface of SMTP server
@@ -12,7 +14,7 @@ public:
    /// \brief	    Create the smtp server connection
    /// \param [in]   smtpConfiguration  The smtp server configuration
    //--------------------------------------------------------------
-   explicit CSmtpTlsServiceProvider(boost::shared_ptr<IMSConfiguration>& smtpConfiguration);
+   explicit CSmtpTlsServiceProvider(boost::shared_ptr<IMSConfiguration>& smtpConfiguration, Poco::SharedPtr<Poco::Net::PrivateKeyPassphraseHandler> certificatePassphraseHandler);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -25,5 +27,6 @@ public:
 
 private:
    boost::shared_ptr<IMSConfiguration> m_smtpConfiguration;
+   Poco::SharedPtr<Poco::Net::PrivateKeyPassphraseHandler> m_certificatePassphraseHandler;
 };
 
