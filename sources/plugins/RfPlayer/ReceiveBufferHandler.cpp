@@ -145,9 +145,9 @@ boost::shared_ptr<frames::incoming::CFrame> CReceiveBufferHandler::popNextMessag
             // Delete extracted data
             m_content.erase(m_content.begin(), m_content.begin() + len + frames::incoming::CBinaryFrame::HeaderSize);
          }
-      }
       default:
          break;
+      }
    }
    return result;
 }

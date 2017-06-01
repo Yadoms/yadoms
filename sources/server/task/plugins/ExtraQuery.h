@@ -30,16 +30,6 @@ namespace task { namespace plugins {
 
    private:
       //------------------------------------------
-      ///\brief   The task name
-      //------------------------------------------
-      std::string m_taskName;
-
-      //------------------------------------------
-      ///\brief   The task id
-      //------------------------------------------
-      std::string m_taskId;
-
-      //------------------------------------------
       ///\brief   The plugin instance
       //------------------------------------------
       boost::shared_ptr<pluginSystem::IInstance> m_pluginInstance;
@@ -48,6 +38,16 @@ namespace task { namespace plugins {
       ///\brief   The extra query request
       //------------------------------------------
       boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> m_query;
+
+      //------------------------------------------
+      ///\brief   The task name
+      //------------------------------------------
+      std::string m_taskName;
+
+      //------------------------------------------
+      ///\brief   The task id
+      //------------------------------------------
+      std::string m_taskId;
    };
 
 } //namespace plugins
