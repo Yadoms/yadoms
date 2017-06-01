@@ -363,7 +363,10 @@ add_library ( openzwave STATIC ${OPENZWAVE_SOURCES} )
 set_target_properties( openzwave PROPERTIES OUTPUT_NAME "openzwave" )
 set_target_properties( openzwave PROPERTIES LIBRARY_OUTPUT_DIRECTORY static )
 
-	
+if(CMAKE_COMPILER_IS_GNUCXX)
+	add_definitions ("-Wno-unknown-pragmas")
+endif(CMAKE_COMPILER_IS_GNUCXX)
+
 #########################################
 ## Define all include path
 #########################################
