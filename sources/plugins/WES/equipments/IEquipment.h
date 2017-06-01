@@ -30,12 +30,6 @@ namespace equipments
       virtual std::string getDeviceType() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief      isMasterDevice
-      /// \return  true if this device is a server equipment
-      //--------------------------------------------------------------
-      virtual bool isMasterDevice() const = 0;
-
-      //--------------------------------------------------------------
       /// \brief      updateFromDevice
       ///\param[in]   api                     Yadoms API
       ///\param[in]   pluginConfiguration     Configuration of the plugin

@@ -5,16 +5,13 @@
 #include <shared/Log.h>
 #include <algorithm>
 
-CIOManager::CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment> >& deviceList,
-                       std::vector<boost::shared_ptr<equipments::IEquipment> >& masterDeviceList):
-   m_deviceManager(deviceList),
-   m_masterDeviceManager(masterDeviceList)
+CIOManager::CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment> >& deviceList):
+   m_deviceManager(deviceList)
 {}
 
 void CIOManager::addEquipment(boost::shared_ptr<equipments::IEquipment> equipment)
 {
-   if (equipment->isMasterDevice())
-      m_deviceManager.push_back(equipment);
+   m_deviceManager.push_back(equipment);
 }
 
 void CIOManager::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::string deviceRemoved)
@@ -25,7 +22,7 @@ void CIOManager::removeDevice(boost::shared_ptr<yApi::IYPluginApi> api, std::str
       if (m_deviceManager[counter]->getDeviceName() == deviceRemoved)
       {
          m_deviceManager[counter]->remove(api);
-         m_deviceManager.erase(m_deviceManager.begin()+counter); // TODO : Doesn't work properly
+         m_deviceManager.erase(m_deviceManager.begin()+counter);
          return;
       }
    }
@@ -82,11 +79,11 @@ shared::CDataContainer CIOManager::bindMasterDevice()
 {
    shared::CDataContainer ev;
    int counter = 0;
-   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorMasterDevice;
+   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorDevice;
 
-   for (iteratorMasterDevice = m_masterDeviceManager.begin(); iteratorMasterDevice != m_masterDeviceManager.end(); ++iteratorMasterDevice)
+   for (iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
    {
-      ev.set(boost::lexical_cast<std::string>(counter + 1), (*iteratorMasterDevice)->getDeviceName());
+      ev.set(boost::lexical_cast<std::string>(counter + 1), (*iteratorDevice)->getDeviceName());
    }
 
    shared::CDataContainer en;
@@ -100,11 +97,11 @@ shared::CDataContainer CIOManager::bindMasterDevice()
 std::vector<specificHistorizers::EWESdeviceStatus> CIOManager::getMasterdeviceStates()
 {
    std::vector<specificHistorizers::EWESdeviceStatus> devicesStatus;
-   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorMasterDevice;
+   std::vector<boost::shared_ptr<equipments::IEquipment> >::const_iterator iteratorDevice;
 
-   for (iteratorMasterDevice = m_masterDeviceManager.begin(); iteratorMasterDevice != m_masterDeviceManager.end(); ++iteratorMasterDevice)
+   for (iteratorDevice = m_deviceManager.begin(); iteratorDevice != m_deviceManager.end(); ++iteratorDevice)
    {
-      devicesStatus.push_back((*iteratorMasterDevice)->getStatus());
+      devicesStatus.push_back((*iteratorDevice)->getStatus());
    }
 
    return devicesStatus;

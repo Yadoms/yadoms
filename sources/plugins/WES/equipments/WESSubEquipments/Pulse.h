@@ -25,6 +25,7 @@ namespace equipments
          //-----------------------------------------------------
          CPulse(boost::shared_ptr<yApi::IYPluginApi> api,
                 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
+                const bool instantFlowEnable,
                 const std::string& deviceName,
                 const std::string& keywordName,
                 const std::string& unitName);
@@ -39,6 +40,7 @@ namespace equipments
          //-----------------------------------------------------
          void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
+                               const bool instantFlowEnable,
                                const std::string& unitName,
                                const double& flowValue,
                                const std::string& totalValue
@@ -73,6 +75,7 @@ namespace equipments
          //-----------------------------------------------------
          void initializePulse(boost::shared_ptr<yApi::IYPluginApi> api, 
                               std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
+                              const bool instantFlowEnable,
                               const std::string& keywordName);
 
          //-----------------------------------------------------

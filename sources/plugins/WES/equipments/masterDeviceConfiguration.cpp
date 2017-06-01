@@ -33,3 +33,8 @@ bool CmasterDeviceConfiguration::isInstantCurrentClampRegistered(const int selec
 {
    return m_data.get<bool>("clampConfiguration.content.displayCurrentClamp" + boost::lexical_cast<std::string>(selectedClamp+1));
 }
+
+bool CmasterDeviceConfiguration::isInstantFlowPulseCounterEnabled(const int selectedClamp) const
+{
+   return m_data.get<bool>("pulseConfiguration.content.displayFlowPulse" + boost::lexical_cast<std::string>(selectedClamp + 1));
+}

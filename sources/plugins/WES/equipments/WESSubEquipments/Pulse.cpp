@@ -8,6 +8,7 @@ namespace equipments
    {
       CPulse::CPulse(boost::shared_ptr<yApi::IYPluginApi> api,
                      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
+                     const bool instantFlowEnable,
                      const std::string& deviceName,
                      const std::string& keywordName,
                      const std::string& unitName) :
@@ -15,13 +16,18 @@ namespace equipments
          m_keywordName(keywordName),
          m_unitName(unitName)
       {
-         initializePulse(api, keywordsToDeclare, keywordName);
+         initializePulse(api, keywordsToDeclare, instantFlowEnable, keywordName);
       }
 
       void CPulse::initializePulse(boost::shared_ptr<yApi::IYPluginApi> api, 
                                    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
+                                   const bool instantFlowEnable,
                                    const std::string& keywordName)
       {
+         // TODO : Flow initialization
+
+
+         // Main Counters initialization
          if (m_unitName.compare("Wh")==0 || m_unitName.compare("KWh") == 0)
          {
             m_pulseEnergy = boost::make_shared<yApi::historization::CEnergyDouble>(keywordName,
@@ -77,6 +83,7 @@ namespace equipments
 
       void CPulse::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                     std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
+                                    const bool instantFlowEnable,
                                     const std::string& unitName,
                                     const double& flowValue,
                                     const std::string& total)

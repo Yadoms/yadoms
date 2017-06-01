@@ -2,6 +2,8 @@
 #include <shared/DataContainer.h>
 #include <Poco/Net/SocketAddress.h>
 
+// TODO : Finir les commentaires
+
 //--------------------------------------------------------------
 /// \brief	Interface of plugin configuration
 //--------------------------------------------------------------
@@ -37,6 +39,12 @@ public:
    /// \return     true if the instant current element is selected
    //--------------------------------------------------------------
    virtual bool isInstantCurrentClampRegistered(const int selectedClamp) const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief      return if the instant current for the selected clamp should be registered
+   /// \return     true if the instant current element is selected
+   //--------------------------------------------------------------
+   virtual bool isInstantFlowPulseCounterEnabled(const int selectedClamp) const = 0;
 
    //--------------------------------------------------------------
    /// \brief      retrieve the user used to connect the WES

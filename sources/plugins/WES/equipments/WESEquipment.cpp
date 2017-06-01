@@ -70,6 +70,7 @@ namespace equipments
       {
          boost::shared_ptr<equipments::subdevices::CPulse> temp = boost::make_shared<equipments::subdevices::CPulse>(api,
                                                                                                                      keywordsToDeclare,
+                                                                                                                     m_configuration.isInstantFlowPulseCounterEnabled(counter),
                                                                                                                      m_deviceName,
                                                                                                                      pulseContainerName.get<std::string>("P" + boost::lexical_cast<std::string>(counter)),
                                                                                                                      pulseContainerName.get<std::string>("P" + boost::lexical_cast<std::string>(counter)));
@@ -261,6 +262,7 @@ namespace equipments
          {
             boost::shared_ptr<equipments::subdevices::CPulse> temp = boost::make_shared<equipments::subdevices::CPulse>(api,
                                                                                                                         keywordsToDeclare,
+                                                                                                                        m_configuration.isInstantFlowPulseCounterEnabled(counter),
                                                                                                                         m_deviceName,
                                                                                                                         PulseName[counter],
                                                                                                                         PulseType[counter]);
@@ -357,11 +359,6 @@ namespace equipments
       return m_deviceName;
    }
 
-   bool CWESEquipment::isMasterDevice() const
-   {
-      return true;
-   }
-
    std::string CWESEquipment::getDeviceType() const
    {
       return m_deviceType;
@@ -427,6 +424,7 @@ namespace equipments
             try {
                m_PulseList[counter]->updateFromDevice(api,
                                                       keywordsToHistorize,
+                                                      m_configuration.isInstantFlowPulseCounterEnabled(counter),
                                                       results.get<std::string>("PLSU" + boost::lexical_cast<std::string>(counter + 1)),
                                                       results.get<double>("debit" + boost::lexical_cast<std::string>(counter + 1) + "_val"),
                                                       results.get<std::string>("actuel" + boost::lexical_cast<std::string>(counter + 1) + "_val"));

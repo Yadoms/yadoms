@@ -25,6 +25,7 @@ public:
    std::string getPassword() const override;
    std::string getUser() const override;
    bool isInstantCurrentClampRegistered(const int selectedClamp) const override;
+   bool isInstantFlowPulseCounterEnabled(const int selectedClamp) const override;
    // [END] ImasterDeviceConfiguration implementation
 
 private:

@@ -68,7 +68,28 @@
 									"defaultValue": "false"
 								}
 							}
-						}
+						},
+						"pulseConfiguration": {
+							"type": "section",
+							"content": {
+								"displayFlowPulse1": {
+									"type": "bool",
+									"defaultValue": "false"
+								},
+								"displayFlowPulse2": {
+									"type": "bool",
+									"defaultValue": "false"
+								},
+								"displayFlowPulse3": {
+									"type": "bool",
+									"defaultValue": "false"
+								},
+								"displayFlowPulse4": {
+									"type": "bool",
+									"defaultValue": "false"
+								}
+							}
+						}                  
 					}
 				}
 			}

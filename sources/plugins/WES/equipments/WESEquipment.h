@@ -46,7 +46,6 @@ namespace equipments
       // IEquipment implementation
       std::string getDeviceName() const override;
       std::string getDeviceType() const override;
-      bool isMasterDevice() const override;
       void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                             const boost::shared_ptr<IWESConfiguration> pluginConfiguration,
                             bool forceHistorization = false) override;

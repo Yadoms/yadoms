@@ -103,7 +103,29 @@
 									"description": ""
 								}
 							}
-						}
+						},
+						"pulseConfiguration": {
+							"name": "Configuration des compteurs impulsionnels",
+							"description": "Active l'enregistrement des valeurs instantanées des compteurs impulsionnels",
+							"content": {
+								"displayFlowPulse1": {
+									"name": "Débit instantanée du compteur 1",
+									"description": ""
+								},
+								"displayFlowPulse2": {
+									"name": "Débit instantanée du compteur 2",
+									"description": ""
+								},
+								"displayFlowPulse3": {
+									"name": "Débit instantanée du compteur 3",
+									"description": ""
+								},
+								"displayFlowPulse4": {
+									"name": "Débit instantanée du compteur 4",
+									"description": ""
+								}
+							}
+						}                  
 					}
 				}
 			}

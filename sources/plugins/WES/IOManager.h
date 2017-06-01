@@ -18,10 +18,8 @@ public:
    //--------------------------------------------------------------
    /// \brief	   Constructor
    /// \param[in]  deviceList   list of all devices managed by this plugin
-   /// \param[in]  deviceList   list of all server equipments managed by this plugin
    //--------------------------------------------------------------
-   explicit CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment> >& deviceList,
-                       std::vector<boost::shared_ptr<equipments::IEquipment> >& masterDeviceList);
+   explicit CIOManager(std::vector<boost::shared_ptr<equipments::IEquipment> >& deviceList);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -100,9 +98,4 @@ private:
    /// \brief The device Manager
    //--------------------------------------------------------------
    std::vector<boost::shared_ptr<equipments::IEquipment>> m_deviceManager;
-
-   //--------------------------------------------------------------
-   /// \brief The master device Manager
-   //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<equipments::IEquipment>> m_masterDeviceManager;
 };
