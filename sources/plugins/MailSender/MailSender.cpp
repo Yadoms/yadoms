@@ -18,10 +18,10 @@ IMPLEMENT_PLUGIN(CMailSender)
 CMailSender::CMailSender() :
    m_deviceName("MailSender"),
    m_configuration(boost::make_shared<CMSConfiguration>()),
-   m_certificatePassphraseProvider(new CCertificatePassphraseProvider(m_configuration)),
    m_mailId("email"),
-   m_messageKeyword(boost::make_shared<yApi::historization::CMessage>("message", m_mailId, yApi::EKeywordAccessMode::kGetSet))
-{
+   m_messageKeyword(boost::make_shared<yApi::historization::CMessage>("message", m_mailId, yApi::EKeywordAccessMode::kGetSet)),
+   m_certificatePassphraseProvider(new CCertificatePassphraseProvider(m_configuration))
+   {
 }
 
 CMailSender::~CMailSender()
