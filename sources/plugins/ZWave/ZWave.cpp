@@ -192,6 +192,40 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                break;
             }
 
+            case kUpdateDeviceInfo:
+            {
+               try
+               {
+                  auto deviceData = api->getEventHandler().getEventData<shared::CDataContainer>();
+                  std::string deviceName = deviceData.get<std::string>("name");
+                  if (!api->deviceExists(deviceName))
+                     api->declareDevice(deviceName, deviceData.get<std::string>("friendlyName"), deviceData.get<std::string>("friendlyName"), std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(), deviceData.get<shared::CDataContainer>("details"));
+
+                  shared::CDataContainer details = api->getDeviceDetails(deviceName);
+                  shared::CDataContainer newDetails = deviceData.get<shared::CDataContainer>("details");
+                  auto allprops = newDetails.getAsMap();
+                  for (auto i = allprops.begin(); i != allprops.end(); ++i)
+                  {
+                     if(!i->second.empty())
+                        details.set(i->first, i->second);
+                  }
+                  api->updateDeviceDetails(deviceName, details);
+               }
+               catch (shared::exception::CException& ex)
+               {
+                  YADOMS_LOG(error) << "Fail to update device : " << ex.what();
+               }
+               catch (std::exception& ex)
+               {
+                  YADOMS_LOG(error) << "Fail to update device. exception : " << ex.what();
+               }
+               catch (...)
+               {
+                  YADOMS_LOG(error) << "Fail to update device. unknown exception";
+               }
+               break;
+            }
+
             case kUpdateKeyword:
             {
                try
