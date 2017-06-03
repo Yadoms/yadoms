@@ -24,13 +24,11 @@ namespace equipments
          ///\param[in] api                             Yadoms API
          ///\param[in] keywordsToDeclare               list of keywords to declare
          ///\param[in] pluginConfiguration             the plugin configuration
-         ///\param[in] isInstantCurrentClampRegistered Boolean value for instant current to historize if check in the interface
          ///\param[in] deviceName                      The device name
          ///\param[in] keywordName                     The keyword name
          //-----------------------------------------------------
          CClamp(boost::shared_ptr<yApi::IYPluginApi> api,
                 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
-                const bool isInstantCurrentClampRegistered,
                 const std::string& deviceName,
                 const std::string& keywordName);
 
@@ -38,21 +36,11 @@ namespace equipments
          ///\brief                                      updateFromDevice
          ///\param[in] api                             Yadoms API
          ///\param[in] keywordsToHistorize             list of keywords to historize
-         ///\param[in] instantCurrentValue             The instant current value sent by the WES
          ///\param[in] energyClampValue                The energy clamp value sent by the WES
          //-----------------------------------------------------
          void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
-                               const double& instantCurrentValue,
                                const Poco::Int64& energyClampValue);
-
-         //-----------------------------------------------------
-         ///\brief                                      updateConfiguration
-         ///\param[in] api                             Yadoms API
-         ///\param[in] isInstantCurrentClampRegistered Boolean value for instant current to historize if check in the interface
-         //-----------------------------------------------------
-         void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api, 
-                                  const bool isInstantCurrentClampRegistered);
 
          //-----------------------------------------------------
          ///\brief                     get the device name
@@ -93,11 +81,6 @@ namespace equipments
          /// \brief  Keywords Name
          //--------------------------------------------------------------
          std::string m_keywordName;
-
-         //--------------------------------------------------------------
-         /// \brief  if we need to historize the instant current
-         //--------------------------------------------------------------
-         bool m_instantCurrentRegistered;
       };
    }
 } // namespace equipments::subdevices

@@ -25,7 +25,6 @@ namespace equipments
          //-----------------------------------------------------
          CPulse(boost::shared_ptr<yApi::IYPluginApi> api,
                 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
-                const bool instantFlowEnable,
                 const std::string& deviceName,
                 const std::string& keywordName,
                 const std::string& unitName);
@@ -35,15 +34,12 @@ namespace equipments
          ///\param[in] api                             Yadoms API
          ///\param[in] keywordsToHistorize             list of keywords to historize
          ///\param[in] unitName                        The unit used by the WES
-         ///\param[in] flowValue                       The instant flow sent by the WES
          ///\param[in] totalValue                      The total value sent by the WES
          //-----------------------------------------------------
          void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
-                               const bool instantFlowEnable,
                                const std::string& unitName,
-                               const double& flowValue,
-                               const std::string& totalValue
+                               const double& totalValue
          );
 
          //-----------------------------------------------------
@@ -75,7 +71,6 @@ namespace equipments
          //-----------------------------------------------------
          void initializePulse(boost::shared_ptr<yApi::IYPluginApi> api, 
                               std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
-                              const bool instantFlowEnable,
                               const std::string& keywordName);
 
          //-----------------------------------------------------
@@ -94,11 +89,10 @@ namespace equipments
          std::string m_unitName;
 
          //--------------------------------------------------------------
-         /// \brief  Keywords
+         /// \brief  Main keywords
          //--------------------------------------------------------------
-         boost::shared_ptr<yApi::historization::CEnergyDouble> m_pulseEnergy; // Check if not CPower
+         boost::shared_ptr<yApi::historization::CEnergyDouble> m_pulseEnergy;
          boost::shared_ptr<yApi::historization::CVolume> m_pulseVolume;
-
       };
    }
 } // namespace equipments::subdevices

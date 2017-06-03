@@ -81,50 +81,6 @@
 									"description": ""
 								}
 							}
-						},
-						"clampConfiguration": {
-							"name": "Configuration of clamps",
-							"description": "Activate intant current data for clamps",
-							"content": {
-								"displayCurrentClamp1": {
-									"name": "Instant current data for clamp 1",
-									"description": ""
-								},
-								"displayCurrentClamp2": {
-									"name": "Instant current data for clamp 2",
-									"description": ""
-								},
-								"displayCurrentClamp3": {
-									"name": "Instant current data for clamp 3",
-									"description": ""
-								},
-								"displayCurrentClamp4": {
-									"name": "Instant current data for clamp 4",
-									"description": ""
-								}
-							}
-						},
-						"pulseConfiguration": {
-							"name": "Configuration of pulses",
-							"description": "Activate instant mesurement for pulses",
-							"content": {
-								"displayFlowPulse1": {
-									"name": "Instant mesurement data for pulse 1",
-									"description": ""
-								},
-								"displayFlowPulse2": {
-									"name": "Instant mesurement data for pulse 2",
-									"description": ""
-								},
-								"displayFlowPulse3": {
-									"name": "Instant mesurement data for pulse 3",
-									"description": ""
-								},
-								"displayFlowPulse4": {
-									"name": "Instant mesurement data for pulse 4",
-									"description": ""
-								}
-							}
 						}                  
 					}
 				}

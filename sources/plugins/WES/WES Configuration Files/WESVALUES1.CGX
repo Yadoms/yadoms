@@ -31,15 +31,11 @@ c TI4 <html><id>CPT2_INDEX_4</id><value>%09d</value></html>
 c TI5 <html><id>CPT2_INDEX_5</id><value>%09d</value></html>
 c TI6 <html><id>CPT2_INDEX_6</id><value>%09d</value></html>
 # PINCES AMPEREMETRIQUES
-c P A1 <html><id>IPC1_val</id><value>%.02f</value></html>
-c P A2 <html><id>IPC2_val</id><value>%.02f</value></html>
 c P P1 <html><id>VAPC1_val</id><value>%d</value></html>
 c P P2 <html><id>VAPC2_val</id><value>%d</value></html>
 c P W1 <html><id>WHPC1_val</id><value>%d</value></html>
 c P W2 <html><id>WHPC2_val</id><value>%d</value></html>
 # COMPTEURS IMPULSIONNELS
-c pd1 <text><id>debit1_val</id><value>%.02f</value></text>
-c pd2 <text><id>debit2_val</id><value>%.02f</value></text>
 c pIU1<text><id>actuel1_val</id><value>%.0f</value></text>
 c pIU2<text><id>actuel2_val</id><value>%.0f</value></text>
 #UNITES COMPTEURS IMPULSIONNELS

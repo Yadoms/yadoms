@@ -70,7 +70,6 @@ namespace equipments
       {
          boost::shared_ptr<equipments::subdevices::CPulse> temp = boost::make_shared<equipments::subdevices::CPulse>(api,
                                                                                                                      keywordsToDeclare,
-                                                                                                                     m_configuration.isInstantFlowPulseCounterEnabled(counter),
                                                                                                                      m_deviceName,
                                                                                                                      pulseContainerName.get<std::string>("P" + boost::lexical_cast<std::string>(counter)),
                                                                                                                      pulseContainerName.get<std::string>("P" + boost::lexical_cast<std::string>(counter)));
@@ -82,7 +81,6 @@ namespace equipments
       {
          boost::shared_ptr<equipments::subdevices::CClamp> temp = boost::make_shared<equipments::subdevices::CClamp>(api,
                                                                                                                      keywordsToDeclare,
-                                                                                                                     m_configuration.isInstantCurrentClampRegistered(counter),
                                                                                                                      m_deviceName,
                                                                                                                      clampContainerName.get<std::string>("C" + boost::lexical_cast<std::string>(counter)));
          m_ClampList.push_back(temp);
@@ -262,7 +260,6 @@ namespace equipments
          {
             boost::shared_ptr<equipments::subdevices::CPulse> temp = boost::make_shared<equipments::subdevices::CPulse>(api,
                                                                                                                         keywordsToDeclare,
-                                                                                                                        m_configuration.isInstantFlowPulseCounterEnabled(counter),
                                                                                                                         m_deviceName,
                                                                                                                         PulseName[counter],
                                                                                                                         PulseType[counter]);
@@ -274,7 +271,6 @@ namespace equipments
          {
             boost::shared_ptr<equipments::subdevices::CClamp> temp = boost::make_shared<equipments::subdevices::CClamp>(api,
                                                                                                                         keywordsToDeclare,
-                                                                                                                        m_configuration.isInstantCurrentClampRegistered(counter),
                                                                                                                         m_deviceName,
                                                                                                                         ClampName[counter]);
             m_ClampList.push_back(temp);
@@ -409,7 +405,6 @@ namespace equipments
             try {
                m_ClampList[counter]->updateFromDevice(api,
                                                       keywordsToHistorize,
-                                                      results.get<double>("IPC" + boost::lexical_cast<std::string>(counter + 1) + "_val"),
                                                       results.get<Poco::Int64>("WHPC" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
             }
             catch (std::exception& e)
@@ -424,10 +419,8 @@ namespace equipments
             try {
                m_PulseList[counter]->updateFromDevice(api,
                                                       keywordsToHistorize,
-                                                      m_configuration.isInstantFlowPulseCounterEnabled(counter),
                                                       results.get<std::string>("PLSU" + boost::lexical_cast<std::string>(counter + 1)),
-                                                      results.get<double>("debit" + boost::lexical_cast<std::string>(counter + 1) + "_val"),
-                                                      results.get<std::string>("actuel" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
+                                                      results.get<double>("actuel" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
             }
             catch (std::exception& e)
             {
@@ -509,13 +502,6 @@ namespace equipments
    {
       m_configuration.initializeWith(newConfiguration);
       api->updateDeviceConfiguration(m_deviceName, newConfiguration);
-
-      for (int counter = 0; counter < m_WESIOMapping.clampQty; ++counter)
-      {
-         // update the clamp configuration
-         m_ClampList[counter]->updateConfiguration(api, m_configuration.isInstantCurrentClampRegistered(counter));
-      }
-
       YADOMS_LOG(information) << "Configuration updated for " << m_deviceName;
    }
 

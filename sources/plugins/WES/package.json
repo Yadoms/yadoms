@@ -47,48 +47,6 @@
 									"required": "true"
 								}
 							}
-						},
-						"clampConfiguration": {
-							"type": "section",
-							"content": {
-								"displayCurrentClamp1": {
-									"type": "bool",
-									"defaultValue": "false"
-								},
-								"displayCurrentClamp2": {
-									"type": "bool",
-									"defaultValue": "false"
-								},
-								"displayCurrentClamp3": {
-									"type": "bool",
-									"defaultValue": "false"
-								},
-								"displayCurrentClamp4": {
-									"type": "bool",
-									"defaultValue": "false"
-								}
-							}
-						},
-						"pulseConfiguration": {
-							"type": "section",
-							"content": {
-								"displayFlowPulse1": {
-									"type": "bool",
-									"defaultValue": "false"
-								},
-								"displayFlowPulse2": {
-									"type": "bool",
-									"defaultValue": "false"
-								},
-								"displayFlowPulse3": {
-									"type": "bool",
-									"defaultValue": "false"
-								},
-								"displayFlowPulse4": {
-									"type": "bool",
-									"defaultValue": "false"
-								}
-							}
 						}                  
 					}
 				}

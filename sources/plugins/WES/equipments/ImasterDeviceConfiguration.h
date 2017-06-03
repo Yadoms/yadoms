@@ -35,18 +35,6 @@ public:
    virtual std::string getPassword() const = 0;
 
    //--------------------------------------------------------------
-   /// \brief      return if the instant current for the selected clamp should be registered
-   /// \return     true if the instant current element is selected
-   //--------------------------------------------------------------
-   virtual bool isInstantCurrentClampRegistered(const int selectedClamp) const = 0;
-
-   //--------------------------------------------------------------
-   /// \brief      return if the instant current for the selected clamp should be registered
-   /// \return     true if the instant current element is selected
-   //--------------------------------------------------------------
-   virtual bool isInstantFlowPulseCounterEnabled(const int selectedClamp) const = 0;
-
-   //--------------------------------------------------------------
    /// \brief      retrieve the user used to connect the WES
    /// \return     the user
    //--------------------------------------------------------------
