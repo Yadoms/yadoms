@@ -8,8 +8,8 @@
 #include <Poco/AutoPtr.h>
 #include <shared/Log.h>
 
-CSmtpTlsServiceProvider::CSmtpTlsServiceProvider(boost::shared_ptr<IMSConfiguration>& smtpConfiguration)
-   : m_smtpConfiguration(smtpConfiguration)
+CSmtpTlsServiceProvider::CSmtpTlsServiceProvider(boost::shared_ptr<IMSConfiguration>& smtpConfiguration, Poco::SharedPtr<Poco::Net::PrivateKeyPassphraseHandler> certificatePassphraseHandler)
+   : m_smtpConfiguration(smtpConfiguration), m_certificatePassphraseHandler(certificatePassphraseHandler)
 {
 }
 
@@ -31,7 +31,8 @@ bool CSmtpTlsServiceProvider::sendMail(const Poco::Net::MailMessage& message) co
                                                                   9,
                                                                   true,
                                                                   "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH");
-      Poco::Net::SSLManager::instance().initializeClient(0, ptrHandler, ptrContext);
+
+      Poco::Net::SSLManager::instance().initializeClient(m_certificatePassphraseHandler, ptrHandler, ptrContext);
 
       Poco::Net::SecureSMTPClientSession session(m_smtpConfiguration->getHost(), m_smtpConfiguration->getPort());
 

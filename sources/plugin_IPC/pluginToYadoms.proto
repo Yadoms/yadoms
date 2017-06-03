@@ -107,6 +107,13 @@ message DeviceConfigurationSchemaAnswer {
 message ExtraQueryAnswer {
 	bool success = 1;
 	string result = 2;
+	string taskId = 3;
+}
+
+message ExtraQueryProgression {
+	float progress = 1;
+	string message = 2;
+	string taskId = 3;
 }
 
 message RemoveDevice {
@@ -195,5 +202,6 @@ message msg {
 		UpdateDeviceConfiguration updateDeviceConfiguration = 26;
 		AllKeywordsRequest allKeywordsRequest = 27;
 		DeclareKeywords declareKeywords = 28;
+		ExtraQueryProgression extraQueryProgress = 29;
 	}
 }

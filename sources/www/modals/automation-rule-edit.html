@@ -53,7 +53,10 @@
       //we must listen changed event of the interpreterList
       interpreterParameter.locateInDOM().change(function() {
          //we notify the editor that the interpreter has changed
-         rule.editor.setInterpreter(interpreterParameter.getCurrentConfiguration());
+         interpreterParameter.getCurrentConfiguration()
+         .done(function(chosenInterpreter) {
+            rule.editor.setInterpreter(chosenInterpreter);
+         });         
       });
    }
 
@@ -91,16 +94,23 @@
             submitSuccess: function($form, event) {
                event.preventDefault();
                if (rule.editor.validate()) {
-                  rule.name = nameParameter.getCurrentConfiguration();
-                  rule.description = descriptionParameter.getCurrentConfiguration();
-                  rule.editor.updateRule();
+                  nameParameter.getCurrentConfiguration()
+                  .done(function(ruleName) {
+                     descriptionParameter.getCurrentConfiguration()
+                     .done(function(ruleDescription) {
+                     
+                        rule.name = ruleName;
+                        rule.description = ruleDescription;
+                        rule.editor.updateRule();
+                   
+                        console.debug("End of Automation rule edition : " + JSON.stringify(rule));
 
-                  console.debug("End of Automation rule edition : " + JSON.stringify(rule));
+                        //we hide the current window and the wizard if opened previously
+                        $("div#edit-automation-rule-modal").modal("hide");
 
-                  //we hide the current window and the wizard if opened previously
-                  $("div#edit-automation-rule-modal").modal("hide");
-
-                  callback();
+                        callback();
+                     });
+                  });
                }
             },
             filter: function() {

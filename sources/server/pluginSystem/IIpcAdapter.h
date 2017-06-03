@@ -81,7 +81,7 @@ namespace pluginSystem
       /// \brief                 Post an extra command to a plugin
       /// \param [in] extraQuery The command
       //--------------------------------------------------------------
-      virtual void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery) = 0;
+      virtual void postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery, const std::string & taskId) = 0;
 
       //--------------------------------------------------------------
       /// \brief                 Post a manually device creation request to a plugin

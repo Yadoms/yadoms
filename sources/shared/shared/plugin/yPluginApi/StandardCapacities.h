@@ -18,7 +18,8 @@ namespace shared
             /// \brief		Standard capacities (please keep in alphabetical order)
             //--------------------------------------------------------------
             //                                                    capacity name      |        unit           |          description
-            //                                              ----------------------------------------------------------------------------------------------
+            //                                                   ----------------------------------------------------------------------------------------------
+            static const CStandardCapacity& Alarm();            // alarm             | -                     | A on/off alarm value 
             static const CStandardCapacity& ApparentPower();    // apparentpower     | Volt Ampere           | Apparent Voltage
             static const CStandardCapacity& ArmingAlarm();      // armingAlarm       | -                     | Alarme arming status (disarmed, armedAtHome, armedAway...)
             static const CStandardCapacity& BatteryLevel();     // batteryLevel      | percent               | Battery level capacity
@@ -44,11 +45,12 @@ namespace shared
             static const CStandardCapacity& Pressure();         // pressure          | hPa                   | Pressure
             static const CStandardCapacity& Rain();             // rain              | mm                    | Rain counter
             static const CStandardCapacity& RainRate();         // rain rate         | mm/s                  | Rain rate
-            static const CStandardCapacity& Rssi();             // rssi              | dbm                   | Rssi measure capacity
+            static const CStandardCapacity& Rssi();             // rssi              | percent               | Rssi measure capacity
             static const CStandardCapacity& SignalLevel();      // signal level      | dB                    | An signal level in decibels
-            static const CStandardCapacity& SignalPower();      // signal power      | %                     | An signal power in %
+            static const CStandardCapacity& SignalPower();      // signal power      | dBm                   | An signal power in dBm
             static const CStandardCapacity& Speed();            // speed             | m/s                   | A speed value, in m/s
             static const CStandardCapacity& Switch();           // switch            | -                     | A on/off value
+            static const CStandardCapacity& Tamper();           // tamper            | -                     | A on/off tamper value (alarm systems)
             static const CStandardCapacity& Temperature();      // temperature       | degrees Celcius       | Temperature
             static const CStandardCapacity& Text();             // text              | -                     | A text
             static const CStandardCapacity& UpDownStop();       // upDownStop        | -                     | Used for device accepting orders Up, Down Stop

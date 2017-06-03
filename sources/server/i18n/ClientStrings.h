@@ -56,6 +56,9 @@ namespace i18n
       static std::string DatabaseBackupSuccess;
       static std::string DatabaseBackupFail;
 
+      static std::string ExtraQuerySuccess;
+      static std::string ExtraQueryFail;
+
       static std::string TaskInterrupted;
       static std::string TaskCrashed;
       static std::string TaskUnkownError;

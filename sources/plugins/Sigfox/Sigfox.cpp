@@ -83,9 +83,9 @@ void CSigfox::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          auto extraQuery = api->getEventHandler().getEventData<boost::shared_ptr<yApi::IExtraQuery> >();
          if (extraQuery)
          {
-            if (extraQuery->getData().query() == "sigfox")
+            if (extraQuery->getData()->query() == "sigfox")
             {
-               processIncomingMessage(api, extraQuery->getData().data());
+               processIncomingMessage(api, extraQuery->getData()->data());
             }
          }
          extraQuery->sendSuccess(shared::CDataContainer());

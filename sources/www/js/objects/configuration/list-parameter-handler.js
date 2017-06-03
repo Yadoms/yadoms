@@ -192,6 +192,8 @@ ListParameterHandler.prototype.getPosFromSiblings = function(item) {
 ListParameterHandler.prototype.duplicateLine = function() {
    var self = this;
    return function(handler) {
+      var d = new $.Deferred();
+      
       var $container = $(handler.currentTarget).parents("div.list-item-line");
       assert($container.length >= 1, "Unable to locate list item container");
       //we take the nearest
@@ -202,31 +204,34 @@ ListParameterHandler.prototype.duplicateLine = function() {
       //i contains the position into the items array
       assert(i >= 0, "Unable to locate item position");
 
-      var confToDuplicate = self.items[i].getCurrentConfiguration();
+      self.items[i].getCurrentConfiguration()
+      .done(function(confToDuplicate) {
+         var newI18nContext = self.i18nContext + self.i18nKey + ".item.";
+         var item = ConfigurationHelper.createParameterHandler(newI18nContext, undefined, null, self.content.item, confToDuplicate);
 
-      var newI18nContext = self.i18nContext + self.i18nKey + ".item.";
-      var item = ConfigurationHelper.createParameterHandler(newI18nContext, undefined, null, self.content.item, confToDuplicate);
+         //we insert item in the right place
+         self.items.insert(i+1, item);
 
-      //we insert item in the right place
-      self.items.insert(i+1, item);
+         var itemLine = self.createItemLine(item);
 
-      var itemLine = self.createItemLine(item);
+         //and in the right place for the DOM
 
-      //and in the right place for the DOM
+         $(itemLine).insertAfter($container);
+         $("div#" + self.uuid).i18n();
+         //we add it to the form validation
+         $("div#" + self.uuid).find("div.list-item-container").last().find("input,select,textarea").jqBootstrapValidation();
 
-      $(itemLine).insertAfter($container);
-      $("div#" + self.uuid).i18n();
-      //we add it to the form validation
-      $("div#" + self.uuid).find("div.list-item-container").last().find("input,select,textarea").jqBootstrapValidation();
+         //we manage event binding
+         $("div#" + self.uuid).find("button.btn-duplicate").unbind('click').bind('click', self.duplicateLine());
+         $("div#" + self.uuid).find("button.btn-remove").unbind('click').bind('click', self.deleteLine());
 
-      //we manage event binding
-      $("div#" + self.uuid).find("button.btn-duplicate").unbind('click').bind('click', self.duplicateLine());
-      $("div#" + self.uuid).find("button.btn-remove").unbind('click').bind('click', self.deleteLine());
+         self.updateItemNumberVerificator();
 
-      self.updateItemNumberVerificator();
-
-      if ($.isFunction(item.applyScript))
-         item.applyScript();
+         if ($.isFunction(item.applyScript))
+            item.applyScript();      
+         d.resolve();         
+      }).fail(d.reject).catch(d.reject);
+      return d.promise();
    };
 };
 
@@ -290,11 +295,24 @@ ListParameterHandler.prototype.setEnabled = function (enabled) {
  */
 ListParameterHandler.prototype.getCurrentConfiguration = function () {
    //we update configurationValues with content of DOM
+   var d= new $.Deferred();
    var self = this;
    self.configurationValues = [];
+   var deferredArray =[];
+   
    $.each(self.items, function (key, value) {
-      self.configurationValues.push(value.getCurrentConfiguration());
+      var deferred = value.getCurrentConfiguration();
+      deferredArray.push(deferred);
+      deferred.done(function (data) {
+          self.configurationValues.push(data);
+      });      
    });
 
-   return self.configurationValues;
+
+   $.whenAll(deferredArray)
+   .done(function() {
+      d.resolve(self.configurationValues);
+   });   
+   
+   return d.promise();
 };

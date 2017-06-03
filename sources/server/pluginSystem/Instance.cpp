@@ -78,9 +78,9 @@ namespace pluginSystem
       m_ipcAdapter->postDeviceRemoved(event);
    }
 
-   void CInstance::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery)
+   void CInstance::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery, const std::string & taskId)
    {
-      m_ipcAdapter->postExtraQuery(extraQuery);
+      m_ipcAdapter->postExtraQuery(extraQuery, taskId);
    }
 
    void CInstance::updateConfiguration(const shared::CDataContainer& newConfiguration)
