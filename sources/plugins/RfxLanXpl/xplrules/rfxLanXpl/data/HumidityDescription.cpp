@@ -16,7 +16,7 @@ namespace xplrules
          );
 
 
-         DECLARE_CAPACITY(HumidityDescriptionCapacity, "humidityDescription", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(HumidityDescriptionCapacity, "humidityDescription", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CHumidityDescription::CHumidityDescription(const std::string& keywordName)

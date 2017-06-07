@@ -15,7 +15,7 @@ namespace specificHistorizers
    CPilotWireHistorizer::CPilotWireHistorizer(const std::string& keywordName)
       : CSingleHistorizableData<EPilotWire>(keywordName,
                                             shared::plugin::yPluginApi::CStandardCapacity("PilotWire",
-                                                                                          shared::plugin::yPluginApi::CStandardUnits::NoUnits,
+                                                                                          shared::plugin::yPluginApi::CStandardUnits::NoUnit(),
                                                                                           shared::plugin::yPluginApi::EKeywordDataType::kNoData),
                                             shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
    {

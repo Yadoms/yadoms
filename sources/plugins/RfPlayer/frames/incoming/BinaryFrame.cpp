@@ -12,8 +12,6 @@
 #include <shared/plugin/yPluginApi/historization/Energy.h>
 #include <shared/plugin/yPluginApi/historization/BatteryLevel.h>
 #include <shared/plugin/yPluginApi/historization/SignalPower.h>
-#include <shared/plugin/yPluginApi/historization/Alarm.h>
-#include <shared/plugin/yPluginApi/historization/Tamper.h>
 #include <shared/plugin/yPluginApi/historization/Temperature.h>
 #include <shared/plugin/yPluginApi/historization/Humidity.h>
 #include <shared/plugin/yPluginApi/historization/Pressure.h>

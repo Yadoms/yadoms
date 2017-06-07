@@ -134,11 +134,13 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/KeywordAccessMode.h
    shared/plugin/yPluginApi/KeywordDataType.cpp
    shared/plugin/yPluginApi/KeywordDataType.h
+   shared/plugin/yPluginApi/StandardCapacities.cpp
    shared/plugin/yPluginApi/StandardCapacities.h
    shared/plugin/yPluginApi/StandardCapacity.cpp
    shared/plugin/yPluginApi/StandardCapacity.h
-   shared/plugin/yPluginApi/StandardDeclarations.cpp
+   shared/plugin/yPluginApi/StandardUnits.cpp
    shared/plugin/yPluginApi/StandardUnits.h
+   shared/plugin/yPluginApi/StandardValues.cpp
    shared/plugin/yPluginApi/StandardValues.h
    shared/plugin/yPluginApi/YPluginConfiguration.hpp
 

@@ -67,7 +67,7 @@ boost::shared_ptr<IOpenZWaveNodeKeyword> COpenZWaveNodeKeywordFactory::generateH
          auto instance = vID.GetInstance();
 
          if (units.empty())
-            units = shared::plugin::yPluginApi::CStandardUnits::NoUnits;
+            units = shared::plugin::yPluginApi::CStandardUnits::NoUnit();
 
          std::string genre = "";
 

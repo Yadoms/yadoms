@@ -73,8 +73,7 @@ IZWaveController::E_StartResult COpenZWaveController::start()
       auto folder = full_path;
       folder /= "config";
 
-      auto dataFolder = full_path;
-      dataFolder /= "data";
+      boost::filesystem::path dataFolder(m_configuration->getDataPath());
       if (!boost::filesystem::exists(dataFolder))
       {
          boost::system::error_code returnedError;
@@ -83,7 +82,7 @@ IZWaveController::E_StartResult COpenZWaveController::start()
          if (returnedError)
          {
             //did not successfully create directories
-            YADOMS_LOG(error) << "Fali to create folder : " << dataFolder.string() ;
+            YADOMS_LOG(error) << "Fail to create folder : " << dataFolder.string() ;
          }
       }
 

@@ -37,6 +37,7 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
       m_configuration.initializeWith(api->getConfiguration());
 
       m_configuration.setPath(api->getInformation()->getPath().string());
+      m_configuration.setDataPath(api->getDataPath().string());
 
       // the main loop
       api->setPluginState(yApi::historization::EPluginState::kCustom, "Configuring");

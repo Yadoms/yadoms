@@ -16,7 +16,7 @@ namespace outgoing {
    )
 
 
-   DECLARE_CAPACITY(RtsCapacity, "blyss_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+   DECLARE_CAPACITY(RtsCapacity, "blyss_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
    CRtsKeyword::CRtsKeyword(const std::string& keywordName)
       : shared::plugin::yPluginApi::historization::CSingleHistorizableData<ERts>(keywordName,

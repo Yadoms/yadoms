@@ -4,7 +4,7 @@
 
 namespace specificHistorizer
 {
-   DECLARE_CAPACITY(ConditionCapacity, "Condition", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kJson);
+   DECLARE_CAPACITY(ConditionCapacity, "Condition", yApi::CStandardUnits::NoUnit(), yApi::EKeywordDataType::kJson);
 
    CConditionHistorizer::CConditionHistorizer(const std::string& keywordName,
                                               const yApi::EKeywordAccessMode& accessMode)

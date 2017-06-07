@@ -4,7 +4,7 @@
 
 namespace specificHistorizer
 {
-   DECLARE_CAPACITY(ForecastCapacity, "Forecast", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kJson);
+   DECLARE_CAPACITY(ForecastCapacity, "Forecast", yApi::CStandardUnits::NoUnit(), yApi::EKeywordDataType::kJson);
 
    CForecastHistorizer::CForecastHistorizer(const std::string& keywordName,
                                             const yApi::EKeywordAccessMode& accessMode,
