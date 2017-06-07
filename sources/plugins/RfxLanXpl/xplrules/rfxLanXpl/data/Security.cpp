@@ -23,7 +23,7 @@ namespace xplrules
             ((LightsOff))
          )
 
-         DECLARE_CAPACITY(SecurityCapacity, "security", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(SecurityCapacity, "security", shared::plugin::yPluginApi::CStandardUnits::NoUnits(), shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
          CSecurity::CSecurity(const std::string& keywordName,
                               const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode)

@@ -14,7 +14,7 @@ namespace outgoing {
    )
 
 
-   DECLARE_CAPACITY(VisonicCapacity, "visonic_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+   DECLARE_CAPACITY(VisonicCapacity, "visonic_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnits(), shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
    CVisonicKeyword::CVisonicKeyword(const std::string& keywordName)
       : shared::plugin::yPluginApi::historization::CSingleHistorizableData<EVisonic>(keywordName,

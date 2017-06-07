@@ -16,7 +16,7 @@ namespace xplrules
          );
 
 
-         DECLARE_CAPACITY(ForecastCapacity, "forecast", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(ForecastCapacity, "forecast", shared::plugin::yPluginApi::CStandardUnits::NoUnits(), shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CForecast::CForecast(const std::string& keywordName)

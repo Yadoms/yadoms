@@ -15,7 +15,7 @@ namespace teleInfo
          ((RED))
       );
 
-      DECLARE_CAPACITY(ColorCapacity, "ForecastPrice", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+      DECLARE_CAPACITY(ColorCapacity, "ForecastPrice", shared::plugin::yPluginApi::CStandardUnits::NoUnits(), shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
       CColor::CColor(const std::string& keywordName)
          : CSingleHistorizableData<EColor>(keywordName,

@@ -16,7 +16,7 @@ namespace xplrules
          );
 
 
-         DECLARE_CAPACITY(DigimaxDemandCapacity, "digimax_demand", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(DigimaxDemandCapacity, "digimax_demand", shared::plugin::yPluginApi::CStandardUnits::NoUnits(), shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CDigimaxDemand::CDigimaxDemand(const std::string& keywordName)

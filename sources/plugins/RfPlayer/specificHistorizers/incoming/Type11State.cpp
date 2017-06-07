@@ -13,7 +13,7 @@ namespace incoming {
 
    )
 
-   DECLARE_CAPACITY(Type11StateCapacity, "deltadoreX2dAlarm", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kEnum);
+   DECLARE_CAPACITY(Type11StateCapacity, "deltadoreX2dAlarm", yApi::CStandardUnits::NoUnits(), yApi::EKeywordDataType::kEnum);
 
    CType11State::CType11State(const std::string& keywordName)
       : CSingleHistorizableData<EType11StateValues>(keywordName, Type11StateCapacity(), yApi::EKeywordAccessMode::kGet)
