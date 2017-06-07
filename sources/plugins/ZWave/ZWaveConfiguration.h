@@ -40,6 +40,20 @@ public:
    /// \param [in] path    The library path
    //--------------------------------------------------------------
    void setPath(const std::string & path);
+
+
+   //--------------------------------------------------------------
+   /// \brief	    Get the data path
+   /// \return	    The data path
+   //--------------------------------------------------------------
+   std::string getDataPath() const;
+
+   //--------------------------------------------------------------
+   /// \brief	    Set the data path
+   /// \param [in] path    The data path
+   //--------------------------------------------------------------
+   void setDataPath(const std::string & dataPath); 
+
 private :
    //--------------------------------------------------------------
    /// \brief	    The container
