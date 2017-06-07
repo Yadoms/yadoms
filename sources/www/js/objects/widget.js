@@ -120,3 +120,84 @@ Widget.prototype.setInitialPosition = function (position) {
 Widget.prototype.title = function () {
     return this.title;
 };
+
+
+Widget.prototype.getBoundConfigurationSchema = function() {
+   var d = new $.Deferred();
+
+   if (!isNullOrUndefined(this.package)) {
+      if (this.package.configurationSchema && Object.keys(this.package.configurationSchema).length > 0) {
+         var tmp = this.package.configurationSchema;
+         this.applyBindingPrivate(tmp, ["system"])
+            .done(d.resolve)
+            .fail(d.reject);
+      } else {
+         //if configurationSchema is not defined, to not try to do any binding...
+         //just resolve with undefined configurationSchema
+         d.resolve(this.package.configurationSchema);
+      }
+   } else {
+      d.reject("undefined package");
+   }
+   return d.promise();
+};
+
+/**
+ * Apply binding
+ * @param item The configuration item
+ * @param allowedTypes Allowed types for this item
+ * @returns {*}
+ */
+Widget.prototype.applyBindingPrivate = function(item, allowedTypes) {
+   assert(!isNullOrUndefined(item), "item must be defined");
+   assert(!isNullOrUndefined(allowedTypes), "allowedTypes must be defined");
+   var self = this;
+
+   var d = new $.Deferred();
+
+   var arrayOfDeffered = [];
+
+   $.each(item, function(key, confItem) {
+      if ($.isPlainObject(confItem)) {
+         if (!isNullOrUndefined(confItem.__Binding__)) {
+            //we've got binding
+            assert(!isNullOrUndefined(confItem.__Binding__.type), "type must be defined in binding");
+            //is the binding type is allowed
+
+            assert($.inArray(confItem.__Binding__.type.toLowerCase(), allowedTypes) != -1, "Binding of type " + confItem.__Binding__.type + " is not allowed here");
+            assert(!isNullOrUndefined(confItem.__Binding__.query), "query must be defined in binding");
+
+            switch (confItem.__Binding__.type.toLowerCase()) {
+            case "system":
+               //we ask synchronously the bound value
+               var deffered = RestEngine.getJson("/rest/system/binding/" + confItem.__Binding__.query);
+               arrayOfDeffered.push(deffered);
+               deffered.done(function(data) {
+                     //we replace the binded value by the result
+                  item[key] = data;
+                  })
+                  .fail(function(error) {
+                     notifyError($.t("objects.pluginInstance.errorApplyingBinding"), error);
+                  });
+               break;
+            }
+         } else {
+            var innerDeferred = self.applyBindingPrivate(confItem, allowedTypes);
+            arrayOfDeffered.push(innerDeferred);
+            innerDeferred.done(function(data) {
+               confItem = data;
+            });
+         }
+      }
+   });
+
+   if (arrayOfDeffered.length > 0) {
+      $.whenAll(arrayOfDeffered).done(function() {
+         d.resolve(item);
+      });
+   } else {
+      d.resolve(item);
+   }
+
+   return d.promise();
+};
