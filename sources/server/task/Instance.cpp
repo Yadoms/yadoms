@@ -34,7 +34,7 @@ namespace task {
       stop();
    }
    
-   boost::shared_ptr<ITask> CInstance::getTask()
+   boost::shared_ptr<ITask> CInstance::getTask() const
    {
       return m_task;
    }
@@ -79,7 +79,7 @@ namespace task {
       return m_creationDate;
    }
 
-   void CInstance::OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, std::string message, std::string exception, shared::CDataContainer taskData)
+   void CInstance::OnTaskProgressUpdated(bool isRunning, boost::optional<float> progression, const std::string& message, const std::string& exception, const shared::CDataContainer& taskData)
    {
       if (!isRunning)
          m_currentStatus = ETaskStatus::kFail;
@@ -98,9 +98,9 @@ namespace task {
       m_taskData = taskData;
 
       if (m_currentProgression)
-         YADOMS_LOG(information) << m_task->getName() << " report progression " << m_currentProgression.get() << " with message " << m_currentMessage;
+         YADOMS_LOG(debug) << m_task->getName() << " report progression " << m_currentProgression.get() << " with message " << m_currentMessage;
       else
-         YADOMS_LOG(information) << m_task->getName() << " report progression none with message " << m_currentMessage;
+         YADOMS_LOG(debug) << m_task->getName() << " report progression none with message " << m_currentMessage;
 
       // Post notification
       boost::shared_ptr<CInstanceNotificationData> obj(new CInstanceNotificationData(*this));
@@ -121,6 +121,7 @@ namespace task {
          OnTaskProgressUpdated(true, 0.0f, i18n::CClientStrings::TaskStarted, std::string(), shared::CDataContainer::EmptyContainer);
 
          // Execute task code
+         m_task->onSetTaskId(getGuid());
          m_task->doWork(boost::bind(&CInstance::OnTaskProgressUpdated, this, _1, _2, _3, _4, _5));
 
          //check if task is still running (modified by callback)

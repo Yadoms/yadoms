@@ -25,6 +25,7 @@ void CMSConfiguration::initializeWith(const shared::CDataContainer& data)
       m_data.initializeWith(data);
 
       m_senderMail = m_data.get<std::string>("Sender");
+      m_certificatePassphrase = m_data.getWithDefault<std::string>("CerticiatePassphrase", "");
 
       if (m_data.exists("account.content.gmail.radio") && m_data.get<bool>("account.content.gmail.radio"))
       {
@@ -117,3 +118,7 @@ bool CMSConfiguration::getAuthenticationRequired() const
    return m_bRequireAuthentication;
 }
 
+std::string CMSConfiguration::getCertificatePassphrase() const
+{
+   return m_certificatePassphrase;
+}

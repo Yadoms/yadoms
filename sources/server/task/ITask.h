@@ -15,7 +15,7 @@ namespace task {
       //
       // The function:
       //    -> return : void
-      //    -> param 1 : bool                      : tells if the task if still active (true: running/sucess, false : stopped/error)
+      //    -> param 1 : bool                      : tells if the task if still active (true: running/success, false : error)
       //    -> param 2 : float                     : the task progression (as percent)
       //    -> param 3 : std::string               : the task step message (should be i18n messages)
       //    -> param 4 : std::string               : the exception message (should not be i18n messages; only when param1 is false)
@@ -29,6 +29,15 @@ namespace task {
       //------------------------------
       virtual const std::string & getName() = 0;
    
+      //------------------------------
+      ///\brief Method called when task instance is ready to start
+      ///\param [in] taskId : The taskid
+      //------------------------------
+      virtual void onSetTaskId(const std::string & taskId)
+      {
+
+      }
+
       //------------------------------
       ///\brief The task core working method
       ///\param [in] pFunctor : a fucntion pointer to call on task update

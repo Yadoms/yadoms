@@ -81,6 +81,12 @@
       "connecting": "Connexion en cours...",
       "updateConfiguration": "Mise à jour de la configuration...",
       "newCustomStateMessage": "Un nouvel état avec le message __messageFromExtraQuery__"
+    },
+    "asyncEQwithProgression" : {
+      "step1" : "Etape n°1",
+      "step2" : "Etape n°2",
+      "step3" : "Etape n°3",
+      "step4" : "Etape n°4"
     }
   },
   "extraQueries": {
@@ -122,7 +128,16 @@
           "description": "Le message associé au nouvel état"
         }
       }
-    }
+    },
+   "asyncEQwithProgression": {
+      "name": "Opération asynchrone",
+      "commandData": {
+         "fileContent": {
+            "name": "Fichier",
+            "description": "Le fichier à envoyer au plugin"
+         }
+      }
+   }
   },
   "deviceConfiguration": {
    "staticConfigurationSchema": {
@@ -149,15 +164,33 @@
                "name": "Une section",
                "description": "Exemple d'utilisation d'une section de configuration.",
                "content": {
-                 "SubIntParameter": {
-                   "name": "Entier dans une section",
-                   "description": "Un exemple de paramètre entier dans une section"
-                 },
-                 "SubStringParameter": {
-                   "name": "Chaîne dans une section",
-                   "description": "Un exemple de paramètre chaîne dans une section",
-                   "defaultValue": "Les sous-sections rendent la configuration vraiment puissante !"
-                 }
+                  "SubIntParameter": {
+                     "name": "Entier dans une section",
+                     "description": "Un exemple de paramètre entier dans une section"
+                  },
+                  "SubStringParameter": {
+                     "name": "Chaîne dans une section",
+                     "description": "Un exemple de paramètre chaîne dans une section",
+                     "defaultValue": "Les sous-sections rendent la configuration vraiment puissante !"
+                  },
+                  "SubComboParameter": {
+                     "name": "Sous liste dans une section",
+                     "description": "Exemple d'une liste dans une sous-section",
+                     "content": {
+                        "first": {
+                           "name": "Première section",
+                           "description": "Première section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                        }, 
+                        "second": {
+                           "name": "Seconde section",
+                           "description": "Seconde section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                        }, 
+                        "third": {
+                           "name": "Troisième section",
+                           "description": "Troisième section de la liste : vous pouvez ajouter ici d'autres données de configuration"
+                        }
+                     }
+                  }
                }
              }           
            }

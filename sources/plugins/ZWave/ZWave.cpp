@@ -112,33 +112,33 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
                if (extraQuery)
                {
-                  YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData().query() ;
+                  YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData()->query() ;
 
-                  if (extraQuery->getData().query() == "inclusionMode")
+                  if (extraQuery->getData()->query() == "inclusionMode")
                   {
                      m_controller->startInclusionMode();
                   }
-                  else if (extraQuery->getData().query() == "exclusionMode")
+                  else if (extraQuery->getData()->query() == "exclusionMode")
                   {
                      m_controller->startExclusionMode();
                   }
-                  else if (extraQuery->getData().query() == "hardReset")
+                  else if (extraQuery->getData()->query() == "hardReset")
                   {
                      m_controller->hardResetController();
                   }
-                  else if (extraQuery->getData().query() == "softReset")
+                  else if (extraQuery->getData()->query() == "softReset")
                   {
                      m_controller->softResetController();
                   }
-                  else if (extraQuery->getData().query() == "testNetwork")
+                  else if (extraQuery->getData()->query() == "testNetwork")
                   {
-                     m_controller->testNetwork(extraQuery->getData().data().get<int>("frameCount"));
+                     m_controller->testNetwork(extraQuery->getData()->data().get<int>("frameCount"));
                   }
-                  else if (extraQuery->getData().query() == "healNetowrk")
+                  else if (extraQuery->getData()->query() == "healNetowrk")
                   {
                      m_controller->healNetwork();
                   }
-                  else if (extraQuery->getData().query() == "cancelCommand")
+                  else if (extraQuery->getData()->query() == "cancelCommand")
                   {
                      m_controller->cancelCurrentCommand();
                   }
@@ -188,6 +188,40 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                catch (...)
                {
                   YADOMS_LOG(error) << "Fail to declare device. unknown exception" ;
+               }
+               break;
+            }
+
+            case kUpdateDeviceInfo:
+            {
+               try
+               {
+                  auto deviceData = api->getEventHandler().getEventData<shared::CDataContainer>();
+                  std::string deviceName = deviceData.get<std::string>("name");
+                  if (!api->deviceExists(deviceName))
+                     api->declareDevice(deviceName, deviceData.get<std::string>("friendlyName"), deviceData.get<std::string>("friendlyName"), std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(), deviceData.get<shared::CDataContainer>("details"));
+
+                  shared::CDataContainer details = api->getDeviceDetails(deviceName);
+                  shared::CDataContainer newDetails = deviceData.get<shared::CDataContainer>("details");
+                  auto allprops = newDetails.getAsMap();
+                  for (auto i = allprops.begin(); i != allprops.end(); ++i)
+                  {
+                     if(!i->second.empty())
+                        details.set(i->first, i->second);
+                  }
+                  api->updateDeviceDetails(deviceName, details);
+               }
+               catch (shared::exception::CException& ex)
+               {
+                  YADOMS_LOG(error) << "Fail to update device : " << ex.what();
+               }
+               catch (std::exception& ex)
+               {
+                  YADOMS_LOG(error) << "Fail to update device. exception : " << ex.what();
+               }
+               catch (...)
+               {
+                  YADOMS_LOG(error) << "Fail to update device. unknown exception";
                }
                break;
             }

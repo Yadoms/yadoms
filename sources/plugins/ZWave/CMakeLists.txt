@@ -97,6 +97,13 @@ IF(MSVC OR XCODE)
 	SET_PROPERTY(TARGET openzwave PROPERTY FOLDER "plugins/external-libs")
 ENDIF()
 
+#########################################
+## Remove specific warnings (due to OpenZWave)
+#########################################
+if(CMAKE_COMPILER_IS_GNUCXX)
+	add_definitions ("-Wno-unknown-pragmas")
+endif(CMAKE_COMPILER_IS_GNUCXX)
+
 
 #########################################
 ## Place here all additional include directories

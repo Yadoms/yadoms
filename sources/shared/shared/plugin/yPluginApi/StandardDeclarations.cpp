@@ -17,6 +17,8 @@ namespace shared
 
          const std::string CStandardUnits::NoUnits("data.units.noUnit");
          const std::string CStandardUnits::Ampere("data.units.ampere");
+         const std::string CStandardUnits::Decibel("data.units.db");
+         const std::string CStandardUnits::DecibelPower("data.units.dbm");
          const std::string CStandardUnits::Degrees("data.units.degrees");
          const std::string CStandardUnits::DegreesCelcius("data.units.degreesCelcius");
          const std::string CStandardUnits::DegreesFarenheit("data.units.degreesFarenheit");
@@ -43,6 +45,7 @@ namespace shared
          const std::string CStandardValues::Close("close");
          const std::string CStandardValues::Stop("stop");
 
+         DECLARE_CAPACITY(CStandardCapacities::Alarm, "alarm", CStandardUnits::NoUnits, EKeywordDataType::kBool);
          DECLARE_CAPACITY(CStandardCapacities::ApparentPower, "apparentpower", CStandardUnits::VoltAmpere, EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::ArmingAlarm, "armingAlarm", CStandardUnits::NoUnits, EKeywordDataType::kEnum);
          DECLARE_CAPACITY(CStandardCapacities::BatteryLevel, "batteryLevel", CStandardUnits::Percent, EKeywordDataType::kNumeric);
@@ -68,9 +71,12 @@ namespace shared
          DECLARE_CAPACITY(CStandardCapacities::Pressure, "pressure", CStandardUnits::hectoPascal, EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Rain, "rain", CStandardUnits::Millimeter, EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::RainRate, "rainrate", CStandardUnits::MillimeterPerSecond, EKeywordDataType::kNumeric);
-         DECLARE_CAPACITY(CStandardCapacities::Rssi, "rssi", CStandardUnits::Percent, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Rssi, "rssi", CStandardUnits::DecibelPower, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::SignalLevel, "signalLevel", CStandardUnits::Decibel, EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::SignalPower, "signalPower", CStandardUnits::Percent, EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Speed, "speed", CStandardUnits::MetersPerSecond, EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Switch, "switch", CStandardUnits::NoUnits, EKeywordDataType::kBool);
+         DECLARE_CAPACITY(CStandardCapacities::Tamper, "tamper", CStandardUnits::NoUnits, EKeywordDataType::kBool);
          DECLARE_CAPACITY(CStandardCapacities::Temperature, "temperature", CStandardUnits::DegreesCelcius, EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Text, "text", CStandardUnits::NoUnits, EKeywordDataType::kString);
          DECLARE_CAPACITY(CStandardCapacities::UpDownStop, "upDownStop", CStandardUnits::NoUnits, EKeywordDataType::kEnum);

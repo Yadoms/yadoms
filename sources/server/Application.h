@@ -3,7 +3,6 @@
 #include <Poco/Util/OptionSet.h>
 #include "startupOptions/StartupOptions.h"
 #include "IRunningInformation.h"
-#include <shared/event/EventHandler.hpp>
 
 //-----------------------------
 ///\brief Yadoms application

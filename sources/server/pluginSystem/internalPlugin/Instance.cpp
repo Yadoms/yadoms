@@ -73,7 +73,7 @@ namespace pluginSystem
                                    request);
       }
 
-      void CInstance::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery)
+      void CInstance::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery, const std::string & taskId)
       {
          m_eventHandler->postEvent(yApi::IYPluginApi::kEventExtraQuery,
                                    extraQuery);

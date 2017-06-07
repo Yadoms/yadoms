@@ -9,7 +9,7 @@ COpenZWaveEnumHandler::COpenZWaveEnumHandler()
 }
 
 COpenZWaveEnumHandler::COpenZWaveEnumHandler(const std::string& str)
-   : m_value(static_cast<uint32>(0), static_cast<uint64>(0)), m_valueString(str)
+   : m_valueString(str), m_value(static_cast<uint32>(0), static_cast<uint64>(0))
 {
 }
 
@@ -52,7 +52,7 @@ void COpenZWaveEnumHandler::fromString(const std::string& val)
 const std::multimap<int, std::string> COpenZWaveEnumHandler::getAllValuesAndStrings() const
 {
    std::multimap<int, std::string> result;
-   for (int i = 0; i < m_strings.size(); ++i)
+   for (unsigned int i = 0; i < m_strings.size(); ++i)
    {
       result.insert(std::make_pair(m_integers[i], m_strings[i]));
    }
@@ -71,8 +71,8 @@ const std::vector<std::string> COpenZWaveEnumHandler::getAllStrings() const
 
 bool COpenZWaveEnumHandler::getTextOfValue(const std::string& integerValueInString, std::string& result)
 {
-   auto value = atoi(integerValueInString.c_str());
-   for (auto i = 0; i < m_strings.size(); ++i)
+   int value = atoi(integerValueInString.c_str());
+   for (unsigned int i = 0; i < m_strings.size(); ++i)
    {
       if (m_integers[i] == value)
       {

@@ -30,4 +30,5 @@ public:
    virtual bool getAuthenticationRequired() const = 0;
    virtual std::string getLogin() const = 0;
    virtual std::string getPassword() const = 0;
+   virtual std::string getCertificatePassphrase() const = 0;
 };

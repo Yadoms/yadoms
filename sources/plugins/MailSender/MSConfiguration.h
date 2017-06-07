@@ -29,6 +29,7 @@ public:
    bool getAuthenticationRequired() const override;
    std::string getLogin() const override;
    std::string getPassword() const override;
+   std::string getCertificatePassphrase() const override;
    // [END] ISIConfiguration implementation
 
 private:
@@ -71,5 +72,10 @@ private:
    /// \brief	    Password
    //--------------------------------------------------------------
    std::string m_password;
+
+   //--------------------------------------------------------------
+   /// \brief	    Certificate Passphrase
+   //--------------------------------------------------------------
+   std::string m_certificatePassphrase;
 };
 

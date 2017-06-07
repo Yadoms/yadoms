@@ -81,7 +81,13 @@
 			"connecting": "Connecting...",
 			"updateConfiguration": "Configuration updating...",
 			"anotherMessageWithData" : "New state with message __messageFromExtraQuery__"
-		}
+		},
+      "asyncEQwithProgression" : {
+         "step1" : "Step n°1",
+         "step2" : "Step n°2",
+         "step3" : "Step n°3",
+         "step4" : "Step n°4"
+      }
 	},
 	"extraQueries" : {
 		"simpleCommand" : {
@@ -122,7 +128,16 @@
 					"description": "The message associated to the state"
 				}
 			}
-		}
+		},
+      "asyncEQwithProgression": {
+         "name": "Asynchronous process",
+         "commandData": {
+            "fileContent": {
+               "name": "File",
+               "description": "The file to send to plugin"
+            }
+         }
+      }
 	},
    "deviceConfiguration": {
       "staticConfigurationSchema": {
@@ -154,6 +169,24 @@
                         "name": "A string-in-section example",
                         "description": "Just a string parameter in the sub-section",
                         "defaultValue": "Sub-sections make configuration very powerful !"
+                     },
+                     "SubComboParameter": {
+                        "name": "Sublist in section",
+                        "description": "Example of combo parameter in the sub-section",
+                        "content": {
+                           "first": {
+                              "name": "First section",
+                              "description": "The first list section : you can add here some other configuration parameters"
+                           }, 
+                           "second": {
+                              "name": "Second section",
+                              "description": "The second list section : you can add here some other configuration parameters"
+                           },
+                           "third": {
+                              "name": "Third section",
+                              "description": "The third list section : you can add here some other configuration parameters"
+                           }
+                        }
                      }
                   }
                }

@@ -39,7 +39,7 @@ BOOST_AUTO_TEST_CASE(DeviceDeclaration)
    ckeckKeyword(api, "temp1", sensorId, yApi::CStandardCapacities::Temperature());
    ckeckKeyword(api, "temp2", sensorId, yApi::CStandardCapacities::Temperature());
    ckeckKeyword(api, "Battery", sensorId, yApi::CStandardCapacities::BatteryLevel());
-   ckeckKeyword(api, "rssi", sensorId, yApi::CStandardCapacities::Rssi());
+   ckeckKeyword(api, "signalPower", sensorId, yApi::CStandardCapacities::SignalPower());
    ckeckKeyword(api, "dateTime", sensorId, yApi::CStandardCapacities::DateTime());
    ckeckKeyword(api, "current", sensorId, yApi::CStandardCapacities::Current());
 }
@@ -78,8 +78,8 @@ BOOST_AUTO_TEST_CASE(Historization)
    BOOST_CHECK_EQUAL(boost::lexical_cast<double>(readLastData(api, "temp2").m_value), 10.0);
    BOOST_CHECK_EQUAL(readLastData(api, "Battery").m_device, sensorId);
    BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(api, "Battery").m_value), 100);
-   BOOST_CHECK_EQUAL(readLastData(api, "rssi").m_device, sensorId);
-   BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(api, "rssi").m_value), 50);
+   BOOST_CHECK_EQUAL(readLastData(api, "signalPower").m_device, sensorId);
+   BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(api, "signalPower").m_value), 50);
    BOOST_CHECK_EQUAL(readLastData(api, "current").m_device, sensorId);
    BOOST_CHECK_EQUAL(boost::lexical_cast<double>(readLastData(api, "current").m_value), 2.0);
    BOOST_CHECK_EQUAL(readLastData(api, "dateTime").m_device, sensorId);
@@ -98,8 +98,8 @@ BOOST_AUTO_TEST_CASE(Historization)
    BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(api, "temp2").m_value), 11.0);
    BOOST_CHECK_EQUAL(readLastData(api, "Battery").m_device, sensorId);
    BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(api, "Battery").m_value), 99);
-   BOOST_CHECK_EQUAL(readLastData(api, "rssi").m_device, sensorId);
-   BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(api, "rssi").m_value), 50);
+   BOOST_CHECK_EQUAL(readLastData(api, "signalPower").m_device, sensorId);
+   BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(api, "signalPower").m_value), 50);
    BOOST_CHECK_EQUAL(readLastData(api, "current").m_device, sensorId);
    BOOST_CHECK_EQUAL(readLastData(api, "dateTime").m_device, sensorId);
    readLastTime = boost::posix_time::time_from_string(readLastData(api, "dateTime").m_value);

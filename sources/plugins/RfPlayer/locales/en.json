@@ -1,0 +1,296 @@
+{
+	"name": "RfPlayer",
+	"description": "Plugin which handle RfPlayer device. (RFP1000)",
+	"configurationSchema": {
+		"Serial Port": {
+			"name": "Serial port",
+			"description": "The serial port connected to the RfPlayer device (RFP1000)"
+		},
+		"receiver": {
+			"name": "Received protocols",
+			"description": "Specify the list of enabled received protocols",
+			"content": {
+				"X10": {
+					"name": "X10",
+					"description": "Active X10 protocol"
+				},
+				"RTS": {
+					"name": "RTS",
+					"description": "Active RTS protocol"
+				},
+				"VISONIC": {
+					"name": "VISONIC",
+					"description": "Active VISONIC protocol"
+				},
+				"BLYSS": {
+					"name": "BLYSS",
+					"description": "Active BLYSS protocol"
+				},
+				"CHACON": {
+					"name": "CHACON",
+					"description": "Active CHACON protocol"
+				},
+				"OREGONV1": {
+					"name": "OREGONV1",
+					"description": "Active OREGONV1 protocol"
+				},
+				"OREGONV2": {
+					"name": "OREGONV2",
+					"description": "Active OREGONV2 protocol"
+				},
+				"OREGONV3/OWL": {
+					"name": "OREGONV3/OWL",
+					"description": "Active OREGONV3/OWL protocol"
+				},
+				"DOMIA": {
+					"name": "DOMIA",
+					"description": "Active DOMIA protocol"
+				},
+				"X2D": {
+					"name": "X2D",
+					"description": "Active X2D protocol"
+				},
+				"KD101": {
+					"name": "KD101",
+					"description": "Active KD101 protocol"
+				},
+				"PARROT": {
+					"name": "PARROT",
+					"description": "Active PARROT protocol"
+				}
+			}
+		},
+		"repeater": {
+			"name": "Repeated protocols",
+			"description": "Specify the list of enabled repeated protocols",
+			"content": {
+				"X10": {
+					"name": "X10",
+					"description": "Repeat X10 protocol"
+				},
+				"RTS": {
+					"name": "RTS",
+					"description": "Repeat RTS protocol"
+				},
+				"VISONIC": {
+					"name": "VISONIC",
+					"description": "Repeat VISONIC protocol"
+				},
+				"BLYSS": {
+					"name": "BLYSS",
+					"description": "Repeat BLYSS protocol"
+				},
+				"CHACON": {
+					"name": "CHACON",
+					"description": "Repeat CHACON protocol"
+				},
+				"OREGONV1": {
+					"name": "OREGONV1",
+					"description": "Repeat OREGONV1 protocol"
+				},
+				"OREGONV2": {
+					"name": "OREGONV2",
+					"description": "Repeat OREGONV2 protocol"
+				},
+				"OREGONV3/OWL": {
+					"name": "OREGONV3/OWL",
+					"description": "Repeat OREGONV3/OWL protocol"
+				},
+				"DOMIA": {
+					"name": "DOMIA",
+					"description": "Repeat DOMIA protocol"
+				},
+				"X2D": {
+					"name": "X2D",
+					"description": "Repeat X2D protocol"
+				},
+				"KD101": {
+					"name": "KD101",
+					"description": "Repeat KD101 protocol"
+				}
+			}
+		},
+		"ledactiviy": {
+			"name": "leds",
+			"description": "Enable ou disable LED activity related to RF flow."
+		}
+	},
+	"deviceConfiguration": {
+		"staticConfigurationSchema": {
+			"name": "Type",
+			"description": "Device type",
+      "schemas": {
+        "blyssDevice": {
+          "types": {
+            "blyss": {
+              "title": "BLYSS",
+              "description": "BLYSS distributed by Cartorama"
+            }
+          },
+          "content": {
+            "groupCode": {
+              "name": "Group",
+              "description": "The group ID (A-P)"
+            },
+            "unitCode": {
+              "name": "Unit",
+              "description": "The unit code (1-5)"
+            },
+            "burst": {
+              "name": "Burst",
+              "description": "Frame repetition factor (0 by default)"
+            }
+          }
+        },
+        "simpleDevice": {
+          "types": {
+            "x10": {
+              "title": "X10"
+            },
+            "domia": {
+              "title": "DomiaLite"
+            },
+            "kd101": {
+              "title": "KD101 (smoke dectector)"
+            },
+            "parrot": {
+              "title": "Parrot"
+            }
+          },
+          "content": {
+            "id": {
+              "name": "ID",
+              "description": "Device identifier"
+            },
+            "burst": {
+              "name": "Burst",
+              "description": "Frame repetition factor (0 by default)"
+            }
+          }
+        },
+        "visonicDevice": {
+          "types": {
+            "visonic": {
+              "title": "Visonic",
+              "description": "Marque VISONIC, BFT,..."
+            }
+          },
+          "content": {
+            "frequency": {
+              "name": "Frequency",
+              "description": "The used frequency",
+              "values": {
+                "433": "433 MHz",
+                "866": "868 MHz"
+              }
+            },
+            "id": {
+              "name": "ID",
+              "description": "Device identifier"
+            },
+            "burst": {
+              "name": "Burst",
+              "description": "Frame repetition factor (0 by default)"
+            },
+            "qualifier": {
+              "name": "Qualifier",
+              "description": "The frame qualifier"
+            }
+          }
+        },
+        "x2dDevice": {
+          "types": {
+            "x2dAlarm433": {
+              "title": "Alarm DeltaDore 433MHz",
+              "description": "Alarme Deltadore/X2D fonctionnant en 433MHz"
+            },
+            "x2dAlarm868": {
+              "title": "Alarm DeltaDore 868MHz",
+              "description": "Alarme Deltadore/X2D fonctionnant en 868MHz"
+            },
+            "x2dShutter": {
+              "title": "Shutter X2D",
+              "description": "Shutter command DeltaDore/X2D"
+            },
+            "x2dElec": {
+              "title": "Elec X2D",
+              "description": "Electrical command DeltaDore/X2D"
+            },
+            "x2dGas": {
+              "title": "Gas X2D",
+              "description": "Gas command DeltaDore/X2D"
+            }
+          },
+          "content": {
+            "id": {
+              "name": "ID",
+              "description": "Device identifier"
+            },
+            "burst": {
+              "name": "Burst",
+              "description": "Frame repetition factor (0 by default)"
+            },
+            "x2dVariant": {
+              "name": "X2D Variant",
+              "description": "Use the X2D variant"
+            }
+          }
+        },
+        "genericDevice": {
+          "types": {
+            "rts": {
+              "title": "Somfy RTS",
+              "description": "Somfy"
+            }
+          },
+          "content": {
+            "id": {
+              "name": "ID",
+              "description": "Device identifier"
+            },
+            "burst": {
+              "name": "Burst",
+              "description": "Frame repetition factor (0 by default)"
+            },
+            "qualifier": {
+              "name": "Qualifier",
+              "description": "The frame qualifier"
+            }
+          }
+        }
+      }
+		}
+	},
+	"extraQueries": {
+		"firmwareUpdate": {
+			"name": "Update dongle firmware",
+			"commandData": {
+				"fileContent": {
+					"name": "File",
+					"description": "The firmware file to use"
+				}
+			}
+		}
+	},
+	"customLabels": {
+		"firmwareUpdate": {
+			"fail": "Fail to upgrade firmware",
+			"writeFile": "Sending firmware",
+			"waitReboot": "Writing firmware (~1 min)"
+		}
+	},
+  "enumerations": {
+    "EBlyss": {
+      "name": "",
+      "values": {
+        "Off": "OFF",
+        "On": "ON",
+        "Dim": "DOM",
+        "AllOff": "All ON",
+        "AllOn": "All OFF",
+        "Assoc": "Peering frame"
+      }
+    }
+  }   
+
+}

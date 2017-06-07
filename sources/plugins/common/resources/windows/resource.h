@@ -1,4 +1,3 @@
-//{{NO_DEPENDENCIES}}
 // Fichier Include généré de Microsoft Visual C++.
 // Utilisé par Yadoms.rc
 //

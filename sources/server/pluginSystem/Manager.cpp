@@ -19,13 +19,16 @@
 #include "DeviceConfigurationSchemaRequest.h"
 #include "SetDeviceConfiguration.h"
 #include "DeviceRemoved.h"
+#include "ExtraQuery.h"
+#include "task/plugins/ExtraQuery.h"
 
 namespace pluginSystem
 {
    CManager::CManager(const IPathProvider& pathProvider,
                       boost::shared_ptr<database::IDataProvider> dataProvider,
                       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
-                      boost::shared_ptr<shared::ILocation> location)
+                      boost::shared_ptr<shared::ILocation> location,
+                      boost::shared_ptr<task::CScheduler> taskScheduler)
       : m_factory(boost::make_shared<CFactory>(pathProvider,
                                                location)),
         m_dataProvider(dataProvider),
@@ -35,7 +38,8 @@ namespace pluginSystem
 #else
       m_qualifier(boost::make_shared<CIndicatorQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
 #endif
-        m_dataAccessLayer(dataAccessLayer)
+        m_dataAccessLayer(dataAccessLayer),
+        m_taskScheduler(taskScheduler)
    {
    }
 
@@ -652,15 +656,24 @@ namespace pluginSystem
       instance->postDeviceCommand(command);
    }
 
-   void CManager::postExtraQuery(int id,
-                                 boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query) const
+   const std::string CManager::postExtraQuery(int id, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query) const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
       auto instance(getRunningInstance(id));
 
-      YADOMS_LOG(debug) << "Send extra query " << query->getData().query() << " to plugin " << instance->about()->DisplayName();
+      YADOMS_LOG(debug) << "Send extra query " << query->getData()->query() << " to plugin " << instance->about()->DisplayName();
 
-      instance->postExtraQuery(query);
+      boost::shared_ptr<task::ITask> task(boost::make_shared<task::plugins::CExtraQuery>(instance, query)); 
+
+      std::string taskUid = "";
+      bool result = m_taskScheduler->runTask(task, taskUid);
+      if(!result)
+      {
+         YADOMS_LOG(error) << "Fail to send extra query " << query->getData()->query() << " to plugin " << instance->about()->DisplayName();
+         //ensure taskId is set to ""
+         taskUid = "";
+      }
+      return taskUid;
    }
 
    void CManager::postManuallyDeviceCreationRequest(int id,
