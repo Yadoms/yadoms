@@ -7,21 +7,33 @@
 ################################################################################################
 
 
+##### Boost ######
+#
 #define Boost ROOT
 set(BOOST_ROOT "/path/to/boost")
 
+
+##### Poco ######
+#
 #define Poco ROOT
 set(POCO_ROOT "path/to/poco")
 
+
+##### OpenSSL ######
+#
 #define OpenSSL ROOT
 set(OPENSSL_ROOT "path/to/openssl")
 
+
+##### Protobuf ######
+#
 #define Protobuf ROOT
 set(PROTOBUF_ROOT "path/to/protobuf")
-
+#
 # if ON, then use path of generated file in case "make install" of protobuf has been done into a custom folder
 # this is very usefull, and bypass bad finding protobuf with cmake < 3.9
-set(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY ON)
+#set(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY ON)
+
 
 ##### Database ######
 #
