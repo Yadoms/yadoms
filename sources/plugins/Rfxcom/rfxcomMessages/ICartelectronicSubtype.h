@@ -40,11 +40,11 @@ namespace rfxcomMessages
       virtual char BatteryLevelFromProtocol(const RBUF& rbuf) = 0;
 
       //--------------------------------------------------------------
-      /// \brief	                        Get rssi from protocol data
+      /// \brief	                        Get signalPower from protocol data
       /// \param[in] buf                  buffer of the message
-      /// \return                         The rssi level
+      /// \return                         The signalPower level
       //--------------------------------------------------------------
-      virtual char RssiFromProtocol(const RBUF& rbuf) = 0;
+      virtual char signalPowerFromProtocol(const RBUF& rbuf) = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Get device model

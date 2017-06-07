@@ -1,88 +1,92 @@
 ﻿{
 	"name": "Envoi d'email",
 	"description": "Ce plugin fourni les informations nécessaires pour envoyer un email",
-	"configurationSchema": {
-		"Sender": {
-			"name": "Adresse email expéditeur",
-			"description": "Yadoms a besoin d'un compte mail existant pour pouvoir envoyer des mails. Entrer ici l'adresse du compte mail à utiliser (Cette adresse sera également utilisée pour le champ 'expéditeur' des emails envoyés).",
-			"regexErrorMessage" : "Doit être une adresse email valide"
-		},
-      "account": {
-         "name": "Type de compte",
-         "description": "Si votre fournisseur de compte mail est introuvable dans cette liste, choisissez \"Autre\"",
-         "content":  {
-            "gmail": {
-               "name": "GMail",
-               "content": {
-                  "password": {
-                     "name": "Mot de passe",
-                     "description": "Le mot de passe peut être celui des GoogleApps"
-                  }               
-               }
-            },
-            "outlook": {
-               "name": "Outlook",
-               "content": {
-                  "password": {
-                     "name": "Mot de passe",
-                     "description": "Le mot de passe de votre compte outlook.com"
-                  }               
-               }
-            },
-            "ovh": {
-               "name": "OVH",
-               "content": {
-                  "password": {
-                     "name": "Mot de passe",
-                     "description": "Le mot de passe de votre compte OVH"
-                  }               
-               }
-            },
-            "yahoo": {
-               "name": "Yahoo",
-               "content": {
-                  "password": {
-                     "name": "Mot de passe",
-                     "description": "Le mot de passe de votre compte Yahoo"
-                  }               
-               }
-            },
-            "other": {
-               "name": "Autre",
-               "content": {
-                  "SMTPServer": {
-                     "name": "Serveur SMTP",
-                     "description": "Nom du serveur SMTP"
-                  },
-                  "SMTPPort": {
-                     "name": "port du serveur SMTP",
-                     "description": "port SMTP"
-                  },
-                  "Security": {
-                     "name" : "Sécurité",
-                     "description": "Le serveur SMTP requiert une connexion sécurisée",
-                     "values": {
-                        "none": "Aucune",
-                        "SSL": "SSL",
-                        "TLS": "TLS",
-                        "Automatic": "Automatique"
-                     }
-                  },		
-                  "authentication": {
-                     "name": "Authentification requise",
-                     "description": "Seulement si le server SMTP requiert une authentification",
-                     "content": {
-                        "user": {
-                           "name": "Utilisateur"
-                        },
-                        "password": {
-                           "name": "Mot de passe"
-                        }
-                     }
-                  }
-               }
+  "configurationSchema": {
+    "Sender": {
+      "name": "Adresse email expéditeur",
+      "description": "Yadoms a besoin d'un compte mail existant pour pouvoir envoyer des mails. Entrer ici l'adresse du compte mail à utiliser (Cette adresse sera également utilisée pour le champ 'expéditeur' des emails envoyés).",
+      "regexErrorMessage": "Doit être une adresse email valide"
+    },
+    "account": {
+      "name": "Type de compte",
+      "description": "Si votre fournisseur de compte mail est introuvable dans cette liste, choisissez \"Autre\"",
+      "content": {
+        "gmail": {
+          "name": "GMail",
+          "content": {
+            "password": {
+              "name": "Mot de passe",
+              "description": "Le mot de passe peut être celui des GoogleApps"
             }
-         }
+          }
+        },
+        "outlook": {
+          "name": "Outlook",
+          "content": {
+            "password": {
+              "name": "Mot de passe",
+              "description": "Le mot de passe de votre compte outlook.com"
+            }
+          }
+        },
+        "ovh": {
+          "name": "OVH",
+          "content": {
+            "password": {
+              "name": "Mot de passe",
+              "description": "Le mot de passe de votre compte OVH"
+            }
+          }
+        },
+        "yahoo": {
+          "name": "Yahoo",
+          "content": {
+            "password": {
+              "name": "Mot de passe",
+              "description": "Le mot de passe de votre compte Yahoo"
+            }
+          }
+        },
+        "other": {
+          "name": "Autre",
+          "content": {
+            "SMTPServer": {
+              "name": "Serveur SMTP",
+              "description": "Nom du serveur SMTP"
+            },
+            "SMTPPort": {
+              "name": "port du serveur SMTP",
+              "description": "port SMTP"
+            },
+            "Security": {
+              "name": "Sécurité",
+              "description": "Le serveur SMTP requiert une connexion sécurisée",
+              "values": {
+                "none": "Aucune",
+                "SSL": "SSL",
+                "TLS": "TLS",
+                "Automatic": "Automatique"
+              }
+            },
+            "authentication": {
+              "name": "Authentification requise",
+              "description": "Seulement si le server SMTP requiert une authentification",
+              "content": {
+                "user": {
+                  "name": "Utilisateur"
+                },
+                "password": {
+                  "name": "Mot de passe"
+                }
+              }
+            }
+          }
+        }
       }
-	}
+    },
+    "CerticiatePassphrase": {
+      "name": "Mot de passe du certificat (optionnel)",
+      "description": "Mot de passe (passphrase) du certiciat SSL"
+    }
+  }
 }

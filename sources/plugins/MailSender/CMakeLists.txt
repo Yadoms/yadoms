@@ -15,6 +15,8 @@ set(MAILSENDER_SOURCES
    SecurityMode.cpp
    
    ISmtpServiceProvider.h
+   CertificatePassphraseProvider.h
+   CertificatePassphraseProvider.cpp
    SmtpServiceProviderFactory.h
    SmtpServiceProviderFactory.cpp
    SmtpUnsecureServiceProvider.h

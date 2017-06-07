@@ -16,7 +16,7 @@ namespace web
          ///\brief Constructor
          ///\param[in] acquisitionSummaries     The acquisition summaries to send to GUI
          //-----------------------------
-         explicit CAcquisitionSummaryUpdateFrame(const std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary>>& acquisitionSummaries);
+         explicit CAcquisitionSummaryUpdateFrame(const std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary> >& acquisitionSummaries);
 
          //-----------------------------
          ///\brief Destructor

@@ -10,10 +10,10 @@ namespace rfxcomMessages
    CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api,
                           const std::string& command,
                           const shared::CDataContainer& deviceDetails)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_signalPower })
    {
-      m_rssi->set(0);
+      m_signalPower->set(0);
 
       createSubType(deviceDetails.get<unsigned char>("subType"));
       m_houseCode = (m_subType == sTypeKambrook) ? deviceDetails.get<unsigned char>("houseCode") : 0;
@@ -27,10 +27,10 @@ namespace rfxcomMessages
    CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api,
                           unsigned int subType,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_signalPower })
    {
-      m_rssi->set(0);
+      m_signalPower->set(0);
 
       createSubType(static_cast<unsigned char>(subType));
 
@@ -45,8 +45,8 @@ namespace rfxcomMessages
    CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> api,
                           const RBUF& rbuf,
                           size_t rbufSize)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_signalPower })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -59,7 +59,7 @@ namespace rfxcomMessages
       m_subTypeManager->idFromProtocol(rbuf.LIGHTING2.id1, rbuf.LIGHTING2.id2, rbuf.LIGHTING2.id3, rbuf.LIGHTING2.id4, m_houseCode, m_id);
       m_subTypeManager->setFromProtocolState(rbuf.LIGHTING2.cmnd, rbuf.LIGHTING2.level);
       m_unitCode = rbuf.LIGHTING2.unitcode;
-      m_rssi->set(NormalizeRssiLevel(rbuf.LIGHTING2.rssi));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING2.rssi));
 
       declare(api);
    }

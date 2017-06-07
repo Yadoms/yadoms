@@ -1,6 +1,8 @@
 #pragma once
 #include <plugin_cpp_api/IPlugin.h>
 #include "IMSConfiguration.h"
+#include <Poco/Net/PrivateKeyPassphraseHandler.h>
+#include <Poco/SharedPtr.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -77,5 +79,10 @@ private:
    /// \brief	    Message historization object
    //--------------------------------------------------------------
    boost::shared_ptr<yApi::historization::CMessage> m_messageKeyword;
+
+   //--------------------------------------------------------------
+   /// \brief	    The ceertificate passphrase provider
+   //--------------------------------------------------------------
+   Poco::SharedPtr<Poco::Net::PrivateKeyPassphraseHandler> m_certificatePassphraseProvider;
 };
 

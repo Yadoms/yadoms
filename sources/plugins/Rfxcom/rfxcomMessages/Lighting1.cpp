@@ -11,11 +11,11 @@ namespace rfxcomMessages
                           const std::string& command,
                           const shared::CDataContainer& deviceDetails)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_state , m_rssi })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_state , m_signalPower })
    {
       m_state->setCommand(command);
-      m_rssi->set(0);
+      m_signalPower->set(0);
 
       m_subType = deviceDetails.get<unsigned char>("subType");
       m_houseCode = deviceDetails.get<unsigned char>("houseCode");
@@ -28,11 +28,11 @@ namespace rfxcomMessages
                           unsigned int subType,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_state , m_rssi })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_state , m_signalPower })
    {
       m_state->set(false);
-      m_rssi->set(0);
+      m_signalPower->set(0);
 
       m_subType = static_cast<unsigned char>(subType);
       switch (m_subType)
@@ -64,8 +64,8 @@ namespace rfxcomMessages
                           const RBUF& rbuf,
                           size_t rbufSize)
       : m_state(boost::make_shared<yApi::historization::CSwitch>("state")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_state , m_rssi })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_state , m_signalPower })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -78,7 +78,7 @@ namespace rfxcomMessages
       m_houseCode = rbuf.LIGHTING1.housecode;
       m_unitCode = rbuf.LIGHTING1.unitcode;
       m_state->set(fromProtocolState(rbuf.LIGHTING1.cmnd));
-      m_rssi->set(NormalizeRssiLevel(rbuf.LIGHTING1.rssi));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING1.rssi));
 
       Init(api);
    }

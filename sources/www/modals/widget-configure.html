@@ -67,20 +67,33 @@
                 submitSuccess: function($form, event) {
                     event.preventDefault();
 
-                    if (configMgr)
-                        widgetToConfigure.configuration = configMgr.getCurrentConfiguration();
+                    var d = new $.Deferred();
+                    
+                    if (configMgr) {
+                        configMgr.getCurrentConfiguration()
+                        .done(function(v) {
+                           widgetToConfigure.configuration = v;
+                           d.resolve();
+                        });
+                    } else {
+                        d.resolve();
+                    }
+                    
+                    d.done(function() {
+                       if (parseBool(widgetToConfigure.package.hasTitle))
+                           widgetToConfigure.title = $form.find("input")[0].value;
+                       else
+                           widgetToConfigure.title = "";
 
-                    if (parseBool(widgetToConfigure.package.hasTitle))
-                        widgetToConfigure.title = $form.find("input")[0].value;
-                    else
-                        widgetToConfigure.title = "";
+                       //we clear the current id
+                       widgetToConfigure = undefined;
 
-                    //we clear the current id
-                    widgetToConfigure = undefined;
+                       $("div#configure-widget-modal").modal("hide");
 
-                    $("div#configure-widget-modal").modal("hide");
+                       callback();                    
+                    });
+                    
 
-                    callback();
                 },
                 filter: function() {
                     //we check only control that have class enable-validation and are visible

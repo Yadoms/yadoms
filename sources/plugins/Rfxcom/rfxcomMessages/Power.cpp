@@ -16,8 +16,8 @@ namespace rfxcomMessages
       m_totalPower(boost::make_shared<yApi::historization::CPower>("total")),
       m_powerFactor(boost::make_shared<yApi::historization::CPowerFactor>("powerFactor")),
       m_frequency(boost::make_shared<yApi::historization::CFrequency>("frequency")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_voltage , m_current , m_instantPower , m_totalPower , m_powerFactor , m_frequency , m_rssi })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_voltage , m_current , m_instantPower , m_totalPower , m_powerFactor , m_frequency , m_signalPower })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -42,7 +42,7 @@ namespace rfxcomMessages
 
       m_frequency->set(rbuf.POWER.freq);
 
-      m_rssi->set(NormalizeRssiLevel(rbuf.POWER.rssi));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.POWER.rssi));
 
       Init(api);
    }

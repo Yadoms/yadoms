@@ -77,11 +77,11 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> toBufferQueue(
 int NormalizeBatteryLevel(unsigned char fromRfxcom);
 
 //--------------------------------------------------------------
-/// \brief	                           Normalize rssi level
-/// \param[in] fromRfxcom              Rssi level, as encoded in RFXCom messages
-/// \return                            Rssi level in %
+/// \brief	                           Normalize signalPower level
+/// \param[in] fromRfxcom              signalPower level, as encoded in RFXCom messages
+/// \return                            signalPower level in %
 //--------------------------------------------------------------
-int NormalizeRssiLevel(unsigned char fromRfxcom);
+int NormalizesignalPowerLevel(unsigned char fromRfxcom);
 
 //--------------------------------------------------------------
 /// \brief	                           Normalize temperature

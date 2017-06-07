@@ -11,10 +11,10 @@ namespace rfxcomMessages
    CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYPluginApi> api,
                               const std::string& command,
                               const shared::CDataContainer& deviceDetails)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_signalPower })
    {
-      m_rssi->set(0);
+      m_signalPower->set(0);
 
       createSubType(deviceDetails.get<unsigned char>("subType"));
       m_id = deviceDetails.get<unsigned int>("id");
@@ -26,10 +26,10 @@ namespace rfxcomMessages
    CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYPluginApi> api,
                               unsigned int subType,
                               const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_signalPower })
    {
-      m_rssi->set(0);
+      m_signalPower->set(0);
 
       createSubType(static_cast<unsigned char>(subType));
 
@@ -42,8 +42,8 @@ namespace rfxcomMessages
    CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYPluginApi> api,
                               const RBUF& rbuf,
                               size_t rbufSize)
-      : m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_rssi })
+      : m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_signalPower })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -55,7 +55,7 @@ namespace rfxcomMessages
       createSubType(rbuf.THERMOSTAT1.subtype);
       m_id = rbuf.THERMOSTAT1.id1 << 8 | rbuf.THERMOSTAT1.id2;
       m_subTypeManager->setFromProtocolState(rbuf);
-      m_rssi->set(NormalizeRssiLevel(rbuf.THERMOSTAT1.rssi));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.THERMOSTAT1.rssi));
 
       declare(api);
    }

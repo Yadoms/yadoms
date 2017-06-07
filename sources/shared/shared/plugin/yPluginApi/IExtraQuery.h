@@ -25,7 +25,7 @@ namespace shared
             ///\brief               Get the extra query data
             ///\return              The extra query data
             //-----------------------------------------------------
-            virtual const shared::plugin::yPluginApi::IExtraQueryData& getData() const = 0;
+            virtual boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> getData() const = 0;
 
             //-----------------------------------------------------
             ///\brief Answer the request with success, providing query answer data
@@ -38,6 +38,13 @@ namespace shared
             ///\param [in] errorMessage  The error message
             //-----------------------------------------------------
             virtual void sendError(const std::string& errorMessage) = 0;
+
+            //-----------------------------------------------------
+            ///\brief Report the extra query progression
+            ///\param [in] progression  The progression (0->100)
+            ///\param [in] errorMessage The associated message (can be i18n string)
+            //-----------------------------------------------------
+            virtual void reportProgress(const float progression, const std::string& message) = 0;
          };
       }
    }

@@ -52,6 +52,9 @@ namespace i18n
    std::string CClientStrings::DatabaseBackupSuccess                        = "database.backup.success";
    std::string CClientStrings::DatabaseBackupFail                           = "database.backup.fail";
 
+   std::string CClientStrings::ExtraQuerySuccess                            = "plugins.extraquery.success";
+   std::string CClientStrings::ExtraQueryFail                               = "plugins.extraquery.fail";
+
    std::string CClientStrings::TaskInterrupted                              = "task.interrupted";
    std::string CClientStrings::TaskCrashed                                  = "task.crash";
    std::string CClientStrings::TaskUnkownError                              = "task.unknownError";

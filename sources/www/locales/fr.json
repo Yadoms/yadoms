@@ -68,6 +68,12 @@
                 "success" : "Sauvergarde réussie",
                 "fail" : "Echec de la sauvegarde"
             }
+        },
+        "plugins": {
+            "extraquery" : {
+               "success": "__extraquery__ a réussi",
+               "fail": "Echec de __extraquery__"
+            }
         }
     },
     "common": {
@@ -932,10 +938,10 @@
         }
     },
   "eventLogger": {
-    "DefaultCode": "Evénement inconnu : __what__ généré par $t(core.__who__.name)",
-    "Started": "$t(core.__who__.name) a démarré",
-    "Stopped": "$t(core.__who__.name) s'est arrêté",
-    "Updated": "The $t(core.__who__.name) a été mise à jour",
+    "DefaultCode": "Evénement inconnu : __what__ généré par __who__",
+    "Started": "__who__ a démarré",
+    "Stopped": "__who__ s'est arrêté",
+    "Updated": "The __who__ a été mise à jour",
     "YadomsCrash": "yadoms a rencontré une erreur et s'est arrêté",
     "PluginCrash": "__who__ a rencontré une erreur et s'est arrêté",
     "TaskFailed": "La tâche __who__ a rencontré une erreur et s'est arrêtée",
@@ -999,6 +1005,8 @@
     "units": {
       "noUnit": "",
       "ampere": "A",
+      "db": "dB",
+      "dbm": "dBm",
       "degrees": "°",
       "degreesCelcius": "°C",
       "degreesFarenheit": "°F",

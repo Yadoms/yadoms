@@ -127,7 +127,16 @@
           "type": "string"
         }
       }
-    }
+    },
+    "asyncEQwithProgression": {
+      "iconClass": "fa  fa-upload",
+      "commandData": {
+        "fileContent": {
+          "type": "file",
+          "filter": ".txt"
+        }
+      }
+    }      
   },
   "deviceConfiguration": {
     "staticConfigurationSchema": {

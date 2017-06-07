@@ -27,6 +27,7 @@
 #include "automation/RuleManager.h"
 #include <shared/ServiceLocator.h>
 #include "startupOptions/IStartupOptions.h"
+#include "dateTime/DateTimeNotifier.h"
 #include <Poco/Net/NetException.h>
 #include "location/Location.h"
 #include "location/IpApiAutoLocation.h"
@@ -69,11 +70,13 @@ void CSupervisor::run()
       auto location = boost::make_shared<location::CLocation>(dal->getConfigurationManager(),
                                                               boost::make_shared<location::CIpApiAutoLocation>());
 
+      // Create Task manager
+      auto taskManager(boost::make_shared<task::CScheduler>(dal->getEventLogger()));
+
       // Create the Plugin manager
-      auto pluginManager(boost::make_shared<pluginSystem::CManager>(m_pathProvider, pDataProvider, dal, location));
+      auto pluginManager(boost::make_shared<pluginSystem::CManager>(m_pathProvider, pDataProvider, dal, location, taskManager));
 
       // Start Task manager
-      auto taskManager(boost::make_shared<task::CScheduler>(dal->getEventLogger()));
       taskManager->start();
 
       // Create the update manager
@@ -136,6 +139,10 @@ void CSupervisor::run()
       //start the rule manager
       automationRulesManager->start();
 
+      //create and start the dateTime notification scheduler
+      dateTime::CDateTimeNotifier dateTimeNotificationService;
+      dateTimeNotificationService.start();
+
       // Register to event logger started event
       dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", std::string());
 
@@ -149,6 +156,9 @@ void CSupervisor::run()
       }
 
       YADOMS_LOG(debug) << "Supervisor is stopping...";
+
+      //stop datetime notification service
+      dateTimeNotificationService.stop();
 
       //stop web server
       webServer->stop();

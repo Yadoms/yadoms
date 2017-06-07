@@ -1,94 +1,98 @@
 {
 	"type": "MailSender",
-	"version": "1.0.0-beta",
+	"version": "1.0.0-beta.1",
 	"author": "Jean-Michel DECORET",
    "url": "https://github.com/Yadoms/yadoms/wiki/MailSender",
 	"credits": "",
 	"supportedPlatforms": "all",
 	"supportManuallyDeviceCreation": "false",
-	"configurationSchema": {
-		"Sender": {
-			"type": "string",
-			"regex" : "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$",
-			"required" : "true"
-		},
-      "account": {
-         "type": "radioSection",
-         "content":  {
-            "gmail": {
-               "type": "section",
-               "content": {
-                  "password": {
-                     "type": "string",
-                     "encrypted": "true"
-                  }               
-               }
-            },
-            "outlook": {
-               "type": "section",
-               "content": {
-                  "password": {
-                     "type": "string",
-                     "encrypted": "true"
-                  }               
-               }
-            },
-            "ovh": {
-               "type": "section",
-               "content": {
-                  "password": {
-                     "type": "string",
-                     "encrypted": "true"
-                  }               
-               }
-            },
-            "yahoo": {
-               "type": "section",
-               "content": {
-                  "password": {
-                     "type": "string",
-                     "encrypted": "true"
-                  }               
-               }
-            },
-            "other": {
-               "type": "section",
-               "content": {
-                  "SMTPServer": {
-                     "type": "string"
-                  },
-                  "SMTPPort": {
-                     "type": "int",
-                     "defaultValue": "587"
-                  },
-                  "Security": {
-                     "type": "enum",
-                     "values": {
-                        "none": "None",
-                        "SSL": "Ssl",
-                        "TLS": "TLS",
-                        "Automatic": "Automatic"
-                     }
-                  },
-                  "authentication": {
-                     "type": "section",
-                     "name": "Authentication required by server",
-                     "description": "Only if SMTP server requires an authentication",
-                     "enableWithCheckBox": "true",
-                     "enableWithCheckBoxDefaultValue": "false",
-                     "content": {
-                        "user": {
-                           "type": "string"
-                        },
-                        "password": {
-                           "type": "string",
-                           "encrypted": "true"
-                        }
-                     }
-                  }              
-               }
+  "configurationSchema": {
+    "Sender": {
+      "type": "string",
+      "regex": "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$",
+      "required": "true"
+    },
+    "account": {
+      "type": "radioSection",
+      "content": {
+        "gmail": {
+          "type": "section",
+          "content": {
+            "password": {
+              "type": "string",
+              "encrypted": "true"
             }
-         }
+          }
+        },
+        "outlook": {
+          "type": "section",
+          "content": {
+            "password": {
+              "type": "string",
+              "encrypted": "true"
+            }
+          }
+        },
+        "ovh": {
+          "type": "section",
+          "content": {
+            "password": {
+              "type": "string",
+              "encrypted": "true"
+            }
+          }
+        },
+        "yahoo": {
+          "type": "section",
+          "content": {
+            "password": {
+              "type": "string",
+              "encrypted": "true"
+            }
+          }
+        },
+        "other": {
+          "type": "section",
+          "content": {
+            "SMTPServer": {
+              "type": "string"
+            },
+            "SMTPPort": {
+              "type": "int",
+              "defaultValue": "587"
+            },
+            "Security": {
+              "type": "enum",
+              "values": {
+                "none": "None",
+                "SSL": "Ssl",
+                "TLS": "TLS",
+                "Automatic": "Automatic"
+              }
+            },
+            "authentication": {
+              "type": "section",
+              "name": "Authentication required by server",
+              "description": "Only if SMTP server requires an authentication",
+              "enableWithCheckBox": "true",
+              "enableWithCheckBoxDefaultValue": "false",
+              "content": {
+                "user": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string",
+                  "encrypted": "true"
+                }
+              }
+            }
+          }
+        }
       }
-	}
+    },
+    "CerticiatePassphrase": {
+      "type": "string",
+      "required": "false"
+    }
+  }
 }

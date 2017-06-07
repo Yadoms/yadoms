@@ -83,9 +83,13 @@ BoolParameterHandler.prototype.setEnabled = function (enabled) {
  * @returns {bool}
  */
 BoolParameterHandler.prototype.getCurrentConfiguration = function () {
+   var d = new $.Deferred();
    this.value = parseBool($("input#" + this.uuid).prop("checked"));
    
+   
    if(this.useIntegerResult && this.useIntegerResult === true)
-      return (this.value == true)?1:0;
-   return this.value;
+      d.resolve((this.value == true)?1:0);
+   else
+      d.resolve(this.value);
+   return d.promise();
 };

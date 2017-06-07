@@ -177,16 +177,28 @@ void CAsyncTcpClient::readCompleted(const boost::system::error_code& error, std:
 
 void CAsyncTcpClient::send(const CByteBuffer& buffer)
 {
+   boost::asio::const_buffers_1 toSend(buffer.begin(), buffer.size());
+   sendBuffer(toSend);
+}
+
+void CAsyncTcpClient::sendText(const std::string & content)
+{
+   boost::asio::const_buffers_1 toSend = boost::asio::buffer(content);
+   sendBuffer(toSend);
+}
+
+void CAsyncTcpClient::sendBuffer(boost::asio::const_buffers_1 & buffer)
+{
    try
    {
-      m_boostSocket.write_some(boost::asio::const_buffers_1(buffer.begin(), buffer.size()));
+      m_boostSocket.write_some(buffer);
    }
    catch (boost::system::system_error& e)
    {
       // boost::asio::error::eof is the normal stop
       if (e.code() != boost::asio::error::eof)
       {
-         YADOMS_LOG(error) << "Socket write error : " << e.what();
+         YADOMS_LOG(error) << "Socket write text error : " << e.what();
          disconnect();
       }
 

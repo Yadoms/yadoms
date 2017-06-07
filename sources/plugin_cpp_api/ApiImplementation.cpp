@@ -292,21 +292,33 @@ namespace plugin_cpp_api
 
    void CApiImplementation::processExtraQuery(const plugin_IPC::toPlugin::ExtraQuery& msg)
    {
+      std::string taskId = msg.taskid();
       boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> command = boost::make_shared<CExtraQuery>(msg,
-                                                                                                           [&](const shared::CDataContainer& r)
+                                                                                                           [&, taskId](const shared::CDataContainer& r)
                                                                                                            {
                                                                                                               plugin_IPC::toYadoms::msg ans;
                                                                                                               auto answer = ans.mutable_extraqueryanswer();
                                                                                                               answer->set_success(true);
                                                                                                               answer->set_result(r.serialize());
+                                                                                                              answer->set_taskid(taskId);
                                                                                                               send(ans);
                                                                                                            },
-                                                                                                           [&](const std::string& r)
+                                                                                                           [&, taskId](const std::string& r)
                                                                                                            {
                                                                                                               plugin_IPC::toYadoms::msg ans;
                                                                                                               auto answer = ans.mutable_extraqueryanswer();
                                                                                                               answer->set_success(false);
                                                                                                               answer->set_result(r);
+                                                                                                              answer->set_taskid(taskId);
+                                                                                                              send(ans);
+                                                                                                           },
+                                                                                                           [&, taskId](const float progression, const std::string& msg)
+                                                                                                           {
+                                                                                                              plugin_IPC::toYadoms::msg ans;
+                                                                                                              auto answer = ans.mutable_extraqueryprogress();
+                                                                                                              answer->set_progress(progression);
+                                                                                                              answer->set_message(msg);
+                                                                                                              answer->set_taskid(taskId);
                                                                                                               send(ans);
                                                                                                            });
       m_pluginEventHandler.postEvent(kEventExtraQuery, command);

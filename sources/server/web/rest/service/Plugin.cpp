@@ -266,23 +266,17 @@ namespace web
                   auto query = parameters[3];
                   shared::CDataContainer queryData(requestContent);
 
-                  communication::callback::CSynchronousCallback<shared::CDataContainer> cb;
-                  pluginSystem::CExtraQueryData data(query, queryData);
-                  m_messageSender.sendExtraQueryAsync(instanceId, data, cb);
-
-                  switch (cb.waitForResult())
+                  auto data = boost::make_shared<pluginSystem::CExtraQueryData>(query, queryData);
+                  std::string taskId = m_messageSender.sendExtraQueryAsync(instanceId, data);
+                  if (!taskId.empty())
                   {
-                  case communication::callback::CSynchronousCallback<shared::CDataContainer>::kResult:
-                     {
-                        auto res = cb.getCallbackResult();
-                        if (res.Success)
-                           return CResult::GenerateSuccess(res.Result);
-                        return CResult::GenerateError(res.ErrorMessage);
-                     }
-                  case shared::event::kTimeout:
-                     return CResult::GenerateError("The plugin did not respond");
-                  default:
-                     return CResult::GenerateError("Unkown plugin result");
+                     shared::CDataContainer result;
+                     result.set("taskId", taskId);
+                     return CResult::GenerateSuccess(result);
+                  }
+                  else
+                  {
+                     return CResult::GenerateError("Fail to get extra query task");
                   }
                }
                return CResult::GenerateError("invalid parameter. Not enough parameters in url");

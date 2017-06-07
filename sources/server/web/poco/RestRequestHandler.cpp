@@ -9,13 +9,13 @@ namespace web
    namespace poco
    {
       CRestRequestHandler::CRestRequestHandler(const std::string& restBaseKeyword,
-                                               const std::vector<boost::shared_ptr<rest::service::IRestService>>& services)
+                                               const std::vector< boost::shared_ptr<rest::service::IRestService> >& services)
          : m_restBaseKeyword(restBaseKeyword)
       {
-         std::vector<boost::shared_ptr<rest::service::IRestService>>::const_iterator i;
+         std::vector< boost::shared_ptr<rest::service::IRestService> >::const_iterator i;
          for (i = services.begin(); i != services.end(); ++i)
-            CRestRequestHandler::registerRestService(*i);
-         CRestRequestHandler::initialize();
+            registerRestService(*i);
+         initialize();
       }
 
       CRestRequestHandler::~CRestRequestHandler()
@@ -59,7 +59,7 @@ namespace web
       std::string CRestRequestHandler::manageRestRequests(Poco::Net::HTTPServerRequest& request)
       {
          // Decode url to path.
-         auto request_path = request.getURI();
+         std::string request_path = request.getURI();
 
          try
          {
@@ -79,7 +79,7 @@ namespace web
             }
 
             //dispatch url to rest dispatcher
-            auto js = m_restDispatcher.dispath(request.getMethod(), parameters, content);
+            shared::CDataContainer js = m_restDispatcher.dispath(request.getMethod(), parameters, content);
             return js.serialize();
          }
 
@@ -100,9 +100,9 @@ namespace web
       {
          YADOMS_LOG(trace) << "Rest request : [" << request.getMethod() << "] : " << request.getURI();
 
-         auto answer = manageRestRequests(request);
+         std::string answer = manageRestRequests(request);
          response.setContentType("application/json");
-         auto& ostr = response.send();
+         std::ostream& ostr = response.send();
          ostr << answer;
       }
 

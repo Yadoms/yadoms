@@ -10,10 +10,10 @@ namespace rfxcomMessages
                           const std::string& command,
                           const shared::CDataContainer& deviceDetails)
       : m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_keyword , m_rssi })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_keyword , m_signalPower })
    {
-      m_rssi->set(0);
+      m_signalPower->set(0);
 
       m_subType = deviceDetails.get<unsigned char>("subType");
       m_id = deviceDetails.get<unsigned int>("id");
@@ -25,10 +25,10 @@ namespace rfxcomMessages
                           unsigned int subType,
                           const shared::CDataContainer& manuallyDeviceCreationConfiguration)
       : m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_keyword , m_rssi })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_keyword , m_signalPower })
    {
-      m_rssi->set(0);
+      m_signalPower->set(0);
 
       m_subType = static_cast<unsigned char>(subType);
       if (m_subType != sTypePT2262)
@@ -43,8 +43,8 @@ namespace rfxcomMessages
                           const RBUF& rbuf,
                           size_t rbufSize)
       : m_keyword(boost::make_shared<yApi::historization::CEvent>("event")),
-      m_rssi(boost::make_shared<yApi::historization::CRssi>("rssi")),
-      m_keywords({ m_keyword , m_rssi })
+      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+      m_keywords({ m_keyword , m_signalPower })
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -55,7 +55,7 @@ namespace rfxcomMessages
 
       m_subType = rbuf.LIGHTING4.subtype;
       m_id = rbuf.LIGHTING4.cmd1 << 16 | rbuf.LIGHTING4.cmd2 << 8 | rbuf.LIGHTING4.cmd3;
-      m_rssi->set(NormalizeRssiLevel(rbuf.LIGHTING4.rssi));
+      m_signalPower->set(NormalizesignalPowerLevel(rbuf.LIGHTING4.rssi));
 
       Init(api);
    }
