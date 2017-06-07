@@ -14,7 +14,7 @@ namespace outgoing {
    )
 
 
-   DECLARE_CAPACITY(DomiaCapacity, "blyss_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+   DECLARE_CAPACITY(DomiaCapacity, "blyss_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnits(), shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
    CDomiaKeyword::CDomiaKeyword(const std::string& keywordName)
       : shared::plugin::yPluginApi::historization::CSingleHistorizableData<EDomia>(keywordName,

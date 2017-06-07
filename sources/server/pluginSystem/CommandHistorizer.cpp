@@ -4,9 +4,9 @@
 
 namespace pluginSystem
 {
-
    CCommandHistorizer::CCommandHistorizer(const std::string& keywordName, const std::string& value)
-      :m_keywordName(keywordName), m_value(value)
+      : m_keywordName(keywordName),
+        m_value(value)
    {
    }
 
@@ -21,8 +21,8 @@ namespace pluginSystem
 
    const shared::plugin::yPluginApi::CStandardCapacity& CCommandHistorizer::getCapacity() const
    {
-      static const shared::plugin::yPluginApi::CStandardCapacity NoCapacity("command", shared::plugin::yPluginApi::CStandardUnits::NoUnits,
-         shared::plugin::yPluginApi::EKeywordDataType::kString);
+      static const shared::plugin::yPluginApi::CStandardCapacity NoCapacity("command", shared::plugin::yPluginApi::CStandardUnits::NoUnits(),
+                                                                            shared::plugin::yPluginApi::EKeywordDataType::kString);
       return NoCapacity;
    }
 
@@ -38,7 +38,7 @@ namespace pluginSystem
 
    const shared::plugin::yPluginApi::historization::EMeasureType& CCommandHistorizer::getMeasureType() const
    {
-      static const shared::plugin::yPluginApi::historization::EMeasureType MeasureType(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute);
+      static const auto MeasureType(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute);
       return MeasureType;
    }
 
@@ -46,5 +46,6 @@ namespace pluginSystem
    {
       return shared::CDataContainer();
    }
-
 } // namespace pluginSystem	
+
+

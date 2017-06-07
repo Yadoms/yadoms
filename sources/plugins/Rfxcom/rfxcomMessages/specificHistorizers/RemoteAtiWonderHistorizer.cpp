@@ -78,7 +78,7 @@ namespace rfxcomMessages
          ((XEnd))
       )
 
-      DECLARE_CAPACITY(RemoteAtiWonderCapacity, "RemoteAtiWonder", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+      DECLARE_CAPACITY(RemoteAtiWonderCapacity, "RemoteAtiWonder", shared::plugin::yPluginApi::CStandardUnits::NoUnits(), shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
       CRemoteAtiWonderHistorizer::CRemoteAtiWonderHistorizer(const std::string& keywordName)

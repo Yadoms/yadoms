@@ -8,6 +8,7 @@
 #include <shared/currentTime/Provider.h>
 #include <Poco/Net/NetworkInterface.h>
 #include <shared/ServiceLocator.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <startupOptions/IStartupOptions.h>
 
 namespace web
@@ -17,6 +18,7 @@ namespace web
       namespace service
       {
          std::string CSystem::m_restKeyword = std::string("system");
+         shared::CDataContainer CSystem::VirtualDevicesSupportedCapacities;
 
          CSystem::CSystem()
             : m_runningInformation(shared::CServiceLocator::instance().get<IRunningInformation>())
@@ -34,6 +36,7 @@ namespace web
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("binding")("*"), CSystem::getBinding);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("information"), CSystem::getSystemInformation);
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("currentTime"), CSystem::getCurrentTime);
+            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("virtualDevicesSupportedCapacities"), CSystem::getVirtualDevicesSupportedCapacities);
          }
 
 
@@ -161,6 +164,25 @@ namespace web
             }
          }
 
+         shared::CDataContainer CSystem::getVirtualDevicesSupportedCapacities(const std::vector<std::string>& parameters,
+                                                                              const std::string& requestContent) const
+         {
+            try
+            {
+               shared::CDataContainer result;
+               result.set("capacities", getVirtualDevicesSupportedCapacities());
+               return CResult::GenerateSuccess(result);
+            }
+            catch (std::exception& ex)
+            {
+               return CResult::GenerateError(ex);
+            }
+            catch (...)
+            {
+               return CResult::GenerateError("unknown exception in retreiving system information");
+            }
+         }
+
          shared::CDataContainer CSystem::platformIs(const std::string& refPlatform) const
          {
             try
@@ -177,6 +199,56 @@ namespace web
             {
                return CResult::GenerateError("unknown exception in retreiving system information");
             }
+         }
+
+         void CSystem::addVirtualDevicesSupportedCapacity(const shared::plugin::yPluginApi::CStandardCapacity& capacity)
+         {
+            auto capcityContainer = boost::make_shared<shared::CDataContainer>();
+            capcityContainer->set("name", capacity.getName());
+            capcityContainer->set("unit", capacity.getUnit());
+            capcityContainer->set("dataType", capacity.getType());
+            VirtualDevicesSupportedCapacities.set(capacity.getName(), capcityContainer);
+         }
+
+         const shared::CDataContainer& CSystem::getVirtualDevicesSupportedCapacities()
+         {
+            if (VirtualDevicesSupportedCapacities.empty())
+            {
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ApparentPower());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::ArmingAlarm());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::BatteryLevel());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::CameraMove());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Counter());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Current());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Curtain());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Dimmable());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Direction());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Distance());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Duration());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Energy());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Event());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Frequency());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Humidity());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Illumination());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Load());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Power());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::PowerFactor());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Pressure());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Rain());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::RainRate());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Rssi());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Speed());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Switch());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Temperature());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Text());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::UpDownStop());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Uv());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Voltage());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::WeatherCondition());
+               addVirtualDevicesSupportedCapacity(shared::plugin::yPluginApi::CStandardCapacities::Weight());
+            }
+
+            return VirtualDevicesSupportedCapacities;
          }
       } //namespace service
    } //namespace rest

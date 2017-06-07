@@ -11,7 +11,7 @@ namespace incoming {
       ((Right))
    )
 
-   DECLARE_CAPACITY(Type3RemoteCodeCapacity, "somfyRtsPortalsRemoteCode", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kEnum);
+   DECLARE_CAPACITY(Type3RemoteCodeCapacity, "somfyRtsPortalsRemoteCode", yApi::CStandardUnits::NoUnits(), yApi::EKeywordDataType::kEnum);
 
    CType3RemoteCode::CType3RemoteCode(const std::string& keywordName)
       : CSingleHistorizableData<EType3RemoteCodeValues>(keywordName, Type3RemoteCodeCapacity(), yApi::EKeywordAccessMode::kGet)
