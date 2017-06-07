@@ -32,7 +32,7 @@ enum
 
 
 CEnOcean::CEnOcean()
-   : m_rssiKeyword(boost::make_shared<shared::plugin::yPluginApi::historization::CRssi>("rssi"))
+   : m_signalPowerKeyword(boost::make_shared<shared::plugin::yPluginApi::historization::CSignalPower>("signal power"))
 {
 }
 
@@ -407,18 +407,18 @@ void CEnOcean::processDataReceived(boost::shared_ptr<const message::CEsp3Receive
    }
 }
 
-void CEnOcean::AddRssi(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords,
-                       const std::string& deviceId,
-                       int rssiValue) const
+void CEnOcean::AddSignalPower(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords,
+                              const std::string& deviceId,
+                              int signalPower) const
 {
-   if (!m_api->keywordExists(deviceId, m_rssiKeyword))
-      m_api->declareKeyword(deviceId, m_rssiKeyword);
+   if (!m_api->keywordExists(deviceId, m_signalPowerKeyword))
+      m_api->declareKeyword(deviceId, m_signalPowerKeyword);
 
-   m_rssiKeyword->set(rssiValue);
-   keywords.push_back(m_rssiKeyword);
+   m_signalPowerKeyword->set(signalPower);
+   keywords.push_back(m_signalPowerKeyword);
 }
 
-int CEnOcean::dbmToRssi(int dBm)
+int CEnOcean::dbmToSignalPower(int dBm)
 {
    // Thresholds were determined empirically with DolphinView tool
    if (dBm >= -65)
@@ -541,9 +541,9 @@ void CEnOcean::processRadioErp1(boost::shared_ptr<const message::CEsp3ReceivedPa
          return;
       }
 
-      AddRssi(keywordsToHistorize,
-              deviceId,
-              dbmToRssi(erp1Message.dBm()));
+      AddSignalPower(keywordsToHistorize,
+                     deviceId,
+                     dbmToSignalPower(erp1Message.dBm()));
 
       YADOMS_LOG(information) << "Received message for id#" << deviceId << " : ";
       for (const auto& kw: keywordsToHistorize)
@@ -763,3 +763,4 @@ void CEnOcean::requestDongleVersion()
    processDongleVersionResponse(response->returnCode(),
                                 message::CDongleVersionResponseReceivedMessage(response));
 }
+
