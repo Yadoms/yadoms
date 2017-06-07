@@ -76,6 +76,23 @@ protected:
    void processDataReceived(boost::shared_ptr<const message::CEsp3ReceivedPacket> message);
 
    //--------------------------------------------------------------
+   /// \brief	                     Add signal power to historizable keyword list
+   /// \param [in/out] keywords     Keyword list
+   /// \param [in] deviceId         Device ID
+   /// \param [in] signalPower      The current signal strength value (%)
+   //--------------------------------------------------------------
+   void AddSignalPower(std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>>& keywords,
+                       const std::string& deviceId,
+                       int signalPower) const;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Convert dBm value to signal power
+   /// \param [in] dBm              Signal power as dBm
+   /// \return                      Signal power value (%)
+   //--------------------------------------------------------------
+   static int dbmToSignalPower(int dBm);
+
+   //--------------------------------------------------------------
    /// \brief	                     Process received messages
    /// \param [in] esp3Packet       Message received
    //--------------------------------------------------------------
@@ -184,4 +201,10 @@ private:
    /// \brief  The send ID (ID of EnOcean chip on the USB dongle)
    //--------------------------------------------------------------
    std::string m_senderId;
+
+   //--------------------------------------------------------------
+   /// \brief  The signal power keyword, used for each received message
+   //--------------------------------------------------------------
+   boost::shared_ptr<shared::plugin::yPluginApi::historization::CSignalPower> m_signalPowerKeyword;
 };
+

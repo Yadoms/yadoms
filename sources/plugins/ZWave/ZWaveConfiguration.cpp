@@ -32,4 +32,14 @@ void CZWaveConfiguration::setPath(const std::string & path)
    m_container.set("libraryPath", path);
 }
 
+std::string CZWaveConfiguration::getDataPath() const
+{
+   return m_container.get<std::string>("dataPath");
+}
+
+void CZWaveConfiguration::setDataPath(const std::string & dataPath)
+{
+   m_container.set("dataPath", dataPath);
+}
+
 

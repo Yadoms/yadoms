@@ -78,7 +78,7 @@ namespace rfxcomMessages
          ((XEnd))
       )
 
-      DECLARE_CAPACITY(RemoteMedionCapacity, "RemoteMedion", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+      DECLARE_CAPACITY(RemoteMedionCapacity, "RemoteMedion", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
       CRemoteMedionHistorizer::CRemoteMedionHistorizer(const std::string& keywordName)

@@ -406,9 +406,9 @@ KeywordParameterHandler.prototype.setEnabled = function (enabled) {
  * @returns {string}
  */
 KeywordParameterHandler.prototype.getCurrentConfiguration = function () {
-   var value = {};
-   value.deviceId = $("select#" + this.uuid).val();
-   value.keywordId = $("select#" + this.uuidKeywordList).val();
+   this.value = {};
+   this.value.deviceId = $("select#" + this.uuid).val();
+   this.value.keywordId = $("select#" + this.uuidKeywordList).val();
 
    var d = new $.Deferred();
    d.resolve(this.value);

@@ -18,7 +18,7 @@ namespace incoming {
       ((Centralised))
    )
 
-   DECLARE_CAPACITY(Type10OperatingModeCapacity, "deltadoreX2dThermostat", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kEnum);
+   DECLARE_CAPACITY(Type10OperatingModeCapacity, "deltadoreX2dThermostat", yApi::CStandardUnits::NoUnit(), yApi::EKeywordDataType::kEnum);
 
    CType10OperatingMode::CType10OperatingMode(const std::string& keywordName)
       : CSingleHistorizableData<EType10OperatingModeValues>(keywordName, Type10OperatingModeCapacity(), yApi::EKeywordAccessMode::kGet)

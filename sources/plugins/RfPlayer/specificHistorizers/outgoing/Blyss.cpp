@@ -16,7 +16,7 @@ namespace outgoing {
    )
 
 
-   DECLARE_CAPACITY(BlyssCapacity, "blyss_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+   DECLARE_CAPACITY(BlyssCapacity, "blyss_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
    CBlyssKeyword::CBlyssKeyword(const std::string& keywordName)
       : shared::plugin::yPluginApi::historization::CSingleHistorizableData<EBlyss>(keywordName,

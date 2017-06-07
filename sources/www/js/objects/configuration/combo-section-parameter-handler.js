@@ -145,6 +145,11 @@ ComboSectionParameterHandler.prototype.afterI18n = function() {
    });
    $ul.append($li);
    
+    $.each($("#" + this.dropdownUuid).find(".combo-item-description"), function (key, value) {
+       if($(value).text() === "") {
+          $(value).siblings(".combo-item-title").removeClass("combo-item-title").addClass("combo-item-title-without-description");
+       }
+    });   
   
    // force first selection
    $ul.find("li a").first().trigger('click');
@@ -198,12 +203,6 @@ ComboSectionParameterHandler.prototype.applyScript = function () {
       if (self.configurationValues.activeSection === value.getParamName()) {
         activeSectionUuid = value.uuid;
       }
-    });
-    
-    $.each($("#" + self.dropdownUuid).find(".combo-item-description"), function (key, value) {
-       if($(value).text() === "") {
-          $(value).siblings(".combo-item-title").removeClass(".combo-item-title").addClass("combo-item-title-without-description");
-       }
     });
     
     //is the active value doesn't match we take the first one

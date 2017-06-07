@@ -45,9 +45,9 @@ namespace shared
             static const CStandardCapacity& Pressure();         // pressure          | hPa                   | Pressure
             static const CStandardCapacity& Rain();             // rain              | mm                    | Rain counter
             static const CStandardCapacity& RainRate();         // rain rate         | mm/s                  | Rain rate
-            static const CStandardCapacity& Rssi();             // rssi              | percent               | Rssi measure capacity
+            static const CStandardCapacity& Rssi();             // rssi              | dBm                   | Rssi measure capacity
             static const CStandardCapacity& SignalLevel();      // signal level      | dB                    | An signal level in decibels
-            static const CStandardCapacity& SignalPower();      // signal power      | dBm                   | An signal power in dBm
+            static const CStandardCapacity& SignalPower();      // signal strength   | percent               | An signal strength indication in %
             static const CStandardCapacity& Speed();            // speed             | m/s                   | A speed value, in m/s
             static const CStandardCapacity& Switch();           // switch            | -                     | A on/off value
             static const CStandardCapacity& Tamper();           // tamper            | -                     | A on/off tamper value (alarm systems)

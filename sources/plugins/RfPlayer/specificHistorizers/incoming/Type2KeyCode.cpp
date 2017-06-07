@@ -13,7 +13,7 @@ namespace incoming {
       ((Button4))
    )
 
-   DECLARE_CAPACITY(Type2KeyCodeCapacity, "visonicKeyCode", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kEnum);
+   DECLARE_CAPACITY(Type2KeyCodeCapacity, "visonicKeyCode", yApi::CStandardUnits::NoUnit(), yApi::EKeywordDataType::kEnum);
 
    CType2KeyCode::CType2KeyCode(const std::string& keywordName)
       : CSingleHistorizableData<EType2KeyCodeValues>(keywordName, Type2KeyCodeCapacity(), yApi::EKeywordAccessMode::kGet)
