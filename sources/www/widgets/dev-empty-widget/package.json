@@ -1,0 +1,17 @@
+{
+    "type": "dev-empty-widget",
+    "version": "1.0.0-beta",
+    "author": "Jean-Michel BERHAULT",
+    "url": "https://github.com/Yadoms/yadoms/wiki/dev-empty-widget",
+    "credits": "",
+    "dimensions": {
+        "min": {
+            "x": 1,
+            "y": 1
+        },
+        "default": {
+            "x": 1,
+            "y": 1
+        }
+    }
+}

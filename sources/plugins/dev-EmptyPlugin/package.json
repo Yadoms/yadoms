@@ -1,0 +1,34 @@
+{
+  "type": "dev-emptyPlugin",
+  "version": "1.0.0-beta",
+  "author": "Jean-Michel BERHAULT",
+  "url": "https://github.com/Yadoms/yadoms/wiki/FakePlugin",
+  "credits": "",
+  "supportedPlatforms": "all",
+  "configurationSchema": {
+    "StringParameter": {
+      "type": "string"
+    },
+    "BoolParameter": {
+      "type": "bool",
+      "defaultValue": "false"
+    },
+    "IntParameter": {
+      "type": "int",
+      "defaultValue": "258"
+    },
+    "DecimalParameter": {
+      "type": "decimal",
+      "defaultValue": "25.3"
+    },
+    "EnumParameter": {
+      "type": "enum",
+      "values": {
+        "EnumValue1": "",
+        "EnumValue2": "",
+        "EnumValue3": ""
+      },
+      "defaultValue": "EnumValue2"
+    }
+  }
+}
