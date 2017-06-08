@@ -1,0 +1,32 @@
+{
+	"name": "Commande de volets",
+	"description": "Un widget émulant une commande de volets",
+	"errorDuringGettingDeviceInformation": "Erreur lors de la récupération des informations de l'équipement",
+	"errorDuringSendingCommand": "Erreur lors de l'envoi de la commande",
+	"configurationSchema": {
+		"device": {
+			"name": "Equipement",
+         "description": "Sélectionner ci-dessous l'équipement à piloter"
+		},
+		"additionalDevices": {
+         "name": "Equipements complémentaires",
+         "description": "Le widget peut piloter simultanément plusieurs équipements. Sélectionner ici la liste des équipements complémentaires à piloter",      
+         "content": {
+            "devices": {
+               "name": "Equipements",
+               "description": "Si un équipement est en lecture seule, le bouton ne pourra pas être utilisé",
+               "item": {
+                  "name": "",
+                  "description": "",
+                  "content": {
+                     "source": {
+                        "name": "Equipement",
+                        "description": "Equipement à piloter"
+                     }
+                  }
+               }
+            }
+         }
+		}
+	}
+}
