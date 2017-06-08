@@ -11,6 +11,10 @@ void CEmptyPluginConfiguration::initializeWith(const shared::CDataContainer& dat
    m_configuration.initializeWith(data);
 }
 
+/*
+    You will find here an example how to retrieve enum variables from the configuration
+*/
+
 EEnumType CEmptyPluginConfiguration::getEnumParameter() const
 {
    // Enum type, declare keys labels
@@ -46,4 +50,3 @@ void CEmptyPluginConfiguration::trace() const
       YADOMS_LOG(error) << "Parameter value out of range : " << e.what();
    }
 }
-

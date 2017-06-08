@@ -6,11 +6,10 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
-/// \brief	This class is a simple plugin example
-/// \note   This plugin do nothing useful, just demonstrate how to :
-///         - use a configuration
-///         - process a command from Yadoms
-///         - send sensor state to Yadoms
+/// \brief	This class is an empty plugin example
+/// \note   This plugin do nothing, you just have to :
+///         - rename all classes of this plugin
+///         - populate all code/functions
 //--------------------------------------------------------------
 class CEmptyPlugin : public plugin_cpp_api::IPlugin
 {
@@ -35,4 +34,3 @@ private:
    //--------------------------------------------------------------
    CEmptyPluginConfiguration m_configuration;
 };
-

@@ -1,9 +1,9 @@
 {
   "type": "dev-emptyPlugin",
   "version": "1.0.0-beta",
-  "author": "Jean-Michel BERHAULT",
-  "url": "https://github.com/Yadoms/yadoms/wiki/FakePlugin",
-  "credits": "",
+  "author": "Your name here",
+  "url": "https://linkToUrlHere.com",
+  "credits": "external libraries used here",
   "supportedPlatforms": "all",
   "configurationSchema": {
     "StringParameter": {
