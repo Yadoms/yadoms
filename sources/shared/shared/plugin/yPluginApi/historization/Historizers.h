@@ -1,4 +1,5 @@
 #pragma once
+#include "Alarm.h"
 #include "ApparentPower.h"
 #include "ArmingAlarm.h"
 #include "BatteryLevel.h"
@@ -28,6 +29,7 @@
 #include "Speed.h"
 #include "Switch.h"
 #include "SignalPower.h"
+#include "Tamper.h"
 #include "Temperature.h"
 #include "Text.h"
 #include "UpDownStop.h"

@@ -35,6 +35,7 @@ namespace shared { namespace communication {
       virtual void subscribeForConnectionEvents(event::CEventHandler& forEventHandler, int forId);
       virtual void setReceiveBufferHandler(boost::shared_ptr<IReceiveBufferHandler> handler);
       virtual void send(const CByteBuffer& buffer);
+      virtual void sendText(const std::string & content);
       virtual void flush();
       // [END] IAsyncPort Implementation
 
@@ -87,6 +88,12 @@ namespace shared { namespace communication {
       /// \param[in] isConnected       Connection state
       //--------------------------------------------------------------
       void notifyEventHandler(bool isConnected);
+
+      //--------------------------------------------------------------
+      /// \brief	                     Send buffer content
+      /// \param[in] buffer            The buffer to send
+      //--------------------------------------------------------------
+      void sendBuffer(boost::asio::const_buffers_1 & buffer);
 
    private:
       //--------------------------------------------------------------

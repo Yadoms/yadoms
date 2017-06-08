@@ -5,7 +5,7 @@
 
 namespace specificHistorizers
 {
-   DECLARE_CAPACITY(SNRCapacity, "SNR", shared::plugin::yPluginApi::CStandardUnits::Decibel, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+   DECLARE_CAPACITY(SNRCapacity, "SNR", shared::plugin::yPluginApi::CStandardUnits::Decibel(), shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
    CSNR::CSNR(const std::string& keywordName)
       : CSingleHistorizableData<double>(keywordName,

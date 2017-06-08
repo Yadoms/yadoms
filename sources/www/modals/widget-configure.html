@@ -47,52 +47,70 @@
 
             var configMgr = null;
 
-            if (widgetToConfigure.package.configurationSchema) {
-                configMgr = new ConfigurationControlManager(widgetToConfigure.package.configurationSchema, widgetToConfigure.configuration, "widgets/" + widgetToConfigure.type + ":configurationSchema.", $modalBody);
-            }
+            widgetToConfigure.getBoundConfigurationSchema()
+            .done( function(schema) {
+                configMgr = new ConfigurationControlManager(schema, widgetToConfigure.configuration, "widgets/" + widgetToConfigure.type + ":configurationSchema.", $modalBody);
+            })
+            .fail( function(error) {
+            })
+            .always( function() {
+               //i18n
+               $modalBody.i18n();
+               
+               //finalize treatments (ie sort items after trnaslation)
+               if(configMgr)
+                  configMgr.afterI18n();
 
-            //i18n
-            $modalBody.i18n();
-            
-            //finalize treatments (ie sort items after trnaslation)
-            configMgr.afterI18n();
+               //validation form
+               //erase previous jqBootstrapValidation
+               $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
+                   preventSubmit: true,
+                   submitError: function($form, event, errors) {
+                       console.warn("Unable to validate form: " + errors);
+                   },
+                   submitSuccess: function($form, event) {
+                       event.preventDefault();
 
-            //validation form
-            //erase previous jqBootstrapValidation
-            $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
-                preventSubmit: true,
-                submitError: function($form, event, errors) {
-                    console.warn("Unable to validate form: " + errors);
-                },
-                submitSuccess: function($form, event) {
-                    event.preventDefault();
+                       var d = new $.Deferred();
+                       
+                       if (configMgr) {
+                           configMgr.getCurrentConfiguration()
+                           .done(function(v) {
+                              widgetToConfigure.configuration = v;
+                              d.resolve();
+                           });
+                       } else {
+                           d.resolve();
+                       }
+                       
+                       d.done(function() {
+                          if (parseBool(widgetToConfigure.package.hasTitle))
+                              widgetToConfigure.title = $form.find("input")[0].value;
+                          else
+                              widgetToConfigure.title = "";
 
-                    if (configMgr)
-                        widgetToConfigure.configuration = configMgr.getCurrentConfiguration();
+                          //we clear the current id
+                          widgetToConfigure = undefined;
 
-                    if (parseBool(widgetToConfigure.package.hasTitle))
-                        widgetToConfigure.title = $form.find("input")[0].value;
-                    else
-                        widgetToConfigure.title = "";
+                          $("div#configure-widget-modal").modal("hide");
 
-                    //we clear the current id
-                    widgetToConfigure = undefined;
+                          callback();                    
+                       });
+                       
 
-                    $("div#configure-widget-modal").modal("hide");
+                   },
+                   filter: function() {
+                       //we check only control that have class enable-validation and are visible
+                       return $(this).is(".enable-validation") && $(this).is(":visible");
+                   }
+               });
 
-                    callback();
-                },
-                filter: function() {
-                    //we check only control that have class enable-validation and are visible
-                    return $(this).is(".enable-validation") && $(this).is(":visible");
-                }
+               //fix additional sub modals input (like icon picker search box)
+               $('div#configure-widget-modal').on('shown.bs.modal', function (e) { $(document).off('focusin.modal'); });
+
+               //we display the modal
+               $('div#configure-widget-modal').modal({ backdrop: 'static' });            
             });
-
-            //fix additional sub modals input (like icon picker search box)
-            $('div#configure-widget-modal').on('shown.bs.modal', function (e) { $(document).off('focusin.modal'); });
-
-            //we display the modal
-            $('div#configure-widget-modal').modal({ backdrop: 'static' });
         });
     }
 

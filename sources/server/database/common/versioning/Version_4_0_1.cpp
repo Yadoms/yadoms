@@ -59,32 +59,19 @@ namespace database
                if (pRequester->transactionSupport())
                   pRequester->transactionBegin();
 
-               auto qUpdateNameColumn = pRequester->newQuery();
-               auto qUpdateFriendlyNameColumn = pRequester->newQuery();
-               auto qUpdateCapacityNameColumn = pRequester->newQuery();
+               auto qUpdateKeyword = pRequester->newQuery();
 
                // Change the name from rssi to signalStrength
-               qUpdateNameColumn.Update(CKeywordTable::getTableName()).
-                  Set(CKeywordTable::getNameColumnName(), "signalPower").
-                  Where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, "rssi");
+               qUpdateKeyword.Update(CKeywordTable::getTableName()).
+                              Set(  CKeywordTable::getNameColumnName(), "signalPower",
+                                    CKeywordTable::getFriendlyNameColumnName(), "signalPower",
+                                    CKeywordTable::getCapacityNameColumnName(), "signalPower").
+                              Where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, "rssi");
 
-               // Change the friendlyName  from rssi to signalStrength
-               qUpdateFriendlyNameColumn.Update(CKeywordTable::getTableName()).
-                  Set(CKeywordTable::getFriendlyNameColumnName(), "signalPower").
-                  Where(CKeywordTable::getFriendlyNameColumnName(), CQUERY_OP_EQUAL, "rssi");
-
-               // Change the capacityName  from rssi to signalStrength
-               qUpdateCapacityNameColumn.Update(CKeywordTable::getTableName()).
-                  Set(CKeywordTable::getCapacityNameColumnName(), "signalPower").
-                  Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, "rssi");
-
-               pRequester->queryStatement(qUpdateNameColumn);
-               pRequester->queryStatement(qUpdateFriendlyNameColumn);
-               pRequester->queryStatement(qUpdateCapacityNameColumn);
-
+               pRequester->queryStatement(qUpdateKeyword);
+               
                //set the database version
-               updateDatabaseVersion(pRequester,
-                                     Version);
+               updateDatabaseVersion(pRequester, Version);
 
                //commit transaction
                if (pRequester->transactionSupport())

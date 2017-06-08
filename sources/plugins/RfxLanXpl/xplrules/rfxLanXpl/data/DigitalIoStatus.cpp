@@ -13,7 +13,7 @@ namespace xplrules
             ((Low))
          );
 
-         DECLARE_CAPACITY(RfxLanDigitalIoStatusCapacity, "digitalio", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(RfxLanDigitalIoStatusCapacity, "digitalio", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CDigitalIoStatus::CDigitalIoStatus(const std::string& keywordName)

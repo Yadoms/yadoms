@@ -1,56 +1,36 @@
 #pragma once
-
 #include "IRestService.h"
-#include "database/IDataProvider.h"
 #include "dataAccessLayer/IEventLogger.h"
 
-namespace web { namespace rest { namespace service {
-
-   class CEventLogger : public IRestService
+namespace web
+{
+   namespace rest
    {
-   public:
-      explicit CEventLogger(boost::shared_ptr<dataAccessLayer::IEventLogger> dataProvider);
-      virtual ~CEventLogger();
+      namespace service
+      {
+         class CEventLogger : public IRestService
+         {
+         public:
+            explicit CEventLogger(boost::shared_ptr<dataAccessLayer::IEventLogger> dataProvider);
+            virtual ~CEventLogger();
 
-   public:
-      // IRestService implementation
-      virtual void configureDispatcher(CRestDispatcher & dispatcher);
-      // [END] IRestService implementation
+            // IRestService implementation
+            void configureDispatcher(CRestDispatcher& dispatcher) override;
+            // [END] IRestService implementation
 
-      const std::string & getRestKeyword();
+         protected:
+            shared::CDataContainer getEvents(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            shared::CDataContainer getLastEvent(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            shared::CDataContainer getEventsFrom(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            shared::CDataContainer getEventsRange(const std::vector<std::string>& parameters, const std::string& requestContent) const;
+            shared::CDataContainer addEvent(const std::vector<std::string>& parameters, const std::string& requestContent) const;
 
-   private:
-      //-----------------------------------------
-      ///\brief   get events
-      //-----------------------------------------
-      shared::CDataContainer getEvents(const std::vector<std::string> & parameters, const std::string & requestContent);  
-
-      //-----------------------------------------
-      ///\brief   get the last event
-      //-----------------------------------------
-      shared::CDataContainer getLastEvent(const std::vector<std::string> & parameters, const std::string & requestContent);  
-
-      //-----------------------------------------
-      ///\brief   get the events from
-      //-----------------------------------------
-      shared::CDataContainer getEventsFrom(const std::vector<std::string> & parameters, const std::string & requestContent);  
-
-      //-----------------------------------------
-      ///\brief   get the events in a range
-      //-----------------------------------------
-      shared::CDataContainer getEventsRange(const std::vector<std::string> & parameters, const std::string & requestContent);  
-
-      //-----------------------------------------
-      ///\brief   create an event entry
-      //-----------------------------------------
-      shared::CDataContainer addEvent(const std::vector<std::string> & parameters, const std::string & requestContent);  
-
-   private:
-      boost::shared_ptr<dataAccessLayer::IEventLogger> m_dataProvider;
-      std::string m_restKeyword;
-   };
-
-
-} //namespace service
-} //namespace rest
+         private:
+            boost::shared_ptr<dataAccessLayer::IEventLogger> m_dataProvider;
+            std::string m_restKeyword;
+         };
+      } //namespace service
+   } //namespace rest
 } //namespace web 
+
+

@@ -191,9 +191,9 @@ ENDIF()
 set (PROTOBUF_SRC_ROOT_FOLDER ${PROTOBUF_ROOT})
 set (Protobuf_USE_STATIC_LIBS ON)
 
-#Helper (FindProtoBuf.cmake allow defingin all variable before finding it)
-#In case protbuf has been installed in a custom directory (${PROTOBUF_ROOT}) 
-#then predefine all files and path (make it works with old cmake <3.9)
+#Helper (FindProtoBuf.cmake allows defining all variables before finding it)
+#In case Protobuf has been installed in a custom directory (${PROTOBUF_ROOT}) 
+#then predefine all files and paths (make it works with old cmake <3.9)
 if(PROTOBUF_INSTALLED_TO_CUSTOM_DIRECTORY)
    if(NOT PROTOBUF_INCLUDE_DIR)
       set(PROTOBUF_INCLUDE_DIR "${PROTOBUF_ROOT}/include")
@@ -272,6 +272,9 @@ set(YADOMS_SRC
    server/authentication/BasicAuthentication.h
    server/authentication/BasicAuthentication.cpp
 
+   server/dateTime/DateTimeNotifier.h
+   server/dateTime/DateTimeNotifier.cpp
+   
    server/automation/IRule.h
    server/automation/IRuleManager.h
    server/automation/IRuleThreadHandler.h
@@ -524,6 +527,8 @@ set(YADOMS_SRC
    server/task/TaskStatus.cpp
    server/task/backup/Database.h
    server/task/backup/Database.cpp
+   server/task/plugins/ExtraQuery.h
+   server/task/plugins/ExtraQuery.cpp
    
    
    server/update/UpdateManager.h
@@ -633,6 +638,7 @@ source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPl
 source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\task  server/task/*.*)
 source_group(server\\task\\backup  server/task/backup/*.*)
+source_group(server\\task\\plugins  server/task/plugins/*.*)
 source_group(server\\update  server/update/*.*)
 source_group(server\\update\\info  server/update/info/*.*)
 source_group(server\\update\\worker  server/update/worker/*.*)

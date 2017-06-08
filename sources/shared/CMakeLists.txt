@@ -55,6 +55,8 @@ set(SHARED_LIB_SRC
    shared/communication/MessageQueueRemover.hpp
    shared/communication/NoBufferLogger.h
    shared/communication/NoBufferLogger.cpp
+   shared/communication/StringBuffer.h
+   shared/communication/StringBuffer.cpp
    shared/communication/PortException.hpp
    shared/communication/SmallHeader.h
    shared/communication/SmallHeaderMessageAssembler.h
@@ -132,11 +134,13 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/KeywordAccessMode.h
    shared/plugin/yPluginApi/KeywordDataType.cpp
    shared/plugin/yPluginApi/KeywordDataType.h
+   shared/plugin/yPluginApi/StandardCapacities.cpp
    shared/plugin/yPluginApi/StandardCapacities.h
    shared/plugin/yPluginApi/StandardCapacity.cpp
    shared/plugin/yPluginApi/StandardCapacity.h
-   shared/plugin/yPluginApi/StandardDeclarations.cpp
+   shared/plugin/yPluginApi/StandardUnits.cpp
    shared/plugin/yPluginApi/StandardUnits.h
+   shared/plugin/yPluginApi/StandardValues.cpp
    shared/plugin/yPluginApi/StandardValues.h
    shared/plugin/yPluginApi/YPluginConfiguration.hpp
 
@@ -144,6 +148,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp
    shared/plugin/yPluginApi/historization/BatteryLevel.cpp
    shared/plugin/yPluginApi/historization/BatteryLevel.h
+   shared/plugin/yPluginApi/historization/Alarm.cpp
+   shared/plugin/yPluginApi/historization/Alarm.h
    shared/plugin/yPluginApi/historization/ApparentPower.cpp
    shared/plugin/yPluginApi/historization/ApparentPower.h
    shared/plugin/yPluginApi/historization/ArmingAlarm.cpp
@@ -207,6 +213,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/SignalPower.h
    shared/plugin/yPluginApi/historization/Switch.cpp
    shared/plugin/yPluginApi/historization/Switch.h
+   shared/plugin/yPluginApi/historization/Tamper.cpp
+   shared/plugin/yPluginApi/historization/Tamper.h
    shared/plugin/yPluginApi/historization/Temperature.cpp
    shared/plugin/yPluginApi/historization/Temperature.h
    shared/plugin/yPluginApi/historization/Text.cpp

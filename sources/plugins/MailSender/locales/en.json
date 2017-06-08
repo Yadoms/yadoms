@@ -1,88 +1,92 @@
 {
 	"name": "Mail Sender",
 	"description": "This plugin provide information about the server to send a e-mail",
-	"configurationSchema": {
-		"Sender": {
-			"name": "Sender Mail",
-			"description": "Yadoms must use an existing mail account. Enter here the email to use to send emails (will also be used as 'from' field of sent emails).",
-			"regexErrorMessage" : "Must be a valid email address"
-		},
-      "account": {
-         "name": "Account type",
-         "description": "If your email account provider is not found in this list, choose \"Other\"",
-         "content":  {
-            "gmail": {
-               "name": "GMail",
-               "content": {
-                  "password": {
-                     "name": "Password",
-                     "description": "This can be the GoogleApps password"
-                  }               
-               }
-            },
-            "outlook": {
-               "name": "Outlook",
-               "content": {
-                  "password": {
-                     "name": "Password",
-                     "description": "Your Outlook.com account password"
-                  }               
-               }
-            },
-            "ovh": {
-               "name": "OVH",
-               "content": {
-                  "password": {
-                     "name": "Password",
-                     "description": "Your OVH account password"
-                  }               
-               }
-            },
-            "yahoo": {
-               "name": "Yahoo",
-               "content": {
-                  "password": {
-                     "name": "Password",
-                     "description": "Your Yahoo account password"
-                  }               
-               }
-            },
-            "other": {
-               "name": "Other",
-               "content": {
-                  "SMTPServer": {
-                     "name": "SMTP server",
-                     "description": "SMTP server name"
-                  },
-                  "SMTPPort": {
-                     "name": "SMTP port of the server",
-                     "description": "SMTP port"
-                  },
-                  "Security": {
-                     "name" : "Security",
-                     "description": "The SMTP server requires a secure connection",
-                     "values": {
-                        "none": "None",
-                        "SSL": "SSL",
-                        "TLS": "TLS",
-                        "Automatic": "Automatic"
-                     }
-                  },		
-                  "authentication": {
-                     "name": "Authentication required by server",
-                     "description": "Only if SMTP server requires an authentication",
-                     "content": {
-                        "user": {
-                           "name": "Account name"
-                        },
-                        "password": {
-                           "name": "Account password"
-                        }
-                     }
-                  }
-               }
+  "configurationSchema": {
+    "Sender": {
+      "name": "Sender Mail",
+      "description": "Yadoms must use an existing mail account. Enter here the email to use to send emails (will also be used as 'from' field of sent emails).",
+      "regexErrorMessage": "Must be a valid email address"
+    },
+    "account": {
+      "name": "Account type",
+      "description": "If your email account provider is not found in this list, choose \"Other\"",
+      "content": {
+        "gmail": {
+          "name": "GMail",
+          "content": {
+            "password": {
+              "name": "Password",
+              "description": "This can be the GoogleApps password"
             }
-         }
+          }
+        },
+        "outlook": {
+          "name": "Outlook",
+          "content": {
+            "password": {
+              "name": "Password",
+              "description": "Your Outlook.com account password"
+            }
+          }
+        },
+        "ovh": {
+          "name": "OVH",
+          "content": {
+            "password": {
+              "name": "Password",
+              "description": "Your OVH account password"
+            }
+          }
+        },
+        "yahoo": {
+          "name": "Yahoo",
+          "content": {
+            "password": {
+              "name": "Password",
+              "description": "Your Yahoo account password"
+            }
+          }
+        },
+        "other": {
+          "name": "Other",
+          "content": {
+            "SMTPServer": {
+              "name": "SMTP server",
+              "description": "SMTP server name"
+            },
+            "SMTPPort": {
+              "name": "SMTP port of the server",
+              "description": "SMTP port"
+            },
+            "Security": {
+              "name": "Security",
+              "description": "The SMTP server requires a secure connection",
+              "values": {
+                "none": "None",
+                "SSL": "SSL",
+                "TLS": "TLS",
+                "Automatic": "Automatic"
+              }
+            },
+            "authentication": {
+              "name": "Authentication required by server",
+              "description": "Only if SMTP server requires an authentication",
+              "content": {
+                "user": {
+                  "name": "Account name"
+                },
+                "password": {
+                  "name": "Account password"
+                }
+              }
+            }
+          }
+        }
       }
-	}
+    },
+    "CerticiatePassphrase": {
+      "name": "Certificate passphrase (optionnal)",
+      "description": "SSL certificate passphrase, may be required in some particular cases"
+    }
+  }
 }

@@ -46,9 +46,11 @@ IF(NOT DISABLE_TEST_PLUGIN_FAKEPLUGIN)
       shared/shared/plugin/yPluginApi/KeywordDataType.h
       shared/shared/plugin/yPluginApi/KeywordDataType.cpp
 		shared/shared/plugin/yPluginApi/StandardUnits.h
+		shared/shared/plugin/yPluginApi/StandardUnits.cpp
 		shared/shared/plugin/yPluginApi/StandardCapacities.h
+		shared/shared/plugin/yPluginApi/StandardCapacities.cpp
 		shared/shared/plugin/yPluginApi/StandardValues.h
-		shared/shared/plugin/yPluginApi/StandardDeclarations.cpp
+		shared/shared/plugin/yPluginApi/StandardValues.cpp
 		shared/shared/plugin/yPluginApi/StandardCapacity.h
 		shared/shared/plugin/yPluginApi/StandardCapacity.cpp
       shared/shared/plugin/yPluginApi/historization/MeasureType.h

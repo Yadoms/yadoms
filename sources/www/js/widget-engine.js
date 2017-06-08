@@ -201,7 +201,18 @@ function periodicUpdateTask() {
                     var translation = "eventLogger." + value.code;
                     notify(DateTimeFormatter.isoDateToString(value.date) +
                         " " +
-                        $.t(translation, { "who": value.who, "what": value.what }),
+                        $.t(translation, { 
+                              "who": $.t(value.who, { 
+                                 defaultValue: $.t('core.' + value.who + '.name', {
+                                    defaultValue: value.who
+                                 })
+                              }), 
+                              "what": $.t(value.what, { 
+                                 defaultValue: $.t('core.' + value.what + '.name', {
+                                    defaultValue: value.what
+                                 })
+                              })
+                        }),
                         gravity);
 
                     //we update the lastEvent Id Read

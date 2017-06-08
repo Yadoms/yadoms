@@ -7,6 +7,7 @@
 #include "MSConfiguration.h"
 #include "SmtpServiceProviderFactory.h"
 #include <shared/Log.h>
+#include "CertificatePassphraseProvider.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -18,10 +19,9 @@ CMailSender::CMailSender() :
    m_deviceName("MailSender"),
    m_configuration(boost::make_shared<CMSConfiguration>()),
    m_mailId("email"),
-   m_messageKeyword(boost::make_shared<yApi::historization::CMessage>("message",
-                                                                      m_mailId,
-                                                                      yApi::EKeywordAccessMode::kGetSet))
-{
+   m_messageKeyword(boost::make_shared<yApi::historization::CMessage>("message", m_mailId, yApi::EKeywordAccessMode::kGetSet)),
+   m_certificatePassphraseProvider(new CCertificatePassphraseProvider(m_configuration))
+   {
 }
 
 CMailSender::~CMailSender()
@@ -123,7 +123,7 @@ void CMailSender::onSendMailRequest(boost::shared_ptr<yApi::IYPluginApi> api,
       message.setContentType("text/plain; charset=UTF-8");
       message.setContent(m_messageKeyword->body(), Poco::Net::MailMessage::ENCODING_8BIT);
 
-      boost::shared_ptr<ISmtpServiceProvider> mailServiceProvider = CSmtpServiceProviderFactory::CreateSmtpServer(m_configuration);
+      boost::shared_ptr<ISmtpServiceProvider> mailServiceProvider = CSmtpServiceProviderFactory::CreateSmtpServer(m_configuration, m_certificatePassphraseProvider);
       if (mailServiceProvider->sendMail(message))
       {
          YADOMS_LOG(information) << "Email successfully sent to " << to ;

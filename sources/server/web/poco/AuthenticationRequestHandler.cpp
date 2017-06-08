@@ -44,8 +44,8 @@ namespace web
             {
                //the request contains credentials data, just ensure it is valid
                Poco::Net::HTTPBasicCredentials cred(request);
-               const auto& user = cred.getUsername();
-               const auto& pwd = cred.getPassword();
+               const std::string& user = cred.getUsername();
+               const std::string& pwd = cred.getPassword();
                if (!m_authenticator->authenticate(user, pwd))
                {
                   //credentials are no more valid, eturn unauthorized http (401)

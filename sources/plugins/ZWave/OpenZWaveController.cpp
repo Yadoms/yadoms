@@ -73,8 +73,7 @@ IZWaveController::E_StartResult COpenZWaveController::start()
       auto folder = full_path;
       folder /= "config";
 
-      auto dataFolder = full_path;
-      dataFolder /= "data";
+      boost::filesystem::path dataFolder(m_configuration->getDataPath());
       if (!boost::filesystem::exists(dataFolder))
       {
          boost::system::error_code returnedError;
@@ -83,17 +82,20 @@ IZWaveController::E_StartResult COpenZWaveController::start()
          if (returnedError)
          {
             //did not successfully create directories
-            YADOMS_LOG(error) << "Fali to create folder : " << dataFolder.string() ;
+            YADOMS_LOG(error) << "Fail to create folder : " << dataFolder.string() ;
          }
       }
 
       OpenZWave::Options::Create(folder.string(), dataFolder.string(), "");
       OpenZWave::Options::Get()->AddOptionInt("SaveLogLevel", OpenZWave::LogLevel_Error);
       OpenZWave::Options::Get()->AddOptionInt("QueueLogLevel", OpenZWave::LogLevel_Error);
-      OpenZWave::Options::Get()->AddOptionInt("DumpTrigger", OpenZWave::LogLevel_Error);
-      OpenZWave::Options::Get()->AddOptionInt("PollInterval", 500);
+      OpenZWave::Options::Get()->AddOptionInt("DumpTriggerLevel", OpenZWave::LogLevel_Error);
+      OpenZWave::Options::Get()->AddOptionInt("PollInterval", 30000); // 30 seconds (can easily poll 30 values in this time; ~120 values is the effective limit for 30 seconds)
       OpenZWave::Options::Get()->AddOptionBool("IntervalBetweenPolls", true);
       OpenZWave::Options::Get()->AddOptionBool("ValidateValueChanges", true);
+      OpenZWave::Options::Get()->AddOptionBool("Associate", true); // Enable automatic association of the controller with group one of every device.
+      OpenZWave::Options::Get()->AddOptionBool("SaveConfiguration", true); // Save the XML configuration upon driver close.
+
       OpenZWave::Options::Get()->Lock();
 
 
@@ -240,8 +242,57 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
    case OpenZWave::Notification::Type_ValueAdded:
       {
          auto node = getNode(_notification);
+
+         //refresh node info (manufacturer, product type,...)
+         if (node)
+         {
+            std::string sNodeName = OpenZWave::Manager::Get()->GetNodeName(node->getHomeId(), node->getNodeId());
+            std::string sNodeManufacturerId = OpenZWave::Manager::Get()->GetNodeManufacturerId(node->getHomeId(), node->getNodeId());
+            std::string sNodeManufacturer = OpenZWave::Manager::Get()->GetNodeManufacturerName(node->getHomeId(), node->getNodeId());
+            std::string sNodeProductName = OpenZWave::Manager::Get()->GetNodeProductName(node->getHomeId(), node->getNodeId());
+            std::string sNodeProductType = OpenZWave::Manager::Get()->GetNodeProductType(node->getHomeId(), node->getNodeId());
+            std::string sNodeProductId = OpenZWave::Manager::Get()->GetNodeProductId(node->getHomeId(), node->getNodeId());
+            std::string sNodeLocation = OpenZWave::Manager::Get()->GetNodeLocation(node->getHomeId(), node->getNodeId());
+            std::string sNodeType = OpenZWave::Manager::Get()->GetNodeType(node->getHomeId(), node->getNodeId());
+            uint8 sNodeVersion = OpenZWave::Manager::Get()->GetNodeVersion(node->getHomeId(), node->getNodeId());
+            auto id = COpenZWaveHelpers::GenerateDeviceName(node->getHomeId(), node->getNodeId());
+
+            uint8 sNodePlusType = OpenZWave::Manager::Get()->GetNodePlusType(node->getHomeId(), node->getNodeId());
+            std::string sNodeDeviceTypeString = OpenZWave::Manager::Get()->GetNodeDeviceTypeString(node->getHomeId(), node->getNodeId());
+            std::string sNodeRole = OpenZWave::Manager::Get()->GetNodeRoleString(node->getHomeId(), node->getNodeId());
+
+            shared::CDataContainer d;
+            d.set("name", id);
+            if (sNodeName.empty())
+               d.set("friendlyName", sNodeProductName);
+            else
+               d.set("friendlyName", sNodeName);
+
+            shared::CDataContainer details;
+            details.set("Manufacturer", sNodeManufacturer);
+            details.set("ManufacturerId", sNodeManufacturerId);
+            details.set("Product", sNodeProductName);
+            details.set("ProductId", sNodeProductId);
+            details.set("ProductType", sNodeProductType);
+            details.set("Location", sNodeLocation);
+            details.set("Type", sNodeType);
+            details.set("Version", sNodeVersion);
+            details.set("ZWave+", sNodePlusType);
+            details.set("DeviceType", sNodeDeviceTypeString);
+            details.set("Role", sNodeRole);
+            d.set("details", details);
+
+            if (m_handler != nullptr)
+               m_handler->postEvent(CZWave::kUpdateDeviceInfo, d);
+         }
+
          if (node)
             node->registerKeyword(vID, m_configuration->getIncludeSystemKeywords());
+
+         if (!OpenZWave::Manager::Get()->IsValuePolled(vID))
+         {
+            OpenZWave::Manager::Get()->EnablePoll(vID, 1);
+         }
          break;
       }
 
@@ -322,8 +373,10 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
       }
 
    case OpenZWave::Notification::Type_NodeAdded:
-      {
-         m_nodes.push_back(boost::make_shared<COpenZWaveNode>(_notification->GetHomeId(), _notification->GetNodeId()));
+   case OpenZWave::Notification::Type_NodeNew:
+   {
+         if (getNode(_notification->GetHomeId(), _notification->GetNodeId()).get() == nullptr)
+            m_nodes.push_back(boost::make_shared<COpenZWaveNode>(_notification->GetHomeId(), _notification->GetNodeId()));
          break;
       }
 
@@ -344,21 +397,32 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
          auto nodeInfo = getNode(_notification);
          if (nodeInfo)
          {
-            auto sNodeName = OpenZWave::Manager::Get()->GetNodeName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
-            auto sNodeManufacturer = OpenZWave::Manager::Get()->GetNodeManufacturerName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
-            auto sNodeProductName = OpenZWave::Manager::Get()->GetNodeProductName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
-            auto sNodeProductType = OpenZWave::Manager::Get()->GetNodeProductType(nodeInfo->getHomeId(), nodeInfo->getNodeId());
-            auto sNodeProductId = OpenZWave::Manager::Get()->GetNodeProductId(nodeInfo->getHomeId(), nodeInfo->getNodeId());
-            auto sNodeLocation = OpenZWave::Manager::Get()->GetNodeLocation(nodeInfo->getHomeId(), nodeInfo->getNodeId());
-            auto sNodeType = OpenZWave::Manager::Get()->GetNodeType(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            std::string sNodeName = OpenZWave::Manager::Get()->GetNodeName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            std::string sNodeManufacturerId = OpenZWave::Manager::Get()->GetNodeManufacturerId(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            std::string sNodeManufacturer = OpenZWave::Manager::Get()->GetNodeManufacturerName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            std::string sNodeProductName = OpenZWave::Manager::Get()->GetNodeProductName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            std::string sNodeProductType = OpenZWave::Manager::Get()->GetNodeProductType(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            std::string sNodeProductId = OpenZWave::Manager::Get()->GetNodeProductId(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            std::string sNodeLocation = OpenZWave::Manager::Get()->GetNodeLocation(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            std::string sNodeType = OpenZWave::Manager::Get()->GetNodeType(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            uint8 sNodeVersion = OpenZWave::Manager::Get()->GetNodeVersion(nodeInfo->getHomeId(), nodeInfo->getNodeId());
             auto id = COpenZWaveHelpers::GenerateDeviceName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
 
+            uint8 sNodePlusType = OpenZWave::Manager::Get()->GetNodePlusType(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            std::string sNodeDeviceTypeString = OpenZWave::Manager::Get()->GetNodeDeviceTypeString(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            std::string sNodeRole = OpenZWave::Manager::Get()->GetNodeRoleString(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            
             YADOMS_LOG(information) << "ZWave : NodeNaming : id = " << id ;
             YADOMS_LOG(information) << "ZWave : NodeNaming : name = " << sNodeName ;
+            YADOMS_LOG(information) << "ZWave : NodeNaming : manufacturerId = " << sNodeManufacturerId;
             YADOMS_LOG(information) << "ZWave : NodeNaming : manufacturer = " << sNodeManufacturer ;
             YADOMS_LOG(information) << "ZWave : NodeNaming : productName = " << sNodeProductName ;
             YADOMS_LOG(information) << "ZWave : NodeNaming : productType = " << sNodeProductType ;
             YADOMS_LOG(information) << "ZWave : NodeNaming : productId = " << sNodeProductId ;
+            YADOMS_LOG(information) << "ZWave : NodeNaming : version = " << (int)sNodeVersion;
+            YADOMS_LOG(information) << "ZWave : NodeNaming : ZWave+type = " << sNodePlusType;
+            YADOMS_LOG(information) << "ZWave : NodeNaming : Device type = " << sNodeDeviceTypeString;
+            YADOMS_LOG(information) << "ZWave : NodeNaming : Role = " << sNodeRole;
 
             shared::CDataContainer d;
             d.set("name", id);
@@ -370,11 +434,16 @@ void COpenZWaveController::onNotification(OpenZWave::Notification const* _notifi
 
             shared::CDataContainer details;
             details.set("Manufacturer", sNodeManufacturer);
+            details.set("ManufacturerId", sNodeManufacturerId);
             details.set("Product", sNodeProductName);
             details.set("ProductId", sNodeProductId);
             details.set("ProductType", sNodeProductType);
             details.set("Location", sNodeLocation);
             details.set("Type", sNodeType);
+            details.set("Version", sNodeVersion);
+            details.set("ZWave+", sNodePlusType);
+            details.set("DeviceType", sNodeDeviceTypeString);
+            details.set("Role", sNodeRole);
             d.set("details", details);
 
             if (m_handler != nullptr)

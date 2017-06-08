@@ -15,20 +15,18 @@ function IntParameterHandler(i18nContext, i18nKey, paramName, content, currentVa
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
 
-   //we search min and max value
-   this.minValue = parseInt(content.minimumValue);
-   this.maxValue = parseInt(content.maximumValue);
-
-   //if value is set we use it
+   //if value is set we use it else we use the default value else we use 0
    this.value = parseInt(currentValue);
 
    if (isNaN(this.value)) {
       this.value = parseInt(content.defaultValue);
-      if (isNaN(this.value)) {
-         console.warn("Unable to parse as int content.defaultValue of " + paramName + " parameter. Set to minValue if available, else 0.");
-         this.value = isNaN(this.minValue) ? 0 : this.minValue;
-      }
+      if (isNaN(this.value))
+         this.value = 0;
    }
+
+   //we search min and max value
+   this.minValue = parseInt(content.minimumValue);
+   this.maxValue = parseInt(content.maximumValue);
 
    //we round the actual value with max and min
    this.value = Math.max((isNaN(this.minValue)?-Infinity:this.minValue) , Math.min((isNaN(this.maxValue)?Infinity:this.maxValue), this.value));
@@ -114,5 +112,8 @@ IntParameterHandler.prototype.setEnabled = function (enabled) {
  */
 IntParameterHandler.prototype.getCurrentConfiguration = function () {
    this.value = parseInt($("input#" + this.uuid).val());
-   return this.value;
+   var d = new $.Deferred();
+   d.resolve(this.value);
+   return d.promise();
+
 };
