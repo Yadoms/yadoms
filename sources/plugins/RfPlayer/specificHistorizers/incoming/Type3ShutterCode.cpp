@@ -13,7 +13,7 @@ namespace incoming {
       ((Assoc))
    )
 
-   DECLARE_CAPACITY(Type3ShutterCodeCapacity, "somfyRtsPortalsShutterCode", yApi::CStandardUnits::NoUnits(), yApi::EKeywordDataType::kEnum);
+   DECLARE_CAPACITY(Type3ShutterCodeCapacity, "somfyRtsPortalsShutterCode", yApi::CStandardUnits::NoUnit(), yApi::EKeywordDataType::kEnum);
 
    CType3ShutterCode::CType3ShutterCode(const std::string& keywordName)
       : CSingleHistorizableData<EType3ShutterCodeValues>(keywordName, Type3ShutterCodeCapacity(), yApi::EKeywordAccessMode::kGet)

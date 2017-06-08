@@ -16,7 +16,7 @@ namespace outgoing {
    )
 
 
-   DECLARE_CAPACITY(ParrotCapacity, "blyss_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnits(), shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+   DECLARE_CAPACITY(ParrotCapacity, "blyss_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
    CParrotKeyword::CParrotKeyword(const std::string& keywordName)
       : shared::plugin::yPluginApi::historization::CSingleHistorizableData<EParrot>(keywordName,

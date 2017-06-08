@@ -17,13 +17,13 @@ namespace shared
             //--------------------------------------------------------------
             /// \brief		Standard units
             //--------------------------------------------------------------
-            static const std::string& NoUnits();
+            static const std::string& NoUnit();
             static const std::string& Ampere(); // A
             static const std::string& Decibel(); // dB
-            static const std::string& DecibelPower(); // dBm
-            static const std::string& Degrees(); // Â°
-            static const std::string& DegreesCelcius(); // Â°C
-            static const std::string& DegreesFarenheit(); // Â°F
+            static const std::string& DecibelPerMilliWatt(); // dBm
+            static const std::string& Degrees(); // °
+            static const std::string& DegreesCelcius(); // °C
+            static const std::string& DegreesFarenheit(); // °F
             static const std::string& hectoPascal(); // hPa
             static const std::string& Hertz(); // Hz
             static const std::string& Kg(); // kg

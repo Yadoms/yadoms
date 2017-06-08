@@ -82,7 +82,7 @@ namespace xplrules
             ((XEnd))
          )
 
-         DECLARE_CAPACITY(RemoteAtiWonderPlusCapacity, "RemoteAtiWonderPlus", shared::plugin::yPluginApi::CStandardUnits::NoUnits(), shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(RemoteAtiWonderPlusCapacity, "RemoteAtiWonderPlus", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CRemoteAtiWonderPlus::CRemoteAtiWonderPlus(const std::string& keywordName)

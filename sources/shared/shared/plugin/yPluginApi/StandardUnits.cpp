@@ -16,10 +16,10 @@ namespace shared
    {
       namespace yPluginApi
       {
-         DECLARE_UNIT(NoUnits, "data.units.noUnit");
+         DECLARE_UNIT(NoUnit, "data.units.noUnit");
          DECLARE_UNIT(Ampere, "data.units.ampere");
          DECLARE_UNIT(Decibel, "data.units.decibel");
-         DECLARE_UNIT(DecibelPower, "data.units.decibelPower");
+         DECLARE_UNIT(DecibelPerMilliWatt, "data.units.decibelPerMilliWatt");
          DECLARE_UNIT(Degrees, "data.units.degrees");
          DECLARE_UNIT(DegreesCelcius, "data.units.degreesCelcius");
          DECLARE_UNIT(DegreesFarenheit, "data.units.degreesFarenheit");

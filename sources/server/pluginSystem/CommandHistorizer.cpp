@@ -21,7 +21,7 @@ namespace pluginSystem
 
    const shared::plugin::yPluginApi::CStandardCapacity& CCommandHistorizer::getCapacity() const
    {
-      static const shared::plugin::yPluginApi::CStandardCapacity NoCapacity("command", shared::plugin::yPluginApi::CStandardUnits::NoUnits(),
+      static const shared::plugin::yPluginApi::CStandardCapacity NoCapacity("command", shared::plugin::yPluginApi::CStandardUnits::NoUnit(),
                                                                             shared::plugin::yPluginApi::EKeywordDataType::kString);
       return NoCapacity;
    }

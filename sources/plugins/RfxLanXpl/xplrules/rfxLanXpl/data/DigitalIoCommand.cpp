@@ -14,7 +14,7 @@ namespace xplrules
             ((Toggle))
          );
 
-         DECLARE_CAPACITY(RfxLanDigitalIoCommandCapacity, "digitalio", shared::plugin::yPluginApi::CStandardUnits::NoUnits(), shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(RfxLanDigitalIoCommandCapacity, "digitalio", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CDigitalIoCommand::CDigitalIoCommand(const std::string& keywordName)

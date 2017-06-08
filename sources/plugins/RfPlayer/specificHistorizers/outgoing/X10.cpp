@@ -16,7 +16,7 @@ namespace outgoing {
    )
 
 
-   DECLARE_CAPACITY(X10Capacity, "x10_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnits(), shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+   DECLARE_CAPACITY(X10Capacity, "x10_capacity", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
    CX10Keyword::CX10Keyword(const std::string& keywordName)
       : shared::plugin::yPluginApi::historization::CSingleHistorizableData<EX10>(keywordName,

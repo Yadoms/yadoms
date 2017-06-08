@@ -60,7 +60,7 @@ namespace xplrules
             ((Record))
          );
 
-         DECLARE_CAPACITY(RemotePCCapacity, "RemotePC", shared::plugin::yPluginApi::CStandardUnits::NoUnits(), shared::plugin::yPluginApi::EKeywordDataType::kNoData);
+         DECLARE_CAPACITY(RemotePCCapacity, "RemotePC", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
          CRemotePC::CRemotePC(const std::string& keywordName)
