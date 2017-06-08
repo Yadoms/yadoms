@@ -1,0 +1,10 @@
+{
+	"name": "Prévision télé-Info",
+	"description": "Un widget présentant la prévision de couleur de contrat pour le lendemain",
+	"configurationSchema": {
+		"device": {
+			"name": "Equipement",
+         "description": "Sélectionner ci-dessous l'équipement pilote"
+		}
+	}
+}

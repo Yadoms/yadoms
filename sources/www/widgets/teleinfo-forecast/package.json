@@ -1,0 +1,29 @@
+{
+	"type": "teleinfo-forecast",
+	"version": "1.0.0-beta.1",
+	"author": "Jean-Michel BERHAULT",
+	"url": "https://github.com/Yadoms/yadoms/wiki/teleinfo-forecast",
+	"credits": "",
+  "dimensions": {
+    "min": {
+      "x": 1,
+      "y": 1
+    },
+    "max": {
+      "x": 2,
+      "y": 1
+    },
+    "default": {
+      "x": 1,
+      "y": 1
+    }
+  },
+  "hasTitle" :  true,
+	"configurationSchema": {
+		"device": {
+			"type": "keyword",
+         "expectedCapacity": ["ForecastPrice"],
+			"expectedKeywordAccess": "get"
+		}
+	}
+}
