@@ -461,8 +461,6 @@ set(YADOMS_SRC
    server/pluginSystem/YadomsInformation.h
    server/pluginSystem/YadomsInformation.cpp
    
-   server/pluginSystem/internalPlugin/System.h
-   server/pluginSystem/internalPlugin/System.cpp
    server/pluginSystem/internalPlugin/Information.h
    server/pluginSystem/internalPlugin/Information.cpp
    server/pluginSystem/internalPlugin/Instance.h
