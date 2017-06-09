@@ -203,9 +203,9 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
          if (extraQuery)
          {
-            YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData().query();
+            YADOMS_LOG(information) << "Extra command received : " << extraQuery->getData()->query();
 
-            if (extraQuery->getData().query() == "wes")
+            if (extraQuery->getData()->query() == "wes")
             {
                YADOMS_LOG(information) << "Simple command received";
             }

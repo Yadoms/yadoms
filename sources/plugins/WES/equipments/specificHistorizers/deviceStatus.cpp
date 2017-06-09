@@ -12,7 +12,7 @@ namespace specificHistorizers
       ((TimeOut))
    );
 
-   DECLARE_CAPACITY(WESdeviceCapacity, "Status", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+   DECLARE_CAPACITY(WESdeviceCapacity, "Status", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
    CdeviceStatus::CdeviceStatus(const std::string& keywordName)
       : CSingleHistorizableData<EWESdeviceStatus>(keywordName,

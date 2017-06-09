@@ -12,7 +12,7 @@ namespace specificHistorizers
       ((Desactivated))
    );
 
-   DECLARE_CAPACITY(StatusCapacity, "Status", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+   DECLARE_CAPACITY(StatusCapacity, "Status", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 
    CTeleInfoStatus::CTeleInfoStatus(const std::string& keywordName)
       : CSingleHistorizableData<EWESTeleInfoStatus>(keywordName,

@@ -5,7 +5,7 @@
 
 namespace specificHistorizers
 {
-   DECLARE_CAPACITY(analogCapacity, "analog", yApi::CStandardUnits::NoUnits, yApi::EKeywordDataType::kNumeric);
+   DECLARE_CAPACITY(analogCapacity, "analog", yApi::CStandardUnits::NoUnit(), yApi::EKeywordDataType::kNumeric);
 
    CAnalog::CAnalog(const std::string& keywordName,
                     const yApi::EKeywordAccessMode& accessMode,
