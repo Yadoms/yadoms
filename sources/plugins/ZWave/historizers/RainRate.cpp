@@ -5,12 +5,12 @@
 namespace historizers
 {
    CRainRate::CRainRate(const std::string& name, CDecimalTypeInfo &ti)
-      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CRainRate>(name, shared::plugin::yPluginApi::historization::EMeasureType::kCumulative, ti))
+      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CRainRate>(name, shared::plugin::yPluginApi::EKeywordAccessMode::kGet, shared::plugin::yPluginApi::historization::EMeasureType::kCumulative, ti))
    {
    }
 
    CRainRate::CRainRate(const std::string& name, shared::plugin::yPluginApi::historization::EMeasureType measureType, CDecimalTypeInfo &ti)
-      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CRainRate>(name, measureType, ti))
+      : COpenZWaveSingleHistorizableData<double>(boost::make_shared<shared::plugin::yPluginApi::historization::CRainRate>(name, shared::plugin::yPluginApi::EKeywordAccessMode::kGet, measureType, ti))
    {
    }
 

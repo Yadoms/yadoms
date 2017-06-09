@@ -73,7 +73,7 @@ private:
    boost::shared_ptr<yApi::historization::CPressure> m_pressure;
    boost::shared_ptr<yApi::historization::CHumidity> m_humidity;
    boost::shared_ptr<yApi::historization::CDistance> m_visibility;
-   boost::shared_ptr<yApi::historization::CDirection> m_uv;
+   boost::shared_ptr<yApi::historization::CUv> m_uv;
    boost::shared_ptr<yApi::historization::CDirection> m_WindDirection;
    boost::shared_ptr<yApi::historization::CTemperature> m_dewPoint;
    boost::shared_ptr<yApi::historization::CRainRate> m_rain1hr;

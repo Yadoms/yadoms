@@ -190,8 +190,70 @@ namespace pluginSystem
             throw std::invalid_argument("device already exists");
 
          boost::shared_ptr<const yApi::historization::IHistorizable> keyword;
-         if (data.getDeviceType() == "switch") //TODO ne pas laisser en dur
-            keyword = boost::make_shared<yApi::historization::CSwitch>("state");
+         if (data.getDeviceType() == yApi::CStandardCapacities::ApparentPower().getName())
+            keyword = boost::make_shared<yApi::historization::CApparentPower>("ApparentPower", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::ArmingAlarm().getName())
+            keyword = boost::make_shared<yApi::historization::CArmingAlarm>("armAlarm", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::BatteryLevel().getName())
+            keyword = boost::make_shared<yApi::historization::CBatteryLevel>("battery", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::CameraMove().getName())
+            keyword = boost::make_shared<yApi::historization::CCameraMove>("camera", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Counter().getName())
+            keyword = boost::make_shared<yApi::historization::CCounter>("counter", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Current().getName())
+            keyword = boost::make_shared<yApi::historization::CCurrent>("current", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Curtain().getName())
+            keyword = boost::make_shared<yApi::historization::CCurtain>("state");
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Dimmable().getName())
+            keyword = boost::make_shared<yApi::historization::CDimmable>("state", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Direction().getName())
+            keyword = boost::make_shared<yApi::historization::CDirection>("uv", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Distance().getName())
+            keyword = boost::make_shared<yApi::historization::CDistance>("distance", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Duration().getName())
+            keyword = boost::make_shared<yApi::historization::CDuration>("duration", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Energy().getName())
+            keyword = boost::make_shared<yApi::historization::CEnergy>("energy", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Event().getName())
+            keyword = boost::make_shared<yApi::historization::CEvent>("event", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Frequency().getName())
+            keyword = boost::make_shared<yApi::historization::CFrequency>("frequency", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Humidity().getName())
+            keyword = boost::make_shared<yApi::historization::CHumidity>("humidity", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Illumination().getName())
+            keyword = boost::make_shared<yApi::historization::CIllumination>("illumination", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Load().getName())
+            keyword = boost::make_shared<yApi::historization::CLoad>("load", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Power().getName())
+            keyword = boost::make_shared<yApi::historization::CPower>("power", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::PowerFactor().getName())
+            keyword = boost::make_shared<yApi::historization::CPowerFactor>("powerFactor", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Pressure().getName())
+            keyword = boost::make_shared<yApi::historization::CPressure>("pressure", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Rain().getName())
+            keyword = boost::make_shared<yApi::historization::CRain>("rain", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::RainRate().getName())
+            keyword = boost::make_shared<yApi::historization::CRainRate>("rainRate", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Rssi().getName())
+            keyword = boost::make_shared<yApi::historization::CRssi>("rssi", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Speed().getName())
+            keyword = boost::make_shared<yApi::historization::CSpeed>("speed", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Switch().getName())
+            keyword = boost::make_shared<yApi::historization::CSwitch>("state", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Temperature().getName())
+            keyword = boost::make_shared<yApi::historization::CTemperature>("temperature", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Text().getName())
+            keyword = boost::make_shared<yApi::historization::CText>("text", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::UpDownStop().getName())
+            keyword = boost::make_shared<yApi::historization::CUpDownStop>("UpDownStop", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Uv().getName())
+            keyword = boost::make_shared<yApi::historization::CUv>("uv", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Voltage().getName())
+            keyword = boost::make_shared<yApi::historization::CVoltage>("voltage", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::WeatherCondition().getName())
+            keyword = boost::make_shared<yApi::historization::CWeatherCondition>("weatherCondition", yApi::EKeywordAccessMode::kGetSet);
+         else if (data.getDeviceType() == yApi::CStandardCapacities::Weight().getName())
+            keyword = boost::make_shared<yApi::historization::CWeight>("weight", yApi::EKeywordAccessMode::kGetSet);
 
          if (!keyword)
             throw std::invalid_argument("Unsupported device type");
