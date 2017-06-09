@@ -1,29 +1,29 @@
 {
-	"type": "switch",
-	"version": "1.0.2-rc.2",
-	"author": "Jean-Michel BERHAULT, Nicolas HILAIRE",
-	"url": "https://github.com/Yadoms/yadoms/wiki/switch",
+	"type": "curtain",
+	"version": "1.0.0-beta.1",
+	"author": "Jean-Michel DECORET",
+	"url": "https://github.com/Yadoms/yadoms/wiki/curtain",
 	"credits": "[bootstrap toogle](http://www.bootstraptoggle.com/)",
   "dimensions": {
     "min": {
       "x": 1,
-      "y": 1
+      "y": 2
     },
     "max": {
       "x": 1,
-      "y": 1
+      "y": 2
     },
     "default": {
       "x": 1,
-      "y": 1
+      "y": 2
     }
   },
   "hasTitle" :  true,
 	"configurationSchema": {
 		"device": {
 			"type": "keyword",
-         "expectedCapacity": ["switch", "dimmable", "event"],
-			"expectedKeywordAccess": "get"
+         "expectedCapacity": ["curtain", "upDownStop"],
+			"expectedKeywordAccess": "getset"
 		},
 		"additionalDevices": {
 			"type": "section",
@@ -45,35 +45,13 @@
                         "name": "",
                         "description": "",					
                         "type": "keyword",
-                        "expectedCapacity": ["switch", "dimmable", "event"],
-                        "expectedKeywordAccess": "get"
+                        "expectedCapacity": ["curtain", "upDownStop"],
+                        "expectedKeywordAccess": "getset"
                      }
                   }
                }
             }
          }
-      },
-		"kind": {
-			"type": "radioSection",
-			"content": {
-				"horizontalInverter": {
-					"type": "section"
-				},
-				"verticalInverter": {
-					"type": "section"
-				},
-				"pushButton": {
-					"type": "section",
-					"content": {
-						"icon": {
-							"type": "icon"
-						}
-					}
-				},
-				"toggle": {
-					"type": "section"
-				}
-			}
-		}
+      }
 	}
 }

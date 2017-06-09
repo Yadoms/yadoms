@@ -9,6 +9,7 @@
 #include "FakeConfigurableDevice.h"
 #include "FakeDynamicallyConfigurableDevice.h"
 #include "FakeAnotherConfigurableDevice.h"
+#include "FakeCurtain.h"
 #include <Poco/Net/NetworkInterface.h>
 #include <shared/Log.h>
 #include <shared/encryption/Base64.h>
@@ -57,6 +58,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    CFakeController fakeController("fakeController1");
    CFakeConfigurableDevice configurableDevice("configurableDevice");
    CFakeDynamicallyConfigurableDevice dynamicallyConfigurableDevice("dynamicallyConfigurableDevice");
+   CFakeCurtain fakeCurtain("fakeCurtain");
 
 
    // Declare these sensors to Yadoms (devices and associated keywords) if not already declared
@@ -70,6 +72,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
    fakeController.declareDevice(api);
    configurableDevice.declareDevice(api);
    dynamicallyConfigurableDevice.declareDevice(api);
+   fakeCurtain.declareDevice(api);
 
    std::vector< boost::shared_ptr<CFakeAnotherConfigurableDevice> > manuallyCreatedStaticConf;
    std::vector< boost::shared_ptr<CFakeDynamicallyConfigurableDevice> > manuallyCreatedDynaConf;
@@ -93,7 +96,8 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
          (*devName) != fakeDimmableReadOnlySwitch.getDeviceName() &&
          (*devName) != fakeDimmableReadWriteSwitch.getDeviceName() &&
          (*devName) != fakeController.getDeviceName() &&
-         (*devName) != configurableDevice.getDeviceName())
+         (*devName) != configurableDevice.getDeviceName() &&
+         (*devName) != fakeCurtain.getDeviceName())
       {
          std::string type = api->getDeviceType(*devName);
          if (type == CFakeAnotherConfigurableDevice::getType())
@@ -406,6 +410,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             fakeDimmableReadOnlySwitch.read();
             fakeController.read();
             configurableDevice.read();
+            fakeCurtain.read();
 
             YADOMS_LOG(information) << "Send the periodically sensors state...";
             fakeSensor1.historizeData(api);
@@ -415,6 +420,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             fakeDimmableReadOnlySwitch.historizeData(api);
             fakeController.historizeData(api);
             configurableDevice.historizeData(api);
+            fakeCurtain.historizeData(api);
 
             for (auto i = manuallyCreatedStaticConf.begin(); i != manuallyCreatedStaticConf.end(); ++i)
             {
