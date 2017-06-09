@@ -278,6 +278,7 @@ PluginInstanceManager.downloadPackage = function (pluginInstance) {
     var d = new $.Deferred();
 
     //we can't download package from system plugins
+    // TODO créer le package en dur pour le plugin system (contenant seulement la rubrique "supportManuallyDeviceCreation": "true" et "deviceConfiguration")
     if (!pluginInstance.isSystemCategory() && !pluginInstance.package) {
         RestEngine.getJson("plugins/" + pluginInstance.type + "/package.json")
             .done(function (data) {

@@ -25,7 +25,9 @@
 <script>
 
    var pluginTypes = [];
-
+   
+   const VIRTUAL_DEVICE_PLUGIN_ID = "1";
+   
    /**
     * Ask for plugin types to the REST server
     */
@@ -36,44 +38,49 @@
          .done(function(list) {
 
             $("select#associatedPluginTypeList").empty();
+            
+            // Insert virtual device into list
+            <!-- TODO mettre "Virtual device" en i18n -->
+            var systemPi = PluginInstanceManager.factory({id: VIRTUAL_DEVICE_PLUGIN_ID, type: "system", configuration: "", autoStart: "true", category: "system", displayName: "Virtual device" });
+            list.splice(0, 0, systemPi);
 
-			// Enter all Plugins into an array
-			var tabPlugins = [];			
-			
+            // Enter all Plugins into an array
+            var tabPlugins = [];
+
             $.each(list, function(index, value) {
                var pi = PluginInstanceManager.factory(value);
                //foreach plugin
-			   tabPlugins.push ( {type: pi.id, displayName: pi.displayName });
+               tabPlugins.push ( {type: pi.id, displayName: pi.displayName });
             });
 			
-			//sort plugins
-			tabPlugins = sortListItemsWithdisplayName ( tabPlugins );
-			
-			$.each(tabPlugins, function(index, value) {
-			   $("select#associatedPluginTypeList").append("<option value=\"" + value.type + "\">" + value.displayName + "</option>");
+            //sort plugins
+            tabPlugins = sortListItemsWithdisplayName ( tabPlugins );
+            
+            $.each(tabPlugins, function(index, value) {
+               $("select#associatedPluginTypeList").append("<option value=\"" + value.type + "\">" + value.displayName + "</option>");
 			});
 
-            //event click on add plugin button
-            $("button#btn-confirm-add-manually-device").unbind("click").bind("click", function() {
-               //we close the new widget modal
-               $("div#new-manually-device-modal").modal("hide");
+         //event click on add device button
+         $("button#btn-confirm-add-manually-device").unbind("click").bind("click", function() {
+            //we close the new device modal
+            $("div#new-manually-device-modal").modal("hide");
 
-               //we get the plugin instance id chosen
-               var pluginId = $("select#associatedPluginTypeList").val();
-			   
-               //from the id, retreive the plugin instance
-               var instance = $.grep(list, function(e) { return e.id === pluginId; });
-			   
-               //send found instance
-               callback(instance[0]);
-            });
-
-            //we display the modal
-            $('div#new-manually-device-modal').modal({ backdrop: 'static' });
-         })
-         .fail(function(error) {
-            notifyError($.t("modals.pluginInstance.errorGettingManuallyDeviceCreation"), error);
+            //we get the device instance id chosen
+            var pluginId = $("select#associatedPluginTypeList").val();
+         
+            //from the id, retreive the plugin instance
+            var instance = $.grep(list, function(e) { return e.id === pluginId; });
+         
+            //send found instance
+            callback(instance[0]);
          });
+
+         //we display the modal
+         $('div#new-manually-device-modal').modal({ backdrop: 'static' });
+      })
+      .fail(function(error) {
+         notifyError($.t("modals.pluginInstance.errorGettingManuallyDeviceCreation"), error);
+      });
    };
 
 </script>

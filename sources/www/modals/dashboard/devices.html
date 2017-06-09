@@ -1,7 +1,7 @@
 <div id="dashboard-devices">
    <h1 class="page-header"><span class="fa fa-tasks"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.title"></span></h1>
    <span data-i18n="modals.dashboard.sub-windows.devices.deviceListDescription"></span><br>
-   <button id="btn-add-new-device" type="button" class="btn btn-success dashboard-btn-new disabled"><span class="fa fa-tasks"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.new"></span></button>
+   <button id="btn-add-new-device" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-tasks"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.new"></span></button>
    <table id="device-list" class="table table-bordered table-striped dashboard-list">
       <tr>
          <td data-i18n="modals.dashboard.sub-windows.devices.table.name" class="col-md-2"></td>
@@ -26,17 +26,13 @@
    Yadoms.initializeDeviceDashboard = function () {
    
       $("input.cb-showblacklist").unbind('change').bind('change', function () { refreshDeviceList(); });
+      $("#btn-add-new-device").unbind("click").bind("click", function () { addNewDevice(); });
       
       var d = new $.Deferred();
 
       //we check if there is at least one plugin instantiated that handle manual creation
       PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation()
          .done(function (list) {
-            if (list.length > 0) {
-               //there is at least one plugin instance that handle this button
-               $("#btn-add-new-device").removeClass("disabled").unbind("click").bind("click", function () { addNewDevice(); });
-            }
-
             refreshDeviceList()
                .done(function() {
                   //we use the periodic task of the dashboard
@@ -517,7 +513,7 @@
                   });
                });
             });
-         });
+         });         
       });
    }
 
