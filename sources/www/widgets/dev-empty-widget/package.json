@@ -1,0 +1,17 @@
+{
+    "type": "dev-empty-widget",
+    "version": "1.0.0-beta",
+    "author": "Your name here",
+    "url": "https://linkToUrlHere.com",
+    "credits": "external libraries used here",
+    "dimensions": {
+        "min": {
+            "x": 1,
+            "y": 1
+        },
+        "default": {
+            "x": 1,
+            "y": 1
+        }
+    }
+}
