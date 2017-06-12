@@ -1,6 +1,6 @@
 {
 	"type": "chart",
-	"version": "1.0.1-rc.1",
+	"version": "1.0.1-rc.2",
 	"author": "Jean-Michel BERHAULT, Nicolas HILAIRE",
 	"url": "https://github.com/Yadoms/yadoms/wiki/chart",
 	"credits": "[Highstocks](http://www.highcharts.com/)",
@@ -32,14 +32,22 @@
 			},         
 			"defaultValue": "DAY"
 		},
-      "legendLabels" : {
-			"type": "enum",
-			"values": {
-				"DeviceAndKeyword": "",
-				"Device": "",
-				"Keyword": ""
-			},         
-			"defaultValue": "DeviceAndKeyword"      
+      "legends" : {
+			"type": "section",
+			"defaultValue": "true",
+			"enableWithCheckBox": "true",
+			"enableWithCheckBoxDefaultValue": "true",
+         "content": {        
+            "legendLabels" : {
+               "type": "enum",
+               "values": {
+                  "DeviceAndKeyword": "",
+                  "Device": "",
+                  "Keyword": ""
+               },         
+               "defaultValue": "DeviceAndKeyword"
+            }
+         }
       },
 		"oneAxis": {
 			"type": "section",

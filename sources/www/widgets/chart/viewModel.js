@@ -189,7 +189,7 @@ widgetViewModelCtor =
                
                self.widgetApi.askServerLocalTime(function (serverLocalTime) {
                   self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
-                  //TODO : Be carefull withe the time this function take, perhaps, we have to create a promise
+                  //TODO : Be carefull with the time this function take, perhaps, we have to create a promise
                });
                
                d.resolve();
@@ -575,9 +575,9 @@ widgetViewModelCtor =
                                    
                                    // axes and series names
                                    try {
-                                      if (self.widget.configuration.legendLabels ==="Device")
+                                      if (self.widget.configuration.legends.content.legendLabels ==="Device")
                                          legendText = self.deviceInfo[index].friendlyName;
-                                      else if (self.widget.configuration.legendLabels ==="Keyword")
+                                      else if (self.widget.configuration.legends.content.legendLabels ==="Keyword")
                                          legendText = self.keywordInfo[index].friendlyName;                                       
                                       else
                                          legendText = self.deviceInfo[index].friendlyName + "/" + self.keywordInfo[index].friendlyName;
@@ -590,6 +590,30 @@ widgetViewModelCtor =
                                        try {
                                            function isOdd(num) {
                                                return num % 2;
+                                           }
+                                           
+                                           function getAxisTitle(legendsEnable){
+                                              var self = this;
+                                              
+                                              // create the structure
+                                              var response= {
+                                                 text: null,
+                                                 style:{
+                                                    color: colorAxis
+                                                 }
+                                              };
+                                              
+                                              console.log ("legends : ", legendsEnable);
+                                              
+                                              if (legendsEnable)
+                                              {
+                                                 response.text = legendText;
+                                                 console.log ("response : ", response);
+                                                 
+                                                 return response;
+                                              }
+                                              else 
+                                                 return response;
                                            }
 
                                            var align = 'right';
@@ -605,12 +629,7 @@ widgetViewModelCtor =
                                                // new axis
                                                id: yAxisName, //The same id as the serie with axis at the beginning
                                                reversedStacks: false,
-                                               title: {
-                                                   text: legendText,
-                                                   style: {
-                                                       color: colorAxis
-                                                   }
-                                               },
+                                               title: getAxisTitle(parseBool(self.widget.configuration.legends.checkbox)),
                                                labels: {
                                                    align: align,
                                                    format: '{value:.1f} ' + unit,
