@@ -592,8 +592,7 @@ widgetViewModelCtor =
                                                return num % 2;
                                            }
                                            
-                                           function getAxisTitle(legendsEnable){
-                                              var self = this;
+                                           function getAxisTitle(){
                                               
                                               // create the structure
                                               var response= {
@@ -603,17 +602,7 @@ widgetViewModelCtor =
                                                  }
                                               };
                                               
-                                              console.log ("legends : ", legendsEnable);
-                                              
-                                              if (legendsEnable)
-                                              {
-                                                 response.text = legendText;
-                                                 console.log ("response : ", response);
-                                                 
-                                                 return response;
-                                              }
-                                              else 
-                                                 return response;
+                                              return response;
                                            }
 
                                            var align = 'right';
@@ -629,7 +618,7 @@ widgetViewModelCtor =
                                                // new axis
                                                id: yAxisName, //The same id as the serie with axis at the beginning
                                                reversedStacks: false,
-                                               title: getAxisTitle(parseBool(self.widget.configuration.legends.checkbox)),
+                                               title: getAxisTitle(),
                                                labels: {
                                                    align: align,
                                                    format: '{value:.1f} ' + unit,
@@ -746,7 +735,7 @@ widgetViewModelCtor =
                                        serie.units = $.t(self.keywordInfo[index].units);
 
                                        // If only one axis, we show the legend. In otherwise we destroy it
-                                       if (parseBool(self.widget.configuration.oneAxis.checkbox)) {
+                                       if (parseBool(self.widget.configuration.legends.checkbox)) {
                                            serie.options.showInLegend = true;
                                            self.chart.legend.renderItem(serie);
                                        } else {
