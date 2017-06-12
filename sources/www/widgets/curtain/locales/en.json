@@ -1,0 +1,32 @@
+{
+	"name": "Curtain",
+	"description": "A widget that provide buttons to control curtains",
+	"errorDuringGettingDeviceInformation": "Error during getting device information",
+	"errorDuringSendingCommand": "Error sending command",
+	"configurationSchema": {
+		"device": {
+			"name": "Device",
+         "description": "Select below the device to drive"
+		},
+		"additionalDevices": {
+			"name": "additional devices",
+			"description": "Curtain widget is able to drive several devices simultaneously. Select below the devices list to drive",      
+         "content": {
+            "devices": {
+               "name": "Devices",
+               "description": "if a device is read-only, the button will not be clickable",
+               "item": {
+                  "name": "",
+                  "description": "",
+                  "content": {
+                     "source": {
+                        "name": "Switch device",
+                        "description": "device to drive"
+                     }
+                  }
+               }				
+            }
+         }
+      }
+	}
+}
