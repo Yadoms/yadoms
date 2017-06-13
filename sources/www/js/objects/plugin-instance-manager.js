@@ -273,32 +273,73 @@ PluginInstanceManager.postExtraQuery= function (pluginInstance, commandName, com
  * @return {Promise} A promise for the result
  */
 PluginInstanceManager.downloadPackage = function (pluginInstance) {
-    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
+   assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
 
-    var d = new $.Deferred();
+   var d = new $.Deferred();
+   debugger;
 
-    //we can't download package from system plugins
-    // TODO créer le package en dur pour le plugin system (contenant seulement la rubrique "supportManuallyDeviceCreation": "true" et "deviceConfiguration")
-    if (!pluginInstance.isSystemCategory() && !pluginInstance.package) {
-        RestEngine.getJson("plugins/" + pluginInstance.type + "/package.json")
-            .done(function (data) {
-                pluginInstance.package = data;
+   //we can't download package from system plugins
+   // TODO créer le package en dur pour le plugin system (contenant seulement la rubrique "supportManuallyDeviceCreation": "true" et "deviceConfiguration")
+   if (!pluginInstance.package) {
+      if (!pluginInstance.isSystemCategory()) {
+         RestEngine.getJson("plugins/" + pluginInstance.type + "/package.json")
+         .done(function (data) {
+            pluginInstance.package = data;
 
-                //we manage i18n
-                i18n.options.resGetPath = '__ns__/locales/__lng__.json';
-                i18n.loadNamespace("plugins/" + pluginInstance.type);
+            //we manage i18n
+            i18n.options.resGetPath = '__ns__/locales/__lng__.json';
+            i18n.loadNamespace("plugins/" + pluginInstance.type);
 
-                //we restore the resGetPath
-                i18n.options.resGetPath = "locales/__lng__.json";
+            //we restore the resGetPath
+            i18n.options.resGetPath = "locales/__lng__.json";
 
-                d.resolve();
-            })
-            .fail(d.reject);
-    } else {
-        d.resolve();
-    }
+            d.resolve();
+         })
+         .fail(d.reject);
+      }
+      else if (pluginInstance.type === 'system') {
+         pluginInstance.package = {
+            type: pluginInstance.type,
+            supportManuallyDeviceCreation: "true",
+            deviceConfiguration: {
+               staticConfigurationSchema: {
+                  schemas: {
+                     virtualDevice: {
+                        types: {
+                           virtualDeviceType: {
+                              canBeCreatedManually: "true"
+                              }
+                           },
+                        content: {
+                        "CounterDivider2": {
+                           "type": "int",
+                           "defaultValue": "2",
+                           "minimumValue": "1",
+                           "maximumValue": "10"
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         };
 
-    return d.promise();
+         //we manage i18n
+         i18n.options.resGetPath = '__ns__/locales/__lng__.json';
+         i18n.loadNamespace("plugins/" + pluginInstance.type);
+
+         //we restore the resGetPath
+         i18n.options.resGetPath = "locales/__lng__.json";
+
+         d.resolve();
+      } else {
+         d.resolve();
+      }
+   } else {
+      d.resolve();
+   }
+
+   return d.promise();
 };
 
 /**
