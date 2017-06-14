@@ -90,11 +90,14 @@ namespace http
       }
       catch (Poco::Exception& e)
       {
-         auto message = (boost::format("Fail to send get http request \"%1%\" : %2%") % url % e.message()).str();
-         YADOMS_LOG(error) << "e.message() : " << e.message();
-         YADOMS_LOG(error) << "e.message().size() : " << e.message().size();
-         YADOMS_LOG(error) << "e.what() : " << e.what();
-         YADOMS_LOG(error) << message;
+         std::string message;
+
+         // Sometimes message return nothing. In this case, we return what()
+         if (e.message().size() != 0)
+            message = (boost::format("Fail to send get http request \"%1%\" : %2%") % url % e.message()).str();
+         else
+            message = (boost::format("Fail to send get http request \"%1%\" : %2%") % url % e.what()).str();
+
          if (boost::contains(e.what(),"Timeout"))
             throw CTimeOutException(message);
          else

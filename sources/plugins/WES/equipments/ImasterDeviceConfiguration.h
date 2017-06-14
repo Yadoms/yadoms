@@ -2,8 +2,6 @@
 #include <shared/DataContainer.h>
 #include <Poco/Net/SocketAddress.h>
 
-// TODO : Finir les commentaires
-
 //--------------------------------------------------------------
 /// \brief	Interface of plugin configuration
 //--------------------------------------------------------------
@@ -24,7 +22,7 @@ public:
 
    //--------------------------------------------------------------
    /// \brief      retrieve the IP address with the port from the configuration
-   /// \return     the IP address withe the port
+   /// \return     the IP address with the port
    //--------------------------------------------------------------
    virtual Poco::Net::SocketAddress getIPAddressWithSocket() const = 0;
 

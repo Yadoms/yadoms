@@ -106,9 +106,9 @@ namespace equipments
                                   const Poco::Int64& counter4,
                                   const Poco::Int64& counter5,
                                   const Poco::Int64& counter6,
-                                  const specificHistorizers::EColor newColor)
+                                  const int newColor)
       {
-         m_deviceStatus->set(newState);
+         setDeviceState(newState);
 
          // In case of contract change -> create new keywords
          if (m_contractName != contractName)
@@ -146,8 +146,25 @@ namespace equipments
             setPeriodTime(timePeriod);
 
             if (m_Color->get() != newColor)
-               m_Color->set(newColor);
-
+            {
+               switch (newColor)
+               {
+               case specificHistorizers::EColor::kNOTDEFINEDValue:
+                  m_Color->set(specificHistorizers::EColor::kNOTDEFINED);
+                  break;
+               case specificHistorizers::EColor::kBLUEValue:
+                  m_Color->set(specificHistorizers::EColor::kBLUE);
+                  break;
+               case specificHistorizers::EColor::kWHITEValue:
+                  m_Color->set(specificHistorizers::EColor::kWHITE);
+                  break;
+               case specificHistorizers::EColor::kREDValue:
+                  m_Color->set(specificHistorizers::EColor::kRED);
+                  break;
+               default:
+                  break;
+               }
+            }
             break;
          case BT4SUP36:
             break;

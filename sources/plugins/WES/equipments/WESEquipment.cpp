@@ -22,9 +22,7 @@ namespace equipments
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
 
-      m_deviceStatus->set(specificHistorizers::EWESdeviceStatus::kUndefined);
-      keywordsToDeclare.push_back(m_deviceStatus);
-
+      setDeviceState(keywordsToDeclare, specificHistorizers::EWESdeviceStatus::kUndefined);
       m_configuration.initializeWith(deviceConfiguration);
       shared::CDataContainer details = api->getDeviceDetails(device);
 
@@ -116,8 +114,7 @@ namespace equipments
       std::string PulseName[4];
       std::string counterId[2];
 
-      m_deviceStatus->set(specificHistorizers::EWESdeviceStatus::kUndefined);
-      keywordsToDeclare.push_back(m_deviceStatus);
+      setDeviceState(keywordsToDeclare, specificHistorizers::EWESdeviceStatus::kUndefined);
 
       try {
          m_configuration.initializeWith(deviceConfiguration);
@@ -381,7 +378,7 @@ namespace equipments
                                                                     credentials,
                                                                     CGXfileName);
 
-         results.printToLog(YADOMS_LOG(information)); //TODO : A basculer en trace
+         results.printToLog(YADOMS_LOG(trace));
 
          // Reading relays - historize only on change value or when the historization is forced (initialization, for example)      
          try {
@@ -448,7 +445,6 @@ namespace equipments
          api->historizeData(m_deviceName, keywordsToHistorize);
 
          // TIC Counters Values -> independant from the others keywords
-         // TODO : Faire la correction de la conversion EColor
          for (int counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
          {
             m_TICList[counter]->updateFromDevice(api,
@@ -463,7 +459,7 @@ namespace equipments
                                                  results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_4"),
                                                  results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_5"),
                                                  results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_6"),
-                                                 specificHistorizers::EColor::kNOTDEFINED/*results.get<specificHistorizers::EColor>("DEMAIN_" + boost::lexical_cast<std::string>(counter + 1))*/);
+                                                 results.get<int>("DEMAIN_" + boost::lexical_cast<std::string>(counter + 1)));
          }
       }
       catch (CTimeOutException&)
@@ -545,11 +541,35 @@ namespace equipments
                                                                      credentials,
                                                                      parameters);
 
-         // TODO : Check the return of this function
+         // For security, we check if the results contain the value, with the corresponding new state
+         if (results.containsChild("Relai1"))
+         {
+            if (results.get<std::string>("Relai1") == "ON" && !m_relaysList[0]->get())
+            {
+               m_relaysList[0]->set(true);
+               keywordsToHistorize.push_back(m_relaysList[0]);
+            }
+            else if (results.get<std::string>("Relai1") == "OFF" && m_relaysList[0]->get())
+            {
+               m_relaysList[0]->set(false);
+               keywordsToHistorize.push_back(m_relaysList[0]);
+            }
+         }
 
-         // historize the new value after sending and check that the value is well registered and return from the WES Equipment
-         (*iteratorRelay)->set(newValue);
-         keywordsToHistorize.push_back((*iteratorRelay));
+         if (results.containsChild("Relai2"))
+         {
+            if (results.get<std::string>("Relai2") == "ON" && !m_relaysList[1]->get())
+            {
+               m_relaysList[1]->set(true);
+               keywordsToHistorize.push_back(m_relaysList[1]);
+            }
+            else if (results.get<std::string>("Relai2") == "OFF" && m_relaysList[1]->get())
+            {
+               m_relaysList[1]->set(false);
+               keywordsToHistorize.push_back(m_relaysList[1]);
+            }
+         }
+
          setDeviceState(keywordsToHistorize, specificHistorizers::EWESdeviceStatus::kOk);
          api->historizeData(m_deviceName, keywordsToHistorize);
       }

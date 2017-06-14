@@ -82,7 +82,7 @@ namespace equipments
             }
             break;
          default:
-            //TODO : Mettre ne place une erreur
+            YADOMS_LOG(error) << "This unit is not handle";
             break;
          }
 
@@ -120,7 +120,7 @@ namespace equipments
             YADOMS_LOG(trace) << m_pulseVolume->getKeyword() << " set to " << total << "m3";
             break;
          default:
-            // TODO : Mettre un message d'erreur
+            YADOMS_LOG(error) << "This unit is not handle";
             break;
          }
       }

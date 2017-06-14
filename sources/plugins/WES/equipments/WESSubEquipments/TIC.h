@@ -70,7 +70,7 @@ namespace equipments
                                const Poco::Int64& counter4,
                                const Poco::Int64& counter5,
                                const Poco::Int64& counter6,
-                               const specificHistorizers::EColor newColor);
+                               const int newColor);
 
          //-----------------------------------------------------
          ///\brief                     remove
