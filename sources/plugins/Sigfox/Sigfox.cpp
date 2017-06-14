@@ -139,16 +139,17 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
       //   "battery": "{batt}"
       //}
 
+      // This part is common the two messages
+      m_rssi->set(newMessage.get<double>("rssi"));
+      m_snr->set(newMessage.get<double>("snr"));
+
+      // For the signalStrength, we do a rule to normalize rssi to %.
+      m_signalPower->set(boost::lexical_cast<int>((m_rssi->get() - m_configuration.getRssiMin()) * 100 / (m_configuration.getRssiMax() - m_configuration.getRssiMin())));
+      //
+
       if (type.compare("data") == 0)
       {
-         m_messageKeyword->set(newMessage.get<std::string>("data"));
-         m_rssi->set(newMessage.get<double>("rssi"));
-         m_snr->set(newMessage.get<double>("snr"));
-
-         // For the signalStrength, we do a rule to normalize rssi to %.
-         m_signalPower->set((m_rssi->get() - m_configuration.getRssiMin()) * 100 / (m_configuration.getRssiMax() - m_configuration.getRssiMin()));
-
-         // the rule to normalize the battery level
+         m_messageKeyword->set(newMessage.get<std::string>("data"));;
 
          api->historizeData(deviceName, m_keywordsData);
          YADOMS_LOG(information) << "historize a data message for " << deviceName;
@@ -156,16 +157,10 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
 
       if (type.compare("service") == 0)
       {
-         m_rssi->set(newMessage.get<double>("rssi"));
-         m_snr->set(newMessage.get<double>("snr"));
-
-         // For the signalStrength, we do a rule to normalize rssi to %.
-         m_signalPower->set((m_rssi->get() - m_configuration.getRssiMin()) * 100 / (m_configuration.getRssiMax() - m_configuration.getRssiMin()));
-
          // the rule to normalize the battery level
          // Receive a voltage
          auto m_voltage = newMessage.get<double>("battery");
-         m_batteryLevel->set( (m_voltage - m_configuration.getTensionMin()) * 100 / (m_configuration.getTensionMax() - m_configuration.getTensionMin()) );
+         m_batteryLevel->set(boost::lexical_cast<int>((m_voltage - m_configuration.getTensionMin()) * 100 / (m_configuration.getTensionMax() - m_configuration.getTensionMin())) );
 
          api->historizeData(deviceName, m_keywordsService);
          YADOMS_LOG(information) << "historize a service message for " << deviceName;
