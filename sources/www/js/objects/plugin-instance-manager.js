@@ -294,6 +294,7 @@ PluginInstanceManager.buildVirtualDevicePackage=function () {
                      content: {
                         capacity: {
                            type: 'enum',
+                           sort : 'true',
                            values: {}
                         }
                      }
@@ -306,34 +307,6 @@ PluginInstanceManager.buildVirtualDevicePackage=function () {
       for (var cap in capacities.capacities) {
          pkg.deviceConfiguration.staticConfigurationSchema.schemas.virtualDevice.content.capacity.values[cap] = cap;
       }
-      
-      
-   
-      // pkg = {
-         // type: 'system',
-         // supportManuallyDeviceCreation: 'true',
-         // deviceConfiguration: {
-            // staticConfigurationSchema: {
-               // schemas: {
-                  // virtualDevice: {
-                     // types: {
-                        // virtualDeviceType: {
-                           // canBeCreatedManually: 'true'
-                           // }
-                        // },
-                     // content: {
-                     // 'CounterDivider2': {
-                        // 'type': 'int',
-                        // 'defaultValue': '2',
-                        // 'minimumValue': '1',
-                        // 'maximumValue': '10'
-                        // }
-                     // }
-                  // }
-               // }
-            // }
-         // }
-      // }
    
       d.resolve(pkg);
    })
