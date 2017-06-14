@@ -10,7 +10,7 @@ namespace equipments
                      std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
                      const std::string& deviceName,
                      const std::string& keywordName,
-                     const std::string& unitName) :
+                     const EUnit unitName) :
          m_deviceName(deviceName),
          m_keywordName(keywordName),
          m_unitName(unitName)
@@ -22,53 +22,57 @@ namespace equipments
                                    std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
                                    const std::string& keywordName)
       {
-         if (m_unitName.compare("Wh")==0 || m_unitName.compare("KWh") == 0)
+         switch (m_unitName)
          {
-            m_pulseEnergy = boost::make_shared<yApi::historization::CEnergyDouble>(keywordName,
-                                                                                   yApi::EKeywordAccessMode::kGet);
+         case Wh:
+         case KWh:
+            m_pulseEnergy = boost::make_shared<yApi::historization::CEnergy>(keywordName,
+                                                                             yApi::EKeywordAccessMode::kGet);
             keywordsToDeclare.push_back(m_pulseEnergy);
-         }
-         else if (m_unitName.compare("Litre") == 0 || m_unitName.compare("m3") == 0)
-         {
+            break;
+         case litre:
+         case m3:
             m_pulseVolume = boost::make_shared<yApi::historization::CVolume>(keywordName,
                                                                              yApi::EKeywordAccessMode::kGet);
             keywordsToDeclare.push_back(m_pulseVolume);
-         }
-         else
-         {
+            break;
+         default:
             YADOMS_LOG(information) << "No keywords created for pulse equipments";
+            break;
          }
       }
 
       void CPulse::updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                       const std::string& unitName)
+                                       const EUnit unitName)
       {
          std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
 
-         if (m_unitName.compare("Wh") == 0 || m_unitName.compare("KWh") == 0)
+         switch (unitName)
          {
+         case Wh:
+         case KWh:
             if (!m_pulseEnergy)
             {
                if (m_pulseVolume)
                {
-                  YADOMS_LOG(trace) << m_pulseVolume->getKeyword() << " removed.";
+                  YADOMS_LOG(trace) << m_pulseVolume->getKeyword() << " removed";
                   api->removeKeyword(m_deviceName, m_keywordName);
                   m_pulseVolume.reset();
                }
 
-               m_pulseEnergy = boost::make_shared<yApi::historization::CEnergyDouble>(m_keywordName,
-                                                                                      yApi::EKeywordAccessMode::kGet);
+               m_pulseEnergy = boost::make_shared<yApi::historization::CEnergy>(m_keywordName,
+                                                                                yApi::EKeywordAccessMode::kGet);
 
                keywordsToDeclare.push_back(m_pulseEnergy);
             }
-         }
-         else if (m_unitName.compare("Litre") == 0 || m_unitName.compare("m3") == 0)
-         {
+            break;
+         case litre:
+         case m3:
             if (!m_pulseVolume)
             {
                if (m_pulseEnergy)
                {
-                  YADOMS_LOG(trace) << m_pulseEnergy->getKeyword() << " removed.";
+                  YADOMS_LOG(trace) << m_pulseEnergy->getKeyword() << " removed";
                   api->removeKeyword(m_deviceName, m_keywordName);
                   m_pulseEnergy.reset();
                }
@@ -76,6 +80,10 @@ namespace equipments
                m_pulseVolume = boost::make_shared<yApi::historization::CVolume>(m_keywordName,
                                                                                 yApi::EKeywordAccessMode::kGet);
             }
+            break;
+         default:
+            //TODO : Mettre ne place une erreur
+            break;
          }
 
          api->declareKeywords(m_deviceName, keywordsToDeclare);
@@ -83,32 +91,37 @@ namespace equipments
 
       void CPulse::updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                     std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
-                                    const std::string& unitName,
+                                    const EUnit unitName,
                                     const double& total)
       {
          if (m_unitName != unitName)
             updateConfiguration(api, unitName);
 
-         if (m_unitName.compare("Wh") == 0 || m_unitName.compare("KWh") == 0)
+         switch (unitName)
          {
-            m_pulseEnergy->set(total);
+         case Wh:
+            m_pulseEnergy->set(boost::lexical_cast<Poco::Int64>(total));
             keywordsToHistorize.push_back(m_pulseEnergy);
-            YADOMS_LOG(trace) << m_pulseEnergy->getKeyword() << " set to " << total;
-         }
-         else if (m_unitName.compare("Litre") == 0 || m_unitName.compare("m3") == 0)
-         {
-            //double totalValue = 0;
-            //boost::regex regtotal("([+-]?([0-9]*[.])?[0-9]+) (.+)");  // TODO : to be checked
-
-            //boost::smatch match;
-            //if (boost::regex_search(total, match, regtotal))
-            //{
-            //   totalValue = boost::lexical_cast<double>(match[1]);
-            //}
-
+            YADOMS_LOG(trace) << m_pulseEnergy->getKeyword() << " set to " << total << "Wh";
+            break;
+         case KWh:
+            m_pulseEnergy->set(boost::lexical_cast<Poco::Int64>(total*1000));
+            keywordsToHistorize.push_back(m_pulseEnergy);
+            YADOMS_LOG(trace) << m_pulseEnergy->getKeyword() << " set to " << total << "Kwh";
+            break;
+         case litre:
+            m_pulseVolume->set(total/1000);
+            keywordsToHistorize.push_back(m_pulseVolume);
+            YADOMS_LOG(trace) << m_pulseVolume->getKeyword() << " set to " << total << "liter";
+            break;
+         case m3:
             m_pulseVolume->set(total);
             keywordsToHistorize.push_back(m_pulseVolume);
-            YADOMS_LOG(trace) << m_pulseVolume->getKeyword() << " set to " << total;
+            YADOMS_LOG(trace) << m_pulseVolume->getKeyword() << " set to " << total << "m3";
+            break;
+         default:
+            // TODO : Mettre un message d'erreur
+            break;
          }
       }
 

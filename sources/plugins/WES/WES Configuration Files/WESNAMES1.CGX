@@ -21,8 +21,8 @@ c Pn2 <html><id>nPCE2</id><value>%s</value></html>
 c pn1 <text><id>npls1</id><value>%s</value></text>
 c pn2 <text><id>npls2</id><value>%s</value></text>
 #UNITES COMPTEURS IMPULSIONNELS
-c po1 <java><var>PLSU1</var><value>%s</value></java>
-c po2 <java><var>PLSU2</var><value>%s</value></java>
+c GpU1 <java><var>PLSU1</var><value>%d</value></java>
+c GpU2 <java><var>PLSU2</var><value>%d</value></java>
 # RELAIS
 c o n0 <bssw><id>RL1</id><value>%s</value></bssw>
 c o n1 <bssw><id>RL2</id><value>%s</value></bssw>

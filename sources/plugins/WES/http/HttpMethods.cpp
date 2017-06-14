@@ -92,6 +92,7 @@ namespace http
       {
          auto message = (boost::format("Fail to send get http request \"%1%\" : %2%") % url % e.message()).str();
          YADOMS_LOG(error) << "e.message() : " << e.message();
+         YADOMS_LOG(error) << "e.message().size() : " << e.message().size();
          YADOMS_LOG(error) << "e.what() : " << e.what();
          YADOMS_LOG(error) << message;
          if (boost::contains(e.what(),"Timeout"))

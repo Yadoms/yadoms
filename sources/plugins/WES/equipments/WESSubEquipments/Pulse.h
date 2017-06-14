@@ -10,6 +10,17 @@ namespace equipments
    namespace subdevices
    {
       //-----------------------------------------------------
+      ///\brief list of units available
+      //-----------------------------------------------------
+      typedef enum {
+         undefined,
+         litre,
+         m3,
+         Wh,
+         KWh
+      } EUnit;
+
+      //-----------------------------------------------------
       ///\brief WES equipment
       //-----------------------------------------------------
       class CPulse
@@ -27,7 +38,7 @@ namespace equipments
                 std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToDeclare,
                 const std::string& deviceName,
                 const std::string& keywordName,
-                const std::string& unitName);
+                const EUnit unitName);
 
          //-----------------------------------------------------
          ///\brief                                      updateFromDevice
@@ -38,7 +49,7 @@ namespace equipments
          //-----------------------------------------------------
          void updateFromDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> >& keywordsToHistorize,
-                               const std::string& unitName,
+                               const EUnit unitName,
                                const double& totalValue
          );
 
@@ -48,7 +59,7 @@ namespace equipments
          ///\param[in] unitName                        the unit used
          //-----------------------------------------------------
          void updateConfiguration(boost::shared_ptr<yApi::IYPluginApi> api,
-                                  const std::string& unitName);
+                                  const EUnit unitName);
 
          //-----------------------------------------------------
          ///\brief                     get the device name
@@ -86,12 +97,12 @@ namespace equipments
          //-----------------------------------------------------
          ///\brief                     The contract name
          //-----------------------------------------------------
-         std::string m_unitName;
+         EUnit m_unitName;
 
          //--------------------------------------------------------------
          /// \brief  Main keywords
          //--------------------------------------------------------------
-         boost::shared_ptr<yApi::historization::CEnergyDouble> m_pulseEnergy;
+         boost::shared_ptr<yApi::historization::CEnergy> m_pulseEnergy;
          boost::shared_ptr<yApi::historization::CVolume> m_pulseVolume;
       };
    }

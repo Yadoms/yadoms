@@ -73,7 +73,7 @@ namespace equipments
                                                                                                                      keywordsToDeclare,
                                                                                                                      m_deviceName,
                                                                                                                      pulseContainerName.get<std::string>("P" + boost::lexical_cast<std::string>(counter)),
-                                                                                                                     pulseContainerName.get<std::string>("P" + boost::lexical_cast<std::string>(counter)));
+                                                                                                                     pulseContainerName.get<equipments::subdevices::EUnit>("T" + boost::lexical_cast<std::string>(counter)));
          m_PulseList.push_back(temp);
       }
 
@@ -112,7 +112,7 @@ namespace equipments
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
       std::string relayName[2], TICName[2], ClampName[4], AnalogName[4], inputName[2];
       equipments::subdevices::ContractAvailable contract[2];
-      std::string PulseType[4];
+      equipments::subdevices::EUnit PulseType[4];
       std::string PulseName[4];
       std::string counterId[2];
 
@@ -186,10 +186,10 @@ namespace equipments
             PulseName[2] = results.get<std::string>("npls3");
             PulseName[3] = results.get<std::string>("npls4");
 
-            PulseType[0] = results.get<std::string>("PLSU1");
-            PulseType[1] = results.get<std::string>("PLSU2");
-            PulseType[2] = results.get<std::string>("PLSU3");
-            PulseType[3] = results.get<std::string>("PLSU4");
+            PulseType[0] = results.get<equipments::subdevices::EUnit>("PLSU1");
+            PulseType[1] = results.get<equipments::subdevices::EUnit>("PLSU2");
+            PulseType[2] = results.get<equipments::subdevices::EUnit>("PLSU3");
+            PulseType[3] = results.get<equipments::subdevices::EUnit>("PLSU4");
          }
          else  // Defaults names
          {
@@ -222,10 +222,10 @@ namespace equipments
             PulseName[2] = "pls3";
             PulseName[3] = "pls4";
 
-            PulseType[0] = "ND";
-            PulseType[1] = "ND";
-            PulseType[2] = "ND";
-            PulseType[3] = "ND";
+            PulseType[0] = equipments::subdevices::EUnit::undefined;
+            PulseType[1] = equipments::subdevices::EUnit::undefined;
+            PulseType[2] = equipments::subdevices::EUnit::undefined;
+            PulseType[3] = equipments::subdevices::EUnit::undefined;
          }
 
          // Relay Configuration
@@ -381,6 +381,8 @@ namespace equipments
                                                                     credentials,
                                                                     CGXfileName);
 
+         results.printToLog(YADOMS_LOG(information)); //TODO : A basculer en trace
+
          // Reading relays - historize only on change value or when the historization is forced (initialization, for example)      
          try {
             updateSwitchValue(keywordsToHistorize, m_relaysList[0], results.get<bool>("RL1"), forceHistorization);
@@ -388,7 +390,7 @@ namespace equipments
          }
          catch (std::exception& e)
          {
-            YADOMS_LOG(warning) << e.what();
+            YADOMS_LOG(warning) << "Exception reading relays" << e.what();
          }
 
          try {
@@ -397,7 +399,7 @@ namespace equipments
          }
          catch (std::exception& e)
          {
-            YADOMS_LOG(warning) << e.what();
+            YADOMS_LOG(warning) << "Exception reading inputs" << e.what();
          }
 
          //Reading clamp values
@@ -410,7 +412,7 @@ namespace equipments
             }
             catch (std::exception& e)
             {
-               YADOMS_LOG(warning) << e.what();
+               YADOMS_LOG(warning) << "Error reading clamp " << "WHPC" + boost::lexical_cast<std::string>(counter + 1) + "_val" << e.what();
             }
          }
 
@@ -420,12 +422,12 @@ namespace equipments
             try {
                m_PulseList[counter]->updateFromDevice(api,
                                                       keywordsToHistorize,
-                                                      results.get<std::string>("PLSU" + boost::lexical_cast<std::string>(counter + 1)),
+                                                      results.get<equipments::subdevices::EUnit>("PLSU" + boost::lexical_cast<std::string>(counter + 1)),
                                                       results.get<double>("actuel" + boost::lexical_cast<std::string>(counter + 1) + "_val"));
             }
             catch (std::exception& e)
             {
-               YADOMS_LOG(warning) << e.what();
+               YADOMS_LOG(warning) << "Error reading pulse " << "actuel" + boost::lexical_cast<std::string>(counter + 1) + "_val :" << e.what();
             }
          }
 
@@ -438,7 +440,7 @@ namespace equipments
             }
             catch (std::exception& e)
             {
-               YADOMS_LOG(warning) << e.what();
+               YADOMS_LOG(warning) << "Exception reading analog " << "ad" + boost::lexical_cast<std::string>(counter + 1) << e.what();
             }
          }
 
@@ -446,6 +448,7 @@ namespace equipments
          api->historizeData(m_deviceName, keywordsToHistorize);
 
          // TIC Counters Values -> independant from the others keywords
+         // TODO : Faire la correction de la conversion EColor
          for (int counter = 0; counter < m_WESIOMapping.ticQty; ++counter)
          {
             m_TICList[counter]->updateFromDevice(api,
@@ -460,7 +463,7 @@ namespace equipments
                                                  results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_4"),
                                                  results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_5"),
                                                  results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_6"),
-                                                 results.get<specificHistorizers::EColor>("DEMAIN_" + boost::lexical_cast<std::string>(counter + 1)));
+                                                 specificHistorizers::EColor::kNOTDEFINED/*results.get<specificHistorizers::EColor>("DEMAIN_" + boost::lexical_cast<std::string>(counter + 1))*/);
          }
       }
       catch (CTimeOutException&)

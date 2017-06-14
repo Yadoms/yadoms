@@ -42,15 +42,15 @@ c P W2 <html><id>WHPC2_val</id><value>%d</value></html>
 c P W3 <html><id>WHPC3_val</id><value>%d</value></html>
 c P W4 <html><id>WHPC4_val</id><value>%d</value></html>
 # COMPTEURS IMPULSIONNELS
-c pIU1<text><id>actuel1_val</id><value>%.0f</value></text>
-c pIU2<text><id>actuel2_val</id><value>%.0f</value></text>
-c pIU3<text><id>actuel3_val</id><value>%.0f</value></text>
-c pIU4<text><id>actuel4_val</id><value>%.0f</value></text>
+c pIU1<text><id>actuel1_val</id><value>%f</value></text>
+c pIU2<text><id>actuel2_val</id><value>%f</value></text>
+c pIU3<text><id>actuel3_val</id><value>%f</value></text>
+c pIU4<text><id>actuel4_val</id><value>%f</value></text>
 #UNITES COMPTEURS IMPULSIONNELS
-c po1 <java><var>PLSU1</var><value>%s</value></java>
-c po2 <java><var>PLSU2</var><value>%s</value></java>
-c po3 <java><var>PLSU3</var><value>%s</value></java>
-c po4 <java><var>PLSU4</var><value>%s</value></java>
+c GpU1 <java><var>PLSU1</var><value>%d</value></java>
+c GpU2 <java><var>PLSU2</var><value>%d</value></java>
+c GpU3 <java><var>PLSU3</var><value>%d</value></java>
+c GpU4 <java><var>PLSU4</var><value>%d</value></java>
 # RELAIS
 c o E1 <bssw><id>RL1</id><value>%d</value></bssw>
 c o E2 <bssw><id>RL2</id><value>%d</value></bssw>
