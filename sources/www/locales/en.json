@@ -247,7 +247,7 @@
       "friendlyName-configuration": {
         "name": "Name",
         "description": "Friendly name of your keyword",
-        "regexErrorMessage": "The name of the keyword must contains at least one character"
+        "regexErrorMessage": "The name of the keyword must contain at least one character"
       }
     },
     "set-value-keyword": {
@@ -262,7 +262,15 @@
       "friendlyName-configuration": {
         "name": "Name",
         "description": "Friendly name of your device",
-        "regexErrorMessage": "The name of the device must contains at least one character"
+        "regexErrorMessage": "The name of the device must contain at least one character"
+      }
+    },
+    "virtual-device-configure": {
+      "title": "Create a virtual device",
+      "friendlyName-configuration": {
+        "name": "Name",
+        "description": "Friendly name of your virtual device",
+        "regexErrorMessage": "The name of the virutal device must contain at least one character"
       }
     },
     "new-automation-rule": {

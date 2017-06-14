@@ -225,7 +225,7 @@
    }
 
    function updateDeviceConfiguration(device) {
-      //device represent the device concerned
+      //device represents the device concerned
       //we just ask for the friendly name
       Yadoms.modals.deviceConfigure.loadAsync()
          .done(function () {
@@ -495,15 +495,12 @@
       Yadoms.modals.deviceAddManually.loadAsync()
       .done(function () {
          Yadoms.askPluginTypesForManuallyDeviceCreation(function (pi) {
-            //we get package.json
-            PluginInstanceManager.downloadPackage(pi).done(function () {
-               //we ask for configuration modal async
-               Yadoms.modals.deviceConfigureManually.loadAsync()
+            if (PluginInstanceManager.isSystemCategory(pi)) {
+               debugger;
+               Yadoms.modals.virtualDeviceConfigure.loadAsync()
                .done(function () {
-                  //we launch configureInstance GUI
-                   Yadoms.showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration) {
-                       //we ask for manually device creation
-                       PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
+                   Yadoms.showVirtualDeviceConfigurationModal(pi, function (newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration) {
+                     PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
                      .done(function () {
                         refreshDeviceList();
                      })
@@ -512,7 +509,26 @@
                      });
                   });
                });
-            });
+            } else {
+               //we get package.json
+               PluginInstanceManager.downloadPackage(pi).done(function () {
+                  //we ask for configuration modal async
+                  Yadoms.modals.deviceConfigureManually.loadAsync()
+                  .done(function () {
+                     //we launch configureInstance GUI
+                      Yadoms.showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration) {
+                          //we ask for manually device creation
+                          PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
+                        .done(function () {
+                           refreshDeviceList();
+                        })
+                        .fail(function (error) {
+                           notifyError($.t("objects.pluginInstance.errorCreatingManuallyDevice", { deviceName: newDeviceName }), error);
+                        });
+                     });
+                  });
+               });
+            }
          });         
       });
    }

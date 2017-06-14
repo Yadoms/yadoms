@@ -265,6 +265,14 @@
         "regexErrorMessage": "Le nom de l'équipement doit contenir au minimum 1 caractère"
       }
     },
+    "virtual-device-configure": {
+      "title": "Créer un équipement virtuel",
+      "friendlyName-configuration": {
+        "name": "Nom",
+        "description": "Nom de l'équipement virtuel",
+        "regexErrorMessage": "Le nom de l'équipement virtuel doit contenir au minimum 1 caractère"
+      }
+    },
     "new-automation-rule": {
       "title": "Création d'une règle d'automatisation",
       "newRule": "Creer une règle",

@@ -1,0 +1,135 @@
+<!--Configure device Modal -->
+<div class="modal fade" id="virtual-device-configure-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form class="form-horizontal" novalidate>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" data-i18n="modals.virtual-device-configure.title"></h4>
+                </div>
+                <div class="modal-body form-group">
+                    <!--configuration will be inserted here-->
+                </div>
+                <div class="modal-footer">
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
+                        <button type="submit" id="btn-confirm-configure-device" class="btn btn-primary" data-i18n="common.ok"></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+//TODO vérifier si les paramètres sont utiles
+   Yadoms.showVirtualDeviceConfigurationModal = function (pluginInstance, callback) {
+      assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
+      assert($.isFunction(callback), "callback must be defined");
+        
+        
+      var $modalBody = $("div#virtual-device-configure-modal.modal-body");
+      $modalBody.empty();
+      
+      //we append the common parameters section
+      var friendlyNameParameter = new StringParameterHandler("modals.virtual-device-configure.", undefined, "friendlyName-configuration", { required: "true" }, "");
+      $modalBody.append(friendlyNameParameter.getDOMObject());
+      var modelParameter = new StringParameterHandler("modals.configure-device.", undefined, "model-configuration", { required: false }, "");
+      $modalBody.append(modelParameter.getDOMObject()); 
+
+      //fix additional sub modals input (like icon picker search box)
+      $('div#virtual-device-configure-modal').on('shown.bs.modal', function (e) { $(document).off('focusin.modal'); });
+
+      //we display the modal
+      $('div#virtual-device-configure-modal').modal({ backdrop: 'static' });    
+        
+      <!-- var tmp = {  -->
+         <!-- type: -->
+         <!-- { -->
+            <!-- type: "comboSection",  -->
+            <!-- name: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.title", { defaultValue: $.t("configuration.manually-device-model.title") }),  -->
+            <!-- name: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.description", { defaultValue: $.t("configuration.manually-device-model.description") }),  -->
+            <!-- content : {} -->
+         <!-- } -->
+      <!-- }; -->
+      <!-- for (var k in schema){ -->
+         <!-- if (schema.hasOwnProperty(k)) { -->
+            <!-- for(var typeName in schema[k].types) { -->
+               <!-- if(schema[k].types[typeName].canBeCreatedManually == "true") { -->
+                  <!-- tmp.type.content[typeName] = { -->
+                     <!-- type: "section", -->
+                     <!-- name: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".types." + typeName + ".title", { defaultValue: typeName}), -->
+                     <!-- description: $.t("plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas." + k + ".types." + typeName + ".description", { defaultValue: ""}), -->
+                     <!-- content: schema[k].content, -->
+                     <!-- i18nBasePath: "plugins/" + self.type + ":deviceConfiguration.staticConfigurationSchema.schemas.", -->
+                     <!-- i18nKey: k -->
+                  <!-- }; -->
+               <!-- } -->
+            <!-- } -->
+         <!-- } -->
+      <!-- } -->
+
+        <!-- pluginInstance.getBoundManuallyDeviceCreationConfigurationSchema() -->
+           <!-- .done(function (configurationSchema) { -->
+               <!-- var $modalBody = $("div#virtual-device-configure-modal.modal-body"); -->
+               <!-- $modalBody.empty(); -->
+
+               <!-- //we append the common parameters section -->
+               <!-- var friendlyNameParameter = new StringParameterHandler("modals.virtual-device-configure.", undefined, "friendlyName-configuration", { required: "true" }, ""); -->
+               <!-- $modalBody.append(friendlyNameParameter.getDOMObject()); -->
+               <!-- var modelParameter = new StringParameterHandler("modals.configure-device.", undefined, "model-configuration", { required: false }, ""); -->
+               <!-- $modalBody.append(modelParameter.getDOMObject());      -->
+               
+               <!-- //we finish parmeters instantiation -->
+               <!-- if ($.isFunction(friendlyNameParameter.applyScript)) -->
+                   <!-- friendlyNameParameter.applyScript(); -->
+               <!-- if ($.isFunction(modelParameter.applyScript)) -->
+                   <!-- modelParameter.applyScript(); -->
+                   
+               <!-- //we append classic configuration -->
+               <!-- var configMgr = new ConfigurationControlManager(configurationSchema, undefined, "plugins/" + pluginInstance.type + ":deviceConfiguration.staticConfigurationSchema.schemas.", $modalBody); -->
+
+               <!-- //i18n -->
+               <!-- $modalBody.i18n(); -->
+               
+               <!-- //finalize treatments (ie sort items after trnaslation) -->
+               <!-- configMgr.afterI18n(); -->
+
+               <!-- //validation form -->
+               <!-- //erase previous jqBootstrapValidation -->
+               <!-- $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({ -->
+                   <!-- preventSubmit: true, -->
+                   <!-- submitError: function ($form, event, errors) { -->
+                       <!-- console.warn("Unable to validate form: " + errors); -->
+                   <!-- }, -->
+                   <!-- submitSuccess: function ($form, event) { -->
+                       <!-- event.preventDefault(); -->
+                       
+                        <!-- friendlyNameParameter.getCurrentConfiguration() -->
+                        <!-- .done(function(deviceName) { -->
+                           <!-- modelParameter.getCurrentConfiguration() -->
+                           <!-- .done(function(deviceModel) { -->
+                              <!-- configMgr.getCurrentConfiguration() -->
+                              <!-- .done(function(config) { -->
+                                 <!-- var deviceType = config.type.activeSection; -->
+                                 <!-- var deviceConfiguration = _.get(config.type.content, [deviceType, 'content']); -->
+                                 <!-- $("div#virtual-device-configure-modal").modal("hide"); -->
+                                 <!-- callback(deviceName, deviceModel, deviceType, deviceConfiguration); -->
+                              <!-- }); -->
+                           <!-- }); -->
+                        <!-- }); -->
+                   <!-- }, -->
+                   <!-- filter: function () { -->
+                       <!-- //we check only control that have class enable-validation and are visible -->
+                       <!-- return $(this).is(".enable-validation") && $(this).is(":visible"); -->
+                   <!-- } -->
+               <!-- }); -->
+
+               <!-- //fix additional sub modals input (like icon picker search box) -->
+               <!-- $('div#virtual-device-configure-modal').on('shown.bs.modal', function (e) { $(document).off('focusin.modal'); }); -->
+
+               <!-- //we display the modal -->
+               <!-- $('div#virtual-device-configure-modal').modal({ backdrop: 'static' }); -->
+           <!-- }); -->
+    };
+</script>

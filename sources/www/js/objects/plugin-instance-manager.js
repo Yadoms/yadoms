@@ -272,7 +272,8 @@ PluginInstanceManager.getVirtualDevicesSupportedCapacities= function () {
 };
 
 
-PluginInstanceManager.buildVirtualDevicePackage=function () {
+//TODO à virer
+PluginInstanceManager.buildVirtualDevicePackage= function () {
    
 	var d = $.Deferred();
    
@@ -334,9 +335,9 @@ PluginInstanceManager.downloadPackage = function (pluginInstance) {
 
    var d = new $.Deferred();
 
-   if (!pluginInstance.package) {
-      if (!pluginInstance.isSystemCategory()) {
-         RestEngine.getJson("plugins/" + pluginInstance.type + "/package.json")
+   //we can't download package from system plugins
+   if (!pluginInstance.isSystemCategory() && !pluginInstance.package) {
+      RestEngine.getJson("plugins/" + pluginInstance.type + "/package.json")
          .done(function (data) {
             pluginInstance.package = data;
 
@@ -350,24 +351,6 @@ PluginInstanceManager.downloadPackage = function (pluginInstance) {
             d.resolve();
          })
          .fail(d.reject);
-      }
-      else if (pluginInstance.type === 'system') {
-         PluginInstanceManager.buildVirtualDevicePackage()
-         .done(function (pkg) {
-            pluginInstance.package = pkg;
-            
-            //we manage i18n
-            i18n.options.resGetPath = '__ns__/locales/__lng__.json';
-            i18n.loadNamespace("plugins/" + pluginInstance.type);
-
-            //we restore the resGetPath
-            i18n.options.resGetPath = "locales/__lng__.json";
-
-            d.resolve();
-         })
-      } else {
-         d.resolve();
-      }
    } else {
       d.resolve();
    }

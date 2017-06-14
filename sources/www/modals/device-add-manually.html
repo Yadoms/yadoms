@@ -33,6 +33,7 @@
     */
    Yadoms.askPluginTypesForManuallyDeviceCreation = function(callback) {
       assert($.isFunction(callback), "callback must be defined");
+      debugger;
 
       PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation()
          .done(function(list) {
