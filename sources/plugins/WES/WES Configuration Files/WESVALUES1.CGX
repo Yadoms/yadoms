@@ -18,6 +18,8 @@ c Ti3 <html><id>CPT1_INDEX_3</id><value>%09d</value></html>
 c Ti4 <html><id>CPT1_INDEX_4</id><value>%09d</value></html>
 c Ti5 <html><id>CPT1_INDEX_5</id><value>%09d</value></html>
 c Ti6 <html><id>CPT1_INDEX_6</id><value>%09d</value></html>
+c Tp1 <html><id>DEMAIN_1</id><value>%d</value></html>
+c Tp2 <html><id>DEMAIN_2</id><value>%d</value></html>
 # COMPTEUR 2
 c e A <html><id>CPT2_adco</id><value>%s</value></html>
 c TP2 <html><id>CPT2_PTarif</id><value>%d</value></html>

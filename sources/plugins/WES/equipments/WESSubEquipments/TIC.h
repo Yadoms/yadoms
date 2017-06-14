@@ -2,6 +2,7 @@
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "../specificHistorizers/Period.h"
+#include "../specificHistorizers/Color.h"
 #include "../specificHistorizers/TeleInfoStatus.h"
 #include "../specificHistorizers/deviceStatus.h"
 
@@ -68,7 +69,8 @@ namespace equipments
                                const Poco::Int64& counter3,
                                const Poco::Int64& counter4,
                                const Poco::Int64& counter5,
-                               const Poco::Int64& counter6);
+                               const Poco::Int64& counter6,
+                               const specificHistorizers::EColor newColor);
 
          //-----------------------------------------------------
          ///\brief                     remove
@@ -152,6 +154,7 @@ namespace equipments
          boost::shared_ptr<yApi::historization::CEnergy> m_tempoWhiteDaysNormalCostPeriod;
          boost::shared_ptr<yApi::historization::CApparentPower> m_apparentPower;
          boost::shared_ptr<specificHistorizers::CPeriod> m_TimePeriod;
+         boost::shared_ptr<specificHistorizers::CColor> m_Color;
 
          //--------------------------------------------------------------
          /// \brief	TeleInfo Status

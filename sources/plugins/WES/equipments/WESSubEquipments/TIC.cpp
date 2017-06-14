@@ -27,7 +27,8 @@ namespace equipments
          m_apparentPower(boost::make_shared<yApi::historization::CApparentPower>("ApparentPower")),
          m_TimePeriod(boost::make_shared<specificHistorizers::CPeriod>("RunningPeriod")),
          m_teleInfoStatus(boost::make_shared<specificHistorizers::CTeleInfoStatus>("TeleInfoStatus")),
-         m_deviceStatus(boost::make_shared<specificHistorizers::CdeviceStatus>("DeviceStatus"))
+         m_deviceStatus(boost::make_shared<specificHistorizers::CdeviceStatus>("DeviceStatus")),
+         m_Color(boost::make_shared<specificHistorizers::CColor>("Tomorrow"))
       {
          initializeTIC(api, counterId);
       }
@@ -72,6 +73,7 @@ namespace equipments
             m_teleInfoStatus->set(specificHistorizers::EWESTeleInfoStatus::kOk);
             m_keywords.push_back(m_apparentPower);
             m_keywords.push_back(m_TimePeriod);
+            m_keywords.push_back(m_Color);
             break;
          case BT4SUP36:
             break;
@@ -103,7 +105,8 @@ namespace equipments
                                   const Poco::Int64& counter3,
                                   const Poco::Int64& counter4,
                                   const Poco::Int64& counter5,
-                                  const Poco::Int64& counter6)
+                                  const Poco::Int64& counter6,
+                                  const specificHistorizers::EColor newColor)
       {
          m_deviceStatus->set(newState);
 
@@ -141,6 +144,10 @@ namespace equipments
             m_tempoWhiteDaysLowCostPeriod->set(counter5);
             m_tempoWhiteDaysNormalCostPeriod->set(counter6);
             setPeriodTime(timePeriod);
+
+            if (m_Color->get() != newColor)
+               m_Color->set(newColor);
+
             break;
          case BT4SUP36:
             break;

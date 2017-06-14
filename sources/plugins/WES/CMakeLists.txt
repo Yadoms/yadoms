@@ -29,12 +29,14 @@ set(WES_PLUGIN_SOURCES
    equipments/noInformationException.hpp
    equipments/specificHistorizers/Analog.cpp
    equipments/specificHistorizers/Analog.h
+   equipments/specificHistorizers/Color.cpp
+   equipments/specificHistorizers/Color.h
+   equipments/specificHistorizers/deviceStatus.cpp
+   equipments/specificHistorizers/deviceStatus.h
    equipments/specificHistorizers/Period.cpp
    equipments/specificHistorizers/Period.h
    equipments/specificHistorizers/TeleInfoStatus.cpp
    equipments/specificHistorizers/TeleInfoStatus.h
-   equipments/specificHistorizers/deviceStatus.cpp
-   equipments/specificHistorizers/deviceStatus.h
    equipments/WESSubEquipments/Clamp.cpp
    equipments/WESSubEquipments/Clamp.h
    equipments/WESSubEquipments/Pulse.cpp

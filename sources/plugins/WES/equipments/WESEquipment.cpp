@@ -5,6 +5,7 @@
 #include "../urlManager.h"
 #include <shared/Log.h>
 #include "../http/timeOutException.hpp"
+#include "specificHistorizers/Color.h"
 
 namespace equipments
 {
@@ -458,7 +459,8 @@ namespace equipments
                                                  results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_3"),
                                                  results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_4"),
                                                  results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_5"),
-                                                 results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_6"));
+                                                 results.get<Poco::Int64>("CPT" + boost::lexical_cast<std::string>(counter + 1) + "_INDEX_6"),
+                                                 results.get<specificHistorizers::EColor>("DEMAIN_" + boost::lexical_cast<std::string>(counter + 1)));
          }
       }
       catch (CTimeOutException&)
