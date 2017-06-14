@@ -12,7 +12,7 @@ namespace shared
          namespace historization
          {
             //-----------------------------------------------------
-            ///\brief A rssi (signal strength) historizable object
+            ///\brief A rssi (dBm) historizable object
             ///\note Rssi value is read-only
             //-----------------------------------------------------
             class YADOMS_SHARED_EXPORT CRssi : public CSingleHistorizableData<double>

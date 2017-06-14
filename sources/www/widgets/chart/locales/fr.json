@@ -20,15 +20,21 @@
 				"YEAR": "1 an"
 			}
 		},
-      "legendLabels" : {
-         "name": "Construction des noms des axes",
-         "description": "Légende des axes",
-         "values": {
-            "DeviceAndKeyword": "Nom de l'équipement + nom de la donnée",
-            "Device": "Nom de l'équipement",
-            "Keyword": "Nom de la donnée"
+      "legends" : {
+         "name": "Légendes des courbes",
+         "description": "",
+         "content": {        
+            "legendLabels" : {
+               "name": "Construction des noms des axes",
+               "description": "Légende des axes",
+               "values": {
+                  "DeviceAndKeyword": "Nom de l'équipement + nom de la donnée",
+                  "Device": "Nom de l'équipement",
+                  "Keyword": "Nom de la donnée"
+               }
+            }
          }
-      },      
+      },       
 		"oneAxis": {
 			"name": "1 axe pour toutes les séries de données",
 			"description": "Permet de mettre l'ensemble des séries sur un seul et même axe. Cette option permet ainsi de comparer des données à la même échelle.",
