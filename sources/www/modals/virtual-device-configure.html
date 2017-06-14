@@ -26,23 +26,45 @@
    Yadoms.showVirtualDeviceConfigurationModal = function (pluginInstance, callback) {
       assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
       assert($.isFunction(callback), "callback must be defined");
-        
-        
-      var $modalBody = $("div#virtual-device-configure-modal.modal-body");
-      $modalBody.empty();
       
-      //we append the common parameters section
-      var friendlyNameParameter = new StringParameterHandler("modals.virtual-device-configure.", undefined, "friendlyName-configuration", { required: "true" }, "");
-      $modalBody.append(friendlyNameParameter.getDOMObject());
-      var modelParameter = new StringParameterHandler("modals.configure-device.", undefined, "model-configuration", { required: false }, "");
-      $modalBody.append(modelParameter.getDOMObject()); 
+      buildVirtualDeviceConfigurationSchema()
+      .done(function (configurationSchema) {
+      
+         var $modalBody = $("div#virtual-device-configure-modal .modal-body");
+         $modalBody.empty();
+         
+         //we append the common parameters section
+         var friendlyNameParameter = new StringParameterHandler("modals.virtual-device-configure.", undefined, "friendlyName-configuration", { required: "true" }, "");
+         $modalBody.append(friendlyNameParameter.getDOMObject());
+         var modelParameter = new StringParameterHandler("modals.virtual-device-configure.", undefined, "model-configuration", { required: false }, "");
+         $modalBody.append(modelParameter.getDOMObject());
+         
+         //we finish parmeters instantiation
+         if ($.isFunction(friendlyNameParameter.applyScript))
+            friendlyNameParameter.applyScript();
+         if ($.isFunction(modelParameter.applyScript))
+            modelParameter.applyScript();
+            
+         //we append classic configuration
+         debugger;
+         var configMgr = new ConfigurationControlManager(configurationSchema, undefined, "modals.virtual-device-configure.schema.", $modalBody);
 
-      //fix additional sub modals input (like icon picker search box)
-      $('div#virtual-device-configure-modal').on('shown.bs.modal', function (e) { $(document).off('focusin.modal'); });
+         //i18n
+         $modalBody.i18n();
+         
+         //finalize treatments (ie sort items after trnaslation)
+         configMgr.afterI18n();
 
-      //we display the modal
-      $('div#virtual-device-configure-modal').modal({ backdrop: 'static' });    
+         
+         //fix additional sub modals input (like icon picker search box)
+         $('div#virtual-device-configure-modal').on('shown.bs.modal', function (e) { $(document).off('focusin.modal'); });
+
+         //we display the modal
+         $('div#virtual-device-configure-modal').modal({ backdrop: 'static' });    
+      });
         
+
+        //TOPO ménage
       <!-- var tmp = {  -->
          <!-- type: -->
          <!-- { -->
@@ -131,5 +153,54 @@
                <!-- //we display the modal -->
                <!-- $('div#virtual-device-configure-modal').modal({ backdrop: 'static' }); -->
            <!-- }); -->
-    };
+   };
+    
+    
+   buildVirtualDeviceConfigurationSchema= function () {
+      
+      var d = $.Deferred();
+      
+      PluginInstanceManager.getVirtualDevicesSupportedCapacities()
+      .done(function (capacities) {      
+      
+         schema = {
+            capacity: {
+               type: 'radioSection',
+               content: {
+                  standardCapacity: {                  
+                     type: 'section',
+                     content: {
+                        capacity: {
+                           type: 'enum',
+                           sort : 'true',
+                           values: {}
+                        }
+                     }
+                  },
+                  customEnumCapacity: {                  
+                     type: 'section',
+                     content: {
+                        valueList: {
+                           type: 'string',
+                           defaultValue: 'on,off'
+                        }
+                     }
+                  }
+               }
+            }
+         }
+         
+         for (var cap in capacities.capacities) {
+            schema.capacity.content.standardCapacity.content.capacity.values[cap] = cap;
+         }
+      
+         d.resolve(schema);
+      })
+      .fail(function (error) {
+         console.error("Fail to get virtual devices supported capacities ");
+         d.reject();
+      });
+      
+      return d.promise();
+   };    
 </script>

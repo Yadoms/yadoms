@@ -272,59 +272,6 @@ PluginInstanceManager.getVirtualDevicesSupportedCapacities= function () {
 };
 
 
-//TODO à virer
-PluginInstanceManager.buildVirtualDevicePackage= function () {
-   
-	var d = $.Deferred();
-   
-   PluginInstanceManager.getVirtualDevicesSupportedCapacities()
-   .done(function (capacities) {      
-   
-      pkg = {
-         type: 'system',
-         supportManuallyDeviceCreation: 'true',
-         deviceConfiguration: {
-            staticConfigurationSchema: {
-               schemas: {
-                  virtualDevice: {
-                     types: {
-                        virtualDeviceType: {
-                           canBeCreatedManually: 'true'
-                           }
-                        },
-                     content: {
-                        capacity: {
-                           type: 'enum',
-                           sort : 'true',
-                           values: {}
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
-      
-      for (var cap in capacities.capacities) {
-         pkg.deviceConfiguration.staticConfigurationSchema.schemas.virtualDevice.content.capacity.values[cap] = cap;
-      }
-   
-      d.resolve(pkg);
-   })
-   .fail(function (error) {
-      console.error("Fail to get virtual devices supported capacities ");      
-   
-      pkg = {
-         type: 'system',
-         supportManuallyDeviceCreation: 'false'
-      }
-      d.resolve(pkg);
-   });
-   
-   return d.promise();
-};
-
-
 /**
  * Download a plugin package for an instance
  * @param pluginInstance The plugin instance

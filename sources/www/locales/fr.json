@@ -271,6 +271,38 @@
         "name": "Nom",
         "description": "Nom de l'équipement virtuel",
         "regexErrorMessage": "Le nom de l'équipement virtuel doit contenir au minimum 1 caractère"
+      },
+      "model-configuration": {
+        "name": "Modèle",
+        "description": "Modèle de l'équipement virtuel",
+        "regexErrorMessage": "Vous permet d'identifier l'équipement"
+      },
+      "schema": {
+         "capacity": {
+            "name": "Type de donnée",
+            "description": "Sélection du type de donnée de l'équipement virtuel",
+            "content": {
+               "standardCapacity": {
+                  "name": "Type de donnée standard",
+                  "description": "Utilisation d'un type de donnée standard",
+                  "content": {
+                     "capacity": {
+                        "name": "Type de donnée"
+                     }
+                  }
+               },
+               "customEnumCapacity": {     
+                  "name": "Liste de valeurs",
+                  "description": "Type de donnée énuméré contenant une liste de valeurs personnalisée",
+                  "content": {
+                     "valueList": {
+                        "name": "Valeurs",
+                        "description": "Saisir les valeurs en les séparant par des virgules"
+                     }
+                  }
+               }
+            }
+         }
       }
     },
     "new-automation-rule": {

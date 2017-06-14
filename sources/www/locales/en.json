@@ -240,6 +240,33 @@
         "name": "Model",
         "description": "Device model",
         "regexErrorMessage": "Enter here the device model to easy identify the device"
+      },
+      "schema": {
+         "capacity": {
+            "name": "Data type",
+            "description": "Select the virtual device data type",
+            "content": {
+               "standardCapacity": {
+                  "name": "Standard data type",
+                  "description": "Use of standard data type",
+                  "content": {
+                     "capacity": {
+                        "name": "Data type"
+                     }
+                  }
+               },
+               "customEnumCapacity": {     
+                  "name": "Values list",
+                  "description": "Enumerated data type, containing a custom list of values",
+                  "content": {
+                     "valueList": {
+                        "name": "Values",
+                        "description": "Enter the values, spearated by comma"
+                     }
+                  }
+               }
+            }
+         }
       }
     },
     "configure-keyword": {
@@ -271,6 +298,11 @@
         "name": "Name",
         "description": "Friendly name of your virtual device",
         "regexErrorMessage": "The name of the virutal device must contain at least one character"
+      },
+      "model-configuration": {
+        "name": "Model",
+        "description": "Virtual device model",
+        "regexErrorMessage": "Enter here the virtual device model to easy identify the device"
       }
     },
     "new-automation-rule": {

@@ -496,10 +496,10 @@
       .done(function () {
          Yadoms.askPluginTypesForManuallyDeviceCreation(function (pi) {
             if (PluginInstanceManager.isSystemCategory(pi)) {
-               debugger;
                Yadoms.modals.virtualDeviceConfigure.loadAsync()
                .done(function () {
                    Yadoms.showVirtualDeviceConfigurationModal(pi, function (newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration) {
+                     debugger;
                      PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
                      .done(function () {
                         refreshDeviceList();
