@@ -20,14 +20,20 @@
         "YEAR": "1 year"
       }
     },
-    "legendLabels" : {
-      "name": "Legend names",
-      "description": "Axes legends",
-       "values": {
-          "DeviceAndKeyword": "Device name + keyword name",
-          "Device": "Device name",
-          "Keyword": "Keyword name"
-       }
+      "legends" : {
+         "name": "Charts legends",
+         "description": "",
+         "content": {        
+            "legendLabels" : {
+               "name": "Legend names",
+               "description": "Axes legends",
+                "values": {
+                   "DeviceAndKeyword": "Device name + keyword name",
+                   "Device": "Device name",
+                   "Keyword": "Keyword name"
+                }
+            }
+         }
       },
     "oneAxis": {
       "name": "Only one axis for all series",

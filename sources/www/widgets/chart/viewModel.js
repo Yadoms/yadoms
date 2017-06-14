@@ -14,9 +14,9 @@ widgetViewModelCtor =
        this.interval = 0;
        this.deviceInfo = [];
        this.keywordInfo = [];
-       this.cleaningTask = null;
        this.differentialDisplay = [];
        this.incompatibility = false;
+       this.serverTime = null;
        
        //This variable is used in differential display
        this.chartLastValue = [];
@@ -31,7 +31,7 @@ widgetViewModelCtor =
 
            var self = this;
            var d = new $.Deferred();
-
+           
            // create the chart
            self.$chart = self.widgetApi.find("div.container");
 
@@ -187,15 +187,14 @@ widgetViewModelCtor =
                    });
                });
                
-               // TODO : Request the server for its current time
                self.widgetApi.askServerLocalTime(function (serverLocalTime) {
-                  // ...
+                  self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
+                  //TODO : Be carefull with the time this function take, perhaps, we have to create a promise
                });
                
                d.resolve();
            })
            .fail(function (error) {
-               //TODO : To be tested
                notifyError($.t("widgets/chart:errorInitialization"), error);
                throw $.t("widgets/chart:errorInitialization");
            });
@@ -307,7 +306,6 @@ widgetViewModelCtor =
            $.whenAll(arrayOfDeffered).done(function () {
                //we use the periodic task of cleaning
                clearInterval(self.cleaningTask);
-               self.cleaningTask = setInterval(self.periodicCleaningTask.bind(self), 60000); // Cleaning every minute
                self.refreshData(self.widget.configuration.interval);
            });
        };
@@ -322,7 +320,12 @@ widgetViewModelCtor =
                self.widgetApi.find(".range-btn[interval='" + interval + "']").addClass("widget-toolbar-pressed-button");
                self.widgetApi.find(".range-btn[interval!='" + interval + "']").removeClass("widget-toolbar-pressed-button");
 
-               self.refreshData(interval);
+               //we ask the new time server, and we refresh information
+               self.widgetApi.askServerLocalTime(function (serverLocalTime) {
+                  self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
+                  
+                  self.refreshData(interval);
+               });
            };
        };
 
@@ -372,49 +375,48 @@ widgetViewModelCtor =
 
                                //The goal is to ask to the server the elapsed time only. Example : 22h00 -> 22h59mn59s.
                                //If you ask 22h00 -> 23h00, the system return also the average for 23h. If 23h is not complete, the value will be wrong.
-
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment());
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'hours').startOf('minute'));
+                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'hours').startOf('minute'));
                                //we request all data
                                timeBetweenTwoConsecutiveValues = undefined;
                                isSummaryData = false;
                                break;
                            default:
                            case "DAY":
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('hour').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'days').startOf('hour'));
+                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf('hour').subtract(1, 'seconds'));
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'days').startOf('hour'));
                                //we request hour summary data
                                prefixUri = "/hour";
                                timeBetweenTwoConsecutiveValues = 1000 * 3600;
                                isSummaryData = true;
                                break;
                            case "WEEK":
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('hour').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'weeks').startOf('hour'));
+                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf('hour').subtract(1, 'seconds'));
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'weeks').startOf('hour'));
                                //we request hour summary data
                                prefixUri = "/hour";
                                timeBetweenTwoConsecutiveValues = 1000 * 3600;
                                isSummaryData = true;
                                break;
                            case "MONTH":
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'months').startOf('day'));
+                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf('day').subtract(1, 'seconds'));
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'months').startOf('day'));
                                //we request day summary data
                                prefixUri = "/day";
                                timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
                                isSummaryData = true;
                                break;
                            case "HALF_YEAR":
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(6, 'months').startOf('day'));
+                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf('day').subtract(1, 'seconds'));
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(6, 'months').startOf('day'));
                                //we request day summary data
                                prefixUri = "/day";
                                timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
                                isSummaryData = true;
                                break;
                            case "YEAR":
-                               dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf('day').subtract(1, 'seconds'));
-                               dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'years').startOf('day'));
+                               dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).startOf('day').subtract(1, 'seconds'));
+                               dateFrom = DateTimeFormatter.dateToIsoDate(moment(self.serverTime).subtract(1, 'years').startOf('day'));
                                //we request day summary data
                                prefixUri = "/day";
                                timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
@@ -443,7 +445,7 @@ widgetViewModelCtor =
                                    case "DAY":
                                    case "WEEK":
                                    case "MONTH":
-                                       dateTo = DateTimeFormatter.dateToIsoDate(moment());
+                                       dateTo = DateTimeFormatter.dateToIsoDate(moment(self.serverTime));
                                        displayData = true;
                                        break;
                                    case "HALF_YEAR":
@@ -573,9 +575,9 @@ widgetViewModelCtor =
                                    
                                    // axes and series names
                                    try {
-                                      if (self.widget.configuration.legendLabels ==="Device")
+                                      if (self.widget.configuration.legends.content.legendLabels ==="Device")
                                          legendText = self.deviceInfo[index].friendlyName;
-                                      else if (self.widget.configuration.legendLabels ==="Keyword")
+                                      else if (self.widget.configuration.legends.content.legendLabels ==="Keyword")
                                          legendText = self.keywordInfo[index].friendlyName;                                       
                                       else
                                          legendText = self.deviceInfo[index].friendlyName + "/" + self.keywordInfo[index].friendlyName;
@@ -588,6 +590,19 @@ widgetViewModelCtor =
                                        try {
                                            function isOdd(num) {
                                                return num % 2;
+                                           }
+                                           
+                                           function getAxisTitle(){
+                                              
+                                              // create the structure
+                                              var response= {
+                                                 text: null,
+                                                 style:{
+                                                    color: colorAxis
+                                                 }
+                                              };
+                                              
+                                              return response;
                                            }
 
                                            var align = 'right';
@@ -603,12 +618,7 @@ widgetViewModelCtor =
                                                // new axis
                                                id: yAxisName, //The same id as the serie with axis at the beginning
                                                reversedStacks: false,
-                                               title: {
-                                                   text: legendText,
-                                                   style: {
-                                                       color: colorAxis
-                                                   }
-                                               },
+                                               title: getAxisTitle(),
                                                labels: {
                                                    align: align,
                                                    format: '{value:.1f} ' + unit,
@@ -725,7 +735,7 @@ widgetViewModelCtor =
                                        serie.units = $.t(self.keywordInfo[index].units);
 
                                        // If only one axis, we show the legend. In otherwise we destroy it
-                                       if (parseBool(self.widget.configuration.oneAxis.checkbox)) {
+                                       if (parseBool(self.widget.configuration.legends.checkbox)) {
                                            serie.options.showInLegend = true;
                                            self.chart.legend.renderItem(serie);
                                        } else {
@@ -799,10 +809,10 @@ widgetViewModelCtor =
                    ex = true;
            }
        };      
-      
-       this.periodicCleaningTask = function()
-       {
+
+       this.onTime = function (serverLocalTime) {
          var self = this;
+         var dateServerLocalTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
          
          console.log ("cleaning chart");
          
@@ -841,7 +851,7 @@ widgetViewModelCtor =
                  break;
          }
          
-         var dateTo = DateTimeFormatter.dateToIsoDate(moment().startOf(prefix).subtract(1, 'seconds'));
+         var dateTo = DateTimeFormatter.dateToIsoDate(moment(dateServerLocalTime).startOf(prefix).subtract(1, 'seconds'));
          
          $.each(self.seriesUuid, function (index, value) {
          
@@ -990,9 +1000,4 @@ widgetViewModelCtor =
                }
            }
        };
-       
-       // TODO this function will be called every minute (from server time)
-       this.onTime = function (serverLocalTime) {
-          // ...
-       }
    };

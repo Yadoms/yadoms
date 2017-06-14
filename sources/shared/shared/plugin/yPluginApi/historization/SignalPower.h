@@ -12,7 +12,7 @@ namespace shared
          namespace historization
          {
             //-----------------------------------------------------
-            ///\brief A signal power (dBm) historizable object
+            ///\brief A signal power (unit : %) historizable object
             ///\note signal power value is read-only
             //-----------------------------------------------------
             class YADOMS_SHARED_EXPORT CSignalPower : public CSingleHistorizableData<int>

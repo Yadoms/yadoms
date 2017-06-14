@@ -75,7 +75,7 @@ widgetViewModelCtor =
              self.widgetApi.toolbar({
                  activated: true,
                  displayTitle: true,
-                 batteryItem: false
+                 batteryItem: true
              });
            
              // Initialization of the toogle button if exist
