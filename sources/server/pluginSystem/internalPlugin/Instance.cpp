@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "Instance.h"
+#include "CustomEnumHistorizer.h"
 #include <shared/Log.h>
 #include <tools/OperatingSystem.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 namespace pluginSystem
 {
@@ -93,7 +95,7 @@ namespace pluginSystem
 
       void CInstance::doWorkThread(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api,
                                    boost::shared_ptr<shared::event::CEventHandler> eventHandler,
-                                   boost::shared_ptr<CInstanceStateHandler> instanceStateHandler) const
+                                   boost::shared_ptr<CInstanceStateHandler> instanceStateHandler)
       {
          instanceStateHandler->onStart();
          doWork(api, *eventHandler);
@@ -101,7 +103,7 @@ namespace pluginSystem
       }
 
       void CInstance::doWork(boost::shared_ptr<yApi::IYPluginApi> api,
-                             shared::event::CEventHandler& eventHandler) const
+                             shared::event::CEventHandler& eventHandler)
       {
          try
          {
@@ -184,7 +186,7 @@ namespace pluginSystem
       }
 
       std::string CInstance::createVirtualDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                 const yApi::IManuallyDeviceCreationData& data) const
+                                                 const yApi::IManuallyDeviceCreationData& data)
       {
          if (api->deviceExists(data.getDeviceName()))
             throw std::invalid_argument("device already exists");
@@ -192,91 +194,138 @@ namespace pluginSystem
          if (data.getDeviceType() != "virtualDeviceType")
             throw std::invalid_argument("Wrong device type");
 
-         std::string capacity;
+         std::string standardCapacity;
+         bool isStandardCapacity;
          try
          {
-            capacity = data.getConfiguration().get<std::string>("capacity");
+            isStandardCapacity = data.getConfiguration().get<std::string>("capacity.activeSection") == "standardCapacity";
+            boost::shared_ptr<const yApi::historization::IHistorizable> keyword;
+            if (isStandardCapacity)
+               createStandardCapacityDevice(api,
+                                            data.getDeviceName(),
+                                            data.getDeviceType(),
+                                            data.getConfiguration().get<std::string>("capacity.content.standardCapacity.content.capacity"));
+            else
+               createCustomEnumCapacityDevice(api,
+                                              data.getDeviceName(),
+                                              data.getDeviceType(),
+                                              data.getConfiguration().get<std::string>("capacity.content.customEnumCapacity.content.valueList"));
+            return data.getDeviceName();
          }
-         catch(std::exception&)
+         catch (std::exception& e)
          {
-            throw std::invalid_argument("Error reading virtual device configuration");
+            throw std::invalid_argument(std::string("Unable to create virtual device : ") + e.what());
          }
+      }
 
+      void CInstance::createStandardCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                   const std::string& deviceName,
+                                                   const std::string& deviceType,
+                                                   const std::string& standardCapacity)
+      {
          boost::shared_ptr<const yApi::historization::IHistorizable> keyword;
-         if (capacity == yApi::CStandardCapacities::ApparentPower().getName())
+
+         if (standardCapacity == yApi::CStandardCapacities::ApparentPower().getName())
             keyword = boost::make_shared<yApi::historization::CApparentPower>("ApparentPower", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::ArmingAlarm().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::ArmingAlarm().getName())
             keyword = boost::make_shared<yApi::historization::CArmingAlarm>("armAlarm", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::BatteryLevel().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::BatteryLevel().getName())
             keyword = boost::make_shared<yApi::historization::CBatteryLevel>("battery", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::CameraMove().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::CameraMove().getName())
             keyword = boost::make_shared<yApi::historization::CCameraMove>("camera", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Counter().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Counter().getName())
             keyword = boost::make_shared<yApi::historization::CCounter>("counter", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Current().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Current().getName())
             keyword = boost::make_shared<yApi::historization::CCurrent>("current", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Curtain().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Curtain().getName())
             keyword = boost::make_shared<yApi::historization::CCurtain>("state");
-         else if (capacity == yApi::CStandardCapacities::Dimmable().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Dimmable().getName())
             keyword = boost::make_shared<yApi::historization::CDimmable>("state", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Direction().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Direction().getName())
             keyword = boost::make_shared<yApi::historization::CDirection>("uv", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Distance().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Distance().getName())
             keyword = boost::make_shared<yApi::historization::CDistance>("distance", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Duration().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Duration().getName())
             keyword = boost::make_shared<yApi::historization::CDuration>("duration", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Energy().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Energy().getName())
             keyword = boost::make_shared<yApi::historization::CEnergy>("energy", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Event().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Event().getName())
             keyword = boost::make_shared<yApi::historization::CEvent>("event", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Frequency().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Frequency().getName())
             keyword = boost::make_shared<yApi::historization::CFrequency>("frequency", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Humidity().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Humidity().getName())
             keyword = boost::make_shared<yApi::historization::CHumidity>("humidity", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Illumination().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Illumination().getName())
             keyword = boost::make_shared<yApi::historization::CIllumination>("illumination", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Load().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Load().getName())
             keyword = boost::make_shared<yApi::historization::CLoad>("load", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Power().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Power().getName())
             keyword = boost::make_shared<yApi::historization::CPower>("power", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::PowerFactor().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::PowerFactor().getName())
             keyword = boost::make_shared<yApi::historization::CPowerFactor>("powerFactor", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Pressure().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Pressure().getName())
             keyword = boost::make_shared<yApi::historization::CPressure>("pressure", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Rain().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Rain().getName())
             keyword = boost::make_shared<yApi::historization::CRain>("rain", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::RainRate().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::RainRate().getName())
             keyword = boost::make_shared<yApi::historization::CRainRate>("rainRate", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Rssi().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Rssi().getName())
             keyword = boost::make_shared<yApi::historization::CRssi>("rssi", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Speed().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Speed().getName())
             keyword = boost::make_shared<yApi::historization::CSpeed>("speed", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Switch().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Switch().getName())
             keyword = boost::make_shared<yApi::historization::CSwitch>("state", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Temperature().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Temperature().getName())
             keyword = boost::make_shared<yApi::historization::CTemperature>("temperature", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Text().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Text().getName())
             keyword = boost::make_shared<yApi::historization::CText>("text", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::UpDownStop().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::UpDownStop().getName())
             keyword = boost::make_shared<yApi::historization::CUpDownStop>("UpDownStop", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Uv().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Uv().getName())
             keyword = boost::make_shared<yApi::historization::CUv>("uv", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Voltage().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Voltage().getName())
             keyword = boost::make_shared<yApi::historization::CVoltage>("voltage", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::WeatherCondition().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::WeatherCondition().getName())
             keyword = boost::make_shared<yApi::historization::CWeatherCondition>("weatherCondition", yApi::EKeywordAccessMode::kGetSet);
-         else if (capacity == yApi::CStandardCapacities::Weight().getName())
+         else if (standardCapacity == yApi::CStandardCapacities::Weight().getName())
             keyword = boost::make_shared<yApi::historization::CWeight>("weight", yApi::EKeywordAccessMode::kGetSet);
 
          if (!keyword)
             throw std::invalid_argument("Unsupported device type");
 
-         api->declareDevice(data.getDeviceName(),
-                            capacity,
-                            data.getDeviceName(),
+         api->declareDevice(deviceName,
+                            deviceType,
+                            deviceName,
                             keyword);
 
-         return data.getDeviceName();
+         m_virtualKeywords.push_back(keyword);
+      }
+
+      void CInstance::createCustomEnumCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
+                                                     const std::string& deviceName,
+                                                     const std::string& deviceType,
+                                                     const std::string& commaSeparatedValues)
+      {
+         shared::plugin::yPluginApi::CStandardCapacity capacity(deviceType + "_" + deviceName,
+                                                                shared::plugin::yPluginApi::CStandardUnits::NoUnit(),
+                                                                shared::plugin::yPluginApi::EKeywordDataType::kEnum);
+
+         std::vector<std::string> enumValues;
+         boost::split(enumValues, commaSeparatedValues, boost::is_any_of(","));
+         for (auto& enumValue : enumValues)
+            boost::trim(enumValue);
+
+         auto keyword = boost::make_shared<CCustomEnumHistorizer>(deviceType,
+                                                                  capacity,
+                                                                  yApi::EKeywordAccessMode::kGetSet,
+                                                                  enumValues);
+
+         api->declareDevice(deviceName,
+                            deviceType,
+                            deviceName,
+                            keyword);
+
+         m_virtualKeywords.push_back(keyword);
       }
    }
 } // namespace pluginSystem::internalPlugin

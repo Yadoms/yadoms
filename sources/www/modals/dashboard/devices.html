@@ -498,9 +498,8 @@
             if (PluginInstanceManager.isSystemCategory(pi)) {
                Yadoms.modals.virtualDeviceConfigure.loadAsync()
                .done(function () {
-                   Yadoms.showVirtualDeviceConfigurationModal(pi, function (newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration) {
-                     debugger;
-                     PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
+                   Yadoms.showVirtualDeviceConfigurationModal(function (newDeviceName, newDeviceModel, newDeviceConfiguration) {
+                     PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, "virtualDeviceType", newDeviceConfiguration)
                      .done(function () {
                         refreshDeviceList();
                      })
@@ -518,7 +517,7 @@
                      //we launch configureInstance GUI
                       Yadoms.showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration) {
                           //we ask for manually device creation
-                          PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
+                        PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
                         .done(function () {
                            refreshDeviceList();
                         })

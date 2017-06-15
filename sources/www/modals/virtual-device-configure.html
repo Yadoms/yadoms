@@ -22,9 +22,7 @@
 </div>
 
 <script>
-//TODO vérifier si les paramètres sont utiles
-   Yadoms.showVirtualDeviceConfigurationModal = function (pluginInstance, callback) {
-      assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
+   Yadoms.showVirtualDeviceConfigurationModal = function (callback) {
       assert($.isFunction(callback), "callback must be defined");
       
       buildVirtualDeviceConfigurationSchema()
@@ -46,7 +44,6 @@
             modelParameter.applyScript();
             
          //we append classic configuration
-         debugger;
          var configMgr = new ConfigurationControlManager(configurationSchema, undefined, "modals.virtual-device-configure.schema.", $modalBody);
 
          //i18n
@@ -54,6 +51,34 @@
          
          //finalize treatments (ie sort items after trnaslation)
          configMgr.afterI18n();
+
+         //validation form
+         //erase previous jqBootstrapValidation
+         $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
+               preventSubmit: true,
+               submitError: function ($form, event, errors) {
+                  console.warn("Unable to validate form: " + errors);
+            },
+            submitSuccess: function ($form, event) {
+               event.preventDefault();
+
+               friendlyNameParameter.getCurrentConfiguration()
+               .done(function(deviceName) {
+                  modelParameter.getCurrentConfiguration()
+                  .done(function(deviceModel) {
+                     configMgr.getCurrentConfiguration()
+                     .done(function(config) {
+                        $("div#virtual-device-configure-modal").modal("hide");
+                        callback(deviceName, deviceModel, config);
+                     });
+                  });
+               });
+            },
+            filter: function () {
+               //we check only control that have class enable-validation and are visible
+               return $(this).is(".enable-validation") && $(this).is(":visible");
+            }
+         });
 
          
          //fix additional sub modals input (like icon picker search box)
