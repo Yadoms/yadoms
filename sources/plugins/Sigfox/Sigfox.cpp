@@ -119,7 +119,7 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
       YADOMS_LOG(information) << "Message received for device " << deviceName;
 
 
-      // Configuration sur le site https://backend.sigfox.com/
+      // Configuration to the site https://backend.sigfox.com/
 
       // json string data format
 
@@ -140,12 +140,14 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
       //}
 
       // This part is common the two messages
-      m_rssi->set(newMessage.get<double>("rssi"));
-      m_snr->set(newMessage.get<double>("snr"));
+      if ((type.compare("data") == 0) || (type.compare("service") == 0))
+      {
+         m_rssi->set(newMessage.get<double>("rssi"));
+         m_snr->set(newMessage.get<double>("snr"));
 
-      // For the signalStrength, we do a rule to normalize rssi to %.
-      m_signalPower->set(boost::lexical_cast<int>((m_rssi->get() - m_configuration.getRssiMin()) * 100 / (m_configuration.getRssiMax() - m_configuration.getRssiMin())));
-      //
+         // For the signalStrength, we do a rule to normalize rssi to %.
+         m_signalPower->set(boost::lexical_cast<int>((m_rssi->get() - m_configuration.getRssiMin()) * 100 / (m_configuration.getRssiMax() - m_configuration.getRssiMin())));
+      }
 
       if (type.compare("data") == 0)
       {
@@ -153,9 +155,7 @@ void CSigfox::processIncomingMessage(boost::shared_ptr<yApi::IYPluginApi> api, c
 
          api->historizeData(deviceName, m_keywordsData);
          YADOMS_LOG(information) << "historize a data message for " << deviceName;
-      }
-
-      if (type.compare("service") == 0)
+      } else if (type.compare("service") == 0)
       {
          // the rule to normalize the battery level
          // Receive a voltage
