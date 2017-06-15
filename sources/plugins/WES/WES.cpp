@@ -160,6 +160,13 @@ void CWES::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             {
                m_ioManager->removeDevice(api, device->device());
                YADOMS_LOG(information) << device->device() << " is removed";
+
+               // Check if no module present
+               if (m_ioManager->getMasterEquipment() == 0)
+               {
+                  m_refreshTimer->stop();                        // No more refresh timer
+                  setPluginState(api, EWESPluginState::kReady);  // State ready
+               }
             }
             else
                YADOMS_LOG(error) << "Cannot remove the device " << device->device() << ". IO Manager is not initialized";
