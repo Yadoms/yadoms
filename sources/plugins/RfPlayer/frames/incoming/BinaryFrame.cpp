@@ -11,7 +11,7 @@
 #include <shared/plugin/yPluginApi/historization/Power.h>
 #include <shared/plugin/yPluginApi/historization/Energy.h>
 #include <shared/plugin/yPluginApi/historization/BatteryLevel.h>
-#include <shared/plugin/yPluginApi/historization/SignalPower.h>
+#include <shared/plugin/yPluginApi/historization/SignalLevel.h>
 #include <shared/plugin/yPluginApi/historization/Temperature.h>
 #include <shared/plugin/yPluginApi/historization/Humidity.h>
 #include <shared/plugin/yPluginApi/historization/Pressure.h>
@@ -282,11 +282,11 @@ namespace incoming {
          rssiKeyword->set((int)pFrame->header.rfQuality * 10); //rfQuality is [1;10], RSSI [10;100]
          m_keywords.push_back(rssiKeyword);
 
-         auto rfLevelKeyword = boost::make_shared<yApi::historization::CSignalPower>("rfLevel");
+         auto rfLevelKeyword = boost::make_shared<yApi::historization::CSignalLevel>("rfLevel");
          rfLevelKeyword->set((int)pFrame->header.rfLevel);
          m_keywords.push_back(rfLevelKeyword);
 
-         auto floorNoiseKeyword = boost::make_shared<yApi::historization::CSignalPower>("floorNoise");
+         auto floorNoiseKeyword = boost::make_shared<yApi::historization::CSignalLevel>("floorNoise");
          floorNoiseKeyword->set((int)pFrame->header.floorNoise);
          m_keywords.push_back(floorNoiseKeyword);
 
