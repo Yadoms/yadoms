@@ -157,12 +157,20 @@ namespace pluginSystem
                      YADOMS_LOG(information) << "Manually device creation request received for device : " << request->getData().getDeviceName();
                      try
                      {
+                        // Autoriser les noms de device en doublons.
+                        // Prenons cet exemple :
+                        // - Création du device dev1
+                        // - Renommage de dev1 en dev2 (en réalité, seul friendlyName est changé)
+                        // - Création du device dev1 ==> échec, alors que pour l'utilisateur dev1 n'existe plus
+                        // La solution est de ne pas utiliser le nom entré par l'utilisateur pour le champ name,
+                        // mais un nom généré "VirtualDevice_XXX" par exemple (le friendlyName reste celui entré par l'utilisateur).
                         request->sendSuccess(createVirtualDevice(api,
                                                                  request->getData()));
                      }
                      catch (std::exception& e)
                      {
                         YADOMS_LOG(error) << "Unable to create virtual device " << request->getData().getDeviceName() << ", " << e.what();
+                        //TODO remonter les erreurs de création, et les traduire
                         request->sendError("Unable to create virtual device");
                      }
 
