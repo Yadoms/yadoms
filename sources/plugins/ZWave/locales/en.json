@@ -8,8 +8,8 @@
 		},
 		"IncludeSystemKeywords":
 		{
-			"name": "Include system keywords",
-			"description": "Define system keywords in yadoms"
+			"name": "Save system data",
+			"description": "Provide system data (very advanced usage)"
 		}		
 	},
 	"customLabels": {
