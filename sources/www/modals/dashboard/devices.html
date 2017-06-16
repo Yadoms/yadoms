@@ -229,54 +229,73 @@
    }
 
    function updateDeviceConfiguration(device) {
-      //device represents the device concerned
-      //we just ask for the friendly name
-      Yadoms.modals.deviceConfigure.loadAsync()
+      if (PluginInstanceManager.isSystemCategory(device.attachedPlugin)) {
+         // Virtual device
+         Yadoms.modals.virtualDeviceConfigure.loadAsync()
          .done(function () {
-
-            DeviceManager.getConfigurationSchema(device)
-            .done(function(schemaConfig) {
-                  Yadoms.showConfigurationDeviceModal(device, schemaConfig, function () {
-
-                        //update configuration
-                        DeviceManager.updateToServer(device)
-                        .done(function (updateDevice) {
-                              //We update the information that can have changed after the configuration
-                                    
-                              // Copy of the list before the new sort
-                              var TempdeviceList = deviceList.slice ( 0, deviceList.length );					 
-                              
-                              //sort after rename
-                              deviceList = sortListItemsWithFriendlyName ( deviceList );					 
-                              
-                              var isIdentical = (TempdeviceList.length == deviceList.length) && TempdeviceList.every(function(element, index) {
-                                    return element.friendlyName === deviceList[index].friendlyName && element.model === deviceList[index].model; 					 
-                              })					 
-                              var $row = getDeviceDomRow(updateDevice);
-                              
-                              if (!isIdentical)
-                              {  // If the two lists are differents, we change the order
-                                    $row.remove ();
-                                    
-                                    addDeviceToDom ( device, deviceList.indexOf (device) );
-                              } else {
-                                    var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + device.friendlyName + "</span>";
-                                    $row.find("td.device-friendlyName").html(friendlyName);
-                                    
-                                    var model = "<span>" + device.model + "</span>"
-                                    $row.find("td.device-model").html(model);
-                              }
-                        })                        
-                        .fail(function (error) {
-                              notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
-                        });
-                  });
-
-            })
-            .fail(function (error) {
-                  notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
+             Yadoms.showVirtualDeviceConfigurationModal(device, function (friendlyName, model, configuration) {
+             //TODO
+               <!-- PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, "", newDeviceConfiguration) -->
+               <!-- .done(function () { -->
+                  <!-- refreshDeviceList(); -->
+               <!-- }) -->
+               <!-- .fail(function (error) { -->
+                  <!-- notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error); -->
+               <!-- }); -->
             });
          });
+      } else {
+         // Manually plugin-related device creation
+
+         //device represents the device concerned
+         //we just ask for the friendly name
+         Yadoms.modals.deviceConfigure.loadAsync()
+            .done(function () {
+
+               DeviceManager.getConfigurationSchema(device)
+               .done(function(schemaConfig) {
+                     Yadoms.showConfigurationDeviceModal(device, schemaConfig, function () {
+
+                           //update configuration
+                           DeviceManager.updateToServer(device)
+                           .done(function (updateDevice) {
+                                 //We update the information that can have changed after the configuration
+                                       
+                                 // Copy of the list before the new sort
+                                 var TempdeviceList = deviceList.slice ( 0, deviceList.length );					 
+                                 
+                                 //sort after rename
+                                 deviceList = sortListItemsWithFriendlyName ( deviceList );					 
+                                 
+                                 var isIdentical = (TempdeviceList.length == deviceList.length) && TempdeviceList.every(function(element, index) {
+                                       return element.friendlyName === deviceList[index].friendlyName && element.model === deviceList[index].model; 					 
+                                 })					 
+                                 var $row = getDeviceDomRow(updateDevice);
+                                 
+                                 if (!isIdentical)
+                                 {  // If the two lists are differents, we change the order
+                                       $row.remove ();
+                                       
+                                       addDeviceToDom ( device, deviceList.indexOf (device) );
+                                 } else {
+                                       var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + device.friendlyName + "</span>";
+                                       $row.find("td.device-friendlyName").html(friendlyName);
+                                       
+                                       var model = "<span>" + device.model + "</span>"
+                                       $row.find("td.device-model").html(model);
+                                 }
+                           })                        
+                           .fail(function (error) {
+                                 notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
+                           });
+                     });
+
+               })
+               .fail(function (error) {
+                     notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
+               });
+            });
+      }
    }
 
 
@@ -500,10 +519,11 @@
       .done(function () {
          Yadoms.askPluginTypesForManuallyDeviceCreation(function (pi) {
             if (PluginInstanceManager.isSystemCategory(pi)) {
+               // Virtual device creation
                Yadoms.modals.virtualDeviceConfigure.loadAsync()
                .done(function () {
-                   Yadoms.showVirtualDeviceConfigurationModal(function (newDeviceName, newDeviceModel, newDeviceConfiguration) {
-                     PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, "", newDeviceConfiguration)
+                   Yadoms.showVirtualDeviceConfigurationModal(null, function (newDeviceName, newDeviceModel, newDeviceConfiguration) {
+                     PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, "virtualDeviceType", newDeviceConfiguration)
                      .done(function () {
                         refreshDeviceList();
                      })
@@ -513,6 +533,7 @@
                   });
                });
             } else {
+               // Manually plugin-related device creation
                //we get package.json
                PluginInstanceManager.downloadPackage(pi).done(function () {
                   //we ask for configuration modal async
