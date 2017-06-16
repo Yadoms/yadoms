@@ -1005,8 +1005,8 @@
     "units": {
       "noUnit": "",
       "ampere": "A",
-      "db": "dB",
-      "dbm": "dBm",
+      "decibel": "dB",
+      "decibelPerMilliWatt": "dBm",
       "degrees": "°",
       "degreesCelcius": "°C",
       "degreesFarenheit": "°F",

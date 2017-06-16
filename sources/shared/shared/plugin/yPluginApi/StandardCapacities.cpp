@@ -35,7 +35,7 @@ namespace shared
          DECLARE_CAPACITY(CStandardCapacities::Pressure, "pressure", CStandardUnits::hectoPascal(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Rain, "rain", CStandardUnits::Millimeter(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::RainRate, "rainrate", CStandardUnits::MillimeterPerSecond(), EKeywordDataType::kNumeric);
-         DECLARE_CAPACITY(CStandardCapacities::Rssi, "rssi", CStandardUnits::Percent(), EKeywordDataType::kNumeric);
+         DECLARE_CAPACITY(CStandardCapacities::Rssi, "rssi", CStandardUnits::DecibelPerMilliWatt(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::SignalLevel, "signalLevel", CStandardUnits::Decibel(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::SignalPower, "signalPower", CStandardUnits::Percent(), EKeywordDataType::kNumeric);
          DECLARE_CAPACITY(CStandardCapacities::Speed, "speed", CStandardUnits::MetersPerSecond(), EKeywordDataType::kNumeric);
