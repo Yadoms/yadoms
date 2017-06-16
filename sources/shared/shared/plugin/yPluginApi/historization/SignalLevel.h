@@ -12,7 +12,7 @@ namespace shared
          namespace historization
          {
             //-----------------------------------------------------
-            ///\brief A signal Level (unit : %) historizable object
+            ///\brief A signal Level (unit : dB) historizable object
             ///\note signal Level value is read-only
             //-----------------------------------------------------
             class YADOMS_SHARED_EXPORT CSignalLevel : public CSingleHistorizableData<int>
