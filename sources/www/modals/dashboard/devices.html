@@ -190,7 +190,6 @@
       DeviceManager.getAttachedPlugin(device, true)
       .done(function () {
          var iconName;
-         //TODO virtual devices must be removables
          if (!device.attachedPlugin.isSystemCategory()) {
             iconName = "plugins/" + device.attachedPlugin.type + "/icon.png";
             
@@ -207,11 +206,15 @@
          else {
             //we use application logo
             iconName = "img/icon_256.png";
-            //we prevent from editing or renaming system devices
-            $deviceRow.find("button.btn-configure").addClass("hide");
-            $deviceRow.find("button.btn-delete").addClass("hide");
-            $deviceRow.find("button.btn-delete").unbind('click');
-            $deviceRow.find("button.btn-configure").unbind('click');
+            
+            // The system plugin contains hard-coded devices (ie device containing shutdown and reboot keywords) and virtual devices
+            // Only virtual devices are configurable/removable
+            if (device.type !== "virtualDeviceType") {
+               $deviceRow.find("button.btn-configure").addClass("hide");
+               $deviceRow.find("button.btn-configure").unbind('click');
+               $deviceRow.find("button.btn-delete").addClass("hide");
+               $deviceRow.find("button.btn-delete").unbind('click');
+            }
          }
 
          var attachedTo = "<img src=\"" + iconName + "\" class=\"img-thumbnail dashboard-table-icon\">&nbsp;&nbsp;" +
@@ -500,7 +503,7 @@
                Yadoms.modals.virtualDeviceConfigure.loadAsync()
                .done(function () {
                    Yadoms.showVirtualDeviceConfigurationModal(function (newDeviceName, newDeviceModel, newDeviceConfiguration) {
-                     PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, "virtualDeviceType", newDeviceConfiguration)
+                     PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, "", newDeviceConfiguration)
                      .done(function () {
                         refreshDeviceList();
                      })

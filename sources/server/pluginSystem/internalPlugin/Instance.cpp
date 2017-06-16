@@ -197,17 +197,18 @@ namespace pluginSystem
          bool isStandardCapacity;
          try
          {
+            static const std::string virtualDeviceTypeName("virtualDeviceType");
             isStandardCapacity = data.getConfiguration().get<std::string>("capacity.activeSection") == "standardCapacity";
             boost::shared_ptr<const yApi::historization::IHistorizable> keyword;
             if (isStandardCapacity)
                createStandardCapacityDevice(api,
                                             data.getDeviceName(),
-                                            data.getDeviceType(),
+                                            virtualDeviceTypeName,
                                             data.getConfiguration().get<std::string>("capacity.content.standardCapacity.content.capacity"));
             else
                createCustomEnumCapacityDevice(api,
                                               data.getDeviceName(),
-                                              data.getDeviceType(),
+                                              virtualDeviceTypeName,
                                               data.getConfiguration().get<std::string>("capacity.content.customEnumCapacity.content.valueList"));
             return data.getDeviceName();
          }
