@@ -95,7 +95,7 @@ namespace pluginSystem
 
       void CInstance::doWorkThread(boost::shared_ptr<shared::plugin::yPluginApi::IYPluginApi> api,
                                    boost::shared_ptr<shared::event::CEventHandler> eventHandler,
-                                   boost::shared_ptr<CInstanceStateHandler> instanceStateHandler)
+                                   boost::shared_ptr<CInstanceStateHandler> instanceStateHandler) const
       {
          instanceStateHandler->onStart();
          doWork(api, *eventHandler);
@@ -103,7 +103,7 @@ namespace pluginSystem
       }
 
       void CInstance::doWork(boost::shared_ptr<yApi::IYPluginApi> api,
-                             shared::event::CEventHandler& eventHandler)
+                             shared::event::CEventHandler& eventHandler) const
       {
          try
          {
@@ -186,7 +186,7 @@ namespace pluginSystem
       }
 
       std::string CInstance::createVirtualDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                                 const yApi::IManuallyDeviceCreationData& data)
+                                                 const yApi::IManuallyDeviceCreationData& data) const
       {
          if (api->deviceExists(data.getDeviceName()))
             throw std::invalid_argument("device already exists");
@@ -221,7 +221,7 @@ namespace pluginSystem
       void CInstance::createStandardCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                                    const std::string& deviceName,
                                                    const std::string& deviceType,
-                                                   const std::string& standardCapacity)
+                                                   const std::string& standardCapacity) const
       {
          boost::shared_ptr<const yApi::historization::IHistorizable> keyword;
 
@@ -297,14 +297,12 @@ namespace pluginSystem
                             deviceType,
                             deviceName,
                             keyword);
-
-         m_virtualKeywords.push_back(keyword);
       }
 
       void CInstance::createCustomEnumCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                                      const std::string& deviceName,
                                                      const std::string& deviceType,
-                                                     const std::string& commaSeparatedValues)
+                                                     const std::string& commaSeparatedValues) const
       {
          shared::plugin::yPluginApi::CStandardCapacity capacity(deviceType + "_" + deviceName,
                                                                 shared::plugin::yPluginApi::CStandardUnits::NoUnit(),
@@ -324,8 +322,6 @@ namespace pluginSystem
                             deviceType,
                             deviceName,
                             keyword);
-
-         m_virtualKeywords.push_back(keyword);
       }
    }
 } // namespace pluginSystem::internalPlugin
