@@ -154,7 +154,7 @@ namespace pluginSystem
                case yApi::IYPluginApi::kEventManuallyDeviceCreation:
                   {
                      auto request = eventHandler.getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationRequest>>();
-                     YADOMS_LOG(information) << "Manually device creation request received for device :" << request->getData().getDeviceName();
+                     YADOMS_LOG(information) << "Manually device creation request received for device : " << request->getData().getDeviceName();
                      try
                      {
                         request->sendSuccess(createVirtualDevice(api,
