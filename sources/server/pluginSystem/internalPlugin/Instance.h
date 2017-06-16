@@ -57,29 +57,27 @@ namespace pluginSystem
       protected:
          void doWorkThread(boost::shared_ptr<yApi::IYPluginApi> api,
                            boost::shared_ptr<shared::event::CEventHandler> eventHandler,
-                           boost::shared_ptr<CInstanceStateHandler> instanceStateHandler);
+                           boost::shared_ptr<CInstanceStateHandler> instanceStateHandler) const;
 
          void doWork(boost::shared_ptr<yApi::IYPluginApi> api,
-                     shared::event::CEventHandler& eventHandler);
+                     shared::event::CEventHandler& eventHandler) const;
 
          std::string createVirtualDevice(boost::shared_ptr<yApi::IYPluginApi> api,
-                                         const yApi::IManuallyDeviceCreationData& data);
+                                         const yApi::IManuallyDeviceCreationData& data) const;
          void createStandardCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                            const std::string& deviceName,
                                            const std::string& deviceType,
-                                           const std::string& standardCapacity);
+                                           const std::string& standardCapacity) const;
          void createCustomEnumCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                              const std::string& deviceName,
                                              const std::string& deviceType,
-                                             const std::string& commaSeparatedValues);
+                                             const std::string& commaSeparatedValues) const;
 
       private:
          boost::shared_ptr<const database::entities::CPlugin> m_instanceInformation;
          boost::shared_ptr<const shared::plugin::information::IInformation> m_pluginInformation;
          boost::shared_ptr<shared::event::CEventHandler> m_eventHandler;
          boost::thread m_thread;
-
-         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_virtualKeywords; //TODO à charger au démarrage
       };
    }
 } // namespace pluginSystem::internalPlugin
