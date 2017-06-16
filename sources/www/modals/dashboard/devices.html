@@ -190,6 +190,7 @@
       DeviceManager.getAttachedPlugin(device, true)
       .done(function () {
          var iconName;
+         //TODO virtual devices must be removables
          if (!device.attachedPlugin.isSystemCategory()) {
             iconName = "plugins/" + device.attachedPlugin.type + "/icon.png";
             

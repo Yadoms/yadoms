@@ -3,7 +3,6 @@
 #include "CustomEnumHistorizer.h"
 #include <shared/Log.h>
 #include <tools/OperatingSystem.h>
-#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 namespace pluginSystem
 {
@@ -304,17 +303,12 @@ namespace pluginSystem
                                                      const std::string& deviceType,
                                                      const std::string& commaSeparatedValues) const
       {
-         shared::plugin::yPluginApi::CStandardCapacity capacity(deviceType + "_" + deviceName,
-                                                                shared::plugin::yPluginApi::CStandardUnits::NoUnit(),
-                                                                shared::plugin::yPluginApi::EKeywordDataType::kEnum);
-
          std::vector<std::string> enumValues;
          boost::split(enumValues, commaSeparatedValues, boost::is_any_of(","));
          for (auto& enumValue : enumValues)
             boost::trim(enumValue);
 
-         auto keyword = boost::make_shared<CCustomEnumHistorizer>(deviceType,
-                                                                  capacity,
+         auto keyword = boost::make_shared<CCustomEnumHistorizer>("state",
                                                                   yApi::EKeywordAccessMode::kGetSet,
                                                                   enumValues);
 

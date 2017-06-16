@@ -461,8 +461,6 @@ set(YADOMS_SRC
    server/pluginSystem/YadomsInformation.h
    server/pluginSystem/YadomsInformation.cpp
    
-   server/pluginSystem/internalPlugin/CustomEnum.h
-   server/pluginSystem/internalPlugin/CustomEnum.cpp
    server/pluginSystem/internalPlugin/CustomEnumHistorizer.h
    server/pluginSystem/internalPlugin/CustomEnumHistorizer.cpp
    server/pluginSystem/internalPlugin/CustomEnumTypeInfo.h
