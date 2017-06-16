@@ -255,6 +255,7 @@ KeywordParameterHandler.prototype.applyScript = function () {
 
                   //we select the last selected or the first one
                   $cbKeywords.prop('selectedIndex', keywordToSelect);
+                  $cbKeywords.trigger('change');
                   handler.locateInDOM().change();
                })
                .fail(function(error) {

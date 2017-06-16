@@ -25,55 +25,52 @@ function KeywordValueParameterHandler(i18NContext, i18nKey, paramName, content, 
 
    this.content.expectedKeywordAccess = "GetSet";
    this.content.lookupMethod = "all";
-   
+   this.currentValue = currentValue;
    this.keywordPH = new KeywordParameterHandler(i18NContext, i18nKey, paramName, content, currentValue);
 }
 
 KeywordValueParameterHandler.prototype.applyScript = function () {
-
-   this.keywordPH.applyScript();
-   /*
-   $cbKeywords.change(function(handler) {
-      return function() {
-         debugger;
-            //clear value div
-            var v = $("select#" + this.uuidKeywordList).val();
-            //var configObject = ConfigurationHelper.createKeywordValueParameterHandler("modals.set-value-keyword.", undefined, "keyword-configuration", keyword, value, pluginInstance);
-
-      };
-   });
-   */
    var self = this;
+
+   $("select#" + self.keywordPH.uuidKeywordList).on('change', function (e) { 
+      self.onKeywordChange(); 
+   });
    
-   $("select#" + this.keywordPH.uuidKeywordList).on('change', function (e) {
-       
-      var selectedKeywordId = this.value;
-      
-       
-      if(self.valuePH && self.valuePH.uuidContainer) {
-         $("#" + self.valuePH.uuidContainer).remove();
-      }
-       
-      if(!isNullOrUndefined(selectedKeywordId)) {
-        RestEngine.getJson("/rest/device/keyword/" + selectedKeywordId)
-        .done(function(keywordData) {
-           self.valuePH = ConfigurationHelper.createKeywordValueParameterHandler(self.i18nContext, "value", "value", keywordData);
-           if(self.valuePH) {
-              $("#" + self.uuidContainer).append(self.valuePH.getDOMObject());
-              if ($.isFunction(self.valuePH.applyScript))
+   self.keywordPH.applyScript();
+};
+
+
+KeywordValueParameterHandler.prototype.onKeywordChange = function () {
+   var self = this;
+   var d = new $.Deferred();
+   
+   var selectedKeywordId = $("select#" + self.keywordPH.uuidKeywordList).val();
+   
+   if(self.valuePH && self.valuePH.uuidContainer) {
+      $("#" + self.valuePH.uuidContainer).remove();
+   }
+    
+   if(!isNullOrUndefined(selectedKeywordId)) {
+      RestEngine.getJson("/rest/device/keyword/" + selectedKeywordId)
+      .done(function(keywordData) {
+         self.valuePH = ConfigurationHelper.createKeywordValueParameterHandler(self.i18nContext, "value", "value", keywordData, self.currentValue.value);
+         if(self.valuePH) {
+            $("#" + self.uuidContainer).append(self.valuePH.getDOMObject());
+            if ($.isFunction(self.valuePH.applyScript)) {
                self.valuePH.applyScript();
-           }
-        })
-        .fail(function() {
-           //clear value div
-        });
-      } else {
-           //clear value div
-      }
+            }
+            d.resolve();
+         } else {
+           d.reject("Cannot create parameter handler for keyword id=" + selectedKeywordId);
+         }         
+      })
+      .fail(d.reject);
+   } else {
       //clear value div
-      //var v = $("select#" + self.keywordPH.uuidKeywordList).val();
-      //var configObject = ConfigurationHelper.createKeywordValueParameterHandler("modals.set-value-keyword.", undefined, "keyword-configuration", keyword, value, pluginInstance);
-  });
+      d.reject("No keyword selected");
+   }
+   
+   return d.promise();
 };
 
 /**
