@@ -53,7 +53,7 @@ KeywordValueParameterHandler.prototype.onKeywordChange = function () {
    if(!isNullOrUndefined(selectedKeywordId)) {
       RestEngine.getJson("/rest/device/keyword/" + selectedKeywordId)
       .done(function(keywordData) {
-         self.valuePH = ConfigurationHelper.createKeywordValueParameterHandler(self.i18nContext, "value", "value", keywordData, self.currentValue.value);
+         self.valuePH = ConfigurationHelper.createKeywordValueParameterHandler(self.i18nContext, "value", "value", keywordData, self.currentValue.value.toString());
          if(self.valuePH) {
             $("#" + self.uuidContainer).append(self.valuePH.getDOMObject());
             if ($.isFunction(self.valuePH.applyScript)) {
