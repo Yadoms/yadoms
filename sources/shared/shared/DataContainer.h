@@ -301,16 +301,7 @@ namespace shared
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      const char* get(const std::string & parameterName = std::string(), const char pathChar = '.');
-
-      //--------------------------------------------------------------
-      /// \brief	    Get parameter value
-      /// \param [in] parameterName    Name of the parameter
-      /// \return     The parameter value
-      /// \throw      shared::exception::COutOfRange if parameter can not be converted
-      /// \throw      shared::exception::CInvalidParameter if parameter is not found
-      //--------------------------------------------------------------
-      const char* get(const char* parameterName = "", const char pathChar = '.');
+      const char* get(const std::string & parameterName = std::string(), const char pathChar = '.') const;
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter value as map<string, string>

@@ -12,10 +12,10 @@ namespace shared
          namespace historization
          {
             //-----------------------------------------------------
-            ///\brief A signal power (unit : %) historizable object
-            ///\note signal power value is read-only
+            ///\brief A signal Level (unit : dB) historizable object
+            ///\note signal Level value is read-only
             //-----------------------------------------------------
-            class YADOMS_SHARED_EXPORT CSignalPower : public CSingleHistorizableData<int>
+            class YADOMS_SHARED_EXPORT CSignalLevel : public CSingleHistorizableData<int>
             {
             public:
                //-----------------------------------------------------
@@ -23,14 +23,14 @@ namespace shared
                ///\param[in] keywordName     Yadoms keyword name
                ///\param[in] measureType     The measure type (normally kAbsolute)
                //-----------------------------------------------------
-               explicit CSignalPower(const std::string& keywordName,
+               explicit CSignalLevel(const std::string& keywordName,
                                  const EMeasureType& measureType = EMeasureType::kAbsolute,
                                  typeInfo::CIntTypeInfo& additionalInfo = typeInfo::CIntTypeInfo::Empty);
 
                //-----------------------------------------------------
                ///\brief                     Destructor
                //-----------------------------------------------------
-               virtual ~CSignalPower();
+               virtual ~CSignalLevel();
             };
          }
       }

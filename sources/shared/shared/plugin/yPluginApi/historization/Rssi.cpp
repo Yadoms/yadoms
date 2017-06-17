@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Rssi.h"
-#include "../StandardCapacities.h"
 
 
 namespace shared
@@ -12,14 +11,15 @@ namespace shared
          namespace historization
          {
             CRssi::CRssi(const std::string& keywordName,
+                         const EKeywordAccessMode& accessMode,
                          const EMeasureType& measureType,
                          typeInfo::CIntTypeInfo& additionalInfo)
                : CSingleHistorizableData<double>(keywordName,
-                                              CStandardCapacities::Rssi(),
-                                              EKeywordAccessMode::kGet,
-                                              0,
-                                              measureType,
-                                              additionalInfo)
+                                                 CStandardCapacities::Rssi(),
+                                                 accessMode,
+                                                 0,
+                                                 measureType,
+                                                 additionalInfo)
             {
             }
 

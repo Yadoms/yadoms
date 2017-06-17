@@ -1,0 +1,169 @@
+<!--Configure device Modal -->
+<div class="modal fade" id="virtual-device-configure-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form class="form-horizontal" novalidate>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" data-i18n="modals.virtual-device-configure.title"></h4>
+                </div>
+                <div class="modal-body form-group">
+                    <!--configuration will be inserted here-->
+                </div>
+                <div class="modal-footer">
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
+                        <button type="submit" id="btn-confirm-configure-device" class="btn btn-primary" data-i18n="common.ok"></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+   Yadoms.showVirtualDeviceConfigurationModal = function (currentDevice, callback) {
+      assert($.isFunction(callback), "callback must be defined");
+      
+      buildVirtualDeviceConfigurationSchema()
+      .done(function (configurationSchema) {
+         if (!isNullOrUndefined(currentDevice)) {
+            // Editing existing device
+            applyCurrentConfiguration(configurationSchema, currentDevice);
+         }
+      
+         var $modalBody = $("div#virtual-device-configure-modal .modal-body");
+         $modalBody.empty();
+         
+         //we append the common parameters section
+         var friendlyNameParameter = new StringParameterHandler(
+            "modals.virtual-device-configure.",
+            undefined,
+            "friendlyName-configuration",
+            { required: "true" },
+            isNullOrUndefined(currentDevice) ? "" : currentDevice.friendlyName);
+         $modalBody.append(friendlyNameParameter.getDOMObject());
+         
+         var modelParameter = new StringParameterHandler(
+            "modals.virtual-device-configure.",
+            undefined,
+            "model-configuration",
+            { required: false },
+            isNullOrUndefined(currentDevice) ? "" : currentDevice.model);  
+         $modalBody.append(modelParameter.getDOMObject());
+         
+         //we finish parmeters instantiation
+         if ($.isFunction(friendlyNameParameter.applyScript))
+            friendlyNameParameter.applyScript();
+         if ($.isFunction(modelParameter.applyScript))
+            modelParameter.applyScript();
+            
+         //we append classic configuration
+         var configMgr = new ConfigurationControlManager(
+            configurationSchema,
+            isNullOrUndefined(currentDevice) ? null : currentDevice.configuration,
+            "modals.virtual-device-configure.schema.",
+            $modalBody);
+
+         //i18n
+         $modalBody.i18n();
+         
+         //finalize treatments (ie sort items after trnaslation)
+         configMgr.afterI18n();
+
+         //validation form
+         //erase previous jqBootstrapValidation
+         $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy").jqBootstrapValidation({
+               preventSubmit: true,
+               submitError: function ($form, event, errors) {
+                  console.warn("Unable to validate form: " + errors);
+            },
+            submitSuccess: function ($form, event) {
+               event.preventDefault();
+
+               friendlyNameParameter.getCurrentConfiguration()
+               .done(function(deviceName) {
+                  modelParameter.getCurrentConfiguration()
+                  .done(function(deviceModel) {
+                     configMgr.getCurrentConfiguration()
+                     .done(function(config) {
+                        $("div#virtual-device-configure-modal").modal("hide");
+                        callback(deviceName, deviceModel, config);
+                     });
+                  });
+               });
+            },
+            filter: function () {
+               //we check only control that have class enable-validation and are visible
+               return $(this).is(".enable-validation") && $(this).is(":visible");
+            }
+         });
+
+         
+         //fix additional sub modals input (like icon picker search box)
+         $('div#virtual-device-configure-modal').on('shown.bs.modal', function (e) { $(document).off('focusin.modal'); });
+
+         //we display the modal
+         $('div#virtual-device-configure-modal').modal({ backdrop: 'static' });    
+      });
+   };
+    
+    
+   buildVirtualDeviceConfigurationSchema= function () {
+      
+      var d = $.Deferred();
+      
+      PluginInstanceManager.getVirtualDevicesSupportedCapacities()
+      .done(function (capacities) {      
+      
+         schema = {
+            capacity: {
+               type: 'radioSection',
+               content: {
+                  standardCapacity: {                  
+                     type: 'section',
+                     content: {
+                        capacity: {
+                           type: 'enum',
+                           sort : 'true',
+                           values: {}
+                        }
+                     }
+                  },
+                  customEnumCapacity: {                  
+                     type: 'section',
+                     content: {
+                        valueList: {
+                           type: 'string',
+                           defaultValue: 'on,off'
+                        }
+                     }
+                  }
+               }
+            }
+         }
+         
+         for (var cap in capacities.capacities) {
+            schema.capacity.content.standardCapacity.content.capacity.values[cap] = cap;
+         }
+      
+         d.resolve(schema);
+      })
+      .fail(function (error) {
+         console.error("Fail to get virtual devices supported capacities ");
+         d.reject();
+      });
+      
+      return d.promise();
+   };    
+    
+    
+   applyCurrentConfiguration= function (configurationSchema, currentDevice) {
+   
+      configurationSchema.capacity.activeSection = currentDevice.configuration.capacity.activeSection;
+      for (var section in configurationSchema.capacity.content) {
+         configurationSchema.capacity.content[section].radio = (section === currentDevice.configuration.capacity.activeSection) ? 'true' : 'false';
+      }
+      <!-- configurationSchema.capacity.content.(currentDevice.configuration.capacity.activeSection). -->
+   };    
+</script>

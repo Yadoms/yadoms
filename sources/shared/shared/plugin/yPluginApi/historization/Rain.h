@@ -17,12 +17,8 @@ namespace shared
             class YADOMS_SHARED_EXPORT CRain : public CSingleHistorizableData<double>
             {
             public:
-               //-----------------------------------------------------
-               ///\brief                     Constructor
-               ///\param[in] keywordName     Yadoms keyword name
-               ///\param[in] measureType     The measure type (normally kCumulative)
-               //-----------------------------------------------------
                explicit CRain(const std::string& keywordName,
+                              const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
                               const EMeasureType& measureType = EMeasureType::kCumulative,
                               typeInfo::CDoubleTypeInfo& additionalInfo = typeInfo::CDoubleTypeInfo::Empty);
 

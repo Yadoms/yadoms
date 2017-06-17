@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ManuallyDeviceCreationData.h"
-#include <shared/Log.h>
 
 namespace pluginSystem
 {

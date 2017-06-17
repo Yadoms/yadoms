@@ -485,21 +485,6 @@
                                        .fail(d.reject);
                                  })
                                  .fail(d.reject);
-
-/*
-                              d.promise()
-                                 .done(function() {
-                                    //we show that configuration has been successfully saved
-                                    notifySuccess($.t("modals.dashboard.sub-windows.system-configuration.defaultConfigurationRestored"));
-                                 })
-                                 .fail(function(error) {
-                                    //an error has occurred during saving
-                                    notifyError($.t("modals.dashboard.sub-windows.system-configuration.errorDuringSavingConfiguration"), error);
-                                 })
-                                 .always(function() {
-                                    //we ask to reload the modal
-                                    Yadoms.initializeSystemConfigurationDashboard();
-                                 });*/
                            });
                      });
                   promise.resolve();

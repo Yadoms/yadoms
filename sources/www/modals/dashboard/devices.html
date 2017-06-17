@@ -1,7 +1,7 @@
 <div id="dashboard-devices">
    <h1 class="page-header"><span class="fa fa-tasks"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.title"></span></h1>
    <span data-i18n="modals.dashboard.sub-windows.devices.deviceListDescription"></span><br>
-   <button id="btn-add-new-device" type="button" class="btn btn-success dashboard-btn-new disabled"><span class="fa fa-tasks"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.new"></span></button>
+   <button id="btn-add-new-device" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-tasks"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.new"></span></button>
    <table id="device-list" class="table table-bordered table-striped dashboard-list">
       <tr>
          <td data-i18n="modals.dashboard.sub-windows.devices.table.name" class="col-md-2"></td>
@@ -26,17 +26,13 @@
    Yadoms.initializeDeviceDashboard = function () {
    
       $("input.cb-showblacklist").unbind('change').bind('change', function () { refreshDeviceList(); });
+      $("#btn-add-new-device").unbind("click").bind("click", function () { addNewDevice(); });
       
       var d = new $.Deferred();
 
       //we check if there is at least one plugin instantiated that handle manual creation
       PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation()
          .done(function (list) {
-            if (list.length > 0) {
-               //there is at least one plugin instance that handle this button
-               $("#btn-add-new-device").removeClass("disabled").unbind("click").bind("click", function () { addNewDevice(); });
-            }
-
             refreshDeviceList()
                .done(function() {
                   //we use the periodic task of the dashboard
@@ -210,11 +206,15 @@
          else {
             //we use application logo
             iconName = "img/icon_256.png";
-            //we prevent from editing or renaming system devices
-            $deviceRow.find("button.btn-configure").addClass("hide");
-            $deviceRow.find("button.btn-delete").addClass("hide");
-            $deviceRow.find("button.btn-delete").unbind('click');
-            $deviceRow.find("button.btn-configure").unbind('click');
+            
+            // The system plugin contains hard-coded devices (ie device containing shutdown and reboot keywords) and virtual devices
+            // Only virtual devices are configurable/removable
+            if (device.type !== "virtualDeviceType") {
+               $deviceRow.find("button.btn-configure").addClass("hide");
+               $deviceRow.find("button.btn-configure").unbind('click');
+               $deviceRow.find("button.btn-delete").addClass("hide");
+               $deviceRow.find("button.btn-delete").unbind('click');
+            }
          }
 
          var attachedTo = "<img src=\"" + iconName + "\" class=\"img-thumbnail dashboard-table-icon\">&nbsp;&nbsp;" +
@@ -229,54 +229,73 @@
    }
 
    function updateDeviceConfiguration(device) {
-      //device represent the device concerned
-      //we just ask for the friendly name
-      Yadoms.modals.deviceConfigure.loadAsync()
+      if (PluginInstanceManager.isSystemCategory(device.attachedPlugin)) {
+         // Virtual device
+         Yadoms.modals.virtualDeviceConfigure.loadAsync()
          .done(function () {
-
-            DeviceManager.getConfigurationSchema(device)
-            .done(function(schemaConfig) {
-                  Yadoms.showConfigurationDeviceModal(device, schemaConfig, function () {
-
-                        //update configuration
-                        DeviceManager.updateToServer(device)
-                        .done(function (updateDevice) {
-                              //We update the information that can have changed after the configuration
-                                    
-                              // Copy of the list before the new sort
-                              var TempdeviceList = deviceList.slice ( 0, deviceList.length );					 
-                              
-                              //sort after rename
-                              deviceList = sortListItemsWithFriendlyName ( deviceList );					 
-                              
-                              var isIdentical = (TempdeviceList.length == deviceList.length) && TempdeviceList.every(function(element, index) {
-                                    return element.friendlyName === deviceList[index].friendlyName && element.model === deviceList[index].model; 					 
-                              })					 
-                              var $row = getDeviceDomRow(updateDevice);
-                              
-                              if (!isIdentical)
-                              {  // If the two lists are differents, we change the order
-                                    $row.remove ();
-                                    
-                                    addDeviceToDom ( device, deviceList.indexOf (device) );
-                              } else {
-                                    var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + device.friendlyName + "</span>";
-                                    $row.find("td.device-friendlyName").html(friendlyName);
-                                    
-                                    var model = "<span>" + device.model + "</span>"
-                                    $row.find("td.device-model").html(model);
-                              }
-                        })                        
-                        .fail(function (error) {
-                              notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
-                        });
-                  });
-
-            })
-            .fail(function (error) {
-                  notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
+             Yadoms.showVirtualDeviceConfigurationModal(device, function (friendlyName, model, configuration) {
+             //TODO
+               <!-- PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, "", newDeviceConfiguration) -->
+               <!-- .done(function () { -->
+                  <!-- refreshDeviceList(); -->
+               <!-- }) -->
+               <!-- .fail(function (error) { -->
+                  <!-- notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error); -->
+               <!-- }); -->
             });
          });
+      } else {
+         // Manually plugin-related device creation
+
+         //device represents the device concerned
+         //we just ask for the friendly name
+         Yadoms.modals.deviceConfigure.loadAsync()
+            .done(function () {
+
+               DeviceManager.getConfigurationSchema(device)
+               .done(function(schemaConfig) {
+                     Yadoms.showConfigurationDeviceModal(device, schemaConfig, function () {
+
+                           //update configuration
+                           DeviceManager.updateToServer(device)
+                           .done(function (updateDevice) {
+                                 //We update the information that can have changed after the configuration
+                                       
+                                 // Copy of the list before the new sort
+                                 var TempdeviceList = deviceList.slice ( 0, deviceList.length );					 
+                                 
+                                 //sort after rename
+                                 deviceList = sortListItemsWithFriendlyName ( deviceList );					 
+                                 
+                                 var isIdentical = (TempdeviceList.length == deviceList.length) && TempdeviceList.every(function(element, index) {
+                                       return element.friendlyName === deviceList[index].friendlyName && element.model === deviceList[index].model; 					 
+                                 })					 
+                                 var $row = getDeviceDomRow(updateDevice);
+                                 
+                                 if (!isIdentical)
+                                 {  // If the two lists are differents, we change the order
+                                       $row.remove ();
+                                       
+                                       addDeviceToDom ( device, deviceList.indexOf (device) );
+                                 } else {
+                                       var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;</span><span>" + device.friendlyName + "</span>";
+                                       $row.find("td.device-friendlyName").html(friendlyName);
+                                       
+                                       var model = "<span>" + device.model + "</span>"
+                                       $row.find("td.device-model").html(model);
+                                 }
+                           })                        
+                           .fail(function (error) {
+                                 notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
+                           });
+                     });
+
+               })
+               .fail(function (error) {
+                     notifyError($.t("objects.deviceManager.errorUpdating", { deviceName: device.friendlyName }), error);
+               });
+            });
+      }
    }
 
 
@@ -499,15 +518,12 @@
       Yadoms.modals.deviceAddManually.loadAsync()
       .done(function () {
          Yadoms.askPluginTypesForManuallyDeviceCreation(function (pi) {
-            //we get package.json
-            PluginInstanceManager.downloadPackage(pi).done(function () {
-               //we ask for configuration modal async
-               Yadoms.modals.deviceConfigureManually.loadAsync()
+            if (PluginInstanceManager.isSystemCategory(pi)) {
+               // Virtual device creation
+               Yadoms.modals.virtualDeviceConfigure.loadAsync()
                .done(function () {
-                  //we launch configureInstance GUI
-                   Yadoms.showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration) {
-                       //we ask for manually device creation
-                       PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
+                   Yadoms.showVirtualDeviceConfigurationModal(null, function (newDeviceName, newDeviceModel, newDeviceConfiguration) {
+                     PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, "virtualDeviceType", newDeviceConfiguration)
                      .done(function () {
                         refreshDeviceList();
                      })
@@ -516,8 +532,28 @@
                      });
                   });
                });
-            });
-         });
+            } else {
+               // Manually plugin-related device creation
+               //we get package.json
+               PluginInstanceManager.downloadPackage(pi).done(function () {
+                  //we ask for configuration modal async
+                  Yadoms.modals.deviceConfigureManually.loadAsync()
+                  .done(function () {
+                     //we launch configureInstance GUI
+                      Yadoms.showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration) {
+                          //we ask for manually device creation
+                        PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceModel, newDeviceType, newDeviceConfiguration)
+                        .done(function () {
+                           refreshDeviceList();
+                        })
+                        .fail(function (error) {
+                           notifyError($.t("objects.pluginInstance.errorCreatingManuallyDevice", { deviceName: newDeviceName }), error);
+                        });
+                     });
+                  });
+               });
+            }
+         });         
       });
    }
 

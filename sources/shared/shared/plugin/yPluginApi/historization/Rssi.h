@@ -12,18 +12,14 @@ namespace shared
          namespace historization
          {
             //-----------------------------------------------------
-            ///\brief A rssi (signal strength) historizable object
+            ///\brief A rssi (dBm) historizable object
             ///\note Rssi value is read-only
             //-----------------------------------------------------
             class YADOMS_SHARED_EXPORT CRssi : public CSingleHistorizableData<double>
             {
             public:
-               //-----------------------------------------------------
-               ///\brief                     Constructor
-               ///\param[in] keywordName     Yadoms keyword name
-               ///\param[in] measureType     The measure type (normally kAbsolute)
-               //-----------------------------------------------------
                explicit CRssi(const std::string& keywordName,
+                              const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet,
                               const EMeasureType& measureType = EMeasureType::kAbsolute,
                               typeInfo::CIntTypeInfo& additionalInfo = typeInfo::CIntTypeInfo::Empty);
 
