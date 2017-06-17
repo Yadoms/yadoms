@@ -22,7 +22,7 @@ namespace equipments
    {
       std::vector<boost::shared_ptr<const yApi::historization::IHistorizable> > keywordsToDeclare;
 
-      setDeviceState(keywordsToDeclare, specificHistorizers::EWESdeviceStatus::kUndefined);
+      keywordsToDeclare.push_back(m_deviceStatus);
       m_configuration.initializeWith(deviceConfiguration);
       shared::CDataContainer details = api->getDeviceDetails(device);
 
@@ -114,9 +114,8 @@ namespace equipments
       std::string PulseName[4];
       std::string counterId[2];
 
-      setDeviceState(keywordsToDeclare, specificHistorizers::EWESdeviceStatus::kUndefined);
-
       try {
+         keywordsToDeclare.push_back(m_deviceStatus);
          m_configuration.initializeWith(deviceConfiguration);
          deviceConfiguration.printToLog(YADOMS_LOG(information));
 
@@ -332,7 +331,6 @@ namespace equipments
             analogContainerName.set("A" + boost::lexical_cast<std::string>(counter), m_AnalogList[counter]->getKeyword());
          }
          details.set("Analogs", analogContainerName);
-
          details.set("version", m_version);
 
          details.printToLog(YADOMS_LOG(information));

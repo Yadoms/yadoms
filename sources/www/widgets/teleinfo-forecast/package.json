@@ -10,7 +10,7 @@
       "y": 1
     },
     "max": {
-      "x": 2,
+      "x": 1,
       "y": 1
     },
     "default": {
@@ -22,7 +22,7 @@
 	"configurationSchema": {
 		"device": {
 			"type": "keyword",
-         "expectedCapacity": ["ForecastPrice"],
+         "expectedCapacity": ["ForecastPrice","load","temperature"],
 			"expectedKeywordAccess": "get"
 		}
 	}
