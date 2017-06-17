@@ -22,7 +22,7 @@
 	"configurationSchema": {
 		"device": {
 			"type": "keyword",
-         "expectedCapacity": ["ForecastPrice","load","temperature"],
+         "expectedCapacity": ["ForecastPrice"],
 			"expectedKeywordAccess": "get"
 		}
 	}
