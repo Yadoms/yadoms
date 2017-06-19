@@ -1,0 +1,36 @@
+{
+	"name": "linky",
+	"description": "EDF power meter information",
+	"configurationSchema": {
+		"SerialPort": {
+			"name": "Serial port",
+			"description": "The serial port connected to the linky reader"
+		}
+	},
+	"enumerations": {
+		"EPeriod": {
+			"name" : "Running period",
+			"values" : {
+				"AllHours": "All hours",
+				"LowCostHours": "Low cost hours",
+				"PeakCostHour": "Peak cost hour",
+				"NormalCostHours": "Normal cost hours",
+            "MobilePeakCostHours": "Mobile peak cost hours",
+            "LowCostBlueDays": "Low cost blue day",
+            "LowCostWhiteDays": "Low cost white day",
+            "LowCostRedDays": "Low cost red day",
+            "NormalCostBlueDays": "Normal cost blue day",
+            "NormalCostWhiteDays": "Normal cost white day",
+            "NormalCostRedDays": "Normal cost red day"
+			}
+		}    
+   },      
+	"customLabels": {
+		"pluginState": {
+         "connecting": "Connecting...",
+			"connectionLost": "Connection to TeleInfo module was lost",
+         "ErDFCounterdesactivated" : "Linky desactivated in the ErDF counter. Please contact our energy supplier.",
+			"updateConfiguration": "Configuration updating..."
+		}
+	}
+}
