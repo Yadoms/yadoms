@@ -201,8 +201,25 @@
     },
     "add-manually-device": {
       "title": "Add a new device",
-      "attachedPlugin": "Attached plugin",
-      "errorDuringGettingPluginTypes": "Error during requesting plugin types"
+      "errorDuringGettingPluginTypes": "Error during requesting plugin types",
+      "addManuallyDeviceSection": {
+         "name": "Device type to create",
+         "content": {
+            "attachedToPlugin" : {
+               "name": "Attached to plugin",
+               "description": "Create a device associated to a plugin. Some receiving devices (remote plugs, light or blind command devices...) can't be auto-detected, they must be manually created.",
+               "content" : {
+                  "plugins": {
+                     "name": "Select the plugin"
+                  }
+               }
+            },
+            "virtualDevice" : {
+               "name": "Virtual device",
+               "description": "A virtual device can be used to record data that don't come from a physical device. Example : alarm state, tank level compute based on cosumption (without level sensor), global lights command..."
+            }
+         }
+      }
     },
     "delete-device": {
       "title": "Blacklist device",

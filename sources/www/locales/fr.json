@@ -201,8 +201,25 @@
     },
     "add-manually-device": {
       "title": "Ajouter un équipement",
-      "attachedPlugin": "Plugin attaché",
-      "errorDuringGettingPluginTypes": "Erreur lors de la récupération de la liste des types de plugins"
+      "errorDuringGettingPluginTypes": "Erreur lors de la récupération de la liste des types de plugins",
+      "addManuallyDeviceSection": {
+         "name": "Type d'équipement à créer",
+         "content": {
+            "attachedToPlugin" : {
+               "name": "Attaché à un plugin",
+               "description": "Permet la création d'un équipement associé à un plugin. Certains équipements récepteurs (prises commandées, modules de commande d'éclairage ou volet motorisé...) ne peuvent être auto-détectés, ils doivent donc être créés manuellement.",
+               "content" : {
+                  "plugins": {
+                     "name": "Sélectionner le plugin"
+                  }
+               }
+            },
+            "virtualDevice" : {
+               "name": "Device virtuel",
+               "description": "Un équipement virtuel peut être utilisé pour mémoriser toute donnée ne correspondant pas à un équipement physique. Exemples : état de l'alarme, niveau d'une cuve basé sur la consommation (sans capteur de niveau), commande globale de lampes..."
+            }
+         }
+      }
     },
     "delete-device": {
       "title": "Mettre l'équipement en liste noire",
