@@ -8,8 +8,8 @@
 		},
 		"IncludeSystemKeywords":
 		{
-			"name": "Ajout des keywords systèmes",
-			"description": "Défini les keywords systèmes"
+			"name": "Enregistre les données systèmes",
+			"description": "Enregistre des données internes supplémentaires (pour un usage avancé)"
 		}		
 	},
 	"customLabels": {

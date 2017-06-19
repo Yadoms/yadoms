@@ -211,6 +211,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Speed.h
    shared/plugin/yPluginApi/historization/SignalPower.cpp
    shared/plugin/yPluginApi/historization/SignalPower.h
+   shared/plugin/yPluginApi/historization/SignalLevel.cpp
+   shared/plugin/yPluginApi/historization/SignalLevel.h
    shared/plugin/yPluginApi/historization/Switch.cpp
    shared/plugin/yPluginApi/historization/Switch.h
    shared/plugin/yPluginApi/historization/Tamper.cpp

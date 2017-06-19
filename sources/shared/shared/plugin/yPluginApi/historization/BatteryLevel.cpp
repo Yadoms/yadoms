@@ -11,11 +11,12 @@ namespace shared
          namespace historization
          {
             CBatteryLevel::CBatteryLevel(const std::string& keywordName,
+                                         const EKeywordAccessMode& accessMode,
                                          const EMeasureType& measureType,
                                          typeInfo::CIntTypeInfo& additionalInfo)
                : CSingleHistorizableData<int>(keywordName,
                                               CStandardCapacities::BatteryLevel(),
-                                              EKeywordAccessMode::kGet,
+                                              accessMode,
                                               0,
                                               measureType,
                                               additionalInfo)

@@ -170,4 +170,4 @@ PLUGIN_POST_BUILD_COPY_DIRECTORY(ZWave locales)
 #########################################
 ## Copy configuration files
 #########################################
-PLUGIN_POST_BUILD_COPY_DIRECTORY(ZWave config)
+PLUGIN_POST_BUILD_COPY_DIRECTORY(ZWave ${OPENZWAVE_CONF_DIRECTORY})

@@ -12,11 +12,12 @@ namespace shared
          namespace historization
          {
             CRain::CRain(const std::string& keywordName,
+                         const EKeywordAccessMode& accessMode,
                          const EMeasureType& measureType,
                          typeInfo::CDoubleTypeInfo& additionalInfo)
                : CSingleHistorizableData<double>(keywordName,
                                                  CStandardCapacities::Rain(),
-                                                 EKeywordAccessMode::kGet,
+                                                 accessMode,
                                                  0.0,
                                                  measureType,
                                                  additionalInfo)
