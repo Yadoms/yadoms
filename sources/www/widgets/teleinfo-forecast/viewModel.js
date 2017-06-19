@@ -71,7 +71,7 @@ this.refresh = function(color)
       ctx.lineWidth = 1;
       ctx.fillStyle = color;
       ctx.fill();
-      ctx.strokeStyle = color;
+      ctx.strokeStyle = 'black';
       ctx.stroke();
    }          
           
