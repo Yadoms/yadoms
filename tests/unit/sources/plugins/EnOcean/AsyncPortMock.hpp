@@ -6,7 +6,7 @@
 class CAsyncPortMock : public shared::communication::IAsyncPort
 {
 public:
-   CAsyncPortMock()
+	CAsyncPortMock()
    {
    }
 
@@ -47,6 +47,11 @@ public:
 
       if (m_autoReceiveMessage)
          m_receiveBufferHandler->push(*m_autoReceiveMessage);
+   }
+
+   void sendText(const std::string& content) override
+   {
+	   send(shared::communication::CByteBuffer((unsigned char*)content.c_str(), content.size()));
    }
 
    void flush() override

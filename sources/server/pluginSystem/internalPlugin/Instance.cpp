@@ -157,6 +157,7 @@ namespace pluginSystem
                      YADOMS_LOG(information) << "Manually device creation request received for device : " << request->getData().getDeviceName();
                      try
                      {
+						 //TODO
                         // Autoriser les noms de device en doublons.
                         // Prenons cet exemple :
                         // - Création du device dev1
