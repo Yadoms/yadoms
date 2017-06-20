@@ -1,0 +1,101 @@
+﻿{
+	"name": "WES",
+	"description": "Plugin permettant de dialoguer avec un module WES",
+	"configurationSchema": {
+		"retrieveNamesFromdevice": {
+			"name": "nom des données",
+			"description": "Récupère le nom des données de l'équipement"
+		}
+	},
+	"enumerations": {
+		"EWESdeviceStatus": {
+			"name" : "Etat de l'équipement",
+			"values" : {
+				"Undefined": "Indéfini",
+				"Ok": "Ok",
+				"Error": "Erreur",
+				"TimeOut": "Connection perdue"
+			}
+		},
+		"EWESTeleInfoPeriod": {
+			"name" : "Période tarifaire",
+			"values" : {
+				"AllHours": "Toutes heures",
+				"LowCostHours": "Heures creuses",
+				"PeakCostHour": "Heures pleines",
+				"NormalCostHours": "Heures pleines",
+            "MobilePeakCostHours": "heures pointe mobile",
+            "LowCostBlueDays": "Heures creuses bleues",
+            "LowCostWhiteDays": "Heures creuses blanches",
+            "LowCostRedDays": "Heures creuses rouges",
+            "NormalCostBlueDays": "Heures pleines bleues",
+            "NormalCostWhiteDays": "Heures pleines blanches",
+            "NormalCostRedDays": "Heures pleines rouges",
+            "WinterNormalCost": "Heures pleines hiver",
+            "WinterLowCost": "Heures creuses hiver",
+            "SummerNormalCost": "Heures pleines été",
+            "SummerLowCost": "Heures creuses été",
+            "WinterCost": "Heures hiver"            
+			}
+		},
+		"EWESTeleInfoStatus": {
+			"name" : "Etat de la télé-info",
+			"values" : {
+				"Ok": "Ok",
+				"Error": "Erreur",
+            "TeleInfoLost": "Perte télé-info",
+				"Desactivated": "Désactivée"
+			}
+		}      
+	},   
+	"deviceConfiguration": {
+		"staticConfigurationSchema": {
+			"name": "Type",
+			"description": "Type de l'équipement",
+			"schemas": {
+				"WES": {
+					"types": {
+						"WES": {
+							"title": "module WES"
+						}
+					},
+					"content": {
+						"IPAddress": {
+							"name": "Adresse IP",
+							"description": "L'adresse IP du module"
+						},
+						"Port": {
+							"name": "Port",
+							"description": "Le port de communication du WES (exemple: 80)"
+						},
+						"authentication": {
+							"name": "clé d'accès au module WES",
+							"description": "seulement si la clé est activée",
+							"content": {
+								"User": {
+									"name": "Utilisateur",
+									"description": ""
+								},
+								"Password": {
+									"name": "Mot de passe",
+									"description": ""
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"customLabels": {
+		"pluginState": {
+			"initialization": "Initialisation...",
+			"initializationError": "Erreur d'initialisation",
+			"ready": "plugin prêt",
+			"noConnection": "Pas de connexion à l'équipement",
+			"noInformation": "L'équipement est connecté, mais aucune information n'est retournée. Vérifiez la clé apikey.",
+			"updateConfiguration": "Mise à jour de la configuration...",
+         "kAtLeastOneConnectionFaulty": "Au moins un équipement est en erreur"
+		}
+	}
+}

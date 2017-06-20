@@ -1,0 +1,24 @@
+{
+	"name": "Commande multiple",
+	"description": "Un widget permettant de commander n'importe quel device",
+	"configurationSchema": {
+		"commands": {
+			"name": "Commandes",
+         "description": "Ajouter une nouvelle commande",
+         "item": {
+				"name": "Equipement",
+				"description": "Equipement cible",
+				"content": {
+					"target": {
+						"name": "Equipement",
+						"description": "L'équipement à contrôler"
+					},     
+					"icon": {
+						"name": "L'icone",
+						"description": "L'icone utilisé."
+					}
+            }
+         }
+		}
+	}
+}
