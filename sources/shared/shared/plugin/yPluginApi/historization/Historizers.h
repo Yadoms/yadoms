@@ -35,5 +35,6 @@
 #include "UpDownStop.h"
 #include "Uv.h"
 #include "Voltage.h"
+#include "Volume.h"
 #include "WeatherCondition.h"
 #include "Weight.h"
