@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "FakeSwitch.h"
+#include <shared/tools/Random.h>
 
 CFakeSwitch::CFakeSwitch(const std::string& deviceName,
                          bool isDimmable,
                          bool isSettable)
    : m_deviceName(deviceName),
-     m_isDimmable(isDimmable),
-     m_dist(0, 100)
+     m_isDimmable(isDimmable)
 {
    if (m_isDimmable)
       m_dimmableSwitch = boost::make_shared<yApi::historization::CDimmable>("DimmableSwitch",
@@ -38,12 +38,12 @@ void CFakeSwitch::declareDevice(boost::shared_ptr<yApi::IYPluginApi> api) const
    }
 }
 
-void CFakeSwitch::read()
+void CFakeSwitch::read() const
 {
    if (m_isDimmable)
    {
       // Generate a random value (0 to 100)
-      m_dimmableSwitch->set(m_dist(m_gen));
+      m_dimmableSwitch->set(shared::tools::CRandom::generate(0, 100));
    }
    else
    {

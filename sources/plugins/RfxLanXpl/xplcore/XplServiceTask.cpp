@@ -11,6 +11,7 @@
 #include <Poco/Net/NetworkInterface.h>
 #include <Poco/Net/NetException.h>
 #include <shared/Log.h>
+#include <shared/tools/Random.h>
 
 
 // A client send its data as broadcast on the XPL port,
@@ -103,12 +104,11 @@ namespace xplcore
 
       //the localendpoint is determined from the network interface 
       //(take the ip from the interface and get an used port between 49152 and 65535 according to xpl documentation)
-      boost::random::mt19937 gen;
-      boost::random::uniform_int_distribution<> dist(49152, 65535);
+      auto port = shared::tools::CRandom::generate(49152, 65535);
 
       //because our socket only supports ipv4; we need to get the first ipv4 address
       const auto& firstIpV4Addr = networkInterface.firstAddress(Poco::Net::IPAddress::Family::IPv4);
-      m_localEndPoint = Poco::Net::SocketAddress(firstIpV4Addr, static_cast<Poco::UInt16>(dist(gen))); //cast allowed because value is in [49152, 65535]
+      m_localEndPoint = Poco::Net::SocketAddress(firstIpV4Addr, static_cast<Poco::UInt16>(port)); //cast allowed because value is in [49152, 65535]
 
       //the remote interface is just a broadcast one on xpl port
       m_remoteEndPoint = Poco::Net::SocketAddress(Poco::Net::IPAddress::broadcast(),
@@ -242,9 +242,7 @@ namespace xplcore
       {
          //it is a hbeat request from another client to get our information
          //for the moment we don't manage it (it is not mandatory)
-         boost::random::mt19937 gen;
-         boost::random::uniform_int_distribution<> dist(2, 6);
-         runHeartbeatSequenceIn(dist(gen));
+         runHeartbeatSequenceIn(shared::tools::CRandom::generate(2, 6));
       }
       else
       {

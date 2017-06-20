@@ -39,7 +39,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
    //--------------------------------------------------------------
-   void read();
+   void read() const;
 
    //--------------------------------------------------------------
    /// \brief	            Send all sensor data to Yadoms
@@ -81,11 +81,5 @@ private:
    //--------------------------------------------------------------
    boost::shared_ptr<yApi::historization::CDimmable> m_dimmableSwitch;
    boost::shared_ptr<yApi::historization::CSwitch> m_switch;
-
-   //--------------------------------------------------------------
-   /// \brief	    Random number generator, used to simulate increments
-   //--------------------------------------------------------------
-   boost::random::mt19937 m_gen;
-   boost::random::uniform_int_distribution<> m_dist;
 };
 
