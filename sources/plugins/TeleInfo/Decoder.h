@@ -88,4 +88,27 @@ private:
       OP_EJP,
       OP_TEMPO
    } m_optarif;
+
+   static const std::string m_tag_ADCO;
+   static const std::string m_tag_OPTARIF;
+   static const std::string m_tag_ISOUSC;
+   static const std::string m_tag_BASE;
+   static const std::string m_tag_HCHC;
+   static const std::string m_tag_HCHP;
+   static const std::string m_tag_EJPHPM;
+   static const std::string m_tag_EJPHN;
+   static const std::string m_tag_BBRHCJB;
+   static const std::string m_tag_BBRHPJB;
+   static const std::string m_tag_BBRHCJW;
+   static const std::string m_tag_BBRHPJW;
+   static const std::string m_tag_BBRHCJR;
+   static const std::string m_tag_BBRHPJR;
+   static const std::string m_tag_PTEC;
+   static const std::string m_tag_IINST;
+   static const std::string m_tag_IMAX;
+   static const std::string m_tag_PAPP;
+   static const std::string m_tag_HHPHC;
+   static const std::string m_tag_DEMAIN;
+   static const std::string m_tag_ADPS;
+   static const std::string m_tag_MOTDETAT;
 };
