@@ -1,0 +1,44 @@
+# ------------------------------------
+# --
+# --  Configuration files for Yadoms v1.00 beta
+# --  This file is for retrieve all names from the WES equipment revision 2.
+# --
+# ------------------------------------
+t <form>
+# COMPTEURS TELEINFO
+# COMPTEUR 1
+c e n <html><id>CPT1_name</id><value>%s</value></html>
+c e a <html><id>CPT1_adco</id><value>%s</value></html>
+c e d <html><id>CPT1_abo_name</id><value>%d</value></html>
+# COMPTEUR 2
+c e N <html><id>CPT2_name</id><value>%s</value></html>
+c e A <html><id>CPT2_adco</id><value>%s</value></html>
+c e D <html><id>CPT2_abo_name</id><value>%d</value></html>
+# PINCES AMPERMETRIQUES
+c Pn1 <html><id>nPCE1</id><value>%s</value></html>
+c Pn2 <html><id>nPCE2</id><value>%s</value></html>
+c Pn3 <html><id>nPCE3</id><value>%s</value></html>
+c Pn4 <html><id>nPCE4</id><value>%s</value></html>
+# COMPTEURS IMPULSIONNELS
+c pn1 <text><id>npls1</id><value>%s</value></text>
+c pn2 <text><id>npls2</id><value>%s</value></text>
+c pn3 <text><id>npls3</id><value>%s</value></text>
+c pn4 <text><id>npls4</id><value>%s</value></text>
+#UNITES COMPTEURS IMPULSIONNELS
+c GpU1 <java><var>PLSU1</var><value>%d</value></java>
+c GpU2 <java><var>PLSU2</var><value>%d</value></java>
+c GpU3 <java><var>PLSU3</var><value>%d</value></java>
+c GpU4 <java><var>PLSU4</var><value>%d</value></java>
+# RELAIS
+c o n0 <bssw><id>RL1</id><value>%s</value></bssw>
+c o n1 <bssw><id>RL2</id><value>%s</value></bssw>
+# ENTREE
+c l n1 <text><id>I1</id><value>%s</value></text>
+c l n2 <text><id>I2</id><value>%s</value></text>
+# ANALOGIQUE
+c l a1 <text><id>ANA1</id><value>%s</value></text>
+c l a2 <text><id>ANA2</id><value>%s</value></text>
+c l a3 <text><id>ANA3</id><value>%s</value></text>
+c l a4 <text><id>ANA4</id><value>%s</value></text>
+t </form>
+.

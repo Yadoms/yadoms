@@ -519,13 +519,13 @@ namespace web
                               m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(createdDevice->Id(), content.get<std::string>("name"));
 
                               //update model
-                              if (!content.get<std::string>("model").empty())
+                              if (content.exists("model") && !content.get<std::string>("model").empty())
                                  m_dataProvider->getDeviceRequester()->updateDeviceModel(createdDevice->Id(), content.get<std::string>("model"));
 
-							  //update type
-							  m_dataProvider->getDeviceRequester()->updateDeviceType(createdDevice->Id(), content.get<std::string>("type"));
-							  
-							  //set the device configuration
+                              //update type
+                              m_dataProvider->getDeviceRequester()->updateDeviceType(createdDevice->Id(), content.get<std::string>("type"));
+
+                              //set the device configuration
                               m_dataProvider->getDeviceRequester()->updateDeviceConfiguration(createdDevice->Id(), content.get<shared::CDataContainer>("configuration"));
 
                               //get device with friendly name updated
@@ -624,3 +624,5 @@ namespace web
       } //namespace service
    } //namespace rest
 } //namespace web 
+
+

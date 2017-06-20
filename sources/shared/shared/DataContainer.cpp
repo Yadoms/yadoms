@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "DataContainer.h"
-#include "Log.h"
 #include <boost/property_tree/json_parser.hpp>
 #include <shared/exception/JSONParse.hpp>
 #include "exception/EmptyResult.hpp"
@@ -257,13 +256,7 @@ namespace shared
       set<std::string>(parameterName, strValue, pathChar);
    }
 
-   const char* CDataContainer::get(const char* parameterName, const char pathChar)
-   {
-      std::string strParamName(parameterName);
-      return get<std::string>(strParamName, pathChar).c_str();
-   }
-
-   const char* CDataContainer::get(const std::string & parameterName, const char pathChar)
+   const char* CDataContainer::get(const std::string & parameterName, const char pathChar) const
    {
       return get<std::string>(parameterName, pathChar).c_str();
    }

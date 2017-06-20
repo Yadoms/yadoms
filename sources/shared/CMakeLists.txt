@@ -227,6 +227,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Uv.h
    shared/plugin/yPluginApi/historization/Voltage.cpp
    shared/plugin/yPluginApi/historization/Voltage.h
+   shared/plugin/yPluginApi/historization/Volume.cpp
+   shared/plugin/yPluginApi/historization/Volume.h
    shared/plugin/yPluginApi/historization/Weight.cpp
    shared/plugin/yPluginApi/historization/WeatherCondition.h
    shared/plugin/yPluginApi/historization/WeatherCondition.cpp

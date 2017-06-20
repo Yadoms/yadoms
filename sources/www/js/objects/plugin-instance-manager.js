@@ -267,37 +267,42 @@ PluginInstanceManager.postExtraQuery= function (pluginInstance, commandName, com
 };
 
 
+PluginInstanceManager.getVirtualDevicesSupportedCapacities= function () {
+	return RestEngine.getJson("/rest/system/virtualDevicesSupportedCapacities");
+};
+
+
 /**
  * Download a plugin package for an instance
  * @param pluginInstance The plugin instance
  * @return {Promise} A promise for the result
  */
 PluginInstanceManager.downloadPackage = function (pluginInstance) {
-    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
+   assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
 
-    var d = new $.Deferred();
+   var d = new $.Deferred();
 
-    //we can't download package from system plugins
-    if (!pluginInstance.isSystemCategory() && !pluginInstance.package) {
-        RestEngine.getJson("plugins/" + pluginInstance.type + "/package.json")
-            .done(function (data) {
-                pluginInstance.package = data;
+   //we can't download package from system plugins
+   if (!pluginInstance.isSystemCategory() && !pluginInstance.package) {
+      RestEngine.getJson("plugins/" + pluginInstance.type + "/package.json")
+         .done(function (data) {
+            pluginInstance.package = data;
 
-                //we manage i18n
-                i18n.options.resGetPath = '__ns__/locales/__lng__.json';
-                i18n.loadNamespace("plugins/" + pluginInstance.type);
+            //we manage i18n
+            i18n.options.resGetPath = '__ns__/locales/__lng__.json';
+            i18n.loadNamespace("plugins/" + pluginInstance.type);
 
-                //we restore the resGetPath
-                i18n.options.resGetPath = "locales/__lng__.json";
+            //we restore the resGetPath
+            i18n.options.resGetPath = "locales/__lng__.json";
 
-                d.resolve();
-            })
-            .fail(d.reject);
-    } else {
-        d.resolve();
-    }
+            d.resolve();
+         })
+         .fail(d.reject);
+   } else {
+      d.resolve();
+   }
 
-    return d.promise();
+   return d.promise();
 };
 
 /**

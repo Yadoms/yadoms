@@ -1,0 +1,10 @@
+{
+	"name": "Prévision télé-Info",
+	"description": "Un widget présentant la prévision de couleur de contrat pour le lendemain. Les couleurs sont bleu, blanc, rouge, et gris lorsqu'il n'y a pas de prévision",
+	"configurationSchema": {
+		"device": {
+			"name": "Equipement",
+         "description": "Sélectionner ci-dessous l'équipement pilote"
+		}
+	}
+}

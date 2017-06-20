@@ -12,8 +12,8 @@ namespace rfxcomMessages
                 const RBUF& rbuf,
                 size_t rbufSize)
       : m_batteryLevel(boost::make_shared<yApi::historization::CBatteryLevel>("battery")),
-      m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
-      m_keywords({ m_batteryLevel, m_signalPower })
+        m_signalPower(boost::make_shared<yApi::historization::CSignalPower>("signalPower")),
+        m_keywords({m_batteryLevel, m_signalPower})
    {
       CheckReceivedMessage(rbuf,
                            rbufSize,
@@ -26,7 +26,9 @@ namespace rfxcomMessages
 
       m_id = rbuf.RAIN.id1 | (rbuf.RAIN.id2 << 8);
 
-      m_rain = boost::make_shared<yApi::historization::CRain>("rain", (m_subType == sTypeRAIN6) ? (yApi::historization::EMeasureType::kIncrement) : (yApi::historization::EMeasureType::kCumulative));
+      m_rain = boost::make_shared<yApi::historization::CRain>("rain",
+                                                              yApi::EKeywordAccessMode::kGet,
+                                                              (m_subType == sTypeRAIN6) ? (yApi::historization::EMeasureType::kIncrement) : (yApi::historization::EMeasureType::kCumulative));
       m_keywords.push_back(m_rain);
 
       switch (m_subType)
@@ -74,7 +76,7 @@ namespace rfxcomMessages
       }
    }
 
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CRain::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer>> CRain::encode(boost::shared_ptr<ISequenceNumber> seqNumberProvider) const
    {
       throw shared::exception::CInvalidParameter("Rain is a read-only message, can not be encoded");
    }

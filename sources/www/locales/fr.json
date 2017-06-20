@@ -6,11 +6,11 @@
             "install": "Installation du plugin ...",
             "update": "Mise à jour du plugin ...",
             "remove": "Suppression du plugin ...",
-            "removeFailed": "La suppression du plugin a echoué",
+            "removeFailed": "La suppression du plugin a échoué",
             "download": "Téléchargement du plugin ...",
-            "downloadFailed": "Le téléchargement du plugin a echoué",
+            "downloadFailed": "Le téléchargement du plugin a échoué",
             "deploy": "Déploiement du plugin ...",
-            "deployFailed": "Le déploiement du plugin a echoué",
+            "deployFailed": "Le déploiement du plugin a échoué",
             "finalize": "Finalisation ...",
             "success": "Succès"
         },
@@ -19,11 +19,11 @@
             "install": "Installation du widget ...",
             "update": "Mise à jour du widget ...",
             "remove": "Suppression du widget ...",
-            "removeFailed": "La suppression du widget a echoué",
+            "removeFailed": "La suppression du widget a échoué",
             "download": "Téléchargement du  widget ...",
-            "downloadFailed": "Le téléchargement du widget a echoué",
+            "downloadFailed": "Le téléchargement du widget a échoué",
             "deploy": "Déploiement du widget ...",
-            "deployFailed": "Le déploiement du widget a echoué",
+            "deployFailed": "Le déploiement du widget a échoué",
             "finalize": "Finalisation ...",
             "success": "Succès"
         },
@@ -32,22 +32,22 @@
             "install": "Installation de l'interpréteur de scripts ...",
             "update": "Mise à jour de l'interpréteur de scripts ...",
             "remove": "Suppression de l'interpréteur de scripts ...",
-            "removeFailed": "La suppression de l'interpréteur de scripts a echoué",
+            "removeFailed": "La suppression de l'interpréteur de scripts a échoué",
             "download": "Téléchargement de l'interpréteur de scripts ...",
-            "downloadFailed": "Le téléchargement de l'interpréteur de scripts a echoué",
+            "downloadFailed": "Le téléchargement de l'interpréteur de scripts a échoué",
             "deploy": "Déploiement de l'interpréteur de scripts ...",
-            "deployFailed": "Le déploiement de l'interpréteur de scripts a echoué",
+            "deployFailed": "Le déploiement de l'interpréteur de scripts a échoué",
             "finalize": "Finalisation ...",
             "success": "Succès"
         },
         "yadoms": {
             "name": "yadoms",
             "update": "Mise à jour de Yadoms ...",
-            "updateFailed": "La mise à jour de Yadoms a echoué",
+            "updateFailed": "La mise à jour de Yadoms a échoué",
             "download": "Téléchargement de Yadoms ...",
-            "downloadFailed": "Le téléchargement de Yadoms a echoué",
+            "downloadFailed": "Le téléchargement de Yadoms a échoué",
             "extract": "Extraction de Yadoms ...",
-            "extractFailed": "L'extraction de Yadoms a echoué",
+            "extractFailed": "L'extraction de Yadoms a échoué",
             "deploy": "Déploiement de Yadoms ...",
             "deployFailed": "Le déploiement de Yadoms a echoué",
             "exit": "Arrêt Yadoms ...",
@@ -263,6 +263,46 @@
         "name": "Nom",
         "description": "Nom de l'équipement",
         "regexErrorMessage": "Le nom de l'équipement doit contenir au minimum 1 caractère"
+      }
+    },
+    "virtual-device-configure": {
+      "title": "Créer un équipement virtuel",
+      "friendlyName-configuration": {
+        "name": "Nom",
+        "description": "Nom de l'équipement virtuel",
+        "regexErrorMessage": "Le nom de l'équipement virtuel doit contenir au minimum 1 caractère"
+      },
+      "model-configuration": {
+        "name": "Modèle",
+        "description": "Modèle de l'équipement virtuel",
+        "regexErrorMessage": "Vous permet d'identifier l'équipement"
+      },
+      "schema": {
+         "capacity": {
+            "name": "Type de donnée",
+            "description": "Sélection du type de donnée de l'équipement virtuel",
+            "content": {
+               "standardCapacity": {
+                  "name": "Type de donnée standard",
+                  "description": "Utilisation d'un type de donnée standard",
+                  "content": {
+                     "capacity": {
+                        "name": "Type de donnée"
+                     }
+                  }
+               },
+               "customEnumCapacity": {     
+                  "name": "Liste de valeurs",
+                  "description": "Type de donnée énuméré contenant une liste de valeurs personnalisée",
+                  "content": {
+                     "valueList": {
+                        "name": "Valeurs",
+                        "description": "Saisir les valeurs en les séparant par des virgules"
+                     }
+                  }
+               }
+            }
+         }
       }
     },
     "new-automation-rule": {
@@ -953,7 +993,7 @@
         "install": "Installation du plugin...",
         "update": "Mise à jour du plugin...",
         "remove": "Suppression du plugin...",
-        "removeFailed": "Erreur lors de la suppresion du plugin",
+        "removeFailed": "Erreur lors de la suppression du plugin",
         "download": "Téléchargement du plugin...",
         "downloadFailed": "Erreur lors du téléchargement du plugin",
         "deploy": "Déploiement du plugin...",
@@ -965,7 +1005,7 @@
         "install": "Installation du widget...",
         "update": "Mise à jour du widget...",
         "remove": "Suppression du widget...",
-        "removeFailed": "Erreur lors de la suppresion du widget",
+        "removeFailed": "Erreur lors de la suppression du widget",
         "download": "Téléchargement du widget...",
         "downloadFailed": "Erreur lors du téléchargement du widget",
         "deploy": "Déploiement du widget...",
@@ -1007,6 +1047,7 @@
       "ampere": "A",
       "decibel": "dB",
       "decibelPerMilliWatt": "dBm",
+      "cubicMetre" : "m3",
       "degrees": "°",
       "degreesCelcius": "°C",
       "degreesFarenheit": "°F",

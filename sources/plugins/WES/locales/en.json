@@ -1,0 +1,101 @@
+{
+	"name": "WES",
+	"description": "This plugin provide access to WES equipment\n",
+	"configurationSchema": {
+		"retrieveNamesFromdevice": {
+			"name": "keyword names",
+			"description": "Retrieve names from devices"
+		}
+	},
+	"enumerations": {
+		"EWESdeviceStatus": {
+			"name" : "Device status",
+			"values" : {
+				"Undefined": "Undefined",
+				"Ok": "Ok",
+				"Error": "Error",
+				"TimeOut": "Time out"
+			}
+		},
+		"EWESTeleInfoPeriod": {
+			"name" : "Running period",
+			"values" : {
+				"AllHours": "All hours",
+				"LowCostHours": "Low cost hours",
+				"PeakCostHour": "Peak cost hour",
+				"NormalCostHours": "Normal cost hours",
+            "MobilePeakCostHours": "Mobile peak cost hours",
+            "LowCostBlueDays": "Low cost blue day",
+            "LowCostWhiteDays": "Low cost white day",
+            "LowCostRedDays": "Low cost red day",
+            "NormalCostBlueDays": "Normal cost blue day",
+            "NormalCostWhiteDays": "Normal cost white day",
+            "NormalCostRedDays": "Normal cost red day",
+            "WinterNormalCost": "Winter normal cost",
+            "WinterLowCost": "Winter low cost",
+            "SummerNormalCost": "Summer normal cost",
+            "SummerLowCost": "Summer low cost",
+            "WinterCost": "Winter cost"
+			}
+		},
+		"EWESTeleInfoStatus": {
+			"name" : "Télé-info Status",
+			"values" : {
+				"Ok": "Ok",
+				"Error": "Error",
+            "TeleInfoLost": "TeleInfo lost",
+				"Desactivated": "Desactivated"
+			}
+		}      
+	},     
+	"deviceConfiguration": {
+		"staticConfigurationSchema": {
+			"name": "Type",
+			"description": "Type of the device",
+			"schemas": {
+				"WES": {
+					"types": {
+						"WES": {
+							"title": "WES Module"
+						}
+					},
+					"content": {
+						"IPAddress": {
+							"name": "IP Address",
+							"description": "the IP address of the equipment"
+						},
+						"Port": {
+							"name": "Port",
+							"description": "the WES local socket opened (example: 80)"
+						},
+						"authentication": {
+							"name": "key to access the WES",
+							"description": "Only if the key is enabled",
+							"content": {
+								"User": {
+									"name": "User",
+									"description": ""
+								},
+								"Password": {
+									"name": "Password",
+									"description": ""
+								}
+							}
+						}                  
+					}
+				}
+			}
+		}
+	}, 
+	"customLabels": {
+		"pluginState": {
+			"initialization": "Initializing...",
+			"initializationError": "Initialization error",
+			"ready": "Plugin ready",
+			"noConnection": "Could not connect to the equipment",
+			"noInformation": "The equipment is connected. No information returned. Please check the apikey",
+			"updateConfiguration": "Configuration updating...",
+         "kAtLeastOneConnectionFaulty": "At least one connection is faulty"
+		}
+	}
+}

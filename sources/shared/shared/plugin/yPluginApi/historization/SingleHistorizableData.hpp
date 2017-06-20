@@ -33,7 +33,7 @@ namespace shared
                                        const CStandardCapacity& capacity,
                                        const EKeywordAccessMode& accessMode,
                                        const EMeasureType& measureType = EMeasureType::kAbsolute,
-                                       typeInfo::ITypeInfo& typeInfo = typeInfo::CEmptyTypeInfo::Empty)
+                                       const typeInfo::ITypeInfo& typeInfo = typeInfo::CEmptyTypeInfo::Empty)
                   : m_keywordName(keywordName),
                     m_capacity(capacity),
                     m_accessMode(accessMode),
@@ -55,7 +55,7 @@ namespace shared
                                        const EKeywordAccessMode& accessMode,
                                        const T& initialValue,
                                        const EMeasureType& measureType = EMeasureType::kAbsolute,
-                                       typeInfo::ITypeInfo& typeInfo = typeInfo::CEmptyTypeInfo::Empty)
+                                       const typeInfo::ITypeInfo& typeInfo = typeInfo::CEmptyTypeInfo::Empty)
                   : m_keywordName(keywordName),
                     m_capacity(capacity),
                     m_value(initialValue),
@@ -213,7 +213,7 @@ namespace shared
                //-----------------------------------------------------
                ///\brief               The type information
                //-----------------------------------------------------
-               CDataContainer m_typeInfo;
+               const CDataContainer m_typeInfo;
 
                //-----------------------------------------------------
                ///\brief     Helpers to uniformise access to simple value and enum values
