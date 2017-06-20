@@ -122,7 +122,7 @@ boost::shared_ptr<std::map<std::string, std::string>> CLinkyReceiveBufferHandler
       message.erase(message.begin());
 
       // Separate key/value
-      boost::char_separator<char> sep(" ");
+      boost::char_separator<char> sep("\t");
       boost::tokenizer<boost::char_separator<char>> tok(message, sep);
 
       try
@@ -178,7 +178,7 @@ bool CLinkyReceiveBufferHandler::isCheckSumOk(const std::string& message)
       return false;
 
    auto checksum = 0x00;
-   for (auto byte = message.begin() + 1; byte != (message.end() - 3); ++byte)
+   for (auto byte = message.begin() + 1; byte != (message.end() - 2); ++byte)
       checksum += *byte;
 
    checksum = (checksum & 0x3F) + 0x20;

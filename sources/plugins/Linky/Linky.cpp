@@ -98,15 +98,6 @@ void CLinky::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
             processDataReceived(api,
                                 api->getEventHandler().getEventData<boost::shared_ptr<std::map<std::string, std::string>>>());
 
-            if (m_decoder->isERDFCounterDesactivated())
-            {
-               if (m_runningState != kErDFCounterdesactivated)
-               {
-                  api->setPluginState(yApi::historization::EPluginState::kCustom, "ErDFCounterdesactivated");
-                  m_runningState = kErDFCounterdesactivated;
-               }
-            }
-
 			//Lauch a new time the time out to detect connexion failure
 			m_waitForAnswerTimer->start();
 

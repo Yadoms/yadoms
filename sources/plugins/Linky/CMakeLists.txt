@@ -20,7 +20,6 @@ set(LINKY_SOURCES
    LinkyFactory.cpp
    LinkyReceiveBufferHandler.h
    LinkyReceiveBufferHandler.cpp
-   LinkytrxHelpers.h
    stdafx.h
    stdafx.cpp
    Keywords/IKeyword.h

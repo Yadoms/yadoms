@@ -25,14 +25,13 @@ public:
    // IDecoder implementation
    void decodeLinkyMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                            const boost::shared_ptr<std::map<std::string, std::string>>& messages) override;
-   bool isERDFCounterDesactivated() const override;
    // [END] IDecoder implementation
 
 private:
    //--------------------------------------------------------------
    /// \brief	                     Create the Device with the counter Id
    //--------------------------------------------------------------
-   void createDeviceAndKeywords(bool apparentPowerPresent);
+   void createDeviceAndKeywords();
 
 
    void createKeywordList(const std::string& tariff);
@@ -85,4 +84,11 @@ private:
       OP_EJP,
       OP_TEMPO
    } m_optarif;
+
+   static const std::string m_tag_ADSC;
+   static const std::string m_tag_VTIC;
+   static const std::string m_tag_NGTF;
+   static const std::string m_tag_LTARF;
+   static const std::string m_tag_EASF;
+   static const std::string m_tag_EASD;
 };

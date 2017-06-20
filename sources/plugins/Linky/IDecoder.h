@@ -24,10 +24,4 @@ public:
    //--------------------------------------------------------------
    virtual void decodeLinkyMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                                    const boost::shared_ptr<std::map<std::string, std::string>>& messages) = 0;
-   
-   //--------------------------------------------------------------
-   /// \brief	                     Return if the ERDF counter Linky is desactivated
-   /// \return                      the counter state
-   //--------------------------------------------------------------
-   virtual bool isERDFCounterDesactivated() const = 0;
 };

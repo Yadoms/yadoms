@@ -3,7 +3,6 @@
 #include <shared/communication/AsyncSerialPort.h>
 #include <shared/communication/AsciiBufferLogger.h>
 #include "LinkyReceiveBufferHandler.h"
-#include "LinkytrxHelpers.h"
 #include "Decoder.h"
 #include <shared/Log.h>
 
@@ -19,11 +18,11 @@ boost::shared_ptr<shared::communication::IAsyncPort> CLinkyFactory::constructPor
    YADOMS_LOG(information) << "Connecting Linky on serial port " << configuration.getSerialPort() << "..." ;
 
    auto port = boost::make_shared<shared::communication::CAsyncSerialPort>(configuration.getSerialPort(),
-                                                                           boost::asio::serial_port_base::baud_rate(LINKY_BAUD_RATE),
-                                                                           boost::asio::serial_port_base::parity(LINKY_PARITY),
-                                                                           boost::asio::serial_port_base::character_size(LINKY_CARACTER_SIZE),
-                                                                           boost::asio::serial_port_base::stop_bits(LINKY_STOP_BITS),
-                                                                           boost::asio::serial_port_base::flow_control(LINKY_FLOW_CONTROL));
+                                                                           boost::asio::serial_port_base::baud_rate(9600),
+                                                                           boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::even),
+                                                                           boost::asio::serial_port_base::character_size(7),
+                                                                           boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
+                                                                           boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none));
 
    port->subscribeForConnectionEvents(eventHandler,
                                       evtPortConnectionId);
