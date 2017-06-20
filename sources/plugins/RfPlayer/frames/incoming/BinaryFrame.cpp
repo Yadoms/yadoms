@@ -571,11 +571,11 @@ namespace incoming {
 
 
             auto totalRainKeyword = boost::make_shared<yApi::historization::CRain>("rain");
-            totalRainKeyword->set((pFrame->infos.type9.totalRainLsb + (pFrame->infos.type9.totalRainMsb << 8)));
+            totalRainKeyword->set((pFrame->infos.type9.totalRainLsb + (pFrame->infos.type9.totalRainMsb << 8)) / 10.0);
             m_keywords.push_back(totalRainKeyword);
 
             auto rainRateKeyword = boost::make_shared<yApi::historization::CRainRate>("rain_rate");
-            rainRateKeyword->set(pFrame->infos.type9.rain);
+            rainRateKeyword->set(pFrame->infos.type9.rain / 100.0);
             m_keywords.push_back(rainRateKeyword);
 
             break;
