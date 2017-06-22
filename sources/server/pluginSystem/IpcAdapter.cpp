@@ -255,6 +255,8 @@ namespace pluginSystem
          break;
       case plugin_IPC::toYadoms::msg::kExtraQueryProgress: processExtraQueryProgression(toYadomsProtoBuffer.extraqueryprogress());
          break;
+      case plugin_IPC::toYadoms::msg::kDeclareManuallyCreatedDeviceRequest: processDeclareManuallyCreatedDeviceRequest(toYadomsProtoBuffer.declaremanuallycreateddevicerequest());
+         break;
       default:
          throw shared::exception::CInvalidParameter((boost::format("message : unknown message type %1%") % toYadomsProtoBuffer.OneOf_case()).str());
       }
@@ -473,8 +475,8 @@ namespace pluginSystem
    {
       m_pluginApi->updateDeviceModel(msg.device(),
                                      msg.model());
-   }  
-   
+   }
+
    void CIpcAdapter::processDeviceTypeRequest(const plugin_IPC::toYadoms::DeviceTypeRequest& msg)
    {
       plugin_IPC::toPlugin::msg ans;
@@ -504,13 +506,24 @@ namespace pluginSystem
 
    void CIpcAdapter::processExtraQueryProgression(const plugin_IPC::toYadoms::ExtraQueryProgression& msg) const
    {
-      std::map<std::string, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> >::const_iterator extraQueryIter = m_pendingExtraQueries.find(msg.taskid());
+      auto extraQueryIter = m_pendingExtraQueries.find(msg.taskid());
       if (extraQueryIter != m_pendingExtraQueries.end())
       {
          extraQueryIter->second->reportProgress(msg.progress(), msg.message());
       }
    }
-      
+
+   void CIpcAdapter::processDeclareManuallyCreatedDeviceRequest(const plugin_IPC::toYadoms::DeclareManuallyCreatedDeviceRequest& msg)
+   {
+      plugin_IPC::toPlugin::msg ans;
+      auto answer = ans.mutable_declaremanuallycreateddeviceanswer();
+      answer->set_devicename(m_pluginApi->declareManuallyCreatedDevice(msg.userdevicename(),
+                                                                       msg.type(),
+                                                                       msg.model(),
+                                                                       msg.details().empty() ? shared::CDataContainer::EmptyContainer : shared::CDataContainer(msg.details())));
+      send(ans);
+   }
+
 
    void CIpcAdapter::postStopRequest()
    {
@@ -631,7 +644,7 @@ namespace pluginSystem
       send(msg);
    }
 
-   void CIpcAdapter::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery, const std::string & taskId)
+   void CIpcAdapter::postExtraQuery(boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> extraQuery, const std::string& taskId)
    {
       plugin_IPC::toPlugin::msg req;
       auto message = req.mutable_extraquery();
@@ -665,9 +678,9 @@ namespace pluginSystem
 
                     m_pendingExtraQueries.erase(taskId);
                  }
-                 else if(ans.has_extraqueryprogress())
+                 else if (ans.has_extraqueryprogress())
                  {
-                     extraQuery->reportProgress(ans.extraqueryprogress().progress(), ans.extraqueryprogress().message());
+                    extraQuery->reportProgress(ans.extraqueryprogress().progress(), ans.extraqueryprogress().message());
                  }
               }, boost::posix_time::minutes(10));
       }
@@ -675,8 +688,6 @@ namespace pluginSystem
       {
          extraQuery->sendError((boost::format("Plugin doesn't answer to extra query : %1%") % e.what()).str());
       }
-
-
    }
 
    void CIpcAdapter::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request)

@@ -193,7 +193,7 @@ namespace pluginSystem
          }
       }
 
-      std::string CInstance::generateUniqueDeviceName(boost::shared_ptr<yApi::IYPluginApi> api) const
+      std::string CInstance::generateUniqueDeviceName(boost::shared_ptr<yApi::IYPluginApi> api) const//TODO virer
       {
          static const boost::regex DeviceNamePattern("^virtualDevice_([[:digit:]]*)$");
          const auto& devices = api->getAllDevices();

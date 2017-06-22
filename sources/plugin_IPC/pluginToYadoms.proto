@@ -172,6 +172,13 @@ message DeclareKeywords {
 	repeated Historizable keywords = 3;
 }
 
+message DeclareManuallyCreatedDeviceRequest {
+	string userDeviceName = 1;
+	string type = 2;
+	string model = 3;
+	string details = 4;
+}
+
 message msg {
 	oneof OneOf {
 		SetPluginState pluginState = 1;
@@ -203,5 +210,6 @@ message msg {
 		AllKeywordsRequest allKeywordsRequest = 27;
 		DeclareKeywords declareKeywords = 28;
 		ExtraQueryProgression extraQueryProgress = 29;
+		DeclareManuallyCreatedDeviceRequest declareManuallyCreatedDeviceRequest = 30;
 	}
 }

@@ -65,9 +65,29 @@ namespace pluginSystem
                                                  const shared::CDataContainer& details)
    {
       if (!deviceExists(device))
-         m_deviceManager->createDevice(getPluginId(), device, device, type, model, details);
+         m_deviceManager->createDevice(getPluginId(),
+                                       device,
+                                       device,
+                                       type,
+                                       model,
+                                       details);
 
       declareKeywords(device, keywords);
+   }
+
+   std::string CYPluginApiImplementation::declareManuallyCreatedDevice(const std::string& userDeviceName,
+                                                                       const std::string& type,
+                                                                       const std::string& model,
+                                                                       const shared::CDataContainer& details)
+   {
+      const auto deviceName = generateUniqueDeviceName();
+      m_deviceManager->createDevice(getPluginId(),
+                                    deviceName,
+                                    userDeviceName,
+                                    type,
+                                    model,
+                                    details);
+      return deviceName;
    }
 
    std::vector<std::string> CYPluginApiImplementation::getAllDevices() const
@@ -324,6 +344,25 @@ namespace pluginSystem
    int CYPluginApiImplementation::getPluginId() const
    {
       return m_instanceData->Id;
+   }
+
+   std::string CYPluginApiImplementation::generateUniqueDeviceName() const
+   {
+      static const boost::regex DeviceNamePattern("^manuallyCreatedDevice_([[:digit:]]*)$");
+      const auto& devices = getAllDevices();
+      unsigned int lastNumber = 0;
+      for (const auto& device : devices)
+      {
+         boost::smatch result;
+         if (boost::regex_search(device, result, DeviceNamePattern))
+         {
+            auto number = std::stoul(std::string(result[1].first, result[1].second), nullptr, 16);
+            if (lastNumber < number)
+               lastNumber = number;
+         }
+      }
+
+      return std::string("manuallyCreatedDevice_") + std::to_string(lastNumber + 1);
    }
 } // namespace pluginSystem	
 

@@ -312,12 +312,12 @@ namespace plugin_cpp_api
                                                                                                               answer->set_taskid(taskId);
                                                                                                               send(ans);
                                                                                                            },
-                                                                                                           [&, taskId](const float progression, const std::string& msg)
+                                                                                                           [&, taskId](const float progression, const std::string& text)
                                                                                                            {
                                                                                                               plugin_IPC::toYadoms::msg ans;
                                                                                                               auto answer = ans.mutable_extraqueryprogress();
                                                                                                               answer->set_progress(progression);
-                                                                                                              answer->set_message(msg);
+                                                                                                              answer->set_message(text);
                                                                                                               answer->set_taskid(taskId);
                                                                                                               send(ans);
                                                                                                            });
@@ -454,6 +454,40 @@ namespace plugin_cpp_api
          std::cerr << "}, " << details.serialize() << ")" << std::endl;
          throw;
       }
+   }
+
+   std::string CApiImplementation::declareManuallyCreatedDevice(const std::string& userDeviceName,
+                                                                const std::string& type,
+                                                                const std::string& model,
+                                                                const shared::CDataContainer& details)
+   {
+      plugin_IPC::toYadoms::msg req;
+      auto request = req.mutable_declaremanuallycreateddevicerequest();
+      request->set_userdevicename(userDeviceName);
+      request->set_type(type);
+      request->set_model(model);
+      if (!details.empty())
+         request->set_details(details.serialize());
+
+      std::string deviceName;
+      try
+      {
+         send(req,
+              [](const plugin_IPC::toPlugin::msg& ans) -> bool
+              {
+                 return ans.has_declaremanuallycreateddeviceanswer();
+              },
+              [&](const plugin_IPC::toPlugin::msg& ans) -> void
+              {
+                 deviceName = ans.declaremanuallycreateddeviceanswer().devicename();
+              });
+      }
+      catch (std::exception&)
+      {
+         std::cerr << "Call was : declareManuallyCreatedDevice(" << userDeviceName << ")" << std::endl;
+         throw;
+      }
+      return deviceName;
    }
 
    std::vector<std::string> CApiImplementation::getAllDevices() const

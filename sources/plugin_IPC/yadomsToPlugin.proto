@@ -108,6 +108,10 @@ message AllKeywordsAnswer {
 	repeated string keywords = 1;
 }
 
+message DeclareManuallyCreatedDeviceAnswer {
+	string deviceName = 1;
+}
+
 message msg {
 	oneof OneOf {
 		string error = 1;
@@ -134,6 +138,7 @@ message msg {
 		DeviceTypeAnswer deviceTypeAnswer = 23;
 		DeviceConfigurationAnswer deviceConfigurationAnswer = 24;
 		AllKeywordsAnswer allKeywordsAnswer = 25;
+		DeclareManuallyCreatedDeviceAnswer declareManuallyCreatedDeviceAnswer = 26;
 	}
 }
 
