@@ -62,15 +62,18 @@ namespace pluginSystem
          void doWork(boost::shared_ptr<yApi::IYPluginApi> api,
                      shared::event::CEventHandler& eventHandler) const;
 
+         std::string generateUniqueDeviceName(boost::shared_ptr<yApi::IYPluginApi> api) const;
          std::string createVirtualDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                          const yApi::IManuallyDeviceCreationData& data) const;
          void createStandardCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                            const std::string& deviceName,
                                            const std::string& deviceType,
+                                           const std::string& deviceFriendlyName,
                                            const std::string& standardCapacity) const;
          void createCustomEnumCapacityDevice(boost::shared_ptr<yApi::IYPluginApi> api,
                                              const std::string& deviceName,
                                              const std::string& deviceType,
+                                             const std::string& deviceFriendlyName,
                                              const std::string& commaSeparatedValues) const;
 
       private:
