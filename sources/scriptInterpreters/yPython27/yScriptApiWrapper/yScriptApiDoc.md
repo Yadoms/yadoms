@@ -1,7 +1,7 @@
 # yScriptApi documentation
 
 ## Constants
-* kTimeout : constant returned by some methods in case of timeout occurs
+* scriptUtilities.WAITFOREVENT_TIMEOUT : constant returned by some methods in case of timeout occurs
 
 ## Types
 ### CWaitForEventResult
@@ -10,13 +10,13 @@ Result type of a call to waitForEvent method
 #### Members
 * getType : Get the type of result (see EResultType)
 * getKeywordId : Get the signaled keyword ID
-* getValue : Get the value of the signaled event
+* getValue : Get the value of the signaled event. If datetime event, format is ISO8601 ("AAAAMMDDThhmmss.xxxxxx", example : "20170620T214600.000928").
 #### Types
 ##### EResultType : Type of result
 Values:
-* kTimeout : timeout
-* kKeyword : event on keyword
-* kDateTime : datetime event
+* scriptUtilities.WAITFOREVENT_TIMEOUT : timeout
+* scriptUtilities.WAITFOREVENT_KEYWORD : event on keyword
+* scriptUtilities.WAITFOREVENT_DATETIME : datetime event
 
 ## Methods
 
@@ -108,7 +108,7 @@ Wait for an event (acquisition, time event...)
 ##### keywordIdList (in)
 The keyword IDs list to watch (can be empty list to only wait for time events)
 ##### receiveDateTimeEvent (in)
-True to receive date/time events (one per minute)
+True to receive date/time events (one per minute). See scriptUtilities functions for date/time helpers.
 ##### timeout (in)
 Timeout to wait. Can be a duration (format \"hh:mm:ss\") or a dateTime (format \"YYYY-MM-DD hh:mm:ss\"). No timeout if empty (default).  
 If dateTime is used and specified in the past, the function will immediately return.
@@ -160,3 +160,87 @@ Information key, from this list (don't forget to prefix by 'yApi.') :
 Information as string (empty string if not found)
 #### Throw
 Error if key doesn't exist
+
+
+### scriptUtilities.next_weekday
+#### Description
+Get the next weekeday
+#### Parameters
+##### d (in)
+The initial datetime (python datetime object)
+##### weekday (in)
+The weekday to find (0:monday,...)
+#### Return
+The next weekday (python datetime object)
+
+
+### scriptUtilities.strToTime
+#### Description
+Convert a time string from format HH:MM to datetime.time object
+#### Parameters
+##### timeAsString (in)
+The time as string
+#### Return
+A datetime.time object
+
+
+### scriptUtilities.strToDateTime
+#### Description
+Convert a datetime string in ISO format, into datetime object
+#### Parameters
+##### dateTimeAsString (in)
+The datetime as ISO string YYYYMMDDTHHMMSS
+#### Return
+A datetime.time object
+
+
+### scriptUtilities.strMatchDate
+#### Description
+Helper function which compare an ISO datetime string to a datetime object
+#### Parameters
+##### dateTimeAsString (in)
+The datetime as ISO string YYYYMMDDTHHMMSS
+##### dateTime (in)
+The datetime object
+#### Return
+The comparison result (boolean)
+
+
+### scriptUtilities.dateTimeToString
+#### Description
+Convert a datetime to string YYYY-MM-DD HH:MM:SS
+#### Parameters
+##### dateTimeObject (in)
+The datetime object
+#### Return
+A string
+
+
+### scriptUtilities.timeDeltaToString
+#### Description
+Convert a time delta to string HH:MM:SS
+#### Parameters
+##### dateTimeObject (in)
+The datetime delta object
+#### Return
+A string
+
+
+### scriptUtilities.dateTimeOrTimeDeltaToString
+#### Description
+Convert a datetime or timedelta to string
+#### Parameters
+##### object (in)
+The object to stringize
+#### Return
+A string
+
+
+### scriptUtilities.toDatetime
+#### Description
+Convert an object (time or date) to datetime
+#### Parameters
+##### object (in)
+The object to convert
+#### Return
+A datetime object if parameter is date or time, else the object is returned as is
