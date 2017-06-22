@@ -107,7 +107,7 @@ namespace rfxcomMessages
          break;
       case sTypeMDREMOTE108: m_subTypeManager = boost::make_shared<CLighting5MdRemote>("MDREMOTE 108 LED dimmer");
          break;
-      case sTypeKangtai: m_subTypeManager = boost::make_shared<CLighting5MdRemote>("Kangtai, Cotech");
+      case sTypeKangtai: m_subTypeManager = boost::make_shared<CLighting5OnOff>("Kangtai, Cotech");
          break;
       default:
          throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
