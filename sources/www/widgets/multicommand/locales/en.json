@@ -1,0 +1,24 @@
+{
+	"name": "Multiple commands",
+	"description": "A widget able to control any device",
+	"configurationSchema": {
+		"commands": {
+			"name": "Commands",
+         "description": "Add a new command",
+         "item": {
+				"name": "Device",
+				"description": "Target device",
+				"content": {
+					"target": {
+						"name": "The value",
+						"description": "The device value to set."
+					},     
+					"icon": {
+						"name": "The icon",
+						"description": "The icon."
+					}
+            }
+         }
+		}
+	}
+}

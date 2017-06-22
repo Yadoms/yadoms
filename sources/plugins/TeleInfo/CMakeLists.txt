@@ -22,7 +22,6 @@ set(TELEINFO_SOURCES
    TeleInfoFactory.cpp
    TeleInfoReceiveBufferHandler.h
    TeleInfoReceiveBufferHandler.cpp
-   TeleInfotrxHelpers.h
    Keywords/ForecastTomorrow.cpp
    Keywords/ForecastTomorrow.h
    Keywords/IKeyword.h

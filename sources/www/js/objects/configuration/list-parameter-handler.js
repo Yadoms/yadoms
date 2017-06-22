@@ -230,7 +230,7 @@ ListParameterHandler.prototype.duplicateLine = function() {
          if ($.isFunction(item.applyScript))
             item.applyScript();      
          d.resolve();         
-      }).fail(d.reject).catch(d.reject);
+      }).fail(d.reject);
       return d.promise();
    };
 };

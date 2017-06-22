@@ -15,6 +15,7 @@ ConfigurationHelper.loadConfigurationLibs = function() {
         "js/objects/configuration/bool-parameter-handler.js",
         "js/objects/configuration/section-parameter-handler.js",
         "js/objects/configuration/keyword-parameter-handler.js",
+        "js/objects/configuration/keywordValue-parameter-handler.js",
         "js/objects/configuration/radio-section-parameter-handler.js",
         "js/objects/configuration/combo-section-parameter-handler.js",
         "js/objects/configuration/color-parameter-handler.js",
@@ -150,6 +151,10 @@ ConfigurationHelper.createParameterHandler = function (i18nCtxt, i18nKey, paramN
 
       case "keyword" :
          return new KeywordParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
+         break;
+
+      case "keywordvalue" :
+         return new KeywordValueParameterHandler(i18nContext, i18nKey, paramName, content, currentValue);
          break;
 
       case "color" :

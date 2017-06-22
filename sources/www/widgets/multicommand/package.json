@@ -1,0 +1,41 @@
+{
+	"type": "multicommand",
+	"version": "1.0.0-beta.1",
+	"author": "Jean-Michel DECORET",
+	"url": "https://github.com/Yadoms/yadoms/wiki/multicommand",
+	"credits": "",
+  "dimensions": {
+    "min": {
+      "x": 1,
+      "y": 1
+    },
+    "max": {
+      "x": 4,
+      "y": 4
+    },
+    "default": {
+      "x": 1,
+      "y": 1
+    }
+  },
+  "hasTitle" :  true,
+	"configurationSchema": {
+      "commands": {
+			"type": "list",
+			"nbItemsMin": "1",
+			"nbItemsMax": "16",
+			"allowDuplication": "true",
+			"item": {
+				"type": "section",
+				"content": {
+					"target": {
+						"type": "keywordValue"
+					},
+               "icon": {
+                  "type": "icon"
+               }
+				}
+			}
+		}
+	}
+}

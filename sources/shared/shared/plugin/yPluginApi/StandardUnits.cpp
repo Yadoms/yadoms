@@ -18,6 +18,7 @@ namespace shared
       {
          DECLARE_UNIT(NoUnit, "data.units.noUnit");
          DECLARE_UNIT(Ampere, "data.units.ampere");
+         DECLARE_UNIT(CubicMetre, "data.units.cubicMetre");
          DECLARE_UNIT(Decibel, "data.units.decibel");
          DECLARE_UNIT(DecibelPerMilliWatt, "data.units.decibelPerMilliWatt");
          DECLARE_UNIT(Degrees, "data.units.degrees");

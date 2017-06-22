@@ -32,7 +32,7 @@ namespace outgoing {
          }
          else
          {
-            std::string addr = (boost::format("%2%%3%") % config.get<std::string>("groupCode") % config.get<int>("unitCode")).str();
+            std::string addr = (boost::format("%1%%2%") % config.get<std::string>("groupCode") % config.get<int>("unitCode")).str();
             return CAsciiCommand::generateCommandByAddress(m_protocol, cmd, addr);
          }
       }

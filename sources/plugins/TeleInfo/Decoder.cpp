@@ -1,7 +1,24 @@
 #include "stdafx.h"
 #include "Decoder.h"
-#include "TeleInfotrxHelpers.h"
 #include <shared/Log.h>
+
+const std::string CDecoder::m_tag_ADCO = "ADCO"; //meter id
+const std::string CDecoder::m_tag_OPTARIF = "OPTARIF";//pricing option
+const std::string CDecoder::m_tag_BASE = "BASE";//total power usage normal tariff in base option
+const std::string CDecoder::m_tag_HCHC = "HCHC";// total power usage low tariff in HC option
+const std::string CDecoder::m_tag_HCHP = "HCHP";// total power usage normal tariff in HC option
+const std::string CDecoder::m_tag_EJPHPM = "EJPHPM";// total power usage normal tariff in PM option
+const std::string CDecoder::m_tag_EJPHN = "EJPHN";// total power usage low tariff in HN option
+const std::string CDecoder::m_tag_BBRHCJB = "BBRHCJB";// total power usage low tariff in HC option tempo blue
+const std::string CDecoder::m_tag_BBRHPJB = "BBRHPJB";// total power usage normal tariff in HC option tempo blue
+const std::string CDecoder::m_tag_BBRHCJW = "BBRHCJW";// total power usage low tariff in HC option tempo white
+const std::string CDecoder::m_tag_BBRHPJW = "BBRHPJW";// total power usage normal tariff in HC option tempo white
+const std::string CDecoder::m_tag_BBRHCJR = "BBRHCJR";// total power usage low tariff in HC option tempo red
+const std::string CDecoder::m_tag_BBRHPJR = "BBRHPJR";// total power usage normal tariff in HC option tempo red
+const std::string CDecoder::m_tag_PTEC = "PTEC";//current tariff period
+const std::string CDecoder::m_tag_IINST = "IINST";//instant current power usage
+const std::string CDecoder::m_tag_PAPP = "PAPP";//apparent power
+const std::string CDecoder::m_tag_DEMAIN = "DEMAIN"; // Color of the next day
 
 CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    : m_baseCounter(boost::make_shared<yApi::historization::CEnergy>("BaseCounter")),
@@ -35,7 +52,7 @@ CDecoder::~CDecoder()
 void CDecoder::decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> api,
                                      const boost::shared_ptr<std::map<std::string, std::string>>& messages)
 {
-   m_teleinfoEnableInCounter = (messages->size() == 1 && messages->find(TE_ADCO) != messages->end()) ? false : true;
+   m_teleinfoEnableInCounter = (messages->size() == 1 && messages->find(m_tag_ADCO) != messages->end()) ? false : true;
 
    for (const auto message : *messages)
    {
@@ -44,7 +61,7 @@ void CDecoder::decodeTeleInfoMessage(boost::shared_ptr<yApi::IYPluginApi> api,
    }
 
    if (!m_deviceCreated)
-      createDeviceAndKeywords(messages->find(TE_PAPP) != messages->end());
+      createDeviceAndKeywords(messages->find(m_tag_PAPP) != messages->end());
 
    m_api->historizeData(m_deviceName, m_keywords);
 }
@@ -136,7 +153,7 @@ void CDecoder::processMessage(const std::string& key,
 {
 	try
 	{
-		if (key == TE_ADCO)
+		if (key == m_tag_ADCO)
 		{
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "ADCO" << "=" << value ;
 
@@ -148,113 +165,90 @@ void CDecoder::processMessage(const std::string& key,
 				ADCOalreadyReceived = true;
 			}
 		}
-		else if (key == TE_OPTARIF)
+		else if (key == m_tag_OPTARIF)
 		{
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "OPTARIF" << "=" << value ;
 			if (m_keywords.empty())
 				createKeywordList(value);
 		}
-		else if (key == TE_ISOUSC)
-		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "ISOUSC" << "=" << value ;
-		}
-		else if (key == TE_BASE)
+		else if (key == m_tag_BASE)
 		{
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "BASE" << "=" << value ;
 			m_baseCounter->set(std::stoll(value));
 		}
-		else if (key == TE_HCHC)
+		else if (key == m_tag_HCHC)
 		{
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "HCHC" << "=" << value ;
 			m_lowCostCounter->set(std::stoll(value));
 		}
-		else if (key == TE_HCHP)
+		else if (key == m_tag_HCHP)
 		{
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "HCHP" << "=" << value ;
 			m_normalCostCounter->set(std::stoll(value));
 		}
-		else if (key == TE_EJPHPM)
+		else if (key == m_tag_EJPHPM)
 		{
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "EJPHPM" << "=" << value ;
 			m_EJPPeakPeriod->set(std::stoll(value));
 		}
-		else if (key == TE_EJPHN)
+		else if (key == m_tag_EJPHN)
 		{
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "EJPHN" << "=" << value ;
 			m_EJPNormalPeriod->set(std::stoll(value));
 		}
-		else if (key == TE_BBRHCJB)
+		else if (key == m_tag_BBRHCJB)
 		{
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "BBRHCJB" << "=" << value ;
 			m_tempoBlueDaysLowCostPeriod->set(std::stoll(value));
 		}
-		else if (key == TE_BBRHPJB)
+		else if (key == m_tag_BBRHPJB)
 		{
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "BBRHPJB" << "=" << value ;
 			m_tempoBlueDaysNormalCostPeriod->set(std::stoll(value));
 		}
-		else if (key == TE_BBRHCJW)
+		else if (key == m_tag_BBRHCJW)
 		{
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "BBRHCJW" << "=" << value ;
 			m_tempoWhiteDaysLowCostPeriod->set(std::stoll(value));
 		}
-		else if (key == TE_BBRHPJW)
+		else if (key == m_tag_BBRHPJW)
 		{
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "BBRHPJW" << "=" << value ;
 			m_tempoWhiteDaysNormalCostPeriod->set(std::stoll(value));
 		}
-		else if (key == TE_BBRHCJR)
+		else if (key == m_tag_BBRHCJR)
 		{
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "BBRHCJR" << "=" << value ;
 			m_tempoRedDaysLowCostPeriod->set(std::stoll(value));
 		}
-		else if (key == TE_BBRHPJR)
+		else if (key == m_tag_BBRHPJR)
 		{
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "BBRHPJR" << "=" << value ;
 			m_tempoRedDaysNormalCostPeriod->set(std::stoll(value));
 		}
-		else if (key == TE_PTEC)
+		else if (key == m_tag_PTEC)
 		{
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "PTEC" << "=" << value ;
 			m_TimePeriod->set(value);
 		}
-		else if (key == TE_IINST)
+		else if (key == m_tag_IINST)
 		{
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "IINST" << "=" << value ;
 			m_instantCurrent->set(std::stod(value));
 		}
-		else if (key == TE_IMAX)
-		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "IMAX" << "=" << value ;
-		}
-		else if (key == TE_PAPP)
+		else if (key == m_tag_PAPP)
 		{
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "PAPP" << "=" << value ;
 			m_apparentPower->set(std::stol(value));
 		}
-		else if (key == TE_HHPHC)
-		{
-			//No interest ! Used by the distributor.
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "HHPHC" << "=" << value ;
-		}
-		else if (key == TE_DEMAIN)
+		else if (key == m_tag_DEMAIN)
 		{
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "DEMAIN" << "=" << value ;
 			m_ForecastPeriod->set(value);
 		}
-		else if (key == TE_ADPS)
-		{
-			// Threshold warning ! If IINST > ISOUSC
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "ADPS" << "=" << value ;
-		}
-		else if (key == TE_MOTDETAT)
-		{
-			// This value is for the distributor. It's nevers used
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "MOTDETAT" << "=" << value ;
-		}
 		else
 		{
-			YADOMS_LOG(error) << "label " << key << " not processed" ;
+			YADOMS_LOG(warning) << "label " << key << " not processed" ;
 		}
 	}
 	catch (std::exception& e )

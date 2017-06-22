@@ -1,0 +1,35 @@
+#pragma once
+#include <shared/Export.h>
+#include <shared/enumeration/EnumHelpers.hpp>
+#include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
+
+namespace specificHistorizers
+{
+   //-----------------------------------------------------
+   ///\brief  Status of the TeleInfo
+   //-----------------------------------------------------   
+   DECLARE_ENUM_HEADER(EWESdeviceStatus,
+      ((Undefined))
+      ((Ok))
+      ((Error))
+      ((TimeOut))
+      );
+
+   //-----------------------------------------------------
+   ///\brief A Status object
+   //-----------------------------------------------------
+   class CdeviceStatus : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EWESdeviceStatus>
+   {
+   public:
+      //-----------------------------------------------------
+      ///\brief                     Constructor
+      ///\param[in] keywordName     Yadoms keyword name
+      //-----------------------------------------------------
+      explicit CdeviceStatus(const std::string& keywordName);
+
+      //-----------------------------------------------------
+      ///\brief                     Destructor
+      //-----------------------------------------------------
+      virtual ~CdeviceStatus();
+   };
+} // namespace specificHistorizers
