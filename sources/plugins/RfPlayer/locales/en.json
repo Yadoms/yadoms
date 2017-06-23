@@ -151,7 +151,7 @@
               "title": "DomiaLite"
             },
             "kd101": {
-              "title": "KD101 (smoke dectector)"
+              "title": "KD101 (smoke detector)"
             },
             "parrot": {
               "title": "Parrot"
@@ -202,11 +202,11 @@
           "types": {
             "x2dAlarm433": {
               "title": "Alarm DeltaDore 433MHz",
-              "description": "Alarme Deltadore/X2D fonctionnant en 433MHz"
+              "description": "Alarme Deltadore/X2D in 433MHz band"
             },
             "x2dAlarm868": {
               "title": "Alarm DeltaDore 868MHz",
-              "description": "Alarme Deltadore/X2D fonctionnant en 868MHz"
+              "description": "Alarme Deltadore/X2D in 868MHz band"
             },
             "x2dShutter": {
               "title": "Shutter X2D",
@@ -285,7 +285,7 @@
       "values": {
         "Off": "OFF",
         "On": "ON",
-        "Dim": "DOM",
+        "Dim": "DIM",
         "AllOff": "All ON",
         "AllOn": "All OFF",
         "Assoc": "Peering frame"
