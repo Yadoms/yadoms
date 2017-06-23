@@ -176,7 +176,16 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                {
                   auto deviceData = api->getEventHandler().getEventData<shared::CDataContainer>();
                   if (!api->deviceExists(deviceData.get<std::string>("name")))
-                     api->declareDevice(deviceData.get<std::string>("name"), deviceData.get<std::string>("friendlyName"), deviceData.get<std::string>("friendlyName"), std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(), deviceData.get<shared::CDataContainer>("details"));
+                     api->declareDevice(deviceData.get<std::string>("name"), deviceData.get<std::string>("friendlyName"), deviceData.getWithDefault<std::string>("details.product", deviceData.get<std::string>("friendlyName")), std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(), deviceData.get<shared::CDataContainer>("details"));
+                  else
+                  {
+                     if (deviceData.containsValue("details.product"))
+                     {
+                        std::string s = deviceData.get<std::string>("details.product");
+                        if(!s.empty())
+                           api->updateDeviceModel(deviceData.get<std::string>("name"), s);
+                     }
+                  }
                }
                catch (shared::exception::CException& ex)
                {
@@ -200,7 +209,16 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                   auto deviceData = api->getEventHandler().getEventData<shared::CDataContainer>();
                   std::string deviceName = deviceData.get<std::string>("name");
                   if (!api->deviceExists(deviceName))
-                     api->declareDevice(deviceName, deviceData.get<std::string>("friendlyName"), deviceData.get<std::string>("friendlyName"), std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(), deviceData.get<shared::CDataContainer>("details"));
+                     api->declareDevice(deviceName, deviceData.get<std::string>("friendlyName"), deviceData.getWithDefault<std::string>("details.product", deviceData.get<std::string>("friendlyName")) , std::vector<boost::shared_ptr<const shared::plugin::yPluginApi::historization::IHistorizable> >(), deviceData.get<shared::CDataContainer>("details"));
+                  else
+                  {
+                     if (deviceData.containsValue("details.product"))
+                     {
+                        std::string s = deviceData.get<std::string>("details.product");
+                        if (!s.empty())
+                           api->updateDeviceModel(deviceData.get<std::string>("name"), s);
+                     }
+                  }
 
                   shared::CDataContainer details = api->getDeviceDetails(deviceName);
                   shared::CDataContainer newDetails = deviceData.get<shared::CDataContainer>("details");
