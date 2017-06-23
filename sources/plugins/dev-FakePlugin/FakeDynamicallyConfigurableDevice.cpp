@@ -35,6 +35,27 @@ void CFakeDynamicallyConfigurableDevice::declareDevice(boost::shared_ptr<yApi::I
    }
 }
 
+std::string CFakeDynamicallyConfigurableDevice::declareManuallyCreatedDevice(boost::shared_ptr<yApi::IYPluginApi> api)
+{
+   // Declare device and associated keywords (= values managed by this device)
+   const auto realName = api->declareManuallyCreatedDevice(m_deviceName, getType(), getModel());
+   api->declareKeywords(realName, m_historizers);
+
+   // Get the divider value from the device configuration
+   try
+   {
+      YADOMS_LOG(information) << "Configuration = " << api->getDeviceConfiguration(m_deviceName).serialize();
+      m_divider = api->getDeviceConfiguration(realName).get<int>("DynamicDivider");
+   }
+   catch (std::exception&)
+   {
+      // Configuration may not actually exist, set the default value to divider
+      m_divider = 1.0;
+   }
+
+   return realName;
+}
+
 void CFakeDynamicallyConfigurableDevice::read()
 {
    ++m_internalCounter;

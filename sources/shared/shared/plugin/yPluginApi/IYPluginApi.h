@@ -103,6 +103,7 @@ namespace shared
                ///       (Flag "supportManuallyDeviceCreation" set to true in package.json)
                ///\note Data : a boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> object containing the device creation request
                ///\note Plugin must process the specified request, and return result within 10 seconds, by calling request->sendSuccess or sendError
+               ///\note To declare the device, use declareManuallyCreatedDevice instead of declareDevice
                //-----------------------------------------------------
                kEventManuallyDeviceCreation,
 

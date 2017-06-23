@@ -31,6 +31,12 @@ public:
    void declareDevice(boost::shared_ptr<yApi::IYPluginApi> api);
 
    //--------------------------------------------------------------
+   /// \brief	            Declare manually created device and associated keywords if necessary
+   /// \param[in] api      yPluginApi context
+   //--------------------------------------------------------------
+   std::string declareManuallyCreatedDevice(boost::shared_ptr<yApi::IYPluginApi> api);
+
+   //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
    //--------------------------------------------------------------
    void read();
