@@ -13,8 +13,8 @@ WAITFOREVENT_TIMEOUT = 0
 WAITFOREVENT_KEYWORD = 1
 WAITFOREVENT_DATETIME = 2
 
-# Get the next weekeday
-# If d the weekday, then d is returned
+# Get the next weekday
+# If d is the weekday, then d is returned
 # param [in] d The initial datetime
 # param [in] weekday The weekday to find (0:monday,...)
 def next_weekday(d, weekday):

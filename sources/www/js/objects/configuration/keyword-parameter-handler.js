@@ -188,7 +188,8 @@ KeywordParameterHandler.prototype.applyScript = function () {
 
                   $.each(data2.keyword, function(index, value) {
                      //we add the keyword only if access mode is at least the same than expected
-                     if ((handler.expectedKeywordAccess.toLowerCase() !== "getset") || (value.accessMode.toLowerCase() !== "get")) {
+                     if( (handler.expectedKeywordAccess.toLowerCase() == "getset" && value.accessMode.toLowerCase() == "getset") ||
+                         (handler.expectedKeywordAccess.toLowerCase() == "get") && (value.accessMode.toLowerCase() == "get" || value.accessMode.toLowerCase() == "getset")) {
                         switch (handler.lookupMethod)
                         {
                            case "name":
@@ -254,6 +255,7 @@ KeywordParameterHandler.prototype.applyScript = function () {
 
                   //we select the last selected or the first one
                   $cbKeywords.prop('selectedIndex', keywordToSelect);
+                  $cbKeywords.trigger('change');
                   handler.locateInDOM().change();
                })
                .fail(function(error) {

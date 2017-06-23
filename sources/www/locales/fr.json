@@ -1064,6 +1064,7 @@
       "ampere": "A",
       "decibel": "dB",
       "decibelPerMilliWatt": "dBm",
+      "cubicMetre" : "m3",
       "degrees": "°",
       "degreesCelcius": "°C",
       "degreesFarenheit": "°F",

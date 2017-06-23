@@ -1,0 +1,14 @@
+.widget-multicommand .main {
+    padding: 0;
+    overflow: hidden;
+    flex: 1;
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.widget-multicommand .action {
+    margin: auto;
+}
+
