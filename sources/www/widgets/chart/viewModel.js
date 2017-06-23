@@ -192,8 +192,7 @@ widgetViewModelCtor =
                    }
                    catch(error)
                    {
-                      // TODO : faire une vrai erreur
-                      notifyError(error);
+                      notifyError($.t("widgets/chart:formatNotSupported", {format: $(e.currentTarget).attr("mime-type")}));
                    }
                });
                

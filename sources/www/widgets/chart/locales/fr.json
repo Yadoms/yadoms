@@ -7,6 +7,7 @@
 	"loadingData": "Chargement des données",
 	"RangeTooBroad" : "Echelle trop large",
   "noAvailableData": "Données indisponibles",
+  "formatNotSupported": "Le format __format__ n'est pas supporté",
 	"configurationSchema": {
 		"interval": {
 			"name": "Période d'affichage du graphique",
