@@ -982,12 +982,13 @@ set(YADOMS_INCL_DIR
 	${script_IPC_INCLUDE_DIRS}
 )
 
+#setup include dirs. Add protobuf include dirs in first lines to make xcode-clang work)
 set(YADOMS_ALL_INCL_DIR
+	${PROTOBUF_INCLUDE_DIRS}
 	${YADOMS_INCL_DIR} 
 	${BOOST_INCL_DIR} 
 	${OPENSSL_INCLUDE_DIR}
 	${Poco_INCLUDE_DIRS}
-	${PROTOBUF_INCLUDE_DIRS}
 )
 
 set_property(TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
