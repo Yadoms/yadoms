@@ -7,6 +7,7 @@
   "loadingData": "Loading data",
   "RangeTooBroad": "Range is too broad",
   "noAvailableData": "No available data",
+  "formatNotSupported": "This format __format__ is not supported",
   "configurationSchema": {
     "interval": {
       "name": "Default interval of the chart",

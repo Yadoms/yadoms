@@ -386,7 +386,7 @@ namespace incoming {
             if (pFrame->infos.type2.subtype == 0)
             {
                //detector/sensor( PowerCode device)
-               m_deviceModel += " Detector/sendsor";
+               m_deviceModel += " Detector/sensor";
 
                if ((pFrame->infos.type2.qualifier & 0x0008) != 0)
                {
