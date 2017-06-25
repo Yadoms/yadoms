@@ -23,7 +23,7 @@ public:
    /// \brief	                      Set the value of the keyword
    /// \param[in] value              The new value
    //--------------------------------------------------------------
-   void set(const std::string& value) const;
+   void set(const teleInfo::specificHistorizers::EPeriod value) const;
 
    //--------------------------------------------------------------
    /// \brief	Destructor

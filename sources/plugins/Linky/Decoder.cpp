@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Decoder.h"
 #include <shared/Log.h>
+#include <boost/algorithm/string.hpp>
 
 const std::string CDecoder::m_tag_ADSC = "ADSC";  //meter id
 const std::string CDecoder::m_tag_VTIC = "VTIC";  //Linky revision
@@ -8,6 +9,13 @@ const std::string CDecoder::m_tag_NGTF = "NGTF";  // current tariff period
 const std::string CDecoder::m_tag_LTARF = "LTARF"; // 
 const std::string CDecoder::m_tag_EASF = "EASF";  // counter ...
 const std::string CDecoder::m_tag_EASD = "EASD";// counter
+
+DECLARE_ENUM_IMPLEMENTATION(EContract,
+((BASE))
+((CREUSE))
+((EJP))
+((TEMPO))
+);
 
 CDecoder::CDecoder(boost::shared_ptr<yApi::IYPluginApi> api)
    : m_baseCounter(boost::make_shared<yApi::historization::CEnergy>("BaseCounter")),
@@ -143,26 +151,35 @@ void CDecoder::processMessage(const std::string& key,
 		}
 		else if (key == m_tag_VTIC)
 		{
+         m_revision = value;
 			if (m_isdeveloperMode) YADOMS_LOG(information) << "VTIC" << "=" << value ;
-         //TODO : Check the moment when this creation should be done
 			if (m_keywords.empty())
 				createKeywordList(value);
 		}
 		else if (key == m_tag_NGTF)
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "NGTF" << "=" << value ;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "NGTF" << "=<" << value << ">";
+         std::string s_period(value);
+         boost::trim_right(s_period);
+         boost::trim_left(s_period);
+         teleInfo::specificHistorizers::EPeriod period(s_period); //TODO : Changer le nom teleInfo en linky
+         m_TimePeriod->set(period);
 		}
 		else if (key == m_tag_LTARF)
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "LTARF" << "=" << value ;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << "LTARF" << "=<" << value << ">";
+         std::string s_contract(value);
+         boost::trim_right(s_contract);
+         boost::trim_left(s_contract);
+         EContract contract(s_contract);
 		}
 		else if (key.find(m_tag_EASF))
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "EASF" << "=" << value ;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << m_tag_EASF << "=" << value ;
 		}
 		else if (key.find(m_tag_EASD))
 		{
-			if (m_isdeveloperMode) YADOMS_LOG(information) << "EASD" << "=" << value ;
+			if (m_isdeveloperMode) YADOMS_LOG(information) << m_tag_EASD << "=" << value ;
 		}
 		else
 		{

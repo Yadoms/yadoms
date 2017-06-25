@@ -6,6 +6,13 @@
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
+DECLARE_ENUM_HEADER(EContract,
+((BASE))
+((CREUSE))
+((EJP))
+((TEMPO))
+);
+
 //--------------------------------------------------------------
 /// \brief	This class implement the Linky protocol
 //--------------------------------------------------------------
@@ -71,10 +78,9 @@ private:
    std::string m_deviceName;
 
    bool m_isdeveloperMode;
-
    bool m_linkyEnableInCounter; // TODO : Check if this one always exist
-
    bool m_deviceCreated;
+   std::string m_revision;
    
    enum
    {
@@ -91,4 +97,11 @@ private:
    static const std::string m_tag_LTARF;
    static const std::string m_tag_EASF;
    static const std::string m_tag_EASD;
+
+   static const int m_nb_period=11;
+   static const int m_nb_contrat=4;
+
+   static const std::string Enedis_Periode[m_nb_period];
+   static const std::string Enedis_Contrat[m_nb_contrat];
+
 };

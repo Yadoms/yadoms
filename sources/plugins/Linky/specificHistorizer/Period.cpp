@@ -9,18 +9,18 @@ namespace teleInfo
    namespace specificHistorizers
    {
       DECLARE_ENUM_IMPLEMENTATION(EPeriod,
-         ((AllHours))
-         ((LowCostHours))
-         ((PeakCostHours))
-         ((NormalCostHours))
-         ((MobilePeakCostHours))
-         ((LowCostBlueDays))
-         ((LowCostWhiteDays))
-         ((LowCostRedDays))
-         ((NormalCostBlueDays))
-         ((NormalCostWhiteDays))
-         ((NormalCostRedDays))
-      );
+         ((AllHours)("TH"))
+         ((LowCostHours)("HC"))
+         ((PeakCostHours)("HP"))
+         ((NormalCostHours)("HN"))
+         ((MobilePeakCostHours)("PM"))
+         ((LowCostBlueDays)("HCJB"))
+         ((LowCostWhiteDays)("HCJW"))
+         ((LowCostRedDays)("HCJR"))
+         ((NormalCostBlueDays)("HPJB"))
+         ((NormalCostWhiteDays)("HPJW"))
+         ((NormalCostRedDays)("HPJR"))
+       );
 
       DECLARE_CAPACITY(PeriodCapacity, "Period", shared::plugin::yPluginApi::CStandardUnits::NoUnit(), shared::plugin::yPluginApi::EKeywordDataType::kEnum);
 

@@ -27,7 +27,7 @@ set(LINKY_SOURCES
    Keywords/RunningPeriod.cpp
    Keywords/RunningPeriod.h
    specificHistorizer/Color.h
-   specificHistorizer/Color.cpp   
+   specificHistorizer/Color.cpp
    specificHistorizer/Period.h
    specificHistorizer/Period.cpp
 )

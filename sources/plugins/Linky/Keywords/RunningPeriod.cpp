@@ -12,32 +12,19 @@ CRunningPeriod::CRunningPeriod(boost::shared_ptr<yApi::IYPluginApi> api, const s
 {
 }
 
-void CRunningPeriod::set(const std::string& value) const
+void CRunningPeriod::set(const teleInfo::specificHistorizers::EPeriod value) const
 {
-   static const EnumPeriod EEnumPeriod = boost::assign::map_list_of
-      ("TH..", teleInfo::specificHistorizers::EPeriod::kAllHours)
-      ("HC..", teleInfo::specificHistorizers::EPeriod::kLowCostHours)
-      ("HP..", teleInfo::specificHistorizers::EPeriod::kPeakCostHours)
-      ("HN..", teleInfo::specificHistorizers::EPeriod::kNormalCostHours)
-      ("PM..", teleInfo::specificHistorizers::EPeriod::kMobilePeakCostHours)
-      ("HCJB", teleInfo::specificHistorizers::EPeriod::kLowCostBlueDays)
-      ("HCJW", teleInfo::specificHistorizers::EPeriod::kLowCostWhiteDays)
-      ("HCJR", teleInfo::specificHistorizers::EPeriod::kLowCostRedDays)
-      ("HPJB", teleInfo::specificHistorizers::EPeriod::kNormalCostBlueDays)
-      ("HPJW", teleInfo::specificHistorizers::EPeriod::kNormalCostWhiteDays)
-      ("HPJR", teleInfo::specificHistorizers::EPeriod::kNormalCostRedDays);
-
    try
    {
-      auto it = EEnumPeriod.find(value);
-      if (it != EEnumPeriod.end())
-      {
-         m_runningPeriod->set(static_cast<teleInfo::specificHistorizers::EPeriod>(it->second));
+      //auto it = EEnumPeriod.find(value);
+      //if (it != EEnumPeriod.end())
+      //{
+         m_runningPeriod->set(value);
 
          if (m_isDeveloperMode) YADOMS_LOG(information) << m_runningPeriod->getKeyword() << "=" << m_runningPeriod->get() ;
-      }
-      else
-         throw CKeywordException("Keyword " + m_runningPeriod->getKeyword() + " could not be set");
+      //}
+      //else
+      //   throw CKeywordException("Keyword " + m_runningPeriod->getKeyword() + " could not be set");
    }
    catch (shared::exception::CException& e)
    {

@@ -11,8 +11,8 @@ namespace teleInfo { namespace specificHistorizers
    ///\brief  All periods
    //-----------------------------------------------------   
    DECLARE_ENUM_HEADER(EPeriod,
-      ((AllHours))
-      ((LowCostHours))
+     ((AllHours))
+     ((LowCostHours))
 	  ((PeakCostHours))
 	  ((NormalCostHours))
 	  ((MobilePeakCostHours))
