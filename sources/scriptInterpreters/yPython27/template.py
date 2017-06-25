@@ -9,6 +9,9 @@
 # This sample is a simple thermostat, reading a temperature to drive a heating.
 # Heating is ON when temperature is lower than a setPoint, and OFF if greater.
 
+# Import some helper functions (see help)
+import scriptUtilities
+
 # The temperature setPoint.
 setPoint = 21.5
 

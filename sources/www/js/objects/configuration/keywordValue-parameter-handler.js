@@ -50,10 +50,14 @@ KeywordValueParameterHandler.prototype.onKeywordChange = function () {
       $("#" + self.valuePH.uuidContainer).remove();
    }
     
-   if(!isNullOrUndefined(selectedKeywordId)) {
+   if(!isNullOrUndefinedOrEmpty(selectedKeywordId)) {
       RestEngine.getJson("/rest/device/keyword/" + selectedKeywordId)
       .done(function(keywordData) {
-         self.valuePH = ConfigurationHelper.createKeywordValueParameterHandler(self.i18nContext, "value", "value", keywordData, self.currentValue.value.toString());
+         var curVal;
+         if(self.currentValue && self.currentValue.value) {
+            curVal = self.currentValue.value.toString();
+         }
+         self.valuePH = ConfigurationHelper.createKeywordValueParameterHandler(self.i18nContext, "value", "value", keywordData, curVal);
          if(self.valuePH) {
             $("#" + self.uuidContainer).append(self.valuePH.getDOMObject());
             if ($.isFunction(self.valuePH.applyScript)) {
