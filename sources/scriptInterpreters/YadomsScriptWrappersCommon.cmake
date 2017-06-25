@@ -25,7 +25,15 @@ ENDMACRO()
 MACRO(SCRIPT_API_WRAPPER_SOURCES targetLanguage)
    include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${SHARED_INCL_DIR})
    SET(SWIG_MODULE_yScriptApiWrapper_EXTRA_DEPS ${SHARED_COMMON_INCL_DIR}/shared/script/yScriptApi/IYScriptApi.h)
-   SWIG_ADD_MODULE(yScriptApiWrapper ${targetLanguage} ${ARGN})
+
+   if (${CMAKE_VERSION} VERSION_LESS "3.8.0")
+      SWIG_ADD_MODULE(yScriptApiWrapper ${targetLanguage} ${ARGN})
+   else()
+      SWIG_ADD_LIBRARY(yScriptApiWrapper
+         LANGUAGE ${targetLanguage}
+         SOURCES ${ARGN})
+   endif()
+
    project(yScriptApiWrapper)   
 ENDMACRO()
 

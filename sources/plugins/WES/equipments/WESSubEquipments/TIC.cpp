@@ -26,9 +26,9 @@ namespace equipments
          m_tempoWhiteDaysNormalCostPeriod(boost::make_shared<yApi::historization::CEnergy>("TempoWhiteDaysNormalCostPeriod")),
          m_apparentPower(boost::make_shared<yApi::historization::CApparentPower>("ApparentPower")),
          m_TimePeriod(boost::make_shared<specificHistorizers::CPeriod>("RunningPeriod")),
+         m_Color(boost::make_shared<specificHistorizers::CColor>("Tomorrow")),
          m_teleInfoStatus(boost::make_shared<specificHistorizers::CTeleInfoStatus>("TeleInfoStatus")),
-         m_deviceStatus(boost::make_shared<specificHistorizers::CdeviceStatus>("DeviceStatus")),
-         m_Color(boost::make_shared<specificHistorizers::CColor>("Tomorrow"))
+         m_deviceStatus(boost::make_shared<specificHistorizers::CdeviceStatus>("DeviceStatus"))
       {
          initializeTIC(api, counterId);
       }

@@ -134,11 +134,6 @@ namespace equipments
          ContractAvailable m_contractName;
 
          //--------------------------------------------------------------
-         /// \brief  Keywords list
-         //--------------------------------------------------------------
-         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
-
-         //--------------------------------------------------------------
          /// \brief  Keywords
          //--------------------------------------------------------------
          boost::shared_ptr<yApi::historization::CEnergy> m_baseCounter;
@@ -165,6 +160,11 @@ namespace equipments
          /// \brief	status of the device
          //--------------------------------------------------------------
          boost::shared_ptr<specificHistorizers::CdeviceStatus> m_deviceStatus;
+
+         //--------------------------------------------------------------
+         /// \brief  Keywords list
+         //--------------------------------------------------------------
+         std::vector<boost::shared_ptr<const yApi::historization::IHistorizable>> m_keywords;
       };
    }
 } // namespace equipments::subdevices

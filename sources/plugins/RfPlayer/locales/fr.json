@@ -8,7 +8,7 @@
 		},
 		"receiver": {
 			"name": "Protocoles écoutés",
-			"description": "Specifie la liste des protocole activés",
+			"description": "Spécifie la liste des protocoles activés",
 			"content": {
 				"X10": {
 					"name": "X10",
@@ -62,7 +62,7 @@
 		},
 		"repeater": {
 			"name": "Protocoles répétés",
-			"description": "Specifie la liste des protocole répétés par le dongle RfPlayer",
+			"description": "Spécifie la liste des protocoles répétés par le dongle RfPlayer",
 			"content": {
 				"X10": {
 					"name": "X10",
@@ -177,8 +177,8 @@
           },
           "content": {
             "frequency": {
-              "name": "Frequency",
-              "description": "The used frequency",
+              "name": "Fréquence",
+              "description": "La fréquence utilisée",
               "values": {
                 "433": "433 MHz",
                 "866": "868 MHz"
@@ -193,7 +193,7 @@
               "description": "Facteur de répétition de trame (0 par défaut)"
             },
             "qualifier": {
-              "name": "Qualifier",
+              "name": "Qualificatif",
               "description": "Paramètre optionnel"
             }
           }
@@ -214,7 +214,7 @@
             },
             "x2dElec": {
               "title": "Commande electrique X2D",
-              "description": "Commande electrique DeltaDore/X2D"
+              "description": "Commande électrique DeltaDore/X2D"
             },
             "x2dGas": {
               "title": "Commande de gaz X2D",
@@ -253,7 +253,7 @@
               "description": "Facteur de répétition de trame (0 par défaut)"
             },
             "qualifier": {
-              "name": "Qualifier",
+              "name": "Qualificatif",
               "description": "Paramètre optionnel"
             }
           }
@@ -285,7 +285,7 @@
       "values": {
         "Off": "OFF",
         "On": "ON",
-        "Dim": "DOM",
+        "Dim": "DIM",
         "AllOff": "Tous ON",
         "AllOn": "Tous OFF",
         "Assoc": "Trame d'appairage"

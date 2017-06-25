@@ -11,12 +11,6 @@
 
 namespace http
 {
-   /*
-   shared::CDataContainer CHttpMethods::SendGetRequest(const std::string& url)
-   {
-      return SendGetRequest(url, shared::CDataContainer());
-   }*/
-
    bool CHttpMethods::SendGetRequest(const std::string& url,
                                      const shared::CDataContainer& credentials,
                                      const shared::CDataContainer& parameters,
@@ -47,7 +41,6 @@ namespace http
          Poco::Net::HTTPResponse response;
          session.sendRequest(request);
 
-         auto& rs = session.receiveResponse(response);
          std::string buffer;
          if (response.getStatus() == Poco::Net::HTTPResponse::HTTP_UNAUTHORIZED)
          {

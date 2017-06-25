@@ -39,6 +39,9 @@ widgetViewModelCtor =
                "libs/highstock/js/highstock.js",
                "libs/highstock/js/highcharts-more.js",
                "libs/highstock/js/modules/exporting.js",
+               "libs/highstock/js/modules/offline-exporting.js",
+               "libs/highstock/js/modules/canvas-tools.js",
+               "libs/export-csv/js/export-csv.min.js",
                "libs/highcharts-export-clientside/js/highcharts-export-clientside.min.js"
            ]).done(function () {
 
@@ -181,15 +184,20 @@ widgetViewModelCtor =
                });
 
                self.widgetApi.find(".export-command").unbind("click").bind("click", function (e) {
-                   self.chart.exportChartLocal({
-                       type: $(e.currentTarget).attr("mime-type"),
-                       filename: 'export'
-                   });
+                   try{
+                      self.chart.exportChartLocal({
+                          type: $(e.currentTarget).attr("mime-type"),
+                          filename: 'export'
+                      });
+                   }
+                   catch(error)
+                   {
+                      notifyError($.t("widgets/chart:formatNotSupported", {format: $(e.currentTarget).attr("mime-type")}));
+                   }
                });
                
                self.widgetApi.askServerLocalTime(function (serverLocalTime) {
                   self.serverTime = DateTimeFormatter.isoDateToDate (serverLocalTime);
-                  //TODO : Be carefull with the time this function take, perhaps, we have to create a promise
                });
                
                d.resolve();
@@ -735,14 +743,23 @@ widgetViewModelCtor =
                                        serie.units = $.t(self.keywordInfo[index].units);
 
                                        // If only one axis, we show the legend. In otherwise we destroy it
-                                       if (parseBool(self.widget.configuration.legends.checkbox)) {
-                                           serie.options.showInLegend = true;
-                                           self.chart.legend.renderItem(serie);
-                                       } else {
-                                           serie.options.showInLegend = false;
-                                           serie.legendItem = null;
-                                           self.chart.legend.destroyItem(serie);
+                                       try{
+                                          if (parseBool(self.widget.configuration.legends.checkbox)) {
+                                              serie.options.showInLegend = true;
+                                              self.chart.legend.renderItem(serie);
+                                          } else {
+                                              serie.options.showInLegend = false;
+                                              serie.legendItem = null;
+                                              self.chart.legend.destroyItem(serie);
+                                          }
                                        }
+                                       catch (err) {
+                                          console.warn(err);
+                                          
+                                          // Default configuration
+                                          serie.options.showInLegend = true;
+                                          self.chart.legend.renderItem(serie);
+                                       }                                       
                                        self.chart.legend.render();
 
                                    }

@@ -238,7 +238,7 @@
                }
             },
             "id1_65535": {
-               "types": { "mdRemote106" : { "title": "mdRemote106" } , "livolo" : { "title": "livolo" } , "aoke" : { "title": "aoke" } , "rgb432w" : { "title": "rgb432w" } , "mdremote107" : { "title": "mdremote107" } , "legrandCad" : { "title": "legrandCad" } , "it" : { "title": "it" } , "mdRemote108" : { "title": "mdRemote108" } , "kangtai" : { "title": "kangtai" } },
+               "types": { "mdRemote106" : { "title": "mdRemote106" } , "livolo" : { "title": "livolo" } , "aoke" : { "title": "aoke" } , "rgb432w" : { "title": "rgb432w" } , "mdremote107" : { "title": "mdremote107" } , "legrandCad" : { "title": "legrandCad" } , "it" : { "title": "it" } , "mdRemote108" : { "title": "mdRemote108" } },
                "content": {
                   "id": {
                      "name": "ID",
@@ -354,6 +354,20 @@
                   "unitCode": {
                      "name": "Unit Code",
                      "description": "The unit code (1-15)"
+                  }
+               }
+            },
+                 
+            "id1_65535-uc1_30": {
+               "types": { "kangtai" : { "title": "kangtai" } },
+               "content": {
+                  "id": {
+                     "name": "ID",
+                     "description": "The device ID (1-65535)"
+                  },
+                  "unitCode": {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-30)"
                   }
                }
             },
