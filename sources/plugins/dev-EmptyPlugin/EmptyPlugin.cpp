@@ -169,7 +169,7 @@ void CEmptyPlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
 
                /*
 
-               Treat here the manually device creation event
+               Treat here the manually device creation event (be careful to use declareManuallyCreatedDevice instead of declareDevice for device creation)
 
                */
                
