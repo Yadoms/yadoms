@@ -40,7 +40,7 @@ namespace rfxcomMessages
    {
       // To put Livolo module OFF : send a OFF command
       // To put Livolo module ON : send a OFF command, and a toggle command
-      return m_keyword.get() ? 2 : 1;
+      return m_keyword->get() ? 2 : 1;
    }
 
    void CLighting5Livolo::setFromProtocolState(unsigned char cmdByte,
@@ -62,7 +62,7 @@ namespace rfxcomMessages
                                           unsigned char& levelByte) const
    {
       levelByte = 0;
-      if (!m_keyword.get())
+      if (!m_keyword->get())
       {
          // To put Livolo module OFF : send a OFF command
          cmdByte = light5_sLivoloAllOff;

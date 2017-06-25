@@ -567,13 +567,13 @@ std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginA
    catch (shared::exception::CInvalidParameter& e)
    {
       YADOMS_LOG(error) << "Fail to create device manually, invalid parameter : " << e.what();
-      YADOMS_LOG(error) << "data : " << data.getConfiguration().get<shared::CDataContainer>("type.content").serialize();
+      YADOMS_LOG(error) << "data : " << data.getConfiguration().serialize();
       throw CManuallyDeviceCreationException("invalid parameter");
    }
    catch (shared::exception::COutOfRange& e)
    {
       YADOMS_LOG(error) << "Fail to create device manually, out of range : " << e.what();
-      YADOMS_LOG(error) << "data : " << data.getConfiguration().get<shared::CDataContainer>("type.content").serialize();
+      YADOMS_LOG(error) << "data : " << data.getConfiguration().serialize();
       throw CManuallyDeviceCreationException("out of range");
    }
 

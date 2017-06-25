@@ -64,6 +64,6 @@ namespace rfxcomMessages
                                          unsigned char& levelByte) const
    {
       levelByte = 0;
-      cmdByte = m_keyword.get() ? 0x01 : 0x00;
+      cmdByte = m_keyword->get() ? 0x01 : 0x00;
    }
 } // namespace rfxcomMessages
