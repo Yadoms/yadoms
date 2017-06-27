@@ -94,8 +94,8 @@ BOOST_AUTO_TEST_CASE(Historization)
    BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(api, "temp1").m_value), 24.0);
    BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(api, "temp1").m_value), 26.0);
    BOOST_CHECK_EQUAL(readLastData(api, "temp2").m_device, sensorId);
-   BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(api, "temp2").m_value), 9.0);
-   BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(api, "temp2").m_value), 11.0);
+   BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(api, "temp2").m_value), 8.0);
+   BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(api, "temp2").m_value), 12.0);
    BOOST_CHECK_EQUAL(readLastData(api, "Battery").m_device, sensorId);
    BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(api, "Battery").m_value), 99);
    BOOST_CHECK_EQUAL(readLastData(api, "signalPower").m_device, sensorId);
@@ -131,7 +131,7 @@ BOOST_AUTO_TEST_CASE(TemperatureVariations)
    auto api(boost::make_shared<CDefaultYPluginApiMock>());
 
    // Loop of 100 tests
-   // Temperature variation must be +/- 1° from previous value
+   // Temperature variation must be +/- 1° from previous value for temp1 and +/- 2° from previous value for temp12
    // First value is 25° for temp1, 10° for temp2
    auto temp1 = 25.0, temp2 = 10.0;
    for (auto i = 100 ; i >= 0 ; --i)
@@ -140,8 +140,8 @@ BOOST_AUTO_TEST_CASE(TemperatureVariations)
       BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(api, "temp1").m_value), static_cast<double>(temp1) - 1.1); // Add some marging for float conversion
       BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(api, "temp1").m_value), static_cast<double>(temp1) + 1.1);
       temp1 = boost::lexical_cast<double>(readLastData(api, "temp1").m_value);
-      BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(api, "temp2").m_value), static_cast<double>(temp2) - 1.1);
-      BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(api, "temp2").m_value), static_cast<double>(temp2) + 1.1);
+      BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(api, "temp2").m_value), static_cast<double>(temp2) - 2.1);
+      BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(api, "temp2").m_value), static_cast<double>(temp2) + 2.1);
       temp2 = boost::lexical_cast<double>(readLastData(api, "temp2").m_value);
       sensor.read();
    }
